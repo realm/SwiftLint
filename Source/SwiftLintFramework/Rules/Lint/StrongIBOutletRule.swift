@@ -1,16 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, SubstitutionCorrectableASTRule, OptInRule,
-    AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct StrongIBOutletRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "strong_iboutlet",
         name: "Strong IBOutlet",
-        description: "@IBOutlets shouldn't be declared as weak.",
+        description: "@IBOutlets shouldn't be declared as weak",
         kind: .lint,
         nonTriggeringExamples: [
             wrapExample("@IBOutlet var label: UILabel?"),
@@ -31,29 +29,65 @@ public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, Substituti
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private extension StrongIBOutletRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: VariableDeclSyntax) {
+            if let violationPosition = node.violationPosition {
+                violations.append(violationPosition)
+            }
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
-                                dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard kind == .varInstance && dictionary.enclosedSwiftAttributes.contains(.iboutlet),
-            let weakAttribute = dictionary.swiftAttributes.first(where: {
-                $0.attribute == SwiftDeclarationAttributeKind.weak.rawValue
-            }),
-            let byteRange = weakAttribute.byteRange,
-            let range = file.stringView.byteRangeToNSRange(byteRange)
-            else { return [] }
-        return [range]
+    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
+            guard let violationPosition = node.violationPosition,
+                  let weakOrUnownedModifier = node.weakOrUnownedModifier,
+                  let modifiers = node.modifiers,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
+
+            let newModifiers = ModifierListSyntax(modifiers.filter { $0 != weakOrUnownedModifier })
+            let newNode = node.withModifiers(newModifiers)
+            correctionPositions.append(violationPosition)
+            return super.visit(newNode)
+        }
+    }
+}
+
+private extension VariableDeclSyntax {
+    var violationPosition: AbsolutePosition? {
+        guard let keyword = weakOrUnownedKeyword, isIBOutlet else {
+            return nil
+        }
+
+        return keyword.positionAfterSkippingLeadingTrivia
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (NSRange(location: violationRange.location, length: violationRange.length + 1), "")
+    var weakOrUnownedKeyword: TokenSyntax? {
+        weakOrUnownedModifier?.name
     }
 }
 

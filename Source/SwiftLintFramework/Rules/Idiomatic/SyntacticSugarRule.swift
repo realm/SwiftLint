@@ -2,12 +2,12 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "syntactic_sugar",
         name: "Syntactic Sugar",
         description: "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.",
@@ -17,8 +17,8 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
         corrections: SyntacticSugarRuleExamples.corrections
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let visitor = SyntacticSugarRuleVisitor()
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let visitor = SyntacticSugarRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file) { visitor in
             flattenViolations(visitor.violations)
         }.map { violation in
@@ -33,8 +33,8 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
         return violations.flatMap { [$0] + flattenViolations($0.children) }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        let visitor = SyntacticSugarRuleVisitor()
+    func correct(file: SwiftLintFile) -> [Correction] {
+        let visitor = SyntacticSugarRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file) { visitor in
             var context = CorrectingContext(rule: self, file: file, contents: file.contents)
             context.correctViolations(visitor.violations)
@@ -50,7 +50,6 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
 
 private enum SugaredType: String {
     case optional = "Optional"
-    case implicitlyUnwrappedOptional = "ImplicitlyUnwrappedOptional"
     case array = "Array"
     case dictionary = "Dictionary"
 
@@ -67,8 +66,6 @@ private enum SugaredType: String {
         switch self {
         case .optional:
             return "Int?"
-        case .implicitlyUnwrappedOptional:
-            return "Int!"
         case .array:
             return "[Int]"
         case .dictionary:
@@ -78,7 +75,7 @@ private enum SugaredType: String {
 
     var desugaredExample: String {
         switch self {
-        case .optional, .implicitlyUnwrappedOptional, .array:
+        case .optional, .array:
             return "\(rawValue)<Int>"
         case .dictionary:
             return "\(rawValue)<String, Int>"
@@ -86,7 +83,7 @@ private enum SugaredType: String {
     }
 
     var violationReason: String {
-        "Shorthand syntactic sugar should be used, i.e. \(sugaredExample) instead of \(desugaredExample)."
+        "Shorthand syntactic sugar should be used, i.e. \(sugaredExample) instead of \(desugaredExample)"
     }
 }
 
@@ -105,7 +102,6 @@ private struct SyntacticSugarRuleViolation {
         case optional
         case dictionary(commaStart: AbsolutePosition, commaEnd: AbsolutePosition)
         case array
-        case implicitlyUnwrappedOptional
     }
 
     let position: AbsolutePosition
@@ -141,13 +137,6 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         }
     }
 
-    override func visitPost(_ node: AsExprSyntax) {
-        // json["recommendations"] as? ↓Array<[String: Any]>
-        if let violation = violation(in: node.typeName) {
-            violations.append(violation)
-        }
-    }
-
     override func visitPost(_ node: TypeInitializerClauseSyntax) {
         // typealias Document = ↓Dictionary<String, AnyBSON?>
         if let violation = violation(in: node.value) {
@@ -176,7 +165,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         // let x = ↓Array<String>.array(of: object)
         // Skip checks for 'self' or \T Dictionary<Key, Value>.self
         if let parent = node.parent?.as(MemberAccessExprSyntax.self),
-           let lastToken = Array(parent.tokens).last?.tokenKind,
+           let lastToken = Array(parent.tokens(viewMode: .sourceAccurate)).last?.tokenKind,
            [.selfKeyword, .identifier("Type"), .identifier("none"), .identifier("Index")].contains(lastToken) {
             return
         }
@@ -196,6 +185,12 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
             .compactMap { self.violation(in: $0.argumentType) }
             .first
             .map { violations.append($0) }
+    }
+
+    override func visitPost(_ node: TypeExprSyntax) {
+        if let violation = violation(in: node.type) {
+            violations.append(violation)
+        }
     }
 
     private func violation(in typeSyntax: TypeSyntax?) -> SyntacticSugarRuleViolation? {
@@ -237,8 +232,6 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         switch type {
         case .optional:
             correctionType = .optional
-        case .implicitlyUnwrappedOptional:
-            correctionType = .implicitlyUnwrappedOptional
         case .array:
             correctionType = .array
         case .dictionary:
@@ -311,11 +304,6 @@ private struct CorrectingContext {
 
         case .optional:
             replaceCharacters(in: rightRange, with: "?")
-            correctViolations(violation.children)
-            replaceCharacters(in: leftRange, with: "")
-
-        case .implicitlyUnwrappedOptional:
-            replaceCharacters(in: rightRange, with: "!")
             correctViolations(violation.children)
             replaceCharacters(in: leftRange, with: "")
         }

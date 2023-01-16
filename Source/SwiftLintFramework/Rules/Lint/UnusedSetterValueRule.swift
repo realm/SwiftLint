@@ -1,15 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unused_setter_value",
         name: "Unused Setter Value",
-        description: "Setter value is not used.",
+        description: "Setter value is not used",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -47,9 +46,23 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
              get {
                  return Persister.shared.aValue
              }
-             set() { }
+             set { }
             }
-            """)
+            """),
+            Example("""
+            protocol Foo {
+                var bar: Bool { get set }
+            """, excludeFromDocumentation: true),
+            Example("""
+            override var accessibilityValue: String? {
+                get {
+                    let index = Int(self.value)
+                    guard steps.indices.contains(index) else { return "" }
+                    return ""
+                }
+                set {}
+            }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("""
@@ -116,133 +129,74 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let setTokens = file.rangesAndTokens(matching: "\\bset\\b").keywordTokens()
-
-        let violatingLocations = setTokens.compactMap { setToken -> ByteCount? in
-            // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: setToken.offset,
-                                          structureDictionary: file.structureDictionary).last,
-                let bodyByteRange = dict.bodyByteRange,
-                case let contents = file.stringView,
-                let propertyRange = contents.byteRangeToNSRange(bodyByteRange),
-                let getToken = findGetToken(in: propertyRange, file: file, propertyStructure: dict)
-            else {
-                return nil
-            }
-
-            let argument = findNamedArgument(after: setToken, file: file)
-
-            let propertyEndOffset = bodyByteRange.upperBound
-            let setterByteRange: ByteRange
-
-            let startOfBody: ByteCount
-            if let argumentToken = argument?.token {
-                startOfBody = argumentToken.offset + argumentToken.length
-            } else {
-                startOfBody = setToken.offset + setToken.length
-            }
-            let endOfBody = setToken.offset > getToken.offset ? propertyEndOffset : getToken.offset
-            setterByteRange = ByteRange(location: startOfBody,
-                                        length: endOfBody - startOfBody)
-
-            guard let setterRange = contents.byteRangeToNSRange(setterByteRange) else {
-                return nil
-            }
-
-            let argumentName = argument?.name ?? "newValue"
-            guard file.match(pattern: "\\b\(argumentName)\\b", with: [.identifier], range: setterRange).isEmpty else {
-                return nil
-            }
-
-            if dict.enclosedSwiftAttributes.contains(.override) &&
-                !file.syntaxMap.kinds(inByteRange: setterByteRange).contains(where: { !$0.isCommentLike }) {
-                return nil
-            }
-
-            return setToken.offset
-        }
-
-        return violatingLocations.map { offset in
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: offset))
-        }
-    }
-
-    private func findNamedArgument(after token: SwiftLintSyntaxToken,
-                                   file: SwiftLintFile) -> (name: String, token: SwiftLintSyntaxToken)? {
-        guard let firstToken = file.syntaxMap.tokens.first(where: { $0.offset > token.offset }),
-            firstToken.kind == .identifier else {
-                return nil
-        }
-
-        let declaration = file.structureDictionary.structures(forByteOffset: firstToken.offset)
-            .first(where: { $0.offset == firstToken.offset && $0.length == firstToken.length })
-
-        guard let name = declaration?.name else {
-            return nil
-        }
-
-        return (name, firstToken)
-    }
-
-    private func findGetToken(in range: NSRange, file: SwiftLintFile,
-                              propertyStructure: SourceKittenDictionary) -> SwiftLintSyntaxToken? {
-        let getTokens = file.rangesAndTokens(matching: "\\bget\\b", range: range).keywordTokens()
-        return getTokens.first(where: { token -> Bool in
-            // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: token.offset,
-                                          structureDictionary: file.structureDictionary).last,
-                propertyStructure.value.isEqualTo(dict.value) else {
-                    return false
-            }
-
-            return true
-        })
-    }
-
-    private func declarations(forByteOffset byteOffset: ByteCount,
-                              structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
-        var results = [SourceKittenDictionary]()
-        let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
-
-        func parse(dictionary: SourceKittenDictionary, parentKind: SwiftDeclarationKind?) {
-            // Only accepts declarations which contains a body and contains the
-            // searched byteOffset
-            guard let kind = dictionary.declarationKind,
-                let byteRange = dictionary.bodyByteRange,
-                byteRange.contains(byteOffset)
-            else {
-                return
-            }
-
-            if parentKind != .protocol && allowedKinds.contains(kind) {
-                results.append(dictionary)
-            }
-
-            for dictionary in dictionary.substructure {
-                parse(dictionary: dictionary, parentKind: kind)
-            }
-        }
-
-        let dict = structureDictionary
-
-        for dictionary in dict.substructure {
-            parse(dictionary: dictionary, parentKind: nil)
-        }
-
-        return results
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
-private extension Array where Element == (NSRange, [SwiftLintSyntaxToken]) {
-    func keywordTokens() -> [SwiftLintSyntaxToken] {
-        return compactMap { _, tokens in
-            guard let token = tokens.last, token.kind == .keyword else {
-                return nil
+private extension UnusedSetterValueRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+
+        override func visitPost(_ node: AccessorDeclSyntax) {
+            guard node.accessorKind.tokenKind == .contextualKeyword("set") else {
+                return
             }
-            return token
+
+            let variableName = node.parameter?.name.withoutTrivia().text ?? "newValue"
+            let visitor = NewValueUsageVisitor(variableName: variableName)
+            if !visitor.walk(tree: node, handler: \.isVariableUsed) {
+                if (Syntax(node).closestVariableOrSubscript()?.modifiers).containsOverride,
+                    let body = node.body, body.statements.isEmpty {
+                    return
+                }
+
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+
+    final class NewValueUsageVisitor: SyntaxVisitor {
+        let variableName: String
+        private(set) var isVariableUsed = false
+
+        init(variableName: String) {
+            self.variableName = variableName
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: IdentifierExprSyntax) {
+            if node.identifier.withoutTrivia().text == variableName {
+                isVariableUsed = true
+            }
+        }
+    }
+}
+
+private extension Syntax {
+    func closestVariableOrSubscript() -> Either<SubscriptDeclSyntax, VariableDeclSyntax>? {
+        if let subscriptDecl = self.as(SubscriptDeclSyntax.self) {
+            return .left(subscriptDecl)
+        } else if let variableDecl = self.as(VariableDeclSyntax.self) {
+            return .right(variableDecl)
+        }
+
+        return parent?.closestVariableOrSubscript()
+    }
+}
+
+private enum Either<L, R> {
+    case left(L)
+    case right(R)
+}
+
+private extension Either<SubscriptDeclSyntax, VariableDeclSyntax> {
+    var modifiers: ModifierListSyntax? {
+        switch self {
+        case .left(let left):
+            return left.modifiers
+        case .right(let right):
+            return right.modifiers
         }
     }
 }

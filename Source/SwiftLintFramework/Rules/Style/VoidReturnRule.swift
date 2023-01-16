@@ -1,15 +1,15 @@
 import Foundation
 import SourceKittenFramework
 
-public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "void_return",
         name: "Void Return",
-        description: "Prefer `-> Void` over `-> ()`.",
+        description: "Prefer `-> Void` over `-> ()`",
         kind: .style,
         nonTriggeringExamples: [
             Example("let abc: () -> Void = {}\n"),
@@ -41,7 +41,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
@@ -49,7 +49,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds
         let parensPattern = "\\(\\s*(?:Void)?\\s*\\)"
         let pattern = "->\\s*\(parensPattern)\\s*(?!->)"
@@ -62,7 +62,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "Void")
     }
 }

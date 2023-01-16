@@ -4,7 +4,7 @@
       "engineId":"SwiftLint",
       "primaryLocation":{
         "filePath":"filename",
-        "message":"Violation Reason.",
+        "message":"Violation Reason",
         "textRange":{
           "startLine":1
         }
@@ -17,7 +17,7 @@
       "engineId":"SwiftLint",
       "primaryLocation":{
         "filePath":"filename",
-        "message":"Violation Reason.",
+        "message":"Violation Reason",
         "textRange":{
           "startLine":1
         }
@@ -30,7 +30,7 @@
       "engineId":"SwiftLint",
       "primaryLocation":{
         "filePath":"filename",
-        "message":"Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.",
+        "message":"Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>",
         "textRange":{
           "startLine":1
         }
@@ -43,7 +43,7 @@
       "engineId":"SwiftLint",
       "primaryLocation":{
         "filePath":"",
-        "message":"Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.",
+        "message":"Colons should be next to the identifier when specifying a type and next to the key in dictionary literals",
         "textRange":{
           "startLine":1
         }

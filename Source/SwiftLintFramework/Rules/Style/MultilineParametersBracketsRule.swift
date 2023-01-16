@@ -1,15 +1,15 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "multiline_parameters_brackets",
         name: "Multiline Parameters Brackets",
-        description: "Multiline parameters should have their surrounding brackets in a new line.",
+        description: "Multiline parameters should have their surrounding brackets in a new line",
         kind: .style,
         nonTriggeringExamples: [
             Example("""
@@ -92,7 +92,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violations(in: file.structureDictionary, file: file)
     }
 

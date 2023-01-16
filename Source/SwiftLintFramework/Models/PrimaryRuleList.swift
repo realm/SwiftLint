@@ -1,8 +1,10 @@
-// Generated using Sourcery 1.7.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 /// The rule list containing all available rules built into SwiftLint.
-public let primaryRuleList = RuleList(rules: [
+let builtInRules: [Rule.Type] = [
     AccessibilityLabelForImageRule.self,
+    AccessibilityTraitForButtonRule.self,
     AnonymousArgumentInMultilineClosureRule.self,
     AnyObjectProtocolRule.self,
     ArrayInitRule.self,
@@ -102,6 +104,7 @@ public let primaryRuleList = RuleList(rules: [
     LetVarWhitespaceRule.self,
     LineLengthRule.self,
     LiteralExpressionEndIdentationRule.self,
+    LocalDocCommentRule.self,
     LowerACLThanParentRule.self,
     MarkRule.self,
     MissingDocsRule.self,
@@ -115,12 +118,14 @@ public let primaryRuleList = RuleList(rules: [
     MultipleClosuresWithTrailingClosureRule.self,
     NSLocalizedStringKeyRule.self,
     NSLocalizedStringRequireBundleRule.self,
+    NSNumberInitAsFunctionReferenceRule.self,
     NSObjectPreferIsEqualRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,
     NoExtensionAccessModifierRule.self,
     NoFallthroughOnlyRule.self,
     NoGroupingExtensionRule.self,
+    NoMagicNumbersRule.self,
     NoSpaceInMethodCallRule.self,
     NotificationCenterDetachmentRule.self,
     NumberSeparatorRule.self,
@@ -133,6 +138,7 @@ public let primaryRuleList = RuleList(rules: [
     OverriddenSuperCallRule.self,
     OverrideInExtensionRule.self,
     PatternMatchingKeywordsRule.self,
+    PeriodSpacingRule.self,
     PreferNimbleRule.self,
     PreferSelfInStaticReferencesRule.self,
     PreferSelfTypeOverTypeOfSelfRule.self,
@@ -164,8 +170,10 @@ public let primaryRuleList = RuleList(rules: [
     RequiredEnumCaseRule.self,
     ReturnArrowWhitespaceRule.self,
     ReturnValueFromVoidFunctionRule.self,
+    SelfBindingRule.self,
     SelfInPropertyInitializationRule.self,
     ShorthandOperatorRule.self,
+    ShorthandOptionalBindingRule.self,
     SingleTestClassRule.self,
     SortedFirstLastRule.self,
     SortedImportsRule.self,
@@ -210,9 +218,13 @@ public let primaryRuleList = RuleList(rules: [
     VerticalWhitespaceClosingBracesRule.self,
     VerticalWhitespaceOpeningBracesRule.self,
     VerticalWhitespaceRule.self,
+    VoidFunctionInTernaryConditionRule.self,
     VoidReturnRule.self,
     WeakDelegateRule.self,
     XCTFailMessageRule.self,
     XCTSpecificMatcherRule.self,
     YodaConditionRule.self
-])
+]
+
+/// The rule list containing all available rules built into SwiftLint as well as native custom rules.
+public let primaryRuleList = RuleList(rules: builtInRules + extraRules())

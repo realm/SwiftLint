@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "closure_end_indentation",
         name: "Closure End Indentation",
         description: "Closure end should have the same indentation as the line that started it.",
@@ -18,16 +18,16 @@ public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderR
 
     fileprivate static let notWhitespace = regex("[^\\s]")
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violations(in: file).map { violation in
             return styleViolation(for: violation, in: file)
         }
     }
 
     private func styleViolation(for violation: Violation, in file: SwiftLintFile) -> StyleViolation {
-        let reason = "Closure end should have the same indentation as the line that started it. " +
-                     "Expected \(violation.indentationRanges.expected.length), " +
-                     "got \(violation.indentationRanges.actual.length)."
+        let reason = "Closure end should have the same indentation as the line that started it; " +
+                     "expected \(violation.indentationRanges.expected.length), " +
+                     "got \(violation.indentationRanges.actual.length)"
 
         return StyleViolation(ruleDescription: Self.description,
                               severity: configuration.severity,
@@ -37,7 +37,7 @@ public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderR
 }
 
 extension ClosureEndIndentationRule: CorrectableRule {
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let allViolations = violations(in: file).reversed().filter { violation in
             guard let nsRange = file.stringView.byteRangeToNSRange(violation.range) else {
                 return false

@@ -1,13 +1,11 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct AnonymousArgumentInMultilineClosureRule: ASTRule, OptInRule, ConfigurationProviderRule,
-                                                       AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct AnonymousArgumentInMultilineClosureRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "anonymous_argument_in_multiline_closure",
         name: "Anonymous Argument in Multiline Closure",
         description: "Use named arguments in multiline closures",
@@ -35,46 +33,35 @@ public struct AnonymousArgumentInMultilineClosureRule: ASTRule, OptInRule, Confi
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .closure,
-              dictionary.enclosedVarParameters.isEmpty,
-              let range = dictionary.bodyByteRange,
-              let (initialLine, _) = file.stringView.lineAndCharacter(forByteOffset: range.lowerBound),
-              let (finalLine, _) = file.stringView.lineAndCharacter(forByteOffset: range.upperBound),
-              initialLine != finalLine,
-              let bodyNSRange = file.stringView.byteRangeToNSRange(range) else {
-                return []
-        }
-
-        let matches = file.match(pattern: "\\$0", with: [.identifier], range: bodyNSRange).filter { range in
-            guard range.length == 2,
-                  let byteRange = file.stringView.NSRangeToByteRange(range) else {
-                return false
-            }
-
-            // do not trigger for nested closures
-            let expressions = closureExpressions(forByteOffset: byteRange.location, structureDictionary: dictionary)
-            return expressions.isEmpty
-        }
-
-        return matches.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(locationConverter: file.locationConverter)
     }
+}
 
-    private func closureExpressions(forByteOffset byteOffset: ByteCount,
-                                    structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
-        return structureDictionary.traverseBreadthFirst { dictionary in
-            guard dictionary.expressionKind == .closure,
-                let byteRange = dictionary.byteRange,
-                byteRange.contains(byteOffset)
-            else {
-                return nil
+private extension AnonymousArgumentInMultilineClosureRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let locationConverter: SourceLocationConverter
+
+        init(locationConverter: SourceLocationConverter) {
+            self.locationConverter = locationConverter
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+            let startLocation = locationConverter.location(for: node.leftBrace.positionAfterSkippingLeadingTrivia)
+            let endLocation = locationConverter.location(for: node.rightBrace.endPositionBeforeTrailingTrivia)
+
+            guard let startLine = startLocation.line, let endLine = endLocation.line, startLine != endLine else {
+                return .skipChildren
             }
-            return [dictionary]
+
+            return .visitChildren
+        }
+
+        override func visitPost(_ node: IdentifierExprSyntax) {
+            if case .dollarIdentifier = node.identifier.tokenKind {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

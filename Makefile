@@ -7,10 +7,7 @@ XCODEFLAGS=-scheme 'swiftlint' \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
 SWIFT_BUILD_FLAGS=--configuration release -Xlinker -dead_strip
-UNAME=$(shell uname)
 
-SWIFTLINT_EXECUTABLE_X86=$(shell swift build $(SWIFT_BUILD_FLAGS) --arch x86_64 --show-bin-path)/swiftlint
-SWIFTLINT_EXECUTABLE_ARM64=$(shell swift build $(SWIFT_BUILD_FLAGS) --arch arm64 --show-bin-path)/swiftlint
 SWIFTLINT_EXECUTABLE_PARENT=.build/universal
 SWIFTLINT_EXECUTABLE=$(SWIFTLINT_EXECUTABLE_PARENT)/swiftlint
 
@@ -27,21 +24,21 @@ LICENSE_PATH="$(shell pwd)/LICENSE"
 
 OUTPUT_PACKAGE=SwiftLint.pkg
 
-VERSION_STRING=$(shell ./script/get-version)
+VERSION_STRING=$(shell ./tools/get-version)
 
 .PHONY: all clean build install package test uninstall docs
 
 all: build
 
-sourcery: Source/SwiftLintFramework/Models/PrimaryRuleList.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift
+sourcery: Source/SwiftLintFramework/Models/PrimaryRuleList.swift Tests/GeneratedTests/GeneratedTests.swift
 
 Source/SwiftLintFramework/Models/PrimaryRuleList.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/PrimaryRuleList.stencil
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/PrimaryRuleList.stencil --output .sourcery
 	mv .sourcery/PrimaryRuleList.generated.swift Source/SwiftLintFramework/Models/PrimaryRuleList.swift
 
-Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/AutomaticRuleTests.stencil
-	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/AutomaticRuleTests.stencil --output .sourcery
-	mv .sourcery/AutomaticRuleTests.generated.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift
+Tests/GeneratedTests/GeneratedTests.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/GeneratedTests.stencil
+	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/GeneratedTests.stencil --output .sourcery
+	mv .sourcery/GeneratedTests.generated.swift Tests/GeneratedTests/GeneratedTests.swift
 
 test: clean_xcode
 	$(BUILD_TOOL) $(XCODEFLAGS) test
@@ -62,25 +59,18 @@ analyze_autocorrect: write_xcodebuild_log
 clean:
 	rm -f "$(OUTPUT_PACKAGE)"
 	rm -rf "$(TEMPORARY_FOLDER)"
-	rm -f "./*.zip"
+	rm -f "./*.zip" "bazel.tar.gz" "bazel.tar.gz.sha256"
 	swift package clean
 
 clean_xcode:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
-build_x86_64:
-	swift build $(SWIFT_BUILD_FLAGS) --arch x86_64
-
-build_arm64:
-	swift build $(SWIFT_BUILD_FLAGS) --arch arm64
-
-build: clean build_x86_64 build_arm64
-	# Need to build for each arch independently to work around https://bugs.swift.org/browse/SR-15802
-	mkdir -p $(SWIFTLINT_EXECUTABLE_PARENT)
-	lipo -create -output \
-		"$(SWIFTLINT_EXECUTABLE)" \
-		"$(SWIFTLINT_EXECUTABLE_X86)" \
-		"$(SWIFTLINT_EXECUTABLE_ARM64)"
+build: clean
+	mkdir -p "$(SWIFTLINT_EXECUTABLE_PARENT)"
+	bazel build --config release universal_swiftlint
+	$(eval SWIFTLINT_BINARY := $(shell bazel cquery --config release --output=files universal_swiftlint))
+	mv "$(SWIFTLINT_BINARY)" "$(SWIFTLINT_EXECUTABLE)"
+	chmod +w "$(SWIFTLINT_EXECUTABLE)"
 	strip -rSTX "$(SWIFTLINT_EXECUTABLE)"
 
 build_with_disable_sandbox:
@@ -109,7 +99,7 @@ portable_zip: installables
 
 spm_artifactbundle_macos: installables
 	mkdir -p "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin"
-	sed 's/__VERSION__/$(VERSION_STRING)/g' script/info-macos.json.template > "$(ARTIFACT_BUNDLE_PATH)/info.json"
+	sed 's/__VERSION__/$(VERSION_STRING)/g' tools/info-macos.json.template > "$(ARTIFACT_BUNDLE_PATH)/info.json"
 	cp -f "$(SWIFTLINT_EXECUTABLE)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin"
 	cp -f "$(LICENSE_PATH)" "$(ARTIFACT_BUNDLE_PATH)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary-macos.artifactbundle.zip"
@@ -128,13 +118,6 @@ zip_linux_release:
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 
-zip_linux_release_5_5:
-	$(eval TMP_FOLDER := $(shell mktemp -d))
-	docker run "ghcr.io/realm/swiftlint:5.5-$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
-	chmod +x "$(TMP_FOLDER)/swiftlint"
-	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
-	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux_swift_5_5.zip"
-
 package: build
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))
 	cp "$(SWIFTLINT_EXECUTABLE)" "$(PACKAGE_ROOT)"
@@ -145,13 +128,15 @@ package: build
 		--version "$(VERSION_STRING)" \
 		"$(OUTPUT_PACKAGE)"
 
-release: package portable_zip spm_artifactbundle_macos zip_linux_release zip_linux_release_5_5
+bazel_release:
+	bazel build :release
+	mv bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 .
 
 docker_image:
 	docker build --platform linux/amd64 --force-rm --tag swiftlint .
 
 docker_test:
-	docker run --platform linux/amd64 -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.5 swift test --parallel
+	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.7-focal swift test --parallel
 
 docker_htop:
 	docker run --platform linux/amd64 -it --rm --pid=container:swiftlint terencewestphal/htop || reset
@@ -173,14 +158,19 @@ docs:
 get_version:
 	@echo "$(VERSION_STRING)"
 
-push_version:
+release:
 ifneq ($(strip $(shell git status --untracked-files=no --porcelain 2>/dev/null)),)
 	$(error git state is not clean)
 endif
 	$(eval NEW_VERSION_AND_NAME := $(filter-out $@,$(MAKECMDGOALS)))
 	$(eval NEW_VERSION := $(shell echo $(NEW_VERSION_AND_NAME) | sed 's/:.*//' ))
-	@sed -i '' 's/## Master/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
-	@sed 's/__VERSION__/$(NEW_VERSION)/g' script/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
+	@sed -i '' 's/## Main/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
+	@sed 's/__VERSION__/$(NEW_VERSION)/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
+	make package
+	make bazel_release
+	make portable_zip
+	make spm_artifactbundle_macos
+	./tools/update-artifact-bundle.sh "$(NEW_VERSION)"
 	git commit -a -m "release $(NEW_VERSION)"
 	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
 	git push origin HEAD

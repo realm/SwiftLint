@@ -2,12 +2,13 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct CommaInheritanceRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule,
+                                    SourceKitFreeRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "comma_inheritance",
         name: "Comma Inheritance Rule",
         description: "Use commas to separate types in inheritance lists",
@@ -61,7 +62,7 @@ public struct CommaInheritanceRule: SubstitutionCorrectableRule, ConfigurationPr
 
     // MARK: - Rule
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
@@ -71,12 +72,12 @@ public struct CommaInheritanceRule: SubstitutionCorrectableRule, ConfigurationPr
 
     // MARK: - SubstitutionCorrectableRule
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, ", ")
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let visitor = CommaInheritanceRuleVisitor()
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+        let visitor = CommaInheritanceRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file) { visitor -> [ByteRange] in
             visitor.violationRanges
         }.compactMap {
@@ -89,7 +90,7 @@ private final class CommaInheritanceRuleVisitor: SyntaxVisitor {
     private(set) var violationRanges: [ByteRange] = []
 
     override func visitPost(_ node: InheritedTypeSyntax) {
-        for type in node.children {
+        for type in node.children(viewMode: .sourceAccurate) {
             guard let composition = type.as(CompositionTypeSyntax.self) else {
                 continue
             }

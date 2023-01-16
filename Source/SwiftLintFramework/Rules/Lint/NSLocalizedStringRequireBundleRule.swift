@@ -1,12 +1,14 @@
-public struct NSLocalizedStringRequireBundleRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+import SwiftSyntax
 
-    public init() {}
+struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    init() {}
+
+    static let description = RuleDescription(
         identifier: "nslocalizedstring_require_bundle",
         name: "NSLocalizedString Require Bundle",
-        description: "Calls to NSLocalizedString should specify the bundle which contains the strings file.",
+        description: "Calls to NSLocalizedString should specify the bundle which contains the strings file",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -40,21 +42,27 @@ public struct NSLocalizedStringRequireBundleRule: ASTRule, OptInRule, Configurat
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let isBundleArgument: (SourceKittenDictionary) -> Bool = { $0.name == "bundle" }
-        guard kind == .call,
-            dictionary.name == "NSLocalizedString",
-            let offset = dictionary.offset,
-            !dictionary.enclosedArguments.contains(where: isBundleArgument) else {
-            return []
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+private extension NSLocalizedStringRequireBundleRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
+               identifierExpr.identifier.tokenKind == .identifier("NSLocalizedString"),
+               !node.argumentList.containsArgument(named: "bundle") {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+}
+
+private extension TupleExprElementListSyntax {
+    func containsArgument(named name: String) -> Bool {
+        contains { arg in
+            arg.label?.tokenKind == .identifier(name)
+        }
     }
 }

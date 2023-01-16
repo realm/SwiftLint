@@ -15,6 +15,7 @@ struct Benchmark {
     }
 
     mutating func record(id: String, time: Double) {
+        guard id != "custom_rules" else { return }
         entries.append(BenchmarkEntry(id: id, time: time))
     }
 
@@ -32,7 +33,7 @@ struct Benchmark {
             return "\(numberFormatter.string(from: NSNumber(value: time))!): \(id)"
         }
         let string: String = lines.joined(separator: "\n") + "\n"
-        let url = URL(fileURLWithPath: "benchmark_\(name)_\(timestamp).txt")
+        let url = URL(fileURLWithPath: "benchmark_\(name)_\(timestamp).txt", isDirectory: false)
         try? string.data(using: .utf8)?.write(to: url, options: [.atomic])
     }
 }

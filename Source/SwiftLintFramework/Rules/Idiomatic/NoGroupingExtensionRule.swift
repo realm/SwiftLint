@@ -1,14 +1,14 @@
 import SourceKittenFramework
 
-public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "no_grouping_extension",
         name: "No Grouping Extension",
-        description: "Extensions shouldn't be used to group code within the same source file.",
+        description: "Extensions shouldn't be used to group code within the same source file",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("protocol Food {}\nextension Food {}\n"),
@@ -23,7 +23,7 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let collector = NamespaceCollector(dictionary: file.structureDictionary)
         let elements = collector.findAllElements(of: [.class, .enum, .struct, .extension])
 

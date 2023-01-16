@@ -1,64 +1,56 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct NotificationCenterDetachmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "notification_center_detachment",
         name: "Notification Center Detachment",
-        description: "An object should only remove itself as an observer in `deinit`.",
+        description: "An object should only remove itself as an observer in `deinit`",
         kind: .lint,
         nonTriggeringExamples: NotificationCenterDetachmentRuleExamples.nonTriggeringExamples,
         triggeringExamples: NotificationCenterDetachmentRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .class else {
-            return []
-        }
-
-        return violationOffsets(file: file, dictionary: dictionary).map { offset in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func violationOffsets(file: SwiftLintFile,
-                                  dictionary: SourceKittenDictionary) -> [ByteCount] {
-        return dictionary.substructure.flatMap { subDict -> [ByteCount] in
-            // complete detachment is allowed on `deinit`
-            if subDict.declarationKind == .functionMethodInstance,
-                subDict.name == "deinit" {
-                return []
+private extension NotificationCenterDetachmentRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard node.isNotificationCenterDettachmentCall,
+                  let arg = node.argumentList.first,
+                  arg.label == nil,
+                  let expr = arg.expression.as(IdentifierExprSyntax.self),
+                  expr.identifier.tokenKind == .selfKeyword else {
+                return
             }
 
-            if subDict.expressionKind == .call,
-                subDict.name == methodName,
-                parameterIsSelf(dictionary: subDict, file: file),
-                let offset = subDict.offset {
-                return [offset]
-            }
+            violations.append(node.positionAfterSkippingLeadingTrivia)
+        }
 
-            return violationOffsets(file: file, dictionary: subDict)
+        override func visit(_ node: DeinitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
         }
     }
+}
 
-    private var methodName = "NotificationCenter.default.removeObserver"
-
-    private func parameterIsSelf(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let bodyRange = dictionary.bodyByteRange,
-            case let tokens = file.syntaxMap.tokens(inByteRange: bodyRange),
-            tokens.kinds == [.keyword],
-            let token = tokens.first
-        else {
+private extension FunctionCallExprSyntax {
+    var isNotificationCenterDettachmentCall: Bool {
+        guard trailingClosure == nil,
+              argumentList.count == 1,
+              let expr = calledExpression.as(MemberAccessExprSyntax.self),
+              expr.name.text == "removeObserver",
+              let baseExpr = expr.base?.as(MemberAccessExprSyntax.self),
+              baseExpr.name.text == "default",
+              baseExpr.base?.as(IdentifierExprSyntax.self)?.identifier.text == "NotificationCenter" else {
             return false
         }
 
-        let body = file.contents(for: token)
-        return body == "self"
+        return true
     }
 }

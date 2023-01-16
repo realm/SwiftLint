@@ -23,7 +23,7 @@ enum ImportUsage {
         case .unused:
             return nil
         case .missing(let module):
-            return "Missing import for referenced module '\(module)'."
+            return "Missing import for referenced module '\(module)'"
         }
     }
 }

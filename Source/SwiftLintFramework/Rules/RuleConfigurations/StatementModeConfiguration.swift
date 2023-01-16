@@ -1,10 +1,10 @@
-public enum StatementModeConfiguration: String {
+enum StatementModeConfiguration: String {
     case `default` = "default"
     case uncuddledElse = "uncuddled_else"
 
     init(value: Any) throws {
         if let string = (value as? String)?.lowercased(),
-            let value = StatementModeConfiguration(rawValue: string) {
+            let value = Self(rawValue: string) {
             self = value
         } else {
             throw ConfigurationError.unknownConfiguration
@@ -12,8 +12,8 @@ public enum StatementModeConfiguration: String {
     }
 }
 
-public struct StatementConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
+struct StatementConfiguration: RuleConfiguration, Equatable {
+    var consoleDescription: String {
         return "(statement_mode) \(statementMode.rawValue), " +
             "(severity) \(severity.consoleDescription)"
     }
@@ -21,13 +21,7 @@ public struct StatementConfiguration: RuleConfiguration, Equatable {
     var statementMode: StatementModeConfiguration
     var severity: SeverityConfiguration
 
-    public init(statementMode: StatementModeConfiguration,
-                severity: SeverityConfiguration) {
-        self.statementMode = statementMode
-        self.severity = severity
-    }
-
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

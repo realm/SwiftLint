@@ -1,3 +1,5 @@
+import SwiftSyntax
+
 /// A contiguous region of Swift source code.
 public struct Region: Equatable {
     /// The location describing the start of the region. All locations that are less than this value
@@ -62,5 +64,22 @@ public struct Region: Equatable {
     public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {
         let identifiers = type(of: rule).description.deprecatedAliases
         return Set(disabledRuleIdentifiers.map { $0.stringRepresentation }).intersection(identifiers)
+    }
+
+    /// Converts this `Region` to a SwiftSyntax `SourceRange`.
+    ///
+    /// - parameter locationConverter: The SwiftSyntax location converter to use.
+    ///
+    /// - returns: The `SourceRange` if one was produced.
+    func toSourceRange(locationConverter: SourceLocationConverter) -> SourceRange? {
+        guard let startLine = start.line, let endLine = end.line else {
+            return nil
+        }
+
+        let startPosition = locationConverter.position(ofLine: startLine, column: min(1000, start.character ?? 1))
+        let endPosition = locationConverter.position(ofLine: endLine, column: min(1000, end.character ?? 1))
+        let startLocation = locationConverter.location(for: startPosition)
+        let endLocation = locationConverter.location(for: endPosition)
+        return SourceRange(start: startLocation, end: endLocation)
     }
 }

@@ -2,10 +2,6 @@
 import XCTest
 
 class OpeningBraceRuleTests: XCTestCase {
-    func testOpeningBraceWithDefaultConfiguration() {
-        verifyRule(OpeningBraceRule.description)
-    }
-
     // swiftlint:disable function_body_length
     func testWithAllowMultilineTrue() {
         // Test with `same_line` set to false

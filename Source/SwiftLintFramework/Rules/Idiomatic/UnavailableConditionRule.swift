@@ -1,15 +1,14 @@
-import SourceKittenFramework
 import SwiftSyntax
 
-public struct UnavailableConditionRule: ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unavailable_condition",
         name: "Unavailable Condition",
-        description: "Use #unavailable instead of #available with an empty body.",
+        description: "Use #unavailable/#available instead of #available/#unavailable with an empty body.",
         kind: .idiomatic,
         minSwiftVersion: .fiveDotSix,
         nonTriggeringExamples: [
@@ -24,7 +23,23 @@ public struct UnavailableConditionRule: ConfigurationProviderRule, AutomaticTest
             } else {
               legacyDoSomething()
             }
-            """)
+            """),
+            Example("""
+            if #available(macOS 11.0, *) {
+               // Do nothing
+            } else if #available(macOS 10.15, *) {
+               print("do some stuff")
+            }
+            """),
+            Example("""
+            if #available(macOS 11.0, *) {
+               // Do nothing
+            } else if i > 7 {
+               print("do some stuff")
+            } else if i < 2, #available(macOS 11.0, *) {
+              print("something else")
+            }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("""
@@ -45,35 +60,70 @@ public struct UnavailableConditionRule: ConfigurationProviderRule, AutomaticTest
             if ↓#available(iOS 13, *) {} else {
               loadMainWindow()
             }
+            """),
+            Example("""
+            if ↓#unavailable(iOS 13) {
+              // Do nothing
+            } else if i < 2 {
+              loadMainWindow()
+            }
             """)
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let visitor = UnavailableConditionRuleVisitor()
-        return visitor.walk(file: file) {
-            $0.positions
-        }.map { position in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: ByteCount(position.utf8Offset)))
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        UnavailableConditionRuleVisitor(viewMode: .sourceAccurate)
     }
 }
 
-private final class UnavailableConditionRuleVisitor: SyntaxVisitor {
-    private(set) var positions: [AbsolutePosition] = []
-
+private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: IfStmtSyntax) {
         guard node.body.statements.withoutTrivia().isEmpty else {
             return
         }
 
-        guard node.conditions.count == 1, let condition = node.conditions.first,
-              let availability = condition.condition.as(AvailabilityConditionSyntax.self) else {
+        guard let condition = node.conditions.onlyElement,
+              let availability = asAvailabilityCondition(condition.condition) else {
             return
         }
 
-        positions.append(availability.positionAfterSkippingLeadingTrivia)
+        if otherAvailabilityCheckInvolved(ifStmt: node) {
+            // If there are other conditional branches with availability checks it might not be possible
+            // to just invert the first one.
+            return
+        }
+
+        violations.append(
+            ReasonedRuleViolation(
+                position: availability.positionAfterSkippingLeadingTrivia,
+                reason: reason(for: availability)
+            )
+        )
+    }
+
+    private func asAvailabilityCondition(_ condition: ConditionElementSyntax.Condition) -> SyntaxProtocol? {
+        condition.as(AvailabilityConditionSyntax.self) ??
+            condition.as(UnavailabilityConditionSyntax.self)
+    }
+
+    private func otherAvailabilityCheckInvolved(ifStmt: IfStmtSyntax) -> Bool {
+        if let elseBody = ifStmt.elseBody, let nestedIfStatement = elseBody.as(IfStmtSyntax.self) {
+            if nestedIfStatement.conditions.map(\.condition).compactMap(asAvailabilityCondition).isNotEmpty {
+                return true
+            }
+            return otherAvailabilityCheckInvolved(ifStmt: nestedIfStatement)
+        }
+        return false
+    }
+
+    private func reason(for check: SyntaxProtocol) -> String {
+        switch check {
+        case is AvailabilityConditionSyntax:
+            return "Use #unavailable instead of #available with an empty body"
+        case is UnavailabilityConditionSyntax:
+            return "Use #available instead of #unavailable with an empty body"
+        default:
+            queuedFatalError("Unknown availability check type.")
+        }
     }
 }

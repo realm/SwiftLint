@@ -2,14 +2,10 @@
 import XCTest
 
 class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ImplicitlyUnwrappedOptionalRule.description)
-    }
-
     func testImplicitlyUnwrappedOptionalRuleDefaultConfiguration() {
         let rule = ImplicitlyUnwrappedOptionalRule()
         XCTAssertEqual(rule.configuration.mode, .allExceptIBOutlets)
-        XCTAssertEqual(rule.configuration.severity.severity, .warning)
+        XCTAssertEqual(rule.configuration.severity, .warning)
     }
 
     func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() {

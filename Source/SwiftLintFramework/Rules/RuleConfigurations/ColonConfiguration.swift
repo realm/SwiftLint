@@ -1,15 +1,15 @@
-public struct ColonConfiguration: RuleConfiguration, Equatable {
+struct ColonConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var flexibleRightSpacing = false
     private(set) var applyToDictionaries = true
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+    var consoleDescription: String {
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", flexible_right_spacing: \(flexibleRightSpacing)" +
             ", apply_to_dictionaries: \(applyToDictionaries)"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

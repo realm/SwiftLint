@@ -1,15 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct MultipleClosuresWithTrailingClosureRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "multiple_closures_with_trailing_closure",
         name: "Multiple Closures with Trailing Closure",
-        description: "Trailing closure syntax should not be used when passing more than one closure argument.",
+        description: "Trailing closure syntax should not be used when passing more than one closure argument",
         kind: .style,
         nonTriggeringExamples: [
             Example("foo.map { $0 + 1 }\n"),
@@ -38,101 +37,32 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .call,
-            case let arguments = dictionary.enclosedArguments,
-            case let closureArguments = arguments.filterClosures(file: file),
-            // Any violations must have at least one closure argument.
-            closureArguments.isNotEmpty,
-            // If there is no closing paren (e.g. `foo { ... }`), there is no violation.
-            let closingParenOffset = dictionary.closingParenLocation(file: file),
-            // Find all trailing closures.
-            case let trailingClosureArguments = closureArguments.filter({
-                isTrailingClosure(argument: $0, closingParenOffset: closingParenOffset)
-            }),
-            // If there are no trailing closures, there is no violation.
-            trailingClosureArguments.isNotEmpty,
-            // If all closure arguments are trailing closures, there is no violation
-            trailingClosureArguments.count != closureArguments.count,
-            let firstTrailingClosureOffset = trailingClosureArguments.first?.offset else {
-                return []
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: firstTrailingClosureOffset))
-        ]
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    // A closure is 'trailing' if it appears outside the closing paren.
-    private func isTrailingClosure(argument: SourceKittenDictionary,
-                                   closingParenOffset: ByteCount) -> Bool {
-        guard let argOffset = argument.offset else {
+private extension MultipleClosuresWithTrailingClosureRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard let trailingClosure = node.trailingClosure,
+                  node.hasTrailingClosureViolation else {
+                return
+            }
+
+            violations.append(trailingClosure.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var hasTrailingClosureViolation: Bool {
+        guard trailingClosure != nil else {
             return false
         }
 
-        return argOffset > closingParenOffset
-    }
-}
-
-private extension SourceKittenDictionary {
-    func closingParenLocation(file: SwiftLintFile) -> ByteCount? {
-        guard self.expressionKind == .call,
-              case let arguments = self.enclosedArguments,
-              arguments.isNotEmpty else {
-            return nil
-        }
-
-        func rangeBetween(_ expr1: SourceKittenDictionary, and expr2: SourceKittenDictionary) -> ByteRange? {
-            guard let offset1 = expr1.offset,
-                  let length1 = expr1.length,
-                  let offset2 = expr2.offset,
-                  case let end1 = offset1 + length1,
-                  end1 <= offset2 else {
-                return nil
-            }
-
-            return ByteRange(location: end1, length: offset2 - end1)
-        }
-
-        var searchRanges: [ByteRange] = []
-        for index in arguments.indices.dropLast() {
-            let currentArg = arguments[index]
-            let nextArg = arguments[index + 1]
-            if let range = rangeBetween(currentArg, and: nextArg) {
-                searchRanges.append(range)
-            }
-        }
-
-        if let lastOffset = arguments.last?.offset,
-           let lastLength = arguments.last?.length,
-           let callOffset = self.offset,
-           let callLength = self.length,
-           case let lastEnd = lastOffset + lastLength,
-           case let callEnd = callOffset + callLength,
-           lastEnd <= callEnd {
-            searchRanges.append(ByteRange(location: lastEnd, length: callEnd - lastEnd))
-        }
-
-        for byteRange in searchRanges {
-            if let range = file.stringView.byteRangeToNSRange(byteRange),
-               let match = regex("^\\s*\\)").firstMatch(in: file.contents, options: [], range: range)?.range {
-                return file.stringView.byteOffset(fromLocation: match.location)
-            }
-        }
-
-        return nil
-    }
-}
-
-private extension Array where Element == SourceKittenDictionary {
-    func filterClosures(file: SwiftLintFile) -> [SourceKittenDictionary] {
-        return filter { argument in
-            return argument.substructure.contains(where: { dictionary in
-                dictionary.expressionKind == .closure
-            })
+        return argumentList.contains { elem in
+            elem.expression.is(ClosureExprSyntax.self)
         }
     }
 }

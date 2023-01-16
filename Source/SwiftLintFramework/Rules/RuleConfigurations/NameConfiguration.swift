@@ -1,17 +1,17 @@
 import Foundation
 
-public struct NameConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
+struct NameConfiguration: RuleConfiguration, Equatable {
+    var consoleDescription: String {
         return "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription), " +
-            "excluded: \(excluded.sorted()), " +
+            "excluded: \(excludedRegularExpressions.map { $0.pattern }.sorted()), " +
             "allowed_symbols: \(allowedSymbolsSet.sorted()), " +
             "validates_start_with_lowercase: \(validatesStartWithLowercase)"
     }
 
     var minLength: SeverityLevelsConfiguration
     var maxLength: SeverityLevelsConfiguration
-    var excluded: Set<String>
+    var excludedRegularExpressions: Set<NSRegularExpression>
     private var allowedSymbolsSet: Set<String>
     var validatesStartWithLowercase: Bool
 
@@ -27,21 +27,23 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         return CharacterSet(charactersIn: allowedSymbolsSet.joined())
     }
 
-    public init(minLengthWarning: Int,
-                minLengthError: Int,
-                maxLengthWarning: Int,
-                maxLengthError: Int,
-                excluded: [String] = [],
-                allowedSymbols: [String] = [],
-                validatesStartWithLowercase: Bool = true) {
+    init(minLengthWarning: Int,
+         minLengthError: Int,
+         maxLengthWarning: Int,
+         maxLengthError: Int,
+         excluded: [String] = [],
+         allowedSymbols: [String] = [],
+         validatesStartWithLowercase: Bool = true) {
         minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
-        self.excluded = Set(excluded)
+        self.excludedRegularExpressions = Set(excluded.compactMap {
+            try? NSRegularExpression.cached(pattern: "^\($0)$")
+        })
         self.allowedSymbolsSet = Set(allowedSymbols)
         self.validatesStartWithLowercase = validatesStartWithLowercase
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -53,7 +55,9 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
             try maxLength.apply(configuration: maxLengthConfiguration)
         }
         if let excluded = [String].array(of: configurationDict["excluded"]) {
-            self.excluded = Set(excluded)
+            self.excludedRegularExpressions = Set(excluded.compactMap {
+                try? NSRegularExpression.cached(pattern: "^\($0)$")
+            })
         }
         if let allowedSymbols = [String].array(of: configurationDict["allowed_symbols"]) {
             self.allowedSymbolsSet = Set(allowedSymbols)
@@ -71,16 +75,32 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
 
 // MARK: - ConfigurationProviderRule extensions
 
-public extension ConfigurationProviderRule where ConfigurationType == NameConfiguration {
+extension ConfigurationProviderRule where ConfigurationType == NameConfiguration {
     func severity(forLength length: Int) -> ViolationSeverity? {
-        if let minError = configuration.minLength.error, length < minError {
+        return configuration.severity(forLength: length)
+    }
+}
+
+extension NameConfiguration {
+    func severity(forLength length: Int) -> ViolationSeverity? {
+        if let minError = minLength.error, length < minError {
             return .error
-        } else if let maxError = configuration.maxLength.error, length > maxError {
+        } else if let maxError = maxLength.error, length > maxError {
             return .error
-        } else if length < configuration.minLength.warning ||
-                  length > configuration.maxLength.warning {
+        } else if length < minLength.warning ||
+                  length > maxLength.warning {
             return .warning
         }
         return nil
+    }
+}
+
+// MARK: - `exclude` option extensions
+
+extension NameConfiguration {
+    func shouldExclude(name: String) -> Bool {
+        excludedRegularExpressions.contains {
+            !$0.matches(in: name, options: [], range: NSRange(name.startIndex..., in: name)).isEmpty
+        }
     }
 }

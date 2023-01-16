@@ -223,6 +223,13 @@ extension SwiftLintFile {
     }
 
     internal func append(_ string: String) {
+        guard string.isNotEmpty else {
+            return
+        }
+        file.contents += string
+        if isVirtual {
+            return
+        }
         guard let stringData = string.data(using: .utf8) else {
             queuedFatalError("can't encode '\(string)' with UTF8")
         }
@@ -232,12 +239,15 @@ extension SwiftLintFile {
         _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)
         fileHandle.closeFile()
-
-        file.contents += string
+        invalidateCache()
     }
 
     internal func write<S: StringProtocol>(_ string: S) {
         guard string != contents else {
+            return
+        }
+        file.contents = String(string)
+        if isVirtual {
             return
         }
         guard let path = path else {
@@ -247,11 +257,10 @@ extension SwiftLintFile {
             queuedFatalError("can't encode '\(string)' with UTF8")
         }
         do {
-            try stringData.write(to: URL(fileURLWithPath: path), options: .atomic)
+            try stringData.write(to: URL(fileURLWithPath: path, isDirectory: false), options: .atomic)
         } catch {
             queuedFatalError("can't write file to \(path)")
         }
-        file.contents = String(string)
         invalidateCache()
     }
 
@@ -269,52 +278,6 @@ extension SwiftLintFile {
 
     internal func ruleEnabled(violatingRange: NSRange, for rule: Rule) -> NSRange? {
         return ruleEnabled(violatingRanges: [violatingRange], for: rule).first
-    }
-
-    fileprivate func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
-        let commentKinds = SyntaxKind.commentKinds
-        return syntaxKindsByLines[startLine...endLine].filter { kinds in
-            commentKinds.isSuperset(of: kinds)
-        }.count
-    }
-
-    internal func exceedsLineCountExcludingCommentsAndWhitespace(_ start: Int, _ end: Int,
-                                                                 _ limit: Int) -> (Bool, Int) {
-        guard end - start > limit else {
-            return (false, end - start)
-        }
-
-        let count = end - start - numberOfCommentAndWhitespaceOnlyLines(startLine: start, endLine: end)
-        return (count > limit, count)
-    }
-
-    private typealias RangePatternTemplate = (NSRange, String, String)
-
-    internal func correct<R: Rule>(legacyRule: R, patterns: [String: String]) -> [Correction] {
-        let matches: [RangePatternTemplate]
-        matches = patterns.flatMap({ pattern, template -> [RangePatternTemplate] in
-            return match(pattern: pattern).filter { range, kinds in
-                return kinds.first == .identifier &&
-                    !ruleEnabled(violatingRanges: [range], for: legacyRule).isEmpty
-            }.map { ($0.0, pattern, template) }
-        }).sorted { $0.0.location > $1.0.location } // reversed
-
-        guard matches.isNotEmpty else { return [] }
-
-        let description = type(of: legacyRule).description
-        var corrections = [Correction]()
-        var contents = self.contents
-
-        for (range, pattern, template) in matches {
-            contents = regex(pattern).stringByReplacingMatches(in: contents, options: [],
-                                                               range: range,
-                                                               withTemplate: template)
-            let location = Location(file: self, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-
-        write(contents)
-        return corrections
     }
 
     internal func isACL(token: SwiftLintSyntaxToken) -> Bool {

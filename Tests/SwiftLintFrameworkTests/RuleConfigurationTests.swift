@@ -2,8 +2,6 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable type_body_length
-
 class RuleConfigurationTests: XCTestCase {
     func testNameConfigurationSetsCorrectly() {
         let config = [ "min_length": ["warning": 17, "error": 7],
@@ -385,6 +383,6 @@ class RuleConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.severityConfiguration.severity, .error)
         XCTAssertEqual(configuration.order, .setGet)
 
-        XCTAssertEqual(configuration.consoleDescription, "error, order: set_get")
+        XCTAssertEqual(configuration.consoleDescription, "severity: error, order: set_get")
     }
 }

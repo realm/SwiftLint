@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 
 struct CompilerArgumentsExtractor {
     static func allCompilerInvocations(compilerLogs: String) -> [[String]] {
@@ -17,28 +16,6 @@ struct CompilerArgumentsExtractor {
 }
 
 // MARK: - Private
-
-#if !os(Linux)
-private extension Scanner {
-    func scanUpToString(_ string: String) -> String? {
-        var result: NSString?
-        let success = scanUpTo(string, into: &result)
-        if success {
-            return result?.bridge()
-        }
-        return nil
-    }
-
-    func scanString(_ string: String) -> String? {
-        var result: NSString?
-        let success = scanString(string, into: &result)
-        if success {
-            return result?.bridge()
-        }
-        return nil
-    }
-}
-#endif
 
 private func parseCLIArguments(_ string: String) -> [String] {
     let escapedSpacePlaceholder = "\u{0}"
@@ -87,7 +64,7 @@ extension Array where Element == String {
                 return [arg]
             }
             let responseFile = String(arg.dropFirst())
-            return (try? String(contentsOf: URL(fileURLWithPath: responseFile))).flatMap {
+            return (try? String(contentsOf: URL(fileURLWithPath: responseFile, isDirectory: false))).flatMap {
                 $0.trimmingCharacters(in: .newlines)
                   .components(separatedBy: "\n")
                   .expandingResponseFiles
@@ -116,7 +93,8 @@ extension Array where Element == String {
                 "-parseable-output",
                 "-incremental",
                 "-serialize-diagnostics",
-                "-emit-dependencies"
+                "-emit-dependencies",
+                "-use-frontend-parseable-output"
             ].contains($0)
         }.map {
             if $0 == "-O" {

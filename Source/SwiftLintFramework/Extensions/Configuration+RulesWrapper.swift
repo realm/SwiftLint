@@ -5,7 +5,7 @@ internal extension Configuration {
         // MARK: - Properties
         private static var isOptInRuleCache: [String: Bool] = [:]
 
-        public let allRulesWrapped: [ConfigurationRuleWrapper]
+        let allRulesWrapped: [ConfigurationRuleWrapper]
         internal let mode: RulesMode
         private let aliasResolver: (String) -> String
 
@@ -231,13 +231,11 @@ internal extension Configuration {
                 return .default(
                     disabled: Set(childDisabled).union(Set(disabled.filter { !childOptIn.contains($0) }))
                         .filter {
-                            // (. != true) means (. == false) || (. == nil)
-                            isOptInRule($0, allRulesWrapped: newAllRulesWrapped) != true
+                            !isOptInRule($0, allRulesWrapped: newAllRulesWrapped)
                         },
                     optIn: Set(childOptIn).union(Set(optIn.filter { !childDisabled.contains($0) }))
                         .filter {
-                            // (. != false) means (. == true) || (. == nil)
-                            isOptInRule($0, allRulesWrapped: newAllRulesWrapped) != false
+                            isOptInRule($0, allRulesWrapped: newAllRulesWrapped)
                         }
                 )
 
@@ -268,12 +266,12 @@ internal extension Configuration {
                 return .default(
                     disabled: childDisabled
                         .filter {
-                            isOptInRule($0, allRulesWrapped: newAllRulesWrapped) == false
+                            !isOptInRule($0, allRulesWrapped: newAllRulesWrapped)
                         },
                     optIn: Set(newAllRulesWrapped.map { type(of: $0.rule).description.identifier }
                         .filter {
                             !childDisabled.contains($0)
-                            && isOptInRule($0, allRulesWrapped: newAllRulesWrapped) == true
+                            && isOptInRule($0, allRulesWrapped: newAllRulesWrapped)
                         }
                     )
                 )
@@ -283,7 +281,7 @@ internal extension Configuration {
         // MARK: Helpers
         private func isOptInRule(
             _ identifier: String, allRulesWrapped: [ConfigurationRuleWrapper]
-        ) -> Bool? {
+        ) -> Bool {
             if let cachedIsOptInRule = Self.isOptInRuleCache[identifier] {
                 return cachedIsOptInRule
             }

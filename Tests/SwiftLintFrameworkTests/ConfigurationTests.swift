@@ -1,9 +1,10 @@
 import Foundation
 import SourceKittenFramework
+@_spi(TestHelper)
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable file_length type_body_length
+// swiftlint:disable file_length
 
 private let optInRules = primaryRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
@@ -193,6 +194,10 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testIncludedExcludedRelativeLocationLevel1() {
+        guard !isRunningWithBazel else {
+            return
+        }
+
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level1)
 
         // The included path "File.swift" should be put relative to the configuration file
@@ -232,8 +237,8 @@ class ConfigurationTests: XCTestCase {
             case "directory": return ["directory/File1.swift", "directory/File2.swift",
                                       "directory/excluded/Excluded.swift",
                                       "directory/ExcludedFile.swift"]
-            case "directory/excluded" : return ["directory/excluded/Excluded.swift"]
-            case "directory/ExcludedFile.swift" : return ["directory/ExcludedFile.swift"]
+            case "directory/excluded": return ["directory/excluded/Excluded.swift"]
+            case "directory/ExcludedFile.swift": return ["directory/ExcludedFile.swift"]
             default: break
             }
             XCTFail("Should not be called with path \(path)")
@@ -289,6 +294,16 @@ class ConfigurationTests: XCTestCase {
             "Level0.swift", "Level1.swift", "Level2.swift", "Level3.swift",
             "Main.swift", "Sub.swift"
         ]
+
+        XCTAssertEqual(Set(expectedFilenames), Set(filenames))
+    }
+
+    func testGlobIncludePaths() {
+        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
+        let configuration = Configuration(includedPaths: ["**/Level2"])
+        let paths = configuration.lintablePaths(inPath: Mock.Dir.level0, forceExclude: true)
+        let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
+        let expectedFilenames = ["Level2.swift", "Level3.swift"]
 
         XCTAssertEqual(Set(expectedFilenames), Set(filenames))
     }

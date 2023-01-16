@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
     // List of all possible import kinds
     static let importKinds = [
@@ -11,15 +11,16 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
         "var", "func"
     ]
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "duplicate_imports",
         name: "Duplicate Imports",
-        description: "Imports should be unique.",
+        description: "Imports should be unique",
         kind: .idiomatic,
         nonTriggeringExamples: DuplicateImportsRuleExamples.nonTriggeringExamples,
-        triggeringExamples: DuplicateImportsRuleExamples.triggeringExamples
+        triggeringExamples: DuplicateImportsRuleExamples.triggeringExamples,
+        corrections: DuplicateImportsRuleExamples.corrections
     )
 
     private func rangesInConditionalCompilation(file: SwiftLintFile) -> [ByteRange] {
@@ -40,7 +41,61 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
         }
     }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    private func buildImportLineSlicesByImportSubpath(
+        importLines: [Line]
+    ) -> [ImportSubpath: [ImportLineSlice]] {
+        var importLineSlices = [ImportSubpath: [ImportLineSlice]]()
+
+        importLines.forEach { importLine in
+            importLine.importSlices.forEach { slice in
+                importLineSlices[slice.subpath, default: []].append(
+                    ImportLineSlice(
+                        slice: slice,
+                        line: importLine
+                    )
+                )
+            }
+        }
+
+        return importLineSlices
+    }
+
+    private func findDuplicateImports(
+        file: SwiftLintFile,
+        importLineSlicesGroupedBySubpath: [[ImportLineSlice]]
+    ) -> [DuplicateImport] {
+        typealias ImportLocation = Int
+
+        var duplicateImportsByLocation = [ImportLocation: DuplicateImport]()
+
+        importLineSlicesGroupedBySubpath.forEach { linesImportingSubpath in
+            guard linesImportingSubpath.count > 1 else { return }
+            guard let primaryImportIndex = linesImportingSubpath.firstIndex(where: {
+                $0.slice.type == .complete
+            }) else { return }
+
+            linesImportingSubpath.enumerated().forEach { index, importedLine in
+                guard index != primaryImportIndex else { return }
+                let location = Location(
+                    file: file,
+                    characterOffset: importedLine.line.range.location
+                )
+                duplicateImportsByLocation[importedLine.line.range.location] = DuplicateImport(
+                    location: location,
+                    range: importedLine.line.range
+                )
+            }
+        }
+
+        return Array(duplicateImportsByLocation.values)
+    }
+
+    private struct DuplicateImport {
+        let location: Location
+        var range: NSRange
+    }
+
+    private func duplicateImports(file: SwiftLintFile) -> [DuplicateImport] {
         let contents = file.stringView
 
         let ignoredRanges = self.rangesInConditionalCompilation(file: file)
@@ -65,34 +120,70 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
             return lines[line - 1]
         }
 
-        var violations = [StyleViolation]()
+        let importLineSlices = buildImportLineSlicesByImportSubpath(importLines: importLines)
 
-        for indexI in 0..<importLines.count {
-            for indexJ in indexI + 1..<importLines.count {
-                let firstLine = importLines[indexI]
-                let secondLine = importLines[indexJ]
+        let duplicateImports = findDuplicateImports(
+            file: file,
+            importLineSlicesGroupedBySubpath: Array(importLineSlices.values)
+        )
 
-                guard firstLine.areImportsDuplicated(with: secondLine)
-                    else { continue }
+        return duplicateImports.sorted(by: {
+            $0.range.lowerBound < $1.range.lowerBound
+        })
+    }
 
-                let lineWithDuplicatedImport: Line = {
-                    if firstLine.importIdentifier?.count ?? 0 <= secondLine.importIdentifier?.count ?? 0 {
-                        return secondLine
-                    } else {
-                        return firstLine
-                    }
-                }()
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
+        return duplicateImports(file: file).map { duplicateImport in
+            StyleViolation(
+                ruleDescription: Self.description,
+                severity: configuration.severity,
+                location: duplicateImport.location
+            )
+        }
+    }
 
-                let location = Location(file: file, characterOffset: lineWithDuplicatedImport.range.location)
-                let violation = StyleViolation(ruleDescription: Self.description,
-                                               severity: configuration.severity,
-                                               location: location)
-                violations.append(violation)
-            }
+    func correct(file: SwiftLintFile) -> [Correction] {
+        let duplicateImports = duplicateImports(file: file).reversed().filter {
+            file.ruleEnabled(violatingRange: $0.range, for: self) != nil
         }
 
-        return violations
+        let violatingRanges = duplicateImports.map(\.range)
+        let correctedFileContents = violatingRanges.reduce(file.stringView.nsString) { contents, range in
+            contents.replacingCharacters(
+                in: range,
+                with: ""
+            ).bridge()
+        }
+
+        file.write(correctedFileContents.bridge())
+
+        return duplicateImports.map { duplicateImport in
+            Correction(
+                ruleDescription: Self.description,
+                location: duplicateImport.location
+            )
+        }
     }
+}
+
+private typealias ImportSubpath = ArraySlice<String>
+
+private struct ImportSlice {
+    enum ImportSliceType {
+        /// For "import A.B.C" parent subpaths are ["A", "B"] and ["A"]
+        case parent
+
+        /// For "import A.B.C" complete subpath is ["A", "B", "C"]
+        case complete
+    }
+
+    let subpath: ImportSubpath
+    let type: ImportSliceType
+}
+
+private struct ImportLineSlice {
+    let slice: ImportSlice
+    let line: Line
 }
 
 private extension Line {
@@ -101,11 +192,23 @@ private extension Line {
         return self.content.split(separator: " ").last
     }
 
-    func areImportsDuplicated(with otherLine: Line) -> Bool {
-        guard let firstImportIdentifiers = self.importIdentifier?.split(separator: "."),
-            let secondImportIdentifiers = otherLine.importIdentifier?.split(separator: ".")
-            else { return false }
+    /// For "import A.B.C" returns slices [["A", "B", "C"], ["A", "B"], ["A"]]
+    var importSlices: [ImportSlice] {
+        guard let importIdentifier = importIdentifier else { return [] }
 
-        return zip(firstImportIdentifiers, secondImportIdentifiers).allSatisfy { $0 == $1 }
+        let importedSubpathParts = importIdentifier.split(separator: ".").map { String($0) }
+        guard !importedSubpathParts.isEmpty else { return [] }
+
+        return [
+            ImportSlice(
+                subpath: importedSubpathParts[0..<importedSubpathParts.count],
+                type: .complete
+            )
+        ] + (1..<importedSubpathParts.count).map {
+            ImportSlice(
+                subpath: importedSubpathParts[0..<importedSubpathParts.count - $0],
+                type: .parent
+            )
+        }
     }
 }

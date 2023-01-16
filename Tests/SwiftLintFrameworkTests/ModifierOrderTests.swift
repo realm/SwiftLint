@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable:next type_body_length
 class ModifierOrderTests: XCTestCase {
     func testAttributeTypeMethod() {
         let descriptionOverride = ModifierOrderRule.description
@@ -67,7 +66,7 @@ class ModifierOrderTests: XCTestCase {
                                                                     "override"]])
     }
 
-    // swiftlint:disable function_body_length
+    // swiftlint:disable:next function_body_length
     func testAtPrefixedGroup() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
@@ -217,6 +216,7 @@ class ModifierOrderTests: XCTestCase {
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl"]])
     }
 
+    // swiftlint:disable:next function_body_length
     func testCorrectionsAreAppliedCorrectly() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
@@ -283,6 +283,7 @@ class ModifierOrderTests: XCTestCase {
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
     }
 
+    // swiftlint:disable:next function_body_length
     func testCorrectionsAreNotAppliedToIrrelevantModifier() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
@@ -385,7 +386,7 @@ class ModifierOrderTests: XCTestCase {
         let allViolations = violations(Example("final public var foo: String"), config: config)
         let modifierOrderRuleViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         if let violation = modifierOrderRuleViolation {
-            XCTAssertEqual(violation.reason, "public modifier should be before final.")
+            XCTAssertEqual(violation.reason, "public modifier should come before final")
         } else {
             XCTFail("A modifier order violation should have been triggered!")
         }

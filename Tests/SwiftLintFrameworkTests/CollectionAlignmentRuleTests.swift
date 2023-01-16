@@ -2,10 +2,6 @@
 import XCTest
 
 class CollectionAlignmentRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(CollectionAlignmentRule.description)
-    }
-
     func testCollectionAlignmentWithAlignLeft() {
         let baseDescription = CollectionAlignmentRule.description
         let examples = CollectionAlignmentRule.Examples(alignColons: false)

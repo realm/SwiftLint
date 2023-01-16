@@ -4,24 +4,26 @@ import XCTest
 // swiftlint:disable:next type_name
 class ImplicitlyUnwrappedOptionalConfigurationTests: XCTestCase {
     func testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary() throws {
-        var configuration = ImplicitlyUnwrappedOptionalConfiguration(mode: .allExceptIBOutlets,
-                                                                     severity: SeverityConfiguration(.warning))
+        var configuration = ImplicitlyUnwrappedOptionalConfiguration(
+            mode: .allExceptIBOutlets,
+            severityConfiguration: SeverityConfiguration(.warning)
+        )
 
         try configuration.apply(configuration: ["mode": "all", "severity": "error"])
         XCTAssertEqual(configuration.mode, .all)
-        XCTAssertEqual(configuration.severity.severity, .error)
+        XCTAssertEqual(configuration.severity, .error)
 
         try configuration.apply(configuration: ["mode": "all_except_iboutlets"])
         XCTAssertEqual(configuration.mode, .allExceptIBOutlets)
-        XCTAssertEqual(configuration.severity.severity, .error)
+        XCTAssertEqual(configuration.severity, .error)
 
         try configuration.apply(configuration: ["severity": "warning"])
         XCTAssertEqual(configuration.mode, .allExceptIBOutlets)
-        XCTAssertEqual(configuration.severity.severity, .warning)
+        XCTAssertEqual(configuration.severity, .warning)
 
         try configuration.apply(configuration: ["mode": "all", "severity": "warning"])
         XCTAssertEqual(configuration.mode, .all)
-        XCTAssertEqual(configuration.severity.severity, .warning)
+        XCTAssertEqual(configuration.severity, .warning)
     }
 
     func testImplicitlyUnwrappedOptionalConfigurationThrowsOnBadConfig() {
@@ -32,8 +34,11 @@ class ImplicitlyUnwrappedOptionalConfigurationTests: XCTestCase {
         ]
 
         for badConfig in badConfigs {
-            var configuration = ImplicitlyUnwrappedOptionalConfiguration(mode: .allExceptIBOutlets,
-                                                                         severity: SeverityConfiguration(.warning))
+            var configuration = ImplicitlyUnwrappedOptionalConfiguration(
+                mode: .allExceptIBOutlets,
+                severityConfiguration: SeverityConfiguration(.warning)
+            )
+
             checkError(ConfigurationError.unknownConfiguration) {
                 try configuration.apply(configuration: badConfig)
             }

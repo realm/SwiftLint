@@ -1,13 +1,13 @@
 import SourceKittenFramework
 
-public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
+struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
     private typealias TypeContentOffset = (typeContent: TypeContent, offset: ByteCount)
 
-    public var configuration = TypeContentsOrderConfiguration()
+    var configuration = TypeContentsOrderConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "type_contents_order",
         name: "Type Contents Order",
         description: "Specifies the order of subtypes, properties, methods & more within a type.",
@@ -16,7 +16,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         triggeringExamples: TypeContentsOrderRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         let substructures = dict.substructure
         return substructures.reduce(into: [StyleViolation]()) { violations, substructure in
@@ -60,7 +60,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
                     ruleDescription: Self.description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: typeContentOffset.offset),
-                    reason: "\(article) '\(content)' should not be placed amongst the type content(s) '\(expected)'."
+                    reason: "\(article) '\(content)' should not be placed amongst the type content(s) '\(expected)'"
                 )
                 violations.append(styleViolation)
             }
@@ -76,7 +76,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    // swiftlint:disable:next cyclomatic_complexity
     private func typeContent(for typeContentStructure: SourceKittenDictionary) -> TypeContent? {
         guard let typeContentKind = typeContentStructure.declarationKind else { return nil }
 
@@ -118,7 +118,8 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
                 "viewDidLayoutSubviews(",
                 "viewDidAppear(",
                 "viewWillDisappear(",
-                "viewDidDisappear("
+                "viewDidDisappear(",
+                "willMove("
             ]
 
             if typeContentStructure.name!.starts(with: "init(") {

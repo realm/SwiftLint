@@ -1,9 +1,21 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class TypeNameRuleTests: XCTestCase {
-    func testTypeName() {
-        verifyRule(TypeNameRule.description)
+    func testTypeNameWithExcluded() {
+        let baseDescription = TypeNameRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
+            Example("class apple {}"),
+            Example("struct some_apple {}"),
+            Example("protocol test123 {}")
+        ]
+        let triggeringExamples = baseDescription.triggeringExamples + [
+            Example("enum ap_ple {}"),
+            Example("typealias appleJuice = Void")
+        ]
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
+                                               triggeringExamples: triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["excluded": ["apple", "some.*", ".*st\\d+.*"]])
     }
 
     func testTypeNameWithAllowedSymbols() {

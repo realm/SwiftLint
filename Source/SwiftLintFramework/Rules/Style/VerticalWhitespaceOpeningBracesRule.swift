@@ -7,10 +7,10 @@ private extension SwiftLintFile {
     }
 }
 
-public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
     private static let nonTriggeringExamples = [
         Example("[1, 2].map { $0 }.foo()"),
@@ -142,22 +142,20 @@ public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
     private let pattern = "([{(\\[][ \\t]*(?:[^\\n{]+ in[ \\t]*$)?)((?:\\n[ \\t]*)+)(\\n)"
 }
 
-extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule {
-    public var configurationDescription: String { return "N/A" }
+extension VerticalWhitespaceOpeningBracesRule: OptInRule {
+    init(configuration: Any) throws {}
 
-    public init(configuration: Any) throws {}
-
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "vertical_whitespace_opening_braces",
         name: "Vertical Whitespace after Opening Braces",
-        description: "Don't include vertical whitespace (empty line) after opening braces.",
+        description: "Don't include vertical whitespace (empty line) after opening braces",
         kind: .style,
         nonTriggeringExamples: (violatingToValidExamples.values + nonTriggeringExamples).sorted(),
         triggeringExamples: Array(violatingToValidExamples.keys).sorted(),
         corrections: violatingToValidExamples.removingViolationMarkers()
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let patternRegex: NSRegularExpression = regex(pattern)
 
         return file.violatingRanges(for: pattern).map { violationRange in
@@ -177,7 +175,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule 
 }
 
 extension VerticalWhitespaceOpeningBracesRule: CorrectableRule {
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
         guard violatingRanges.isNotEmpty else { return [] }
 

@@ -2,10 +2,6 @@
 import XCTest
 
 class SwitchCaseAlignmentRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SwitchCaseAlignmentRule.description)
-    }
-
     func testSwitchCaseAlignmentWithoutIndentedCases() {
         let baseDescription = SwitchCaseAlignmentRule.description
         let examples = SwitchCaseAlignmentRule.Examples(indentedCases: false)

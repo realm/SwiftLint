@@ -1,21 +1,21 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LastWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "last_where",
         name: "Last Where",
-        description: "Prefer using `.last(where:)` over `.filter { }.last` in collections.",
+        description: "Prefer using `.last(where:)` over `.filter { }.last` in collections",
         kind: .performance,
         nonTriggeringExamples: [
             Example("kinds.filter(excludingKinds.contains).isEmpty && kinds.last == .identifier\n"),
             Example("myList.last(where: { $0 % 2 == 0 })\n"),
             Example("match(pattern: pattern).filter { $0.last == .identifier }\n"),
             Example("(myList.filter { $0 == 1 }.suffix(2)).last\n"),
-            Example("collection.filter(\"stringCol = '3'\").last")
+            Example(#"collection.filter("stringCol = '3'").last"#)
         ],
         triggeringExamples: [
             Example("↓myList.filter { $0 % 2 == 0 }.last\n"),
@@ -28,34 +28,39 @@ public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule,
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return validate(file: file,
-                        pattern: "[\\}\\)]\\s*\\.last",
-                        patternSyntaxKinds: [.identifier],
-                        callNameSuffix: ".filter",
-                        severity: configuration.severity) { dictionary in
-            let substructure: [SourceKittenDictionary] = {
-                if SwiftVersion.current >= .fiveDotSix {
-                    return dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
-                        if dict.expressionKind == .argument {
-                            return dict.substructure
-                        }
-                        return [dict]
-                    }
-                }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-                return dictionary.substructure
-            }()
-            if substructure.isNotEmpty {
-                return true // has a substructure, like a closure
+private extension LastWhereRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: MemberAccessExprSyntax) {
+            guard
+                node.name.text == "last",
+                let functionCall = node.base?.asFunctionCall,
+                let calledExpression = functionCall.calledExpression.as(MemberAccessExprSyntax.self),
+                calledExpression.name.text == "filter",
+                !functionCall.argumentList.contains(where: \.expression.shouldSkip)
+            else {
+                return
             }
 
-            guard let bodyRange = dictionary.bodyByteRange else {
-                return true
-            }
+            violations.append(functionCall.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
 
-            let syntaxKinds = file.syntaxMap.kinds(inByteRange: bodyRange)
-            return !syntaxKinds.contains(.string)
+private extension ExprSyntax {
+    var shouldSkip: Bool {
+        if self.is(StringLiteralExprSyntax.self) {
+            return true
+        } else if let functionCall = self.as(FunctionCallExprSyntax.self),
+                  let calledExpression = functionCall.calledExpression.as(IdentifierExprSyntax.self),
+                  calledExpression.identifier.text == "NSPredicate" {
+            return true
+        } else {
+            return false
         }
     }
 }

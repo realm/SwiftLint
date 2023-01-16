@@ -1,14 +1,14 @@
-public struct SwitchCaseAlignmentConfiguration: RuleConfiguration, Equatable {
+struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var indentedCases = false
 
     init() {}
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", indented_cases: \(indentedCases)"
+    var consoleDescription: String {
+        return "severity: \(severityConfiguration.consoleDescription)" + ", indented_cases: \(indentedCases)"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule, AutomaticTestableRule {
-    public var configuration = OverriddenSuperCallConfiguration()
+struct OverriddenSuperCallRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+    var configuration = OverriddenSuperCallConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "overridden_super_call",
-        name: "Overridden methods call super",
-        description: "Some overridden methods should always call super",
+        name: "Overridden Method Calls Super",
+        description: "Some overridden methods should always call super.",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -76,28 +76,45 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let offset = dictionary.bodyOffset,
-            let name = dictionary.name,
-            kind == .functionMethodInstance,
-            configuration.resolvedMethodNames.contains(name),
-            dictionary.enclosedSwiftAttributes.contains(.override)
-        else { return [] }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(resolvedMethodNames: configuration.resolvedMethodNames)
+    }
+}
 
-        let callsToSuper = dictionary.extractCallsToSuper(methodName: name)
+private extension OverriddenSuperCallRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let resolvedMethodNames: [String]
 
-        if callsToSuper.isEmpty {
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: configuration.severity,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: "Method '\(name)' should call to super function")]
-        } else if callsToSuper.count > 1 {
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: configuration.severity,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: "Method '\(name)' should call to super only once")]
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            [ProtocolDeclSyntax.self]
         }
-        return []
+
+        init(resolvedMethodNames: [String]) {
+            self.resolvedMethodNames = resolvedMethodNames
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard let body = node.body,
+                  node.modifiers.containsOverride,
+                  !node.modifiers.containsStaticOrClass,
+                  case let name = node.resolvedName(),
+                  resolvedMethodNames.contains(name) else {
+                return
+            }
+
+            let superCallsCount = node.numberOfCallsToSuper()
+            if superCallsCount == 0 {
+                violations.append(ReasonedRuleViolation(
+                    position: body.leftBrace.endPositionBeforeTrailingTrivia,
+                    reason: "Method '\(name)' should call to super function"
+                ))
+            } else if superCallsCount > 1 {
+                violations.append(ReasonedRuleViolation(
+                    position: body.leftBrace.endPositionBeforeTrailingTrivia,
+                    reason: "Method '\(name)' should call to super only once"
+                ))
+            }
+        }
     }
 }

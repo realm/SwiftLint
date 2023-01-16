@@ -1,14 +1,7 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class ColonRuleTests: XCTestCase {
-    func testColonWithDefaultConfiguration() {
-        // Verify Colon rule with test values for when flexible_right_spacing
-        // is false (default).
-        verifyRule(ColonRule.description)
-    }
-
-    // swiftlint:disable:next function_body_length
     func testColonWithFlexibleRightSpace() {
         // Verify Colon rule with test values for when flexible_right_spacing
         // is true.
@@ -21,23 +14,23 @@ class ColonRuleTests: XCTestCase {
             Example("let abc = [Void:  Void]()\n")
         ]
         let triggeringExamples: [Example] = [
-            Example("let ↓abc:Void\n"),
-            Example("let ↓abc :Void\n"),
-            Example("let ↓abc : Void\n"),
-            Example("let ↓abc : [Void: Void]\n"),
-            Example("let ↓abc : (Void, String, Int)\n"),
-            Example("let ↓abc : ([Void], String, Int)\n"),
-            Example("let ↓abc : [([Void], String, Int)]\n"),
-            Example("let ↓abc :String=\"def\"\n"),
-            Example("let ↓abc :Int=0\n"),
-            Example("let ↓abc :Int = 0\n"),
-            Example("let ↓abc:Int=0\n"),
-            Example("let ↓abc:Int = 0\n"),
-            Example("let ↓abc:Enum=Enum.Value\n"),
-            Example("func abc(↓def:Void) {}\n"),
-            Example("func abc(↓def :Void) {}\n"),
-            Example("func abc(↓def : Void) {}\n"),
-            Example("func abc(def: Void, ↓ghi :Void) {}\n"),
+            Example("let abc↓:Void\n"),
+            Example("let abc↓ :Void\n"),
+            Example("let abc↓ : Void\n"),
+            Example("let abc↓ : [Void: Void]\n"),
+            Example("let abc↓ : (Void, String, Int)\n"),
+            Example("let abc↓ : ([Void], String, Int)\n"),
+            Example("let abc↓ : [([Void], String, Int)]\n"),
+            Example("let abc↓ :String=\"def\"\n"),
+            Example("let abc↓ :Int=0\n"),
+            Example("let abc↓ :Int = 0\n"),
+            Example("let abc↓:Int=0\n"),
+            Example("let abc↓:Int = 0\n"),
+            Example("let abc↓:Enum=Enum.Value\n"),
+            Example("func abc(def↓:Void) {}\n"),
+            Example("func abc(def↓ :Void) {}\n"),
+            Example("func abc(def↓ : Void) {}\n"),
+            Example("func abc(def: Void, ghi↓ :Void) {}\n"),
             Example("let abc = [Void↓:Void]()\n"),
             Example("let abc = [Void↓ : Void]()\n"),
             Example("let abc = [Void↓ :  Void]()\n"),
@@ -45,23 +38,23 @@ class ColonRuleTests: XCTestCase {
             Example("let abc = [1: [3↓ : 2], 3:  4]\n")
         ]
         let corrections: [Example: Example] = [
-            Example("let ↓abc:Void\n"): Example("let abc: Void\n"),
-            Example("let ↓abc :Void\n"): Example("let abc: Void\n"),
-            Example("let ↓abc : Void\n"): Example("let abc: Void\n"),
-            Example("let ↓abc : [Void: Void]\n"): Example("let abc: [Void: Void]\n"),
-            Example("let ↓abc : (Void, String, Int)\n"): Example("let abc: (Void, String, Int)\n"),
-            Example("let ↓abc : ([Void], String, Int)\n"): Example("let abc: ([Void], String, Int)\n"),
-            Example("let ↓abc : [([Void], String, Int)]\n"): Example("let abc: [([Void], String, Int)]\n"),
-            Example("let ↓abc :String=\"def\"\n"): Example("let abc: String=\"def\"\n"),
-            Example("let ↓abc :Int=0\n"): Example("let abc: Int=0\n"),
-            Example("let ↓abc :Int = 0\n"): Example("let abc: Int = 0\n"),
-            Example("let ↓abc:Int=0\n"): Example("let abc: Int=0\n"),
-            Example("let ↓abc:Int = 0\n"): Example("let abc: Int = 0\n"),
-            Example("let ↓abc:Enum=Enum.Value\n"): Example("let abc: Enum=Enum.Value\n"),
-            Example("func abc(↓def:Void) {}\n"): Example("func abc(def: Void) {}\n"),
-            Example("func abc(↓def :Void) {}\n"): Example("func abc(def: Void) {}\n"),
-            Example("func abc(↓def : Void) {}\n"): Example("func abc(def: Void) {}\n"),
-            Example("func abc(def: Void, ↓ghi :Void) {}\n"): Example("func abc(def: Void, ghi: Void) {}\n"),
+            Example("let abc↓:Void\n"): Example("let abc: Void\n"),
+            Example("let abc↓ :Void\n"): Example("let abc: Void\n"),
+            Example("let abc↓ : Void\n"): Example("let abc: Void\n"),
+            Example("let abc↓ : [Void: Void]\n"): Example("let abc: [Void: Void]\n"),
+            Example("let abc↓ : (Void, String, Int)\n"): Example("let abc: (Void, String, Int)\n"),
+            Example("let abc↓ : ([Void], String, Int)\n"): Example("let abc: ([Void], String, Int)\n"),
+            Example("let abc↓ : [([Void], String, Int)]\n"): Example("let abc: [([Void], String, Int)]\n"),
+            Example("let abc↓ :String=\"def\"\n"): Example("let abc: String=\"def\"\n"),
+            Example("let abc↓ :Int=0\n"): Example("let abc: Int=0\n"),
+            Example("let abc↓ :Int = 0\n"): Example("let abc: Int = 0\n"),
+            Example("let abc↓:Int=0\n"): Example("let abc: Int=0\n"),
+            Example("let abc↓:Int = 0\n"): Example("let abc: Int = 0\n"),
+            Example("let abc↓:Enum=Enum.Value\n"): Example("let abc: Enum=Enum.Value\n"),
+            Example("func abc(def↓:Void) {}\n"): Example("func abc(def: Void) {}\n"),
+            Example("func abc(def↓ :Void) {}\n"): Example("func abc(def: Void) {}\n"),
+            Example("func abc(def↓ : Void) {}\n"): Example("func abc(def: Void) {}\n"),
+            Example("func abc(def: Void, ghi↓ :Void) {}\n"): Example("func abc(def: Void, ghi: Void) {}\n"),
             Example("let abc = [Void↓:Void]()\n"): Example("let abc = [Void: Void]()\n"),
             Example("let abc = [Void↓ : Void]()\n"): Example("let abc = [Void: Void]()\n"),
             Example("let abc = [Void↓ :  Void]()\n"): Example("let abc = [Void: Void]()\n"),
@@ -75,7 +68,6 @@ class ColonRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["flexible_right_spacing": true])
     }
 
-    // swiftlint:disable:next function_body_length
     func testColonWithoutApplyToDictionaries() {
         let nonTriggeringExamples = ColonRule.description.nonTriggeringExamples + [
             Example("let abc = [Void:Void]()\n"),
@@ -86,52 +78,52 @@ class ColonRuleTests: XCTestCase {
             Example("let abc = [1: [3 : 2], 3:  4]\n")
         ]
         let triggeringExamples: [Example] = [
-            Example("let ↓abc:Void\n"),
-            Example("let ↓abc:  Void\n"),
-            Example("let ↓abc :Void\n"),
-            Example("let ↓abc : Void\n"),
-            Example("let ↓abc : [Void: Void]\n"),
-            Example("let ↓abc : (Void, String, Int)\n"),
-            Example("let ↓abc : ([Void], String, Int)\n"),
-            Example("let ↓abc : [([Void], String, Int)]\n"),
-            Example("let ↓abc:  (Void, String, Int)\n"),
-            Example("let ↓abc:  ([Void], String, Int)\n"),
-            Example("let ↓abc:  [([Void], String, Int)]\n"),
-            Example("let ↓abc :String=\"def\"\n"),
-            Example("let ↓abc :Int=0\n"),
-            Example("let ↓abc :Int = 0\n"),
-            Example("let ↓abc:Int=0\n"),
-            Example("let ↓abc:Int = 0\n"),
-            Example("let ↓abc:Enum=Enum.Value\n"),
-            Example("func abc(↓def:Void) {}\n"),
-            Example("func abc(↓def:  Void) {}\n"),
-            Example("func abc(↓def :Void) {}\n"),
-            Example("func abc(↓def : Void) {}\n"),
-            Example("func abc(def: Void, ↓ghi :Void) {}\n")
+            Example("let abc↓:Void\n"),
+            Example("let abc↓:  Void\n"),
+            Example("let abc↓ :Void\n"),
+            Example("let abc↓ : Void\n"),
+            Example("let abc↓ : [Void: Void]\n"),
+            Example("let abc↓ : (Void, String, Int)\n"),
+            Example("let abc↓ : ([Void], String, Int)\n"),
+            Example("let abc↓ : [([Void], String, Int)]\n"),
+            Example("let abc↓:  (Void, String, Int)\n"),
+            Example("let abc↓:  ([Void], String, Int)\n"),
+            Example("let abc↓:  [([Void], String, Int)]\n"),
+            Example("let abc↓ :String=\"def\"\n"),
+            Example("let abc↓ :Int=0\n"),
+            Example("let abc↓ :Int = 0\n"),
+            Example("let abc↓:Int=0\n"),
+            Example("let abc↓:Int = 0\n"),
+            Example("let abc↓:Enum=Enum.Value\n"),
+            Example("func abc(def↓:Void) {}\n"),
+            Example("func abc(def↓:  Void) {}\n"),
+            Example("func abc(def↓ :Void) {}\n"),
+            Example("func abc(def↓ : Void) {}\n"),
+            Example("func abc(def: Void, ghi↓ :Void) {}\n")
         ]
         let corrections: [Example: Example] = [
-            Example("let ↓abc:Void\n"): Example("let abc: Void\n"),
-            Example("let ↓abc:  Void\n"): Example("let abc: Void\n"),
-            Example("let ↓abc :Void\n"): Example("let abc: Void\n"),
-            Example("let ↓abc : Void\n"): Example("let abc: Void\n"),
-            Example("let ↓abc : [Void: Void]\n"): Example("let abc: [Void: Void]\n"),
-            Example("let ↓abc : (Void, String, Int)\n"): Example("let abc: (Void, String, Int)\n"),
-            Example("let ↓abc : ([Void], String, Int)\n"): Example("let abc: ([Void], String, Int)\n"),
-            Example("let ↓abc : [([Void], String, Int)]\n"): Example("let abc: [([Void], String, Int)]\n"),
-            Example("let ↓abc:  (Void, String, Int)\n"): Example("let abc: (Void, String, Int)\n"),
-            Example("let ↓abc:  ([Void], String, Int)\n"): Example("let abc: ([Void], String, Int)\n"),
-            Example("let ↓abc:  [([Void], String, Int)]\n"): Example("let abc: [([Void], String, Int)]\n"),
-            Example("let ↓abc :String=\"def\"\n"): Example("let abc: String=\"def\"\n"),
-            Example("let ↓abc :Int=0\n"): Example("let abc: Int=0\n"),
-            Example("let ↓abc :Int = 0\n"): Example("let abc: Int = 0\n"),
-            Example("let ↓abc:Int=0\n"): Example("let abc: Int=0\n"),
-            Example("let ↓abc:Int = 0\n"): Example("let abc: Int = 0\n"),
-            Example("let ↓abc:Enum=Enum.Value\n"): Example("let abc: Enum=Enum.Value\n"),
-            Example("func abc(↓def:Void) {}\n"): Example("func abc(def: Void) {}\n"),
-            Example("func abc(↓def:  Void) {}\n"): Example("func abc(def: Void) {}\n"),
-            Example("func abc(↓def :Void) {}\n"): Example("func abc(def: Void) {}\n"),
-            Example("func abc(↓def : Void) {}\n"): Example("func abc(def: Void) {}\n"),
-            Example("func abc(def: Void, ↓ghi :Void) {}\n"): Example("func abc(def: Void, ghi: Void) {}\n")
+            Example("let abc↓:Void\n"): Example("let abc: Void\n"),
+            Example("let abc↓:  Void\n"): Example("let abc: Void\n"),
+            Example("let abc↓ :Void\n"): Example("let abc: Void\n"),
+            Example("let abc↓ : Void\n"): Example("let abc: Void\n"),
+            Example("let abc↓ : [Void: Void]\n"): Example("let abc: [Void: Void]\n"),
+            Example("let abc↓ : (Void, String, Int)\n"): Example("let abc: (Void, String, Int)\n"),
+            Example("let abc↓ : ([Void], String, Int)\n"): Example("let abc: ([Void], String, Int)\n"),
+            Example("let abc↓ : [([Void], String, Int)]\n"): Example("let abc: [([Void], String, Int)]\n"),
+            Example("let abc↓:  (Void, String, Int)\n"): Example("let abc: (Void, String, Int)\n"),
+            Example("let abc↓:  ([Void], String, Int)\n"): Example("let abc: ([Void], String, Int)\n"),
+            Example("let abc↓:  [([Void], String, Int)]\n"): Example("let abc: [([Void], String, Int)]\n"),
+            Example("let abc↓ :String=\"def\"\n"): Example("let abc: String=\"def\"\n"),
+            Example("let abc↓ :Int=0\n"): Example("let abc: Int=0\n"),
+            Example("let abc↓ :Int = 0\n"): Example("let abc: Int = 0\n"),
+            Example("let abc↓:Int=0\n"): Example("let abc: Int=0\n"),
+            Example("let abc↓:Int = 0\n"): Example("let abc: Int = 0\n"),
+            Example("let abc↓:Enum=Enum.Value\n"): Example("let abc: Enum=Enum.Value\n"),
+            Example("func abc(def↓:Void) {}\n"): Example("func abc(def: Void) {}\n"),
+            Example("func abc(def↓:  Void) {}\n"): Example("func abc(def: Void) {}\n"),
+            Example("func abc(def↓ :Void) {}\n"): Example("func abc(def: Void) {}\n"),
+            Example("func abc(def↓ : Void) {}\n"): Example("func abc(def: Void) {}\n"),
+            Example("func abc(def: Void, ghi↓ :Void) {}\n"): Example("func abc(def: Void, ghi: Void) {}\n")
         ]
 
         let description = ColonRule.description.with(triggeringExamples: triggeringExamples)

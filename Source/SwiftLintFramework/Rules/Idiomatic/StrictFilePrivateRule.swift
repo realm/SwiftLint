@@ -1,15 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "strict_fileprivate",
-        name: "Strict fileprivate",
-        description: "`fileprivate` should be avoided.",
+        name: "Strict Fileprivate",
+        description: "`fileprivate` should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("extension String {}"),
@@ -59,12 +58,17 @@ public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, Autom
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        // Mark all fileprivate occurrences as a violation
-        return file.match(pattern: "fileprivate", with: [.attributeBuiltin]).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension StrictFilePrivateRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: DeclModifierSyntax) {
+            if node.name.tokenKind == .fileprivateKeyword {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

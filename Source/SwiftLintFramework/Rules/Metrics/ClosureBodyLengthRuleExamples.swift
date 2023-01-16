@@ -2,28 +2,28 @@ internal struct ClosureBodyLengthRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         singleLineClosure(),
         trailingClosure(codeLinesCount: 0, commentLinesCount: 0, emptyLinesCount: 0),
-        trailingClosure(codeLinesCount: 1, commentLinesCount: 10, emptyLinesCount: 10),
-        trailingClosure(codeLinesCount: 19, commentLinesCount: 0, emptyLinesCount: 0),
-        trailingClosure(codeLinesCount: 19, commentLinesCount: 10, emptyLinesCount: 10),
+        trailingClosure(codeLinesCount: 1, commentLinesCount: 15, emptyLinesCount: 15),
+        trailingClosure(codeLinesCount: 29, commentLinesCount: 0, emptyLinesCount: 0),
+        trailingClosure(codeLinesCount: 29, commentLinesCount: 15, emptyLinesCount: 15),
         argumentClosure(codeLinesCount: 0),
         argumentClosure(codeLinesCount: 1),
-        argumentClosure(codeLinesCount: 19),
+        argumentClosure(codeLinesCount: 29),
         labeledArgumentClosure(codeLinesCount: 0),
         labeledArgumentClosure(codeLinesCount: 1),
-        labeledArgumentClosure(codeLinesCount: 19),
-        multiLabeledArgumentClosures(codeLinesCount: 19),
-        labeledAndTrailingClosures(codeLinesCount: 19),
-        lazyInitialization(codeLinesCount: 18)
+        labeledArgumentClosure(codeLinesCount: 29),
+        multiLabeledArgumentClosures(codeLinesCount: 29),
+        labeledAndTrailingClosures(codeLinesCount: 29),
+        lazyInitialization(codeLinesCount: 28)
     ]
 
     static let triggeringExamples: [Example] = [
-        trailingClosure("↓", codeLinesCount: 21, commentLinesCount: 0, emptyLinesCount: 0),
-        trailingClosure("↓", codeLinesCount: 21, commentLinesCount: 10, emptyLinesCount: 10),
-        argumentClosure("↓", codeLinesCount: 21),
-        labeledArgumentClosure("↓", codeLinesCount: 21),
-        multiLabeledArgumentClosures("↓", codeLinesCount: 21),
-        labeledAndTrailingClosures("↓", codeLinesCount: 21),
-        lazyInitialization("↓", codeLinesCount: 19)
+        trailingClosure("↓", codeLinesCount: 31, commentLinesCount: 0, emptyLinesCount: 0),
+        trailingClosure("↓", codeLinesCount: 31, commentLinesCount: 10, emptyLinesCount: 10),
+        argumentClosure("↓", codeLinesCount: 31),
+        labeledArgumentClosure("↓", codeLinesCount: 31),
+        multiLabeledArgumentClosures("↓", codeLinesCount: 31),
+        labeledAndTrailingClosures("↓", codeLinesCount: 31),
+        lazyInitialization("↓", codeLinesCount: 29)
     ]
 }
 

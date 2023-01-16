@@ -1,12 +1,9 @@
-import Foundation
-import SourceKittenFramework
+struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    init() {}
 
-    public init() {}
-
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "legacy_nsgeometry_functions",
         name: "Legacy NSGeometry Functions",
         description: "Struct extension properties and methods are preferred over legacy functions",
@@ -25,7 +22,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             Example("rect.insetBy(dx: 5.0, dy: -7.0)"),
             Example("rect.offsetBy(dx: 5.0, dy: -7.0)"),
             Example("rect1.union(rect2)"),
-            Example("rect1.intersect(rect2)"),
+            Example("rect1.intersection(rect2)"),
             // "rect.divide(atDistance: 10.2, fromEdge: edge)", No correction available for divide
             Example("rect1.contains(rect2)"),
             Example("rect.contains(point)"),
@@ -72,59 +69,48 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             Example("↓NSInsetRect(rect, 5.0, -7.0)\n"): Example("rect.insetBy(dx: 5.0, dy: -7.0)\n"),
             Example("↓NSOffsetRect(rect, -2, 8.3)\n"): Example("rect.offsetBy(dx: -2, dy: 8.3)\n"),
             Example("↓NSUnionRect(rect1, rect2)\n"): Example("rect1.union(rect2)\n"),
-            Example("↓NSIntersectionRect( rect1 ,rect2)\n"): Example("rect1.intersect(rect2)\n"),
             Example("↓NSContainsRect( rect1,rect2     )\n"): Example("rect1.contains(rect2)\n"),
             Example("↓NSPointInRect(point  ,rect)\n"): Example("rect.contains(point)\n"), // note order of arguments
             Example("↓NSIntersectsRect(  rect1,rect2 )\n"): Example("rect1.intersects(rect2)\n"),
             Example("↓NSIntersectsRect(rect1, rect2 )\n↓NSWidth(rect  )\n"):
-            Example("rect1.intersects(rect2)\nrect.width\n")
+                Example("rect1.intersects(rect2)\nrect.width\n"),
+            Example("↓NSIntersectionRect(rect1, rect2)"): Example("rect1.intersection(rect2)")
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let functions = ["NSWidth", "NSHeight", "NSMinX", "NSMidX",
-                         "NSMaxX", "NSMinY", "NSMidY", "NSMaxY",
-                         "NSEqualRects", "NSEqualSizes", "NSEqualPoints", "NSEdgeInsetsEqual",
-                         "NSIsEmptyRect", "NSIntegralRect", "NSInsetRect",
-                         "NSOffsetRect", "NSUnionRect", "NSIntersectionRect",
-                         "NSContainsRect", "NSPointInRect", "NSIntersectsRect"]
+    private static let legacyFunctions: [String: LegacyFunctionRuleHelper.RewriteStrategy] = [
+        "NSHeight": .property(name: "height"),
+        "NSIntegralRect": .property(name: "integral"),
+        "NSIsEmptyRect": .property(name: "isEmpty"),
+        "NSMaxX": .property(name: "maxX"),
+        "NSMaxY": .property(name: "maxY"),
+        "NSMidX": .property(name: "midX"),
+        "NSMidY": .property(name: "midY"),
+        "NSMinX": .property(name: "minX"),
+        "NSMinY": .property(name: "minY"),
+        "NSWidth": .property(name: "width"),
+        "NSEqualPoints": .equal,
+        "NSEqualSizes": .equal,
+        "NSEqualRects": .equal,
+        "NSEdgeInsetsEqual": .equal,
+        "NSInsetRect": .function(name: "insetBy", argumentLabels: ["dx", "dy"]),
+        "NSOffsetRect": .function(name: "offsetBy", argumentLabels: ["dx", "dy"]),
+        "NSUnionRect": .function(name: "union", argumentLabels: [""]),
+        "NSContainsRect": .function(name: "contains", argumentLabels: [""]),
+        "NSIntersectsRect": .function(name: "intersects", argumentLabels: [""]),
+        "NSIntersectionRect": .function(name: "intersection", argumentLabels: [""]),
+        "NSPointInRect": .function(name: "contains", argumentLabels: [""], reversed: true)
+    ]
 
-        let pattern = "\\b(" + functions.joined(separator: "|") + ")\\b"
-
-        return file.match(pattern: pattern, with: [.identifier]).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        LegacyFunctionRuleHelper.Visitor(legacyFunctions: Self.legacyFunctions)
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        let varName = RegexHelpers.varNameGroup
-        let twoVars = RegexHelpers.twoVars
-        let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
-        let patterns: [String: String] = [
-            "NSWidth\\(\(varName)\\)": "$1.width",
-            "NSHeight\\(\(varName)\\)": "$1.height",
-            "NSMinX\\(\(varName)\\)": "$1.minX",
-            "NSMidX\\(\(varName)\\)": "$1.midX",
-            "NSMaxX\\(\(varName)\\)": "$1.maxX",
-            "NSMinY\\(\(varName)\\)": "$1.minY",
-            "NSMidY\\(\(varName)\\)": "$1.midY",
-            "NSMaxY\\(\(varName)\\)": "$1.maxY",
-            "NSEqualRects\\(\(twoVars)\\)": "$1 == $2",
-            "NSEqualSizes\\(\(twoVars)\\)": "$1 == $2",
-            "NSEqualPoints\\(\(twoVars)\\)": "$1 == $2",
-            "NSEdgeInsetsEqual\\(\(twoVars)\\)": "$1 == $2",
-            "NSIsEmptyRect\\(\(varName)\\)": "$1.isEmpty",
-            "NSIntegralRect\\(\(varName)\\)": "$1.integral",
-            "NSInsetRect\\(\(varName),\(twoVariableOrNumber)\\)": "$1.insetBy(dx: $2, dy: $3)",
-            "NSOffsetRect\\(\(varName),\(twoVariableOrNumber)\\)": "$1.offsetBy(dx: $2, dy: $3)",
-            "NSUnionRect\\(\(twoVars)\\)": "$1.union($2)",
-            "NSIntersectionRect\\(\(twoVars)\\)": "$1.intersect($2)",
-            "NSContainsRect\\(\(twoVars)\\)": "$1.contains($2)",
-            "NSPointInRect\\(\(twoVars)\\)": "$2.contains($1)", // note order of arguments
-            "NSIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"
-        ]
-        return file.correct(legacyRule: self, patterns: patterns)
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        LegacyFunctionRuleHelper.Rewriter(
+            legacyFunctions: Self.legacyFunctions,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }

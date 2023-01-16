@@ -5,7 +5,7 @@ class ExplicitTypeInterfaceConfigurationTests: XCTestCase {
     func testDefaultConfiguration() {
         let config = ExplicitTypeInterfaceConfiguration()
         XCTAssertEqual(config.severityConfiguration.severity, .warning)
-        XCTAssertEqual(config.allowedKinds, Set([.varInstance, .varClass, .varStatic, .varLocal]))
+        XCTAssertEqual(config.allowedKinds, Set([.instance, .class, .static, .local]))
     }
 
     func testApplyingCustomConfiguration() throws {
@@ -14,7 +14,7 @@ class ExplicitTypeInterfaceConfigurationTests: XCTestCase {
                                          "excluded": ["local"],
                                          "allow_redundancy": true])
         XCTAssertEqual(config.severityConfiguration.severity, .error)
-        XCTAssertEqual(config.allowedKinds, Set([.varInstance, .varClass, .varStatic]))
+        XCTAssertEqual(config.allowedKinds, Set([.instance, .class, .static]))
         XCTAssertTrue(config.allowRedundancy)
     }
 
@@ -44,7 +44,7 @@ class ExplicitTypeInterfaceConfigurationTests: XCTestCase {
         try config.apply(configuration: ["excluded": ["class", "instance"]])
         XCTAssertEqual(
             config.consoleDescription,
-            "warning, excluded: [\"class\", \"instance\"], allow_redundancy: false"
+            "severity: warning, excluded: [\"class\", \"instance\"], allow_redundancy: false"
         )
     }
 }

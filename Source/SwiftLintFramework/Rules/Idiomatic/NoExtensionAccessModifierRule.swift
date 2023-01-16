@@ -1,11 +1,11 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.error)
+struct NoExtensionAccessModifierRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.error)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "no_extension_access_modifier",
         name: "No Extension Access Modifier",
         description: "Prefer not to use extension access modifiers",
@@ -23,22 +23,19 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .extension, let offset = dictionary.offset else {
-            return []
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let syntaxTokens = file.syntaxMap.tokens
-        let parts = syntaxTokens.prefix(while: { offset > $0.offset })
-        guard let aclToken = parts.last, file.isACL(token: aclToken) else {
-            return []
-        }
+private extension NoExtensionAccessModifierRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: aclToken.offset))
-        ]
+        override func visitPost(_ node: ExtensionDeclSyntax) {
+            if let modifiers = node.modifiers, modifiers.isNotEmpty {
+                violations.append(modifiers.positionAfterSkippingLeadingTrivia)
+            }
+        }
     }
 }

@@ -1,16 +1,16 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LineLengthRule: ConfigurationProviderRule {
-    public var configuration = LineLengthConfiguration(warning: 120, error: 200)
+struct LineLengthRule: ConfigurationProviderRule {
+    var configuration = LineLengthConfiguration(warning: 120, error: 200)
 
-    public init() {}
+    init() {}
 
     private let commentKinds = SyntaxKind.commentKinds
     private let nonCommentKinds = SyntaxKind.allKinds.subtracting(SyntaxKind.commentKinds)
     private let functionKinds = SwiftDeclarationKind.functionKinds
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "line_length",
         name: "Line Length",
         description: "Lines should not span too many characters.",
@@ -24,10 +24,10 @@ public struct LineLengthRule: ConfigurationProviderRule {
             Example(String(repeating: "/", count: 121) + "\n"),
             Example(String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 121) + "\n"),
             Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + "\n")
-        ]
+        ].skipWrappingInCommentTests().skipWrappingInStringTests()
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let minValue = configuration.params.map({ $0.value }).min() ?? .max
         let swiftDeclarationKindsByLine = Lazy(file.swiftDeclarationKindsByLine() ?? [])
         let syntaxKindsByLine = Lazy(file.syntaxKindsByLine() ?? [])
@@ -76,7 +76,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
             let length = strippedString.count
 
             for param in configuration.params where length > param.value {
-                let reason = "Line should be \(param.value) characters or less: currently \(length) characters"
+                let reason = "Line should be \(param.value) characters or less; currently it has \(length) characters"
                 return StyleViolation(ruleDescription: Self.description,
                                       severity: param.severity,
                                       location: Location(file: file.path, line: line.index),

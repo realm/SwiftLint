@@ -63,9 +63,8 @@ extension Configuration {
             .map { rule in [type(of: rule).description.identifier, rule.cacheDescription] }
             .sorted { $0[0] < $1[0] }
         let jsonObject: [Any] = [rootDirectory, cacheRulesDescriptions]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
-            let jsonString = String(data: jsonData, encoding: .utf8) {
-            return jsonString.md5()
+        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) {
+            return jsonData.sha256().toHexString()
         }
         queuedFatalError("Could not serialize configuration for cache")
     }
@@ -73,15 +72,22 @@ extension Configuration {
     internal var cacheURL: URL {
         let baseURL: URL
         if let path = cachePath {
-            baseURL = URL(fileURLWithPath: path)
+            baseURL = URL(fileURLWithPath: path, isDirectory: true)
         } else {
 #if os(Linux)
-            baseURL = URL(fileURLWithPath: "/var/tmp/")
+            baseURL = URL(fileURLWithPath: "/var/tmp/", isDirectory: true)
 #else
             baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
 #endif
         }
-        let folder = baseURL.appendingPathComponent("SwiftLint/\(Version.current.value)")
+
+        let versionedDirectory = [
+            "SwiftLint",
+            Version.current.value,
+            ExecutableInfo.buildID
+        ].compactMap({ $0 }).joined(separator: "/")
+
+        let folder = baseURL.appendingPathComponent(versionedDirectory)
 
         do {
             try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)

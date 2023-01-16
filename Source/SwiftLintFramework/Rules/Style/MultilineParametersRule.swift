@@ -1,62 +1,71 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = MultilineParametersConfiguration()
+struct MultilineParametersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = MultilineParametersConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "multiline_parameters",
         name: "Multiline Parameters",
-        description: "Functions and methods parameters should be either on the same line, or one per line.",
+        description: "Functions and methods parameters should be either on the same line, or one per line",
         kind: .style,
         nonTriggeringExamples: MultilineParametersRuleExamples.nonTriggeringExamples,
         triggeringExamples: MultilineParametersRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            SwiftDeclarationKind.functionKinds.contains(kind),
-            let nameRange = dictionary.nameByteRange
-        else {
-            return []
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(allowsSingleLine: configuration.allowsSingleLine, locationConverter: file.locationConverter)
+    }
+}
+
+private extension MultilineParametersRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let allowsSingleLine: Bool
+        private let locationConverter: SourceLocationConverter
+
+        init(allowsSingleLine: Bool, locationConverter: SourceLocationConverter) {
+            self.allowsSingleLine = allowsSingleLine
+            self.locationConverter = locationConverter
+            super.init(viewMode: .sourceAccurate)
         }
 
-        let parameterRanges = dictionary.substructure.compactMap { subStructure -> ByteRange? in
-            guard subStructure.declarationKind == .varParameter else {
-                return nil
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if containsViolation(for: node.signature) {
+                violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            if containsViolation(for: node.signature) {
+                violations.append(node.initKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        private func containsViolation(for signature: FunctionSignatureSyntax) -> Bool {
+            let parameterPositions = signature.input.parameterList.map(\.positionAfterSkippingLeadingTrivia)
+            guard parameterPositions.isNotEmpty else {
+                return false
             }
 
-            return subStructure.byteRange
-        }
+            var numberOfParameters = 0
+            var linesWithParameters = Set<Int>()
 
-        var numberOfParameters = 0
-        var linesWithParameters = Set<Int>()
+            for position in parameterPositions {
+                guard let line = locationConverter.location(for: position).line else {
+                    continue
+                }
 
-        for range in parameterRanges {
-            guard
-                let line = file.stringView.lineAndCharacter(forByteOffset: range.location)?.line,
-                nameRange.contains(range.location),
-                range.intersects(parameterRanges)
-            else {
-                continue
+                linesWithParameters.insert(line)
+                numberOfParameters += 1
             }
 
-            linesWithParameters.insert(line)
-            numberOfParameters += 1
-        }
+            guard linesWithParameters.count > (allowsSingleLine ? 1 : 0),
+                  numberOfParameters != linesWithParameters.count else {
+                return false
+            }
 
-        guard
-            linesWithParameters.count > (configuration.allowsSingleLine ? 1 : 0),
-            numberOfParameters != linesWithParameters.count
-        else {
-            return []
+            return true
         }
-
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severityConfiguration.severity,
-                               location: Location(file: file, byteOffset: nameRange.location))]
     }
 }

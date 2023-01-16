@@ -1,11 +1,11 @@
 // swiftlint:disable:next type_name
-public enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
+enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
     case all = "all"
     case allExceptIBOutlets = "all_except_iboutlets"
 
     init(value: Any) throws {
         if let string = (value as? String)?.lowercased(),
-            let value = ImplicitlyUnwrappedOptionalModeConfiguration(rawValue: string) {
+            let value = Self(rawValue: string) {
             self = value
         } else {
             throw ConfigurationError.unknownConfiguration
@@ -13,21 +13,21 @@ public enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
     }
 }
 
-public struct ImplicitlyUnwrappedOptionalConfiguration: RuleConfiguration, Equatable {
-    private(set) var severity: SeverityConfiguration
+struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration: SeverityConfiguration
     private(set) var mode: ImplicitlyUnwrappedOptionalModeConfiguration
 
-    init(mode: ImplicitlyUnwrappedOptionalModeConfiguration, severity: SeverityConfiguration) {
+    init(mode: ImplicitlyUnwrappedOptionalModeConfiguration, severityConfiguration: SeverityConfiguration) {
         self.mode = mode
-        self.severity = severity
+        self.severityConfiguration = severityConfiguration
     }
 
-    public var consoleDescription: String {
-        return severity.consoleDescription +
-            ", mode: \(mode)"
+    var consoleDescription: String {
+        return "severity: \(severityConfiguration.consoleDescription)" +
+            ", mode: \(mode.rawValue)"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -37,7 +37,7 @@ public struct ImplicitlyUnwrappedOptionalConfiguration: RuleConfiguration, Equat
         }
 
         if let severityString = configuration["severity"] as? String {
-            try severity.apply(configuration: severityString)
+            try severityConfiguration.apply(configuration: severityString)
         }
     }
 }

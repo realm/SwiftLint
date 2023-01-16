@@ -1,38 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    private static let regularExpression =
-        "catch" + // The catch keyword
-        "(?:"   + // Start of the first non-capturing group
-        "\\s*"  + // Zero or multiple whitespace character
-        "\\("   + // The `(` character
-        "?"     + // Zero or one occurrence of the previous character
-        "\\s*"  + // Zero or multiple whitespace character
-        "(?:"   + // Start of the alternative non-capturing group
-        "let"   + // `let` keyword
-        "|"     + // OR
-        "var"   + // `var` keyword
-        ")"     + // End of the alternative non-capturing group
-        "\\s+"  + // At least one any type of whitespace character
-        "\\w+"  + // At least one any type of word character
-        "\\s*"  + // Zero or multiple whitespace character
-        "\\)"   + // The `)` character
-        "?"     + // Zero or one occurrence of the previous character
-        ")"     + // End of the first non-capturing group
-        "(?:"   + // Start of the second non-capturing group
-        "\\s*"  + // Zero or unlimited any whitespace character
-        ")"     + // End of the second non-capturing group
-        "\\{"     // Start scope character
-
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "untyped_error_in_catch",
         name: "Untyped Error in Catch",
-        description: "Catch statements should not declare error variables without type casting.",
+        description: "Catch statements should not declare error variables without type casting",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -57,6 +33,15 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Aut
               try foo()
             } catch var error as MyError {
             } catch {}
+            """),
+            Example("""
+            do {
+                try something()
+            } catch let e where e.code == .fileError {
+                // can be ignored
+            } catch {
+                print(error)
+            }
             """)
         ],
         triggeringExamples: [
@@ -102,37 +87,75 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Aut
             Example("do {\n    try foo() \n} ↓catch (let error) {}"): Example("do {\n    try foo() \n} catch {}")
         ])
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: $0.location),
-                                  reason: configuration.consoleDescription)
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        UntypedErrorInCatchRuleVisitor(viewMode: .sourceAccurate)
     }
 
-    fileprivate func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.match(pattern: Self.regularExpression,
-                          with: [.keyword, .keyword, .identifier])
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        UntypedErrorInCatchRuleRewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 
-extension UntypedErrorInCatchRule: CorrectableRule {
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        let violations = violationRanges(in: file)
-        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
-        if matches.isEmpty { return [] }
-
-        var contents = file.contents.bridge()
-        let description = Self.description
-        var corrections = [Correction]()
-
-        for range in matches.reversed() where contents.substring(with: range).contains("let error") {
-            contents = contents.replacingCharacters(in: range, with: "catch {").bridge()
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
+private extension CatchItemSyntax {
+    var isIdentifierPattern: Bool {
+        guard whereClause == nil else {
+            return false
         }
-        file.write(contents.bridge())
-        return corrections
+
+        if let pattern = pattern?.as(ValueBindingPatternSyntax.self) {
+            return pattern.valuePattern.is(IdentifierPatternSyntax.self)
+        }
+
+        if let pattern = pattern?.as(ExpressionPatternSyntax.self),
+           let tupleExpr = pattern.expression.as(TupleExprSyntax.self),
+           let tupleElement = tupleExpr.elementList.onlyElement,
+           let unresolvedPattern = tupleElement.expression.as(UnresolvedPatternExprSyntax.self),
+           let valueBindingPattern = unresolvedPattern.pattern.as(ValueBindingPatternSyntax.self) {
+            return valueBindingPattern.valuePattern.is(IdentifierPatternSyntax.self)
+        }
+
+        return false
+    }
+}
+
+private final class UntypedErrorInCatchRuleVisitor: ViolationsSyntaxVisitor {
+    override func visitPost(_ node: CatchClauseSyntax) {
+        guard let item = node.catchItems?.onlyElement,
+              item.isIdentifierPattern else {
+            return
+        }
+
+        violations.append(node.catchKeyword.positionAfterSkippingLeadingTrivia)
+    }
+}
+
+private final class UntypedErrorInCatchRuleRewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    private(set) var correctionPositions: [AbsolutePosition] = []
+    let locationConverter: SourceLocationConverter
+    let disabledRegions: [SourceRange]
+
+    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+        self.locationConverter = locationConverter
+        self.disabledRegions = disabledRegions
+    }
+
+    override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
+        guard
+            let item = node.catchItems?.onlyElement,
+            item.isIdentifierPattern,
+            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+        else {
+            return super.visit(node)
+        }
+
+        correctionPositions.append(node.catchKeyword.positionAfterSkippingLeadingTrivia)
+        return super.visit(
+            node
+                .withCatchKeyword(node.catchKeyword.withTrailingTrivia(.spaces(1)))
+                .withCatchItems(CatchItemListSyntax([]))
+        )
     }
 }

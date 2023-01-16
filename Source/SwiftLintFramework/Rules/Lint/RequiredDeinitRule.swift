@@ -1,4 +1,4 @@
-import SourceKittenFramework
+import SwiftSyntax
 
 /// Rule to require all classes to have a deinit method
 ///
@@ -6,13 +6,13 @@ import SourceKittenFramework
 /// of objects and the deinit should print a message or remove its instance from a
 /// list of allocations. Even having an empty deinit method is useful to provide
 /// a place to put a breakpoint when chasing down leaks.
-public struct RequiredDeinitRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct RequiredDeinitRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "required_deinit",
         name: "Required Deinit",
-        description: "Classes should have an explicit deinit method.",
+        description: "Classes should have an explicit deinit method",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -66,31 +66,30 @@ public struct RequiredDeinitRule: ASTRule, OptInRule, ConfigurationProviderRule,
         ]
     )
 
-    public init() {}
+    init() {}
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .class,
-            let offset = dictionary.offset else {
-                return []
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension RequiredDeinitRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: ClassDeclSyntax) {
+            let visitor = DeinitVisitor(viewMode: .sourceAccurate)
+            if !visitor.walk(tree: node.members, handler: \.hasDeinit) {
+                violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
+    }
+}
 
-        let methodCollector = NamespaceCollector(dictionary: dictionary)
-        let methods = methodCollector.findAllElements(of: [.functionMethodInstance])
+private class DeinitVisitor: ViolationsSyntaxVisitor {
+    private(set) var hasDeinit = false
 
-        let containsDeinit = methods.contains {
-            $0.name == "deinit"
-        }
+    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
-        if containsDeinit {
-            return []
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+    override func visitPost(_ node: DeinitializerDeclSyntax) {
+        hasDeinit = true
     }
 }

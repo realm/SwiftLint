@@ -1,61 +1,68 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "SourceKitten",
-        "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
-        "state": {
-          "branch": null,
-          "revision": "817dfa6f2e09b0476f3a6c9dbc035991f02f0241",
-          "version": "0.32.0"
-        }
-      },
-      {
-        "package": "swift-argument-parser",
-        "repositoryURL": "https://github.com/apple/swift-argument-parser.git",
-        "state": {
-          "branch": null,
-          "revision": "e394bf350e38cb100b6bc4172834770ede1b7232",
-          "version": "1.0.3"
-        }
-      },
-      {
-        "package": "SwiftSyntax",
-        "repositoryURL": "https://github.com/apple/swift-syntax.git",
-        "state": {
-          "branch": null,
-          "revision": "0b6c22b97f8e9320bca62e82cdbee601cf37ad3f",
-          "version": "0.50600.1"
-        }
-      },
-      {
-        "package": "SwiftyTextTable",
-        "repositoryURL": "https://github.com/scottrhoyt/SwiftyTextTable.git",
-        "state": {
-          "branch": null,
-          "revision": "c6df6cf533d120716bff38f8ff9885e1ce2a4ac3",
-          "version": "0.9.0"
-        }
-      },
-      {
-        "package": "SWXMLHash",
-        "repositoryURL": "https://github.com/drmohundro/SWXMLHash.git",
-        "state": {
-          "branch": null,
-          "revision": "6469881a3f30417c5bb02404ea4b69207f297592",
-          "version": "6.0.0"
-        }
-      },
-      {
-        "package": "Yams",
-        "repositoryURL": "https://github.com/jpsim/Yams.git",
-        "state": {
-          "branch": null,
-          "revision": "9ff1cc9327586db4e0c8f46f064b6a82ec1566fa",
-          "version": "4.0.6"
-        }
+  "pins" : [
+    {
+      "identity" : "collectionconcurrencykit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/JohnSundell/CollectionConcurrencyKit.git",
+      "state" : {
+        "revision" : "b4f23e24b5a1bff301efc5e70871083ca029ff95",
+        "version" : "0.2.0"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "sourcekitten",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jpsim/SourceKitten.git",
+      "state" : {
+        "revision" : "fc12c0f182c5cf80781dd933b17a82eb98bd7c61",
+        "version" : "0.33.1"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "fddd1c00396eed152c45a46bea9f47b98e59301d",
+        "version" : "1.2.0"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "edd2d0cdb988ac45e2515e0dd0624e4a6de54a94",
+        "version" : "0.50800.0-SNAPSHOT-2022-12-29-a"
+      }
+    },
+    {
+      "identity" : "swiftytexttable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/scottrhoyt/SwiftyTextTable.git",
+      "state" : {
+        "revision" : "c6df6cf533d120716bff38f8ff9885e1ce2a4ac3",
+        "version" : "0.9.0"
+      }
+    },
+    {
+      "identity" : "swxmlhash",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/drmohundro/SWXMLHash.git",
+      "state" : {
+        "revision" : "4d0f62f561458cbe1f732171e625f03195151b60",
+        "version" : "7.0.1"
+      }
+    },
+    {
+      "identity" : "yams",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jpsim/Yams.git",
+      "state" : {
+        "revision" : "01835dc202670b5bb90d07f3eae41867e9ed29f6",
+        "version" : "5.0.1"
+      }
+    }
+  ],
+  "version" : 2
 }

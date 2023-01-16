@@ -1,111 +1,149 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
-    public var configuration = NumberSeparatorConfiguration(
+struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = NumberSeparatorConfiguration(
         minimumLength: 0,
         minimumFractionLength: nil,
         excludeRanges: []
     )
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "number_separator",
         name: "Number Separator",
-        description: "Underscores should be used as thousand separator in large decimal numbers.",
+        description: "Underscores should be used as thousand separator in large decimal numbers",
         kind: .style,
         nonTriggeringExamples: NumberSeparatorRuleExamples.nonTriggeringExamples,
         triggeringExamples: NumberSeparatorRuleExamples.triggeringExamples,
         corrections: NumberSeparatorRuleExamples.corrections
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violatingRanges(in: file).map { range, _ in
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severityConfiguration.severity,
-                                  location: Location(file: file, characterOffset: range.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(configuration: configuration)
+    }
+
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            configuration: configuration,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private extension NumberSeparatorRule {
+    final class Visitor: ViolationsSyntaxVisitor, NumberSeparatorValidator {
+        let configuration: NumberSeparatorConfiguration
+
+        init(configuration: NumberSeparatorConfiguration) {
+            self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: FloatLiteralExprSyntax) {
+            if let violation = violation(token: node.floatingDigits) {
+                violations.append(violation.position)
+            }
+        }
+
+        override func visitPost(_ node: IntegerLiteralExprSyntax) {
+            if let violation = violation(token: node.digits) {
+                violations.append(violation.position)
+            }
         }
     }
 
-    private func violatingRanges(in file: SwiftLintFile) -> [(NSRange, String)] {
-        let numberTokens = file.syntaxMap.tokens.filter { $0.kind == .number }
-        return numberTokens.compactMap { (token: SwiftLintSyntaxToken) -> (NSRange, String)? in
+    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter, NumberSeparatorValidator {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let configuration: NumberSeparatorConfiguration
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(configuration: NumberSeparatorConfiguration,
+             locationConverter: SourceLocationConverter,
+             disabledRegions: [SourceRange]) {
+            self.configuration = configuration
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {
             guard
-                let content = file.contents(for: token),
-                isDecimal(number: content),
-                !isInValidRanges(number: content)
+                let violation = violation(token: node.floatingDigits),
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
-                return nil
+                return super.visit(node)
             }
 
-            let signs = CharacterSet(charactersIn: "+-")
-            let exponential = CharacterSet(charactersIn: "eE")
-            guard let nonSign = content.components(separatedBy: signs).last,
-                case let exponentialComponents = nonSign.components(separatedBy: exponential),
-                let nonExponential = exponentialComponents.first else {
-                    return nil
-            }
+            let newNode = node.withFloatingDigits(node.floatingDigits.withKind(.floatingLiteral(violation.correction)))
+            correctionPositions.append(violation.position)
+            return super.visit(newNode)
+        }
 
-            let components = nonExponential.components(separatedBy: ".")
-
-            var validFraction = true
-            var expectedFraction: String?
-            if components.count == 2, let fractionSubstring = components.last {
-                let result = isValid(number: fractionSubstring, isFraction: true)
-                validFraction = result.0
-                expectedFraction = result.1
-            }
-
-            guard let integerSubstring = components.first,
-                case let (valid, expected) = isValid(number: integerSubstring, isFraction: false),
-                !valid || !validFraction,
-                let range = file.stringView.byteRangeToNSRange(token.range)
+        override func visit(_ node: IntegerLiteralExprSyntax) -> ExprSyntax {
+            guard
+                let violation = violation(token: node.digits),
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
-                return nil
+                return super.visit(node)
             }
 
-            var corrected = ""
-            let hasSign = content.countOfLeadingCharacters(in: signs) == 1
-            if hasSign {
-                corrected += String(content.prefix(1))
-            }
-
-            corrected += expected
-            if let fraction = expectedFraction {
-                corrected += "." + fraction
-            }
-
-            if exponentialComponents.count == 2, let exponential = exponentialComponents.last {
-                let exponentialSymbol = content.contains("e") ? "e" : "E"
-                corrected += exponentialSymbol + exponential
-            }
-
-            return (range, corrected)
+            let newNode = node.withDigits(node.digits.withKind(.integerLiteral(violation.correction)))
+            correctionPositions.append(violation.position)
+            return super.visit(newNode)
         }
     }
+}
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        let violatingRanges = self.violatingRanges(in: file).filter { range, _ in
-            return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
+private protocol NumberSeparatorValidator {
+    var configuration: NumberSeparatorConfiguration { get }
+}
+
+extension NumberSeparatorValidator {
+    func violation(token: TokenSyntax) -> (position: AbsolutePosition, correction: String)? {
+        let content = token.withoutTrivia().text
+        guard isDecimal(number: content),
+            !isInValidRanges(number: content)
+        else {
+            return nil
         }
 
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
-
-        for (violatingRange, correction) in violatingRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: correction)
-                adjustedLocations.insert(violatingRange.location, at: 0)
-            }
+        let exponential = CharacterSet(charactersIn: "eE")
+        guard case let exponentialComponents = content.components(separatedBy: exponential),
+            let nonExponential = exponentialComponents.first else {
+                return nil
         }
 
-        file.write(correctedContents)
+        let components = nonExponential.components(separatedBy: ".")
 
-        return adjustedLocations.map {
-            Correction(ruleDescription: Self.description,
-                       location: Location(file: file, characterOffset: $0))
+        var validFraction = true
+        var expectedFraction: String?
+        if components.count == 2, let fractionSubstring = components.last {
+            let result = isValid(number: fractionSubstring, isFraction: true)
+            validFraction = result.0
+            expectedFraction = result.1
         }
+
+        guard let integerSubstring = components.first,
+            case let (valid, expected) = isValid(number: integerSubstring, isFraction: false),
+            !valid || !validFraction
+        else {
+            return nil
+        }
+
+        var corrected = expected
+        if let fraction = expectedFraction {
+            corrected += "." + fraction
+        }
+
+        if exponentialComponents.count == 2, let exponential = exponentialComponents.last {
+            let exponentialSymbol = content.contains("e") ? "e" : "E"
+            corrected += exponentialSymbol + exponential
+        }
+
+        return (token.positionAfterSkippingLeadingTrivia, corrected)
     }
 
     private func isDecimal(number: String) -> Bool {
@@ -130,7 +168,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
 
         let minimumLength: Int
         if isFraction {
-            minimumLength = configuration.minimumFractionLength ?? configuration.minimumLength
+            minimumLength = configuration.minimumFractionLength ?? .max
         } else {
             minimumLength = configuration.minimumLength
         }

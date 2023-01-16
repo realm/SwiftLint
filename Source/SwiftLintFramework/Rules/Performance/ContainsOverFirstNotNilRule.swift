@@ -1,13 +1,13 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "contains_over_first_not_nil",
-        name: "Contains over first not nil",
+        name: "Contains over First not Nil",
         description: "Prefer `contains` over `first(where:) != nil` and `firstIndex(where:) != nil`.",
         kind: .performance,
         nonTriggeringExamples: ["first", "firstIndex"].flatMap { method in
@@ -30,15 +30,34 @@ public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, Configuratio
         }
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*(==|!=)\\s*nil"
-        let firstViolations = validate(file: file, pattern: pattern, patternSyntaxKinds: [.keyword],
-                                       callNameSuffix: ".first", severity: configuration.severity,
-                                       reason: "Prefer `contains` over `first(where:) != nil`")
-        let firstIndexViolations = validate(file: file, pattern: pattern, patternSyntaxKinds: [.keyword],
-                                            callNameSuffix: ".firstIndex", severity: configuration.severity,
-                                            reason: "Prefer `contains` over `firstIndex(where:) != nil`")
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
 
-        return firstViolations + firstIndexViolations
+    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+        syntaxTree.folded()
+    }
+}
+
+private extension ContainsOverFirstNotNilRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            guard
+                let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                operatorNode.operatorToken.tokenKind.isEqualityComparison,
+                node.rightOperand.is(NilLiteralExprSyntax.self),
+                let first = node.leftOperand.asFunctionCall,
+                let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
+                calledExpression.name.text == "first" || calledExpression.name.text == "firstIndex"
+            else {
+                return
+            }
+
+            let violation = ReasonedRuleViolation(
+                position: first.positionAfterSkippingLeadingTrivia,
+                reason: "Prefer `contains` over `\(calledExpression.name.text)(where:) != nil`"
+            )
+            violations.append(violation)
+        }
     }
 }

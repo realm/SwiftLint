@@ -1,16 +1,16 @@
 import Foundation
 import SourceKittenFramework
 
-public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = NameConfiguration(minLengthWarning: 3,
-                                                 minLengthError: 2,
-                                                 maxLengthWarning: 40,
-                                                 maxLengthError: 60,
-                                                 excluded: ["id"])
+struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
+    var configuration = NameConfiguration(minLengthWarning: 3,
+                                          minLengthError: 2,
+                                          maxLengthWarning: 40,
+                                          maxLengthError: 60,
+                                          excluded: ["id"])
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "identifier_name",
         name: "Identifier Name",
         description: "Identifier names should only contain alphanumeric characters and " +
@@ -24,7 +24,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         deprecatedAliases: ["variable_name"]
     )
 
-    public func validate(
+    func validate(
         file: SwiftLintFile,
         kind: SwiftDeclarationKind,
         dictionary: SourceKittenDictionary
@@ -34,9 +34,9 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         return validateName(dictionary: dictionary, kind: kind).map { name, offset in
-            guard !configuration.excluded.contains(name), let firstCharacter = name.first else {
-                return []
-            }
+            guard let firstCharacter = name.first else { return [] }
+
+            guard !configuration.shouldExclude(name: name) else { return [] }
 
             let isFunction = SwiftDeclarationKind.functionKinds.contains(kind)
             let description = Self.description
@@ -49,15 +49,14 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                         StyleViolation(ruleDescription: description,
                                        severity: .error,
                                        location: Location(file: file, byteOffset: offset),
-                                       reason: "\(type) name should only contain alphanumeric " +
-                            "characters: '\(name)'")
+                                       reason: "\(type) name '\(name)' should only contain alphanumeric characters")
                     ]
                 }
 
                 if let severity = severity(forLength: name.count) {
-                    let reason = "\(type) name should be between " +
+                    let reason = "\(type) name '\(name)' should be between " +
                         "\(configuration.minLengthThreshold) and " +
-                        "\(configuration.maxLengthThreshold) characters long: '\(name)'"
+                        "\(configuration.maxLengthThreshold) characters long"
                     return [
                         StyleViolation(ruleDescription: Self.description,
                                        severity: severity,
@@ -72,10 +71,10 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             guard !firstCharacterIsAllowed else {
                 return []
             }
-            let requiresCaseCheck = configuration.validatesStartWithLowercase || isFunction
+            let requiresCaseCheck = configuration.validatesStartWithLowercase
             if requiresCaseCheck &&
                 kind != .varStatic && name.isViolatingCase && !name.isOperator {
-                let reason = "\(type) name should start with a lowercase character: '\(name)'"
+                let reason = "\(type) name '\(name)' should start with a lowercase character"
                 return [
                     StyleViolation(ruleDescription: description,
                                    severity: .error,

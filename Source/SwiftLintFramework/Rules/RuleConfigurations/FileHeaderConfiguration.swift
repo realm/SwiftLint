@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
+struct FileHeaderConfiguration: RuleConfiguration, Equatable {
     private static let fileNamePlaceholder = "SWIFTLINT_CURRENT_FILENAME"
     private static let stringRegexOptions: NSRegularExpression.Options = [.ignoreMetacharacters]
     private static let patternRegexOptions: NSRegularExpression.Options =
@@ -18,22 +18,22 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
     private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         let requiredStringDescription = requiredString ?? "None"
         let requiredPatternDescription = requiredPattern ?? "None"
         let forbiddenStringDescription = forbiddenString ?? "None"
         let forbiddenPatternDescription = forbiddenPattern ?? "None"
 
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", required_string: \(requiredStringDescription)" +
             ", required_pattern: \(requiredPatternDescription)" +
             ", forbidden_string: \(forbiddenStringDescription)" +
             ", forbidden_pattern: \(forbiddenPatternDescription)"
     }
 
-    public init() {}
+    init() {}
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: String] else {
             throw ConfigurationError.unknownConfiguration
         }

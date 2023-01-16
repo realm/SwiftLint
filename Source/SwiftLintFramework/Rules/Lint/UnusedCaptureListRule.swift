@@ -1,15 +1,26 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+private let warnDeprecatedOnceImpl: Void = {
+    queuedPrintError("""
+        The `\(UnusedCaptureListRule.description.identifier)` rule is now deprecated and will be completely \
+        removed in a future release due to an equivalent warning issued by the Swift compiler.
+        """
+    )
+}()
 
-    public init() {}
+private func warnDeprecatedOnce() {
+    _ = warnDeprecatedOnceImpl
+}
 
-    public static var description = RuleDescription(
+struct UnusedCaptureListRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
+
+    init() {}
+
+    static var description = RuleDescription(
         identifier: "unused_capture_list",
         name: "Unused Capture List",
-        description: "Unused reference in a capture list should be removed.",
+        description: "Unused reference in a capture list should be removed",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -106,7 +117,7 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             """),
             Example("""
             numbers.forEach({
-                [self, weak handler] in
+                [self, ↓weak handler] in
                 print($0)
             })
             """),
@@ -121,113 +132,86 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         ]
     )
 
-    private let captureListRegex = regex("^\\{\\s*\\[([^\\]]+)\\]")
-
-    private let selfKeyword = "self"
-
-    private let unownedKeyword = "unowned"
-
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let contents = file.stringView
-        guard kind == .closure,
-            let offset = dictionary.offset,
-            let length = dictionary.length,
-            let closureByteRange = dictionary.byteRange,
-            let closureRange = contents.byteRangeToNSRange(closureByteRange)
-            else { return [] }
-
-        let firstSubstructureOffset = dictionary.substructure.firstFlatteningBrace()?.offset ?? (offset + length)
-        let captureListSearchLength = firstSubstructureOffset - offset
-        let captureListSearchByteRange = ByteRange(location: offset, length: captureListSearchLength)
-        guard let captureListSearchRange = contents.byteRangeToNSRange(captureListSearchByteRange),
-            let match = captureListRegex.firstMatch(in: file.contents, options: [], range: captureListSearchRange)
-            else { return [] }
-
-        let captureListRange = match.range(at: 1)
-        guard captureListRange.location != NSNotFound,
-            captureListRange.length > 0 else { return [] }
-
-        let captureList = contents.substring(with: captureListRange)
-        let references = referencesAndLocationsFromCaptureList(captureList)
-
-        let restOfClosureLocation = captureListRange.location + captureListRange.length + 1
-        let restOfClosureLength = closureRange.length - (restOfClosureLocation - closureRange.location)
-        let restOfClosureRange = NSRange(location: restOfClosureLocation, length: restOfClosureLength)
-        guard let restOfClosureByteRange = contents
-            .NSRangeToByteRange(start: restOfClosureRange.location, length: restOfClosureRange.length)
-            else { return [] }
-
-        let identifiers = identifierStrings(in: file, byteRange: restOfClosureByteRange)
-        return violations(in: file, references: references,
-                          identifiers: identifiers, captureListRange: captureListRange)
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        warnDeprecatedOnce()
+        return Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    // MARK: - Private
+private extension UnusedCaptureListRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: ClosureExprSyntax) {
+            guard let captureItems = node.signature?.capture?.items,
+                    captureItems.isNotEmpty else {
+                return
+            }
 
-    private func referencesAndLocationsFromCaptureList(_ captureList: String) -> [(String, Int)] {
-        var locationOffset = 0
-        return captureList.components(separatedBy: ",")
-            .reduce(into: [(String, Int)]()) { referencesAndLocations, item in
-                let words = item
-                  .trimmingCharacters(in: .whitespacesAndNewlines)
-                  .components(separatedBy: .whitespacesAndNewlines)
-                guard words.first != selfKeyword
-                        && (words.first != unownedKeyword || words.last != selfKeyword) else { return }
-                let item = item.bridge()
-                let range = item.rangeOfCharacter(from: CharacterSet.whitespacesAndNewlines.inverted)
-                guard range.location != NSNotFound else { return }
+            let captureItemsWithNames = captureItems
+                .compactMap { item -> (name: String, item: ClosureCaptureItemSyntax)? in
+                    if let name = item.name {
+                        return (name.text, item)
+                    } else if let expr = item.expression.as(IdentifierExprSyntax.self) {
+                        // allow "[unowned self]"
+                        if expr.identifier.tokenKind == .selfKeyword && item.specifier.containsUnowned {
+                            return nil
+                        }
 
-                let location = range.location + locationOffset
-                locationOffset += item.length + 1 // 1 for comma
-                let reference = item.components(separatedBy: "=")
-                    .first?
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                    .components(separatedBy: .whitespaces)
-                    .last
-                if let reference = reference {
-                    referencesAndLocations.append((reference, location))
+                        // allow "[self]" capture (SE-0269)
+                        if expr.identifier.tokenKind == .selfKeyword && item.specifier.isNilOrEmpty {
+                            return nil
+                        }
+
+                        return (expr.identifier.text, item)
+                    }
+
+                    return nil
                 }
-            }
-    }
 
-    private func identifierStrings(in file: SwiftLintFile, byteRange: ByteRange) -> Set<String> {
-        let identifiers = file.syntaxMap
-            .tokens(inByteRange: byteRange)
-            .compactMap { token -> String? in
-                guard token.kind == .identifier || token.kind == .keyword else { return nil }
-                return file.contents(for: token)
+            guard captureItemsWithNames.isNotEmpty else {
+                return
             }
-        return Set(identifiers)
-    }
 
-    private func violations(in file: SwiftLintFile, references: [(String, Int)],
-                            identifiers: Set<String>, captureListRange: NSRange) -> [StyleViolation] {
-        return references.compactMap { reference, location -> StyleViolation? in
-            guard !identifiers.contains(reference) else { return nil }
-            let offset = captureListRange.location + location
-            let reason = "Unused reference \(reference) in a capture list should be removed."
-            return StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: offset),
-                reason: reason
-            )
+            let identifiersToSearch = Set(captureItemsWithNames.map(\.name))
+            let foundIdentifiers = IdentifierReferenceVisitor(identifiersToSearch: identifiersToSearch)
+                .walk(tree: node.statements, handler: \.foundIdentifiers)
+
+            let missingIdentifiers = identifiersToSearch.subtracting(foundIdentifiers)
+            guard missingIdentifiers.isNotEmpty else {
+                return
+            }
+
+            for entry in captureItemsWithNames where missingIdentifiers.contains(entry.name) {
+                violations.append(entry.item.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }
 
-private extension Array where Element == SourceKittenDictionary {
-    func firstFlatteningBrace() -> Element? {
-        guard SwiftVersion.current >= .fiveDotFour else {
-            return first
-        }
+private final class IdentifierReferenceVisitor: SyntaxVisitor {
+    private let identifiersToSearch: Set<String>
+    private(set) var foundIdentifiers: Set<String> = []
 
-        return flatMap { dict -> [SourceKittenDictionary] in
-            guard dict.kind == "source.lang.swift.stmt.brace" else {
-                return [dict]
-            }
-            return dict.substructure
-        }.first
+    init(identifiersToSearch: Set<String>) {
+        self.identifiersToSearch = identifiersToSearch
+        super.init(viewMode: .sourceAccurate)
+    }
+
+    override func visitPost(_ node: IdentifierExprSyntax) {
+        let name = node.identifier.text
+        if identifiersToSearch.contains(name) {
+            foundIdentifiers.insert(name)
+        }
+    }
+}
+
+private extension TokenListSyntax? {
+    var containsUnowned: Bool {
+        self?.contains { token in
+            token.tokenKind == .contextualKeyword("unowned")
+        } ?? false
+    }
+
+    var isNilOrEmpty: Bool {
+        self?.isEmpty ?? true
     }
 }

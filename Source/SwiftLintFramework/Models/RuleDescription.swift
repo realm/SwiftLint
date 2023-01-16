@@ -18,8 +18,8 @@ public struct RuleDescription: Equatable {
     /// users of various samples of code that are considered valid by this rule. Should be valid Swift syntax but is not
     /// required to compile.
     ///
-    /// These examples are also used for testing purposes if the rule conforms to `AutomaticTestableRule`. Tests will
-    /// validate that the rule does not trigger any violations for these examples.
+    /// These examples are also used for automatic testing purposes. Tests will validate that the rule does not trigger
+    /// any violations for these examples.
     public let nonTriggeringExamples: [Example]
 
     /// Swift source examples that do trigger one or more violations for this rule. Used for documentation purposes to
@@ -28,8 +28,8 @@ public struct RuleDescription: Equatable {
     ///
     /// Violations should occur where `↓` markers are located.
     ///
-    /// These examples are also used for testing purposes if the rule conforms to `AutomaticTestableRule`. Tests will
-    /// validate that the rule triggers violations for these examples wherever `↓` markers are located.
+    /// These examples are also used for automatic testing purposes. Tests will validate that the rule triggers
+    /// violations for these examples wherever `↓` markers are located.
     public let triggeringExamples: [Example]
 
     /// Pairs of Swift source examples, where keys are examples that trigger violations for this rule, and the values

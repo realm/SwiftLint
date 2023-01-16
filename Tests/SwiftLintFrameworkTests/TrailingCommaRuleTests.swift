@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class TrailingCommaRuleTests: XCTestCase {
@@ -10,13 +10,8 @@ class TrailingCommaRuleTests: XCTestCase {
 
         // Ensure the rule produces the correct reason string.
         let failingCase = Example("let array = [\n\t1,\n\t2,\n]\n")
-        XCTAssertEqual(trailingCommaViolations(failingCase), [
-            StyleViolation(
-                ruleDescription: TrailingCommaRule.description,
-                location: Location(file: nil, line: 3, character: 3),
-                reason: "Collection literals should not have trailing commas."
-            )
-        ])
+        XCTAssertEqual(trailingCommaViolations(failingCase).first?.reason,
+                       "Collection literals should not have trailing commas")
     }
 
     private static let triggeringExamples = [
@@ -25,6 +20,7 @@ class TrailingCommaRuleTests: XCTestCase {
         Example("let foo = [1: 2,\n 2: 3↓   ]\n"),
         Example("struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n"),
         Example("let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n"),
+        Example("let foo = [1, 2,\n 3↓  ]"),
         Example("let foo = [\"אבג\", \"αβγ\",\n\"🇺🇸\"↓]\n")
     ]
 
@@ -68,13 +64,8 @@ class TrailingCommaRuleTests: XCTestCase {
 
         // Ensure the rule produces the correct reason string.
         let failingCase = Example("let array = [\n\t1,\n\t2\n]\n")
-        XCTAssertEqual(trailingCommaViolations(failingCase, ruleConfiguration: ruleConfiguration), [
-            StyleViolation(
-                ruleDescription: TrailingCommaRule.description,
-                location: Location(file: nil, line: 3, character: 3),
-                reason: "Multi-line collection literals should have trailing commas."
-            )
-        ])
+        XCTAssertEqual(trailingCommaViolations(failingCase, ruleConfiguration: ruleConfiguration).first?.reason,
+                       "Multi-line collection literals should have trailing commas")
     }
 
     private func trailingCommaViolations(_ example: Example, ruleConfiguration: Any? = nil) -> [StyleViolation] {

@@ -1,4 +1,5 @@
 included:
+  - Plugins
   - Source
   - Tests
 excluded:
@@ -7,7 +8,6 @@ analyzer_rules:
   - unused_declaration
   - unused_import
 opt_in_rules:
-  - anyobject_protocol
   - array_init
   - attributes
   - closure_end_indentation
@@ -37,6 +37,7 @@ opt_in_rules:
   - last_where
   - legacy_multiple
   - literal_expression_end_indentation
+  - local_doc_comment
   - lower_acl_than_parent
   - modifier_order
   - nimble_operator
@@ -47,7 +48,7 @@ opt_in_rules:
   - overridden_super_call
   - override_in_extension
   - pattern_matching_keywords
-  - prefer_self_in_static_references
+  - period_spacing
   - prefer_self_type_over_type_of_self
   - private_action
   - private_outlet
@@ -80,15 +81,17 @@ opt_in_rules:
 identifier_name:
   excluded:
     - id
+large_tuple: 3
 number_separator:
   minimum_length: 5
 file_name:
   excluded:
-    - main.swift
-    - LinuxMain.swift
+    - SwiftSyntax+SwiftLint.swift
+    - GeneratedTests.swift
     - TestHelpers.swift
-    - shim.swift
-    - AutomaticRuleTests.generated.swift
+
+function_body_length: 60
+type_body_length: 400
 
 custom_rules:
   rule_id:
@@ -111,3 +114,7 @@ custom_rules:
     message: Rule Test Function mustn't end with `rule`
     regex: func\s*test\w+(r|R)ule\(\)
     severity: error
+
+unused_import:
+  always_keep_imports:
+    - SwiftSyntaxBuilder # we can't detect uses of string interpolation of swift syntax nodes

@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct IsDisjointRule: ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct IsDisjointRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "is_disjoint",
         name: "Is Disjoint",
-        description: "Prefer using `Set.isDisjoint(with:)` over `Set.intersection(_:).isEmpty`.",
+        description: "Prefer using `Set.isDisjoint(with:)` over `Set.intersection(_:).isEmpty`",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("_ = Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)"),
@@ -22,13 +22,24 @@ public struct IsDisjointRule: ConfigurationProviderRule, AutomaticTestableRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\bintersection\\(\\S+\\)\\.isEmpty"
-        let excludingKinds = SyntaxKind.commentAndStringKinds
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension IsDisjointRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: MemberAccessExprSyntax) {
+            guard
+                node.name.text == "isEmpty",
+                let firstBase = node.base?.asFunctionCall,
+                let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
+                firstBaseCalledExpression.name.text == "intersection"
+            else {
+                return
+            }
+
+            violations.append(firstBaseCalledExpression.name.positionAfterSkippingLeadingTrivia)
         }
     }
 }

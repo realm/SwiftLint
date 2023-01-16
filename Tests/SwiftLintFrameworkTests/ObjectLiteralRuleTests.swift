@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class ObjectLiteralRuleTests: XCTestCase {
@@ -26,10 +26,6 @@ class ObjectLiteralRuleTests: XCTestCase {
     }
 
     // MARK: - Test Methods
-    func testObjectLiteralWithDefaultConfiguration() {
-        verifyRule(ObjectLiteralRule.description)
-    }
-
     func testObjectLiteralWithImageLiteral() {
         // Verify ObjectLiteral rule for when image_literal is true.
         let baseDescription = ObjectLiteralRule.description

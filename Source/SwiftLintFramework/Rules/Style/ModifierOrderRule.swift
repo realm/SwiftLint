@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, CorrectableRule {
-    public var configuration = ModifierOrderConfiguration(
+struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, CorrectableRule {
+    var configuration = ModifierOrderConfiguration(
         preferredModifierOrder: [
             .override,
             .acl,
@@ -18,9 +18,9 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         ]
     )
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "modifier_order",
         name: "Modifier Order",
         description: "Modifier order should be consistent.",
@@ -29,9 +29,9 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         triggeringExamples: ModifierOrderRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile,
+                  kind: SwiftDeclarationKind,
+                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset else {
             return []
         }
@@ -41,7 +41,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         if let first = violatingModifiers.first {
             let preferredModifier = first.0
             let declaredModifier = first.1
-            let reason = "\(preferredModifier.keyword) modifier should be before \(declaredModifier.keyword)."
+            let reason = "\(preferredModifier.keyword) modifier should come before \(declaredModifier.keyword)"
             return [
                 StyleViolation(
                     ruleDescription: Self.description,
@@ -55,7 +55,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         return file.structureDictionary.traverseDepthFirst { subDict in
             guard let kind = subDict.declarationKind else { return nil }
             return correct(file: file, kind: kind, dictionary: subDict)

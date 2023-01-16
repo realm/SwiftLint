@@ -1,11 +1,7 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class DiscouragedObjectLiteralRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DiscouragedObjectLiteralRule.description)
-    }
-
     func testWithImageLiteral() {
         let baseDescription = DiscouragedObjectLiteralRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [

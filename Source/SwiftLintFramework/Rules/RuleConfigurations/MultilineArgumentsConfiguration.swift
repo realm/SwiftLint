@@ -4,8 +4,8 @@ private enum ConfigurationKey: String {
     case onlyEnforceAfterFirstClosureOnFirstLine = "only_enforce_after_first_closure_on_first_line"
 }
 
-public struct MultilineArgumentsConfiguration: RuleConfiguration, Equatable {
-    public enum FirstArgumentLocation: String {
+struct MultilineArgumentsConfiguration: RuleConfiguration, Equatable {
+    enum FirstArgumentLocation: String {
         case anyLine = "any_line"
         case sameLine = "same_line"
         case nextLine = "next_line"
@@ -13,7 +13,7 @@ public struct MultilineArgumentsConfiguration: RuleConfiguration, Equatable {
         init(value: Any) throws {
             guard
                 let string = (value as? String)?.lowercased(),
-                let value = FirstArgumentLocation(rawValue: string) else {
+                let value = Self(rawValue: string) else {
                     throw ConfigurationError.unknownConfiguration
             }
 
@@ -25,14 +25,14 @@ public struct MultilineArgumentsConfiguration: RuleConfiguration, Equatable {
     private(set) var firstArgumentLocation = FirstArgumentLocation.anyLine
     private(set) var onlyEnforceAfterFirstClosureOnFirstLine = false
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+    var consoleDescription: String {
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", \(ConfigurationKey.firstArgumentLocation.rawValue): \(firstArgumentLocation.rawValue)" +
             ", \(ConfigurationKey.onlyEnforceAfterFirstClosureOnFirstLine.rawValue): \(onlyEnforceAfterFirstClosureOnFirstLine)"
             // swiftlint:disable:previous line_length
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         let error = ConfigurationError.unknownConfiguration
 
         guard let configuration = configuration as? [String: Any] else {

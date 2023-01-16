@@ -7,20 +7,9 @@ import Glibc
 #error("Unsupported platform")
 #endif
 import Foundation
+@_spi(TestHelper)
 import SwiftLintFramework
 import SwiftyTextTable
-
-enum RuleEnablementOptions: String, EnumerableFlag {
-    case enabled, disabled
-
-    static func name(for value: RuleEnablementOptions) -> NameSpecification {
-        return .shortAndLong
-    }
-
-    static func help(for value: RuleEnablementOptions) -> ArgumentHelp? {
-        return "Only show \(value.rawValue) rules"
-    }
-}
 
 extension SwiftLint {
     struct Rules: ParsableCommand {
@@ -28,16 +17,13 @@ extension SwiftLint {
 
         @Option(help: "The path to a SwiftLint configuration file")
         var config: String?
-        @Flag(exclusivity: .exclusive)
-        var ruleEnablement: RuleEnablementOptions?
-        @Flag(name: .shortAndLong, help: "Only display correctable rules")
-        var correctable = false
+        @OptionGroup var rulesFilterOptions: RulesFilterOptions
         @Flag(name: .shortAndLong, help: "Display full configuration details")
         var verbose = false
         @Argument(help: "The rule identifier to display description for")
         var ruleID: String?
 
-        mutating func run() throws {
+        func run() throws {
             if let ruleID = ruleID {
                 guard let rule = primaryRuleList.list[ruleID] else {
                     throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")
@@ -48,33 +34,11 @@ extension SwiftLint {
             }
 
             let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
-            let rules = ruleList(configuration: configuration)
+            let rulesFilter = RulesFilter(enabledRules: configuration.rules)
+            let rules = rulesFilter.getRules(excluding: .excludingOptions(byCommandLineOptions: rulesFilterOptions))
             let table = TextTable(ruleList: rules, configuration: configuration, verbose: verbose)
             print(table.render())
-        }
-
-        private func ruleList(configuration: Configuration) -> RuleList {
-            guard ruleEnablement != nil || correctable else {
-                return primaryRuleList
-            }
-
-            let filtered: [Rule.Type] = primaryRuleList.list.compactMap { ruleID, ruleType in
-                let configuredRule = configuration.rules.first { rule in
-                    return type(of: rule).description.identifier == ruleID
-                }
-
-                if ruleEnablement == .enabled && configuredRule == nil {
-                    return nil
-                } else if ruleEnablement == .disabled && configuredRule != nil {
-                    return nil
-                } else if correctable && !(configuredRule is CorrectableRule) {
-                    return nil
-                }
-
-                return ruleType
-            }
-
-            return RuleList(rules: filtered)
+            ExitHelper.successfullyExit()
         }
     }
 }
@@ -108,6 +72,7 @@ private extension TextTable {
             TextTableColumn(header: "enabled in your config"),
             TextTableColumn(header: "kind"),
             TextTableColumn(header: "analyzer"),
+            TextTableColumn(header: "uses sourcekit"),
             TextTableColumn(header: "configuration")
         ]
         self.init(columns: columns)
@@ -115,7 +80,7 @@ private extension TextTable {
         func truncate(_ string: String) -> String {
             let stringWithNoNewlines = string.replacingOccurrences(of: "\n", with: "\\n")
             let minWidth = "configuration".count - "...".count
-            let configurationStartColumn = 124
+            let configurationStartColumn = 140
             let maxWidth = verbose ? Int.max : Terminal.currentWidth()
             let truncatedEndIndex = stringWithNoNewlines.index(
                 stringWithNoNewlines.startIndex,
@@ -129,15 +94,7 @@ private extension TextTable {
         }
         for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
-            let configuredRule = configuration.rules.first { rule in
-                guard type(of: rule).description.identifier == ruleID else {
-                    return false
-                }
-                guard let customRules = rule as? CustomRules else {
-                    return true
-                }
-                return !customRules.configuration.customRuleConfigurations.isEmpty
-            }
+            let configuredRule = configuration.configuredRule(forID: ruleID)
             addRow(values: [
                 ruleID,
                 (rule is OptInRule) ? "yes" : "no",
@@ -145,6 +102,7 @@ private extension TextTable {
                 configuredRule != nil ? "yes" : "no",
                 ruleType.description.kind.rawValue,
                 (rule is AnalyzerRule) ? "yes" : "no",
+                (rule is SourceKitFreeRule) ? "no" : "yes",
                 truncate((configuredRule ?? rule).configurationDescription)
             ])
         }

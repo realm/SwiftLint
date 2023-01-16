@@ -1,87 +1,81 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "xct_specific_matcher",
         name: "XCTest Specific Matcher",
-        description: "Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`",
+        description: "Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`.",
         kind: .idiomatic,
         nonTriggeringExamples: XCTSpecificMatcherRuleExamples.nonTriggeringExamples,
         triggeringExamples: XCTSpecificMatcherRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .call,
-            let offset = dictionary.offset,
-            let name = dictionary.name,
-            let matcher = XCTestMatcher(rawValue: name) else { return [] }
-
-        /*
-         *  - Gets the first two arguments and creates an array where the protected
-         *    word is the first one (if any).
-         *
-         *  Examples:
-         *
-         *  - XCTAssertEqual(foo, true) -> [true, foo]
-         *  - XCTAssertEqual(true, foo) -> [true, foo]
-         *  - XCTAssertEqual(foo, true, "toto") -> [true, foo]
-         *  - XCTAssertEqual(1, 2, accuracy: 0.1, "toto") -> [1, 2]
-         */
-        let arguments = dictionary.substructure
-            .filter { $0.offset != nil }
-            .sorted { arg1, arg2 -> Bool in
-                guard
-                    let firstOffset = arg1.offset,
-                    let secondOffset = arg2.offset else { return false }
-
-                return firstOffset < secondOffset
-            }
-            .prefix(2)
-            .compactMap { $0.byteRange.flatMap(file.stringView.substringWithByteRange) }
-            .sorted { arg1, _ -> Bool in
-                return protectedArguments.contains(arg1)
-            }
-
-        /*
-         *  - Checks if the number of arguments is two (otherwise there's no need to continue).
-         *  - Checks if the first argument is a protected word (otherwise there's no need to continue).
-         *  - Gets the suggestion for the given protected word (taking in consideration the presence of
-         *    optionals.
-         *
-         *  Examples:
-         *
-         *  - equal, [true, foo.bar] -> XCTAssertTrue
-         *  - equal, [true, foo?.bar] -> no violation
-         *  - equal, [nil, foo.bar] -> XCTAssertNil
-         *  - equal, [nil, foo?.bar] -> XCTAssertNil
-         *  - equal, [1, 2] -> no violation
-         */
-        guard
-            arguments.count == 2,
-            let argument = arguments.first, protectedArguments.contains(argument),
-            let hasOptional = arguments.last?.contains("?"),
-            let suggestedMatcher = matcher.suggestion(for: argument, hasOptional: hasOptional)
-            else { return [] }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset),
-                           reason: "Prefer the specific matcher '\(suggestedMatcher)' instead.")
-        ]
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private let protectedArguments: Set<String> = [
-        "false", "true", "nil"
-    ]
+private extension XCTSpecificMatcherRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private static let protectedArguments: Set<String> = [
+            "false", "true", "nil"
+        ]
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard let name = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text,
+                  let matcher = XCTestMatcher(rawValue: name) else {
+                return
+            }
+
+            /*
+             *  - Gets the first two arguments and creates an array where the protected
+             *    word is the first one (if any).
+             *
+             *  Examples:
+             *
+             *  - XCTAssertEqual(foo, true) -> [true, foo]
+             *  - XCTAssertEqual(true, foo) -> [true, foo]
+             *  - XCTAssertEqual(foo, true, "toto") -> [true, foo]
+             *  - XCTAssertEqual(1, 2, accuracy: 0.1, "toto") -> [1, 2]
+             */
+            let arguments = node.argumentList
+                .prefix(2)
+                .map { $0.expression.withoutTrivia().description }
+                .sorted { arg1, _ -> Bool in
+                    return Self.protectedArguments.contains(arg1)
+                }
+
+            /*
+             *  - Checks if the number of arguments is two (otherwise there's no need to continue).
+             *  - Checks if the first argument is a protected word (otherwise there's no need to continue).
+             *  - Gets the suggestion for the given protected word (taking in consideration the presence of
+             *    optionals.
+             *
+             *  Examples:
+             *
+             *  - equal, [true, foo.bar] -> XCTAssertTrue
+             *  - equal, [true, foo?.bar] -> no violation
+             *  - equal, [nil, foo.bar] -> XCTAssertNil
+             *  - equal, [nil, foo?.bar] -> XCTAssertNil
+             *  - equal, [1, 2] -> no violation
+             */
+            guard arguments.count == 2,
+                  let argument = arguments.first, Self.protectedArguments.contains(argument),
+                  let hasOptional = arguments.last?.contains("?"),
+                  let suggestedMatcher = matcher.suggestion(for: argument, hasOptional: hasOptional) else {
+                return
+            }
+
+            violations.append(ReasonedRuleViolation(
+                position: node.positionAfterSkippingLeadingTrivia,
+                reason: "Prefer the specific matcher '\(suggestedMatcher)' instead"
+            ))
+        }
+    }
 }
 
 private enum XCTestMatcher: String {

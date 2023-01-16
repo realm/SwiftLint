@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct PrivateActionRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "private_action",
         name: "Private Actions",
-        description: "IBActions should be private.",
+        description: "IBActions should be private",
         kind: .lint,
         nonTriggeringExamples: [
             Example("class Foo {\n\t@IBAction private func barButtonTapped(_ sender: UIButton) {}\n}\n"),
@@ -33,22 +33,23 @@ public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            let offset = dictionary.offset,
-            kind == .functionMethodInstance,
-            dictionary.enclosedSwiftAttributes.contains(.ibaction),
-            dictionary.accessibility?.isPrivate != true
-            else {
-                return []
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension PrivateActionRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.modifiers.isPrivateOrFileprivate ? .skipChildren : .visitChildren
         }
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard node.isIBAction, !node.modifiers.isPrivateOrFileprivate else {
+                return
+            }
+
+            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+        }
     }
 }

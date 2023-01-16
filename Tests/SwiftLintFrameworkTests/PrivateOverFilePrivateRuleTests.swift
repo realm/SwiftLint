@@ -1,11 +1,7 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class PrivateOverFilePrivateRuleTests: XCTestCase {
-    func testPrivateOverFilePrivateWithDefaultConfiguration() {
-        verifyRule(PrivateOverFilePrivateRule.description)
-    }
-
     func testPrivateOverFilePrivateValidatingExtensions() {
         let baseDescription = PrivateOverFilePrivateRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [

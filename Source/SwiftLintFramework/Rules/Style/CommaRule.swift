@@ -1,15 +1,16 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
-public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "comma",
         name: "Comma Spacing",
-        description: "There should be no space before and one after any comma.",
+        description: "There should be no space before and one after any comma",
         kind: .style,
         nonTriggeringExamples: [
             Example("func abc(a: String, b: String) { }"),
@@ -17,14 +18,39 @@ public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
             Example("enum a { case a, b, c }"),
             Example("func abc(\n  a: String,  // comment\n  bcd: String // comment\n) {\n}\n"),
             Example("func abc(\n  a: String,\n  bcd: String\n) {\n}\n"),
-            Example("#imageLiteral(resourceName: \"foo,bar,baz\")")
+            Example("#imageLiteral(resourceName: \"foo,bar,baz\")"),
+            Example("""
+                kvcStringBuffer.advanced(by: rootKVCLength)
+                  .storeBytes(of: 0x2E /* '.' */, as: CChar.self)
+                """),
+            Example("""
+                public indirect enum ExpectationMessage {
+                  /// appends after an existing message ("<expectation> (use beNil() to match nils)")
+                  case appends(ExpectationMessage, /* Appended Message */ String)
+                }
+                """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("func abc(a: String↓ ,b: String) { }"),
             Example("func abc(a: String↓ ,b: String↓ ,c: String↓ ,d: String) { }"),
             Example("abc(a: \"string\"↓,b: \"string\""),
             Example("enum a { case a↓ ,b }"),
-            Example("let result = plus(\n    first: 3↓ , // #683\n    second: 4\n)\n")
+            Example("let result = plus(\n    first: 3↓ , // #683\n    second: 4\n)\n"),
+            Example("""
+            Foo(
+              parameter: a.b.c,
+              tag: a.d,
+              value: a.identifier.flatMap { Int64($0) }↓ ,
+              reason: Self.abcd()
+            )
+            """),
+            Example("""
+            return Foo(bar: .baz, title: fuzz,
+                      message: My.Custom.message↓ ,
+                      another: parameter, doIt: true,
+                      alignment: .center)
+            """),
+            Example(#"Logger.logError("Hat is too large"↓,  info: [])"#)
         ],
         corrections: [
             Example("func abc(a: String↓,b: String) {}\n"): Example("func abc(a: String, b: String) {}\n"),
@@ -32,94 +58,106 @@ public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
             Example("abc(a: \"string\"↓  ,  b: \"string\"\n"): Example("abc(a: \"string\", b: \"string\"\n"),
             Example("enum a { case a↓  ,b }\n"): Example("enum a { case a, b }\n"),
             Example("let a = [1↓,1]\nlet b = 1\nf(1, b)\n"): Example("let a = [1, 1]\nlet b = 1\nf(1, b)\n"),
-            Example("let a = [1↓,1↓,1↓,1]\n"): Example("let a = [1, 1, 1, 1]\n")
+            Example("let a = [1↓,1↓,1↓,1]\n"): Example("let a = [1, 1, 1, 1]\n"),
+            Example("""
+            Foo(
+              parameter: a.b.c,
+              tag: a.d,
+              value: a.identifier.flatMap { Int64($0) }↓ ,
+              reason: Self.abcd()
+            )
+            """): Example("""
+                Foo(
+                  parameter: a.b.c,
+                  tag: a.d,
+                  value: a.identifier.flatMap { Int64($0) },
+                  reason: Self.abcd()
+                )
+                """),
+            Example("""
+            return Foo(bar: .baz, title: fuzz,
+                      message: My.Custom.message↓ ,
+                      another: parameter, doIt: true,
+                      alignment: .center)
+            """): Example("""
+                return Foo(bar: .baz, title: fuzz,
+                          message: My.Custom.message,
+                          another: parameter, doIt: true,
+                          alignment: .center)
+                """),
+            Example(#"Logger.logError("Hat is too large"↓,  info: [])"#):
+                Example(#"Logger.logError("Hat is too large", info: [])"#)
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+                           location: Location(file: file, byteOffset: $0.0.location))
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, ", ")
+    private func violationRanges(in file: SwiftLintFile) -> [(ByteRange, shouldAddSpace: Bool)] {
+        let syntaxTree = file.syntaxTree
+
+        return syntaxTree
+            .windowsOfThreeTokens()
+            .compactMap { previous, current, next -> (ByteRange, shouldAddSpace: Bool)? in
+                if current.tokenKind != .comma {
+                    return nil
+                } else if !previous.trailingTrivia.isEmpty && !previous.trailingTrivia.containsBlockComments() {
+                    let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
+                    let end = ByteCount(current.endPosition)
+                    let nextIsNewline = next.leadingTrivia.containsNewlines()
+                    return (ByteRange(location: start, length: end - start), shouldAddSpace: !nextIsNewline)
+                } else if !current.trailingTrivia.starts(with: [.spaces(1)]), !next.leadingTrivia.containsNewlines() {
+                    let start = ByteCount(current.position)
+                    let end = ByteCount(next.positionAfterSkippingLeadingTrivia)
+                    return (ByteRange(location: start, length: end - start), shouldAddSpace: true)
+                } else {
+                    return nil
+                }
+            }
     }
 
-    // captures spaces and comma only
-    // http://userguide.icu-project.org/strings/regexp
-
-    private static let mainPatternGroups =
-        "(" +                  // start first capure
-        "\\s+" +               // followed by whitespace
-        "," +                  // to the left of a comma
-        "[\\t\\p{Z}]*" +       // followed by any amount of tab or space.
-        "|" +                  // or
-        "," +                  // immediately followed by a comma
-        "(?:[\\t\\p{Z}]{0}|" + // followed by 0
-        "[\\t\\p{Z}]{2,})" +   // or 2+ tab or space characters.
-        ")" +                  // end capture
-        "(\\S)"                // second capture is not whitespace.
-
-    private static let pattern =
-        "\\S\(mainPatternGroups)" + // Regexp will match if expression not begin with comma
-        "|" +                       // or
-        "\(mainPatternGroups)"      // Regexp will match if expression begins with comma
-
-    private static let regularExpression = regex(pattern, options: [])
-    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds.union([.objectLiteral])
-    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds.union([.objectLiteral])
-
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let contents = file.stringView
-        let range = contents.range
-        let syntaxMap = file.syntaxMap
-        return Self.regularExpression
-            .matches(in: contents, options: [], range: range)
-            .compactMap { match -> NSRange? in
-                if match.numberOfRanges != 5 { return nil } // Number of Groups in regexp
-
-                var indexStartRange = 1
-                if match.range(at: indexStartRange).location == NSNotFound {
-                    indexStartRange += 2
+    func correct(file: SwiftLintFile) -> [Correction] {
+        let initialNSRanges = Dictionary(
+            uniqueKeysWithValues: violationRanges(in: file)
+                .compactMap { byteRange, shouldAddSpace in
+                    file.stringView
+                        .byteRangeToNSRange(byteRange)
+                        .flatMap { ($0, shouldAddSpace) }
                 }
+        )
 
-                // check first captured range
-                let firstRange = match.range(at: indexStartRange)
-                guard let matchByteFirstRange = contents
-                    .NSRangeToByteRange(start: firstRange.location, length: firstRange.length)
-                    else { return nil }
+        let violatingRanges = file.ruleEnabled(violatingRanges: Array(initialNSRanges.keys), for: self)
+        guard violatingRanges.isNotEmpty else { return [] }
 
-                // first captured range won't match kinds if it is not comment neither string
-                let firstCaptureIsCommentOrString = syntaxMap.kinds(inByteRange: matchByteFirstRange)
-                    .contains(where: Self.excludingSyntaxKindsForFirstCapture.contains)
-                if firstCaptureIsCommentOrString {
-                    return nil
-                }
+        let description = Self.description
+        var corrections = [Correction]()
+        var contents = file.contents
+        for range in violatingRanges.sorted(by: { $0.location > $1.location }) {
+            let contentsNSString = contents.bridge()
+            let shouldAddSpace = initialNSRanges[range] ?? true
+            contents = contentsNSString.replacingCharacters(in: range, with: ",\(shouldAddSpace ? " " : "")")
+            let location = Location(file: file, characterOffset: range.location)
+            corrections.append(Correction(ruleDescription: description, location: location))
+        }
 
-                // If the first range does not start with comma, it already violates this rule
-                // no matter what is contained in the second range.
-                if !contents.substring(with: firstRange).hasPrefix(", ") {
-                    return firstRange
-                }
+        file.write(contents)
+        return corrections
+    }
+}
 
-                // check second captured range
-                let secondRange = match.range(at: indexStartRange + 1)
-                guard let matchByteSecondRange = contents
-                    .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
-                    else { return nil }
-
-                // second captured range won't match kinds if it is not comment
-                let secondCaptureIsComment = syntaxMap.kinds(inByteRange: matchByteSecondRange)
-                    .contains(where: Self.excludingSyntaxKindsForSecondCapture.contains)
-                if secondCaptureIsComment {
-                    return nil
-                }
-
-                // return first captured range
-                return firstRange
+private extension Trivia {
+    func containsBlockComments() -> Bool {
+        contains { piece in
+            if case .blockComment = piece {
+                return true
+            } else {
+                return false
             }
+        }
     }
 }

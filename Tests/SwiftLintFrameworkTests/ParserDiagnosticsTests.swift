@@ -1,3 +1,4 @@
+@_spi(TestHelper)
 @testable import SwiftLintFramework
 import XCTest
 
@@ -9,10 +10,9 @@ final class ParserDiagnosticsTests: XCTestCase {
 
     func testFileWithParserErrorDiagnosticsDoesntAutocorrect() throws {
         let contents = """
-        importz Foundation
-        print(CGPointZero)
+        print(CGPointZero))
         """
-        XCTAssertNotNil(SwiftLintFile(contents: contents).parserDiagnostics)
+        XCTAssertEqual(SwiftLintFile(contents: contents).parserDiagnostics, ["extraneous code \')\' at top level"])
 
         let ruleDescription = LegacyConstantRule.description
             .with(corrections: [Example(contents): Example(contents)])
@@ -33,7 +33,7 @@ final class ParserDiagnosticsTests: XCTestCase {
         func foo(bar bar: String) -> Int { 0 }
         """
 
-        XCTAssertNotNil(SwiftLintFile(contents: original).parserDiagnostics)
+        XCTAssertEqual(SwiftLintFile(contents: original).parserDiagnostics, [])
 
         let ruleDescription = ReturnArrowWhitespaceRule.description
             .with(corrections: [Example(original): Example(corrected)])
@@ -45,6 +45,6 @@ final class ParserDiagnosticsTests: XCTestCase {
 
     func testFileWithoutParserDiagnostics() {
         parserDiagnosticsDisabledForTests = false
-        XCTAssertNil(SwiftLintFile(contents: "import Foundation").parserDiagnostics)
+        XCTAssertEqual(SwiftLintFile(contents: "import Foundation").parserDiagnostics, [])
     }
 }

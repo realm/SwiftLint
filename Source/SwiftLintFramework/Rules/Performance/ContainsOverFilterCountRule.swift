@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "contains_over_filter_count",
-        name: "Contains Over Filter Count",
-        description: "Prefer `contains` over comparing `filter(where:).count` to 0.",
+        name: "Contains over Filter Count",
+        description: "Prefer `contains` over comparing `filter(where:).count` to 0",
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
             return [
@@ -30,9 +30,40 @@ public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, Configuratio
         }
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*\\.count\\s*(?:!=|==|>)\\s*0\\b"
-        return validate(file: file, pattern: pattern, patternSyntaxKinds: [.identifier, .number],
-                        callNameSuffix: ".filter", severity: configuration.severity)
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension ContainsOverFilterCountRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: ExprListSyntax) {
+            guard
+                node.count == 3,
+                let last = node.last?.as(IntegerLiteralExprSyntax.self),
+                last.isZero,
+                let second = node.dropFirst().first,
+                second.firstToken?.tokenKind.isZeroComparison == true,
+                let first = node.first?.as(MemberAccessExprSyntax.self),
+                first.name.text == "count",
+                let firstBase = first.base?.asFunctionCall,
+                let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
+                firstBaseCalledExpression.name.text == "filter"
+            else {
+                return
+            }
+
+            violations.append(node.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension TokenKind {
+    var isZeroComparison: Bool {
+        self == .spacedBinaryOperator("==") ||
+            self == .spacedBinaryOperator("!=") ||
+            self == .unspacedBinaryOperator("==") ||
+            self == .spacedBinaryOperator(">") ||
+            self == .unspacedBinaryOperator(">")
     }
 }

@@ -2,10 +2,6 @@
 import XCTest
 
 class TrailingClosureRuleTests: XCTestCase {
-    func testDefaultConfiguration() {
-        verifyRule(TrailingClosureRule.description)
-    }
-
     func testWithOnlySingleMutedParameterEnabled() {
         let originalDescription = TrailingClosureRule.description
         let description = originalDescription

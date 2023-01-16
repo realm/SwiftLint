@@ -24,7 +24,6 @@ internal extension Configuration.FileGraph {
         private let originalRootDirectory: String
         let isInitialVertix: Bool
         private(set) var filePath: FilePath
-        private(set) var configurationString: String = ""
         private(set) var configurationDict: [String: Any] = [:]
 
         init(string: String, rootDirectory: String, isInitialVertix: Bool) {
@@ -55,7 +54,6 @@ internal extension Configuration.FileGraph {
                 filePath: filePath,
                 isInitialVertix: isInitialVertix
             )
-            vertix.configurationString = configurationString
             vertix.configurationDict = configurationDict
             return vertix
         }
@@ -70,8 +68,7 @@ internal extension Configuration.FileGraph {
             )
 
             filePath = .existing(path: path)
-            configurationString = try read(at: path)
-            configurationDict = try YamlParser.parse(configurationString)
+            configurationDict = try YamlParser.parse(read(at: path))
         }
 
         private func read(at path: String) throws -> String {

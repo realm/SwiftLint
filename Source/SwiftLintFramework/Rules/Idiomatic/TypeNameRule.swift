@@ -1,77 +1,154 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = NameConfiguration(minLengthWarning: 3,
-                                                 minLengthError: 0,
-                                                 maxLengthWarning: 40,
-                                                 maxLengthError: 1000)
+struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = TypeNameRuleConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "type_name",
         name: "Type Name",
-        description: "Type name should only contain alphanumeric characters, start with an " +
-                     "uppercase character and span between 3 and 40 characters in length.",
+        description: """
+            Type name should only contain alphanumeric characters, start with an uppercase character and span between \
+            3 and 40 characters in length.
+            Private types may start with an underscore.
+            """,
         kind: .idiomatic,
         nonTriggeringExamples: TypeNameRuleExamples.nonTriggeringExamples,
         triggeringExamples: TypeNameRuleExamples.triggeringExamples
     )
 
-    private let typeKinds = SwiftDeclarationKind.typeKinds
-
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard typeKinds.contains(kind),
-            let name = dictionary.name,
-            let offset = dictionary.nameOffset else {
-                return []
-        }
-
-        return validate(name: name, dictionary: dictionary, file: file, offset: offset)
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(configuration: configuration)
     }
+}
 
-    private func validate(name: String, dictionary: SourceKittenDictionary = SourceKittenDictionary([:]),
-                          file: SwiftLintFile, offset: ByteCount) -> [StyleViolation] {
-        guard !configuration.excluded.contains(name) else {
-            return []
+private extension TypeNameRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let configuration: TypeNameRuleConfiguration
+
+        init(configuration: TypeNameRuleConfiguration) {
+            self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
         }
 
-        let name = name
-            .nameStrippingLeadingUnderscoreIfPrivate(dictionary)
-            .nameStrippingTrailingSwiftUIPreviewProvider(dictionary)
-        let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
-        if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: .error,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: "Type name should only contain alphanumeric characters: '\(name)'")]
-        } else if configuration.validatesStartWithLowercase &&
-            name.first?.isLowercase == true {
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: .error,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: "Type name should start with an uppercase character: '\(name)'")]
-        } else if let severity = severity(forLength: name.count) {
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: severity,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: "Type name should be between \(configuration.minLengthThreshold) and " +
-                "\(configuration.maxLengthThreshold) characters long: '\(name)'")]
+        override func visitPost(_ node: StructDeclSyntax) {
+            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+                violations.append(violation)
+            }
         }
 
-        return []
+        override func visitPost(_ node: ClassDeclSyntax) {
+            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+                violations.append(violation)
+            }
+        }
+
+        override func visitPost(_ node: TypealiasDeclSyntax) {
+            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers, inheritedTypes: nil) {
+                violations.append(violation)
+            }
+        }
+
+        override func visitPost(_ node: AssociatedtypeDeclSyntax) {
+            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+                violations.append(violation)
+            }
+        }
+
+        override func visitPost(_ node: EnumDeclSyntax) {
+            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+                violations.append(violation)
+            }
+        }
+
+        override func visitPost(_ node: ActorDeclSyntax) {
+            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+                violations.append(violation)
+            }
+        }
+
+        override func visitPost(_ node: ProtocolDeclSyntax) {
+            if configuration.validateProtocols,
+               let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+                violations.append(violation)
+            }
+        }
+
+        private func violation(identifier: TokenSyntax,
+                               modifiers: ModifierListSyntax?,
+                               inheritedTypes: InheritedTypeListSyntax?) -> ReasonedRuleViolation? {
+            let originalName = identifier.text
+            let nameConfiguration = configuration.nameConfiguration
+
+            guard !nameConfiguration.shouldExclude(name: originalName) else { return nil }
+
+            let name = originalName
+                .strippingBackticks()
+                .strippingLeadingUnderscoreIfPrivate(modifiers: modifiers)
+                .strippingTrailingSwiftUIPreviewProvider(inheritedTypes: inheritedTypes)
+            let allowedSymbols = nameConfiguration.allowedSymbols.union(.alphanumerics)
+
+            if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
+                return ReasonedRuleViolation(
+                    position: identifier.positionAfterSkippingLeadingTrivia,
+                    reason: "Type name '\(name)' should only contain alphanumeric characters",
+                    severity: .error
+                )
+            } else if nameConfiguration.validatesStartWithLowercase &&
+                name.first?.isLowercase == true {
+                return ReasonedRuleViolation(
+                    position: identifier.positionAfterSkippingLeadingTrivia,
+                    reason: "Type name '\(name)' should start with an uppercase character",
+                    severity: .error
+                )
+            } else if let severity = nameConfiguration.severity(forLength: name.count) {
+                return ReasonedRuleViolation(
+                    position: identifier.positionAfterSkippingLeadingTrivia,
+                    reason: "Type name '\(name)' should be between \(nameConfiguration.minLengthThreshold) and " +
+                            "\(nameConfiguration.maxLengthThreshold) characters long",
+                    severity: severity
+                )
+            }
+
+            return nil
+        }
     }
 }
 
 private extension String {
-    func nameStrippingTrailingSwiftUIPreviewProvider(_ dictionary: SourceKittenDictionary) -> String {
-        guard dictionary.inheritedTypes.contains("PreviewProvider"),
-            hasSuffix("_Previews"),
-            let lastPreviewsIndex = lastIndex(of: "_Previews")
-            else { return self }
+    func strippingBackticks() -> String {
+        replacingOccurrences(of: "`", with: "")
+    }
+
+    func strippingTrailingSwiftUIPreviewProvider(inheritedTypes: InheritedTypeListSyntax?) -> String {
+        guard let inheritedTypes = inheritedTypes,
+              hasSuffix("_Previews"),
+              let lastPreviewsIndex = lastIndex(of: "_Previews"),
+              inheritedTypes.typeNames.contains("PreviewProvider") else {
+            return self
+        }
 
         return substring(from: 0, length: lastPreviewsIndex)
+    }
+
+    func strippingLeadingUnderscoreIfPrivate(modifiers: ModifierListSyntax?) -> String {
+        if first == "_", modifiers.isPrivateOrFileprivate {
+            return String(self[index(after: startIndex)...])
+        }
+        return self
+    }
+}
+
+private extension InheritedTypeListSyntax {
+    var typeNames: Set<String> {
+        Set(compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }.map(\.name.text))
     }
 }

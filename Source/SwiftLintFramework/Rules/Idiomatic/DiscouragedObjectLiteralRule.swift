@@ -1,12 +1,14 @@
-public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = ObjectLiteralConfiguration()
+import SwiftSyntax
 
-    public init() {}
+struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = ObjectLiteralConfiguration()
 
-    public static let description = RuleDescription(
+    init() {}
+
+    static let description = RuleDescription(
         identifier: "discouraged_object_literal",
         name: "Discouraged Object Literal",
-        description: "Prefer initializers over object literals.",
+        description: "Prefer initializers over object literals",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("let image = UIImage(named: aVariable)"),
@@ -22,21 +24,37 @@ public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let offset = dictionary.offset, kind == .objectLiteral else { return [] }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(configuration: configuration)
+    }
+}
 
-        if !configuration.imageLiteral && dictionary.name == "imageLiteral" {
-            return []
+private extension DiscouragedObjectLiteralRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let configuration: ObjectLiteralConfiguration
+
+        init(configuration: ObjectLiteralConfiguration) {
+            self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
         }
 
-        if !configuration.colorLiteral && dictionary.name == "colorLiteral" {
-            return []
-        }
+        override func visitPost(_ node: MacroExpansionExprSyntax) {
+            guard
+                case let .identifier(identifierText) = node.macro.tokenKind,
+                ["colorLiteral", "imageLiteral"].contains(identifierText)
+            else {
+                return
+            }
 
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severityConfiguration.severity,
-                               location: Location(file: file, byteOffset: offset))]
+            if !configuration.imageLiteral && identifierText == "imageLiteral" {
+                return
+            }
+
+            if !configuration.colorLiteral && identifierText == "colorLiteral" {
+                return
+            }
+
+            violations.append(node.positionAfterSkippingLeadingTrivia)
+        }
     }
 }

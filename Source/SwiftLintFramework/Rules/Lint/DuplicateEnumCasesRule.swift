@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.error)
+struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.error)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "duplicate_enum_cases",
         name: "Duplicate Enum Cases",
-        description: "Enum can't contain multiple cases with the same name.",
+        description: "Enum shouldn't contain multiple cases with the same name",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -24,6 +24,26 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, Automa
             enum B {
                 case add(image: UIImage)
             }
+            """),
+            Example("""
+            enum Tag: String {
+            #if CONFIG_A
+                case value = "CONFIG_A"
+            #elseif CONFIG_B
+                case value = "CONFIG_B"
+            #else
+                case value = "CONFIG_DEFAULT"
+            #endif
+            }
+            """),
+            Example("""
+            enum Target {
+            #if os(iOS)
+              case file
+            #else
+              case file(URL)
+            #endif
+            }
             """)
         ],
         triggeringExamples: [
@@ -37,40 +57,33 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, Automa
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .enum else {
-            return []
-        }
-
-        let enumElements = substructureElements(of: dictionary, matching: .enumcase)
-            .compactMap { substructureElements(of: $0, matching: .enumelement) }
-            .flatMap { $0 }
-
-        var elementsByName: [String: [ByteCount]] = [:]
-        for element in enumElements {
-            guard let name = element.name,
-                let nameWithoutParameters = name.split(separator: "(").first,
-                let offset = element.offset
-            else {
-                continue
-            }
-
-            elementsByName[String(nameWithoutParameters), default: []].append(offset)
-        }
-
-        return elementsByName.filter { $0.value.count > 1 }
-            .flatMap { $0.value }
-            .map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: $0))
-            }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func substructureElements(of dict: SourceKittenDictionary,
-                                      matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
-        return dict.substructure
-            .filter { $0.declarationKind == kind }
+private extension DuplicateEnumCasesRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: EnumDeclSyntax) {
+            let enumElements = node.members.members
+                .flatMap { member -> EnumCaseElementListSyntax in
+                    guard let enumCaseDecl = member.decl.as(EnumCaseDeclSyntax.self) else {
+                        return EnumCaseElementListSyntax([])
+                    }
+
+                    return enumCaseDecl.elements
+                }
+
+            let elementsByName = enumElements.reduce(into: [String: [AbsolutePosition]]()) { elements, element in
+                let name = String(element.identifier.text)
+                elements[name, default: []].append(element.positionAfterSkippingLeadingTrivia)
+            }
+
+            let duplicatedElementPositions = elementsByName
+                .filter { $0.value.count > 1 }
+                .flatMap { $0.value }
+
+            violations.append(contentsOf: duplicatedElementPositions)
+        }
     }
 }

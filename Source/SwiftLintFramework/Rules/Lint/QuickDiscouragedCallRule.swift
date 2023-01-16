@@ -1,11 +1,11 @@
 import SourceKittenFramework
 
-public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "quick_discouraged_call",
         name: "Quick Discouraged Call",
         description: "Discouraged call inside 'describe' and/or 'context' block.",
@@ -14,10 +14,10 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         triggeringExamples: QuickDiscouragedCallRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         let testClasses = dict.substructure.filter {
-            return $0.inheritedTypes.contains("QuickSpec") &&
+            return $0.inheritedTypes.isNotEmpty &&
                 $0.declarationKind == .class
         }
 
@@ -56,7 +56,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0),
-                           reason: "Discouraged call inside a '\(name)' block.")
+                           reason: "Discouraged call inside a '\(name)' block")
         }
     }
 
@@ -107,7 +107,9 @@ private enum QuickCallKind: String {
     case context
     case sharedExamples
     case itBehavesLike
+    case aroundEach
     case beforeEach
+    case justBeforeEach
     case beforeSuite
     case afterEach
     case afterSuite

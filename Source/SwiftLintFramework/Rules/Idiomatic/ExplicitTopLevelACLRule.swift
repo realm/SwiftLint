@@ -1,15 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ExplicitTopLevelACLRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "explicit_top_level_acl",
         name: "Explicit Top Level ACL",
-        description: "Top-level declarations should specify Access Control Level keywords explicitly.",
+        description: "Top-level declarations should specify Access Control Level keywords explicitly",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("internal enum A {}\n"),
@@ -23,67 +22,99 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
             Example("extension A {}")
         ],
         triggeringExamples: [
-            Example("enum A {}\n"),
-            Example("final class B {}\n"),
-            Example("struct C {}\n"),
-            Example("func a() {}\n"),
-            Example("internal let a = 0\nfunc b() {}\n")
+            Example("↓enum A {}\n"),
+            Example("final ↓class B {}\n"),
+            Example("↓struct C {}\n"),
+            Example("↓func a() {}\n"),
+            Example("internal let a = 0\n↓func b() {}\n")
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        // find all top-level types marked as internal (either explicitly or implicitly)
-        let dictionary = file.structureDictionary
-        let internalTypesOffsets = dictionary.substructure.compactMap { element -> ByteCount? in
-            // ignore extensions
-            guard let kind = element.declarationKind,
-                !SwiftDeclarationKind.extensionKinds.contains(kind) else {
-                    return nil
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension ExplicitTopLevelACLRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+
+        override func visitPost(_ node: ClassDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
             }
+        }
 
-            if element.accessibility == .internal {
-                return element.offset
+        override func visitPost(_ node: StructDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.structKeyword.positionAfterSkippingLeadingTrivia)
             }
-
-            return nil
         }
 
-        guard internalTypesOffsets.isNotEmpty else {
-            return []
+        override func visitPost(_ node: EnumDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.enumKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
 
-        // find all "internal" tokens
-        let contents = file.stringView
-        let allInternalRanges = file.match(pattern: "internal", with: [.attributeBuiltin]).compactMap {
-            contents.NSRangeToByteRange(start: $0.location, length: $0.length)
+        override func visitPost(_ node: ProtocolDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.protocolKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
 
-        let violationOffsets = internalTypesOffsets.filter { typeOffset in
-            // find the last "internal" token before the type
-            guard let previousInternalByteRange = lastInternalByteRange(before: typeOffset,
-                                                                        in: allInternalRanges) else {
-                // didn't find a candidate token, so we are sure it's a violation
+        override func visitPost(_ node: ActorDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.actorKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: TypealiasDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.typealiasKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: VariableDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        private func hasViolation(modifiers: ModifierListSyntax?) -> Bool {
+            guard let modifiers = modifiers else {
                 return true
             }
 
-            // the "internal" token correspond to the type if there're only
-            // attributeBuiltin (`final` for example) tokens between them
-            let length = typeOffset - previousInternalByteRange.location
-            let range = ByteRange(location: previousInternalByteRange.location, length: length)
-            let internalDoesntBelongToType = Set(file.syntaxMap.kinds(inByteRange: range)) != [.attributeBuiltin]
-
-            return internalDoesntBelongToType
-        }
-
-        return violationOffsets.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0))
+            return !modifiers.contains(where: \.isACLModifier)
         }
     }
+}
 
-    private func lastInternalByteRange(before typeOffset: ByteCount, in ranges: [ByteRange]) -> ByteRange? {
-        let firstPartition = ranges.prefix(while: { typeOffset > $0.location })
-        return firstPartition.last
+private extension DeclModifierSyntax {
+    var isACLModifier: Bool {
+        let aclModifiers: Set<TokenKind> = [
+            .privateKeyword,
+            .fileprivateKeyword,
+            .internalKeyword,
+            .publicKeyword,
+            .contextualKeyword("open")
+        ]
+
+        return detail == nil && aclModifiers.contains(name.tokenKind)
     }
 }

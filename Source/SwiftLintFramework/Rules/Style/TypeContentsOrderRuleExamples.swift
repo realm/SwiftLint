@@ -1,4 +1,3 @@
-// swiftlint:disable:next type_body_length
 internal struct TypeContentsOrderRuleExamples {
     static let defaultOrderParts = [
         """
@@ -63,6 +62,13 @@ internal struct TypeContentsOrderRuleExamples {
                 view1.setNeedsLayout()
                 view1.layoutIfNeeded()
                 hasLayoutedView1 = true
+            }
+
+            override func willMove(toParent parent: UIViewController?) {
+                super.willMove(toParent: parent)
+                if parent == nil {
+                    viewModel.willMoveToParent()
+                }
             }
 
             override func viewDidLayoutSubviews() {

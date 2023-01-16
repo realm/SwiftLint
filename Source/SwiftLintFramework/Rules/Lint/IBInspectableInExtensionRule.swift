@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct IBInspectableInExtensionRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "ibinspectable_in_extension",
         name: "IBInspectable in Extension",
-        description: "Extensions shouldn't add @IBInspectable properties.",
+        description: "Extensions shouldn't add @IBInspectable properties",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -20,33 +20,27 @@ public struct IBInspectableInExtensionRule: ConfigurationProviderRule, OptInRule
         triggeringExamples: [
             Example("""
             extension Foo {
-              @IBInspectable private var x: Int
+              ↓@IBInspectable private var x: Int
             }
             """)
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let collector = NamespaceCollector(dictionary: file.structureDictionary)
-        let elements = collector.findAllElements(of: [.extension])
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        return elements
-            .flatMap { element in
-                return element.dictionary.substructure.compactMap { element -> ByteCount? in
-                    guard element.declarationKind == .varInstance,
-                        element.enclosedSwiftAttributes.contains(.ibinspectable),
-                        let offset = element.offset
-                    else {
-                        return nil
-                    }
+private extension IBInspectableInExtensionRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            .allExcept(ExtensionDeclSyntax.self, VariableDeclSyntax.self)
+        }
 
-                    return offset
-                }
+        override func visitPost(_ node: AttributeSyntax) {
+            if node.attributeName.text == "IBInspectable" {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
-            .map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: $0))
-            }
+        }
     }
 }

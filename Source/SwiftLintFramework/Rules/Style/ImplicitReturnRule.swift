@@ -1,22 +1,22 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, OptInRule {
-    public var configuration = ImplicitReturnConfiguration()
+struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, OptInRule {
+    var configuration = ImplicitReturnConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "implicit_return",
         name: "Implicit Return",
-        description: "Prefer implicit returns in closures, functions and getters.",
+        description: "Prefer implicit returns in closures, functions and getters",
         kind: .style,
         nonTriggeringExamples: ImplicitReturnRuleExamples.nonTriggeringExamples,
         triggeringExamples: ImplicitReturnRuleExamples.triggeringExamples,
         corrections: ImplicitReturnRuleExamples.corrections
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).compactMap {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
@@ -24,11 +24,11 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "")
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let pattern = "(?:\\bin|\\{)\\s+(return\\s+)"
         let contents = file.stringView
 

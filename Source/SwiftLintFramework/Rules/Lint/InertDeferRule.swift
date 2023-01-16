@@ -1,15 +1,26 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct InertDeferRule: ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+private let warnDeprecatedOnceImpl: Void = {
+    queuedPrintError("""
+        The `\(InertDeferRule.description.identifier)` rule is now deprecated and will be completely \
+        removed in a future release due to an equivalent warning issued by the Swift compiler.
+        """
+    )
+}()
 
-    public init() {}
+private func warnDeprecatedOnce() {
+    _ = warnDeprecatedOnceImpl
+}
 
-    public static let description = RuleDescription(
+struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
+
+    init() {}
+
+    static let description = RuleDescription(
         identifier: "inert_defer",
         name: "Inert Defer",
-        description: "If defer is at the end of its parent scope, it will be executed right where it is anyway.",
+        description: "If defer is at the end of its parent scope, it will be executed right where it is anyway",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -26,7 +37,17 @@ public struct InertDeferRule: ConfigurationProviderRule, AutomaticTestableRule {
                     print("other code")
                 }
             }
-            """)
+            """),
+            Example("""
+            func f() {
+                #if os(macOS)
+                defer { print(2) }
+                #else
+                defer { print(3) }
+                #endif
+                print(1)
+            }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("""
@@ -47,47 +68,54 @@ public struct InertDeferRule: ConfigurationProviderRule, AutomaticTestableRule {
                     // comment
                 }
             }
-            """)
+            """),
+            Example("""
+            func f(arg: Int) {
+                if arg == 1 {
+                    ↓defer { print(2) }
+                    // a comment
+                } else {
+                    ↓defer { print(3) }
+                }
+                print(1)
+                #if os(macOS)
+                ↓defer { print(4) }
+                #else
+                ↓defer { print(5) }
+                #endif
+            }
+            """, excludeFromDocumentation: true)
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file
-            .match(pattern: "defer\\s*\\{", with: [.keyword])
-            .filter(file.shouldReportViolation(for:))
-            .map { range in
-                StyleViolation(ruleDescription: Self.description, severity: configuration.severity,
-                               location: Location(file: file, characterOffset: range.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        warnDeprecatedOnce()
+        return Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension InertDeferRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: DeferStmtSyntax) {
+            guard node.isLastStatement else {
+                return
             }
-    }
-}
+            if let ifConfigClause = node.parent?.parent?.parent?.as(IfConfigClauseSyntax.self),
+               ifConfigClause.parent?.parent?.isLastStatement == false {
+                return
+            }
 
-private extension SwiftLintFile {
-    func shouldReportViolation(for range: NSRange) -> Bool {
-        guard let byteRange = stringView.NSRangeToByteRange(start: range.location, length: range.length),
-            case let kinds = structureDictionary.kinds(forByteOffset: byteRange.upperBound),
-            let brace = kinds.enumerated().lazy.reversed().first(where: isBrace),
-            brace.offset > kinds.startIndex else {
-            return false
+            violations.append(node.deferKeyword.positionAfterSkippingLeadingTrivia)
         }
-
-        let outerKindIndex = kinds.index(before: brace.offset)
-        let outerKind = kinds[outerKindIndex]
-        let braceEnd = brace.element.byteRange.upperBound
-        let tokensRange = ByteRange(location: braceEnd, length: outerKind.byteRange.upperBound - braceEnd)
-        let tokens = syntaxMap.tokens(inByteRange: tokensRange)
-        return !tokens.contains(where: isNotComment)
     }
 }
 
-private func isBrace(offset: Int, element: (kind: String, byteRange: ByteRange)) -> Bool {
-    return StatementKind(rawValue: element.kind) == .brace
-}
-
-private func isNotComment(token: SwiftLintSyntaxToken) -> Bool {
-    guard let kind = token.kind else {
+private extension SyntaxProtocol {
+    var isLastStatement: Bool {
+        if let codeBlockItem = parent?.as(CodeBlockItemSyntax.self),
+           let codeBlockList = codeBlockItem.parent?.as(CodeBlockItemListSyntax.self) {
+            return codeBlockList.last == codeBlockItem
+        }
         return false
     }
-
-    return !SyntaxKind.commentKinds.contains(kind)
 }

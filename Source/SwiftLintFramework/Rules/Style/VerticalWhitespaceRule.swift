@@ -1,17 +1,17 @@
 import Foundation
 import SourceKittenFramework
 
-private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line."
+private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line"
 
-public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
-    public var configuration = VerticalWhitespaceConfiguration(maxEmptyLines: 1)
+struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
+    var configuration = VerticalWhitespaceConfiguration(maxEmptyLines: 1)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "vertical_whitespace",
         name: "Vertical Whitespace",
-        description: defaultDescriptionReason,
+        description: defaultDescriptionReason + ".",
         kind: .style,
         nonTriggeringExamples: [
             Example("let abc = 0\n"),
@@ -33,12 +33,12 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
     private var configuredDescriptionReason: String {
         guard configuration.maxEmptyLines == 1 else {
-            return "Limit vertical whitespace to maximum \(configuration.maxEmptyLines) empty lines."
+            return "Limit vertical whitespace to maximum \(configuration.maxEmptyLines) empty lines"
         }
         return defaultDescriptionReason
     }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let linesSections = violatingLineSections(in: file)
         guard linesSections.isNotEmpty else {
             return []
@@ -49,7 +49,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
                 ruleDescription: Self.description,
                 severity: configuration.severityConfiguration.severity,
                 location: Location(file: file.path, line: eachLastLine.index),
-                reason: configuredDescriptionReason + " Currently \(eachSectionCount + 1)."
+                reason: configuredDescriptionReason + "; currently \(eachSectionCount + 1)"
             )
         }
     }
@@ -108,7 +108,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         return blankLinesSections
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let linesSections = violatingLineSections(in: file)
         if linesSections.isEmpty { return [] }
 

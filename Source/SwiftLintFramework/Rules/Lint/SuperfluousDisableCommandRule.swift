@@ -1,4 +1,5 @@
-public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
+@_spi(TestHelper)
+public struct SuperfluousDisableCommandRule: ConfigurationProviderRule, SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -6,8 +7,10 @@ public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "superfluous_disable_command",
         name: "Superfluous Disable Command",
-        description: "SwiftLint 'disable' commands are superfluous when the disabled rule would not have " +
-                     "triggered a violation in the disabled region. Use \" - \" if you wish to document a command.",
+        description: """
+            SwiftLint 'disable' commands are superfluous when the disabled rule would not have triggered a violation \
+            in the disabled region. Use " - " if you wish to document a command.
+            """,
         kind: .lint
     )
 
@@ -16,16 +19,14 @@ public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
         return []
     }
 
-    public func reason(for rule: Rule.Type) -> String {
-        return self.reason(for: rule.description.identifier)
+    func reason(for rule: Rule.Type) -> String {
+        """
+        SwiftLint rule '\(rule.description.identifier)' did not trigger a violation in the disabled region; \
+        remove the disable command
+        """
     }
 
-    public func reason(for rule: String) -> String {
-        return "SwiftLint rule '\(rule)' did not trigger a violation " +
-        "in the disabled region. Please remove the disable command."
-    }
-
-    public func reason(forNonExistentRule rule: String) -> String {
-        return "'\(rule)' is not a valid SwiftLint rule. Please remove it from the disable command."
+    func reason(forNonExistentRule rule: String) -> String {
+        return "'\(rule)' is not a valid SwiftLint rule; remove it from the disable command"
     }
 }

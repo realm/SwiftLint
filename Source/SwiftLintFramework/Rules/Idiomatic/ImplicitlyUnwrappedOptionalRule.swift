@@ -1,16 +1,17 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = ImplicitlyUnwrappedOptionalConfiguration(mode: .allExceptIBOutlets,
-                                                                        severity: SeverityConfiguration(.warning))
+struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = ImplicitlyUnwrappedOptionalConfiguration(
+        mode: .allExceptIBOutlets,
+        severityConfiguration: SeverityConfiguration(.warning)
+    )
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "implicitly_unwrapped_optional",
         name: "Implicitly Unwrapped Optional",
-        description: "Implicitly unwrapped optionals should be avoided when possible.",
+        description: "Implicitly unwrapped optionals should be avoided when possible",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("@IBOutlet private var label: UILabel!"),
@@ -29,41 +30,36 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
             Example("let int: Int! = 42"),
             Example("let int: Int! = nil"),
             Example("var int: Int! = 42"),
-            Example("let int: ImplicitlyUnwrappedOptional<Int>"),
             Example("let collection: AnyCollection<Int!>"),
             Example("func foo(int: Int!) {}")
         ]
     )
 
-    private func hasImplicitlyUnwrappedOptional(_ typeName: String) -> Bool {
-        return typeName.contains("!") || typeName.contains("ImplicitlyUnwrappedOptional<")
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(mode: configuration.mode)
     }
+}
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard SwiftDeclarationKind.variableKinds.contains(kind) else {
-            return []
+private extension ImplicitlyUnwrappedOptionalRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let mode: ImplicitlyUnwrappedOptionalModeConfiguration
+
+        init(mode: ImplicitlyUnwrappedOptionalModeConfiguration) {
+            self.mode = mode
+            super.init(viewMode: .sourceAccurate)
         }
 
-        guard let typeName = dictionary.typeName  else { return [] }
-        guard hasImplicitlyUnwrappedOptional(typeName) else { return [] }
-
-        if configuration.mode == .allExceptIBOutlets {
-            let isOutlet = dictionary.enclosedSwiftAttributes.contains(.iboutlet)
-            if isOutlet { return [] }
+        override func visitPost(_ node: ImplicitlyUnwrappedOptionalTypeSyntax) {
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
 
-        let location: Location
-        if let offset = dictionary.offset {
-            location = Location(file: file, byteOffset: offset)
-        } else {
-            location = Location(file: file.path)
+        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+            switch mode {
+            case .all:
+                return .visitChildren
+            case .allExceptIBOutlets:
+                return node.isIBOutlet ? .skipChildren : .visitChildren
+            }
         }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity.severity,
-                           location: location)
-        ]
     }
 }

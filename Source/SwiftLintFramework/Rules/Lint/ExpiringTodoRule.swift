@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
+struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
     enum ExpiryViolationLevel {
         case approachingExpiry
         case expired
@@ -10,16 +10,16 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
         var reason: String {
             switch self {
             case .approachingExpiry:
-                return "TODO/FIXME is approaching its expiry and should be resolved soon."
+                return "TODO/FIXME is approaching its expiry and should be resolved soon"
             case .expired:
-                return "TODO/FIXME has expired and must be resolved."
+                return "TODO/FIXME has expired and must be resolved"
             case .badFormatting:
-                return "Expiring TODO/FIXME is incorrectly formatted."
+                return "Expiring TODO/FIXME is incorrectly formatted"
             }
         }
     }
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "expiring_todo",
         name: "Expiring Todo",
         description: "TODOs and FIXMEs should be resolved prior to their expiry date.",
@@ -36,19 +36,19 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
             Example("/** TODO: */\n")
         ],
         triggeringExamples: [
-            Example("// TODO: [10/14/2019]\n"),
-            Example("// FIXME: [10/14/2019]\n"),
-            Example("// FIXME: [1/14/2019]\n"),
-            Example("// FIXME: [10/14/2019]\n"),
-            Example("// TODO: [9999/14/10]\n")
-        ]
+            Example("// TODO: [↓10/14/2019]\n"),
+            Example("// FIXME: [↓10/14/2019]\n"),
+            Example("// FIXME: [↓1/14/2019]\n"),
+            Example("// FIXME: [↓10/14/2019]\n"),
+            Example("// TODO: [↓9999/14/10]\n")
+        ].skipWrappingInCommentTests()
     )
 
-    public var configuration: ExpiringTodoConfiguration = .init()
+    var configuration: ExpiringTodoConfiguration = .init()
 
-    public init() {}
+    init() {}
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let regex = #"""
         \b(?:TODO|FIXME)(?::|\b)(?:(?!\b(?:TODO|FIXME)(?::|\b)).)*?\#
         \\#(configuration.dateDelimiters.opening)\#

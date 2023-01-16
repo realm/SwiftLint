@@ -4,24 +4,24 @@ private enum ConfigurationKey: String {
     case relatedUSRsToSkip = "related_usrs_to_skip"
 }
 
-public struct UnusedDeclarationConfiguration: RuleConfiguration, Equatable {
+struct UnusedDeclarationConfiguration: RuleConfiguration, Equatable {
     private(set) var includePublicAndOpen: Bool
-    private(set) var severity: ViolationSeverity
+    private(set) var severityConfiguration: SeverityConfiguration
     private(set) var relatedUSRsToSkip: Set<String>
 
-    public var consoleDescription: String {
-        return "\(ConfigurationKey.severity.rawValue): \(severity.rawValue), " +
+    var consoleDescription: String {
+        return "\(ConfigurationKey.severity.rawValue): \(severityConfiguration.severity.rawValue), " +
             "\(ConfigurationKey.includePublicAndOpen.rawValue): \(includePublicAndOpen), " +
             "\(ConfigurationKey.relatedUSRsToSkip.rawValue): \(relatedUSRsToSkip.sorted())"
     }
 
-    public init(severity: ViolationSeverity, includePublicAndOpen: Bool, relatedUSRsToSkip: Set<String>) {
+    init(severity: ViolationSeverity, includePublicAndOpen: Bool, relatedUSRsToSkip: Set<String>) {
         self.includePublicAndOpen = includePublicAndOpen
-        self.severity = severity
+        self.severityConfiguration = SeverityConfiguration(severity)
         self.relatedUSRsToSkip = relatedUSRsToSkip
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configDict = configuration as? [String: Any], configDict.isNotEmpty else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -32,11 +32,7 @@ public struct UnusedDeclarationConfiguration: RuleConfiguration, Equatable {
             }
             switch (key, value) {
             case (.severity, let stringValue as String):
-                if let severityValue = ViolationSeverity(rawValue: stringValue) {
-                    severity = severityValue
-                } else {
-                    throw ConfigurationError.unknownConfiguration
-                }
+                try severityConfiguration.apply(configuration: stringValue)
             case (.includePublicAndOpen, let boolValue as Bool):
                 includePublicAndOpen = boolValue
             case (.relatedUSRsToSkip, let value):

@@ -1,14 +1,8 @@
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable function_body_length
-
 class FileTypesOrderRuleTests: XCTestCase {
-    func testFileTypesOrderWithDefaultConfiguration() {
-        // Test with default parameters
-        verifyRule(FileTypesOrderRule.description)
-    }
-
+    // swiftlint:disable:next function_body_length
     func testFileTypesOrderReversedOrder() {
         // Test with reversed `order` entries
         let nonTriggeringExamples = [
@@ -60,6 +54,19 @@ class FileTypesOrderRuleTests: XCTestCase {
             struct ContentView_Previews: PreviewProvider {
                static var previews: some View { ContentView() }
             }
+            """),
+            Example("""
+            ↓struct ContentView: View {
+               var body: some View {
+                   Text("Hello, World!")
+               }
+            }
+
+            struct ContentView_LibraryContent: LibraryContentProvider {
+                var views: [LibraryItem] {
+                    LibraryItem(ContentView())
+                }
+            }
             """)
         ]
 
@@ -70,7 +77,7 @@ class FileTypesOrderRuleTests: XCTestCase {
         verifyRule(
             reversedOrderDescription,
             ruleConfiguration: [
-                "order": ["preview_provider", "extension", "main_type", "supporting_type"]
+                "order": ["library_content_provider", "preview_provider", "extension", "main_type", "supporting_type"]
             ]
         )
     }

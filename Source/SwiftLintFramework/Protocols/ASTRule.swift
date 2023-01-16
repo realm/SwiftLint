@@ -6,7 +6,7 @@ public protocol ASTRule: Rule {
     /// The kind of token being recursed over.
     associatedtype KindType: RawRepresentable
 
-    /// Executes the rule on a file and a subset of its AST structure, returnng any violations to the rule's
+    /// Executes the rule on a file and a subset of its AST structure, returning any violations to the rule's
     /// expectations.
     ///
     /// - parameter file:       The file for which to execute the rule.
@@ -30,11 +30,11 @@ public extension ASTRule {
         return validate(file: file, dictionary: file.structureDictionary)
     }
 
-    /// Executes the rule on a file and a subset of its AST structure, returnng any violations to the rule's
+    /// Executes the rule on a file and a subset of its AST structure, returning any violations to the rule's
     /// expectations.
     ///
     /// - parameter file:       The file for which to execute the rule.
-    /// - parameter dictionary: The dicttionary for an AST subset to validate.
+    /// - parameter dictionary: The dictionary for an AST subset to validate.
     ///
     /// - returns: All style violations to the rule's expectations.
     func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {

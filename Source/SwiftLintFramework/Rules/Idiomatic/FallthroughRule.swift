@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct FallthroughRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "fallthrough",
         name: "Fallthrough",
-        description: "Fallthrough should be avoided.",
+        description: "Fallthrough should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -30,11 +30,15 @@ public struct FallthroughRule: ConfigurationProviderRule, OptInRule, AutomaticTe
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.match(pattern: "fallthrough", with: [.keyword]).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension FallthroughRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FallthroughStmtSyntax) {
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

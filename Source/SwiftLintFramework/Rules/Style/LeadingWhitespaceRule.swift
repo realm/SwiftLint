@@ -1,37 +1,40 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "leading_whitespace",
         name: "Leading Whitespace",
-        description: "Files should not contain leading whitespace.",
+        description: "Files should not contain leading whitespace",
         kind: .style,
-        nonTriggeringExamples: [ Example("//\n") ],
-        triggeringExamples: [ Example("\n//\n"), Example(" //\n") ],
-        corrections: [Example("\n //"): Example("//")]
+        nonTriggeringExamples: [
+            Example("//\n")
+        ],
+        triggeringExamples: [
+            Example("\n//\n"),
+            Example(" //\n")
+        ].skipMultiByteOffsetTests().skipDisableCommandTests(),
+        corrections: [
+            Example("\n //", testMultiByteOffsets: false): Example("//")
+        ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let countOfLeadingWhitespace = file.contents.countOfLeadingCharacters(in: .whitespacesAndNewlines)
         if countOfLeadingWhitespace == 0 {
             return []
         }
 
-        let reason = "File shouldn't start with whitespace: " +
-                     "currently starts with \(countOfLeadingWhitespace) whitespace characters"
-
         return [StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
-                               location: Location(file: file.path, line: 1),
-                               reason: reason)]
+                               location: Location(file: file.path, line: 1))]
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let whitespaceAndNewline = CharacterSet.whitespacesAndNewlines
         let spaceCount = file.contents.countOfLeadingCharacters(in: whitespaceAndNewline)
         guard spaceCount > 0,

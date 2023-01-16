@@ -7,122 +7,71 @@ private extension SwiftLintFile {
     }
 }
 
-public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
+    var configuration = Configuration()
 
-    public init() {}
-
-    private static let nonTriggeringExamples: [Example] = [
-        Example("[1, 2].map { $0 }.filter { true }"),
-        Example("[1, 2].map { $0 }.filter { num in true }"),
-        Example("""
-        /*
-            class X {
-
-                let x = 5
-
-            }
-        */
-        """)
-    ]
-
-    private static let violatingToValidExamples: [Example: Example] = [
-        Example("""
-        do {
-          print("x is 5")
-        ↓
-        }
-        """):
-            Example("""
-            do {
-              print("x is 5")
-            }
-            """),
-        Example("""
-        do {
-          print("x is 5")
-        ↓
-
-        }
-        """):
-            Example("""
-            do {
-              print("x is 5")
-            }
-            """),
-        Example("""
-        do {
-          print("x is 5")
-        ↓\n  \n}
-        """):
-            Example("""
-            do {
-              print("x is 5")
-            }
-            """),
-        Example("""
-        [
-        1,
-        2,
-        3
-        ↓
-        ]
-        """):
-            Example("""
-            [
-            1,
-            2,
-            3
-            ]
-            """),
-        Example("""
-        foo(
-            x: 5,
-            y:6
-        ↓
-        )
-        """):
-            Example("""
-            foo(
-                x: 5,
-                y:6
-            )
-            """),
-        Example("""
-        func foo() {
-          run(5) { x in
-            print(x)
-          }
-        ↓
-        }
-        """): Example("""
-            func foo() {
-              run(5) { x in
-                print(x)
-              }
-            }
-            """)
-    ]
+    init() {}
 
     private let pattern = "((?:\\n[ \\t]*)+)(\\n[ \\t]*[)}\\]])"
+    private let trivialLinePattern = "((?:\\n[ \\t]*)+)(\\n[ \\t)}\\]]*$)"
 }
 
-extension VerticalWhitespaceClosingBracesRule: OptInRule, AutomaticTestableRule {
-    public var configurationDescription: String { return "N/A" }
+extension VerticalWhitespaceClosingBracesRule {
+    private enum ConfigurationKey: String {
+        case severity = "severity"
+        case onlyEnforceBeforeTrivialLines = "only_enforce_before_trivial_lines"
+    }
 
-    public init(configuration: Any) throws {}
+    struct Configuration: RuleConfiguration, Equatable {
+        private(set) var severityConfiguration = SeverityConfiguration(.warning)
+        private(set) var onlyEnforceBeforeTrivialLines = false
 
-    public static let description = RuleDescription(
+        var consoleDescription: String {
+            return "severity: \(severityConfiguration.consoleDescription)" +
+                ", \(ConfigurationKey.onlyEnforceBeforeTrivialLines.rawValue): \(onlyEnforceBeforeTrivialLines)"
+        }
+
+        mutating func apply(configuration: Any) throws {
+            let error = ConfigurationError.unknownConfiguration
+
+            guard let configuration = configuration as? [String: Any] else {
+                throw error
+            }
+
+            for (string, value) in configuration {
+                guard let key = ConfigurationKey(rawValue: string) else {
+                    throw error
+                }
+
+                switch (key, value) {
+                case (.severity, let stringValue as String):
+                    try severityConfiguration.apply(configuration: stringValue)
+                case (.onlyEnforceBeforeTrivialLines, let boolValue as Bool):
+                    onlyEnforceBeforeTrivialLines = boolValue
+                default:
+                    throw error
+                }
+            }
+        }
+    }
+}
+
+extension VerticalWhitespaceClosingBracesRule: OptInRule {
+    private static let examples = VerticalWhitespaceClosingBracesRuleExamples.self
+    static let description = RuleDescription(
         identifier: "vertical_whitespace_closing_braces",
         name: "Vertical Whitespace before Closing Braces",
-        description: "Don't include vertical whitespace (empty line) before closing braces.",
+        description: "Don't include vertical whitespace (empty line) before closing braces",
         kind: .style,
-        nonTriggeringExamples: (violatingToValidExamples.values + nonTriggeringExamples).sorted(),
-        triggeringExamples: Array(violatingToValidExamples.keys).sorted(),
-        corrections: violatingToValidExamples.removingViolationMarkers()
+        nonTriggeringExamples: (examples.violatingToValidExamples.values +
+                                examples.nonTriggeringExamples),
+        triggeringExamples: Array(examples.violatingToValidExamples.keys),
+        corrections: examples.violatingToValidExamples.removingViolationMarkers()
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let pattern = configuration.onlyEnforceBeforeTrivialLines ? self.trivialLinePattern : self.pattern
+
         let patternRegex: NSRegularExpression = regex(pattern)
 
         return file.violatingRanges(for: pattern).map { violationRange in
@@ -133,7 +82,7 @@ extension VerticalWhitespaceClosingBracesRule: OptInRule, AutomaticTestableRule 
 
             return StyleViolation(
                 ruleDescription: Self.description,
-                severity: configuration.severity,
+                severity: configuration.severityConfiguration.severity,
                 location: Location(file: file, characterOffset: characterOffset)
             )
         }
@@ -141,7 +90,9 @@ extension VerticalWhitespaceClosingBracesRule: OptInRule, AutomaticTestableRule 
 }
 
 extension VerticalWhitespaceClosingBracesRule: CorrectableRule {
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
+        let pattern = configuration.onlyEnforceBeforeTrivialLines ? self.trivialLinePattern : self.pattern
+
         let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
         guard violatingRanges.isNotEmpty else { return [] }
 

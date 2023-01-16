@@ -1,26 +1,26 @@
 import SourceKittenFramework
 
-public struct FileLengthRule: ConfigurationProviderRule {
-    public var configuration = FileLengthRuleConfiguration(warning: 400, error: 1000)
+struct FileLengthRule: ConfigurationProviderRule {
+    var configuration = FileLengthRuleConfiguration(warning: 400, error: 1000)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "file_length",
         name: "File Length",
         description: "Files should not span too many lines.",
         kind: .metrics,
         nonTriggeringExamples: [
-            Example(repeatElement("print(\"swiftlint\")\n", count: 400).joined())
+            Example(repeatElement("print(\"swiftlint\")\n", count: 399).joined())
         ],
         triggeringExamples: [
             Example(repeatElement("print(\"swiftlint\")\n", count: 401).joined()),
             Example((repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()),
             Example(repeatElement("print(\"swiftlint\")\n\n", count: 201).joined())
-        ]
+        ].skipWrappingInCommentTests()
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         func lineCountWithoutComments() -> Int {
             let commentKinds = SyntaxKind.commentKinds
             let lineCount = file.syntaxKindsByLines.filter { kinds in

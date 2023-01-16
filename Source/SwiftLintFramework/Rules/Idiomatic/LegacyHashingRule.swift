@@ -1,11 +1,11 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct LegacyHashingRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LegacyHashingRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "legacy_hashing",
         name: "Legacy Hashing",
         description: "Prefer using the `hash(into:)` function instead of overriding `hashValue`",
@@ -75,21 +75,27 @@ public struct LegacyHashingRule: ASTRule, ConfigurationProviderRule, AutomaticTe
         ]
     )
 
-    // MARK: - ASTRule
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .varInstance,
-            dictionary.setterAccessibility == nil,
-            dictionary.typeName == "Int",
-            dictionary.name == "hashValue",
-            let offset = dictionary.offset else {
-                return []
+extension LegacyHashingRule {
+    private final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard
+                node.parent?.is(MemberDeclListItemSyntax.self) == true,
+                node.letOrVarKeyword.tokenKind == .varKeyword,
+                let binding = node.bindings.onlyElement,
+                let identifier = binding.pattern.as(IdentifierPatternSyntax.self),
+                identifier.identifier.text == "hashValue",
+                let returnType = binding.typeAnnotation?.type.as(SimpleTypeIdentifierSyntax.self),
+                returnType.name.text == "Int"
+            else {
+                return
+            }
+
+            violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
         }
-
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))]
     }
 }

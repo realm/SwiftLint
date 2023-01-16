@@ -1,15 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "array_init",
         name: "Array Init",
-        description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array.",
+        description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array",
         kind: .lint,
         nonTriggeringExamples: [
             Example("Array(foo)\n"),
@@ -24,195 +23,92 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
             Example("foo.map { /* a comment */ !$0 }\n")
         ],
         triggeringExamples: [
-            Example("↓foo.map({ $0 })\n"),
-            Example("↓foo.map { $0 }\n"),
-            Example("↓foo.map { return $0 }\n"),
+            Example("foo.↓map({ $0 })\n"),
+            Example("foo.↓map { $0 }\n"),
+            Example("foo.↓map { return $0 }\n"),
             Example("""
-                ↓foo.map { elem in
+                foo.↓map { elem in
                     elem
                 }
             """),
             Example("""
-                ↓foo.map { elem in
+                foo.↓map { elem in
                     return elem
                 }
             """),
             Example("""
-                ↓foo.map { (elem: String) in
+                foo.↓map { (elem: String) in
                     elem
                 }
             """),
             Example("""
-                ↓foo.map { elem -> String in
+                foo.↓map { elem -> String in
                     elem
                 }
             """),
-            Example("↓foo.map { $0 /* a comment */ }\n"),
-            Example("↓foo.map { /* a comment */ $0 }\n")
+            Example("foo.↓map { $0 /* a comment */ }\n"),
+            Example("foo.↓map { /* a comment */ $0 }\n")
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .call, let name = dictionary.name, name.hasSuffix(".map"),
-            let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength,
-            let bodyRange = dictionary.bodyByteRange,
-            let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let offset = dictionary.offset else {
-                return []
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let tokens = file.syntaxMap.tokens(inByteRange: bodyRange).filter { token in
-            guard let kind = token.kind else {
-                return false
+extension ArrayInitRule {
+    private final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),
+                  memberAccess.name.text == "map",
+                  let (closureParam, closureStatement) = node.singleClosure(),
+                  closureStatement.returnsInput(closureParam)
+            else {
+                return
             }
 
-            return !SyntaxKind.commentKinds.contains(kind)
+            violations.append(memberAccess.name.positionAfterSkippingLeadingTrivia)
         }
-
-        guard let firstToken = tokens.first,
-            case let nameEndPosition = nameOffset + nameLength,
-            isClosureParameter(firstToken: firstToken, nameEndPosition: nameEndPosition, file: file),
-            isShortParameterStyleViolation(file: file, tokens: tokens) ||
-            isParameterStyleViolation(file: file, dictionary: dictionary, tokens: tokens),
-            let lastToken = tokens.last,
-            case let bodyEndPosition = bodyOffset + bodyLength,
-            !containsTrailingContent(lastToken: lastToken, bodyEndPosition: bodyEndPosition, file: file),
-            !containsLeadingContent(tokens: tokens, bodyStartPosition: bodyOffset, file: file) else {
-                return []
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
     }
+}
 
-    private func isClosureParameter(firstToken: SwiftLintSyntaxToken,
-                                    nameEndPosition: ByteCount,
-                                    file: SwiftLintFile) -> Bool {
-        let length = firstToken.offset - nameEndPosition
-        guard length > 0,
-            case let contents = file.stringView,
-            case let byteRange = ByteRange(location: nameEndPosition, length: length),
-            let nsRange = contents.byteRangeToNSRange(byteRange)
-        else {
-            return false
-        }
-
-        let pattern = regex("\\A\\s*\\(?\\s*\\{")
-        return pattern.firstMatch(in: file.contents, options: .anchored, range: nsRange) != nil
-    }
-
-    private func containsTrailingContent(lastToken: SwiftLintSyntaxToken,
-                                         bodyEndPosition: ByteCount,
-                                         file: SwiftLintFile) -> Bool {
-        let lastTokenEnd = lastToken.offset + lastToken.length
-        let remainingLength = bodyEndPosition - lastTokenEnd
-        let remainingRange = ByteRange(location: lastTokenEnd, length: remainingLength)
-        return containsContent(inByteRange: remainingRange, file: file)
-    }
-
-    private func containsLeadingContent(tokens: [SwiftLintSyntaxToken],
-                                        bodyStartPosition: ByteCount,
-                                        file: SwiftLintFile) -> Bool {
-        let inTokenPosition = tokens.firstIndex(where: { token in
-            token.kind == .keyword && file.contents(for: token) == "in"
-        })
-
-        let firstToken: SwiftLintSyntaxToken
-        let start: ByteCount
-        if let position = inTokenPosition {
-            let index = tokens.index(after: position)
-            firstToken = tokens[index]
-            let inToken = tokens[position]
-            start = inToken.offset + inToken.length
+private extension FunctionCallExprSyntax {
+    func singleClosure() -> (String?, CodeBlockItemSyntax)? {
+        let closure: ClosureExprSyntax
+        if let expression = argumentList.onlyElement?.expression.as(ClosureExprSyntax.self) {
+            closure = expression
+        } else if argumentList.isEmpty, let expression = trailingClosure {
+            closure = expression
         } else {
-            firstToken = tokens[0]
-            start = bodyStartPosition
+            return nil
         }
 
-        let length = firstToken.offset - start
-        let remainingRange = ByteRange(location: start, length: length)
-        return containsContent(inByteRange: remainingRange, file: file)
-    }
-
-    private func containsContent(inByteRange byteRange: ByteRange, file: SwiftLintFile) -> Bool {
-        let stringView = file.stringView
-        let remainingTokens = file.syntaxMap.tokens(inByteRange: byteRange)
-        guard let nsRange = stringView.byteRangeToNSRange(byteRange) else {
-            return false
-        }
-
-        let ranges = NSMutableIndexSet(indexesIn: nsRange)
-
-        for tokenNSRange in remainingTokens.compactMap({ stringView.byteRangeToNSRange($0.range) }) {
-            ranges.remove(in: tokenNSRange)
-        }
-
-        var containsContent = false
-        ranges.enumerateRanges(options: []) { range, stop in
-            let substring = stringView.substring(with: range)
-            let processedSubstring = substring
-                .trimmingCharacters(in: CharacterSet(charactersIn: "{}"))
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-
-            if processedSubstring.isNotEmpty {
-                stop.pointee = true
-                containsContent = true
-            }
-        }
-
-        return containsContent
-    }
-
-    private func isShortParameterStyleViolation(file: SwiftLintFile, tokens: [SwiftLintSyntaxToken]) -> Bool {
-        let kinds = tokens.kinds
-        switch kinds {
-        case [.identifier]:
-            let identifier = file.contents(for: tokens[0])
-            return identifier == "$0"
-        case [.keyword, .identifier]:
-            let keyword = file.contents(for: tokens[0])
-            let identifier = file.contents(for: tokens[1])
-            return keyword == "return" && identifier == "$0"
-        default:
-            return false
+        if let closureStatement = closure.statements.onlyElement {
+            return (closure.signature?.singleInputParamText(), closureStatement)
+        } else {
+            return nil
         }
     }
+}
 
-    private func isParameterStyleViolation(file: SwiftLintFile, dictionary: SourceKittenDictionary,
-                                           tokens: [SwiftLintSyntaxToken]) -> Bool {
-        let parameters = dictionary.enclosedVarParameters
-        guard parameters.count == 1,
-            let offset = parameters[0].offset,
-            let length = parameters[0].length,
-            let parameterName = parameters[0].name else {
-                return false
-        }
+private extension CodeBlockItemSyntax {
+    func returnsInput(_ closureParam: String?) -> Bool {
+        let expectedReturnIdentifier = closureParam ?? "$0"
+        let identifier = item.as(IdentifierExprSyntax.self) ??
+            item.as(ReturnStmtSyntax.self)?.expression?.as(IdentifierExprSyntax.self)
+        return identifier?.identifier.text == expectedReturnIdentifier
+    }
+}
 
-        let parameterEnd = offset + length
-        let tokens = Array(tokens.filter { $0.offset >= parameterEnd }.drop { token in
-            let isKeyword = token.kind == .keyword
-            return !isKeyword || file.contents(for: token) != "in"
-        })
-
-        let kinds = tokens.kinds
-        switch kinds {
-        case [.keyword, .identifier]:
-            let keyword = file.contents(for: tokens[0])
-            let identifier = file.contents(for: tokens[1])
-            return keyword == "in" && identifier == parameterName
-        case [.keyword, .keyword, .identifier]:
-            let firstKeyword = file.contents(for: tokens[0])
-            let secondKeyword = file.contents(for: tokens[1])
-            let identifier = file.contents(for: tokens[2])
-            return firstKeyword == "in" && secondKeyword == "return" && identifier == parameterName
-        default:
-            return false
+private extension ClosureSignatureSyntax {
+    func singleInputParamText() -> String? {
+        if let list = input?.as(ClosureParamListSyntax.self), list.count == 1 {
+            return list.onlyElement?.name.text
+        } else if let clause = input?.as(ParameterClauseSyntax.self), clause.parameterList.count == 1,
+                  clause.parameterList.first?.secondName == nil {
+            return clause.parameterList.first?.firstName?.text
+        } else {
+            return nil
         }
     }
 }

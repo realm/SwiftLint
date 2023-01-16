@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct FlatMapOverMapReduceRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct FlatMapOverMapReduceRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "flatmap_over_map_reduce",
-        name: "FlatMap over map and reduce",
-        description: "Prefer `flatMap` over `map` followed by `reduce([], +)`.",
+        name: "Flat Map over Map Reduce",
+        description: "Prefer `flatMap` over `map` followed by `reduce([], +)`",
         kind: .performance,
         nonTriggeringExamples: [
             Example("let foo = bar.map { $0.count }.reduce(0, +)"),
@@ -19,9 +19,27 @@ public struct FlatMapOverMapReduceRule: CallPairRule, OptInRule, ConfigurationPr
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*\\.reduce\\s*\\(\\[\\s*\\],\\s*\\+\\s*\\)"
-        return validate(file: file, pattern: pattern, patternSyntaxKinds: [.identifier],
-                        callNameSuffix: ".map", severity: configuration.severity)
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension FlatMapOverMapReduceRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard
+                let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),
+                memberAccess.name.text == "reduce",
+                node.argumentList.count == 2,
+                let firstArgument = node.argumentList.first?.expression.as(ArrayExprSyntax.self),
+                firstArgument.elements.isEmpty,
+                let secondArgument = node.argumentList.last?.expression.as(IdentifierExprSyntax.self),
+                secondArgument.identifier.text == "+"
+            else {
+                return
+            }
+
+            violations.append(node.positionAfterSkippingLeadingTrivia)
+        }
     }
 }

@@ -1,5 +1,4 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
 private func embedInSwitch(
     _ text: String,
@@ -12,15 +11,16 @@ private func embedInSwitch(
         }
         """, file: file, line: line)
 }
-public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+struct UnneededBreakInSwitchRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    init() {}
+
+    static let description = RuleDescription(
         identifier: "unneeded_break_in_switch",
         name: "Unneeded Break in Switch",
-        description: "Avoid using unneeded break statements.",
+        description: "Avoid using unneeded break statements",
         kind: .idiomatic,
         nonTriggeringExamples: [
             embedInSwitch("break"),
@@ -50,59 +50,20 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.match(pattern: "break", with: [.keyword]).compactMap { range in
-            let contents = file.stringView
-            let structureDict = file.structureDictionary
-
-            guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
-                  case let lastStructures = structureDict.structures(forByteOffset: byteRange.location).suffix(2),
-                  lastStructures.compactMap(\.statementKind) == [.switch, .case],
-                  let innerStructure = lastStructures.last,
-                  let caseRange = innerStructure.byteRange,
-                  let lastPatternEnd = patternEnd(dictionary: innerStructure) else {
-                    return nil
-            }
-
-            let tokens = file.syntaxMap.tokens(inByteRange: caseRange).filter { token in
-                guard let kind = token.kind,
-                    token.offset > lastPatternEnd else {
-                        return false
-                }
-
-                return !kind.isCommentLike
-            }
-
-            // is the `break` the only token inside `case`? If so, it's valid.
-            guard tokens.count > 1 else {
-                return nil
-            }
-
-            // is the `break` found the last (non-comment) token inside `case`?
-            guard let lastValidToken = tokens.last,
-                lastValidToken.kind == .keyword,
-                lastValidToken.offset == byteRange.location,
-                lastValidToken.length == byteRange.length else {
-                    return nil
-            }
-
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: range.location))
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        UnneededBreakInSwitchRuleVisitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func patternEnd(dictionary: SourceKittenDictionary) -> ByteCount? {
-        let patternEnds = dictionary.elements.compactMap { subDictionary -> ByteCount? in
-            guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
-                let offset = subDictionary.offset,
-                let length = subDictionary.length else {
-                    return nil
-            }
-
-            return offset + length
+private final class UnneededBreakInSwitchRuleVisitor: ViolationsSyntaxVisitor {
+    override func visitPost(_ node: SwitchCaseSyntax) {
+        guard node.statements.count > 1,
+              let statement = node.statements.last,
+              let breakStatement = statement.item.as(BreakStmtSyntax.self),
+              breakStatement.label == nil else {
+            return
         }
 
-        return patternEnds.max()
+        violations.append(statement.item.positionAfterSkippingLeadingTrivia)
     }
 }

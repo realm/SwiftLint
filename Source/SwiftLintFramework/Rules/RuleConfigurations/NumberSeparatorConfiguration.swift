@@ -1,28 +1,28 @@
-public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
+struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var minimumLength: Int
     private(set) var minimumFractionLength: Int?
     private(set) var excludeRanges: [Range<Double>]
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         let minimumFractionLengthDescription: String
         if let minimumFractionLength = minimumFractionLength {
             minimumFractionLengthDescription = ", minimum_fraction_length: \(minimumFractionLength)"
         } else {
             minimumFractionLengthDescription = ", minimum_fraction_length: none"
         }
-        return severityConfiguration.consoleDescription
+        return "severity: \(severityConfiguration.consoleDescription)"
             + ", minimum_length: \(minimumLength)"
             + minimumFractionLengthDescription
     }
 
-    public init(minimumLength: Int, minimumFractionLength: Int?, excludeRanges: [Range<Double>]) {
+    init(minimumLength: Int, minimumFractionLength: Int?, excludeRanges: [Range<Double>]) {
         self.minimumLength = minimumLength
         self.minimumFractionLength = minimumFractionLength
         self.excludeRanges = excludeRanges
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

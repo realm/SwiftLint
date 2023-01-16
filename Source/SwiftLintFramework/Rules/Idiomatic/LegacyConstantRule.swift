@@ -1,46 +1,100 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
+import SwiftSyntaxBuilder
 
-public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LegacyConstantRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "legacy_constant",
         name: "Legacy Constant",
-        description: "Struct-scoped constants are preferred over legacy global constants.",
+        description: "Struct-scoped constants are preferred over legacy global constants",
         kind: .idiomatic,
         nonTriggeringExamples: LegacyConstantRuleExamples.nonTriggeringExamples,
         triggeringExamples: LegacyConstantRuleExamples.triggeringExamples,
         corrections: LegacyConstantRuleExamples.corrections
     )
 
-    private static let legacyConstants: [String] = {
-        return Array(Self.legacyPatterns.keys)
-    }()
-
-    private static let legacyPatterns = LegacyConstantRuleExamples.patterns
-
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\b" + Self.legacyConstants.joined(separator: "|")
-
-        return file.match(pattern: pattern, range: nil)
-            .filter { Set($0.1).isSubset(of: [.identifier]) }
-            .map { $0.0 }
-            .map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, characterOffset: $0.location))
-            }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        var wordBoundPatterns: [String: String] = [:]
-        Self.legacyPatterns.forEach { key, value in
-            wordBoundPatterns["\\b" + key] = value
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private extension LegacyConstantRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: IdentifierExprSyntax) {
+            if LegacyConstantRuleExamples.patterns.keys.contains(node.identifier.text) {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
 
-        return file.correct(legacyRule: self, patterns: wordBoundPatterns)
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if node.isLegacyPiExpression {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: IdentifierExprSyntax) -> ExprSyntax {
+            guard
+                let correction = LegacyConstantRuleExamples.patterns[node.identifier.text],
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            return ("\(raw: correction)" as ExprSyntax)
+                .withLeadingTrivia(node.leadingTrivia ?? .zero)
+                .withTrailingTrivia(node.trailingTrivia ?? .zero)
+        }
+
+        override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
+            guard
+                node.isLegacyPiExpression,
+                let calledExpression = node.calledExpression.as(IdentifierExprSyntax.self),
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            return ("\(raw: calledExpression.identifier.text).pi" as ExprSyntax)
+                .withLeadingTrivia(node.leadingTrivia ?? .zero)
+                .withTrailingTrivia(node.trailingTrivia ?? .zero)
+        }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var isLegacyPiExpression: Bool {
+        guard
+            let calledExpression = calledExpression.as(IdentifierExprSyntax.self),
+            calledExpression.identifier.text == "CGFloat" || calledExpression.identifier.text == "Float",
+            let argument = argumentList.onlyElement?.expression.as(IdentifierExprSyntax.self),
+            argument.identifier.text == "M_PI"
+        else {
+            return false
+        }
+
+        return true
     }
 }

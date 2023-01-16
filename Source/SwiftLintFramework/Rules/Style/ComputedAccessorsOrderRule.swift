@@ -1,12 +1,11 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ComputedAccessorsOrderRule: ConfigurationProviderRule {
-    public var configuration = ComputedAccessorsOrderRuleConfiguration()
+struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = ComputedAccessorsOrderRuleConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "computed_accessors_order",
         name: "Computed Accessors Order",
         description: "Getter and setters in computed properties and subscripts should be in a consistent order.",
@@ -15,117 +14,67 @@ public struct ComputedAccessorsOrderRule: ConfigurationProviderRule {
         triggeringExamples: ComputedAccessorsOrderRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let getTokens = findKeywordTokens(keyword: "get", file: file)
-
-        let violatingLocations = getTokens.compactMap { getToken -> (ByteCount, SwiftDeclarationKind?)? in
-            // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: getToken.offset,
-                                          structureDictionary: file.structureDictionary).last else {
-                return nil
-            }
-
-            guard let range = dict.byteRange.map(file.stringView.byteRangeToNSRange) else {
-                return nil
-            }
-
-            let setTokens = findKeywordTokens(keyword: "set", file: file, range: range)
-            let setToken = setTokens.first { token in
-                // the last element is the deepest structure
-                guard let setDict = declarations(forByteOffset: token.offset,
-                                                 structureDictionary: file.structureDictionary).last else {
-                    return false
-                }
-
-                return setDict.offset == dict.offset
-            }
-
-            let tokensInOrder = [getToken, setToken].compactMap { $0?.offset }.sorted()
-            let expectedOrder: [ByteCount]
-            switch configuration.order {
-            case .getSet:
-                expectedOrder = [getToken, setToken].compactMap { $0?.offset }
-            case .setGet:
-                expectedOrder = [setToken, getToken].compactMap { $0?.offset }
-            }
-
-            guard tokensInOrder != expectedOrder else {
-                return nil
-            }
-
-            let kind = dict.declarationKind
-            return (tokensInOrder[0], kind)
-        }
-
-        return violatingLocations.map { offset, kind in
-            let reason = kind.map { kind -> String in
-                let kindString = kind == .functionSubscript ? "subscripts" : "properties"
-                let orderString: String
-                switch configuration.order {
-                case .getSet:
-                    orderString = "getter and then the setter"
-                case .setGet:
-                    orderString = "setter and then the getter"
-                }
-                return "Computed \(kindString) should declare first the \(orderString)."
-            }
-
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severityConfiguration.severity,
-                                  location: Location(file: file, byteOffset: offset),
-                                  reason: reason)
-        }
-    }
-
-    private func findKeywordTokens(keyword: String,
-                                   file: SwiftLintFile,
-                                   range: NSRange? = nil) -> [SwiftLintSyntaxToken] {
-        let pattern = "\\b\(keyword)\\b"
-        return file.rangesAndTokens(matching: pattern, range: range).compactMap { _, tokens in
-            guard tokens.count == 1,
-                let token = tokens.last,
-                token.kind == .keyword else {
-                    return nil
-            }
-
-            return token
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        ComputedAccessorsOrderRuleVisitor(expectedOrder: configuration.order)
     }
 }
 
-private extension ComputedAccessorsOrderRule {
-    func declarations(forByteOffset byteOffset: ByteCount,
-                      structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
-        var results = [SourceKittenDictionary]()
-        let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
-            .union([.functionSubscript])
+private final class ComputedAccessorsOrderRuleVisitor: ViolationsSyntaxVisitor {
+    enum ViolationKind {
+        case `subscript`, property
+    }
 
-        func parse(dictionary: SourceKittenDictionary,
-                   parentKind: SwiftDeclarationKind?,
-                   into results: inout [SourceKittenDictionary]) {
-            // Only accepts declarations which contains a body and contains the
-            // searched byteOffset
-            guard let kind = dictionary.declarationKind,
-                let byteRange = dictionary.byteRange,
-                byteRange.contains(byteOffset)
-            else {
-                return
-            }
+    private let expectedOrder: ComputedAccessorsOrderRuleConfiguration.Order
 
-            if parentKind != .protocol && allowedKinds.contains(kind) {
-                results.append(dictionary)
-            }
+    init(expectedOrder: ComputedAccessorsOrderRuleConfiguration.Order) {
+        self.expectedOrder = expectedOrder
+        super.init(viewMode: .sourceAccurate)
+    }
 
-            for dictionary in dictionary.substructure {
-                parse(dictionary: dictionary, parentKind: kind, into: &results)
-            }
+    override func visitPost(_ node: AccessorBlockSyntax) {
+        guard let firstAccessor = node.accessors.first,
+              let order = node.order,
+              order != expectedOrder else {
+            return
         }
 
-        let dict = structureDictionary
-        for dictionary in dict.substructure {
-            parse(dictionary: dictionary, parentKind: nil, into: &results)
+        let kind: ViolationKind = node.parent?.as(SubscriptDeclSyntax.self) == nil ? .property : .subscript
+        violations.append(
+            ReasonedRuleViolation(
+                position: firstAccessor.positionAfterSkippingLeadingTrivia,
+                reason: reason(for: kind)
+            )
+        )
+    }
+
+    private func reason(for kind: ComputedAccessorsOrderRuleVisitor.ViolationKind) -> String {
+        let kindString = kind == .subscript ? "subscripts" : "properties"
+        let orderString: String
+        switch expectedOrder {
+        case .getSet:
+            orderString = "getter and then the setter"
+        case .setGet:
+            orderString = "setter and then the getter"
+        }
+        return "Computed \(kindString) should first declare the \(orderString)"
+    }
+}
+
+private extension AccessorBlockSyntax {
+    var order: ComputedAccessorsOrderRuleConfiguration.Order? {
+        guard accessors.count == 2, accessors.map(\.body).allSatisfy({ $0 != nil }) else {
+            return nil
         }
 
-        return results
+        let tokens = accessors.map(\.accessorKind.tokenKind)
+        if tokens == [.contextualKeyword("get"), .contextualKeyword("set")] {
+            return .getSet
+        }
+
+        if tokens == [.contextualKeyword("set"), .contextualKeyword("get")] {
+            return .setGet
+        }
+
+        return nil
     }
 }

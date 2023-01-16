@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = ObjectLiteralConfiguration()
+struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = ObjectLiteralConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "object_literal",
         name: "Object Literal",
-        description: "Prefer object literals over image and color inits.",
+        description: "Prefer object literals over image and color inits",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("let image = #imageLiteral(resourceName: \"image.jpg\")"),
@@ -33,67 +33,87 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         }
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .call,
-            let offset = dictionary.offset,
-            (configuration.imageLiteral && isImageNamedInit(dictionary: dictionary, file: file)) ||
-                (configuration.colorLiteral && isColorInit(dictionary: dictionary, file: file)) else {
-            return []
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(validateImageLiteral: configuration.imageLiteral, validateColorLiteral: configuration.colorLiteral)
+    }
+}
+
+private extension ObjectLiteralRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let validateImageLiteral: Bool
+        private let validateColorLiteral: Bool
+
+        init(validateImageLiteral: Bool, validateColorLiteral: Bool) {
+            self.validateImageLiteral = validateImageLiteral
+            self.validateColorLiteral = validateColorLiteral
+            super.init(viewMode: .sourceAccurate)
         }
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
-    }
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard validateColorLiteral || validateImageLiteral else {
+                return
+            }
 
-    private func isImageNamedInit(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let name = dictionary.name,
-            inits(forClasses: ["UIImage", "NSImage"]).contains(name),
-            case let arguments = dictionary.enclosedArguments,
-            arguments.compactMap({ $0.name }) == ["named"],
-            let argument = arguments.first,
-            case let kinds = kinds(forArgument: argument, file: file),
-            kinds == [.string] else {
+            let name = node.calledExpression.withoutTrivia().description
+            if validateImageLiteral, isImageNamedInit(node: node, name: name) {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            } else if validateColorLiteral, isColorInit(node: node, name: name) {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        private func isImageNamedInit(node: FunctionCallExprSyntax, name: String) -> Bool {
+            guard inits(forClasses: ["UIImage", "NSImage"]).contains(name),
+                  node.argumentList.compactMap(\.label?.text) == ["named"],
+                  let argument = node.argumentList.first?.expression.as(StringLiteralExprSyntax.self),
+                  argument.isConstantString else {
                 return false
+            }
+
+            return true
         }
 
-        return true
-    }
+        private func isColorInit(node: FunctionCallExprSyntax, name: String) -> Bool {
+            guard inits(forClasses: ["UIColor", "NSColor"]).contains(name),
+                case let argumentsNames = node.argumentList.compactMap(\.label?.text),
+                argumentsNames == ["red", "green", "blue", "alpha"] || argumentsNames == ["white", "alpha"] else {
+                    return false
+            }
 
-    private func isColorInit(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let name = dictionary.name,
-            inits(forClasses: ["UIColor", "NSColor"]).contains(name),
-            case let arguments = dictionary.enclosedArguments,
-            case let argumentsNames = arguments.compactMap({ $0.name }),
-            argumentsNames == ["red", "green", "blue", "alpha"] || argumentsNames == ["white", "alpha"],
-            validateColorKinds(arguments: arguments, file: file) else {
-                return false
+            return node.argumentList.allSatisfy { elem in
+                elem.expression.canBeExpressedAsColorLiteralParams
+            }
         }
 
-        return true
-    }
-
-    private func inits(forClasses names: [String]) -> [String] {
-        return names.flatMap { name in
-            [
-                name,
-                name + ".init"
-            ]
+        private func inits(forClasses names: [String]) -> [String] {
+            return names.flatMap { name in
+                [
+                    name,
+                    name + ".init"
+                ]
+            }
         }
     }
+}
 
-    private func validateColorKinds(arguments: [SourceKittenDictionary], file: SwiftLintFile) -> Bool {
-        for dictionary in arguments where kinds(forArgument: dictionary, file: file) != [.number] {
-            return false
+private extension StringLiteralExprSyntax {
+    var isConstantString: Bool {
+        segments.allSatisfy { $0.is(StringSegmentSyntax.self) }
+    }
+}
+
+private extension ExprSyntax {
+    var canBeExpressedAsColorLiteralParams: Bool {
+        if self.is(FloatLiteralExprSyntax.self) ||
+            self.is(IntegerLiteralExprSyntax.self) ||
+            self.is(BinaryOperatorExprSyntax.self) {
+            return true
         }
 
-        return true
-    }
+        if let expr = self.as(SequenceExprSyntax.self) {
+            return expr.elements.allSatisfy(\.canBeExpressedAsColorLiteralParams)
+        }
 
-    private func kinds(forArgument argument: SourceKittenDictionary, file: SwiftLintFile) -> Set<SyntaxKind> {
-        return argument.bodyByteRange.map { Set(file.syntaxMap.kinds(inByteRange: $0)) } ?? []
+        return false
     }
 }

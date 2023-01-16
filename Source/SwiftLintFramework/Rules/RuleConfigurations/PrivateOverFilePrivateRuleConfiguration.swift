@@ -1,14 +1,14 @@
-public struct PrivateOverFilePrivateRuleConfiguration: RuleConfiguration, Equatable {
-    public var severityConfiguration = SeverityConfiguration(.warning)
-    public var validateExtensions = false
+struct PrivateOverFilePrivateRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    var severityConfiguration = SeverityConfiguration(.warning)
+    var validateExtensions = false
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", validate_extensions: \(validateExtensions)"
+    var consoleDescription: String {
+        return "severity: \(severityConfiguration.consoleDescription)" + ", validate_extensions: \(validateExtensions)"
     }
 
     // MARK: - RuleConfiguration
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

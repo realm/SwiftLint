@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "extension_access_modifier",
         name: "Extension Access Modifier",
         description: "Prefer to use extension access modifiers",
@@ -92,8 +92,8 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .extension, let offset = dictionary.offset,
             dictionary.inheritedTypes.isEmpty
         else {

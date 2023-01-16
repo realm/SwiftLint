@@ -1,20 +1,20 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "multiline_literal_brackets",
         name: "Multiline Literal Brackets",
-        description: "Multiline literals should have their surrounding brackets in a new line.",
+        description: "Multiline literals should have their surrounding brackets in a new line",
         kind: .style,
         nonTriggeringExamples: [
             Example("""
             let trio = ["harry", "ronald", "hermione"]
-            let houseCup = ["gryffinder": 460, "hufflepuff": 370, "ravenclaw": 410, "slytherin": 450]
+            let houseCup = ["gryffindor": 460, "hufflepuff": 370, "ravenclaw": 410, "slytherin": 450]
             """),
             Example("""
             let trio = [
@@ -23,7 +23,7 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                 "hermione"
             ]
             let houseCup = [
-                "gryffinder": 460,
+                "gryffindor": 460,
                 "hufflepuff": 370,
                 "ravenclaw": 410,
                 "slytherin": 450
@@ -34,7 +34,7 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                 "harry", "ronald", "hermione"
             ]
             let houseCup = [
-                "gryffinder": 460, "hufflepuff": 370,
+                "gryffindor": 460, "hufflepuff": 370,
                 "ravenclaw": 410, "slytherin": 450
             ]
             """),
@@ -57,9 +57,15 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
             ]
             """),
             Example("""
-            let houseCup = [↓"gryffinder": 460, "hufflepuff": 370,
+            let houseCup = [↓"gryffindor": 460, "hufflepuff": 370,
                             "ravenclaw": 410, "slytherin": 450
             ]
+            """),
+            Example("""
+            let houseCup = [↓"gryffindor": 460,
+                            "hufflepuff": 370,
+                            "ravenclaw": 410,
+                            "slytherin": 450↓]
             """),
             Example("""
             let trio = [
@@ -69,13 +75,13 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
             """),
             Example("""
             let houseCup = [
-                "gryffinder": 460, "hufflepuff": 370,
+                "gryffindor": 460, "hufflepuff": 370,
                 "ravenclaw": 410, "slytherin": 450↓]
             """),
             Example("""
             class Hogwarts {
                 let houseCup = [
-                    "gryffinder": 460, "hufflepuff": 370,
+                    "gryffindor": 460, "hufflepuff": 370,
                     "ravenclaw": 410, "slytherin": 450↓]
             }
             """),
@@ -97,9 +103,9 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile,
+                  kind: SwiftExpressionKind,
+                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             [.array, .dictionary].contains(kind),
             let bodyByteRange = dictionary.bodyByteRange,

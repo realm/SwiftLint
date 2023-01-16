@@ -1,15 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "empty_string",
         name: "Empty String",
-        description: "Prefer checking `isEmpty` over comparing `string` to an empty string literal.",
+        description: "Prefer checking `isEmpty` over comparing `string` to an empty string literal",
         kind: .performance,
         nonTriggeringExamples: [
             Example("myString.isEmpty"),
@@ -17,23 +16,34 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, AutomaticTe
             Example("\"\"\"\nfoo==\n\"\"\"")
         ],
         triggeringExamples: [
-            Example("myString↓ == \"\""),
-            Example("myString↓ != \"\"")
+            Example(#"myString↓ == """#),
+            Example(#"myString↓ != """#),
+            Example(#"myString↓=="""#),
+            Example(##"myString↓ == #""#"##),
+            Example(###"myString↓ == ##""##"###)
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\b\\s*(==|!=)\\s*\"\""
-        return file.match(pattern: pattern, with: [.string]).compactMap { range in
-            guard let byteRange = file.stringView.NSRangeToByteRange(NSRange(location: range.location, length: 1)),
-                case let kinds = file.syntaxMap.kinds(inByteRange: byteRange),
-                kinds.isEmpty else {
-                    return nil
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension EmptyStringRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: StringLiteralExprSyntax) {
+            guard
+                // Empty string literal: `""`, `#""#`, etc.
+                node.segments.onlyElement?.contentLength == .zero,
+                let previousToken = node.previousToken,
+                // On the rhs of an `==` or `!=` operator
+                previousToken.tokenKind.isEqualityComparison,
+                let violationPosition = previousToken.previousToken?.endPositionBeforeTrailingTrivia
+            else {
+                return
             }
 
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: range.location))
+            violations.append(violationPosition)
         }
     }
 }

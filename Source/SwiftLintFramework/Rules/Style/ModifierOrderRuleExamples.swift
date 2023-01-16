@@ -1,9 +1,8 @@
-// swiftlint:disable type_body_length
 internal struct ModifierOrderRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
         public class Foo {
-           public convenience required init() {}
+           public required convenience init() {}
         }
         """),
         Example("""

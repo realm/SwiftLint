@@ -1,11 +1,7 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class ExplicitTypeInterfaceRuleTests: XCTestCase {
-    func testExplicitTypeInterface() {
-        verifyRule(ExplicitTypeInterfaceRule.description)
-    }
-
     func testLocalVars() {
         let nonTriggeringExamples = [
             Example("func foo() {\nlet intVal: Int = 1\n}"),
@@ -18,11 +14,11 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             """)
         ]
         let triggeringExamples = [
-            Example("func foo() {\n↓let intVal = 1\n}"),
+            Example("func foo() {\nlet ↓intVal = 1\n}"),
             Example("""
             func foo() {
                 bar {
-                    ↓let x = 1
+                    let ↓x = 1
                 }
             }
             """)
@@ -52,9 +48,9 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             Example("class Foo {\n  static let myStaticLet = 0\n}\n")
         ]
         let triggeringExamples: [Example] = [
-            Example("class Foo {\n  ↓var myVar = 0\n\n}\n"),
-            Example("class Foo {\n  ↓let mylet = 0\n\n}\n"),
-            Example("class Foo {\n  ↓class var myClassVar = 0\n}\n")
+            Example("class Foo {\n  var ↓myVar = 0\n\n}\n"),
+            Example("class Foo {\n  let ↓mylet = 0\n\n}\n"),
+            Example("class Foo {\n  class var ↓myClassVar = 0\n}\n")
         ]
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -80,12 +76,12 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             Example("class Foo {\n  let l10n = L10n.Communication.self\n}\n")
         ]
         let triggeringExamples: [Example] = [
-            Example("class Foo {\n  ↓var myVar = 0\n\n}\n"),
-            Example("class Foo {\n  ↓let mylet = 0\n\n}\n"),
-            Example("class Foo {\n  ↓static var myStaticVar = 0\n}\n"),
-            Example("class Foo {\n  ↓class var myClassVar = 0\n}\n"),
-            Example("class Foo {\n  ↓let array = [\"foo\", \"bar\"]\n}\n"),
-            Example("class Foo {\n  ↓let dict = [\"foo\": \"bar\"]\n}\n")
+            Example("class Foo {\n  var ↓myVar = 0\n\n}\n"),
+            Example("class Foo {\n  let ↓mylet = 0\n\n}\n"),
+            Example("class Foo {\n  static var ↓myStaticVar = 0\n}\n"),
+            Example("class Foo {\n  class var ↓myClassVar = 0\n}\n"),
+            Example("class Foo {\n  let ↓array = [\"foo\", \"bar\"]\n}\n"),
+            Example("class Foo {\n  let ↓dict = [\"foo\": \"bar\"]\n}\n")
         ]
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -94,7 +90,7 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["allow_redundancy": true])
     }
 
-    func testEmbededInStatements() {
+    func testEmbeddedInStatements() {
         let nonTriggeringExamples = [
             Example("""
             func foo() {
@@ -177,7 +173,6 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
         verifyRule(description)
     }
 
-    // swiftlint:disable function_body_length
     func testSwitchCaseDeclarations() {
         let nonTriggeringExamples = [
             Example("""
@@ -216,8 +211,8 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             func bar() {
                 let foo: Foo = .success(1)
                 switch foo {
-                case .failure(let error): ↓let fooBar = 1
-                case .success(let result): ↓let fooBar = 1
+                case .failure(let error): let ↓fooBar = 1
+                case .success(let result): let ↓fooBar = 1
                 }
             }
             """),
@@ -228,8 +223,8 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             func foo() {
                 let foo: Foo = .failure(1, 1)
                 switch foo {
-                case var .failure(x, y): ↓let fooBar = 1
-                default: ↓let fooBar = 1
+                case var .failure(x, y): let ↓fooBar = 1
+                default: let ↓fooBar = 1
                 }
             }
             """)

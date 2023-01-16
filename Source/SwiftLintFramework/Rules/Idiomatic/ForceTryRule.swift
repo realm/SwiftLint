@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ForceTryRule: ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.error)
+struct ForceTryRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.error)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "force_try",
         name: "Force Try",
-        description: "Force tries should be avoided.",
+        description: "Force tries should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -26,11 +26,17 @@ public struct ForceTryRule: ConfigurationProviderRule, AutomaticTestableRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.match(pattern: "try!", with: [.keyword]).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension ForceTryRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: TryExprSyntax) {
+            if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

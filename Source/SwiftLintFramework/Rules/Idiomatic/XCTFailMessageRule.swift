@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct XCTFailMessageRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct XCTFailMessageRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "xctfail_message",
         name: "XCTFail Message",
-        description: "An XCTFail call should include a description of the assertion.",
+        description: "An XCTFail call should include a description of the assertion",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -36,31 +36,32 @@ public struct XCTFailMessageRule: ASTRule, ConfigurationProviderRule, AutomaticT
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .call,
-            let offset = dictionary.offset,
-            dictionary.name == "XCTFail",
-            hasEmptyMessage(dictionary: dictionary, file: file)
-            else {
-                return []
-        }
-
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))]
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func hasEmptyMessage(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let bodyRange = dictionary.bodyByteRange else {
-            return false
+private extension XCTFailMessageRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard
+                let expression = node.calledExpression.as(IdentifierExprSyntax.self),
+                expression.identifier.text == "XCTFail",
+                node.argumentList.isEmptyOrEmptyString
+            else {
+                return
+            }
+
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
 
-        guard bodyRange.length > 0 else { return true }
-
-        let body = file.stringView.substringWithByteRange(bodyRange)
-        return body == "\"\""
+private extension TupleExprElementListSyntax {
+    var isEmptyOrEmptyString: Bool {
+        if isEmpty {
+            return true
+        }
+        return count == 1 && first?.expression.as(StringLiteralExprSyntax.self)?.isEmptyString == true
     }
 }

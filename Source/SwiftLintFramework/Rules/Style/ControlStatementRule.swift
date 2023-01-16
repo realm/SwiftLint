@@ -1,17 +1,17 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestableRule, SubstitutionCorrectableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "control_statement",
         name: "Control Statement",
         description:
             "`if`, `for`, `guard`, `switch`, `while`, and `catch` statements shouldn't unnecessarily wrap their " +
-            "conditionals or arguments in parentheses.",
+            "conditionals or arguments in parentheses",
         kind: .style,
         nonTriggeringExamples: [
             Example("if condition {\n"),
@@ -80,7 +80,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map { match -> StyleViolation in
             return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
@@ -88,7 +88,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let statements = ["if", "for", "guard", "switch", "while", "catch"]
         let statementPatterns: [String] = statements.map { statement -> String in
             let isGuard = statement == "guard"
@@ -116,7 +116,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         var violationString = file.stringView.substring(with: violationRange)
         if violationString.contains("(") && violationString.contains(")") {
             if let openingIndex = violationString.firstIndex(of: "(") {

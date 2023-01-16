@@ -4,7 +4,8 @@ private extension SwiftLintFile {
     func missingDocOffsets(in dictionary: SourceKittenDictionary,
                            acls: [AccessControlLevel],
                            excludesExtensions: Bool,
-                           excludesInheritedTypes: Bool) -> [(ByteCount, AccessControlLevel)] {
+                           excludesInheritedTypes: Bool,
+                           excludesTrivialInit: Bool) -> [(ByteCount, AccessControlLevel)] {
         if dictionary.enclosedSwiftAttributes.contains(.override) ||
             (dictionary.inheritedTypes.isNotEmpty && excludesInheritedTypes) {
             return []
@@ -14,9 +15,18 @@ private extension SwiftLintFile {
                 in: $0,
                 acls: acls,
                 excludesExtensions: excludesExtensions,
-                excludesInheritedTypes: excludesInheritedTypes
+                excludesInheritedTypes: excludesInheritedTypes,
+                excludesTrivialInit: excludesTrivialInit
             )
         }
+
+        let isTrivialInit = dictionary.declarationKind == .functionMethodInstance &&
+                            dictionary.name == "init()" &&
+                            dictionary.enclosedVarParameters.isEmpty
+        if isTrivialInit && excludesTrivialInit {
+            return substructureOffsets
+        }
+
         guard let kind = dictionary.declarationKind,
             (!SwiftDeclarationKind.extensionKinds.contains(kind) || !excludesExtensions),
             case let isDeinit = kind == .functionMethodInstance && dictionary.name == "deinit",
@@ -33,15 +43,15 @@ private extension SwiftLintFile {
     }
 }
 
-public struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
-    public init() {
+struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
+    init() {
         configuration = MissingDocsRuleConfiguration()
     }
 
-    public typealias ConfigurationType = MissingDocsRuleConfiguration
-    public var configuration: MissingDocsRuleConfiguration
+    typealias ConfigurationType = MissingDocsRuleConfiguration
+    var configuration: MissingDocsRuleConfiguration
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "missing_docs",
         name: "Missing Docs",
         description: "Declarations should be documented.",
@@ -73,7 +83,13 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
             """),
             Example("""
             public extension A {}
-            """)
+            """),
+            Example("""
+            /// docs
+            public class A {
+                public init() {}
+            }
+            """, configuration: ["excludes_trivial_init": true])
         ],
         triggeringExamples: [
             // public, undocumented
@@ -93,23 +109,30 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
 
             public let b: Int
             }
-            """)
+            """),
+            Example("""
+            /// docs
+            public class A {
+                public init(argument: String) {}
+            }
+            """, configuration: ["excludes_trivial_init": true])
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let acls = configuration.parameters.map { $0.value }
         let dict = file.structureDictionary
         return file.missingDocOffsets(
             in: dict,
             acls: acls,
             excludesExtensions: configuration.excludesExtensions,
-            excludesInheritedTypes: configuration.excludesInheritedTypes
+            excludesInheritedTypes: configuration.excludesInheritedTypes,
+            excludesTrivialInit: configuration.excludesTrivialInit
         ).map { offset, acl in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.parameters.first { $0.value == acl }?.severity ?? .warning,
                            location: Location(file: file, byteOffset: offset),
-                           reason: "\(acl.description) declarations should be documented.")
+                           reason: "\(acl.description) declarations should be documented")
         }
     }
 }

@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule, AutomaticTestableRule {
-    public var configuration = ProhibitedSuperConfiguration()
+struct ProhibitedSuperRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+    var configuration = ProhibitedSuperConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "prohibited_super_call",
-        name: "Prohibited calls to super",
-        description: "Some methods should not call super",
+        name: "Prohibited Calls to Super",
+        description: "Some methods should not call super.",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -72,19 +72,38 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let offset = dictionary.bodyOffset,
-            let name = dictionary.name,
-            kind == .functionMethodInstance,
-            configuration.resolvedMethodNames.contains(name),
-            dictionary.enclosedSwiftAttributes.contains(.override),
-            dictionary.extractCallsToSuper(methodName: name).isNotEmpty
-            else { return [] }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(resolvedMethodNames: configuration.resolvedMethodNames)
+    }
+}
 
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset),
-                               reason: "Method '\(name)' should not call to super function")]
+private extension ProhibitedSuperRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let resolvedMethodNames: [String]
+
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            [ProtocolDeclSyntax.self]
+        }
+
+        init(resolvedMethodNames: [String]) {
+            self.resolvedMethodNames = resolvedMethodNames
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard let body = node.body,
+                  node.modifiers.containsOverride,
+                  !node.modifiers.containsStaticOrClass,
+                  case let name = node.resolvedName(),
+                  resolvedMethodNames.contains(name),
+                  node.numberOfCallsToSuper() > 0 else {
+                return
+            }
+
+            violations.append(ReasonedRuleViolation(
+                position: body.leftBrace.endPositionBeforeTrailingTrivia,
+                reason: "Method '\(name)' should not call to super function"
+            ))
+        }
     }
 }

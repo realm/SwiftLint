@@ -1,58 +1,61 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "quick_discouraged_pending_test",
         name: "Quick Discouraged Pending Test",
-        description: "Discouraged pending test. This test won't run while it's marked as pending.",
+        description: "This test won't run as long as it's marked pending",
         kind: .lint,
         nonTriggeringExamples: QuickDiscouragedPendingTestRuleExamples.nonTriggeringExamples,
         triggeringExamples: QuickDiscouragedPendingTestRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
-        let testClasses = dict.substructure.filter {
-            return $0.inheritedTypes.contains("QuickSpec") &&
-                $0.declarationKind == .class
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let specDeclarations = testClasses.flatMap { classDict in
-            return classDict.substructure.filter {
-                return $0.name == "spec()" && $0.enclosedVarParameters.isEmpty &&
-                    $0.declarationKind == .functionMethodInstance &&
-                    $0.enclosedSwiftAttributes.contains(.override)
+private extension QuickDiscouragedPendingTestRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
+               case let name = identifierExpr.identifier.withoutTrivia().text,
+               QuickPendingCallKind(rawValue: name) != nil {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
-        return specDeclarations.flatMap {
-            validate(file: file, dictionary: $0)
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.containsInheritance ? .visitChildren : .skipChildren
+        }
+
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.isSpecFunction ? .visitChildren : .skipChildren
         }
     }
+}
 
-    private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.expressionKind else { return nil }
-            return validate(file: file, kind: kind, dictionary: subDict)
+private extension ClassDeclSyntax {
+    var containsInheritance: Bool {
+        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
+            return false
         }
+
+        return inheritanceList.isNotEmpty
     }
+}
 
-    private func validate(file: SwiftLintFile,
-                          kind: SwiftExpressionKind,
-                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .call,
-            let name = dictionary.name,
-            let offset = dictionary.offset,
-            QuickPendingCallKind(rawValue: name) != nil else { return [] }
-
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))]
+private extension FunctionDeclSyntax {
+    var isSpecFunction: Bool {
+        return identifier.tokenKind == .identifier("spec") &&
+            signature.input.parameterList.isEmpty &&
+            modifiers.containsOverride
     }
 }
 

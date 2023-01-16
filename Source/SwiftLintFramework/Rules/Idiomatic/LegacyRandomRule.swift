@@ -1,12 +1,14 @@
-public struct LegacyRandomRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+import SwiftSyntax
 
-    public init() {}
+struct LegacyRandomRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public static var description = RuleDescription(
+    init() {}
+
+    static var description = RuleDescription(
         identifier: "legacy_random",
         name: "Legacy Random",
-        description: "Prefer using `type.random(in:)` over legacy functions.",
+        description: "Prefer using `type.random(in:)` over legacy functions",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("Int.random(in: 0..<10)\n"),
@@ -20,37 +22,24 @@ public struct LegacyRandomRule: ASTRule, ConfigurationProviderRule, AutomaticTes
         ]
     )
 
-    private let legacyRandomFunctions: Set<String> = [
-        "arc4random",
-        "arc4random_uniform",
-        "drand48"
-    ]
-
-    public func validate(
-        file: SwiftLintFile,
-        kind: SwiftExpressionKind,
-        dictionary: SourceKittenDictionary
-    ) -> [StyleViolation] {
-        guard containsViolation(kind: kind, dictionary: dictionary),
-        let offset = dictionary.offset else {
-            return []
-        }
-
-        let location = Location(file: file, byteOffset: offset)
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: location)
-        ]
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func containsViolation(kind: SwiftExpressionKind, dictionary: SourceKittenDictionary) -> Bool {
-        guard kind == .call,
-            let name = dictionary.name,
-            legacyRandomFunctions.contains(name) else {
-            return false
+private extension LegacyRandomRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private static let legacyRandomFunctions: Set<String> = [
+            "arc4random",
+            "arc4random_uniform",
+            "drand48"
+        ]
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if let function = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.withoutTrivia().text,
+               Self.legacyRandomFunctions.contains(function) {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
-
-        return true
     }
 }

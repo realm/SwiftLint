@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "operator_whitespace",
         name: "Operator Function Whitespace",
-        description: "Operators should be surrounded by a single whitespace when defining them.",
+        description: "Operators should be surrounded by a single whitespace when defining them",
         kind: .style,
         nonTriggeringExamples: [
             Example("func <| (lhs: Int, rhs: Int) -> Int {}\n"),
@@ -25,19 +25,34 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, Automat
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let escapedOperators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."]
-            .map({ "\\\($0)" }).joined()
-        let operators = "\(escapedOperators)%<>&"
-        let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
-        let pattern1 = "func\\s+[\(operators)]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
-        let pattern2 = "func\(zeroOrManySpaces)[\(operators)]+\\s+(<[A-Z]+>)?\\("
-        return file.match(pattern: "(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
-            return syntaxKinds.first == .keyword
-        }.map { range, _ in
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: range.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension OperatorFunctionWhitespaceRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard node.isOperatorDeclaration, node.hasWhitespaceViolation else {
+                return
+            }
+
+            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
+
+private extension FunctionDeclSyntax {
+    var isOperatorDeclaration: Bool {
+        switch identifier.tokenKind {
+        case .spacedBinaryOperator, .unspacedBinaryOperator:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var hasWhitespaceViolation: Bool {
+        !identifier.trailingTrivia.isSingleSpace || !funcKeyword.trailingTrivia.isSingleSpace
     }
 }

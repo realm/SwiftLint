@@ -1,15 +1,15 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "explicit_self",
         name: "Explicit Self",
-        description: "Instance variables and functions should be explicitly accessed with 'self.'.",
+        description: "Instance variables and functions should be explicitly accessed with 'self.'",
         kind: .style,
         nonTriggeringExamples: ExplicitSelfRuleExamples.nonTriggeringExamples,
         triggeringExamples: ExplicitSelfRuleExamples.triggeringExamples,
@@ -17,7 +17,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
         requiresFileOnDisk: true
     )
 
-    public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         return violationRanges(in: file, compilerArguments: compilerArguments).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
@@ -25,7 +25,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
         }
     }
 
-    public func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
+    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
         let violations = violationRanges(in: file, compilerArguments: compilerArguments)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }

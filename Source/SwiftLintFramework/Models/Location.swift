@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
 /// The placement of a segment of Swift in a collection of source files.
 public struct Location: CustomStringConvertible, Comparable, Codable {
@@ -52,8 +53,17 @@ public struct Location: CustomStringConvertible, Comparable, Codable {
         }
     }
 
+    /// Creates a `Location` based on a `SwiftLintFile` and a SwiftSyntax `AbsolutePosition` into the file.
+    /// Fails if the specified offset was not a valid location in the file.
+    ///
+    /// - parameter file:     The file for this location.
+    /// - parameter position: The absolute position returned from SwiftSyntax.
+    public init(file: SwiftLintFile, position: AbsolutePosition) {
+        self.init(file: file, byteOffset: ByteCount(position.utf8Offset))
+    }
+
     /// Creates a `Location` based on a `SwiftLintFile` and a UTF8 character-offset into the file.
-    /// Fails if tthe specified offset was not a valid location in the file.
+    /// Fails if the specified offset was not a valid location in the file.
     ///
     /// - parameter file:   The file for this location.
     /// - parameter offset: The offset in UTF8 fragments into the file for this location.

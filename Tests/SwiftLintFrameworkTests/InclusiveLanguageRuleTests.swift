@@ -2,10 +2,6 @@
 import XCTest
 
 class InclusiveLanguageRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(InclusiveLanguageRule.description)
-    }
-
     func testNonTriggeringExamplesWithNonDefaultConfig() {
         InclusiveLanguageRuleExamples.nonTriggeringExamplesWithConfig.forEach { example in
             let description = InclusiveLanguageRule.description

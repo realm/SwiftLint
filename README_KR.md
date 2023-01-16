@@ -4,8 +4,8 @@ SwiftLint는 스위프트 스타일 및 컨벤션을 강제하기 위한 도구�
 
 SwiftLint는 좀 더 정확한 결과를 위해 [Clang](http://clang.llvm.org)과 [SourceKit](http://www.jpsim.com/uncovering-sourcekit)에 연결하여 소스 파일의 [AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) 표현을 사용합니다.
 
-[![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=master)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=master)
-[![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=master)](https://codecov.io/github/realm/SwiftLint?branch=master)
+[![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
+[![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=main)](https://codecov.io/github/realm/SwiftLint?branch=main)
 
 ![](assets/screenshot.png)
 
@@ -56,7 +56,7 @@ $ mint install realm/SwiftLint
 
 ### Xcode
 
-SwiftLint를 Xcode 스킴에 통합하여 IDE 상에 경고나 에러를 표시할 수 있습니다. "Run Script Phase"를 새로 만들고 아래 스크립트를 추가하기만 하면 됩니다.
+SwiftLint를 Xcode 프로젝트에 통합하여 IDE 상에 경고나 에러를 표시할 수 있습니다. 프로젝트의 파일 내비게이터에서 타겟 앱을 선택 후 "Build Phases" 탭으로 이동합니다. + 버튼을 클릭한 후 "Run Script Phase"를 선택합니다. 그 후 아래 스크립트를 추가하기만 하면 됩니다.
 
 ```bash
 if which swiftlint >/dev/null; then
@@ -67,6 +67,31 @@ fi
 ```
 
 ![](assets/runscript.png)
+
+만약, 애플 실리콘 환경에서 Homebrew를 통해 SwiftLint를 설치했다면, 아마도 다음과 같은 경고를 겪었을 것입니다.
+
+> warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint
+
+그 이유는, 애플 실리콘 기반 맥에서 Homebrew는 기본적으로 바이너리들을 `/opt/homebrew/bin`에 저장하기 때문입니다. SwiftLint가 어디 있는지 찾는 것을 Xcode에 알려주기 위해, build phase에서 `/opt/homebrew/bin`를 `PATH` 환경 변수에 동시에 추가하여야 합니다.
+
+```bash
+export PATH="$PATH:/opt/homebrew/bin"
+if which swiftlint > /dev/null; then
+  swiftlint
+else
+  echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
+fi
+```
+
+혹은 아래와 같이 `/usr/local/bin`에 심볼릭 링크를 생성하여 실제 바이너리가 있는 곳으로 포인팅할 수 있습니다. :
+
+```bash
+ln -s /opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint
+```
+
+당신은 SwiftLint phase를 'Compile Sources' 단계 직전으로 옮겨 컴파일 전에 에러를 빠르게 찾고 싶어 할 것입니다. 하지만, SwiftLint는 컴파일러의 구문 분석 단계를 완벽히 수행하는 유효한 Swift 코드를 실행하기 위해 설계되었습니다. 따라서, 'Compile Sources' 전에 SwiftLint를 실행하면 일부 부정확한 오류가 발생할 수도 있습니다.
+
+만약 당신은 위반 사항(violations)을 동시에 수정하는 것을 원한다면, 스크립트에 `swiftlint` 대신 `swiftlint --fix && swiftlint`을 적어야 합니다. 이는 프로젝트의 수정 가능한 모든 위반 사항들이 수정되고 나머지 위반 사항에 대한 경고가 표시된다는 것을 의미합니다.
 
 CocoaPods를 사용해서 설치한 경우는 아래 스크립트를 대신 사용합니다.
 

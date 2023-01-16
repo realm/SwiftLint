@@ -1,5 +1,29 @@
 import Foundation
 
+public final class CustomRuleTimer {
+    private let lock = NSLock()
+    private var ruleIDForTimes = [String: [TimeInterval]]()
+    fileprivate var shouldRecord = false
+
+    public static let shared = CustomRuleTimer()
+
+    public func activate() {
+        shouldRecord = true
+    }
+
+    func register(time: TimeInterval, forRuleID ruleID: String) {
+        guard shouldRecord else { return }
+
+        lock.lock()
+        defer { lock.unlock() }
+        ruleIDForTimes[ruleID, default: []].append(time)
+    }
+
+    public func dump() -> [String: TimeInterval] {
+        ruleIDForTimes.mapValues { $0.reduce(0, +) }
+    }
+}
+
 private extension Region {
     func isRuleDisabled(customRuleIdentifier: String) -> Bool {
         return disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
@@ -8,19 +32,17 @@ private extension Region {
 
 // MARK: - CustomRulesConfiguration
 
-public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
-    public var consoleDescription: String { return "user-defined" }
+struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
+    var consoleDescription: String { return "user-defined" }
     internal var cacheDescription: String {
         return customRuleConfigurations
             .sorted { $0.identifier < $1.identifier }
             .map { $0.cacheDescription }
             .joined(separator: "\n")
     }
-    public var customRuleConfigurations = [RegexConfiguration]()
+    var customRuleConfigurations = [RegexConfiguration]()
 
-    public init() {}
-
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -42,24 +64,23 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescr
 
 // MARK: - CustomRules
 
-public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
+struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
     internal var cacheDescription: String {
         return configuration.cacheDescription
     }
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "custom_rules",
         name: "Custom Rules",
-        description: "Create custom rules by providing a regex string. " +
-            "Optionally specify what syntax kinds to match against, the severity " +
-            "level, and what message to display.",
+        description: """
+            Create custom rules by providing a regex string. Optionally specify what syntax kinds to match against, \
+            the severity level, and what message to display.
+            """,
         kind: .style)
 
-    public var configuration = CustomRulesConfiguration()
+    var configuration = CustomRulesConfiguration()
 
-    public init() {}
-
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         var configurations = configuration.customRuleConfigurations
 
         guard configurations.isNotEmpty else {
@@ -67,25 +88,17 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
         }
 
         if let path = file.path {
-            let pathRange = path.fullNSRange
             configurations = configurations.filter { config in
-                let included: Bool
-                if let includedRegex = config.included {
-                    included = includedRegex.matches(in: path, options: [], range: pathRange).isNotEmpty
-                } else {
-                    included = true
-                }
-                guard included else {
-                    return false
-                }
-                guard let excludedRegex = config.excluded else {
-                    return true
-                }
-                return excludedRegex.matches(in: path, options: [], range: pathRange).isEmpty
+                config.shouldValidate(filePath: path)
             }
         }
 
         return configurations.flatMap { configuration -> [StyleViolation] in
+            let start = Date()
+            defer {
+                CustomRuleTimer.shared.register(time: -start.timeIntervalSinceNow, forRuleID: configuration.identifier)
+            }
+
             let pattern = configuration.regex.pattern
             let captureGroup = configuration.captureGroup
             let excludingKinds = configuration.excludedMatchKinds

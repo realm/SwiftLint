@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct FatalErrorMessageRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "fatal_error_message",
         name: "Fatal Error Message",
-        description: "A fatalError call should have a message.",
+        description: "A fatalError call should have a message",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -36,32 +36,30 @@ public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRu
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .call,
-            let offset = dictionary.offset,
-            dictionary.name == "fatalError",
-            hasEmptyBody(dictionary: dictionary, file: file) else {
-                return []
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func hasEmptyBody(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let bodyRange = dictionary.bodyByteRange else {
-            return false
+private extension FatalErrorMessageRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard let expression = node.calledExpression.as(IdentifierExprSyntax.self),
+                  expression.identifier.withoutTrivia().text == "fatalError",
+                node.argumentList.isEmptyOrEmptyString else {
+                return
+            }
+
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
 
-        if bodyRange.length == 0 {
+private extension TupleExprElementListSyntax {
+    var isEmptyOrEmptyString: Bool {
+        if isEmpty {
             return true
         }
-
-        let body = file.stringView.substringWithByteRange(bodyRange)
-        return body == "\"\""
+        return count == 1 && first?.expression.as(StringLiteralExprSyntax.self)?.isEmptyString == true
     }
 }

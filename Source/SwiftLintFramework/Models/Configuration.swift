@@ -7,7 +7,7 @@ public struct Configuration {
     /// The default Configuration resulting from an empty configuration file.
     public static var `default`: Configuration {
         // This is realized via a getter to account for differences of the current working directory
-        Configuration()
+        Self()
     }
 
     /// The default file name to look for user-defined configurations.
@@ -117,7 +117,8 @@ public struct Configuration {
     /// - parameter cachePath:              The location of the persisted cache to use whith this configuration.
     /// - parameter pinnedVersion:          The SwiftLint version defined in this configuration.
     /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable files
-    internal init(
+    @_spi(TestHelper)
+    public init(
         rulesMode: RulesMode = .default(disabled: [], optIn: []),
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
         ruleList: RuleList = primaryRuleList,

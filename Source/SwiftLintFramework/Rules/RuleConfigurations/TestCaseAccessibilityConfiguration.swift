@@ -1,13 +1,15 @@
-public struct TestCaseAccessibilityConfiguration: RuleConfiguration, Equatable {
-    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    public private(set) var allowedPrefixes: Set<String> = []
+struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var allowedPrefixes: Set<String> = []
+    private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
-            ", allowed_prefixes: [\(allowedPrefixes)]"
+    var consoleDescription: String {
+        return "severity: \(severityConfiguration.consoleDescription)" +
+            ", allowed_prefixes: \(allowedPrefixes.sorted())" +
+            ", test_parent_classes: \(testParentClasses.sorted())"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -19,9 +21,9 @@ public struct TestCaseAccessibilityConfiguration: RuleConfiguration, Equatable {
         if let allowedPrefixes = configuration["allowed_prefixes"] as? [String] {
             self.allowedPrefixes = Set(allowedPrefixes)
         }
-    }
 
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
+        if let extraTestParentClasses = configuration["test_parent_classes"] as? [String] {
+            self.testParentClasses.formUnion(extraTestParentClasses)
+        }
     }
 }

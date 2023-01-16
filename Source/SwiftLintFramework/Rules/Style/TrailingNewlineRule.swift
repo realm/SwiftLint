@@ -18,15 +18,15 @@ extension String {
     }
 }
 
-public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "trailing_newline",
         name: "Trailing Newline",
-        description: "Files should have a single trailing newline.",
+        description: "Files should have a single trailing newline",
         kind: .style,
         nonTriggeringExamples: [
             Example("let a = 0\n")
@@ -34,7 +34,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         triggeringExamples: [
             Example("let a = 0"),
             Example("let a = 0\n\n")
-        ],
+        ].skipWrappingInCommentTests().skipWrappingInStringTests(),
         corrections: [
             Example("let a = 0"): Example("let a = 0\n"),
             Example("let b = 0\n\n"): Example("let b = 0\n"),
@@ -42,7 +42,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         if file.contents.trailingNewlineCount() == 1 {
             return []
         }
@@ -51,7 +51,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
                                location: Location(file: file.path, line: max(file.lines.count, 1)))]
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         guard let count = file.contents.trailingNewlineCount(), count != 1 else {
             return []
         }

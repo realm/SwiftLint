@@ -1,21 +1,7 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-private let typeAndExtensionKinds = SwiftDeclarationKind.typeKinds + [.extension, .protocol]
-
-private extension SourceKittenDictionary {
-    func recursiveDeclaredTypeNames() -> [String] {
-        let subNames = substructure.flatMap { $0.recursiveDeclaredTypeNames() }
-        if let kind = declarationKind,
-            typeAndExtensionKinds.contains(kind), let name = name {
-            return [name] + subNames
-        }
-        return subNames
-    }
-}
-
-public struct FileNameRule: ConfigurationProviderRule, OptInRule {
-    public var configuration = FileNameConfiguration(
+struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
+    var configuration = FileNameConfiguration(
         severity: .warning,
         excluded: ["main.swift", "LinuxMain.swift"],
         prefixPattern: "",
@@ -23,16 +9,16 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         nestedTypeSeparator: "."
     )
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "file_name",
         name: "File Name",
-        description: "File name should match a type or extension declared in the file (if any).",
+        description: "File name should match a type or extension declared in the file (if any)",
         kind: .idiomatic
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let filePath = file.path,
             case let fileName = filePath.bridge().lastPathComponent,
             !configuration.excluded.contains(fileName) else {
@@ -57,10 +43,11 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         }
 
         // Process nested type separator
-        let dictionary = file.structureDictionary
-        let allDeclaredTypeNames = dictionary.recursiveDeclaredTypeNames().map {
-            $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
-        }
+        let allDeclaredTypeNames = TypeNameCollectingVisitor(viewMode: .sourceAccurate)
+            .walk(tree: file.syntaxTree, handler: \.names)
+            .map {
+                $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
+            }
 
         guard allDeclaredTypeNames.isNotEmpty, !allDeclaredTypeNames.contains(typeInFileName) else {
             return []
@@ -69,5 +56,37 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         return [StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity.severity,
                                location: Location(file: filePath, line: 1))]
+    }
+}
+
+private class TypeNameCollectingVisitor: SyntaxVisitor {
+    private(set) var names: Set<String> = []
+
+    override func visitPost(_ node: ClassDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: ActorDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: StructDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: TypealiasDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: EnumDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: ProtocolDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: ExtensionDeclSyntax) {
+        names.insert(node.extendedType.withoutTrivia().description)
     }
 }

@@ -1,17 +1,16 @@
 import Foundation
+import IDEUtils
 import SourceKittenFramework
 
-public struct CommentSpacingRule: ConfigurationProviderRule,
-                                  SubstitutionCorrectableRule,
-                                  AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, SubstitutionCorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "comment_spacing",
         name: "Comment Spacing",
-        description: "Prefer at least one space after slashes for comments.",
+        description: "Prefer at least one space after slashes for comments",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -120,16 +119,14 @@ public struct CommentSpacingRule: ConfigurationProviderRule,
         ]
     )
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         // Find all comment tokens in the file and regex search them for violations
-        let commentTokens = file.syntaxMap.tokens.filter { token in
-            guard let kind = token.kind else { return false }
-            return SyntaxKind.commentKinds.contains(kind)
-        }
-        return commentTokens
-            .compactMap { (token: SwiftLintSyntaxToken) -> [NSRange]? in
+        file.syntaxClassifications
+            .filter(\.kind.isComment)
+            .map { $0.range.toSourceKittenByteRange() }
+            .compactMap { (range: ByteRange) -> [NSRange]? in
                 return file.stringView
-                    .substringWithByteRange(token.range)
+                    .substringWithByteRange(range)
                     .map(StringView.init)
                     .map { commentBody in
                         // Look for 2+ slash characters followed immediately by
@@ -143,7 +140,7 @@ public struct CommentSpacingRule: ConfigurationProviderRule,
                                     ByteRange(
                                         // Safe to mix NSRange offsets with byte offsets here because the regex can't
                                         // contain multi-byte characters
-                                        location: ByteCount(token.range.lowerBound.value + result.range.upperBound - 1),
+                                        location: ByteCount(range.lowerBound.value + result.range.upperBound - 1),
                                         length: 0
                                     )
                                 )
@@ -153,7 +150,7 @@ public struct CommentSpacingRule: ConfigurationProviderRule,
             .flatMap { $0 }
     }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map { range in
             StyleViolation(
                 ruleDescription: Self.description,
@@ -163,7 +160,7 @@ public struct CommentSpacingRule: ConfigurationProviderRule,
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, " ")
     }
 }

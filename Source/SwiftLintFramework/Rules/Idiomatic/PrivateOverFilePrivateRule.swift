@@ -1,15 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
-    public var configuration = PrivateOverFilePrivateRuleConfiguration()
+struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
+    var configuration = PrivateOverFilePrivateRuleConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "private_over_fileprivate",
-        name: "Private over fileprivate",
-        description: "Prefer `private` over `fileprivate` declarations.",
+        name: "Private over Fileprivate",
+        description: "Prefer `private` over `fileprivate` declarations",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("extension String {}"),
@@ -50,49 +49,211 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, Substitutio
         ],
         corrections: [
             Example("↓fileprivate enum MyEnum {}"): Example("private enum MyEnum {}"),
+            Example("↓fileprivate enum MyEnum { fileprivate class A {} }"):
+                Example("private enum MyEnum { fileprivate class A {} }"),
             Example("↓fileprivate class MyClass {\nfileprivate(set) var myInt = 4\n}"):
                 Example("private class MyClass {\nfileprivate(set) var myInt = 4\n}")
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(validateExtensions: configuration.validateExtensions)
+    }
+
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            validateExtensions: configuration.validateExtensions,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private extension PrivateOverFilePrivateRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let validateExtensions: Bool
+
+        init(validateExtensions: Bool) {
+            self.validateExtensions = validateExtensions
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            if let privateModifier = node.modifiers.fileprivateModifier {
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
+            }
+            return .skipChildren
+        }
+
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            if validateExtensions, let privateModifier = node.modifiers.fileprivateModifier {
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
+            }
+            return .skipChildren
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            if let privateModifier = node.modifiers.fileprivateModifier {
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
+            }
+            return .skipChildren
+        }
+
+        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            if let privateModifier = node.modifiers.fileprivateModifier {
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
+            }
+            return .skipChildren
+        }
+
+        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+            if let privateModifier = node.modifiers.fileprivateModifier {
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
+            }
+            return .skipChildren
+        }
+
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+            if let privateModifier = node.modifiers.fileprivateModifier {
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
+            }
+            return .skipChildren
+        }
+
+        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+            if let privateModifier = node.modifiers.fileprivateModifier {
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
+            }
+            return .skipChildren
+        }
+
+        override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
+            if let privateModifier = node.modifiers.fileprivateModifier {
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
+            }
+            return .skipChildren
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let syntaxTokens = file.syntaxMap.tokens
-        let contents = file.stringView
+    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        private let validateExtensions: Bool
+        private let locationConverter: SourceLocationConverter
+        private let disabledRegions: [SourceRange]
 
-        let dict = file.structureDictionary
-        return dict.substructure.compactMap { dictionary -> NSRange? in
-            guard let offset = dictionary.offset else {
-                return nil
+        init(validateExtensions: Bool, locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.validateExtensions = validateExtensions
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        // don't call super in any of the `visit` methods to avoid digging into the children
+        override func visit(_ node: ExtensionDeclSyntax) -> DeclSyntax {
+            guard validateExtensions, let modifier = node.modifiers.fileprivateModifier,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return DeclSyntax(node)
             }
 
-            if !configuration.validateExtensions &&
-                dictionary.declarationKind == .extension {
-                return nil
+            correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
+            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            return DeclSyntax(newNode)
+        }
+
+        override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
+            guard let modifier = node.modifiers.fileprivateModifier,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return DeclSyntax(node)
             }
 
-            let parts = syntaxTokens.prefix { offset > $0.offset }
-            guard let lastKind = parts.last,
-                lastKind.kind == .attributeBuiltin,
-                let aclName = contents.substringWithByteRange(lastKind.range),
-                AccessControlLevel(description: aclName) == .fileprivate,
-                let range = contents.byteRangeToNSRange(lastKind.range)
-            else {
-                return nil
+            correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
+            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            return DeclSyntax(newNode)
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
+            guard let modifier = node.modifiers.fileprivateModifier,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return DeclSyntax(node)
             }
 
-            return range
+            correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
+            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            return DeclSyntax(newNode)
+        }
+
+        override func visit(_ node: EnumDeclSyntax) -> DeclSyntax {
+            guard let modifier = node.modifiers.fileprivateModifier,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return DeclSyntax(node)
+            }
+
+            correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
+            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            return DeclSyntax(newNode)
+        }
+
+        override func visit(_ node: ProtocolDeclSyntax) -> DeclSyntax {
+            guard let modifier = node.modifiers.fileprivateModifier,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return DeclSyntax(node)
+            }
+
+            correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
+            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            return DeclSyntax(newNode)
+        }
+
+        override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
+            guard let modifier = node.modifiers.fileprivateModifier,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return DeclSyntax(node)
+            }
+
+            correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
+            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            return DeclSyntax(newNode)
+        }
+
+        override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
+            guard let modifier = node.modifiers.fileprivateModifier,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return DeclSyntax(node)
+            }
+
+            correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
+            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            return DeclSyntax(newNode)
+        }
+
+        override func visit(_ node: TypealiasDeclSyntax) -> DeclSyntax {
+            guard let modifier = node.modifiers.fileprivateModifier,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return DeclSyntax(node)
+            }
+
+            correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
+            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            return DeclSyntax(newNode)
         }
     }
+}
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "private")
+private extension ModifierListSyntax? {
+    var fileprivateModifier: DeclModifierSyntax? {
+        self?.first { $0.name.tokenKind == .fileprivateKeyword }
+    }
+}
+
+private extension ModifierListSyntax {
+    func replacing(fileprivateModifier: DeclModifierSyntax) -> ModifierListSyntax? {
+        replacing(
+            childAt: fileprivateModifier.indexInParent,
+            with: fileprivateModifier.withName(
+                .privateKeyword(
+                    leadingTrivia: fileprivateModifier.leadingTrivia ?? .zero,
+                    trailingTrivia: fileprivateModifier.trailingTrivia ?? .zero
+                )
+            )
+        )
     }
 }

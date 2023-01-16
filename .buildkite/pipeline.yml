@@ -1,7 +1,33 @@
 steps:
+  - label: "Bazel"
+    commands:
+      - echo "+++ Build"
+      - bazel build :swiftlint
+      - echo "+++ Test"
+      - bazel test --test_output=errors //Tests/...
+  - label: "SwiftPM"
+    commands:
+      - echo "+++ Test"
+      - swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
   - label: "Danger"
     commands:
-      - bundle install
-      - bundle exec danger --verbose
+      - echo "--- Build Danger"
+      - bazel build //tools:danger
+      - echo "+++ Run Danger"
+      - ./bazel-bin/tools/danger --verbose
   - label: "Analyze"
-    command: make analyze
+    commands:
+      - echo "+++ Analyze"
+      - bazel test -c opt --test_output=streamed --test_timeout=3600 --spawn_strategy=local analyze
+  - label: "TSan Tests"
+    commands:
+      - echo "+++ Test"
+      - bazel test --test_output=streamed --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
+  - label: "TSan Runs"
+    commands:
+      - echo "--- Build"
+      - bazel build --config=release --features=tsan swiftlint
+      - echo "+++ Pre-cache SwiftLint Run"
+      - ./bazel-bin/swiftlint --progress --lenient
+      - echo "+++ Post-cache SwiftLint Run"
+      - ./bazel-bin/swiftlint --progress --lenient

@@ -1,15 +1,14 @@
-import SourceKittenFramework
 import SwiftSyntax
 
-public struct ForceCastRule: ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.error)
+struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.error)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "force_cast",
         name: "Force Cast",
-        description: "Force casts should be avoided.",
+        description: "Force casts should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("NSNumber() as? Int\n")
@@ -17,22 +16,21 @@ public struct ForceCastRule: ConfigurationProviderRule, AutomaticTestableRule {
         triggeringExamples: [ Example("NSNumber() ↓as! Int\n") ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let visitor = ForceCastRuleVisitor()
-        return visitor.walk(file: file, handler: \.positions).map { position in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: ByteCount(position)))
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        ForceCastRuleVisitor(viewMode: .sourceAccurate)
     }
 }
 
-private final class ForceCastRuleVisitor: SyntaxVisitor {
-    var positions: [AbsolutePosition] = []
-
+private final class ForceCastRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: AsExprSyntax) {
         if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
-            positions.append(node.asTok.positionAfterSkippingLeadingTrivia)
+            violations.append(node.asTok.positionAfterSkippingLeadingTrivia)
+        }
+    }
+
+    override func visitPost(_ node: UnresolvedAsExprSyntax) {
+        if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
+            violations.append(node.asTok.positionAfterSkippingLeadingTrivia)
         }
     }
 }

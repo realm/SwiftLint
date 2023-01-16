@@ -1,17 +1,15 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule,
-                                                       AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct EmptyParenthesesWithTrailingClosureRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "empty_parentheses_with_trailing_closure",
         name: "Empty Parentheses with Trailing Closure",
         description: "When using trailing closures, empty parentheses should be avoided " +
-                     "after the method call.",
+                     "after the method call",
         kind: .style,
         nonTriggeringExamples: [
             Example("[1, 2].map { $0 + 1 }\n"),
@@ -48,67 +46,65 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
         ]
     )
 
-    private static let emptyParenthesesRegex = regex("^\\s*\\(\\s*\\)")
-
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
-    }
-
-    public func violationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
-                                dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard kind == .call else {
-            return []
-        }
-
-        guard let offset = dictionary.offset,
-            let length = dictionary.length,
-            let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let bodyLength = dictionary.bodyLength,
-            bodyLength > 0 else {
-                return []
-        }
-
-        // avoid the more expensive regex match if there's no trailing closure in the substructure
-        if !dictionary.hasTrailingClosure {
-            return []
-        }
-
-        let rangeStart = nameOffset + nameLength
-        let rangeLength = (offset + length) - (nameOffset + nameLength)
-        let byteRange = ByteRange(location: rangeStart, length: rangeLength)
-        let regex = Self.emptyParenthesesRegex
-
-        guard let range = file.stringView.byteRangeToNSRange(byteRange),
-            let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
-            match.location == range.location
-        else {
-            return []
-        }
-
-        return [match]
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 
-private extension SourceKittenDictionary {
-    var hasTrailingClosure: Bool {
-        guard let lastStructure = substructure.last else {
-            return false
+private extension EmptyParenthesesWithTrailingClosureRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard let position = node.violationPosition else {
+                return
+            }
+
+            violations.append(position)
+        }
+    }
+
+    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
 
-        if SwiftVersion.current >= .fiveDotSix, lastStructure.expressionKind == .argument {
-            return lastStructure.substructure.last?.expressionKind == .closure
-        } else {
-            return lastStructure.expressionKind == .closure
+        override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
+            guard
+                let violationPosition = node.violationPosition,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
+
+            let newNode = node
+                .withLeftParen(nil)
+                .withRightParen(nil)
+                .withTrailingClosure(node.trailingClosure?.withLeadingTrivia(.spaces(1)))
+            correctionPositions.append(violationPosition)
+            return super.visit(newNode)
         }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var violationPosition: AbsolutePosition? {
+        guard trailingClosure != nil,
+              let leftParen = leftParen,
+              argumentList.isEmpty else {
+            return nil
+        }
+
+        return leftParen.positionAfterSkippingLeadingTrivia
     }
 }

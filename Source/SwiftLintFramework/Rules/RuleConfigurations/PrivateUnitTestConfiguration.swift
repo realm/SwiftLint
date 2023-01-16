@@ -1,22 +1,18 @@
 import Foundation
 
-public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
-    public let identifier: String
-    public var name: String?
-    public var message = "Regex matched."
-    public var regex: NSRegularExpression!
-    public var included: NSRegularExpression?
-    public var severityConfiguration = SeverityConfiguration(.warning)
+struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, CacheDescriptionProvider {
+    let identifier: String
+    var name: String?
+    var message = "Regex matched."
+    var regex: NSRegularExpression!
+    var included: NSRegularExpression?
+    var severityConfiguration = SeverityConfiguration(.warning)
 
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
-    }
-
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return "\(severity.rawValue): \(regex.pattern)"
     }
 
-    internal var cacheDescription: String {
+    var cacheDescription: String {
         let jsonObject: [String] = [
             identifier,
             name ?? "",
@@ -32,11 +28,11 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable, CacheD
         queuedFatalError("Could not serialize private unit test configuration for cache")
     }
 
-    public init(identifier: String) {
+    init(identifier: String) {
         self.identifier = identifier
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

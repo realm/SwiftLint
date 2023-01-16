@@ -1,13 +1,13 @@
-public struct MultilineParametersConfiguration: RuleConfiguration, Equatable {
+struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var allowsSingleLine = true
 
-    public var consoleDescription: String {
-        severityConfiguration.consoleDescription
+    var consoleDescription: String {
+        "severity: \(severityConfiguration.consoleDescription)"
             + ", allowsSingleLine: \(allowsSingleLine)"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

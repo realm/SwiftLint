@@ -1,15 +1,15 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
-    public var configuration = TrailingClosureConfiguration()
+struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
+    var configuration = TrailingClosureConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "trailing_closure",
         name: "Trailing Closure",
-        description: "Trailing closure syntax should be used whenever possible.",
+        description: "Trailing closure syntax should be used whenever possible",
         kind: .style,
         nonTriggeringExamples: [
             Example("foo.map { $0 + 1 }\n"),
@@ -30,7 +30,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         return violationOffsets(for: dict, file: file).map {
             StyleViolation(ruleDescription: Self.description,

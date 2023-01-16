@@ -1,15 +1,15 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "nimble_operator",
         name: "Nimble Operator",
-        description: "Prefer Nimble operator overloads over free matcher functions.",
+        description: "Prefer Nimble operator overloads over free matcher functions",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("expect(seagull.squawk) != \"Hi!\"\n"),
@@ -21,6 +21,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             Example("expect(x) === x"),
             Example("expect(10) == 10"),
             Example("expect(success) == true"),
+            Example("expect(value) == nil"),
+            Example("expect(value) != nil"),
             Example("expect(object.asyncFunction()).toEventually(equal(1))\n"),
             Example("expect(actual).to(haveCount(expected))\n"),
             Example("""
@@ -42,6 +44,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             Example("↓expect(x).to(beIdenticalTo(x))\n"),
             Example("↓expect(success).to(beTrue())\n"),
             Example("↓expect(success).to(beFalse())\n"),
+            Example("↓expect(value).to(beNil())\n"),
+            Example("↓expect(value).toNot(beNil())\n"),
             Example("expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n")
         ],
         corrections: [
@@ -60,6 +64,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             Example("↓expect(success).to(beFalse())\n"): Example("expect(success) == false\n"),
             Example("↓expect(success).toNot(beFalse())\n"): Example("expect(success) != false\n"),
             Example("↓expect(success).toNot(beTrue())\n"): Example("expect(success) != true\n"),
+            Example("↓expect(value).to(beNil())\n"): Example("expect(value) == nil\n"),
+            Example("↓expect(value).toNot(beNil())\n"): Example("expect(value) != nil\n"),
             Example("expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n"): Example("expect(10) > 2\n expect(10) > 2\n")
         ]
     )
@@ -88,10 +94,11 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         "beLessThan": (to: "<", toNot: nil, .withArguments),
         "beLessThanOrEqualTo": (to: "<=", toNot: nil, .withArguments),
         "beTrue": (to: "==", toNot: "!=", .nullary(analogueValue: "true")),
-        "beFalse": (to: "==", toNot: "!=", .nullary(analogueValue: "false"))
+        "beFalse": (to: "==", toNot: "!=", .nullary(analogueValue: "false")),
+        "beNil": (to: "==", toNot: "!=", .nullary(analogueValue: "nil"))
     ]
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let matches = violationMatchesRanges(in: file)
         return matches.map {
             StyleViolation(ruleDescription: Self.description,
@@ -137,7 +144,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             .map { $0.0 }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let matches = violationMatchesRanges(in: file)
             .filter { file.ruleEnabled(violatingRanges: [$0], for: self).isNotEmpty }
         guard matches.isNotEmpty else { return [] }

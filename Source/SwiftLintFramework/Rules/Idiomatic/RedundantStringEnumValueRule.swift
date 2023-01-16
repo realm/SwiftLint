@@ -1,24 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-private func children(of dict: SourceKittenDictionary,
-                      matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
-    return dict.substructure.compactMap { subDict in
-        if subDict.declarationKind == kind {
-            return subDict
-        }
-        return nil
-    }
-}
+struct RedundantStringEnumValueRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    init() {}
 
-    public init() {}
-
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "redundant_string_enum_value",
         name: "Redundant String Enum Value",
-        description: "String enum values can be omitted when they are equal to the enumcase name.",
+        description: "String enum values can be omitted when they are equal to the enumcase name",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -71,80 +61,54 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .enum else {
-            return []
-        }
-
-        // Check if it's a String enum
-        guard dictionary.inheritedTypes.contains("String") else {
-            return []
-        }
-
-        let violations = violatingOffsetsForEnum(dictionary: dictionary, file: file)
-        return violations.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0))
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> [ByteCount] {
-        var caseCount = 0
-        var violations = [ByteCount]()
-
-        for enumCase in children(of: dictionary, matching: .enumcase) {
-            caseCount += enumElementsCount(dictionary: enumCase)
-            violations += violatingOffsetsForEnumCase(dictionary: enumCase, file: file)
-        }
-
-        guard violations.count == caseCount else {
-            return []
-        }
-
-        return violations
-    }
-
-    private func enumElementsCount(dictionary: SourceKittenDictionary) -> Int {
-        return children(of: dictionary, matching: .enumelement).filter({ element in
-            return filterEnumInits(dictionary: element).isNotEmpty
-        }).count
-    }
-
-    private func violatingOffsetsForEnumCase(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> [ByteCount] {
-        return children(of: dictionary, matching: .enumelement).flatMap { element -> [ByteCount] in
-            guard let name = element.name else {
-                return []
-            }
-            return violatingOffsetsForEnumElement(dictionary: element, name: name, file: file)
-        }
-    }
-
-    private func violatingOffsetsForEnumElement(dictionary: SourceKittenDictionary, name: String,
-                                                file: SwiftLintFile) -> [ByteCount] {
-        let enumInits = filterEnumInits(dictionary: dictionary)
-
-        return enumInits.compactMap { dictionary -> ByteCount? in
-            guard let offset = dictionary.offset,
-                let length = dictionary.length else {
-                    return nil
+private extension RedundantStringEnumValueRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: EnumDeclSyntax) {
+            guard node.isStringEnum else {
+                return
             }
 
-            // the string would be quoted if offset and length were used directly
-            let rangeWithoutQuotes = ByteRange(location: offset + 1, length: length - 2)
-            let enumCaseName = file.stringView.substringWithByteRange(rangeWithoutQuotes) ?? ""
-            guard enumCaseName == name else {
-                return nil
-            }
+            let enumsWithExplicitValues = node.members.members
+                .flatMap { member -> EnumCaseElementListSyntax in
+                    guard let enumCaseDecl = member.decl.as(EnumCaseDeclSyntax.self) else {
+                        return EnumCaseElementListSyntax([])
+                    }
 
-            return offset
+                    return enumCaseDecl.elements
+                }
+                .filter { $0.rawValue != nil }
+
+            let redundantMembersPositions = enumsWithExplicitValues
+                .compactMap { element -> AbsolutePosition? in
+                    guard let stringExpr = element.rawValue?.value.as(StringLiteralExprSyntax.self),
+                          let segment = stringExpr.segments.onlyElement?.as(StringSegmentSyntax.self),
+                          segment.content.text == element.identifier.text else {
+                        return nil
+                    }
+
+                    return stringExpr.positionAfterSkippingLeadingTrivia
+                }
+
+            if redundantMembersPositions.count == enumsWithExplicitValues.count {
+                violations.append(contentsOf: redundantMembersPositions)
+            }
         }
     }
+}
 
-    private func filterEnumInits(dictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
-        return dictionary.elements.filter {
-            $0.kind == "source.lang.swift.structure.elem.init_expr"
+private extension EnumDeclSyntax {
+    var isStringEnum: Bool {
+        guard let inheritanceClause = inheritanceClause else {
+            return false
+        }
+
+        return inheritanceClause.inheritedTypeCollection.contains { elem in
+            elem.typeName.as(SimpleTypeIdentifierSyntax.self)?.typeName == "String"
         }
     }
 }

@@ -1,79 +1,97 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SwitchCaseAlignmentConfiguration()
+struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SwitchCaseAlignmentConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "switch_case_alignment",
         name: "Switch and Case Statement Alignment",
-        description: "Case statements should vertically align with their enclosing switch statement, " +
-                     "or indented if configured otherwise.",
+        description: """
+            Case statements should vertically align with their enclosing switch statement, or indented if configured \
+            otherwise.
+            """,
         kind: .style,
-        nonTriggeringExamples: Examples(indentedCases: false).nonTriggeringExamples,
+        nonTriggeringExamples: Examples(indentedCases: false).nonTriggeringExamples + [
+            Example("""
+            extension OSLogFloatFormatting {
+              /// Returns a fprintf-compatible length modifier for a given argument type
+              @_semantics("constant_evaluable")
+              @inlinable
+              @_optimize(none)
+              internal static func _formatStringLengthModifier<I: FloatingPoint>(
+                _ type: I.Type
+              ) -> String? {
+                switch type {
+                //   fprintf formatters promote Float to Double
+                case is Float.Type: return ""
+                case is Double.Type: return ""
+            #if !os(Windows) && (arch(i386) || arch(x86_64))
+                //   fprintf formatters use L for Float80
+                case is Float80.Type: return "L"
+            #endif
+                default: return nil
+                }
+              }
+            }
+            """, excludeFromDocumentation: true)
+        ],
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile, kind: StatementKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let contents = file.stringView
-
-        guard kind == .switch,
-              let offset = dictionary.offset,
-              let (_, switchCharacter) = contents.lineAndCharacter(forByteOffset: offset) else {
-            return []
-        }
-
-        let caseStatements = dictionary.substructure.filter { subDict in
-            // includes both `case` and `default` statements
-            return subDict.statementKind == .case
-        }
-
-        if caseStatements.isEmpty {
-            return []
-        }
-
-        let caseLocations = caseStatements.compactMap { caseDict -> Location? in
-            guard let byteOffset = caseDict.offset,
-                  let (line, char) = contents.lineAndCharacter(forByteOffset: byteOffset) else {
-                return nil
-            }
-
-            return Location(file: file.path, line: line, character: char)
-        }
-
-        guard let firstCaseCharacter = caseLocations.first?.character else {
-            return []
-        }
-
-        // If indented_cases is on, the first case should be indented from its containing switch.
-        if configuration.indentedCases, firstCaseCharacter <= switchCharacter {
-            return caseLocations.map(locationToViolation)
-        }
-
-        let indentation = configuration.indentedCases ? firstCaseCharacter - switchCharacter : 0
-
-        return caseLocations
-            .filter { $0.character != switchCharacter + indentation }
-            .map(locationToViolation)
-    }
-
-    private func locationToViolation(_ location: Location) -> StyleViolation {
-        let reason = """
-                    Case statements should \
-                    \(configuration.indentedCases ? "be indented within" : "vertically align with") \
-                    their enclosing switch statement.
-                    """
-
-        return StyleViolation(ruleDescription: Self.description,
-                              severity: configuration.severityConfiguration.severity,
-                              location: location,
-                              reason: reason)
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(locationConverter: file.locationConverter, indentedCases: configuration.indentedCases)
     }
 }
 
 extension SwitchCaseAlignmentRule {
+    private final class Visitor: ViolationsSyntaxVisitor {
+        private let locationConverter: SourceLocationConverter
+        private let indentedCases: Bool
+
+        init(locationConverter: SourceLocationConverter, indentedCases: Bool) {
+            self.locationConverter = locationConverter
+            self.indentedCases = indentedCases
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: SwitchStmtSyntax) {
+            let switchPosition = node.switchKeyword.positionAfterSkippingLeadingTrivia
+            guard
+                let switchColumn = locationConverter.location(for: switchPosition).column,
+                node.cases.isNotEmpty,
+                let firstCasePosition = node.cases.first?.positionAfterSkippingLeadingTrivia,
+                let firstCaseColumn = locationConverter.location(for: firstCasePosition).column
+            else {
+                return
+            }
+
+            for `case` in node.cases where `case`.is(SwitchCaseSyntax.self) {
+                let casePosition = `case`.positionAfterSkippingLeadingTrivia
+                guard let caseColumn = locationConverter.location(for: casePosition).column else {
+                    continue
+                }
+
+                let hasViolation = (indentedCases && caseColumn <= switchColumn) ||
+                    (!indentedCases && caseColumn != switchColumn) ||
+                    (indentedCases && caseColumn != firstCaseColumn)
+
+                guard hasViolation else {
+                    continue
+                }
+
+                let reason = """
+                    Case statements should \
+                    \(indentedCases ? "be indented within" : "vertically align with") \
+                    their enclosing switch statement
+                    """
+
+                violations.append(ReasonedRuleViolation(position: casePosition, reason: reason))
+            }
+        }
+    }
+
     struct Examples {
         private let indentedCasesOption: Bool
         private let violationMarker = "↓"

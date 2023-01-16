@@ -1,16 +1,25 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule,
-                                     ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+private let warnDeprecatedOnceImpl: Void = {
+    queuedPrintError("""
+        The `anyobject_protocol` rule is now deprecated and will be completely removed in a future release.
+        """
+    )
+}()
 
-    public init() {}
+private func warnDeprecatedOnce() {
+    _ = warnDeprecatedOnceImpl
+}
 
-    public static let description = RuleDescription(
+struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
+
+    init() {}
+
+    static let description = RuleDescription(
         identifier: "anyobject_protocol",
         name: "AnyObject Protocol",
-        description: "Prefer using `AnyObject` over `class` for class-only protocols.",
+        description: "Prefer using `AnyObject` over `class` for class-only protocols",
         kind: .lint,
         nonTriggeringExamples: [
             Example("protocol SomeProtocol {}\n"),
@@ -33,39 +42,55 @@ public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule,
         ]
     )
 
-    // MARK: - ASTRule
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        warnDeprecatedOnce()
+        return Visitor(viewMode: .sourceAccurate)
+    }
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private extension AnyObjectProtocolRule {
+    private final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: ClassRestrictionTypeSyntax) {
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 
-    // MARK: - SubstitutionCorrectableASTRule
+    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "AnyObject")
-    }
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
 
-    public func violationRanges(in file: SwiftLintFile,
-                                kind: SwiftDeclarationKind,
-                                dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard kind == .protocol else { return [] }
-
-        return dictionary.elements.compactMap { subDict -> NSRange? in
+        override func visit(_ node: InheritedTypeSyntax) -> InheritedTypeSyntax {
+            let typeName = node.typeName
             guard
-                let byteRange = subDict.byteRange,
-                let content = file.stringView.substringWithByteRange(byteRange),
-                content == "class"
+                typeName.is(ClassRestrictionTypeSyntax.self),
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
-                return nil
+                return super.visit(node)
             }
 
-            return file.stringView.byteRangeToNSRange(byteRange)
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            return super.visit(
+                node.withTypeName(
+                    TypeSyntax(
+                        SimpleTypeIdentifierSyntax(name: .identifier("AnyObject"), genericArgumentClause: nil)
+                            .withLeadingTrivia(typeName.leadingTrivia ?? .zero)
+                            .withTrailingTrivia(typeName.trailingTrivia ?? .zero)
+                    )
+                )
+            )
         }
     }
 }

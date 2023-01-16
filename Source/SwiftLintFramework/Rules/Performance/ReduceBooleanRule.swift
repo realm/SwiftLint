@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ReduceBooleanRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "reduce_boolean",
         name: "Reduce Boolean",
-        description: "Prefer using `.allSatisfy()` or `.contains()` over `reduce(true)` or `reduce(false)`",
+        description: "Prefer using `.allSatisfy()` or `.contains()` over `reduce(true)` or `reduce(false)`.",
         kind: .performance,
         nonTriggeringExamples: [
             Example("nums.reduce(0) { $0.0 + $0.1 }"),
@@ -26,24 +26,30 @@ public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTesta
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\breduce\\((true|false)"
-        return file
-            .match(pattern: pattern, with: [.identifier, .keyword])
-            .map { range in
-                let reason: String
-                if file.contents[Range(range, in: file.contents)!].contains("true") {
-                    reason = "Use `allSatisfy` instead"
-                } else {
-                    reason = "Use `contains` instead"
-                }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-                return StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: configuration.severity,
-                    location: Location(file: file, characterOffset: range.location),
-                    reason: reason
-                )
+private extension ReduceBooleanRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard
+                let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
+                calledExpression.name.text == "reduce",
+                let firstArgument = node.argumentList.first,
+                let bool = firstArgument.expression.as(BooleanLiteralExprSyntax.self)
+            else {
+                return
             }
+
+            let suggestedFunction = bool.booleanLiteral.tokenKind == .trueKeyword ? "allSatisfy" : "contains"
+            violations.append(
+                ReasonedRuleViolation(
+                    position: calledExpression.name.positionAfterSkippingLeadingTrivia,
+                    reason: "Use `\(suggestedFunction)` instead"
+                )
+            )
+        }
     }
 }

@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct EmptyCollectionLiteralRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "empty_collection_literal",
         name: "Empty Collection Literal",
-        description: "Prefer checking `isEmpty` over comparing collection to an empty array or dictionary literal.",
+        description: "Prefer checking `isEmpty` over comparing collection to an empty array or dictionary literal",
         kind: .performance,
         nonTriggeringExamples: [
             Example("myArray = []"),
@@ -28,13 +28,26 @@ public struct EmptyCollectionLiteralRule: ConfigurationProviderRule, OptInRule, 
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\b\\s*(==|!=)\\s*\\[\\s*:?\\s*\\]"
-        let excludingKinds = SyntaxKind.commentAndStringKinds
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension EmptyCollectionLiteralRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: TokenSyntax) {
+            guard
+                node.tokenKind.isEqualityComparison,
+                let violationPosition = node.previousToken?.endPositionBeforeTrailingTrivia,
+                let expectedLeftSquareBracketToken = node.nextToken,
+                expectedLeftSquareBracketToken.tokenKind == .leftSquareBracket,
+                let expectedColonToken = expectedLeftSquareBracketToken.nextToken,
+                expectedColonToken.tokenKind == .colon || expectedColonToken.tokenKind == .rightSquareBracket
+            else {
+                return
+            }
+
+            violations.append(violationPosition)
         }
     }
 }

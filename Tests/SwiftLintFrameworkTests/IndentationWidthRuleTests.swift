@@ -162,17 +162,59 @@ class IndentationWidthRuleTests: XCTestCase {
         assertViolations(in: "firstLine\n     secondLine\n     thirdLine\n    fourthLine\n     fifthLine", equals: 2)
     }
 
+    func testIgnoredCompilerDirectives() {
+        assertNoViolation(in: """
+            struct S {
+                            #if os(iOS)
+                var i: Int = 0
+            #endif
+                var j: Int = 0
+
+                func reset() {
+                #if os(iOS)
+                    i = 0
+                            #endif
+                    j = 0
+                }
+            }
+            """, includeCompilerDirectives: false)
+
+        assertNoViolation(in: """
+            struct S {
+                #if os(iOS)
+                    var i: Int = 0
+                #endif
+                var j: Int = 0
+
+                func reset() {
+                    #if os(iOS)
+                        i = 0
+                    #endif
+                    j = 0
+                }
+            }
+            """, includeCompilerDirectives: true)
+    }
+
     // MARK: Helpers
     private func countViolations(
         in example: Example,
         indentationWidth: Int? = nil,
         includeComments: Bool? = nil,
+        includeCompilerDirectives: Bool? = nil,
         file: StaticString = #file,
         line: UInt = #line
     ) -> Int {
         var configDict: [String: Any] = [:]
-        if let indentationWidth = indentationWidth { configDict["indentation_width"] = indentationWidth }
-        if let includeComments = includeComments { configDict["include_comments"] = includeComments }
+        if let indentationWidth = indentationWidth {
+            configDict["indentation_width"] = indentationWidth
+        }
+        if let includeComments = includeComments {
+            configDict["include_comments"] = includeComments
+        }
+        if let includeCompilerDirectives = includeCompilerDirectives {
+            configDict["include_compiler_directives"] = includeCompilerDirectives
+        }
 
         guard let config = makeConfig(configDict, IndentationWidthRule.description.identifier) else {
             XCTFail("Unable to create rule configuration.", file: (file), line: line)
@@ -187,6 +229,7 @@ class IndentationWidthRuleTests: XCTestCase {
         equals expectedCount: Int,
         indentationWidth: Int? = nil,
         includeComments: Bool? = nil,
+        includeCompilerDirectives: Bool? = nil,
         file: StaticString = #file,
         line: UInt = #line
     ) {
@@ -195,6 +238,7 @@ class IndentationWidthRuleTests: XCTestCase {
                 in: Example(string, file: (file), line: line),
                 indentationWidth: indentationWidth,
                 includeComments: includeComments,
+                includeCompilerDirectives: includeCompilerDirectives,
                 file: file,
                 line: line
             ),
@@ -208,6 +252,7 @@ class IndentationWidthRuleTests: XCTestCase {
         in string: String,
         indentationWidth: Int? = nil,
         includeComments: Bool? = nil,
+        includeCompilerDirectives: Bool? = nil,
         file: StaticString = #file,
         line: UInt = #line
     ) {
@@ -216,6 +261,7 @@ class IndentationWidthRuleTests: XCTestCase {
             equals: 0,
             indentationWidth: indentationWidth,
             includeComments: includeComments,
+            includeCompilerDirectives: includeCompilerDirectives,
             file: file,
             line: line
         )
@@ -225,6 +271,7 @@ class IndentationWidthRuleTests: XCTestCase {
         in string: String,
         indentationWidth: Int? = nil,
         includeComments: Bool? = nil,
+        includeCompilerDirectives: Bool? = nil,
         file: StaticString = #file,
         line: UInt = #line
     ) {
@@ -233,6 +280,7 @@ class IndentationWidthRuleTests: XCTestCase {
             equals: 1,
             indentationWidth: indentationWidth,
             includeComments: includeComments,
+            includeCompilerDirectives: includeCompilerDirectives,
             file: file,
             line: line
         )

@@ -1,1 +1,2 @@
-internal typealias ConfigurationRuleWrapper = (rule: Rule, initializedWithNonEmptyConfiguration: Bool)
+@_spi(TestHelper)
+public typealias ConfigurationRuleWrapper = (rule: Rule, initializedWithNonEmptyConfiguration: Bool)

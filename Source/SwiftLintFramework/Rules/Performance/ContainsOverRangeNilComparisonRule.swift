@@ -1,15 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ContainsOverRangeNilComparisonRule: CallPairRule, OptInRule, ConfigurationProviderRule,
-                                                  AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "contains_over_range_nil_comparison",
-        name: "Contains over range(of:) comparison to nil",
-        description: "Prefer `contains` over `range(of:) != nil` and `range(of:) == nil`.",
+        name: "Contains over Range Comparision to Nil",
+        description: "Prefer `contains` over `range(of:) != nil` and `range(of:) == nil`",
         kind: .performance,
         nonTriggeringExamples: [
             Example("let range = myString.range(of: \"Test\")"),
@@ -24,12 +23,31 @@ public struct ContainsOverRangeNilComparisonRule: CallPairRule, OptInRule, Confi
         }
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\)\\s*(==|!=)\\s*nil"
-        return validate(file: file, pattern: pattern, patternSyntaxKinds: [.keyword],
-                        callNameSuffix: ".range", severity: configuration.severity,
-                        reason: "Prefer `contains` over range(of:) comparison to nil") { expression in
-                            return expression.enclosedArguments.map { $0.name } == ["of"]
+    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+        syntaxTree.folded()
+    }
+
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension ContainsOverRangeNilComparisonRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            guard
+                let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                operatorNode.operatorToken.tokenKind.isEqualityComparison,
+                node.rightOperand.is(NilLiteralExprSyntax.self),
+                let first = node.leftOperand.asFunctionCall,
+                first.argumentList.onlyElement?.label?.text == "of",
+                let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
+                calledExpression.name.text == "range"
+            else {
+                return
+            }
+
+            violations.append(first.positionAfterSkippingLeadingTrivia)
         }
     }
 }

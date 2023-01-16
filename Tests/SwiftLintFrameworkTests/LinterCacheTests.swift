@@ -27,11 +27,11 @@ private struct CacheTestHelper {
             StyleViolation(ruleDescription: ruleDescription,
                            severity: .warning,
                            location: Location(file: file, line: 10, character: 2),
-                           reason: "Something is not right."),
+                           reason: "Something is not right"),
             StyleViolation(ruleDescription: ruleDescription,
                            severity: .error,
                            location: Location(file: file, line: 5, character: nil),
-                           reason: "Something is wrong.")
+                           reason: "Something is wrong")
         ]
     }
 

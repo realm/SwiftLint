@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ExplicitEnumRawValueRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "explicit_enum_raw_value",
         name: "Explicit Enum Raw Value",
-        description: "Enums should be explicitly assigned their raw values.",
+        description: "Enums should be explicitly assigned their raw values",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -68,16 +68,49 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
             enum Numbers: Decimal {
               case ↓one, ↓two
             }
+            """),
+            Example("""
+            enum Outer {
+                enum Numbers: Decimal {
+                  case ↓one, ↓two
+                }
+            }
             """)
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .enum else {
-            return []
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension ExplicitEnumRawValueRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+
+        override func visitPost(_ node: EnumCaseElementSyntax) {
+            if node.rawValue == nil,
+               let enclosingEnum = Syntax(node).enclosingEnum(),
+               let inheritance = enclosingEnum.inheritanceClause,
+               inheritance.supportsRawValue {
+                violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+}
+
+private extension Syntax {
+    func enclosingEnum() -> EnumDeclSyntax? {
+        if let node = self.as(EnumDeclSyntax.self) {
+            return node
         }
 
+        return parent?.enclosingEnum()
+    }
+}
+
+private extension TypeInheritanceClauseSyntax {
+    var supportsRawValue: Bool {
         // Check if it's an enum which supports raw values
         let implicitRawValueSet: Set<String> = [
             "Int", "Int8", "Int16", "Int32", "Int64",
@@ -86,38 +119,12 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
             "NSDecimalNumber", "NSInteger", "String"
         ]
 
-        let enumInheritedTypesSet = Set(dictionary.inheritedTypes)
+        return inheritedTypeCollection.contains { element in
+            guard let identifier = element.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text else {
+                return false
+            }
 
-        guard !implicitRawValueSet.isDisjoint(with: enumInheritedTypesSet) else {
-            return []
+            return implicitRawValueSet.contains(identifier)
         }
-
-        let violations = violatingOffsetsForEnum(dictionary: dictionary)
-        return violations.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0))
-        }
-    }
-
-    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary) -> [ByteCount] {
-        let locs = substructureElements(of: dictionary, matching: .enumcase)
-            .compactMap { substructureElements(of: $0, matching: .enumelement) }
-            .flatMap(enumElementsMissingInitExpr)
-            .compactMap { $0.offset }
-
-        return locs
-    }
-
-    private func substructureElements(of dict: SourceKittenDictionary,
-                                      matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
-        return dict.substructure
-            .filter { $0.declarationKind == kind }
-    }
-
-    private func enumElementsMissingInitExpr(
-        _ enumElements: [SourceKittenDictionary]) -> [SourceKittenDictionary] {
-        return enumElements
-            .filter { !$0.elements.contains { $0.kind == "source.lang.swift.structure.elem.init_expr" } }
     }
 }

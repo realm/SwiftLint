@@ -1,13 +1,11 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct RedundantNilCoalescingRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule,
-                                          AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct RedundantNilCoalescingRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "redundant_nil_coalescing",
         name: "Redundant Nil Coalescing",
         description: "nil coalescing operator is only evaluated if the lhs is nil" +
@@ -17,30 +15,66 @@ public struct RedundantNilCoalescingRule: OptInRule, SubstitutionCorrectableRule
             Example("var myVar: Int?; myVar ?? 0\n")
         ],
         triggeringExamples: [
-            Example("var myVar: Int? = nil; myVar↓ ?? nil\n"),
-            Example("var myVar: Int? = nil; myVar↓??nil\n")
+            Example("var myVar: Int? = nil; myVar ↓?? nil\n")
         ],
         corrections: [
             Example("var myVar: Int? = nil; let foo = myVar↓ ?? nil\n"):
-                Example("var myVar: Int? = nil; let foo = myVar\n"),
-            Example("var myVar: Int? = nil; let foo = myVar↓??nil\n"):
                 Example("var myVar: Int? = nil; let foo = myVar\n")
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private extension RedundantNilCoalescingRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: TokenSyntax) {
+            if node.tokenKind.isNilCoalescingOperator && node.nextToken?.tokenKind == .nilKeyword {
+                violations.append(node.position)
+            }
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
-    }
+    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.match(pattern: "\\s?\\?{2}\\s*nil\\b", with: [.keyword])
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: ExprListSyntax) -> ExprListSyntax {
+            guard
+                node.count > 2,
+                let lastExpression = node.last,
+                lastExpression.is(NilLiteralExprSyntax.self),
+                let secondToLastExpression = node.dropLast().last?.as(BinaryOperatorExprSyntax.self),
+                secondToLastExpression.operatorToken.tokenKind.isNilCoalescingOperator,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
+
+            let newNode = node.removingLast().removingLast().withoutTrailingTrivia()
+            correctionPositions.append(newNode.endPosition)
+            return super.visit(newNode)
+        }
+    }
+}
+
+private extension TokenKind {
+    var isNilCoalescingOperator: Bool {
+        self == .spacedBinaryOperator("??") || self == .unspacedBinaryOperator("??")
     }
 }

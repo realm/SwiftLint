@@ -16,7 +16,7 @@ enum TypeContent: String {
     case deinitializer = "deinitializer"
 }
 
-public struct TypeContentsOrderConfiguration: RuleConfiguration, Equatable {
+struct TypeContentsOrderConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var order: [[TypeContent]] = [
         [.case],
@@ -35,12 +35,12 @@ public struct TypeContentsOrderConfiguration: RuleConfiguration, Equatable {
         [.deinitializer]
     ]
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+    var consoleDescription: String {
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", order: \(String(describing: order))"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

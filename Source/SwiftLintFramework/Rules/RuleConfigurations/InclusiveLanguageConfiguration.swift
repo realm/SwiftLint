@@ -5,23 +5,19 @@ private enum ConfigurationKey: String {
     case overrideAllowedTerms = "override_allowed_terms"
 }
 
-public struct InclusiveLanguageConfiguration: RuleConfiguration, Equatable {
-    public var severityConfiguration = SeverityConfiguration(.warning)
-    public var additionalTerms: Set<String>?
-    public var overrideTerms: Set<String>?
-    public var overrideAllowedTerms: Set<String>?
-    public var allTerms: Set<String>
-    public var allAllowedTerms: Set<String>
+struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    var severityConfiguration = SeverityConfiguration(.warning)
+    private var additionalTerms: Set<String>?
+    private var overrideTerms: Set<String>?
+    private var overrideAllowedTerms: Set<String>?
+    private(set) var allTerms: [String]
+    private(set) var allAllowedTerms: Set<String>
 
-    public var consoleDescription: String {
-        severityConfiguration.consoleDescription
+    var consoleDescription: String {
+        "severity: \(severityConfiguration.consoleDescription)"
             + ", additional_terms: \(additionalTerms?.sorted() ?? [])"
             + ", override_terms: \(overrideTerms?.sorted() ?? [])"
             + ", override_allowed_terms: \(overrideAllowedTerms?.sorted() ?? [])"
-    }
-
-    public var severity: ViolationSeverity {
-        severityConfiguration.severity
     }
 
     private let defaultTerms: Set<String> = [
@@ -35,12 +31,12 @@ public struct InclusiveLanguageConfiguration: RuleConfiguration, Equatable {
         "mastercard"
     ]
 
-    public init() {
-        self.allTerms = defaultTerms
+    init() {
+        self.allTerms = defaultTerms.sorted()
         self.allAllowedTerms = defaultAllowedTerms
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -53,8 +49,9 @@ public struct InclusiveLanguageConfiguration: RuleConfiguration, Equatable {
         overrideTerms = lowercasedSet(for: .overrideTerms, from: configuration)
         overrideAllowedTerms = lowercasedSet(for: .overrideAllowedTerms, from: configuration)
 
-        allTerms = overrideTerms ?? defaultTerms
+        var allTerms = overrideTerms ?? defaultTerms
         allTerms.formUnion(additionalTerms ?? [])
+        self.allTerms = allTerms.sorted()
         allAllowedTerms = overrideAllowedTerms ?? defaultAllowedTerms
     }
 

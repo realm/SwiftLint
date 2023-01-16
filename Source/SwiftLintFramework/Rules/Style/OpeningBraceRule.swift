@@ -7,9 +7,9 @@ private extension SwiftLintFile {
     func violatingOpeningBraceRanges(allowMultilineFunc: Bool) -> [(range: NSRange, location: Int)] {
         let excludingPattern: String
         if allowMultilineFunc {
-            excludingPattern = #"(?:func[^\{\n]*\n[^\{\n]*\n[^\{]*|(?:(?:if|guard|while)\n[^\{]+?\s|\{\s*))\{"#
+            excludingPattern = #"(?:func[^\{\n]*\n[^\{\n]*\n[^\{]*|(?:\b(?:if|guard|while)\n[^\{]+?\s|\{\s*))\{"#
         } else {
-            excludingPattern = #"(?:(?:if|guard|while)\n[^\{]+?\s|\{\s*)\{"#
+            excludingPattern = #"(?:\b(?:if|guard|while)\n[^\{]+?\s|\{\s*)\{"#
         }
 
         return match(pattern: #"(?:[^( ]|[\s(][\s]+)\{"#,
@@ -18,8 +18,8 @@ private extension SwiftLintFile {
             if isAnonymousClosure(range: $0) {
                 return nil
             }
-            let branceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
-            return ($0, branceRange.location)
+            let braceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
+            return ($0, braceRange.location)
         }
     }
 
@@ -61,16 +61,16 @@ private extension SwiftLintFile {
     }
 }
 
-public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
-    public var configuration = OpeningBraceConfiguration()
+struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
+    var configuration = OpeningBraceConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "opening_brace",
         name: "Opening Brace Spacing",
         description: "Opening braces should be preceded by a single space and on the same line " +
-                     "as the declaration.",
+                     "as the declaration",
         kind: .style,
         nonTriggeringExamples: [
             Example("func abc() {\n}"),
@@ -147,6 +147,19 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
             func run_Array_method2x(_ N: Int) {
 
             }
+            """),
+            Example("""
+               class TestFile {
+                   func problemFunction() {
+                       #if DEBUG
+                       #endif
+                   }
+
+                   func openingBraceViolation()
+                  ↓{
+                       print("Brackets")
+                   }
+               }
             """)
         ],
         corrections: [
@@ -162,7 +175,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
@@ -170,7 +183,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc)
             .filter {
                 file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty

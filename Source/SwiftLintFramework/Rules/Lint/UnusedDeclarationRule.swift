@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProviderRule, AnalyzerRule, CollectingRule {
-    public struct FileUSRs: Hashable {
+struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, CollectingRule {
+    struct FileUSRs: Hashable {
         var referenced: Set<String>
         var declared: Set<DeclaredUSR>
 
-        fileprivate static var empty: FileUSRs { FileUSRs(referenced: [], declared: []) }
+        fileprivate static var empty: FileUSRs { Self(referenced: [], declared: []) }
     }
 
     struct DeclaredUSR: Hashable {
@@ -14,27 +14,27 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
         let nameOffset: ByteCount
     }
 
-    public typealias FileInfo = FileUSRs
+    typealias FileInfo = FileUSRs
 
-    public var configuration = UnusedDeclarationConfiguration(
+    var configuration = UnusedDeclarationConfiguration(
         severity: .error,
         includePublicAndOpen: false,
         relatedUSRsToSkip: ["s:7SwiftUI15PreviewProviderP"]
     )
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unused_declaration",
         name: "Unused Declaration",
-        description: "Declarations should be referenced at least once within all files linted.",
+        description: "Declarations should be referenced at least once within all files linted",
         kind: .lint,
         nonTriggeringExamples: UnusedDeclarationRuleExamples.nonTriggeringExamples,
         triggeringExamples: UnusedDeclarationRuleExamples.triggeringExamples,
         requiresFileOnDisk: true
     )
 
-    public func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
+    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
         guard compilerArguments.isNotEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
@@ -69,14 +69,14 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
         )
     }
 
-    public func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: UnusedDeclarationRule.FileUSRs],
-                         compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: UnusedDeclarationRule.FileUSRs],
+                  compilerArguments: [String]) -> [StyleViolation] {
         let allReferencedUSRs = collectedInfo.values.reduce(into: Set()) { $0.formUnion($1.referenced) }
         return violationOffsets(declaredUSRs: collectedInfo[file]?.declared ?? [],
                                 allReferencedUSRs: allReferencedUSRs)
             .map {
                 StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
+                               severity: configuration.severityConfiguration.severity,
                                location: Location(file: file, byteOffset: $0))
             }
     }
@@ -295,13 +295,16 @@ private extension SourceKittenDictionary {
         // https://github.com/apple/swift-evolution/blob/main/proposals/0289-result-builders.md#result-building-methods
         let resultBuilderStaticMethods = [
             "buildBlock(_:)",
-            "buildIf(_:)",
-            "buildOptional(_:)",
-            "buildEither(_:)",
-            "buildArray(_:)",
             "buildExpression(_:)",
+            "buildOptional(_:)",
+            "buildEither(first:)",
+            "buildEither(second:)",
+            "buildArray(_:)",
+            "buildLimitedAvailability(_:)",
             "buildFinalResult(_:)",
-            "buildLimitedAvailability(_:)"
+            // https://github.com/apple/swift-evolution/blob/main/proposals/0348-buildpartialblock.md
+            "buildPartialBlock(first:)",
+            "buildPartialBlock(accumulated:next:)"
         ]
 
         return resultBuilderStaticMethods.contains(name)

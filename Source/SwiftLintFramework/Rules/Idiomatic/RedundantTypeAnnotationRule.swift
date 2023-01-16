@@ -1,11 +1,10 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule,
-                                           ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "redundant_type_annotation",
         name: "Redundant Type Annotation",
         description: "Variables should not have redundant type annotation",
@@ -77,7 +76,7 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map { range in
             StyleViolation(
                 ruleDescription: Self.description,
@@ -87,14 +86,14 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "")
     }
 
     private let typeAnnotationPattern: String
     private let expressionPattern: String
 
-    public init() {
+    init() {
         typeAnnotationPattern =
             ":\\s*" + // semicolon and any number of whitespaces
             "\\w+"    // type name
@@ -110,7 +109,7 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
             "[\\(\\.]?"   // possible opening parenthesis or dot
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let violatingRanges = file
             .match(pattern: expressionPattern)
             .filter {

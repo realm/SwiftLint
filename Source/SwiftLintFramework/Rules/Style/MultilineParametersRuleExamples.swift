@@ -1,5 +1,3 @@
-// swiftlint:disable type_body_length
-
 internal struct MultilineParametersRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         Example("func foo() { }"),
@@ -165,6 +163,13 @@ internal struct MultilineParametersRuleExamples {
                           param3: @escaping (Int, (Int) -> Void) -> Void = { (x: Int, f: (Int) -> Void) in }) { }
         }
         """),
+        Example("""
+        class Foo {
+           init(param1: Int,
+                param2: Bool,
+                param3: @escaping ((Int) -> Void)? = { _ in }) { }
+        }
+        """),
         Example("func foo() { }",
                 configuration: ["allows_single_line": false]),
         Example("func foo(param1: Int) { }",
@@ -319,6 +324,12 @@ internal struct MultilineParametersRuleExamples {
         class Foo {
            class func ↓foo(param1: Int,
                           param2: Bool, param3: @escaping (Int) -> Void = { (x: Int) in }) { }
+        }
+        """),
+        Example("""
+        class Foo {
+          ↓init(param1: Int, param2: Bool,
+                param3: @escaping ((Int) -> Void)? = { _ in }) { }
         }
         """),
         Example("func ↓foo(param1: Int, param2: Bool) { }",

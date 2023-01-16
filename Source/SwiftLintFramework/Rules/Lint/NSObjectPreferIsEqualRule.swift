@@ -1,67 +1,92 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct NSObjectPreferIsEqualRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "nsobject_prefer_isequal",
         name: "NSObject Prefer isEqual",
-        description: "NSObject subclasses should implement isEqual instead of ==.",
+        description: "NSObject subclasses should implement isEqual instead of ==",
         kind: .lint,
         nonTriggeringExamples: NSObjectPreferIsEqualRuleExamples.nonTriggeringExamples,
         triggeringExamples: NSObjectPreferIsEqualRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return objcVisibleClasses(in: file).flatMap { violations(in: file, for: $0) }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    // MARK: - Private
+private extension NSObjectPreferIsEqualRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .extensionsAndProtocols }
 
-    private func objcVisibleClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
-        let dict = file.structureDictionary
-
-        return dict.substructure.filter { dictionary in
-            guard dictionary.declarationKind == .class
-            else { return false }
-            let isDirectNSObjectSubclass = dictionary.inheritedTypes.contains("NSObject")
-            let isMarkedObjc = dictionary.enclosedSwiftAttributes.contains(.objc)
-            return isDirectNSObjectSubclass || isMarkedObjc
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if node.isSelfEqualFunction, node.isInObjcClass {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
+}
 
-    private func violations(in file: SwiftLintFile,
-                            for dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let typeName = dictionary.name else { return [] }
-        return dictionary.substructure.compactMap { subDictionary -> StyleViolation? in
-            guard
-                isDoubleEqualsMethod(subDictionary, onType: typeName),
-                let offset = subDictionary.offset
-            else { return nil }
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: offset))
+private extension ClassDeclSyntax {
+    var isObjC: Bool {
+        if attributes?.isObjc == true {
+            return true
+        }
+
+        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
+            return false
+        }
+        return inheritanceList.contains { type in
+            type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "NSObject"
         }
     }
+}
 
-    private func isDoubleEqualsMethod(_ method: SourceKittenDictionary,
-                                      onType typeName: String) -> Bool {
+private extension FunctionDeclSyntax {
+    var isSelfEqualFunction: Bool {
         guard
-            let kind = method.declarationKind,
-            let name = method.name,
-            kind == .functionMethodStatic,
-            name == "==(_:_:)",
-            areAllArguments(toMethod: method, ofType: typeName)
-        else { return false }
+            modifiers.isStatic,
+            identifier.text == "==",
+            returnsBool,
+            case let parameterList = signature.input.parameterList,
+            parameterList.count == 2,
+            let lhs = parameterList.first,
+            let rhs = parameterList.last,
+            lhs.firstName?.text == "lhs",
+            rhs.firstName?.text == "rhs",
+            let lhsTypeDescription = lhs.type?.withoutTrivia().description,
+            let rhsTypeDescription = rhs.type?.withoutTrivia().description,
+            lhsTypeDescription == rhsTypeDescription
+        else {
+            return false
+        }
+
         return true
     }
 
-    private func areAllArguments(toMethod method: SourceKittenDictionary,
-                                 ofType typeName: String) -> Bool {
-        return method.enclosedVarParameters.allSatisfy { param in
-            param.typeName == typeName
+    var returnsBool: Bool {
+        signature.output?.returnType.as(SimpleTypeIdentifierSyntax.self)?.name.text == "Bool"
+    }
+}
+
+private extension SyntaxProtocol {
+    var isInObjcClass: Bool {
+        if let parentClass = parent?.as(ClassDeclSyntax.self) {
+            return parentClass.isObjC
+        } else if parent?.as(DeclSyntax.self) != nil {
+            return false
         }
+
+        return parent?.isInObjcClass ?? false
+    }
+}
+
+private extension AttributeListSyntax {
+    var isObjc: Bool {
+        contains { ["objc", "objcMembers"].contains($0.as(AttributeSyntax.self)?.attributeName.text) }
     }
 }

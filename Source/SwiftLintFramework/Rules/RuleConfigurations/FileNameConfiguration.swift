@@ -1,5 +1,5 @@
-public struct FileNameConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
+struct FileNameConfiguration: RuleConfiguration, Equatable {
+    var consoleDescription: String {
         return "(severity) \(severity.consoleDescription), " +
             "excluded: \(excluded.sorted()), " +
             "prefix_pattern: \(prefixPattern), " +
@@ -7,14 +7,14 @@ public struct FileNameConfiguration: RuleConfiguration, Equatable {
             "nested_type_separator: \(nestedTypeSeparator)"
     }
 
-    public private(set) var severity: SeverityConfiguration
-    public private(set) var excluded: Set<String>
-    public private(set) var prefixPattern: String
-    public private(set) var suffixPattern: String
-    public private(set) var nestedTypeSeparator: String
+    private(set) var severity: SeverityConfiguration
+    private(set) var excluded: Set<String>
+    private(set) var prefixPattern: String
+    private(set) var suffixPattern: String
+    private(set) var nestedTypeSeparator: String
 
-    public init(severity: ViolationSeverity, excluded: [String] = [],
-                prefixPattern: String = "", suffixPattern: String = "\\+.*", nestedTypeSeparator: String = ".") {
+    init(severity: ViolationSeverity, excluded: [String] = [],
+         prefixPattern: String = "", suffixPattern: String = "\\+.*", nestedTypeSeparator: String = ".") {
         self.severity = SeverityConfiguration(severity)
         self.excluded = Set(excluded)
         self.prefixPattern = prefixPattern
@@ -22,7 +22,7 @@ public struct FileNameConfiguration: RuleConfiguration, Equatable {
         self.nestedTypeSeparator = nestedTypeSeparator
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

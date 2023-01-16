@@ -32,7 +32,7 @@ internal struct InclusiveLanguageRuleExamples {
             case ↓blacklist
         }
         """),
-        Example("↓init(master: String, slave: String) {}"),
+        Example("init(↓master: String, ↓slave: String) {}"),
         Example("""
         final class FooBar {
             func register<↓Master, ↓Slave>(one: Master, two: Slave) {}
@@ -44,7 +44,7 @@ internal struct InclusiveLanguageRuleExamples {
 
     static let nonTriggeringExamplesWithConfig: [Example] = [
         Example("""
-        public let blackList = [
+        let blackList = [
             "foo", "bar"
         ]
         """, configuration: [

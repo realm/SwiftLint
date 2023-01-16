@@ -3,8 +3,13 @@ import SourceKittenFramework
 
 /// A unit of Swift source code, either on disk or in memory.
 public final class SwiftLintFile {
+    /// The underlying SourceKitten file.
     let file: File
     let id: UUID
+    /// Whether or not this is a file generated for testing purposes.
+    private(set) var isTestFile = false
+    /// A file is virtual if it is not backed by a filesystem path.
+    private(set) var isVirtual = false
 
     /// Creates a `SwiftLintFile` with a SourceKitten `File`.
     ///
@@ -36,6 +41,7 @@ public final class SwiftLintFile {
     /// - parameter contents: The contents of the file.
     public convenience init(contents: String) {
         self.init(file: File(contents: contents))
+        isVirtual = true
     }
 
     /// The path on disk for this file.
@@ -58,30 +64,18 @@ public final class SwiftLintFile {
         return file.lines
     }
 
-    /// Returns whether or not the file contains any attributes that require the Foundation module.
-    func containsAttributesRequiringFoundation() -> Bool {
-        guard contents.contains("@objc") else {
-            return false
-        }
-
-        func containsAttributesRequiringFoundation(dict: SourceKittenDictionary) -> Bool {
-            let attributesRequiringFoundation = SwiftDeclarationAttributeKind.attributesRequiringFoundation
-            if !attributesRequiringFoundation.isDisjoint(with: dict.enclosedSwiftAttributes) {
-                return true
-            } else {
-                return dict.substructure.contains(where: containsAttributesRequiringFoundation)
-            }
-        }
-
-        return containsAttributesRequiringFoundation(dict: structureDictionary)
+    /// Mark this file as used for testing purposes.
+    @_spi(TestHelper)
+    public func markAsTestFile() {
+        isTestFile = true
     }
 }
 
 // MARK: - Hashable Conformance
 
-extension SwiftLintFile: Hashable {
+extension SwiftLintFile: Equatable, Hashable {
     public static func == (lhs: SwiftLintFile, rhs: SwiftLintFile) -> Bool {
-        return lhs.id == rhs.id
+        lhs.id == rhs.id
     }
 
     public func hash(into hasher: inout Hasher) {

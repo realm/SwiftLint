@@ -80,6 +80,13 @@ internal struct QuickDiscouragedPendingTestRuleExamples {
                ↓xitBehavesLike("foo")
            }
         }
+        """),
+        Example("""
+        class TotoTests: QuickSpecSubclass {
+           override func spec() {
+               ↓xitBehavesLike("foo")
+           }
+        }
         """)
     ]
 }

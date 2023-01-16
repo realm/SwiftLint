@@ -1,4 +1,4 @@
-// swiftlint:disable file_length type_body_length
+// swiftlint:disable file_length
 internal struct NestingRuleExamples {
     static let nonTriggeringExamples = nonTriggeringTypeExamples
         + nonTriggeringFunctionExamples

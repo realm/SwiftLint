@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "function_default_parameter_at_end",
         name: "Function Default Parameter at End",
-        description: "Prefer to locate parameters with defaults toward the end of the parameter list.",
+        description: "Prefer to locate parameters with defaults toward the end of the parameter list",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("func foo(baz: String, bar: Int = 0) {}"),
@@ -30,77 +30,107 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
             Example("""
             func foo(a: String, b: String? = nil,
                      c: String? = nil, d: @escaping AlertActionHandler = { _ in }) {}
-            """)
+            """),
+            Example("override init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}"),
+            Example("""
+            func handleNotification(_ userInfo: NSDictionary,
+                                    userInteraction: Bool = false,
+                                    completionHandler: ((UIBackgroundFetchResult) -> Void)?) {}
+            """),
+            Example("""
+            func write(withoutNotifying tokens: [NotificationToken] =  {}, _ block: (() throws -> Int)) {}
+            """),
+            Example("""
+            func expect<T>(file: String = #file, _ expression: @autoclosure () -> (() throws -> T)) -> Expectation<T> {}
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
-            Example("↓func foo(bar: Int = 0, baz: String) {}")
+            Example("↓func foo(bar: Int = 0, baz: String) {}"),
+            Example("private ↓func foo(bar: Int = 0, baz: String) {}"),
+            Example("public ↓init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}")
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard SwiftDeclarationKind.functionKinds.contains(kind),
-            let offset = dictionary.offset,
-            let bodyOffset = dictionary.bodyOffset,
-            !dictionary.enclosedSwiftAttributes.contains(.override) else {
-                return []
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension FunctionDefaultParameterAtEndRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard !node.modifiers.containsOverride, node.signature.containsViolation else {
+                return
+            }
+
+            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
 
-        let isNotClosure = { !self.isClosureParameter(dictionary: $0) }
-        let params = dictionary.substructure
-            .flatMap { subDict -> [SourceKittenDictionary] in
-                guard subDict.declarationKind == .varParameter else {
-                    return []
-                }
-
-                return [subDict]
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            guard !node.modifiers.containsOverride, node.signature.containsViolation else {
+                return
             }
-            .filter(isNotClosure)
-            .filter { param in
-                guard let paramOffset = param.offset else {
-                    return false
-                }
 
-                return paramOffset < bodyOffset
-            }
+            violations.append(node.initKeyword.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension FunctionSignatureSyntax {
+    var containsViolation: Bool {
+        let params = input.parameterList.filter { param in
+            !param.isClosure
+        }
 
         guard params.isNotEmpty else {
-            return []
+            return false
         }
 
-        let containsDefaultValue = { self.isDefaultParameter(file: file, dictionary: $0) }
-        let defaultParams = params.filter(containsDefaultValue)
+        let defaultParams = params.filter { param in
+            param.defaultArgument != nil
+        }
         guard defaultParams.isNotEmpty else {
-            return []
+            return false
         }
 
         let lastParameters = params.suffix(defaultParams.count)
-        let lastParametersWithDefaultValue = lastParameters.filter(containsDefaultValue)
-
-        guard lastParameters.count != lastParametersWithDefaultValue.count else {
-            return []
+        let lastParametersWithDefaultValue = lastParameters.filter { param in
+            param.defaultArgument != nil
         }
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+        return lastParameters.count != lastParametersWithDefaultValue.count
+    }
+}
+
+private extension FunctionParameterSyntax {
+    var isClosure: Bool {
+        if isEscaping || type?.as(FunctionTypeSyntax.self) != nil {
+            return true
+        }
+
+        if let optionalType = type?.as(OptionalTypeSyntax.self),
+           let tuple = optionalType.wrappedType.as(TupleTypeSyntax.self) {
+            return tuple.elements.onlyElement?.type.as(FunctionTypeSyntax.self) != nil
+        }
+
+        if let tuple = type?.as(TupleTypeSyntax.self) {
+            return tuple.elements.onlyElement?.type.as(FunctionTypeSyntax.self) != nil
+        }
+
+        if let attrType = type?.as(AttributedTypeSyntax.self) {
+            return attrType.baseType.is(FunctionTypeSyntax.self)
+        }
+
+        return false
     }
 
-    private func isClosureParameter(dictionary: SourceKittenDictionary) -> Bool {
-        guard let typeName = dictionary.typeName else {
+    var isEscaping: Bool {
+        guard let attrType = type?.as(AttributedTypeSyntax.self) else {
             return false
         }
 
-        return typeName.contains("->") || typeName.contains("@escaping")
-    }
-
-    private func isDefaultParameter(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Bool {
-        guard let range = dictionary.byteRange.flatMap(file.stringView.byteRangeToNSRange) else {
-            return false
-        }
-
-        return regex("=").firstMatch(in: file.contents, options: [], range: range) != nil
+        return attrType.attributes?.contains { attr in
+            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("escaping")
+        } ?? false
     }
 }

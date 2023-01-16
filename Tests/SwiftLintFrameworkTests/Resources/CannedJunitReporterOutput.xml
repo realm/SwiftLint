@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <testsuites><testsuite>
 	<testcase classname='Formatting Test' name='filename'>
-<failure message='Violation Reason.'>warning:
+<failure message='Violation Reason'>warning:
 Line:1 </failure>	</testcase>
 	<testcase classname='Formatting Test' name='filename'>
-<failure message='Violation Reason.'>error:
+<failure message='Violation Reason'>error:
 Line:1 </failure>	</testcase>
 	<testcase classname='Formatting Test' name='filename'>
-<failure message='Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;.'>error:
+<failure message='Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;'>error:
 Line:1 </failure>	</testcase>
 	<testcase classname='Formatting Test' name='&lt;nopath&gt;'>
-<failure message='Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.'>error:
+<failure message='Colons should be next to the identifier when specifying a type and next to the key in dictionary literals'>error:
 Line:0 </failure>	</testcase>
 </testsuite></testsuites>

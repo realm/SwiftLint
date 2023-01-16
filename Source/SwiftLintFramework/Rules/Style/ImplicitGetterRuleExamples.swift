@@ -1,4 +1,3 @@
-// swiftlint:disable:next type_body_length
 struct ImplicitGetterRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         Example("""
@@ -53,6 +52,7 @@ struct ImplicitGetterRuleExamples {
         Example("""
             protocol Foo {
                 var foo: Int { get }
+            }
             """),
         Example("""
             protocol Foo {

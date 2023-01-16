@@ -1,14 +1,14 @@
 import SourceKittenFramework
 
-public struct NestingRule: ConfigurationProviderRule {
-    public var configuration = NestingConfiguration(typeLevelWarning: 1,
-                                                    typeLevelError: nil,
-                                                    functionLevelWarning: 2,
-                                                    functionLevelError: nil)
+struct NestingRule: ConfigurationProviderRule {
+    var configuration = NestingConfiguration(typeLevelWarning: 1,
+                                             typeLevelError: nil,
+                                             functionLevelWarning: 2,
+                                             functionLevelError: nil)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "nesting",
         name: "Nesting",
         description:
@@ -35,7 +35,7 @@ public struct NestingRule: ConfigurationProviderRule {
         }
     }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return validate(file: file, substructure: file.structureDictionary.substructure, args: ValidationArgs())
     }
 

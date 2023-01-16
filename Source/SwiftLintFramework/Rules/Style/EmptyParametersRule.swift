@@ -1,20 +1,19 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct EmptyParametersRule: ConfigurationProviderRule, SubstitutionCorrectableRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct EmptyParametersRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "empty_parameters",
         name: "Empty Parameters",
-        description: "Prefer `() -> ` over `Void -> `.",
+        description: "Prefer `() -> ` over `Void -> `",
         kind: .style,
         nonTriggeringExamples: [
             Example("let abc: () -> Void = {}\n"),
             Example("func foo(completion: () -> Void)\n"),
-            Example("func foo(completion: () thows -> Void)\n"),
+            Example("func foo(completion: () throws -> Void)\n"),
             Example("let foo: (ConfigurationTests) -> Void throws -> Void)\n"),
             Example("let foo: (ConfigurationTests) ->   Void throws -> Void)\n"),
             Example("let foo: (ConfigurationTests) ->Void throws -> Void)\n")
@@ -34,28 +33,65 @@ public struct EmptyParametersRule: ConfigurationProviderRule, SubstitutionCorrec
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private extension EmptyParametersRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionTypeSyntax) {
+            guard let violationPosition = node.emptyParametersViolationPosition else {
+                return
+            }
+
+            violations.append(violationPosition)
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let voidPattern = "\\(Void\\)"
-        let pattern = voidPattern + "\\s*(throws\\s+)?->"
-        let excludingPattern = "->\\s*" + pattern // excludes curried functions
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-        return file.match(pattern: pattern,
-                          excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-                          excludingPattern: excludingPattern).compactMap { range in
-            let voidRegex = regex(voidPattern)
-            return voidRegex.firstMatch(in: file.contents, options: [], range: range)?.range
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: FunctionTypeSyntax) -> TypeSyntax {
+            guard
+                let violationPosition = node.emptyParametersViolationPosition,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(violationPosition)
+            return super.visit(node.withArguments(TupleTypeElementListSyntax([])))
         }
     }
+}
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "()")
+private extension FunctionTypeSyntax {
+    var emptyParametersViolationPosition: AbsolutePosition? {
+        guard
+            let argument = arguments.onlyElement,
+            leftParen.presence == .present,
+            rightParen.presence == .present,
+            let simpleType = argument.type.as(SimpleTypeIdentifierSyntax.self),
+            simpleType.typeName == "Void"
+        else {
+            return nil
+        }
+
+        return leftParen.positionAfterSkippingLeadingTrivia
     }
 }

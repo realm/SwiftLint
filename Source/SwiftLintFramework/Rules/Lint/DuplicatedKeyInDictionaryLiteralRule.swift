@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct DuplicatedKeyInDictionaryLiteralRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct DuplicatedKeyInDictionaryLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static var description = RuleDescription(
+    static var description = RuleDescription(
         identifier: "duplicated_key_in_dictionary_literal",
         name: "Duplicated Key in Dictionary Literal",
-        description: "Dictionary literals with duplicated keys will crash in runtime.",
+        description: "Dictionary literals with duplicated keys will crash at runtime",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -27,6 +27,18 @@ public struct DuplicatedKeyInDictionaryLiteralRule: ASTRule, ConfigurationProvid
                 [
                     foo: "1",
                     bar: "2"
+                ]
+            """),
+            Example("""
+                [
+                    UUID(): "1",
+                    UUID(): "2"
+                ]
+            """),
+            Example("""
+                [
+                    #line: "1",
+                    #line: "2"
                 ]
             """)
         ],
@@ -67,58 +79,60 @@ public struct DuplicatedKeyInDictionaryLiteralRule: ASTRule, ConfigurationProvid
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .dictionary else {
-            return []
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let keys = dictionaryKeys(with: file, dictionary: dictionary)
-        guard keys.count >= 2 else {
-            return []
-        }
+private extension DuplicatedKeyInDictionaryLiteralRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ list: DictionaryElementListSyntax) {
+            let keys = list.map(\.keyExpression).compactMap { expr -> DictionaryKey? in
+                expr.stringContent.map {
+                    DictionaryKey(position: expr.positionAfterSkippingLeadingTrivia, content: $0)
+                }
+            }
 
-        var existingKeys: [String: DictionaryKey] = [:]
-        return keys
-            .filter { key in
-                guard let existingKey = existingKeys[key.content] else {
-                    existingKeys[key.content] = key
-                    return false
+            guard keys.count >= 2 else {
+                return
+            }
+
+            let newViolations = keys
+                .reduce(into: [String: [DictionaryKey]]()) { result, key in
+                    result[key.content, default: []].append(key)
+                }
+                .flatMap { _, value -> [AbsolutePosition] in
+                    guard value.count > 1 else {
+                        return []
+                    }
+
+                    return value.dropFirst().map(\.position)
                 }
 
-                let existingKeyKinds = file.syntaxMap.kinds(inByteRange: existingKey.byteRange)
-                let keyKinds = file.syntaxMap.kinds(inByteRange: key.byteRange)
-                return keyKinds == existingKeyKinds
-            }.map { key in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: key.byteRange.location))
-            }
-    }
-
-    private func dictionaryKeys(with file: SwiftLintFile,
-                                dictionary: SourceKittenDictionary) -> [DictionaryKey] {
-        let keys = dictionary.elements.enumerated().compactMap { index, element -> SourceKittenDictionary? in
-            // in a dictionary, the even elements are keys, and the odd elements are values
-            if index.isMultiple(of: 2) {
-                return element
-            }
-            return nil
-        }
-
-        let contents = file.stringView
-        return keys.compactMap { key -> DictionaryKey? in
-            guard let range = key.byteRange,
-                  let substring = contents.substringWithByteRange(range) else {
-                return nil
-            }
-
-            return DictionaryKey(byteRange: range, content: substring)
+            violations.append(contentsOf: newViolations)
         }
     }
+}
 
-    private struct DictionaryKey {
-        let byteRange: ByteRange
-        let content: String
+private struct DictionaryKey {
+    let position: AbsolutePosition
+    let content: String
+}
+
+private extension ExprSyntax {
+    var stringContent: String? {
+        if let string = self.as(StringLiteralExprSyntax.self) {
+            return string.description
+        } else if let int = self.as(IntegerLiteralExprSyntax.self) {
+            return int.description
+        } else if let float = self.as(FloatLiteralExprSyntax.self) {
+            return float.description
+        } else if let memberAccess = self.as(MemberAccessExprSyntax.self) {
+            return memberAccess.description
+        } else if let identifier = self.as(IdentifierExprSyntax.self) {
+            return identifier.identifier.text
+        }
+
+        return nil
     }
 }

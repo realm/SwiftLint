@@ -2,11 +2,6 @@
 import XCTest
 
 class AttributesRuleTests: XCTestCase {
-    func testAttributesWithDefaultConfiguration() {
-        // Test with default parameters
-        verifyRule(AttributesRule.description)
-    }
-
     func testAttributesWithAlwaysOnSameLine() {
         // Test with custom `always_on_same_line`
         let nonTriggeringExamples = [

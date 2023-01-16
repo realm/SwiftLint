@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct EnumCaseAssociatedValuesLengthRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 5, error: 6)
+struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityLevelsConfiguration(warning: 5, error: 6)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "enum_case_associated_values_count",
         name: "Enum Case Associated Values Count",
-        description: "Number of associated values in an enum case should be low",
+        description: "The number of associated values in an enum case should be low.",
         kind: .metrics,
         nonTriggeringExamples: [
             Example("""
@@ -38,44 +38,45 @@ public struct EnumCaseAssociatedValuesLengthRule: ASTRule, OptInRule, Configurat
         ]
     )
 
-    public func validate(
-        file: SwiftLintFile,
-        kind: SwiftDeclarationKind,
-        dictionary: SourceKittenDictionary
-    ) -> [StyleViolation] {
-        guard kind == .enumelement,
-            let keyOffset = dictionary.offset,
-            let keyName = dictionary.name,
-            let caseNameWithoutParams = keyName.split(separator: "(").first else {
-            return []
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(configuration: configuration)
+    }
+}
+
+private extension EnumCaseAssociatedValuesLengthRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let configuration: SeverityLevelsConfiguration
+
+        init(configuration: SeverityLevelsConfiguration) {
+            self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
         }
 
-        var violations: [StyleViolation] = []
+        override func visitPost(_ node: EnumCaseElementSyntax) {
+            guard let associatedValue = node.associatedValue,
+                  case let enumCaseAssociatedValueCount = associatedValue.parameterList.count,
+                  enumCaseAssociatedValueCount >= configuration.warning else {
+                return
+            }
 
-        let enumCaseAssociatedValueCount = keyName.split(separator: ":").count - 1
-
-        if enumCaseAssociatedValueCount >= configuration.warning {
             let violationSeverity: ViolationSeverity
-
             if let errorConfig = configuration.error,
-                enumCaseAssociatedValueCount >= errorConfig {
+               enumCaseAssociatedValueCount >= errorConfig {
                 violationSeverity = .error
             } else {
                 violationSeverity = .warning
             }
 
-            let reason = "Enum case \(caseNameWithoutParams) should contain "
+            let reason = "Enum case \(node.identifier.withoutTrivia().text) should contain "
                 + "less than \(configuration.warning) associated values: "
                 + "currently contains \(enumCaseAssociatedValueCount)"
             violations.append(
-                StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: violationSeverity,
-                    location: Location(file: file, byteOffset: keyOffset),
-                    reason: reason
+                ReasonedRuleViolation(
+                    position: node.positionAfterSkippingLeadingTrivia,
+                    reason: reason,
+                    severity: violationSeverity
                 )
             )
         }
-        return violations
     }
 }

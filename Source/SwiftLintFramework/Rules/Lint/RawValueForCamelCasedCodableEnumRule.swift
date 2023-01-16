@@ -1,15 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct RawValueForCamelCasedCodableEnumRule: ASTRule, OptInRule, ConfigurationProviderRule,
-    AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct RawValueForCamelCasedCodableEnumRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "raw_value_for_camel_cased_codable_enum",
-        name: "Raw Value For Camel Cased Codable Enum",
-        description: "Camel cased cases of Codable String enums should have raw value.",
+        name: "Raw Value for Camel Cased Codable Enum",
+        description: "Camel cased cases of Codable String enums should have raw values",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -94,45 +93,40 @@ public struct RawValueForCamelCasedCodableEnumRule: ASTRule, OptInRule, Configur
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .enum else { return [] }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let codableTypesSet = Set(["Codable", "Decodable", "Encodable"])
-        let enumInheritedTypesSet = Set(dictionary.inheritedTypes)
+private extension RawValueForCamelCasedCodableEnumRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let codableTypes = Set(["Codable", "Decodable", "Encodable"])
 
-        guard
-            enumInheritedTypesSet.contains("String"),
-            !enumInheritedTypesSet.isDisjoint(with: codableTypesSet)
-        else { return [] }
+        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            guard let inheritedTypes = node.inheritanceClause?.inheritedTypeCollection.typeNames,
+                  !inheritedTypes.isDisjoint(with: codableTypes),
+                  inheritedTypes.contains("String") else {
+                return .skipChildren
+            }
 
-        let violations = violatingOffsetsForEnum(dictionary: dictionary)
-        return violations.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0))
+            return .visitChildren
+        }
+
+        override func visitPost(_ node: EnumCaseElementSyntax) {
+            guard node.rawValue == nil,
+                  case let name = node.identifier.text,
+                  !name.isUppercase(),
+                  !name.isLowercase() else {
+                return
+            }
+
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
+}
 
-    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary) -> [ByteCount] {
-        return substructureElements(of: dictionary, matching: .enumcase)
-            .compactMap { substructureElements(of: $0, matching: .enumelement) }
-            .flatMap(camelCasedEnumCasesMissingRawValue)
-            .compactMap { $0.offset }
-    }
-
-    private func substructureElements(of dict: SourceKittenDictionary,
-                                      matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
-        return dict.substructure.filter { $0.declarationKind == kind }
-    }
-
-    private func camelCasedEnumCasesMissingRawValue(
-        _ enumElements: [SourceKittenDictionary]) -> [SourceKittenDictionary] {
-        return enumElements
-            .filter { substructure in
-                guard let name = substructure.name, !name.isLowercase(), !name.isUppercase() else { return false }
-                return !substructure.elements.contains { $0.kind == "source.lang.swift.structure.elem.init_expr" }
-            }
+private extension InheritedTypeListSyntax {
+    var typeNames: Set<String> {
+        Set(compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }.map(\.name.text))
     }
 }

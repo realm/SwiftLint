@@ -2,11 +2,6 @@
 import XCTest
 
 class ConditionalReturnsOnNewlineRuleTests: XCTestCase {
-    func testConditionalReturnsOnNewlineWithDefaultConfiguration() {
-        // Test with default parameters
-        verifyRule(ConditionalReturnsOnNewlineRule.description)
-    }
-
     func testConditionalReturnsOnNewlineWithIfOnly() {
         // Test with `if_only` set to true
         let nonTriggeringExamples = [

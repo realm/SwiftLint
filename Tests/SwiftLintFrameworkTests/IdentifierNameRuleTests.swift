@@ -1,9 +1,21 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class IdentifierNameRuleTests: XCTestCase {
-    func testIdentifierName() {
-        verifyRule(IdentifierNameRule.description)
+    func testIdentifierNameWithExcluded() {
+        let baseDescription = IdentifierNameRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
+            Example("let Apple = 0"),
+            Example("let some_apple = 0"),
+            Example("let Test123 = 0")
+        ]
+        let triggeringExamples = baseDescription.triggeringExamples + [
+            Example("let ap_ple = 0"),
+            Example("let AppleJuice = 0")
+        ]
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
+                                               triggeringExamples: triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["excluded": ["Apple", "some.*", ".*\\d+.*"]])
     }
 
     func testIdentifierNameWithAllowedSymbols() {
@@ -34,7 +46,8 @@ class IdentifierNameRuleTests: XCTestCase {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamplesToRemove = [
             Example("↓let MyLet = 0"),
-            Example("enum Foo { case ↓MyEnum }")
+            Example("enum Foo { case ↓MyEnum }"),
+            Example("↓func IsOperator(name: String) -> Bool")
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()

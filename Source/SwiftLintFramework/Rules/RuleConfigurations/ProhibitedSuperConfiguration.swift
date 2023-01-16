@@ -1,5 +1,5 @@
-public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.warning)
+struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
     var excluded = [String]()
     var included = ["*"]
 
@@ -16,13 +16,13 @@ public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
 
     init() {}
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+    var consoleDescription: String {
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", excluded: [\(excluded)]" +
             ", included: [\(included)]"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -40,10 +40,6 @@ public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
         }
 
         resolvedMethodNames = calculateResolvedMethodNames()
-    }
-
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
     }
 
     private func calculateResolvedMethodNames() -> [String] {

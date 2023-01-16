@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = CyclomaticComplexityConfiguration(warning: 10, error: 20)
+struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
+    var configuration = CyclomaticComplexityConfiguration(warning: 10, error: 20)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "cyclomatic_complexity",
         name: "Cyclomatic Complexity",
         description: "Complexity of function bodies should be limited.",
@@ -72,8 +72,8 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds.contains(kind) else {
             return []
         }
@@ -82,8 +82,8 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
         for parameter in configuration.params where complexity > parameter.value {
             let offset = dictionary.offset ?? 0
-            let reason = "Function should have complexity \(configuration.length.warning) or less: " +
-                         "currently complexity equals \(complexity)"
+            let reason = "Function should have complexity \(configuration.length.warning) or less; " +
+                         "currently complexity is \(complexity)"
             return [StyleViolation(ruleDescription: Self.description,
                                    severity: parameter.severity,
                                    location: Location(file: file, byteOffset: offset),

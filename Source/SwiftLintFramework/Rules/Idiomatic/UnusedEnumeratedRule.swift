@@ -1,11 +1,11 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UnusedEnumeratedRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unused_enumerated",
         name: "Unused Enumerated",
         description: "When the index or the item is not used, `.enumerated()` can be removed.",
@@ -29,74 +29,62 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: StatementKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .forEach,
-            isEnumeratedCall(dictionary: dictionary),
-            let byteRange = byteRangeForVariables(dictionary: dictionary),
-            case let tokens = file.syntaxMap.tokens(inByteRange: byteRange),
-            tokens.count == 2,
-            let lastToken = tokens.last,
-            case let firstTokenIsUnderscore = isTokenUnderscore(tokens[0], file: file),
-            case let lastTokenIsUnderscore = isTokenUnderscore(lastToken, file: file),
-            firstTokenIsUnderscore || lastTokenIsUnderscore else {
-                return []
-        }
-
-        let offset: ByteCount
-        let reason: String
-        if firstTokenIsUnderscore {
-            offset = tokens[0].offset
-            reason = "When the index is not used, `.enumerated()` can be removed."
-        } else {
-            offset = lastToken.offset
-            reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`."
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset),
-                           reason: reason)
-        ]
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func isTokenUnderscore(_ token: SwiftLintSyntaxToken, file: SwiftLintFile) -> Bool {
-        return token.length == 1 &&
-            token.kind == .keyword &&
-            isUnderscore(file: file, token: token)
-    }
-
-    private func isEnumeratedCall(dictionary: SourceKittenDictionary) -> Bool {
-        for subDict in dictionary.substructure {
-            guard subDict.expressionKind == .call,
-                let name = subDict.name else {
-                    continue
+private extension UnusedEnumeratedRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: ForInStmtSyntax) {
+            guard let tuplePattern = node.pattern.as(TuplePatternSyntax.self),
+                  tuplePattern.elements.count == 2,
+                  let functionCall = node.sequenceExpr.asFunctionCall,
+                  functionCall.isEnumerated,
+                  let firstElement = tuplePattern.elements.first,
+                  let secondElement = tuplePattern.elements.last,
+                  case let firstTokenIsUnderscore = firstElement.isUnderscore,
+                  case let lastTokenIsUnderscore = secondElement.isUnderscore,
+                  firstTokenIsUnderscore || lastTokenIsUnderscore else {
+                return
             }
 
-            if name.hasSuffix(".enumerated") {
-                return true
-            }
-        }
-
-        return false
-    }
-
-    private func byteRangeForVariables(dictionary: SourceKittenDictionary) -> ByteRange? {
-        let expectedKind = "source.lang.swift.structure.elem.id"
-        for subDict in dictionary.elements where subDict.kind == expectedKind {
-            guard let offset = subDict.offset,
-                let length = subDict.length else {
-                continue
+            let position: AbsolutePosition
+            let reason: String
+            if firstTokenIsUnderscore {
+                position = firstElement.positionAfterSkippingLeadingTrivia
+                reason = "When the index is not used, `.enumerated()` can be removed"
+            } else {
+                position = secondElement.positionAfterSkippingLeadingTrivia
+                reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`"
             }
 
-            return ByteRange(location: offset, length: length)
+            violations.append(ReasonedRuleViolation(position: position, reason: reason))
+        }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var isEnumerated: Bool {
+        guard let memberAccess = calledExpression.as(MemberAccessExprSyntax.self),
+              memberAccess.base != nil,
+              memberAccess.name.withoutTrivia().text == "enumerated",
+              hasNoArguments else {
+            return false
         }
 
-        return nil
+        return true
     }
 
-    private func isUnderscore(file: SwiftLintFile, token: SwiftLintSyntaxToken) -> Bool {
-        return file.contents(for: token) == "_"
+    var hasNoArguments: Bool {
+        trailingClosure == nil &&
+            (additionalTrailingClosures?.isEmpty ?? true) &&
+            argumentList.isEmpty
+    }
+}
+
+private extension TuplePatternElementSyntax {
+    var isUnderscore: Bool {
+        pattern.is(WildcardPatternSyntax.self)
     }
 }

@@ -1,12 +1,9 @@
-import Foundation
-import SourceKittenFramework
+struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    init() {}
 
-    public init() {}
-
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "legacy_cggeometry_functions",
         name: "Legacy CGGeometry Functions",
         description: "Struct extension properties and methods are preferred over legacy functions",
@@ -82,49 +79,38 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let functions = ["CGRectGetWidth", "CGRectGetHeight", "CGRectGetMinX", "CGRectGetMidX",
-                         "CGRectGetMaxX", "CGRectGetMinY", "CGRectGetMidY", "CGRectGetMaxY",
-                         "CGRectIsNull", "CGRectIsEmpty", "CGRectIsInfinite", "CGRectStandardize",
-                         "CGRectIntegral", "CGRectInset", "CGRectOffset", "CGRectUnion",
-                         "CGRectIntersection", "CGRectContainsRect", "CGRectContainsPoint",
-                         "CGRectIntersectsRect"]
+    private static let legacyFunctions: [String: LegacyFunctionRuleHelper.RewriteStrategy] = [
+        "CGRectGetWidth": .property(name: "width"),
+        "CGRectGetHeight": .property(name: "height"),
+        "CGRectGetMinX": .property(name: "minX"),
+        "CGRectGetMidX": .property(name: "midX"),
+        "CGRectGetMaxX": .property(name: "maxX"),
+        "CGRectGetMinY": .property(name: "minY"),
+        "CGRectGetMidY": .property(name: "midY"),
+        "CGRectGetMaxY": .property(name: "maxY"),
+        "CGRectIsNull": .property(name: "isNull"),
+        "CGRectIsEmpty": .property(name: "isEmpty"),
+        "CGRectIsInfinite": .property(name: "isInfinite"),
+        "CGRectStandardize": .property(name: "standardized"),
+        "CGRectIntegral": .property(name: "integral"),
+        "CGRectInset": .function(name: "insetBy", argumentLabels: ["dx", "dy"]),
+        "CGRectOffset": .function(name: "offsetBy", argumentLabels: ["dx", "dy"]),
+        "CGRectUnion": .function(name: "union", argumentLabels: [""]),
+        "CGRectContainsRect": .function(name: "contains", argumentLabels: [""]),
+        "CGRectContainsPoint": .function(name: "contains", argumentLabels: [""]),
+        "CGRectIntersectsRect": .function(name: "intersects", argumentLabels: [""]),
+        "CGRectIntersection": .function(name: "intersect", argumentLabels: [""])
+    ]
 
-        let pattern = "\\b(" + functions.joined(separator: "|") + ")\\b"
-
-        return file.match(pattern: pattern, with: [.identifier]).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        LegacyFunctionRuleHelper.Visitor(legacyFunctions: Self.legacyFunctions)
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        let varName = RegexHelpers.varNameGroup
-        let twoVars = RegexHelpers.twoVars
-        let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
-        let patterns: [String: String] = [
-            "CGRectGetWidth\\(\(varName)\\)": "$1.width",
-            "CGRectGetHeight\\(\(varName)\\)": "$1.height",
-            "CGRectGetMinX\\(\(varName)\\)": "$1.minX",
-            "CGRectGetMidX\\(\(varName)\\)": "$1.midX",
-            "CGRectGetMaxX\\(\(varName)\\)": "$1.maxX",
-            "CGRectGetMinY\\(\(varName)\\)": "$1.minY",
-            "CGRectGetMidY\\(\(varName)\\)": "$1.midY",
-            "CGRectGetMaxY\\(\(varName)\\)": "$1.maxY",
-            "CGRectIsNull\\(\(varName)\\)": "$1.isNull",
-            "CGRectIsEmpty\\(\(varName)\\)": "$1.isEmpty",
-            "CGRectIsInfinite\\(\(varName)\\)": "$1.isInfinite",
-            "CGRectStandardize\\(\(varName)\\)": "$1.standardized",
-            "CGRectIntegral\\(\(varName)\\)": "$1.integral",
-            "CGRectInset\\(\(varName),\(twoVariableOrNumber)\\)": "$1.insetBy(dx: $2, dy: $3)",
-            "CGRectOffset\\(\(varName),\(twoVariableOrNumber)\\)": "$1.offsetBy(dx: $2, dy: $3)",
-            "CGRectUnion\\(\(twoVars)\\)": "$1.union($2)",
-            "CGRectIntersection\\(\(twoVars)\\)": "$1.intersect($2)",
-            "CGRectContainsRect\\(\(twoVars)\\)": "$1.contains($2)",
-            "CGRectContainsPoint\\(\(twoVars)\\)": "$1.contains($2)",
-            "CGRectIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"
-        ]
-        return file.correct(legacyRule: self, patterns: patterns)
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        LegacyFunctionRuleHelper.Rewriter(
+            legacyFunctions: Self.legacyFunctions,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }

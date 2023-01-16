@@ -1,23 +1,23 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = MultilineArgumentsConfiguration()
+struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule {
+    var configuration = MultilineArgumentsConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "multiline_arguments",
         name: "Multiline Arguments",
-        description: "Arguments should be either on the same line, or one per line.",
+        description: "Arguments should be either on the same line, or one per line",
         kind: .style,
         nonTriggeringExamples: MultilineArgumentsRuleExamples.nonTriggeringExamples,
         triggeringExamples: MultilineArgumentsRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile,
+                  kind: SwiftExpressionKind,
+                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             kind == .call,
             case let arguments = dictionary.enclosedArguments,

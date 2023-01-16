@@ -1,6 +1,14 @@
 import Foundation
 import SourceKittenFramework
 
+private let warnSourceKitFailedOnceImpl: Void = {
+    queuedPrintError("SourceKit-based rules will be skipped because sourcekitd has failed.")
+}()
+
+private func warnSourceKitFailedOnce() {
+    _ = warnSourceKitFailedOnceImpl
+}
+
 private struct LintResult {
     let violations: [StyleViolation]
     let ruleTime: (id: String, time: Double)?
@@ -55,13 +63,12 @@ private extension Rule {
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
         // Empty files shouldn't trigger violations
-        if file.isEmpty { return nil }
-
-        if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
+        guard !file.isEmpty, SwiftVersion.current >= Self.description.minSwiftVersion else {
             return nil
         }
 
-        if SwiftVersion.current < Self.description.minSwiftVersion {
+        if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
+            warnSourceKitFailedOnce()
             return nil
         }
 
@@ -211,9 +218,6 @@ public struct CollectedLinter {
             return cached
         }
 
-        if file.sourcekitdFailed {
-            queuedPrintError("Most rules will be skipped because sourcekitd has failed.")
-        }
         let regions = file.regions()
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
@@ -245,6 +249,9 @@ public struct CollectedLinter {
                 "completely removed in a future release.")
         }
 
+        // Free some memory used for this file's caches. They shouldn't be needed after this point.
+        file.invalidateCache()
+
         return (violations, ruleTimes)
     }
 
@@ -274,30 +281,25 @@ public struct CollectedLinter {
     /// - parameter storage: The storage object containing all collected info.
     ///
     /// - returns: All corrections that were applied.
+    @_spi(TestHelper)
     public func correct(using storage: RuleStorage) -> [Correction] {
         if let violations = cachedStyleViolations()?.0, violations.isEmpty {
             return []
         }
 
-        if let parserDiagnostics = file.parserDiagnostics {
-            let errorDiagnostics = parserDiagnostics.filter { diagnostic in
-                diagnostic["key.severity"] as? String == "source.diagnostic.severity.error"
-            }
-
-            if errorDiagnostics.isNotEmpty {
-                queuedPrintError(
-                    "Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
-                )
-                queuedPrintError(toJSON(["diagnostics": errorDiagnostics]))
-                return []
-            }
+        if let parserDiagnostics = file.parserDiagnostics, parserDiagnostics.isNotEmpty {
+            queuedPrintError(
+                "Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
+            )
+            queuedPrintError(toJSON(["diagnostics": parserDiagnostics]))
+            return []
         }
 
         var corrections = [Correction]()
         for rule in rules.compactMap({ $0 as? CorrectableRule }) {
             let newCorrections = rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
             corrections += newCorrections
-            if newCorrections.isNotEmpty {
+            if newCorrections.isNotEmpty, !file.isVirtual {
                 file.invalidateCache()
             }
         }

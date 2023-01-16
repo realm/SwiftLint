@@ -1,15 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import IDEUtils
 
-public struct OrphanedDocCommentRule: ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "orphaned_doc_comment",
         name: "Orphaned Doc Comment",
-        description: "A doc comment should be attached to a declaration.",
+        description: "A doc comment should be attached to a declaration",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -47,33 +46,32 @@ public struct OrphanedDocCommentRule: ConfigurationProviderRule {
         ]
     )
 
-    private static let characterSet = CharacterSet.whitespacesAndNewlines.union(CharacterSet(charactersIn: "/"))
-
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let docStringsTokens = file.syntaxMap.tokens.filter { token in
-            return token.kind == .docComment || token.kind == .docCommentField
-        }
-
-        let docummentedDeclsRanges = file.structureDictionary.traverseDepthFirst { dictionary -> [ByteRange]? in
-            guard let docOffset = dictionary.docOffset, let docLength = dictionary.docLength else {
-                return nil
-            }
-
-            return [ByteRange(location: docOffset, length: docLength)]
-        }.sorted { $0.location < $1.location }
-
-        return docStringsTokens
-            .filter { token in
-                guard docummentedDeclsRanges.firstIndexAssumingSorted(where: token.range.intersects) == nil,
-                    let contents = file.contents(for: token) else {
-                        return false
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
+        file.syntaxClassifications
+            .filter { $0.kind != .none }
+            .pairs()
+            .compactMap { first, second in
+                let firstByteRange = first.range.toSourceKittenByteRange()
+                guard
+                    let second = second,
+                    first.kind == .docLineComment || first.kind == .docBlockComment,
+                    second.kind == .lineComment || second.kind == .blockComment,
+                    let firstString = file.stringView.substringWithByteRange(firstByteRange),
+                    // These patterns are often used for "file header" style comments
+                    !firstString.starts(with: "////") && !firstString.starts(with: "/***")
+                else {
+                    return nil
                 }
 
-                return contents.trimmingCharacters(in: Self.characterSet).isNotEmpty
-            }.map { token in
                 return StyleViolation(ruleDescription: Self.description,
                                       severity: configuration.severity,
-                                      location: Location(file: file, byteOffset: token.offset))
+                                      location: Location(file: file, byteOffset: firstByteRange.location))
             }
+    }
+}
+
+private extension Sequence {
+    func pairs() -> Zip2Sequence<Self, [Element?]> {
+        return zip(self, Array(dropFirst()) + [nil])
     }
 }

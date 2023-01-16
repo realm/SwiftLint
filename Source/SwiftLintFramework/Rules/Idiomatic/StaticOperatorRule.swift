@@ -1,15 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "static_operator",
         name: "Static Operator",
-        description: "Operators should be declared as static functions, not free functions.",
+        description: "Operators should be declared as static functions, not free functions",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -79,23 +78,34 @@ public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule,
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .functionFree,
-            let offset = dictionary.offset,
-            let name = dictionary.name?.split(separator: "(").first.flatMap(String.init) else {
-                return []
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let characterSet = CharacterSet(charactersIn: name)
-        guard characterSet.isDisjoint(with: .alphanumerics) else {
-            return []
-        }
+private extension StaticOperatorRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if node.isFreeFunction, node.isOperator {
+                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+}
+
+private extension FunctionDeclSyntax {
+    var isFreeFunction: Bool {
+        parent?.is(CodeBlockItemSyntax.self) ?? false
+    }
+
+    var isOperator: Bool {
+        switch identifier.tokenKind {
+        case .spacedBinaryOperator:
+            return true
+        default:
+            return false
+        }
     }
 }

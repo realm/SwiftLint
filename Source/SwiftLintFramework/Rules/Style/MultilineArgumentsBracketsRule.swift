@@ -1,15 +1,14 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "multiline_arguments_brackets",
         name: "Multiline Arguments Brackets",
-        description: "Multiline arguments should have their surrounding brackets in a new line.",
+        description: "Multiline arguments should have their surrounding brackets in a new line",
         kind: .style,
         nonTriggeringExamples: [
             Example("""
@@ -46,6 +45,11 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
             }
             """),
             Example("""
+            views.append(ViewModel(title: "MacBook", subtitle: "M1", action: { [weak self] in
+                print("action tapped")
+            }))
+            """, excludeFromDocumentation: true),
+            Example("""
             public final class Logger {
                 public static let shared = Logger(outputs: [
                     OSLoggerOutput(),
@@ -67,6 +71,35 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
             SomeType(a: [
                 1, 2, 3
             ], b: [1, 2])
+            """),
+            Example("""
+            SomeType(
+              a: 1
+            ) { print("completion") }
+            """),
+            Example("""
+            SomeType(
+              a: 1
+            ) {
+              print("completion")
+            }
+            """),
+            Example("""
+            SomeType(
+              a: .init() { print("completion") }
+            )
+            """),
+            Example("""
+            SomeType(
+              a: .init() {
+                print("completion")
+              }
+            )
+            """),
+            Example("""
+            SomeType(
+              a: 1
+            ) {} onError: {}
             """)
         ],
         triggeringExamples: [
@@ -78,6 +111,11 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
             Example("""
             foo(
                 param1: "Param1",
+                param2: "Param2",
+                param3: "Param3"↓)
+            """),
+            Example("""
+            foo(↓param1: "Param1",
                 param2: "Param2",
                 param3: "Param3"↓)
             """),
@@ -100,55 +138,65 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
                     1, 2, 3
                 ],
                 b: "two"↓)
-            """)
+            """),
+            Example("""
+            SomeOtherType(
+              a: 1↓) {}
+            """),
+            Example("""
+            SomeOtherType(
+              a: 1↓) {
+              print("completion")
+            }
+            """),
+            Example("""
+            views.append(ViewModel(
+                title: "MacBook", subtitle: "M1", action: { [weak self] in
+                print("action tapped")
+            }↓))
+            """, excludeFromDocumentation: true)
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .call,
-            let bodyRange = dictionary.bodyByteRange,
-            let range = file.stringView.byteRangeToNSRange(bodyRange)
-        else {
-            return []
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension MultilineArgumentsBracketsRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard let firstArgument = node.argumentList.first,
+                  let leftParen = node.leftParen,
+                  let rightParen = node.rightParen else {
+                return
+            }
+
+            let hasMultilineFirstArgument = hasLeadingNewline(firstArgument)
+            let hasMultilineArgument = node.argumentList
+                .contains { argument in
+                    hasLeadingNewline(argument)
+                }
+
+            let hasMultilineRightParen = hasLeadingNewline(rightParen)
+
+            if !hasMultilineFirstArgument, hasMultilineArgument {
+                violations.append(leftParen.endPosition)
+            }
+
+            if !hasMultilineArgument, hasMultilineRightParen {
+                violations.append(leftParen.endPosition)
+            }
+
+            if !hasMultilineRightParen, hasMultilineArgument {
+                violations.append(rightParen.position)
+            }
         }
 
-        let callBody = file.contents.substring(from: range.location, length: range.length)
+        private func hasLeadingNewline(_ syntax: SyntaxProtocol) -> Bool {
+            guard let leadingTrivia = syntax.leadingTrivia else { return false }
 
-        let parameters = dictionary.substructure.filter {
-            // Argument expression types that can contain newlines
-            [.argument, .array, .dictionary, .closure].contains($0.expressionKind)
-        }
-        let parameterBodies = parameters.compactMap { $0.content(in: file) }
-        let parametersNewlineCount = parameterBodies.map { body in
-            return body.countOccurrences(of: "\n")
-        }.reduce(0, +)
-        let callNewlineCount = callBody.countOccurrences(of: "\n")
-        let isMultiline = callNewlineCount > parametersNewlineCount
-
-        guard isMultiline else {
-            return []
-        }
-
-        let expectedBodyBeginRegex = regex("\\A(?:[ \\t]*\\n|[^\\n]*(?:in|\\{)\\n)")
-        let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
-
-        var violatingByteOffsets = [ByteCount]()
-        if expectedBodyBeginRegex.firstMatch(in: callBody, options: [], range: callBody.fullNSRange) == nil {
-            violatingByteOffsets.append(bodyRange.location)
-        }
-
-        if expectedBodyEndRegex.firstMatch(in: callBody, options: [], range: callBody.fullNSRange) == nil {
-            violatingByteOffsets.append(bodyRange.upperBound)
-        }
-
-        return violatingByteOffsets.map { byteOffset in
-            StyleViolation(
-                ruleDescription: Self.description, severity: configuration.severity,
-                location: Location(file: file, byteOffset: byteOffset)
-            )
+            return leadingTrivia.pieces.contains { $0.isNewline }
         }
     }
 }

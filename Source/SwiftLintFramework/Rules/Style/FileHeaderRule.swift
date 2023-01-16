@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
-    public var configuration = FileHeaderConfiguration()
+struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
+    var configuration = FileHeaderConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "file_header",
         name: "File Header",
         description: "Header comments should be consistent with project patterns. " +
@@ -30,12 +30,10 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             //  ↓Copyright © 2016 Realm. All rights reserved.
             //
             """)
-        ]
+        ].skipWrappingInCommentTests()
     )
 
-    private static let reason = "Header comments should be consistent with project patterns."
-
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         var firstToken: SwiftLintSyntaxToken?
         var lastToken: SwiftLintSyntaxToken?
         var firstNonCommentToken: SwiftLintSyntaxToken?
@@ -102,7 +100,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         return StyleViolation(ruleDescription: Self.description,
                               severity: configuration.severityConfiguration.severity,
                               location: location,
-                              reason: Self.reason)
+                              reason: "Header comments should be consistent with project patterns")
     }
 }
 

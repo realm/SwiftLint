@@ -1,15 +1,15 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, ASTRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct SelfInPropertyInitializationRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "self_in_property_initialization",
         name: "Self in Property Initialization",
-        description: "`self` refers to the unapplied `NSObject.self()` method, which is likely not expected. " +
-            "Make the variable `lazy` to be able to refer to the current instance or use `ClassName.self`.",
+        description: "`self` refers to the unapplied `NSObject.self()` method, which is likely not expected; " +
+            "make the variable `lazy` to be able to refer to the current instance or use `ClassName.self`",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -47,7 +47,28 @@ public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, ASTRu
                     return collectionView
                 }()
             }
-            """)
+            """),
+            Example("""
+            class Foo {
+                var bar: Bool = false {
+                    didSet {
+                        value = {
+                            if bar {
+                                return self.calculateA()
+                            } else {
+                                return self.calculateB()
+                            }
+                        }()
+                        print(value)
+                    }
+                }
+
+                var value: String?
+
+                func calculateA() -> String { "A" }
+                func calculateB() -> String { "B" }
+            }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("""
@@ -71,50 +92,56 @@ public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, ASTRu
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .class else {
-            return []
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let inlineClosures = dictionary.substructure
-            .filter { entry in
-                guard let name = entry.name,
-                      entry.expressionKind == .call, name.hasPrefix("{"),
-                      let closureByteRange = entry.nameByteRange,
-                      let closureRange = file.stringView.byteRangeToNSRange(closureByteRange) else {
-                    return false
+private extension SelfInPropertyInitializationRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard !node.modifiers.containsLazy,
+                  !node.modifiers.containsStaticOrClass,
+                  let closestDecl = node.closestDecl(),
+                  closestDecl.is(ClassDeclSyntax.self) else {
+                return
+            }
+
+            let visitor = IdentifierUsageVisitor(identifier: .selfKeyword)
+            for binding in node.bindings {
+                guard let initializer = binding.initializer,
+                      visitor.walk(tree: initializer.value, handler: \.isTokenUsed) else {
+                    continue
                 }
 
-                return file.match(pattern: "\\b(?<!\\.)self\\b", with: [.keyword], range: closureRange).isNotEmpty
-            }
-
-        let variableDeclarations = inlineClosures.compactMap { closureDict -> ByteCount? in
-            guard let closureOffset = closureDict.offset else {
-                return nil
-            }
-
-            let lastStructure = dictionary.substructure.last { dict in
-                guard let offset = dict.offset else {
-                    return false
-                }
-                return offset < closureOffset
-            }
-
-            return lastStructure.flatMap { lastStructure -> ByteCount? in
-                guard lastStructure.declarationKind == .varInstance,
-                      !lastStructure.enclosedSwiftAttributes.contains(.lazy) else {
-                    return nil
-                }
-
-                return lastStructure.offset
+                violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
+    }
 
-        return variableDeclarations.map { byteOffset in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: byteOffset))
+    final class IdentifierUsageVisitor: SyntaxVisitor {
+        let identifier: TokenKind
+        private(set) var isTokenUsed = false
+
+        init(identifier: TokenKind) {
+            self.identifier = identifier
+            super.init(viewMode: .sourceAccurate)
         }
+
+        override func visitPost(_ node: IdentifierExprSyntax) {
+            if node.identifier.tokenKind == identifier {
+                isTokenUsed = true
+            }
+        }
+    }
+}
+
+private extension SyntaxProtocol {
+    func closestDecl() -> DeclSyntax? {
+        if let decl = self.parent?.as(DeclSyntax.self) {
+            return decl
+        }
+
+        return parent?.closestDecl()
     }
 }

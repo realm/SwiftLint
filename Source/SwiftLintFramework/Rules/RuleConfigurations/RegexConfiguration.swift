@@ -1,20 +1,16 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionProvider {
+public struct RegexConfiguration: SeverityBasedRuleConfiguration, Hashable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?
-    public var message = "Regex matched."
+    public var message = "Regex matched"
     public var regex: NSRegularExpression!
-    public var included: NSRegularExpression?
-    public var excluded: NSRegularExpression?
+    public var included: [NSRegularExpression] = []
+    public var excluded: [NSRegularExpression] = []
     public var excludedMatchKinds = Set<SyntaxKind>()
     public var severityConfiguration = SeverityConfiguration(.warning)
     public var captureGroup: Int = 0
-
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
-    }
 
     public var consoleDescription: String {
         return "\(severity.rawValue): \(regex.pattern)"
@@ -26,8 +22,8 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
             name ?? "",
             message,
             regex.pattern,
-            included?.pattern ?? "",
-            excluded?.pattern ?? "",
+            included.map(\.pattern).joined(separator: ","),
+            excluded.map(\.pattern).joined(separator: ","),
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
                 .map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
             severityConfiguration.consoleDescription
@@ -57,11 +53,19 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
         regex = try .cached(pattern: regexString)
 
         if let includedString = configurationDict["included"] as? String {
-            included = try .cached(pattern: includedString)
+            included = [try .cached(pattern: includedString)]
+        } else if let includedArray = configurationDict["included"] as? [String] {
+            included = try includedArray.map { pattern in
+                try .cached(pattern: pattern)
+            }
         }
 
         if let excludedString = configurationDict["excluded"] as? String {
-            excluded = try .cached(pattern: excludedString)
+            excluded = [try .cached(pattern: excludedString)]
+        } else if let excludedArray = configurationDict["excluded"] as? [String] {
+            excluded = try excludedArray.map { pattern in
+                try .cached(pattern: pattern)
+            }
         }
 
         if let name = configurationDict["name"] as? String {
@@ -85,6 +89,21 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
+    }
+
+    func shouldValidate(filePath: String) -> Bool {
+        let pathRange = filePath.fullNSRange
+        let isIncluded = included.isEmpty || included.contains { regex in
+            regex.firstMatch(in: filePath, range: pathRange) != nil
+        }
+
+        guard isIncluded else {
+            return false
+        }
+
+        return excluded.allSatisfy { regex in
+            regex.firstMatch(in: filePath, range: pathRange) == nil
+        }
     }
 
     private func excludedMatchKinds(from configurationDict: [String: Any]) throws -> Set<SyntaxKind> {

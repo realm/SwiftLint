@@ -1,12 +1,14 @@
-public struct PreferNimbleRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+import SwiftSyntax
 
-    public init() {}
+struct PreferNimbleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    init() {}
+
+    static let description = RuleDescription(
         identifier: "prefer_nimble",
         name: "Prefer Nimble",
-        description: "Prefer Nimble matchers over XCTAssert functions.",
+        description: "Prefer Nimble matchers over XCTAssert functions",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("expect(foo) == 1"),
@@ -22,18 +24,18 @@ public struct PreferNimbleRule: ASTRule, OptInRule, ConfigurationProviderRule, A
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .call,
-              let offset = dictionary.offset,
-              let name = dictionary.name,
-              name.starts(with: "XCTAssert") else {
-            return []
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))]
+private extension PreferNimbleRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if let expr = node.calledExpression.as(IdentifierExprSyntax.self),
+               expr.identifier.text.starts(with: "XCTAssert") {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
     }
 }

@@ -3,11 +3,11 @@ author: JP Simard, SwiftLint Contributors
 author_url: https://jpsim.com
 root_url: https://realm.github.io/SwiftLint/
 github_url: https://github.com/realm/SwiftLint
-github_file_prefix: https://github.com/realm/SwiftLint/tree/master
+github_file_prefix: https://github.com/realm/SwiftLint/tree/main
 swift_build_tool: spm
 theme: fullwidth
 clean: true
-copyright: '© 2020 [JP Simard](https://jpsim.com) under MIT.'
+copyright: '© 2022 [JP Simard](https://jpsim.com) under MIT.'
 
 documentation: rule_docs/*.md
 hide_unlisted_documentation: true
@@ -22,7 +22,7 @@ custom_categories:
     children:
       - CSVReporter
       - CheckstyleReporter
-      - CodeclimateReporter
+      - CodeClimateReporter
       - EmojiReporter
       - GitHubActionsLoggingReporter
       - HTMLReporter

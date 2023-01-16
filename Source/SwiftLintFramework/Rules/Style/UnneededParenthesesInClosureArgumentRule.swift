@@ -1,22 +1,31 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, CorrectableRule, OptInRule,
-                                                        AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule,
+                                                        SwiftSyntaxCorrectableRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unneeded_parentheses_in_closure_argument",
         name: "Unneeded Parentheses in Closure Argument",
-        description: "Parentheses are not needed when declaring closure arguments.",
+        description: "Parentheses are not needed when declaring closure arguments",
         kind: .style,
         nonTriggeringExamples: [
             Example("let foo = { (bar: Int) in }\n"),
             Example("let foo = { bar, _  in }\n"),
             Example("let foo = { bar in }\n"),
-            Example("let foo = { bar -> Bool in return true }\n")
+            Example("let foo = { bar -> Bool in return true }\n"),
+            Example("""
+            DispatchQueue.main.async { () -> Void in
+                doSomething()
+            }
+            """),
+            Example("""
+            registerFilter(name) { any, args throws -> Any? in
+                doSomething(any, args)
+            }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("call(arg: { ↓(bar) in })\n"),
@@ -47,7 +56,12 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
                 }
                 return false
             }
-            """)
+            """),
+            Example("""
+            registerFilter(name) { ↓(any, args) throws -> Any? in
+                doSomething(any, args)
+            }
+            """, excludeFromDocumentation: true)
         ],
         corrections: [
             Example("call(arg: { ↓(bar) in })\n"): Example("call(arg: { bar in })\n"),
@@ -61,75 +75,65 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(file: file).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
 
-    private func violationRanges(file: SwiftLintFile) -> [NSRange] {
-        let capturesPattern = "(?:\\[[^\\]]+\\])?"
-        let pattern = "\\{\\s*\(capturesPattern)\\s*(\\([^:}]+?\\))\\s*(in|->)"
-        let contents = file.stringView
-        return regex(pattern).matches(in: file).compactMap { match -> NSRange? in
-            let parametersRange = match.range(at: 1)
-            let inRange = match.range(at: 2)
-            guard let parametersByteRange = contents.NSRangeToByteRange(start: parametersRange.location,
-                                                                        length: parametersRange.length),
-                let inByteRange = contents.NSRangeToByteRange(start: inRange.location,
-                                                              length: inRange.length) else {
-                    return nil
-            }
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
 
-            let parametersTokens = file.syntaxMap.tokens(inByteRange: parametersByteRange)
-            let parametersAreValid = parametersTokens.allSatisfy { token in
-                if token.kind == .identifier {
-                    return true
-                }
-
-                return token.kind == .keyword && file.contents(for: token) == "_"
-            }
-
-            let inKinds = Set(file.syntaxMap.kinds(inByteRange: inByteRange))
-            guard parametersAreValid,
-                inKinds.isEmpty || inKinds == [.keyword] else {
-                    return nil
-            }
-
-            return parametersRange
+private final class Visitor: ViolationsSyntaxVisitor {
+    override func visitPost(_ node: ClosureSignatureSyntax) {
+        guard let clause = node.input?.as(ParameterClauseSyntax.self),
+              !clause.parameterList.contains(where: { $0.type != nil }),
+              clause.parameterList.isNotEmpty else {
+            return
         }
+
+        violations.append(clause.positionAfterSkippingLeadingTrivia)
+    }
+}
+
+private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    private(set) var correctionPositions: [AbsolutePosition] = []
+    let locationConverter: SourceLocationConverter
+    let disabledRegions: [SourceRange]
+
+    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+        self.locationConverter = locationConverter
+        self.disabledRegions = disabledRegions
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(file: file), for: self)
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
+    override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
+        guard
+            let clause = node.input?.as(ParameterClauseSyntax.self),
+            !clause.parameterList.contains(where: { $0.type != nil }),
+            clause.parameterList.isNotEmpty,
+            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+        else {
+            return super.visit(node)
+        }
 
-        for violatingRange in violatingRanges.reversed() {
-            let correctingRange = NSRange(location: violatingRange.location + 1,
-                                          length: violatingRange.length - 2)
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange),
-                let updatedRange = correctedContents.nsrangeToIndexRange(correctingRange) {
-                var updatedArguments = correctedContents[updatedRange]
-                if let whiteSpaceIndex = correctedContents.index(indexRange.upperBound,
-                                                                 offsetBy: 0,
-                                                                 limitedBy: correctedContents.endIndex),
-                   !String(correctedContents[whiteSpaceIndex]).hasTrailingWhitespace() {
-                    updatedArguments += " "
-                }
-                correctedContents = correctedContents.replacingCharacters(in: indexRange,
-                                                                          with: String(updatedArguments))
-                adjustedLocations.insert(violatingRange.location, at: 0)
+        let items = clause.parameterList.enumerated().compactMap { idx, param -> ClosureParamSyntax? in
+            guard let name = param.firstName else {
+                return nil
             }
+
+            let isLast = idx == clause.parameterList.count - 1
+            return ClosureParamSyntax(
+                name: name,
+                trailingComma: isLast ? nil : .commaToken(trailingTrivia: Trivia(pieces: [.spaces(1)]))
+            )
         }
 
-        file.write(correctedContents)
+        correctionPositions.append(clause.positionAfterSkippingLeadingTrivia)
 
-        return adjustedLocations.map {
-            Correction(ruleDescription: Self.description,
-                       location: Location(file: file, characterOffset: $0))
-        }
+        let paramList = ClosureParamListSyntax(items).withTrailingTrivia(.spaces(1))
+        return super.visit(node.withInput(.init(paramList)))
     }
 }

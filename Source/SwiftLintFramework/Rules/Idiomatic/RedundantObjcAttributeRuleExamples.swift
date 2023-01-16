@@ -1,4 +1,3 @@
-// swiftlint:disable:next type_body_length
 struct RedundantObjcAttributeRuleExamples {
     static let nonTriggeringExamples = [
         Example("@objc private var foo: String? {}"),
@@ -69,6 +68,12 @@ struct RedundantObjcAttributeRuleExamples {
         @objcMembers
         class Foo {
             @objc class Bar {}
+        }
+        """),
+        Example("""
+        extension BlockEditorSettings {
+            @objc(addElementsObject:)
+            @NSManaged public func addToElements(_ value: BlockEditorSettingElement)
         }
         """)
     ]

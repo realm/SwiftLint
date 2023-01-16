@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "legacy_multiple",
         name: "Legacy Multiple",
-        description: "Prefer using the `isMultiple(of:)` function instead of using the remainder operator (`%`).",
+        description: "Prefer using the `isMultiple(of:)` function instead of using the remainder operator (`%`)",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("cell.contentView.backgroundColor = indexPath.row.isMultiple(of: 2) ? .gray : .white"),
@@ -27,6 +27,7 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, Automati
         ],
         triggeringExamples: [
             Example("cell.contentView.backgroundColor = indexPath.row ↓% 2 == 0 ? .gray : .white"),
+            Example("cell.contentView.backgroundColor = 0 == indexPath.row ↓% 2 ? .gray : .white"),
             Example("cell.contentView.backgroundColor = indexPath.row ↓% 2 != 0 ? .gray : .white"),
             Example("guard count ↓% 2 == 0 else { throw DecodingError.dataCorrupted(...) }"),
             Example("sanityCheck(bytes > 0 && bytes ↓% 4 == 0, \"capacity must be multiple of 4 bytes\")"),
@@ -38,15 +39,49 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, Automati
         ]
     )
 
-    // MARK: - Rule
+    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+        syntaxTree.folded()
+    }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "(?!\\b\\s*)%\(RegexHelpers.variableOrNumber)[=!]=\\s*0\\b"
-        return file.match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
-            .map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, characterOffset: $0.location))
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension LegacyMultipleRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                  operatorNode.operatorToken.tokenKind == .spacedBinaryOperator("%"),
+                  let parent = node.parent?.as(InfixOperatorExprSyntax.self),
+                  let parentOperatorNode = parent.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                  parentOperatorNode.isEqualityOrInequalityOperator else {
+                return
             }
+
+            let isExprEqualTo0 = {
+                parent.leftOperand.as(InfixOperatorExprSyntax.self) == node &&
+                    parent.rightOperand.as(IntegerLiteralExprSyntax.self)?.isZero == true
+            }
+
+            let is0EqualToExpr = {
+                parent.leftOperand.as(IntegerLiteralExprSyntax.self)?.isZero == true &&
+                    parent.rightOperand.as(InfixOperatorExprSyntax.self) == node
+            }
+
+            guard isExprEqualTo0() || is0EqualToExpr() else {
+                return
+            }
+
+            violations.append(node.operatorOperand.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension BinaryOperatorExprSyntax {
+    var isEqualityOrInequalityOperator: Bool {
+        operatorToken.tokenKind == .spacedBinaryOperator("==") ||
+            operatorToken.tokenKind == .unspacedBinaryOperator("==") ||
+            operatorToken.tokenKind == .spacedBinaryOperator("!=")
     }
 }

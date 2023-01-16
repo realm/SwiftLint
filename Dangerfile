@@ -14,12 +14,13 @@ modified_files = git.modified_files + git.added_files
 # including in a CHANGELOG for example
 has_app_changes = !modified_files.grep(/Source/).empty?
 has_test_changes = !modified_files.grep(/Tests/).empty?
-has_danger_changes = !modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
+has_danger_changes = !modified_files.grep(/Dangerfile|tools\/oss-check|Gemfile/).empty?
 has_package_changes = !modified_files.grep(/Package\.swift/).empty?
+has_bazel_changes = !modified_files.grep(/\.bazelrc|\.bazelversion|WORKSPACE|bazel\/|BUILD/).empty?
 
 # Add a CHANGELOG entry for app changes
 if !modified_files.include?('CHANGELOG.md') && has_app_changes
-  warn("Please include a CHANGELOG entry to credit yourself! \nYou can find it at [CHANGELOG.md](https://github.com/realm/SwiftLint/blob/master/CHANGELOG.md).")
+  warn("If this is a user-facing change, please include a CHANGELOG entry to credit yourself! \nYou can find it at [CHANGELOG.md](https://github.com/realm/SwiftLint/blob/main/CHANGELOG.md).")
     markdown <<-MARKDOWN
 Here's an example of your CHANGELOG entry:
 ```markdown
@@ -31,7 +32,7 @@ Here's an example of your CHANGELOG entry:
 MARKDOWN
 end
 
-return unless has_app_changes || has_danger_changes || has_package_changes
+return unless has_app_changes || has_danger_changes || has_package_changes || has_bazel_changes
 
 # Non-trivial amounts of app changes without tests
 if git.lines_of_code > 50 && has_app_changes && !has_test_changes
@@ -50,7 +51,8 @@ end
 
 file = Tempfile.new('violations')
 
-Open3.popen3("script/oss-check -v 2> #{file.path}") do |_, stdout, _, _|
+force_flag = has_danger_changes ? "--force" : ""
+Open3.popen3("tools/oss-check -v #{force_flag} 2> #{file.path}") do |_, stdout, _, _|
   while char = stdout.getc
     print char
   end

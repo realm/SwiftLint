@@ -2,10 +2,6 @@
 import XCTest
 
 class ImplicitReturnRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ImplicitReturnRule.description)
-    }
-
     func testOnlyClosureKindIncluded() {
         let nonTriggeringExamples = ImplicitReturnRuleExamples.GenericExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.ClosureExamples.nonTriggeringExamples +

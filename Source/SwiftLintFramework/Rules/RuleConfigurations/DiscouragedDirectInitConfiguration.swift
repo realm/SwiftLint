@@ -2,21 +2,18 @@ private func toExplicitInitMethod(typeName: String) -> String {
     return "\(typeName).init"
 }
 
-public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
-    public var severityConfiguration = SeverityConfiguration(.warning)
+struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    var severityConfiguration = SeverityConfiguration(.warning)
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", types: \(discouragedInits.sorted(by: <))"
+    var consoleDescription: String {
+        return "severity: \(severityConfiguration.consoleDescription)" + ", types: \(discouragedInits.sorted(by: <))"
     }
 
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
-    }
-
-    public private(set) var discouragedInits: Set<String>
+    private(set) var discouragedInits: Set<String>
 
     private let defaultDiscouragedInits = [
         "Bundle",
+        "NSError",
         "UIDevice"
     ]
 
@@ -26,7 +23,7 @@ public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
 
     // MARK: - RuleConfiguration
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

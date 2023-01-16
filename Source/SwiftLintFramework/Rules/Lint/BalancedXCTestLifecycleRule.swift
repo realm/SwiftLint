@@ -1,14 +1,14 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct BalancedXCTestLifecycleRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     // MARK: - Properties
 
-    public var configuration = SeverityConfiguration(.warning)
+    var configuration = BalancedXCTestLifecycleConfiguration()
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "balanced_xctest_lifecycle",
-        name: "Balanced XCTest life-cycle",
-        description: "Test classes must implement balanced setUp and tearDown methods.",
+        name: "Balanced XCTest Life Cycle",
+        description: "Test classes must implement balanced setUp and tearDown methods",
         kind: .lint,
         nonTriggeringExamples: [
             Example(#"""
@@ -108,38 +108,50 @@ public struct BalancedXCTestLifecycleRule: Rule, OptInRule, ConfigurationProvide
 
     // MARK: - Life cycle
 
-    public init() {}
+    init() {}
 
     // MARK: - Public
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        testClasses(in: file).compactMap { violations(in: file, for: $0) }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate, testClasses: configuration.testParentClasses)
     }
+}
 
-    // MARK: - Private
+private extension BalancedXCTestLifecycleRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let testClasses: Set<String>
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
-    private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
-        file.structureDictionary.substructure.filter { dictionary in
-            guard dictionary.declarationKind == .class else { return false }
-            return dictionary.inheritedTypes.contains("XCTestCase")
+        init(viewMode: SyntaxTreeViewMode, testClasses: Set<String>) {
+            self.testClasses = testClasses
+            super.init(viewMode: viewMode)
+        }
+
+        override func visitPost(_ node: ClassDeclSyntax) {
+            guard node.isXCTestCase(testClasses) else {
+                return
+            }
+
+            let methods = SetupTearDownVisitor(viewMode: .sourceAccurate)
+                .walk(tree: node.members, handler: \.methods)
+            guard methods.contains(.setUp) != methods.contains(.tearDown) else {
+                return
+            }
+
+            violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
         }
     }
 
-    private func violations(in file: SwiftLintFile,
-                            for dictionary: SourceKittenDictionary) -> StyleViolation? {
-        let methods = dictionary.substructure
-            .compactMap { XCTMethod($0.name) }
+    final class SetupTearDownVisitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+        private(set) var methods: Set<XCTMethod> = []
 
-        guard
-            methods.contains(.setUp) != methods.contains(.tearDown),
-            let offset = dictionary.nameOffset
-        else {
-            return nil
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if let method = XCTMethod(node.identifier.description),
+               node.signature.input.parameterList.isEmpty {
+                methods.insert(method)
+            }
         }
-
-        return StyleViolation(ruleDescription: Self.description,
-                              severity: configuration.severity,
-                              location: Location(file: file, byteOffset: offset))
     }
 }
 
@@ -151,8 +163,8 @@ private enum XCTMethod {
 
     init?(_ name: String?) {
         switch name {
-        case "setUp()", "setUpWithError()": self = .setUp
-        case "tearDown()", "tearDownWithError()": self = .tearDown
+        case "setUp", "setUpWithError": self = .setUp
+        case "tearDown", "tearDownWithError": self = .tearDown
         default: return nil
         }
     }

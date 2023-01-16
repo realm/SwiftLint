@@ -1,5 +1,3 @@
-// swiftlint:disable type_body_length
-
 internal struct QuickDiscouragedCallRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         Example("""
@@ -31,6 +29,30 @@ internal struct QuickDiscouragedCallRuleExamples {
                    context("bar") {
                    }
                    it("bar") {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   justBeforeEach {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   aroundEach {
                        let foo = Foo()
                        foo.toto()
                    }
@@ -269,6 +291,18 @@ internal struct QuickDiscouragedCallRuleExamples {
         """),
         Example("""
         class TotoTests: QuickSpec {
+           override func spec() {
+               xcontext("foo") {
+                   let foo = ↓Foo()
+               }
+               fcontext("foo") {
+                   let foo = ↓Foo()
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpecSubclass {
            override func spec() {
                xcontext("foo") {
                    let foo = ↓Foo()

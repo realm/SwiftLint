@@ -48,6 +48,17 @@ internal struct VerticalParameterAlignmentRuleExamples {
         Example("""
         func foo(data: Data,
                  @ViewBuilder content: @escaping (Data.Element.IdentifiedValue) -> Content) {}
+        """),
+        Example("""
+        class A {
+            init(bar: Int)
+        }
+        """),
+        Example("""
+        class A {
+            init(foo: Int,
+                 bar: String)
+        }
         """)
     ]
 
@@ -68,6 +79,12 @@ internal struct VerticalParameterAlignmentRuleExamples {
         Example("""
             func foo(data: Data,
                         ↓@ViewBuilder content: @escaping (Data.Element.IdentifiedValue) -> Content) {}
-            """)
+            """),
+        Example("""
+        class A {
+            init(data: Data,
+                        ↓@ViewBuilder content: @escaping (Data.Element.IdentifiedValue) -> Content) {}
+        }
+        """)
     ]
 }

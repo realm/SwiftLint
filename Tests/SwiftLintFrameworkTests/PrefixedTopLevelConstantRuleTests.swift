@@ -2,10 +2,6 @@
 import XCTest
 
 final class PrefixedTopLevelConstantRuleTests: XCTestCase {
-    func testDefaultConfiguration() {
-        verifyRule(PrefixedTopLevelConstantRule.description)
-    }
-
     func testPrivateOnly() {
         let triggeringExamples = [
             Example("private let ↓Foo = 20.0"),

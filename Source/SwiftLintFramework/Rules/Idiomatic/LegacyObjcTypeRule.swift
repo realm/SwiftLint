@@ -1,5 +1,4 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
 private let legacyObjcTypes = [
     "NSAffineTransform",
@@ -29,12 +28,12 @@ private let legacyObjcTypes = [
     "NSUUID"
 ]
 
-public struct LegacyObjcTypeRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "legacy_objc_type",
         name: "Legacy Objective-C Reference Type",
         description: "Prefer Swift value types to bridged Objective-C reference types",
@@ -43,23 +42,59 @@ public struct LegacyObjcTypeRule: OptInRule, ConfigurationProviderRule, Automati
             Example("var array = Array<Int>()\n"),
             Example("var calendar: Calendar? = nil"),
             Example("var formatter: NSDataDetector"),
-            Example("var className: String = NSStringFromClass(MyClass.self)")
+            Example("var className: String = NSStringFromClass(MyClass.self)"),
+            Example("_ = URLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
+            Example(#"_ = Notification.Name("com.apple.Music.playerInfo")"#)
         ],
         triggeringExamples: [
-            Example("var array = NSArray()"),
-            Example("var calendar: NSCalendar? = nil")
+            Example("var array = ↓NSArray()"),
+            Example("var calendar: ↓NSCalendar? = nil"),
+            Example("_ = ↓NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
+            Example(#"_ = ↓NSNotification.Name("com.apple.Music.playerInfo")"#),
+            Example(#"""
+            let keyValuePair: (Int) -> (↓NSString, ↓NSString) = {
+              let n = "\($0)" as ↓NSString; return (n, n)
+            }
+            dictionary = [↓NSString: ↓NSString](uniqueKeysWithValues:
+              (1...10_000).lazy.map(keyValuePair))
+            """#),
+            Example("""
+            extension Foundation.Notification.Name {
+                static var reachabilityChanged: Foundation.↓NSNotification.Name {
+                    return Foundation.Notification.Name("org.wordpress.reachability.changed")
+                }
+            }
+            """)
         ]
     )
 
-    private let pattern = "\\b(?:\(legacyObjcTypes.joined(separator: "|")))\\b"
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.match(pattern: pattern)
-            .filter { !Set($0.1).isDisjoint(with: [.typeidentifier, .identifier]) }
-            .map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, characterOffset: $0.0.location))
+private extension LegacyObjcTypeRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
+            if let typeName = node.typeName, legacyObjcTypes.contains(typeName) {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
+        }
+
+        override func visitPost(_ node: IdentifierExprSyntax) {
+            if legacyObjcTypes.contains(node.identifier.text) {
+                violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: MemberTypeIdentifierSyntax) {
+            guard node.baseType.as(SimpleTypeIdentifierSyntax.self)?.typeName == "Foundation",
+               legacyObjcTypes.contains(node.name.text)
+            else {
+                return
+            }
+
+            violations.append(node.name.positionAfterSkippingLeadingTrivia)
+        }
     }
 }

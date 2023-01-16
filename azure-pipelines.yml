@@ -1,68 +1,52 @@
 trigger:
-- master
+- main
 
 jobs:
-- job: linux
+- job: Sourcery
   pool:
-    vmImage: 'Ubuntu 18.04'
+    vmImage: 'macOS-12'
+  steps:
+    - script: brew install sourcery
+      displayName: Install Sourcery
+    - script: make --always-make sourcery
+      displayName: Generate sources
+    - script: "! git diff -U0 | grep '^[-+][^-+]' | grep --invert-match '// Generated using Sourcery'"
+      displayName: Check changed files ignoring Sourcery's version
+
+- job: Linux
+  pool:
+    vmImage: 'ubuntu-latest'
   strategy:
     maxParallel: 10
     matrix:
-      swift55:
-        containerImage: swift:5.5
-      swift56:
-        containerImage: swift:5.6
+      swift57:
+        containerImage: swift:5.7
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
 
-- job: Xcode
-  pool:
-    vmImage: 'macOS-12'
-  strategy:
-    maxParallel: 10
-    matrix:
-      xcode1321:
-        DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
-      xcode1331:
-        DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
-  steps:
-    - script: |
-        sw_vers
-        xcodebuild -version
-      displayName: Version Informations
-    - script: xcodebuild -scheme swiftlint test -destination "platform=macOS" OTHER_SWIFT_FLAGS="-D DISABLE_FOCUSED_EXAMPLES"
-      displayName: xcodebuild test
-
-- job: SwiftPM
-  pool:
-    vmImage: 'macOS-12'
-  strategy:
-    maxParallel: 10
-    matrix:
-      xcode1321:
-        DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
-      xcode1331:
-        DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
-  steps:
-    - script: |
-        sw_vers
-        xcodebuild -version
-      displayName: Version Informations
-    - script: swift test --parallel --enable-code-coverage -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
-      displayName: swift test
-    - script: |
-        xcrun llvm-cov export -format="lcov" .build/debug/SwiftLintPackageTests.xctest/Contents/MacOS/SwiftLintPackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
-        bash <(curl -s https://codecov.io/bash)
-      displayName: Upload code coverage
-      condition: eq(variables['DEVELOPER_DIR'], '/Applications/Xcode_13.2.1.app')
-
+# TODO: Re-enable when FB11648454 is fixed
+# - job: Xcode
+#   pool:
+#     vmImage: 'macOS-12'
+#   strategy:
+#     maxParallel: 10
+#     matrix:
+#       xcode14:
+#         DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
+#   steps:
+#     - script: |
+#         sw_vers
+#         xcodebuild -version
+#       displayName: Version Informations
+#     - script: xcodebuild -scheme swiftlint test -destination "platform=macOS" OTHER_SWIFT_FLAGS="\$(inherited) -D DISABLE_FOCUSED_EXAMPLES"
+#       displayName: xcodebuild test
 - job: CocoaPods
   pool:
     vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
+    DEVELOPER_DIR: /Applications/Xcode_13.4.1.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -71,26 +55,11 @@ jobs:
     - script: bundle exec pod lib lint --verbose
       displayName: pod lib lint
 
-- job: TSan
-  pool:
-    vmImage: 'macOS-12'
-  variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
-  steps:
-    - script: swift build --configuration release --sanitize thread
-      displayName: Build SwiftLint
-    - script: swift run --configuration release --sanitize thread swiftlint lint --lenient
-      displayName: Pre-cache SwiftLint Run
-    - script: swift run --configuration release --sanitize thread swiftlint lint --lenient
-      displayName: Post-cache SwiftLint Run
-    - script: make test_tsan
-      displayName: Test With TSan
-
 - job: jazzy
   pool:
     vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
+    DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs
@@ -110,9 +79,9 @@ jobs:
         artifactName: 'API Docs'
         targetPath: 'docs'
     - task: DownloadSecureFile@1
-      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
       inputs:
         secureFile: doc_deploy_key
-    - script: ./script/push-docs
+    - script: ./tools/push-docs
       displayName: Publish
-      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')

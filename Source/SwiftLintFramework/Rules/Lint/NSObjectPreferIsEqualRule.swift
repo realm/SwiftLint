@@ -33,7 +33,7 @@ private extension NSObjectPreferIsEqualRule {
 
 private extension ClassDeclSyntax {
     var isObjC: Bool {
-        if attributes?.isObjc == true {
+        if attributes.isObjc {
             return true
         }
 
@@ -85,11 +85,8 @@ private extension SyntaxProtocol {
     }
 }
 
-private extension AttributeListSyntax {
+private extension AttributeListSyntax? {
     var isObjc: Bool {
-        contains { attribute in
-            let name = attribute.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
-            return ["objc", "objcMembers"].contains(name)
-        }
+        contains(attributeNamed: "objc") || contains(attributeNamed: "objcMembers")
     }
 }

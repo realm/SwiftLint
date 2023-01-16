@@ -95,7 +95,7 @@ private extension PrivateOutletRule {
         override func visitPost(_ node: MemberDeclListItemSyntax) {
             guard
                 let decl = node.decl.as(VariableDeclSyntax.self),
-                decl.attributes?.hasIBOutlet == true,
+                decl.attributes.contains(attributeNamed: "IBOutlet"),
                 decl.modifiers?.isPrivateOrFilePrivate != true
             else {
                 return
@@ -106,15 +106,6 @@ private extension PrivateOutletRule {
             }
 
             violations.append(decl.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
-        }
-    }
-}
-
-private extension AttributeListSyntax {
-    var hasIBOutlet: Bool {
-        contains { attribute in
-            let name = attribute.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
-            return name == "IBOutlet"
         }
     }
 }

@@ -281,10 +281,6 @@ private func resultInPrivateProperty(modifiers: ModifierListSyntax?, attributes:
     guard let modifiers, modifiers.hasPrivate else {
         return false
     }
-    guard let attributes else {
-        return true
-    }
-    return !attributes.contains { attribute in
-        attribute.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "objc"
-    }
+
+    return !attributes.contains(attributeNamed: "objc")
 }

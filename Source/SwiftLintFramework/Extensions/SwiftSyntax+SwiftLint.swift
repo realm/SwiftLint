@@ -8,7 +8,7 @@ extension SyntaxVisitor: SwiftLintSyntaxVisitor {}
 
 extension SwiftLintSyntaxVisitor {
     func walk<T, SyntaxType: SyntaxProtocol>(tree: SyntaxType, handler: (Self) -> T) -> T {
-        #if DEBUG
+#if DEBUG
         // workaround for stack overflow when running in debug
         // https://bugs.swift.org/browse/SR-11170
         let lock = NSLock()
@@ -31,10 +31,10 @@ extension SwiftLintSyntaxVisitor {
         }
 
         return handler(self)
-        #else
+#else
         walk(tree)
         return handler(self)
-        #endif
+#endif
     }
 
     func walk<T>(file: SwiftLintFile, handler: (Self) -> [T]) -> [T] {
@@ -156,11 +156,28 @@ extension ModifierListSyntax? {
     }
 }
 
+extension AttributeSyntax {
+    var attributeNameText: String {
+        attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text ??
+            attributeName.description
+    }
+}
+
+extension AttributeListSyntax? {
+    func contains(attributeNamed attributeName: String) -> Bool {
+        self?.contains { $0.as(AttributeSyntax.self)?.attributeNameText == attributeName } == true
+    }
+}
+
+extension TokenKind {
+    var isUnavailableKeyword: Bool {
+        self == .keyword(.unavailable) || self == .identifier("unavailable")
+    }
+}
+
 extension VariableDeclSyntax {
     var isIBOutlet: Bool {
-       attributes?.contains { attr in
-           attr.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "IBOutlet"
-       } ?? false
+        attributes.contains(attributeNamed: "IBOutlet")
     }
 
     var weakOrUnownedModifier: DeclModifierSyntax? {
@@ -177,9 +194,7 @@ extension VariableDeclSyntax {
 
 extension FunctionDeclSyntax {
     var isIBAction: Bool {
-        attributes?.contains { attr in
-            attr.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "IBAction"
-        } ?? false
+        attributes.contains(attributeNamed: "IBAction")
     }
 
     /// Returns the signature including arguments, e.g "setEditing(_:animated:)"

@@ -77,8 +77,8 @@ struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
 }
 
 private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: IfStmtSyntax) {
-        guard node.body.statements.withoutTrivia().isEmpty else {
+    override func visitPost(_ node: IfExprSyntax) {
+        guard node.body.statements.isEmpty else {
             return
         }
 
@@ -106,8 +106,8 @@ private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
         condition.as(AvailabilityConditionSyntax.self)
     }
 
-    private func otherAvailabilityCheckInvolved(ifStmt: IfStmtSyntax) -> Bool {
-        if let elseBody = ifStmt.elseBody, let nestedIfStatement = elseBody.as(IfStmtSyntax.self) {
+    private func otherAvailabilityCheckInvolved(ifStmt: IfExprSyntax) -> Bool {
+        if let elseBody = ifStmt.elseBody, let nestedIfStatement = elseBody.as(IfExprSyntax.self) {
             if nestedIfStatement.conditions.map(\.condition).compactMap(asAvailabilityCondition).isNotEmpty {
                 return true
             }

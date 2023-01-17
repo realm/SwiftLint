@@ -122,7 +122,7 @@ private extension UnusedControlFlowLabelRule {
                 return super.visit(node)
             }
 
-            let newNode = node.statement.withLeadingTrivia(node.leadingTrivia ?? .zero)
+            let newNode = node.statement.with(\.leadingTrivia, node.leadingTrivia ?? .zero)
             correctionPositions.append(violationPosition)
             return visit(newNode).as(StmtSyntax.self) ?? newNode
         }
@@ -133,7 +133,7 @@ private extension LabeledStmtSyntax {
     var violationPosition: AbsolutePosition? {
         let visitor = BreakAndContinueLabelCollector(viewMode: .sourceAccurate)
         let labels = visitor.walk(tree: self, handler: \.labels)
-        guard !labels.contains(labelName.withoutTrivia().text) else {
+        guard !labels.contains(labelName.text) else {
             return nil
         }
 
@@ -145,13 +145,13 @@ private class BreakAndContinueLabelCollector: SyntaxVisitor {
     private(set) var labels: Set<String> = []
 
     override func visitPost(_ node: BreakStmtSyntax) {
-        if let label = node.label?.withoutTrivia().text {
+        if let label = node.label?.text {
             labels.insert(label)
         }
     }
 
     override func visitPost(_ node: ContinueStmtSyntax) {
-        if let label = node.label?.withoutTrivia().text {
+        if let label = node.label?.text {
             labels.insert(label)
         }
     }

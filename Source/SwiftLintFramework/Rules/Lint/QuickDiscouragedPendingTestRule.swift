@@ -25,7 +25,7 @@ private extension QuickDiscouragedPendingTestRule {
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
-               case let name = identifierExpr.identifier.withoutTrivia().text,
+               case let name = identifierExpr.identifier.text,
                QuickPendingCallKind(rawValue: name) != nil {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }

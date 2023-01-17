@@ -210,7 +210,7 @@ private extension VariableDeclSyntax {
                 return false
             }
 
-            return ValidIBInspectableRule.supportedTypes.contains(type.type.withoutTrivia().description)
+            return ValidIBInspectableRule.supportedTypes.contains(type.type.trimmedDescription)
         }
     }
 }

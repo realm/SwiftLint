@@ -42,7 +42,7 @@ struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule 
 }
 
 private final class YodaConditionRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: IfStmtSyntax) {
+    override func visitPost(_ node: IfExprSyntax) {
         visit(conditions: node.conditions)
     }
 

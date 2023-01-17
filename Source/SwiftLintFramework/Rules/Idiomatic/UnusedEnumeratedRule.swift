@@ -68,7 +68,7 @@ private extension FunctionCallExprSyntax {
     var isEnumerated: Bool {
         guard let memberAccess = calledExpression.as(MemberAccessExprSyntax.self),
               memberAccess.base != nil,
-              memberAccess.name.withoutTrivia().text == "enumerated",
+              memberAccess.name.text == "enumerated",
               hasNoArguments else {
             return false
         }

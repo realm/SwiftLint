@@ -66,7 +66,7 @@ private extension RedundantNilCoalescingRule {
                 return super.visit(node)
             }
 
-            let newNode = node.removingLast().removingLast().withoutTrailingTrivia()
+            let newNode = node.removingLast().removingLast().with(\.trailingTrivia, [])
             correctionPositions.append(newNode.endPosition)
             return super.visit(newNode)
         }

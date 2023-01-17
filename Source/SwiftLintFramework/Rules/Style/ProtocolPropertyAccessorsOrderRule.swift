@@ -73,7 +73,7 @@ private extension ProtocolPropertyAccessorsOrderRule {
 
             let reversedAccessors = AccessorListSyntax(Array(node.accessors.reversed()))
             return super.visit(
-                node.withAccessors(reversedAccessors)
+                node.with(\.accessors, reversedAccessors)
             )
         }
     }

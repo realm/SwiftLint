@@ -75,7 +75,7 @@ private extension EmptyParametersRule {
             }
 
             correctionPositions.append(violationPosition)
-            return super.visit(node.withArguments(TupleTypeElementListSyntax([])))
+            return super.visit(node.with(\.arguments, TupleTypeElementListSyntax([])))
         }
     }
 }

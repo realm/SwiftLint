@@ -87,6 +87,6 @@ private class TypeNameCollectingVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: ExtensionDeclSyntax) {
-        names.insert(node.extendedType.withoutTrivia().description)
+        names.insert(node.extendedType.trimmedDescription)
     }
 }

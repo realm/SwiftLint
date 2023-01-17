@@ -56,7 +56,7 @@ extension SwitchCaseAlignmentRule {
             super.init(viewMode: .sourceAccurate)
         }
 
-        override func visitPost(_ node: SwitchStmtSyntax) {
+        override func visitPost(_ node: SwitchExprSyntax) {
             let switchPosition = node.switchKeyword.positionAfterSkippingLeadingTrivia
             guard
                 let switchColumn = locationConverter.location(for: switchPosition).column,

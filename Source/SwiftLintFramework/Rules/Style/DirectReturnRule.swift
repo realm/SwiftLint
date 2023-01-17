@@ -210,22 +210,30 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
             .enumerated()
             .map { index, item in
                 if index == bindingList.count - 2 {
-                    return item.withTrailingComma(false)
+                    return item.with(\.trailingComma, nil)
                 }
                 return item
             }
         if newBindingList.isNotEmpty {
             newStmtList.append(CodeBlockItemSyntax(
-                item: .decl(DeclSyntax(varDecl.withBindings(PatternBindingListSyntax(newBindingList))))
+                item: .decl(DeclSyntax(varDecl.with(\.bindings, PatternBindingListSyntax(newBindingList))))
             ))
             newStmtList.append(CodeBlockItemSyntax(
-                item: .stmt(StmtSyntax(returnStmt.withExpression(initExpression)))
+                item: .stmt(StmtSyntax(returnStmt.with(\.expression, initExpression)))
             ))
         } else {
             let leadingTrivia = (binding.trailingTrivia ?? .zero) + (returnStmt.leadingTrivia ?? .zero)
-            newStmtList.append(CodeBlockItemSyntax(
-                item: .stmt(StmtSyntax(returnStmt.withExpression(initExpression).withLeadingTrivia(leadingTrivia)))
-            ))
+            newStmtList.append(
+                CodeBlockItemSyntax(
+                    item: .stmt(
+                        StmtSyntax(
+                            returnStmt
+                                .with(\.expression, initExpression)
+                                .with(\.leadingTrivia, leadingTrivia)
+                        )
+                    )
+                )
+            )
         }
         return super.visit(CodeBlockItemListSyntax(newStmtList))
     }

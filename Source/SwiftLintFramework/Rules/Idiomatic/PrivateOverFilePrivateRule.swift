@@ -155,7 +155,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifier: modifier))
             return DeclSyntax(newNode)
         }
 
@@ -166,7 +166,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifier: modifier))
             return DeclSyntax(newNode)
         }
 
@@ -177,7 +177,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifier: modifier))
             return DeclSyntax(newNode)
         }
 
@@ -188,7 +188,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifier: modifier))
             return DeclSyntax(newNode)
         }
 
@@ -199,7 +199,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifier: modifier))
             return DeclSyntax(newNode)
         }
 
@@ -210,7 +210,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifier: modifier))
             return DeclSyntax(newNode)
         }
 
@@ -221,7 +221,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifier: modifier))
             return DeclSyntax(newNode)
         }
 
@@ -232,7 +232,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.withModifiers(node.modifiers?.replacing(fileprivateModifier: modifier))
+            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifier: modifier))
             return DeclSyntax(newNode)
         }
     }
@@ -248,7 +248,8 @@ private extension ModifierListSyntax {
     func replacing(fileprivateModifier: DeclModifierSyntax) -> ModifierListSyntax? {
         replacing(
             childAt: fileprivateModifier.indexInParent,
-            with: fileprivateModifier.withName(
+            with: fileprivateModifier.with(
+                \.name,
                 .keyword(
                     .private,
                     leadingTrivia: fileprivateModifier.leadingTrivia ?? .zero,

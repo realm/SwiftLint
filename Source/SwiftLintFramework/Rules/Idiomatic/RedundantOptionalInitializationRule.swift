@@ -166,16 +166,16 @@ private extension RedundantOptionalInitializationRule {
                     return binding
                 }
 
-                let newBinding = binding.withInitializer(nil)
+                let newBinding = binding.with(\.initializer, nil)
 
                 if newBinding.accessor == nil {
-                    return newBinding.withTrailingTrivia(binding.initializer?.trailingTrivia ?? .zero)
+                    return newBinding.with(\.trailingTrivia, binding.initializer?.trailingTrivia ?? .zero)
                 } else {
                     return newBinding
                 }
             })
 
-            return super.visit(node.withBindings(newBindings))
+            return super.visit(node.with(\.bindings, newBindings))
         }
     }
 }

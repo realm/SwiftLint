@@ -7,7 +7,6 @@
 require 'fileutils'
 require 'open3'
 require 'optparse'
-require 'erb'
 
 ################################
 # Options
@@ -136,10 +135,22 @@ def non_empty_lines(path)
 end
 
 def setup_repos
+  repos_cache_dir = '/tmp/SwiftLint-OSSCheck-Repos'
+  FileUtils.mkdir_p(repos_cache_dir)
   @repos.each do |repo|
+    local_cache_dir = "#{repos_cache_dir}/#{repo.name}"
+    if File.directory?(local_cache_dir)
+      puts "Syncing #{repo}"
+      Dir.chdir(local_cache_dir) do
+        perform("git pull 2> /dev/null")
+      end
+    else
+      puts "Cloning #{repo}"
+      perform("git clone #{repo.git_url} --depth 1 #{local_cache_dir} 2> /dev/null")
+    end
+
     dir = "#{@working_dir}/#{repo.name}"
-    puts "Cloning #{repo}"
-    perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
+    perform("git clone #{local_cache_dir} #{dir} 2> /dev/null")
     swiftlint_config = "#{dir}/.swiftlint.yml"
     FileUtils.rm_rf(swiftlint_config)
     if repo.name == 'Swift'

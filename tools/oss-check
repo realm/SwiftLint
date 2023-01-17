@@ -60,6 +60,10 @@ class Repo
     "https://github.com/#{github_location}"
   end
 
+  def local_cache_dir
+    "/tmp/SwiftLint-OSSCheck-Repos/#{name}"
+  end
+
   def to_s
     @name
   end
@@ -135,11 +139,26 @@ def non_empty_lines(path)
   File.read(path).split(/\n+/).reject(&:empty?)
 end
 
+def setup_repo_cache
+  FileUtils.mkdir_p('/tmp/SwiftLint-OSSCheck-Repos')
+  @repos.each do |repo|
+    if File.directory?(repo.local_cache_dir)
+      puts "Syncing #{repo} in repo cache"
+      Dir.chdir(repo.local_cache_dir) do
+        perform("git pull 2> /dev/null")
+      end
+    else
+      puts "Cloning #{repo} to repo cache"
+      perform("git clone #{repo.git_url} --depth 1 #{repo.local_cache_dir} 2> /dev/null")
+    end
+  end
+end
+
 def setup_repos
   @repos.each do |repo|
     dir = "#{@working_dir}/#{repo.name}"
     puts "Cloning #{repo}"
-    perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
+    perform("git clone #{repo.local_cache_dir} #{dir} 2> /dev/null")
     swiftlint_config = "#{dir}/.swiftlint.yml"
     FileUtils.rm_rf(swiftlint_config)
     if repo.name == 'Swift'
@@ -339,6 +358,7 @@ unless @options[:force]
   end
 end
 
+setup_repo_cache
 setup_repos
 
 %w[branch main].each do |branch|

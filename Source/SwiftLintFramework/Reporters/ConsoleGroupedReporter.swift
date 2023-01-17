@@ -31,8 +31,6 @@ public struct ConsoleGroupedReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        var report = ""
-
         let errorsCount = violations.filter { $0.severity == .error }.count
         let warningsCount = violations.filter { $0.severity == .warning }.count
 
@@ -45,11 +43,13 @@ public struct ConsoleGroupedReporter: Reporter {
         var warningsTable = TextTable(groupedViolations: groupdeWarnings)
         warningsTable.header = "Errors: \(warningsCount)\n"
 
-        report.append(errorsTable.render())
-        report.append("\n\n\n")
-        report.append(warningsTable.render())
+        return """
 
-        return report
+            \(errorsTable.render())
+
+            \(warningsTable.render())
+
+            """
     }
 }
 

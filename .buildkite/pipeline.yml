@@ -31,3 +31,20 @@ steps:
       - ./bazel-bin/swiftlint --progress --lenient
       - echo "+++ Post-cache SwiftLint Run"
       - ./bazel-bin/swiftlint --progress --lenient
+  - label: "Generate Docs"
+    commands:
+      - echo "+++ Generate markdown docs"
+      - bazel run swiftlint -- generate-docs
+      - echo "--- Build Jazzy"
+      - bazel build //tools:jazzy
+      - echo "+++ Run Jazzy"
+      - ./bazel-bin/tools/jazzy
+      - echo "--- Validate Documentation Coverage"
+      - |
+        if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
+          echo "Undocumented declarations:"
+          cat docs/undocumented.json
+          exit 1
+        fi
+      - echo "+++ Deploy"
+      - ./tools/push-docs

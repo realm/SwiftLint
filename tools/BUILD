@@ -7,3 +7,9 @@ ruby_binary(
     main = "@bundle//:bin/danger",
     deps = ["@bundle//:bin"],
 )
+
+ruby_binary(
+    name = "jazzy",
+    main = "@bundle//:bin/jazzy",
+    deps = ["@bundle//:bin"],
+)

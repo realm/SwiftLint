@@ -1,8 +1,11 @@
 #!/bin/bash
 
-mkdir -p ~/.ssh && mv $DOWNLOADSECUREFILE_SECUREFILEPATH ~/.ssh/id_rsa
-chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_rsa
-ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+if [[ $BUILDKITE_BRANCH != 'main' ]]; then
+  exit 0
+fi
+
+# TODO: Make this script compatible with Buildkite
+exit 1
 
 source_sha="$(git rev-parse HEAD)"
 user="swiftlintbot@jpsim.com"
@@ -13,7 +16,6 @@ git clone git@github.com:realm/SwiftLint.git out
 cd out
 git checkout gh-pages
 git rm -rf .
-rm -rf Carthage
 cd ..
 
 cp -a docs/. out/.

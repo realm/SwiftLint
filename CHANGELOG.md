@@ -32,6 +32,16 @@
   [Moly](https://github.com/kyounh12)
   [#4655](https://github.com/realm/SwiftLint/pull/4655)
 
+* Add `period_spacing` opt-in rule that checks periods are not followed
+  by 2 or more spaces in comments.  
+  [Julioacarrettoni](https://github.com/Julioacarrettoni)
+  [#4624](https://github.com/realm/SwiftLint/pull/4624)
+
+* Allow new Quick APIs `aroundEach` and `justBeforeEach` for
+  `quick_discouraged_call`.  
+  [David Steinacher](https://github.com/stonko1994)
+  [#4626](https://github.com/realm/SwiftLint/issues/4626)
+
 #### Bug Fixes
 
 * Report violations in all `<scope>_length` rules when the error threshold is
@@ -96,21 +106,11 @@
   `single_test_class` and `empty_xctest_method` rules.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4200](https://github.com/realm/SwiftLint/issues/4200)
-  
-  * Add `period_spacing` opt-in rule that checks periods are not followed
-  by 2 or more spaces in comments.  
-  [Julioacarrettoni](https://github.com/Julioacarrettoni)
-  [#4624](https://github.com/realm/SwiftLint/pull/4624)
 
 * Show warnings in the console for Analyzer rules that are listed in the
   `opt_in_rules` configuration section.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4612](https://github.com/realm/SwiftLint/issues/4612)
-
-* Allow new Quick APIs `aroundEach` and `justBeforeEach`
-  for `quick_discouraged_call`.  
-  [David Steinacher](https://github.com/stonko1994)
-  [#4626](https://github.com/realm/SwiftLint/issues/4626)
 
 #### Bug Fixes
 

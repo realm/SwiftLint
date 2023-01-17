@@ -7,7 +7,6 @@
 require 'fileutils'
 require 'open3'
 require 'optparse'
-require 'parallel'
 
 ################################
 # Options
@@ -138,7 +137,7 @@ end
 def setup_repos
   repos_cache_dir = '/tmp/SwiftLint-OSSCheck-Repos'
   FileUtils.mkdir_p(repos_cache_dir)
-  Parallel.each(@repos) do |repo|
+  @repos.each do |repo|
     local_cache_dir = "#{repos_cache_dir}/#{repo.name}"
     if File.directory?(local_cache_dir)
       puts "Syncing #{repo}"

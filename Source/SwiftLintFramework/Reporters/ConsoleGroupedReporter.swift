@@ -1,9 +1,9 @@
 import SwiftyTextTable
 
-public struct GroupedReporter: Reporter {
+public struct ConsoleGroupedReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "grouped"
+    public static let identifier = "console-grouped"
     public static let isRealtime = false
 
     public var description: String {

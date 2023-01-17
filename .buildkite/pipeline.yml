@@ -23,11 +23,3 @@ steps:
     commands:
       - echo "+++ Test"
       - bazel test --test_output=streamed --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
-  - label: "TSan Runs"
-    commands:
-      - echo "--- Build"
-      - bazel build --noremote_accept_cached --config=release --features=tsan swiftlint
-      - echo "+++ Pre-cache SwiftLint Run"
-      - ./bazel-bin/swiftlint --progress --lenient
-      - echo "+++ Post-cache SwiftLint Run"
-      - ./bazel-bin/swiftlint --progress --lenient

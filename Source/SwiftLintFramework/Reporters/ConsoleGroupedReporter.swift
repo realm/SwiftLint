@@ -78,10 +78,6 @@ private extension TextTable {
 
 private extension StyleViolation {
     var isCorrectable: Bool {
-        if let rule = primaryRuleList.list[self.ruleIdentifier], rule.init() is CorrectableRule {
-            return true
-        } else {
-            return false
-        }
+        primaryRuleList.list[self.ruleIdentifier] is CorrectableRule.Type
     }
 }

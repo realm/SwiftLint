@@ -47,8 +47,8 @@ public func reporterFrom(identifier: String) -> Reporter.Type { // swiftlint:dis
         return GitLabJUnitReporter.self
     case CodeClimateReporter.identifier:
         return CodeClimateReporter.self
-    case GroupedReporter.identifier:
-        return GroupedReporter.self
+    case ConsoleGroupedReporter.identifier:
+        return ConsoleGroupedReporter.self
     default:
         queuedFatalError("no reporter with identifier '\(identifier)' available.")
     }

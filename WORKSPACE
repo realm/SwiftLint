@@ -15,15 +15,21 @@ load(
 
 apple_rules_dependencies()
 
+http_archive(
+    name = "rules_swift",
+    sha256 = "84e2cc1c9e3593ae2c0aa4c773bceeb63c2d04c02a74a6e30c1961684d235593",
+    url = "https://github.com/bazelbuild/rules_swift/releases/download/1.5.1/rules_swift.1.5.1.tar.gz",
+)
+
 load(
-    "@build_bazel_rules_swift//swift:repositories.bzl",
+    "@rules_swift//swift:repositories.bzl",
     "swift_rules_dependencies",
 )
 
 swift_rules_dependencies()
 
 load(
-    "@build_bazel_rules_swift//swift:extras.bzl",
+    "@rules_swift//swift:extras.bzl",
     "swift_rules_extra_dependencies",
 )
 

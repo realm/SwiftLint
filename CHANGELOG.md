@@ -80,6 +80,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4599](https://github.com/realm/SwiftLint/issues/4599)
 
+* Stop triggering `strict_fileprivate` rule on symbols implementing a protocol
+  in the same file.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4692](https://github.com/realm/SwiftLint/issues/4692)
+
 * Fix false positives on `private_subject` rule when using
   subjects inside functions.  
   [Marcelo Fabri](https://github.com/marcelofabri)

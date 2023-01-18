@@ -214,10 +214,6 @@ private extension Syntax {
 }
 
 private extension ModifierListSyntax? {
-    var isFileprivate: Bool {
-        self?.contains(where: { $0.name.tokenKind == .fileprivateKeyword }) == true
-    }
-
     var isPrivate: Bool {
         self?.contains(where: { $0.name.tokenKind == .privateKeyword }) == true
     }

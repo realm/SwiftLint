@@ -134,6 +134,10 @@ extension ModifierListSyntax? {
         contains(tokenKind: .classKeyword)
     }
 
+    var isFileprivate: Bool {
+        contains(tokenKind: .fileprivateKeyword)
+    }
+
     var isPrivateOrFileprivate: Bool {
         guard let modifiers = self else {
             return false

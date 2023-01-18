@@ -187,24 +187,10 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4200](https://github.com/realm/SwiftLint/issues/4200)
 
-* Add `period_spacing` opt-in rule that checks periods are not followed
-  by 2 or more spaces in comments.  
-  [Julioacarrettoni](https://github.com/Julioacarrettoni)
-  [#4624](https://github.com/realm/SwiftLint/pull/4624)
-
 * Show warnings in the console for Analyzer rules that are listed in the
   `opt_in_rules` configuration section.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4612](https://github.com/realm/SwiftLint/issues/4612)
-
-* Adds `all` pseudo-rule for `opt_in_rules` - enables all opt in rules
-  that are not listed in `disabled_rules`  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4540](https://github.com/realm/SwiftLint/issues/4540)
-* Allow new Quick APIs `aroundEach` and `justBeforeEach`
-  for `quick_discouraged_call`.  
-  [David Steinacher](https://github.com/stonko1994)
-  [#4626](https://github.com/realm/SwiftLint/issues/4626)
 
 #### Bug Fixes
 

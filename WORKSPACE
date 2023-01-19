@@ -45,8 +45,8 @@ swiftlint_deps()
 
 http_archive(
     name = "com_github_buildbuddy_io_rules_xcodeproj",
-    sha256 = "9e55508584934e1d179eb817a305547b3bff4fc210f783aabd2f46f670d14ed3",
-    url = "https://github.com/buildbuddy-io/rules_xcodeproj/releases/download/0.12.1/release.tar.gz",
+    sha256 = "9c86784491854f205b075e5c4d8a838612d433d9454a226d270ad1a17ad8d634",
+    url = "https://github.com/buildbuddy-io/rules_xcodeproj/releases/download/0.12.2/release.tar.gz",
 )
 
 load("@com_github_buildbuddy_io_rules_xcodeproj//xcodeproj:repositories.bzl", "xcodeproj_rules_dependencies")

@@ -1,17 +1,5 @@
 workspace(name = "SwiftLint")
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
-http_archive(
-    name = "com_github_buildbuddy_io_rules_xcodeproj",
-    sha256 = "9c86784491854f205b075e5c4d8a838612d433d9454a226d270ad1a17ad8d634",
-    url = "https://github.com/buildbuddy-io/rules_xcodeproj/releases/download/0.12.2/release.tar.gz",
-)
-
-load("@com_github_buildbuddy_io_rules_xcodeproj//xcodeproj:repositories.bzl", "xcodeproj_rules_dependencies")
-
-xcodeproj_rules_dependencies()
-
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(

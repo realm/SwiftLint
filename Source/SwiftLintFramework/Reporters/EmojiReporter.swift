@@ -28,7 +28,7 @@ public struct EmojiReporter: Reporter {
                 if let line = violation.location.line {
                     lineString = "Line \(line): "
                 }
-                return "\(emoji) \(lineString)\(violation.reason)"
+                return "\(emoji) \(lineString)\(violation.reason) (\(violation.ruleIdentifier))"
             }
             .joined(separator: "\n")
         return """

@@ -9,39 +9,35 @@ public struct ConsoleGroupedReporter: Reporter {
     public var description: String {
         return "Reports how many times certain violations are broken."
     }
-
-    private static func groupViolations(_ violations: [StyleViolation],
-                                        WithViolationsSeverity severity: ViolationSeverity) -> [[StyleViolation]] {
-        let groupedBySeverity = Dictionary(grouping: violations) { $0.severity }
+    
+    private static func groupByIdentifiers(violations: [StyleViolation]) -> [[StyleViolation]] {
         var groupedArrays = [[StyleViolation]]()
-
-        if let errorViolations = groupedBySeverity[severity] {
-            let groupedErrorViolations = Dictionary(grouping: errorViolations) { $0.ruleIdentifier }
-            for key in groupedErrorViolations.keys {
-                if let violations = groupedErrorViolations[key] {
-                    groupedArrays.append(violations)
-                }
+        
+        let violationsGroupedByIdentifier = Dictionary(grouping: violations) { $0.ruleIdentifier }
+        for key in violationsGroupedByIdentifier.keys {
+            if let violations = violationsGroupedByIdentifier[key] {
+                groupedArrays.append(violations)
             }
         }
-
-        groupedArrays.sort { array0, array1 -> Bool in
-            return array0.count > array1.count
-        }
+        
         return groupedArrays
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        let errorsCount = violations.filter { $0.severity == .error }.count
-        let warningsCount = violations.filter { $0.severity == .warning }.count
+        let errors = violations.filter { $0.severity == .error }
+        let warnings = violations.filter { $0.severity == .warning }
 
-        let groupedErrors = groupViolations(violations, WithViolationsSeverity: .error)
-        let groupdeWarnings = groupViolations(violations, WithViolationsSeverity: .warning)
+        var groupedErrors = groupByIdentifiers(violations: errors)
+        groupedErrors.sort {$0.count > $1.count}
+        
+        var groupedWarnings = groupByIdentifiers(violations: warnings)
+        groupedWarnings.sort {$0.count > $1.count}
 
         var errorsTable = TextTable(groupedViolations: groupedErrors)
-        errorsTable.header = "Errors: \(errorsCount)\n"
+        errorsTable.header = "Errors: \(errors.count)"
 
-        var warningsTable = TextTable(groupedViolations: groupdeWarnings)
-        warningsTable.header = "Errors: \(warningsCount)\n"
+        var warningsTable = TextTable(groupedViolations: groupedWarnings)
+        warningsTable.header = "Warnings: \(warnings.count)"
 
         return """
 

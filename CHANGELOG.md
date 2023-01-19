@@ -838,7 +838,8 @@ macOS < 12.
 
 #### Enhancements
 
-* Add `GroupedReporter` command line reporter to get a summary report in console
+* Add `ConsoleGroupedReporter` command line reporter to get a summary 
+  report in console
   [Ágúst Rafnsson](https://github.com/agustr)
 
 * Add type-checked analyzer rule version of `ArrayInitRule` named

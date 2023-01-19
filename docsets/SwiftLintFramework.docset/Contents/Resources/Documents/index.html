@@ -369,13 +369,17 @@ running it.</p>
 <code>make install</code> (Xcode 13.3 or later).</p>
 <h3 id='using-bazel' class='heading'>Using Bazel</h3>
 
-<p>Put this in your <code>WORKSPACE</code>:</p>
+<p>Put this in your <code>MODULE.bazel</code>:</p>
+<pre class="highlight plaintext"><code>bazel_dep(name = "swiftlint", version = "0.50.4", repo_name = "SwiftLint")
+</code></pre>
+
+<p>Or put this in your <code>WORKSPACE</code>:</p>
 
 <details>
 
 <summary>WORKSPACE</summary>
 
-&ldquo;`python
+&ldquo;`bzl
 load(&rdquo;@bazel_tools//tools/build_defs/repo:http.bzl&quot;, &ldquo;http_archive&rdquo;)
 
 http_archive(

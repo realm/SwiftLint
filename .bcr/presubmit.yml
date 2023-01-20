@@ -1,0 +1,24 @@
+shell_commands: &shell_commands
+- "echo --- Downloading and extracting Swift $SWIFT_VERSION to $SWIFT_HOME"
+- "mkdir $SWIFT_HOME"
+- "curl https://download.swift.org/swift-${SWIFT_VERSION}-release/ubuntu2004/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE-ubuntu20.04.tar.gz | tar xvz --strip-components=1 -C $SWIFT_HOME"
+
+tasks:
+  verify_targets_linux:
+    name: Verify targets (Linux)
+    platform: ubuntu2004
+    environment:
+      CC: "clang"
+      SWIFT_VERSION: "5.7.2"
+      SWIFT_HOME: "$HOME/swift-$SWIFT_VERSION"
+      PATH: "$PATH:$SWIFT_HOME/usr/bin"
+    shell_commands: *shell_commands
+    build_flags:
+      - "--action_env=PATH"
+    build_targets:
+      - '@SwiftLint//:swiftlint'
+  verify_targets_macos:
+    name: Verify targets (macOS)
+    platform: macos
+    build_targets:
+      - '@SwiftLint//:swiftlint'

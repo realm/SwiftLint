@@ -40,6 +40,10 @@
   [Moly](https://github.com/kyounh12)
   [#4655](https://github.com/realm/SwiftLint/pull/4655)
 
+* Add new `direct_return` rule that triggers on `return` statements returning
+  variables that have been declared in the statement before only.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Add `period_spacing` opt-in rule that checks periods are not followed
   by 2 or more spaces in comments.  
   [Julioacarrettoni](https://github.com/Julioacarrettoni)

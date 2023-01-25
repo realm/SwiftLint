@@ -19,20 +19,20 @@ struct InvalidSwiftLintCommandRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("// swiftlint:disable:this unused_import")
         ],
         triggeringExamples: [
-            Example("// swiftlint:"),
-            Example("// swiftlint: "),
-            Example("// swiftlint::"),
-            Example("// swiftlint:: "),
-            Example("// swiftlint:disable"),
-            Example("// swiftlint:dissable unused_import"),
-            Example("// swiftlint:enaaaable unused_import"),
-            Example("// swiftlint:disable:nxt unused_import"),
-            Example("// swiftlint:enable:prevus unused_import"),
-            Example("// swiftlint:enable:ths unused_import"),
-            Example("// swiftlint:enable"),
-            Example("// swiftlint:enable:"),
-            Example("// swiftlint:enable: "),
-            Example("// swiftlint:disable: unused_import")
+            Example("// ↓swiftlint:"),
+            Example("// ↓swiftlint: "),
+            Example("// ↓swiftlint::"),
+            Example("// ↓swiftlint:: "),
+            Example("// ↓swiftlint:disable"),
+            Example("// ↓swiftlint:dissable unused_import"),
+            Example("// ↓swiftlint:enaaaable unused_import"),
+            Example("// ↓swiftlint:disable:nxt unused_import"),
+            Example("// ↓swiftlint:enable:prevus unused_import"),
+            Example("// ↓swiftlint:enable:ths unused_import"),
+            Example("// ↓swiftlint:enable"),
+            Example("// ↓swiftlint:enable:"),
+            Example("// ↓swiftlint:enable: "),
+            Example("// ↓swiftlint:disable: unused_import"),
         ]
     )
 
@@ -58,18 +58,19 @@ private extension Trivia {
         var triviaOffset = SourceLength.zero
         var violations: [ReasonedRuleViolation] = []
         for trivia in self {
-            triviaOffset += trivia.sourceLength
             switch trivia {
             case .lineComment(let comment), .blockComment(let comment):
-                if
-                    let lower = comment.range(of: "swiftlint:")?.lowerBound,
-                    case let actionString = String(comment[lower...]),
-                    let violation = violation(forString: actionString, offset: offset + triviaOffset) {
-                    violations.append(violation)
+                if let lower = comment.range(of: "swiftlint:")?.lowerBound,
+                   case let actionString = String(comment[lower...]) {
+                    let swiftLintOffset = comment.distance(from: comment.startIndex, to: lower)
+                    if let violation = violation(forString: actionString, offset: (offset + triviaOffset).advanced(by: swiftLintOffset)) {
+                        violations.append(violation)
+                    }
                 }
             default:
                 break
             }
+            triviaOffset += trivia.sourceLength
         }
 
         return violations

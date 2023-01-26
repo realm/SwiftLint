@@ -1,6 +1,5 @@
 @_spi(TestHelper)
 @testable import SwiftLintFramework
-import SwiftLintTestHelpers
 import XCTest
 
 class SourceKitCrashTests: XCTestCase {
@@ -48,9 +47,7 @@ class SourceKitCrashTests: XCTestCase {
                       "Expects assert handler was not called on accessing SwiftLintFile.syntaxTokensByLines")
     }
 
-    func testRulesWithFileThatCrashedSourceKitService() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testRulesWithFileThatCrashedSourceKitService() {
         let file = SwiftLintFile(path: #file)!
         file.sourcekitdFailed = true
         file.assertHandler = {

@@ -1,6 +1,5 @@
 import SourceKittenFramework
 @testable import SwiftLintFramework
-import SwiftLintTestHelpers
 import XCTest
 
 class CustomRulesTests: XCTestCase {
@@ -127,18 +126,14 @@ class CustomRulesTests: XCTestCase {
                                        reason: configs.0.message)])
     }
 
-    func testCustomRulesIncludedDefault() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCustomRulesIncludedDefault() {
         // Violation detected when included is omitted.
         let (_, customRules) = getCustomRules()
         let violations = customRules.validate(file: getTestTextFile())
         XCTAssertEqual(violations.count, 1)
     }
 
-    func testCustomRulesIncludedExcludesFile() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCustomRulesIncludedExcludesFile() {
         var (regexConfig, customRules) = getCustomRules(["included": "\\.yml$"])
 
         var customRuleConfiguration = CustomRulesConfiguration()
@@ -149,9 +144,7 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
-    func testCustomRulesExcludedExcludesFile() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCustomRulesExcludedExcludesFile() {
         var (regexConfig, customRules) = getCustomRules(["excluded": "\\.txt$"])
 
         var customRuleConfiguration = CustomRulesConfiguration()
@@ -162,9 +155,7 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
-    func testCustomRulesExcludedArrayExcludesFile() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCustomRulesExcludedArrayExcludesFile() {
         var (regexConfig, customRules) = getCustomRules(["excluded": ["\\.pdf$", "\\.txt$"]])
 
         var customRuleConfiguration = CustomRulesConfiguration()
@@ -175,9 +166,7 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
-    func testCustomRulesCaptureGroup() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCustomRulesCaptureGroup() {
         let (_, customRules) = getCustomRules(["regex": #"\ba\s+(\w+)"#,
                                                "capture_group": 1])
         let violations = customRules.validate(file: getTestTextFile())

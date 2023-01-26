@@ -2,9 +2,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-private let fixturesDirectory = #file.bridge()
-    .deletingLastPathComponent.bridge()
-    .appendingPathComponent("Resources/FileNameRuleFixtures")
+private let fixturesDirectory = "\(TestResources.path)/FileNameRuleFixtures"
 
 class FileNameRuleTests: XCTestCase {
     private func validate(fileName: String, excludedOverride: [String]? = nil,

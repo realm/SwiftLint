@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<testsuites><testsuite>
-	<testcase classname='Formatting Test' name='filename'>
-<failure message='Violation Reason'>warning:
-Line:1 </failure>	</testcase>
-	<testcase classname='Formatting Test' name='filename'>
-<failure message='Violation Reason'>error:
-Line:1 </failure>	</testcase>
-	<testcase classname='Formatting Test' name='filename'>
-<failure message='Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;'>error:
-Line:1 </failure>	</testcase>
-	<testcase classname='Formatting Test' name='&lt;nopath&gt;'>
-<failure message='Colons should be next to the identifier when specifying a type and next to the key in dictionary literals'>error:
-Line:0 </failure>	</testcase>
-</testsuite></testsuites>
+<testsuites failures="1" errors="3">
+	<testsuite failures="1" errors="3">
+		<testcase classname='Formatting Test' name='filename'>
+			<failure message='Violation Reason'>Warning:Line:1</failure>
+		</testcase>
+		<testcase classname='Formatting Test' name='filename'>
+			<failure message='Violation Reason'>Error:Line:1</failure>
+		</testcase>
+		<testcase classname='Formatting Test' name='filename'>
+			<failure message='Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;'>Error:Line:1</failure>
+		</testcase>
+		<testcase classname='Formatting Test' name='&lt;nopath&gt;'>
+			<failure message='Colons should be next to the identifier when specifying a type and next to the key in dictionary literals'>Error:Line:0</failure>
+		</testcase>
+	</testsuite>
+</testsuites>

@@ -54,7 +54,7 @@ private extension ObjectLiteralRule {
                 return
             }
 
-            let name = node.calledExpression.withoutTrivia().description
+            let name = node.calledExpression.trimmedDescription
             if validateImageLiteral, isImageNamedInit(node: node, name: name) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             } else if validateColorLiteral, isColorInit(node: node, name: name) {

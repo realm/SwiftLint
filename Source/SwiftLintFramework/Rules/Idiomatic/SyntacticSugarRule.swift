@@ -170,7 +170,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
             return
         }
 
-        let typeName = node.expression.withoutTrivia().description
+        let typeName = node.expression.trimmedDescription
 
         if SugaredType(typeName: typeName) != nil {
             if let violation = violation(from: node) {

@@ -135,16 +135,15 @@ private extension TrailingCommaRule {
             switch (lastElement.trailingComma, mandatoryComma) {
             case (let commaToken?, false):
                 correctionPositions.append(commaToken.positionAfterSkippingLeadingTrivia)
+                let newTrailingTrivia = (lastElement.valueExpression.trailingTrivia ?? .zero)
+                    .appending(trivia: commaToken.leadingTrivia)
+                    .appending(trivia: commaToken.trailingTrivia)
                 let newNode = node
                     .replacing(
                         childAt: lastElement.indexInParent,
                         with: lastElement
-                            .withTrailingComma(nil)
-                            .withTrailingTrivia(
-                                (lastElement.valueExpression.trailingTrivia ?? .zero)
-                                    .appending(trivia: commaToken.leadingTrivia)
-                                    .appending(trivia: commaToken.trailingTrivia)
-                            )
+                            .with(\.trailingComma, nil)
+                            .with(\.trailingTrivia, newTrailingTrivia)
                     )
                 return super.visit(newNode)
             case (nil, true) where !locationConverter.isSingleLine(node: node):
@@ -153,9 +152,9 @@ private extension TrailingCommaRule {
                     .replacing(
                         childAt: lastElement.indexInParent,
                         with: lastElement
-                            .withoutTrailingTrivia()
-                            .withTrailingComma(.commaToken())
-                            .withTrailingTrivia(lastElement.trailingTrivia ?? .zero)
+                            .with(\.trailingTrivia, [])
+                            .with(\.trailingComma, .commaToken())
+                            .with(\.trailingTrivia, lastElement.trailingTrivia ?? .zero)
                     )
                 return super.visit(newNode)
             case (_, true), (nil, false):
@@ -176,11 +175,11 @@ private extension TrailingCommaRule {
                     .replacing(
                         childAt: lastElement.indexInParent,
                         with: lastElement
-                            .withTrailingComma(nil)
-                            .withTrailingTrivia(
-                                (lastElement.expression.trailingTrivia ?? .zero)
-                                    .appending(trivia: commaToken.leadingTrivia)
-                                    .appending(trivia: commaToken.trailingTrivia)
+                            .with(\.trailingComma, nil)
+                            .with(\.trailingTrivia,
+                                  (lastElement.expression.trailingTrivia ?? .zero)
+                                        .appending(trivia: commaToken.leadingTrivia)
+                                        .appending(trivia: commaToken.trailingTrivia)
                             )
                     )
                 return super.visit(newNode)
@@ -189,9 +188,9 @@ private extension TrailingCommaRule {
                 let newNode = node.replacing(
                     childAt: lastElement.indexInParent,
                     with: lastElement
-                        .withExpression(lastElement.expression.withoutTrailingTrivia())
-                        .withTrailingComma(.commaToken())
-                        .withTrailingTrivia(lastElement.expression.trailingTrivia ?? .zero)
+                        .with(\.expression, lastElement.expression.with(\.trailingTrivia, []))
+                        .with(\.trailingComma, .commaToken())
+                        .with(\.trailingTrivia, lastElement.expression.trailingTrivia ?? .zero)
                 )
                 return super.visit(newNode)
             case (_, true), (nil, false):

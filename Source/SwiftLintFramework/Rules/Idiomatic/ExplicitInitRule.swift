@@ -218,7 +218,9 @@ private extension ExplicitInitRule {
             }
 
             correctionPositions.append(violationPosition)
-            return super.visit(node.withCalledExpression("\(calledBase.withoutTrivia())"))
+            let newNode = node.with(\.calledExpression,
+                                    "\(calledBase.with(\.leadingTrivia, []).with(\.trailingTrivia, []))")
+            return super.visit(newNode)
         }
     }
 }

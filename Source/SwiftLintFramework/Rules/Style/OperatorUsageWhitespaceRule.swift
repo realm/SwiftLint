@@ -183,7 +183,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
         let noSpacingAfter = operatorToken.trailingTrivia.isEmpty && nextToken.leadingTrivia.isEmpty
         let noSpacing = noSpacingBefore || noSpacingAfter
 
-        let operatorText = operatorToken.withoutTrivia().text
+        let operatorText = operatorToken.text
         if noSpacing && allowedNoSpaceOperators.contains(operatorText) {
             return nil
         }

@@ -82,8 +82,8 @@ enum LegacyFunctionRuleHelper {
             }
 
             return expr
-                .withLeadingTrivia(node.leadingTrivia ?? .zero)
-                .withTrailingTrivia(node.trailingTrivia ?? .zero)
+                .with(\.leadingTrivia, node.leadingTrivia ?? .zero)
+                .with(\.trailingTrivia, node.trailingTrivia ?? .zero)
         }
     }
 }
@@ -105,8 +105,8 @@ private extension FunctionCallExprSyntax {
 private extension TupleExprElementSyntax {
     func trimmed() -> TupleExprElementSyntax {
         self
-            .withoutTrivia()
-            .withTrailingComma(nil)
-            .withoutTrivia()
+            .with(\.leadingTrivia, []).with(\.trailingTrivia, [])
+            .with(\.trailingComma, nil)
+            .with(\.leadingTrivia, []).with(\.trailingTrivia, [])
     }
 }

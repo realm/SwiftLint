@@ -88,9 +88,9 @@ private extension EmptyParenthesesWithTrailingClosureRule {
             }
 
             let newNode = node
-                .withLeftParen(nil)
-                .withRightParen(nil)
-                .withTrailingClosure(node.trailingClosure?.withLeadingTrivia(.spaces(1)))
+                .with(\.leftParen, nil)
+                .with(\.rightParen, nil)
+                .with(\.trailingClosure, node.trailingClosure?.with(\.leadingTrivia, .spaces(1)))
             correctionPositions.append(violationPosition)
             return super.visit(newNode)
         }

@@ -44,7 +44,7 @@ private extension XCTSpecificMatcherRule {
              */
             let arguments = node.argumentList
                 .prefix(2)
-                .map { $0.expression.withoutTrivia().description }
+                .map { $0.expression.trimmedDescription }
                 .sorted { arg1, _ -> Bool in
                     return Self.protectedArguments.contains(arg1)
                 }

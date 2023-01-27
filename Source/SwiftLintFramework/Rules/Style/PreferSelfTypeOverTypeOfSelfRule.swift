@@ -147,11 +147,12 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
 
             correctionPositions.append(function.positionAfterSkippingLeadingTrivia)
 
-            let base: IdentifierExprSyntax = "Self"
+            // swiftlint:disable:next rule_id
+            let base = IdentifierExprSyntax(identifier: "Self")
             let baseWithTrivia = base
-                .withLeadingTrivia(function.leadingTrivia ?? .zero)
-                .withTrailingTrivia(function.trailingTrivia ?? .zero)
-            return super.visit(node.withBase(ExprSyntax(baseWithTrivia)))
+                .with(\.leadingTrivia, function.leadingTrivia ?? .zero)
+                .with(\.trailingTrivia, function.trailingTrivia ?? .zero)
+            return super.visit(node.with(\.base, ExprSyntax(baseWithTrivia)))
         }
     }
 }

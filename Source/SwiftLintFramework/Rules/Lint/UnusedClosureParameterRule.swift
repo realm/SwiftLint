@@ -86,14 +86,13 @@ private extension UnusedClosureParameterRule {
                     }
 
                     correctionPositions.append(name.positionAfterSkippingLeadingTrivia)
-                    newParams = newParams.withParameterList(
-                        newParams.parameterList.replacing(
-                            childAt: index,
-                            with: param.withFirstName(name.withKind(.wildcard))
-                        )
+                    let newParameterList = newParams.parameterList.replacing(
+                        childAt: index,
+                        with: param.with(\.firstName, name.withKind(.wildcard))
                     )
+                    newParams = newParams.with(\.parameterList, newParameterList)
                 }
-                let newNode = node.withSignature(signature.withInput(.init(newParams)))
+                let newNode = node.with(\.signature, signature.with(\.input, .init(newParams)))
                 return super.visit(newNode)
             }
 
@@ -108,10 +107,10 @@ private extension UnusedClosureParameterRule {
                 correctionPositions.append(param.name.positionAfterSkippingLeadingTrivia)
                 newParams = newParams.replacing(
                     childAt: index,
-                    with: param.withName(param.name.withKind(.wildcard))
+                    with: param.with(\.name, param.name.withKind(.wildcard))
                 )
             }
-            let newNode = node.withSignature(signature.withInput(.init(newParams)))
+            let newNode = node.with(\.signature, signature.with(\.input, .init(newParams)))
             return super.visit(newNode)
         }
     }

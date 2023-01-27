@@ -69,8 +69,8 @@ private extension RedundantDiscardableLetRule {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
             let newNode = node
-                .withLetOrVarKeyword(.keyword(.let, presence: .missing))
-                .withBindings(node.bindings.withLeadingTrivia(node.letOrVarKeyword.leadingTrivia))
+                .with(\.letOrVarKeyword, .keyword(.let, presence: .missing))
+                .with(\.bindings, node.bindings.with(\.leadingTrivia, node.letOrVarKeyword.leadingTrivia))
             return super.visit(newNode)
         }
     }

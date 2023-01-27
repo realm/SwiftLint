@@ -133,7 +133,7 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
         correctionPositions.append(clause.positionAfterSkippingLeadingTrivia)
 
-        let paramList = ClosureParamListSyntax(items).withTrailingTrivia(.spaces(1))
-        return super.visit(node.withInput(.init(paramList)))
+        let paramList = ClosureParamListSyntax(items).with(\.trailingTrivia, .spaces(1))
+        return super.visit(node.with(\.input, .init(paramList)))
     }
 }

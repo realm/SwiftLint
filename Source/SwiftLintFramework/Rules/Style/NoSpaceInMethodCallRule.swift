@@ -89,7 +89,7 @@ private extension NoSpaceInMethodCallRule {
             correctionPositions.append(node.calledExpression.endPositionBeforeTrailingTrivia)
 
             let newNode = node
-                .withCalledExpression(node.calledExpression.withoutTrailingTrivia())
+                .with(\.calledExpression, node.calledExpression.with(\.trailingTrivia, []))
 
             return super.visit(newNode)
         }

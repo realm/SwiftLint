@@ -85,7 +85,7 @@ private extension IdenticalOperandsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                  IdenticalOperandsRule.operators.contains(operatorNode.operatorToken.withoutTrivia().text) else {
+                  IdenticalOperandsRule.operators.contains(operatorNode.operatorToken.text) else {
                 return
             }
 

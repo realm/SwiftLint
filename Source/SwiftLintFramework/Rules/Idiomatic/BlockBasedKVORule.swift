@@ -53,7 +53,7 @@ private extension BlockBasedKVORule {
             }
 
             let types = parameterList
-                .compactMap { $0.type?.withoutTrivia().description.replacingOccurrences(of: " ", with: "") }
+                .compactMap { $0.type?.trimmedDescription.replacingOccurrences(of: " ", with: "") }
             let firstTypes = ["String?", "Any?", "[NSKeyValueChangeKey:Any]?", "UnsafeMutableRawPointer?"]
             let secondTypes = ["String?", "Any?", "Dictionary<NSKeyValueChangeKey,Any>?", "UnsafeMutableRawPointer?"]
             if types == firstTypes || types == secondTypes {

@@ -103,16 +103,16 @@ private final class ClosureSpacingRuleRewriter: SyntaxRewriter, ViolationsSyntax
 
         let violations = node.violations
         if violations.leftBraceLeftSpace {
-            node.leftBrace = node.leftBrace.withLeadingTrivia(.spaces(1))
+            node.leftBrace = node.leftBrace.with(\.leadingTrivia, .spaces(1))
         }
         if violations.leftBraceRightSpace {
-            node.leftBrace = node.leftBrace.withTrailingTrivia(.spaces(1))
+            node.leftBrace = node.leftBrace.with(\.trailingTrivia, .spaces(1))
         }
         if violations.rightBraceLeftSpace {
-            node.rightBrace = node.rightBrace.withLeadingTrivia(.spaces(1))
+            node.rightBrace = node.rightBrace.with(\.leadingTrivia, .spaces(1))
         }
         if violations.rightBraceRightSpace {
-            node.rightBrace = node.rightBrace.withTrailingTrivia(.spaces(1))
+            node.rightBrace = node.rightBrace.with(\.trailingTrivia, .spaces(1))
         }
         if violations.hasViolations {
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)

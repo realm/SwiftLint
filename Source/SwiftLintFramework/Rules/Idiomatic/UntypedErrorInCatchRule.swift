@@ -154,8 +154,8 @@ private final class UntypedErrorInCatchRuleRewriter: SyntaxRewriter, ViolationsS
         correctionPositions.append(node.catchKeyword.positionAfterSkippingLeadingTrivia)
         return super.visit(
             node
-                .withCatchKeyword(node.catchKeyword.withTrailingTrivia(.spaces(1)))
-                .withCatchItems(CatchItemListSyntax([]))
+                .with(\.catchKeyword, node.catchKeyword.with(\.trailingTrivia, .spaces(1)))
+                .with(\.catchItems, CatchItemListSyntax([]))
         )
     }
 }

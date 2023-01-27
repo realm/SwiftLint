@@ -83,25 +83,6 @@ struct LintableFilesVisitor {
     let mode: LintOrAnalyzeModeWithCompilerArguments
     let block: (CollectedLinter) async -> Void
 
-    init(paths: [String], action: String, useSTDIN: Bool,
-         quiet: Bool, showProgressBar: Bool, useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
-         cache: LinterCache?, parallel: Bool,
-         allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) async -> Void) {
-        self.paths = resolveParamsFiles(args: paths)
-        self.action = action
-        self.useSTDIN = useSTDIN
-        self.quiet = quiet
-        self.showProgressBar = showProgressBar
-        self.useScriptInputFiles = useScriptInputFiles
-        self.forceExclude = forceExclude
-        self.useExcludingByPrefix = useExcludingByPrefix
-        self.cache = cache
-        self.parallel = parallel
-        self.mode = .lint
-        self.allowZeroLintableFiles = allowZeroLintableFiles
-        self.block = block
-    }
-
     private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, showProgressBar: Bool,
                  useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
                  cache: LinterCache?, compilerInvocations: CompilerInvocations?,
@@ -142,15 +123,17 @@ struct LintableFilesVisitor {
                 compilerInvocations = try loadCompilerInvocations(options)
             }
 
-            return Self(paths: options.paths, action: options.verb.bridge().capitalized,
-                        useSTDIN: options.useSTDIN, quiet: options.quiet,
-                        showProgressBar: options.progress,
-                        useScriptInputFiles: options.useScriptInputFiles,
-                        forceExclude: options.forceExclude,
-                        useExcludingByPrefix: options.useExcludingByPrefix,
-                        cache: cache,
-                        compilerInvocations: compilerInvocations,
-                        allowZeroLintableFiles: allowZeroLintableFiles, block: block)
+            return LintableFilesVisitor(
+                paths: options.paths, action: options.verb.bridge().capitalized,
+                useSTDIN: options.useSTDIN, quiet: options.quiet,
+                showProgressBar: options.progress,
+                useScriptInputFiles: options.useScriptInputFiles,
+                forceExclude: options.forceExclude,
+                useExcludingByPrefix: options.useExcludingByPrefix,
+                cache: cache,
+                compilerInvocations: compilerInvocations,
+                allowZeroLintableFiles: allowZeroLintableFiles, block: block
+            )
         }
     }
 

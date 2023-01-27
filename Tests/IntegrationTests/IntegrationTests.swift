@@ -2,22 +2,20 @@ import Foundation
 import SourceKittenFramework
 @_spi(TestHelper)
 import SwiftLintFramework
-import SwiftLintTestHelpers
 import XCTest
 
 private let config: Configuration = {
-    let directory = #file.bridge()
+    let bazelWorkspaceDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"]
+    let rootProjectDirectory = bazelWorkspaceDirectory ?? #file.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent
-    _ = FileManager.default.changeCurrentDirectoryPath(directory)
+    _ = FileManager.default.changeCurrentDirectoryPath(rootProjectDirectory)
     return Configuration(configurationFiles: [Configuration.defaultFileName])
 }()
 
 class IntegrationTests: XCTestCase {
-    func testSwiftLintLints() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testSwiftLintLints() {
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
         XCTAssert(
@@ -36,9 +34,7 @@ class IntegrationTests: XCTestCase {
         }
     }
 
-    func testSwiftLintAutoCorrects() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testSwiftLintAutoCorrects() {
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
         let storage = RuleStorage()
         let corrections = swiftFiles.parallelFlatMap {

@@ -1,7 +1,6 @@
 import Foundation
 import SourceKittenFramework
 @testable import SwiftLintFramework
-import SwiftLintTestHelpers
 import XCTest
 
 class ReporterTests: XCTestCase {
@@ -51,33 +50,25 @@ class ReporterTests: XCTestCase {
         ]
     }
 
-    func testXcodeReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testXcodeReporter() {
         let expectedOutput = stringFromFile("CannedXcodeReporterOutput.txt")
         let result = XcodeReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
 
-    func testEmojiReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testEmojiReporter() {
         let expectedOutput = stringFromFile("CannedEmojiReporterOutput.txt")
         let result = EmojiReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
 
-    func testGitHubActionsLoggingReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testGitHubActionsLoggingReporter() {
         let expectedOutput = stringFromFile("CannedGitHubActionsLoggingReporterOutput.txt")
         let result = GitHubActionsLoggingReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
 
-    func testGitLabJUnitReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testGitLabJUnitReporter() {
         let expectedOutput = stringFromFile("CannedGitLabJUnitReporterOutput.xml")
         let result = GitLabJUnitReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
@@ -95,48 +86,36 @@ class ReporterTests: XCTestCase {
     }
 
     func testJSONReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
         let expectedOutput = stringFromFile("CannedJSONReporterOutput.json")
         let result = JSONReporter.generateReport(generateViolations())
         XCTAssertEqual(try jsonValue(result), try jsonValue(expectedOutput))
     }
 
-    func testCSVReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCSVReporter() {
         let expectedOutput = stringFromFile("CannedCSVReporterOutput.csv")
         let result = CSVReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
 
-    func testCheckstyleReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCheckstyleReporter() {
         let expectedOutput = stringFromFile("CannedCheckstyleReporterOutput.xml")
         let result = CheckstyleReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
 
-    func testCodeClimateReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCodeClimateReporter() {
         let expectedOutput = stringFromFile("CannedCodeClimateReporterOutput.json")
         let result = CodeClimateReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
 
-    func testJunitReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testJunitReporter() {
         let expectedOutput = stringFromFile("CannedJunitReporterOutput.xml")
         let result = JUnitReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
 
-    func testHTMLReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testHTMLReporter() {
         let expectedOutput = stringFromFile("CannedHTMLReporterOutput.html")
         let result = HTMLReporter.generateReport(
             generateViolations(),
@@ -146,17 +125,13 @@ class ReporterTests: XCTestCase {
         XCTAssertEqual(result, expectedOutput)
     }
 
-    func testSonarQubeReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testSonarQubeReporter() {
         let expectedOutput = stringFromFile("CannedSonarQubeReporterOutput.json")
         let result = SonarQubeReporter.generateReport(generateViolations())
         XCTAssertEqual(try jsonValue(result), try jsonValue(expectedOutput))
     }
 
-    func testMarkdownReporter() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testMarkdownReporter() {
         let expectedOutput = stringFromFile("CannedMarkdownReporterOutput.md")
         let result = MarkdownReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)

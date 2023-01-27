@@ -12,9 +12,7 @@ private extension Configuration {
 
 extension ConfigurationTests {
     // MARK: - Rules Merging
-    func testMerge() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testMerge() {
         let config0Merge2 = Mock.Config._0.merged(withChild: Mock.Config._2, rootDirectory: "")
 
         XCTAssertFalse(Mock.Config._0.contains(rule: ForceCastRule.self))
@@ -74,9 +72,7 @@ extension ConfigurationTests {
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceTryRule.self))
     }
 
-    func testCustomRulesMerging() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCustomRulesMerging() {
         let mergedConfiguration = Mock.Config._0CustomRules.merged(
             withChild: Mock.Config._2CustomRules,
             rootDirectory: ""
@@ -94,9 +90,7 @@ extension ConfigurationTests {
         )
     }
 
-    func testMergingAllowsDisablingParentsCustomRules() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testMergingAllowsDisablingParentsCustomRules() {
         let mergedConfiguration = Mock.Config._0CustomRules.merged(
             withChild: Mock.Config._2CustomRulesDisabled,
             rootDirectory: ""
@@ -114,9 +108,7 @@ extension ConfigurationTests {
         )
     }
 
-    func testCustomRulesMergingWithOnlyRulesCase1() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCustomRulesMergingWithOnlyRulesCase1() {
         // The base configuration is in only rules mode
         // The child configuration is in the default rules mode
         // => all custom rules should be considered
@@ -137,9 +129,7 @@ extension ConfigurationTests {
         )
     }
 
-    func testCustomRulesMergingWithOnlyRulesCase2() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCustomRulesMergingWithOnlyRulesCase2() {
         // The base configuration is in only rules mode
         // The child configuration is in the only rules mode
         // => only the custom rules from the child configuration should be considered
@@ -161,9 +151,7 @@ extension ConfigurationTests {
         )
     }
 
-    func testCustomRulesReconfiguration() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testCustomRulesReconfiguration() {
         // Custom Rule severity gets reconfigured to "error"
         let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
             withChild: Mock.Config._2CustomRulesReconfig,
@@ -187,23 +175,17 @@ extension ConfigurationTests {
     }
 
     // MARK: - Nested Configurations
-    func testLevel0() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testLevel0() {
         XCTAssertEqual(Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._0)!),
                        Mock.Config._0)
     }
 
-    func testLevel1() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testLevel1() {
         XCTAssertEqual(Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._1)!),
                        Mock.Config._0)
     }
 
-    func testLevel2() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testLevel2() {
         let config = Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._2)!)
         var config2 = Mock.Config._2
         config2.fileGraph = Configuration.FileGraph(rootDirectory: Mock.Dir.level2)
@@ -214,9 +196,7 @@ extension ConfigurationTests {
         )
     }
 
-    func testLevel3() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testLevel3() {
         let config = Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._3)!)
         var config3 = Mock.Config._3
         config3.fileGraph = Configuration.FileGraph(rootDirectory: Mock.Dir.level3)
@@ -227,9 +207,7 @@ extension ConfigurationTests {
         )
     }
 
-    func testNestedConfigurationForOnePathPassedIn() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testNestedConfigurationForOnePathPassedIn() {
         // If a path to one or more configuration files is specified, nested configurations should be ignored
         let config = Configuration(configurationFiles: [Mock.Yml._0])
         XCTAssertEqual(
@@ -238,9 +216,7 @@ extension ConfigurationTests {
         )
     }
 
-    func testParentConfigIsIgnoredAsNestedConfiguration() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testParentConfigIsIgnoredAsNestedConfiguration() {
         // If a configuration has already been used to build the main config,
         // it should not again be regarded as a nested config
         XCTAssertEqual(
@@ -265,9 +241,7 @@ extension ConfigurationTests {
         }
     }
 
-    func testValidParentConfig() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testValidParentConfig() {
         for path in [Mock.Dir.parentConfigTest1, Mock.Dir.parentConfigTest2] {
             FileManager.default.changeCurrentDirectoryPath(path)
 
@@ -328,9 +302,7 @@ extension ConfigurationTests {
     }
 
     // MARK: - Remote Configs
-    func testValidRemoteChildConfig() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testValidRemoteChildConfig() {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild)
 
         assertEqualExceptForFileGraph(
@@ -349,9 +321,7 @@ extension ConfigurationTests {
         )
     }
 
-    func testValidRemoteParentConfig() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
+    func testValidRemoteParentConfig() {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigParent)
 
         assertEqualExceptForFileGraph(

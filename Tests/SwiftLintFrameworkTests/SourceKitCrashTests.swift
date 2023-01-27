@@ -1,6 +1,5 @@
 @_spi(TestHelper)
 @testable import SwiftLintFramework
-import SwiftLintTestHelpers
 import XCTest
 
 class SourceKitCrashTests: XCTestCase {
@@ -49,9 +48,7 @@ class SourceKitCrashTests: XCTestCase {
     }
 
     func testRulesWithFileThatCrashedSourceKitService() throws {
-        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
-
-        let file = SwiftLintFile(path: #file)!
+        let file = try XCTUnwrap(SwiftLintFile(path: "\(TestResources.path)/ProjectMock/Level0.swift"))
         file.sourcekitdFailed = true
         file.assertHandler = {
             XCTFail("If this called, rule's SourceKitFreeRule is not properly configured")

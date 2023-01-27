@@ -28,14 +28,6 @@ public extension Configuration {
             self.ignoreParentAndChildConfigs = ignoreParentAndChildConfigs
         }
 
-        internal init(config: String, rootDirectory: String, ignoreParentAndChildConfigs: Bool) throws {
-            self.init(
-                commandLineChildConfigs: [config],
-                rootDirectory: rootDirectory,
-                ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
-            )
-        }
-
         /// Dummy init to get a FileGraph that just represents a root directory
         internal init(rootDirectory: String) {
             self.init(

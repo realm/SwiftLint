@@ -15,8 +15,8 @@ struct ProtocolCollector {
     ///
     /// - returns: The protocol graph.
     func collect() async -> ProtocolGraph {
-        await units
-            .concurrentCompactMap(collectSingle(unitReader:))
+        units
+            .compactMap(collectSingle(unitReader:))
             .reduce(into: ProtocolCollectionResult()) { $0.merge(with: $1) }
             .toProtocolGraph()
     }

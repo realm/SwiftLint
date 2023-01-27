@@ -89,42 +89,19 @@ private extension ExplicitEnumRawValueRule {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: EnumCaseElementSyntax) {
-            if node.rawValue == nil,
-               let enclosingEnum = Syntax(node).enclosingEnum(),
-               let inheritance = enclosingEnum.inheritanceClause,
-               inheritance.supportsRawValue {
+            if node.rawValue == nil, node.enclosingEnum()?.supportsRawValues == true {
                 violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
             }
         }
     }
 }
 
-private extension Syntax {
+private extension SyntaxProtocol {
     func enclosingEnum() -> EnumDeclSyntax? {
         if let node = self.as(EnumDeclSyntax.self) {
             return node
         }
 
         return parent?.enclosingEnum()
-    }
-}
-
-private extension TypeInheritanceClauseSyntax {
-    var supportsRawValue: Bool {
-        // Check if it's an enum which supports raw values
-        let implicitRawValueSet: Set<String> = [
-            "Int", "Int8", "Int16", "Int32", "Int64",
-            "UInt", "UInt8", "UInt16", "UInt32", "UInt64",
-            "Double", "Float", "Float80", "Decimal", "NSNumber",
-            "NSDecimalNumber", "NSInteger", "String"
-        ]
-
-        return inheritedTypeCollection.contains { element in
-            guard let identifier = element.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text else {
-                return false
-            }
-
-            return implicitRawValueSet.contains(identifier)
-        }
     }
 }

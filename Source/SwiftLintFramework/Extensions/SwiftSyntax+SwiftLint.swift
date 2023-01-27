@@ -177,6 +177,30 @@ extension VariableDeclSyntax {
     }
 }
 
+public extension EnumDeclSyntax {
+    /// True if this enum supports raw values
+    var supportsRawValues: Bool {
+        guard let inheritedTypeCollection = inheritanceClause?.inheritedTypeCollection else {
+            return false
+        }
+
+        let rawValueTypes: Set<String> = [
+            "Int", "Int8", "Int16", "Int32", "Int64",
+            "UInt", "UInt8", "UInt16", "UInt32", "UInt64",
+            "Double", "Float", "Float80", "Decimal", "NSNumber",
+            "NSDecimalNumber", "NSInteger", "String", "CGFloat"
+        ]
+
+        return inheritedTypeCollection.contains { element in
+            guard let identifier = element.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text else {
+                return false
+            }
+
+            return rawValueTypes.contains(identifier)
+        }
+    }
+}
+
 extension FunctionDeclSyntax {
     var isIBAction: Bool {
         attributes?.contains { attr in

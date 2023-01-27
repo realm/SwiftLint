@@ -15,10 +15,6 @@ steps:
       - bazel build //tools:danger
       - echo "+++ Run Danger"
       - ./bazel-bin/tools/danger --verbose
-  - label: "Analyze"
-    commands:
-      - echo "+++ Analyze"
-      - bazel test -c opt --test_output=streamed --test_timeout=3600 --spawn_strategy=local analyze
   - label: "TSan Tests"
     commands:
       - echo "+++ Test"

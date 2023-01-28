@@ -57,13 +57,11 @@ struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, Correct
 
     func correct(file: SwiftLintFile) -> [Correction] {
         return file.structureDictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.declarationKind else { return nil }
-            return correct(file: file, kind: kind, dictionary: subDict)
+            guard subDict.declarationKind != nil else { return nil }
+            return correct(file: file, dictionary: subDict)
         }
     }
-    private func correct(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [Correction] {
+    private func correct(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [Correction] {
         guard let offset = dictionary.offset else { return [] }
         let originalContents = file.stringView
         let violatingRanges = violatingModifiers(dictionary: dictionary)

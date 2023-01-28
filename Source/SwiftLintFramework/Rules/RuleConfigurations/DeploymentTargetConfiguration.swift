@@ -50,10 +50,6 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
             self.init(platform: platform, major: major, minor: minor, patch: patch)
         }
 
-        fileprivate convenience init(platform: Platform, value: Any) throws {
-            try self.init(platform: platform, rawValue: String(describing: value))
-        }
-
         fileprivate func update(using value: Any) throws {
             let (major, minor, patch) = try Self.parseVersion(string: String(describing: value))
             self.major = major

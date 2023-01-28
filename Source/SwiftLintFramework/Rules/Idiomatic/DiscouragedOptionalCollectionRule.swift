@@ -17,7 +17,7 @@ struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, ConfigurationProvi
     func validate(file: SwiftLintFile,
                   kind: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let offsets = variableViolations(file: file, kind: kind, dictionary: dictionary) +
+        let offsets = variableViolations(kind: kind, dictionary: dictionary) +
             functionViolations(file: file, kind: kind, dictionary: dictionary)
 
         return offsets.map {
@@ -29,9 +29,7 @@ struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, ConfigurationProvi
 
     // MARK: - Private
 
-    private func variableViolations(file: SwiftLintFile,
-                                    kind: SwiftDeclarationKind,
-                                    dictionary: SourceKittenDictionary) -> [ByteCount] {
+    private func variableViolations(kind: SwiftDeclarationKind, dictionary: SourceKittenDictionary) -> [ByteCount] {
         guard
             SwiftDeclarationKind.variableKinds.contains(kind),
             let offset = dictionary.offset,

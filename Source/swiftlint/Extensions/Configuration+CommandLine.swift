@@ -68,8 +68,7 @@ extension Configuration {
         }
         let result = await Signposts.record(name: "Configuration.VisitLintableFiles.Visit") {
             await collected.asyncMap { linters, duplicateFileNames in
-                await visit(linters: linters, visitor: visitor, storage: storage,
-                            duplicateFileNames: duplicateFileNames)
+                await visit(linters: linters, visitor: visitor, duplicateFileNames: duplicateFileNames)
             }
         }
         return result.flatMap { $0 }
@@ -182,7 +181,6 @@ extension Configuration {
 
     private func visit(linters: [CollectedLinter],
                        visitor: LintableFilesVisitor,
-                       storage: RuleStorage,
                        duplicateFileNames: Set<String>) async -> [SwiftLintFile] {
         let counter = CounterActor()
         let progress = ProgressBar(count: linters.count)

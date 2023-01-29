@@ -6,7 +6,7 @@ import XCTest
 // swiftlint:disable file_length single_test_class type_name
 
 {% for rule in types.structs %}
-{% if rule.name|hasSuffix:"Rule" %}
+{% if rule.name|hasSuffix:"Rule" and rule.name != "InvalidSwiftLintCommandRule" %}
 class {{ rule.name }}GeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule({{ rule.name }}.description)

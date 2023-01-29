@@ -32,7 +32,7 @@ struct InvalidSwiftLintCommandRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("// ↓swiftlint:enable"),
             Example("// ↓swiftlint:enable:"),
             Example("// ↓swiftlint:enable: "),
-            Example("// ↓swiftlint:disable: unused_import"),
+            Example("// ↓swiftlint:disable: unused_import")
         ]
     )
 

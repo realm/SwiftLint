@@ -1,7 +1,9 @@
 import SwiftSyntax
 
 struct NoBlanketDisablesRule: ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    typealias ConfigurationType = NoBlanketDisablesConfiguration
+    
+    var configuration = NoBlanketDisablesConfiguration()
 
     init() {}
 
@@ -37,6 +39,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
         var violations: [StyleViolation] = []
         var ruleIdentifierToCommandMap: [RuleIdentifier: Command] = [:]
         var disabledRuleIdentifiers: Set<RuleIdentifier> = []
+        
         for command in file.commands {
             if command.modifier != nil {
                 continue
@@ -51,9 +54,9 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             }
         }
 
+        let allowedRuleIdentifiers = configuration.allowedRuleIdentifiers
         for disabledRuleIdentifier in disabledRuleIdentifiers {
-            if disabledRuleIdentifier == "file_length" ||
-                disabledRuleIdentifier == "single_test_class" {
+            if allowedRuleIdentifiers.contains(disabledRuleIdentifier.stringRepresentation) {
                 continue
             }
 

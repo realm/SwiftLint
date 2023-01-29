@@ -59,7 +59,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             if allowedRuleIdentifiers.contains(disabledRuleIdentifier.stringRepresentation) {
                 continue
             }
-            
+
             if primaryRuleList.list[disabledRuleIdentifier.stringRepresentation] == nil {
                 continue
             }

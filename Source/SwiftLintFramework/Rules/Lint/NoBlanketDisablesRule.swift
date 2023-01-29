@@ -6,7 +6,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
     init() {}
 
     static let description = RuleDescription(
-        identifier: "no blanket disables",
+        identifier: "no_blanket_disables",
         name: "No Blanket Disables",
         description: "swiftlint:disable commands should be re-enabled before the end of the file",
         kind: .lint,
@@ -52,6 +52,11 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
         }
 
         for disabledRuleIdentifier in disabledRuleIdentifiers {
+            if disabledRuleIdentifier == "file_length" ||
+                disabledRuleIdentifier == "single_test_class" {
+                continue
+            }
+
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
                 let location = Location(file: file.file.path, line: command.line, character: command.character)
                 let violation = StyleViolation(ruleDescription: Self.description,

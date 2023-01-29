@@ -303,8 +303,10 @@ class CommandTests: XCTestCase {
 
     func testInvalidDisableCommands() {
         XCTAssertEqual(
-            Set(violations(Example("// swiftlint:disable nesting_foo\nprint(123)\n")).map { $0.ruleIdentifier }),
-            Set(["superfluous_disable_command", "no_blanket_disables"])
+            violations(Example("// swiftlint:disable nesting_foo\n" +
+                               "print(123)\n" +
+                               "// swiftlint:enable nesting_foo\n"))[0].ruleIdentifier,
+            "superfluous_disable_command"
         )
         XCTAssertEqual(
             violations(Example("// swiftlint:disable:next nesting_foo\nprint(123)\n"))[0]
@@ -327,18 +329,18 @@ class CommandTests: XCTestCase {
             1
         )
 
-        let multipleViolations = violations(Example("// swiftlint:disable nesting this is a comment\n"))
-        XCTAssertEqual(multipleViolations.count, 10)
+        let multipleViolations = violations(Example("// swiftlint:disable nesting this is a comment\n// swiftlint:enable nesting\n"))
+        XCTAssertEqual(multipleViolations.count, 9)
         XCTAssertTrue(multipleViolations.allSatisfy {
-            $0.ruleIdentifier == "superfluous_disable_command" ||
-            $0.ruleIdentifier == "no_blanket_disables"
+            $0.ruleIdentifier == "superfluous_disable_command"
         })
+        
+        print(">>>> rules violated = \(multipleViolations.map { $0.ruleIdentifier })")
 
         let onlyNonExistentRulesViolations = violations(Example("// swiftlint:disable this is a comment\n"))
-        XCTAssertEqual(onlyNonExistentRulesViolations.count, 8)
+        XCTAssertEqual(onlyNonExistentRulesViolations.count, 4)
         XCTAssertTrue(onlyNonExistentRulesViolations.allSatisfy {
-            $0.ruleIdentifier == "superfluous_disable_command" ||
-            $0.ruleIdentifier == "no_blanket_disables"
+            $0.ruleIdentifier == "superfluous_disable_command"
         })
 
         XCTAssertEqual(
@@ -351,15 +353,17 @@ class CommandTests: XCTestCase {
 
     func testSuperfluousDisableCommandsDisabled() {
         XCTAssertEqual(
-            Set(violations(Example("// swiftlint:disable superfluous_disable_command nesting\n" +
-                                   "print(123)\n")).map { $0.ruleIdentifier }),
-            Set(["no_blanket_disables"])
+            violations(Example("// swiftlint:disable superfluous_disable_command nesting\n" +
+                               "print(123)\n" +
+                               "// swiftlint:enable superfluous_disable_command nesting\n")),
+            []
         )
         XCTAssertEqual(
-            Set(violations(Example("// swiftlint:disable superfluous_disable_command\n" +
-                                   "// swiftlint:disable nesting\n" +
-                                   "print(123)\n")).map { $0.ruleIdentifier }),
-            Set(["no_blanket_disables"])
+            violations(Example("// swiftlint:disable superfluous_disable_command\n" +
+                               "// swiftlint:disable nesting\n" +
+                               "print(123)\n" +
+                               "// swiftlint:enable superfluous_disable_command nesting\n")),
+            []
         )
         XCTAssertEqual(
             violations(Example("// swiftlint:disable:next superfluous_disable_command nesting\nprint(123)\n")),
@@ -380,9 +384,10 @@ class CommandTests: XCTestCase {
         let configuration = Configuration(rulesMode: rulesMode)
 
         XCTAssertEqual(
-            Set(violations(Example("// swiftlint:disable nesting\n" +
-                                   "print(123)\n"), config: configuration).map { $0.ruleIdentifier }),
-            Set(["no_blanket_disables"])
+            violations(Example("// swiftlint:disable nesting\n" +
+                               "print(123)\n" +
+                               "// swiftlint:enable nesting\n"), config: configuration),
+            []
         )
         XCTAssertEqual(
             violations(Example("// swiftlint:disable:next nesting\nprint(123)\n"), config: configuration),

@@ -59,6 +59,10 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             if allowedRuleIdentifiers.contains(disabledRuleIdentifier.stringRepresentation) {
                 continue
             }
+            
+            if primaryRuleList.list[disabledRuleIdentifier.stringRepresentation] == nil {
+                continue
+            }
 
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
                 let location = Location(file: file.file.path, line: command.line, character: command.character)

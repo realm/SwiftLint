@@ -517,6 +517,12 @@ class InertDeferRuleGeneratedTests: XCTestCase {
     }
 }
 
+class InvalidSwiftLintCommandRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(InvalidSwiftLintCommandRule.description)
+    }
+}
+
 class IsDisjointRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IsDisjointRule.description)

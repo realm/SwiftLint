@@ -2,7 +2,7 @@ import SwiftSyntax
 
 struct NoBlanketDisablesRule: ConfigurationProviderRule {
     typealias ConfigurationType = NoBlanketDisablesConfiguration
-    
+
     var configuration = NoBlanketDisablesConfiguration()
 
     init() {}
@@ -39,7 +39,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
         var violations: [StyleViolation] = []
         var ruleIdentifierToCommandMap: [RuleIdentifier: Command] = [:]
         var disabledRuleIdentifiers: Set<RuleIdentifier> = []
-        
+
         for command in file.commands {
             if command.modifier != nil {
                 continue

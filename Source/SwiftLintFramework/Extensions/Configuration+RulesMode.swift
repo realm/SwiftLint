@@ -63,7 +63,7 @@ public extension Configuration {
                 warnAboutDuplicates(in: disabledRules)
 
                 let effectiveOptInRules: [String]
-                if optInRules.contains("all") {
+                if optInRules.contains(RuleIdentifier.all.stringRepresentation) {
                     let allOptInRules = primaryRuleList.list.compactMap { ruleID, ruleType in
                         ruleType is OptInRule.Type && !(ruleType is AnalyzerRule.Type) ? ruleID : nil
                     }

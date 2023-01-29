@@ -114,7 +114,7 @@ internal extension Configuration {
 
         // MARK: - Methods: Validation
         private func validate(optInRuleIds: Set<String>, valid: Set<String>) -> Set<String> {
-            validate(ruleIds: optInRuleIds, valid: valid.union(["all"]))
+            validate(ruleIds: optInRuleIds, valid: valid.union([RuleIdentifier.all.stringRepresentation]))
         }
 
         private func validate(ruleIds: Set<String>, valid: Set<String>, silent: Bool = false) -> Set<String> {

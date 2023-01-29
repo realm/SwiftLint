@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct NoBlanketDisablesRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct NoBlanketDisablesRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
     init() {}
@@ -33,8 +33,7 @@ struct NoBlanketDisablesRule: SwiftSyntaxRule, ConfigurationProviderRule {
         ]
      )
 
-    @available(*, unavailable)
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        queuedFatalError("no implemented yet")
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
+        []
     }
 }

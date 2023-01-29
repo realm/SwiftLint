@@ -17,7 +17,7 @@ struct InvalidSwiftLintCommandRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("// swiftlint:disable:next unused_import"),
             Example("// swiftlint:disable:previous unused_import"),
             Example("// swiftlint:disable:this unused_import")
-        ].skipWrappingInCommentTests().skipDisableCommandTests(),
+        ],
         triggeringExamples: [
             Example("// ↓swiftlint:"),
             Example("// ↓swiftlint: "),
@@ -33,7 +33,7 @@ struct InvalidSwiftLintCommandRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("// ↓swiftlint:enable:"),
             Example("// ↓swiftlint:enable: "),
             Example("// ↓swiftlint:disable: unused_import")
-        ].skipWrappingInCommentTests().skipDisableCommandTests()
+        ].skipWrappingInCommentTests()
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {

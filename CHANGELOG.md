@@ -82,6 +82,10 @@
 
 * Catch more valid `no_magic_numbers` violations.  
   [JP Simard](https://github.com/jpsim)
+* Add `invalid_swiftlint_command` rule that validates
+  `// swiftlint:enable` and `disable` commands.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4546](https://github.com/realm/SwiftLint/pull/4546)
 
 * Improve `identifier_name` documentation.  
   [Martin Redington](https://github.com/mildm8nnered)

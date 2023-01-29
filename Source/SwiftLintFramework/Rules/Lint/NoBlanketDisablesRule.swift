@@ -32,7 +32,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             // swiftlint:disable unused_import unused_declaration
             // swiftlint:enable unused_import
             """)
-        ]
+        ].skipWrappingInCommentTests()
      )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

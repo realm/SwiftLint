@@ -35,7 +35,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         var violations: [StyleViolation] = []
-        var ruleIdentifierToCommandMap: [RuleIdentifier:Command] = [:]
+        var ruleIdentifierToCommandMap: [RuleIdentifier: Command] = [:]
         var disabledRuleIdentifiers: Set<RuleIdentifier> = []
         for command in file.commands {
             if command.modifier != nil {
@@ -50,7 +50,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
                 command.ruleIdentifiers.forEach { ruleIdentifierToCommandMap.removeValue(forKey: $0) }
             }
         }
-        
+
         for disabledRuleIdentifier in disabledRuleIdentifiers {
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
                 let location = Location(file: file.file.path, line: command.line, character: command.character)

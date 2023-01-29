@@ -303,9 +303,8 @@ class CommandTests: XCTestCase {
 
     func testInvalidDisableCommands() {
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting_foo\nprint(123)\n"))[0]
-                .ruleIdentifier,
-            "superfluous_disable_command"
+            Set(violations(Example("// swiftlint:disable nesting_foo\nprint(123)\n")).map { $0.ruleIdentifier }),
+            Set(["superfluous_disable_command", "no_blanket_disables"])
         )
         XCTAssertEqual(
             violations(Example("// swiftlint:disable:next nesting_foo\nprint(123)\n"))[0]
@@ -329,13 +328,17 @@ class CommandTests: XCTestCase {
         )
 
         let multipleViolations = violations(Example("// swiftlint:disable nesting this is a comment\n"))
-        XCTAssertEqual(multipleViolations.count, 5)
-        XCTAssertTrue(multipleViolations.allSatisfy { $0.ruleIdentifier == "superfluous_disable_command" })
+        XCTAssertEqual(multipleViolations.count, 10)
+        XCTAssertTrue(multipleViolations.allSatisfy {
+            $0.ruleIdentifier == "superfluous_disable_command" ||
+            $0.ruleIdentifier == "no_blanket_disables"
+        })
 
         let onlyNonExistentRulesViolations = violations(Example("// swiftlint:disable this is a comment\n"))
-        XCTAssertEqual(onlyNonExistentRulesViolations.count, 4)
+        XCTAssertEqual(onlyNonExistentRulesViolations.count, 8)
         XCTAssertTrue(onlyNonExistentRulesViolations.allSatisfy {
-            $0.ruleIdentifier == "superfluous_disable_command"
+            $0.ruleIdentifier == "superfluous_disable_command" ||
+            $0.ruleIdentifier == "no_blanket_disables"
         })
 
         XCTAssertEqual(
@@ -343,19 +346,20 @@ class CommandTests: XCTestCase {
             "'nesting_foo' is not a valid SwiftLint rule; remove it from the disable command"
         )
 
-        XCTAssertEqual(violations(Example("/* swiftlint:disable nesting */\n")).count, 1)
+        XCTAssertEqual(violations(Example("/* swiftlint:disable nesting */\n")).count, 2)
     }
 
     func testSuperfluousDisableCommandsDisabled() {
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable superfluous_disable_command nesting\nprint(123)\n")),
-            []
+            Set(violations(Example("// swiftlint:disable superfluous_disable_command nesting\n" +
+                                   "print(123)\n")).map { $0.ruleIdentifier }),
+            Set(["no_blanket_disables"])
         )
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable superfluous_disable_command\n" +
-                       "// swiftlint:disable nesting\n" +
-                       "print(123)\n")),
-            []
+            Set(violations(Example("// swiftlint:disable superfluous_disable_command\n" +
+                                   "// swiftlint:disable nesting\n" +
+                                   "print(123)\n")).map { $0.ruleIdentifier }),
+            Set(["no_blanket_disables"])
         )
         XCTAssertEqual(
             violations(Example("// swiftlint:disable:next superfluous_disable_command nesting\nprint(123)\n")),
@@ -376,8 +380,9 @@ class CommandTests: XCTestCase {
         let configuration = Configuration(rulesMode: rulesMode)
 
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting\nprint(123)\n"), config: configuration),
-            []
+            Set(violations(Example("// swiftlint:disable nesting\n" +
+                                   "print(123)\n"), config: configuration).map { $0.ruleIdentifier }),
+            Set(["no_blanket_disables"])
         )
         XCTAssertEqual(
             violations(Example("// swiftlint:disable:next nesting\nprint(123)\n"), config: configuration),

@@ -63,7 +63,8 @@ private extension Trivia {
                 if let lower = comment.range(of: "swiftlint:")?.lowerBound,
                    case let actionString = String(comment[lower...]) {
                     let swiftLintOffset = comment.distance(from: comment.startIndex, to: lower)
-                    if let violation = violation(forString: actionString, offset: (offset + triviaOffset).advanced(by: swiftLintOffset)) {
+                    let violationOffset = (offset + triviaOffset).advanced(by: swiftLintOffset)
+                    if let violation = violation(forString: actionString, offset: violationOffset) {
                         violations.append(violation)
                     }
                 }

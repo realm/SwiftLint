@@ -1,10 +1,12 @@
 public struct NoBlanketDisablesConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     public private(set) var allowedRuleIdentifiers: Set<String> = ["file_length", "single_test_class"]
+    public private(set) var alwaysBlanketDisableRuleIdentifiers: Set<String> = []
 
     public var consoleDescription: String {
         "severity: \(severityConfiguration.consoleDescription)" +
-        ", allowed_rules: \(allowedRuleIdentifiers.sorted())"
+        ", allowed_rules: \(allowedRuleIdentifiers.sorted())" +
+        ", always_blanket_disable: \(alwaysBlanketDisableRuleIdentifiers.sorted())"
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -18,6 +20,10 @@ public struct NoBlanketDisablesConfiguration: SeverityBasedRuleConfiguration, Eq
 
         if let allowedRuleIdentifiers = configuration["allowed_rules"] as? [String] {
             self.allowedRuleIdentifiers = Set(allowedRuleIdentifiers)
+        }
+
+        if let alwaysBlanketDisableRuleIdentifiers = configuration["always_blanket_disable"] as? [String] {
+            self.alwaysBlanketDisableRuleIdentifiers = Set(alwaysBlanketDisableRuleIdentifiers)
         }
     }
 

@@ -65,11 +65,33 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             }
 
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
-                let location = Location(file: file.file.path, line: command.line, character: command.character)
-                let violation = StyleViolation(ruleDescription: Self.description,
-                                               severity: configuration.severity,
-                                               location: location)
+                let violation = violation(forPath: file.file.path, line: command.line, character: command.character)
                 violations.append(violation)
+            }
+        }
+
+        return violations
+    }
+
+    private func violation(forPath path: String?, line: Int?, character: Int?) -> StyleViolation {
+        let location = Location(file: path, line: line, character: character)
+        return StyleViolation(ruleDescription: Self.description, severity: configuration.severity, location: location)
+    }
+
+    private func validateAlwaysBlanketDisable(file: SwiftLintFile) -> [StyleViolation] {
+        var violations: [StyleViolation] = []
+
+        guard configuration.alwaysBlanketDisableRuleIdentifiers.isEmpty == false else {
+            return []
+        }
+
+        for command in file.commands {
+            let ruleIdentifiers: Set<String> = Set(command.ruleIdentifiers.map { $0.stringRepresentation })
+            if ruleIdentifiers.isDisjoint(with: configuration.alwaysBlanketDisableRuleIdentifiers) == false {
+                if command.modifier != nil || command.action == .enable {
+                    let violation = violation(forPath: file.file.path, line: command.line, character: command.character)
+                    violations.append(violation)
+                }
             }
         }
 

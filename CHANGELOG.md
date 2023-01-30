@@ -73,6 +73,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4121](https://github.com/realm/SwiftLint/issues/4121)
 
+* Updated JUnit reporter to output error count and warning count.  
+  [patricks](https://github.com/patricks)
+  [#4725](https://github.com/realm/SwiftLint/pull/4725)
+
 ## 0.50.3: Bundle of Towels
 
 #### Breaking

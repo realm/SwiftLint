@@ -332,9 +332,7 @@ class CommandTests: XCTestCase {
         let example = Example("// swiftlint:disable nesting this is a comment\n// swiftlint:enable nesting\n")
         let multipleViolations = violations(example)
         XCTAssertEqual(multipleViolations.count, 9)
-        XCTAssertTrue(multipleViolations.allSatisfy {
-            $0.ruleIdentifier == "superfluous_disable_command"
-        })
+        XCTAssertTrue(multipleViolations.allSatisfy { $0.ruleIdentifier == "superfluous_disable_command" })
 
         let onlyNonExistentRulesViolations = violations(Example("// swiftlint:disable this is a comment\n"))
         XCTAssertEqual(onlyNonExistentRulesViolations.count, 4)

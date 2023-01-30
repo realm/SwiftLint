@@ -26,7 +26,8 @@ class ObjectLiteralRuleTests: XCTestCase {
     }
 
     // MARK: - Test Methods
-    func testObjectLiteralWithImageLiteral() {
+
+    func testObjectLiteralWithImageLiteral() async throws {
         // Verify ObjectLiteral rule for when image_literal is true.
         let baseDescription = ObjectLiteralRule.description
         let nonTriggeringColorLiteralExamples = colorLiteralTriggeringExamples.removingViolationMarkers()
@@ -35,10 +36,10 @@ class ObjectLiteralRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: imageLiteralTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["image_literal": true, "color_literal": false])
+        try await verifyRule(description, ruleConfiguration: ["image_literal": true, "color_literal": false])
     }
 
-    func testObjectLiteralWithColorLiteral() {
+    func testObjectLiteralWithColorLiteral() async throws {
         // Verify ObjectLiteral rule for when color_literal is true.
         let baseDescription = ObjectLiteralRule.description
         let nonTriggeringImageLiteralExamples = imageLiteralTriggeringExamples.removingViolationMarkers()
@@ -47,12 +48,12 @@ class ObjectLiteralRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: colorLiteralTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["image_literal": false, "color_literal": true])
+        try await verifyRule(description, ruleConfiguration: ["image_literal": false, "color_literal": true])
     }
 
-    func testObjectLiteralWithImageAndColorLiteral() {
+    func testObjectLiteralWithImageAndColorLiteral() async throws {
         // Verify ObjectLiteral rule for when image_literal & color_literal are true.
         let description = ObjectLiteralRule.description.with(triggeringExamples: allTriggeringExamples)
-        verifyRule(description, ruleConfiguration: ["image_literal": true, "color_literal": true])
+        try await verifyRule(description, ruleConfiguration: ["image_literal": true, "color_literal": true])
     }
 }

@@ -8,7 +8,7 @@ class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
         XCTAssertEqual(rule.configuration.severity, .warning)
     }
 
-    func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() {
+    func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() async throws {
         let baseDescription = ImplicitlyUnwrappedOptionalRule.description
         let triggeringExamples = [
             Example("@IBOutlet private var label: UILabel!"),
@@ -20,7 +20,7 @@ class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["mode": "all"],
-                   commentDoesntViolate: true, stringDoesntViolate: true)
+        try await verifyRule(description, ruleConfiguration: ["mode": "all"],
+                             commentDoesntViolate: true, stringDoesntViolate: true)
     }
 }

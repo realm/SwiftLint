@@ -122,8 +122,10 @@ struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
         }
     }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let implicitAndExplicitInternalElements = internalTypeElements(in: file.structureDictionary)
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
+        let implicitAndExplicitInternalElements = internalTypeElements(
+            in: try await file.getStructureDictionary()
+        )
 
         guard implicitAndExplicitInternalElements.isNotEmpty else {
             return []

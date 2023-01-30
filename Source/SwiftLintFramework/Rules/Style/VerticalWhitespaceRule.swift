@@ -38,7 +38,7 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         return defaultDescriptionReason
     }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let linesSections = violatingLineSections(in: file)
         guard linesSections.isNotEmpty else {
             return []

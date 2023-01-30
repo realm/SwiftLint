@@ -2,15 +2,16 @@
 import XCTest
 
 class TrailingCommaRuleTests: XCTestCase {
-    func testTrailingCommaRuleWithDefaultConfiguration() {
+    func testTrailingCommaRuleWithDefaultConfiguration() async throws {
         // Verify TrailingCommaRule with test values for when mandatory_comma is false (default).
         let triggeringExamples = TrailingCommaRule.description.triggeringExamples +
         [Example("class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}")]
-        verifyRule(TrailingCommaRule.description.with(triggeringExamples: triggeringExamples))
+        try await verifyRule(TrailingCommaRule.description.with(triggeringExamples: triggeringExamples))
 
         // Ensure the rule produces the correct reason string.
         let failingCase = Example("let array = [\n\t1,\n\t2,\n]\n")
-        XCTAssertEqual(trailingCommaViolations(failingCase).first?.reason,
+        let violations = try await trailingCommaViolations(failingCase)
+        XCTAssertEqual(violations.first?.reason,
                        "Collection literals should not have trailing commas")
     }
 
@@ -55,21 +56,23 @@ class TrailingCommaRuleTests: XCTestCase {
         .with(triggeringExamples: TrailingCommaRuleTests.triggeringExamples)
         .with(corrections: TrailingCommaRuleTests.corrections)
 
-    func testTrailingCommaRuleWithMandatoryComma() {
+    func testTrailingCommaRuleWithMandatoryComma() async throws {
         // Verify TrailingCommaRule with test values for when mandatory_comma is true.
         let ruleDescription = mandatoryCommaRuleDescription
         let ruleConfiguration = ["mandatory_comma": true]
 
-        verifyRule(ruleDescription, ruleConfiguration: ruleConfiguration)
+        try await verifyRule(ruleDescription, ruleConfiguration: ruleConfiguration)
 
         // Ensure the rule produces the correct reason string.
         let failingCase = Example("let array = [\n\t1,\n\t2\n]\n")
-        XCTAssertEqual(trailingCommaViolations(failingCase, ruleConfiguration: ruleConfiguration).first?.reason,
+        let violations = try await trailingCommaViolations(failingCase, ruleConfiguration: ruleConfiguration)
+        XCTAssertEqual(violations.first?.reason,
                        "Multi-line collection literals should have trailing commas")
     }
 
-    private func trailingCommaViolations(_ example: Example, ruleConfiguration: Any? = nil) -> [StyleViolation] {
+    private func trailingCommaViolations(_ example: Example, ruleConfiguration: Any? = nil) async throws
+        -> [StyleViolation] {
         let config = makeConfig(ruleConfiguration, TrailingCommaRule.description.identifier)!
-        return violations(example, config: config)
+        return try await violations(example, config: config)
     }
 }

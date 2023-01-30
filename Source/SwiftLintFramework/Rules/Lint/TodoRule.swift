@@ -71,7 +71,7 @@ struct TodoRule: ConfigurationProviderRule {
         return reason
     }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return file.match(pattern: "\\b(?:TODO|FIXME)(?::|\\b)").compactMap { range, syntaxKinds in
             if syntaxKinds.contains(where: { !$0.isCommentLike }) {
                 return nil

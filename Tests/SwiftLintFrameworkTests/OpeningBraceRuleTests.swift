@@ -3,7 +3,7 @@ import XCTest
 
 class OpeningBraceRuleTests: XCTestCase {
     // swiftlint:disable function_body_length
-    func testWithAllowMultilineTrue() {
+    func testWithAllowMultilineTrue() async throws {
         // Test with `same_line` set to false
 
         let nonTriggeringExamples = [
@@ -88,6 +88,6 @@ class OpeningBraceRuleTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(corrections: corrections)
 
-        verifyRule(description, ruleConfiguration: ["allow_multiline_func": true])
+        try await verifyRule(description, ruleConfiguration: ["allow_multiline_func": true])
     }
 }

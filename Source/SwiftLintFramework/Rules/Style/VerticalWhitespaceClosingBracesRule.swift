@@ -69,7 +69,7 @@ extension VerticalWhitespaceClosingBracesRule: OptInRule {
         corrections: examples.violatingToValidExamples.removingViolationMarkers()
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let pattern = configuration.onlyEnforceBeforeTrivialLines ? self.trivialLinePattern : self.pattern
 
         let patternRegex: NSRegularExpression = regex(pattern)

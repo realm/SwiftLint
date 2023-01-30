@@ -1,3 +1,4 @@
+import CollectionConcurrencyKit
 import Foundation
 import SourceKittenFramework
 @_spi(TestHelper)
@@ -15,7 +16,7 @@ private let config: Configuration = {
 }()
 
 class IntegrationTests: XCTestCase {
-    func testSwiftLintLints() {
+    func testSwiftLintLints() async throws {
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
         XCTAssert(
@@ -24,8 +25,8 @@ class IntegrationTests: XCTestCase {
         )
 
         let storage = RuleStorage()
-        let violations = swiftFiles.parallelFlatMap {
-            Linter(file: $0, configuration: config).collect(into: storage).styleViolations(using: storage)
+        let violations = try await swiftFiles.concurrentFlatMap {
+            try await Linter(file: $0, configuration: config).collect(into: storage).styleViolations(using: storage)
         }
         violations.forEach { violation in
             violation.location.file!.withStaticString {

@@ -14,7 +14,7 @@ public struct SuperfluousDisableCommandRule: ConfigurationProviderRule, SourceKi
         kind: .lint
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         // This rule is implemented in Linter.swift
         return []
     }

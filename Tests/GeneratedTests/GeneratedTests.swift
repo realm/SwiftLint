@@ -8,1327 +8,1327 @@ import XCTest
 // swiftlint:disable file_length single_test_class type_name
 
 class AccessibilityLabelForImageRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(AccessibilityLabelForImageRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(AccessibilityLabelForImageRule.description)
     }
 }
 
 class AccessibilityTraitForButtonRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(AccessibilityTraitForButtonRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(AccessibilityTraitForButtonRule.description)
     }
 }
 
 class AnonymousArgumentInMultilineClosureRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(AnonymousArgumentInMultilineClosureRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(AnonymousArgumentInMultilineClosureRule.description)
     }
 }
 
 class AnyObjectProtocolRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(AnyObjectProtocolRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(AnyObjectProtocolRule.description)
     }
 }
 
 class ArrayInitRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ArrayInitRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ArrayInitRule.description)
     }
 }
 
 class AttributesRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(AttributesRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(AttributesRule.description)
     }
 }
 
 class BalancedXCTestLifecycleRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(BalancedXCTestLifecycleRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(BalancedXCTestLifecycleRule.description)
     }
 }
 
 class BlockBasedKVORuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(BlockBasedKVORule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(BlockBasedKVORule.description)
     }
 }
 
 class CaptureVariableRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(CaptureVariableRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(CaptureVariableRule.description)
     }
 }
 
 class ClassDelegateProtocolRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ClassDelegateProtocolRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ClassDelegateProtocolRule.description)
     }
 }
 
 class ClosingBraceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ClosingBraceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ClosingBraceRule.description)
     }
 }
 
 class ClosureBodyLengthRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ClosureBodyLengthRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ClosureBodyLengthRule.description)
     }
 }
 
 class ClosureEndIndentationRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ClosureEndIndentationRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ClosureEndIndentationRule.description)
     }
 }
 
 class ClosureParameterPositionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ClosureParameterPositionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ClosureParameterPositionRule.description)
     }
 }
 
 class ClosureSpacingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ClosureSpacingRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ClosureSpacingRule.description)
     }
 }
 
 class CollectionAlignmentRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(CollectionAlignmentRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(CollectionAlignmentRule.description)
     }
 }
 
 class ColonRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ColonRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ColonRule.description)
     }
 }
 
 class CommaInheritanceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(CommaInheritanceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(CommaInheritanceRule.description)
     }
 }
 
 class CommaRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(CommaRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(CommaRule.description)
     }
 }
 
 class CommentSpacingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(CommentSpacingRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(CommentSpacingRule.description)
     }
 }
 
 class CompilerProtocolInitRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(CompilerProtocolInitRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(CompilerProtocolInitRule.description)
     }
 }
 
 class ComputedAccessorsOrderRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ComputedAccessorsOrderRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ComputedAccessorsOrderRule.description)
     }
 }
 
 class ConditionalReturnsOnNewlineRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ConditionalReturnsOnNewlineRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 }
 
 class ContainsOverFilterCountRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ContainsOverFilterCountRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ContainsOverFilterCountRule.description)
     }
 }
 
 class ContainsOverFilterIsEmptyRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ContainsOverFilterIsEmptyRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ContainsOverFilterIsEmptyRule.description)
     }
 }
 
 class ContainsOverFirstNotNilRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ContainsOverFirstNotNilRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ContainsOverFirstNotNilRule.description)
     }
 }
 
 class ContainsOverRangeNilComparisonRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ContainsOverRangeNilComparisonRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ContainsOverRangeNilComparisonRule.description)
     }
 }
 
 class ControlStatementRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ControlStatementRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ControlStatementRule.description)
     }
 }
 
 class ConvenienceTypeRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ConvenienceTypeRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ConvenienceTypeRule.description)
     }
 }
 
 class CyclomaticComplexityRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(CyclomaticComplexityRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(CyclomaticComplexityRule.description)
     }
 }
 
 class DeploymentTargetRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DeploymentTargetRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DeploymentTargetRule.description)
     }
 }
 
 class DirectReturnRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DirectReturnRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DirectReturnRule.description)
     }
 }
 
 class DiscardedNotificationCenterObserverRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DiscardedNotificationCenterObserverRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DiscardedNotificationCenterObserverRule.description)
     }
 }
 
 class DiscouragedAssertRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DiscouragedAssertRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DiscouragedAssertRule.description)
     }
 }
 
 class DiscouragedDirectInitRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DiscouragedDirectInitRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DiscouragedDirectInitRule.description)
     }
 }
 
 class DiscouragedNoneNameRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DiscouragedNoneNameRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DiscouragedNoneNameRule.description)
     }
 }
 
 class DiscouragedObjectLiteralRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DiscouragedObjectLiteralRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DiscouragedObjectLiteralRule.description)
     }
 }
 
 class DiscouragedOptionalBooleanRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DiscouragedOptionalBooleanRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DiscouragedOptionalBooleanRule.description)
     }
 }
 
 class DiscouragedOptionalCollectionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DiscouragedOptionalCollectionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DiscouragedOptionalCollectionRule.description)
     }
 }
 
 class DuplicateEnumCasesRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DuplicateEnumCasesRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DuplicateEnumCasesRule.description)
     }
 }
 
 class DuplicateImportsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DuplicateImportsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DuplicateImportsRule.description)
     }
 }
 
 class DuplicatedKeyInDictionaryLiteralRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DuplicatedKeyInDictionaryLiteralRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DuplicatedKeyInDictionaryLiteralRule.description)
     }
 }
 
 class DynamicInlineRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DynamicInlineRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(DynamicInlineRule.description)
     }
 }
 
 class EmptyCollectionLiteralRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EmptyCollectionLiteralRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(EmptyCollectionLiteralRule.description)
     }
 }
 
 class EmptyCountRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EmptyCountRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(EmptyCountRule.description)
     }
 }
 
 class EmptyEnumArgumentsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EmptyEnumArgumentsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(EmptyEnumArgumentsRule.description)
     }
 }
 
 class EmptyParametersRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EmptyParametersRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(EmptyParametersRule.description)
     }
 }
 
 class EmptyParenthesesWithTrailingClosureRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 }
 
 class EmptyStringRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EmptyStringRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(EmptyStringRule.description)
     }
 }
 
 class EmptyXCTestMethodRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EmptyXCTestMethodRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(EmptyXCTestMethodRule.description)
     }
 }
 
 class EnumCaseAssociatedValuesLengthRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EnumCaseAssociatedValuesLengthRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(EnumCaseAssociatedValuesLengthRule.description)
     }
 }
 
 class ExpiringTodoRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExpiringTodoRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ExpiringTodoRule.description)
     }
 }
 
 class ExplicitACLRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExplicitACLRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ExplicitACLRule.description)
     }
 }
 
 class ExplicitEnumRawValueRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExplicitEnumRawValueRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ExplicitEnumRawValueRule.description)
     }
 }
 
 class ExplicitInitRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExplicitInitRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ExplicitInitRule.description)
     }
 }
 
 class ExplicitSelfRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExplicitSelfRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ExplicitSelfRule.description)
     }
 }
 
 class ExplicitTopLevelACLRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExplicitTopLevelACLRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ExplicitTopLevelACLRule.description)
     }
 }
 
 class ExplicitTypeInterfaceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExplicitTypeInterfaceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ExplicitTypeInterfaceRule.description)
     }
 }
 
 class ExtensionAccessModifierRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExtensionAccessModifierRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ExtensionAccessModifierRule.description)
     }
 }
 
 class FallthroughRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FallthroughRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FallthroughRule.description)
     }
 }
 
 class FatalErrorMessageRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FatalErrorMessageRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FatalErrorMessageRule.description)
     }
 }
 
 class FileHeaderRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FileHeaderRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FileHeaderRule.description)
     }
 }
 
 class FileLengthRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FileLengthRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FileLengthRule.description)
     }
 }
 
 class FileNameNoSpaceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FileNameNoSpaceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FileNameNoSpaceRule.description)
     }
 }
 
 class FileNameRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FileNameRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FileNameRule.description)
     }
 }
 
 class FileTypesOrderRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FileTypesOrderRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FileTypesOrderRule.description)
     }
 }
 
 class FirstWhereRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FirstWhereRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FirstWhereRule.description)
     }
 }
 
 class FlatMapOverMapReduceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FlatMapOverMapReduceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FlatMapOverMapReduceRule.description)
     }
 }
 
 class ForWhereRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ForWhereRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ForWhereRule.description)
     }
 }
 
 class ForceCastRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ForceCastRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ForceCastRule.description)
     }
 }
 
 class ForceTryRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ForceTryRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ForceTryRule.description)
     }
 }
 
 class ForceUnwrappingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ForceUnwrappingRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ForceUnwrappingRule.description)
     }
 }
 
 class FunctionBodyLengthRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FunctionBodyLengthRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FunctionBodyLengthRule.description)
     }
 }
 
 class FunctionDefaultParameterAtEndRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FunctionDefaultParameterAtEndRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FunctionDefaultParameterAtEndRule.description)
     }
 }
 
 class FunctionParameterCountRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FunctionParameterCountRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(FunctionParameterCountRule.description)
     }
 }
 
 class GenericTypeNameRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(GenericTypeNameRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(GenericTypeNameRule.description)
     }
 }
 
 class IBInspectableInExtensionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(IBInspectableInExtensionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(IBInspectableInExtensionRule.description)
     }
 }
 
 class IdenticalOperandsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(IdenticalOperandsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(IdenticalOperandsRule.description)
     }
 }
 
 class IdentifierNameRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(IdentifierNameRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(IdentifierNameRule.description)
     }
 }
 
 class ImplicitGetterRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ImplicitGetterRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ImplicitGetterRule.description)
     }
 }
 
 class ImplicitReturnRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ImplicitReturnRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ImplicitReturnRule.description)
     }
 }
 
 class ImplicitlyUnwrappedOptionalRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ImplicitlyUnwrappedOptionalRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ImplicitlyUnwrappedOptionalRule.description)
     }
 }
 
 class InclusiveLanguageRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(InclusiveLanguageRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(InclusiveLanguageRule.description)
     }
 }
 
 class IndentationWidthRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(IndentationWidthRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(IndentationWidthRule.description)
     }
 }
 
 class InertDeferRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(InertDeferRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(InertDeferRule.description)
     }
 }
 
 class IsDisjointRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(IsDisjointRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(IsDisjointRule.description)
     }
 }
 
 class JoinedDefaultParameterRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(JoinedDefaultParameterRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(JoinedDefaultParameterRule.description)
     }
 }
 
 class LargeTupleRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LargeTupleRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LargeTupleRule.description)
     }
 }
 
 class LastWhereRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LastWhereRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LastWhereRule.description)
     }
 }
 
 class LeadingWhitespaceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LeadingWhitespaceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LeadingWhitespaceRule.description)
     }
 }
 
 class LegacyCGGeometryFunctionsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyCGGeometryFunctionsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LegacyCGGeometryFunctionsRule.description)
     }
 }
 
 class LegacyConstantRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyConstantRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LegacyConstantRule.description)
     }
 }
 
 class LegacyConstructorRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyConstructorRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LegacyConstructorRule.description)
     }
 }
 
 class LegacyHashingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyHashingRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LegacyHashingRule.description)
     }
 }
 
 class LegacyMultipleRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyMultipleRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LegacyMultipleRule.description)
     }
 }
 
 class LegacyNSGeometryFunctionsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyNSGeometryFunctionsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LegacyNSGeometryFunctionsRule.description)
     }
 }
 
 class LegacyObjcTypeRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyObjcTypeRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LegacyObjcTypeRule.description)
     }
 }
 
 class LegacyRandomRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyRandomRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LegacyRandomRule.description)
     }
 }
 
 class LetVarWhitespaceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LetVarWhitespaceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LetVarWhitespaceRule.description)
     }
 }
 
 class LineLengthRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LineLengthRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LineLengthRule.description)
     }
 }
 
 class LiteralExpressionEndIdentationRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LiteralExpressionEndIdentationRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LiteralExpressionEndIdentationRule.description)
     }
 }
 
 class LocalDocCommentRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LocalDocCommentRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LocalDocCommentRule.description)
     }
 }
 
 class LowerACLThanParentRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LowerACLThanParentRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(LowerACLThanParentRule.description)
     }
 }
 
 class MarkRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MarkRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(MarkRule.description)
     }
 }
 
 class MissingDocsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MissingDocsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(MissingDocsRule.description)
     }
 }
 
 class ModifierOrderRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ModifierOrderRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ModifierOrderRule.description)
     }
 }
 
 class MultilineArgumentsBracketsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MultilineArgumentsBracketsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(MultilineArgumentsBracketsRule.description)
     }
 }
 
 class MultilineArgumentsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MultilineArgumentsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(MultilineArgumentsRule.description)
     }
 }
 
 class MultilineFunctionChainsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MultilineFunctionChainsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(MultilineFunctionChainsRule.description)
     }
 }
 
 class MultilineLiteralBracketsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MultilineLiteralBracketsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(MultilineLiteralBracketsRule.description)
     }
 }
 
 class MultilineParametersBracketsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MultilineParametersBracketsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(MultilineParametersBracketsRule.description)
     }
 }
 
 class MultilineParametersRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MultilineParametersRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(MultilineParametersRule.description)
     }
 }
 
 class MultipleClosuresWithTrailingClosureRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MultipleClosuresWithTrailingClosureRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(MultipleClosuresWithTrailingClosureRule.description)
     }
 }
 
 class NSLocalizedStringKeyRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NSLocalizedStringKeyRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NSLocalizedStringKeyRule.description)
     }
 }
 
 class NSLocalizedStringRequireBundleRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NSLocalizedStringRequireBundleRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NSLocalizedStringRequireBundleRule.description)
     }
 }
 
 class NSNumberInitAsFunctionReferenceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NSNumberInitAsFunctionReferenceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NSNumberInitAsFunctionReferenceRule.description)
     }
 }
 
 class NSObjectPreferIsEqualRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NSObjectPreferIsEqualRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NSObjectPreferIsEqualRule.description)
     }
 }
 
 class NestingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NestingRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NestingRule.description)
     }
 }
 
 class NimbleOperatorRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NimbleOperatorRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NimbleOperatorRule.description)
     }
 }
 
 class NoExtensionAccessModifierRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NoExtensionAccessModifierRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NoExtensionAccessModifierRule.description)
     }
 }
 
 class NoFallthroughOnlyRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NoFallthroughOnlyRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NoFallthroughOnlyRule.description)
     }
 }
 
 class NoGroupingExtensionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NoGroupingExtensionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NoGroupingExtensionRule.description)
     }
 }
 
 class NoMagicNumbersRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NoMagicNumbersRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NoMagicNumbersRule.description)
     }
 }
 
 class NoSpaceInMethodCallRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NoSpaceInMethodCallRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NoSpaceInMethodCallRule.description)
     }
 }
 
 class NotificationCenterDetachmentRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NotificationCenterDetachmentRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NotificationCenterDetachmentRule.description)
     }
 }
 
 class NumberSeparatorRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NumberSeparatorRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(NumberSeparatorRule.description)
     }
 }
 
 class ObjectLiteralRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ObjectLiteralRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ObjectLiteralRule.description)
     }
 }
 
 class OpeningBraceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(OpeningBraceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(OpeningBraceRule.description)
     }
 }
 
 class OperatorFunctionWhitespaceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(OperatorFunctionWhitespaceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(OperatorFunctionWhitespaceRule.description)
     }
 }
 
 class OperatorUsageWhitespaceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(OperatorUsageWhitespaceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(OperatorUsageWhitespaceRule.description)
     }
 }
 
 class OptionalEnumCaseMatchingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(OptionalEnumCaseMatchingRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(OptionalEnumCaseMatchingRule.description)
     }
 }
 
 class OrphanedDocCommentRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(OrphanedDocCommentRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(OrphanedDocCommentRule.description)
     }
 }
 
 class OverriddenSuperCallRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(OverriddenSuperCallRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(OverriddenSuperCallRule.description)
     }
 }
 
 class OverrideInExtensionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(OverrideInExtensionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(OverrideInExtensionRule.description)
     }
 }
 
 class PatternMatchingKeywordsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PatternMatchingKeywordsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PatternMatchingKeywordsRule.description)
     }
 }
 
 class PeriodSpacingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PeriodSpacingRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PeriodSpacingRule.description)
     }
 }
 
 class PreferNimbleRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferNimbleRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PreferNimbleRule.description)
     }
 }
 
 class PreferSelfInStaticReferencesRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferSelfInStaticReferencesRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PreferSelfInStaticReferencesRule.description)
     }
 }
 
 class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
     }
 }
 
 class PreferZeroOverExplicitInitRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferZeroOverExplicitInitRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PreferZeroOverExplicitInitRule.description)
     }
 }
 
 class PrefixedTopLevelConstantRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PrefixedTopLevelConstantRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PrefixedTopLevelConstantRule.description)
     }
 }
 
 class PrivateActionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PrivateActionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PrivateActionRule.description)
     }
 }
 
 class PrivateOutletRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PrivateOutletRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PrivateOutletRule.description)
     }
 }
 
 class PrivateOverFilePrivateRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PrivateOverFilePrivateRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PrivateOverFilePrivateRule.description)
     }
 }
 
 class PrivateSubjectRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PrivateSubjectRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PrivateSubjectRule.description)
     }
 }
 
 class PrivateUnitTestRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PrivateUnitTestRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(PrivateUnitTestRule.description)
     }
 }
 
 class ProhibitedInterfaceBuilderRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ProhibitedInterfaceBuilderRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ProhibitedInterfaceBuilderRule.description)
     }
 }
 
 class ProhibitedSuperRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ProhibitedSuperRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ProhibitedSuperRule.description)
     }
 }
 
 class ProtocolPropertyAccessorsOrderRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ProtocolPropertyAccessorsOrderRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ProtocolPropertyAccessorsOrderRule.description)
     }
 }
 
 class QuickDiscouragedCallRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(QuickDiscouragedCallRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(QuickDiscouragedCallRule.description)
     }
 }
 
 class QuickDiscouragedFocusedTestRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(QuickDiscouragedFocusedTestRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(QuickDiscouragedFocusedTestRule.description)
     }
 }
 
 class QuickDiscouragedPendingTestRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(QuickDiscouragedPendingTestRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(QuickDiscouragedPendingTestRule.description)
     }
 }
 
 class RawValueForCamelCasedCodableEnumRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RawValueForCamelCasedCodableEnumRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(RawValueForCamelCasedCodableEnumRule.description)
     }
 }
 
 class ReduceBooleanRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ReduceBooleanRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ReduceBooleanRule.description)
     }
 }
 
 class ReduceIntoRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ReduceIntoRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ReduceIntoRule.description)
     }
 }
 
 class RedundantDiscardableLetRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantDiscardableLetRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(RedundantDiscardableLetRule.description)
     }
 }
 
 class RedundantNilCoalescingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantNilCoalescingRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(RedundantNilCoalescingRule.description)
     }
 }
 
 class RedundantObjcAttributeRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantObjcAttributeRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(RedundantObjcAttributeRule.description)
     }
 }
 
 class RedundantOptionalInitializationRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantOptionalInitializationRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(RedundantOptionalInitializationRule.description)
     }
 }
 
 class RedundantSetAccessControlRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantSetAccessControlRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(RedundantSetAccessControlRule.description)
     }
 }
 
 class RedundantStringEnumValueRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantStringEnumValueRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(RedundantStringEnumValueRule.description)
     }
 }
 
 class RedundantTypeAnnotationRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantTypeAnnotationRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(RedundantTypeAnnotationRule.description)
     }
 }
 
 class RedundantVoidReturnRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantVoidReturnRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(RedundantVoidReturnRule.description)
     }
 }
 
 class RequiredDeinitRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RequiredDeinitRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(RequiredDeinitRule.description)
     }
 }
 
 class RequiredEnumCaseRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RequiredEnumCaseRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(RequiredEnumCaseRule.description)
     }
 }
 
 class ReturnArrowWhitespaceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ReturnArrowWhitespaceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ReturnArrowWhitespaceRule.description)
     }
 }
 
 class ReturnValueFromVoidFunctionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ReturnValueFromVoidFunctionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ReturnValueFromVoidFunctionRule.description)
     }
 }
 
 class SelfBindingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SelfBindingRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(SelfBindingRule.description)
     }
 }
 
 class SelfInPropertyInitializationRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SelfInPropertyInitializationRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(SelfInPropertyInitializationRule.description)
     }
 }
 
 class ShorthandOperatorRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ShorthandOperatorRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ShorthandOperatorRule.description)
     }
 }
 
 class ShorthandOptionalBindingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ShorthandOptionalBindingRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ShorthandOptionalBindingRule.description)
     }
 }
 
 class SingleTestClassRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SingleTestClassRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(SingleTestClassRule.description)
     }
 }
 
 class SortedFirstLastRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SortedFirstLastRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(SortedFirstLastRule.description)
     }
 }
 
 class SortedImportsRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SortedImportsRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(SortedImportsRule.description)
     }
 }
 
 class StatementPositionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(StatementPositionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(StatementPositionRule.description)
     }
 }
 
 class StaticOperatorRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(StaticOperatorRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(StaticOperatorRule.description)
     }
 }
 
 class StrictFilePrivateRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(StrictFilePrivateRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(StrictFilePrivateRule.description)
     }
 }
 
 class StrongIBOutletRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(StrongIBOutletRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(StrongIBOutletRule.description)
     }
 }
 
 class SuperfluousDisableCommandRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SuperfluousDisableCommandRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(SuperfluousDisableCommandRule.description)
     }
 }
 
 class SwitchCaseAlignmentRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SwitchCaseAlignmentRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(SwitchCaseAlignmentRule.description)
     }
 }
 
 class SwitchCaseOnNewlineRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SwitchCaseOnNewlineRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(SwitchCaseOnNewlineRule.description)
     }
 }
 
 class SyntacticSugarRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SyntacticSugarRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(SyntacticSugarRule.description)
     }
 }
 
 class TestCaseAccessibilityRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TestCaseAccessibilityRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(TestCaseAccessibilityRule.description)
     }
 }
 
 class TodoRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TodoRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(TodoRule.description)
     }
 }
 
 class ToggleBoolRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ToggleBoolRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ToggleBoolRule.description)
     }
 }
 
 class TrailingClosureRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TrailingClosureRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(TrailingClosureRule.description)
     }
 }
 
 class TrailingCommaRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TrailingCommaRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(TrailingCommaRule.description)
     }
 }
 
 class TrailingNewlineRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TrailingNewlineRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(TrailingNewlineRule.description)
     }
 }
 
 class TrailingSemicolonRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TrailingSemicolonRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(TrailingSemicolonRule.description)
     }
 }
 
 class TrailingWhitespaceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TrailingWhitespaceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(TrailingWhitespaceRule.description)
     }
 }
 
 class TypeBodyLengthRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TypeBodyLengthRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(TypeBodyLengthRule.description)
     }
 }
 
 class TypeContentsOrderRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TypeContentsOrderRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(TypeContentsOrderRule.description)
     }
 }
 
 class TypeNameRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TypeNameRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(TypeNameRule.description)
     }
 }
 
 class TypesafeArrayInitRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TypesafeArrayInitRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(TypesafeArrayInitRule.description)
     }
 }
 
 class UnavailableConditionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnavailableConditionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnavailableConditionRule.description)
     }
 }
 
 class UnavailableFunctionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnavailableFunctionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnavailableFunctionRule.description)
     }
 }
 
 class UnneededBreakInSwitchRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnneededBreakInSwitchRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnneededBreakInSwitchRule.description)
     }
 }
 
 class UnneededParenthesesInClosureArgumentRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnneededParenthesesInClosureArgumentRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnneededParenthesesInClosureArgumentRule.description)
     }
 }
 
 class UnownedVariableCaptureRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnownedVariableCaptureRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnownedVariableCaptureRule.description)
     }
 }
 
 class UntypedErrorInCatchRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UntypedErrorInCatchRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UntypedErrorInCatchRule.description)
     }
 }
 
 class UnusedCaptureListRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedCaptureListRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnusedCaptureListRule.description)
     }
 }
 
 class UnusedClosureParameterRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedClosureParameterRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnusedClosureParameterRule.description)
     }
 }
 
 class UnusedControlFlowLabelRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedControlFlowLabelRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnusedControlFlowLabelRule.description)
     }
 }
 
 class UnusedDeclarationRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedDeclarationRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnusedDeclarationRule.description)
     }
 }
 
 class UnusedEnumeratedRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedEnumeratedRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnusedEnumeratedRule.description)
     }
 }
 
 class UnusedImportRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedImportRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnusedImportRule.description)
     }
 }
 
 class UnusedOptionalBindingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedOptionalBindingRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnusedOptionalBindingRule.description)
     }
 }
 
 class UnusedSetterValueRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedSetterValueRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(UnusedSetterValueRule.description)
     }
 }
 
 class ValidIBInspectableRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ValidIBInspectableRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(ValidIBInspectableRule.description)
     }
 }
 
 class VerticalParameterAlignmentOnCallRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(VerticalParameterAlignmentOnCallRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(VerticalParameterAlignmentOnCallRule.description)
     }
 }
 
 class VerticalParameterAlignmentRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(VerticalParameterAlignmentRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(VerticalParameterAlignmentRule.description)
     }
 }
 
 class VerticalWhitespaceBetweenCasesRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(VerticalWhitespaceBetweenCasesRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(VerticalWhitespaceBetweenCasesRule.description)
     }
 }
 
 class VerticalWhitespaceClosingBracesRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(VerticalWhitespaceClosingBracesRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(VerticalWhitespaceClosingBracesRule.description)
     }
 }
 
 class VerticalWhitespaceOpeningBracesRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(VerticalWhitespaceOpeningBracesRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(VerticalWhitespaceOpeningBracesRule.description)
     }
 }
 
 class VerticalWhitespaceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(VerticalWhitespaceRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(VerticalWhitespaceRule.description)
     }
 }
 
 class VoidFunctionInTernaryConditionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(VoidFunctionInTernaryConditionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(VoidFunctionInTernaryConditionRule.description)
     }
 }
 
 class VoidReturnRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(VoidReturnRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(VoidReturnRule.description)
     }
 }
 
 class WeakDelegateRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(WeakDelegateRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(WeakDelegateRule.description)
     }
 }
 
 class XCTFailMessageRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(XCTFailMessageRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(XCTFailMessageRule.description)
     }
 }
 
 class XCTSpecificMatcherRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(XCTSpecificMatcherRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(XCTSpecificMatcherRule.description)
     }
 }
 
 class YodaConditionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(YodaConditionRule.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule(YodaConditionRule.description)
     }
 }

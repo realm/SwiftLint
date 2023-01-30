@@ -4,11 +4,11 @@ import XCTest
 class DiscouragedDirectInitRuleTests: XCTestCase {
     private let baseDescription = DiscouragedDirectInitRule.description
 
-    func testDiscouragedDirectInitWithConfiguredSeverity() {
-        verifyRule(baseDescription, ruleConfiguration: ["severity": "error"])
+    func testDiscouragedDirectInitWithConfiguredSeverity() async throws {
+        try await verifyRule(baseDescription, ruleConfiguration: ["severity": "error"])
     }
 
-    func testDiscouragedDirectInitWithNewIncludedTypes() {
+    func testDiscouragedDirectInitWithNewIncludedTypes() async throws {
         let triggeringExamples = [
             Example("let foo = ↓Foo()"),
             Example("let bar = ↓Bar()")
@@ -23,10 +23,10 @@ class DiscouragedDirectInitRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["types": ["Foo", "Bar"]])
+        try await verifyRule(description, ruleConfiguration: ["types": ["Foo", "Bar"]])
     }
 
-    func testDiscouragedDirectInitWithReplacedTypes() {
+    func testDiscouragedDirectInitWithReplacedTypes() async throws {
         let triggeringExamples = [
             Example("let bundle = ↓Bundle()")
         ]
@@ -39,6 +39,6 @@ class DiscouragedDirectInitRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["types": ["Bundle"]])
+        try await verifyRule(description, ruleConfiguration: ["types": ["Bundle"]])
     }
 }

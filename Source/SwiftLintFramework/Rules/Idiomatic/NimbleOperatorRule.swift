@@ -98,7 +98,7 @@ struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule
         "beNil": (to: "==", toNot: "!=", .nullary(analogueValue: "nil"))
     ]
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let matches = violationMatchesRanges(in: file)
         return matches.map {
             StyleViolation(ruleDescription: Self.description,

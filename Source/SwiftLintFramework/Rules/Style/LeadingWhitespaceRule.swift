@@ -23,7 +23,7 @@ struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, Source
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let countOfLeadingWhitespace = file.contents.countOfLeadingCharacters(in: .whitespacesAndNewlines)
         if countOfLeadingWhitespace == 0 {
             return []

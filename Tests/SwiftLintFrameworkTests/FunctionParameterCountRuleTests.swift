@@ -11,7 +11,7 @@ private func funcWithParameters(_ parameters: String,
 }
 
 class FunctionParameterCountRuleTests: XCTestCase {
-    func testFunctionParameterCount() {
+    func testFunctionParameterCount() async throws {
         let baseDescription = FunctionParameterCountRule.description
         let nonTriggeringExamples = [
             funcWithParameters(repeatElement("x: Int, ", count: 3).joined() + "x: Int")
@@ -24,10 +24,10 @@ class FunctionParameterCountRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description)
+        try await verifyRule(description)
     }
 
-    func testDefaultFunctionParameterCount() {
+    func testDefaultFunctionParameterCount() async throws {
         let baseDescription = FunctionParameterCountRule.description
         let nonTriggeringExamples = [
             funcWithParameters(repeatElement("x: Int, ", count: 3).joined() + "x: Int")
@@ -41,6 +41,6 @@ class FunctionParameterCountRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_default_parameters": false])
+        try await verifyRule(description, ruleConfiguration: ["ignores_default_parameters": false])
     }
 }

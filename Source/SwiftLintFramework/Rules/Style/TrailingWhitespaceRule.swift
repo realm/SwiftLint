@@ -25,7 +25,7 @@ struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let filteredLines = file.lines.filter {
             guard $0.content.hasTrailingWhitespace() else { return false }
 

@@ -3,7 +3,7 @@ import XCTest
 
 class FileTypesOrderRuleTests: XCTestCase {
     // swiftlint:disable:next function_body_length
-    func testFileTypesOrderReversedOrder() {
+    func testFileTypesOrderReversedOrder() async throws {
         // Test with reversed `order` entries
         let nonTriggeringExamples = [
             Example(FileTypesOrderRuleExamples.defaultOrderParts.reversed().joined(separator: "\n\n"))
@@ -74,7 +74,7 @@ class FileTypesOrderRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(
+        try await verifyRule(
             reversedOrderDescription,
             ruleConfiguration: [
                 "order": ["library_content_provider", "preview_provider", "extension", "main_type", "supporting_type"]
@@ -82,7 +82,7 @@ class FileTypesOrderRuleTests: XCTestCase {
         )
     }
 
-    func testFileTypesOrderGroupedOrder() {
+    func testFileTypesOrderGroupedOrder() async throws {
         // Test with grouped `order` entries
         let nonTriggeringExamples = [
             Example("""
@@ -140,7 +140,7 @@ class FileTypesOrderRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(
+        try await verifyRule(
             groupedOrderDescription,
             ruleConfiguration: [
                 "order": ["main_type", ["extension", "supporting_type"], "preview_provider"]

@@ -123,7 +123,7 @@ struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptI
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return violations(in: file).map { violation in
             return styleViolation(for: violation, in: file)
         }

@@ -175,7 +175,7 @@ struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,

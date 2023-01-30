@@ -6,7 +6,7 @@ private let fixturesDirectory = "\(TestResources.path)/FileNameRuleFixtures"
 class FileNameRuleTests: XCTestCase {
     private func validate(fileName: String, excludedOverride: [String]? = nil,
                           prefixPattern: String? = nil, suffixPattern: String? = nil,
-                          nestedTypeSeparator: String? = nil) throws -> [StyleViolation] {
+                          nestedTypeSeparator: String? = nil) async throws -> [StyleViolation] {
         let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule: FileNameRule
         if let excluded = excludedOverride {
@@ -23,81 +23,124 @@ class FileNameRuleTests: XCTestCase {
             rule = FileNameRule()
         }
 
-        return rule.validate(file: file)
+        return try await rule.validate(file: file)
     }
 
-    func testMainDoesntTrigger() {
-        XCTAssert(try validate(fileName: "main.swift").isEmpty)
+    func testMainDoesntTrigger() async throws {
+        let violations = try await validate(fileName: "main.swift")
+        XCTAssert(violations.isEmpty)
     }
 
-    func testLinuxMainDoesntTrigger() {
-        XCTAssert(try validate(fileName: "LinuxMain.swift").isEmpty)
+    func testLinuxMainDoesntTrigger() async throws {
+        let violations = try await validate(fileName: "LinuxMain.swift")
+        XCTAssert(violations.isEmpty)
     }
 
-    func testClassNameDoesntTrigger() {
-        XCTAssert(try validate(fileName: "MyClass.swift").isEmpty)
+    func testClassNameDoesntTrigger() async throws {
+        let violations = try await validate(fileName: "MyClass.swift")
+        XCTAssert(violations.isEmpty)
     }
 
-    func testStructNameDoesntTrigger() {
-        XCTAssert(try validate(fileName: "MyStruct.swift").isEmpty)
+    func testStructNameDoesntTrigger() async throws {
+        let violations = try await validate(fileName: "MyStruct.swift")
+        XCTAssert(violations.isEmpty)
     }
 
-    func testExtensionNameDoesntTrigger() {
-        XCTAssert(try validate(fileName: "NSString+Extension.swift").isEmpty)
+    func testExtensionNameDoesntTrigger() async throws {
+        let violations = try await validate(fileName: "NSString+Extension.swift")
+        XCTAssert(violations.isEmpty)
     }
 
-    func testNestedExtensionDoesntTrigger() {
-        XCTAssert(try validate(fileName: "Notification.Name+Extension.swift").isEmpty)
+    func testNestedExtensionDoesntTrigger() async throws {
+        let violations = try await validate(fileName: "Notification.Name+Extension.swift")
+        XCTAssert(violations.isEmpty)
     }
 
-    func testNestedTypeSeparatorDoesntTrigger() {
-        XCTAssert(try validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "").isEmpty)
-        XCTAssert(try validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: "__").isEmpty)
+    func testNestedTypeSeparatorDoesntTrigger() async throws {
+        do {
+            let violations = try await validate(fileName: "NotificationName+Extension.swift",
+                                                nestedTypeSeparator: "")
+            XCTAssert(violations.isEmpty)
+        }
+        do {
+            let violations = try await validate(fileName: "Notification__Name+Extension.swift",
+                                                nestedTypeSeparator: "__")
+            XCTAssert(violations.isEmpty)
+        }
     }
 
-    func testWrongNestedTypeSeparatorDoesTrigger() {
-        XCTAssert(try !validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: ".").isEmpty)
-        XCTAssert(try !validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "__").isEmpty)
+    func testWrongNestedTypeSeparatorDoesTrigger() async throws {
+        do {
+            let violations = try await validate(fileName: "Notification__Name+Extension.swift",
+                                                nestedTypeSeparator: ".")
+            XCTAssert(!violations.isEmpty)
+        }
+        do {
+            let violations = try await validate(fileName: "NotificationName+Extension.swift",
+                                                nestedTypeSeparator: "__")
+            XCTAssert(!violations.isEmpty)
+        }
     }
 
-    func testMisspelledNameDoesTrigger() {
-        XCTAssertEqual(try validate(fileName: "MyStructf.swift").count, 1)
+    func testMisspelledNameDoesTrigger() async throws {
+        let violations = try await validate(fileName: "MyStructf.swift")
+        XCTAssertEqual(violations.count, 1)
     }
 
-    func testMisspelledNameDoesntTriggerWithOverride() {
-        XCTAssert(try validate(fileName: "MyStructf.swift", excludedOverride: ["MyStructf.swift"]).isEmpty)
+    func testMisspelledNameDoesntTriggerWithOverride() async throws {
+        let violations = try await validate(fileName: "MyStructf.swift", excludedOverride: ["MyStructf.swift"])
+        XCTAssert(violations.isEmpty)
     }
 
-    func testMainDoesTriggerWithoutOverride() {
-        XCTAssertEqual(try validate(fileName: "main.swift", excludedOverride: []).count, 1)
+    func testMainDoesTriggerWithoutOverride() async throws {
+        let violations = try await validate(fileName: "main.swift", excludedOverride: [])
+        XCTAssertEqual(violations.count, 1)
     }
 
-    func testCustomSuffixPattern() {
-        XCTAssert(try validate(fileName: "BoolExtension.swift", suffixPattern: "Extensions?").isEmpty)
-        XCTAssert(try validate(fileName: "BoolExtensions.swift", suffixPattern: "Extensions?").isEmpty)
-        XCTAssert(try validate(fileName: "BoolExtensionTests.swift", suffixPattern: "Extensions?|\\+.*").isEmpty)
+    func testCustomSuffixPattern() async throws {
+        do {
+            let violations = try await validate(fileName: "BoolExtension.swift", suffixPattern: "Extensions?")
+            XCTAssert(violations.isEmpty)
+        }
+        do {
+            let violations = try await validate(fileName: "BoolExtensions.swift", suffixPattern: "Extensions?")
+            XCTAssert(violations.isEmpty)
+        }
+        do {
+            let violations = try await validate(fileName: "BoolExtensionTests.swift",
+                                                suffixPattern: "Extensions?|\\+.*")
+            XCTAssert(violations.isEmpty)
+        }
     }
 
-    func testCustomPrefixPattern() {
-        XCTAssert(try validate(fileName: "ExtensionBool.swift", prefixPattern: "Extensions?").isEmpty)
-        XCTAssert(try validate(fileName: "ExtensionsBool.swift", prefixPattern: "Extensions?").isEmpty)
+    func testCustomPrefixPattern() async throws {
+        do {
+            let violations = try await validate(fileName: "ExtensionBool.swift", prefixPattern: "Extensions?")
+            XCTAssert(violations.isEmpty)
+        }
+        do {
+            let violations = try await validate(fileName: "ExtensionsBool.swift", prefixPattern: "Extensions?")
+            XCTAssert(violations.isEmpty)
+        }
     }
 
-    func testCustomPrefixAndSuffixPatterns() {
-        XCTAssert(
-            try validate(
+    func testCustomPrefixAndSuffixPatterns() async throws {
+        do {
+            let violations = try await validate(
                 fileName: "SLBoolExtension.swift",
                 prefixPattern: "SL",
                 suffixPattern: "Extensions?|\\+.*"
-            ).isEmpty
-        )
+            )
+            XCTAssertEqual(violations, [])
+        }
 
-        XCTAssert(
-            try validate(
+        do {
+            let violations = try await validate(
                 fileName: "ExtensionBool+SwiftLint.swift",
                 prefixPattern: "Extensions?",
                 suffixPattern: "Extensions?|\\+.*"
-            ).isEmpty
-        )
+            )
+            XCTAssertEqual(violations, [])
+        }
     }
 }

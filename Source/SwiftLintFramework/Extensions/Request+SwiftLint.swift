@@ -11,6 +11,13 @@ extension Request {
         return try send()
     }
 
+    func sendAsyncIfNotDisabled() async throws -> [String: SourceKitRepresentable] {
+        guard !Self.disableSourceKit else {
+            throw Self.Error.connectionInterrupted("SourceKit is disabled by `SWIFTLINT_DISABLE_SOURCEKIT`.")
+        }
+        return try await asyncSend()
+    }
+
     static func cursorInfo(file: String, offset: ByteCount, arguments: [String]) -> Request {
         .customRequest(request: [
             "key.request": UID("source.request.cursorinfo"),

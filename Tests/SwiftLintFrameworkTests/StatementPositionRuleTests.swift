@@ -2,8 +2,8 @@
 import XCTest
 
 class StatementPositionRuleTests: XCTestCase {
-    func testStatementPositionUncuddled() {
+    func testStatementPositionUncuddled() async throws {
         let configuration = ["statement_mode": "uncuddled_else"]
-        verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
+        try await verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
     }
 }

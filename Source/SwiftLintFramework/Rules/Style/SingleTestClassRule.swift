@@ -51,7 +51,7 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderR
 
     init() {}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let classes = TestClassVisitor(viewMode: .sourceAccurate, testClasses: configuration.testParentClasses)
             .walk(tree: file.syntaxTree, handler: \.violations)
 

@@ -21,20 +21,20 @@ class LineLengthRuleTests: XCTestCase {
     private let interpolatedString = Example("print(\"\\(value)" + String(repeating: "A", count: 113) + "\" )\n")
     private let plainString = Example("print(\"" + String(repeating: "A", count: 121) + ")\"\n")
 
-    func testLineLength() {
-        verifyRule(LineLengthRule.description, commentDoesntViolate: false, stringDoesntViolate: false)
+    func testLineLength() async throws {
+        try await verifyRule(LineLengthRule.description, commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
-    func testLineLengthWithIgnoreFunctionDeclarationsEnabled() {
+    func testLineLengthWithIgnoreFunctionDeclarationsEnabled() async throws {
         let baseDescription = LineLengthRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + longFunctionDeclarations
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_function_declarations": true],
-                   commentDoesntViolate: false, stringDoesntViolate: false)
+        try await verifyRule(description, ruleConfiguration: ["ignores_function_declarations": true],
+                             commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
-    func testLineLengthWithIgnoreCommentsEnabled() {
+    func testLineLengthWithIgnoreCommentsEnabled() async throws {
         let baseDescription = LineLengthRule.description
         let triggeringExamples = longFunctionDeclarations + [declarationWithTrailingLongComment]
         let nonTriggeringExamples = [longComment, longBlockComment]
@@ -42,11 +42,11 @@ class LineLengthRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_comments": true],
-                   commentDoesntViolate: false, stringDoesntViolate: false, skipCommentTests: true)
+        try await verifyRule(description, ruleConfiguration: ["ignores_comments": true],
+                             commentDoesntViolate: false, stringDoesntViolate: false, skipCommentTests: true)
     }
 
-    func testLineLengthWithIgnoreURLsEnabled() {
+    func testLineLengthWithIgnoreURLsEnabled() async throws {
         let url = "https://github.com/realm/SwiftLint"
         let triggeringLines = [Example(String(repeating: "/", count: 121) + "\(url)\n")]
         let nonTriggeringLines = [
@@ -61,11 +61,11 @@ class LineLengthRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_urls": true],
-                   commentDoesntViolate: false, stringDoesntViolate: false)
+        try await verifyRule(description, ruleConfiguration: ["ignores_urls": true],
+                             commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
-    func testLineLengthWithIgnoreInterpolatedStringsTrue() {
+    func testLineLengthWithIgnoreInterpolatedStringsTrue() async throws {
         let triggeringLines = [plainString]
         let nonTriggeringLines = [interpolatedString]
 
@@ -76,10 +76,10 @@ class LineLengthRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": true],
-                   commentDoesntViolate: false, stringDoesntViolate: false)
+        try await verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": true],
+                             commentDoesntViolate: false, stringDoesntViolate: false)
     }
-    func testLineLengthWithIgnoreInterpolatedStringsFalse() {
+    func testLineLengthWithIgnoreInterpolatedStringsFalse() async throws {
         let triggeringLines = [plainString, interpolatedString]
 
         let baseDescription = LineLengthRule.description
@@ -89,7 +89,7 @@ class LineLengthRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": false],
-                   commentDoesntViolate: false, stringDoesntViolate: false)
+        try await verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": false],
+                             commentDoesntViolate: false, stringDoesntViolate: false)
     }
 }

@@ -80,7 +80,7 @@ struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
 
     var configuration = CustomRulesConfiguration()
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         var configurations = configuration.customRuleConfigurations
 
         guard configurations.isNotEmpty else {

@@ -17,26 +17,26 @@ struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         triggeringExamples: FileTypesOrderRuleExamples.triggeringExamples
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let mainTypeSubstructure = mainTypeSubstructure(in: file),
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
+        guard let mainTypeSubstructure = try await mainTypeSubstructure(in: file),
               let mainTypeSubstuctureOffset = mainTypeSubstructure.offset else { return [] }
 
-        let extensionsSubstructures = self.extensionsSubstructures(
+        let extensionsSubstructures = try await self.extensionsSubstructures(
             in: file,
             mainTypeSubstructure: mainTypeSubstructure
         )
 
-        let supportingTypesSubstructures = self.supportingTypesSubstructures(
+        let supportingTypesSubstructures = try await self.supportingTypesSubstructures(
             in: file,
             mainTypeSubstructure: mainTypeSubstructure
         )
 
-        let previewProviderSubstructures = self.substructures(
+        let previewProviderSubstructures = try await self.substructures(
             in: file,
             withInheritedType: "PreviewProvider"
         )
 
-        let libraryContentSubstructures = self.substructures(
+        let libraryContentSubstructures = try await self.substructures(
             in: file,
             withInheritedType: "LibraryContentProvider"
         )
@@ -95,8 +95,8 @@ struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     private func extensionsSubstructures(
         in file: SwiftLintFile,
         mainTypeSubstructure: SourceKittenDictionary
-    ) -> [SourceKittenDictionary] {
-        let dict = file.structureDictionary
+    ) async throws -> [SourceKittenDictionary] {
+        let dict = try await file.getStructureDictionary()
         return dict.substructure.filter { substructure in
             guard let kind = substructure.kind else { return false }
             return substructure.offset != mainTypeSubstructure.offset
@@ -107,11 +107,11 @@ struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     private func supportingTypesSubstructures(
         in file: SwiftLintFile,
         mainTypeSubstructure: SourceKittenDictionary
-    ) -> [SourceKittenDictionary] {
+    ) async throws -> [SourceKittenDictionary] {
         var supportingTypeKinds = SwiftDeclarationKind.typeKinds
         supportingTypeKinds.insert(SwiftDeclarationKind.protocol)
 
-        let dict = file.structureDictionary
+        let dict = try await file.getStructureDictionary()
         return dict.substructure.filter { substructure in
             guard let declarationKind = substructure.declarationKind else { return false }
             guard !substructure.hasExcludedInheritedType else { return false }
@@ -124,14 +124,14 @@ struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     private func substructures(
         in file: SwiftLintFile,
         withInheritedType inheritedType: String
-    ) -> [SourceKittenDictionary] {
-        file.structureDictionary.substructure.filter { substructure in
+    ) async throws -> [SourceKittenDictionary] {
+        try await file.getStructureDictionary().substructure.filter { substructure in
             substructure.inheritedTypes.contains(inheritedType)
         }
     }
 
-    private func mainTypeSubstructure(in file: SwiftLintFile) -> SourceKittenDictionary? {
-        let dict = file.structureDictionary
+    private func mainTypeSubstructure(in file: SwiftLintFile) async throws -> SourceKittenDictionary? {
+        let dict = try await file.getStructureDictionary()
 
         guard let filePath = file.path else {
             return self.mainTypeSubstructure(in: dict)
@@ -140,7 +140,7 @@ struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         let fileName = URL(fileURLWithPath: filePath, isDirectory: false)
             .lastPathComponent.replacingOccurrences(of: ".swift", with: "")
         guard let mainTypeSubstructure = dict.substructure.first(where: { $0.name == fileName }) else {
-            return self.mainTypeSubstructure(in: file.structureDictionary)
+            return self.mainTypeSubstructure(in: try await file.getStructureDictionary())
         }
 
         // specify type with name matching the files name as main type

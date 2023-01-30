@@ -62,8 +62,8 @@ struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
+        let dict = try await file.getStructureDictionary()
 
         var attributeLines = attributeLineNumbers(file: file)
         var varLines = Set<Int>()

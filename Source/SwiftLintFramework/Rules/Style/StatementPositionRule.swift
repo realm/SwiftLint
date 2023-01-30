@@ -63,7 +63,7 @@ struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         switch configuration.statementMode {
         case .default:
             return defaultValidate(file: file)

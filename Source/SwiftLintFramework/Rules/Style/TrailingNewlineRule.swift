@@ -42,7 +42,7 @@ struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, SourceKi
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         if file.contents.trailingNewlineCount() == 1 {
             return []
         }

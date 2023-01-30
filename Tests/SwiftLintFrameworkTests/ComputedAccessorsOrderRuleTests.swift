@@ -2,7 +2,7 @@
 import XCTest
 
 class ComputedAccessorsOrderRuleTests: XCTestCase {
-    func testSetGetConfiguration() {
+    func testSetGetConfiguration() async throws {
         let nonTriggeringExamples = [
             Example("""
             class Foo {
@@ -36,10 +36,10 @@ class ComputedAccessorsOrderRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["order": "set_get"])
+        try await verifyRule(description, ruleConfiguration: ["order": "set_get"])
     }
 
-    func testGetSetPropertyReason() {
+    func testGetSetPropertyReason() async throws {
         let example = Example("""
         class Foo {
             var foo: Int {
@@ -53,13 +53,14 @@ class ComputedAccessorsOrderRuleTests: XCTestCase {
         }
         """)
 
+        let ruleViolations = try await ruleViolations(example)
         XCTAssertEqual(
-            ruleViolations(example).first?.reason,
+            ruleViolations.first?.reason,
             "Computed properties should first declare the getter and then the setter"
         )
     }
 
-    func testGetSetSubscriptReason() {
+    func testGetSetSubscriptReason() async throws {
         let example = Example("""
         class Foo {
             subscript(i: Int) -> Int {
@@ -73,13 +74,14 @@ class ComputedAccessorsOrderRuleTests: XCTestCase {
         }
         """)
 
+        let ruleViolations = try await ruleViolations(example)
         XCTAssertEqual(
-            ruleViolations(example).first?.reason,
+            ruleViolations.first?.reason,
             "Computed subscripts should first declare the getter and then the setter"
         )
     }
 
-    func testSetGetPropertyReason() {
+    func testSetGetPropertyReason() async throws {
         let example = Example("""
         class Foo {
             var foo: Int {
@@ -93,13 +95,14 @@ class ComputedAccessorsOrderRuleTests: XCTestCase {
         }
         """)
 
+        let ruleViolations = try await ruleViolations(example, ruleConfiguration: ["order": "set_get"])
         XCTAssertEqual(
-            ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason,
+            ruleViolations.first?.reason,
             "Computed properties should first declare the setter and then the getter"
         )
     }
 
-    func testSetGetSubscriptReason() {
+    func testSetGetSubscriptReason() async throws {
         let example = Example("""
         class Foo {
             subscript(i: Int) -> Int {
@@ -113,17 +116,18 @@ class ComputedAccessorsOrderRuleTests: XCTestCase {
         }
         """)
 
+        let ruleViolations = try await ruleViolations(example, ruleConfiguration: ["order": "set_get"])
         XCTAssertEqual(
-            ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason,
+            ruleViolations.first?.reason,
             "Computed subscripts should first declare the setter and then the getter"
         )
     }
 
-    private func ruleViolations(_ example: Example, ruleConfiguration: Any? = nil) -> [StyleViolation] {
+    private func ruleViolations(_ example: Example, ruleConfiguration: Any? = nil) async throws -> [StyleViolation] {
         guard let config = makeConfig(ruleConfiguration, ComputedAccessorsOrderRule.description.identifier) else {
             return []
         }
 
-        return violations(example, config: config)
+        return try await violations(example, config: config)
     }
 }

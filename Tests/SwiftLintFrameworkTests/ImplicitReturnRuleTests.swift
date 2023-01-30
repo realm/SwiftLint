@@ -2,7 +2,7 @@
 import XCTest
 
 class ImplicitReturnRuleTests: XCTestCase {
-    func testOnlyClosureKindIncluded() {
+    func testOnlyClosureKindIncluded() async throws {
         let nonTriggeringExamples = ImplicitReturnRuleExamples.GenericExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.ClosureExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.FunctionExamples.nonTriggeringExamples +
@@ -17,10 +17,10 @@ class ImplicitReturnRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: corrections)
 
-        self.verifyRule(description, returnKind: .closure)
+        try await self.verifyRule(description, returnKind: .closure)
     }
 
-    func testOnlyFunctionKindIncluded() {
+    func testOnlyFunctionKindIncluded() async throws {
         let nonTriggeringExamples = ImplicitReturnRuleExamples.GenericExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.ClosureExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.ClosureExamples.triggeringExamples +
@@ -35,10 +35,10 @@ class ImplicitReturnRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: corrections)
 
-        self.verifyRule(description, returnKind: .function)
+        try await self.verifyRule(description, returnKind: .function)
     }
 
-    func testOnlyGetterKindIncluded() {
+    func testOnlyGetterKindIncluded() async throws {
         let nonTriggeringExamples = ImplicitReturnRuleExamples.GenericExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.ClosureExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.ClosureExamples.triggeringExamples +
@@ -53,10 +53,11 @@ class ImplicitReturnRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: corrections)
 
-        self.verifyRule(description, returnKind: .getter)
+        try await self.verifyRule(description, returnKind: .getter)
     }
 
-    private func verifyRule(_ ruleDescription: RuleDescription, returnKind: ImplicitReturnConfiguration.ReturnKind) {
-        self.verifyRule(ruleDescription, ruleConfiguration: ["included": [returnKind.rawValue]])
+    private func verifyRule(_ ruleDescription: RuleDescription, returnKind: ImplicitReturnConfiguration.ReturnKind)
+        async throws {
+        try await self.verifyRule(ruleDescription, ruleConfiguration: ["included": [returnKind.rawValue]])
     }
 }

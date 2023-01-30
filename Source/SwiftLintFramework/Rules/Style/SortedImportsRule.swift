@@ -133,7 +133,7 @@ struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule 
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let groups = importGroups(in: file, filterEnabled: false)
         return violatingOffsets(inGroups: groups).map { index -> StyleViolation in
             let location = Location(file: file, characterOffset: index)

@@ -119,9 +119,9 @@ struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let acls = configuration.parameters.map { $0.value }
-        let dict = file.structureDictionary
+        let dict = try await file.getStructureDictionary()
         return file.missingDocOffsets(
             in: dict,
             acls: acls,

@@ -33,7 +33,7 @@ struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         ].skipWrappingInCommentTests()
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         var firstToken: SwiftLintSyntaxToken?
         var lastToken: SwiftLintSyntaxToken?
         var firstNonCommentToken: SwiftLintSyntaxToken?

@@ -30,8 +30,8 @@ struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
+        let dict = try await file.getStructureDictionary()
         return violationOffsets(for: dict, file: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,

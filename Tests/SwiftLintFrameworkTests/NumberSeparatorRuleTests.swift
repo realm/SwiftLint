@@ -3,7 +3,7 @@ import SwiftParser
 import XCTest
 
 class NumberSeparatorRuleTests: XCTestCase {
-    func testNumberSeparatorWithMinimumLength() {
+    func testNumberSeparatorWithMinimumLength() async throws {
         let nonTriggeringExamples = [
             Example("let foo = 10_000"),
             Example("let foo = 1000"),
@@ -27,10 +27,10 @@ class NumberSeparatorRuleTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(corrections: corrections)
 
-        verifyRule(description, ruleConfiguration: ["minimum_length": 5])
+        try await verifyRule(description, ruleConfiguration: ["minimum_length": 5])
     }
 
-    func testNumberSeparatorWithMinimumFractionLength() {
+    func testNumberSeparatorWithMinimumFractionLength() async throws {
         let nonTriggeringExamples = [
             Example("let foo = 1_000.000_000_1"),
             Example("let foo = 1.000_001"),
@@ -53,10 +53,10 @@ class NumberSeparatorRuleTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(corrections: corrections)
 
-        verifyRule(description, ruleConfiguration: ["minimum_fraction_length": 5])
+        try await verifyRule(description, ruleConfiguration: ["minimum_fraction_length": 5])
     }
 
-    func testNumberSeparatorWithExcludeRanges() {
+    func testNumberSeparatorWithExcludeRanges() async throws {
         let nonTriggeringExamples = [
             Example("let foo = 1950"),
             Example("let foo = 1_950"),
@@ -87,7 +87,7 @@ class NumberSeparatorRuleTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(corrections: corrections)
 
-        verifyRule(
+        try await verifyRule(
             description,
             ruleConfiguration: [
                 "exclude_ranges": [

@@ -70,6 +70,8 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             }
         }
 
+        violations.append(contentsOf: validateAlwaysBlanketDisable(file: file))
+
         return violations
     }
 

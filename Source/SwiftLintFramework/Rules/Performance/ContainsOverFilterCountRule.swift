@@ -8,7 +8,7 @@ struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
     static let description = RuleDescription(
         identifier: "contains_over_filter_count",
         name: "Contains over Filter Count",
-        description: "Prefer `contains` over comparing `filter(where:).count` to 0.",
+        description: "Prefer `contains` over comparing `filter(where:).count` to 0",
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
             return [

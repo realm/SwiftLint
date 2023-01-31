@@ -26,9 +26,9 @@ private final class ImplicitGetterRuleVisitor: ViolationsSyntaxVisitor {
         var violationDescription: String {
             switch self {
             case .subscript:
-                return "Computed read-only subscripts should avoid using the get keyword."
+                return "Computed read-only subscripts should avoid using the get keyword"
             case .property:
-                return "Computed read-only properties should avoid using the get keyword."
+                return "Computed read-only properties should avoid using the get keyword"
             }
         }
     }

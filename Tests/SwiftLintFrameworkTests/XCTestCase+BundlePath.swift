@@ -3,7 +3,11 @@ import XCTest
 
 enum TestResources {
     static var path: String {
-        URL(fileURLWithPath: #file, isDirectory: false)
+        if let rootProjectDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"] {
+            return "\(rootProjectDirectory)/Tests/SwiftLintFrameworkTests/Resources"
+        }
+
+        return URL(fileURLWithPath: #file, isDirectory: false)
             .deletingLastPathComponent()
             .appendingPathComponent("Resources")
             .path

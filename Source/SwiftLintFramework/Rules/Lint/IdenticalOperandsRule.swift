@@ -10,7 +10,7 @@ struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInR
     static let description = RuleDescription(
         identifier: "identical_operands",
         name: "Identical Operands",
-        description: "Comparing two identical operands is likely a mistake.",
+        description: "Comparing two identical operands is likely a mistake",
         kind: .lint,
         nonTriggeringExamples: operators.flatMap { operation in
             [

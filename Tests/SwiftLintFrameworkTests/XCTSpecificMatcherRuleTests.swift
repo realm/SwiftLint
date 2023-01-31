@@ -7,7 +7,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead")
     }
 
     func testEqualFalse() {
@@ -15,7 +15,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead")
     }
 
     func testEqualNil() {
@@ -23,7 +23,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNil' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNil' instead")
     }
 
     func testNotEqualTrue() {
@@ -31,7 +31,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead")
     }
 
     func testNotEqualFalse() {
@@ -39,7 +39,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead")
     }
 
     func testNotEqualNil() {
@@ -47,7 +47,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotNil' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotNil' instead")
     }
 
     // MARK: - Additional Tests
@@ -64,7 +64,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead")
     }
 
     func testEqualNilNil() {
@@ -72,7 +72,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNil' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNil' instead")
     }
 
     func testEqualTrueTrue() {
@@ -80,7 +80,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead")
     }
 
     func testEqualFalseFalse() {
@@ -88,7 +88,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead")
     }
 
     func testNotEqualNilNil() {
@@ -96,7 +96,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotNil' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotNil' instead")
     }
 
     func testNotEqualTrueTrue() {
@@ -104,7 +104,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead")
     }
 
     func testNotEqualFalseFalse() {
@@ -112,7 +112,7 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead")
     }
 
     private func violations(_ example: Example) -> [StyleViolation] {

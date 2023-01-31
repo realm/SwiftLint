@@ -2,6 +2,22 @@
 import XCTest
 
 class GenericTypeNameRuleTests: XCTestCase {
+    func testGenericTypeNameWithExcluded() {
+        let baseDescription = GenericTypeNameRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
+            Example("func foo<apple> {}\n"),
+            Example("func foo<some_apple> {}\n"),
+            Example("func foo<test123> {}\n")
+        ]
+        let triggeringExamples = baseDescription.triggeringExamples + [
+            Example("func foo<ap_ple> {}\n"),
+            Example("func foo<appleJuice> {}\n")
+        ]
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
+                                               triggeringExamples: triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["excluded": ["apple", "some.*", ".*st\\d+.*"]])
+    }
+
     func testGenericTypeNameWithAllowedSymbols() {
         let baseDescription = GenericTypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [

@@ -41,7 +41,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, Correct
         if let first = violatingModifiers.first {
             let preferredModifier = first.0
             let declaredModifier = first.1
-            let reason = "\(preferredModifier.keyword) modifier should be before \(declaredModifier.keyword)."
+            let reason = "\(preferredModifier.keyword) modifier should come before \(declaredModifier.keyword)"
             return [
                 StyleViolation(
                     ruleDescription: Self.description,
@@ -57,13 +57,11 @@ struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, Correct
 
     func correct(file: SwiftLintFile) -> [Correction] {
         return file.structureDictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.declarationKind else { return nil }
-            return correct(file: file, kind: kind, dictionary: subDict)
+            guard subDict.declarationKind != nil else { return nil }
+            return correct(file: file, dictionary: subDict)
         }
     }
-    private func correct(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [Correction] {
+    private func correct(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [Correction] {
         guard let offset = dictionary.offset else { return [] }
         let originalContents = file.stringView
         let violatingRanges = violatingModifiers(dictionary: dictionary)
@@ -180,13 +178,9 @@ private extension SourceKittenDictionary {
     }
 
     private func kindsAndOffsets(in declarationKinds: [SwiftDeclarationKind]) -> SourceKittenDictionary? {
-        guard let offset = offset,
-            let declarationKind = declarationKind,
-            declarationKinds.contains(declarationKind)
-        else {
+        guard let offset, let declarationKind, declarationKinds.contains(declarationKind) else {
             return nil
         }
-
         return SourceKittenDictionary(["key.kind": declarationKind.rawValue, "key.offset": Int64(offset.value)])
     }
 }

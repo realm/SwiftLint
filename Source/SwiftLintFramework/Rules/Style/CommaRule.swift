@@ -10,7 +10,7 @@ struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule 
     static let description = RuleDescription(
         identifier: "comma",
         name: "Comma Spacing",
-        description: "There should be no space before and one after any comma.",
+        description: "There should be no space before and one after any comma",
         kind: .style,
         nonTriggeringExamples: [
             Example("func abc(a: String, b: String) { }"),

@@ -33,6 +33,7 @@ opt_in_rules:
   - first_where
   - flatmap_over_map_reduce
   - identical_operands
+  - if_let_shadowing
   - joined_default_parameter
   - last_where
   - legacy_multiple
@@ -78,6 +79,9 @@ opt_in_rules:
   - xct_specific_matcher
   - yoda_condition
 
+attributes:
+  always_on_line_above:
+    - "@OptionGroup"
 identifier_name:
   excluded:
     - id

@@ -206,13 +206,13 @@ class IndentationWidthRuleTests: XCTestCase {
         line: UInt = #line
     ) -> Int {
         var configDict: [String: Any] = [:]
-        if let indentationWidth = indentationWidth {
+        if let indentationWidth {
             configDict["indentation_width"] = indentationWidth
         }
-        if let includeComments = includeComments {
+        if let includeComments {
             configDict["include_comments"] = includeComments
         }
-        if let includeCompilerDirectives = includeCompilerDirectives {
+        if let includeCompilerDirectives {
             configDict["include_compiler_directives"] = includeCompilerDirectives
         }
 

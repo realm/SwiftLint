@@ -8,7 +8,7 @@ struct ClassDelegateProtocolRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "class_delegate_protocol",
         name: "Class Delegate Protocol",
-        description: "Delegate protocols should be class-only so they can be weakly referenced.",
+        description: "Delegate protocols should be class-only so they can be weakly referenced",
         kind: .lint,
         nonTriggeringExamples: [
             Example("protocol FooDelegate: class {}\n"),

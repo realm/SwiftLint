@@ -26,7 +26,7 @@ struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, SourceKi
     static let description = RuleDescription(
         identifier: "trailing_newline",
         name: "Trailing Newline",
-        description: "Files should have a single trailing newline.",
+        description: "Files should have a single trailing newline",
         kind: .style,
         nonTriggeringExamples: [
             Example("let a = 0\n")

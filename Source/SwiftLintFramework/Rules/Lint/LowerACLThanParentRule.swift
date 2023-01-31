@@ -159,7 +159,7 @@ private extension DeclModifierSyntax {
 
 private extension SyntaxProtocol {
     func nearestNominalParent() -> Syntax? {
-        guard let parent = parent else {
+        guard let parent else {
             return nil
         }
 
@@ -167,7 +167,7 @@ private extension SyntaxProtocol {
     }
 
     func nearestNominalExtensionDeclParent() -> Syntax? {
-        guard let parent = parent, !parent.isNominalTypeDecl else {
+        guard let parent, !parent.isNominalTypeDecl else {
             return nil
         }
 

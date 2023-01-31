@@ -11,9 +11,10 @@ public struct EmojiReporter: Reporter {
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return violations
-            .group(by: { $0.location.file ?? "Other" })
-            .sorted(by: { $0.key < $1.key })
-            .map(report).joined(separator: "\n")
+            .group { $0.location.file ?? "Other" }
+            .sorted { $0.key < $1.key }
+            .map(report)
+            .joined(separator: "\n")
     }
 
     // MARK: - Private

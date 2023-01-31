@@ -66,7 +66,7 @@ extension SourceKittenDictionary {
     ///            arguments appears in the view's substructure.
     func hasModifier(anyOf modifiers: [SwiftUIModifier], in file: SwiftLintFile) -> Bool {
         // SwiftUI ViewModifiers are treated as `call` expressions, and we make sure we can get the expression's name.
-        guard expressionKind == .call, let name = name else {
+        guard expressionKind == .call, let name else {
             return false
         }
 
@@ -169,7 +169,7 @@ extension SourceKittenDictionary {
 
     /// Helper to get the value of an argument.
     func getArgumentValue(in file: SwiftLintFile) -> String? {
-        guard expressionKind == .argument, let bodyByteRange = bodyByteRange else {
+        guard expressionKind == .argument, let bodyByteRange else {
             return nil
         }
 
@@ -178,7 +178,7 @@ extension SourceKittenDictionary {
 
     /// Helper to get the value of a single unnamed argument to a function call.
     func getSingleUnnamedArgumentValue(in file: SwiftLintFile) -> String? {
-        guard expressionKind == .call, let bodyByteRange = bodyByteRange else {
+        guard expressionKind == .call, let bodyByteRange else {
             return nil
         }
 

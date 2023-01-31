@@ -8,8 +8,8 @@ struct SelfInPropertyInitializationRule: ConfigurationProviderRule, SwiftSyntaxR
     static let description = RuleDescription(
         identifier: "self_in_property_initialization",
         name: "Self in Property Initialization",
-        description: "`self` refers to the unapplied `NSObject.self()` method, which is likely not expected. " +
-            "Make the variable `lazy` to be able to refer to the current instance or use `ClassName.self`.",
+        description: "`self` refers to the unapplied `NSObject.self()` method, which is likely not expected; " +
+            "make the variable `lazy` to be able to refer to the current instance or use `ClassName.self`",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

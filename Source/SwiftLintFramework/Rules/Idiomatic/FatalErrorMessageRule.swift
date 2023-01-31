@@ -8,7 +8,7 @@ struct FatalErrorMessageRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInR
     static let description = RuleDescription(
         identifier: "fatal_error_message",
         name: "Fatal Error Message",
-        description: "A fatalError call should have a message.",
+        description: "A fatalError call should have a message",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

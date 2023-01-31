@@ -9,7 +9,7 @@ struct ConvenienceTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRul
         identifier: "convenience_type",
         name: "Convenience Type",
         description: "Types used for hosting only static members should be implemented as a caseless enum " +
-                     "to avoid instantiation.",
+                     "to avoid instantiation",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

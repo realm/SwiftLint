@@ -15,7 +15,7 @@ extension SourceKittenDictionary {
             guard let range = dictionary.byteRange else {
                 return
             }
-            if let byteOffset = byteOffset, !range.contains(byteOffset) {
+            if let byteOffset, !range.contains(byteOffset) {
                 return
             }
             if let kind = dictionary.kind {

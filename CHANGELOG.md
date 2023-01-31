@@ -22,9 +22,25 @@
   [jimmya](https://github.com/jimmya)
   [#issue_number](https://github.com/realm/SwiftLint/issues/4609)
 
-* Separate analyzer rules as an independent section in the rule directory of the reference.  
+* Separate analyzer rules as an independent section in the rule directory of
+  the reference.  
   [Ethan Wong](https://github.com/GetToSet)
   [#4664](https://github.com/realm/SwiftLint/pull/4664)
+  
+* Interpret strings in `excluded` option of `identifier_name`, 
+  `type_name` and `generic_type_name` rules as regex.  
+  [Moly](https://github.com/kyounh12)
+  [#4655](https://github.com/realm/SwiftLint/pull/4655)
+
+* Add `period_spacing` opt-in rule that checks periods are not followed
+  by 2 or more spaces in comments.  
+  [Julioacarrettoni](https://github.com/Julioacarrettoni)
+  [#4624](https://github.com/realm/SwiftLint/pull/4624)
+
+* Allow new Quick APIs `aroundEach` and `justBeforeEach` for
+  `quick_discouraged_call`.  
+  [David Steinacher](https://github.com/stonko1994)
+  [#4626](https://github.com/realm/SwiftLint/issues/4626)
 
 #### Bug Fixes
 
@@ -32,6 +48,10 @@
   smaller than the warning threshold.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4645](https://github.com/realm/SwiftLint/issues/4645)
+
+* Consider custom attributes in `attributes` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4599](https://github.com/realm/SwiftLint/issues/4599)
 
 * Fix false positives on `private_subject` rule when using
   subjects inside functions.  
@@ -47,6 +67,19 @@
   false-positive in if-case-let statements.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4548](https://github.com/realm/SwiftLint/issues/4548)
+  
+* Ensure that negative literals in initializers do not trigger
+  `no_magic_numbers` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4677](https://github.com/realm/SwiftLint/issues/4677)
+
+* Fix caching of `indentation_width` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4121](https://github.com/realm/SwiftLint/issues/4121)
+
+* Updated JUnit reporter to output error count and warning count.  
+  [patricks](https://github.com/patricks)
+  [#4725](https://github.com/realm/SwiftLint/pull/4725)
 
 ## 0.50.3: Bundle of Towels
 
@@ -81,21 +114,11 @@
   `single_test_class` and `empty_xctest_method` rules.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4200](https://github.com/realm/SwiftLint/issues/4200)
-  
-  * Add `period_spacing` opt-in rule that checks periods are not followed
-  by 2 or more spaces in comments.  
-  [Julioacarrettoni](https://github.com/Julioacarrettoni)
-  [#4624](https://github.com/realm/SwiftLint/pull/4624)
 
 * Show warnings in the console for Analyzer rules that are listed in the
   `opt_in_rules` configuration section.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4612](https://github.com/realm/SwiftLint/issues/4612)
-
-* Allow new Quick APIs `aroundEach` and `justBeforeEach`
-  for `quick_discouraged_call`.  
-  [David Steinacher](https://github.com/stonko1994)
-  [#4626](https://github.com/realm/SwiftLint/issues/4626)
 
 #### Bug Fixes
 

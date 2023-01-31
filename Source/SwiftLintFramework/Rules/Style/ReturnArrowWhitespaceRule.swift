@@ -10,7 +10,7 @@ struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, CorrectableRule, Configuratio
         identifier: "return_arrow_whitespace",
         name: "Returning Whitespace",
         description: "Return arrow and return type should be separated by a single space or on a " +
-                     "separate line.",
+                     "separate line",
         kind: .style,
         nonTriggeringExamples: [
             Example("func abc() -> Int {}\n"),
@@ -129,7 +129,7 @@ private struct ArrowViolation {
 
 private extension TokenSyntax {
     var arrowViolation: ArrowViolation? {
-        guard let previousToken = previousToken, let nextToken = nextToken else {
+        guard let previousToken, let nextToken else {
             return nil
         }
 
@@ -156,7 +156,7 @@ private extension TokenSyntax {
             end = endPosition
         }
 
-        guard let start = start, let end = end else {
+        guard let start, let end else {
             return nil
         }
 

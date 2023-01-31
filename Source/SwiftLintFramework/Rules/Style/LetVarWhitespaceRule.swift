@@ -9,7 +9,7 @@ struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
     static let description = RuleDescription(
         identifier: "let_var_whitespace",
         name: "Variable Declaration Whitespace",
-        description: "Let and var should be separated from other statements by a blank line.",
+        description: "Variable declarations should be separated from other statements by a blank line",
         kind: .style,
         nonTriggeringExamples: [
             Example("let a = 0\nvar x = 1\n\nx = 2\n"),

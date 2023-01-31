@@ -11,7 +11,7 @@ struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, Source
         identifier: "colon",
         name: "Colon Spacing",
         description: """
-            Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.
+            Colons should be next to the identifier when specifying a type and next to the key in dictionary literals
             """,
         kind: .style,
         nonTriggeringExamples: ColonRuleExamples.nonTriggeringExamples,

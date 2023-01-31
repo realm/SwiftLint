@@ -8,7 +8,7 @@ struct StrongIBOutletRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule
     static let description = RuleDescription(
         identifier: "strong_iboutlet",
         name: "Strong IBOutlet",
-        description: "@IBOutlets shouldn't be declared as weak.",
+        description: "@IBOutlets shouldn't be declared as weak",
         kind: .lint,
         nonTriggeringExamples: [
             wrapExample("@IBOutlet var label: UILabel?"),

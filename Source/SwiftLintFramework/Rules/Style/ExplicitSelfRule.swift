@@ -9,7 +9,7 @@ struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
     static let description = RuleDescription(
         identifier: "explicit_self",
         name: "Explicit Self",
-        description: "Instance variables and functions should be explicitly accessed with 'self.'.",
+        description: "Instance variables and functions should be explicitly accessed with 'self.'",
         kind: .style,
         nonTriggeringExamples: ExplicitSelfRuleExamples.nonTriggeringExamples,
         triggeringExamples: ExplicitSelfRuleExamples.triggeringExamples,

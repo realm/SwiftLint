@@ -8,7 +8,7 @@ struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, SwiftSynta
     static let description = RuleDescription(
         identifier: "void_function_in_ternary",
         name: "Void Function in Ternary",
-        description: "Using ternary to call Void functions should be avoided.",
+        description: "Using ternary to call Void functions should be avoided",
         kind: .idiomatic,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: [

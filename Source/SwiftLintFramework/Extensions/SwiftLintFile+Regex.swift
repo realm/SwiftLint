@@ -16,7 +16,7 @@ extension SwiftLintFile {
         var regions = [Region]()
         var disabledRules = Set<RuleIdentifier>()
         let commands: [Command]
-        if let restrictingRuleIdentifiers = restrictingRuleIdentifiers {
+        if let restrictingRuleIdentifiers {
             commands = self.commands().filter { command in
                 return command.ruleIdentifiers.contains(where: restrictingRuleIdentifiers.contains)
             }
@@ -55,7 +55,7 @@ extension SwiftLintFile {
     }
 
     internal func commands(in range: NSRange? = nil) -> [Command] {
-        guard let range = range else {
+        guard let range else {
             return commands
                 .flatMap { $0.expand() }
         }
@@ -233,7 +233,7 @@ extension SwiftLintFile {
         guard let stringData = string.data(using: .utf8) else {
             queuedFatalError("can't encode '\(string)' with UTF8")
         }
-        guard let path = path, let fileHandle = FileHandle(forWritingAtPath: path) else {
+        guard let path, let fileHandle = FileHandle(forWritingAtPath: path) else {
             queuedFatalError("can't write to path '\(String(describing: self.path))'")
         }
         _ = fileHandle.seekToEndOfFile()
@@ -250,7 +250,7 @@ extension SwiftLintFile {
         if isVirtual {
             return
         }
-        guard let path = path else {
+        guard let path else {
             queuedFatalError("file needs a path to call write(_:)")
         }
         guard let stringData = String(string).data(using: .utf8) else {

@@ -8,7 +8,7 @@ struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule 
     static let description = RuleDescription(
         identifier: "object_literal",
         name: "Object Literal",
-        description: "Prefer object literals over image and color inits.",
+        description: "Prefer object literals over image and color inits",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("let image = #imageLiteral(resourceName: \"image.jpg\")"),

@@ -8,7 +8,7 @@ struct ForceTryRule: ConfigurationProviderRule, SwiftSyntaxRule {
     static let description = RuleDescription(
         identifier: "force_try",
         name: "Force Try",
-        description: "Force tries should be avoided.",
+        description: "Force tries should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

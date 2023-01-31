@@ -12,7 +12,7 @@ struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
     static let description = RuleDescription(
         identifier: "unused_import",
         name: "Unused Import",
-        description: "All imported modules should be required to make the file compile.",
+        description: "All imported modules should be required to make the file compile",
         kind: .lint,
         nonTriggeringExamples: UnusedImportRuleExamples.nonTriggeringExamples,
         triggeringExamples: UnusedImportRuleExamples.triggeringExamples,
@@ -124,8 +124,7 @@ private extension SwiftLintFile {
             )
         }
 
-        let contentsNSString = stringView.nsString
-        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports), contents: contentsNSString)
+        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports))
             .map { ImportUsage.unused(module: $0, range: $1) }
 
         guard configuration.requireExplicitImports else {
@@ -188,7 +187,7 @@ private extension SwiftLintFile {
         return (imports: imports, usrFragments: usrFragments)
     }
 
-    func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
+    func rangedAndSortedUnusedImports(of unusedImports: [String]) -> [(String, NSRange)] {
         return unusedImports
             .compactMap { module in
                 match(pattern: "^(@\\w+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
@@ -258,7 +257,7 @@ private extension SwiftLintFile {
 
     // Operators that are a part of some body are reported as method.static
     func mightBeOperator(kind: String?) -> Bool {
-        guard let kind = kind else { return false }
+        guard let kind else { return false }
         return [
             "source.lang.swift.ref.function.operator",
             "source.lang.swift.ref.function.method.static"

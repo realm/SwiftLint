@@ -70,7 +70,7 @@ struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         identifier: "opening_brace",
         name: "Opening Brace Spacing",
         description: "Opening braces should be preceded by a single space and on the same line " +
-                     "as the declaration.",
+                     "as the declaration",
         kind: .style,
         nonTriggeringExamples: [
             Example("func abc() {\n}"),

@@ -9,7 +9,7 @@ struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRul
     static let description = RuleDescription(
         identifier: "implicit_return",
         name: "Implicit Return",
-        description: "Prefer implicit returns in closures, functions and getters.",
+        description: "Prefer implicit returns in closures, functions and getters",
         kind: .style,
         nonTriggeringExamples: ImplicitReturnRuleExamples.nonTriggeringExamples,
         triggeringExamples: ImplicitReturnRuleExamples.triggeringExamples,
@@ -69,7 +69,7 @@ private extension Array where Element == (kind: String, byteRange: ByteRange) {
             return last
         }
 
-        guard let last = last else {
+        guard let last else {
             return nil
         }
 

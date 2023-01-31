@@ -13,7 +13,7 @@ struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, Configuration
     static let description = RuleDescription(
         identifier: "number_separator",
         name: "Number Separator",
-        description: "Underscores should be used as thousand separator in large decimal numbers.",
+        description: "Underscores should be used as thousand separator in large decimal numbers",
         kind: .style,
         nonTriggeringExamples: NumberSeparatorRuleExamples.nonTriggeringExamples,
         triggeringExamples: NumberSeparatorRuleExamples.triggeringExamples,
@@ -155,7 +155,7 @@ extension NumberSeparatorValidator {
 
     private func isInValidRanges(number: String) -> Bool {
         let doubleValue = Double(number.replacingOccurrences(of: "_", with: ""))
-        if let doubleValue = doubleValue, configuration.excludeRanges.contains(where: { $0.contains(doubleValue) }) {
+        if let doubleValue, configuration.excludeRanges.contains(where: { $0.contains(doubleValue) }) {
             return true
         }
 

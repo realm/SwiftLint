@@ -9,7 +9,7 @@ struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, Source
     static let description = RuleDescription(
         identifier: "leading_whitespace",
         name: "Leading Whitespace",
-        description: "Files should not contain leading whitespace.",
+        description: "Files should not contain leading whitespace",
         kind: .style,
         nonTriggeringExamples: [
             Example("//\n")
@@ -29,13 +29,9 @@ struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, Source
             return []
         }
 
-        let reason = "File shouldn't start with whitespace: " +
-                     "currently starts with \(countOfLeadingWhitespace) whitespace characters"
-
         return [StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
-                               location: Location(file: file.path, line: 1),
-                               reason: reason)]
+                               location: Location(file: file.path, line: 1))]
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {

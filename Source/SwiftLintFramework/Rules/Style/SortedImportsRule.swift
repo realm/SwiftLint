@@ -54,7 +54,7 @@ struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule 
     static let description = RuleDescription(
         identifier: "sorted_imports",
         name: "Sorted Imports",
-        description: "Imports should be sorted.",
+        description: "Imports should be sorted",
         kind: .style,
         nonTriggeringExamples: [
             Example("import AAA\nimport BBB\nimport CCC\nimport DDD"),

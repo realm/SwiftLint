@@ -8,7 +8,7 @@ struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     static let description = RuleDescription(
         identifier: "array_init",
         name: "Array Init",
-        description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array.",
+        description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array",
         kind: .lint,
         nonTriggeringExamples: [
             Example("Array(foo)\n"),

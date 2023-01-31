@@ -55,7 +55,7 @@ class ComputedAccessorsOrderRuleTests: XCTestCase {
 
         XCTAssertEqual(
             ruleViolations(example).first?.reason,
-            "Computed properties should declare first the getter and then the setter."
+            "Computed properties should first declare the getter and then the setter"
         )
     }
 
@@ -75,7 +75,7 @@ class ComputedAccessorsOrderRuleTests: XCTestCase {
 
         XCTAssertEqual(
             ruleViolations(example).first?.reason,
-            "Computed subscripts should declare first the getter and then the setter."
+            "Computed subscripts should first declare the getter and then the setter"
         )
     }
 
@@ -95,7 +95,7 @@ class ComputedAccessorsOrderRuleTests: XCTestCase {
 
         XCTAssertEqual(
             ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason,
-            "Computed properties should declare first the setter and then the getter."
+            "Computed properties should first declare the setter and then the getter"
         )
     }
 
@@ -115,7 +115,7 @@ class ComputedAccessorsOrderRuleTests: XCTestCase {
 
         XCTAssertEqual(
             ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason,
-            "Computed subscripts should declare first the setter and then the getter."
+            "Computed subscripts should first declare the setter and then the getter"
         )
     }
 

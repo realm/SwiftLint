@@ -10,11 +10,11 @@ struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
         var reason: String {
             switch self {
             case .approachingExpiry:
-                return "TODO/FIXME is approaching its expiry and should be resolved soon."
+                return "TODO/FIXME is approaching its expiry and should be resolved soon"
             case .expired:
-                return "TODO/FIXME has expired and must be resolved."
+                return "TODO/FIXME has expired and must be resolved"
             case .badFormatting:
-                return "Expiring TODO/FIXME is incorrectly formatted."
+                return "Expiring TODO/FIXME is incorrectly formatted"
             }
         }
     }
@@ -99,7 +99,7 @@ struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
     }
 
     private func violationLevel(for expiryDate: Date?) -> ExpiryViolationLevel? {
-        guard let expiryDate = expiryDate else {
+        guard let expiryDate else {
             return .badFormatting
         }
         guard expiryDate.isAfterToday else {

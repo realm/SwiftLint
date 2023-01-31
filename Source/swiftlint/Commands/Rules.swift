@@ -17,14 +17,15 @@ extension SwiftLint {
 
         @Option(help: "The path to a SwiftLint configuration file")
         var config: String?
-        @OptionGroup var rulesFilterOptions: RulesFilterOptions
+        @OptionGroup
+        var rulesFilterOptions: RulesFilterOptions
         @Flag(name: .shortAndLong, help: "Display full configuration details")
         var verbose = false
         @Argument(help: "The rule identifier to display description for")
         var ruleID: String?
 
         func run() throws {
-            if let ruleID = ruleID {
+            if let ruleID {
                 guard let rule = primaryRuleList.list[ruleID] else {
                     throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")
                 }
@@ -87,7 +88,7 @@ private extension TextTable {
                 offsetBy: max(minWidth, maxWidth - configurationStartColumn),
                 limitedBy: stringWithNoNewlines.endIndex
             )
-            if let truncatedEndIndex = truncatedEndIndex {
+            if let truncatedEndIndex {
                 return stringWithNoNewlines[..<truncatedEndIndex] + "..."
             }
             return stringWithNoNewlines

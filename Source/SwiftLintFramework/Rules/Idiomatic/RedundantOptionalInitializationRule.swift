@@ -8,7 +8,7 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
     static let description = RuleDescription(
         identifier: "redundant_optional_initialization",
         name: "Redundant Optional Initialization",
-        description: "Initializing an optional variable with nil is redundant.",
+        description: "Initializing an optional variable with nil is redundant",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("var myVar: Int?\n"),
@@ -182,7 +182,7 @@ private extension RedundantOptionalInitializationRule {
 
 private extension PatternBindingSyntax {
     var violationPosition: AbsolutePosition? {
-        guard let initializer = initializer,
+        guard let initializer,
               let type = typeAnnotation,
               initializer.isInitializingToNil,
               type.isOptionalType else {

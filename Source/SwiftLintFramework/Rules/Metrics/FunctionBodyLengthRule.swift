@@ -6,7 +6,7 @@ struct FunctionBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "function_body_length",
         name: "Function Body Length",
-        description: "Functions bodies should not span too many lines.",
+        description: "Function bodies should not span too many lines",
         kind: .metrics
     )
 

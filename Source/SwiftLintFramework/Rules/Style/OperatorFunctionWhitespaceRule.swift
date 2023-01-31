@@ -8,7 +8,7 @@ struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, SwiftSyntaxRul
     static let description = RuleDescription(
         identifier: "operator_whitespace",
         name: "Operator Function Whitespace",
-        description: "Operators should be surrounded by a single whitespace when defining them.",
+        description: "Operators should be surrounded by a single whitespace when defining them",
         kind: .style,
         nonTriggeringExamples: [
             Example("func <| (lhs: Int, rhs: Int) -> Int {}\n"),

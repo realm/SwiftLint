@@ -9,7 +9,7 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProviderRul
     static let description = RuleDescription(
         identifier: "multiline_function_chains",
         name: "Multiline Function Chains",
-        description: "Chained function calls should be either on the same line, or one per line.",
+        description: "Chained function calls should be either on the same line, or one per line",
         kind: .style,
         nonTriggeringExamples: [
             Example("let evenSquaresSum = [20, 17, 35, 4].filter { $0 % 2 == 0 }.map { $0 * $0 }.reduce(0, +)"),
@@ -173,7 +173,7 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProviderRul
 
         let subcalls = dictionary.subcalls
 
-        if subcalls.isEmpty, let parentCallName = parentCallName, parentCallName.starts(with: name) {
+        if subcalls.isEmpty, let parentCallName, parentCallName.starts(with: name) {
             return [ByteRange(location: offset, length: length)]
         }
 

@@ -22,14 +22,14 @@ struct Signposts {
             description = file
         }
         let signpostID = OSSignpostID(log: log)
-        if let description = description {
+        if let description {
             os_signpost(.begin, log: log, name: name, signpostID: signpostID, "%{public}s", description)
         } else {
             os_signpost(.begin, log: log, name: name, signpostID: signpostID)
         }
 
         let result = try body()
-        if let description = description {
+        if let description {
             os_signpost(.end, log: log, name: name, signpostID: signpostID, "%{public}s", description)
         } else {
             os_signpost(.end, log: log, name: name, signpostID: signpostID)
@@ -53,14 +53,14 @@ struct Signposts {
             description = file
         }
         let signpostID = OSSignpostID(log: log)
-        if let description = description {
+        if let description {
             os_signpost(.begin, log: log, name: name, signpostID: signpostID, "%{public}s", description)
         } else {
             os_signpost(.begin, log: log, name: name, signpostID: signpostID)
         }
 
         let result = try await body()
-        if let description = description {
+        if let description {
             os_signpost(.end, log: log, name: name, signpostID: signpostID, "%{public}s", description)
         } else {
             os_signpost(.end, log: log, name: name, signpostID: signpostID)

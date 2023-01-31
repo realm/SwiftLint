@@ -20,7 +20,7 @@ struct UnneededBreakInSwitchRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "unneeded_break_in_switch",
         name: "Unneeded Break in Switch",
-        description: "Avoid using unneeded break statements.",
+        description: "Avoid using unneeded break statements",
         kind: .idiomatic,
         nonTriggeringExamples: [
             embedInSwitch("break"),

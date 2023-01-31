@@ -27,7 +27,7 @@ struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Collectin
     static let description = RuleDescription(
         identifier: "unused_declaration",
         name: "Unused Declaration",
-        description: "Declarations should be referenced at least once within all files linted.",
+        description: "Declarations should be referenced at least once within all files linted",
         kind: .lint,
         nonTriggeringExamples: UnusedDeclarationRuleExamples.nonTriggeringExamples,
         triggeringExamples: UnusedDeclarationRuleExamples.triggeringExamples,
@@ -244,7 +244,7 @@ private extension SourceKittenDictionary {
     }
 
     func aclAtOffset(_ offset: ByteCount) -> AccessControlLevel? {
-        if let nameOffset = nameOffset,
+        if let nameOffset,
             nameOffset == offset,
             let acl = accessibility {
             return acl
@@ -288,7 +288,7 @@ private extension SourceKittenDictionary {
     }
 
     func shouldSkipResultBuilder() -> Bool {
-        guard let name = name, declarationKind == .functionMethodStatic else {
+        guard let name, declarationKind == .functionMethodStatic else {
             return false
         }
 

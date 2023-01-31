@@ -20,7 +20,7 @@ extension SwiftLint {
 
         func run() async throws {
             let allPaths: [String]
-            if let path = path {
+            if let path {
                 queuedPrintError("""
                     warning: The --path option is deprecated. Pass the path(s) to analyze last to the swiftlint command.
                     """)

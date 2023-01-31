@@ -9,7 +9,7 @@ struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "multiline_parameters_brackets",
         name: "Multiline Parameters Brackets",
-        description: "Multiline parameters should have their surrounding brackets in a new line.",
+        description: "Multiline parameters should have their surrounding brackets in a new line",
         kind: .style,
         nonTriggeringExamples: [
             Example("""

@@ -8,7 +8,7 @@ struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProviderRule,
     static let description = RuleDescription(
         identifier: "ibinspectable_in_extension",
         name: "IBInspectable in Extension",
-        description: "Extensions shouldn't add @IBInspectable properties.",
+        description: "Extensions shouldn't add @IBInspectable properties",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

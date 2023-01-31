@@ -75,7 +75,7 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                         severity: configuration.severityConfiguration.severity,
                         location: Location(file: file, characterOffset: line.range.location),
                         reason: "Code should be indented with tabs or " +
-                        "\(configuration.indentationWidth) spaces, but not both in the same line."
+                        "\(configuration.indentationWidth) spaces, but not both in the same line"
                     )
                 )
 
@@ -98,7 +98,7 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                             ruleDescription: Self.description,
                             severity: configuration.severityConfiguration.severity,
                             location: Location(file: file, characterOffset: line.range.location),
-                            reason: "The first line shall not be indented."
+                            reason: "The first line shall not be indented"
                         )
                     )
                 }
@@ -124,8 +124,8 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                         severity: configuration.severityConfiguration.severity,
                         location: Location(file: file, characterOffset: line.range.location),
                         reason: isIndentation ?
-                            "Code should be indented using one tab or \(indentWidth) spaces." :
-                            "Code should be unindented by multiples of one tab or multiples of \(indentWidth) spaces."
+                            "Code should be indented using one tab or \(indentWidth) spaces" :
+                            "Code should be unindented by multiples of one tab or multiples of \(indentWidth) spaces"
                     )
                 )
             }

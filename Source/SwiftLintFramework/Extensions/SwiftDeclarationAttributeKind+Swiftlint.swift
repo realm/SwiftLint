@@ -33,7 +33,7 @@ extension SwiftDeclarationAttributeKind {
                 $0.swiftDeclarationAttributeKinds.contains(where: { $0.rawValue == rawAttribute })
             }
 
-            if let modifierGroup = modifierGroup {
+            if let modifierGroup {
                 self = modifierGroup
             } else {
                 return nil

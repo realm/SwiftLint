@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line."
+private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line"
 
 struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
     var configuration = VerticalWhitespaceConfiguration(maxEmptyLines: 1)
@@ -11,7 +11,7 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "vertical_whitespace",
         name: "Vertical Whitespace",
-        description: defaultDescriptionReason,
+        description: defaultDescriptionReason + ".",
         kind: .style,
         nonTriggeringExamples: [
             Example("let abc = 0\n"),
@@ -33,7 +33,7 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
 
     private var configuredDescriptionReason: String {
         guard configuration.maxEmptyLines == 1 else {
-            return "Limit vertical whitespace to maximum \(configuration.maxEmptyLines) empty lines."
+            return "Limit vertical whitespace to maximum \(configuration.maxEmptyLines) empty lines"
         }
         return defaultDescriptionReason
     }
@@ -49,7 +49,7 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
                 ruleDescription: Self.description,
                 severity: configuration.severityConfiguration.severity,
                 location: Location(file: file.path, line: eachLastLine.index),
-                reason: configuredDescriptionReason + " Currently \(eachSectionCount + 1)."
+                reason: configuredDescriptionReason + "; currently \(eachSectionCount + 1)"
             )
         }
     }

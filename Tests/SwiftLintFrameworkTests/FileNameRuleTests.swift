@@ -1,10 +1,7 @@
-import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-private let fixturesDirectory = #file.bridge()
-    .deletingLastPathComponent.bridge()
-    .appendingPathComponent("Resources/FileNameRuleFixtures")
+private let fixturesDirectory = "\(TestResources.path)/FileNameRuleFixtures"
 
 class FileNameRuleTests: XCTestCase {
     private func validate(fileName: String, excludedOverride: [String]? = nil,
@@ -14,13 +11,13 @@ class FileNameRuleTests: XCTestCase {
         let rule: FileNameRule
         if let excluded = excludedOverride {
             rule = try FileNameRule(configuration: ["excluded": excluded])
-        } else if let prefixPattern = prefixPattern, let suffixPattern = suffixPattern {
+        } else if let prefixPattern, let suffixPattern {
             rule = try FileNameRule(configuration: ["prefix_pattern": prefixPattern, "suffix_pattern": suffixPattern])
-        } else if let prefixPattern = prefixPattern {
+        } else if let prefixPattern {
             rule = try FileNameRule(configuration: ["prefix_pattern": prefixPattern])
-        } else if let suffixPattern = suffixPattern {
+        } else if let suffixPattern {
             rule = try FileNameRule(configuration: ["suffix_pattern": suffixPattern])
-        } else if let nestedTypeSeparator = nestedTypeSeparator {
+        } else if let nestedTypeSeparator {
             rule = try FileNameRule(configuration: ["nested_type_separator": nestedTypeSeparator])
         } else {
             rule = FileNameRule()

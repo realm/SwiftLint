@@ -11,7 +11,7 @@ struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "explicit_acl",
         name: "Explicit ACL",
-        description: "All declarations should specify Access Control Level keywords explicitly.",
+        description: "All declarations should specify Access Control Level keywords explicitly",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("internal enum A {}\n"),
@@ -188,7 +188,7 @@ private extension SwiftDeclarationKind {
              .functionMethodInstance, .functionMethodStatic, .functionOperator, .functionOperatorInfix,
              .functionOperatorPostfix, .functionOperatorPrefix, .functionSubscript, .protocol, .opaqueType:
             return true
-        case .class, .enum, .extension, .extensionClass, .extensionEnum,
+        case .actor, .class, .enum, .extension, .extensionClass, .extensionEnum,
              .extensionProtocol, .extensionStruct, .struct:
             return false
         }

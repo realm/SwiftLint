@@ -15,9 +15,8 @@ struct AccessibilityTraitForButtonRule: ASTRule, ConfigurationProviderRule, OptI
     static let description = RuleDescription(
         identifier: "accessibility_trait_for_button",
         name: "Accessibility Trait for Button",
-        description: "All views with tap gestures added should include the .isButton " +
-                    "accessibility trait. If a tap opens an external link the .isLink " +
-                    "trait should be used instead.",
+        description: "All views with tap gestures added should include the .isButton or the .isLink accessibility " +
+                     "traits",
         kind: .lint,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: AccessibilityTraitForButtonRuleExamples.nonTriggeringExamples,

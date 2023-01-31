@@ -8,7 +8,7 @@ struct PreferNimbleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "prefer_nimble",
         name: "Prefer Nimble",
-        description: "Prefer Nimble matchers over XCTAssert functions.",
+        description: "Prefer Nimble matchers over XCTAssert functions",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("expect(foo) == 1"),

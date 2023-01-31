@@ -5,11 +5,12 @@ import SwiftLintFramework
 import XCTest
 
 private let config: Configuration = {
-    let directory = #file.bridge()
+    let bazelWorkspaceDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"]
+    let rootProjectDirectory = bazelWorkspaceDirectory ?? #file.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent
-    _ = FileManager.default.changeCurrentDirectoryPath(directory)
+    _ = FileManager.default.changeCurrentDirectoryPath(rootProjectDirectory)
     return Configuration(configurationFiles: [Configuration.defaultFileName])
 }()
 
@@ -146,13 +147,13 @@ private func execute(_ args: [String],
     let process = Process()
     process.launchPath = "/usr/bin/env"
     process.arguments = args
-    if let directory = directory {
+    if let directory {
         process.currentDirectoryPath = directory.path
     }
     let stdoutPipe = Pipe(), stderrPipe = Pipe()
     process.standardOutput = stdoutPipe
     process.standardError = stderrPipe
-    if let input = input {
+    if let input {
         let stdinPipe = Pipe()
         process.standardInput = stdinPipe.fileHandleForReading
         stdinPipe.fileHandleForWriting.write(input)

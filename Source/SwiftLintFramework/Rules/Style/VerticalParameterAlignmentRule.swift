@@ -8,7 +8,7 @@ struct VerticalParameterAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRul
     static let description = RuleDescription(
         identifier: "vertical_parameter_alignment",
         name: "Vertical Parameter Alignment",
-        description: "Function parameters should be aligned vertically if they're in multiple lines in a declaration.",
+        description: "Function parameters should be aligned vertically if they're in multiple lines in a declaration",
         kind: .style,
         nonTriggeringExamples: VerticalParameterAlignmentRuleExamples.nonTriggeringExamples,
         triggeringExamples: VerticalParameterAlignmentRuleExamples.triggeringExamples

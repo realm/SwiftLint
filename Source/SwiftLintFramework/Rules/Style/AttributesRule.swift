@@ -10,7 +10,7 @@ struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
         name: "Attributes",
         description: """
             Attributes should be on their own lines in functions and types, but on the same line as variables and \
-            imports.
+            imports
             """,
         kind: .style,
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
@@ -121,7 +121,7 @@ private struct RuleHelper {
 
     func hasViolation(
         locationConverter: SourceLocationConverter,
-        attributesAndPlacements: [(AttributeSyntax, AttributePlacement)]
+        attributesAndPlacements: [(SyntaxProtocol, AttributePlacement)]
     ) -> Bool {
         var linesWithAttributes: Set<Int> = [keywordLine]
         for (attribute, placement) in attributesAndPlacements {
@@ -147,29 +147,75 @@ private struct RuleHelper {
     }
 }
 
+private enum Attribute {
+    case builtIn(AttributeSyntax)
+    case custom(CustomAttributeSyntax)
+
+    static func from(syntax: SyntaxProtocol) -> Self? {
+        if let attribute = syntax.as(AttributeSyntax.self) {
+            return .builtIn(attribute)
+        }
+        if let attribute = syntax.as(CustomAttributeSyntax.self) {
+            return .custom(attribute)
+        }
+        return nil
+    }
+
+    var hasArguments: Bool {
+        switch self {
+        case let .builtIn(attribute):
+            return attribute.argument != nil
+        case let .custom(attribute):
+            return attribute.argumentList != nil
+        }
+    }
+
+    var name: String? {
+        switch self {
+        case let .builtIn(attribute):
+            return attribute.attributeName.text
+        case let .custom(attribute):
+            return attribute.attributeName.as(SimpleTypeIdentifierSyntax.self)?.typeName
+        }
+    }
+
+    var syntaxNode: SyntaxProtocol {
+        switch self {
+        case let .builtIn(attribute):
+            return attribute
+        case let .custom(attribute):
+            return attribute
+        }
+    }
+}
+
 private extension AttributeListSyntax {
     func attributesAndPlacements(configuration: AttributesConfiguration, shouldBeOnSameLine: Bool)
-        -> [(AttributeSyntax, AttributePlacement)] {
-        self
-            .children(viewMode: .sourceAccurate)
-            .compactMap { $0.as(AttributeSyntax.self) }
-            .map { attribute in
-                let atPrefixedName = "@\(attribute.attributeName.text)"
+        -> [(SyntaxProtocol, AttributePlacement)] {
+        self.children(viewMode: .sourceAccurate)
+            .compactMap { Attribute.from(syntax: $0) }
+            .compactMap { attribute in
+                guard let attributeName = attribute.name else {
+                    return nil
+                }
+                let atPrefixedName = "@\(attributeName)"
                 if configuration.alwaysOnSameLine.contains(atPrefixedName) {
-                    return (attribute, .sameLineAsDeclaration)
+                    return (attribute.syntaxNode, .sameLineAsDeclaration)
                 } else if configuration.alwaysOnNewLine.contains(atPrefixedName) {
-                    return (attribute, .dedicatedLine)
-                } else if attribute.argument != nil {
-                    return (attribute, .dedicatedLine)
+                    return (attribute.syntaxNode, .dedicatedLine)
+                } else if attribute.hasArguments {
+                    return (attribute.syntaxNode, .dedicatedLine)
                 }
 
-                return shouldBeOnSameLine ? (attribute, .sameLineAsDeclaration) : (attribute, .dedicatedLine)
+                return shouldBeOnSameLine
+                    ? (attribute.syntaxNode, .sameLineAsDeclaration)
+                    : (attribute.syntaxNode, .dedicatedLine)
             }
     }
 
     // swiftlint:disable:next cyclomatic_complexity
     func makeHelper(locationConverter: SourceLocationConverter) -> RuleHelper? {
-        guard let parent = parent else {
+        guard let parent else {
             return nil
         }
 

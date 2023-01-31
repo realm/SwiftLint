@@ -8,7 +8,7 @@ struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule
     static let description = RuleDescription(
         identifier: "static_operator",
         name: "Static Operator",
-        description: "Operators should be declared as static functions, not free functions.",
+        description: "Operators should be declared as static functions, not free functions",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

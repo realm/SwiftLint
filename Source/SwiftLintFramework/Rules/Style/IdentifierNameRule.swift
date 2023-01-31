@@ -34,9 +34,9 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         return validateName(dictionary: dictionary, kind: kind).map { name, offset in
-            guard !configuration.excluded.contains(name), let firstCharacter = name.first else {
-                return []
-            }
+            guard let firstCharacter = name.first else { return [] }
+
+            guard !configuration.shouldExclude(name: name) else { return [] }
 
             let isFunction = SwiftDeclarationKind.functionKinds.contains(kind)
             let description = Self.description
@@ -49,15 +49,14 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                         StyleViolation(ruleDescription: description,
                                        severity: .error,
                                        location: Location(file: file, byteOffset: offset),
-                                       reason: "\(type) name should only contain alphanumeric " +
-                            "characters: '\(name)'")
+                                       reason: "\(type) name '\(name)' should only contain alphanumeric characters")
                     ]
                 }
 
                 if let severity = severity(forLength: name.count) {
-                    let reason = "\(type) name should be between " +
+                    let reason = "\(type) name '\(name)' should be between " +
                         "\(configuration.minLengthThreshold) and " +
-                        "\(configuration.maxLengthThreshold) characters long: '\(name)'"
+                        "\(configuration.maxLengthThreshold) characters long"
                     return [
                         StyleViolation(ruleDescription: Self.description,
                                        severity: severity,
@@ -75,7 +74,7 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             let requiresCaseCheck = configuration.validatesStartWithLowercase
             if requiresCaseCheck &&
                 kind != .varStatic && name.isViolatingCase && !name.isOperator {
-                let reason = "\(type) name should start with a lowercase character: '\(name)'"
+                let reason = "\(type) name '\(name)' should start with a lowercase character"
                 return [
                     StyleViolation(ruleDescription: description,
                                    severity: .error,

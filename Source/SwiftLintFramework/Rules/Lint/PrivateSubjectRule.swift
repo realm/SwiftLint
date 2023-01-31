@@ -8,7 +8,7 @@ struct PrivateSubjectRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
     static let description = RuleDescription(
         identifier: "private_subject",
         name: "Private Combine Subject",
-        description: "Combine Subject should be private.",
+        description: "Combine Subject should be private",
         kind: .lint,
         nonTriggeringExamples: PrivateSubjectRuleExamples.nonTriggeringExamples,
         triggeringExamples: PrivateSubjectRuleExamples.triggeringExamples

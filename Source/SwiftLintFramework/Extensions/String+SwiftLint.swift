@@ -40,7 +40,7 @@ extension String {
     }
 
     internal func substring(from: Int, length: Int? = nil) -> String {
-        if let length = length {
+        if let length {
             return self[from..<from + length]
         }
         return String(self[index(startIndex, offsetBy: from, limitedBy: endIndex)!...])

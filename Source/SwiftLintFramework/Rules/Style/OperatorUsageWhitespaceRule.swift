@@ -10,7 +10,7 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationPro
     static let description = RuleDescription(
         identifier: "operator_usage_whitespace",
         name: "Operator Usage Whitespace",
-        description: "Operators should be surrounded by a single whitespace when they are being used.",
+        description: "Operators should be surrounded by a single whitespace when they are being used",
         kind: .style,
         nonTriggeringExamples: OperatorUsageWhitespaceRuleExamples.nonTriggeringExamples,
         triggeringExamples: OperatorUsageWhitespaceRuleExamples.triggeringExamples,

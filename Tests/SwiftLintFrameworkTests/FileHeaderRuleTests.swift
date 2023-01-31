@@ -1,10 +1,7 @@
-import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-private let fixturesDirectory = #file.bridge()
-    .deletingLastPathComponent.bridge()
-    .appendingPathComponent("Resources/FileHeaderRuleFixtures")
+private let fixturesDirectory = "\(TestResources.path)/FileHeaderRuleFixtures"
 
 class FileHeaderRuleTests: XCTestCase {
     private func validate(fileName: String, using configuration: Any) throws -> [StyleViolation] {

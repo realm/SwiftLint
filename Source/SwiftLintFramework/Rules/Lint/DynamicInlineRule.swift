@@ -8,7 +8,7 @@ struct DynamicInlineRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "dynamic_inline",
         name: "Dynamic Inline",
-        description: "Avoid using 'dynamic' and '@inline(__always)' together.",
+        description: "Avoid using 'dynamic' and '@inline(__always)' together",
         kind: .lint,
         nonTriggeringExamples: [
             Example("class C {\ndynamic func f() {}}"),

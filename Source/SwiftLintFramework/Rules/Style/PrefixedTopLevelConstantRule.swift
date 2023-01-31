@@ -8,7 +8,7 @@ struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule, ConfigurationPr
     static let description = RuleDescription(
         identifier: "prefixed_toplevel_constant",
         name: "Prefixed Top-Level Constant",
-        description: "Top-level constants should be prefixed by `k`.",
+        description: "Top-level constants should be prefixed by `k`",
         kind: .style,
         nonTriggeringExamples: [
             Example("private let kFoo = 20.0"),

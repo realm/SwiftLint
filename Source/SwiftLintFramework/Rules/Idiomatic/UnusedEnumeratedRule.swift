@@ -53,10 +53,10 @@ private extension UnusedEnumeratedRule {
             let reason: String
             if firstTokenIsUnderscore {
                 position = firstElement.positionAfterSkippingLeadingTrivia
-                reason = "When the index is not used, `.enumerated()` can be removed."
+                reason = "When the index is not used, `.enumerated()` can be removed"
             } else {
                 position = secondElement.positionAfterSkippingLeadingTrivia
-                reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`."
+                reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`"
             }
 
             violations.append(ReasonedRuleViolation(position: position, reason: reason))

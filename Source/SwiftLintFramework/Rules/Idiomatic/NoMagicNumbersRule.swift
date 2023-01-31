@@ -8,7 +8,7 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
     static let description = RuleDescription(
         identifier: "no_magic_numbers",
         name: "No Magic Numbers",
-        description: "Magic numbers should be replaced by named constants.",
+        description: "Magic numbers should be replaced by named constants",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("var foo = 123"),
@@ -19,26 +19,32 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
             Example("// array[1337]"),
             Example("baz(\"9999\")"),
             Example("""
-        func foo() {
-            let x: Int = 2
-            let y = 3
-            let vector = [x, y, -1]
-        }
-        """),
-            Example("""
-        class A {
-            var foo: Double = 132
-            static let bar: Double = 0.98
-        }
-        """),
-            Example("""
-        @available(iOS 13, *)
-        func version() {
-            if #available(iOS 13, OSX 10.10, *) {
-                return
+            func foo() {
+                let x: Int = 2
+                let y = 3
+                let vector = [x, y, -1]
             }
-        }
-        """)
+            """),
+            Example("""
+            class A {
+                var foo: Double = 132
+                static let bar: Double = 0.98
+            }
+            """),
+            Example("""
+            @available(iOS 13, *)
+            func version() {
+                if #available(iOS 13, OSX 10.10, *) {
+                    return
+                }
+            }
+            """),
+            Example("""
+            enum Example: Int {
+                case positive = 2
+                case negative = -2
+            }
+            """)
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -59,13 +65,13 @@ private extension NoMagicNumbersRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FloatLiteralExprSyntax) {
             if node.floatingDigits.isMagicNumber {
-                self.violations.append(node.floatingDigits.positionAfterSkippingLeadingTrivia)
+                violations.append(node.floatingDigits.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
             if node.digits.isMagicNumber {
-                self.violations.append(node.digits.positionAfterSkippingLeadingTrivia)
+                violations.append(node.digits.positionAfterSkippingLeadingTrivia)
             }
         }
     }
@@ -73,14 +79,16 @@ private extension NoMagicNumbersRule {
 
 private extension TokenSyntax {
     var isMagicNumber: Bool {
-        let numerStr = text.replacingOccurrences(of: "_", with: "")
-
-        guard let number = Double(numerStr),
-              ![0, 1].contains(number),
-              let parentToken = parent?.parent,
-              !parentToken.is(InitializerClauseSyntax.self) else {
+        guard let number = Double(text.replacingOccurrences(of: "_", with: "")) else {
             return false
         }
-        return true
+        if [0, 1].contains(number) {
+            return false
+        }
+        guard let grandparent = parent?.parent else {
+            return true
+        }
+        return !grandparent.is(InitializerClauseSyntax.self)
+            && grandparent.as(PrefixOperatorExprSyntax.self)?.parent?.is(InitializerClauseSyntax.self) != true
     }
 }

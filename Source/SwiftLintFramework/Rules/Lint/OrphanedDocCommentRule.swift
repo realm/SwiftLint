@@ -8,7 +8,7 @@ struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "orphaned_doc_comment",
         name: "Orphaned Doc Comment",
-        description: "A doc comment should be attached to a declaration.",
+        description: "A doc comment should be attached to a declaration",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -53,7 +53,7 @@ struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
             .compactMap { first, second in
                 let firstByteRange = first.range.toSourceKittenByteRange()
                 guard
-                    let second = second,
+                    let second,
                     first.kind == .docLineComment || first.kind == .docBlockComment,
                     second.kind == .lineComment || second.kind == .blockComment,
                     let firstString = file.stringView.substringWithByteRange(firstByteRange),

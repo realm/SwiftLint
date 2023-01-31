@@ -20,7 +20,7 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
     var error: Int?
 
     var params: [RuleParameter<Int>] {
-        if let error = error {
+        if let error {
             return [RuleParameter(severity: .error, value: error),
                     RuleParameter(severity: .warning, value: warning)]
         }

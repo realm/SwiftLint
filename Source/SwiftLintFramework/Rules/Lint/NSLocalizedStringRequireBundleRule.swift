@@ -8,7 +8,7 @@ struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, Configura
     static let description = RuleDescription(
         identifier: "nslocalizedstring_require_bundle",
         name: "NSLocalizedString Require Bundle",
-        description: "Calls to NSLocalizedString should specify the bundle which contains the strings file.",
+        description: "Calls to NSLocalizedString should specify the bundle which contains the strings file",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

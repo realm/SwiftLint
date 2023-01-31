@@ -8,7 +8,7 @@ struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule 
     static let description = RuleDescription(
         identifier: "yoda_condition",
         name: "Yoda Condition",
-        description: "The constant literal should be placed on the right-hand side of the comparison operator.",
+        description: "The constant literal should be placed on the right-hand side of the comparison operator",
         kind: .lint,
         nonTriggeringExamples: [
             Example("if foo == 42 {}\n"),

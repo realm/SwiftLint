@@ -8,7 +8,7 @@ struct UnavailableFunctionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
     static let description = RuleDescription(
         identifier: "unavailable_function",
         name: "Unavailable Function",
-        description: "Unimplemented functions should be marked as unavailable.",
+        description: "Unimplemented functions should be marked as unavailable",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

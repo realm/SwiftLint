@@ -9,7 +9,7 @@ struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptI
     static let description = RuleDescription(
         identifier: "literal_expression_end_indentation",
         name: "Literal Expression End Indentation",
-        description: "Array and dictionary literal end should have the same indentation as the line that started it.",
+        description: "Array and dictionary literal end should have the same indentation as the line that started it",
         kind: .style,
         nonTriggeringExamples: [
             Example("""
@@ -130,9 +130,9 @@ struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptI
     }
 
     private func styleViolation(for violation: Violation, in file: SwiftLintFile) -> StyleViolation {
-        let reason = "\(Self.description.description) " +
-                     "Expected \(violation.indentationRanges.expected.length), " +
-                     "got \(violation.indentationRanges.actual.length)."
+        let reason = "\(Self.description.description); " +
+                     "expected indentation of \(violation.indentationRanges.expected.length), " +
+                     "got \(violation.indentationRanges.actual.length)"
 
         return StyleViolation(ruleDescription: Self.description,
                               severity: configuration.severity,

@@ -194,7 +194,7 @@ private extension Line {
 
     /// For "import A.B.C" returns slices [["A", "B", "C"], ["A", "B"], ["A"]]
     var importSlices: [ImportSlice] {
-        guard let importIdentifier = importIdentifier else { return [] }
+        guard let importIdentifier else { return [] }
 
         let importedSubpathParts = importIdentifier.split(separator: ".").map { String($0) }
         guard !importedSubpathParts.isEmpty else { return [] }

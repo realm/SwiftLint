@@ -272,7 +272,7 @@ public func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,
     let identifiers: Set<String> = skipDisableCommandTests ? [identifier]
         : [identifier, superfluousDisableCommandRuleIdentifier]
 
-    if let ruleConfiguration = ruleConfiguration, let ruleType = primaryRuleList.list[identifier] {
+    if let ruleConfiguration, let ruleType = primaryRuleList.list[identifier] {
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
             let rules = skipDisableCommandTests ? [configuredRule] : [configuredRule, SuperfluousDisableCommandRule()]

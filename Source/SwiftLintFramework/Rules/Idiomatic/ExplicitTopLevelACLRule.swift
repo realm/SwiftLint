@@ -96,7 +96,7 @@ private extension ExplicitTopLevelACLRule {
         }
 
         private func hasViolation(modifiers: ModifierListSyntax?) -> Bool {
-            guard let modifiers = modifiers else {
+            guard let modifiers else {
                 return true
             }
 

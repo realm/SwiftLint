@@ -123,7 +123,7 @@ public struct Command: Equatable {
     ///
     /// - returns: The expanded commands.
     internal func expand() -> [Command] {
-        guard let modifier = modifier else {
+        guard let modifier else {
             return [self]
         }
         switch modifier {

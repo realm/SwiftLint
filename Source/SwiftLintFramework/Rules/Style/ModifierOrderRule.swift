@@ -178,13 +178,9 @@ private extension SourceKittenDictionary {
     }
 
     private func kindsAndOffsets(in declarationKinds: [SwiftDeclarationKind]) -> SourceKittenDictionary? {
-        guard let offset = offset,
-            let declarationKind = declarationKind,
-            declarationKinds.contains(declarationKind)
-        else {
+        guard let offset, let declarationKind, declarationKinds.contains(declarationKind) else {
             return nil
         }
-
         return SourceKittenDictionary(["key.kind": declarationKind.rawValue, "key.offset": Int64(offset.value)])
     }
 }

@@ -230,7 +230,7 @@ private extension TokenSyntax {
             return true
         } else if case .newlines = nextToken?.leadingTrivia.first {
             return true
-        } else if let nextToken = nextToken, allowedKinds.contains(nextToken.tokenKind) {
+        } else if let nextToken, allowedKinds.contains(nextToken.tokenKind) {
             return true
         } else {
             return false

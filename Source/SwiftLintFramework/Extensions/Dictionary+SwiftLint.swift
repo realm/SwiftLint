@@ -89,7 +89,7 @@ public struct SourceKittenDictionary {
 
     /// Returns byte range starting from `offset` with `length` bytes
     var byteRange: ByteRange? {
-        guard let offset = offset, let length = length else { return nil }
+        guard let offset, let length else { return nil }
         return ByteRange(location: offset, length: length)
     }
 

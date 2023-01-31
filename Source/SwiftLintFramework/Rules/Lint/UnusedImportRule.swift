@@ -257,7 +257,7 @@ private extension SwiftLintFile {
 
     // Operators that are a part of some body are reported as method.static
     func mightBeOperator(kind: String?) -> Bool {
-        guard let kind = kind else { return false }
+        guard let kind else { return false }
         return [
             "source.lang.swift.ref.function.operator",
             "source.lang.swift.ref.function.method.static"

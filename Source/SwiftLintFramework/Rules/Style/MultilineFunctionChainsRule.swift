@@ -173,7 +173,7 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProviderRul
 
         let subcalls = dictionary.subcalls
 
-        if subcalls.isEmpty, let parentCallName = parentCallName, parentCallName.starts(with: name) {
+        if subcalls.isEmpty, let parentCallName, parentCallName.starts(with: name) {
             return [ByteRange(location: offset, length: length)]
         }
 

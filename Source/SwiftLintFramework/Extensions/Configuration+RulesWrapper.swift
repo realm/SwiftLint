@@ -29,7 +29,7 @@ internal extension Configuration {
             defer { resultingRulesLock.unlock() }
 
             // Return existing value if it's available
-            if let cachedResultingRules = cachedResultingRules { return cachedResultingRules }
+            if let cachedResultingRules { return cachedResultingRules }
 
             // Calculate value
             let customRulesFilter: (RegexConfiguration) -> (Bool)

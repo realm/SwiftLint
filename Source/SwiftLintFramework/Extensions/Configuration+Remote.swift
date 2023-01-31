@@ -118,7 +118,7 @@ internal extension Configuration.FileGraph.FilePath {
     }
 
     private mutating func handleMissingNetwork(urlString: String, cachedFilePath: String?) throws -> String {
-        if let cachedFilePath = cachedFilePath {
+        if let cachedFilePath {
             queuedPrintError(
                 "warning: No internet connectivity: Unable to load remote config from \"\(urlString)\". "
                     + "Using cached version as a fallback."
@@ -139,7 +139,7 @@ internal extension Configuration.FileGraph.FilePath {
         taskDone: Bool,
         timeout: TimeInterval
     ) throws -> String {
-        if let cachedFilePath = cachedFilePath {
+        if let cachedFilePath {
             if taskDone {
                 queuedPrintError(
                     "warning: Unable to load remote config from \"\(urlString)\". Using cached version as a fallback."
@@ -169,7 +169,7 @@ internal extension Configuration.FileGraph.FilePath {
     }
 
     private mutating func handleFileWriteFailure(urlString: String, cachedFilePath: String?) throws -> String {
-        if let cachedFilePath = cachedFilePath {
+        if let cachedFilePath {
             queuedPrintError("Unable to cache remote config from \"\(urlString)\". Using cached version as a fallback.")
             self = .existing(path: cachedFilePath)
             return cachedFilePath

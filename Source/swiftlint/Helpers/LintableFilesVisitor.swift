@@ -96,7 +96,7 @@ struct LintableFilesVisitor {
         self.forceExclude = forceExclude
         self.useExcludingByPrefix = useExcludingByPrefix
         self.cache = cache
-        if let compilerInvocations = compilerInvocations {
+        if let compilerInvocations {
             self.mode = .analyze(allCompilerInvocations: compilerInvocations)
             // SourceKit had some changes in 5.6 that makes it ~100x more expensive
             // to process files concurrently. By processing files serially, it's

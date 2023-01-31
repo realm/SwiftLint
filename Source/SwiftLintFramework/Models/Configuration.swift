@@ -132,7 +132,7 @@ public struct Configuration {
         pinnedVersion: String? = nil,
         allowZeroLintableFiles: Bool = false
     ) {
-        if let pinnedVersion = pinnedVersion, pinnedVersion != Version.current.value {
+        if let pinnedVersion, pinnedVersion != Version.current.value {
             queuedPrintError(
                 "Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion)."

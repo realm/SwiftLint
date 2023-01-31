@@ -147,13 +147,13 @@ private func execute(_ args: [String],
     let process = Process()
     process.launchPath = "/usr/bin/env"
     process.arguments = args
-    if let directory = directory {
+    if let directory {
         process.currentDirectoryPath = directory.path
     }
     let stdoutPipe = Pipe(), stderrPipe = Pipe()
     process.standardOutput = stdoutPipe
     process.standardError = stderrPipe
-    if let input = input {
+    if let input {
         let stdinPipe = Pipe()
         process.standardInput = stdinPipe.fileHandleForReading
         stdinPipe.fileHandleForWriting.write(input)

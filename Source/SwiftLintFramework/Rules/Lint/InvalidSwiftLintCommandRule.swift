@@ -79,8 +79,7 @@ private extension Trivia {
 
     private func violation(forString actionString: String, offset: AbsolutePosition) -> ReasonedRuleViolation? {
         guard Command(actionString: actionString, line: 0, character: 0) != nil else {
-            let violation = ReasonedRuleViolation(position: offset)
-            return violation
+            ReasonedRuleViolation(position: offset)
         }
         return nil
     }

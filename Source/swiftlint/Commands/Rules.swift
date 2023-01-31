@@ -17,7 +17,8 @@ extension SwiftLint {
 
         @Option(help: "The path to a SwiftLint configuration file")
         var config: String?
-        @OptionGroup var rulesFilterOptions: RulesFilterOptions
+        @OptionGroup
+        var rulesFilterOptions: RulesFilterOptions
         @Flag(name: .shortAndLong, help: "Display full configuration details")
         var verbose = false
         @Argument(help: "The rule identifier to display description for")

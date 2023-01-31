@@ -73,6 +73,13 @@ internal struct AttributesRuleExamples {
         func refreshable(action: @escaping @Sendable () async -> Void) -> some View {
             modifier(RefreshableModifier(action: action))
         }
+        """),
+        Example("""
+        import AppKit
+
+        @NSApplicationMain
+        @MainActor
+        final class AppDelegate: NSAppDelegate {}
         """)
     ]
 

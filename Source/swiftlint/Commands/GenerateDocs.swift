@@ -12,7 +12,8 @@ extension SwiftLint {
         var path = "rule_docs"
         @Option(help: "The path to a SwiftLint configuration file")
         var config: String?
-        @OptionGroup var rulesFilterOptions: RulesFilterOptions
+        @OptionGroup
+        var rulesFilterOptions: RulesFilterOptions
 
         func run() throws {
             let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))

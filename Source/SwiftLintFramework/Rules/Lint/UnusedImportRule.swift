@@ -124,8 +124,7 @@ private extension SwiftLintFile {
             )
         }
 
-        let contentsNSString = stringView.nsString
-        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports), contents: contentsNSString)
+        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports))
             .map { ImportUsage.unused(module: $0, range: $1) }
 
         guard configuration.requireExplicitImports else {
@@ -188,7 +187,7 @@ private extension SwiftLintFile {
         return (imports: imports, usrFragments: usrFragments)
     }
 
-    func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
+    func rangedAndSortedUnusedImports(of unusedImports: [String]) -> [(String, NSRange)] {
         return unusedImports
             .compactMap { module in
                 match(pattern: "^(@\\w+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }

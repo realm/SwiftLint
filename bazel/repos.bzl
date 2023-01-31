@@ -1,13 +1,14 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-def swiftlint_repos():
+def swiftlint_repos(bzlmod = False):
     """Fetches SwiftLint repositories"""
-    http_archive(
-        name = "com_github_jpsim_sourcekitten",
-        sha256 = "bb200a812f46caa58814a655140e5088225925179bf587901ac62a897341d179",
-        strip_prefix = "SourceKitten-0.33.1",
-        url = "https://github.com/jpsim/SourceKitten/archive/refs/tags/0.33.1.tar.gz",
-    )
+    if not bzlmod:
+        http_archive(
+            name = "com_github_jpsim_sourcekitten",
+            sha256 = "7a38debb93ef11504f6b6a776be598095591fae7e128263754d041c5ada8e856",
+            strip_prefix = "SourceKitten-0.34.0",
+            url = "https://github.com/jpsim/SourceKitten/archive/refs/tags/0.34.0.tar.gz",
+        )
 
     http_archive(
         name = "swiftlint_com_github_scottrhoyt_swifty_text_table",
@@ -41,3 +42,8 @@ def swiftlint_repos():
         strip_prefix = "CryptoSwift-ea07950124f7e44e88bd783bf29e6691a7866228",
         url = "https://github.com/krzyzanowskim/CryptoSwift/archive/ea07950124f7e44e88bd783bf29e6691a7866228.tar.gz",
     )
+
+def _swiftlint_repos_bzlmod(_):
+    swiftlint_repos(bzlmod = True)
+
+swiftlint_repos_bzlmod = module_extension(implementation = _swiftlint_repos_bzlmod)

@@ -64,13 +64,19 @@ You can also build and install from source by cloning this project and running
 
 ### Using Bazel
 
-Put this in your `WORKSPACE`:
+Put this in your `MODULE.bazel`:
+
+```bzl
+bazel_dep(name = "swiftlint", version = "0.50.4", repo_name = "SwiftLint")
+```
+
+Or put this in your `WORKSPACE`:
 
 <details>
 
 <summary>WORKSPACE</summary>
 
-```python
+```bzl
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(

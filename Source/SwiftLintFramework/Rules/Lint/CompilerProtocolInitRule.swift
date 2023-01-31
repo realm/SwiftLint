@@ -82,7 +82,7 @@ private struct ExpressibleByCompiler {
     let initCallNames: Set<String>
     private let arguments: Set<[String]>
 
-    init(protocolName: String, types: Set<String>, arguments: Set<[String]>) {
+    private init(protocolName: String, types: Set<String>, arguments: Set<[String]>) {
         self.protocolName = protocolName
         self.arguments = arguments
 

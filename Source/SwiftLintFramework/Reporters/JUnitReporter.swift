@@ -10,17 +10,30 @@ public struct JUnitReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<testsuites><testsuite>" +
-            violations.map({ violation -> String in
-                let fileName = (violation.location.file ?? "<nopath>").escapedForXML()
-                let severity = violation.severity.rawValue + ":\n"
-                let message = severity + "Line:" + String(violation.location.line ?? 0) + " "
-                let reason = violation.reason.escapedForXML()
-                return [
-                    "\n\t<testcase classname='Formatting Test' name='\(fileName)\'>\n",
-                    "<failure message='\(reason)\'>" + message + "</failure>",
-                    "\t</testcase>"
-                ].joined()
-            }).joined() + "\n</testsuite></testsuites>"
+        let warningCount = violations.filter({ $0.severity == .warning }).count
+        let errorCount = violations.filter({ $0.severity == .error }).count
+
+        return """
+            <?xml version="1.0" encoding="utf-8"?>
+            <testsuites failures="\(warningCount)" errors="\(errorCount)">
+            \t<testsuite failures="\(warningCount)" errors="\(errorCount)">
+            \(violations.map(testCase(for:)).joined(separator: "\n"))
+            \t</testsuite>
+            </testsuites>
+            """
+    }
+
+    private static func testCase(for violation: StyleViolation) -> String {
+        let fileName = (violation.location.file ?? "<nopath>").escapedForXML()
+        let reason = violation.reason.escapedForXML()
+        let severity = violation.severity.rawValue.capitalized
+        let lineNumber = String(violation.location.line ?? 0)
+        let message = severity + ":" + "Line:" + lineNumber
+
+        return """
+            \t\t<testcase classname='Formatting Test' name='\(fileName)'>
+            \t\t\t<failure message='\(reason)'>\(message)</failure>
+            \t\t</testcase>
+            """
     }
 }

@@ -1,3 +1,5 @@
+common --enable_bzlmod
+
 try-import %workspace%/ci.bazelrc
 try-import %workspace%/user.bazelrc
 

@@ -188,7 +188,7 @@ private extension SwiftDeclarationKind {
              .functionMethodInstance, .functionMethodStatic, .functionOperator, .functionOperatorInfix,
              .functionOperatorPostfix, .functionOperatorPrefix, .functionSubscript, .protocol, .opaqueType:
             return true
-        case .class, .enum, .extension, .extensionClass, .extensionEnum,
+        case .actor, .class, .enum, .extension, .extensionClass, .extensionEnum,
              .extensionProtocol, .extensionStruct, .struct:
             return false
         }

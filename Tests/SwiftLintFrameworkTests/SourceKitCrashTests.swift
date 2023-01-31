@@ -47,8 +47,8 @@ class SourceKitCrashTests: XCTestCase {
                       "Expects assert handler was not called on accessing SwiftLintFile.syntaxTokensByLines")
     }
 
-    func testRulesWithFileThatCrashedSourceKitService() {
-        let file = SwiftLintFile(path: #file)!
+    func testRulesWithFileThatCrashedSourceKitService() throws {
+        let file = try XCTUnwrap(SwiftLintFile(path: "\(TestResources.path)/ProjectMock/Level0.swift"))
         file.sourcekitdFailed = true
         file.assertHandler = {
             XCTFail("If this called, rule's SourceKitFreeRule is not properly configured")

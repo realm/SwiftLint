@@ -5,11 +5,12 @@ import SwiftLintFramework
 import XCTest
 
 private let config: Configuration = {
-    let directory = #file.bridge()
+    let bazelWorkspaceDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"]
+    let rootProjectDirectory = bazelWorkspaceDirectory ?? #file.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent
-    _ = FileManager.default.changeCurrentDirectoryPath(directory)
+    _ = FileManager.default.changeCurrentDirectoryPath(rootProjectDirectory)
     return Configuration(configurationFiles: [Configuration.defaultFileName])
 }()
 

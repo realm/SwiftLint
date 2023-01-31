@@ -44,6 +44,12 @@
 
 #### Bug Fixes
 
+* Work around an issue where the Swift Package Manger build plugin would 
+  "consume" input files causing Xcode's build system to ignore them in 
+  subsequent build steps such as compilation. 
+  [Tony Arnold](https://github.com/tonyarnold)
+  [#4732](https://github.com/realm/SwiftLint/pull/4732)
+
 * Report violations in all `<scope>_length` rules when the error threshold is
   smaller than the warning threshold.  
   [SimplyDanny](https://github.com/SimplyDanny)

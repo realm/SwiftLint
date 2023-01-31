@@ -45,15 +45,16 @@ extension Path {
     }
 
     public func relative(to base: Path) -> Path {
+        // This method is a reimplementation of the same method from `Path`
+        // in https://github.com/apple/swift-tools-support-core
         let result: String
         // Split the two paths into their components.
-        // FIXME: The is needs to be optimized to avoid unncessary copying.
         let pathComps = self.parents.reversed()
         let baseComps = base.parents.reversed()
 
         // It's common for the base to be an ancestor, so try that first.
         if pathComps.starts(with: baseComps) {
-            // Special case, which is a plain path without `..` components.  It
+            // Special case, which is a plain path without `..` components. It
             // might be an empty path (when self and the base are equal).
             let relComps = pathComps.dropFirst(baseComps.count).map(\.lastComponent)
 #if os(Windows)

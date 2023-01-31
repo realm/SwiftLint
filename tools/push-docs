@@ -1,24 +1,32 @@
 #!/bin/bash
 
+# Install deploy ssh key, to enable pushing back to gh-pages
 mkdir -p ~/.ssh && mv $DOWNLOADSECUREFILE_SECUREFILEPATH ~/.ssh/id_rsa
 chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_rsa
 ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
+# Get current commit hash, to include in automated commit message
 source_sha="$(git rev-parse HEAD)"
+
+# Get a second copy of the repo, pointing to the `gh-pages` branch,
+# to use for publishing to GitHub Pages
 user="swiftlintbot@jpsim.com"
 git config --global user.email "$user"
 git config --global user.name "$user"
 git clone git@github.com:realm/SwiftLint.git out
 
+# Remove all contents from publishing dir
 cd out
 git checkout gh-pages
 git rm -rf .
 rm -rf Carthage
 cd ..
 
+# Copy generated docs into publishing dir
 cp -a docs/. out/.
-cd out
 
+# Publish to GitHub Pages
+cd out
 git add -A
 git commit -m "Automated deployment to GitHub Pages: ${source_sha}" --allow-empty
 

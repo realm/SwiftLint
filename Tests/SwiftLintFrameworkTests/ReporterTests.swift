@@ -17,7 +17,8 @@ class ReporterTests: XCTestCase {
             SonarQubeReporter.self,
             MarkdownReporter.self,
             GitHubActionsLoggingReporter.self,
-            GitLabJUnitReporter.self
+            GitLabJUnitReporter.self,
+            ConsoleGroupedReporter.self
         ]
         for reporter in reporters {
             XCTAssertEqual(reporter.identifier, reporterFrom(identifier: reporter.identifier).identifier)
@@ -38,6 +39,53 @@ class ReporterTests: XCTestCase {
                            severity: .error,
                            location: location,
                            reason: "Violation Reason"),
+            StyleViolation(ruleDescription: SyntacticSugarRule.description,
+                           severity: .error,
+                           location: location,
+                           reason: "Shorthand syntactic sugar should be used" +
+                                   ", i.e. [Int] instead of Array<Int>"),
+            StyleViolation(ruleDescription: ColonRule.description,
+                           severity: .error,
+                           location: Location(file: nil),
+                           reason: nil)
+        ]
+    }
+    
+    private func generateViolationsForConsoleGroupedReporter() -> [StyleViolation] {
+        let location = Location(file: "filename", line: 1, character: 2)
+        return [
+            StyleViolation(ruleDescription: LineLengthRule.description,
+                           location: location,
+                           reason: "Violation Reason"),
+            StyleViolation(ruleDescription: LineLengthRule.description,
+                           location: location,
+                           reason: "Violation Reason"),
+            StyleViolation(ruleDescription: LineLengthRule.description,
+                           location: location,
+                           reason: "Violation Reason"),
+            StyleViolation(ruleDescription: LineLengthRule.description,
+                           severity: .error,
+                           location: location,
+                           reason: "Violation Reason"),
+            StyleViolation(ruleDescription: LineLengthRule.description,
+                           severity: .error,
+                           location: location,
+                           reason: "Violation Reason"),
+            StyleViolation(ruleDescription: SyntacticSugarRule.description,
+                           severity: .error,
+                           location: location,
+                           reason: "Shorthand syntactic sugar should be used" +
+                                   ", i.e. [Int] instead of Array<Int>"),
+            StyleViolation(ruleDescription: SyntacticSugarRule.description,
+                           severity: .error,
+                           location: location,
+                           reason: "Shorthand syntactic sugar should be used" +
+                                   ", i.e. [Int] instead of Array<Int>"),
+            StyleViolation(ruleDescription: SyntacticSugarRule.description,
+                           severity: .error,
+                           location: location,
+                           reason: "Shorthand syntactic sugar should be used" +
+                                   ", i.e. [Int] instead of Array<Int>"),
             StyleViolation(ruleDescription: SyntacticSugarRule.description,
                            severity: .error,
                            location: location,
@@ -134,6 +182,12 @@ class ReporterTests: XCTestCase {
     func testMarkdownReporter() {
         let expectedOutput = stringFromFile("CannedMarkdownReporterOutput.md")
         let result = MarkdownReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
+    }
+    
+    func testConsoleGroupedReporter() {
+        let expectedOutput = stringFromFile("CannedConsoleGroupedReporterOutput.txt")
+        let result = ConsoleGroupedReporter.generateReport(generateViolationsForConsoleGroupedReporter())
         XCTAssertEqual(result, expectedOutput)
     }
 }

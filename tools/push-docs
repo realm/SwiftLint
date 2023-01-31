@@ -25,8 +25,9 @@ git rm -rf .
 rm -rf Carthage
 cd ..
 
-# Copy generated docs into publishing dir
+# Copy generated docs & repo's assets into the publishing dir
 cp -a docs/. "${publishing_dir}/."
+cp -R assets "${publishing_dir}/"
 
 # Publish to GitHub Pages
 cd "$publishing_dir" || exit

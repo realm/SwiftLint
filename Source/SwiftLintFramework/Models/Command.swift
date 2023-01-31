@@ -112,11 +112,11 @@ public struct Command: Equatable {
         // Modifier
         let hasModifier = actionAndModifierScanner.scanString(":") != nil
         if hasModifier {
-            modifier = Modifier(
-              rawValue: String(
-                actionAndModifierScanner.string[actionAndModifierScanner.currentIndex...]
-              )
-            )
+            let modifierString = String(actionAndModifierScanner.string[actionAndModifierScanner.currentIndex...])
+            guard let modifier = Modifier(rawValue: modifierString) else {
+                return nil
+            }
+            self.modifier = modifier
         } else {
             modifier = nil
         }

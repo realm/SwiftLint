@@ -78,48 +78,9 @@ private extension Trivia {
     }
 
     private func violation(forString actionString: String, offset: AbsolutePosition) -> ReasonedRuleViolation? {
-        guard let command = Command(actionString: actionString, line: 0, character: 0) else {
+        guard Command(actionString: actionString, line: 0, character: 0) != nil else {
             let violation = ReasonedRuleViolation(position: offset)
             return violation
-        }
-        if command.modifier == nil {
-            return malformedModifierViolation(forString: actionString, offset: offset)
-        }
-        return nil
-    }
-
-    private func malformedModifierViolation(
-        forString actionString: String,
-        offset: AbsolutePosition
-    ) -> ReasonedRuleViolation? {
-        if let malformedEnableViolation = malformedModifierViolation(
-            commandAndAction: "swiftlint:enable:",
-            forString: actionString,
-            offset: offset
-        ) {
-            return malformedEnableViolation
-        }
-        return malformedModifierViolation(
-            commandAndAction: "swiftlint:disable:",
-            forString: actionString,
-            offset: offset
-        )
-    }
-
-    private func malformedModifierViolation(
-        commandAndAction: String,
-        forString actionString: String,
-        offset: AbsolutePosition
-    ) -> ReasonedRuleViolation? {
-        let scanner = Scanner(string: actionString)
-        guard scanner.scanString(commandAndAction) != nil else {
-            return nil
-        }
-        guard let modifierString = scanner.scanUpToString(" ") else {
-            return nil
-        }
-        if Command.Modifier(rawValue: modifierString) == nil {
-            return ReasonedRuleViolation(position: offset)
         }
         return nil
     }

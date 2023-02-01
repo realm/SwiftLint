@@ -31,6 +31,9 @@ extension SwiftLintFile {
 
             case .enable:
                 disabledRules.subtract(command.ruleIdentifiers)
+
+            case .invalid:
+                break
             }
 
             let start = Location(file: path, line: command.line, character: command.character)

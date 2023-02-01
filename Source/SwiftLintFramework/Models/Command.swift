@@ -119,11 +119,7 @@ public struct Command: Equatable {
         let modifier: Modifier?
         if hasModifier {
             let modifierString = String(actionAndModifierScanner.string[actionAndModifierScanner.currentIndex...])
-            if let modifierTemp = Modifier(rawValue: modifierString) {
-                modifier = modifierTemp
-            } else {
-                modifier = .invalid
-            }
+            modifier = Modifier(rawValue: modifierString) ?? .invalid
         } else {
             modifier = nil
         }

@@ -15,10 +15,12 @@ struct SwiftLintPlugin: BuildToolPlugin {
         )
     }
 
-    private func createBuildCommands(inputFiles: [Path],
-                                     packageDirectory: Path,
-                                     workingDirectory: Path,
-                                     tool: PluginContext.Tool) -> [Command] {
+    private func createBuildCommands(
+        inputFiles: [Path],
+        packageDirectory: Path,
+        workingDirectory: Path,
+        tool: PluginContext.Tool
+    ) -> [Command] {
         if inputFiles.isEmpty {
             // Don't lint anything if there are no Swift source files in this target
             return []
@@ -37,13 +39,15 @@ struct SwiftLintPlugin: BuildToolPlugin {
         }
         arguments += inputFiles.map(\.string)
 
+        // We are not producing output files and this is needed only to not include cache files into bundle
+        let outputFilesDirectory = workingDirectory.appending("Output")
+
         return [
-            .buildCommand(
+            .prebuildCommand(
                 displayName: "SwiftLint",
                 executable: tool.path,
                 arguments: arguments,
-                inputFiles: inputFiles,
-                outputFiles: [workingDirectory]
+                outputFilesDirectory: outputFilesDirectory
             )
         ]
     }

@@ -17,7 +17,8 @@ class ReporterTests: XCTestCase {
             SonarQubeReporter.self,
             MarkdownReporter.self,
             GitHubActionsLoggingReporter.self,
-            GitLabJUnitReporter.self
+            GitLabJUnitReporter.self,
+            RelativePathReporter.self
         ]
         for reporter in reporters {
             XCTAssertEqual(reporter.identifier, reporterFrom(identifier: reporter.identifier).identifier)
@@ -134,6 +135,12 @@ class ReporterTests: XCTestCase {
     func testMarkdownReporter() {
         let expectedOutput = stringFromFile("CannedMarkdownReporterOutput.md")
         let result = MarkdownReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
+    }
+
+    func testRelativePathReporter() {
+        let expectedOutput = stringFromFile("CannedRelativePathReporterOutput.txt")
+        let result = RelativePathReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
 }

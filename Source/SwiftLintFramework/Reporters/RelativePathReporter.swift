@@ -1,4 +1,4 @@
-/// Reports violations in a format similar to the one Xcode uses to display in the IDE but with relative paths.
+/// Reports violations with relative paths.
 public struct RelativePathReporter: Reporter {
     // MARK: - Reporter Conformance
 
@@ -6,7 +6,7 @@ public struct RelativePathReporter: Reporter {
     public static let isRealtime = true
 
     public var description: String {
-        return "Reports violations in a format similar to the one Xcode uses to display in the IDE but with relative paths."
+        return "Reports violations with relative paths."
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {

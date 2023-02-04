@@ -765,6 +765,9 @@ only configurable rule list, there are no equivalents for <code>disabled_rules</
 <span class="c1">#   - empty_parameters</span>
 <span class="c1">#   - vertical_whitespace</span>
 
+<span class="na">analyzer_rules</span><span class="pi">:</span> <span class="c1"># Rules run by `swiftlint analyze`</span>
+  <span class="pi">-</span> <span class="s">explicit_self</span>
+
 <span class="na">included</span><span class="pi">:</span> <span class="c1"># paths to include during linting. `--path` is ignored if present.</span>
   <span class="pi">-</span> <span class="s">Source</span>
 <span class="na">excluded</span><span class="pi">:</span> <span class="c1"># paths to ignore during linting. Takes precedence over `included`.</span>
@@ -773,8 +776,9 @@ only configurable rule list, there are no equivalents for <code>disabled_rules</
   <span class="pi">-</span> <span class="s">Source/ExcludedFolder</span>
   <span class="pi">-</span> <span class="s">Source/ExcludedFile.swift</span>
   <span class="pi">-</span> <span class="s">Source/*/ExcludedFile.swift</span> <span class="c1"># Exclude files with a wildcard</span>
-<span class="na">analyzer_rules</span><span class="pi">:</span> <span class="c1"># Rules run by `swiftlint analyze`</span>
-  <span class="pi">-</span> <span class="s">explicit_self</span>
+
+<span class="c1"># If true, SwiftLint will not fail if no lintable files are found.</span>
+<span class="na">allow_zero_lintable_files</span><span class="pi">:</span> <span class="no">false</span>
 
 <span class="c1"># configurable rules can be customized from this configuration file</span>
 <span class="c1"># binary rules can set their severity level</span>

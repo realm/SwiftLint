@@ -371,12 +371,21 @@ Once [installed](https://pre-commit.com/#install), add this to the
 ```yaml
 repos:
   - repo: https://github.com/realm/SwiftLint
-    rev: 0.44.0
+    rev: 0.50.3
     hooks:
       - id: swiftlint
 ```
 
-Adjust `rev` to the SwiftLint version of your choice.
+Adjust `rev` to the SwiftLint version of your choice.  `pre-commit autoupdate` can be used to update to the current version.
+
+SwiftLint can be configured using `entry` to apply fixes and fail on errors:
+```yaml
+-   repo: https://github.com/realm/SwiftLint
+    rev: 0.50.3
+    hooks:
+    -   id: swiftlint
+        entry: swiftlint --fix --strict
+```
 
 ## Rules
 

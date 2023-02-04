@@ -487,6 +487,9 @@ opt_in_rules: # some rules are turned off by default, so you need to opt-in
 #   - empty_parameters
 #   - vertical_whitespace
 
+analyzer_rules: # Rules run by `swiftlint analyze`
+  - explicit_self
+
 included: # paths to include during linting. `--path` is ignored if present.
   - Source
 excluded: # paths to ignore during linting. Takes precedence over `included`.
@@ -495,8 +498,9 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Source/ExcludedFolder
   - Source/ExcludedFile.swift
   - Source/*/ExcludedFile.swift # Exclude files with a wildcard
-analyzer_rules: # Rules run by `swiftlint analyze`
-  - explicit_self
+
+# If true, SwiftLint will not fail if no lintable files are found.
+allow_zero_lintable_files: false
 
 # configurable rules can be customized from this configuration file
 # binary rules can set their severity level

@@ -649,12 +649,20 @@ Once <a href="https://pre-commit.com/#install">installed</a>, add this to the
 <code>.pre-commit-config.yaml</code> in the root of your repository:</p>
 <pre class="highlight yaml"><code><span class="na">repos</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/realm/SwiftLint</span>
-    <span class="na">rev</span><span class="pi">:</span> <span class="s">0.44.0</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">0.50.3</span>
     <span class="na">hooks</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">swiftlint</span>
 </code></pre>
 
-<p>Adjust <code>rev</code> to the SwiftLint version of your choice.</p>
+<p>Adjust <code>rev</code> to the SwiftLint version of your choice.  <code>pre-commit autoupdate</code> can be used to update to the current version.</p>
+
+<p>SwiftLint can be configured using <code>entry</code> to apply fixes and fail on errors:</p>
+<pre class="highlight yaml"><code><span class="pi">-</span>   <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/realm/SwiftLint</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">0.50.3</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+    <span class="pi">-</span>   <span class="na">id</span><span class="pi">:</span> <span class="s">swiftlint</span>
+        <span class="na">entry</span><span class="pi">:</span> <span class="s">swiftlint --fix --strict</span>
+</code></pre>
 <h2 id='rules' class='heading'>Rules</h2>
 
 <p>Over 200 rules are included in SwiftLint and the Swift community (that&rsquo;s you!)

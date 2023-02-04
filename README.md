@@ -378,7 +378,7 @@ repos:
 
 Adjust `rev` to the SwiftLint version of your choice.  `pre-commit autoupdate` can be used to update to the current version.
 
-SwiftLint can be configured to apply fixes and fail on errors:
+SwiftLint can be configured using `entry` to apply fixes and fail on errors:
 ```yaml
 -   repo: https://github.com/realm/SwiftLint
     rev: 0.50.3

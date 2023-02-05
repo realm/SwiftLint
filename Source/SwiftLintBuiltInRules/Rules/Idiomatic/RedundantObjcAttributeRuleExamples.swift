@@ -75,6 +75,18 @@ struct RedundantObjcAttributeRuleExamples {
             @objc(addElementsObject:)
             @NSManaged public func addToElements(_ value: BlockEditorSettingElement)
         }
+        """),
+        Example("""
+        @objcMembers
+        public class Foo {
+            @objc
+            private func handler(_ notification: Notification) {
+            }
+
+            func registerForNotifications() {
+                NotificationCenter.default.addObserver(self, selector: #selector(handler(_:)), name: nil, object: nil)
+            }
+        }
         """)
     ]
 

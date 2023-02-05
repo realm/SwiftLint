@@ -1,6 +1,6 @@
 struct RedundantObjcAttributeRuleExamples {
     static let nonTriggeringExamples = [
-        Example("@objc private var foo: String? {}"), // nope
+        Example("@objc private var foo: String? {}"),
         Example("@IBInspectable private var foo: String? {}"),
         Example("@objc private func foo(_ sender: Any) {}"),
         Example("@IBAction private func foo(_ sender: Any) {}"),

@@ -89,9 +89,7 @@ private extension AttributeListSyntax {
                   let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
                   parentClassDecl.attributes?.hasObjCMembers == true {
             if let functionDeclSyntax = parent?.as(FunctionDeclSyntax.self) {
-                if functionDeclSyntax.modifiers.isPrivateOrFileprivate == false {
-                    return objcAttribute
-                }
+                return functionDeclSyntax.modifiers.isPrivateOrFileprivate ? nil : objcAttribute
             } else {
                 return objcAttribute
             }
@@ -101,8 +99,6 @@ private extension AttributeListSyntax {
         } else {
             return nil
         }
-
-        return nil
     }
 }
 

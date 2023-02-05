@@ -94,17 +94,15 @@ private extension AttributeListSyntax {
 
         if hasAttributeImplyingObjC, parent?.is(ExtensionDeclSyntax.self) != true {
             return objcAttribute
+        } else if parent?.is(EnumDeclSyntax.self) == true {
+            return nil
         } else if parent?.isFunctionOrStoredProperty == true,
                   let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
                   parentClassDecl.attributes?.hasObjCMembers == true {
-            if parent?.functionOrVariableModifiers.isPrivateOrFileprivate == true {
-                return nil
-            } else {
-                return objcAttribute
-            }
+            return parent?.functionOrVariableModifiers.isPrivateOrFileprivate == true ? nil : objcAttribute
         } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
                   parentExtensionDecl.attributes?.objCAttribute != nil {
-            return parent?.as(EnumDeclSyntax.self) != nil ? nil : objcAttribute
+            return objcAttribute
         } else {
             return nil
         }

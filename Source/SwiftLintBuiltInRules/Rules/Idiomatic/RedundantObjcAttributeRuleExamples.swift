@@ -1,6 +1,6 @@
 struct RedundantObjcAttributeRuleExamples {
     static let nonTriggeringExamples = [
-        Example("@objc private var foo: String? {}"),
+        Example("@objc private var foo: String? {}"), // nope
         Example("@IBInspectable private var foo: String? {}"),
         Example("@objc private func foo(_ sender: Any) {}"),
         Example("@IBAction private func foo(_ sender: Any) {}"),
@@ -13,7 +13,7 @@ struct RedundantObjcAttributeRuleExamples {
         class Foo {
             var bar: Any?
             @objc
-            class Bar {
+            class Bar: NSObject {
                 @objc
                 var foo: Any?
             }
@@ -59,14 +59,15 @@ struct RedundantObjcAttributeRuleExamples {
         Example("""
         @objcMembers
         class Foo {
+            @objc
             class Bar: NSObject {
-                @objc var foo: Any
+                @objc var foo: Any?
             }
         }
         """),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             @objc class Bar {}
         }
         """),
@@ -78,7 +79,7 @@ struct RedundantObjcAttributeRuleExamples {
         """),
         Example("""
         @objcMembers
-        public class Foo {
+        public class Foo: NSObject {
             @objc
             private func handler(_ notification: Notification) {
             }
@@ -120,6 +121,14 @@ struct RedundantObjcAttributeRuleExamples {
                 value(forKey: "baz")
             }
         }
+        """),
+        Example("""
+        @objcMembers
+        class Foo: NSObject {
+            @objc enum Bar: Int {
+               case bar
+            }
+        }
         """)
     ]
 
@@ -135,13 +144,13 @@ struct RedundantObjcAttributeRuleExamples {
         Example("↓@objc @IBDesignable class Foo {}"),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             ↓@objc var bar: Any?
         }
         """),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             ↓@objc var bar: Any?
             ↓@objc var foo: Any?
             @objc
@@ -171,7 +180,7 @@ struct RedundantObjcAttributeRuleExamples {
         """),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             @objcMembers
             class Bar: NSObject {
                 ↓@objc var foo: Any
@@ -205,23 +214,23 @@ struct RedundantObjcAttributeRuleExamples {
         Example("↓@objc @IBDesignable class Foo {}"): Example("@IBDesignable class Foo {}"),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             ↓@objc var bar: Any?
         }
         """):
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             var bar: Any?
         }
         """),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             ↓@objc var bar: Any?
             ↓@objc var foo: Any?
             @objc
-            class Bar {
+            class Bar: NSObject {
                 @objc
                 var foo2: Any?
             }
@@ -229,11 +238,11 @@ struct RedundantObjcAttributeRuleExamples {
         """):
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             var bar: Any?
             var foo: Any?
             @objc
-            class Bar {
+            class Bar: NSObject {
                 @objc
                 var foo2: Any?
             }
@@ -275,7 +284,7 @@ struct RedundantObjcAttributeRuleExamples {
         """),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             @objcMembers
             class Bar: NSObject {
                 ↓@objc var foo: Any
@@ -284,7 +293,7 @@ struct RedundantObjcAttributeRuleExamples {
         """):
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             @objcMembers
             class Bar: NSObject {
                 var foo: Any

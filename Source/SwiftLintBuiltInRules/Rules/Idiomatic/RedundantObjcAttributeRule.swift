@@ -97,7 +97,7 @@ private extension AttributeListSyntax {
             }
         } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
                   parentExtensionDecl.attributes?.objCAttribute != nil {
-            return objcAttribute
+            return parent?.as(EnumDeclSyntax.self) != nil ? nil : objcAttribute
         } else {
             return nil
         }

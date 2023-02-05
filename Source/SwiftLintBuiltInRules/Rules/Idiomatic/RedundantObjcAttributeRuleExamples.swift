@@ -87,6 +87,17 @@ struct RedundantObjcAttributeRuleExamples {
                 NotificationCenter.default.addObserver(self, selector: #selector(handler(_:)), name: nil, object: nil)
             }
         }
+        """),
+        Example("""
+        class Foo: NSObject { }
+
+        @objc extension Foo {
+            @objc enum Bar: Int {
+               case bar
+            }
+
+            var bar: Bar { .bar }
+        }
         """)
     ]
 

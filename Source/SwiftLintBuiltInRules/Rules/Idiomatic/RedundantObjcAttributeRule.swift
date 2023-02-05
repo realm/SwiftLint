@@ -75,6 +75,15 @@ private extension Syntax {
             return false
         }
     }
+
+    var functionOrVariableModifiers: ModifierListSyntax? {
+        if let functionDecl = self.as(FunctionDeclSyntax.self) {
+            return functionDecl.modifiers
+        } else if let variableDecl = self.as(VariableDeclSyntax.self) {
+            return variableDecl.modifiers
+        }
+        return nil
+    }
 }
 
 private extension AttributeListSyntax {
@@ -88,10 +97,8 @@ private extension AttributeListSyntax {
         } else if parent?.isFunctionOrStoredProperty == true,
                   let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
                   parentClassDecl.attributes?.hasObjCMembers == true {
-            if let functionDecl = parent?.as(FunctionDeclSyntax.self) {
-                return functionDecl.modifiers.isPrivateOrFileprivate ? nil : objcAttribute
-            } else if let variableDecl = parent?.as(VariableDeclSyntax.self) {
-                return variableDecl.modifiers.isPrivateOrFileprivate ? nil : objcAttribute
+            if parent?.functionOrVariableModifiers.isPrivateOrFileprivate == true {
+                return nil
             } else {
                 return objcAttribute
             }

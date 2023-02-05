@@ -110,17 +110,17 @@ struct RedundantObjcAttributeRuleExamples {
           private var baz: Baz { .baz }
         }
         """),
-       Example("""
-       @objcMembers
-       internal class Foo: NSObject {
-           @objc
-           private var baz: Int = 1
+        Example("""
+        @objcMembers
+        internal class Foo: NSObject {
+            @objc
+            private var baz: Int = 1
 
-           var x: Any? {
-               value(forKey: "baz")
-           }
-       }
-       """)
+            var x: Any? {
+                value(forKey: "baz")
+            }
+        }
+        """)
     ]
 
     static let triggeringExamples = [

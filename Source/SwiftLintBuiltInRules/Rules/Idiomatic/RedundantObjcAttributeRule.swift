@@ -88,8 +88,10 @@ private extension AttributeListSyntax {
         } else if parent?.isFunctionOrStoredProperty == true,
                   let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
                   parentClassDecl.attributes?.hasObjCMembers == true {
-            if let functionDeclSyntax = parent?.as(FunctionDeclSyntax.self) {
-                return functionDeclSyntax.modifiers.isPrivateOrFileprivate ? nil : objcAttribute
+            if let functionDecl = parent?.as(FunctionDeclSyntax.self) {
+                return functionDecl.modifiers.isPrivateOrFileprivate ? nil : objcAttribute
+            } else if let variableDecl = parent?.as(VariableDeclSyntax.self) {
+                return variableDecl.modifiers.isPrivateOrFileprivate ? nil : objcAttribute
             } else {
                 return objcAttribute
             }

@@ -389,6 +389,10 @@
 * Fix correction on `lower_acl_than_parent` rule for `open` declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4753](https://github.com/realm/SwiftLint/issues/4753)
+* Fix false positives on `redundant_objc_attribute` rule for enums
+  and private members.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4633](https://github.com/realm/SwiftLint/issues/4633)
 
 * Fix `void_return` rule to support async and async throws functions.  
   [Mathias Schreck](https://github.com/lo1tuma)

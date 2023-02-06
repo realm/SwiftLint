@@ -140,7 +140,7 @@ private extension LegacyConstructorRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
-               constructorsToCorrectedNames[identifierExpr.identifier.withoutTrivia().text] != nil {
+               constructorsToCorrectedNames[identifierExpr.identifier.text] != nil {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -158,7 +158,7 @@ private extension LegacyConstructorRule {
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
-                  case let identifier = identifierExpr.identifier.withoutTrivia().text,
+                  case let identifier = identifierExpr.identifier.text,
                   let correctedName = constructorsToCorrectedNames[identifier],
                   let args = constructorsToArguments[identifier],
                   !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {

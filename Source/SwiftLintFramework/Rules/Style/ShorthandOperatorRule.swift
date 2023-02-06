@@ -62,7 +62,7 @@ private extension ShorthandOperatorRule {
             guard node.operatorOperand.is(AssignmentExprSyntax.self),
                   let rightExpr = node.rightOperand.as(InfixOperatorExprSyntax.self),
                   let binaryOperatorExpr = rightExpr.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                  ShorthandOperatorRule.allOperators.contains(binaryOperatorExpr.operatorToken.withoutTrivia().text),
+                  ShorthandOperatorRule.allOperators.contains(binaryOperatorExpr.operatorToken.text),
                   node.leftOperand.withoutTrivia().description == rightExpr.leftOperand.withoutTrivia().description
             else {
                 return

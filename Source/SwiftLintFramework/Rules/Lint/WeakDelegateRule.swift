@@ -114,7 +114,7 @@ private extension VariableDeclSyntax {
                 return false
             }
 
-            return pattern.identifier.withoutTrivia().text.lowercased().hasSuffix("delegate")
+            return pattern.identifier.text.lowercased().hasSuffix("delegate")
         }
     }
 
@@ -147,7 +147,7 @@ private extension VariableDeclSyntax {
                 return false
             }
 
-            return ignoredAttributes.contains(typeIdentifier.name.withoutTrivia().text)
+            return ignoredAttributes.contains(typeIdentifier.name.text)
         } ?? false
     }
 }

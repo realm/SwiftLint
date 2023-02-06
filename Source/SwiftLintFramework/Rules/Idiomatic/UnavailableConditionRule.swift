@@ -78,7 +78,7 @@ struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
 
 private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: IfStmtSyntax) {
-        guard node.body.statements.withoutTrivia().isEmpty else {
+        guard node.body.statements.isEmpty else {
             return
         }
 

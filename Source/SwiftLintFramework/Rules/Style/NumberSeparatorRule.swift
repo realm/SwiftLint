@@ -140,7 +140,7 @@ private enum NumberSeparatorViolation {
 
 private extension NumberSeparatorValidator {
     func violation(token: TokenSyntax) -> NumberSeparatorViolation? {
-        let content = token.withoutTrivia().text
+        let content = token.text
         guard isDecimal(number: content),
             !isInValidRanges(number: content)
         else {

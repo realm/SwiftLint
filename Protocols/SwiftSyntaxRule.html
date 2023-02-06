@@ -328,7 +328,7 @@
             <p>A SwiftLint Rule backed by SwiftSyntax that does not use SourceKit requests.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L4-L28">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L4-L29">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -480,7 +480,8 @@
                       <div class="abstract">
                         <p>Gives a chance for the rule to do some pre-processing on the syntax tree.
 One typical example is using <code>SwiftOperators</code> to &ldquo;fold&rdquo; the tree, resolving operators precedence.
-By default, it just returns the same <code>syntaxTree</code>.</p>
+This can also be used to skip validation in a given file.
+By default, it just returns the file&rsquo;s <code>syntaxTree</code>.</p>
 
                       </div>
                       <h4>Default Implementation</h4>
@@ -502,12 +503,12 @@ By default, it just returns the same <code>syntaxTree</code>.</p>
                             <tr>
                               <td>
                                 <code>
-                                <em>syntaxTree</em>
+                                <em>file</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>The syntax tree to run pre-processing on</p>
+                                  <p>The file to run pre-processing on.</p>
                                 </div>
                               </td>
                             </tr>
@@ -519,7 +520,7 @@ By default, it just returns the same <code>syntaxTree</code>.</p>
                         <p>The tree that will be used to check for violations. If <code>nil</code>, this rule will return no violations.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L27">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L28">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -575,7 +576,7 @@ By default, it just returns the same <code>syntaxTree</code>.</p>
                         <p>The source ranges in the specified file where this rule is disabled.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L48-L53">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L49-L54">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -607,7 +608,7 @@ By default, it just returns the same <code>syntaxTree</code>.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L55-L64">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L56-L65">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

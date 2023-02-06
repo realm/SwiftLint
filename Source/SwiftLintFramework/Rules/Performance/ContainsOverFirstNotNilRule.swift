@@ -34,8 +34,8 @@ struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
         Visitor(viewMode: .sourceAccurate)
     }
 
-    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
-        syntaxTree.folded()
+    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
+        file.foldedSyntaxTree
     }
 }
 

@@ -13,12 +13,23 @@ struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, Configuration
     static let description = RuleDescription(
         identifier: "number_separator",
         name: "Number Separator",
-        description: "Underscores should be used as thousand separator in large decimal numbers",
+        description: """
+            Underscores should be used as thousand separator in large numbers with a configurable number of digits. In \
+            other words, there should be an underscore after every 3 digits in the integral as well as the fractional \
+            part of a number.
+            """,
         kind: .style,
         nonTriggeringExamples: NumberSeparatorRuleExamples.nonTriggeringExamples,
         triggeringExamples: NumberSeparatorRuleExamples.triggeringExamples,
         corrections: NumberSeparatorRuleExamples.corrections
     )
+
+    static let missingSeparatorsReason = """
+        Underscores should be used as thousand separators
+        """
+    static let misplacedSeparatorsReason = """
+        Underscore(s) used as thousand separator(s) should be added after every 3 digits only
+        """
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
@@ -44,13 +55,13 @@ private extension NumberSeparatorRule {
 
         override func visitPost(_ node: FloatLiteralExprSyntax) {
             if let violation = violation(token: node.floatingDigits) {
-                violations.append(violation.position)
+                violations.append(ReasonedRuleViolation(position: violation.position, reason: violation.reason))
             }
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
             if let violation = violation(token: node.digits) {
-                violations.append(violation.position)
+                violations.append(ReasonedRuleViolation(position: violation.position, reason: violation.reason))
             }
         }
     }
@@ -101,8 +112,34 @@ private protocol NumberSeparatorValidator {
     var configuration: NumberSeparatorConfiguration { get }
 }
 
-extension NumberSeparatorValidator {
-    func violation(token: TokenSyntax) -> (position: AbsolutePosition, correction: String)? {
+private enum NumberSeparatorViolation {
+    case missingSeparator(position: AbsolutePosition, correction: String)
+    case misplacedSeparator(position: AbsolutePosition, correction: String)
+
+    var reason: String {
+        switch self {
+        case .missingSeparator: return NumberSeparatorRule.missingSeparatorsReason
+        case .misplacedSeparator: return NumberSeparatorRule.misplacedSeparatorsReason
+        }
+    }
+
+    var position: AbsolutePosition {
+        switch self {
+        case let .missingSeparator(position, _): return position
+        case let .misplacedSeparator(position, _): return position
+        }
+    }
+
+    var correction: String {
+        switch self {
+        case let .missingSeparator(_, correction): return correction
+        case let .misplacedSeparator(_, correction): return correction
+        }
+    }
+}
+
+private extension NumberSeparatorValidator {
+    func violation(token: TokenSyntax) -> NumberSeparatorViolation? {
         let content = token.withoutTrivia().text
         guard isDecimal(number: content),
             !isInValidRanges(number: content)
@@ -121,9 +158,7 @@ extension NumberSeparatorValidator {
         var validFraction = true
         var expectedFraction: String?
         if components.count == 2, let fractionSubstring = components.last {
-            let result = isValid(number: fractionSubstring, isFraction: true)
-            validFraction = result.0
-            expectedFraction = result.1
+            (validFraction, expectedFraction) = isValid(number: fractionSubstring, isFraction: true)
         }
 
         guard let integerSubstring = components.first,
@@ -143,7 +178,10 @@ extension NumberSeparatorValidator {
             corrected += exponentialSymbol + exponential
         }
 
-        return (token.positionAfterSkippingLeadingTrivia, corrected)
+        if content.contains("_") {
+            return .misplacedSeparator(position: token.positionAfterSkippingLeadingTrivia, correction: corrected)
+        }
+        return .missingSeparator(position: token.positionAfterSkippingLeadingTrivia, correction: corrected)
     }
 
     private func isDecimal(number: String) -> Bool {

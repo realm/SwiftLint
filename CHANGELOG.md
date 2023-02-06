@@ -42,6 +42,10 @@
   [David Steinacher](https://github.com/stonko1994)
   [#4626](https://github.com/realm/SwiftLint/issues/4626)
 
+* Let `number_separator` rule trigger on misplaced separators, e.g. `10_00`.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4637](https://github.com/realm/SwiftLint/issues/4637)
+
 #### Bug Fixes
 
 * Report violations in all `<scope>_length` rules when the error threshold is

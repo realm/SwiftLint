@@ -1,5 +1,6 @@
 import ArgumentParser
 import Foundation
+import SwiftLintFramework
 
 extension SwiftLint {
     struct Docs: ParsableCommand {
@@ -7,8 +8,20 @@ extension SwiftLint {
             abstract: "Open SwiftLint documentation website in the default web browser"
         )
 
+        @Argument(help: "The identifier of the rule to open the documentation for")
+        var ruleID: String?
+
         func run() throws {
-            open(URL(string: "https://realm.github.io/SwiftLint")!)
+            var subPage = ""
+            if let ruleID {
+                if primaryRuleList.list[ruleID] == nil {
+                    queuedPrintError("There is no rule named '\(ruleID)'. Opening rule directory instead.")
+                    subPage = "rule-directory.html"
+                } else {
+                    subPage = ruleID + ".html"
+                }
+            }
+            open(URL(string: "https://realm.github.io/SwiftLint/\(subPage)")!)
             ExitHelper.successfullyExit()
         }
     }

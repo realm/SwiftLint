@@ -41,6 +41,11 @@
   [Julioacarrettoni](https://github.com/Julioacarrettoni)
   [#4624](https://github.com/realm/SwiftLint/pull/4624)
 
+* Allow to pass a rule identifier to the `swiftlint docs` command to open its
+  specific documentation website, e.g. `swiftlint docs for_where`.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4707](https://github.com/realm/SwiftLint/issues/4707)
+
 * Allow new Quick APIs `aroundEach` and `justBeforeEach` for
   `quick_discouraged_call`.  
   [David Steinacher](https://github.com/stonko1994)

@@ -212,6 +212,13 @@ Select `SwiftLintPlugin` from the list and add it to the project.
 
 ![](assets/select-swiftlint-plugin.png)
 
+For unattended use (eg CI) you can disable the package validation dialog by:
+
+* Individually passing `-skipPackagePluginValidation` to `xcodebuild`
+* Globally setting `defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES` for that user
+
+_Note: this implicitly trusts all Xcode package plugins and bypasses Xcode's package validation dialog, which has security implications._
+
 #### Swift Package
 
 You can integrate SwiftLint as a Swift Package Manager Plug-in if you're working with

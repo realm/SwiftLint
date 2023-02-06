@@ -27,6 +27,10 @@
   [Ethan Wong](https://github.com/GetToSet)
   [#4664](https://github.com/realm/SwiftLint/pull/4664)
   
+* Add rule identifier to output of Emoji reporter.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4707](https://github.com/realm/SwiftLint/issues/4707)
+
 * Interpret strings in `excluded` option of `identifier_name`, 
   `type_name` and `generic_type_name` rules as regex.  
   [Moly](https://github.com/kyounh12)

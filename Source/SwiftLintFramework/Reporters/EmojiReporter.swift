@@ -1,4 +1,4 @@
-/// Reports violations in the format that's both fun and easy to read.
+/// Reports violations in a format that's both fun and easy to read.
 public struct EmojiReporter: Reporter {
     // MARK: - Reporter Conformance
 
@@ -10,7 +10,7 @@ public struct EmojiReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        return violations
+        violations
             .group { $0.location.file ?? "Other" }
             .sorted { $0.key < $1.key }
             .map(report)
@@ -20,21 +20,20 @@ public struct EmojiReporter: Reporter {
     // MARK: - Private
 
     private static func report(for file: String, with violations: [StyleViolation]) -> String {
-        let lines = [file] + violations.sorted { lhs, rhs in
-            guard lhs.severity == rhs.severity else {
-                return lhs.severity > rhs.severity
+        let issueList = violations
+            .sorted { $0.severity == $1.severity ? $0.location > $1.location : $0.severity > $1.severity }
+            .map { violation in
+                let emoji = violation.severity == .error ? "⛔️" : "⚠️"
+                var lineString = ""
+                if let line = violation.location.line {
+                    lineString = "Line \(line): "
+                }
+                return "\(emoji) \(lineString)\(violation.reason) (\(violation.ruleIdentifier))"
             }
-            return lhs.location > rhs.location
-        }.map { violation in
-            let emoji = (violation.severity == .error) ? "⛔️" : "⚠️"
-            let lineString: String
-            if let line = violation.location.line {
-                lineString = "Line \(line): "
-            } else {
-                lineString = ""
-            }
-            return "\(emoji) \(lineString)\(violation.reason)"
-        }
-        return lines.joined(separator: "\n")
+            .joined(separator: "\n")
+        return """
+            \(file)
+            \(issueList)
+            """
     }
 }

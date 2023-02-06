@@ -200,7 +200,7 @@ there is currently no way to pass any additional options to the SwiftLint execut
 
 #### Xcode
 
-You can integrate SwiftLint as a Xcode Build Tool Plug-in if you're working
+You can integrate SwiftLint as an Xcode Build Tool Plug-in if you're working
 with a project in Xcode.
 
 Add SwiftLint as a package dependency to your project without linking any of the

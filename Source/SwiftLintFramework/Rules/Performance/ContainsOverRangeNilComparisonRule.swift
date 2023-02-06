@@ -23,8 +23,8 @@ struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, Configura
         }
     )
 
-    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
-        syntaxTree.folded()
+    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
+        file.foldedSyntaxTree
     }
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {

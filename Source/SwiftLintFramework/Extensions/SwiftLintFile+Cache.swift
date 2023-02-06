@@ -4,6 +4,7 @@ import Darwin
 import Foundation
 import IDEUtils
 import SourceKittenFramework
+import SwiftOperators
 import SwiftParser
 import SwiftParserDiagnostics
 import SwiftSyntax
@@ -24,6 +25,11 @@ private let structureDictionaryCache = Cache { file in
 }
 private let syntaxTreeCache = Cache { file -> SourceFileSyntax in
     return Parser.parse(source: file.contents)
+}
+private let foldedSyntaxTreeCache = Cache { file -> SourceFileSyntax? in
+    return OperatorTable.standardOperators
+        .foldAll(file.syntaxTree) { _ in }
+        .as(SourceFileSyntax.self)
 }
 private let locationConverterCache = Cache { file -> SourceLocationConverter in
     return SourceLocationConverter(file: file.path ?? "<nopath>", tree: file.syntaxTree)
@@ -155,6 +161,8 @@ extension SwiftLintFile {
 
     internal var syntaxTree: SourceFileSyntax { syntaxTreeCache.get(self) }
 
+    internal var foldedSyntaxTree: SourceFileSyntax? { foldedSyntaxTreeCache.get(self) }
+
     internal var locationConverter: SourceLocationConverter { locationConverterCache.get(self) }
 
     internal var commands: [Command] { commandsCache.get(self) }
@@ -192,6 +200,7 @@ extension SwiftLintFile {
         syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
         syntaxTreeCache.invalidate(self)
+        foldedSyntaxTreeCache.invalidate(self)
         locationConverterCache.invalidate(self)
         commandsCache.invalidate(self)
         linesWithTokensCache.invalidate(self)
@@ -207,6 +216,7 @@ extension SwiftLintFile {
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()
         syntaxTreeCache.clear()
+        foldedSyntaxTreeCache.clear()
         locationConverterCache.clear()
         commandsCache.clear()
         linesWithTokensCache.clear()

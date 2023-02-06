@@ -24,7 +24,7 @@ public protocol SwiftSyntaxRule: SourceKitFreeRule {
     /// - parameter syntaxTree: The syntax tree to run pre-processing on
     ///
     /// - returns: The tree that will be used to check for violations. If `nil`, this rule will return no violations.
-    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax?
+    func preprocess(file: SwiftLintFile) -> SourceFileSyntax?
 }
 
 public extension SwiftSyntaxRule where Self: ConfigurationProviderRule,
@@ -53,7 +53,7 @@ public extension SwiftSyntaxRule {
     }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let syntaxTree = preprocess(syntaxTree: file.syntaxTree) else {
+        guard let syntaxTree = preprocess(file: file) else {
             return []
         }
 
@@ -79,8 +79,8 @@ public extension SwiftSyntaxRule {
         )
     }
 
-    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
-        syntaxTree
+    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
+        file.syntaxTree
     }
 }
 

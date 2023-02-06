@@ -47,8 +47,8 @@ struct ShorthandOperatorRule: ConfigurationProviderRule, SwiftSyntaxRule {
 
     fileprivate static let allOperators = ["-", "/", "+", "*"]
 
-    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
-        syntaxTree.folded()
+    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
+        file.foldedSyntaxTree
     }
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {

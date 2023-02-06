@@ -38,6 +38,10 @@ struct ClassDelegateProtocolRule: SwiftSyntaxRule, ConfigurationProviderRule {
 
 private extension ClassDelegateProtocolRule {
     private final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            .allExcept(ProtocolDeclSyntax.self)
+        }
+
         override func visitPost(_ node: ProtocolDeclSyntax) {
             if node.identifier.text.hasSuffix("Delegate") &&
                 !node.hasObjCAttribute() &&

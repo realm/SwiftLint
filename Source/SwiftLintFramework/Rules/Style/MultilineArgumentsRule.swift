@@ -1,7 +1,7 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule {
+struct MultilineArgumentsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = MultilineArgumentsConfiguration()
 
     init() {}
@@ -15,147 +15,122 @@ struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule {
         triggeringExamples: MultilineArgumentsRuleExamples.triggeringExamples
     )
 
-    func validate(file: SwiftLintFile,
-                  kind: SwiftExpressionKind,
-                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .call,
-            case let arguments = dictionary.enclosedArguments,
-            arguments.count > 1
-        else {
-            return []
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(
+            onlyEnforceAfterFirstClosureOnFirstLine: configuration.onlyEnforceAfterFirstClosureOnFirstLine,
+            firstArgumentLocation: configuration.firstArgumentLocation,
+            locationConverter: file.locationConverter
+        )
+    }
+}
+
+private extension MultilineArgumentsRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        let onlyEnforceAfterFirstClosureOnFirstLine: Bool
+        let firstArgumentLocation: MultilineArgumentsConfiguration.FirstArgumentLocation
+        let locationConverter: SourceLocationConverter
+
+        init(onlyEnforceAfterFirstClosureOnFirstLine: Bool,
+             firstArgumentLocation: MultilineArgumentsConfiguration.FirstArgumentLocation,
+             locationConverter: SourceLocationConverter) {
+            self.onlyEnforceAfterFirstClosureOnFirstLine = onlyEnforceAfterFirstClosureOnFirstLine
+            self.firstArgumentLocation = firstArgumentLocation
+            self.locationConverter = locationConverter
+            super.init(viewMode: .sourceAccurate)
         }
 
-        let wrappedArguments: [Argument] = arguments
-            .enumerated()
-            .compactMap { idx, argument in
-                Argument(dictionary: argument, file: file, index: idx)
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard node.argumentList.count > 1,
+                  case let functionCallPosition = node.calledExpression.positionAfterSkippingLeadingTrivia,
+                  let functionCallLine = locationConverter.location(for: functionCallPosition).line else {
+                return
             }
 
-        var violatingArguments = findViolations(in: wrappedArguments,
-                                                dictionary: dictionary,
-                                                file: file)
-
-        if configuration.onlyEnforceAfterFirstClosureOnFirstLine {
-            violatingArguments = removeViolationsBeforeFirstClosure(arguments: wrappedArguments,
-                                                                    violations: violatingArguments,
-                                                                    file: file)
-        }
-
-        return violatingArguments.map {
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: self.configuration.severityConfiguration.severity,
-                                  location: Location(file: file, byteOffset: $0.offset))
-        }
-    }
-
-    // MARK: - Violation Logic
-
-    private func findViolations(in arguments: [Argument],
-                                dictionary: SourceKittenDictionary,
-                                file: SwiftLintFile) -> [Argument] {
-        guard case let contents = file.stringView,
-            let nameOffset = dictionary.nameOffset,
-            let (nameLine, _) = contents.lineAndCharacter(forByteOffset: nameOffset)
-        else {
-            return []
-        }
-
-        var visitedLines = Set<Int>()
-
-        if configuration.firstArgumentLocation == .sameLine {
-            visitedLines.insert(nameLine)
-        }
-
-        let lastIndex = arguments.count - 1
-
-        let violations = arguments.compactMap { argument -> Argument? in
-            let (line, idx) = (argument.line, argument.index)
-            let (firstVisit, _) = visitedLines.insert(line)
-
-            if idx == lastIndex && isTrailingClosure(dictionary: dictionary, file: file) {
-                return nil
-            } else if idx == 0 {
-                switch configuration.firstArgumentLocation {
-                case .anyLine: return nil
-                case .nextLine: return line > nameLine ? nil : argument
-                case .sameLine: return line > nameLine ? argument : nil
+            let wrappedArguments: [Argument] = node.argumentList
+                .enumerated()
+                .compactMap { idx, argument in
+                    Argument(element: argument, locationConverter: locationConverter, index: idx)
                 }
-            } else {
-                return firstVisit ? nil : argument
+
+            var violatingArguments = findViolations(in: wrappedArguments, functionCallLine: functionCallLine)
+
+            if onlyEnforceAfterFirstClosureOnFirstLine {
+                violatingArguments = removeViolationsBeforeFirstClosure(arguments: wrappedArguments,
+                                                                        violations: violatingArguments)
             }
+
+            violations.append(contentsOf: violatingArguments.map(\.offset))
         }
 
-        // only report violations if multiline
-        return visitedLines.count > 1 ? violations : []
-    }
+        // MARK: - Violation Logic
 
-    private func removeViolationsBeforeFirstClosure(arguments: [Argument],
-                                                    violations: [Argument],
-                                                    file: SwiftLintFile) -> [Argument] {
-        guard let firstClosure = arguments.first(where: isClosure(in: file)),
-            let firstArgument = arguments.first else {
-            return violations
+        private func findViolations(in arguments: [Argument],
+                                    functionCallLine: Int) -> [Argument] {
+            var visitedLines = Set<Int>()
+
+            if firstArgumentLocation == .sameLine {
+                visitedLines.insert(functionCallLine)
+            }
+
+            let violations = arguments.compactMap { argument -> Argument? in
+                let (line, idx) = (argument.line, argument.index)
+                let (firstVisit, _) = visitedLines.insert(line)
+
+               if idx == 0 {
+                    switch firstArgumentLocation {
+                    case .anyLine: return nil
+                    case .nextLine: return line > functionCallLine ? nil : argument
+                    case .sameLine: return line > functionCallLine ? argument : nil
+                    }
+                } else {
+                    return firstVisit ? nil : argument
+                }
+            }
+
+            // only report violations if multiline
+            return visitedLines.count > 1 ? violations : []
         }
 
-        let violationSlice: ArraySlice<Argument> = violations
-            .drop { argument in
-                // drop violations if they precede the first closure,
-                // if that closure is in the first line
-                firstArgument.line == firstClosure.line &&
+        private func removeViolationsBeforeFirstClosure(arguments: [Argument],
+                                                        violations: [Argument]) -> [Argument] {
+            guard let firstClosure = arguments.first(where: { $0.isClosure }),
+                  let firstArgument = arguments.first else {
+                return violations
+            }
+
+            let violationSlice: ArraySlice<Argument> = violations
+                .drop { argument in
+                    // drop violations if they precede the first closure,
+                    // if that closure is in the first line
+                    firstArgument.line == firstClosure.line &&
                     argument.line == firstClosure.line &&
                     argument.index <= firstClosure.index
-            }
+                }
 
-        return Array(violationSlice)
-    }
-
-    // MARK: - Syntax Helpers
-
-    private func isTrailingClosure(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let offset = dictionary.offset,
-            let length = dictionary.length,
-            case let start = min(offset, offset + length - 1),
-            case let byteRange = ByteRange(location: start, length: length),
-            let text = file.stringView.substringWithByteRange(byteRange)
-        else {
-            return false
-        }
-
-        return !text.hasSuffix(")")
-    }
-
-    private func isClosure(in file: SwiftLintFile) -> (Argument) -> Bool {
-        return { argument in
-            let contents = file.stringView
-            let closureMatcher = regex("^\\s*\\{")
-            guard let range = contents.byteRangeToNSRange(argument.bodyRange) else {
-                return false
-            }
-
-            let matches = closureMatcher.matches(in: file.contents, options: [], range: range)
-            return matches.count == 1
+            return Array(violationSlice)
         }
     }
 }
 
 private struct Argument {
-    let offset: ByteCount
+    let offset: AbsolutePosition
     let line: Int
     let index: Int
-    let bodyRange: ByteRange
+    let expression: ExprSyntax
 
-    init?(dictionary: SourceKittenDictionary, file: SwiftLintFile, index: Int) {
-        guard let offset = dictionary.offset,
-            let (line, _) = file.stringView.lineAndCharacter(forByteOffset: offset),
-            let bodyRange = dictionary.bodyByteRange
-        else {
+    init?(element: TupleExprElementSyntax, locationConverter: SourceLocationConverter, index: Int) {
+        let offset = element.positionAfterSkippingLeadingTrivia
+        guard let line = locationConverter.location(for: offset).line else {
             return nil
         }
 
         self.offset = offset
         self.line = line
         self.index = index
-        self.bodyRange = bodyRange
+        self.expression = element.expression
+    }
+
+    var isClosure: Bool {
+        expression.is(ClosureExprSyntax.self)
     }
 }

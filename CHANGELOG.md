@@ -49,6 +49,8 @@
 * Let `number_separator` rule trigger on misplaced separators, e.g. `10_00`.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4637](https://github.com/realm/SwiftLint/issues/4637)
+* Rewrite `multiline_arguments` rule using SwiftSyntax.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes
 

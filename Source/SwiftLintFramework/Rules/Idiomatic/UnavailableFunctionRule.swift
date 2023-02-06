@@ -123,10 +123,21 @@ private extension AttributeListSyntax? {
                 return false
             }
 
-            return attr.attributeName.tokenKind == .keyword(.available) && arguments.contains { arg in
-                arg.entry.as(TokenSyntax.self)?.tokenKind == .keyword(.unavailable)
+            let attributeName = attr.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
+            return attributeName == "available" && arguments.contains { arg in
+                arg.entry.as(TokenSyntax.self)?.tokenKind.isUnavailable == true
             }
         }
+    }
+}
+
+private extension TokenKind {
+    var isAvailable: Bool {
+        self == .keyword(.available) || self == .identifier("available")
+    }
+
+    var isUnavailable: Bool {
+        self == .keyword(.unavailable) || self == .identifier("unavailable")
     }
 }
 

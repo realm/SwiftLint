@@ -47,7 +47,7 @@ private extension DynamicInlineRule {
 
 private extension AttributeSyntax {
     var isInlineAlways: Bool {
-        attributeName.text == "inline" &&
+        attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "inline" &&
             argument?.firstToken?.tokenKind == .identifier("__always")
     }
 }

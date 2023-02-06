@@ -170,8 +170,9 @@ private extension ValidIBInspectableRule {
 
 private extension VariableDeclSyntax {
     var isIBInspectable: Bool {
-        attributes?.contains { attr in
-            attr.as(AttributeSyntax.self)?.attributeName.text == "IBInspectable"
+        attributes?.contains { attribute in
+            let name = attribute.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
+            return name == "IBInspectable"
         } ?? false
     }
 

@@ -130,7 +130,7 @@ private extension FunctionParameterSyntax {
         }
 
         return attrType.attributes?.contains { attr in
-            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("escaping")
+            attr.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "escaping"
         } ?? false
     }
 }

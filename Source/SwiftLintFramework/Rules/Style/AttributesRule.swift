@@ -121,7 +121,7 @@ private struct RuleHelper {
 
     func hasViolation(
         locationConverter: SourceLocationConverter,
-        attributesAndPlacements: [(SyntaxProtocol, AttributePlacement)]
+        attributesAndPlacements: [(AttributeSyntax, AttributePlacement)]
     ) -> Bool {
         var linesWithAttributes: Set<Int> = [keywordLine]
         for (attribute, placement) in attributesAndPlacements {
@@ -147,69 +147,23 @@ private struct RuleHelper {
     }
 }
 
-private enum Attribute {
-    case builtIn(AttributeSyntax)
-    case custom(CustomAttributeSyntax)
-
-    static func from(syntax: SyntaxProtocol) -> Self? {
-        if let attribute = syntax.as(AttributeSyntax.self) {
-            return .builtIn(attribute)
-        }
-        if let attribute = syntax.as(CustomAttributeSyntax.self) {
-            return .custom(attribute)
-        }
-        return nil
-    }
-
-    var hasArguments: Bool {
-        switch self {
-        case let .builtIn(attribute):
-            return attribute.argument != nil
-        case let .custom(attribute):
-            return attribute.argumentList != nil
-        }
-    }
-
-    var name: String? {
-        switch self {
-        case let .builtIn(attribute):
-            return attribute.attributeName.text
-        case let .custom(attribute):
-            return attribute.attributeName.as(SimpleTypeIdentifierSyntax.self)?.typeName
-        }
-    }
-
-    var syntaxNode: SyntaxProtocol {
-        switch self {
-        case let .builtIn(attribute):
-            return attribute
-        case let .custom(attribute):
-            return attribute
-        }
-    }
-}
-
 private extension AttributeListSyntax {
     func attributesAndPlacements(configuration: AttributesConfiguration, shouldBeOnSameLine: Bool)
-        -> [(SyntaxProtocol, AttributePlacement)] {
-        self.children(viewMode: .sourceAccurate)
-            .compactMap { Attribute.from(syntax: $0) }
-            .compactMap { attribute in
-                guard let attributeName = attribute.name else {
-                    return nil
-                }
-                let atPrefixedName = "@\(attributeName)"
+        -> [(AttributeSyntax, AttributePlacement)] {
+        self
+            .children(viewMode: .sourceAccurate)
+            .compactMap { $0.as(AttributeSyntax.self) }
+            .map { attribute in
+                let atPrefixedName = "@\(attribute.attributeName.as(SimpleTypeIdentifierSyntax.self)!.name.text)"
                 if configuration.alwaysOnSameLine.contains(atPrefixedName) {
-                    return (attribute.syntaxNode, .sameLineAsDeclaration)
+                    return (attribute, .sameLineAsDeclaration)
                 } else if configuration.alwaysOnNewLine.contains(atPrefixedName) {
-                    return (attribute.syntaxNode, .dedicatedLine)
-                } else if attribute.hasArguments {
-                    return (attribute.syntaxNode, .dedicatedLine)
+                    return (attribute, .dedicatedLine)
+                } else if attribute.argument != nil {
+                    return (attribute, .dedicatedLine)
                 }
 
-                return shouldBeOnSameLine
-                    ? (attribute.syntaxNode, .sameLineAsDeclaration)
-                    : (attribute.syntaxNode, .dedicatedLine)
+                return shouldBeOnSameLine ? (attribute, .sameLineAsDeclaration) : (attribute, .dedicatedLine)
             }
     }
 

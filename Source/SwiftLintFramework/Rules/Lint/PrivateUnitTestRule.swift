@@ -284,5 +284,7 @@ private func resultInPrivateProperty(modifiers: ModifierListSyntax?, attributes:
     guard let attributes else {
         return true
     }
-    return !attributes.contains { $0.as(AttributeSyntax.self)?.attributeName.tokenKind == .keyword(.objc) }
+    return !attributes.contains { attribute in
+        attribute.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "objc"
+    }
 }

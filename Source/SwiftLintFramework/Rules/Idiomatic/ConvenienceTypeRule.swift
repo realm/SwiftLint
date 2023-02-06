@@ -198,15 +198,15 @@ private extension TypeInheritanceClauseSyntax? {
 
 private extension AttributeListSyntax? {
     var containsObjcMembers: Bool {
-        self?.contains { elem in
-            elem.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("objcMembers")
-        } ?? false
+       self?.contains { elem in
+           elem.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "objcMembers"
+       } ?? false
     }
 
     var containsObjc: Bool {
-        self?.contains { elem in
-            elem.as(AttributeSyntax.self)?.attributeName.tokenKind == .keyword(.objc)
-        } ?? false
+       self?.contains { elem in
+           elem.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "objc"
+       } ?? false
     }
 }
 
@@ -222,9 +222,20 @@ private extension AttributeListSyntax? {
                 return false
             }
 
-            return attr.attributeName.tokenKind == .keyword(.available) && arguments.contains { arg in
-                arg.entry.as(TokenSyntax.self)?.tokenKind == .keyword(.unavailable)
+            let attributeName = attr.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
+            return attributeName == "available" && arguments.contains { arg in
+                arg.entry.as(TokenSyntax.self)?.tokenKind.isUnavailable == true
             }
         }
+    }
+}
+
+private extension TokenKind {
+    var isUnavailable: Bool {
+        self == .keyword(.unavailable) || self == .identifier("unavailable")
+    }
+
+    var isObjc: Bool {
+        self == .keyword(.objc) || self == .identifier("objc")
     }
 }

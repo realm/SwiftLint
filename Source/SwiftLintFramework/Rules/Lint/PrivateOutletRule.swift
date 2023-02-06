@@ -112,7 +112,10 @@ private extension PrivateOutletRule {
 
 private extension AttributeListSyntax {
     var hasIBOutlet: Bool {
-        contains { $0.as(AttributeSyntax.self)?.attributeName.text == "IBOutlet" }
+        contains { attribute in
+            let name = attribute.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
+            return name == "IBOutlet"
+        }
     }
 }
 

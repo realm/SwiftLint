@@ -378,6 +378,30 @@
     <span class="nv">param3</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
 <span class="p">)</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kt">Picker</span><span class="p">(</span><span class="nv">selection</span><span class="p">:</span> <span class="n">viewStore</span><span class="o">.</span><span class="nf">binding</span><span class="p">(\</span><span class="o">.</span><span class="err">$</span><span class="n">someProperty</span><span class="p">))</span> <span class="p">{</span>
+   <span class="kt">ForEach</span><span class="p">(</span><span class="kt">SomeEnum</span><span class="o">.</span><span class="n">allCases</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span> <span class="p">{</span> <span class="n">someCase</span> <span class="k">in</span>
+      <span class="kt">Text</span><span class="p">(</span><span class="n">someCase</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span>
+         <span class="o">.</span><span class="nf">tag</span><span class="p">(</span><span class="n">someCase</span><span class="p">)</span>
+   <span class="p">}</span>
+<span class="p">}</span> <span class="nv">label</span><span class="p">:</span> <span class="p">{</span>
+   <span class="kt">EmptyView</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kt">UIView</span><span class="o">.</span><span class="nf">animate</span><span class="p">(</span><span class="nv">withDuration</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+               <span class="nv">delay</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// sample</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"a"</span><span class="p">)</span>
+<span class="p">}</span> <span class="nv">completion</span><span class="p">:</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span>
+    <span class="c1">// sample</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"b"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kt">UIView</span><span class="o">.</span><span class="nf">animate</span><span class="p">(</span><span class="nv">withDuration</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">delay</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"a"</span><span class="p">)</span>
+<span class="p">}</span> <span class="nv">completion</span><span class="p">:</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"b"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
     <span class="nv">param1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="err">↓</span><span class="nv">param2</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="err">↓</span><span class="nv">param3</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">])</span>

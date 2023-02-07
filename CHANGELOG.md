@@ -41,6 +41,10 @@
   `quick_discouraged_call`.  
   [David Steinacher](https://github.com/stonko1994)
   [#4626](https://github.com/realm/SwiftLint/issues/4626)
+  
+* Add `relative-path` reporter to generate reports with relative paths
+  [Roya1v](https://github.com/roya1v)
+  [#4660](https://github.com/realm/SwiftLint/issues/4660)
 
 #### Bug Fixes
 

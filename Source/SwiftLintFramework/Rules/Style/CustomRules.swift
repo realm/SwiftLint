@@ -79,6 +79,8 @@ struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
         kind: .style)
 
     var configuration = CustomRulesConfiguration()
+    
+    var customRuleIdentifiers: [String] { configuration.customRuleConfigurations.map { $0.identifier } }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         var configurations = configuration.customRuleConfigurations

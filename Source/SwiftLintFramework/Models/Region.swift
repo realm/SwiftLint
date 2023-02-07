@@ -50,7 +50,12 @@ public struct Region: Equatable {
             return true
         }
 
-        let identifiersToCheck = type(of: rule).description.allIdentifiers
+        let identifiersToCheck: [String]
+        if let customRules = rule as? CustomRules {
+            identifiersToCheck = customRules.customRuleIdentifiers
+        } else {
+            identifiersToCheck = type(of: rule).description.allIdentifiers
+        }
         let regionIdentifiers = Set(disabledRuleIdentifiers.map { $0.stringRepresentation })
         return !regionIdentifiers.isDisjoint(with: identifiersToCheck)
     }

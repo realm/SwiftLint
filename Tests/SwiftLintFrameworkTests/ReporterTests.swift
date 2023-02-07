@@ -143,4 +143,16 @@ class ReporterTests: XCTestCase {
         let result = RelativePathReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
+
+    func testRelativePathReporterPaths() {
+        let relativePath = "filename"
+        let absolutePath = FileManager.default.currentDirectoryPath + "/" + relativePath
+        let location = Location(file: absolutePath, line: 1, character: 2)
+        let violation = StyleViolation(ruleDescription: LineLengthRule.description,
+                                       location: location,
+                                       reason: "Violation Reason")
+        let result = RelativePathReporter.generateReport([violation])
+        XCTAssertFalse(result.contains(absolutePath))
+        XCTAssertTrue(result.contains(relativePath))
+    }
 }

@@ -270,6 +270,9 @@
                 <a class="nav-group-task-link" href="Structs/Region.html">Region</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RelativePathReporter.html">RelativePathReporter</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/RuleDescription.html">RuleDescription</a>
               </li>
               <li class="nav-group-task">
@@ -331,25 +334,6 @@
 <li><strong>Default configuration:</strong> severity: warning, only_enforce_before_trivial_lines: false</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span>
-    <span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="nv">y</span><span class="p">:</span><span class="mi">6</span>
-<span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nf">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>
-    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span>
-  <span class="mi">1</span>
-<span class="p">])</span>
-</code></pre>
 <pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span><span class="n">foo</span> <span class="p">{</span>
   <span class="k">var</span> <span class="nv">sum</span> <span class="o">=</span> <span class="mi">0</span>
   <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
@@ -361,19 +345,38 @@
   <span class="k">return</span> <span class="n">mul</span>
 <span class="p">}])</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
-<span class="p">}</span>
+<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span>
+  <span class="mi">1</span>
+<span class="p">])</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span>
 <span class="mi">1</span><span class="p">,</span>
 <span class="mi">2</span><span class="p">,</span>
 <span class="mi">3</span>
 <span class="p">]</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span>
+    <span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="nv">y</span><span class="p">:</span><span class="mi">6</span>
+<span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="kc">true</span> <span class="p">}</span>
 </code></pre>
@@ -402,29 +405,6 @@
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
-<span class="err">↓</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span>
-    <span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="nv">y</span><span class="p">:</span><span class="mi">6</span>
-<span class="err">↓</span>
-<span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nf">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>
-    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-  <span class="p">}</span>
-<span class="err">↓</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span>
-  <span class="mi">1</span>
-<span class="err">↓</span>
-<span class="p">])</span>
-</code></pre>
 <pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span><span class="n">foo</span> <span class="p">{</span>
   <span class="k">var</span> <span class="nv">sum</span> <span class="o">=</span> <span class="mi">0</span>
   <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
@@ -437,17 +417,10 @@
 <span class="err">↓</span>
 <span class="p">}])</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span>
+  <span class="mi">1</span>
 <span class="err">↓</span>
-
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
-<span class="err">↓</span>
-
-<span class="p">}</span>
+<span class="p">])</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span>
 <span class="mi">1</span><span class="p">,</span>
@@ -455,6 +428,36 @@
 <span class="mi">3</span>
 <span class="err">↓</span>
 <span class="p">]</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="err">↓</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
+<span class="err">↓</span>
+
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
+<span class="err">↓</span>
+
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span>
+    <span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="nv">y</span><span class="p">:</span><span class="mi">6</span>
+<span class="err">↓</span>
+<span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
+<span class="err">↓</span>
+<span class="p">}</span>
 </code></pre>
 
           </div>

@@ -37,6 +37,33 @@ internal struct MultilineArgumentsRuleExamples {
             param2: true,
             param3: [3]
         )
+        """),
+        Example(#"""
+        Picker(selection: viewStore.binding(\.$someProperty)) {
+           ForEach(SomeEnum.allCases, id: \.rawValue) { someCase in
+              Text(someCase.rawValue)
+                 .tag(someCase)
+           }
+        } label: {
+           EmptyView()
+        }
+        """#),
+        Example("""
+        UIView.animate(withDuration: 1,
+                       delay: 0) {
+            // sample
+            print("a")
+        } completion: { _ in
+            // sample
+            print("b")
+        }
+        """),
+        Example("""
+        UIView.animate(withDuration: 1, delay: 0) {
+            print("a")
+        } completion: { _ in
+            print("b")
+        }
         """)
     ]
 

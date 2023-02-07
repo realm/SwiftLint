@@ -55,6 +55,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4637](https://github.com/realm/SwiftLint/issues/4637)
 
+* Rewrite `multiline_arguments` rule using SwiftSyntax, ignoring trailing
+  closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3399](https://github.com/realm/SwiftLint/issues/3399)
+  [#3605](https://github.com/realm/SwiftLint/issues/3605)
+
 #### Bug Fixes
 
 * Report violations in all `<scope>_length` rules when the error threshold is

@@ -4,7 +4,7 @@ private enum ConfigurationKey: String {
     case onlyEnforceAfterFirstClosureOnFirstLine = "only_enforce_after_first_closure_on_first_line"
 }
 
-struct MultilineArgumentsConfiguration: RuleConfiguration, Equatable {
+struct MultilineArgumentsConfiguration: RuleConfiguration, SeverityBasedRuleConfiguration, Equatable {
     enum FirstArgumentLocation: String {
         case anyLine = "any_line"
         case sameLine = "same_line"

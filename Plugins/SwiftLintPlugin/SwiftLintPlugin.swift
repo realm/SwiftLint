@@ -65,13 +65,16 @@ struct SwiftLintPlugin: BuildToolPlugin {
             buildCommandInputFiles = inputFiles
         }
 
+        let nonExistentOutputDirectory = workingDirectory.appending(UUID().uuidString)
+        try FileManager.default.createDirectory(atPath: nonExistentOutputDirectory.string, withIntermediateDirectories: false)
+
         return [
             .buildCommand(
                 displayName: "SwiftLint",
                 executable: tool.path,
                 arguments: arguments,
                 inputFiles: buildCommandInputFiles,
-                outputFiles: [workingDirectory]
+                outputFiles: [nonExistentOutputDirectory]
             )
         ]
     }

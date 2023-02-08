@@ -41,9 +41,36 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
         var disabledRuleIdentifiers: Set<RuleIdentifier> = []
 
         for command in file.commands {
+            if command.action == .disable {
+                let alreadyDisabledRuleIdentifiers = command.ruleIdentifiers.intersection(disabledRuleIdentifiers)
+                violations.append(contentsOf: alreadyDisabledRuleIdentifiers.map {
+                    let reason = "The disabled '\($0)' SwiftLint rule was already disabled"
+                    let violation = violation(
+                        forPath: file.file.path,
+                        command: command,
+                        reason: reason
+                    )
+                    return violation
+                })
+            }
+            
+            if command.action == .enable {
+                let notDisabledRuleIdentifiers = command.ruleIdentifiers.subtracting(disabledRuleIdentifiers)
+                violations.append(contentsOf: notDisabledRuleIdentifiers.map {
+                    let reason = "The disabled '\($0)' SwiftLint rule was not disabled"
+                    let violation = violation(
+                        forPath: file.file.path,
+                        command: command,
+                        reason: reason
+                    )
+                    return violation
+                })
+            }
+            
             if command.modifier != nil {
                 continue
             }
+            
             if command.action == .disable {
                 disabledRuleIdentifiers.formUnion(command.ruleIdentifiers)
                 command.ruleIdentifiers.forEach { ruleIdentifierToCommandMap[$0] = command }
@@ -66,8 +93,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
                              "before the end of the file"
                 let violation = violation(
                     forPath: file.file.path,
-                    line: command.line,
-                    character: command.character,
+                    command: command,
                     reason: reason
                 )
                 violations.append(violation)
@@ -81,11 +107,10 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
 
     private func violation(
         forPath path: String?,
-        line: Int?,
-        character: Int?,
+        command: Command,
         reason: String? = nil
     ) -> StyleViolation {
-        let location = Location(file: path, line: line, character: character)
+        let location = Location(file: path, line: command.line, character: command.character)
         return StyleViolation(
             ruleDescription: Self.description,
             severity: configuration.severity,
@@ -105,16 +130,15 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             let ruleIdentifiers: Set<String> = Set(command.ruleIdentifiers.map { $0.stringRepresentation })
             let intersection = ruleIdentifiers.intersection(configuration.alwaysBlanketDisableRuleIdentifiers)
             if intersection.isEmpty == false && (command.modifier != nil || command.action == .enable) {
-                let reason = intersection.count == 1 ?
-                "The '\(intersection.first ?? "")' SwiftLint rule should be disabled once for the entire file" :
-                "The disabled SwiftLint rules should be disabled once for the entire file"
-                let violation = violation(
-                    forPath: file.file.path,
-                    line: command.line,
-                    character: command.character,
-                    reason: reason
-                )
-                violations.append(violation)
+                violations.append(contentsOf: intersection.map {
+                    let reason = "The '\($0)' SwiftLint rule should be disabled once for the entire file"
+                    let violation = violation(
+                        forPath: file.file.path,
+                        command: command,
+                        reason: reason
+                    )
+                    return violation
+                })
             }
         }
 

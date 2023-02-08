@@ -53,8 +53,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
                 let alreadyDisabledRuleIdentifiers = command.ruleIdentifiers.intersection(disabledRuleIdentifiers)
                 violations.append(contentsOf: alreadyDisabledRuleIdentifiers.map {
                     let reason = "The disabled '\($0)' SwiftLint rule was already disabled"
-                    let violation = violation(forPath: file.file.path, command: command, reason: reason)
-                    return violation
+                    return violation(forPath: file.file.path, command: command, reason: reason)
                 })
             }
 
@@ -62,9 +61,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
                 let notDisabledRuleIdentifiers = command.ruleIdentifiers.subtracting(disabledRuleIdentifiers)
                 violations.append(contentsOf: notDisabledRuleIdentifiers.map {
                     let reason = "The enabled '\($0)' SwiftLint rule was not disabled"
-                    let violation = violation(forPath: file.file.path, command: command, reason: reason
-                    )
-                    return violation
+                    return violation(forPath: file.file.path, command: command, reason: reason)
                 })
             }
 
@@ -92,12 +89,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
                 let ruleIdentifier = disabledRuleIdentifier.stringRepresentation
                 let reason = "The disabled '\(ruleIdentifier)' SwiftLint rule should be re-enabled " +
                              "before the end of the file"
-                let violation = violation(
-                    forPath: file.file.path,
-                    command: command,
-                    reason: reason
-                )
-                violations.append(violation)
+                violations.append(violation(forPath: file.file.path, command: command, reason: reason))
             }
         }
 
@@ -106,13 +98,11 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
         return violations
     }
 
-    private func violation(forPath path: String?, command: Command, reason: String? = nil
-    ) -> StyleViolation {
-        let location = Location(file: path, line: command.line, character: command.character)
+    private func violation(forPath path: String?, command: Command, reason: String) -> StyleViolation {
         return StyleViolation(
             ruleDescription: Self.description,
             severity: configuration.severity,
-            location: location,
+            location: Location(file: path, line: command.line, character: command.character),
             reason: reason
         )
     }
@@ -124,16 +114,13 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             return []
         }
 
-        for command in file.commands {
+        for command in file.commands where command.modifier != nil && command.action == .enable {
             let ruleIdentifiers: Set<String> = Set(command.ruleIdentifiers.map { $0.stringRepresentation })
             let intersection = ruleIdentifiers.intersection(configuration.alwaysBlanketDisableRuleIdentifiers)
-            if intersection.isEmpty == false && (command.modifier != nil || command.action == .enable) {
-                violations.append(contentsOf: intersection.map {
-                    let reason = "The '\($0)' SwiftLint rule should be disabled once for the entire file"
-                    let violation = violation(forPath: file.file.path, command: command, reason: reason)
-                    return violation
-                })
-            }
+            violations.append(contentsOf: intersection.map {
+                let reason = "The '\($0)' SwiftLint rule should be disabled once for the entire file"
+                return violation(forPath: file.file.path, command: command, reason: reason)
+            })
         }
 
         return violations

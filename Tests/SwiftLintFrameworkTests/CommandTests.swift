@@ -331,14 +331,14 @@ class CommandTests: XCTestCase {
 
         let example = Example("// swiftlint:disable nesting this is a comment\n// swiftlint:enable nesting\n")
         let multipleViolations = violations(example)
-        XCTAssertEqual(multipleViolations.count, 9)
-        XCTAssertTrue(multipleViolations.allSatisfy { $0.ruleIdentifier == "superfluous_disable_command" })
+        XCTAssertEqual(multipleViolations.filter({ $0.ruleIdentifier == "superfluous_disable_command" }).count, 9)
+        XCTAssertEqual(multipleViolations.filter({ $0.ruleIdentifier == "no_blanket_disables" }).count, 4)
 
         let onlyNonExistentRulesViolations = violations(Example("// swiftlint:disable this is a comment\n"))
-        XCTAssertEqual(onlyNonExistentRulesViolations.count, 4)
-        XCTAssertTrue(onlyNonExistentRulesViolations.allSatisfy {
-            $0.ruleIdentifier == "superfluous_disable_command"
-        })
+        XCTAssertEqual(
+            onlyNonExistentRulesViolations.filter({ $0.ruleIdentifier == "superfluous_disable_command" }).count, 4
+        )
+        XCTAssertEqual(onlyNonExistentRulesViolations.filter({ $0.ruleIdentifier == "no_blanket_disables" }).count, 4)
 
         XCTAssertEqual(
             violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n"))[0].reason,

@@ -47,10 +47,12 @@ struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
                 \(type) T: P<Int> {
                     fileprivate func f() {}
                     fileprivate let i = 3
+                    public fileprivate(set) var l = 3
                 }
                 protocol P<T> {
                     func f()
                     var i: Int { get }
+                    var l: Int { get set }
                 }
             """, excludeFromDocumentation: true)
         },
@@ -99,12 +101,14 @@ struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
                     fileprivate func f() {}
                     ↓fileprivate func g() {}
                     fileprivate let i = 2
-                    ↓fileprivate var j: Int { 1 }
+                    public ↓fileprivate(set) var j: Int { 1 }
                     ↓fileprivate let a = 3, b = 4
+                    public ↓fileprivate(set) var k = 2
                 }
                 protocol P<T> {
                     func f()
                     var i: Int { get }
+                    var k: Int { get }
                 }
                 protocol Q {
                     func g()
@@ -119,9 +123,15 @@ struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
     }
 }
 
+private enum ProtocolRequirementType: Equatable {
+    case method(String)
+    case getter(String)
+    case setter(String)
+}
+
 private extension StrictFilePrivateRule {
     final class ProtocolCollector: ViolationsSyntaxVisitor {
-        private(set) var protocols = [String: [String]]()
+        private(set) var protocols = [String: [ProtocolRequirementType]]()
         private var currentProtocolName: String = ""
 
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ProtocolDeclSyntax.self) }
@@ -132,14 +142,21 @@ private extension StrictFilePrivateRule {
         }
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            protocols[currentProtocolName, default: []].append(node.identifier.text)
+            protocols[currentProtocolName, default: []].append(.method(node.identifier.text))
             return .skipChildren
         }
 
         override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
             for binding in node.bindings {
-                if let name = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
-                    protocols[currentProtocolName, default: []].append(name)
+                guard let name = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text,
+                      case .accessors(let accessors) = binding.accessor else {
+                    continue
+                }
+                if accessors.specifiesGetAccessor {
+                    protocols[currentProtocolName, default: []].append(.getter(name))
+                }
+                if accessors.specifiesSetAccessor {
+                    protocols[currentProtocolName, default: []].append(.setter(name))
                 }
             }
             return .skipChildren
@@ -168,13 +185,14 @@ private extension StrictFilePrivateRule {
             }
             let protocolMethodNames = implementedTypesInDecl(of: node).flatMap { protocols[$0, default: []] }
             if let funcDecl = grandparent.as(FunctionDeclSyntax.self),
-               protocolMethodNames.contains(funcDecl.identifier.text) {
+               protocolMethodNames.contains(.method(funcDecl.identifier.text)) {
                 return
             }
             if let varDecl = grandparent.as(VariableDeclSyntax.self) {
+                let isSpecificForSetter = node.detail?.detail.tokenKind == .contextualKeyword("set")
                 let allImplementProtocol = varDecl.bindings
                     .compactMap { $0.pattern.as(IdentifierPatternSyntax.self)?.identifier.text }
-                    .allSatisfy { protocolMethodNames.contains($0) }
+                    .allSatisfy { protocolMethodNames.contains(isSpecificForSetter ? .setter($0) : .getter($0)) }
                 if allImplementProtocol {
                     return
                 }

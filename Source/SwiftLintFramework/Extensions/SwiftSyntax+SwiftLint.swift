@@ -250,6 +250,14 @@ extension AccessorBlockSyntax {
             accessor.accessorKind.tokenKind == .contextualKeyword("set")
         }
     }
+
+    var specifiesGetAccessor: Bool {
+        getAccessor != nil
+    }
+
+    var specifiesSetAccessor: Bool {
+        setAccessor != nil
+    }
 }
 
 extension TypeInheritanceClauseSyntax? {

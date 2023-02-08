@@ -65,7 +65,8 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             }
 
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
-                let violation = violation(forPath: file.file.path, line: command.line, character: command.character)
+                let reason = "The disabled \(disabledRuleIdentifier.stringRepresentation) rule should be re-enabled before the end of the file"
+                let violation = violation(forPath: file.file.path, line: command.line, character: command.character, reason: reason)
                 violations.append(violation)
             }
         }
@@ -75,9 +76,9 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
         return violations
     }
 
-    private func violation(forPath path: String?, line: Int?, character: Int?) -> StyleViolation {
+    private func violation(forPath path: String?, line: Int?, character: Int?, reason: String? = nil) -> StyleViolation {
         let location = Location(file: path, line: line, character: character)
-        return StyleViolation(ruleDescription: Self.description, severity: configuration.severity, location: location)
+        return StyleViolation(ruleDescription: Self.description, severity: configuration.severity, location: location, reason: reason)
     }
 
     private func validateAlwaysBlanketDisable(file: SwiftLintFile) -> [StyleViolation] {
@@ -89,11 +90,13 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
 
         for command in file.commands {
             let ruleIdentifiers: Set<String> = Set(command.ruleIdentifiers.map { $0.stringRepresentation })
-            if ruleIdentifiers.isDisjoint(with: configuration.alwaysBlanketDisableRuleIdentifiers) == false {
-                if command.modifier != nil || command.action == .enable {
-                    let violation = violation(forPath: file.file.path, line: command.line, character: command.character)
-                    violations.append(violation)
-                }
+            let intersection = ruleIdentifiers.intersection(configuration.alwaysBlanketDisableRuleIdentifiers)
+            if intersection.isEmpty == false && (command.modifier != nil || command.action == .enable) {
+                let reason = intersection.count == 1 ?
+                "The \(intersection.first ?? "") rule should be disabled once for the entire file" :
+                "The disabled rules should be disabled once for the entire file"
+                let violation = violation(forPath: file.file.path, line: command.line, character: command.character, reason: reason)
+                violations.append(violation)
             }
         }
 

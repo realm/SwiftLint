@@ -200,12 +200,36 @@ If you've installed SwiftLint via CocoaPods the script should look like this:
 
 ### Plug-in Support
 
-SwiftLint can be used as a build tool plug-in for both Xcode projects as well as
-Swift packages.
+SwiftLint can be used as a build tool plugin for both Swift Package projects 
+and Xcode projects.
 
-> Due to limitations with Swift Package Manager Plug-ins this is only
-recommended for projects that have a SwiftLint configuration in their root directory as
-there is currently no way to pass any additional options to the SwiftLint executable.
+The build tool plugin determines the SwiftLint working directory by locating 
+the topmost config file within the package/project directory. If a config file
+is not found therein, the package/project directory is used as the working 
+directory.
+
+The plugin throws an error when it is unable to resolve the SwiftLint working 
+directory. For example, this will occur in Xcode projects where the target's
+Swift files are not located within the project directory.
+
+To maximize compatibility with the plugin, try to avoid project structures that 
+require the use of the `--config` option.
+
+#### Unexpected Project Structures
+
+Project structures where SwiftLint's configuration file is located 
+outside of the package/project directory are not directly supported 
+by the build tool plugin. This is because it isn't possible to pass 
+arguments to build tool plugins (e.g., passing the config file path). 
+
+If your project structure doesn't work directly with the build tool 
+plugin, please consider one of the following options:
+
+- To use a config file located outside the package/project directory, a config 
+  file may be added to that directory specifying a parent config path to the 
+  other config file, e.g., `parent_config: path/to/.swiftlint.yml`.
+- You can also consider the use of a Run Script Build Phase in place of the
+  build tool plugin.
 
 #### Xcode
 

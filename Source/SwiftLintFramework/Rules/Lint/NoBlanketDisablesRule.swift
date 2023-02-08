@@ -52,7 +52,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             if command.action == .disable {
                 let alreadyDisabledRuleIdentifiers = command.ruleIdentifiers.intersection(disabledRuleIdentifiers)
                 violations.append(contentsOf: alreadyDisabledRuleIdentifiers.map {
-                    let reason = "The disabled '\($0)' SwiftLint rule was already disabled"
+                    let reason = "The disabled '\($0.stringRepresentation)' SwiftLint rule was already disabled"
                     return violation(forPath: file.file.path, command: command, reason: reason)
                 })
             }
@@ -60,7 +60,7 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             if command.action == .enable {
                 let notDisabledRuleIdentifiers = command.ruleIdentifiers.subtracting(disabledRuleIdentifiers)
                 violations.append(contentsOf: notDisabledRuleIdentifiers.map {
-                    let reason = "The enabled '\($0)' SwiftLint rule was not disabled"
+                    let reason = "The enabled '\($0.stringRepresentation)' SwiftLint rule was not disabled"
                     return violation(forPath: file.file.path, command: command, reason: reason)
                 })
             }
@@ -86,9 +86,8 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             }
 
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
-                let ruleIdentifier = disabledRuleIdentifier.stringRepresentation
-                let reason = "The disabled '\(ruleIdentifier)' SwiftLint rule should be re-enabled " +
-                             "before the end of the file"
+                let reason = "The disabled '\(disabledRuleIdentifier.stringRepresentation)' SwiftLint rule " +
+                             "should be re-enabled before the end of the file"
                 violations.append(violation(forPath: file.file.path, command: command, reason: reason))
             }
         }

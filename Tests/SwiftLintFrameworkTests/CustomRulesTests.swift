@@ -126,6 +126,25 @@ class CustomRulesTests: XCTestCase {
                                        reason: configs.0.message)])
     }
 
+    func testSuperfluousDisableCommandWithCustomRules() {
+        let customRulesConfiguration: [String:Any] = [
+            "custom1": [
+                "regex": "pattern",
+                "match_kinds": "comment"
+            ]
+        ]
+        
+        let example = Example(
+            "// swiftlint:disable custom1\n",
+            configuration: customRulesConfiguration
+        ).skipWrappingInCommentTest()
+        let configuration = try! Configuration(dict: ["custom_rules": customRulesConfiguration])
+        let violations = violations(example, config: configuration)
+        
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertTrue(violations.allSatisfy { $0.ruleIdentifier == "superfluous_disable_command" })
+    }
+
     func testCustomRulesIncludedDefault() {
         // Violation detected when included is omitted.
         let (_, customRules) = getCustomRules()

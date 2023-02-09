@@ -201,7 +201,7 @@ class CustomRulesTests: SwiftLintTestCase {
         })
     }
 
-    func testSuperfluousDisableCommandWithMultipleCustomRules()  throws{
+    func testSuperfluousDisableCommandWithMultipleCustomRules() throws {
         let customRulesConfiguration: [String: Any] = [
             "custom1": [
                 "regex": "pattern",

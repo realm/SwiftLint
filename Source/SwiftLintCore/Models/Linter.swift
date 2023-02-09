@@ -54,7 +54,7 @@ private extension Rule {
                 }
 
                 let noViolationsInDisabledRegion = !allViolations.contains { violation in
-                    return region.contains(violation.location)
+                    return region.contains(violation.location) && violation.ruleIdentifier == ruleIdentifier
                 }
                 guard noViolationsInDisabledRegion else {
                     return nil

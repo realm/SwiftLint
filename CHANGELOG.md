@@ -104,6 +104,10 @@
   [patricks](https://github.com/patricks)
   [#4725](https://github.com/realm/SwiftLint/pull/4725)
 
+* Fix correction on `lower_acl_than_parent` rule for `open` declarations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#4753](https://github.com/realm/SwiftLint/issues/4753)
+
 ## 0.50.3: Bundle of Towels
 
 #### Breaking

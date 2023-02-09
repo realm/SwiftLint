@@ -56,7 +56,7 @@ struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntax
             Example("enum Foo { ↓public func bar() {} }"):
                 Example("enum Foo { func bar() {} }"),
             Example("public class Foo { ↓open func bar() }"):
-                Example("public class Foo { func bar() }"),
+                Example("public class Foo { public func bar() }"),
             Example("class Foo { ↓public private(set) var bar: String? }"):
                 Example("class Foo { private(set) var bar: String? }"),
             Example("private struct Foo { ↓public func bar() {} }"):
@@ -112,8 +112,17 @@ private extension LowerACLThanParentRule {
             }
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            let keyword: String
+            let trailingTrivia: Trivia
+            if node.name.tokenKind == .contextualKeyword("open") {
+                keyword = "public"
+                trailingTrivia = .space
+            } else {
+                keyword = ""
+                trailingTrivia = .zero
+            }
             let newNode = node.withName(
-                .contextualKeyword("", leadingTrivia: node.leadingTrivia ?? .zero)
+                .contextualKeyword(keyword, leadingTrivia: node.leadingTrivia ?? .zero, trailingTrivia: trailingTrivia)
             )
             return super.visit(newNode)
         }

@@ -180,7 +180,7 @@ class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testSuperfluousDisableCommandWithCustomRules() {
-        let customRulesConfiguration: [String:Any] = [
+        let customRulesConfiguration: [String: Any] = [
             "custom1": [
                 "regex": "pattern",
                 "match_kinds": "comment"
@@ -202,7 +202,7 @@ class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testSuperfluousDisableCommandWithMultipleCustomRules() {
-        let customRulesConfiguration: [String:Any] = [
+        let customRulesConfiguration: [String: Any] = [
             "custom1": [
                 "regex": "pattern",
                 "match_kinds": "comment"

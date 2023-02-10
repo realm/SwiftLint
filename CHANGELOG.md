@@ -17,9 +17,9 @@
 * None.
 
 #### Enhancements
-* add markdown local links to rules in Rule Directory.md.  
+* Add local links to rule descriptions to every rule listed
+  in `Rule Directory.md`.  
   [kattouf](https://github.com/kattouf)
-  [#4762](https://github.com/realm/SwiftLint/pull/4762)
 
 * Make forceExclude work with directly specified files.  
   [jimmya](https://github.com/jimmya)

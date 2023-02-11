@@ -389,6 +389,7 @@
 * Fix correction on `lower_acl_than_parent` rule for `open` declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4753](https://github.com/realm/SwiftLint/issues/4753)
+
 * Fix false positives on `redundant_objc_attribute` rule for enums
   and private members.  
   [Martin Redington](https://github.com/mildm8nnered)

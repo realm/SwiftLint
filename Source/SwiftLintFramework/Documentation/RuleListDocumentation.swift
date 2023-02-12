@@ -84,29 +84,21 @@ public struct RuleListDocumentation {
 
             ### Default Rules (\(enabledSourceKitRules.count))
 
-            \(enabledSourceKitRules
-                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(enabledSourceKitRules.map(makeListEntry).joined(separator: "\n"))
 
             ### Opt-in Rules (\(disabledSourceKitRules.count))
 
-            \(disabledSourceKitRules
-                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(disabledSourceKitRules.map(makeListEntry).joined(separator: "\n"))
 
             ## Rules not Using SourceKit
 
             ### Default Rules (\(enabledSourceKitFreeRules.count))
 
-            \(enabledSourceKitFreeRules
-                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(enabledSourceKitFreeRules.map(makeListEntry).joined(separator: "\n"))
 
             ### Opt-in Rules (\(disabledSourceKitFreeRules.count))
 
-            \(disabledSourceKitFreeRules
-                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(disabledSourceKitFreeRules.map(makeListEntry).joined(separator: "\n"))
 
             """
     }

@@ -42,23 +42,21 @@ public struct RuleListDocumentation {
 
             ## Default Rules
 
-            \(defaultRuleDocumentations
-                .map { "* [`\($0.ruleIdentifier)`](\($0.ruleIdentifier).md): \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(defaultRuleDocumentations.map(makeListEntry).joined(separator: "\n"))
 
             ## Opt-In Rules
 
-            \(optInRuleDocumentations
-                .map { "* [`\($0.ruleIdentifier)`](\($0.ruleIdentifier).md): \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(optInRuleDocumentations.map(makeListEntry).joined(separator: "\n"))
 
             ## Analyzer Rules
 
-            \(analyzerRuleDocumentations
-                .map { "* [`\($0.ruleIdentifier)`](\($0.ruleIdentifier).md): \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(analyzerRuleDocumentations.map(makeListEntry).joined(separator: "\n"))
 
             """
+    }
+
+    private func makeListEntry(from rule: RuleDocumentation) -> String {
+        "* [`\(rule.ruleIdentifier)`](\(rule.ruleIdentifier).md): \(rule.ruleName)"
     }
 
     private var swiftSyntaxDashboardContents: String {

@@ -44,7 +44,7 @@ public struct RuleListDocumentation {
 
             \(defaultRuleDocumentations.map(makeListEntry).joined(separator: "\n"))
 
-            ## Opt-In Rules
+            ## Opt-in Rules
 
             \(optInRuleDocumentations.map(makeListEntry).joined(separator: "\n"))
 
@@ -78,30 +78,30 @@ public struct RuleListDocumentation {
 
             ## Rules Using SourceKit
 
-            ### Enabled By Default (\(rulesUsingSourceKit.filter(\.isEnabledByDefault).count))
+            ### Default Rules (\(rulesUsingSourceKit.filter(\.isEnabledByDefault).count))
 
             \(rulesUsingSourceKit
                 .filter(\.isEnabledByDefault)
                 .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
                 .joined(separator: "\n"))
 
-            ### Opt-In (\(rulesUsingSourceKit.filter(\.isDisabledByDefault).count))
+            ### Opt-in Rules (\(rulesUsingSourceKit.filter(\.isDisabledByDefault).count))
 
             \(rulesUsingSourceKit
                 .filter(\.isDisabledByDefault)
                 .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
                 .joined(separator: "\n"))
 
-            ## Rules Not Using SourceKit
+            ## Rules not Using SourceKit
 
-            ### Enabled By Default (\(rulesNotUsingSourceKit.filter(\.isEnabledByDefault).count))
+            ### Default Rules (\(rulesNotUsingSourceKit.filter(\.isEnabledByDefault).count))
 
             \(rulesNotUsingSourceKit
                 .filter(\.isEnabledByDefault)
                 .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
                 .joined(separator: "\n"))
 
-            ### Opt-In (\(rulesNotUsingSourceKit.filter(\.isDisabledByDefault).count))
+            ### Opt-in Rules (\(rulesNotUsingSourceKit.filter(\.isDisabledByDefault).count))
 
             \(rulesNotUsingSourceKit
                 .filter(\.isDisabledByDefault)

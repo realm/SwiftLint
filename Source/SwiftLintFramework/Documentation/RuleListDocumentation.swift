@@ -64,6 +64,10 @@ public struct RuleListDocumentation {
         let rulesUsingSourceKit = linterRuleDocumentations.filter(\.usesSourceKit)
         let rulesNotUsingSourceKit = linterRuleDocumentations.filter { !$0.usesSourceKit }
         let percentUsingSourceKit = Int(rulesUsingSourceKit.count * 100 / linterRuleDocumentations.count)
+        let enabledSourceKitRules = rulesUsingSourceKit.filter(\.isEnabledByDefault)
+        let disabledSourceKitRules = rulesUsingSourceKit.filter(\.isDisabledByDefault)
+        let enabledSourceKitFreeRules = rulesNotUsingSourceKit.filter(\.isEnabledByDefault)
+        let disabledSourceKitFreeRules = rulesNotUsingSourceKit.filter(\.isDisabledByDefault)
 
         return """
             # Swift Syntax Dashboard
@@ -78,33 +82,29 @@ public struct RuleListDocumentation {
 
             ## Rules Using SourceKit
 
-            ### Default Rules (\(rulesUsingSourceKit.filter(\.isEnabledByDefault).count))
+            ### Default Rules (\(enabledSourceKitRules.count))
 
-            \(rulesUsingSourceKit
-                .filter(\.isEnabledByDefault)
+            \(enabledSourceKitRules
                 .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
                 .joined(separator: "\n"))
 
-            ### Opt-in Rules (\(rulesUsingSourceKit.filter(\.isDisabledByDefault).count))
+            ### Opt-in Rules (\(disabledSourceKitRules.count))
 
-            \(rulesUsingSourceKit
-                .filter(\.isDisabledByDefault)
+            \(disabledSourceKitRules
                 .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
                 .joined(separator: "\n"))
 
             ## Rules not Using SourceKit
 
-            ### Default Rules (\(rulesNotUsingSourceKit.filter(\.isEnabledByDefault).count))
+            ### Default Rules (\(enabledSourceKitFreeRules.count))
 
-            \(rulesNotUsingSourceKit
-                .filter(\.isEnabledByDefault)
+            \(enabledSourceKitFreeRules
                 .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
                 .joined(separator: "\n"))
 
-            ### Opt-in Rules (\(rulesNotUsingSourceKit.filter(\.isDisabledByDefault).count))
+            ### Opt-in Rules (\(disabledSourceKitFreeRules.count))
 
-            \(rulesNotUsingSourceKit
-                .filter(\.isDisabledByDefault)
+            \(disabledSourceKitFreeRules
                 .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
                 .joined(separator: "\n"))
 

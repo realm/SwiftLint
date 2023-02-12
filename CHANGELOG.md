@@ -17,6 +17,9 @@
 * None.
 
 #### Enhancements
+* Add local links to rule descriptions to every rule listed
+  in `Rule Directory.md`.  
+  [kattouf](https://github.com/kattouf)
 
 * Make forceExclude work with directly specified files.  
   [jimmya](https://github.com/jimmya)

@@ -172,6 +172,18 @@ or you can create a symbolic link in `/usr/local/bin` pointing to the actual bin
 ln -s /opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint
 ```
 
+You may get an error similar to this,
+
+```bash
+ln: /usr/local/bin/swiftlint: Permission denied
+```
+
+to fix it, use `sudo`
+
+```bash
+sudo ln -s /opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint
+```
+
 You might want to move your SwiftLint phase directly before the 'Compile Sources'
 step to detect errors quickly before compiling. However, SwiftLint is designed
 to run on valid Swift code that cleanly completes the compiler's parsing stage.

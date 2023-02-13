@@ -17,6 +17,7 @@
 * None.
 
 #### Enhancements
+
 * Add local links to rule descriptions to every rule listed
   in `Rule Directory.md`.  
   [kattouf](https://github.com/kattouf)

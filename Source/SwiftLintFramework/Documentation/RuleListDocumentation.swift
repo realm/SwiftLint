@@ -42,23 +42,21 @@ public struct RuleListDocumentation {
 
             ## Default Rules
 
-            \(defaultRuleDocumentations
-                .map { "* [`\($0.ruleIdentifier)`](\($0.ruleIdentifier).md): \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(defaultRuleDocumentations.map(makeListEntry).joined(separator: "\n"))
 
-            ## Opt-In Rules
+            ## Opt-in Rules
 
-            \(optInRuleDocumentations
-                .map { "* [`\($0.ruleIdentifier)`](\($0.ruleIdentifier).md): \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(optInRuleDocumentations.map(makeListEntry).joined(separator: "\n"))
 
             ## Analyzer Rules
 
-            \(analyzerRuleDocumentations
-                .map { "* [`\($0.ruleIdentifier)`](\($0.ruleIdentifier).md): \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(analyzerRuleDocumentations.map(makeListEntry).joined(separator: "\n"))
 
             """
+    }
+
+    private func makeListEntry(from rule: RuleDocumentation) -> String {
+        "* [`\(rule.ruleIdentifier)`](\(rule.ruleIdentifier).md): \(rule.ruleName)"
     }
 
     private var swiftSyntaxDashboardContents: String {
@@ -66,6 +64,10 @@ public struct RuleListDocumentation {
         let rulesUsingSourceKit = linterRuleDocumentations.filter(\.usesSourceKit)
         let rulesNotUsingSourceKit = linterRuleDocumentations.filter { !$0.usesSourceKit }
         let percentUsingSourceKit = Int(rulesUsingSourceKit.count * 100 / linterRuleDocumentations.count)
+        let enabledSourceKitRules = rulesUsingSourceKit.filter(\.isEnabledByDefault)
+        let disabledSourceKitRules = rulesUsingSourceKit.filter(\.isDisabledByDefault)
+        let enabledSourceKitFreeRules = rulesNotUsingSourceKit.filter(\.isEnabledByDefault)
+        let disabledSourceKitFreeRules = rulesNotUsingSourceKit.filter(\.isDisabledByDefault)
 
         return """
             # Swift Syntax Dashboard
@@ -80,35 +82,23 @@ public struct RuleListDocumentation {
 
             ## Rules Using SourceKit
 
-            ### Enabled By Default (\(rulesUsingSourceKit.filter(\.isEnabledByDefault).count))
+            ### Default Rules (\(enabledSourceKitRules.count))
 
-            \(rulesUsingSourceKit
-                .filter(\.isEnabledByDefault)
-                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(enabledSourceKitRules.map(makeListEntry).joined(separator: "\n"))
 
-            ### Opt-In (\(rulesUsingSourceKit.filter(\.isDisabledByDefault).count))
+            ### Opt-in Rules (\(disabledSourceKitRules.count))
 
-            \(rulesUsingSourceKit
-                .filter(\.isDisabledByDefault)
-                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(disabledSourceKitRules.map(makeListEntry).joined(separator: "\n"))
 
-            ## Rules Not Using SourceKit
+            ## Rules not Using SourceKit
 
-            ### Enabled By Default (\(rulesNotUsingSourceKit.filter(\.isEnabledByDefault).count))
+            ### Default Rules (\(enabledSourceKitFreeRules.count))
 
-            \(rulesNotUsingSourceKit
-                .filter(\.isEnabledByDefault)
-                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(enabledSourceKitFreeRules.map(makeListEntry).joined(separator: "\n"))
 
-            ### Opt-In (\(rulesNotUsingSourceKit.filter(\.isDisabledByDefault).count))
+            ### Opt-in Rules (\(disabledSourceKitFreeRules.count))
 
-            \(rulesNotUsingSourceKit
-                .filter(\.isDisabledByDefault)
-                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
-                .joined(separator: "\n"))
+            \(disabledSourceKitFreeRules.map(makeListEntry).joined(separator: "\n"))
 
             """
     }

@@ -167,9 +167,20 @@ private extension AttributeListSyntax {
             }
     }
 
+    var hasAttributeWithKeypathArgument: Bool {
+        contains { element in
+            switch element {
+            case .attribute(let attribute):
+                return attribute.hasKeypathArgument
+            case .ifConfigDecl:
+                return false
+            }
+        }
+    }
+
     // swiftlint:disable:next cyclomatic_complexity
     func makeHelper(locationConverter: SourceLocationConverter) -> RuleHelper? {
-        guard let parent else {
+        guard let parent, !hasAttributeWithKeypathArgument else {
             return nil
         }
 
@@ -215,5 +226,11 @@ private extension AttributeListSyntax {
             keywordLine: keywordLine,
             shouldBeOnSameLine: shouldBeOnSameLine
         )
+    }
+}
+
+private extension AttributeSyntax {
+    var hasKeypathArgument: Bool {
+        argument?.as(TupleExprElementListSyntax.self)?.first?.expression.is(KeyPathExprSyntax.self) == true
     }
 }

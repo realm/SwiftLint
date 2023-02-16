@@ -151,6 +151,7 @@ public let builtInRules: [Rule.Type] = [
     PrivateOutletRule.self,
     PrivateOverFilePrivateRule.self,
     PrivateSubjectRule.self,
+    PrivateSwiftUIStatePropertyRule.self,
     PrivateUnitTestRule.self,
     ProhibitedInterfaceBuilderRule.self,
     ProhibitedSuperRule.self,

@@ -896,6 +896,12 @@ class PrivateSubjectRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class PrivateSwiftUIStatePropertyRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PrivateSwiftUIStatePropertyRule.description)
+    }
+}
+
 class PrivateUnitTestRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateUnitTestRule.description)

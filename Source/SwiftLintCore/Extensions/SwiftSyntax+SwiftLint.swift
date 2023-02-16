@@ -167,6 +167,20 @@ public extension AttributeListSyntax? {
     func contains(attributeNamed attributeName: String) -> Bool {
         self?.contains { $0.as(AttributeSyntax.self)?.attributeNameText == attributeName } == true
     }
+
+    /// Returns `true` if the attribute's identifier is equal to "State"
+    var hasStateAttribute: Bool {
+        guard let attributes = self else { return false }
+
+        return attributes.contains { attr in
+            guard let stateAttr = attr.as(CustomAttributeSyntax.self),
+                  let identifier = stateAttr.attributeName.as(SimpleTypeIdentifierSyntax.self) else {
+                return false
+            }
+
+            return identifier.name.text == "State"
+        }
+    }
 }
 
 public extension TokenKind {

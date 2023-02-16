@@ -1,14 +1,6 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
 load("@SwiftLint//bazel:opt_wrapper.bzl", "opt_wrapper")
 
-cc_library(
-    name = "_CSwiftSyntax",
-    srcs = glob(["Sources/_CSwiftSyntax/src/*.c"]),
-    hdrs = glob(["Sources/_CSwiftSyntax/include/*.h"]),
-    linkstatic = True,
-    tags = ["swift_module"],
-)
-
 swift_library(
     name = "SwiftSyntax",
     srcs = glob(
@@ -16,7 +8,6 @@ swift_library(
         exclude = ["Sources/SwiftSyntax/Documentation.docc/**"],
     ),
     module_name = "SwiftSyntax",
-    private_deps = ["_CSwiftSyntax"],
 )
 
 swift_library(
@@ -38,7 +29,6 @@ swift_library(
     srcs = glob(["Sources/SwiftParser/**/*.swift"]),
     module_name = "SwiftParser",
     deps = [
-        ":SwiftBasicFormat",
         ":SwiftDiagnostics",
         ":SwiftSyntax",
     ],
@@ -52,6 +42,16 @@ swift_library(
         ":SwiftBasicFormat",
         ":SwiftParser",
         ":SwiftParserDiagnostics",
+        ":SwiftSyntax",
+    ],
+)
+
+swift_library(
+    name = "SwiftSyntaxParser",
+    srcs = glob(["Sources/SwiftSyntaxParser/**/*.swift"]),
+    module_name = "SwiftSyntaxParser",
+    deps = [
+        ":SwiftParser",
         ":SwiftSyntax",
     ],
 )
@@ -76,6 +76,28 @@ swift_library(
         ":SwiftDiagnostics",
         ":SwiftParser",
         ":SwiftSyntax",
+    ],
+)
+
+swift_library(
+    name = "SwiftRefactor",
+    srcs = glob(["Sources/SwiftRefactor/**/*.swift"]),
+    module_name = "SwiftRefactor",
+    deps = [
+        ":SwiftParser",
+        ":SwiftSyntax",
+    ],
+)
+
+swift_library(
+    name = "_SwiftSyntaxMacros",
+    srcs = glob(["Sources/_SwiftSyntaxMacros/**/*.swift"]),
+    module_name = "_SwiftSyntaxMacros",
+    deps = [
+        ":SwiftDiagnostics",
+        ":SwiftParser",
+        ":SwiftSyntax",
+        ":SwiftSyntaxBuilder",
     ],
 )
 

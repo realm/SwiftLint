@@ -259,6 +259,12 @@ class DuplicatedKeyInDictionaryLiteralRuleGeneratedTests: XCTestCase {
     }
 }
 
+class DuplicateConditionsRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DuplicateConditionsRule.description)
+    }
+}
+
 class DynamicInlineRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DynamicInlineRule.description)

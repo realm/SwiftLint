@@ -283,6 +283,11 @@ private extension SwiftLintFile {
             }
 
             let moduleName = typeUSR.substring(from: moduleNameLength.count + 2, length: moduleNameLengthInt)
+            // Generic types like '$s5ValueQzmD' don't have a module
+            if typeUSR.substring(from: moduleNameLength.count + 2 + moduleNameLengthInt).first?.isNumber != true {
+                return
+            }
+
             usrFragments.insert(moduleName)
 
             if moduleName == moduleToLog, let filePath = path {

@@ -103,6 +103,11 @@ public struct SourceKittenDictionary {
         return value["key.typename"] as? String
     }
 
+    /// Type USR.
+    var typeUSR: String? {
+        return value["key.typeusr"] as? String
+    }
+
     /// Documentation length.
     var docLength: ByteCount? {
         return (value["key.doclength"] as? Int64).flatMap(ByteCount.init)

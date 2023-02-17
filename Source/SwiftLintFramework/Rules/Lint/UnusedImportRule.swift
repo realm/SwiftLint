@@ -273,6 +273,24 @@ private extension SwiftLintFile {
                 )
             }
         }
+
+        if cursorInfo.kind == "source.lang.swift.ref.typealias",
+            let typeUSR = cursorInfo.typeUSR, typeUSR.hasPrefix("$s") {
+            // The format of the string is '$s<N><module>' where N is the length of the module name
+            let moduleNameLength = typeUSR.substring(from: 2).prefix(while: { $0.isNumber })
+            guard let moduleNameLengthInt = Int(moduleNameLength) else {
+                return
+            }
+
+            let moduleName = typeUSR.substring(from: moduleNameLength.count + 2, length: moduleNameLengthInt)
+            usrFragments.insert(moduleName)
+
+            if moduleName == moduleToLog, let filePath = path {
+                queuedPrintError(
+                    "[SWIFTLINT_LOG_MODULE_USAGE] \(moduleName) referenced by USR '\(typeUSR)' in file '\(filePath)'"
+                )
+            }
+        }
     }
 
     /// Returns whether or not the file contains any attributes that require the Foundation module.

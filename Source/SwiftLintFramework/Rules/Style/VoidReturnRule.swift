@@ -18,7 +18,12 @@ struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
             Example("let foo: (ConfigurationTests) -> () throws -> Void\n"),
             Example("let foo: (ConfigurationTests) ->   () throws -> Void\n"),
             Example("let foo: (ConfigurationTests) ->() throws -> Void\n"),
-            Example("let foo: (ConfigurationTests) -> () -> Void\n")
+            Example("let foo: (ConfigurationTests) -> () -> Void\n"),
+            Example("let foo: () -> () async -> Void\n"),
+            Example("let foo: () -> () async throws -> Void\n"),
+            Example("let foo: () -> () async -> Void\n"),
+            Example("func foo() -> () async throws -> Void {}\n"),
+            Example("func foo() async throws -> () async -> Void { return {} }\n")
         ],
         triggeringExamples: [
             Example("let abc: () -> ↓() = {}\n"),
@@ -27,7 +32,9 @@ struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
             Example("func foo(completion: () -> ↓())\n"),
             Example("func foo(completion: () -> ↓(   ))\n"),
             Example("func foo(completion: () -> ↓(Void))\n"),
-            Example("let foo: (ConfigurationTests) -> () throws -> ↓()\n")
+            Example("let foo: (ConfigurationTests) -> () throws -> ↓()\n"),
+            Example("func foo() async -> ↓()\n"),
+            Example("func foo() async throws -> ↓()\n")
         ],
         corrections: [
             Example("let abc: () -> ↓() = {}\n"): Example("let abc: () -> Void = {}\n"),
@@ -37,7 +44,8 @@ struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
             Example("func foo(completion: () -> ↓(   ))\n"): Example("func foo(completion: () -> Void)\n"),
             Example("func foo(completion: () -> ↓(Void))\n"): Example("func foo(completion: () -> Void)\n"),
             Example("let foo: (ConfigurationTests) -> () throws -> ↓()\n"):
-                Example("let foo: (ConfigurationTests) -> () throws -> Void\n")
+                Example("let foo: (ConfigurationTests) -> () throws -> Void\n"),
+            Example("func foo() async throws -> ↓()\n"): Example("func foo() async throws -> Void\n")
         ]
     )
 
@@ -53,7 +61,7 @@ struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
         let kinds = SyntaxKind.commentAndStringKinds
         let parensPattern = "\\(\\s*(?:Void)?\\s*\\)"
         let pattern = "->\\s*\(parensPattern)\\s*(?!->)"
-        let excludingPattern = "(\(pattern))\\s*(throws\\s+)?->"
+        let excludingPattern = "(\(pattern))\\s*(async\\s+)?(throws\\s+)?->"
 
         return file.match(pattern: pattern, excludingSyntaxKinds: kinds, excludingPattern: excludingPattern,
                           exclusionMapping: { $0.range(at: 1) }).compactMap {

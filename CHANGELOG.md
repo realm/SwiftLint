@@ -112,6 +112,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4753](https://github.com/realm/SwiftLint/issues/4753)
 
+* Fix `void_return` rule to support async and async throws functions.  
+  [Mathias Schreck](https://github.com/lo1tuma)
+  [#4772](https://github.com/realm/SwiftLint/issues/4772)
+
 ## 0.50.3: Bundle of Towels
 
 #### Breaking

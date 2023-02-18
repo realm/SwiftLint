@@ -35,6 +35,18 @@ struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
                 internal actor A {}
             """),
             Example("""
+                struct S1: P {
+                    fileprivate let i = 2, j = 1
+                }
+                struct S2: P {
+                    fileprivate var (k, l) = (1, 3)
+                }
+                protocol P {
+                    var j: Int { get }
+                    var l: Int { get }
+                }
+            """, excludeFromDocumentation: true),
+            Example("""
                 class C: P<Int> {
                     fileprivate func f() {}
                 }
@@ -82,14 +94,6 @@ struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
                     struct Inter {
                         ↓fileprivate struct Inner {}
                     }
-                }
-            """),
-            Example("""
-                struct S: P {
-                    fileprivate let i = 2, j = 1
-                }
-                protocol P {
-                    var i: Int { get }
                 }
             """),
             Example("""
@@ -190,10 +194,23 @@ private extension StrictFilePrivateRule {
             }
             if let varDecl = grandparent.as(VariableDeclSyntax.self) {
                 let isSpecificForSetter = node.detail?.detail.tokenKind == .contextualKeyword("set")
-                let allImplementProtocol = varDecl.bindings
-                    .compactMap { $0.pattern.as(IdentifierPatternSyntax.self)?.identifier.text }
-                    .allSatisfy { protocolMethodNames.contains(isSpecificForSetter ? .setter($0) : .getter($0)) }
-                if allImplementProtocol {
+                let firstImplementingProtocol = varDecl.bindings
+                    .flatMap { binding in
+                        let pattern = binding.pattern
+                        if let name = pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
+                            return [name]
+                        }
+                        if let tuple = pattern.as(TuplePatternSyntax.self) {
+                            return tuple.elements.compactMap {
+                                $0.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
+                            }
+                        }
+                        return []
+                    }
+                    .first {
+                        protocolMethodNames.contains(isSpecificForSetter ? .setter($0) : .getter($0))
+                    }
+                if firstImplementingProtocol != nil {
                     return
                 }
             }

@@ -134,6 +134,10 @@ extension ModifierListSyntax? {
         contains(tokenKind: .classKeyword)
     }
 
+    var isFileprivate: Bool {
+        contains(tokenKind: .fileprivateKeyword)
+    }
+
     var isPrivateOrFileprivate: Bool {
         guard let modifiers = self else {
             return false
@@ -245,6 +249,14 @@ extension AccessorBlockSyntax {
         accessors.first { accessor in
             accessor.accessorKind.tokenKind == .contextualKeyword("set")
         }
+    }
+
+    var specifiesGetAccessor: Bool {
+        getAccessor != nil
+    }
+
+    var specifiesSetAccessor: Bool {
+        setAccessor != nil
     }
 }
 

@@ -8,7 +8,7 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "duplicate_conditions",
         name: "Duplicate Conditions",
-        description: "Duplicate conditions in the same branching statement should be avoided",
+        description: "Duplicate sets of conditions in the same branching statement should be avoided",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -27,6 +27,13 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
                 }
             """),
             Example("""
+                if x < 5, y == "s" {
+                  foo()
+                } else if x < 5 {
+                  bar()
+                }
+            """),
+            Example("""
                 switch x {
                 case \"a\":
                   foo()
@@ -34,9 +41,24 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
                 }
             """),
             Example("""
+                switch x {
+                case \"a\" where y == "s":
+                  foo()
+                case \"a\" where y == "t":
+                  bar()
+                }
+            """),
+            Example("""
                 if let x = maybeAbc {
                   foo()
                 } else if let x = maybePqr {
+                  bar()
+                }
+            """),
+            Example("""
+                if let x = maybeAbc, let z = x.maybeY {
+                  foo()
+                } else if let x = maybePqr, let z = x.maybeY {
                   bar()
                 }
             """),
@@ -54,16 +76,16 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
                   foo()
                 } else if y == "s" {
                   bar()
-                } else if ↓x < 5 { 
+                } else if ↓x < 5 {
                   baz()
                 }
             """),
             Example("""
-                if x < 5, ↓y == "s" {
+                if ↓x < 5, y == "s" {
                   foo()
                 } else if x < 10 {
                   bar()
-                } else if ↓y == "s", x < 15 {
+                } else if ↓y == "s", x < 5 {
                   baz()
                 }
             """),
@@ -76,9 +98,24 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
                 }
             """),
             Example("""
+                switch x {
+                case ↓\"a\" where y == "s":
+                  foo()
+                case ↓\"a\" where y == "s":
+                  bar()
+                }
+            """),
+            Example("""
                 if ↓let xyz = maybeXyz {
                   foo()
                 } else if ↓let xyz = maybeXyz {
+                  bar()
+                }
+            """),
+            Example("""
+                if let x = maybeAbc, let z = x.maybeY {
+                  foo()
+                } else if let x = maybeAbc, let z = x.maybeY {
                   bar()
                 }
             """),
@@ -120,34 +157,35 @@ private extension DuplicateConditionsRule {
                 maybeCurr = curr.elseBody?.as(IfStmtSyntax.self)
             }
 
-            let positionsByCondition = statementChain
-                .flatMap { $0.conditions }
-                .compactMap(extract)
-                .reduce(into: [[UInt8]: [AbsolutePosition]](), { xs, x in
-                    xs[x.text, default: []].append(x.location)
-                })
+            let positionsByConditions = statementChain
+                .reduce(into: [Set<[UInt8]>: [AbsolutePosition]]()) { acc, elt in
+                    let conditions = elt.conditions.compactMap(extract)
+                    let location = elt.conditions.positionAfterSkippingLeadingTrivia
+                    acc[Set(conditions), default: []].append(location)
+                }
 
-            addViolations(positionsByCondition)
+            addViolations(positionsByConditions)
         }
 
         override func visitPost(_ node: SwitchCaseListSyntax) {
             let switchCases = node.compactMap { $0.as(SwitchCaseSyntax.self) }
 
             let positionsByCondition = switchCases
-                .reduce(into: [[UInt8]: [AbsolutePosition]]()) { xs, x in
+                .reduce(into: [[UInt8]: [AbsolutePosition]]()) { acc, elt in
                     // Defaults don't have a condition to worry about
-                    guard case let .case(caseLabel) = x.label else { return }
-                    for item in caseLabel.caseItems {
-                        let pattern = item.pattern.withoutTrivia().syntaxTextBytes
-                        let location = item.positionAfterSkippingLeadingTrivia
-                        xs[pattern, default: []].append(location)
+                    guard case let .case(caseLabel) = elt.label else { return }
+                    for caseItem in caseLabel.caseItems {
+                        let pattern = caseItem.pattern.withoutTrivia().syntaxTextBytes
+                        let whereClause = caseItem.whereClause?.withoutTrivia().syntaxTextBytes ?? []
+                        let location = caseItem.positionAfterSkippingLeadingTrivia
+                        acc[pattern + whereClause, default: []].append(location)
                     }
                 }
 
             addViolations(positionsByCondition)
         }
 
-        private func extract(_ node: ConditionElementSyntax) -> (text: [UInt8], location: AbsolutePosition)? {
+        private func extract(_ node: ConditionElementSyntax) -> [UInt8]? {
             let text: [UInt8]
             switch node.condition {
             case .availability(let node):
@@ -162,10 +200,10 @@ private extension DuplicateConditionsRule {
                 return nil
             }
 
-            return (text: text, location: node.positionAfterSkippingLeadingTrivia)
+            return text
         }
 
-        private func addViolations(_ positionsByCondition: [[UInt8]: [AbsolutePosition]]) {
+        private func addViolations<T>(_ positionsByCondition: [T: [AbsolutePosition]]) {
             let duplicatedPositions = positionsByCondition
                 .filter { $0.value.count > 1 }
                 .flatMap { $0.value }

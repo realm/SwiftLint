@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.9.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.0.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 @_spi(TestHelper)
 @testable import SwiftLintFramework
@@ -190,6 +190,12 @@ class CyclomaticComplexityRuleGeneratedTests: XCTestCase {
 class DeploymentTargetRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DeploymentTargetRule.description)
+    }
+}
+
+class DirectReturnRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DirectReturnRule.description)
     }
 }
 

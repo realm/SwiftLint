@@ -30,7 +30,7 @@
   the reference.  
   [Ethan Wong](https://github.com/GetToSet)
   [#4664](https://github.com/realm/SwiftLint/pull/4664)
-  
+
 * Add rule identifier to output of Emoji reporter.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4707](https://github.com/realm/SwiftLint/issues/4707)
@@ -58,7 +58,7 @@
   `quick_discouraged_call`.  
   [David Steinacher](https://github.com/stonko1994)
   [#4626](https://github.com/realm/SwiftLint/issues/4626)
-  
+
 * Add `relative-path` reporter to generate reports with relative file paths.  
   [Roya1v](https://github.com/roya1v)
   [#4660](https://github.com/realm/SwiftLint/issues/4660)
@@ -113,7 +113,7 @@
   false-positive in if-case-let statements.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4548](https://github.com/realm/SwiftLint/issues/4548)
-  
+
 * Ensure that negative literals in initializers do not trigger
   `no_magic_numbers` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

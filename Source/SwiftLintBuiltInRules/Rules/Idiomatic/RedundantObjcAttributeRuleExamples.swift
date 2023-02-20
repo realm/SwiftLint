@@ -104,11 +104,11 @@ struct RedundantObjcAttributeRuleExamples {
         class Foo: NSObject { }
 
         @objc extension Foo {
-          @objc private enum Baz: Int {
-            case baz
-          }
+            @objc private enum Baz: Int {
+              case baz
+            }
 
-          private var baz: Baz { .baz }
+            private var baz: Baz { .baz }
         }
         """),
         Example("""

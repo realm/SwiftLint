@@ -104,20 +104,20 @@ struct SuperfluousElseRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRul
 private class Visitor: ViolationsSyntaxVisitor {
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
-    override func visitPost(_ node: IfStmtSyntax) {
+    override func visitPost(_ node: IfExprSyntax) {
         if node.violatesRule {
             violations.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }
 
-private extension IfStmtSyntax {
+private extension IfExprSyntax {
     var violatesRule: Bool {
         if elseKeyword == nil {
             return false
         }
         let thenBodyReturns = lastStatementReturns(in: body)
-        if thenBodyReturns, let parent = parent?.as(IfStmtSyntax.self) {
+        if thenBodyReturns, let parent = parent?.as(IfExprSyntax.self) {
             return parent.violatesRule
         }
         return thenBodyReturns
@@ -127,7 +127,7 @@ private extension IfStmtSyntax {
         guard lastStatementReturns(in: body) else {
             return false
         }
-        if case let .ifStmt(nestedIfStmt) = elseBody {
+        if case let .ifExpr(nestedIfStmt) = elseBody {
             return nestedIfStmt.returnsInAllBranches
         }
         if case let .codeBlock(block) = elseBody {
@@ -143,8 +143,9 @@ private extension IfStmtSyntax {
         if lastItem.is(ReturnStmtSyntax.self) {
             return true
         }
-        if let last = lastItem.as(IfStmtSyntax.self) {
-            return last.returnsInAllBranches
+        if let exprStmt = lastItem.as(ExpressionStmtSyntax.self),
+           let lastIfStmt = exprStmt.expression.as(IfExprSyntax.self) {
+            return lastIfStmt.returnsInAllBranches
         }
         return false
     }

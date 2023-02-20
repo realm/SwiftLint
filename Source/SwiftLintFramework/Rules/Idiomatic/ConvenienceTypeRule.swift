@@ -198,15 +198,11 @@ private extension TypeInheritanceClauseSyntax? {
 
 private extension AttributeListSyntax? {
     var containsObjcMembers: Bool {
-        self?.contains { elem in
-            elem.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("objcMembers")
-        } ?? false
+        contains(attributeNamed: "objcMembers")
     }
 
     var containsObjc: Bool {
-        self?.contains { elem in
-            elem.as(AttributeSyntax.self)?.attributeName.tokenKind == .contextualKeyword("objc")
-        } ?? false
+        contains(attributeNamed: "objc")
     }
 }
 
@@ -218,12 +214,12 @@ private extension AttributeListSyntax? {
 
         return attrs.contains { elem in
             guard let attr = elem.as(AttributeSyntax.self),
-                    let arguments = attr.argument?.as(AvailabilitySpecListSyntax.self) else {
+                  let arguments = attr.argument?.as(AvailabilitySpecListSyntax.self) else {
                 return false
             }
 
-            return attr.attributeName.tokenKind == .contextualKeyword("available") && arguments.contains { arg in
-                arg.entry.as(TokenSyntax.self)?.tokenKind == .contextualKeyword("unavailable")
+            return attr.attributeNameText == "available" && arguments.contains { arg in
+                arg.entry.as(TokenSyntax.self)?.tokenKind.isUnavailableKeyword == true
             }
         }
     }

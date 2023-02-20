@@ -147,11 +147,12 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
 
             correctionPositions.append(function.positionAfterSkippingLeadingTrivia)
 
-            let base: IdentifierExprSyntax = "Self"
+            // swiftlint:disable:next rule_id
+            let base = IdentifierExprSyntax(identifier: "Self")
             let baseWithTrivia = base
-                .withLeadingTrivia(function.leadingTrivia ?? .zero)
-                .withTrailingTrivia(function.trailingTrivia ?? .zero)
-            return super.visit(node.withBase(ExprSyntax(baseWithTrivia)))
+                .with(\.leadingTrivia, function.leadingTrivia ?? .zero)
+                .with(\.trailingTrivia, function.trailingTrivia ?? .zero)
+            return super.visit(node.with(\.base, ExprSyntax(baseWithTrivia)))
         }
     }
 }
@@ -160,7 +161,7 @@ private extension FunctionCallExprSyntax {
     var hasViolation: Bool {
         return isTypeOfSelfCall &&
             argumentList.map(\.label?.text) == ["of"] &&
-            argumentList.first?.expression.as(IdentifierExprSyntax.self)?.identifier.tokenKind == .selfKeyword
+            argumentList.first?.expression.as(IdentifierExprSyntax.self)?.identifier.tokenKind == .keyword(.self)
     }
 
     var isTypeOfSelfCall: Bool {

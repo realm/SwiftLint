@@ -107,7 +107,7 @@ private extension SelfInPropertyInitializationRule {
                 return
             }
 
-            let visitor = IdentifierUsageVisitor(identifier: .selfKeyword)
+            let visitor = IdentifierUsageVisitor(identifier: .keyword(.self))
             for binding in node.bindings {
                 guard let initializer = binding.initializer,
                       visitor.walk(tree: initializer.value, handler: \.isTokenUsed) else {

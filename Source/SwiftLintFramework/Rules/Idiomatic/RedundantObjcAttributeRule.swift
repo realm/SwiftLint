@@ -42,22 +42,15 @@ struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule,
 }
 
 private extension AttributeListSyntax {
-    var hasObjCMembers: Bool {
-        contains { $0.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("objcMembers") }
-    }
-
     var objCAttribute: AttributeSyntax? {
         lazy
             .compactMap { $0.as(AttributeSyntax.self) }
-            .first { attribute in
-                attribute.attributeName.tokenKind == .contextualKeyword("objc") &&
-                    attribute.argument == nil
-            }
+            .first { $0.attributeNameText == "objc" && $0.argument == nil }
     }
 
     var hasAttributeImplyingObjC: Bool {
         contains { element in
-            guard case let .identifier(attributeName) = element.as(AttributeSyntax.self)?.attributeName.tokenKind else {
+            guard let attributeName = element.as(AttributeSyntax.self)?.attributeNameText else {
                 return false
             }
 
@@ -89,7 +82,7 @@ private extension AttributeListSyntax {
             return objcAttribute
         } else if parent?.isFunctionOrStoredProperty == true,
                   let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
-                  parentClassDecl.attributes?.hasObjCMembers == true {
+                  parentClassDecl.attributes.contains(attributeNamed: "objcMembers") {
             return objcAttribute
         } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
                   parentExtensionDecl.attributes?.objCAttribute != nil {

@@ -55,7 +55,7 @@ private extension ClassDelegateProtocolRule {
 
 private extension ProtocolDeclSyntax {
     func hasObjCAttribute() -> Bool {
-        attributes?.contains { $0.as(AttributeSyntax.self)?.attributeName.text == "objc" } == true
+        attributes.contains(attributeNamed: "objc")
     }
 
     func isClassRestricted() -> Bool {

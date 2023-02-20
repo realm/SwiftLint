@@ -129,8 +129,6 @@ private extension FunctionParameterSyntax {
             return false
         }
 
-        return attrType.attributes?.contains { attr in
-            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("escaping")
-        } ?? false
+        return attrType.attributes.contains(attributeNamed: "escaping")
     }
 }

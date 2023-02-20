@@ -8,7 +8,7 @@ extension SyntaxVisitor: SwiftLintSyntaxVisitor {}
 
 extension SwiftLintSyntaxVisitor {
     func walk<T, SyntaxType: SyntaxProtocol>(tree: SyntaxType, handler: (Self) -> T) -> T {
-        #if DEBUG
+#if DEBUG
         // workaround for stack overflow when running in debug
         // https://bugs.swift.org/browse/SR-11170
         let lock = NSLock()
@@ -31,10 +31,10 @@ extension SwiftLintSyntaxVisitor {
         }
 
         return handler(self)
-        #else
+#else
         walk(tree)
         return handler(self)
-        #endif
+#endif
     }
 
     func walk<T>(file: SwiftLintFile, handler: (Self) -> [T]) -> [T] {
@@ -107,19 +107,17 @@ extension StringLiteralExprSyntax {
 
 extension TokenKind {
     var isEqualityComparison: Bool {
-        self == .spacedBinaryOperator("==") ||
-            self == .spacedBinaryOperator("!=") ||
-            self == .unspacedBinaryOperator("==")
+        self == .binaryOperator("==") || self == .binaryOperator("!=")
     }
 }
 
 extension ModifierListSyntax? {
     var containsLazy: Bool {
-        contains(tokenKind: .contextualKeyword("lazy"))
+        contains(tokenKind: .keyword(.lazy))
     }
 
     var containsOverride: Bool {
-        contains(tokenKind: .contextualKeyword("override"))
+        contains(tokenKind: .keyword(.override))
     }
 
     var containsStaticOrClass: Bool {
@@ -127,15 +125,15 @@ extension ModifierListSyntax? {
     }
 
     var isStatic: Bool {
-        contains(tokenKind: .staticKeyword)
+        contains(tokenKind: .keyword(.static))
     }
 
     var isClass: Bool {
-        contains(tokenKind: .classKeyword)
+        contains(tokenKind: .keyword(.class))
     }
 
     var isFileprivate: Bool {
-        contains(tokenKind: .fileprivateKeyword)
+        contains(tokenKind: .keyword(.fileprivate))
     }
 
     var isPrivateOrFileprivate: Bool {
@@ -144,13 +142,13 @@ extension ModifierListSyntax? {
         }
 
         return modifiers.contains { elem in
-            (elem.name.tokenKind == .privateKeyword || elem.name.tokenKind == .fileprivateKeyword) &&
+            (elem.name.tokenKind == .keyword(.private) || elem.name.tokenKind == .keyword(.fileprivate)) &&
                 elem.detail == nil
         }
     }
 
     var isFinal: Bool {
-        contains(tokenKind: .contextualKeyword("final"))
+        contains(tokenKind: .keyword(.final))
     }
 
     private func contains(tokenKind: TokenKind) -> Bool {
@@ -162,17 +160,34 @@ extension ModifierListSyntax? {
     }
 }
 
+extension AttributeSyntax {
+    var attributeNameText: String {
+        attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text ??
+            attributeName.description
+    }
+}
+
+extension AttributeListSyntax? {
+    func contains(attributeNamed attributeName: String) -> Bool {
+        self?.contains { $0.as(AttributeSyntax.self)?.attributeNameText == attributeName } == true
+    }
+}
+
+extension TokenKind {
+    var isUnavailableKeyword: Bool {
+        self == .keyword(.unavailable) || self == .identifier("unavailable")
+    }
+}
+
 extension VariableDeclSyntax {
     var isIBOutlet: Bool {
-        attributes?.contains { attr in
-            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBOutlet")
-        } ?? false
+        attributes.contains(attributeNamed: "IBOutlet")
     }
 
     var weakOrUnownedModifier: DeclModifierSyntax? {
         modifiers?.first { decl in
-            decl.name.tokenKind == .contextualKeyword("weak") ||
-                decl.name.tokenKind == .contextualKeyword("unowned")
+            decl.name.tokenKind == .keyword(.weak) ||
+                decl.name.tokenKind == .keyword(.unowned)
         }
     }
 
@@ -207,9 +222,7 @@ public extension EnumDeclSyntax {
 
 extension FunctionDeclSyntax {
     var isIBAction: Bool {
-        attributes?.contains { attr in
-            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBAction")
-        } ?? false
+        attributes.contains(attributeNamed: "IBAction")
     }
 
     /// Returns the signature including arguments, e.g "setEditing(_:animated:)"
@@ -241,13 +254,13 @@ extension FunctionDeclSyntax {
 extension AccessorBlockSyntax {
     var getAccessor: AccessorDeclSyntax? {
         accessors.first { accessor in
-            accessor.accessorKind.tokenKind == .contextualKeyword("get")
+            accessor.accessorKind.tokenKind == .keyword(.get)
         }
     }
 
     var setAccessor: AccessorDeclSyntax? {
         accessors.first { accessor in
-            accessor.accessorKind.tokenKind == .contextualKeyword("set")
+            accessor.accessorKind.tokenKind == .keyword(.set)
         }
     }
 

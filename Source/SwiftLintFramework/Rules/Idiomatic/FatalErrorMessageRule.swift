@@ -45,7 +45,7 @@ private extension FatalErrorMessageRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let expression = node.calledExpression.as(IdentifierExprSyntax.self),
-                  expression.identifier.withoutTrivia().text == "fatalError",
+                  expression.identifier.text == "fatalError",
                 node.argumentList.isEmptyOrEmptyString else {
                 return
             }

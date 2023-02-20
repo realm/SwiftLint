@@ -142,7 +142,7 @@ private extension UnusedCaptureListRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ClosureExprSyntax) {
             guard let captureItems = node.signature?.capture?.items,
-                    captureItems.isNotEmpty else {
+                  captureItems.isNotEmpty else {
                 return
             }
 
@@ -152,12 +152,14 @@ private extension UnusedCaptureListRule {
                         return (name.text, item)
                     } else if let expr = item.expression.as(IdentifierExprSyntax.self) {
                         // allow "[unowned self]"
-                        if expr.identifier.tokenKind == .selfKeyword && item.specifier.containsUnowned {
+                        if expr.identifier.tokenKind == .keyword(.self),
+                           item.specifier?.specifier.tokenKind == .keyword(.unowned) {
                             return nil
                         }
 
                         // allow "[self]" capture (SE-0269)
-                        if expr.identifier.tokenKind == .selfKeyword && item.specifier.isNilOrEmpty {
+                        if expr.identifier.tokenKind == .keyword(.self),
+                           item.specifier == nil {
                             return nil
                         }
 
@@ -201,17 +203,5 @@ private final class IdentifierReferenceVisitor: SyntaxVisitor {
         if identifiersToSearch.contains(name) {
             foundIdentifiers.insert(name)
         }
-    }
-}
-
-private extension TokenListSyntax? {
-    var containsUnowned: Bool {
-        self?.contains { token in
-            token.tokenKind == .contextualKeyword("unowned")
-        } ?? false
-    }
-
-    var isNilOrEmpty: Bool {
-        self?.isEmpty ?? true
     }
 }

@@ -45,7 +45,7 @@ private extension OperatorFunctionWhitespaceRule {
 private extension FunctionDeclSyntax {
     var isOperatorDeclaration: Bool {
         switch identifier.tokenKind {
-        case .spacedBinaryOperator, .unspacedBinaryOperator:
+        case .binaryOperator:
             return true
         default:
             return false

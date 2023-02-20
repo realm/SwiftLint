@@ -44,7 +44,9 @@ extension SwiftLintFile {
             .tokens(viewMode: .sourceAccurate)
             .reduce(into: []) { linesWithTokens, token in
                 if case .stringSegment = token.tokenKind {
-                    let sourceRange = token.withoutTrivia().sourceRange(converter: locationConverter)
+                    let sourceRange = token
+                        .trimmed
+                        .sourceRange(converter: locationConverter)
                     let startLine = sourceRange.start.line!
                     let endLine = sourceRange.end.line!
                     linesWithTokens.formUnion(startLine...endLine)

@@ -80,7 +80,17 @@ internal struct AttributesRuleExamples {
         @NSApplicationMain
         @MainActor
         final class AppDelegate: NSAppDelegate {}
-        """)
+        """),
+        Example(#"""
+        final class MyView: View {
+          @SwiftUI.Environment(\.colorScheme) var colorScheme: ColorScheme
+        }
+        """#),
+        Example(#"""
+        final class MyView: View {
+          @Environment(\.colorScheme) var colorScheme: ColorScheme
+        }
+        """#)
     ]
 
     static let triggeringExamples = [

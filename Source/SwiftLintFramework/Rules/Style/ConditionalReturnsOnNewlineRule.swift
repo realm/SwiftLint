@@ -53,7 +53,7 @@ private extension ConditionalReturnsOnNewlineRule {
             super.init(viewMode: .sourceAccurate)
         }
 
-        override func visitPost(_ node: IfStmtSyntax) {
+        override func visitPost(_ node: IfExprSyntax) {
             if isReturn(node.body.statements.lastReturn, onTheSameLineAs: node.ifKeyword) {
                 violations.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
                 return

@@ -36,8 +36,7 @@ private final class ImplicitGetterRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: AccessorBlockSyntax) {
         guard let getAccessor = node.getAccessor,
               node.setAccessor == nil,
-              getAccessor.asyncKeyword == nil,
-              getAccessor.throwsKeyword == nil,
+              getAccessor.effectSpecifiers == nil,
               getAccessor.modifier == nil,
               (getAccessor.attributes == nil || getAccessor.attributes?.isEmpty == true),
               getAccessor.body != nil else {

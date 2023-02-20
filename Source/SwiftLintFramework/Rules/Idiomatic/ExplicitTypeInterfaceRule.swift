@@ -132,7 +132,7 @@ private extension InitializerClauseSyntax {
     }
 
     var isTypeReference: Bool {
-        value.as(MemberAccessExprSyntax.self)?.name.tokenKind == .selfKeyword
+        value.as(MemberAccessExprSyntax.self)?.name.tokenKind == .keyword(.self)
     }
 }
 

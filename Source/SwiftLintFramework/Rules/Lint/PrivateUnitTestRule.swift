@@ -201,7 +201,7 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
         correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
         let (modifiers, declKeyword) = withoutPrivate(modifiers: node.modifiers, declKeyword: node.classKeyword)
-        return super.visit(node.withModifiers(modifiers).withClassKeyword(declKeyword))
+        return super.visit(node.with(\.modifiers, modifiers).with(\.classKeyword, declKeyword))
     }
 
     override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
@@ -215,7 +215,7 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
         correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
         let (modifiers, declKeyword) = withoutPrivate(modifiers: node.modifiers, declKeyword: node.funcKeyword)
-        return super.visit(node.withModifiers(modifiers).withFuncKeyword(declKeyword))
+        return super.visit(node.with(\.modifiers, modifiers).with(\.funcKeyword, declKeyword))
     }
 
     private func withoutPrivate(modifiers: ModifierListSyntax?,
@@ -227,14 +227,14 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         var leadingTrivia = Trivia.zero
         for modifier in modifiers {
             let accumulatedLeadingTrivia = leadingTrivia + (modifier.leadingTrivia ?? .zero)
-            if modifier.name.tokenKind == .privateKeyword {
+            if modifier.name.tokenKind == .keyword(.private) {
                 leadingTrivia = accumulatedLeadingTrivia
             } else {
-                filteredModifiers.append(modifier.withLeadingTrivia(accumulatedLeadingTrivia))
+                filteredModifiers.append(modifier.with(\.leadingTrivia, accumulatedLeadingTrivia))
                 leadingTrivia = .zero
             }
         }
-        let declKeyword = declKeyword.withLeadingTrivia(leadingTrivia + (declKeyword.leadingTrivia ?? .zero))
+        let declKeyword = declKeyword.with(\.leadingTrivia, leadingTrivia + (declKeyword.leadingTrivia ?? .zero))
         return (ModifierListSyntax(filteredModifiers), declKeyword)
     }
 }
@@ -269,11 +269,11 @@ private extension FunctionDeclSyntax {
 
 private extension ModifierListSyntax {
     var hasPrivate: Bool {
-        contains { $0.name.tokenKind == .privateKeyword }
+        contains { $0.name.tokenKind == .keyword(.private) }
     }
 
     var hasStatic: Bool {
-        contains { $0.name.tokenKind == .staticKeyword }
+        contains { $0.name.tokenKind == .keyword(.static) }
     }
 }
 
@@ -281,8 +281,6 @@ private func resultInPrivateProperty(modifiers: ModifierListSyntax?, attributes:
     guard let modifiers, modifiers.hasPrivate else {
         return false
     }
-    guard let attributes else {
-        return true
-    }
-    return !attributes.contains { $0.as(AttributeSyntax.self)?.attributeName.tokenKind == .contextualKeyword("objc") }
+
+    return !attributes.contains(attributeNamed: "objc")
 }

@@ -60,10 +60,8 @@ private extension ContainsOverFilterCountRule {
 
 private extension TokenKind {
     var isZeroComparison: Bool {
-        self == .spacedBinaryOperator("==") ||
-            self == .spacedBinaryOperator("!=") ||
-            self == .unspacedBinaryOperator("==") ||
-            self == .spacedBinaryOperator(">") ||
-            self == .unspacedBinaryOperator(">")
+        self == .binaryOperator("==") ||
+            self == .binaryOperator("!=") ||
+            self == .binaryOperator(">")
     }
 }

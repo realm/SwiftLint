@@ -76,7 +76,7 @@ private extension JoinedDefaultParameterRule {
             }
 
             correctionPositions.append(violationPosition)
-            let newNode = node.withArgumentList(nil)
+            let newNode = node.with(\.argumentList, [])
             return super.visit(newNode)
         }
     }

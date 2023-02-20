@@ -170,9 +170,7 @@ private extension ValidIBInspectableRule {
 
 private extension VariableDeclSyntax {
     var isIBInspectable: Bool {
-        attributes?.contains { attr in
-            attr.as(AttributeSyntax.self)?.attributeName.text == "IBInspectable"
-        } ?? false
+        attributes.contains(attributeNamed: "IBInspectable")
     }
 
     var hasViolation: Bool {
@@ -180,7 +178,7 @@ private extension VariableDeclSyntax {
     }
 
     var isReadOnlyProperty: Bool {
-        if letOrVarKeyword.tokenKind == .letKeyword {
+        if letOrVarKeyword.tokenKind == .keyword(.let) {
             return true
         }
 
@@ -212,7 +210,7 @@ private extension VariableDeclSyntax {
                 return false
             }
 
-            return ValidIBInspectableRule.supportedTypes.contains(type.type.withoutTrivia().description)
+            return ValidIBInspectableRule.supportedTypes.contains(type.type.trimmedDescription)
         }
     }
 }

@@ -134,26 +134,26 @@ private extension ForWhereRule {
 
         override func visitPost(_ node: ForInStmtSyntax) {
             guard node.whereClause == nil,
-                  case let statements = node.body.statements,
-                  let ifStatement = statements.onlyElement?.item.as(IfStmtSyntax.self),
-                  ifStatement.elseBody == nil,
-                  !ifStatement.containsOptionalBinding,
-                  !ifStatement.containsPatternCondition,
-                  let condition = ifStatement.conditions.onlyElement,
+                  let onlyExprStmt = node.body.statements.onlyElement?.item.as(ExpressionStmtSyntax.self),
+                  let ifExpr = onlyExprStmt.expression.as(IfExprSyntax.self),
+                  ifExpr.elseBody == nil,
+                  !ifExpr.containsOptionalBinding,
+                  !ifExpr.containsPatternCondition,
+                  let condition = ifExpr.conditions.onlyElement,
                   !condition.containsMultipleConditions else {
                 return
             }
 
-            if allowForAsFilter, ifStatement.containsReturnStatement {
+            if allowForAsFilter, ifExpr.containsReturnStatement {
                 return
             }
 
-            violations.append(ifStatement.positionAfterSkippingLeadingTrivia)
+            violations.append(ifExpr.positionAfterSkippingLeadingTrivia)
         }
     }
 }
 
-private extension IfStmtSyntax {
+private extension IfExprSyntax {
     var containsOptionalBinding: Bool {
         conditions.contains { element in
             element.condition.is(OptionalBindingConditionSyntax.self)

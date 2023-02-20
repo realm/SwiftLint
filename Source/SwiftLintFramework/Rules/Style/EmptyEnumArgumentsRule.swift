@@ -159,7 +159,7 @@ private extension EmptyEnumArgumentsRule {
             }
 
             correctionPositions.append(violationPosition)
-            return super.visit(node.withPattern(newPattern))
+            return super.visit(node.with(\.pattern, newPattern))
         }
 
         override func visit(_ node: MatchingPatternConditionSyntax) -> MatchingPatternConditionSyntax {
@@ -171,7 +171,7 @@ private extension EmptyEnumArgumentsRule {
             }
 
             correctionPositions.append(violationPosition)
-            return super.visit(node.withPattern(newPattern))
+            return super.visit(node.with(\.pattern, newPattern))
         }
     }
 }
@@ -200,7 +200,7 @@ private extension PatternSyntax {
 private extension FunctionCallExprSyntax {
     var argumentsHasViolation: Bool {
         !calledExpression.is(IdentifierExprSyntax.self) &&
-            calledExpression.as(MemberAccessExprSyntax.self)?.lastToken?.tokenKind != .initKeyword &&
+            calledExpression.as(MemberAccessExprSyntax.self)?.lastToken?.tokenKind != .keyword(.`init`) &&
             argumentList.allSatisfy(\.expression.isDiscardAssignmentOrFunction)
     }
 
@@ -222,19 +222,19 @@ private extension FunctionCallExprSyntax {
 
         if argumentList.allSatisfy({ $0.expression.is(DiscardAssignmentExprSyntax.self) }) {
             let newCalledExpression = calledExpression
-                .withTrailingTrivia(rightParen?.trailingTrivia ?? .zero)
+                .with(\.trailingTrivia, rightParen?.trailingTrivia ?? .zero)
             let newExpression = self
-                .withCalledExpression(ExprSyntax(newCalledExpression))
-                .withLeftParen(nil)
-                .withArgumentList(nil)
-                .withRightParen(nil)
+                .with(\.calledExpression, ExprSyntax(newCalledExpression))
+                .with(\.leftParen, nil)
+                .with(\.argumentList, [])
+                .with(\.rightParen, nil)
             return ExprSyntax(newExpression)
         }
 
         var copy = self
         for (index, arg) in argumentList.enumerated() {
             if let newArgExpr = arg.expression.as(FunctionCallExprSyntax.self) {
-                let newArg = arg.withExpression(newArgExpr.removingInnermostDiscardArguments)
+                let newArg = arg.with(\.expression, newArgExpr.removingInnermostDiscardArguments)
                 copy.argumentList = copy.argumentList.replacing(childAt: index, with: newArg)
             }
         }

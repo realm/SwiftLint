@@ -139,11 +139,11 @@ private extension UnusedSetterValueRule {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: AccessorDeclSyntax) {
-            guard node.accessorKind.tokenKind == .contextualKeyword("set") else {
+            guard node.accessorKind.tokenKind == .keyword(.set) else {
                 return
             }
 
-            let variableName = node.parameter?.name.withoutTrivia().text ?? "newValue"
+            let variableName = node.parameter?.name.text ?? "newValue"
             let visitor = NewValueUsageVisitor(variableName: variableName)
             if !visitor.walk(tree: node, handler: \.isVariableUsed) {
                 if (Syntax(node).closestVariableOrSubscript()?.modifiers).containsOverride,
@@ -166,7 +166,7 @@ private extension UnusedSetterValueRule {
         }
 
         override func visitPost(_ node: IdentifierExprSyntax) {
-            if node.identifier.withoutTrivia().text == variableName {
+            if node.identifier.text == variableName {
                 isVariableUsed = true
             }
         }

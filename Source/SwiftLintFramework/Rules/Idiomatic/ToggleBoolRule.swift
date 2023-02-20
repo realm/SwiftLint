@@ -73,11 +73,14 @@ private extension ToggleBoolRule {
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
 
             let newNode = node
-                .replacing(childAt: 0, with: "\(node.first!.withoutTrivia()).toggle()")
+                .replacing(
+                    childAt: 0,
+                    with: "\(node.first!.trimmed).toggle()"
+                )
                 .removingLast()
                 .removingLast()
-                .withLeadingTrivia(node.leadingTrivia ?? .zero)
-                .withTrailingTrivia(node.trailingTrivia ?? .zero)
+                .with(\.leadingTrivia, node.leadingTrivia ?? .zero)
+                .with(\.trailingTrivia, node.trailingTrivia ?? .zero)
 
             return super.visit(newNode)
         }
@@ -90,8 +93,8 @@ private extension ExprListSyntax {
             count == 3,
             dropFirst().first?.is(AssignmentExprSyntax.self) == true,
             last?.is(PrefixOperatorExprSyntax.self) == true,
-            let lhs = first?.withoutTrivia().description,
-            let rhs = last?.withoutTrivia().description,
+            let lhs = first?.trimmedDescription,
+            let rhs = last?.trimmedDescription,
             rhs == "!\(lhs)"
         else {
             return false

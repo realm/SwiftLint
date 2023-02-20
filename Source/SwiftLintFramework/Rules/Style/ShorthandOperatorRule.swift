@@ -62,8 +62,8 @@ private extension ShorthandOperatorRule {
             guard node.operatorOperand.is(AssignmentExprSyntax.self),
                   let rightExpr = node.rightOperand.as(InfixOperatorExprSyntax.self),
                   let binaryOperatorExpr = rightExpr.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                  ShorthandOperatorRule.allOperators.contains(binaryOperatorExpr.operatorToken.withoutTrivia().text),
-                  node.leftOperand.withoutTrivia().description == rightExpr.leftOperand.withoutTrivia().description
+                  ShorthandOperatorRule.allOperators.contains(binaryOperatorExpr.operatorToken.text),
+                  node.leftOperand.trimmedDescription == rightExpr.leftOperand.trimmedDescription
             else {
                 return
             }
@@ -86,7 +86,7 @@ private extension ShorthandOperatorRule {
 private extension TokenSyntax {
     var binaryOperator: String? {
         switch tokenKind {
-        case .spacedBinaryOperator(let str), .unspacedBinaryOperator(let str):
+        case .binaryOperator(let str):
             return str
         default:
             return nil

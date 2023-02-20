@@ -120,36 +120,36 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
            initializerIdentifier.identifier.text == "self" {
             correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
 
-            return super.visit(
-                node.withPattern(
-                    PatternSyntax(
-                        identifierPattern.withIdentifier(
-                            identifierPattern.identifier.withKind(.identifier(bindIdentifier))
-                        )
-                    )
+            let newPattern = PatternSyntax(
+                identifierPattern
+                    .with(\.identifier,
+                          identifierPattern.identifier.withKind(.identifier(bindIdentifier))
                 )
             )
+
+            return super.visit(node.with(\.pattern, newPattern))
         } else if node.initializer == nil, identifierPattern.identifier.text == "self", bindIdentifier != "self" {
             correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
 
+            let newPattern = PatternSyntax(
+                identifierPattern
+                    .with(\.identifier,
+                          identifierPattern.identifier.withKind(.identifier(bindIdentifier)))
+            )
+
+            let newInitializer = InitializerClauseSyntax(
+                value: IdentifierExprSyntax(
+                    identifier: .keyword(
+                        .`self`,
+                        leadingTrivia: .space,
+                        trailingTrivia: identifierPattern.trailingTrivia ?? .space
+                    )
+                )
+            )
+
             let newNode = node
-                .withPattern(
-                    PatternSyntax(
-                        identifierPattern.withIdentifier(
-                            identifierPattern.identifier.withKind(.identifier(bindIdentifier))
-                        )
-                    )
-                )
-                .withInitializer(
-                    InitializerClauseSyntax(
-                        value: IdentifierExprSyntax(
-                            identifier: .selfKeyword(
-                                leadingTrivia: .space,
-                                trailingTrivia: identifierPattern.trailingTrivia ?? .space
-                            )
-                        )
-                    )
-                )
+                .with(\.pattern, newPattern)
+                .with(\.initializer, newInitializer)
             return super.visit(newNode)
         } else {
             return super.visit(node)

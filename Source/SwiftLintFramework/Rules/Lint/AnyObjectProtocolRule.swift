@@ -83,11 +83,12 @@ private extension AnyObjectProtocolRule {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
             return super.visit(
-                node.withTypeName(
+                node.with(
+                    \.typeName,
                     TypeSyntax(
                         SimpleTypeIdentifierSyntax(name: .identifier("AnyObject"), genericArgumentClause: nil)
-                            .withLeadingTrivia(typeName.leadingTrivia ?? .zero)
-                            .withTrailingTrivia(typeName.trailingTrivia ?? .zero)
+                            .with(\.leadingTrivia, typeName.leadingTrivia ?? .zero)
+                            .with(\.trailingTrivia, typeName.trailingTrivia ?? .zero)
                     )
                 )
             )

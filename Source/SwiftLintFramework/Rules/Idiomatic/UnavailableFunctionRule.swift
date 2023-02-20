@@ -105,7 +105,7 @@ private extension UnavailableFunctionRule {
 private extension FunctionDeclSyntax {
     var returnsNever: Bool {
         if let expr = signature.output?.returnType.as(SimpleTypeIdentifierSyntax.self) {
-            return expr.name.withoutTrivia().text == "Never"
+            return expr.name.text == "Never"
         }
         return false
     }
@@ -123,8 +123,9 @@ private extension AttributeListSyntax? {
                 return false
             }
 
-            return attr.attributeName.tokenKind == .contextualKeyword("available") && arguments.contains { arg in
-                arg.entry.as(TokenSyntax.self)?.tokenKind == .contextualKeyword("unavailable")
+            let attributeName = attr.attributeNameText
+            return attributeName == "available" && arguments.contains { arg in
+                arg.entry.as(TokenSyntax.self)?.tokenKind.isUnavailableKeyword == true
             }
         }
     }
@@ -148,7 +149,7 @@ private extension CodeBlockSyntax? {
                 return false
             }
 
-            return terminatingFunctions.contains(identifierExpr.identifier.withoutTrivia().text)
+            return terminatingFunctions.contains(identifierExpr.identifier.text)
         }
     }
 

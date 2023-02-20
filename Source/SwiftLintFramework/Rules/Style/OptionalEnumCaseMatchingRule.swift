@@ -209,11 +209,11 @@ private extension OptionalEnumCaseMatchingRule {
                !expression.expression.isDiscardAssignmentOrBoolLiteral {
                 let violationPosition = expression.questionMark.positionAfterSkippingLeadingTrivia
                 correctionPositions.append(violationPosition)
-                let newExpression = ExprSyntax(expression.withQuestionMark(nil))
-                let newPattern = PatternSyntax(pattern.withExpression(newExpression))
+                let newPattern = PatternSyntax(pattern.with(\.expression, expression.expression))
                 let newNode = node
-                    .withPattern(newPattern)
-                    .withWhereClause(node.whereClause?.withLeadingTrivia(expression.questionMark.trailingTrivia))
+                    .with(\.pattern, newPattern)
+                    .with(\.whereClause,
+                          node.whereClause?.with(\.leadingTrivia, expression.questionMark.trailingTrivia))
                 return super.visit(newNode)
             } else if let expression = pattern.expression.as(TupleExprSyntax.self) {
                 var newExpression = expression
@@ -228,14 +228,13 @@ private extension OptionalEnumCaseMatchingRule {
                     let violationPosition = optionalChainingExpression.questionMark.positionAfterSkippingLeadingTrivia
                     correctionPositions.append(violationPosition)
 
-                    let newElementExpression = ExprSyntax(optionalChainingExpression.withQuestionMark(nil))
-                    let newElement = element.withExpression(newElementExpression)
+                    let newElement = element.with(\.expression, optionalChainingExpression.expression)
                     newExpression.elementList = newExpression.elementList
                         .replacing(childAt: index, with: newElement)
                 }
 
-                let newPattern = PatternSyntax(pattern.withExpression(ExprSyntax(newExpression)))
-                let newNode = node.withPattern(newPattern)
+                let newPattern = PatternSyntax(pattern.with(\.expression, ExprSyntax(newExpression)))
+                let newNode = node.with(\.pattern, newPattern)
                 return super.visit(newNode)
             }
 

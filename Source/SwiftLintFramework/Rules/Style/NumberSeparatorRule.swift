@@ -88,7 +88,8 @@ private extension NumberSeparatorRule {
                 return super.visit(node)
             }
 
-            let newNode = node.withFloatingDigits(node.floatingDigits.withKind(.floatingLiteral(violation.correction)))
+            let newNode = node.with(\.floatingDigits,
+                                    node.floatingDigits.withKind(.floatingLiteral(violation.correction)))
             correctionPositions.append(violation.position)
             return super.visit(newNode)
         }
@@ -101,7 +102,7 @@ private extension NumberSeparatorRule {
                 return super.visit(node)
             }
 
-            let newNode = node.withDigits(node.digits.withKind(.integerLiteral(violation.correction)))
+            let newNode = node.with(\.digits, node.digits.withKind(.integerLiteral(violation.correction)))
             correctionPositions.append(violation.position)
             return super.visit(newNode)
         }
@@ -140,7 +141,7 @@ private enum NumberSeparatorViolation {
 
 private extension NumberSeparatorValidator {
     func violation(token: TokenSyntax) -> NumberSeparatorViolation? {
-        let content = token.withoutTrivia().text
+        let content = token.text
         guard isDecimal(number: content),
             !isInValidRanges(number: content)
         else {

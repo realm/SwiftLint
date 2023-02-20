@@ -43,7 +43,7 @@ private extension ReduceBooleanRule {
                 return
             }
 
-            let suggestedFunction = bool.booleanLiteral.tokenKind == .trueKeyword ? "allSatisfy" : "contains"
+            let suggestedFunction = bool.booleanLiteral.tokenKind == .keyword(.true) ? "allSatisfy" : "contains"
             violations.append(
                 ReasonedRuleViolation(
                     position: calledExpression.name.positionAfterSkippingLeadingTrivia,

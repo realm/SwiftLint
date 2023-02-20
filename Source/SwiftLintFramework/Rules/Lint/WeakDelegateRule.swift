@@ -114,7 +114,7 @@ private extension VariableDeclSyntax {
                 return false
             }
 
-            return pattern.identifier.withoutTrivia().text.lowercased().hasSuffix("delegate")
+            return pattern.identifier.text.lowercased().hasSuffix("delegate")
         }
     }
 
@@ -142,12 +142,12 @@ private extension VariableDeclSyntax {
         ]
 
         return attributes?.contains { attr in
-            guard let customAttr = attr.as(CustomAttributeSyntax.self),
+            guard case let .attribute(customAttr) = attr,
                   let typeIdentifier = customAttr.attributeName.as(SimpleTypeIdentifierSyntax.self) else {
                 return false
             }
 
-            return ignoredAttributes.contains(typeIdentifier.name.withoutTrivia().text)
+            return ignoredAttributes.contains(typeIdentifier.name.text)
         } ?? false
     }
 }

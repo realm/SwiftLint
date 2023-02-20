@@ -16,7 +16,16 @@ struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProv
             Example("foo { [weak bar] in _ }"),
             Example("foo { [weak bar] param in _ }"),
             Example("foo { bar in _ }"),
-            Example("foo { $0 }")
+            Example("foo { $0 }"),
+            Example("""
+            final class First {}
+            final class Second {
+              unowned var value: First
+              init(value: First) {
+                self.value = value
+              }
+            }
+            """)
         ],
         triggeringExamples: [
             Example("foo { [↓unowned self] in _ }"),
@@ -31,23 +40,9 @@ struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProv
 }
 
 private final class UnownedVariableCaptureRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: ClosureCaptureItemSyntax) {
-        if let token = node.unownedToken {
-            violations.append(token.positionAfterSkippingLeadingTrivia)
-        }
-    }
-
-    override func visitPost(_ node: TokenListSyntax) {
-        if case .contextualKeyword("unowned") = node.first?.tokenKind {
+    override func visitPost(_ node: TokenSyntax) {
+        if case .keyword(.unowned) = node.tokenKind, node.parent?.is(ClosureCaptureItemSpecifierSyntax.self) == true {
             violations.append(node.positionAfterSkippingLeadingTrivia)
-        }
-    }
-}
-
-private extension ClosureCaptureItemSyntax {
-    var unownedToken: TokenSyntax? {
-        specifier?.first { token in
-            token.tokenKind == .identifier("unowned")
         }
     }
 }

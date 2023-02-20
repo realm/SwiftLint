@@ -73,7 +73,7 @@ private extension DiscardedNotificationCenterObserverRule {
                 let thirdParent = secondParent.parent?.as(CodeBlockItemListSyntax.self),
                 let fourthParent = thirdParent.parent?.as(CodeBlockSyntax.self),
                 let fifthParent = fourthParent.parent?.as(FunctionDeclSyntax.self),
-                fifthParent.attributes?.hasDiscardableResultAttribute != true
+                !fifthParent.attributes.hasDiscardableResultAttribute
             {
                 return // result is returned from a function
             } else if node.parent?.is(TupleExprElementSyntax.self) == true {
@@ -83,7 +83,7 @@ private extension DiscardedNotificationCenterObserverRule {
             } else if
                 let previousToken = node.previousToken,
                 case .equal = previousToken.tokenKind,
-                previousToken.previousToken?.tokenKind != .wildcardKeyword
+                previousToken.previousToken?.tokenKind != .wildcard
             {
                 return // result is assigned to something other than the wildcard keyword (`_`)
             }
@@ -93,8 +93,8 @@ private extension DiscardedNotificationCenterObserverRule {
     }
 }
 
-private extension AttributeListSyntax {
+private extension AttributeListSyntax? {
     var hasDiscardableResultAttribute: Bool {
-        contains { $0.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("discardableResult") } == true
+        contains(attributeNamed: "discardableResult")
     }
 }

@@ -62,7 +62,7 @@ enum LegacyFunctionRuleHelper {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
 
-            let trimmedArguments = node.argumentList.map { $0.trimmed() }
+            let trimmedArguments = node.argumentList.map { $0.trimmingTrailingComma() }
             let rewriteStrategy = legacyFunctions[funcName]
 
             let expr: ExprSyntax
@@ -82,8 +82,8 @@ enum LegacyFunctionRuleHelper {
             }
 
             return expr
-                .withLeadingTrivia(node.leadingTrivia ?? .zero)
-                .withTrailingTrivia(node.trailingTrivia ?? .zero)
+                .with(\.leadingTrivia, node.leadingTrivia ?? .zero)
+                .with(\.trailingTrivia, node.trailingTrivia ?? .zero)
         }
     }
 }
@@ -103,10 +103,7 @@ private extension FunctionCallExprSyntax {
 }
 
 private extension TupleExprElementSyntax {
-    func trimmed() -> TupleExprElementSyntax {
-        self
-            .withoutTrivia()
-            .withTrailingComma(nil)
-            .withoutTrivia()
+    func trimmingTrailingComma() -> TupleExprElementSyntax {
+        self.trimmed.with(\.trailingComma, nil).trimmed
     }
 }

@@ -121,7 +121,7 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
 private extension RedundantOptionalInitializationRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard node.letOrVarKeyword.tokenKind == .varKeyword,
+            guard node.letOrVarKeyword.tokenKind == .keyword(.var),
                   !node.modifiers.containsLazy else {
                 return
             }
@@ -141,7 +141,7 @@ private extension RedundantOptionalInitializationRule {
         }
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard node.letOrVarKeyword.tokenKind == .varKeyword,
+            guard node.letOrVarKeyword.tokenKind == .keyword(.var),
                   !node.modifiers.containsLazy else {
                 return super.visit(node)
             }
@@ -166,16 +166,16 @@ private extension RedundantOptionalInitializationRule {
                     return binding
                 }
 
-                let newBinding = binding.withInitializer(nil)
+                let newBinding = binding.with(\.initializer, nil)
 
                 if newBinding.accessor == nil {
-                    return newBinding.withTrailingTrivia(binding.initializer?.trailingTrivia ?? .zero)
+                    return newBinding.with(\.trailingTrivia, binding.initializer?.trailingTrivia ?? .zero)
                 } else {
                     return newBinding
                 }
             })
 
-            return super.visit(node.withBindings(newBindings))
+            return super.visit(node.with(\.bindings, newBindings))
         }
     }
 }

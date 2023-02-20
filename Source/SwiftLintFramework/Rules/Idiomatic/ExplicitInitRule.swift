@@ -218,7 +218,8 @@ private extension ExplicitInitRule {
             }
 
             correctionPositions.append(violationPosition)
-            return super.visit(node.withCalledExpression("\(calledBase.withoutTrivia())"))
+            let newNode = node.with(\.calledExpression, calledBase.trimmed)
+            return super.visit(newNode)
         }
     }
 }

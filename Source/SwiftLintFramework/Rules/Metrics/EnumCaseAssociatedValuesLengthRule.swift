@@ -67,7 +67,7 @@ private extension EnumCaseAssociatedValuesLengthRule {
                 violationSeverity = .warning
             }
 
-            let reason = "Enum case \(node.identifier.withoutTrivia().text) should contain "
+            let reason = "Enum case \(node.identifier.text) should contain "
                 + "less than \(configuration.warning) associated values: "
                 + "currently contains \(enumCaseAssociatedValueCount)"
             violations.append(

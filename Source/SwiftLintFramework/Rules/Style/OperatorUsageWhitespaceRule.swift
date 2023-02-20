@@ -183,7 +183,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
         let noSpacingAfter = operatorToken.trailingTrivia.isEmpty && nextToken.leadingTrivia.isEmpty
         let noSpacing = noSpacingBefore || noSpacingAfter
 
-        let operatorText = operatorToken.withoutTrivia().text
+        let operatorText = operatorToken.text
         if noSpacing && allowedNoSpaceOperators.contains(operatorText) {
             return nil
         }
@@ -230,7 +230,7 @@ private extension Trivia {
             switch element {
             case .blockComment, .docLineComment, .docBlockComment, .lineComment:
                 return true
-            case .carriageReturnLineFeeds, .carriageReturns, .formfeeds, .newlines,
+            case .backslashes, .carriageReturnLineFeeds, .carriageReturns, .formfeeds, .newlines, .pounds,
                  .shebang, .spaces, .tabs, .unexpectedText, .verticalTabs:
                 return false
             }

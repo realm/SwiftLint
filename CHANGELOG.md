@@ -73,6 +73,16 @@
   [#3399](https://github.com/realm/SwiftLint/issues/3399)
   [#3605](https://github.com/realm/SwiftLint/issues/3605)
 
+* Speed up linting by up to 6% updating to use a newer version of
+  `SwiftSyntax`.  
+  [JP Simard](https://github.com/jpsim)
+
+* Catch more valid `legacy_multiple` violations.  
+  [JP Simard](https://github.com/jpsim)
+
+* Catch more valid `no_magic_numbers` violations.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Report violations in all `<scope>_length` rules when the error threshold is
@@ -124,6 +134,10 @@
 * Fix `void_return` rule to support async and async throws functions.  
   [Mathias Schreck](https://github.com/lo1tuma)
   [#4772](https://github.com/realm/SwiftLint/issues/4772)
+
+* Fix false positives in `attributes` rule when using property wrappers
+  with keypath arguments.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.50.3: Bundle of Towels
 

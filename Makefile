@@ -113,7 +113,7 @@ zip_linux: docker_image
 
 zip_linux_release:
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	docker run "ghcr.io/realm/swiftlint:$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
+	docker run --platform linux/amd64 "ghcr.io/realm/swiftlint:$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
 	chmod +x "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"

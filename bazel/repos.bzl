@@ -5,9 +5,9 @@ def swiftlint_repos(bzlmod = False):
     if not bzlmod:
         http_archive(
             name = "com_github_jpsim_sourcekitten",
-            sha256 = "7a38debb93ef11504f6b6a776be598095591fae7e128263754d041c5ada8e856",
-            strip_prefix = "SourceKitten-0.34.0",
-            url = "https://github.com/jpsim/SourceKitten/archive/refs/tags/0.34.0.tar.gz",
+            sha256 = "fcc5ea783e6a0b58b3873c3d551c0ff7a146fdd536e66e1d37af13b1f52df3d4",
+            strip_prefix = "SourceKitten-0.34.1",
+            url = "https://github.com/jpsim/SourceKitten/releases/download/0.34.1/SourceKitten-0.34.1.tar.gz",
         )
 
     http_archive(

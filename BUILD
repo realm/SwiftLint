@@ -79,6 +79,7 @@ filegroup(
 filegroup(
     name = "release_files",
     srcs = [
+        "MODULE.bazel",
         "BUILD",
         "LICENSE",
         "//:LintInputs",

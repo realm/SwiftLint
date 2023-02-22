@@ -92,6 +92,7 @@
 
 * Catch more valid `no_magic_numbers` violations.  
   [JP Simard](https://github.com/jpsim)
+
 * Add `no_blanket_disable` rule that checks whether swiftlint
   rules are re-enabled after being disabled.  
   [Martin Redington](https://github.com/mildm8nnered)

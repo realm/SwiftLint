@@ -142,6 +142,16 @@ struct DirectReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, 
                         return 2
                     }(1)
                 }
+            """),
+            Example("""
+                func f() -> Bool {
+                    let b  :  Bool  =  true
+                    return b
+                }
+            """): Example("""
+                func f() -> Bool {
+                    return true as Bool
+                }
             """)
         ]
     )
@@ -200,7 +210,7 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
               !binding.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
               let bindingList = binding.parent?.as(PatternBindingListSyntax.self),
               let varDecl = bindingList.parent?.as(VariableDeclSyntax.self),
-              let initExpression = binding.initializer?.value else {
+              var initExpression = binding.initializer?.value else {
             return super.visit(statements)
         }
         correctionPositions.append(binding.positionAfterSkippingLeadingTrivia)
@@ -214,6 +224,15 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
                 }
                 return item
             }
+        if let type = binding.typeAnnotation?.type {
+            initExpression = ExprSyntax(
+                fromProtocol: AsExprSyntax(
+                    expression: initExpression.trimmed,
+                    asTok: .keyword(.as).with(\.leadingTrivia, .space).with(\.trailingTrivia, .space),
+                    typeName: type.trimmed
+                )
+            )
+        }
         if newBindingList.isNotEmpty {
             newStmtList.append(CodeBlockItemSyntax(
                 item: .decl(DeclSyntax(varDecl.with(\.bindings, PatternBindingListSyntax(newBindingList))))

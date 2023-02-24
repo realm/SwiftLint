@@ -197,7 +197,7 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
     override func visit(_ statements: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
         guard let (binding, returnStmt) = statements.violation,
-              !returnStmt.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+              !binding.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
               let bindingList = binding.parent?.as(PatternBindingListSyntax.self),
               let varDecl = bindingList.parent?.as(VariableDeclSyntax.self),
               let initExpression = binding.initializer?.value else {

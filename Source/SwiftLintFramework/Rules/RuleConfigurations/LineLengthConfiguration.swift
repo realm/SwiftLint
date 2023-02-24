@@ -23,10 +23,10 @@ private enum ConfigurationKey: String {
 struct LineLengthConfiguration: RuleConfiguration, Equatable {
     var consoleDescription: String {
         return length.consoleDescription +
-               ", ignores urls: \(ignoresURLs)" +
-               ", ignores function declarations: \(ignoresFunctionDeclarations)" +
-               ", ignores comments: \(ignoresComments)" +
-               ", ignores interpolated strings: \(ignoresInterpolatedStrings)"
+               ", ignores_urls: \(ignoresURLs)" +
+               ", ignores_function_declarations: \(ignoresFunctionDeclarations)" +
+               ", ignores_comments: \(ignoresComments)" +
+               ", ignores_interpolated_strings: \(ignoresInterpolatedStrings)"
     }
 
     var length: SeverityLevelsConfiguration

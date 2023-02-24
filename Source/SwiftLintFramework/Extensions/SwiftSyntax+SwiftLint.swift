@@ -299,6 +299,28 @@ extension Trivia {
     var isSingleSpace: Bool {
         self == .spaces(1)
     }
+
+    var withFirstEmptyLineRemoved: Trivia {
+        if let index = firstIndex(where: \.isNewline), index < endIndex {
+            return Trivia(pieces: dropFirst(index + 1))
+        }
+        return self
+    }
+
+    var withoutTrailingIndentation: Trivia {
+        Trivia(pieces: reversed().drop(while: \.isHorizontalWhitespace).reversed())
+    }
+}
+
+extension TriviaPiece {
+    var isHorizontalWhitespace: Bool {
+        switch self {
+        case .spaces, .tabs:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 extension IntegerLiteralExprSyntax {

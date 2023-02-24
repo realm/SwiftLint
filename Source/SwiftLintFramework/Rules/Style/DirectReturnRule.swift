@@ -132,13 +132,17 @@ struct DirectReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, 
             Example("""
                 func f() -> Int {
                     { _ in
+                        // A comment
                         let b = 2
+                        // Another comment
                         return b
                     }(1)
                 }
             """): Example("""
                 func f() -> Int {
                     { _ in
+                        // A comment
+                        // Another comment
                         return 2
                     }(1)
                 }
@@ -241,7 +245,9 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
                 item: .stmt(StmtSyntax(returnStmt.with(\.expression, initExpression)))
             ))
         } else {
-            let leadingTrivia = (binding.trailingTrivia ?? .zero) + (returnStmt.leadingTrivia ?? .zero)
+            let leadingTrivia = (varDecl.leadingTrivia?.withoutTrailingIndentation ?? .zero)
+                              + (varDecl.trailingTrivia ?? .zero)
+                              + (returnStmt.leadingTrivia?.withFirstEmptyLineRemoved ?? .zero)
             newStmtList.append(
                 CodeBlockItemSyntax(
                     item: .stmt(

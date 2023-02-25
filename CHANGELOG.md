@@ -141,10 +141,6 @@
 
 * Fix false positives in `attributes` rule when using property wrappers
   with keypath arguments.  
-  [JP Simard](https://github.com/jpsim)
-
-* Fix false positives in `attributes` rule when using property wrappers
-  with keypath arguments.  
   [JP Simard](https://github.com/jpsim)	
 
 ## 0.50.3: Bundle of Towels

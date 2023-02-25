@@ -20,7 +20,8 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         severity: .warning,
         indentationWidth: 4,
         includeComments: true,
-        includeCompilerDirectives: true
+        includeCompilerDirectives: true,
+        includeMultilineStrings: true
     )
     static let description = RuleDescription(
         identifier: "indentation_width",
@@ -34,6 +35,7 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine"),
             Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\t//test\n\t\tfourthLine"),
             Example("firstLine\n    secondLine\n        thirdLine\nfourthLine")
+//            Example("let x = \"\"\"\nstring1\n    string2\n  string3\n\"\"\"\n")
         ],
         triggeringExamples: [
             Example("↓    firstLine", testMultiByteOffsets: false, testDisableCommand: false),
@@ -59,6 +61,8 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             if line.content.count == indentationCharacterCount { continue }
 
             if ignoreComment(line: line, in: file) { continue }
+
+            if ignoreMultilineStrings(line: line, in: file) { continue }
 
             // Get space and tab count in prefix
             let prefix = String(line.content.prefix(indentationCharacterCount))
@@ -162,6 +166,16 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         }
         let syntaxKindsInLine = Set(file.syntaxMap.tokens(inByteRange: line.byteRange).kinds)
         if syntaxKindsInLine.isNotEmpty, SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) {
+            return true
+        }
+        return false
+    }
+    
+    private func ignoreMultilineStrings(line: Line, in file: SwiftLintFile) -> Bool {
+        if configuration.includeMultilineStrings {
+            return false
+        }
+        if file.syntaxMap.tokens(inByteRange: line.byteRange).kinds == [.string] {
             return true
         }
         return false

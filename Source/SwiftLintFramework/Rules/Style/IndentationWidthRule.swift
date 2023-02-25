@@ -60,9 +60,7 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
             if line.content.count == indentationCharacterCount { continue }
 
-            if ignoreComment(line: line, in: file) { continue }
-
-            if ignoreMultilineStrings(line: line, in: file) { continue }
+            if ignoreComment(line: line, in: file) || ignoreMultilineStrings(line: line, in: file) { continue }
 
             // Get space and tab count in prefix
             let prefix = String(line.content.prefix(indentationCharacterCount))
@@ -170,7 +168,7 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         }
         return false
     }
-    
+
     private func ignoreMultilineStrings(line: Line, in file: SwiftLintFile) -> Bool {
         if configuration.includeMultilineStrings {
             return false

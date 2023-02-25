@@ -47,7 +47,7 @@ struct IndentationWidthConfiguration: RuleConfiguration, Equatable {
         if let includeCompilerDirectives = configurationDict["include_compiler_directives"] as? Bool {
             self.includeCompilerDirectives = includeCompilerDirectives
         }
-        
+
         if let includeMultilineStrings = configurationDict["include_multiline_strings"] as? Bool {
             self.includeMultilineStrings = includeMultilineStrings
         }

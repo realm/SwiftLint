@@ -83,6 +83,10 @@
 * Catch more valid `no_magic_numbers` violations.  
   [JP Simard](https://github.com/jpsim)
 
+* Improve `identifier_name` documentation.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4767](https://github.com/realm/SwiftLint/issues/4767)
+
 #### Bug Fixes
 
 * Report violations in all `<scope>_length` rules when the error threshold is

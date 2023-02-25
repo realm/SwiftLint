@@ -13,7 +13,17 @@ internal struct IdentifierNameRuleExamples {
         Example("func == (lhs: SyntaxToken, rhs: SyntaxToken) -> Bool"),
         Example("override func IsOperator(name: String) -> Bool"),
         Example("enum Foo { case `private` }"),
-        Example("enum Foo { case value(String) }")
+        Example("enum Foo { case value(String) }"),
+        Example("""
+                class Foo {
+                   static let Bar = 0
+                }
+                """),
+        Example("""
+                class Foo {
+                   static var Bar = 0
+                }
+                """)
     ]
 
     static let triggeringExamples = [

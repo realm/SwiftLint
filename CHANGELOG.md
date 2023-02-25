@@ -83,6 +83,10 @@
 * Catch more valid `no_magic_numbers` violations.  
   [JP Simard](https://github.com/jpsim)
 
+* Improve `identifier_name` documentation.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4767](https://github.com/realm/SwiftLint/issues/4767)
+
 #### Bug Fixes
 
 * Report violations in all `<scope>_length` rules when the error threshold is
@@ -138,6 +142,10 @@
 * Fix false positives in `attributes` rule when using property wrappers
   with keypath arguments.  
   [JP Simard](https://github.com/jpsim)
+
+* Fix false positives in `attributes` rule when using property wrappers
+  with keypath arguments.  
+  [JP Simard](https://github.com/jpsim)	
 
 ## 0.50.3: Bundle of Towels
 

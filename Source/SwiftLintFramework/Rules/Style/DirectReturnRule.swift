@@ -132,15 +132,29 @@ struct DirectReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, 
             Example("""
                 func f() -> Int {
                     { _ in
+                        // A comment
                         let b = 2
+                        // Another comment
                         return b
                     }(1)
                 }
             """): Example("""
                 func f() -> Int {
                     { _ in
+                        // A comment
+                        // Another comment
                         return 2
                     }(1)
+                }
+            """),
+            Example("""
+                func f() -> Bool {
+                    let b  :  Bool  =  true
+                    return b
+                }
+            """): Example("""
+                func f() -> Bool {
+                    return true as Bool
                 }
             """)
         ]
@@ -197,10 +211,10 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
     override func visit(_ statements: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
         guard let (binding, returnStmt) = statements.violation,
-              !returnStmt.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+              !binding.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
               let bindingList = binding.parent?.as(PatternBindingListSyntax.self),
               let varDecl = bindingList.parent?.as(VariableDeclSyntax.self),
-              let initExpression = binding.initializer?.value else {
+              var initExpression = binding.initializer?.value else {
             return super.visit(statements)
         }
         correctionPositions.append(binding.positionAfterSkippingLeadingTrivia)
@@ -214,6 +228,15 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
                 }
                 return item
             }
+        if let type = binding.typeAnnotation?.type {
+            initExpression = ExprSyntax(
+                fromProtocol: AsExprSyntax(
+                    expression: initExpression.trimmed,
+                    asTok: .keyword(.as).with(\.leadingTrivia, .space).with(\.trailingTrivia, .space),
+                    typeName: type.trimmed
+                )
+            )
+        }
         if newBindingList.isNotEmpty {
             newStmtList.append(CodeBlockItemSyntax(
                 item: .decl(DeclSyntax(varDecl.with(\.bindings, PatternBindingListSyntax(newBindingList))))
@@ -222,7 +245,9 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
                 item: .stmt(StmtSyntax(returnStmt.with(\.expression, initExpression)))
             ))
         } else {
-            let leadingTrivia = (binding.trailingTrivia ?? .zero) + (returnStmt.leadingTrivia ?? .zero)
+            let leadingTrivia = (varDecl.leadingTrivia?.withoutTrailingIndentation ?? .zero)
+                              + (varDecl.trailingTrivia ?? .zero)
+                              + (returnStmt.leadingTrivia?.withFirstEmptyLineRemoved ?? .zero)
             newStmtList.append(
                 CodeBlockItemSyntax(
                     item: .stmt(

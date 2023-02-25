@@ -3,7 +3,7 @@ import XCTest
 
 // swiftlint:disable function_body_length
 class TypeContentsOrderRuleTests: XCTestCase {
-    func testTypeContentsOrderReversedOrder() {
+    func testTypeContentsOrderReversedOrder() async throws {
         // Test with reversed `order` entries
         let nonTriggeringExamples = [
             Example([
@@ -141,7 +141,7 @@ class TypeContentsOrderRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(
+        try await verifyRule(
             reversedOrderDescription,
             ruleConfiguration: [
                 "order": [
@@ -164,7 +164,7 @@ class TypeContentsOrderRuleTests: XCTestCase {
         )
     }
 
-    func testTypeContentsOrderGroupedOrder() {
+    func testTypeContentsOrderGroupedOrder() async throws {
         // Test with grouped `order` entries
         let nonTriggeringExamples = [
             Example("""
@@ -336,7 +336,7 @@ class TypeContentsOrderRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(
+        try await verifyRule(
             groupedOrderDescription,
             ruleConfiguration: [
                 "order": [

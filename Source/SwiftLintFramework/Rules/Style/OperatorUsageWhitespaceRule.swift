@@ -17,7 +17,7 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationPro
         corrections: OperatorUsageWhitespaceRuleExamples.corrections
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return violationRanges(file: file).map { range, _ in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,

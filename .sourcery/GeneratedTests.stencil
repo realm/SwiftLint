@@ -8,8 +8,8 @@ import XCTest
 {% for rule in types.structs %}
 {% if rule.name|hasSuffix:"Rule" %}
 class {{ rule.name }}GeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule({{ rule.name }}.description)
+    func testWithDefaultConfiguration() async throws {
+        try await verifyRule({{ rule.name }}.description)
     }
 }
 {% if not forloop.last %}

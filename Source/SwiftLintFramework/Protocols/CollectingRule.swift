@@ -60,10 +60,10 @@ public extension CollectingRule {
                   compilerArguments: [String]) -> [StyleViolation] {
         return validate(file: file, collectedInfo: collectedInfo)
     }
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:collectedInfo:)` for CollectingRule")
     }
-    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, compilerArguments: [String]) async throws -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:collectedInfo:compilerArguments:)` for CollectingRule")
     }
 }
@@ -74,7 +74,7 @@ public extension CollectingRule where Self: AnalyzerRule {
             "Must call `collect(infoFor:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )
     }
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         queuedFatalError(
             "Must call `validate(file:collectedInfo:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )

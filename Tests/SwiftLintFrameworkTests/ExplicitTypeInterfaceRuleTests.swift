@@ -2,7 +2,7 @@
 import XCTest
 
 class ExplicitTypeInterfaceRuleTests: XCTestCase {
-    func testLocalVars() {
+    func testLocalVars() async throws {
         let nonTriggeringExamples = [
             Example("func foo() {\nlet intVal: Int = 1\n}"),
             Example("""
@@ -27,10 +27,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description)
+        try await verifyRule(description)
     }
 
-    func testExcludeLocalVars() {
+    func testExcludeLocalVars() async throws {
         let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
             Example("func foo() {\nlet intVal = 1\n}")
         ]
@@ -39,10 +39,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["excluded": ["local"]])
+        try await verifyRule(description, ruleConfiguration: ["excluded": ["local"]])
     }
 
-    func testExcludeClassVars() {
+    func testExcludeClassVars() async throws {
         let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
             Example("class Foo {\n  static var myStaticVar = 0\n}\n"),
             Example("class Foo {\n  static let myStaticLet = 0\n}\n")
@@ -56,10 +56,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["excluded": ["static"]])
+        try await verifyRule(description, ruleConfiguration: ["excluded": ["static"]])
     }
 
-    func testAllowRedundancy() {
+    func testAllowRedundancy() async throws {
         let nonTriggeringExamples: [Example] = [
             Example("class Foo {\n  var myVar: Int? = 0\n}\n"),
             Example("class Foo {\n  let myVar: Int? = 0\n}\n"),
@@ -87,10 +87,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["allow_redundancy": true])
+        try await verifyRule(description, ruleConfiguration: ["allow_redundancy": true])
     }
 
-    func testEmbeddedInStatements() {
+    func testEmbeddedInStatements() async throws {
         let nonTriggeringExamples = [
             Example("""
             func foo() {
@@ -114,10 +114,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description)
+        try await verifyRule(description)
     }
 
-    func testCaptureGroup() {
+    func testCaptureGroup() async throws {
         let nonTriggeringExamples = [
             Example("""
             var k: Int = 0
@@ -147,10 +147,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description)
+        try await verifyRule(description)
     }
 
-    func testFastEnumerationDeclaration() {
+    func testFastEnumerationDeclaration() async throws {
         let nonTriggeringExaples = [
             Example("""
             func foo() {
@@ -170,10 +170,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExaples)
-        verifyRule(description)
+        try await verifyRule(description)
     }
 
-    func testSwitchCaseDeclarations() {
+    func testSwitchCaseDeclarations() async throws {
         let nonTriggeringExamples = [
             Example("""
             enum Foo {
@@ -233,6 +233,6 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
-        verifyRule(description)
+        try await verifyRule(description)
     }
 }

@@ -16,8 +16,8 @@ struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         triggeringExamples: TypeContentsOrderRuleExamples.triggeringExamples
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
+        let dict = try await file.getStructureDictionary()
         let substructures = dict.substructure
         return substructures.reduce(into: [StyleViolation]()) { violations, substructure in
             violations.append(contentsOf: validateTypeSubstructure(substructure, in: file))

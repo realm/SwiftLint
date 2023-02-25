@@ -99,77 +99,80 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(identifier, "my_custom_rule")
     }
 
-    func testCustomRules() {
+    func testCustomRules() async throws {
         let (regexConfig, customRules) = getCustomRules()
 
         let file = SwiftLintFile(contents: "// My file with\n// a pattern")
-        XCTAssertEqual(customRules.validate(file: file),
+        let violations = try await customRules.validate(file: file)
+        XCTAssertEqual(violations,
                        [StyleViolation(ruleDescription: regexConfig.description,
                                        severity: .warning,
                                        location: Location(file: nil, line: 2, character: 6),
                                        reason: regexConfig.message)])
     }
 
-    func testLocalDisableCustomRule() {
+    func testLocalDisableCustomRule() async throws {
         let (_, customRules) = getCustomRules()
         let file = SwiftLintFile(contents: "//swiftlint:disable custom \n// file with a pattern")
-        XCTAssertEqual(customRules.validate(file: file), [])
+        let violations = try await customRules.validate(file: file)
+        XCTAssertEqual(violations, [])
     }
 
-    func testLocalDisableCustomRuleWithMultipleRules() {
+    func testLocalDisableCustomRuleWithMultipleRules() async throws {
         let (configs, customRules) = getCustomRulesWithTwoRules()
         let file = SwiftLintFile(contents: "//swiftlint:disable \(configs.1.identifier) \n// file with a pattern")
-        XCTAssertEqual(customRules.validate(file: file),
+        let violations = try await customRules.validate(file: file)
+        XCTAssertEqual(violations,
                        [StyleViolation(ruleDescription: configs.0.description,
                                        severity: .warning,
                                        location: Location(file: nil, line: 2, character: 16),
                                        reason: configs.0.message)])
     }
 
-    func testCustomRulesIncludedDefault() {
+    func testCustomRulesIncludedDefault() async throws {
         // Violation detected when included is omitted.
         let (_, customRules) = getCustomRules()
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = try await customRules.validate(file: getTestTextFile())
         XCTAssertEqual(violations.count, 1)
     }
 
-    func testCustomRulesIncludedExcludesFile() {
+    func testCustomRulesIncludedExcludesFile() async throws {
         var (regexConfig, customRules) = getCustomRules(["included": "\\.yml$"])
 
         var customRuleConfiguration = CustomRulesConfiguration()
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
         customRules.configuration = customRuleConfiguration
 
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = try await customRules.validate(file: getTestTextFile())
         XCTAssertEqual(violations.count, 0)
     }
 
-    func testCustomRulesExcludedExcludesFile() {
+    func testCustomRulesExcludedExcludesFile() async throws {
         var (regexConfig, customRules) = getCustomRules(["excluded": "\\.txt$"])
 
         var customRuleConfiguration = CustomRulesConfiguration()
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
         customRules.configuration = customRuleConfiguration
 
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = try await customRules.validate(file: getTestTextFile())
         XCTAssertEqual(violations.count, 0)
     }
 
-    func testCustomRulesExcludedArrayExcludesFile() {
+    func testCustomRulesExcludedArrayExcludesFile() async throws {
         var (regexConfig, customRules) = getCustomRules(["excluded": ["\\.pdf$", "\\.txt$"]])
 
         var customRuleConfiguration = CustomRulesConfiguration()
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
         customRules.configuration = customRuleConfiguration
 
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = try await customRules.validate(file: getTestTextFile())
         XCTAssertEqual(violations.count, 0)
     }
 
-    func testCustomRulesCaptureGroup() {
+    func testCustomRulesCaptureGroup() async throws {
         let (_, customRules) = getCustomRules(["regex": #"\ba\s+(\w+)"#,
                                                "capture_group": 1])
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = try await customRules.validate(file: getTestTextFile())
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations[0].location.line, 2)
         XCTAssertEqual(violations[0].location.character, 6)

@@ -25,14 +25,14 @@ public protocol Rule {
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     ///
     /// - returns: All style violations to the rule's expectations.
-    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation]
+    func validate(file: SwiftLintFile, compilerArguments: [String]) async throws -> [StyleViolation]
 
     /// Executes the rule on a file and returns any violations to the rule's expectations.
     ///
     /// - parameter file: The file for which to execute the rule.
     ///
     /// - returns: All style violations to the rule's expectations.
-    func validate(file: SwiftLintFile) -> [StyleViolation]
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation]
 
     /// Whether or not the specified rule is equivalent to the current rule.
     ///
@@ -60,17 +60,18 @@ public protocol Rule {
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     ///
     /// - returns: All style violations to the rule's expectations.
-    func validate(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation]
+    func validate(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) async throws
+        -> [StyleViolation]
 }
 
 extension Rule {
     public func validate(file: SwiftLintFile, using storage: RuleStorage,
-                         compilerArguments: [String]) -> [StyleViolation] {
-        return validate(file: file, compilerArguments: compilerArguments)
+                         compilerArguments: [String]) async throws -> [StyleViolation] {
+        return try await validate(file: file, compilerArguments: compilerArguments)
     }
 
-    public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
-        return validate(file: file)
+    public func validate(file: SwiftLintFile, compilerArguments: [String]) async throws -> [StyleViolation] {
+        return try await validate(file: file)
     }
 
     public func isEqualTo(_ rule: Rule) -> Bool {
@@ -200,9 +201,10 @@ public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, AST
 
 public extension SubstitutionCorrectableASTRule {
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
-            guard let kind = self.kind(from: subDict) else { return nil }
-            return violationRanges(in: file, kind: kind, dictionary: subDict)
+        file.structureDictionary.traverseDepthFirst { subDict in
+            kind(from: subDict).flatMap { kind in
+                violationRanges(in: file, kind: kind, dictionary: subDict)
+            }
         }
     }
 }
@@ -215,7 +217,7 @@ public protocol SourceKitFreeRule: Rule {}
 public protocol AnalyzerRule: OptInRule {}
 
 public extension AnalyzerRule {
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:compilerArguments:)` for AnalyzerRule")
     }
 }

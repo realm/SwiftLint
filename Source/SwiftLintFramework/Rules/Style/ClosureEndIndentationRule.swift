@@ -18,7 +18,7 @@ struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderRule {
 
     fileprivate static let notWhitespace = regex("[^\\s]")
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return violations(in: file).map { violation in
             return styleViolation(for: violation, in: file)
         }

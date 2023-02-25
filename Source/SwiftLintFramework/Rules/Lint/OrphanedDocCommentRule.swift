@@ -46,7 +46,7 @@ struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         file.syntaxClassifications
             .filter { $0.kind != .none }
             .pairs()

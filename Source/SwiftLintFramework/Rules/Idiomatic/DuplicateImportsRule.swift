@@ -132,7 +132,7 @@ struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
         })
     }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return duplicateImports(file: file).map { duplicateImport in
             StyleViolation(
                 ruleDescription: Self.description,

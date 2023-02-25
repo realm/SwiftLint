@@ -17,7 +17,7 @@ struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, SourceKit
         corrections: SyntacticSugarRuleExamples.corrections
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let visitor = SyntacticSugarRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file) { visitor in
             flattenViolations(visitor.violations)

@@ -10,6 +10,16 @@ import SwiftParserDiagnostics
 import SwiftSyntax
 
 private typealias FileCacheKey = UUID
+private let responseActorCache = ActorCache { file -> [String: SourceKitRepresentable]? in
+    do {
+        return try Request.editorOpen(file: file.file).sendIfNotDisabled()
+    } catch let error as Request.Error {
+        queuedPrintError(error.description)
+        return nil
+    } catch {
+        return nil
+    }
+}
 private let responseCache = Cache { file -> [String: SourceKitRepresentable]? in
     do {
         return try Request.editorOpen(file: file.file).sendIfNotDisabled()
@@ -19,6 +29,9 @@ private let responseCache = Cache { file -> [String: SourceKitRepresentable]? in
     } catch {
         return nil
     }
+}
+private let structureDictionaryActorCache = ActorCache { file in
+    await responseActorCache.get(file).map(Structure.init).map { SourceKittenDictionary($0.dictionary) }
 }
 private let structureDictionaryCache = Cache { file in
     return responseCache.get(file).map(Structure.init).map { SourceKittenDictionary($0.dictionary) }
@@ -57,6 +70,41 @@ public var parserDiagnosticsDisabledForTests = false
 
 private let assertHandlers = [FileCacheKey: AssertHandler]()
 private let assertHandlerCache = Cache { file in assertHandlers[file.cacheKey] }
+
+private actor ActorCache<T> {
+    private var values = [FileCacheKey: T]()
+    private let factory: (SwiftLintFile) async -> T
+
+    init(_ factory: @escaping (SwiftLintFile) async -> T) {
+        self.factory = factory
+    }
+
+    func get(_ file: SwiftLintFile) async -> T {
+        let key = file.cacheKey
+        if let cachedValue = values[key] {
+            return cachedValue
+        }
+        let value = await factory(file)
+        values[key] = value
+        return value
+    }
+
+    func invalidate(_ file: SwiftLintFile) {
+        values.removeValue(forKey: file.cacheKey)
+    }
+
+    func clear() {
+        values.removeAll(keepingCapacity: false)
+    }
+
+    func set(key: FileCacheKey, value: T) {
+        values[key] = value
+    }
+
+    func unset(key: FileCacheKey) {
+        values.removeValue(forKey: key)
+    }
+}
 
 private class Cache<T> {
     private var values = [FileCacheKey: T]()
@@ -137,6 +185,17 @@ extension SwiftLintFile {
 
     internal var structureDictionary: SourceKittenDictionary {
         guard let structureDictionary = structureDictionaryCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return SourceKittenDictionary([:])
+            }
+            queuedFatalError("Never call this for file that sourcekitd fails.")
+        }
+        return structureDictionary
+    }
+
+    internal func getStructureDictionary() async throws -> SourceKittenDictionary {
+        guard let structureDictionary = await structureDictionaryActorCache.get(self) else {
             if let handler = assertHandler {
                 handler()
                 return SourceKittenDictionary([:])

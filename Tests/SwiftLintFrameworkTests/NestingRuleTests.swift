@@ -3,7 +3,7 @@ import XCTest
 
 class NestingRuleTests: XCTestCase {
     // swiftlint:disable:next function_body_length
-    func testNestingWithAlwaysAllowOneTypeInFunctions() {
+    func testNestingWithAlwaysAllowOneTypeInFunctions() async throws {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
@@ -203,11 +203,11 @@ class NestingRuleTests: XCTestCase {
             triggeringExamples: triggeringExamples
         )
 
-        verifyRule(description, ruleConfiguration: ["always_allow_one_type_in_functions": true])
+        try await verifyRule(description, ruleConfiguration: ["always_allow_one_type_in_functions": true])
     }
 
     // swiftlint:disable:next function_body_length
-    func testNestingWithoutCheckNestingInClosuresAndStatements() {
+    func testNestingWithoutCheckNestingInClosuresAndStatements() async throws {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
@@ -367,6 +367,6 @@ class NestingRuleTests: XCTestCase {
             triggeringExamples: triggeringExamples
         )
 
-        verifyRule(description, ruleConfiguration: ["check_nesting_in_closures_and_statements": false])
+        try await verifyRule(description, ruleConfiguration: ["check_nesting_in_closures_and_statements": false])
     }
 }

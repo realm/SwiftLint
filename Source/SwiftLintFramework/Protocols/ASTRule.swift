@@ -26,8 +26,8 @@ public protocol ASTRule: Rule {
 }
 
 public extension ASTRule {
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return validate(file: file, dictionary: file.structureDictionary)
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
+        return validate(file: file, dictionary: try await file.getStructureDictionary())
     }
 
     /// Executes the rule on a file and a subset of its AST structure, returning any violations to the rule's

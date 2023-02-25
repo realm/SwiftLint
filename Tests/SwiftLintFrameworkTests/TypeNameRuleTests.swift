@@ -2,7 +2,7 @@
 import XCTest
 
 class TypeNameRuleTests: XCTestCase {
-    func testTypeNameWithExcluded() {
+    func testTypeNameWithExcluded() async throws {
         let baseDescription = TypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("class apple {}"),
@@ -15,10 +15,10 @@ class TypeNameRuleTests: XCTestCase {
         ]
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
                                                triggeringExamples: triggeringExamples)
-        verifyRule(description, ruleConfiguration: ["excluded": ["apple", "some.*", ".*st\\d+.*"]])
+        try await verifyRule(description, ruleConfiguration: ["excluded": ["apple", "some.*", ".*st\\d+.*"]])
     }
 
-    func testTypeNameWithAllowedSymbols() {
+    func testTypeNameWithAllowedSymbols() async throws {
         let baseDescription = TypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("class MyType$ {}"),
@@ -29,20 +29,20 @@ class TypeNameRuleTests: XCTestCase {
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
-        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$"]])
+        try await verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$"]])
     }
 
-    func testTypeNameWithAllowedSymbolsAndViolation() {
+    func testTypeNameWithAllowedSymbolsAndViolation() async throws {
         let baseDescription = TypeNameRule.description
         let triggeringExamples = [
             Example("class ↓My_Type$ {}")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
-        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+        try await verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testTypeNameWithIgnoreStartWithLowercase() {
+    func testTypeNameWithIgnoreStartWithLowercase() async throws {
         let baseDescription = TypeNameRule.description
         let triggeringExamplesToRemove = [
             Example("private typealias ↓foo = Void"),
@@ -58,6 +58,6 @@ class TypeNameRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
+        try await verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
     }
 }

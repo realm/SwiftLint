@@ -186,7 +186,7 @@ class MissingDocsRuleTests: XCTestCase {
         )
     }
 
-    func testWithExcludesExtensionsDisabled() {
+    func testWithExcludesExtensionsDisabled() async throws {
         // Perform additional tests with the ignores_comments settings disabled.
         let baseDescription = MissingDocsRule.description
         let triggeringComments = [
@@ -201,11 +201,11 @@ class MissingDocsRuleTests: XCTestCase {
         let description = baseDescription
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
-        verifyRule(description,
-                   ruleConfiguration: ["excludes_extensions": false])
+        try await verifyRule(description,
+                             ruleConfiguration: ["excludes_extensions": false])
     }
 
-    func testWithExcludesInheritedTypesDisabled() {
+    func testWithExcludesInheritedTypesDisabled() async throws {
         // Perform additional tests with the ignores_comments settings disabled.
         let baseDescription = MissingDocsRule.description
         let triggeringComments = [
@@ -234,7 +234,7 @@ class MissingDocsRuleTests: XCTestCase {
         let description = baseDescription
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
-        verifyRule(description,
-                   ruleConfiguration: ["excludes_inherited_types": false])
+        try await verifyRule(description,
+                             ruleConfiguration: ["excludes_inherited_types": false])
     }
 }

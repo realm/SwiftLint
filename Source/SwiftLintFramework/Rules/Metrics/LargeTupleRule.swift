@@ -14,7 +14,7 @@ struct LargeTupleRule: SourceKitFreeRule, ConfigurationProviderRule {
         triggeringExamples: LargeTupleRuleExamples.triggeringExamples
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         LargeTupleRuleVisitor(viewMode: .sourceAccurate)
             .walk(file: file, handler: \.violationPositions)
             .sorted(by: { $0.position < $1.position })

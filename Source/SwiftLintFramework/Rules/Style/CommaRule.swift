@@ -90,7 +90,7 @@ struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule 
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,

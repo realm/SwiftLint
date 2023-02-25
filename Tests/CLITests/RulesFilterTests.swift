@@ -139,7 +139,7 @@ private struct RuleMock1: Rule {
     init() {}
     init(configuration: Any) throws { self.init() }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return []
     }
 }
@@ -152,7 +152,7 @@ private struct RuleMock2: Rule {
     init() {}
     init(configuration: Any) throws { self.init() }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return []
     }
 }
@@ -165,7 +165,7 @@ private struct CorrectableRuleMock: CorrectableRule {
     init() {}
     init(configuration: Any) throws { self.init() }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return []
     }
 

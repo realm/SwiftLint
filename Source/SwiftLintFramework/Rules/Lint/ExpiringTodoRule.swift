@@ -48,7 +48,7 @@ struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
 
     init() {}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let regex = #"""
         \b(?:TODO|FIXME)(?::|\b)(?:(?!\b(?:TODO|FIXME)(?::|\b)).)*?\#
         \\#(configuration.dateDelimiters.opening)\#

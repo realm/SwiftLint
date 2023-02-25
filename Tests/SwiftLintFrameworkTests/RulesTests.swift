@@ -2,26 +2,26 @@
 import XCTest
 
 class RulesTests: XCTestCase {
-    func testLeadingWhitespace() {
-        verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
-                   testMultiByteOffsets: false, testShebang: false)
+    func testLeadingWhitespace() async throws {
+        try await verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
+                             testMultiByteOffsets: false, testShebang: false)
     }
 
-    func testMark() {
-        verifyRule(MarkRule.description, skipCommentTests: true)
+    func testMark() async throws {
+        try await verifyRule(MarkRule.description, skipCommentTests: true)
     }
 
-    func testRequiredEnumCase() {
+    func testRequiredEnumCase() async throws {
         let configuration = ["NetworkResponsable": ["notConnected": "error"]]
-        verifyRule(RequiredEnumCaseRule.description, ruleConfiguration: configuration)
+        try await verifyRule(RequiredEnumCaseRule.description, ruleConfiguration: configuration)
     }
 
-    func testTrailingNewline() {
-        verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
-                   stringDoesntViolate: false)
+    func testTrailingNewline() async throws {
+        try await verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
+                             stringDoesntViolate: false)
     }
 
-    func testOrphanedDocComment() {
-        verifyRule(OrphanedDocCommentRule.description, commentDoesntViolate: false, skipCommentTests: true)
+    func testOrphanedDocComment() async throws {
+        try await verifyRule(OrphanedDocCommentRule.description, commentDoesntViolate: false, skipCommentTests: true)
     }
 }

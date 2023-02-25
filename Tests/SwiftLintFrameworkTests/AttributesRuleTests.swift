@@ -2,7 +2,7 @@
 import XCTest
 
 class AttributesRuleTests: XCTestCase {
-    func testAttributesWithAlwaysOnSameLine() {
+    func testAttributesWithAlwaysOnSameLine() async throws {
         // Test with custom `always_on_same_line`
         let nonTriggeringExamples = [
             Example("@objc var x: String"),
@@ -28,11 +28,11 @@ class AttributesRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(alwaysOnSameLineDescription,
-                   ruleConfiguration: ["always_on_same_line": ["@objc"]])
+        try await verifyRule(alwaysOnSameLineDescription,
+                             ruleConfiguration: ["always_on_same_line": ["@objc"]])
     }
 
-    func testAttributesWithAlwaysOnLineAbove() {
+    func testAttributesWithAlwaysOnLineAbove() async throws {
         // Test with custom `always_on_line_above`
         let nonTriggeringExamples = [
             Example("@objc\n var x: String"),
@@ -49,11 +49,11 @@ class AttributesRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(alwaysOnNewLineDescription,
-                   ruleConfiguration: ["always_on_line_above": ["@objc"]])
+        try await verifyRule(alwaysOnNewLineDescription,
+                             ruleConfiguration: ["always_on_line_above": ["@objc"]])
     }
 
-    func testAttributesWithAttributesOnLineAboveButOnOtherDeclaration() {
+    func testAttributesWithAttributesOnLineAboveButOnOtherDeclaration() async throws {
         let nonTriggeringExamples = [
             Example("""
             @IBDesignable open class TagListView: UIView {
@@ -92,8 +92,11 @@ class AttributesRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(alwaysOnNewLineDescription,
-                   ruleConfiguration: ["always_on_same_line": ["@discardableResult", "@objc",
-                                                               "@IBAction", "@IBDesignable"]])
+        try await verifyRule(
+            alwaysOnNewLineDescription,
+            ruleConfiguration: [
+                "always_on_same_line": ["@discardableResult", "@objc", "@IBAction", "@IBDesignable"]
+            ]
+        )
     }
 }

@@ -58,7 +58,7 @@ struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
             \\Q(Self) -> ((Self.Element) throws -> T) throws -> [T]\\E
             """)
 
-    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, compilerArguments: [String]) async throws -> [StyleViolation] {
         guard let filePath = file.path else {
             return []
         }
@@ -69,7 +69,7 @@ struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
                 """)
             return []
         }
-        return Self.parentRule.validate(file: file)
+        return try await Self.parentRule.validate(file: file)
             .filter { violation in
                 guard let offset = getOffset(in: file, at: violation.location) else {
                     return false

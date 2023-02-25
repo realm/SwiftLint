@@ -35,8 +35,9 @@ struct NestingRule: ConfigurationProviderRule {
         }
     }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return validate(file: file, substructure: file.structureDictionary.substructure, args: ValidationArgs())
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
+        let substructure = try await file.getStructureDictionary().substructure
+        return validate(file: file, substructure: substructure, args: ValidationArgs())
     }
 
     private func validate(file: SwiftLintFile, substructure: [SourceKittenDictionary],

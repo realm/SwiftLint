@@ -148,7 +148,7 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule {
         corrections: violatingToValidExamples.removingViolationMarkers()
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let patternRegex = regex(pattern)
         return violationRanges(in: file).compactMap { violationRange in
             let substring = file.contents.substring(from: violationRange.location, length: violationRange.length)

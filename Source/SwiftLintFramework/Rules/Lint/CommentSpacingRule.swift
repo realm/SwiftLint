@@ -150,7 +150,7 @@ struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, Substit
             .flatMap { $0 }
     }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return violationRanges(in: file).map { range in
             StyleViolation(
                 ruleDescription: Self.description,

@@ -1,3 +1,4 @@
+import CollectionConcurrencyKit
 import Foundation
 import SourceKittenFramework
 
@@ -61,7 +62,7 @@ private extension Rule {
               storage: RuleStorage,
               configuration: Configuration,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
-              compilerArguments: [String]) -> LintResult? {
+              compilerArguments: [String]) async throws -> LintResult? {
         // Empty files shouldn't trigger violations
         guard !file.isEmpty, SwiftVersion.current >= Self.description.minSwiftVersion else {
             return nil
@@ -78,10 +79,10 @@ private extension Rule {
         let ruleTime: (String, Double)?
         if benchmark {
             let start = Date()
-            violations = validate(file: file, using: storage, compilerArguments: compilerArguments)
+            violations = try await validate(file: file, using: storage, compilerArguments: compilerArguments)
             ruleTime = (ruleID, -start.timeIntervalSinceNow)
         } else {
-            violations = validate(file: file, using: storage, compilerArguments: compilerArguments)
+            violations = try await validate(file: file, using: storage, compilerArguments: compilerArguments)
             ruleTime = nil
         }
 
@@ -193,8 +194,8 @@ public struct CollectedLinter {
     /// - parameter storage: The storage object containing all collected info.
     ///
     /// - returns: All style violations found by this linter.
-    public func styleViolations(using storage: RuleStorage) -> [StyleViolation] {
-        return getStyleViolations(using: storage).0
+    public func styleViolations(using storage: RuleStorage) async throws -> [StyleViolation] {
+        return try await getStyleViolations(using: storage).0
     }
 
     /// Computes or retrieves style violations and the time spent executing each rule.
@@ -203,12 +204,13 @@ public struct CollectedLinter {
     ///
     /// - returns: All style violations found by this linter, and the time spent executing each rule.
     public func styleViolationsAndRuleTimes(using storage: RuleStorage)
-        -> ([StyleViolation], [(id: String, time: Double)]) {
-            return getStyleViolations(using: storage, benchmark: true)
+        async throws -> ([StyleViolation], [(id: String, time: Double)]) {
+            return try await getStyleViolations(using: storage, benchmark: true)
     }
 
     private func getStyleViolations(using storage: RuleStorage,
-                                    benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
+                                    benchmark: Bool = false) async throws
+        -> ([StyleViolation], [(id: String, time: Double)]) {
         guard !file.isEmpty else {
             // Empty files shouldn't trigger violations
             return ([], [])
@@ -222,12 +224,12 @@ public struct CollectedLinter {
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        let validationResults = rules.parallelCompactMap {
-            $0.lint(file: self.file, regions: regions, benchmark: benchmark,
-                    storage: storage,
-                    configuration: self.configuration,
-                    superfluousDisableCommandRule: superfluousDisableCommandRule,
-                    compilerArguments: self.compilerArguments)
+        let validationResults = try await rules.concurrentCompactMap {
+            try await $0.lint(file: self.file, regions: regions, benchmark: benchmark,
+                              storage: storage,
+                              configuration: self.configuration,
+                              superfluousDisableCommandRule: superfluousDisableCommandRule,
+                              compilerArguments: self.compilerArguments)
         }
         let undefinedSuperfluousCommandViolations = self.undefinedSuperfluousCommandViolations(
             regions: regions, configuration: configuration,

@@ -76,7 +76,7 @@ struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule, Conf
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return violationRanges(in: file).map { range in
             StyleViolation(
                 ruleDescription: Self.description,

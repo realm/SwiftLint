@@ -19,7 +19,7 @@ struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, Source
         corrections: ColonRuleExamples.corrections
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         violationRanges(in: file).map { range in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,

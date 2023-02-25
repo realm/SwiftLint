@@ -14,8 +14,8 @@ struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
         triggeringExamples: QuickDiscouragedCallRuleExamples.triggeringExamples
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
+        let dict = try await file.getStructureDictionary()
         let testClasses = dict.substructure.filter {
             return $0.inheritedTypes.isNotEmpty &&
                 $0.declarationKind == .class

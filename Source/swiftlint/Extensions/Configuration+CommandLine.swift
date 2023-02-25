@@ -66,9 +66,9 @@ extension Configuration {
                               duplicateFileNames: duplicateFileNames)
             }
         }
-        let result = await Signposts.record(name: "Configuration.VisitLintableFiles.Visit") {
-            await collected.asyncMap { linters, duplicateFileNames in
-                await visit(linters: linters, visitor: visitor, duplicateFileNames: duplicateFileNames)
+        let result = try await Signposts.record(name: "Configuration.VisitLintableFiles.Visit") {
+            try await collected.asyncMap { linters, duplicateFileNames in
+                try await visit(linters: linters, visitor: visitor, duplicateFileNames: duplicateFileNames)
             }
         }
         return result.flatMap { $0 }
@@ -181,7 +181,7 @@ extension Configuration {
 
     private func visit(linters: [CollectedLinter],
                        visitor: LintableFilesVisitor,
-                       duplicateFileNames: Set<String>) async -> [SwiftLintFile] {
+                       duplicateFileNames: Set<String>) async throws -> [SwiftLintFile] {
         let counter = CounterActor()
         let progress = ProgressBar(count: linters.count)
         if visitor.showProgressBar {
@@ -198,12 +198,12 @@ extension Configuration {
                 }
             }
 
-            await Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
-                await visitor.block(linter)
+            try await Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
+                try await visitor.block(linter)
             }
             return linter.file
         }
-        return await visitor.parallel ?
+        return try await visitor.parallel ?
             linters.concurrentMap(visit) :
             linters.asyncMap(visit)
     }
@@ -244,7 +244,8 @@ extension Configuration {
     }
 
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
-                            visitorBlock: @escaping (CollectedLinter) async -> Void) async throws -> [SwiftLintFile] {
+                            visitorBlock: @escaping (CollectedLinter) async throws -> Void) async throws
+        -> [SwiftLintFile] {
         let visitor = try LintableFilesVisitor.create(options, cache: cache,
                                                       allowZeroLintableFiles: allowZeroLintableFiles,
                                                       block: visitorBlock)

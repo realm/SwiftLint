@@ -16,7 +16,7 @@ struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRul
         corrections: ImplicitReturnRuleExamples.corrections
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return violationRanges(in: file).compactMap {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,

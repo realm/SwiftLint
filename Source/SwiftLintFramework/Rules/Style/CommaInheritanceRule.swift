@@ -62,7 +62,7 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, Configurati
 
     // MARK: - Rule
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,

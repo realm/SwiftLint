@@ -155,7 +155,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule {
         corrections: violatingToValidExamples.removingViolationMarkers()
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
         let patternRegex: NSRegularExpression = regex(pattern)
 
         return file.violatingRanges(for: pattern).map { violationRange in

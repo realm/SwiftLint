@@ -3,15 +3,15 @@ import SwiftLintTestHelpers
 import XCTest
 
 final class ExtraRulesTests: XCTestCase {
-    func testWithDefaultConfiguration() {
+    func testWithDefaultConfiguration() async throws {
         for ruleType in extraRules() {
-            verifyRule(ruleType.description)
+            try await verifyRule(ruleType.description)
         }
     }
 }
 
 extension ExtraRulesTests {
-    static var allTests: [(String, (ExtraRulesTests) -> () throws -> Void)] {
+    static var allTests: [(String, (ExtraRulesTests) -> () async throws -> Void)] {
         [("testWithDefaultConfiguration", testWithDefaultConfiguration)]
     }
 }

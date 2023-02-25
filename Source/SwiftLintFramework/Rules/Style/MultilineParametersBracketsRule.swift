@@ -92,8 +92,8 @@ struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violations(in: file.structureDictionary, file: file)
+    func validate(file: SwiftLintFile) async throws -> [StyleViolation] {
+        return violations(in: try await file.getStructureDictionary(), file: file)
     }
 
     private func violations(in substructure: SourceKittenDictionary, file: SwiftLintFile) -> [StyleViolation] {

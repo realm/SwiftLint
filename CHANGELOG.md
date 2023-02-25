@@ -24,7 +24,7 @@
 
 * Make forceExclude work with directly specified files.  
   [jimmya](https://github.com/jimmya)
-  [#issue_number](https://github.com/realm/SwiftLint/issues/4609)
+  [#4609](https://github.com/realm/SwiftLint/issues/4609)
 
 * Separate analyzer rules as an independent section in the rule directory of
   the reference.  
@@ -86,6 +86,9 @@
 * Improve `identifier_name` documentation.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4767](https://github.com/realm/SwiftLint/issues/4767)
+* Adds `include_multiline_strings` option to `indentation_width` rule.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4248](https://github.com/realm/SwiftLint/issues/4248)
 
 #### Bug Fixes
 

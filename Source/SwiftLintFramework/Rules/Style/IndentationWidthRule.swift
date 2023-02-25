@@ -35,7 +35,6 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine"),
             Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\t//test\n\t\tfourthLine"),
             Example("firstLine\n    secondLine\n        thirdLine\nfourthLine")
-//            Example("let x = \"\"\"\nstring1\n    string2\n  string3\n\"\"\"\n")
         ],
         triggeringExamples: [
             Example("↓    firstLine", testMultiByteOffsets: false, testDisableCommand: false),

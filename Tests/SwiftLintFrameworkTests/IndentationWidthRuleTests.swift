@@ -196,12 +196,27 @@ class IndentationWidthRuleTests: XCTestCase {
             """, includeCompilerDirectives: true)
     }
 
+    func testIgnoredMultilineStrings() {
+        assertNoViolation(
+            in: "let x = \"\"\"\nstring1\n    string2\n  string3\n\"\"\"\n",
+            includeMultilineStrings: false
+        )
+        assert1Violation(
+            in: "let x = \"\"\"\nstring1\n    string2\n  string3\n\"\"\"\n"
+        )
+        assertViolations(
+            in: "let x = \"\"\"\nstring1\n    string2\n  string3\n string4\n\"\"\"\n",
+            equals: 2
+        )
+    }
+
     // MARK: Helpers
     private func countViolations(
         in example: Example,
         indentationWidth: Int? = nil,
         includeComments: Bool? = nil,
         includeCompilerDirectives: Bool? = nil,
+        includeMultilineStrings: Bool? = nil,
         file: StaticString = #file,
         line: UInt = #line
     ) -> Int {
@@ -214,6 +229,9 @@ class IndentationWidthRuleTests: XCTestCase {
         }
         if let includeCompilerDirectives {
             configDict["include_compiler_directives"] = includeCompilerDirectives
+        }
+        if let includeMultilineStrings {
+            configDict["include_multiline_strings"] = includeMultilineStrings
         }
 
         guard let config = makeConfig(configDict, IndentationWidthRule.description.identifier) else {
@@ -230,6 +248,7 @@ class IndentationWidthRuleTests: XCTestCase {
         indentationWidth: Int? = nil,
         includeComments: Bool? = nil,
         includeCompilerDirectives: Bool? = nil,
+        includeMultilineStrings: Bool? = nil,
         file: StaticString = #file,
         line: UInt = #line
     ) {
@@ -239,6 +258,7 @@ class IndentationWidthRuleTests: XCTestCase {
                 indentationWidth: indentationWidth,
                 includeComments: includeComments,
                 includeCompilerDirectives: includeCompilerDirectives,
+                includeMultilineStrings: includeMultilineStrings,
                 file: file,
                 line: line
             ),
@@ -253,6 +273,7 @@ class IndentationWidthRuleTests: XCTestCase {
         indentationWidth: Int? = nil,
         includeComments: Bool? = nil,
         includeCompilerDirectives: Bool? = nil,
+        includeMultilineStrings: Bool? = nil,
         file: StaticString = #file,
         line: UInt = #line
     ) {
@@ -262,6 +283,7 @@ class IndentationWidthRuleTests: XCTestCase {
             indentationWidth: indentationWidth,
             includeComments: includeComments,
             includeCompilerDirectives: includeCompilerDirectives,
+            includeMultilineStrings: includeMultilineStrings,
             file: file,
             line: line
         )
@@ -272,6 +294,7 @@ class IndentationWidthRuleTests: XCTestCase {
         indentationWidth: Int? = nil,
         includeComments: Bool? = nil,
         includeCompilerDirectives: Bool? = nil,
+        includeMultilineStrings: Bool? = nil,
         file: StaticString = #file,
         line: UInt = #line
     ) {
@@ -281,6 +304,7 @@ class IndentationWidthRuleTests: XCTestCase {
             indentationWidth: indentationWidth,
             includeComments: includeComments,
             includeCompilerDirectives: includeCompilerDirectives,
+            includeMultilineStrings: includeMultilineStrings,
             file: file,
             line: line
         )

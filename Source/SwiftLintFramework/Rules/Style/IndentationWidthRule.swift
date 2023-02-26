@@ -20,7 +20,8 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         severity: .warning,
         indentationWidth: 4,
         includeComments: true,
-        includeCompilerDirectives: true
+        includeCompilerDirectives: true,
+        includeMultilineStrings: true
     )
     static let description = RuleDescription(
         identifier: "indentation_width",
@@ -58,7 +59,7 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
             if line.content.count == indentationCharacterCount { continue }
 
-            if ignoreComment(line: line, in: file) { continue }
+            if ignoreComment(line: line, in: file) || ignoreMultilineStrings(line: line, in: file) { continue }
 
             // Get space and tab count in prefix
             let prefix = String(line.content.prefix(indentationCharacterCount))
@@ -162,6 +163,16 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         }
         let syntaxKindsInLine = Set(file.syntaxMap.tokens(inByteRange: line.byteRange).kinds)
         if syntaxKindsInLine.isNotEmpty, SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) {
+            return true
+        }
+        return false
+    }
+
+    private func ignoreMultilineStrings(line: Line, in file: SwiftLintFile) -> Bool {
+        if configuration.includeMultilineStrings {
+            return false
+        }
+        if file.syntaxMap.tokens(inByteRange: line.byteRange).kinds == [.string] {
             return true
         }
         return false

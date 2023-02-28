@@ -8,7 +8,7 @@ public struct Command: Equatable {
         case enable
         /// The rule(s) associated with this command should be disabled by the SwiftLint engine.
         case disable
-        /// The action string was invalid
+        /// The action string was invalid.
         case invalid
 
         /// - returns: The inverse action that can cancel out the current action, restoring the SwifttLint engine's
@@ -30,7 +30,7 @@ public struct Command: Equatable {
         case this
         /// The command should only apply to the line following its definition.
         case next
-        /// The modifier string was invalid
+        /// The modifier string was invalid.
         case invalid
     }
 
@@ -78,7 +78,7 @@ public struct Command: Equatable {
     /// - parameter line:         The line in the source file where this command is defined.
     /// - parameter character:    The character offset within the line in the source file where this command is
     ///                           defined.
-    public init?(actionString: String, line: Int, character: Int) {
+    public init(actionString: String, line: Int, character: Int) {
         let scanner = Scanner(string: actionString)
         _ = scanner.scanString("swiftlint:")
         // (enable|disable)(:previous|:this|:next)

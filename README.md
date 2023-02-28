@@ -51,6 +51,17 @@ git is discouraged.
 $ mint install realm/SwiftLint
 ```
 
+### Using SwiftPM Command Plugin:
+
+You can use SwiftLint as a SwiftPM command plugin.
+
+```swift
+dependencies: [
+    // ...
+    .package(url: "https://github.com/realm/SwiftLint", from: "0.50.4"),
+]
+```
+
 ### Using a pre-built package:
 
 You can also install SwiftLint by downloading `SwiftLint.pkg` from the
@@ -191,6 +202,8 @@ If you've installed SwiftLint via CocoaPods the script should look like this:
 
 ### Plug-in Support
 
+#### Build Tool Plugin
+
 SwiftLint can be used as a build tool plug-in for both Xcode projects as well as
 Swift packages.
 
@@ -198,7 +211,7 @@ Swift packages.
 recommended for projects that have a SwiftLint configuration in their root directory as
 there is currently no way to pass any additional options to the SwiftLint executable.
 
-#### Xcode
+##### Xcode
 
 You can integrate SwiftLint as a Xcode Build Tool Plug-in if you're working
 with a project in Xcode.
@@ -212,7 +225,7 @@ Select `SwiftLintPlugin` from the list and add it to the project.
 
 ![](assets/select-swiftlint-plugin.png)
 
-#### Swift Package
+##### Swift Package
 
 You can integrate SwiftLint as a Swift Package Manager Plug-in if you're working with
 a Swift Package with a `Package.swift` manifest.
@@ -227,6 +240,45 @@ Add SwiftLint to a target using the `plugins` parameter.
 ),
 ```
 
+#### Command Plugin
+
+SwiftLint can be used as a command plug-in for both Xcode projects as well as Swift packages.
+
+##### Command-Line
+
+```bash
+# Lint
+# `--config`: Optional
+$ swift package plugin lint-source-code --config ../.swiftlint.yml
+
+# Format
+# `--config`: Optional
+$ swift package plugin --allow-writing-to-package-directory format-source-code --config ../.swiftlint.yml
+
+# Analyze
+# `--config`: Optional
+# `--fix`: Optional
+$ swift package plugin --allow-writing-to-package-directory analyze-source-code --config ../.swiftlint.yml --fix --compiler-log-path ../xcodebuild_build.log
+```
+
+##### Xcode
+
+You can integrate SwiftLint as a Xcode Command Plug-in if you're working
+with a project in Xcode.
+
+Select the package and open the context menu.
+Select `SwiftLint {Option}` from the list.
+
+![](assets/select-command-plugin.png)
+
+Select target and enter arguments.
+Select the `Run` button.
+
+![](assets/select-command-plugin-2.png)
+
+For format and analyze, select `Allow Command to Change Files` button.
+
+![](assets/select-command-plugin-3.png)
 
 ### AppCode
 

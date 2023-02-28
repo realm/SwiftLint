@@ -26,7 +26,10 @@ let package = Package(
     products: [
         .executable(name: "swiftlint", targets: ["swiftlint"]),
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"]),
-        .plugin(name: "SwiftLintPlugin", targets: ["SwiftLintPlugin"])
+        .plugin(name: "SwiftLintPlugin", targets: ["SwiftLintPlugin"]),
+        .plugin(name: "LinterPlugin", targets: ["SwiftLint Lint"]),
+        .plugin(name: "FormatterPlugin", targets: ["SwiftLint Format"]),
+        .plugin(name: "AnalyzerPlugin", targets: ["SwiftLint Analyze"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.2.1")),
@@ -43,6 +46,48 @@ let package = Package(
             dependencies: [
                 .target(name: binaryPlugin ? "SwiftLintBinary" : "swiftlint")
             ]
+        ),
+        .plugin(
+            name: "SwiftLint Lint",
+            capability: .command(
+                intent: .custom(
+                    verb: "lint-source-code",
+                    description: "Lint source files"
+                )
+            ),
+            dependencies: [
+                .target(name: binaryPlugin ? "SwiftLintBinary" : "swiftlint")
+            ],
+            path: "Plugins/SwiftLintLint"
+        ),
+        .plugin(
+            name: "SwiftLint Format",
+            capability: .command(
+                intent: .sourceCodeFormatting(),
+                permissions: [
+                    .writeToPackageDirectory(reason: "This command reformats source files")
+                ]
+            ),
+            dependencies: [
+                .target(name: binaryPlugin ? "SwiftLintBinary" : "swiftlint")
+            ],
+            path: "Plugins/SwiftLintFormat"
+        ),
+        .plugin(
+            name: "SwiftLint Analyze",
+            capability: .command(
+                intent: .custom(
+                    verb: "analyze-source-code",
+                    description: "Analyze source files"
+                ),
+                permissions: [
+                    .writeToPackageDirectory(reason: "This command fixes source files")
+                ]
+            ),
+            dependencies: [
+                .target(name: binaryPlugin ? "SwiftLintBinary" : "swiftlint")
+            ],
+            path: "Plugins/SwiftLintAnalyze"
         ),
         .executableTarget(
             name: "swiftlint",

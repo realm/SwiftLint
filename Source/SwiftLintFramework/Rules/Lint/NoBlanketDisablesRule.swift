@@ -113,13 +113,21 @@ struct NoBlanketDisablesRule: ConfigurationProviderRule {
             return []
         }
 
-        for command in file.commands where command.modifier == nil && command.action == .enable {
+        for command in file.commands {
             let ruleIdentifiers: Set<String> = Set(command.ruleIdentifiers.map { $0.stringRepresentation })
             let intersection = ruleIdentifiers.intersection(configuration.alwaysBlanketDisableRuleIdentifiers)
-            violations.append(contentsOf: intersection.map {
-                let reason = "The '\($0)' SwiftLint rule should be disabled once for the entire file - you do not need to re-enable it"
-                return violation(forPath: file.file.path, command: command, reason: reason)
-            })
+            if command.action == .enable {
+                violations.append(contentsOf: intersection.map {
+                    let reason = "The '\($0)' SwiftLint rule should be disabled once for the whole file. " +
+                                 "You don't need to re-enable it"
+                    return violation(forPath: file.file.path, command: command, reason: reason)
+                })
+            } else if command.modifier != nil {
+                violations.append(contentsOf: intersection.map {
+                    let reason = "Do not use 'previous', 'this' or 'next' when disabling the '\($0)' SwiftLint rule"
+                    return violation(forPath: file.file.path, command: command, reason: reason)
+                })
+            }
         }
 
         return violations

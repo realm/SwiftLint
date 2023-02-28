@@ -6,9 +6,16 @@ class NoBlanketDisableRuleTests: XCTestCase {
         let description = NoBlanketDisablesRule.description
             .with(triggeringExamples: [])
             .with(nonTriggeringExamples: [])
-        let examples = [Example("// swiftlint:disable file_length\n// swiftlint:enable file_length")]
-        verifyRule(description.with(nonTriggeringExamples: examples))
-        verifyRule(description.with(triggeringExamples: examples),
+
+        let nonTriggeringExamples = [Example("// swiftlint:disable file_length\n// swiftlint:enable file_length")]
+        verifyRule(description.with(nonTriggeringExamples: nonTriggeringExamples))
+
+        let triggeringExamples = nonTriggeringExamples + [
+            Example("// swiftlint:disable:previous file_length"),
+            Example("// swiftlint:disable:this file_length"),
+            Example("// swiftlint:disable:next file_length")
+        ]
+        verifyRule(description.with(triggeringExamples: triggeringExamples),
                    ruleConfiguration: ["always_blanket_disable": ["file_length"]],
                    skipCommentTests: true)
     }

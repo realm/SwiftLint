@@ -200,7 +200,7 @@ there is currently no way to pass any additional options to the SwiftLint execut
 
 #### Xcode
 
-You can integrate SwiftLint as a Xcode Build Tool Plug-in if you're working
+You can integrate SwiftLint as an Xcode Build Tool Plug-in if you're working
 with a project in Xcode.
 
 Add SwiftLint as a package dependency to your project without linking any of the
@@ -211,6 +211,15 @@ Open `Run Build Tool Plug-ins` and select the `+` button.
 Select `SwiftLintPlugin` from the list and add it to the project.
 
 ![](assets/select-swiftlint-plugin.png)
+
+For unattended use (e.g. on CI), you can disable the package validation dialog by
+
+* individually passing `-skipPackagePluginValidation` to `xcodebuild` or
+* globally setting `defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES` 
+  for that user.
+
+_Note: This implicitly trusts all Xcode package plugins and bypasses Xcode's package validation
+       dialogs, which has security implications._
 
 #### Swift Package
 

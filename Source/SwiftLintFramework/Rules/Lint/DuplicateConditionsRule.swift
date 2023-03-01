@@ -154,22 +154,22 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
 
 private extension DuplicateConditionsRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: IfStmtSyntax) {
-            if  node.parent?.is(IfStmtSyntax.self) == true {
+        override func visitPost(_ node: IfExprSyntax) {
+            if  node.parent?.is(IfExprSyntax.self) == true {
                 // We can skip these cases - they will be picked up when we visit the top level `if`
                 return
             }
 
-            var maybeCurr: IfStmtSyntax? = node
-            var statementChain: [IfStmtSyntax] = []
+            var maybeCurr: IfExprSyntax? = node
+            var statementChain: [IfExprSyntax] = []
             while let curr = maybeCurr {
                 statementChain.append(curr)
-                maybeCurr = curr.elseBody?.as(IfStmtSyntax.self)
+                maybeCurr = curr.elseBody?.as(IfExprSyntax.self)
             }
 
             let positionsByConditions = statementChain
                 .reduce(into: [Set<String>: [AbsolutePosition]]()) { acc, elt in
-                    let conditions = elt.conditions.compactMap(extract)
+                    let conditions = elt.conditions.map(extract)
                     let location = elt.conditions.positionAfterSkippingLeadingTrivia
                     acc[Set(conditions), default: []].append(location)
                 }
@@ -200,8 +200,8 @@ private extension DuplicateConditionsRule {
             addViolations(positionsByCondition.values)
         }
 
-        private func extract(_ node: ConditionElementSyntax) -> String? {
-            let text: String?
+        private func extract(_ node: ConditionElementSyntax) -> String {
+            let text: String
             switch node.condition {
             case .availability(let node):
                 text = node.debugDescription(includeChildren: true, includeTrivia: false)
@@ -211,8 +211,6 @@ private extension DuplicateConditionsRule {
                 text = node.debugDescription(includeChildren: true, includeTrivia: false)
             case .optionalBinding(let node):
                 text = node.debugDescription(includeChildren: true, includeTrivia: false)
-            default:
-                return nil
             }
 
             return text

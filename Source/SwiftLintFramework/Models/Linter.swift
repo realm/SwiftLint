@@ -332,9 +332,14 @@ public struct CollectedLinter {
             .configuration.customRuleConfigurations.map { RuleIdentifier($0.identifier) } ?? []
         let allRuleIdentifiers = primaryRuleList.allValidIdentifiers().map { RuleIdentifier($0) }
         let allValidIdentifiers = Set(allCustomIdentifiers + allRuleIdentifiers + [.all])
+        let superfluousRuleIdentifier = RuleIdentifier(SuperfluousDisableCommandRule.description.identifier)
 
         return regions.flatMap { region in
-            region.disabledRuleIdentifiers.filter({ !allValidIdentifiers.contains($0) }).map { id in
+            region.disabledRuleIdentifiers.filter({
+                !allValidIdentifiers.contains($0) &&
+                !region.disabledRuleIdentifiers.contains(.all) &&
+                !region.disabledRuleIdentifiers.contains(superfluousRuleIdentifier)
+            }).map { id in
                 return StyleViolation(
                     ruleDescription: type(of: superfluousDisableCommandRule).description,
                     severity: superfluousDisableCommandRule.configuration.severity,

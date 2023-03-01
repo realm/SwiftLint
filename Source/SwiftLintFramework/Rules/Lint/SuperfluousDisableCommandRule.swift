@@ -11,7 +11,17 @@ public struct SuperfluousDisableCommandRule: ConfigurationProviderRule, SourceKi
             SwiftLint 'disable' commands are superfluous when the disabled rule would not have triggered a violation \
             in the disabled region. Use " - " if you wish to document a command.
             """,
-        kind: .lint
+        kind: .lint,
+        nonTriggeringExamples: [
+            Example("""
+            // swiftlint:disable all
+            // swiftlint:disable non_existent_rule_name
+            """),
+            Example("""
+            // swiftlint:disable superfluous_disable_command
+            // swiftlint:disable non_existent_rule_name
+            """)
+        ]
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {

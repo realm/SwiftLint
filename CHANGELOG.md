@@ -21,7 +21,7 @@
 * Add `duplicate_conditions` rule which warns when a condition is duplicated
   in separate branches of the same branching statement (if-else, or switch).  
   [1in1](https://github.com/1in1)
-  [#issue_number](https://github.com/realm/SwiftLint/issues/4666)
+  [#4666](https://github.com/realm/SwiftLint/issues/4666)
 
 * Add local links to rule descriptions to every rule listed
   in `Rule Directory.md`.  

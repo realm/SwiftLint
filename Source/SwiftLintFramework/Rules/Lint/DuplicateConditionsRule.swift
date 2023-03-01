@@ -8,7 +8,7 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "duplicate_conditions",
         name: "Duplicate Conditions",
-        description: "Duplicate sets of conditions in the same branching statement should be avoided",
+        description: "Duplicate sets of conditions in the same branch instruction should be avoided",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -81,6 +81,17 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
                 }
             """),
             Example("""
+                if z {
+                  if ↓x < 5 {
+                    foo()
+                  } else if y == "s" {
+                    bar()
+                  } else if ↓x < 5 {
+                    baz()
+                  }
+                }
+            """),
+            Example("""
                 if ↓x < 5, y == "s" {
                   foo()
                 } else if x < 10 {
@@ -113,9 +124,9 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
                 }
             """),
             Example("""
-                if let x = maybeAbc, let z = x.maybeY {
+                if ↓let x = maybeAbc, let z = x.maybeY {
                   foo()
-                } else if let x = maybeAbc, let z = x.maybeY {
+                } else if ↓let x = maybeAbc, let z = x.maybeY {
                   bar()
                 }
             """),
@@ -144,8 +155,7 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
 private extension DuplicateConditionsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: IfStmtSyntax) {
-            if let prevToken = node.previousToken,
-               prevToken.tokenKind == .elseKeyword {
+            if  node.parent?.is(IfStmtSyntax.self) == true {
                 // We can skip these cases - they will be picked up when we visit the top level `if`
                 return
             }
@@ -158,44 +168,49 @@ private extension DuplicateConditionsRule {
             }
 
             let positionsByConditions = statementChain
-                .reduce(into: [Set<[UInt8]>: [AbsolutePosition]]()) { acc, elt in
+                .reduce(into: [Set<String>: [AbsolutePosition]]()) { acc, elt in
                     let conditions = elt.conditions.compactMap(extract)
                     let location = elt.conditions.positionAfterSkippingLeadingTrivia
                     acc[Set(conditions), default: []].append(location)
                 }
 
-            addViolations(positionsByConditions)
+            addViolations(positionsByConditions.values)
         }
 
         override func visitPost(_ node: SwitchCaseListSyntax) {
             let switchCases = node.compactMap { $0.as(SwitchCaseSyntax.self) }
 
             let positionsByCondition = switchCases
-                .reduce(into: [[UInt8]: [AbsolutePosition]]()) { acc, elt in
+                .reduce(into: [String: [AbsolutePosition]]()) { acc, elt in
                     // Defaults don't have a condition to worry about
                     guard case let .case(caseLabel) = elt.label else { return }
                     for caseItem in caseLabel.caseItems {
-                        let pattern = caseItem.pattern.withoutTrivia().syntaxTextBytes
-                        let whereClause = caseItem.whereClause?.withoutTrivia().syntaxTextBytes ?? []
+                        let pattern = caseItem
+                            .pattern
+                            .debugDescription(includeChildren: true, includeTrivia: false)
+                        let whereClause = caseItem
+                            .whereClause?
+                            .debugDescription(includeChildren: true, includeTrivia: false)
+                            ?? ""
                         let location = caseItem.positionAfterSkippingLeadingTrivia
                         acc[pattern + whereClause, default: []].append(location)
                     }
                 }
 
-            addViolations(positionsByCondition)
+            addViolations(positionsByCondition.values)
         }
 
-        private func extract(_ node: ConditionElementSyntax) -> [UInt8]? {
-            let text: [UInt8]
+        private func extract(_ node: ConditionElementSyntax) -> String? {
+            let text: String?
             switch node.condition {
             case .availability(let node):
-                text = node.withoutTrivia().syntaxTextBytes
+                text = node.debugDescription(includeChildren: true, includeTrivia: false)
             case .expression(let node):
-                text = node.withoutTrivia().syntaxTextBytes
+                text = node.debugDescription(includeChildren: true, includeTrivia: false)
             case .matchingPattern(let node):
-                text = node.withoutTrivia().syntaxTextBytes
+                text = node.debugDescription(includeChildren: true, includeTrivia: false)
             case .optionalBinding(let node):
-                text = node.withoutTrivia().syntaxTextBytes
+                text = node.debugDescription(includeChildren: true, includeTrivia: false)
             default:
                 return nil
             }
@@ -203,10 +218,10 @@ private extension DuplicateConditionsRule {
             return text
         }
 
-        private func addViolations<T>(_ positionsByCondition: [T: [AbsolutePosition]]) {
+        private func addViolations(_ positionsByCondition: any Collection<[AbsolutePosition]>) {
             let duplicatedPositions = positionsByCondition
-                .filter { $0.value.count > 1 }
-                .flatMap { $0.value }
+                .filter { $0.count > 1 }
+                .flatMap { $0 }
 
             violations.append(contentsOf: duplicatedPositions)
         }

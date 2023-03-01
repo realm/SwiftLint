@@ -1,9 +1,9 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class NoBlanketDisableRuleTests: XCTestCase {
+class BlanketDisableCommandRuleTests: XCTestCase {
     func testAlwaysBlanketDisable() {
-        let description = NoBlanketDisablesRule.description
+        let description = BlanketDisableCommandRule.description
             .with(triggeringExamples: [])
             .with(nonTriggeringExamples: [])
 

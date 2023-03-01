@@ -1,6 +1,6 @@
 @testable import SwiftLintFramework
 
-// swiftlint:disable nesting identifier_name no_blanket_disables
+// swiftlint:disable nesting identifier_name blanket_disable_command
 
 internal extension ConfigurationTests {
     enum Mock {

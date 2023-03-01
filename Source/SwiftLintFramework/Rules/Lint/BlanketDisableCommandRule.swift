@@ -1,15 +1,15 @@
 import SwiftSyntax
 
-struct NoBlanketDisablesRule: ConfigurationProviderRule {
-    typealias ConfigurationType = NoBlanketDisablesConfiguration
+struct BlanketDisableCommandRule: ConfigurationProviderRule {
+    typealias ConfigurationType = BlanketDisableCommandConfiguration
 
-    var configuration = NoBlanketDisablesConfiguration()
+    var configuration = BlanketDisableCommandConfiguration()
 
     init() {}
 
     static let description = RuleDescription(
-        identifier: "no_blanket_disables",
-        name: "No Blanket Disables",
+        identifier: "blanket_disable_command",
+        name: "Blanket Disable Command",
         description: "swiftlint:disable commands should be re-enabled before the end of the file",
         kind: .lint,
         nonTriggeringExamples: [

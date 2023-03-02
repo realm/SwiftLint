@@ -237,8 +237,8 @@ class CommandTests: XCTestCase {
 
     func testSuperfluousDisableCommands() {
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting\nprint(123)\n"))[0].ruleIdentifier,
-            "superfluous_disable_command"
+            violations(Example("// swiftlint:disable nesting\nprint(123)\n")).map { $0.ruleIdentifier },
+            ["blanket_disable_command", "superfluous_disable_command"]
         )
         XCTAssertEqual(
             violations(Example("// swiftlint:disable:next nesting\nprint(123)\n"))[0].ruleIdentifier,
@@ -280,9 +280,10 @@ class CommandTests: XCTestCase {
     func testSuperfluousDisableCommandsIgnoreDelimiter() {
         let longComment = "Comment with a large number of words that shouldn't register as superfluous"
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting - \(longComment)\nprint(123)\n"))[0]
-                .ruleIdentifier,
-            "superfluous_disable_command"
+            violations(Example("// swiftlint:disable nesting - \(longComment)\nprint(123)\n")).map {
+                $0.ruleIdentifier
+            },
+            ["blanket_disable_command", "superfluous_disable_command"]
         )
         XCTAssertEqual(
             violations(Example("// swiftlint:disable:next nesting - Comment\nprint(123)\n"))[0]
@@ -338,7 +339,9 @@ class CommandTests: XCTestCase {
         XCTAssertEqual(
             onlyNonExistentRulesViolations.filter({ $0.ruleIdentifier == "superfluous_disable_command" }).count, 4
         )
-        XCTAssertEqual(onlyNonExistentRulesViolations.filter({ $0.ruleIdentifier == "blanket_disable_command" }).count, 4)
+        XCTAssertEqual(onlyNonExistentRulesViolations.filter({
+            $0.ruleIdentifier == "blanket_disable_command"
+        }).count, 4)
 
         XCTAssertEqual(
             violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n"))[0].reason,

@@ -123,7 +123,8 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
                 })
             } else if command.modifier != nil {
                 violations.append(contentsOf: intersection.map {
-                    let reason = "The '\($0)' rule applies to the whole file and thus cannot be disabled locally with 'previous', 'this' or 'next'"
+                    let reason = "The '\($0)' rule applies to the whole file and thus cannot be disabled locally " +
+                                 "with 'previous', 'this' or 'next'"
                     return violation(forFile: file, command: command, reason: reason)
                 })
             }

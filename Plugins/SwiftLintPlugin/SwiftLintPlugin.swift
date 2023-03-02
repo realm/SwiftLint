@@ -29,6 +29,10 @@ struct SwiftLintPlugin: BuildToolPlugin {
         var arguments = [
             "lint",
             "--quiet",
+            // We always pass all of the Swift source files in the target to the tool,
+            // so we need to ensure that any exclusion rules in the configuration are
+            // respected.
+            "--force-exclude",
             "--cache-path", "\(workingDirectory)"
         ]
 

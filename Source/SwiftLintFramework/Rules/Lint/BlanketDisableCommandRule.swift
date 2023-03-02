@@ -99,7 +99,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
 
     private func violation(forFile file: SwiftLintFile, command: Command, reason: String) -> StyleViolation {
         var character = command.character
-        if command.line <= file.lines.count {
+        if command.line > 0, command.line <= file.lines.count {
             let line = file.lines[command.line - 1].content
             if let commandIndex = line.range(of: "swiftlint:")?.lowerBound {
                 character = line.distance(from: line.startIndex, to: commandIndex) + 1

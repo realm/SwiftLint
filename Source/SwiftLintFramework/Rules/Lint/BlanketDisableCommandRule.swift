@@ -27,18 +27,18 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             Example("// swiftlint:disable:previous unused_import")
         ],
         triggeringExamples: [
-            Example("// swiftlint:disable unused_import"),
+            Example("// ↓swiftlint:disable unused_import"),
             Example("""
-            // swiftlint:disable unused_import unused_declaration
+            // ↓swiftlint:disable unused_import unused_declaration
             // swiftlint:enable unused_import
             """),
             Example("""
             // swiftlint:disable unused_import
-            // swiftlint:disable unused_import
+            // ↓swiftlint:disable unused_import
             // swiftlint:enable unused_import
             """),
             Example("""
-            // swiftlint:enable unused_import
+            // ↓swiftlint:enable unused_import
             """)
         ].skipWrappingInCommentTests().skipDisableCommandTests()
      )
@@ -98,10 +98,12 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
     }
 
     private func violation(forFile file: SwiftLintFile, command: Command, reason: String) -> StyleViolation {
-        var character: Int?
-        let line = file.lines[command.line - 1].content
-        if let commandIndex = line.range(of: "swiftlint:")?.lowerBound {
-            character = line.distance(from: line.startIndex, to: commandIndex)
+        var character = command.character
+        if command.line <= file.lines.count {
+            let line = file.lines[command.line - 1].content
+            if let commandIndex = line.range(of: "swiftlint:")?.lowerBound {
+                character = line.distance(from: line.startIndex, to: commandIndex) + 1
+            }
         }
 
         return StyleViolation(

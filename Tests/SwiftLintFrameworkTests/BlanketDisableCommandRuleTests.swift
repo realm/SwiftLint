@@ -14,9 +14,9 @@ class BlanketDisableCommandRuleTests: XCTestCase {
             Example("// swiftlint:disable:previous file_length"),
             Example("// swiftlint:disable:this file_length"),
             Example("// swiftlint:disable:next file_length")
-        ].skipDisableCommandTests()
+        ]
         verifyRule(description.with(triggeringExamples: triggeringExamples),
                    ruleConfiguration: ["always_blanket_disable": ["file_length"]],
-                   skipCommentTests: true)
+                   skipCommentTests: true, skipDisableCommandTests: true)
     }
 }

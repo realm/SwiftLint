@@ -40,7 +40,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             Example("""
             // swiftlint:enable unused_import
             """)
-        ].skipWrappingInCommentTests()
+        ].skipWrappingInCommentTests().skipDisableCommandTests()
      )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

@@ -1,4 +1,5 @@
-// swiftlint:disable blanket_disable_command inclusive_language - To ease migration from `whitelist_rules`
+// swiftlint:disable:next blanket_disable_command
+// swiftlint:disable inclusive_language - To ease migration from `whitelist_rules`
 
 extension Configuration {
     // MARK: - Subtypes

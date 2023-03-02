@@ -1,3 +1,4 @@
+// swiftlint:disable:next blanket_disable_command
 // swiftlint:disable all
 // Copied from https://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Windows.swift
 

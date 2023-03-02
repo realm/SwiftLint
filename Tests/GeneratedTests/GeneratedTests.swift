@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.0.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.0.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 @_spi(TestHelper)
 @testable import SwiftLintFramework
@@ -241,6 +241,12 @@ class DiscouragedOptionalCollectionRuleGeneratedTests: XCTestCase {
     }
 }
 
+class DuplicateConditionsRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DuplicateConditionsRule.description)
+    }
+}
+
 class DuplicateEnumCasesRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicateEnumCasesRule.description)
@@ -256,12 +262,6 @@ class DuplicateImportsRuleGeneratedTests: XCTestCase {
 class DuplicatedKeyInDictionaryLiteralRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicatedKeyInDictionaryLiteralRule.description)
-    }
-}
-
-class DuplicateConditionsRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DuplicateConditionsRule.description)
     }
 }
 

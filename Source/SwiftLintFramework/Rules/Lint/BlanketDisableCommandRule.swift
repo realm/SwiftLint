@@ -53,7 +53,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
                 let alreadyDisabledRuleIdentifiers = command.ruleIdentifiers.intersection(disabledRuleIdentifiers)
                 violations.append(contentsOf: alreadyDisabledRuleIdentifiers.map {
                     let reason = "The disabled '\($0.stringRepresentation)' rule was already disabled"
-                    return violation(forPath: file.file.path, command: command, reason: reason)
+                    return violation(forFile: file, command: command, reason: reason)
                 })
             }
 
@@ -61,7 +61,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
                 let notDisabledRuleIdentifiers = command.ruleIdentifiers.subtracting(disabledRuleIdentifiers)
                 violations.append(contentsOf: notDisabledRuleIdentifiers.map {
                     let reason = "The enabled '\($0.stringRepresentation)' rule was not disabled"
-                    return violation(forPath: file.file.path, command: command, reason: reason)
+                    return violation(forFile: file, command: command, reason: reason)
                 })
             }
 
@@ -88,7 +88,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
                 let reason = "The disabled '\(disabledRuleIdentifier.stringRepresentation)' rule " +
                              "should be re-enabled before the end of the file"
-                violations.append(violation(forPath: file.file.path, command: command, reason: reason))
+                violations.append(violation(forFile: file, command: command, reason: reason))
             }
         }
 
@@ -97,11 +97,11 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
         return violations
     }
 
-    private func violation(forPath path: String?, command: Command, reason: String) -> StyleViolation {
+    private func violation(forFile file: SwiftLintFile, command: Command, reason: String) -> StyleViolation {
         return StyleViolation(
             ruleDescription: Self.description,
             severity: configuration.severity,
-            location: Location(file: path, line: command.line, character: command.character),
+            location: Location(file: file.file.path, line: command.line, character: command.character),
             reason: reason
         )
     }
@@ -119,12 +119,12 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             if command.action == .enable {
                 violations.append(contentsOf: intersection.map {
                     let reason = "The '\($0)' rule applies to the whole file and thus doesn't need to be re-enabled"
-                    return violation(forPath: file.file.path, command: command, reason: reason)
+                    return violation(forFile: file, command: command, reason: reason)
                 })
             } else if command.modifier != nil {
                 violations.append(contentsOf: intersection.map {
                     let reason = "The '\($0)' rule applies to the whole file and thus cannot be disabled locally with 'previous', 'this' or 'next'"
-                    return violation(forPath: file.file.path, command: command, reason: reason)
+                    return violation(forFile: file, command: command, reason: reason)
                 })
             }
         }

@@ -52,7 +52,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             if command.action == .disable {
                 let alreadyDisabledRuleIdentifiers = command.ruleIdentifiers.intersection(disabledRuleIdentifiers)
                 violations.append(contentsOf: alreadyDisabledRuleIdentifiers.map {
-                    let reason = "The disabled '\($0.stringRepresentation)' SwiftLint rule was already disabled"
+                    let reason = "The disabled '\($0.stringRepresentation)' rule was already disabled"
                     return violation(forPath: file.file.path, command: command, reason: reason)
                 })
             }
@@ -60,7 +60,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             if command.action == .enable {
                 let notDisabledRuleIdentifiers = command.ruleIdentifiers.subtracting(disabledRuleIdentifiers)
                 violations.append(contentsOf: notDisabledRuleIdentifiers.map {
-                    let reason = "The enabled '\($0.stringRepresentation)' SwiftLint rule was not disabled"
+                    let reason = "The enabled '\($0.stringRepresentation)' rule was not disabled"
                     return violation(forPath: file.file.path, command: command, reason: reason)
                 })
             }
@@ -86,7 +86,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             }
 
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
-                let reason = "The disabled '\(disabledRuleIdentifier.stringRepresentation)' SwiftLint rule " +
+                let reason = "The disabled '\(disabledRuleIdentifier.stringRepresentation)' rule " +
                              "should be re-enabled before the end of the file"
                 violations.append(violation(forPath: file.file.path, command: command, reason: reason))
             }
@@ -118,13 +118,12 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             let intersection = ruleIdentifiers.intersection(configuration.alwaysBlanketDisableRuleIdentifiers)
             if command.action == .enable {
                 violations.append(contentsOf: intersection.map {
-                    let reason = "The '\($0)' SwiftLint rule should be disabled once for the whole file. " +
-                                 "You don't need to re-enable it"
+                    let reason = "The '\($0)' rule applies to the whole file and thus doesn't need to be re-enabled"
                     return violation(forPath: file.file.path, command: command, reason: reason)
                 })
             } else if command.modifier != nil {
                 violations.append(contentsOf: intersection.map {
-                    let reason = "Do not use 'previous', 'this' or 'next' when disabling the '\($0)' SwiftLint rule"
+                    let reason = "The '\($0)' rule applies to the whole file and thus cannot be disabled locally with 'previous', 'this' or 'next'"
                     return violation(forPath: file.file.path, command: command, reason: reason)
                 })
             }

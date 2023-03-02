@@ -5,7 +5,8 @@
 import SwiftLintTestHelpers
 import XCTest
 
-// swiftlint:disable file_length single_test_class type_name blanket_disable_command
+// swiftlint:disable:next blanket_disable_command
+// swiftlint:disable file_length single_test_class type_name
 
 class AccessibilityLabelForImageRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {

@@ -203,20 +203,20 @@ private extension DuplicateConditionsRule {
         private func extract(_ node: ConditionElementSyntax) -> String {
             let text: String
             switch node.condition {
-            case .availability(let node):
-                text = node.debugDescription(includeChildren: true, includeTrivia: false)
-            case .expression(let node):
-                text = node.debugDescription(includeChildren: true, includeTrivia: false)
-            case .matchingPattern(let node):
-                text = node.debugDescription(includeChildren: true, includeTrivia: false)
-            case .optionalBinding(let node):
-                text = node.debugDescription(includeChildren: true, includeTrivia: false)
+            case .availability(let innerNode):
+                text = innerNode.debugDescription(includeChildren: true, includeTrivia: false)
+            case .expression(let innerNode):
+                text = innerNode.debugDescription(includeChildren: true, includeTrivia: false)
+            case .matchingPattern(let innerNode):
+                text = innerNode.debugDescription(includeChildren: true, includeTrivia: false)
+            case .optionalBinding(let innerNode):
+                text = innerNode.debugDescription(includeChildren: true, includeTrivia: false)
             }
 
             return text
         }
 
-        private func addViolations(_ positionsByCondition: any Collection<[AbsolutePosition]>) {
+        private func addViolations(_ positionsByCondition: some Collection<[AbsolutePosition]>) {
             let duplicatedPositions = positionsByCondition
                 .filter { $0.count > 1 }
                 .flatMap { $0 }

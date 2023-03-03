@@ -174,7 +174,7 @@ private extension DuplicateConditionsRule {
                     acc[Set(conditions), default: []].append(location)
                 }
 
-            addViolations(positionsByConditions.values)
+            addViolations(Array(positionsByConditions.values))
         }
 
         override func visitPost(_ node: SwitchCaseListSyntax) {
@@ -197,7 +197,7 @@ private extension DuplicateConditionsRule {
                     }
                 }
 
-            addViolations(positionsByCondition.values)
+            addViolations(Array(positionsByCondition.values))
         }
 
         private func extract(_ node: ConditionElementSyntax) -> String {
@@ -216,7 +216,7 @@ private extension DuplicateConditionsRule {
             return text
         }
 
-        private func addViolations(_ positionsByCondition: some Collection<[AbsolutePosition]>) {
+        private func addViolations(_ positionsByCondition: [[AbsolutePosition]]) {
             let duplicatedPositions = positionsByCondition
                 .filter { $0.count > 1 }
                 .flatMap { $0 }

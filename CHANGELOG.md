@@ -18,6 +18,11 @@
 
 #### Enhancements
 
+* Add `no_constant_condition` rule which warns when an `if`, `guard` or
+  `switch` condition is a constant value that would never change at runtime.  
+  [lo1tuma](https://github.com/lo1tuma)
+  [#4668](https://github.com/realm/SwiftLint/issues/4668)
+
 * Add `duplicate_conditions` rule which warns when a condition is duplicated
   in separate branches of the same branching statement (if-else, or switch).  
   [1in1](https://github.com/1in1)

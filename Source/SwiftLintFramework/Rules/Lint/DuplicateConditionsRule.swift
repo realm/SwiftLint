@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration(.error)
 
     init() {}
 
@@ -67,6 +67,11 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
                   foo()
                 } else if case .q = x {
                   bar()
+                }
+            """),
+            Example("""
+                if true {
+                  if true { foo() }
                 }
             """)
         ],
@@ -143,6 +148,11 @@ struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
                 } else if ↓case .p = x {
                   bar()
                 }
+            """),
+            Example("""
+                if ↓x < 5 {}
+                else if ↓x < 5 {}
+                else if ↓x < 5 {}
             """)
         ]
     )

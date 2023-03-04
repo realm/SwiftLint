@@ -102,6 +102,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4599](https://github.com/realm/SwiftLint/issues/4599)
 
+* Fix whitespaces issue in auto-fix of `redundant_optional_initialization`
+  rule when multiple variable declaration are involved.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4794](https://github.com/realm/SwiftLint/issues/4794)
+
 * Stop triggering `strict_fileprivate` rule on symbols implementing a protocol
   in the same file.  
   [SimplyDanny](https://github.com/SimplyDanny)

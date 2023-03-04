@@ -49,7 +49,7 @@ internal extension Configuration {
             case var .default(disabledRuleIdentifiers, optInRuleIdentifiers):
                 customRulesFilter = { !disabledRuleIdentifiers.contains($0.identifier) }
                 disabledRuleIdentifiers = validate(ruleIds: disabledRuleIdentifiers, valid: validRuleIdentifiers)
-                optInRuleIdentifiers = validate(ruleIds: optInRuleIdentifiers, valid: validRuleIdentifiers)
+                optInRuleIdentifiers = validate(optInRuleIds: optInRuleIdentifiers, valid: validRuleIdentifiers)
                 resultingRules = allRulesWrapped.filter { tuple in
                     let id = type(of: tuple.rule).description.identifier
                     return !disabledRuleIdentifiers.contains(id)
@@ -113,6 +113,10 @@ internal extension Configuration {
         }
 
         // MARK: - Methods: Validation
+        private func validate(optInRuleIds: Set<String>, valid: Set<String>) -> Set<String> {
+            validate(ruleIds: optInRuleIds, valid: valid.union([RuleIdentifier.all.stringRepresentation]))
+        }
+
         private func validate(ruleIds: Set<String>, valid: Set<String>, silent: Bool = false) -> Set<String> {
             // Process invalid rule identifiers
             if !silent {
@@ -220,12 +224,12 @@ internal extension Configuration {
             validRuleIdentifiers: Set<String>
         ) -> RulesMode {
             let childDisabled = child.validate(ruleIds: childDisabled, valid: validRuleIdentifiers)
-            let childOptIn = child.validate(ruleIds: childOptIn, valid: validRuleIdentifiers)
+            let childOptIn = child.validate(optInRuleIds: childOptIn, valid: validRuleIdentifiers)
 
             switch mode { // Switch parent's mode. Child is in default mode.
             case var .default(disabled, optIn):
                 disabled = validate(ruleIds: disabled, valid: validRuleIdentifiers)
-                optIn = child.validate(ruleIds: optIn, valid: validRuleIdentifiers)
+                optIn = child.validate(optInRuleIds: optIn, valid: validRuleIdentifiers)
 
                 // Only use parent disabled / optIn if child config doesn't tell the opposite
                 return .default(

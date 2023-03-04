@@ -25,6 +25,12 @@
 * Make forceExclude work with directly specified files.  
   [jimmya](https://github.com/jimmya)
   [#4609](https://github.com/realm/SwiftLint/issues/4609)
+  [#4609](https://github.com/realm/SwiftLint/issues/4609)
+
+* Adds `all` pseudo-rule for `opt_in_rules` - enables all opt in rules
+  that are not listed in `disabled_rules`  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4540](https://github.com/realm/SwiftLint/issues/4540)
 
 * Separate analyzer rules as an independent section in the rule directory of
   the reference.  

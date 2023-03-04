@@ -96,12 +96,12 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
                 """),
         Example("""
         func foo() {
-            var myVar: String?↓ = nil
+            var myVar: String?↓ = nil, b: Int
         }
         """):
             Example("""
             func foo() {
-                var myVar: String?
+                var myVar: String?, b: Int
             }
             """)
     ]
@@ -165,14 +165,14 @@ private extension RedundantOptionalInitializationRule {
                 guard violatingBindings.contains(binding) else {
                     return binding
                 }
-
                 let newBinding = binding.with(\.initializer, nil)
-
-                if newBinding.accessor == nil {
-                    return newBinding.with(\.trailingTrivia, binding.initializer?.trailingTrivia ?? .zero)
-                } else {
+                if newBinding.accessor != nil {
                     return newBinding
                 }
+                if binding.trailingComma != nil {
+                    return newBinding.with(\.typeAnnotation, binding.typeAnnotation?.with(\.trailingTrivia, .zero))
+                }
+                return newBinding.with(\.trailingTrivia, binding.initializer?.trailingTrivia ?? .zero)
             })
 
             return super.visit(node.with(\.bindings, newBindings))

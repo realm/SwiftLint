@@ -1,3 +1,4 @@
+import Foundation
 import SwiftSyntax
 
 // MARK: - CommandVisitor
@@ -23,26 +24,47 @@ final class CommandVisitor: SyntaxVisitor {
 
 // MARK: - Private Helpers
 
+private extension TriviaPiece {
+    func actionString() -> String? {
+        let commandString = "swiftlint:"
+        switch self {
+        case .lineComment(let comment):
+            if
+                let lower = comment.range(of: commandString)?.lowerBound,
+                case let actionString = String(comment[lower...])
+            {
+                return actionString
+            }
+        case .blockComment(let comment):
+            if let lower = comment.range(of: commandString)?.lowerBound {
+                var contentsEnd: Int = 0
+                let location = comment.distance(from: comment.startIndex, to: lower)
+                let range = NSRange(location: location, length: commandString.count)
+                (comment as NSString).getLineStart(nil, end: nil, contentsEnd: &contentsEnd, for: range)
+                let actionString = comment[lower..<comment.index(comment.startIndex, offsetBy: contentsEnd)]
+                return String(actionString)
+            }
+        default:
+            return nil
+        }
+        return nil
+    }
+}
+
 private extension Trivia {
     func commands(offset: AbsolutePosition, locationConverter: SourceLocationConverter) -> [Command] {
         var triviaOffset = SourceLength.zero
         var results: [Command] = []
         for trivia in self {
             triviaOffset += trivia.sourceLength
-            switch trivia {
-            case .lineComment(let comment), .blockComment(let comment):
-                if
-                    let lower = comment.range(of: "swiftlint:")?.lowerBound,
-                    case let actionString = String(comment[lower...]),
-                    case let end = locationConverter.location(for: offset + triviaOffset),
-                    let line = end.line,
-                    let column = end.column
-                {
-                    let command = Command(actionString: actionString, line: line, character: column)
-                    results.append(command)
-                }
-            default:
-                break
+            if
+                let actionString = trivia.actionString(),
+                case let end = locationConverter.location(for: offset + triviaOffset),
+                let line = end.line,
+                let column = end.column
+            {
+                let command = Command(actionString: actionString, line: line, character: column)
+                results.append(command)
             }
         }
 

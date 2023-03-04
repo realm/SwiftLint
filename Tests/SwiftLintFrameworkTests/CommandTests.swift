@@ -427,7 +427,7 @@ class CommandTests: SwiftLintTestCase {
                                // swiftlint:enable non_existent_rule_name
                                // swiftlint:enable all
                                """
-            )),
+                              )),
             []
         )
         XCTAssertEqual(
@@ -439,6 +439,21 @@ class CommandTests: SwiftLintTestCase {
 
                                """
             )),
+            []
+        )
+    }
+
+    func testSuperfluousDisableCommandsInMultilineComments() {
+        XCTAssertEqual(violations(
+            Example("""
+                    /*
+                        // swiftlint:disable identifier_name
+                        let a = 0
+                    */
+                    let a = 0
+                    
+                    """)
+            ),
             []
         )
     }

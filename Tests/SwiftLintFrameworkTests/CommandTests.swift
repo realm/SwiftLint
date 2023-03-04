@@ -444,6 +444,7 @@ class CommandTests: SwiftLintTestCase {
     }
 
     func testSuperfluousDisableCommandsInMultilineComments() {
+<<<<<<< HEAD
         XCTAssertEqual(
             violations(Example("""
                                /*
@@ -453,6 +454,18 @@ class CommandTests: SwiftLintTestCase {
 
                                """
             )),
+=======
+        XCTAssertEqual(violations(
+            Example("""
+                    /*
+                        // swiftlint:disable identifier_name
+                        let a = 0
+                    */
+                    let a = 0
+
+                    """)
+            ),
+>>>>>>> cba23a55e (Whitespace change)
             []
         )
     }

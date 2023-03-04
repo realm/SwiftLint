@@ -451,7 +451,7 @@ class CommandTests: SwiftLintTestCase {
                         let a = 0
                     */
                     let a = 0
-                    
+
                     """)
             ),
             []

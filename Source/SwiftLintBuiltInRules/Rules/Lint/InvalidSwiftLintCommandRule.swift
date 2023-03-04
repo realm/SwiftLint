@@ -14,31 +14,74 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
             Example("// swiftlint:disable:this unused_import")
         ],
         triggeringExamples: [
-            Example("// swiftlint:"),
-            Example("// swiftlint: "),
-            Example("// swiftlint::"),
-            Example("// swiftlint:: "),
-            Example("// swiftlint:disable"),
-            Example("// swiftlint:dissable unused_import"),
-            Example("// swiftlint:enaaaable unused_import"),
-            Example("// swiftlint:disable:nxt unused_import"),
-            Example("// swiftlint:enable:prevus unused_import"),
-            Example("// swiftlint:enable:ths unused_import"),
-            Example("// swiftlint:enable"),
-            Example("// swiftlint:enable:"),
-            Example("// swiftlint:enable: "),
-            Example("// swiftlint:disable: unused_import")
+            Example("// ↓swiftlint:"),
+            Example("// ↓swiftlint: "),
+            Example("// ↓swiftlint::"),
+            Example("// ↓swiftlint:: "),
+            Example("// ↓swiftlint:disable"),
+            Example("// ↓swiftlint:dissable unused_import"),
+            Example("// ↓swiftlint:enaaaable unused_import"),
+            Example("// ↓swiftlint:disable:nxt unused_import"),
+            Example("// ↓swiftlint:enable:prevus unused_import"),
+            Example("// ↓swiftlint:enable:ths unused_import"),
+            Example("// ↓swiftlint:enable"),
+            Example("// ↓swiftlint:enable:"),
+            Example("// ↓swiftlint:enable: "),
+            Example("// ↓swiftlint:disable: unused_import"),
+            Example("// s↓swiftlint:disable unused_import")
         ].skipWrappingInCommentTests()
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        file.invalidCommands.map {
-            let location = Location(file: file.path, line: $0.line, character: $0.character)
+        validateBadPrefixViolations(file: file) + validateInvalidCommandViolations(file: file)
+    }
+    
+    private func validateBadPrefixViolations(file: SwiftLintFile) -> [StyleViolation] {
+        (file.commands + file.invalidCommands).compactMap { command in
+            if let precedingCharacter = command.precedingCharacter(in: file) {
+                if precedingCharacter != " ", precedingCharacter != "/", precedingCharacter != "*" {
+                    let location = Location(file: file.path, line: command.line, character: command.startingCharacterPosition(in: file))
+                    return StyleViolation(
+                        ruleDescription: Self.description,
+                        severity: configuration.severity,
+                        location: location
+                    )
+                }
+            }
+            return nil
+        }
+    }
+    
+    private func validateInvalidCommandViolations(file: SwiftLintFile) -> [StyleViolation] {
+        file.invalidCommands.map { command in
+            let character = command.startingCharacterPosition(in: file)
+            let location = Location(file: file.path, line: command.line, character: character)
             return StyleViolation(
                 ruleDescription: Self.description,
                 severity: configuration.severity,
                 location: location
             )
         }
+    }
+}
+
+private extension Command {
+    func startingCharacterPosition(in file: SwiftLintFile) -> Int? {
+        var position = character
+        if line > 0, line <= file.lines.count {
+            let line = file.lines[line - 1].content
+            if let commandIndex = line.range(of: "swiftlint:")?.lowerBound {
+                position = line.distance(from: line.startIndex, to: commandIndex) + 1
+            }
+        }
+        return position
+    }
+    
+    func precedingCharacter(in file: SwiftLintFile) -> String? {
+        if let startingCharacterPosition = startingCharacterPosition(in: file), startingCharacterPosition > 2 {
+            let line = file.lines[line - 1].content
+            return line.substring(from: startingCharacterPosition - 2, length: 1)
+        }
+        return nil
     }
 }

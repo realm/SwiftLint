@@ -635,6 +635,10 @@
   by `disable` commands.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4788](https://github.com/realm/SwiftLint/issues/4788)
+* Fix false positives for superfluous_disable_command, and improved
+  command parsing in multiline strings.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * Fixed correction for `trailing_comma` rule wrongly removing trailing
   comments.  

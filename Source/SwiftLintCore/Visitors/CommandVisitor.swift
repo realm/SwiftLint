@@ -1,4 +1,3 @@
-import Foundation
 import SwiftSyntax
 
 // MARK: - CommandVisitor
@@ -37,11 +36,12 @@ private extension TriviaPiece {
             }
         case .blockComment(let comment):
             if let lower = comment.range(of: commandString)?.lowerBound {
-                var contentsEnd: Int = 0
-                let location = comment.distance(from: comment.startIndex, to: lower)
-                let range = NSRange(location: location, length: commandString.count)
-                (comment as NSString).getLineStart(nil, end: nil, contentsEnd: &contentsEnd, for: range)
-                let actionString = comment[lower..<comment.index(comment.startIndex, offsetBy: contentsEnd)]
+                var start = comment.startIndex
+                var end = comment.startIndex
+                var contentsEnd = comment.startIndex
+                let endOfCommand = comment.index(lower, offsetBy: commandString.count)
+                comment.getLineStart(&start, end: &end, contentsEnd: &contentsEnd, for: lower..<endOfCommand)
+                let actionString = comment[lower..<contentsEnd]
                 return String(actionString)
             }
         default:

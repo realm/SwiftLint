@@ -1,3 +1,4 @@
+// swiftlint:disable file_length
 import Foundation
 import SourceKittenFramework
 @_spi(TestHelper)
@@ -391,14 +392,17 @@ class CommandTests: XCTestCase {
             []
         )
     }
-    
+
     func testSuperfluousDisableCommandsDisabledWhenAllRulesDisabled() {
         XCTAssertEqual(
             violations(Example("// swiftlint:disable all\n// swiftlint:disable non_existent_rule_name\n")),
             []
         )
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable superfluous_disable_command\n// swiftlint:disable non_existent_rule_name\n")),
+            violations(Example(
+                "// swiftlint:disable superfluous_disable_command\n" +
+                "// swiftlint:disable non_existent_rule_name\n"
+            )),
             []
         )
     }

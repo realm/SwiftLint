@@ -331,7 +331,7 @@
             <p>A SwiftLint-interpretable command to modify SwiftLint&rsquo;s behavior embedded as comments in source code.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Command.swift#L4-L147">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Command.swift#L4-L165">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -366,7 +366,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Command.swift#L6-L20">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Command.swift#L6-L23">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -397,7 +397,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Command.swift#L23-L30">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Command.swift#L26-L35">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -422,7 +422,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="kt"><a href="../Structs/Command/Action.html">Action</a></span><span class="p">,</span> <span class="nv">ruleIdentifiers</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt"><a href="../Enums/RuleIdentifier.html">RuleIdentifier</a></span><span class="o">&gt;</span><span class="p">,</span> <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="kt"><a href="../Structs/Command/Action.html">Action</a></span><span class="p">,</span> <span class="nv">ruleIdentifiers</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt"><a href="../Enums/RuleIdentifier.html">RuleIdentifier</a></span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">[],</span> <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
             <span class="nv">character</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">modifier</span><span class="p">:</span> <span class="kt"><a href="../Structs/Command/Modifier.html">Modifier</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">trailingComment</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
 
                         </div>
@@ -508,7 +508,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Command.swift#L56-L64">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Command.swift#L65-L73">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -516,9 +516,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:18SwiftLintFramework7CommandV12actionString4line9characterACSgSS_S2itcfc"></a>
+                    <a name="/s:18SwiftLintFramework7CommandV12actionString4line9characterACSS_S2itcfc"></a>
                     <a name="//apple_ref/swift/Method/init(actionString:line:character:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:18SwiftLintFramework7CommandV12actionString4line9characterACSgSS_S2itcfc">init(actionString:<wbr>line:<wbr>character:<wbr>)</a>
+                    <a class="token" href="#/s:18SwiftLintFramework7CommandV12actionString4line9characterACSS_S2itcfc">init(actionString:<wbr>line:<wbr>character:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -533,7 +533,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">?(</span><span class="nv">actionString</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">character</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">actionString</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">character</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -582,7 +582,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Command.swift#L72-L119">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Command.swift#L81-L135">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

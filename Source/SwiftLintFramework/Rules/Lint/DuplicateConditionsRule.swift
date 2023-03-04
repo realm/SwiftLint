@@ -179,7 +179,9 @@ private extension DuplicateConditionsRule {
 
             let positionsByConditions = statementChain
                 .reduce(into: [Set<String>: [AbsolutePosition]]()) { acc, elt in
-                    let conditions = elt.conditions.map(extract)
+                    let conditions = elt.conditions.map {
+                        $0.condition.debugDescription(includeChildren: true, includeTrivia: false)
+                    }
                     let location = elt.conditions.positionAfterSkippingLeadingTrivia
                     acc[Set(conditions), default: []].append(location)
                 }
@@ -208,22 +210,6 @@ private extension DuplicateConditionsRule {
                 }
 
             addViolations(Array(positionsByCondition.values))
-        }
-
-        private func extract(_ node: ConditionElementSyntax) -> String {
-            let text: String
-            switch node.condition {
-            case .availability(let innerNode):
-                text = innerNode.debugDescription(includeChildren: true, includeTrivia: false)
-            case .expression(let innerNode):
-                text = innerNode.debugDescription(includeChildren: true, includeTrivia: false)
-            case .matchingPattern(let innerNode):
-                text = innerNode.debugDescription(includeChildren: true, includeTrivia: false)
-            case .optionalBinding(let innerNode):
-                text = innerNode.debugDescription(includeChildren: true, includeTrivia: false)
-            }
-
-            return text
         }
 
         private func addViolations(_ positionsByCondition: [[AbsolutePosition]]) {

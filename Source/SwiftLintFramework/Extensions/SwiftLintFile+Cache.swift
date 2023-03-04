@@ -165,7 +165,8 @@ extension SwiftLintFile {
 
     internal var locationConverter: SourceLocationConverter { locationConverterCache.get(self) }
 
-    internal var commands: [Command] { commandsCache.get(self) }
+    internal var commands: [Command] { commandsCache.get(self).filter { $0.isValid } }
+    internal var invalidCommands: [Command] { commandsCache.get(self).filter { !$0.isValid } }
 
     internal var syntaxTokensByLines: [[SwiftLintSyntaxToken]] {
         guard let syntaxTokensByLines = syntaxTokensByLinesCache.get(self) else {

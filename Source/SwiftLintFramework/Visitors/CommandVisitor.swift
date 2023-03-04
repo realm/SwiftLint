@@ -36,9 +36,9 @@ private extension Trivia {
                     case let actionString = String(comment[lower...]),
                     case let end = locationConverter.location(for: offset + triviaOffset),
                     let line = end.line,
-                    let column = end.column,
-                    let command = Command(actionString: actionString, line: line, character: column)
+                    let column = end.column
                 {
+                    let command = Command(actionString: actionString, line: line, character: column)
                     results.append(command)
                 }
             default:

@@ -8,6 +8,8 @@ public struct Command: Equatable {
         case enable
         /// The rule(s) associated with this command should be disabled by the SwiftLint engine.
         case disable
+        /// The action string was invalid.
+        case invalid
 
         /// - returns: The inverse action that can cancel out the current action, restoring the SwifttLint engine's
         ///            state prior to the current action.
@@ -15,6 +17,7 @@ public struct Command: Equatable {
             switch self {
             case .enable: return .disable
             case .disable: return .enable
+            case .invalid: return .invalid
             }
         }
     }
@@ -27,6 +30,8 @@ public struct Command: Equatable {
         case this
         /// The command should only apply to the line following its definition.
         case next
+        /// The modifier string was invalid.
+        case invalid
     }
 
     /// Text after this delimiter is not considered part of the rule.
@@ -35,6 +40,10 @@ public struct Command: Equatable {
     ///
     ///     swiftlint:disable:next force_try - Explanation here
     private static let commentDelimiter = " - "
+
+    var isValid: Bool {
+        action != .invalid && modifier != .invalid && !ruleIdentifiers.isEmpty
+    }
 
     internal let action: Action
     internal let ruleIdentifiers: Set<RuleIdentifier>
@@ -53,7 +62,7 @@ public struct Command: Equatable {
     ///                              defined.
     /// - parameter modifier:        This command's modifier, if any.
     /// - parameter trailingComment: The comment following this command's `-` delimiter, if any.
-    public init(action: Action, ruleIdentifiers: Set<RuleIdentifier>, line: Int = 0,
+    public init(action: Action, ruleIdentifiers: Set<RuleIdentifier> = [], line: Int = 0,
                 character: Int? = nil, modifier: Modifier? = nil, trailingComment: String? = nil) {
         self.action = action
         self.ruleIdentifiers = ruleIdentifiers
@@ -69,24 +78,24 @@ public struct Command: Equatable {
     /// - parameter line:         The line in the source file where this command is defined.
     /// - parameter character:    The character offset within the line in the source file where this command is
     ///                           defined.
-    public init?(actionString: String, line: Int, character: Int) {
+    public init(actionString: String, line: Int, character: Int) {
         let scanner = Scanner(string: actionString)
         _ = scanner.scanString("swiftlint:")
         // (enable|disable)(:previous|:this|:next)
         guard let actionAndModifierString = scanner.scanUpToString(" ") else {
-            return nil
+            self.init(action: .invalid, line: line, character: character)
+            return
         }
         let actionAndModifierScanner = Scanner(string: actionAndModifierString)
         guard let actionString = actionAndModifierScanner.scanUpToString(":"),
-            let action = Action(rawValue: actionString)
-            else {
-                return nil
+              let action = Action(rawValue: actionString)
+        else {
+            self.init(action: .invalid, line: line, character: character)
+            return
         }
-        self.action = action
-        self.line = line
-        self.character = character
 
         let rawRuleTexts = scanner.scanUpToString(Self.commentDelimiter) ?? ""
+        var trailingComment: String?
         if scanner.isAtEnd {
             trailingComment = nil
         } else {
@@ -103,19 +112,26 @@ public struct Command: Equatable {
             return component.isNotEmpty && component != "*/"
         }
 
-        ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
+        let ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
 
         // Modifier
         let hasModifier = actionAndModifierScanner.scanString(":") != nil
+        let modifier: Modifier?
         if hasModifier {
-            modifier = Modifier(
-              rawValue: String(
-                actionAndModifierScanner.string[actionAndModifierScanner.currentIndex...]
-              )
-            )
+            let modifierString = String(actionAndModifierScanner.string[actionAndModifierScanner.currentIndex...])
+            modifier = Modifier(rawValue: modifierString) ?? .invalid
         } else {
             modifier = nil
         }
+
+        self.init(
+            action: action,
+            ruleIdentifiers: ruleIdentifiers,
+            line: line,
+            character: character,
+            modifier: modifier,
+            trailingComment: trailingComment
+        )
     }
 
     /// Expands the current command into its fully descriptive form without any modifiers.
@@ -142,6 +158,8 @@ public struct Command: Equatable {
                 Self(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
                 Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1, character: Int.max)
             ]
+        case .invalid:
+            return []
         }
     }
 }

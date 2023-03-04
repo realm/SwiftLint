@@ -44,7 +44,8 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
                     return StyleViolation(
                         ruleDescription: Self.description,
                         severity: configuration.severity,
-                        location: location
+                        location: location,
+                        reason: "swiftlint command should be preceded by whitespace or a comment character"
                     )
                 }
             }
@@ -59,7 +60,8 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
             return StyleViolation(
                 ruleDescription: Self.description,
                 severity: configuration.severity,
-                location: location
+                location: location,
+                reason: command.invalidReason() ?? Self.description.description
             )
         }
     }
@@ -81,6 +83,19 @@ private extension Command {
         if let startingCharacterPosition = startingCharacterPosition(in: file), startingCharacterPosition > 2 {
             let line = file.lines[line - 1].content
             return line.substring(from: startingCharacterPosition - 2, length: 1)
+        }
+        return nil
+    }
+    
+    func invalidReason() -> String? {
+        if action == .invalid {
+            return "swiftlint command does not have a valid action"
+        }
+        if modifier == .invalid {
+            return "swiftlint command does not have a valid modifier"
+        }
+        if ruleIdentifiers.isEmpty {
+            return "swiftlint command does not specify any rules"
         }
         return nil
     }

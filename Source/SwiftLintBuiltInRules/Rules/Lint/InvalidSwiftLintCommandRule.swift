@@ -35,7 +35,7 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         validateBadPrefixViolations(file: file) + validateInvalidCommandViolations(file: file)
     }
-    
+
     private func validateBadPrefixViolations(file: SwiftLintFile) -> [StyleViolation] {
         (file.commands + file.invalidCommands).compactMap { command in
             if let precedingCharacter = command.precedingCharacter(in: file) {
@@ -52,7 +52,7 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
             return nil
         }
     }
-    
+
     private func validateInvalidCommandViolations(file: SwiftLintFile) -> [StyleViolation] {
         file.invalidCommands.map { command in
             let character = command.startingCharacterPosition(in: file)
@@ -78,7 +78,7 @@ private extension Command {
         }
         return position
     }
-    
+
     func precedingCharacter(in file: SwiftLintFile) -> String? {
         if let startingCharacterPosition = startingCharacterPosition(in: file), startingCharacterPosition > 2 {
             let line = file.lines[line - 1].content
@@ -86,7 +86,7 @@ private extension Command {
         }
         return nil
     }
-    
+
     func invalidReason() -> String? {
         if action == .invalid {
             return "swiftlint command does not have a valid action"

@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.0.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.0.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 @_spi(TestHelper)
 @testable import SwiftLintFramework
@@ -238,6 +238,12 @@ class DiscouragedOptionalBooleanRuleGeneratedTests: XCTestCase {
 class DiscouragedOptionalCollectionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedOptionalCollectionRule.description)
+    }
+}
+
+class DuplicateConditionsRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DuplicateConditionsRule.description)
     }
 }
 

@@ -11,7 +11,8 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
             Example("// swiftlint:enable unused_import"),
             Example("// swiftlint:disable:next unused_import"),
             Example("// swiftlint:disable:previous unused_import"),
-            Example("// swiftlint:disable:this unused_import")
+            Example("// swiftlint:disable:this unused_import"),
+            Example("//swiftlint:disable:this unused_import")
         ],
         triggeringExamples: [
             Example("// ↓swiftlint:"),

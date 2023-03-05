@@ -139,7 +139,9 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
         disabledRuleIdentifiers: Set<RuleIdentifier>,
         ruleIdentifierToCommandMap: [RuleIdentifier: Command]
     ) -> [StyleViolation] {
-        let allowedRuleIdentifiers = configuration.allowedRuleIdentifiers
+        let allowedRuleIdentifiers = configuration.allowedRuleIdentifiers.union(
+            configuration.alwaysBlanketDisableRuleIdentifiers
+        )
         return disabledRuleIdentifiers.compactMap { disabledRuleIdentifier in
             if allowedRuleIdentifiers.contains(disabledRuleIdentifier.stringRepresentation) {
                 return nil

@@ -15,7 +15,6 @@ disabled_rules:
   - conditional_returns_on_newline
   - convenience_type
   - direct_return
-  - discouraged_optional_boolean
   - discouraged_optional_collection
   - explicit_acl
   - explicit_enum_raw_value

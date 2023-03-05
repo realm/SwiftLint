@@ -177,7 +177,8 @@ public struct Configuration {
         cachePath: String? = nil,
         ignoreParentAndChildConfigs: Bool = false,
         mockedNetworkResults: [String: String] = [:],
-        useDefaultConfigOnFailure: Bool? = nil
+        useDefaultConfigOnFailure: Bool? = nil // swiftlint:disable:this discouraged_optional_boolean
+
     ) {
         // Handle mocked network results if needed
         Self.FileGraph.FilePath.mockedNetworkResults = mockedNetworkResults

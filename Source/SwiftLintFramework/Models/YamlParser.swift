@@ -62,6 +62,7 @@ private extension String {
 }
 
 private extension Bool {
+    // swiftlint:disable:next discouraged_optional_boolean
     static func constructUsingOnlyTrueAndFalse(from scalar: Node.Scalar) -> Bool? {
         switch scalar.string.lowercased() {
         case "true":

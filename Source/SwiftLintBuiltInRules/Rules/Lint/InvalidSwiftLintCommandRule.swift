@@ -4,7 +4,7 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "invalid_swiftlint_command",
         name: "Invalid SwiftLint Command",
-        description: "swiftlint command does not have a valid action or modifier",
+        description: "swiftlint command is invalid",
         kind: .lint,
         nonTriggeringExamples: [
             Example("// swiftlint:disable unused_import"),
@@ -33,14 +33,18 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        validateBadPrefixViolations(file: file) + validateInvalidCommandViolations(file: file)
+        validate(badPrefixViolationsIn: file) + validate(invalidCommandViolationsIn: file)
     }
 
-    private func validateBadPrefixViolations(file: SwiftLintFile) -> [StyleViolation] {
+    private func validate(badPrefixViolationsIn file: SwiftLintFile) -> [StyleViolation] {
         (file.commands + file.invalidCommands).compactMap { command in
-            if let precedingCharacter = command.precedingCharacter(in: file) {
-                if precedingCharacter != " ", precedingCharacter != "/", precedingCharacter != "*" {
-                    let location = Location(file: file.path, line: command.line, character: command.startingCharacterPosition(in: file))
+            if let precedingCharacter = command.precedingCharacter(in: file)?.trimmingCharacters(in: .whitespaces) {
+                if !precedingCharacter.isEmpty, precedingCharacter != "/", precedingCharacter != "*" {
+                    let location = Location(
+                        file: file.path,
+                        line: command.line,
+                        character: command.startingCharacterPosition(in: file)
+                    )
                     return StyleViolation(
                         ruleDescription: Self.description,
                         severity: configuration.severity,
@@ -53,7 +57,7 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
         }
     }
 
-    private func validateInvalidCommandViolations(file: SwiftLintFile) -> [StyleViolation] {
+    private func validate(invalidCommandViolationsIn file: SwiftLintFile) -> [StyleViolation] {
         file.invalidCommands.map { command in
             let character = command.startingCharacterPosition(in: file)
             let location = Location(file: file.path, line: command.line, character: character)

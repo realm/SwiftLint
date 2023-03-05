@@ -1,8 +1,6 @@
 import SwiftSyntax
 
 struct BlanketDisableCommandRule: ConfigurationProviderRule {
-    typealias ConfigurationType = BlanketDisableCommandConfiguration
-
     var configuration = BlanketDisableCommandConfiguration()
 
     init() {}

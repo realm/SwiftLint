@@ -395,7 +395,10 @@ class CommandTests: XCTestCase {
 
     func testSuperfluousDisableCommandsDisabledWhenAllRulesDisabled() {
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable all\n// swiftlint:disable non_existent_rule_name\n")),
+            violations(Example("""
+                // swiftlint:disable all
+                // swiftlint:disable non_existent_rule_name
+            """)),
             []
         )
         XCTAssertEqual(

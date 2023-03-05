@@ -28,7 +28,6 @@ disabled_rules:
   - implicit_return
   - implicitly_unwrapped_optional
   - indentation_width
-  - legacy_objc_type
   - let_var_whitespace
   - missing_docs
   - multiline_arguments

@@ -424,14 +424,20 @@ class CommandTests: XCTestCase {
             violations(Example("""
                                // swiftlint:disable all
                                // swiftlint:disable non_existent_rule_name
+                               // swiftlint:enable non_existent_rule_name
+                               // swiftlint:enable all
                                """
             )),
             []
         )
         XCTAssertEqual(
-            violations(Example(
-                "// swiftlint:disable superfluous_disable_command\n" +
-                "// swiftlint:disable non_existent_rule_name\n"
+            violations(Example("""
+                               // swiftlint:disable superfluous_disable_command
+                               // swiftlint:disable non_existent_rule_name
+                               // swiftlint:enable non_existent_rule_name
+                               // swiftlint:enable superfluous_disable_command
+
+                               """
             )),
             []
         )

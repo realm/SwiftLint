@@ -123,7 +123,7 @@ struct LintableFilesVisitor {
                 compilerInvocations = try loadCompilerInvocations(options)
             }
 
-            return LintableFilesVisitor(
+            return Self(
                 paths: options.paths, action: options.verb.bridge().capitalized,
                 useSTDIN: options.useSTDIN, quiet: options.quiet,
                 showProgressBar: options.progress,

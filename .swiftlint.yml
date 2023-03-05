@@ -40,7 +40,6 @@ disabled_rules:
   - no_magic_numbers
   - optional_enum_case_matching
   - prefer_nimble
-  - prefer_self_in_static_references
   - prefixed_toplevel_constant
   - required_deinit
   - self_binding

@@ -48,19 +48,19 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
 
         for command in file.commands {
             if command.action == .disable {
-                let alreadyDisabledRuleIdentifiers = command.ruleIdentifiers.intersection(disabledRuleIdentifiers)
-                violations.append(contentsOf: alreadyDisabledRuleIdentifiers.map {
-                    let reason = "The disabled '\($0.stringRepresentation)' rule was already disabled"
-                    return violation(forFile: file, command: command, reason: reason)
-                })
+                violations += validateAlreadyDisabledRules(
+                    for: command,
+                    in: file,
+                    disabledRuleIdentifiers: disabledRuleIdentifiers
+                )
             }
 
             if command.action == .enable {
-                let notDisabledRuleIdentifiers = command.ruleIdentifiers.subtracting(disabledRuleIdentifiers)
-                violations.append(contentsOf: notDisabledRuleIdentifiers.map {
-                    let reason = "The enabled '\($0.stringRepresentation)' rule was not disabled"
-                    return violation(forFile: file, command: command, reason: reason)
-                })
+                violations += validateAlreadyEnabledRules(
+                    for: command,
+                    in: file,
+                    disabledRuleIdentifiers: disabledRuleIdentifiers
+                )
             }
 
             if command.modifier != nil {
@@ -77,20 +77,12 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             }
         }
 
-        let allowedRuleIdentifiers = configuration.allowedRuleIdentifiers
-        for disabledRuleIdentifier in disabledRuleIdentifiers {
-            if allowedRuleIdentifiers.contains(disabledRuleIdentifier.stringRepresentation) {
-                continue
-            }
-
-            if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
-                let reason = "The disabled '\(disabledRuleIdentifier.stringRepresentation)' rule " +
-                             "should be re-enabled before the end of the file"
-                violations.append(violation(forFile: file, command: command, reason: reason))
-            }
-        }
-
-        violations.append(contentsOf: validateAlwaysBlanketDisable(file: file))
+        violations += validateBlanketDisables(
+            in: file,
+            disabledRuleIdentifiers: disabledRuleIdentifiers,
+            ruleIdentifierToCommandMap: ruleIdentifierToCommandMap
+        )
+        violations += validateAlwaysBlanketDisable(file: file)
 
         return violations
     }
@@ -110,6 +102,50 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             location: Location(file: file.file.path, line: command.line, character: character),
             reason: reason
         )
+    }
+
+    private func validateAlreadyDisabledRules(
+        for command: Command,
+        in file: SwiftLintFile,
+        disabledRuleIdentifiers: Set<RuleIdentifier>
+    ) -> [StyleViolation] {
+        let alreadyDisabledRuleIdentifiers = command.ruleIdentifiers.intersection(disabledRuleIdentifiers)
+        return alreadyDisabledRuleIdentifiers.map {
+            let reason = "The disabled '\($0.stringRepresentation)' rule was already disabled"
+            return violation(forFile: file, command: command, reason: reason)
+        }
+    }
+
+    private func validateAlreadyEnabledRules(
+        for command: Command,
+        in file: SwiftLintFile,
+        disabledRuleIdentifiers: Set<RuleIdentifier>
+    ) -> [StyleViolation] {
+        let notDisabledRuleIdentifiers = command.ruleIdentifiers.subtracting(disabledRuleIdentifiers)
+        return notDisabledRuleIdentifiers.map {
+            let reason = "The enabled '\($0.stringRepresentation)' rule was not disabled"
+            return violation(forFile: file, command: command, reason: reason)
+        }
+    }
+
+    private func validateBlanketDisables(
+        in file: SwiftLintFile,
+        disabledRuleIdentifiers: Set<RuleIdentifier>,
+        ruleIdentifierToCommandMap: [RuleIdentifier: Command]
+    ) -> [StyleViolation] {
+        let allowedRuleIdentifiers = configuration.allowedRuleIdentifiers
+        return disabledRuleIdentifiers.compactMap { disabledRuleIdentifier in
+            if allowedRuleIdentifiers.contains(disabledRuleIdentifier.stringRepresentation) {
+                return nil
+            }
+
+            if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
+                let reason = "The disabled '\(disabledRuleIdentifier.stringRepresentation)' rule " +
+                             "should be re-enabled before the end of the file"
+                return violation(forFile: file, command: command, reason: reason)
+            }
+            return nil
+        }
     }
 
     private func validateAlwaysBlanketDisable(file: SwiftLintFile) -> [StyleViolation] {

@@ -11,10 +11,10 @@ class BlanketDisableCommandRuleTests: XCTestCase {
         verifyRule(description.with(nonTriggeringExamples: nonTriggeringExamples))
 
         let triggeringExamples = [
-            Example("// swiftlint:disable file_length\n// ↓swiftlint:enable file_length"),
-            Example("// ↓swiftlint:disable:previous file_length"),
-            Example("// ↓swiftlint:disable:this file_length"),
-            Example("// ↓swiftlint:disable:next file_length")
+            Example("// swiftlint:disable file_length\n// swiftlint:enable ↓file_length"),
+            Example("// swiftlint:disable:previous ↓file_length"),
+            Example("// swiftlint:disable:this ↓file_length"),
+            Example("// swiftlint:disable:next ↓file_length")
         ]
         verifyRule(description.with(triggeringExamples: triggeringExamples),
                    ruleConfiguration: ["always_blanket_disable": ["file_length"]],

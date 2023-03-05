@@ -87,7 +87,21 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
         return violations
     }
 
-    private func violation(forFile file: SwiftLintFile, command: Command, reason: String) -> StyleViolation {
+    private func violation(
+        for command: Command,
+        ruleIdentifier: RuleIdentifier,
+        in file: SwiftLintFile,
+        reason: String
+    ) -> StyleViolation {
+        violation(for: command, ruleIdentifier: ruleIdentifier.stringRepresentation, in: file, reason: reason)
+    }
+
+    private func violation(
+        for command: Command,
+        ruleIdentifier: String,
+        in file: SwiftLintFile,
+        reason: String
+    ) -> StyleViolation {
         var character = command.character
         if command.line > 0, command.line <= file.lines.count {
             let line = file.lines[command.line - 1].content
@@ -112,7 +126,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
         let alreadyDisabledRuleIdentifiers = command.ruleIdentifiers.intersection(disabledRuleIdentifiers)
         return alreadyDisabledRuleIdentifiers.map {
             let reason = "The disabled '\($0.stringRepresentation)' rule was already disabled"
-            return violation(forFile: file, command: command, reason: reason)
+            return violation(for: command, ruleIdentifier: $0, in: file, reason: reason)
         }
     }
 
@@ -124,7 +138,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
         let notDisabledRuleIdentifiers = command.ruleIdentifiers.subtracting(disabledRuleIdentifiers)
         return notDisabledRuleIdentifiers.map {
             let reason = "The enabled '\($0.stringRepresentation)' rule was not disabled"
-            return violation(forFile: file, command: command, reason: reason)
+            return violation(for: command, ruleIdentifier: $0, in: file, reason: reason)
         }
     }
 
@@ -142,7 +156,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
                 let reason = "The disabled '\(disabledRuleIdentifier.stringRepresentation)' rule " +
                              "should be re-enabled before the end of the file"
-                return violation(forFile: file, command: command, reason: reason)
+                return violation(for: command, ruleIdentifier: disabledRuleIdentifier, in: file, reason: reason)
             }
             return nil
         }
@@ -161,17 +175,30 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             if command.action == .enable {
                 violations.append(contentsOf: intersection.map {
                     let reason = "The '\($0)' rule applies to the whole file and thus doesn't need to be re-enabled"
-                    return violation(forFile: file, command: command, reason: reason)
+                    return violation(for: command, ruleIdentifier: $0, in: file, reason: reason)
                 })
             } else if command.modifier != nil {
                 violations.append(contentsOf: intersection.map {
                     let reason = "The '\($0)' rule applies to the whole file and thus cannot be disabled locally " +
                                  "with 'previous', 'this' or 'next'"
-                    return violation(forFile: file, command: command, reason: reason)
+                    return violation(for: command, ruleIdentifier: $0, in: file, reason: reason)
                 })
             }
         }
 
         return violations
+    }
+}
+
+private extension Command {
+    func location(of ruleIdentifier: String, in file: SwiftLintFile) -> Location {
+        var location = character
+        if line > 0, line <= file.lines.count {
+            let line = file.lines[line - 1].content
+            if let ruleIdentifierIndex = line.range(of: ruleIdentifier)?.lowerBound {
+                location = line.distance(from: line.startIndex, to: ruleIdentifierIndex) + 1
+            }
+        }
+        return Location(file: file.file.path, line: line, character: location)
     }
 }

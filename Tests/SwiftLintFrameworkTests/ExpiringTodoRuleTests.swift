@@ -1,6 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable:next balanced_xctest_lifecycle
 class ExpiringTodoRuleTests: XCTestCase {
     private lazy var config: Configuration = makeConfiguration()
 

@@ -10,30 +10,21 @@ analyzer_rules:
 opt_in_rules:
   - all
 disabled_rules:
-#  - accessibility_label_for_image
-#  - accessibility_trait_for_button
   - anonymous_argument_in_multiline_closure
-#  - anyobject_protocol
   - balanced_xctest_lifecycle
   - closure_body_length
-#  - comma_inheritance
   - conditional_returns_on_newline
   - convenience_type
   - direct_return
-#  - discarded_notification_center_observer
-#  - discouraged_assert
   - discouraged_optional_boolean
   - discouraged_optional_collection
-#  - expiring_todo
   - explicit_acl
   - explicit_enum_raw_value
   - explicit_top_level_acl
   - explicit_type_interface
-#  - file_name_no_space
   - file_types_order
   - force_unwrapping
   - function_default_parameter_at_end
-#  - ibinspectable_in_extension
   - implicit_return
   - implicitly_unwrapped_optional
   - indentation_width
@@ -49,23 +40,17 @@ disabled_rules:
   - no_extension_access_modifier
   - no_grouping_extension
   - no_magic_numbers
-#  - nslocalizedstring_require_bundle
   - optional_enum_case_matching
   - prefer_nimble
   - prefer_self_in_static_references
-#  - prefer_zero_over_explicit_init
   - prefixed_toplevel_constant
-#  - private_subject
-#  - raw_value_for_camel_cased_codable_enum
   - required_deinit
-#  - required_enum_case
   - self_binding
   - strict_fileprivate
   - switch_case_on_newline
   - trailing_closure
   - type_contents_order
   - vertical_whitespace_between_cases
-#  - weak_delegate
 
 attributes:
   always_on_line_above:

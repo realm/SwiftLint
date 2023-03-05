@@ -34,10 +34,10 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        validate(badPrefixViolationsIn: file) + validate(invalidCommandViolationsIn: file)
+        validateBadPrefixes(in: file) + validateInvalidCommands(in: file)
     }
 
-    private func validate(badPrefixViolationsIn file: SwiftLintFile) -> [StyleViolation] {
+    private func validateBadPrefixes(in file: SwiftLintFile) -> [StyleViolation] {
         (file.commands + file.invalidCommands).compactMap { command in
             if let precedingCharacter = command.precedingCharacter(in: file)?.trimmingCharacters(in: .whitespaces) {
                 if !precedingCharacter.isEmpty, precedingCharacter != "/", precedingCharacter != "*" {
@@ -58,7 +58,7 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
         }
     }
 
-    private func validate(invalidCommandViolationsIn file: SwiftLintFile) -> [StyleViolation] {
+    private func validateInvalidCommands(in file: SwiftLintFile) -> [StyleViolation] {
         file.invalidCommands.map { command in
             let character = command.startingCharacterPosition(in: file)
             let location = Location(file: file.path, line: command.line, character: character)

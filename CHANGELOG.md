@@ -167,6 +167,11 @@
   with keypath arguments.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix for `superfluous_disable_command` not being completely disabled
+  by `disable` commands.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4788](https://github.com/realm/SwiftLint/issues/4788)
+
 ## 0.50.3: Bundle of Towels
 
 #### Breaking

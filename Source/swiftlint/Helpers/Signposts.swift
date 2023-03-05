@@ -1,5 +1,6 @@
 #if canImport(os)
 import os.signpost
+
 private let timelineLog = OSLog(subsystem: "io.realm.swiftlint", category: "Timeline")
 private let fileLog = OSLog(subsystem: "io.realm.swiftlint", category: "File")
 #endif

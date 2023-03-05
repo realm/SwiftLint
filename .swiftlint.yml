@@ -28,7 +28,6 @@ disabled_rules:
   - implicit_return
   - implicitly_unwrapped_optional
   - indentation_width
-  - let_var_whitespace
   - missing_docs
   - multiline_arguments
   - multiline_arguments_brackets

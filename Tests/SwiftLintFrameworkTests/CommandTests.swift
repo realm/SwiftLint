@@ -461,8 +461,7 @@ class CommandTests: SwiftLintTestCase {
                         // swiftlint:disable identifier_name
                         let a = 0
                     */
-                    let a = 0
-
+                    
                     """)
             ),
 >>>>>>> cba23a55e (Whitespace change)

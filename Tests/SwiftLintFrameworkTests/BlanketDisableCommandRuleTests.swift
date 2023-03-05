@@ -25,7 +25,7 @@ class BlanketDisableCommandRuleTests: XCTestCase {
         let nonTriggeringExamples = [Example("// swiftlint:disable identifier_name\n")]
         verifyRule(emptyDescription.with(nonTriggeringExamples: nonTriggeringExamples),
                    ruleConfiguration: ["always_blanket_disable": ["identifier_name"], "allowed_rules": []],
-                   skipCommentTests: true, skipDisableCommandTests: true)
+                   skipDisableCommandTests: true)
     }
 
     func testAllowedRules() {

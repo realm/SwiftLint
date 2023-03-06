@@ -36,7 +36,6 @@ disabled_rules:
   - no_extension_access_modifier
   - no_grouping_extension
   - no_magic_numbers
-  - optional_enum_case_matching
   - prefer_nimble
   - prefixed_toplevel_constant
   - required_deinit

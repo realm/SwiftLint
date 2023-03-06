@@ -1,6 +1,12 @@
 public struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    public private(set) var allowedRuleIdentifiers: Set<String> = ["file_length", "single_test_class"]
+    public private(set) var allowedRuleIdentifiers: Set<String> = [
+        "file_header",
+        "file_length",
+        "file_name",
+        "file_name_no_space",
+        "single_test_class"
+    ]
     public private(set) var alwaysBlanketDisableRuleIdentifiers: Set<String> = []
 
     public var consoleDescription: String {

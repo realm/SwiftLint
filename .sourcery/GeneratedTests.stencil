@@ -3,6 +3,7 @@
 import SwiftLintTestHelpers
 import XCTest
 
+// swiftlint:disable:next blanket_disable_command
 // swiftlint:disable file_length single_test_class type_name
 
 {% for rule in types.structs %}

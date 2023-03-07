@@ -93,6 +93,11 @@
 * Catch more valid `no_magic_numbers` violations.  
   [JP Simard](https://github.com/jpsim)
 
+* Add `blanket_disable_command` rule that checks whether
+  rules are re-enabled after being disabled.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4731](https://github.com/realm/SwiftLint/pull/4731)
+
 * Add `invalid_swiftlint_command` rule that validates
   `// swiftlint:enable` and `disable` commands.  
   [Martin Redington](https://github.com/mildm8nnered)

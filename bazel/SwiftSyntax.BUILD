@@ -90,18 +90,6 @@ swift_library(
 )
 
 swift_library(
-    name = "_SwiftSyntaxMacros",
-    srcs = glob(["Sources/_SwiftSyntaxMacros/**/*.swift"]),
-    module_name = "_SwiftSyntaxMacros",
-    deps = [
-        ":SwiftDiagnostics",
-        ":SwiftParser",
-        ":SwiftSyntax",
-        ":SwiftSyntaxBuilder",
-    ],
-)
-
-swift_library(
     name = "IDEUtils",
     srcs = glob(["Sources/IDEUtils/**/*.swift"]),
     module_name = "IDEUtils",

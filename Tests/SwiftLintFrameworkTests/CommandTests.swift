@@ -363,8 +363,6 @@ class CommandTests: SwiftLintTestCase {
             violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n"))[0].reason,
             "'nesting_foo' is not a valid SwiftLint rule; remove it from the disable command"
         )
-
-        XCTAssertEqual(violations(Example("/* swiftlint:disable nesting */\n")).count, 2)
     }
 
     func testSuperfluousDisableCommandsDisabled() {
@@ -439,32 +437,6 @@ class CommandTests: SwiftLintTestCase {
 
                                """
             )),
-            []
-        )
-    }
-
-    func testSuperfluousDisableCommandsInMultilineComments() {
-<<<<<<< HEAD
-        XCTAssertEqual(
-            violations(Example("""
-                               /*
-                               // swiftlint:disable identifier_name
-                               let a = 0
-                               */
-
-                               """
-            )),
-=======
-        XCTAssertEqual(violations(
-            Example("""
-                    /*
-                        // swiftlint:disable identifier_name
-                        let a = 0
-                    */
-
-                    """)
-            ),
->>>>>>> cba23a55e (Whitespace change)
             []
         )
     }

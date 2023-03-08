@@ -37,6 +37,7 @@ disabled_rules:
   - no_grouping_extension
   - no_magic_numbers
   - prefer_nimble
+  - prefer_self_in_static_references
   - prefixed_toplevel_constant
   - required_deinit
   - self_binding

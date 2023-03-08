@@ -15,6 +15,7 @@ private extension Command {
 }
 
 class CommandTests: SwiftLintTestCase {
+// swiftlint:disable:next type_body_length
     // MARK: Command Creation
 
     func testNoCommandsInEmptyFile() {
@@ -447,7 +448,7 @@ class CommandTests: SwiftLintTestCase {
         XCTAssertEqual(violations(
             Example("""
                     /*
-                        // swiftlint:disable identifier_name
+                        // swiftlint:disable:next identifier_name
                         let a = 0
                     */
                     let a = 0

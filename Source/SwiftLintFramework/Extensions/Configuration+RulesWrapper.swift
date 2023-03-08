@@ -8,6 +8,7 @@ internal extension Configuration {
         let allRulesWrapped: [ConfigurationRuleWrapper]
         internal let mode: RulesMode
         private let aliasResolver: (String) -> String
+        private let correctableOnly: Bool
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []
         private var validRuleIdentifiers: Set<String> {
@@ -69,6 +70,10 @@ internal extension Configuration {
                 type(of: $0).description.identifier < type(of: $1).description.identifier
             }
 
+            if correctableOnly {
+                resultingRules.removeAll { !($0 is CorrectableRule) }
+            }
+
             // Store & return
             cachedResultingRules = resultingRules
             return resultingRules
@@ -99,7 +104,8 @@ internal extension Configuration {
             mode: RulesMode,
             allRulesWrapped: [ConfigurationRuleWrapper],
             aliasResolver: @escaping (String) -> String,
-            originatesFromMergingProcess: Bool = false
+            originatesFromMergingProcess: Bool = false,
+            correctableOnly: Bool
         ) {
             self.allRulesWrapped = allRulesWrapped
             self.aliasResolver = aliasResolver
@@ -110,6 +116,7 @@ internal extension Configuration {
             self.mode = originatesFromMergingProcess
                 ? mode
                 : mode.activateCustomRuleIdentifiers(allRulesWrapped: allRulesWrapped)
+            self.correctableOnly = correctableOnly
         }
 
         // MARK: - Methods: Validation
@@ -171,7 +178,8 @@ internal extension Configuration {
                 mode: newMode,
                 allRulesWrapped: mergedCustomRules(newAllRulesWrapped: newAllRulesWrapped, with: child),
                 aliasResolver: { child.aliasResolver(self.aliasResolver($0)) },
-                originatesFromMergingProcess: true
+                originatesFromMergingProcess: true,
+                correctableOnly: correctableOnly
             )
         }
 

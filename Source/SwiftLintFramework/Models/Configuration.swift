@@ -130,7 +130,8 @@ public struct Configuration {
         reporter: String = XcodeReporter.identifier,
         cachePath: String? = nil,
         pinnedVersion: String? = nil,
-        allowZeroLintableFiles: Bool = false
+        allowZeroLintableFiles: Bool = false,
+        correctableOnly: Bool = false
     ) {
         if let pinnedVersion, pinnedVersion != Version.current.value {
             queuedPrintError(
@@ -144,7 +145,8 @@ public struct Configuration {
             rulesWrapper: RulesWrapper(
                 mode: rulesMode,
                 allRulesWrapped: allRulesWrapped ?? (try? ruleList.allRulesWrapped()) ?? [],
-                aliasResolver: { ruleList.identifier(for: $0) ?? $0 }
+                aliasResolver: { ruleList.identifier(for: $0) ?? $0 },
+                correctableOnly: correctableOnly
             ),
             fileGraph: fileGraph ?? FileGraph(
                 rootDirectory: FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
@@ -177,7 +179,8 @@ public struct Configuration {
         cachePath: String? = nil,
         ignoreParentAndChildConfigs: Bool = false,
         mockedNetworkResults: [String: String] = [:],
-        useDefaultConfigOnFailure: Bool? = nil
+        useDefaultConfigOnFailure: Bool? = nil,
+        correctableOnly: Bool = false
     ) {
         // Handle mocked network results if needed
         Self.FileGraph.FilePath.mockedNetworkResults = mockedNetworkResults
@@ -225,7 +228,7 @@ public struct Configuration {
             switch initializationResult {
             case .initialImplicitFileNotFound:
                 // Silently fall back to default
-                self.init(rulesMode: rulesMode, cachePath: cachePath)
+                self.init(rulesMode: rulesMode, cachePath: cachePath, correctableOnly: correctableOnly)
                 return
             case .error(let message):
                 errorString = message
@@ -234,7 +237,7 @@ public struct Configuration {
             if useDefaultConfigOnFailure ?? !hasCustomConfigurationFiles {
                 // No files were explicitly specified, so maybe the user doesn't want a config at all -> warn
                 queuedPrintError("warning: \(errorString) – Falling back to default configuration")
-                self.init(rulesMode: rulesMode, cachePath: cachePath)
+                self.init(rulesMode: rulesMode, cachePath: cachePath, correctableOnly: correctableOnly)
             } else {
                 // Files that were explicitly specified could not be loaded -> fail
                 queuedPrintError("error: \(errorString)")

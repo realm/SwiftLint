@@ -1,3 +1,4 @@
+// swiftlint:disable file_length
 import SwiftSyntax
 
 struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProviderRule {

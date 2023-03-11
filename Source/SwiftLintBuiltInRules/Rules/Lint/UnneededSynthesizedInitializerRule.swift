@@ -17,7 +17,7 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
                     internal struct Foo {
                         let name: String
 
-                        init(name: String) {
+                       ↓init(name: String) {
                             self.name = name
                         }
                     }
@@ -84,7 +84,7 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         let initializersCount = node.members.members.filter { $0.decl.is(InitializerDeclSyntax.self) }.count
         if extraneousInitializers.count == initializersCount {
             extraneousInitializers.forEach {
-                violations.append($0.position)
+                violations.append($0.positionAfterSkippingLeadingTrivia)
             }
         }
 
@@ -93,8 +93,8 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
 
     // Collects all of the initializers that could be replaced by the synthesized memberwise
     // initializer(s).
-    // swiftlint:disable:next cyclomatic_complexity
     private func extraneousInitializers(_ node: StructDeclSyntax) -> [InitializerDeclSyntax] {
+        // swiftlint:disable:previous cyclomatic_complexity
         var storedProperties: [VariableDeclSyntax] = []
         var initializers: [InitializerDeclSyntax] = []
 

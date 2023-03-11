@@ -111,6 +111,16 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
                         }
                     }
                     """),
+            Example("""
+                    internal struct Foo {
+                        fileprivate var bar: String
+
+                        // var is fileprivate
+                        init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """)
         ],
         triggeringExamples: [
             Example("""
@@ -157,56 +167,30 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
                             self.bar = bar
                         }
                     }
+                    """),
+            Example("""
+                    internal struct Foo {
+                        fileprivate var bar: String
+
+                       ↓fileprivate init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    internal struct Foo {
+                        private var bar: String
+
+                       ↓private init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
                     """)
         ]
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         UnneededSynthesizedInitializerVisitor(viewMode: .sourceAccurate)
-    }
-}
-
-private extension ModifierListSyntax {
-    var isStatic: Bool {
-        contains(tokenKind: .keyword(.static))
-    }
-
-    private func contains(tokenKind: TokenKind) -> Bool {
-        contains { $0.name.tokenKind == tokenKind }
-    }
-}
-
-private extension InitializerDeclSyntax {
-    var hasThrowsOrRethrowsKeyword: Bool { signature.effectSpecifiers?.throwsSpecifier != nil }
-}
-
-private extension ModifierListSyntax {
-    /// Returns the declaration's access level modifier, if present.
-    var accessLevelModifier: DeclModifierSyntax? {
-        for modifier in self {
-            switch modifier.name.tokenKind {
-            case .keyword(.public), .keyword(.private), .keyword(.fileprivate), .keyword(.internal):
-                return modifier
-            default:
-                continue
-            }
-        }
-        return nil
-    }
-}
-
-private extension VariableDeclSyntax {
-    var identifiers: [IdentifierPatternSyntax] {
-        var ids: [IdentifierPatternSyntax] = []
-        for binding in bindings {
-            guard let id = binding.pattern.as(IdentifierPatternSyntax.self) else { continue }
-            ids.append(id)
-        }
-        return ids
-    }
-
-    var firstIdentifier: IdentifierPatternSyntax {
-        identifiers[0]
     }
 }
 
@@ -370,6 +354,48 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
             statements.remove(at: idx)
         }
         return statements.isEmpty
+    }
+}
+
+private extension ModifierListSyntax {
+    var isStatic: Bool {
+        contains(tokenKind: .keyword(.static))
+    }
+
+    /// Returns the declaration's access level modifier, if present.
+    var accessLevelModifier: DeclModifierSyntax? {
+        for modifier in self {
+            switch modifier.name.tokenKind {
+            case .keyword(.public), .keyword(.private), .keyword(.fileprivate), .keyword(.internal):
+                return modifier
+            default:
+                continue
+            }
+        }
+        return nil
+    }
+
+    private func contains(tokenKind: TokenKind) -> Bool {
+        contains { $0.name.tokenKind == tokenKind }
+    }
+}
+
+private extension InitializerDeclSyntax {
+    var hasThrowsOrRethrowsKeyword: Bool { signature.effectSpecifiers?.throwsSpecifier != nil }
+}
+
+private extension VariableDeclSyntax {
+    var identifiers: [IdentifierPatternSyntax] {
+        var ids: [IdentifierPatternSyntax] = []
+        for binding in bindings {
+            guard let id = binding.pattern.as(IdentifierPatternSyntax.self) else { continue }
+            ids.append(id)
+        }
+        return ids
+    }
+
+    var firstIdentifier: IdentifierPatternSyntax {
+        identifiers[0]
     }
 }
 

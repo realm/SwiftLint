@@ -56,9 +56,8 @@ public extension Configuration {
             )
         }
 
-        // swiftlint:disable:next discouraged_optional_boolean
-        internal func includesFile(atPath path: String) -> Bool? {
-            guard isBuilt else { return nil }
+        internal func includesFile(atPath path: String) -> Bool {
+            guard isBuilt else { return false }
 
             return vertices.contains { vertix in
                 if case let .existing(filePath) = vertix.filePath {

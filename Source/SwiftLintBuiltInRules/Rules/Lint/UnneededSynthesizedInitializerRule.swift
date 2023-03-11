@@ -31,6 +31,47 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
                         }
                     }
                     """),
+            Example("""
+                    internal struct Foo {
+                        let bar: String
+
+                        // failable initializer
+                        init?(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    internal struct Foo {
+                        let bar: String
+
+                        // initializer throws
+                        init(bar: String) throws {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    internal struct Foo {
+                        let bar: String
+
+                        // different argument labels
+                        init(_ bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    internal struct Foo {
+                        let bar: String = "foo"
+
+                        // different default values
+                        init(bar: String = "bar") {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+
         ],
         triggeringExamples: [
             Example("""

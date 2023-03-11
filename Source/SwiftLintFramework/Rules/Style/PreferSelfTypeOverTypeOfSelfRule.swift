@@ -147,7 +147,6 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
 
             correctionPositions.append(function.positionAfterSkippingLeadingTrivia)
 
-            // swiftlint:disable:next rule_id
             let base = IdentifierExprSyntax(identifier: "Self")
             let baseWithTrivia = base
                 .with(\.leadingTrivia, function.leadingTrivia ?? .zero)

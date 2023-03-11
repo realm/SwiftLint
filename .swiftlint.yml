@@ -73,7 +73,7 @@ custom_rules:
     included: Source/SwiftLintFramework/Rules/.+/\w+\.swift
     name: Rule ID
     message: Rule IDs must be all lowercase, snake case and not end with `rule`
-    regex: identifier:\s*("\w+_rule"|"\S*[^a-z_]\S*")
+    regex: ^\s+identifier:\s*("\w+_rule"|"\S*[^a-z_]\S*")
     severity: error
   fatal_error:
     name: Fatal Error

@@ -129,278 +129,277 @@ private enum ExpressionResult: Equatable {
     case dynamic
 }
 
-private func getTokenText(_ token: TokenSyntax) -> String {
-    return token.text
-}
-
 private enum StringLiteralResult {
     case constant(_ value: String)
     case dynamic
 }
 
-private func analyzeStringLiteral(_ expression: StringLiteralExprSyntax) -> StringLiteralResult {
-    var value = ""
+private extension StringLiteralExprSyntax {
+    func analyze() -> StringLiteralResult {
+        var value = ""
 
-    for literalSegment in expression.segments {
-        switch literalSegment {
-        case .expressionSegment:
-            return .dynamic
-        case let .stringSegment(stringSegment):
-            value += getTokenText(stringSegment.content)
-        }
-    }
-
-    return .constant(value)
-}
-
-private func analyzePrimitiveLiteralExpression(_ element: ExprSyntax) -> ExpressionResult {
-    if let booleanExpression = element.as(BooleanLiteralExprSyntax.self) {
-        let value = getTokenText(booleanExpression.booleanLiteral)
-        return .evaluatedConstant(.booleanValue(value == "true"))
-    }
-
-    if let integerExpression = element.as(IntegerLiteralExprSyntax.self) {
-        let value = getTokenText(integerExpression.digits)
-        return .evaluatedConstant(.integerValue(Int(value) ?? 0))
-    }
-
-    if let floatExpression = element.as(FloatLiteralExprSyntax.self) {
-        let value = getTokenText(floatExpression.floatingDigits)
-        return .evaluatedConstant(.floatValue(Float(value) ?? 0.0))
-    }
-
-    if let stringExpression = element.as(StringLiteralExprSyntax.self) {
-        let stringLiteralResult = analyzeStringLiteral(stringExpression)
-        switch stringLiteralResult {
-        case let .constant(value):
-            return .evaluatedConstant(.stringValue(value))
-        case .dynamic:
-            return .dynamic
-        }
-    }
-
-    if element.is(NilLiteralExprSyntax.self) {
-        return .evaluatedConstant(.nilValue)
-    }
-
-    return .dynamic
-}
-
-private func isBinaryOperator(_ operatorExpression: ExprSyntax, _ expectedOperator: String) -> Bool {
-    if let binaryOperator = operatorExpression.as(BinaryOperatorExprSyntax.self) {
-        let operatorText = getTokenText(binaryOperator.operatorToken)
-
-        return operatorText == expectedOperator
-    }
-
-    return false
-}
-
-private func isLogicalAndOperator(_ operatorExpression: ExprSyntax) -> Bool {
-    return isBinaryOperator(operatorExpression, "&&")
-}
-
-// swiftlint:disable:next function_body_length cyclomatic_complexity
-private func evaluateConstantInfixExpression(
-    operatorExpression: ExprSyntax,
-    leftOperandValue: ConstantValue,
-    rightOperandValue: ConstantValue) -> ConstantEvaluationResult {
-    if isLogicalAndOperator(operatorExpression) {
-        if case let .booleanValue(leftBooleanValue) = leftOperandValue,
-           case let .booleanValue(rightBooleanValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftBooleanValue && rightBooleanValue))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, "||") {
-        if case let .booleanValue(leftBooleanValue) = leftOperandValue,
-           case let .booleanValue(rightBooleanValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftBooleanValue || rightBooleanValue))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, "+") {
-        if case let .stringValue(leftStringValue) = leftOperandValue,
-           case let .stringValue(rightStringValue) = rightOperandValue {
-            return .evaluated(.stringValue(leftStringValue + rightStringValue))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, "==") {
-        if case let .booleanValue(leftBooleanValue) = leftOperandValue,
-           case let .booleanValue(rightBooleanValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftBooleanValue == rightBooleanValue))
-        }
-        if case let .stringValue(leftStringValue) = leftOperandValue,
-           case let .stringValue(rightStringValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftStringValue == rightStringValue))
-        }
-        if case let .integerValue(leftIntValue) = leftOperandValue,
-           case let .integerValue(rightIntValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftIntValue == rightIntValue))
-        }
-        if case let .floatValue(leftFloatValue) = leftOperandValue,
-           case let .floatValue(rightFloatValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftFloatValue == rightFloatValue))
-        }
-        if case .nilValue = leftOperandValue, case .nilValue = rightOperandValue {
-            return .evaluated(.booleanValue(true))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, "!=") {
-        if case let .booleanValue(leftBooleanValue) = leftOperandValue,
-           case let .booleanValue(rightBooleanValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftBooleanValue != rightBooleanValue))
-        }
-        if case let .stringValue(leftStringValue) = leftOperandValue,
-           case let .stringValue(rightStringValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftStringValue != rightStringValue))
-        }
-        if case let .integerValue(leftIntValue) = leftOperandValue,
-           case let .integerValue(rightIntValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftIntValue != rightIntValue))
-        }
-        if case let .floatValue(leftFloatValue) = leftOperandValue,
-           case let .floatValue(rightFloatValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftFloatValue != rightFloatValue))
-        }
-        if case .nilValue = leftOperandValue, case .nilValue = rightOperandValue {
-            return .evaluated(.booleanValue(false))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, "<") {
-        if case let .stringValue(leftStringValue) = leftOperandValue,
-           case let .stringValue(rightStringValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftStringValue < rightStringValue))
-        }
-        if case let .integerValue(leftIntValue) = leftOperandValue,
-           case let .integerValue(rightIntValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftIntValue < rightIntValue))
-        }
-        if case let .floatValue(leftFloatValue) = leftOperandValue,
-           case let .floatValue(rightFloatValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftFloatValue < rightFloatValue))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, ">") {
-        if case let .stringValue(leftStringValue) = leftOperandValue,
-           case let .stringValue(rightStringValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftStringValue > rightStringValue))
-        }
-        if case let .integerValue(leftIntValue) = leftOperandValue,
-           case let .integerValue(rightIntValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftIntValue > rightIntValue))
-        }
-        if case let .floatValue(leftFloatValue) = leftOperandValue,
-           case let .floatValue(rightFloatValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftFloatValue > rightFloatValue))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, "<=") {
-        if case let .stringValue(leftStringValue) = leftOperandValue,
-           case let .stringValue(rightStringValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftStringValue <= rightStringValue))
-        }
-        if case let .integerValue(leftIntValue) = leftOperandValue,
-           case let .integerValue(rightIntValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftIntValue <= rightIntValue))
-        }
-        if case let .floatValue(leftFloatValue) = leftOperandValue,
-           case let .floatValue(rightFloatValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftFloatValue <= rightFloatValue))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, ">=") {
-        if case let .stringValue(leftStringValue) = leftOperandValue,
-           case let .stringValue(rightStringValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftStringValue >= rightStringValue))
-        }
-        if case let .integerValue(leftIntValue) = leftOperandValue,
-           case let .integerValue(rightIntValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftIntValue >= rightIntValue))
-        }
-        if case let .floatValue(leftFloatValue) = leftOperandValue,
-           case let .floatValue(rightFloatValue) = rightOperandValue {
-            return .evaluated(.booleanValue(leftFloatValue >= rightFloatValue))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, "+") {
-        if case let .stringValue(leftStringValue) = leftOperandValue,
-           case let .stringValue(rightStringValue) = rightOperandValue {
-            return .evaluated(.stringValue(leftStringValue + rightStringValue))
-        }
-        if case let .integerValue(leftIntValue) = leftOperandValue,
-           case let .integerValue(rightIntValue) = rightOperandValue {
-            return .evaluated(.integerValue(leftIntValue + rightIntValue))
-        }
-        if case let .floatValue(leftFloatValue) = leftOperandValue,
-           case let .floatValue(rightFloatValue) = rightOperandValue {
-            return .evaluated(.floatValue(leftFloatValue + rightFloatValue))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, "-") {
-        if case let .integerValue(leftIntValue) = leftOperandValue,
-           case let .integerValue(rightIntValue) = rightOperandValue {
-            return .evaluated(.integerValue(leftIntValue - rightIntValue))
-        }
-        if case let .floatValue(leftFloatValue) = leftOperandValue,
-           case let .floatValue(rightFloatValue) = rightOperandValue {
-            return .evaluated(.floatValue(leftFloatValue - rightFloatValue))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, "*") {
-        if case let .integerValue(leftIntValue) = leftOperandValue,
-           case let .integerValue(rightIntValue) = rightOperandValue {
-            return .evaluated(.integerValue(leftIntValue * rightIntValue))
-        }
-        if case let .floatValue(leftFloatValue) = leftOperandValue,
-           case let .floatValue(rightFloatValue) = rightOperandValue {
-            return .evaluated(.floatValue(leftFloatValue * rightFloatValue))
-        }
-    }
-
-    if isBinaryOperator(operatorExpression, "/") {
-        if case let .integerValue(leftIntValue) = leftOperandValue,
-           case let .integerValue(rightIntValue) = rightOperandValue {
-            return .evaluated(.integerValue(leftIntValue / rightIntValue))
-        }
-        if case let .floatValue(leftFloatValue) = leftOperandValue,
-           case let .floatValue(rightFloatValue) = rightOperandValue {
-            return .evaluated(.floatValue(leftFloatValue / rightFloatValue))
-        }
-    }
-
-    return .notEvaluated
-}
-
-private func analyzeGenericExpression(_ expression: ExprSyntax) -> ExpressionResult {
-    let literalResult = analyzePrimitiveLiteralExpression(expression)
-
-    if literalResult == .dynamic {
-        if let infixExpression = expression.as(InfixOperatorExprSyntax.self) {
-            return analyzeInfixExpression(infixExpression)
-        }
-
-        if let tupleExpression = expression.as(TupleExprSyntax.self) {
-            if let unwrappedExpression = tupleExpression.elementList.onlyElement?.expression {
-                return analyzeGenericExpression(unwrappedExpression)
+        for literalSegment in self.segments {
+            switch literalSegment {
+            case .expressionSegment:
+                return .dynamic
+            case let .stringSegment(stringSegment):
+                value += stringSegment.content.text
             }
         }
 
-        if let prefixExpression = expression.as(PrefixOperatorExprSyntax.self) {
-            return analyzePrefixExpression(prefixExpression)
+        return .constant(value)
+    }
+}
+
+private extension ExprSyntax {
+    func analyzePrimitiveLiteralExpression() -> ExpressionResult {
+        if let booleanExpression = self.as(BooleanLiteralExprSyntax.self) {
+            let value = booleanExpression.booleanLiteral.text
+            return .evaluatedConstant(.booleanValue(value == "true"))
         }
+
+        if let integerExpression = self.as(IntegerLiteralExprSyntax.self) {
+            let value = integerExpression.digits.text
+            return .evaluatedConstant(.integerValue(Int(value) ?? 0))
+        }
+
+        if let floatExpression = self.as(FloatLiteralExprSyntax.self) {
+            let value = floatExpression.floatingDigits.text
+            return .evaluatedConstant(.floatValue(Float(value) ?? 0.0))
+        }
+
+        if let stringExpression = self.as(StringLiteralExprSyntax.self) {
+            let stringLiteralResult = stringExpression.analyze()
+            switch stringLiteralResult {
+            case let .constant(value):
+                return .evaluatedConstant(.stringValue(value))
+            case .dynamic:
+                return .dynamic
+            }
+        }
+
+        if self.is(NilLiteralExprSyntax.self) {
+            return .evaluatedConstant(.nilValue)
+        }
+
+        return .dynamic
     }
 
-    return literalResult
+    func isBinaryOperator(_ expectedOperator: String) -> Bool {
+        if let binaryOperator = self.as(BinaryOperatorExprSyntax.self) {
+            let operatorText = binaryOperator.operatorToken.text
+
+            return operatorText == expectedOperator
+        }
+
+        return false
+    }
+
+    func isLogicalAndOperator() -> Bool {
+        return self.isBinaryOperator("&&")
+    }
+
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
+    func evaluateConstantInfixExpression(
+        leftOperandValue: ConstantValue,
+        rightOperandValue: ConstantValue) -> ConstantEvaluationResult {
+        if self.isLogicalAndOperator() {
+            if case let .booleanValue(leftBooleanValue) = leftOperandValue,
+               case let .booleanValue(rightBooleanValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftBooleanValue && rightBooleanValue))
+            }
+        }
+
+        if self.isBinaryOperator("||") {
+            if case let .booleanValue(leftBooleanValue) = leftOperandValue,
+               case let .booleanValue(rightBooleanValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftBooleanValue || rightBooleanValue))
+            }
+        }
+
+        if self.isBinaryOperator("+") {
+            if case let .stringValue(leftStringValue) = leftOperandValue,
+               case let .stringValue(rightStringValue) = rightOperandValue {
+                return .evaluated(.stringValue(leftStringValue + rightStringValue))
+            }
+        }
+
+        if self.isBinaryOperator("==") {
+            if case let .booleanValue(leftBooleanValue) = leftOperandValue,
+               case let .booleanValue(rightBooleanValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftBooleanValue == rightBooleanValue))
+            }
+            if case let .stringValue(leftStringValue) = leftOperandValue,
+               case let .stringValue(rightStringValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftStringValue == rightStringValue))
+            }
+            if case let .integerValue(leftIntValue) = leftOperandValue,
+               case let .integerValue(rightIntValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftIntValue == rightIntValue))
+            }
+            if case let .floatValue(leftFloatValue) = leftOperandValue,
+               case let .floatValue(rightFloatValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftFloatValue == rightFloatValue))
+            }
+            if case .nilValue = leftOperandValue, case .nilValue = rightOperandValue {
+                return .evaluated(.booleanValue(true))
+            }
+        }
+
+        if self.isBinaryOperator("!=") {
+            if case let .booleanValue(leftBooleanValue) = leftOperandValue,
+               case let .booleanValue(rightBooleanValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftBooleanValue != rightBooleanValue))
+            }
+            if case let .stringValue(leftStringValue) = leftOperandValue,
+               case let .stringValue(rightStringValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftStringValue != rightStringValue))
+            }
+            if case let .integerValue(leftIntValue) = leftOperandValue,
+               case let .integerValue(rightIntValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftIntValue != rightIntValue))
+            }
+            if case let .floatValue(leftFloatValue) = leftOperandValue,
+               case let .floatValue(rightFloatValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftFloatValue != rightFloatValue))
+            }
+            if case .nilValue = leftOperandValue, case .nilValue = rightOperandValue {
+                return .evaluated(.booleanValue(false))
+            }
+        }
+
+        if self.isBinaryOperator("<") {
+            if case let .stringValue(leftStringValue) = leftOperandValue,
+               case let .stringValue(rightStringValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftStringValue < rightStringValue))
+            }
+            if case let .integerValue(leftIntValue) = leftOperandValue,
+               case let .integerValue(rightIntValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftIntValue < rightIntValue))
+            }
+            if case let .floatValue(leftFloatValue) = leftOperandValue,
+               case let .floatValue(rightFloatValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftFloatValue < rightFloatValue))
+            }
+        }
+
+        if self.isBinaryOperator(">") {
+            if case let .stringValue(leftStringValue) = leftOperandValue,
+               case let .stringValue(rightStringValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftStringValue > rightStringValue))
+            }
+            if case let .integerValue(leftIntValue) = leftOperandValue,
+               case let .integerValue(rightIntValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftIntValue > rightIntValue))
+            }
+            if case let .floatValue(leftFloatValue) = leftOperandValue,
+               case let .floatValue(rightFloatValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftFloatValue > rightFloatValue))
+            }
+        }
+
+        if self.isBinaryOperator("<=") {
+            if case let .stringValue(leftStringValue) = leftOperandValue,
+               case let .stringValue(rightStringValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftStringValue <= rightStringValue))
+            }
+            if case let .integerValue(leftIntValue) = leftOperandValue,
+               case let .integerValue(rightIntValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftIntValue <= rightIntValue))
+            }
+            if case let .floatValue(leftFloatValue) = leftOperandValue,
+               case let .floatValue(rightFloatValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftFloatValue <= rightFloatValue))
+            }
+        }
+
+        if self.isBinaryOperator(">=") {
+            if case let .stringValue(leftStringValue) = leftOperandValue,
+               case let .stringValue(rightStringValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftStringValue >= rightStringValue))
+            }
+            if case let .integerValue(leftIntValue) = leftOperandValue,
+               case let .integerValue(rightIntValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftIntValue >= rightIntValue))
+            }
+            if case let .floatValue(leftFloatValue) = leftOperandValue,
+               case let .floatValue(rightFloatValue) = rightOperandValue {
+                return .evaluated(.booleanValue(leftFloatValue >= rightFloatValue))
+            }
+        }
+
+        if self.isBinaryOperator("+") {
+            if case let .stringValue(leftStringValue) = leftOperandValue,
+               case let .stringValue(rightStringValue) = rightOperandValue {
+                return .evaluated(.stringValue(leftStringValue + rightStringValue))
+            }
+            if case let .integerValue(leftIntValue) = leftOperandValue,
+               case let .integerValue(rightIntValue) = rightOperandValue {
+                return .evaluated(.integerValue(leftIntValue + rightIntValue))
+            }
+            if case let .floatValue(leftFloatValue) = leftOperandValue,
+               case let .floatValue(rightFloatValue) = rightOperandValue {
+                return .evaluated(.floatValue(leftFloatValue + rightFloatValue))
+            }
+        }
+
+        if self.isBinaryOperator("-") {
+            if case let .integerValue(leftIntValue) = leftOperandValue,
+               case let .integerValue(rightIntValue) = rightOperandValue {
+                return .evaluated(.integerValue(leftIntValue - rightIntValue))
+            }
+            if case let .floatValue(leftFloatValue) = leftOperandValue,
+               case let .floatValue(rightFloatValue) = rightOperandValue {
+                return .evaluated(.floatValue(leftFloatValue - rightFloatValue))
+            }
+        }
+
+        if self.isBinaryOperator("*") {
+            if case let .integerValue(leftIntValue) = leftOperandValue,
+               case let .integerValue(rightIntValue) = rightOperandValue {
+                return .evaluated(.integerValue(leftIntValue * rightIntValue))
+            }
+            if case let .floatValue(leftFloatValue) = leftOperandValue,
+               case let .floatValue(rightFloatValue) = rightOperandValue {
+                return .evaluated(.floatValue(leftFloatValue * rightFloatValue))
+            }
+        }
+
+        if self.isBinaryOperator("/") {
+            if case let .integerValue(leftIntValue) = leftOperandValue,
+               case let .integerValue(rightIntValue) = rightOperandValue {
+                return .evaluated(.integerValue(leftIntValue / rightIntValue))
+            }
+            if case let .floatValue(leftFloatValue) = leftOperandValue,
+               case let .floatValue(rightFloatValue) = rightOperandValue {
+                return .evaluated(.floatValue(leftFloatValue / rightFloatValue))
+            }
+        }
+
+        return .notEvaluated
+    }
+
+    func analyzeGenericExpression() -> ExpressionResult {
+        let literalResult = self.analyzePrimitiveLiteralExpression()
+
+       if literalResult == .dynamic {
+           if let infixExpression = self.as(InfixOperatorExprSyntax.self) {
+               return infixExpression.analyze()
+           }
+
+           if let tupleExpression = self.as(TupleExprSyntax.self) {
+               if let unwrappedExpression = tupleExpression.elementList.onlyElement?.expression {
+                   return unwrappedExpression.analyzeGenericExpression()
+               }
+           }
+
+           if let prefixExpression = self.as(PrefixOperatorExprSyntax.self) {
+               return prefixExpression.analyze()
+           }
+       }
+
+       return literalResult
+   }
 }
 
 private func evaluatesToFalse(_ result: ExpressionResult) -> Bool {
@@ -447,12 +446,41 @@ private func evaluateConstantPrefixExpression(
     return .notEvaluated
 }
 
-private func analyzePrefixExpression(_ expression: PrefixOperatorExprSyntax) -> ExpressionResult {
-    let operandStatus = analyzeGenericExpression(expression.postfixExpression)
+private extension PrefixOperatorExprSyntax {
+    func analyze() -> ExpressionResult {
+        let operandStatus = self.postfixExpression.analyzeGenericExpression()
 
-    if case let .evaluatedConstant(value) = operandStatus {
-        if let operatorText = expression.operatorToken?.text {
-            let result = evaluateConstantPrefixExpression(operatorText: operatorText, operand: value)
+        if case let .evaluatedConstant(value) = operandStatus {
+            if let operatorText = self.operatorToken?.text {
+                let result = evaluateConstantPrefixExpression(operatorText: operatorText, operand: value)
+
+                switch result {
+                case let .evaluated(value):
+                    return .evaluatedConstant(value)
+                case .notEvaluated:
+                    return .nonEvaluatedButConstant
+                }
+            }
+        }
+
+        if operandStatus == .alwaysEvaluatesToFalse || operandStatus == .nonEvaluatedButConstant {
+            return .nonEvaluatedButConstant
+        }
+
+        return .dynamic
+    }
+}
+
+private extension InfixOperatorExprSyntax {
+    func analyze() -> ExpressionResult {
+        let leftOperandStatus = self.leftOperand.analyzeGenericExpression()
+        let rightOperandStatus = self.rightOperand.analyzeGenericExpression()
+
+        if case let .evaluatedConstant(leftOperandValue) = leftOperandStatus,
+           case let .evaluatedConstant(rightOperandValue) = rightOperandStatus {
+            let result = self.operatorOperand.evaluateConstantInfixExpression(
+                leftOperandValue: leftOperandValue,
+                rightOperandValue: rightOperandValue)
 
             switch result {
             case let .evaluated(value):
@@ -461,55 +489,29 @@ private func analyzePrefixExpression(_ expression: PrefixOperatorExprSyntax) -> 
                 return .nonEvaluatedButConstant
             }
         }
-    }
 
-    if operandStatus == .alwaysEvaluatesToFalse || operandStatus == .nonEvaluatedButConstant {
-        return .nonEvaluatedButConstant
-    }
+        if self.operatorOperand.isLogicalAndOperator() {
+            if evaluatesToFalse(leftOperandStatus) {
+                return .alwaysEvaluatesToFalse
+            }
 
-    return .dynamic
-}
+            if evaluatesToFalse(rightOperandStatus) {
+                return .alwaysEvaluatesToFalse
+            }
+        }
 
-private func analyzeInfixExpression(_ expression: InfixOperatorExprSyntax) -> ExpressionResult {
-    let leftOperandStatus = analyzeGenericExpression(expression.leftOperand)
-    let rightOperandStatus = analyzeGenericExpression(expression.rightOperand)
-
-    if case let .evaluatedConstant(leftOperandValue) = leftOperandStatus,
-       case let .evaluatedConstant(rightOperandValue) = rightOperandStatus {
-        let result = evaluateConstantInfixExpression(
-            operatorExpression: expression.operatorOperand,
-            leftOperandValue: leftOperandValue,
-            rightOperandValue: rightOperandValue)
-
-        switch result {
-        case let .evaluated(value):
-            return .evaluatedConstant(value)
-        case .notEvaluated:
+        if leftOperandStatus != .dynamic && rightOperandStatus != .dynamic {
             return .nonEvaluatedButConstant
         }
+
+        return .dynamic
     }
-
-    if isLogicalAndOperator(expression.operatorOperand) {
-        if evaluatesToFalse(leftOperandStatus) {
-            return .alwaysEvaluatesToFalse
-        }
-
-        if evaluatesToFalse(rightOperandStatus) {
-            return .alwaysEvaluatesToFalse
-        }
-    }
-
-    if leftOperandStatus != .dynamic && rightOperandStatus != .dynamic {
-        return .nonEvaluatedButConstant
-    }
-
-    return .dynamic
 }
 
 private func analyzeCondition(_ condition: ConditionElementSyntax.Condition) -> ExpressionResult {
     switch condition {
     case let .expression(expression):
-        return analyzeGenericExpression(expression)
+        return expression.analyzeGenericExpression()
     default:
         return .dynamic
     }
@@ -534,7 +536,7 @@ private func isConstantConditionList(_ conditions: ConditionElementListSyntax) -
 }
 
 private func isConstantConditionExpression(_ condition: ExprSyntax) -> Bool {
-    let result = analyzeGenericExpression(condition)
+    let result = condition.analyzeGenericExpression()
 
     return result != .dynamic
 }

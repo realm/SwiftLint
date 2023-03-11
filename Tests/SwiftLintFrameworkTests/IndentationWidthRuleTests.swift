@@ -214,11 +214,9 @@ class IndentationWidthRuleTests: XCTestCase {
     private func countViolations(
         in example: Example,
         indentationWidth: Int? = nil,
-        // swiftlint:disable discouraged_optional_boolean
-        includeComments: Bool? = nil,
-        includeCompilerDirectives: Bool? = nil,
-        includeMultilineStrings: Bool? = nil,
-        // swiftlint:enable discouraged_optional_boolean
+        includeComments: Bool = true,
+        includeCompilerDirectives: Bool = true,
+        includeMultilineStrings: Bool = true,
         file: StaticString = #file,
         line: UInt = #line
     ) -> Int {
@@ -226,15 +224,9 @@ class IndentationWidthRuleTests: XCTestCase {
         if let indentationWidth {
             configDict["indentation_width"] = indentationWidth
         }
-        if let includeComments {
-            configDict["include_comments"] = includeComments
-        }
-        if let includeCompilerDirectives {
-            configDict["include_compiler_directives"] = includeCompilerDirectives
-        }
-        if let includeMultilineStrings {
-            configDict["include_multiline_strings"] = includeMultilineStrings
-        }
+        configDict["include_comments"] = includeComments
+        configDict["include_compiler_directives"] = includeCompilerDirectives
+        configDict["include_multiline_strings"] = includeMultilineStrings
 
         guard let config = makeConfig(configDict, IndentationWidthRule.description.identifier) else {
             XCTFail("Unable to create rule configuration.", file: (file), line: line)
@@ -248,11 +240,9 @@ class IndentationWidthRuleTests: XCTestCase {
         in string: String,
         equals expectedCount: Int,
         indentationWidth: Int? = nil,
-        // swiftlint:disable discouraged_optional_boolean
-        includeComments: Bool? = nil,
-        includeCompilerDirectives: Bool? = nil,
-        includeMultilineStrings: Bool? = nil,
-        // swiftlint:enable discouraged_optional_boolean
+        includeComments: Bool = true,
+        includeCompilerDirectives: Bool = true,
+        includeMultilineStrings: Bool = true,
         file: StaticString = #file,
         line: UInt = #line
     ) {
@@ -275,11 +265,9 @@ class IndentationWidthRuleTests: XCTestCase {
     private func assertNoViolation(
         in string: String,
         indentationWidth: Int? = nil,
-        // swiftlint:disable discouraged_optional_boolean
-        includeComments: Bool? = nil,
-        includeCompilerDirectives: Bool? = nil,
-        includeMultilineStrings: Bool? = nil,
-        // swiftlint:enable discouraged_optional_boolean
+        includeComments: Bool = true,
+        includeCompilerDirectives: Bool = true,
+        includeMultilineStrings: Bool = true,
         file: StaticString = #file,
         line: UInt = #line
     ) {
@@ -298,11 +286,9 @@ class IndentationWidthRuleTests: XCTestCase {
     private func assert1Violation(
         in string: String,
         indentationWidth: Int? = nil,
-        // swiftlint:disable discouraged_optional_boolean
-        includeComments: Bool? = nil,
-        includeCompilerDirectives: Bool? = nil,
-        includeMultilineStrings: Bool? = nil,
-        // swiftlint:enable discouraged_optional_boolean
+        includeComments: Bool = true,
+        includeCompilerDirectives: Bool = true,
+        includeMultilineStrings: Bool = true,
         file: StaticString = #file,
         line: UInt = #line
     ) {

@@ -20,11 +20,12 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var config = [String]()
     @Flag(name: [.long, .customLong("autocorrect")], help: "Correct violations whenever possible.")
     var fix = false
+
     @Flag(help: """
         Should reformat the Swift files using the same mechanism used by Xcode (via SourceKit).
         Only applied with `--fix`/`--autocorrect`.
         """)
-    var format = false
+    var format = false // swiftlint:disable:this let_var_whitespace - the multiline @Flag breaks us
     @Flag(help: "Use an alternative algorithm to exclude paths for `excluded`, which may be faster in some cases.")
     var useAlternativeExcluding = false
     @Flag(help: "Read SCRIPT_INPUT_FILE* environment variables as files.")

@@ -12,6 +12,7 @@ class ExtendedNSStringTests: XCTestCase {
                 "// do something\n" +                         // 16 characters
             "}\n" +
         "}"
+        // swiftlint:disable:next legacy_objc_type
         let string = NSString(string: contents)
         // A character placed on 80 offset indicates a white-space before 'do' at 5th line.
         if let lineAndCharacter = StringView(string).lineAndCharacter(forCharacterOffset: 80) {

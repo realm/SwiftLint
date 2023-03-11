@@ -49,6 +49,7 @@ struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
     }
 
     typealias ConfigurationType = MissingDocsRuleConfiguration
+
     var configuration: MissingDocsRuleConfiguration
 
     static let description = RuleDescription(

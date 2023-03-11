@@ -47,6 +47,7 @@ extension Configuration {
         Self.nestedConfigIsSelfByIdentifierLock.unlock()
     }
 
+    // swiftlint:disable:next discouraged_optional_boolean
     internal static func getIsNestedConfigurationSelf(forIdentifier identifier: String) -> Bool? {
         Self.nestedConfigIsSelfByIdentifierLock.lock()
         defer { Self.nestedConfigIsSelfByIdentifierLock.unlock() }

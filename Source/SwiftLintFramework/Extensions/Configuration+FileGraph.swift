@@ -56,6 +56,7 @@ public extension Configuration {
             )
         }
 
+        // swiftlint:disable:next discouraged_optional_boolean
         internal func includesFile(atPath path: String) -> Bool? {
             guard isBuilt else { return nil }
 

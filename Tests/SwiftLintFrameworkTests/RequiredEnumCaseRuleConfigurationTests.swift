@@ -1,6 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable:next balanced_xctest_lifecycle
 class RequiredEnumCaseRuleConfigurationTests: XCTestCase {
     private typealias RuleConfiguration = RequiredEnumCaseRuleConfiguration
     private typealias RequiredCase = RuleConfiguration.RequiredCase

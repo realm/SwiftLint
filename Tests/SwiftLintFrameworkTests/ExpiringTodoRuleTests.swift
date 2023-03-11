@@ -1,6 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable:next balanced_xctest_lifecycle
 class ExpiringTodoRuleTests: XCTestCase {
     private lazy var config: Configuration = makeConfiguration()
 
@@ -162,6 +163,7 @@ class ExpiringTodoRuleTests: XCTestCase {
 
         let daysToAdvance: Int
 
+        // swiftlint:disable optional_enum_case_matching
         switch status {
         case .approachingExpiry?:
             daysToAdvance = ruleConfiguration.approachingExpiryThreshold
@@ -170,6 +172,7 @@ class ExpiringTodoRuleTests: XCTestCase {
         case .badFormatting?, nil:
             daysToAdvance = ruleConfiguration.approachingExpiryThreshold + 1
         }
+        // swiftlint:enable optional_enum_case_matching
 
         return Calendar.current
             .date(

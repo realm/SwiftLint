@@ -8,17 +8,55 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
     static let description = RuleDescription(
         identifier: "unneeded_synthesized_initializer",
         name: "Unneeded Synthesized Initializer",
-        description: "An initializer will be synthesized automatically - you do not need to define one",
+        description: "This initializer would be synthesized automatically - you do not need to define it",
         kind: .lint,
         nonTriggeringExamples: [
+            Example("""
+                    public struct Foo {
+                        let bar: String
+
+                        // synthesized initializer would not be private
+                        private init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    struct Foo {
+                        let bar: String
+
+                        // synthesized initializer would not prepend "foo"
+                        init(bar: String) {
+                            self.bar = "foo" + bar
+                        }
+                    }
+                    """),
         ],
         triggeringExamples: [
             Example("""
                     internal struct Foo {
-                        let name: String
+                        let bar: String
 
-                       ↓init(name: String) {
-                            self.name = name
+                       ↓init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    struct Foo {
+                        let bar: String
+
+                       ↓init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    private struct Foo {
+                        let bar: String
+
+                       ↓init(bar: String) {
+                            self.bar = bar
                         }
                     }
                     """)

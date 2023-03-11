@@ -36,8 +36,7 @@ struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInR
                 Example("f(  i :   2) \(operation)   f (i: 3 )")
             ]
         } + [
-            // swiftlint:disable:next line_length
-            Example("func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>"),
+            Example("func evaluate(_ mode: CommandMode) -> Result<Options, CommandantError<CommandantError<()>>>"),
             Example("let array = Array<Array<Int>>()"),
             Example("guard Set(identifiers).count != identifiers.count else { return }"),
             Example(#"expect("foo") == "foo""#),

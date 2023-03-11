@@ -11,6 +11,7 @@ opt_in_rules:
   - all
 disabled_rules:
   - anonymous_argument_in_multiline_closure
+  - anyobject_protocol
   - closure_body_length
   - conditional_returns_on_newline
   - convenience_type
@@ -26,6 +27,7 @@ disabled_rules:
   - implicit_return
   - implicitly_unwrapped_optional
   - indentation_width
+  - inert_defer
   - missing_docs
   - multiline_arguments
   - multiline_arguments_brackets
@@ -45,6 +47,7 @@ disabled_rules:
   - switch_case_on_newline
   - trailing_closure
   - type_contents_order
+  - unused_capture_list
   - vertical_whitespace_between_cases
 
 attributes:

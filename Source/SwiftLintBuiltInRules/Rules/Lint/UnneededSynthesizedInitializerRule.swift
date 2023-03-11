@@ -12,11 +12,31 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
-                    public struct Foo {
+                    struct Foo {
                         let bar: String
 
                         // synthesized initializer would not be private
                         private init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    struct Foo {
+                        var bar: String
+
+                        // synthesized initializer would not be private
+                        private init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    struct Foo {
+                        let bar: String
+
+                        // synthesized initializer would not be fileprivate
+                        fileprivate init(bar: String) {
                             self.bar = bar
                         }
                     }
@@ -90,12 +110,21 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
                             self.bar = bar
                         }
                     }
-                    """)
+                    """),
         ],
         triggeringExamples: [
             Example("""
-                    internal struct Foo {
+                    struct Foo {
                         let bar: String
+
+                       ↓init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    struct Foo {
+                        var bar: String
 
                        ↓init(bar: String) {
                             self.bar = bar
@@ -113,6 +142,15 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
                     """),
             Example("""
                     private struct Foo {
+                        let bar: String
+
+                       ↓init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    fileprivate struct Foo {
                         let bar: String
 
                        ↓init(bar: String) {

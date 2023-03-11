@@ -121,6 +121,39 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
                             self.bar = bar
                         }
                     }
+                    """),
+            Example("""
+                    struct Foo {
+                        var foo: String
+                        var bar: String
+
+                        // init has no body
+                        init(foo: String, bar: String) {
+                        }
+                    }
+                    """),
+            Example("""
+                    struct Foo {
+                        var foo: String
+                        var bar: String
+
+                        // foo is not initialized
+                        init(foo: String, bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    struct Foo {
+                        var foo: String
+                        var bar: String
+
+                        // ordering of args is different from properties
+                        init(bar: String, foo: String) {
+                            self.foo = foo
+                            self.bar = bar
+                        }
+                    }
                     """)
         ],
         triggeringExamples: [
@@ -183,6 +216,17 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
                         private var bar: String
 
                        ↓private init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    struct Foo {
+                        var foo: String
+                        var bar: String
+
+                       ↓init(foo: String, bar: String) {
+                            self.foo = foo
                             self.bar = bar
                         }
                     }

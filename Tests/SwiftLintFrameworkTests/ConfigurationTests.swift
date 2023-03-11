@@ -67,9 +67,8 @@ class ConfigurationTests: XCTestCase {
         XCTAssertTrue(config.allowZeroLintableFiles)
     }
 
-    func testEnableAllRulesConfiguration() {
-        // swiftlint:disable:next force_try
-        let configuration = try! Configuration(
+    func testEnableAllRulesConfiguration() throws {
+        let configuration = try Configuration(
             dict: [:],
             ruleList: primaryRuleList,
             enableAllRules: true,
@@ -79,26 +78,24 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.rules.count, primaryRuleList.list.count)
     }
 
-    func testOnlyRules() {
+    func testOnlyRules() throws {
         let only = ["nesting", "todo"]
 
-        // swiftlint:disable:next force_try
-        let config = try! Configuration(dict: ["only_rules": only])
+        let config = try Configuration(dict: ["only_rules": only])
         let configuredIdentifiers = config.rules.map {
             type(of: $0).description.identifier
         }.sorted()
         XCTAssertEqual(only, configuredIdentifiers)
     }
 
-    func testOnlyRulesWithCustomRules() {
+    func testOnlyRulesWithCustomRules() throws {
         // All custom rules from a config file should be active if the `custom_rules` is included in the `only_rules`
         // As the behavior is different for custom rules from parent configs, this test is helpful
         let only = ["custom_rules"]
         let customRuleIdentifier = "my_custom_rule"
         let customRules = [customRuleIdentifier: ["name": "A name for this custom rule", "regex": "this is illegal"]]
 
-        // swiftlint:disable:next force_try
-        let config = try! Configuration(dict: ["only_rules": only, "custom_rules": customRules])
+        let config = try Configuration(dict: ["only_rules": only, "custom_rules": customRules])
         guard let resultingCustomRules = config.rules.first(where: { $0 is CustomRules }) as? CustomRules
             else {
             XCTFail("Custom rules are expected to be present")
@@ -111,15 +108,13 @@ class ConfigurationTests: XCTestCase {
         )
     }
 
-    func testWarningThreshold_value() {
-        // swiftlint:disable:next force_try
-        let config = try! Configuration(dict: ["warning_threshold": 5])
+    func testWarningThreshold_value() throws {
+        let config = try Configuration(dict: ["warning_threshold": 5])
         XCTAssertEqual(config.warningThreshold, 5)
     }
 
-    func testWarningThreshold_nil() {
-        // swiftlint:disable:next force_try
-        let config = try! Configuration(dict: [:])
+    func testWarningThreshold_nil() throws {
+        let config = try Configuration(dict: [:])
         XCTAssertNil(config.warningThreshold)
     }
 
@@ -142,9 +137,8 @@ class ConfigurationTests: XCTestCase {
         XCTAssertNil(configuration)
     }
 
-    func testDisabledRules() {
-        // swiftlint:disable:next force_try
-        let disabledConfig = try! Configuration(dict: ["disabled_rules": ["nesting", "todo"]])
+    func testDisabledRules() throws {
+        let disabledConfig = try Configuration(dict: ["disabled_rules": ["nesting", "todo"]])
         XCTAssertEqual(disabledConfig.rulesWrapper.disabledRuleIdentifiers,
                        ["nesting", "todo"],
                        "initializing Configuration with valid rules in Dictionary should succeed")
@@ -156,12 +150,11 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
 
-    func testDisabledRulesWithUnknownRule() {
+    func testDisabledRulesWithUnknownRule() throws {
         let validRule = "nesting"
         let bogusRule = "no_sprites_with_elf_shoes"
 
-        // swiftlint:disable:next force_try
-        let configuration = try! Configuration(dict: ["disabled_rules": [validRule, bogusRule]])
+        let configuration = try Configuration(dict: ["disabled_rules": [validRule, bogusRule]])
 
         XCTAssertEqual(configuration.rulesWrapper.disabledRuleIdentifiers,
                        [validRule],
@@ -351,21 +344,18 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: - Testing custom indentation
 
-    func testIndentationTabs() {
-        // swiftlint:disable:next force_try
-        let configuration = try! Configuration(dict: ["indentation": "tabs"])
+    func testIndentationTabs() throws {
+        let configuration = try Configuration(dict: ["indentation": "tabs"])
         XCTAssertEqual(configuration.indentation, .tabs)
     }
 
-    func testIndentationSpaces() {
-        // swiftlint:disable:next force_try
-        let configuration = try! Configuration(dict: ["indentation": 2])
+    func testIndentationSpaces() throws {
+        let configuration = try Configuration(dict: ["indentation": 2])
         XCTAssertEqual(configuration.indentation, .spaces(count: 2))
     }
 
-    func testIndentationFallback() {
-        // swiftlint:disable:next force_try
-        let configuration = try! Configuration(dict: ["indentation": "invalid"])
+    func testIndentationFallback() throws {
+        let configuration = try Configuration(dict: ["indentation": "invalid"])
         XCTAssertEqual(configuration.indentation, .spaces(count: 4))
     }
 
@@ -386,9 +376,8 @@ class ConfigurationTests: XCTestCase {
         XCTAssertTrue(rules == [RuleWithLevelsMock()])
     }
 
-    func testAllowZeroLintableFiles() {
-        // swiftlint:disable:next force_try
-        let configuration = try! Configuration(dict: ["allow_zero_lintable_files": true])
+    func testAllowZeroLintableFiles() throws {
+        let configuration = try Configuration(dict: ["allow_zero_lintable_files": true])
         XCTAssertTrue(configuration.allowZeroLintableFiles)
     }
 }

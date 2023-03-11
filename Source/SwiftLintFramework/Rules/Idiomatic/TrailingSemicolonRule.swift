@@ -16,7 +16,8 @@ struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule, ConfigurationProviderR
         ],
         triggeringExamples: [
             Example("let a = 0↓;\n"),
-            Example("let a = 0↓;\nlet b = 1\n")
+            Example("let a = 0↓;\nlet b = 1\n"),
+            Example("let a = 0↓; // a comment\n")
         ],
         corrections: [
             Example("let a = 0↓;\n"): Example("let a = 0\n"),

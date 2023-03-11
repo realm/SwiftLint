@@ -63,7 +63,7 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
                     """),
             Example("""
                     internal struct Foo {
-                        let bar: String = "foo"
+                        var bar: String = "foo"
 
                         // different default values
                         init(bar: String = "bar") {
@@ -71,7 +71,26 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProvide
                         }
                     }
                     """),
+            Example("""
+                    internal struct Foo {
+                        private static var bar: String
 
+                        // var is static
+                        init(bar: String) {
+                            Self.bar = bar
+                        }
+                    }
+                    """),
+            Example("""
+                    internal struct Foo {
+                        private var bar: String
+
+                        // var is private
+                        init(bar: String) {
+                            self.bar = bar
+                        }
+                    }
+                    """)
         ],
         triggeringExamples: [
             Example("""

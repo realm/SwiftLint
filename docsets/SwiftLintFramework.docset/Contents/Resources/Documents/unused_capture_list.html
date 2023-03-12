@@ -394,6 +394,13 @@
       <span class="nf">doSomething</span><span class="p">()</span>
 <span class="p">})</span><span class="o">.</span><span class="nf">disposed</span><span class="p">(</span><span class="nv">by</span><span class="p">:</span> <span class="n">disposeBag</span><span class="p">)</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">closure</span> <span class="o">=</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="k">in</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">self</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+    <span class="nf">someInstanceFunction</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="p">[</span><span class="err">↓</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="n">num</span> <span class="k">in</span>
     <span class="nf">print</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
@@ -424,6 +431,14 @@
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="p">{</span> <span class="p">[</span><span class="err">↓</span><span class="n">foo</span><span class="p">]</span> <span class="k">in</span> <span class="n">_</span> <span class="p">}()</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">closure</span> <span class="o">=</span> <span class="p">{</span> <span class="p">[</span><span class="err">↓</span><span class="k">weak</span> <span class="n">a</span><span class="p">]</span> <span class="k">in</span>
+    <span class="c1">// The new `a` immediatly shadows the captured `a` which thus isn't needed.</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">a</span> <span class="o">=</span> <span class="nf">getOptionalValue</span><span class="p">()</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+    <span class="nf">someInstanceFunction</span><span class="p">()</span>
+<span class="p">}</span>
 </code></pre>
 
           </div>

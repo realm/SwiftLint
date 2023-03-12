@@ -36,7 +36,7 @@ private extension TextTable {
         }
 
         var totalNumberOfViolations = 0
-        
+
         for ruleIdentifier in sortedRuleIdentifiers {
             guard let ruleIdentifier = ruleIdentifiersToViolationsMap[ruleIdentifier]?.first?.ruleIdentifier else {
                 continue
@@ -58,7 +58,7 @@ private extension TextTable {
                 "\(numberOfFiles)".leftPadded(count: numberOfFileHeader.count)
             ])
         }
-        
+
         let totalNumberOfFiles = Set(violations.map { $0.location.file }).count
         addRow(values: [
             "Total",

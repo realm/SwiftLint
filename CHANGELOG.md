@@ -147,6 +147,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4548](https://github.com/realm/SwiftLint/issues/4548)
 
+* Stop triggering `unused_capture_list` on captured variable that is only
+  referenced by a shorthand optional binding (`if let capturedVar { ... }`).  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4804](https://github.com/realm/SwiftLint/issues/4804)
+
 * Ensure that negative literals in initializers do not trigger
   `no_magic_numbers` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

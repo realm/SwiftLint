@@ -91,6 +91,14 @@ struct UnusedCaptureListRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInR
             rx.onViewDidAppear.subscribe(onNext: { [unowned self] in
                   doSomething()
             }).disposed(by: disposeBag)
+            """),
+            Example("""
+            let closure = { [weak self] in
+                guard let self else {
+                    return
+                }
+                someInstanceFunction()
+            }
             """)
         ],
         triggeringExamples: [
@@ -128,7 +136,16 @@ struct UnusedCaptureListRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInR
                 }
             }
             """),
-            Example("{ [↓foo] in _ }()")
+            Example("{ [↓foo] in _ }()"),
+            Example("""
+            let closure = { [↓weak a] in
+                // The new `a` immediatly shadows the captured `a` which thus isn't needed.
+                guard let a = getOptionalValue() else {
+                    return
+                }
+                someInstanceFunction()
+            }
+            """)
         ]
     )
 
@@ -199,7 +216,20 @@ private final class IdentifierReferenceVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: IdentifierExprSyntax) {
-        let name = node.identifier.text
+        collectReference(by: node.identifier)
+    }
+
+    override func visitPost(_ node: IdentifierPatternSyntax) {
+        // Optional bindings without an initializer like `if let self { ... }` reference the captured `self`
+        // implicitly. This is handled in here. If we have `if let self = self { ... }` the initializer `self`
+        // is handled in the `IdentifierExprSyntax` case above.
+        if let binding = node.parent?.as(OptionalBindingConditionSyntax.self), binding.initializer == nil {
+            collectReference(by: node.identifier)
+        }
+    }
+
+    private func collectReference(by token: TokenSyntax) {
+        let name = token.text
         if identifiersToSearch.contains(name) {
             foundIdentifiers.insert(name)
         }

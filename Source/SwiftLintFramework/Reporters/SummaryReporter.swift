@@ -12,7 +12,15 @@ public struct SummaryReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        TextTable(violations: violations).render()
+        var table = TextTable(violations: violations).render()
+        if violations.isEmpty == false {
+            var lines = table.components(separatedBy: "\n")
+            if lines.count >= 2, let lastLine = lines.last {
+                lines.insert(lastLine, at: lines.count - 2)
+            }
+            table = lines.joined(separator: "\n")
+        }
+        return table
     }
 }
 

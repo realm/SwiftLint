@@ -40,7 +40,14 @@ private extension TextTable {
 
         let ruleIdentifiersToViolationsMap = violations.group { $0.ruleIdentifier }
         let sortedRuleIdentifiers = ruleIdentifiersToViolationsMap.keys.sorted {
-            (ruleIdentifiersToViolationsMap[$0]?.count ?? 0) > (ruleIdentifiersToViolationsMap[$1]?.count ?? 0)
+            let count1 = ruleIdentifiersToViolationsMap[$0]?.count ?? 0
+            let count2 = ruleIdentifiersToViolationsMap[$1]?.count ?? 0
+            if count1 > count2 {
+                return true
+            } else if count1 == count2 {
+                return $0 < $1
+            }
+            return false
         }
 
         var totalNumberOfViolations = 0
@@ -56,7 +63,8 @@ private extension TextTable {
 
             let numberOfViolations = ruleIdentifiersToViolationsMap[ruleIdentifier]?.count ?? 0
             totalNumberOfViolations += numberOfViolations
-            let numberOfFiles = Set((ruleIdentifiersToViolationsMap[ruleIdentifier] ?? []).map { $0.location.file }).count
+            let ruleViolations = ruleIdentifiersToViolationsMap[ruleIdentifier] ?? []
+            let numberOfFiles = Set(ruleViolations.map { $0.location.file }).count
 
             addRow(values: [
                 ruleIdentifier,

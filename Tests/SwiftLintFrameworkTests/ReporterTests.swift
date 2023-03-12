@@ -18,6 +18,7 @@ class ReporterTests: XCTestCase {
             MarkdownReporter.self,
             RelativePathReporter.self,
             SonarQubeReporter.self,
+            SummaryReporter.self,
             XcodeReporter.self
         ]
         for reporter in reporters {
@@ -154,5 +155,12 @@ class ReporterTests: XCTestCase {
         let result = RelativePathReporter.generateReport([violation])
         XCTAssertFalse(result.contains(absolutePath))
         XCTAssertTrue(result.contains(relativePath))
+    }
+
+    func testSummaryReporter() {
+        let expectedOutput = stringFromFile("CannedSummaryReporterOutput.txt")
+            .trimmingTrailingCharacters(in: .whitespacesAndNewlines)
+        let result = SummaryReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
     }
 }

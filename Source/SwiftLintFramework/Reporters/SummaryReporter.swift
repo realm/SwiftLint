@@ -1,10 +1,10 @@
 import SwiftyTextTable
 
 /// Reports a summary table of all violations
-public struct SummaryTableReporter: Reporter {
+public struct SummaryReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "summary-table"
+    public static let identifier = "summary"
     public static let isRealtime = false
 
     public var description: String {

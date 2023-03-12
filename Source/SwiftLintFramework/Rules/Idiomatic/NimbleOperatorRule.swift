@@ -114,12 +114,10 @@ struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule
                 return false
             }
 
-            let containsCall = file.structureDictionary.structures(forByteOffset: byteRange.upperBound - 1)
+            return file.structureDictionary.structures(forByteOffset: byteRange.upperBound - 1)
                 .contains(where: { dict -> Bool in
                     return dict.expressionKind == .call && (dict.name ?? "").starts(with: "expect")
                 })
-
-            return containsCall
         }
     }
 

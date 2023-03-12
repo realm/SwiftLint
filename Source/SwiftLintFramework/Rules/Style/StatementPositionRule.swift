@@ -179,9 +179,7 @@ private extension StatementPositionRule {
         let validator = Self.uncuddledMatchValidator(contents: contents)
         let filterMatches = Self.uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 
-        let validMatches = matches.compactMap(validator).filter(filterMatches).map({ $0.range })
-
-        return validMatches
+        return matches.compactMap(validator).filter(filterMatches).map({ $0.range })
     }
 
     func uncuddledCorrect(file: SwiftLintFile) -> [Correction] {

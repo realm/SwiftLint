@@ -153,7 +153,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                     @usableFromInline
                     let parent: Metadata
 
-                    @inlinable
+                    @inlinable // inlinable
                     init(index: Int, parent: Metadata) {
                        self.index = index
                        self.parent = parent
@@ -233,6 +233,15 @@ enum UnneededSynthesizedInitializerRuleExamples {
 
                    ↓init(foo: String, bar: String) {
                         self.foo = foo
+                        self.bar = bar
+                    }
+                }
+                """),
+        Example("""
+                internal struct Foo {
+                    var bar: String
+
+                   ↓internal init(bar: String) {
                         self.bar = bar
                     }
                 }

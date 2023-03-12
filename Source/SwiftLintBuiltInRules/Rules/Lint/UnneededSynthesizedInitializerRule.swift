@@ -1,3 +1,4 @@
+// swiftlint:disable file_header
 //
 // Adapted from swift-format's UseSynthesizedInitializer.swift
 //

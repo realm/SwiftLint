@@ -197,16 +197,14 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
 }
 
 private extension ModifierListSyntax {
-    var accessLevelModifier: DeclModifierSyntax? {
-        for modifier in self {
-            switch modifier.name.tokenKind {
-            case .keyword(.public), .keyword(.private), .keyword(.fileprivate), .keyword(.internal):
-                return modifier
-            default:
-                continue
-            }
-        }
-        return nil
+    var accessLevelModifier: DeclModifierSyntax? { first { $0.isAccessLevelModifier } }
+}
+
+private extension DeclModifierSyntax {
+    var isAccessLevelModifier: Bool {
+        let tokenKind = name.tokenKind
+        return tokenKind == .keyword(.public) || tokenKind == .keyword(.private) ||
+               tokenKind == .keyword(.fileprivate) || tokenKind == .keyword(.internal)
     }
 }
 
@@ -225,12 +223,10 @@ private extension VariableDeclSyntax {
         return ids
     }
 
-    var firstIdentifier: IdentifierPatternSyntax {
-        identifiers[0]
-    }
+    var firstIdentifier: IdentifierPatternSyntax { identifiers[0] }
 }
 
-/// Defines the access levels which may be assigned to a synthesized memberwise initializer.
+// Defines the access levels which may be assigned to a synthesized memberwise initializer.
 private enum AccessLevel {
     case `internal`
     case `fileprivate`

@@ -165,7 +165,7 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
     /// Compares the actual access level of an initializer with the access level of a synthesized
     /// memberwise initializer.
     private func initializerModifiers(_ modifiers: ModifierListSyntax?, match storedProperties: [VariableDeclSyntax]) -> Bool {
-        let synthesizedAccessLevel = synthesizedInitAccessLevel(using: storedProperties)
+        let synthesizedAccessLevel = synthesizedInitializerAccessLevel(using: storedProperties)
         let accessLevel = modifiers?.accessLevelModifier
         switch synthesizedAccessLevel {
         case .internal:
@@ -229,18 +229,11 @@ private enum AccessLevel {
     case `private`
 }
 
-/// Computes the access level which would be applied to the synthesized memberwise initializer of
-/// a struct that contains the given properties.
-///
-/// The rules for default memberwise initializer access levels are defined in The Swift
-/// Programming Languge:
-/// https://docs.swift.org/swift-book/LanguageGuide/AccessControl.html#ID21
-///
-/// - Parameter properties: The properties contained within the struct.
-/// - Returns: The synthesized memberwise initializer's access level.
-private func synthesizedInitAccessLevel(using properties: [VariableDeclSyntax]) -> AccessLevel {
+// See https://docs.swift.org/swift-book/LanguageGuide/AccessControl.html#ID21
+// for the rules defining default memberwise initializer access levels
+private func synthesizedInitializerAccessLevel(using storedProperties: [VariableDeclSyntax]) -> AccessLevel {
     var hasFileprivate = false
-    for property in properties {
+    for property in storedProperties {
         guard let modifiers = property.modifiers else { continue }
 
         // Private takes precedence, so finding 1 private property defines the access level.

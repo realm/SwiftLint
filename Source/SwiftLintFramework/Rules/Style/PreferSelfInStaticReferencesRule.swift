@@ -305,12 +305,12 @@ private class Visitor: ViolationsSyntaxVisitor {
 
     override func visitPost(_ node: IdentifierExprSyntax) {
         guard let parent = node.parent,
-              parent.as(SpecializeExprSyntax.self) == nil,
-              parent.as(DictionaryElementSyntax.self) == nil,
-              parent.as(ArrayElementSyntax.self) == nil else {
+              !parent.is(SpecializeExprSyntax.self),
+              !parent.is(DictionaryElementSyntax.self),
+              !parent.is(ArrayElementSyntax.self) else {
             return
         }
-        if parent.as(FunctionCallExprSyntax.self) != nil, case .likeClass(_, false) = parentDeclScopes.last {
+        if parent.is(FunctionCallExprSyntax.self), case .likeClass(_, false) = parentDeclScopes.last {
             return
         }
         addViolation(on: node.identifier)
@@ -362,7 +362,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
-        if node.parent?.as(KeyPathExprSyntax.self) != nil {
+        if node.parent?.is(KeyPathExprSyntax.self) == true {
             addViolation(on: node.name)
         }
     }

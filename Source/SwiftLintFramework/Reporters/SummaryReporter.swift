@@ -13,15 +13,7 @@ public struct SummaryReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        var table = TextTable(violations: violations).render()
-        if violations.isEmpty == false {
-            var lines = table.components(separatedBy: "\n")
-            if lines.count >= 2, let lastLine = lines.last {
-                lines.insert(lastLine, at: lines.count - 2)
-            }
-            table = lines.joined(separator: "\n")
-        }
-        return table
+        TextTable(violations: violations).renderWithExtraSeparator()
     }
 }
 
@@ -34,6 +26,7 @@ private extension TextTable {
             TextTableColumn(header: "identifier"),
             TextTableColumn(header: "opt-in"),
             TextTableColumn(header: "correctable"),
+            TextTableColumn(header: "custom"),
             TextTableColumn(header: numberOfViolationHeader),
             TextTableColumn(header: numberOfFileHeader)
         ]
@@ -57,10 +50,11 @@ private extension TextTable {
             guard let ruleIdentifier = ruleIdentifiersToViolationsMap[ruleIdentifier]?.first?.ruleIdentifier else {
                 continue
             }
-            guard let ruleType = builtInRules.first(where: { $0.description.identifier == ruleIdentifier }) else {
-                continue
+
+            var rule: Rule?
+            if let ruleType = builtInRules.first(where: { $0.description.identifier == ruleIdentifier }) {
+                rule = ruleType.init()
             }
-            let rule = ruleType.init()
 
             let numberOfViolations = ruleIdentifiersToViolationsMap[ruleIdentifier]?.count ?? 0
             totalNumberOfViolations += numberOfViolations
@@ -69,8 +63,9 @@ private extension TextTable {
 
             addRow(values: [
                 ruleIdentifier,
-                (rule is OptInRule) ? "yes" : "no",
-                (rule is CorrectableRule) ? "yes" : "no",
+                rule is OptInRule ? "yes" : "no",
+                rule is CorrectableRule ? "yes" : "no",
+                rule == nil ? "yes" : "no",
                 numberOfViolations.formattedString.leftPadded(count: numberOfViolationHeader.count),
                 numberOfFiles.formattedString.leftPadded(count: numberOfFileHeader.count)
             ])
@@ -81,9 +76,20 @@ private extension TextTable {
             "Total",
             "",
             "",
+            "",
             totalNumberOfViolations.formattedString.leftPadded(count: numberOfViolationHeader.count),
             totalNumberOfFiles.formattedString.leftPadded(count: numberOfFileHeader.count)
         ])
+    }
+
+    func renderWithExtraSeparator() -> String {
+        var output = render()
+        var lines = output.components(separatedBy: "\n")
+        if lines.count > 5, let lastLine = lines.last {
+            lines.insert(lastLine, at: lines.count - 2)
+            output = lines.joined(separator: "\n")
+        }
+        return output
     }
 }
 

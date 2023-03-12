@@ -1,3 +1,4 @@
+import Foundation
 import SwiftyTextTable
 
 /// Reports a summary table of all violations
@@ -70,8 +71,8 @@ private extension TextTable {
                 ruleIdentifier,
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
-                "\(numberOfViolations)".leftPadded(count: numberOfViolationHeader.count),
-                "\(numberOfFiles)".leftPadded(count: numberOfFileHeader.count)
+                numberOfViolations.formattedString.leftPadded(count: numberOfViolationHeader.count),
+                numberOfFiles.formattedString.leftPadded(count: numberOfFileHeader.count)
             ])
         }
 
@@ -80,8 +81,8 @@ private extension TextTable {
             "Total",
             "",
             "",
-            "\(totalNumberOfViolations)".leftPadded(count: numberOfViolationHeader.count),
-            "\(totalNumberOfFiles)".leftPadded(count: numberOfFileHeader.count)
+            totalNumberOfViolations.formattedString.leftPadded(count: numberOfViolationHeader.count),
+            totalNumberOfFiles.formattedString.leftPadded(count: numberOfFileHeader.count)
         ])
     }
 }
@@ -89,5 +90,16 @@ private extension TextTable {
 private extension String {
     func leftPadded(count: Int) -> String {
         String(repeating: " ", count: count - self.count) + self
+    }
+}
+
+private extension Int {
+    private static var numberFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        return numberFormatter
+    }()
+    var formattedString: String {
+        Int.numberFormatter.string(from: NSNumber(value: self)) ?? ""
     }
 }

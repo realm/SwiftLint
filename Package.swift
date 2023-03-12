@@ -61,7 +61,7 @@ let package = Package(
         ),
         .target(
             name: "SwiftLintFramework",
-            dependencies: frameworkDependencies
+            dependencies: frameworkDependencies + ["SwiftyTextTable"]
         ),
         .target(
             name: "SwiftLintTestHelpers",

@@ -20,11 +20,13 @@ public struct SummaryTableReporter: Reporter {
 private extension TextTable {
     init(violations: [StyleViolation]) {
         let numberOfViolationHeader = "number of violations"
+        let numberOfFileHeader = "number of files"
         let columns = [
             TextTableColumn(header: "identifier"),
             TextTableColumn(header: "opt-in"),
             TextTableColumn(header: "correctable"),
-            TextTableColumn(header: numberOfViolationHeader)
+            TextTableColumn(header: numberOfViolationHeader),
+            TextTableColumn(header: numberOfFileHeader)
         ]
         self.init(columns: columns)
 
@@ -33,8 +35,7 @@ private extension TextTable {
         let sortedRuleIdentifiers = ruleIdentifiers.sorted {
             (ruleIdentifiersToViolationsMap[$0]?.count ?? 0) > (ruleIdentifiersToViolationsMap[$1]?.count ?? 0)
         }
-        let numberOfViolationsColumnWidth = numberOfViolationHeader.count
-        
+
         for ruleIdentifier in sortedRuleIdentifiers {
             guard let ruleIdentifier = ruleIdentifiersToViolationsMap[ruleIdentifier]?.first?.ruleIdentifier else {
                 continue
@@ -44,14 +45,16 @@ private extension TextTable {
             }
             let rule = ruleType.init()
 
-            let count = ruleIdentifiersToViolationsMap[ruleIdentifier]?.count ?? 0
-            let countString = "\(count)"
-            
+            let numberOfViolationsString = "\(ruleIdentifiersToViolationsMap[ruleIdentifier]?.count ?? 0)"
+            let setOfFiles = Set((ruleIdentifiersToViolationsMap[ruleIdentifier] ?? []).map { $0.location.file })
+            let numberOfFilesString = "\(setOfFiles.count)"
+
             addRow(values: [
                 ruleIdentifier,
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
-                String(repeating: " ", count: numberOfViolationsColumnWidth - countString.count) + countString
+                numberOfViolationsString.leftPadded(count: numberOfViolationHeader.count)
+                numberOfFilesString.leftPadded(count: numberOfFileHeader.count)
             ])
         }
     }
@@ -68,5 +71,11 @@ private extension TextTable {
             }
         }
         return map
+    }
+}
+
+private extension String {
+    func leftPadded(count: Int) -> String {
+        String(repeating: " ", count: count - self.count) + self
     }
 }

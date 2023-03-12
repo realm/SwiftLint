@@ -137,9 +137,8 @@ public struct SourceKittenDictionary {
     /// The fully preserved SourceKitten dictionaries for all the attributes associated with this dictionary.
     var swiftAttributes: [SourceKittenDictionary] {
         let array = value["key.attributes"] as? [SourceKitRepresentable] ?? []
-        let dictionaries = array.compactMap { $0 as? [String: SourceKitRepresentable] }
+        return array.compactMap { $0 as? [String: SourceKitRepresentable] }
             .map(Self.init)
-        return dictionaries
     }
 
     var elements: [SourceKittenDictionary] {

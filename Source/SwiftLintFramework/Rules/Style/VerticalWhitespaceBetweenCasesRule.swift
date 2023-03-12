@@ -132,8 +132,7 @@ struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
 
         let matchFirstRange = matchResult.range(at: 1)
         let matchFirstString = substring.substring(from: matchFirstRange.location, length: matchFirstRange.length)
-        let isAllWhitespace = matchFirstString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        return isAllWhitespace
+        return matchFirstString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
 

@@ -270,13 +270,12 @@ extension SwiftLintFile {
     internal func ruleEnabled(violatingRanges: [NSRange], for rule: Rule) -> [NSRange] {
         let fileRegions = regions()
         if fileRegions.isEmpty { return violatingRanges }
-        let violatingRanges = violatingRanges.filter { range in
+        return violatingRanges.filter { range in
             let region = fileRegions.first {
                 $0.contains(Location(file: self, characterOffset: range.location))
             }
             return region?.isRuleEnabled(rule) ?? true
         }
-        return violatingRanges
     }
 
     internal func ruleEnabled(violatingRange: NSRange, for rule: Rule) -> NSRange? {

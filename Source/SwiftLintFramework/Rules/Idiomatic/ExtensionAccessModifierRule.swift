@@ -157,9 +157,7 @@ struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, OptInRul
             // attributeBuiltin (`final` for example) tokens between them
             let length = typeOffset - previousInternalByteRange.location
             let range = ByteRange(location: previousInternalByteRange.location, length: length)
-            let internalBelongsToType = Set(file.syntaxMap.kinds(inByteRange: range)) == [.attributeBuiltin]
-
-            return internalBelongsToType
+            return Set(file.syntaxMap.kinds(inByteRange: range)) == [.attributeBuiltin]
         }
 
         return violationOffsets.map {

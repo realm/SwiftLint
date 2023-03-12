@@ -234,9 +234,8 @@ struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         }
 
         if let indexRange = contents.nsrangeToIndexRange(adjustedRange) {
-            let correctedContents = contents
+            return contents
                 .replacingCharacters(in: indexRange, with: correctString)
-            return correctedContents
         } else {
             return contents
         }

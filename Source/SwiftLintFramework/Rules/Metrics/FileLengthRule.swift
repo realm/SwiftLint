@@ -23,10 +23,9 @@ struct FileLengthRule: ConfigurationProviderRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         func lineCountWithoutComments() -> Int {
             let commentKinds = SyntaxKind.commentKinds
-            let lineCount = file.syntaxKindsByLines.filter { kinds in
+            return file.syntaxKindsByLines.filter { kinds in
                 return !Set(kinds).isSubset(of: commentKinds)
             }.count
-            return lineCount
         }
 
         var lineCount = file.lines.count

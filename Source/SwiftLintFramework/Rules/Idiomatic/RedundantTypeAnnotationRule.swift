@@ -110,7 +110,7 @@ struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule, Conf
     }
 
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let violatingRanges = file
+        return file
             .match(pattern: expressionPattern)
             .filter {
                 $0.1 == [.keyword, .identifier, .typeidentifier, .identifier] ||
@@ -122,8 +122,6 @@ struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule, Conf
                 file.match(pattern: typeAnnotationPattern,
                            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds, range: $0.0).first
             }
-
-        return violatingRanges
     }
 
     private func isFalsePositive(file: SwiftLintFile, range: NSRange) -> Bool {

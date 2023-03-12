@@ -205,11 +205,9 @@ extension ClosureEndIndentationRule {
             closureArguments.removeLast()
         }
 
-        let argumentViolations = closureArguments.compactMap { dictionary in
+        return closureArguments.compactMap { dictionary in
             return validateClosureArgument(in: file, dictionary: dictionary)
         }
-
-        return argumentViolations
     }
 
     private func validateClosureArgument(in file: SwiftLintFile,

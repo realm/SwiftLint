@@ -65,13 +65,12 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         for initializer in initializers {
             guard
                 matchesPropertyList(
-                    parameters: initializer.signature.input.parameterList,
-                    properties: storedProperties)
+                    intializerParameters: initializer.signature.input.parameterList,
+                    storedProperties: storedProperties
+                )
             else { continue }
             guard
-                matchesAssignmentBody(
-                    variables: storedProperties,
-                    initBody: initializer.body)
+                matchesAssignmentBody(initializerBody: initializer.body, storedProperties: storedProperties)
             else { continue }
             guard matchesAccessLevel(modifiers: initializer.modifiers, properties: storedProperties)
             else { continue }
@@ -80,39 +79,18 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         }
         return extraneousInitializers
     }
-
-    /// Compares the actual access level of an initializer with the access level of a synthesized
-    /// memberwise initializer.
-    ///
-    /// - Parameters:
-    ///   - modifiers: The modifier list from the initializer.
-    ///   - properties: The properties from the enclosing type.
-    /// - Returns: Whether the initializer has the same access level as the synthesized initializer.
-    private func matchesAccessLevel(modifiers: ModifierListSyntax?, properties: [VariableDeclSyntax]) -> Bool {
-        let synthesizedAccessLevel = synthesizedInitAccessLevel(using: properties)
-        let accessLevel = modifiers?.accessLevelModifier
-        switch synthesizedAccessLevel {
-        case .internal:
-            // No explicit access level or internal are equivalent.
-            return accessLevel == nil || accessLevel!.name.tokenKind == .keyword(.internal)
-        case .fileprivate:
-            return accessLevel != nil && accessLevel!.name.tokenKind == .keyword(.fileprivate)
-        case .private:
-            return accessLevel != nil && accessLevel!.name.tokenKind == .keyword(.private)
-        }
-    }
-
+    
     // Compares initializer parameters to stored properties of the struct
     private func matchesPropertyList(
-        parameters: FunctionParameterListSyntax,
-        properties: [VariableDeclSyntax]
+        intializerParameters: FunctionParameterListSyntax,
+        storedProperties: [VariableDeclSyntax]
     ) -> Bool {
-        guard parameters.count == properties.count else { return false }
-        for (idx, parameter) in parameters.enumerated() {
+        guard intializerParameters.count == storedProperties.count else { return false }
+        for (idx, parameter) in intializerParameters.enumerated() {
             guard let paramId = parameter.firstName, parameter.secondName == nil else { return false }
             guard let paramType = parameter.type else { return false }
 
-            let property = properties[idx]
+            let property = storedProperties[idx]
             let propertyId = property.firstIdentifier
             guard let propertyType = property.bindings.first?.typeAnnotation?.type else { return false }
 
@@ -140,14 +118,14 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
 
     // Evaluates if all, and only, the stored properties are initialized in the body
     private func matchesAssignmentBody( // swiftlint:disable:this cyclomatic_complexity
-        variables: [VariableDeclSyntax],
-        initBody: CodeBlockSyntax?
+        initializerBody: CodeBlockSyntax?,
+        storedProperties: [VariableDeclSyntax]
     ) -> Bool {
-        guard let initBody else { return false }
-        guard variables.count == initBody.statements.count else { return false }
+        guard let initializerBody else { return false }
+        guard storedProperties.count == initializerBody.statements.count else { return false }
 
         var statements: [String] = []
-        for statement in initBody.statements {
+        for statement in initializerBody.statements {
             guard let exp = statement.item.as(SequenceExprSyntax.self) else { return false }
             var leftName = ""
             var rightName = ""
@@ -173,13 +151,29 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
             statements.append(leftName)
         }
 
-        for variable in variables {
+        for variable in storedProperties {
             let id = variable.firstIdentifier.identifier.text
             guard statements.contains(id) else { return false }
             guard let idx = statements.firstIndex(of: id) else { return false }
             statements.remove(at: idx)
         }
         return statements.isEmpty
+    }
+
+    /// Compares the actual access level of an initializer with the access level of a synthesized
+    /// memberwise initializer.
+    private func matchesAccessLevel(modifiers: ModifierListSyntax?, properties: [VariableDeclSyntax]) -> Bool {
+        let synthesizedAccessLevel = synthesizedInitAccessLevel(using: properties)
+        let accessLevel = modifiers?.accessLevelModifier
+        switch synthesizedAccessLevel {
+        case .internal:
+            // No explicit access level or internal are equivalent.
+            return accessLevel == nil || accessLevel!.name.tokenKind == .keyword(.internal)
+        case .fileprivate:
+            return accessLevel != nil && accessLevel!.name.tokenKind == .keyword(.fileprivate)
+        case .private:
+            return accessLevel != nil && accessLevel!.name.tokenKind == .keyword(.private)
+        }
     }
 }
 

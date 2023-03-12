@@ -53,7 +53,7 @@ private extension TextTable {
                 ruleIdentifier,
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
-                numberOfViolationsString.leftPadded(count: numberOfViolationHeader.count)
+                numberOfViolationsString.leftPadded(count: numberOfViolationHeader.count),
                 numberOfFilesString.leftPadded(count: numberOfFileHeader.count)
             ])
         }

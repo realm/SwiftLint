@@ -64,29 +64,31 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         var extraneousInitializers = [InitializerDeclSyntax]()
         for initializer in initializers {
             guard
-                matchesPropertyList(
-                    intializerParameters: initializer.signature.input.parameterList,
-                    storedProperties: storedProperties
-                )
-            else { continue }
-            guard
-                matchesAssignmentBody(initializerBody: initializer.body, storedProperties: storedProperties)
-            else { continue }
-            guard matchesAccessLevel(modifiers: initializer.modifiers, properties: storedProperties)
-            else { continue }
-            guard initializer.isInlinable == false else { continue }
+                initializerParameters(initializer.signature.input.parameterList, match: storedProperties)
+            else {
+                continue
+            }
+            guard initializerBody(initializer.body, matches: storedProperties) else {
+                continue
+            }
+            guard initializerModifiers(initializer.modifiers, match: storedProperties) else {
+                continue
+            }
+            guard initializer.isInlinable == false else {
+                continue
+            }
             extraneousInitializers.append(initializer)
         }
         return extraneousInitializers
     }
-    
+
     // Compares initializer parameters to stored properties of the struct
-    private func matchesPropertyList(
-        intializerParameters: FunctionParameterListSyntax,
-        storedProperties: [VariableDeclSyntax]
+    private func initializerParameters(
+        _ initializerParameters: FunctionParameterListSyntax,
+        match storedProperties: [VariableDeclSyntax]
     ) -> Bool {
-        guard intializerParameters.count == storedProperties.count else { return false }
-        for (idx, parameter) in intializerParameters.enumerated() {
+        guard initializerParameters.count == storedProperties.count else { return false }
+        for (idx, parameter) in initializerParameters.enumerated() {
             guard let paramId = parameter.firstName, parameter.secondName == nil else { return false }
             guard let paramType = parameter.type else { return false }
 
@@ -117,9 +119,9 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
     }
 
     // Evaluates if all, and only, the stored properties are initialized in the body
-    private func matchesAssignmentBody( // swiftlint:disable:this cyclomatic_complexity
-        initializerBody: CodeBlockSyntax?,
-        storedProperties: [VariableDeclSyntax]
+    private func initializerBody( // swiftlint:disable:this cyclomatic_complexity
+        _ initializerBody: CodeBlockSyntax?,
+        matches storedProperties: [VariableDeclSyntax]
     ) -> Bool {
         guard let initializerBody else { return false }
         guard storedProperties.count == initializerBody.statements.count else { return false }
@@ -162,8 +164,8 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
 
     /// Compares the actual access level of an initializer with the access level of a synthesized
     /// memberwise initializer.
-    private func matchesAccessLevel(modifiers: ModifierListSyntax?, properties: [VariableDeclSyntax]) -> Bool {
-        let synthesizedAccessLevel = synthesizedInitAccessLevel(using: properties)
+    private func initializerModifiers(_ modifiers: ModifierListSyntax?, match storedProperties: [VariableDeclSyntax]) -> Bool {
+        let synthesizedAccessLevel = synthesizedInitAccessLevel(using: storedProperties)
         let accessLevel = modifiers?.accessLevelModifier
         switch synthesizedAccessLevel {
         case .internal:

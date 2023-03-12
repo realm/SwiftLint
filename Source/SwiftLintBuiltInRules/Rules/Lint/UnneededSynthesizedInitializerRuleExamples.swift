@@ -149,10 +149,10 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 public struct Field {
                     @usableFromInline
                     let index: Int
-                  
+
                     @usableFromInline
                     let parent: Metadata
-                  
+
                     @inlinable
                     init(index: Int, parent: Metadata) {
                        self.index = index

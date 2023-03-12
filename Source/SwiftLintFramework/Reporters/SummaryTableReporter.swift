@@ -19,11 +19,12 @@ public struct SummaryTableReporter: Reporter {
 // MARK: - SwiftyTextTable
 private extension TextTable {
     init(violations: [StyleViolation]) {
+        let numberOfViolationHeader = "number of violations"
         let columns = [
             TextTableColumn(header: "identifier"),
             TextTableColumn(header: "opt-in"),
             TextTableColumn(header: "correctable"),
-            TextTableColumn(header: "number of violations")
+            TextTableColumn(header: numberOfViolationHeader)
         ]
         self.init(columns: columns)
 
@@ -32,7 +33,7 @@ private extension TextTable {
         let sortedRuleIdentifiers = ruleIdentifiers.sorted {
             (ruleIdentifiersToViolationsMap[$0]?.count ?? 0) > (ruleIdentifiersToViolationsMap[$1]?.count ?? 0)
         }
-        let numberOfViolationsColumnWidth = columns[3].header.count
+        let numberOfViolationsColumnWidth = numberOfViolationHeader.count
         
         for ruleIdentifier in sortedRuleIdentifiers {
             guard let ruleIdentifier = ruleIdentifiersToViolationsMap[ruleIdentifier]?.first?.ruleIdentifier else {
@@ -50,7 +51,7 @@ private extension TextTable {
                 ruleIdentifier,
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
-                countString.padding(toLength: numberOfViolationsColumnWidth, withPad: " ", startingAt: 0)
+                String(repeating: " ", count: numberOfViolationsColumnWidth - countString.count) + countString
             ])
         }
     }

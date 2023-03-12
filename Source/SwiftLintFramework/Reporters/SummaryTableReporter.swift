@@ -32,7 +32,8 @@ private extension TextTable {
         let sortedRuleIdentifiers = ruleIdentifiers.sorted {
             (ruleIdentifiersToViolationsMap[$0]?.count ?? 0) > (ruleIdentifiersToViolationsMap[$1]?.count ?? 0)
         }
-
+        let numberOfViolationsColumnWidth = columns[3].header.count
+        
         for ruleIdentifier in sortedRuleIdentifiers {
             guard let ruleIdentifier = ruleIdentifiersToViolationsMap[ruleIdentifier]?.first?.ruleIdentifier else {
                 continue
@@ -42,11 +43,14 @@ private extension TextTable {
             }
             let rule = ruleType.init()
 
+            let count = ruleIdentifiersToViolationsMap[ruleIdentifier]?.count ?? 0
+            let countString = "\(count)"
+            
             addRow(values: [
                 ruleIdentifier,
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
-                ruleIdentifiersToViolationsMap[ruleIdentifier]?.count ?? 0
+                countString.padding(toLength: numberOfViolationsColumnWidth, withPad: " ", startingAt: 0)
             ])
         }
     }

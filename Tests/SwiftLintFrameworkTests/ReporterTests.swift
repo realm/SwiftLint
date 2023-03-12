@@ -6,19 +6,19 @@ import XCTest
 class ReporterTests: XCTestCase {
     func testReporterFromString() {
         let reporters: [Reporter.Type] = [
-            XcodeReporter.self,
-            JSONReporter.self,
-            CSVReporter.self,
             CheckstyleReporter.self,
             CodeClimateReporter.self,
-            JUnitReporter.self,
-            HTMLReporter.self,
+            CSVReporter.self,
             EmojiReporter.self,
-            SonarQubeReporter.self,
-            MarkdownReporter.self,
             GitHubActionsLoggingReporter.self,
             GitLabJUnitReporter.self,
-            RelativePathReporter.self
+            HTMLReporter.self,
+            JSONReporter.self,
+            JUnitReporter.self,
+            MarkdownReporter.self,
+            RelativePathReporter.self,
+            SonarQubeReporter.self,
+            XcodeReporter.self
         ]
         for reporter in reporters {
             XCTAssertEqual(reporter.identifier, reporterFrom(identifier: reporter.identifier).identifier)

@@ -1,3 +1,4 @@
+// swiftlint:disable:next type_name
 enum UnneededSynthesizedInitializerRuleExamples {
     static let nonTriggering = [
         Example("""

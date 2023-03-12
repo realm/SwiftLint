@@ -75,6 +75,7 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
             else { continue }
             guard matchesAccessLevel(modifiers: initializer.modifiers, properties: storedProperties)
             else { continue }
+            guard initializer.isInlinable == false else { continue }
             extraneousInitializers.append(initializer)
         }
         return extraneousInitializers
@@ -207,6 +208,7 @@ private extension ModifierListSyntax {
 
 private extension InitializerDeclSyntax {
     var hasThrowsOrRethrowsKeyword: Bool { signature.effectSpecifiers?.throwsSpecifier != nil }
+    var isInlinable: Bool { attributes.contains(attributeNamed: "inlinable") }
 }
 
 private extension VariableDeclSyntax {

@@ -143,10 +143,26 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
+                """),
+        Example("""
+                @frozen
+                public struct Field {
+                    @usableFromInline
+                    let index: Int
+                  
+                    @usableFromInline
+                    let parent: Metadata
+                  
+                    @inlinable
+                    init(index: Int, parent: Metadata) {
+                       self.index = index
+                       self.parent = parent
+                    }
+                }
                 """)
     ]
 
-    static let triggering = [
+    static let triggering: [Example] = [
         Example("""
                 struct Foo {
                     let bar: String

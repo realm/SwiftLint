@@ -100,6 +100,7 @@ private extension Int {
         return numberFormatter
     }()
     var formattedString: String {
+        // swiftlint:disable:next legacy_objc_type
         Int.numberFormatter.string(from: NSNumber(value: self)) ?? ""
     }
 }

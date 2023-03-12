@@ -23,9 +23,7 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3726](https://github.com/realm/SwiftLint/issues/3726)
 
-* Trigger `prefer_self_in_static_references` rule on more type references like:
-  * Types (e.g. `let a: MyType? { nil }` -> `let a: Self? { nil }`)
-  
+* Trigger `prefer_self_in_static_references` rule on more type references.
   [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Bug Fixes

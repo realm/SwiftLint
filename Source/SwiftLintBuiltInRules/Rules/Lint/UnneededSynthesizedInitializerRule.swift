@@ -162,9 +162,12 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         return statements.isEmpty
     }
 
-    /// Compares the actual access level of an initializer with the access level of a synthesized
-    /// memberwise initializer.
-    private func initializerModifiers(_ modifiers: ModifierListSyntax?, match storedProperties: [VariableDeclSyntax]) -> Bool {
+    // Compares the actual access level of an initializer with the access level of a synthesized
+    // memberwise initializer.
+    private func initializerModifiers(
+        _ modifiers: ModifierListSyntax?,
+        match storedProperties: [VariableDeclSyntax]
+    ) -> Bool {
         let synthesizedAccessLevel = synthesizedInitializerAccessLevel(using: storedProperties)
         let accessLevel = modifiers?.accessLevelModifier
         switch synthesizedAccessLevel {

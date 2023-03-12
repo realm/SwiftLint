@@ -1,3 +1,15 @@
+//
+// Adapted from swift-format's UseSynthesizedInitializer.swift
+//
+// https://github.com/apple/swift-format
+//
+// Copyright (c) 2014 - 2019 Apple Inc. and the Swift project authors
+// Licensed under Apache License v2.0 with Runtime Library Exception
+//
+// See https://swift.org/LICENSE.txt for license information
+// See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
+//
+
 import SwiftSyntax
 
 struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProviderRule {

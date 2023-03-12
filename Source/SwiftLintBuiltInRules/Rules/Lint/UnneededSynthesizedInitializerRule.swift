@@ -59,7 +59,8 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
             let member = memberItem.decl
             // Collect all stored variables into a list
             if let varDecl = member.as(VariableDeclSyntax.self) {
-                guard let modifiers = varDecl.modifiers else {
+                let modifiers = varDecl.modifiers
+                if modifiers == nil {
                     storedProperties.append(varDecl)
                     continue
                 }
@@ -94,7 +95,7 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         return extraneousInitializers
     }
 
-    // Compares initializer parameters to stored properties of the struct
+    // Do the initializer parameters match the stored properties of the struct?
     private func initializerParameters(
         _ initializerParameters: FunctionParameterListSyntax,
         match storedProperties: [VariableDeclSyntax]
@@ -130,7 +131,7 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         return true
     }
 
-    // Evaluates if all, and only, the stored properties are initialized in the body
+    // Does the body initialize all, and only, the stored properties for the struct?
     private func initializerBody( // swiftlint:disable:this cyclomatic_complexity
         _ initializerBody: CodeBlockSyntax?,
         matches storedProperties: [VariableDeclSyntax]
@@ -174,8 +175,8 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         return statements.isEmpty
     }
 
-    // Compares the actual access level of an initializer with the access level of a synthesized
-    // memberwise initializer.
+    // Does the actual access level of an initializer match the access level of the synthesized
+    // memberwise initializer?
     private func initializerModifiers(
         _ modifiers: ModifierListSyntax?,
         match storedProperties: [VariableDeclSyntax]
@@ -195,11 +196,6 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
 }
 
 private extension ModifierListSyntax {
-    var isStatic: Bool {
-        contains(tokenKind: .keyword(.static))
-    }
-
-    /// Returns the declaration's access level modifier, if present.
     var accessLevelModifier: DeclModifierSyntax? {
         for modifier in self {
             switch modifier.name.tokenKind {
@@ -210,10 +206,6 @@ private extension ModifierListSyntax {
             }
         }
         return nil
-    }
-
-    private func contains(tokenKind: TokenKind) -> Bool {
-        contains { $0.name.tokenKind == tokenKind }
     }
 }
 

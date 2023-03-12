@@ -1,5 +1,5 @@
 +-----------------+--------+-------------+--------+----------------------+-----------------+
-| identifier      | opt-in | correctable | custom | number of violations | number of files |
+| rule identifier | opt-in | correctable | custom | number of violations | number of files |
 +-----------------+--------+-------------+--------+----------------------+-----------------+
 | line_length     | no     | no          | no     |                    2 |               1 |
 | colon           | no     | yes         | no     |                    1 |               1 |

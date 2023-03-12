@@ -23,7 +23,7 @@ private extension TextTable {
         let numberOfViolationHeader = "number of violations"
         let numberOfFileHeader = "number of files"
         let columns = [
-            TextTableColumn(header: "identifier"),
+            TextTableColumn(header: "rule identifier"),
             TextTableColumn(header: "opt-in"),
             TextTableColumn(header: "correctable"),
             TextTableColumn(header: "custom"),

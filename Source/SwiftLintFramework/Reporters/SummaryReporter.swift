@@ -30,9 +30,8 @@ private extension TextTable {
         ]
         self.init(columns: columns)
 
-        let ruleIdentifiersToViolationsMap = ruleIdentifiersToViolationsMap(violations: violations)
-        let ruleIdentifiers = ruleIdentifiersToViolationsMap.keys
-        let sortedRuleIdentifiers = ruleIdentifiers.sorted {
+        let ruleIdentifiersToViolationsMap = violations.group { $0.ruleIdentifier }
+        let sortedRuleIdentifiers = ruleIdentifiersToViolationsMap.keys.sorted {
             (ruleIdentifiersToViolationsMap[$0]?.count ?? 0) > (ruleIdentifiersToViolationsMap[$1]?.count ?? 0)
         }
 
@@ -45,32 +44,17 @@ private extension TextTable {
             }
             let rule = ruleType.init()
 
-            let numberOfViolationsString = "\(ruleIdentifiersToViolationsMap[ruleIdentifier]?.count ?? 0)"
-            let setOfFiles = Set((ruleIdentifiersToViolationsMap[ruleIdentifier] ?? []).map { $0.location.file })
-            let numberOfFilesString = "\(setOfFiles.count)"
+            let numberOfViolations = ruleIdentifiersToViolationsMap[ruleIdentifier]?.count ?? 0
+            let files = Set((ruleIdentifiersToViolationsMap[ruleIdentifier] ?? []).map { $0.location.file })
 
             addRow(values: [
                 ruleIdentifier,
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
-                numberOfViolationsString.leftPadded(count: numberOfViolationHeader.count),
-                numberOfFilesString.leftPadded(count: numberOfFileHeader.count)
+                "\(numberOfViolations)".leftPadded(count: numberOfViolationHeader.count),
+                "\(files.count)".leftPadded(count: numberOfFileHeader.count)
             ])
         }
-    }
-
-    private func ruleIdentifiersToViolationsMap(violations: [StyleViolation]) -> [String: [StyleViolation]] {
-        var map: [String: [StyleViolation]] = [:]
-        for violation in violations {
-            let key = violation.ruleIdentifier
-            if var array = map[key] {
-                array.append(violation)
-                map[key] = array
-            } else {
-                map[key] = [violation]
-            }
-        }
-        return map
     }
 }
 

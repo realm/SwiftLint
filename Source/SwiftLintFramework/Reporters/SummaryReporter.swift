@@ -35,6 +35,8 @@ private extension TextTable {
             (ruleIdentifiersToViolationsMap[$0]?.count ?? 0) > (ruleIdentifiersToViolationsMap[$1]?.count ?? 0)
         }
 
+        var totalNumberOfViolations = 0
+        
         for ruleIdentifier in sortedRuleIdentifiers {
             guard let ruleIdentifier = ruleIdentifiersToViolationsMap[ruleIdentifier]?.first?.ruleIdentifier else {
                 continue
@@ -45,16 +47,26 @@ private extension TextTable {
             let rule = ruleType.init()
 
             let numberOfViolations = ruleIdentifiersToViolationsMap[ruleIdentifier]?.count ?? 0
-            let files = Set((ruleIdentifiersToViolationsMap[ruleIdentifier] ?? []).map { $0.location.file })
+            totalNumberOfViolations += numberOfViolations
+            let numberOfFiles = Set((ruleIdentifiersToViolationsMap[ruleIdentifier] ?? []).map { $0.location.file }).count
 
             addRow(values: [
                 ruleIdentifier,
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
                 "\(numberOfViolations)".leftPadded(count: numberOfViolationHeader.count),
-                "\(files.count)".leftPadded(count: numberOfFileHeader.count)
+                "\(numberOfFiles)".leftPadded(count: numberOfFileHeader.count)
             ])
         }
+        
+        let totalNumberOfFiles = Set(violations.map { $0.location.file }).count
+        addRow(values: [
+            "Total",
+            "",
+            "",
+            "\(totalNumberOfViolations)".leftPadded(count: numberOfViolationHeader.count),
+            "\(totalNumberOfFiles)".leftPadded(count: numberOfFileHeader.count)
+        ])
     }
 }
 

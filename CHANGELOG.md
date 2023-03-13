@@ -182,6 +182,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4788](https://github.com/realm/SwiftLint/issues/4788)
 
+* Fixed correction for `trailing_comma` rule wrongly removing trailing
+  comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4814](https://github.com/realm/SwiftLint/issues/4814)
+
 ## 0.50.3: Bundle of Towels
 
 #### Breaking

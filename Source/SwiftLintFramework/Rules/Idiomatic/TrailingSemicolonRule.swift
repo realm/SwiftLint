@@ -21,7 +21,8 @@ struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule, ConfigurationProviderR
         ],
         corrections: [
             Example("let a = 0↓;\n"): Example("let a = 0\n"),
-            Example("let a = 0↓;\nlet b = 1\n"): Example("let a = 0\nlet b = 1\n")
+            Example("let a = 0↓;\nlet b = 1\n"): Example("let a = 0\nlet b = 1\n"),
+            Example("let foo = 12↓;  // comment\n"): Example("let foo = 12  // comment\n")
         ]
     )
 
@@ -65,8 +66,7 @@ private extension TrailingSemicolonRule {
             }
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-            // Is there a better way to remove a node? Should we somehow keep trailing trivia?
-            return super.visit(TokenSyntax(.semicolon, presence: .missing))
+            return .unknown("").with(\.trailingTrivia, node.trailingTrivia ?? .zero)
         }
     }
 }

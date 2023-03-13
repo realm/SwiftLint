@@ -162,7 +162,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 """)
     ]
 
-    static let triggering: [Example] = [
+    static let triggering = [
         Example("""
                 struct Foo {
                     let bar: String

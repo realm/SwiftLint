@@ -363,6 +363,10 @@
 
 * Adds a new `summary` reporter, that displays the number of violations
   of each rule in a text table.  
+* Adds an `unneeded_synthesized_initializer` rule, based on
+  `swift-format`'s `UseSynthesizedInitializer` rule, which warns
+  when a defined initializer would have been automatically
+  synthesized.  
   [Martin Redington](https://github.com/mildm8nnered)
 
 #### Bug Fixes

@@ -18,6 +18,7 @@ public struct SummaryReporter: Reporter {
 }
 
 // MARK: - SwiftyTextTable
+
 private extension TextTable {
     init(violations: [StyleViolation]) {
         let numberOfViolationHeader = "number of violations"

@@ -4,10 +4,7 @@ public struct GitLabJUnitReporter: Reporter {
 
     public static let identifier = "gitlab"
     public static let isRealtime = false
-
-    public var description: String {
-        return "Reports violations as JUnit XML supported by GitLab."
-    }
+    public static let description = "Reports violations as JUnit XML supported by GitLab."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<testsuites><testsuite>" +

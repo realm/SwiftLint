@@ -6,10 +6,7 @@ public struct SonarQubeReporter: Reporter {
 
     public static let identifier = "sonarqube"
     public static let isRealtime = false
-
-    public var description: String {
-        return "Reports violations in SonarQube import format."
-    }
+    public static let description = "Reports violations in SonarQube import format."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return toJSON(["issues": violations.map(dictionary(for:))])

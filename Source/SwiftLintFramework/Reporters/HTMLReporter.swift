@@ -12,10 +12,7 @@ public struct HTMLReporter: Reporter {
 
     public static let identifier = "html"
     public static let isRealtime = false
-
-    public var description: String {
-        return "Reports violations as HTML."
-    }
+    public static let description = "Reports violations as HTML."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return generateReport(violations, swiftlintVersion: Version.current.value,

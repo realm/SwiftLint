@@ -1,11 +1,14 @@
 /// An interface for reporting violations as strings.
-public protocol Reporter: CustomStringConvertible {
+public protocol Reporter {
     /// The unique identifier for this reporter.
     static var identifier: String { get }
 
     /// Whether or not this reporter can output incrementally as violations are found or if all violations must be
     /// collected before generating the report.
     static var isRealtime: Bool { get }
+
+    /// A more detailed description of the reporter's output.
+    static var description: String { get }
 
     /// Return a string with the report for the specified violations.
     ///

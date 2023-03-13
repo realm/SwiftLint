@@ -4,10 +4,7 @@ public struct XcodeReporter: Reporter {
 
     public static let identifier = "xcode"
     public static let isRealtime = true
-
-    public var description: String {
-        return "Reports violations in the format Xcode uses to display in the IDE. (default)"
-    }
+    public static let description = "Reports violations in the format Xcode uses to display in the IDE. (default)"
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return violations.map(generateForSingleViolation).joined(separator: "\n")

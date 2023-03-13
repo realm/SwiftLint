@@ -6,10 +6,7 @@ public struct MarkdownReporter: Reporter {
 
     public static let identifier = "markdown"
     public static let isRealtime = false
-
-    public var description: String {
-        return "Reports violations as markdown formated (with tables)."
-    }
+    public static let description = "Reports violations as markdown formated (with tables)."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         let keys = [

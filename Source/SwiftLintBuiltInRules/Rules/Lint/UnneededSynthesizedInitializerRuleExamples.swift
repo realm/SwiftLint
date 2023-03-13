@@ -182,15 +182,6 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 }
                 """),
         Example("""
-                struct Foo {
-                    let bar: String
-
-                   ↓init(bar: String) {
-                        self.bar = bar
-                    }
-                }
-                """),
-        Example("""
                 private struct Foo {
                     let bar: String
 

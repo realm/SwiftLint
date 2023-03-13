@@ -66,7 +66,6 @@ private extension TrailingSemicolonRule {
             }
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-            // Keep the trailing trivia
             return ("" as TokenSyntax).with(\.trailingTrivia, node.trailingTrivia ?? .zero)
         }
     }

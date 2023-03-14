@@ -24,6 +24,11 @@
   to sort groups of imports defined by their preceding attributes
   (e.g. `@testable`, `@_exported`, ...).  
   [hiltonc](https://github.com/hiltonc)
+* Adds an `unneeded_synthesized_initializer` rule, based on
+  `swift-format`'s `UseSynthesizedInitializer` rule, which warns
+  when a defined default or memberwise initializer would have been
+  automatically synthesized.  
+  [Martin Redington](https://github.com/mildm8nnered)
 
 * Add new `--silence-deprecation-warnings` flag that silences deprecation
   warnings that would otherwise be printed to the console.  
@@ -363,10 +368,6 @@
 
 * Adds a new `summary` reporter, that displays the number of violations
   of each rule in a text table.  
-* Adds an `unneeded_synthesized_initializer` rule, based on
-  `swift-format`'s `UseSynthesizedInitializer` rule, which warns
-  when a defined initializer would have been automatically
-  synthesized.  
   [Martin Redington](https://github.com/mildm8nnered)
 
 #### Bug Fixes

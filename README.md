@@ -313,6 +313,7 @@ SUBCOMMANDS:
   docs                    Open SwiftLint documentation website in the default web browser
   generate-docs           Generates markdown documentation for all rules
   lint (default)          Print lint warnings and errors
+  reporters               Display the list of reporters and their identifiers
   rules                   Display the list of rules and their identifiers
   version                 Display the current version of SwiftLint
 

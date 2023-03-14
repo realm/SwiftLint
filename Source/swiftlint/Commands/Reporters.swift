@@ -6,24 +6,8 @@ extension SwiftLint {
     struct Reporters: ParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Display the list of reporters and their identifiers")
 
-        private static let reporters: [Reporter.Type] = [
-            XcodeReporter.self,
-            JSONReporter.self,
-            CSVReporter.self,
-            CheckstyleReporter.self,
-            CodeClimateReporter.self,
-            JUnitReporter.self,
-            HTMLReporter.self,
-            EmojiReporter.self,
-            SonarQubeReporter.self,
-            MarkdownReporter.self,
-            GitHubActionsLoggingReporter.self,
-            GitLabJUnitReporter.self,
-            RelativePathReporter.self
-        ]
-
         func run() throws {
-            print(TextTable(reporters: Self.reporters).render())
+            print(TextTable(reporters: reportersList).render())
             ExitHelper.successfullyExit()
         }
     }

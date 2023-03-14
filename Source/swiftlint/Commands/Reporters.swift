@@ -35,7 +35,7 @@ private extension TextTable {
     init(reporters: [Reporter.Type]) {
         let columns = [
             TextTableColumn(header: "identifier"),
-            TextTableColumn(header: "description"),
+            TextTableColumn(header: "description")
         ]
         self.init(columns: columns)
         for reporter in reporters {

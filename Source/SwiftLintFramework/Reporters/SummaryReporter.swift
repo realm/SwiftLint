@@ -53,7 +53,7 @@ private extension TextTable {
             }
 
             var rule: Rule?
-            if let ruleType = builtInRules.first(where: { $0.description.identifier == ruleIdentifier }) {
+            if let ruleType = primaryRuleList.list[ruleIdentifier] {
                 rule = ruleType.init()
             }
 

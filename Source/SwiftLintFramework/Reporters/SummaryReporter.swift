@@ -21,15 +21,19 @@ public struct SummaryReporter: Reporter {
 
 private extension TextTable {
     init(violations: [StyleViolation]) {
-        let numberOfViolationHeader = "number of violations"
-        let numberOfFileHeader = "number of files"
+        let numberOfWarningsHeader = "warnings"
+        let numberOfErrorsHeader = "errors"
+        let numberOfViolationsHeader = "total violations"
+        let numberOfFilesHeader = "number of files"
         let columns = [
             TextTableColumn(header: "rule identifier"),
             TextTableColumn(header: "opt-in"),
             TextTableColumn(header: "correctable"),
             TextTableColumn(header: "custom"),
-            TextTableColumn(header: numberOfViolationHeader),
-            TextTableColumn(header: numberOfFileHeader)
+            TextTableColumn(header: numberOfWarningsHeader),
+            TextTableColumn(header: numberOfErrorsHeader),
+            TextTableColumn(header: numberOfViolationsHeader),
+            TextTableColumn(header: numberOfFilesHeader)
         ]
         self.init(columns: columns)
 
@@ -45,20 +49,20 @@ private extension TextTable {
             return false
         }
 
-        var totalNumberOfViolations = 0
+        var totalNumberOfWarnings = 0
+        var totalNumberOfErrors = 0
 
         for ruleIdentifier in sortedRuleIdentifiers {
             guard let ruleIdentifier = ruleIdentifiersToViolationsMap[ruleIdentifier]?.first?.ruleIdentifier else {
                 continue
             }
 
-            var rule: Rule?
-            if let ruleType = primaryRuleList.list[ruleIdentifier] {
-                rule = ruleType.init()
-            }
-
-            let numberOfViolations = ruleIdentifiersToViolationsMap[ruleIdentifier]?.count ?? 0
-            totalNumberOfViolations += numberOfViolations
+            let rule = primaryRuleList.list[ruleIdentifier]
+            let numberOfWarnings = ruleIdentifiersToViolationsMap[ruleIdentifier]?.filter { $0.severity == .warning }.count ?? 0
+            let numberOfErrors = ruleIdentifiersToViolationsMap[ruleIdentifier]?.filter { $0.severity == .error }.count ?? 0
+            let numberOfViolations = numberOfWarnings + numberOfErrors
+            totalNumberOfWarnings += numberOfWarnings
+            totalNumberOfErrors += numberOfErrors
             let ruleViolations = ruleIdentifiersToViolationsMap[ruleIdentifier] ?? []
             let numberOfFiles = Set(ruleViolations.map { $0.location.file }).count
 
@@ -67,19 +71,24 @@ private extension TextTable {
                 rule is OptInRule ? "yes" : "no",
                 rule is CorrectableRule ? "yes" : "no",
                 rule == nil ? "yes" : "no",
-                numberOfViolations.formattedString.leftPadded(count: numberOfViolationHeader.count),
-                numberOfFiles.formattedString.leftPadded(count: numberOfFileHeader.count)
+                numberOfWarnings.formattedString.leftPadded(forHeader: numberOfWarningsHeader),
+                numberOfErrors.formattedString.leftPadded(forHeader: numberOfErrorsHeader),
+                numberOfViolations.formattedString.leftPadded(forHeader: numberOfViolationsHeader),
+                numberOfFiles.formattedString.leftPadded(forHeader: numberOfFilesHeader)
             ])
         }
 
+        let totalNumberOfViolations = totalNumberOfWarnings + totalNumberOfErrors
         let totalNumberOfFiles = Set(violations.map { $0.location.file }).count
         addRow(values: [
             "Total",
             "",
             "",
             "",
-            totalNumberOfViolations.formattedString.leftPadded(count: numberOfViolationHeader.count),
-            totalNumberOfFiles.formattedString.leftPadded(count: numberOfFileHeader.count)
+            totalNumberOfWarnings.formattedString.leftPadded(forHeader: numberOfWarningsHeader),
+            totalNumberOfErrors.formattedString.leftPadded(forHeader: numberOfErrorsHeader),
+            totalNumberOfViolations.formattedString.leftPadded(forHeader: numberOfViolationsHeader),
+            totalNumberOfFiles.formattedString.leftPadded(forHeader: numberOfFilesHeader)
         ])
     }
 
@@ -95,8 +104,12 @@ private extension TextTable {
 }
 
 private extension String {
-    func leftPadded(count: Int) -> String {
-        String(repeating: " ", count: count - self.count) + self
+    func leftPadded(forHeader header: String) -> String {
+        let count = header.count - self.count
+        if count > 0 {
+            return String(repeating: " ", count: count) + self
+        }
+        return self
     }
 }
 

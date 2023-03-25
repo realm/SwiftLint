@@ -15,5 +15,6 @@ public let reportersList: [Reporter.Type] = [
     MarkdownReporter.self,
     RelativePathReporter.self,
     SonarQubeReporter.self,
+    SummaryReporter.self,
     XcodeReporter.self
 ]

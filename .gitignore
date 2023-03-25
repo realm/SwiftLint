@@ -1,6 +1,5 @@
 # Xcode
 #
-# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
 ## Build generated
 build/
@@ -22,6 +21,7 @@ xcuserdata
 *.moved-aside
 *.xcuserstate
 *.xcscmblueprint
+default.profraw
 
 ## Obj-C/Swift specific
 *.hmap

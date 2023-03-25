@@ -111,6 +111,10 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4248](https://github.com/realm/SwiftLint/issues/4248)
 
+* Adds a new `summary` reporter, that displays the number of violations
+  of each rule in a text table.  
+  [Martin Redington](https://github.com/mildm8nnered)
+
 #### Bug Fixes
 
 * Report violations in all `<scope>_length` rules when the error threshold is

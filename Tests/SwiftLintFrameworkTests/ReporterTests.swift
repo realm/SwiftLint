@@ -6,19 +6,20 @@ import XCTest
 class ReporterTests: XCTestCase {
     func testReporterFromString() {
         let reporters: [Reporter.Type] = [
-            XcodeReporter.self,
-            JSONReporter.self,
-            CSVReporter.self,
             CheckstyleReporter.self,
             CodeClimateReporter.self,
-            JUnitReporter.self,
-            HTMLReporter.self,
+            CSVReporter.self,
             EmojiReporter.self,
-            SonarQubeReporter.self,
-            MarkdownReporter.self,
             GitHubActionsLoggingReporter.self,
             GitLabJUnitReporter.self,
-            RelativePathReporter.self
+            HTMLReporter.self,
+            JSONReporter.self,
+            JUnitReporter.self,
+            MarkdownReporter.self,
+            RelativePathReporter.self,
+            SonarQubeReporter.self,
+            SummaryReporter.self,
+            XcodeReporter.self
         ]
         for reporter in reporters {
             XCTAssertEqual(reporter.identifier, reporterFrom(identifier: reporter.identifier).identifier)
@@ -43,7 +44,7 @@ class ReporterTests: XCTestCase {
                            severity: .error,
                            location: location,
                            reason: "Shorthand syntactic sugar should be used" +
-                                   ", i.e. [Int] instead of Array<Int>"),
+                           ", i.e. [Int] instead of Array<Int>"),
             StyleViolation(ruleDescription: ColonRule.description,
                            severity: .error,
                            location: Location(file: nil),
@@ -154,5 +155,19 @@ class ReporterTests: XCTestCase {
         let result = RelativePathReporter.generateReport([violation])
         XCTAssertFalse(result.contains(absolutePath))
         XCTAssertTrue(result.contains(relativePath))
+    }
+
+    func testSummaryReporter() {
+        let expectedOutput = stringFromFile("CannedSummaryReporterOutput.txt")
+            .trimmingTrailingCharacters(in: .whitespacesAndNewlines)
+        let result = SummaryReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
+    }
+
+    func testSummaryReporterWithNoViolations() {
+        let expectedOutput = stringFromFile("CannedSummaryReporterNoViolationsOutput.txt")
+            .trimmingTrailingCharacters(in: .whitespacesAndNewlines)
+        let result = SummaryReporter.generateReport([])
+        XCTAssertEqual(result, expectedOutput)
     }
 }

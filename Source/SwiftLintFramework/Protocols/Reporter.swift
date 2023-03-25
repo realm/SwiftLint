@@ -49,6 +49,8 @@ public func reporterFrom(identifier: String) -> Reporter.Type { // swiftlint:dis
         return CodeClimateReporter.self
     case RelativePathReporter.identifier:
         return RelativePathReporter.self
+    case SummaryReporter.identifier:
+        return SummaryReporter.self
     default:
         queuedFatalError("no reporter with identifier '\(identifier)' available.")
     }

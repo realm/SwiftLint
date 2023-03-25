@@ -20,6 +20,7 @@ public struct SummaryReporter: Reporter {
 // MARK: - SwiftyTextTable
 
 private extension TextTable {
+    // swiftlint:disable:next function_body_length
     init(violations: [StyleViolation]) {
         let numberOfWarningsHeader = "warnings"
         let numberOfErrorsHeader = "errors"
@@ -58,8 +59,9 @@ private extension TextTable {
             }
 
             let rule = primaryRuleList.list[ruleIdentifier]
-            let numberOfWarnings = ruleIdentifiersToViolationsMap[ruleIdentifier]?.filter { $0.severity == .warning }.count ?? 0
-            let numberOfErrors = ruleIdentifiersToViolationsMap[ruleIdentifier]?.filter { $0.severity == .error }.count ?? 0
+            let violations = ruleIdentifiersToViolationsMap[ruleIdentifier]
+            let numberOfWarnings = violations?.filter { $0.severity == .warning }.count ?? 0
+            let numberOfErrors = violations?.filter { $0.severity == .error }.count ?? 0
             let numberOfViolations = numberOfWarnings + numberOfErrors
             totalNumberOfWarnings += numberOfWarnings
             totalNumberOfErrors += numberOfErrors
@@ -105,9 +107,9 @@ private extension TextTable {
 
 private extension String {
     func leftPadded(forHeader header: String) -> String {
-        let count = header.count - self.count
-        if count > 0 {
-            return String(repeating: " ", count: count) + self
+        let headerCount = header.count - self.count
+        if headerCount > 0 {
+            return String(repeating: " ", count: headerCount) + self
         }
         return self
     }

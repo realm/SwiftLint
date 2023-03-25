@@ -8,7 +8,7 @@ public struct SummaryReporter: Reporter {
     public static let identifier = "summary"
     public static let isRealtime = false
 
-    public var description: String {
+    public static var description: String {
         return "Reports a summary table of all violations."
     }
 

@@ -36,7 +36,7 @@ Source/SwiftLintFramework/Models/PrimaryRuleList.swift: Source/SwiftLintFramewor
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/PrimaryRuleList.stencil --output .sourcery
 	mv .sourcery/PrimaryRuleList.generated.swift Source/SwiftLintFramework/Models/PrimaryRuleList.swift
 
-Source/SwiftLintFramework/Models/ReportersList.swift: Source/SwiftLintFramework/Rules/*.swift .sourcery/ReportersList.stencil
+Source/SwiftLintFramework/Models/ReportersList.swift: Source/SwiftLintFramework/Reporters/*.swift .sourcery/ReportersList.stencil
 	sourcery --sources Source/SwiftLintFramework/Reporters --templates .sourcery/ReportersList.stencil --output .sourcery
 	mv .sourcery/ReportersList.generated.swift Source/SwiftLintFramework/Models/ReportersList.swift
 

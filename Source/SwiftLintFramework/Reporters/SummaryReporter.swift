@@ -70,8 +70,8 @@ private extension TextTable {
 
             addRow(values: [
                 ruleIdentifier,
-                rule is OptInRule ? "yes" : "no",
-                rule is CorrectableRule ? "yes" : "no",
+                rule is OptInRule.Type ? "yes" : "no",
+                rule is CorrectableRule.Type ? "yes" : "no",
                 rule == nil ? "yes" : "no",
                 numberOfWarnings.formattedString.leftPadded(forHeader: numberOfWarningsHeader),
                 numberOfErrors.formattedString.leftPadded(forHeader: numberOfErrorsHeader),

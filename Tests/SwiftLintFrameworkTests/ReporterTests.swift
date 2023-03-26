@@ -44,7 +44,7 @@ class ReporterTests: XCTestCase {
                            severity: .error,
                            location: location,
                            reason: "Shorthand syntactic sugar should be used" +
-                           ", i.e. [Int] instead of Array<Int>"),
+                                   ", i.e. [Int] instead of Array<Int>"),
             StyleViolation(ruleDescription: ColonRule.description,
                            severity: .error,
                            location: Location(file: nil),

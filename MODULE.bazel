@@ -1,6 +1,6 @@
 module(
     name = "swiftlint",
-    version = "0.50.3",
+    version = "0.51.0",
     compatibility_level = 1,
     repo_name = "SwiftLint",
 )

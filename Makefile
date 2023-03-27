@@ -65,7 +65,7 @@ clean:
 clean_xcode:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
-build: clean
+build:
 	mkdir -p "$(SWIFTLINT_EXECUTABLE_PARENT)"
 	bazel build --config release universal_swiftlint
 	$(eval SWIFTLINT_BINARY := $(shell bazel cquery --config release --output=files universal_swiftlint))
@@ -167,6 +167,7 @@ endif
 	@sed -i '' 's/## Main/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
 	@sed 's/__VERSION__/$(NEW_VERSION)/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
 	@sed -e '3s/.*/    version = "$(NEW_VERSION)",/' -i '' MODULE.bazel
+	make clean
 	make package
 	make bazel_release
 	make portable_zip

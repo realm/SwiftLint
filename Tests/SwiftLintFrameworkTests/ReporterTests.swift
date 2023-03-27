@@ -160,7 +160,12 @@ class ReporterTests: XCTestCase {
     func testSummaryReporter() {
         let expectedOutput = stringFromFile("CannedSummaryReporterOutput.txt")
             .trimmingTrailingCharacters(in: .whitespacesAndNewlines)
-        let result = SummaryReporter.generateReport(generateViolations())
+        let correctableViolation = StyleViolation(
+            ruleDescription: VerticalWhitespaceOpeningBracesRule.description,
+            location: Location(file: "filename", line: 1, character: 2),
+            reason: "Violation Reason"
+        )
+        let result = SummaryReporter.generateReport(generateViolations() + [correctableViolation])
         XCTAssertEqual(result, expectedOutput)
     }
 

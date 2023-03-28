@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Add `sorted_enum_cases` rule which warns when enum cases are not sorted.  
+  [kimdv](https://github.com/kimdv)
 
 #### Bug Fixes
 

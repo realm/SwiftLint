@@ -179,6 +179,7 @@ let builtInRules: [Rule.Type] = [
     ShorthandOperatorRule.self,
     ShorthandOptionalBindingRule.self,
     SingleTestClassRule.self,
+    SortedEnumCasesRule.self,
     SortedFirstLastRule.self,
     SortedImportsRule.self,
     StatementPositionRule.self,

@@ -568,10 +568,8 @@ following syntax:
 ```yaml
 custom_rules:
   pirates_beat_ninjas: # rule identifier
-    included: 
-      - ".*\\.swift" # regex that defines paths to include during linting. optional.
-    excluded: 
-      - ".*Test\\.swift" # regex that defines paths to exclude during linting. optional
+    included: ".*\\.swift" # regex that defines paths to include during linting. optional.
+    excluded: ".*Test\\.swift" # regex that defines paths to exclude during linting. optional
     name: "Pirates Beat Ninjas" # rule name. optional.
     regex: "([nN]inja)" # matching pattern
     capture_group: 0 # number of regex capture group to highlight the rule violation at. optional.

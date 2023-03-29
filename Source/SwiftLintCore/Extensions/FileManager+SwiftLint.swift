@@ -58,7 +58,18 @@ extension FileManager: LintableFileManager {
     }
 
     public func isFile(atPath path: String) -> Bool {
-        path.isFile
+        exists(atPath: path, isDirectory: false)
+    }
+
+    private func exists(atPath path: String, isDirectory: Bool) -> Bool {
+        guard !path.isEmpty else {
+            return false
+        }
+        var isDirectoryObjC: ObjCBool = false
+        if fileExists(atPath: path, isDirectory: &isDirectoryObjC) {
+            return isDirectoryObjC.boolValue == isDirectory
+        }
+        return false
     }
 
     public func isDirectory(atPath path: String) -> Bool {

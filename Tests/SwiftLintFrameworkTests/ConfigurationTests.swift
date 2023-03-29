@@ -240,7 +240,7 @@ class ConfigurationTests: SwiftLintTestCase {
             case "directory/ExcludedFile.swift": filesToLint = ["directory/ExcludedFile.swift"]
             default: XCTFail("Should not be called with path \(path)")
             }
-            return filesToLint.absolutePathsStandardized()
+            return filesToLint.map { $0.absolutePathStandardized() }
         }
 
         func modificationDate(forFileAtPath path: String) -> Date? {
@@ -261,7 +261,10 @@ class ConfigurationTests: SwiftLintTestCase {
                                           excludedPaths: ["directory/excluded",
                                                           "directory/ExcludedFile.swift"])
         let paths = configuration.lintablePaths(inPath: "", forceExclude: false, fileManager: TestFileManager())
-        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"].absolutePathsStandardized(), paths)
+        XCTAssertEqual(
+            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
+            paths
+        )
     }
 
     func testForceExcludesFile() {
@@ -275,21 +278,30 @@ class ConfigurationTests: SwiftLintTestCase {
         let configuration = Configuration(includedPaths: ["directory"],
                                           excludedPaths: ["directory/ExcludedFile.swift", "directory/excluded"])
         let paths = configuration.lintablePaths(inPath: "", forceExclude: true, fileManager: TestFileManager())
-        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"].absolutePathsStandardized(), paths)
+        XCTAssertEqual(
+            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
+            paths
+        )
     }
 
     func testForceExcludesDirectory() {
         let configuration = Configuration(excludedPaths: ["directory/excluded", "directory/ExcludedFile.swift"])
         let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
                                                 fileManager: TestFileManager())
-        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"].absolutePathsStandardized(), paths)
+        XCTAssertEqual(
+            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
+            paths
+        )
     }
 
     func testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre() {
         let configuration = Configuration(excludedPaths: ["directory/excluded", "directory/ExcludedFile.swift"])
         let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
                                                 fileManager: TestFileManager())
-        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"].absolutePathsStandardized(), paths)
+        XCTAssertEqual(
+            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
+            paths
+        )
     }
 
     func testLintablePaths() {
@@ -543,11 +555,5 @@ extension ConfigurationTests {
 
         XCTAssertEqual(configuration1.cachePath, "cache/path/1")
         XCTAssertEqual(configuration2.cachePath, "cache/path/1")
-    }
-}
-
-private extension Sequence where Element == String {
-    func absolutePathsStandardized() -> [String] {
-        map { $0.absolutePathStandardized() }
     }
 }

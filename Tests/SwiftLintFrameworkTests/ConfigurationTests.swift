@@ -226,20 +226,24 @@ class ConfigurationTests: XCTestCase {
 
     private class TestFileManager: LintableFileManager {
         func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
+            var filesToLint: [String] = []
             switch path {
-            case "directory": return ["directory/File1.swift", "directory/File2.swift",
-                                      "directory/excluded/Excluded.swift",
-                                      "directory/ExcludedFile.swift"]
-            case "directory/excluded": return ["directory/excluded/Excluded.swift"]
-            case "directory/ExcludedFile.swift": return ["directory/ExcludedFile.swift"]
-            default: break
+            case "directory": filesToLint = ["directory/File1.swift", "directory/File2.swift",
+                                             "directory/excluded/Excluded.swift",
+                                             "directory/ExcludedFile.swift"]
+            case "directory/excluded": filesToLint = ["directory/excluded/Excluded.swift"]
+            case "directory/ExcludedFile.swift": filesToLint = ["directory/ExcludedFile.swift"]
+            default: XCTFail("Should not be called with path \(path)")
             }
-            XCTFail("Should not be called with path \(path)")
-            return []
+            return filesToLint.map { $0.absolutePathStandardized() }
         }
 
         func modificationDate(forFileAtPath path: String) -> Date? {
             return nil
+        }
+
+        func isFile(atPath path: String) -> Bool {
+            path.hasSuffix(".swift")
         }
     }
 
@@ -248,7 +252,10 @@ class ConfigurationTests: XCTestCase {
                                           excludedPaths: ["directory/excluded",
                                                           "directory/ExcludedFile.swift"])
         let paths = configuration.lintablePaths(inPath: "", forceExclude: false, fileManager: TestFileManager())
-        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
+        XCTAssertEqual(
+            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
+            paths
+        )
     }
 
     func testForceExcludesFile() {
@@ -262,21 +269,30 @@ class ConfigurationTests: XCTestCase {
         let configuration = Configuration(includedPaths: ["directory"],
                                           excludedPaths: ["directory/ExcludedFile.swift", "directory/excluded"])
         let paths = configuration.lintablePaths(inPath: "", forceExclude: true, fileManager: TestFileManager())
-        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
+        XCTAssertEqual(
+            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
+            paths
+        )
     }
 
     func testForceExcludesDirectory() {
         let configuration = Configuration(excludedPaths: ["directory/excluded", "directory/ExcludedFile.swift"])
         let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
                                                 fileManager: TestFileManager())
-        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
+        XCTAssertEqual(
+            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
+            paths
+        )
     }
 
     func testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre() {
         let configuration = Configuration(excludedPaths: ["directory/excluded", "directory/ExcludedFile.swift"])
         let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
                                                 fileManager: TestFileManager())
-        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
+        XCTAssertEqual(
+            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
+            paths
+        )
     }
 
     func testLintablePaths() {

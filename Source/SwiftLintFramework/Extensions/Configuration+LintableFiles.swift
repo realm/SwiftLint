@@ -33,7 +33,7 @@ extension Configuration {
         excludeByPrefix: Bool = false,
         fileManager: LintableFileManager = FileManager.default
     ) -> [String] {
-        if path.isFile {
+        if fileManager.isFile(atPath: path) {
             if forceExclude {
                 return excludeByPrefix
                     ? filterExcludedPathsByPrefix(in: [path.absolutePathStandardized()])

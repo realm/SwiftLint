@@ -66,6 +66,10 @@ private class TestFileManager: LintableFileManager {
     fileprivate func isFile(atPath path: String) -> Bool {
         false
     }
+
+    fileprivate func isDirectory(atPath path: String) -> Bool {
+        false
+    }
 }
 
 class LinterCacheTests: SwiftLintTestCase {

@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public extension String {
-    func hasTrailingWhitespace() -> Bool {
+extension String {
+    internal func hasTrailingWhitespace() -> Bool {
         if isEmpty {
             return false
         }
@@ -14,12 +14,20 @@ public extension String {
         return false
     }
 
-    func isUppercase() -> Bool {
+    internal func isUppercase() -> Bool {
         return self == uppercased()
     }
 
-    func isLowercase() -> Bool {
+    internal func isLowercase() -> Bool {
         return self == lowercased()
+    }
+
+    internal func nameStrippingLeadingUnderscoreIfPrivate(_ dict: SourceKittenDictionary) -> String {
+        if let acl = dict.accessibility,
+            acl.isPrivate && first == "_" {
+            return String(self[index(after: startIndex)...])
+        }
+        return self
     }
 
     private subscript (range: Range<Int>) -> String {
@@ -31,21 +39,21 @@ public extension String {
         queuedFatalError("invalid range")
     }
 
-    func substring(from: Int, length: Int? = nil) -> String {
+    internal func substring(from: Int, length: Int? = nil) -> String {
         if let length {
             return self[from..<from + length]
         }
         return String(self[index(startIndex, offsetBy: from, limitedBy: endIndex)!...])
     }
 
-    func lastIndex(of search: String) -> Int? {
+    internal func lastIndex(of search: String) -> Int? {
         if let range = range(of: search, options: [.literal, .backwards]) {
             return distance(from: startIndex, to: range.lowerBound)
         }
         return nil
     }
 
-    func nsrangeToIndexRange(_ nsrange: NSRange) -> Range<Index>? {
+    internal func nsrangeToIndexRange(_ nsrange: NSRange) -> Range<Index>? {
         guard nsrange.location != NSNotFound else {
             return nil
         }
@@ -62,24 +70,32 @@ public extension String {
         return fromIndex..<toIndex
     }
 
-    var fullNSRange: NSRange {
+    internal var fullNSRange: NSRange {
         return NSRange(location: 0, length: utf16.count)
     }
 
     /// Returns a new string, converting the path to a canonical absolute path.
     ///
     /// - returns: A new `String`.
-    func absolutePathStandardized() -> String {
+    public func absolutePathStandardized() -> String {
         return bridge().absolutePathRepresentation().bridge().standardizingPath
     }
 
-    var isFile: Bool {
+    internal var isFile: Bool {
+        exists(isDirectory: false)
+    }
+
+    internal var isDirectory: Bool {
+        exists(isDirectory: true)
+    }
+
+    private func exists(isDirectory: Bool) -> Bool {
         if self.isEmpty {
             return false
         }
         var isDirectoryObjC: ObjCBool = false
         if FileManager.default.fileExists(atPath: self, isDirectory: &isDirectoryObjC) {
-            return !isDirectoryObjC.boolValue
+            return isDirectoryObjC.boolValue == isDirectory
         }
         return false
     }
@@ -87,14 +103,14 @@ public extension String {
     /// Count the number of occurrences of the given character in `self`
     /// - Parameter character: Character to count
     /// - Returns: Number of times `character` occurs in `self`
-    func countOccurrences(of character: Character) -> Int {
+    public func countOccurrences(of character: Character) -> Int {
         return self.reduce(0, {
             $1 == character ? $0 + 1 : $0
         })
     }
 
     /// If self is a path, this method can be used to get a path expression relative to a root directory
-    func path(relativeTo rootDirectory: String) -> String {
+    public func path(relativeTo rootDirectory: String) -> String {
         let normalizedRootDir = rootDirectory.bridge().standardizingPath
         let normalizedSelf = bridge().standardizingPath
         if normalizedRootDir.isEmpty {
@@ -115,7 +131,7 @@ public extension String {
         }
     }
 
-    func deletingPrefix(_ prefix: String) -> String {
+    internal func deletingPrefix(_ prefix: String) -> String {
         guard hasPrefix(prefix) else { return self }
         return String(dropFirst(prefix.count))
     }

@@ -250,6 +250,10 @@ class ConfigurationTests: SwiftLintTestCase {
         func isFile(atPath path: String) -> Bool {
             path.hasSuffix(".swift")
         }
+
+        func isDirectory(atPath path: String) -> Bool {
+            path == "directory" || path == "directory/excluded"
+        }
     }
 
     func testExcludedPaths() {

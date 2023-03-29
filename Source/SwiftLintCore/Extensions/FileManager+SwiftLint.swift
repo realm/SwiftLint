@@ -26,6 +26,13 @@ public protocol LintableFileManager {
     ///
     /// - returns: true if the specified path is a file.
     func isFile(atPath path: String) -> Bool
+
+    /// Returns true if a directory exists at the specified path.
+    ///
+    /// - parameter path: The path that should be checked to see if it is a directory.
+    ///
+    /// - returns: true if the specified path is a directory.
+    func isDirectory(atPath path: String) -> Bool
 }
 
 extension FileManager: LintableFileManager {
@@ -52,5 +59,9 @@ extension FileManager: LintableFileManager {
 
     public func isFile(atPath path: String) -> Bool {
         path.isFile
+    }
+
+    public func isDirectory(atPath path: String) -> Bool {
+        path.isDirectory
     }
 }

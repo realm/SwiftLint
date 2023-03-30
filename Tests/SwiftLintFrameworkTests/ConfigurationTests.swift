@@ -323,7 +323,7 @@ class ConfigurationTests: SwiftLintTestCase {
             "Level2.swift",
             "Level3.swift",
             "Main.swift",
-            "Sub.swift",
+            "Sub.swift"
         ].sorted()
 
         // Because a directory was passed, we should ignore the configuration
@@ -434,7 +434,7 @@ extension ConfigurationTests {
             "Level0.swift",
             "Level2.swift",
             "Main.swift",
-            "Sub.swift",
+            "Sub.swift"
         ].sorted()
         XCTAssertEqual(filenames, expectedFilenames)
     }

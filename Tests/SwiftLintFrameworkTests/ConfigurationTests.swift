@@ -309,8 +309,17 @@ class ConfigurationTests: SwiftLintTestCase {
         let configuration = Configuration(includedPaths: ["**/Level2"])
         let paths = configuration.lintablePaths(inPath: Mock.Dir.level0, forceExclude: true)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
-        let expectedFilenames = ["Level2.swift", "Level3.swift"]
+        let expectedFilenames = [
+            "DirectoryLevel1.swift",
+            "Level0.swift",
+            "Level1.swift",
+            "Level2.swift",
+            "Level3.swift",
+            "Main.swift",
+            "Sub.swift",
+        ].sorted()
 
+        // Because a directory was passed, we should ignore the configuration
         XCTAssertEqual(Set(expectedFilenames), Set(filenames))
     }
 
@@ -412,8 +421,15 @@ extension ConfigurationTests {
         let paths = configuration.lintablePaths(inPath: Mock.Dir.level0,
                                                 forceExclude: false,
                                                 excludeByPrefix: true)
-        let filenames = paths.map { $0.bridge().lastPathComponent }
-        XCTAssertEqual(filenames, ["Level2.swift"])
+        let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
+        let expectedFilenames = [
+            "DirectoryLevel1.swift",
+            "Level0.swift",
+            "Level2.swift",
+            "Main.swift",
+            "Sub.swift",
+        ].sorted()
+        XCTAssertEqual(filenames, expectedFilenames)
     }
 
     func testExcludeByPrefixForceExcludesFile() {

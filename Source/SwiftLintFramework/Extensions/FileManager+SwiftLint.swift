@@ -19,6 +19,13 @@ public protocol LintableFileManager {
     ///
     /// - returns: A date, if one was determined.
     func modificationDate(forFileAtPath path: String) -> Date?
+
+    /// Returns true if a file (but not a directory) exists at the specified path.
+    ///
+    /// - parameter path: The path that should be checked to see if it is a file.
+    ///
+    /// - returns: true if the specified path is a file.
+    func isFile(atPath path: String) -> Bool
 }
 
 extension FileManager: LintableFileManager {
@@ -41,5 +48,9 @@ extension FileManager: LintableFileManager {
 
     public func modificationDate(forFileAtPath path: String) -> Date? {
         return (try? attributesOfItem(atPath: path))?[.modificationDate] as? Date
+    }
+
+    public func isFile(atPath path: String) -> Bool {
+        path.isFile
     }
 }

@@ -22,7 +22,7 @@ public protocol Reporter: CustomStringConvertible {
 }
 
 public extension Reporter {
-    // For CustomStringConvertible conformance.
+    /// For CustomStringConvertible conformance.
     var description: String { Self.description }
 }
 

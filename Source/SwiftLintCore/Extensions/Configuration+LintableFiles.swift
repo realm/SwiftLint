@@ -33,6 +33,11 @@ extension Configuration {
         excludeBy: ExcludeBy,
         fileManager: some LintableFileManager = FileManager.default
     ) -> [String] {
+        func excludePaths(from includedPaths: [String]) -> [String] {
+            excludeByPrefix
+            ? filterExcludedPathsByPrefix(in: includedPaths)
+            : filterExcludedPaths(fileManager: fileManager, in: includedPaths)
+        }
         if path.isEmpty {
             var pathsForPath = includedPaths
             if pathsForPath.isEmpty {
@@ -41,26 +46,21 @@ extension Configuration {
             let includedPaths = pathsForPath
                 .flatMap(Glob.resolveGlob)
                 .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
-            return excludeByPrefix
-                ? filterExcludedPathsByPrefix(in: includedPaths)
-                : filterExcludedPaths(fileManager: fileManager, in: includedPaths)
+            return excludePaths(from: includedPaths)
         }
 
         if fileManager.isFile(atPath: path) {
             if forceExclude {
-                return excludeByPrefix
-                    ? filterExcludedPathsByPrefix(in: [path.absolutePathStandardized()])
-                    : filterExcludedPaths(fileManager: fileManager, in: [path.absolutePathStandardized()])
+                return excludePaths(from: [path.absolutePathStandardized()])
             }
-            // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
+            // If path is a file and we're not forcing excludes,
+            // skip filtering with excluded/included paths
             return [path]
         }
 
         if fileManager.isDirectory(atPath: path) {
             let pathsForPath = fileManager.filesToLint(inPath: path, rootDirectory: nil)
-            return excludeByPrefix
-                ? filterExcludedPathsByPrefix(in: pathsForPath)
-                : filterExcludedPaths(fileManager: fileManager, in: pathsForPath)
+            return excludePaths(from: pathsForPath)
         }
 
         return []

@@ -143,7 +143,7 @@ class FileTypesOrderRuleTests: XCTestCase {
         verifyRule(
             groupedOrderDescription,
             ruleConfiguration: [
-                "order": ["main_type", ["extension", "supporting_type"], "preview_provider"]
+                "order": ["main_type", ["extension", "supporting_type"] as Any, "preview_provider"] as Any
             ]
         )
     }

@@ -93,9 +93,9 @@ class NumberSeparatorRuleTests: XCTestCase {
                 "exclude_ranges": [
                     ["min": 1900, "max": 2030],
                     ["min": 2.0, "max": 3.0]
-                ],
+                ] as Any,
                 "minimum_fraction_length": 3
-            ]
+            ] as Any
         )
     }
 
@@ -134,7 +134,7 @@ class NumberSeparatorRuleTests: XCTestCase {
         )
     }
 
-    private func violations(in code: String, config: Any = []) -> [String] {
+    private func violations(in code: String, config: Any = [Any]()) -> [String] {
         var rule = NumberSeparatorRule()
         try? rule.configuration.apply(configuration: config)
         let visitor = rule.makeVisitor(file: SwiftLintFile(contents: ""))

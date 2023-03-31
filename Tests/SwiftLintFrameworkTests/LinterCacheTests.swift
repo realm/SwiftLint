@@ -123,12 +123,12 @@ class LinterCacheTests: XCTestCase {
     }
 
     func testConfigFileReorderedReusesCache() {
-        let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "disabled_rules": []])
+        let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "disabled_rules": [Any]()])
         let file = "foo.swift"
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
-        let configuration2 = helper.makeConfig(dict: ["disabled_rules": [], "only_rules": ["mock"]])
+        let configuration2 = helper.makeConfig(dict: ["disabled_rules": [Any](), "only_rules": ["mock"]])
         XCTAssertEqual(cache.violations(forFile: file, configuration: configuration2)!, violations)
     }
 
@@ -138,7 +138,7 @@ class LinterCacheTests: XCTestCase {
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
-        let configuration2 = helper.makeConfig(dict: ["disabled_rules": [], "only_rules": ["mock"]])
+        let configuration2 = helper.makeConfig(dict: ["disabled_rules": [Any](), "only_rules": ["mock"]])
         XCTAssertEqual(cache.violations(forFile: file, configuration: configuration2)!, violations)
         let configYamlWithComment = try YamlParser.parse("# comment1\nonly_rules:\n  - mock # comment2")
         let configuration3 = helper.makeConfig(dict: configYamlWithComment)
@@ -232,7 +232,7 @@ class LinterCacheTests: XCTestCase {
         // Addition
         try validateNewConfigDoesntHitCache(dict: ["disabled_rules": ["nesting", "todo"]], initialConfig: initialConfig)
         // Removal
-        try validateNewConfigDoesntHitCache(dict: ["disabled_rules": []], initialConfig: initialConfig)
+        try validateNewConfigDoesntHitCache(dict: ["disabled_rules": [Any]()], initialConfig: initialConfig)
     }
 
     func testOptInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
@@ -245,7 +245,7 @@ class LinterCacheTests: XCTestCase {
         try validateNewConfigDoesntHitCache(dict: ["opt_in_rules": ["attributes", "empty_count"]],
                                             initialConfig: initialConfig)
         // Removal
-        try validateNewConfigDoesntHitCache(dict: ["opt_in_rules": []], initialConfig: initialConfig)
+        try validateNewConfigDoesntHitCache(dict: ["opt_in_rules": [Any]()], initialConfig: initialConfig)
     }
 
     func testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
@@ -258,7 +258,7 @@ class LinterCacheTests: XCTestCase {
         try validateNewConfigDoesntHitCache(dict: ["enabled_rules": ["attributes", "empty_count"]],
                                             initialConfig: initialConfig)
         // Removal
-        try validateNewConfigDoesntHitCache(dict: ["enabled_rules": []], initialConfig: initialConfig)
+        try validateNewConfigDoesntHitCache(dict: ["enabled_rules": [Any]()], initialConfig: initialConfig)
     }
 
     func testOnlyRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
@@ -270,7 +270,7 @@ class LinterCacheTests: XCTestCase {
         // Addition
         try validateNewConfigDoesntHitCache(dict: ["only_rules": ["nesting", "todo"]], initialConfig: initialConfig)
         // Removal
-        try validateNewConfigDoesntHitCache(dict: ["only_rules": []], initialConfig: initialConfig)
+        try validateNewConfigDoesntHitCache(dict: ["only_rules": [Any]()], initialConfig: initialConfig)
     }
 
     func testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {

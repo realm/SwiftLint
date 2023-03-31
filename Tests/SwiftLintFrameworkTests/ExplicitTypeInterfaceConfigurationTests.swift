@@ -12,7 +12,7 @@ class ExplicitTypeInterfaceConfigurationTests: XCTestCase {
         var config = ExplicitTypeInterfaceConfiguration()
         try config.apply(configuration: ["severity": "error",
                                          "excluded": ["local"],
-                                         "allow_redundancy": true])
+                                         "allow_redundancy": true] as [String: Any])
         XCTAssertEqual(config.severityConfiguration.severity, .error)
         XCTAssertEqual(config.allowedKinds, Set([.instance, .class, .static]))
         XCTAssertTrue(config.allowRedundancy)

@@ -118,6 +118,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Global%20Variables.html#/s:18SwiftLintFramework15primaryRuleListAA0eF0Vvp">primaryRuleList</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Global%20Variables.html#/s:18SwiftLintFramework13reportersListSayAA8Reporter_pXpGvp">reportersList</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -603,6 +606,7 @@ SUBCOMMANDS:
   docs                    Open SwiftLint documentation website in the default web browser
   generate-docs           Generates markdown documentation for all rules
   lint (default)          Print lint warnings and errors
+  reporters               Display the list of reporters and their identifiers
   rules                   Display the list of rules and their identifiers
   version                 Display the current version of SwiftLint
 
@@ -831,7 +835,7 @@ only configurable rule list, there are no equivalents for <code>disabled_rules</
     <span class="pi">-</span> <span class="s">id</span>
     <span class="pi">-</span> <span class="s">URL</span>
     <span class="pi">-</span> <span class="s">GlobalAPIKey</span>
-<span class="na">reporter</span><span class="pi">:</span> <span class="s2">"</span><span class="s">xcode"</span> <span class="c1"># reporter type (xcode, json, csv, checkstyle, codeclimate, junit, html, emoji, sonarqube, markdown, github-actions-logging)</span>
+<span class="na">reporter</span><span class="pi">:</span> <span class="s2">"</span><span class="s">xcode"</span> <span class="c1"># reporter type (xcode, json, csv, checkstyle, codeclimate, junit, html, emoji, sonarqube, markdown, github-actions-logging, summary)</span>
 </code></pre>
 
 <p>You can also use environment variables in your configuration file,

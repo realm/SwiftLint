@@ -83,7 +83,7 @@ private extension ExplicitTopLevelACLRule {
 
         override func visitPost(_ node: VariableDeclSyntax) {
             if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 

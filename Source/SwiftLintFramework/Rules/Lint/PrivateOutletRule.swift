@@ -105,7 +105,7 @@ private extension PrivateOutletRule {
                 return
             }
 
-            violations.append(decl.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(decl.bindingKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

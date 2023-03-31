@@ -158,9 +158,9 @@ struct UnusedImportRuleExamples {
                 [
                     "module": "Foundation",
                     "allowed_transitive_imports": ["CoreFoundation"]
-                ]
+                ] as [String: Any]
             ]
-        ], testMultiByteOffsets: false, testOnLinux: false):
+        ] as [String: Any], testMultiByteOffsets: false, testOnLinux: false):
             Example("""
             import CoreFoundation
             typealias Foo = CFArray
@@ -186,9 +186,9 @@ struct UnusedImportRuleExamples {
                 [
                     "module": "Foundation",
                     "allowed_transitive_imports": ["CoreFoundation"]
-                ]
+                ] as [String: Any]
             ]
-        ]):
+        ] as [String: Any]):
             Example("""
             import Foundation
             typealias Foo = CFData

@@ -159,7 +159,7 @@ class TypeContentsOrderRuleTests: XCTestCase {
                     "subtype",
                     ["type_alias", "associated_type"],
                     "case"
-                ]
+                ] as [Any]
             ]
         )
     }

@@ -8,11 +8,11 @@ class UnusedDeclarationConfigurationTests: XCTestCase {
             includePublicAndOpen: false,
             relatedUSRsToSkip: []
         )
-        let config: Any = [
+        let config = [
             "severity": "error",
             "include_public_and_open": true,
             "related_usrs_to_skip": ["a", "b"]
-        ]
+        ] as [String: Any]
 
         try testee.apply(configuration: config)
 

@@ -24,8 +24,8 @@ public struct SonarQubeReporter: Reporter {
                 "filePath": violation.location.relativeFile ?? "",
                 "textRange": [
                     "startLine": violation.location.line ?? 1
-                ]
-            ],
+                ] as Any
+            ] as Any,
             "type": "CODE_SMELL",
             "severity": violation.severity == .error ? "MAJOR" : "MINOR"
         ]

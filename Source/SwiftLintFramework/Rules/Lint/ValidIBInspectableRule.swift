@@ -162,7 +162,7 @@ private extension ValidIBInspectableRule {
 
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.isInstanceVariable, node.isIBInspectable, node.hasViolation {
-                violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
     }
@@ -178,7 +178,7 @@ private extension VariableDeclSyntax {
     }
 
     var isReadOnlyProperty: Bool {
-        if letOrVarKeyword.tokenKind == .keyword(.let) {
+        if bindingKeyword.tokenKind == .keyword(.let) {
             return true
         }
 

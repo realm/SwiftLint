@@ -29,7 +29,7 @@ private extension ProhibitedInterfaceBuilderRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.isIBOutlet {
-                violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 

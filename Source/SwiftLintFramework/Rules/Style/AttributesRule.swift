@@ -210,7 +210,7 @@ private extension AttributeListSyntax {
         } else if let importTok = parent.as(ImportDeclSyntax.self)?.importTok {
             keyword = importTok
             shouldBeOnSameLine = true
-        } else if let letOrVarKeyword = parent.as(VariableDeclSyntax.self)?.letOrVarKeyword {
+        } else if let letOrVarKeyword = parent.as(VariableDeclSyntax.self)?.bindingKeyword {
             keyword = letOrVarKeyword
             shouldBeOnSameLine = true
         } else {

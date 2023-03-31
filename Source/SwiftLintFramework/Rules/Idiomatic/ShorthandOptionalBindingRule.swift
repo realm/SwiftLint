@@ -96,7 +96,7 @@ struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, Conf
 private class Visitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: OptionalBindingConditionSyntax) {
         if node.isShadowingOptionalBinding {
-            violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

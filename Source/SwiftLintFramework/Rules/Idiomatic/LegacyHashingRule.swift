@@ -85,7 +85,7 @@ extension LegacyHashingRule {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard
                 node.parent?.is(MemberDeclListItemSyntax.self) == true,
-                node.letOrVarKeyword.tokenKind == .keyword(.var),
+                node.bindingKeyword.tokenKind == .keyword(.var),
                 let binding = node.bindings.onlyElement,
                 let identifier = binding.pattern.as(IdentifierPatternSyntax.self),
                 identifier.identifier.text == "hashValue",
@@ -95,7 +95,7 @@ extension LegacyHashingRule {
                 return
             }
 
-            violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

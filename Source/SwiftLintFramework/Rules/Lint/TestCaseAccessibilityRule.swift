@@ -82,7 +82,7 @@ private extension TestCaseAccessibilityRule {
                     continue
                 }
 
-                violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
                 return
             }
         }

@@ -90,7 +90,7 @@ private extension WeakDelegateRule {
                 return
             }
 
-            violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

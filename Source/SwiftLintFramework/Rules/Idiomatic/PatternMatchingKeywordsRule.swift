@@ -57,12 +57,12 @@ private extension PatternMatchingKeywordsRule {
                 }
 
             guard list.count > 1,
-                let firstLetOrVar = list.first?.letOrVarKeyword.tokenKind else {
+                let firstLetOrVar = list.first?.bindingKeyword.tokenKind else {
                 return
             }
 
             let hasViolation = list.allSatisfy { elem in
-                elem.letOrVarKeyword.tokenKind == firstLetOrVar
+                elem.bindingKeyword.tokenKind == firstLetOrVar
             }
 
             guard hasViolation else {
@@ -70,7 +70,7 @@ private extension PatternMatchingKeywordsRule {
             }
 
             violations.append(contentsOf: list.compactMap { elem in
-                return elem.letOrVarKeyword.positionAfterSkippingLeadingTrivia
+                return elem.bindingKeyword.positionAfterSkippingLeadingTrivia
             })
         }
     }

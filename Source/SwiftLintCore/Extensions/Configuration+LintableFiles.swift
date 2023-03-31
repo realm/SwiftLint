@@ -34,7 +34,10 @@ extension Configuration {
         fileManager: some LintableFileManager = FileManager.default
     ) -> [String] {
         if path.isEmpty {
-            let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : includedPaths
+            var pathsForPath = includedPaths
+            if pathsForPath.isEmpty {
+                pathsForPath = fileManager.filesToLint(inPath: path, rootDirectory: nil)
+            }
             let includedPaths = pathsForPath
                 .flatMap(Glob.resolveGlob)
                 .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }

@@ -34,10 +34,10 @@ extension Configuration {
         fileManager: some LintableFileManager = FileManager.default
     ) -> [String] {
         if path.isEmpty {
-            let includedPaths = self.includedPaths
+            let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : includedPaths
+            let includedPaths = pathsForPath
                 .flatMap(Glob.resolveGlob)
                 .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
-
             return excludeByPrefix
                 ? filterExcludedPathsByPrefix(in: includedPaths)
                 : filterExcludedPaths(fileManager: fileManager, in: includedPaths)

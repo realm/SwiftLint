@@ -4,10 +4,8 @@ public struct GitHubActionsLoggingReporter: Reporter {
 
     public static let identifier = "github-actions-logging"
     public static let isRealtime = true
-
-    public var description: String {
-        return "Reports violations in the format GitHub-hosted virtual machine for Actions can recognize as messages."
-    }
+    public static let description = "Reports violations in the format GitHub-hosted virtual " +
+                                    "machine for Actions can recognize as messages."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return violations.map(generateForSingleViolation).joined(separator: "\n")

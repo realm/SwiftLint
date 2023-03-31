@@ -4,10 +4,7 @@ public struct RelativePathReporter: Reporter {
 
     public static let identifier = "relative-path"
     public static let isRealtime = true
-
-    public var description: String {
-        return "Reports violations with relative paths."
-    }
+    public static let description = "Reports violations with relative paths."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return violations.map(generateForSingleViolation).joined(separator: "\n")

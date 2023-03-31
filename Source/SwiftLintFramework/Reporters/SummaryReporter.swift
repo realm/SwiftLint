@@ -8,9 +8,7 @@ public struct SummaryReporter: Reporter {
     public static let identifier = "summary"
     public static let isRealtime = false
 
-    public var description: String {
-        return "Reports a summary table of all violations."
-    }
+    public static let description = "Reports a summary table of all violations."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         TextTable(violations: violations).renderWithExtraSeparator()

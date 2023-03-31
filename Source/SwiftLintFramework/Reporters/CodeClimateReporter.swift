@@ -10,10 +10,7 @@ public struct CodeClimateReporter: Reporter {
 
     public static let identifier = "codeclimate"
     public static let isRealtime = false
-
-    public var description: String {
-        return "Reports violations as a JSON array in Code Climate format."
-    }
+    public static let description = "Reports violations as a JSON array in Code Climate format."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return toJSON(violations.map(dictionary(for:)))

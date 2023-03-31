@@ -1,0 +1,7 @@
+
+/// The reporters list containing all the reporters built into SwiftLint.
+public let reportersList: [Reporter.Type] = [
+{% for reporter in types.structs where reporter.name|hasSuffix:"Reporter" %}
+    {{ reporter.name }}.self{% if not forloop.last %},{% endif %}
+{% endfor %}
+]

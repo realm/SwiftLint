@@ -313,6 +313,7 @@ SUBCOMMANDS:
   docs                    Open SwiftLint documentation website in the default web browser
   generate-docs           Generates markdown documentation for all rules
   lint (default)          Print lint warnings and errors
+  reporters               Display the list of reporters and their identifiers
   rules                   Display the list of rules and their identifiers
   version                 Display the current version of SwiftLint
 
@@ -554,7 +555,7 @@ identifier_name:
     - id
     - URL
     - GlobalAPIKey
-reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, codeclimate, junit, html, emoji, sonarqube, markdown, github-actions-logging)
+reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, codeclimate, junit, html, emoji, sonarqube, markdown, github-actions-logging, summary)
 ```
 
 You can also use environment variables in your configuration file,

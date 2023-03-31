@@ -4,10 +4,7 @@ public struct EmojiReporter: Reporter {
 
     public static let identifier = "emoji"
     public static let isRealtime = false
-
-    public var description: String {
-        return "Reports violations in the format that's both fun and easy to read."
-    }
+    public static let description = "Reports violations in the format that's both fun and easy to read."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         violations

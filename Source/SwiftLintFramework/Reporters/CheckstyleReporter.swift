@@ -5,10 +5,7 @@ public struct CheckstyleReporter: Reporter {
 
     public static let identifier = "checkstyle"
     public static let isRealtime = false
-
-    public var description: String {
-        return "Reports violations as Checkstyle XML."
-    }
+    public static let description = "Reports violations as Checkstyle XML."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return [

@@ -7,10 +7,7 @@ public struct JSONReporter: Reporter {
 
     public static let identifier = "json"
     public static let isRealtime = false
-
-    public var description: String {
-        return "Reports violations as a JSON array."
-    }
+    public static let description: String = "Reports violations as a JSON array."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return toJSON(violations.map(dictionary(for:)))

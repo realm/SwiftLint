@@ -7,6 +7,12 @@ public protocol Reporter: CustomStringConvertible {
     /// collected before generating the report.
     static var isRealtime: Bool { get }
 
+    /// A more detailed description of the reporter's output.
+    static var description: String { get }
+
+    /// For CustomStringConvertible conformance.
+    var description: String { get }
+
     /// Return a string with the report for the specified violations.
     ///
     /// - parameter violations: The violations to report.
@@ -15,43 +21,20 @@ public protocol Reporter: CustomStringConvertible {
     static func generateReport(_ violations: [StyleViolation]) -> String
 }
 
+public extension Reporter {
+    /// For CustomStringConvertible conformance.
+    var description: String { Self.description }
+}
+
 /// Returns the reporter with the specified identifier. Traps if the specified identifier doesn't correspond to any
 /// known reporters.
 ///
 /// - parameter identifier: The identifier corresponding to the reporter.
 ///
 /// - returns: The reporter type.
-public func reporterFrom(identifier: String) -> Reporter.Type { // swiftlint:disable:this cyclomatic_complexity
-    switch identifier {
-    case XcodeReporter.identifier:
-        return XcodeReporter.self
-    case JSONReporter.identifier:
-        return JSONReporter.self
-    case CSVReporter.identifier:
-        return CSVReporter.self
-    case CheckstyleReporter.identifier:
-        return CheckstyleReporter.self
-    case JUnitReporter.identifier:
-        return JUnitReporter.self
-    case HTMLReporter.identifier:
-        return HTMLReporter.self
-    case EmojiReporter.identifier:
-        return EmojiReporter.self
-    case SonarQubeReporter.identifier:
-        return SonarQubeReporter.self
-    case MarkdownReporter.identifier:
-        return MarkdownReporter.self
-    case GitHubActionsLoggingReporter.identifier:
-        return GitHubActionsLoggingReporter.self
-    case GitLabJUnitReporter.identifier:
-        return GitLabJUnitReporter.self
-    case CodeClimateReporter.identifier:
-        return CodeClimateReporter.self
-    case RelativePathReporter.identifier:
-        return RelativePathReporter.self
-    case SummaryReporter.identifier:
-        return SummaryReporter.self
-    default:
+public func reporterFrom(identifier: String) -> Reporter.Type {
+    guard let reporter = reportersList.first(where: { $0.identifier == identifier }) else {
         queuedFatalError("no reporter with identifier '\(identifier)' available.")
     }
+    return reporter
 }

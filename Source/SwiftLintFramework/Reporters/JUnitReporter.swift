@@ -4,10 +4,7 @@ public struct JUnitReporter: Reporter {
 
     public static let identifier = "junit"
     public static let isRealtime = false
-
-    public var description: String {
-        return "Reports violations as JUnit XML."
-    }
+    public static let description = "Reports violations as JUnit XML."
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         let warningCount = violations.filter({ $0.severity == .warning }).count

@@ -5,23 +5,7 @@ import XCTest
 
 class ReporterTests: XCTestCase {
     func testReporterFromString() {
-        let reporters: [Reporter.Type] = [
-            CheckstyleReporter.self,
-            CodeClimateReporter.self,
-            CSVReporter.self,
-            EmojiReporter.self,
-            GitHubActionsLoggingReporter.self,
-            GitLabJUnitReporter.self,
-            HTMLReporter.self,
-            JSONReporter.self,
-            JUnitReporter.self,
-            MarkdownReporter.self,
-            RelativePathReporter.self,
-            SonarQubeReporter.self,
-            SummaryReporter.self,
-            XcodeReporter.self
-        ]
-        for reporter in reporters {
+        for reporter in reportersList {
             XCTAssertEqual(reporter.identifier, reporterFrom(identifier: reporter.identifier).identifier)
         }
     }

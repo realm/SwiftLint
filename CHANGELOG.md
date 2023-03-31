@@ -133,6 +133,11 @@
   of each rule in a text table.  
   [Martin Redington](https://github.com/mildm8nnered)
 
+* Adds a new `reporters` subcommand, to improve discoverability of
+  reporters.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4819](https://github.com/realm/SwiftLint/issues/4819)
+
 #### Bug Fixes
 
 * Report violations in all `<scope>_length` rules when the error threshold is

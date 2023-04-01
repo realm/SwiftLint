@@ -142,7 +142,7 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
                     identifier: .keyword(
                         .`self`,
                         leadingTrivia: .space,
-                        trailingTrivia: identifierPattern.trailingTrivia ?? .space
+                        trailingTrivia: identifierPattern.trailingTrivia
                     )
                 )
             )

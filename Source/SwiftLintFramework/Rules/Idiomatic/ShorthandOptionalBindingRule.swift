@@ -122,7 +122,7 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
         let newNode = node
             .with(\.initializer, nil)
-            .with(\.pattern, node.pattern.with(\.trailingTrivia, node.trailingTrivia ?? .zero))
+            .with(\.pattern, node.pattern.with(\.trailingTrivia, node.trailingTrivia))
         return super.visit(newNode)
     }
 }

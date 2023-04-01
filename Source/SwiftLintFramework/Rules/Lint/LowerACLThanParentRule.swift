@@ -125,13 +125,13 @@ private extension LowerACLThanParentRule {
             let newNode: DeclModifierSyntax
             if node.name.tokenKind == .keyword(.open) {
                 newNode = DeclModifierSyntax(
-                    leadingTrivia: node.leadingTrivia ?? .zero,
+                    leadingTrivia: node.leadingTrivia,
                     name: .keyword(.public),
                     trailingTrivia: .space
                 )
             } else {
                 newNode = DeclModifierSyntax(
-                    leadingTrivia: node.leadingTrivia ?? .zero,
+                    leadingTrivia: node.leadingTrivia,
                     name: .identifier("")
                 )
             }

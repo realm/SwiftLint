@@ -98,13 +98,8 @@ private extension NoSpaceInMethodCallRule {
 
 private extension FunctionCallExprSyntax {
     var hasNoSpaceInMethodCallViolation: Bool {
-        guard leftParen != nil,
-            !calledExpression.is(TupleExprSyntax.self),
-            let trailingTrivia = calledExpression.trailingTrivia,
-            trailingTrivia.isNotEmpty else {
-            return false
-        }
-
-        return true
+        leftParen != nil &&
+            !calledExpression.is(TupleExprSyntax.self) &&
+            calledExpression.trailingTrivia.isNotEmpty
     }
 }

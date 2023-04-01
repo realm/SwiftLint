@@ -87,8 +87,8 @@ private extension AnyObjectProtocolRule {
                     \.typeName,
                     TypeSyntax(
                         SimpleTypeIdentifierSyntax(name: .identifier("AnyObject"), genericArgumentClause: nil)
-                            .with(\.leadingTrivia, typeName.leadingTrivia ?? .zero)
-                            .with(\.trailingTrivia, typeName.trailingTrivia ?? .zero)
+                            .with(\.leadingTrivia, typeName.leadingTrivia)
+                            .with(\.trailingTrivia, typeName.trailingTrivia)
                     )
                 )
             )

@@ -231,7 +231,7 @@ extension FunctionDeclSyntax {
         name += "("
 
         let params = signature.input.parameterList.compactMap { param in
-            (param.firstName ?? param.secondName)?.text.appending(":")
+            param.firstName.text.appending(":")
         }
 
         name += params.joined()

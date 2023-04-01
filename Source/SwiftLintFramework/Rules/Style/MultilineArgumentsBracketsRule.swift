@@ -194,9 +194,7 @@ private extension MultilineArgumentsBracketsRule {
         }
 
         private func hasLeadingNewline(_ syntax: SyntaxProtocol) -> Bool {
-            guard let leadingTrivia = syntax.leadingTrivia else { return false }
-
-            return leadingTrivia.pieces.contains { $0.isNewline }
+            syntax.leadingTrivia.contains(where: \.isNewline)
         }
     }
 }

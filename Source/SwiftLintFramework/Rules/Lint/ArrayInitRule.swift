@@ -104,9 +104,9 @@ private extension ClosureSignatureSyntax {
     func singleInputParamText() -> String? {
         if let list = input?.as(ClosureParamListSyntax.self), list.count == 1 {
             return list.onlyElement?.name.text
-        } else if let clause = input?.as(ParameterClauseSyntax.self), clause.parameterList.count == 1,
+        } else if let clause = input?.as(ClosureParameterClauseSyntax.self), clause.parameterList.count == 1,
                   clause.parameterList.first?.secondName == nil {
-            return clause.parameterList.first?.firstName?.text
+            return clause.parameterList.first?.firstName.text
         } else {
             return nil
         }

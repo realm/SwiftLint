@@ -149,8 +149,8 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
 
             let base = IdentifierExprSyntax(identifier: "Self")
             let baseWithTrivia = base
-                .with(\.leadingTrivia, function.leadingTrivia ?? .zero)
-                .with(\.trailingTrivia, function.trailingTrivia ?? .zero)
+                .with(\.leadingTrivia, function.leadingTrivia)
+                .with(\.trailingTrivia, function.trailingTrivia)
             return super.visit(node.with(\.base, ExprSyntax(baseWithTrivia)))
         }
     }

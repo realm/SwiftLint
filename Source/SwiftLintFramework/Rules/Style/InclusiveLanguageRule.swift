@@ -94,7 +94,7 @@ private extension InclusiveLanguageRule {
         }
 
         override func visitPost(_ node: FunctionParameterSyntax) {
-            if let name = node.firstName, let violation = violation(for: name) {
+            if let violation = violation(for: node.firstName) {
                 violations.append(violation)
             }
 

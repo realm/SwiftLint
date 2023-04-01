@@ -8,7 +8,7 @@ extension SyntaxClassification {
             return true
         case .none, .keyword, .identifier, .typeIdentifier, .operatorIdentifier, .dollarIdentifier, .integerLiteral,
              .floatingLiteral, .stringLiteral, .stringInterpolationAnchor, .poundDirectiveKeyword, .buildConfigId,
-             .attribute, .objectLiteral, .editorPlaceholder:
+             .attribute, .objectLiteral, .editorPlaceholder, .regexLiteral:
             return false
         }
     }

@@ -10,6 +10,11 @@
 
 #### Enhancements
 
+* Add new `superfluous_else` rule that triggers on `if`-statements when an
+  attached `else`-block can be removed, because all branches of the previous
+  `if`-block(s) would certainly exit the current scope already.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Add `sorted_enum_cases` rule which warns when enum cases are not sorted.  
   [kimdv](https://github.com/kimdv)
 

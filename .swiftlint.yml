@@ -44,6 +44,7 @@ disabled_rules:
   - self_binding
   - sorted_enum_cases
   - strict_fileprivate
+  - superfluous_else
   - switch_case_on_newline
   - trailing_closure
   - type_contents_order

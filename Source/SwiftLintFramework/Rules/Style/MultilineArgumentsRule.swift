@@ -1,4 +1,3 @@
-import Foundation
 import SwiftSyntax
 
 struct MultilineArgumentsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {

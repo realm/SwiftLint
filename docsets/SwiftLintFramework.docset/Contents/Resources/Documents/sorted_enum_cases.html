@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Global Variables  Reference</title>
+    <title>sorted_enum_cases  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,8 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Section/Global Variables" class="dashAnchor"></a>
 
-    <a title="Global Variables  Reference"></a>
+    <a title="sorted_enum_cases  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -50,7 +49,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">SwiftLintFramework Reference</a>
       <img class="carat" src="img/carat.png" alt=""/>
-      Global Variables  Reference
+      sorted_enum_cases  Reference
     </p>
 
     <div class="content-wrapper">
@@ -326,80 +325,78 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>Global Variables</h1>
-            <p>The following global variables are available globally.</p>
+            
+            <h1 id='sorted-enum-cases' class='heading'>Sorted Enum Cases</h1>
+
+<p>Enum cases should be sorted</p>
+
+<ul>
+<li><strong>Identifier:</strong> sorted_enum_cases</li>
+<li><strong>Enabled by default:</strong> No</li>
+<li><strong>Supports autocorrection:</strong> No</li>
+<li><strong>Kind:</strong> style</li>
+<li><strong>Analyzer rule:</strong> No</li>
+<li><strong>Minimum Swift compiler version:</strong> 5.0.0</li>
+<li><strong>Default configuration:</strong> warning</li>
+</ul>
+<h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="n">foo</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">a</span>
+    <span class="k">case</span> <span class="n">b</span>
+    <span class="k">case</span> <span class="n">c</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="n">foo</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="n">foo</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">a</span>
+    <span class="k">case</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="n">foo</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nf">a</span><span class="p">(</span><span class="nv">foo</span><span class="p">:</span> <span class="kt">Foo</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nf">b</span><span class="p">(</span><span class="kt">String</span><span class="p">),</span> <span class="n">c</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">@frozen</span>
+<span class="kd">enum</span> <span class="n">foo</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">b</span>
+    <span class="k">case</span> <span class="n">a</span>
+    <span class="k">case</span> <span class="n">c</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">d</span>
+<span class="p">}</span>
+</code></pre>
+<h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="n">foo</span> <span class="p">{</span>
+    <span class="err">↓</span><span class="k">case</span> <span class="n">b</span>
+    <span class="err">↓</span><span class="k">case</span> <span class="n">a</span>
+    <span class="k">case</span> <span class="n">c</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="n">foo</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="err">↓</span><span class="n">b</span><span class="p">,</span> <span class="err">↓</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="n">foo</span> <span class="p">{</span>
+    <span class="err">↓</span><span class="k">case</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span>
+    <span class="err">↓</span><span class="k">case</span> <span class="n">a</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="n">foo</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">a</span>
+    <span class="k">case</span> <span class="n">b</span><span class="p">,</span> <span class="err">↓</span><span class="n">d</span><span class="p">,</span> <span class="err">↓</span><span class="n">c</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="n">foo</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nf">a</span><span class="p">(</span><span class="nv">foo</span><span class="p">:</span> <span class="kt">Foo</span><span class="p">)</span>
+    <span class="k">case</span> <span class="err">↓</span><span class="n">c</span><span class="p">,</span> <span class="err">↓</span><span class="nf">b</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
 
           </div>
         </section>
 
-        <section class="section">
-          <div class="section-content">
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:18SwiftLintFramework15primaryRuleListAA0eF0Vvp"></a>
-                    <a name="//apple_ref/swift/Global/primaryRuleList" class="dashAnchor"></a>
-                    <a class="token" href="#/s:18SwiftLintFramework15primaryRuleListAA0eF0Vvp">primaryRuleList</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The rule list containing all available rules built into SwiftLint as well as native custom rules.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">primaryRuleList</span><span class="p">:</span> <span class="kt"><a href="Structs/RuleList.html">RuleList</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/PrimaryRuleList.swift#L235">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:18SwiftLintFramework13reportersListSayAA8Reporter_pXpGvp"></a>
-                    <a name="//apple_ref/swift/Global/reportersList" class="dashAnchor"></a>
-                    <a class="token" href="#/s:18SwiftLintFramework13reportersListSayAA8Reporter_pXpGvp">reportersList</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The reporters list containing all the reporters built into SwiftLint.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">reportersList</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="Protocols/Reporter.html">Reporter</a></span><span class="o">.</span><span class="k">Type</span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/ReportersList.swift#L5">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
 
       </article>
     </div>

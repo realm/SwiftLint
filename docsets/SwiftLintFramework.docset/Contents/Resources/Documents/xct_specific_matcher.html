@@ -340,6 +340,8 @@
 <li><strong>Default configuration:</strong> warning</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
+<pre class="highlight swift"><code><span class="kt">XCTAssert</span><span class="p">(</span><span class="n">foo</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kt">XCTAssertFalse</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kt">XCTAssertTrue</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
@@ -375,6 +377,8 @@
 <pre class="highlight swift"><code><span class="kt">XCTAssertEqual</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="n">foo</span><span class="p">?</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kt">XCTAssertEqual</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="n">foo</span><span class="p">?</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kt">XCTAssert</span><span class="p">(</span>    <span class="n">foo</span>  <span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kt">XCTAssertFalse</span><span class="p">(</span>  <span class="n">foo</span>  <span class="p">)</span>
 </code></pre>
@@ -484,6 +488,32 @@
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssertEqual</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssertEqual</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssert</span><span class="p">(</span><span class="n">foo</span> <span class="o">==</span> <span class="n">bar</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssertTrue</span><span class="p">(</span>   <span class="n">foo</span>  <span class="o">==</span>   <span class="n">bar</span>  <span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssertFalse</span><span class="p">(</span><span class="mi">1</span> <span class="o">==</span> <span class="n">foo</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssert</span><span class="p">(</span><span class="n">foo</span> <span class="o">==</span> <span class="n">bar</span><span class="p">,</span> <span class="s">"toto"</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssert</span><span class="p">(</span><span class="n">foo</span> <span class="o">!=</span> <span class="n">bar</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssertTrue</span><span class="p">(</span>   <span class="n">foo</span>  <span class="o">!=</span>   <span class="n">bar</span>  <span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssertFalse</span><span class="p">(</span><span class="mi">1</span> <span class="o">!=</span> <span class="n">foo</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssert</span><span class="p">(</span><span class="n">foo</span> <span class="o">!=</span> <span class="n">bar</span><span class="p">,</span> <span class="s">"toto"</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssert</span><span class="p">(</span>  <span class="n">foo</span>   <span class="o">==</span>  <span class="kc">nil</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssert</span><span class="p">(</span><span class="kc">nil</span> <span class="o">==</span> <span class="n">foo</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssertTrue</span><span class="p">(</span>  <span class="n">foo</span>   <span class="o">!=</span>  <span class="kc">nil</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssertFalse</span><span class="p">(</span><span class="kc">nil</span> <span class="o">!=</span> <span class="n">foo</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">XCTAssert</span><span class="p">(</span><span class="n">foo</span> <span class="o">==</span> <span class="kc">nil</span><span class="p">,</span> <span class="s">"toto"</span><span class="p">)</span>
 </code></pre>
 
           </div>

@@ -1,6 +1,7 @@
 internal struct XCTSpecificMatcherRuleExamples {
     static let nonTriggeringExamples = [
         // True/False
+        Example("XCTAssert(foo"),
         Example("XCTAssertFalse(foo)"),
         Example("XCTAssertTrue(foo)"),
 
@@ -29,6 +30,7 @@ internal struct XCTSpecificMatcherRuleExamples {
         Example("XCTAssertEqual(true, foo?.bar)"),
 
         // Blank spaces
+        Example("XCTAssert(    foo  )"),
         Example("XCTAssertFalse(  foo  )"),
         Example("XCTAssertTrue(  foo  )"),
         Example("XCTAssertNil(  foo  )"),
@@ -102,6 +104,25 @@ internal struct XCTSpecificMatcherRuleExamples {
         Example("↓XCTAssertEqual(false, nil)"),
         Example("↓XCTAssertEqual(nil, nil)"),
         Example("↓XCTAssertEqual(true, true)"),
-        Example("↓XCTAssertEqual(false, false)")
+        Example("↓XCTAssertEqual(false, false)"),
+
+        // Equality with `==`
+        Example("↓XCTAssert(foo == bar)"),
+        Example("↓XCTAssertTrue(   foo  ==   bar  )"),
+        Example("↓XCTAssertFalse(1 == foo)"),
+        Example("↓XCTAssert(foo == bar, \"toto\")"),
+
+        // Inequality with `!=`
+        Example("↓XCTAssert(foo != bar)"),
+        Example("↓XCTAssertTrue(   foo  !=   bar  )"),
+        Example("↓XCTAssertFalse(1 != foo)"),
+        Example("↓XCTAssert(foo != bar, \"toto\")"),
+
+        // Comparison with `nil`
+        Example("↓XCTAssert(  foo   ==  nil)"),
+        Example("↓XCTAssert(nil == foo"),
+        Example("↓XCTAssertTrue(  foo   !=  nil)"),
+        Example("↓XCTAssertFalse(nil != foo"),
+        Example("↓XCTAssert(foo == nil, \"toto\")")
     ]
 }

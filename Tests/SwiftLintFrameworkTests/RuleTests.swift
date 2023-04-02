@@ -71,6 +71,7 @@ class RuleTests: XCTestCase {
     }
 
     func testRuleArraysWithDifferentCountsNotEqual() {
+        // swiftlint:disable:next xct_specific_matcher
         XCTAssertFalse([RuleMock1(), RuleMock2()] == [RuleMock1()])
     }
 

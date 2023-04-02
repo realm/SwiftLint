@@ -13,6 +13,11 @@
 * Add `sorted_enum_cases` rule which warns when enum cases are not sorted.  
   [kimdv](https://github.com/kimdv)
 
+* Extend `xct_specific_matcher` rule to check for boolean asserts on (un)equal
+  comparisons.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3726](https://github.com/realm/SwiftLint/issues/3726)
+
 #### Bug Fixes
 
 * None.

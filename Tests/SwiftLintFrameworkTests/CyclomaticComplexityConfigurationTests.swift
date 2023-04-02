@@ -73,9 +73,9 @@ class CyclomaticComplexityConfigurationTests: XCTestCase {
         let config3 = CyclomaticComplexityConfiguration(warning: 10, error: 30, ignoresCaseStatements: false)
         let config4 = CyclomaticComplexityConfiguration(warning: 10, error: 40)
         let config5 = CyclomaticComplexityConfiguration(warning: 20, error: 30)
-        XCTAssertFalse(config1 == config2)
-        XCTAssertTrue(config1 == config3)
-        XCTAssertFalse(config1 == config4)
-        XCTAssertFalse(config1 == config5)
+        XCTAssertNotEqual(config1, config2)
+        XCTAssertEqual(config1, config3)
+        XCTAssertNotEqual(config1, config4)
+        XCTAssertNotEqual(config1, config5)
     }
 }

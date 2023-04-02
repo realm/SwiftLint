@@ -113,7 +113,7 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
             // Ensure that parameters that correspond to properties declared using 'var' have a default
             // argument that is identical to the property's default value. Otherwise, a default argument
             // doesn't match the memberwise initializer.
-            let isVarDecl = property.letOrVarKeyword.tokenKind == .keyword(.var)
+            let isVarDecl = property.bindingKeyword.tokenKind == .keyword(.var)
             if isVarDecl, let initializer = property.bindings.first?.initializer {
                 guard let defaultArg = parameter.defaultArgument else { return false }
                 guard initializer.value.description == defaultArg.value.description else { return false }

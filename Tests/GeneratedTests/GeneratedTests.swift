@@ -1058,6 +1058,12 @@ class SingleTestClassRuleGeneratedTests: XCTestCase {
     }
 }
 
+class SortedEnumCasesRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(SortedEnumCasesRule.description)
+    }
+}
+
 class SortedFirstLastRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SortedFirstLastRule.description)

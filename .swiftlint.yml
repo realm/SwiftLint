@@ -42,6 +42,7 @@ disabled_rules:
   - prefixed_toplevel_constant
   - required_deinit
   - self_binding
+  - sorted_enum_cases
   - strict_fileprivate
   - switch_case_on_newline
   - trailing_closure

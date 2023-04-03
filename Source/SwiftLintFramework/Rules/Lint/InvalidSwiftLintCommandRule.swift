@@ -1,6 +1,3 @@
-import Foundation
-import SwiftSyntax
-
 struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 

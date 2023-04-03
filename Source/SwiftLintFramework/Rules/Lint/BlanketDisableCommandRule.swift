@@ -1,5 +1,3 @@
-import SwiftSyntax
-
 struct BlanketDisableCommandRule: ConfigurationProviderRule {
     var configuration = BlanketDisableCommandConfiguration()
 

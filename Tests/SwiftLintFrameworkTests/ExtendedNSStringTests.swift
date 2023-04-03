@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 import XCTest
 

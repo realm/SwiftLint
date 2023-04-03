@@ -176,6 +176,23 @@ extension Configuration {
             case let .default(disabled: disabledRules, optIn: optInRules):
                 if rule is any OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {
                     Issue.genericWarning("\(message), but it is not enabled on '\(Key.optInRules.rawValue)'.").print()
+
+                    if rule is OptInRule.Type {
+                    var allOptInRules = optInRules
+                    if let parentConfiguration {
+                        switch parentConfiguration.rulesMode {
+                        case .allEnabled:
+                            return
+                        case .only(let parentOnlyRules):
+                            allOptInRules.formUnion(parentOnlyRules)
+                        case let .default(disabled: _, optIn: parentOptInRules):
+                            allOptInRules.formUnion(parentOptInRules)
+                        }
+                    }
+                    if Set(allOptInRules).isDisjoint(with: rule.description.allIdentifiers) {
+                        queuedPrintError("\(message), but it is not enabled on " +
+                                         "'\(Key.optInRules.rawValue)'.")
+                    }
                 } else if Set(disabledRules).isSuperset(of: rule.description.allIdentifiers) {
                     Issue.genericWarning("\(message), but it is disabled on '\(Key.disabledRules.rawValue)'.").print()
                 }

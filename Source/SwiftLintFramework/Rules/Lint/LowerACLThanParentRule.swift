@@ -68,7 +68,17 @@ struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntax
             Example("class Foo { ↓public func bar() {} }"):
                 Example("class Foo { func bar() {} }"),
             Example("actor Foo { ↓public func bar() {} }"):
-                Example("actor Foo { func bar() {} }")
+                Example("actor Foo { func bar() {} }"),
+            Example("""
+                struct Foo {
+                    ↓public func bar() {}
+                }
+                """):
+                Example("""
+                struct Foo {
+                    func bar() {}
+                }
+                """)
         ]
     )
 
@@ -120,7 +130,10 @@ private extension LowerACLThanParentRule {
                     trailingTrivia: .space
                 )
             } else {
-                newNode = DeclModifierSyntax(name: .keyword(.internal, presence: .missing))
+                newNode = DeclModifierSyntax(
+                    leadingTrivia: node.leadingTrivia ?? .zero,
+                    name: .identifier("")
+                )
             }
 
             return super.visit(newNode)

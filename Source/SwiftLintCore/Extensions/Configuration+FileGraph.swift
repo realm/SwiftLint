@@ -271,8 +271,9 @@ package extension Configuration {
             )
 
             // Build succeeding configurations
-            return try configurationData.reduce(firstConfiguration) {
+            let configuration = try configurationData.reduce(firstConfiguration) {
                 var childConfiguration = try Configuration(
+                    parentConfiguration: $0,
                     dict: $1.configurationDict,
                     enableAllRules: enableAllRules,
                     cachePath: cachePath
@@ -281,6 +282,7 @@ package extension Configuration {
 
                 return $0.merged(withChild: childConfiguration, rootDirectory: rootDirectory)
             }
+            return configuration
         }
     }
 }

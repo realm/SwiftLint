@@ -34,6 +34,7 @@ extension Configuration {
     ///                                     settings in `dict`.
     /// - parameter cachePath:              The location of the persisted cache on disk.
     public init(
+        parentConfiguration: Configuration? = nil,
         dict: [String: Any],
         ruleList: RuleList = RuleRegistry.shared.list,
         enableAllRules: Bool = false,
@@ -75,7 +76,10 @@ extension Configuration {
         )
 
         Self.validateConfiguredRulesAreEnabled(
-            configurationDictionary: dict, ruleList: ruleList, rulesMode: rulesMode
+            parentConfiguration: parentConfiguration,
+            configurationDictionary: dict,
+            ruleList: ruleList,
+            rulesMode: rulesMode
         )
 
         self.init(
@@ -147,6 +151,7 @@ extension Configuration {
     }
 
     private static func validateConfiguredRulesAreEnabled(
+        parentConfiguration: Configuration?,
         configurationDictionary dict: [String: Any],
         ruleList: RuleList,
         rulesMode: RulesMode

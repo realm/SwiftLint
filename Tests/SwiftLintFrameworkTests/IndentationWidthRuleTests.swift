@@ -196,18 +196,57 @@ class IndentationWidthRuleTests: XCTestCase {
             """, includeCompilerDirectives: true)
     }
 
-    func testIgnoredMultilineStrings() {
-        assertNoViolation(
-            in: "let x = \"\"\"\nstring1\n    string2\n  string3\n\"\"\"\n",
-            includeMultilineStrings: false
-        )
-        assert1Violation(
-            in: "let x = \"\"\"\nstring1\n    string2\n  string3\n\"\"\"\n"
-        )
-        assertViolations(
-            in: "let x = \"\"\"\nstring1\n    string2\n  string3\n string4\n\"\"\"\n",
-            equals: 2
-        )
+    func testIncludeMultilineStrings() {
+        let example0 = #"""
+            let x = """
+                string1
+                    string2
+                  string3
+                """
+            """#
+        assertNoViolation(in: example0, includeMultilineStrings: false)
+        assert1Violation(in: example0, includeMultilineStrings: true)
+
+        let example1 = #"""
+            let x = """
+                string1
+                    string2
+                  string3
+                 string4
+                """
+            """#
+        assertNoViolation(in: example1, includeMultilineStrings: false)
+        assertViolations(in: example1, equals: 2, includeMultilineStrings: true)
+
+        let example2 = ##"""
+            let x = #"""
+                string1
+               """#
+            """##
+        assert1Violation(in: example2, includeMultilineStrings: false)
+        assert1Violation(in: example2, includeMultilineStrings: true)
+
+        let example3 = """
+            let x = [
+                "key": [
+                    ["nestedKey": "string"],
+                ],
+            ]
+            """
+        assertNoViolation(in: example3, includeMultilineStrings: false)
+        assertNoViolation(in: example3, includeMultilineStrings: true)
+
+        let example4 = #"""
+            func test() -> String {
+                """
+                ▿ Type:
+                  - property: \(123) + \(456)
+                \(true)
+                """
+            }
+            """#
+        assertNoViolation(in: example4, includeMultilineStrings: false)
+        assert1Violation(in: example4, includeMultilineStrings: true)
     }
 
     // MARK: Helpers

@@ -29,6 +29,9 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4860](https://github.com/realm/SwiftLint/issues/4860)
 
+* Fix false positives in `indentation_width` rule.  
+  [Sven Münnich](https://github.com/svenmuennich)
+
 ## 0.51.0: bzllint
 
 #### Breaking

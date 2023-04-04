@@ -1,3 +1,6 @@
+// swiftlint:disable:next blanket_disable_command
+// swiftlint:disable inclusive_language - To ease migration from `whitelist_rules`
+
 extension Configuration {
     // MARK: - Subtypes
     internal enum Key: String, CaseIterable {
@@ -9,8 +12,10 @@ extension Configuration {
         case optInRules = "opt_in_rules"
         case reporter = "reporter"
         case swiftlintVersion = "swiftlint_version"
+        case useNestedConfigs = "use_nested_configs" // deprecated, always enabled
         case warningThreshold = "warning_threshold"
         case onlyRules = "only_rules"
+        case whitelistRules = "whitelist_rules" // deprecated in favor of onlyRules
         case indentation = "indentation"
         case analyzerRules = "analyzer_rules"
         case allowZeroLintableFiles = "allow_zero_lintable_files"
@@ -46,7 +51,8 @@ extension Configuration {
         let optInRules = defaultStringArray(dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue])
         let disabledRules = defaultStringArray(dict[Key.disabledRules.rawValue])
 
-        let onlyRules = defaultStringArray(dict[Key.onlyRules.rawValue])
+        // Use either the new 'only_rules' or fallback to the deprecated 'whitelist_rules'
+        let onlyRules = defaultStringArray(dict[Key.onlyRules.rawValue] ?? dict[Key.whitelistRules.rawValue])
         let analyzerRules = defaultStringArray(dict[Key.analyzerRules.rawValue])
 
         Self.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
@@ -62,7 +68,7 @@ extension Configuration {
         } catch let RuleListError.duplicatedConfigurations(ruleType) {
             let aliases = ruleType.description.deprecatedAliases.map { "'\($0)'" }.joined(separator: ", ")
             let identifier = ruleType.description.identifier
-            throw Issue.genericWarning(
+            throw ConfigurationError.generic(
                 "Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases)."
             )
         }
@@ -108,7 +114,8 @@ extension Configuration {
             if let indentationStyle = Self.IndentationStyle(rawIndentation) {
                 return indentationStyle
             }
-            Issue.invalidConfiguration(ruleID: Key.indentation.rawValue).print()
+
+            queuedPrintError("Invalid configuration for '\(Key.indentation)'. Falling back to default.")
             return .default
         }
 
@@ -124,7 +131,23 @@ extension Configuration {
     ) {
         // Deprecation warning for "enabled_rules"
         if dict[Key.enabledRules.rawValue] != nil {
-            Issue.renamedIdentifier(old: Key.enabledRules.rawValue, new: Key.optInRules.rawValue).print()
+            queuedPrintError("warning: '\(Key.enabledRules.rawValue)' has been renamed to " +
+                "'\(Key.optInRules.rawValue)' and will be completely removed in a " +
+                "future release.")
+        }
+
+        // Deprecation warning for "use_nested_configs"
+        if dict[Key.useNestedConfigs.rawValue] != nil {
+            queuedPrintError("warning: Support for '\(Key.useNestedConfigs.rawValue)' has " +
+                "been deprecated and its value is now ignored. Nested configuration files are " +
+                "now always considered.")
+        }
+
+        // Deprecation warning for "whitelist_rules"
+        if dict[Key.whitelistRules.rawValue] != nil {
+            queuedPrintError("'\(Key.whitelistRules.rawValue)' has been renamed to " +
+                "'\(Key.onlyRules.rawValue)' and will be completely removed in a " +
+                "future release.")
         }
 
         // Deprecation warning for rules
@@ -138,7 +161,10 @@ extension Configuration {
         }
 
         for (deprecatedIdentifier, identifier) in deprecatedUsages {
-            Issue.renamedIdentifier(old: deprecatedIdentifier, new: identifier).print()
+            queuedPrintError(
+                "warning: '\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be "
+                    + "completely removed in a future release."
+            )
         }
     }
 
@@ -162,7 +188,7 @@ extension Configuration {
                     continue
             }
 
-            let message = "Found a configuration for '\(identifier)' rule"
+            let message = "warning: Found a configuration for '\(identifier)' rule"
 
             switch rulesMode {
             case .allEnabled:
@@ -170,7 +196,8 @@ extension Configuration {
 
             case .only(let onlyRules):
                 if Set(onlyRules).isDisjoint(with: rule.description.allIdentifiers) {
-                    Issue.genericWarning("\(message), but it is not present on '\(Key.onlyRules.rawValue)'.").print()
+                    queuedPrintError("\(message), but it is not present on " +
+                        "'\(Key.onlyRules.rawValue)'.")
                 }
 
             case let .default(disabled: disabledRules, optIn: optInRules):
@@ -195,8 +222,44 @@ extension Configuration {
                     }
                 } else if Set(disabledRules).isSuperset(of: rule.description.allIdentifiers) {
                     Issue.genericWarning("\(message), but it is disabled on '\(Key.disabledRules.rawValue)'.").print()
+
+                    validateConfiguredRulesAreEnabled(
+                    message: message,
+                    parentConfiguration: parentConfiguration,
+                    disabledRules: disabledRules,
+                    optInRules: optInRules,
+                    rule: rule
+                )
+            }
+        }
+    }
+
+    private static func validateConfiguredRulesAreEnabled(
+        message: String,
+        parentConfiguration: Configuration?,
+        disabledRules: Set<String>,
+        optInRules: Set<String>,
+        rule: Rule.Type
+    ) {
+        if rule is OptInRule.Type {
+            var allOptInRules = optInRules
+            if let parentConfiguration {
+                switch parentConfiguration.rulesMode {
+                case .allEnabled:
+                    return
+                case .only(let parentOnlyRules):
+                    allOptInRules.formUnion(parentOnlyRules)
+                case let .default(disabled: _, optIn: parentOptInRules):
+                    allOptInRules.formUnion(parentOptInRules)
                 }
             }
+            if Set(allOptInRules).isDisjoint(with: rule.description.allIdentifiers) {
+                queuedPrintError("\(message), but it is not enabled on " +
+                                 "'\(Key.optInRules.rawValue)'.")
+            }
+        } else if Set(disabledRules).isSuperset(of: rule.description.allIdentifiers) {
+            queuedPrintError("\(message), but it is disabled on " +
+                "'\(Key.disabledRules.rawValue)'.")
         }
     }
 
@@ -207,12 +270,10 @@ extension Configuration {
         Set(analyzerRules).intersection(optInRules)
             .sorted()
             .forEach {
-                Issue.genericWarning(
-                    """
-                    '\($0)' should be listed in the 'analyzer_rules' configuration section \
-                    for more clarity as it is only run by 'swiftlint analyze'.
-                    """
-                ).print()
+                queuedPrintError("""
+                    warning: '\($0)' should be listed in the 'analyzer_rules' configuration section \
+                    for more clarity as it is only run by 'swiftlint analyze'
+                    """)
             }
     }
 }

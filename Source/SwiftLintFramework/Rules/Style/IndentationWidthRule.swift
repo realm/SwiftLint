@@ -172,10 +172,21 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         if configuration.includeMultilineStrings {
             return false
         }
-        if file.syntaxMap.tokens(inByteRange: line.byteRange).kinds == [.string] {
-            return true
+
+        // A multiline string content line is characterized by beginning with a token of kind string whose range's lower
+        // bound is smaller than that of the line itself.
+        let tokensInLine = file.syntaxMap.tokens(inByteRange: line.byteRange)
+        guard
+            let firstToken = tokensInLine.first,
+            firstToken.kind == .string,
+            firstToken.range.lowerBound < line.byteRange.lowerBound else {
+            return false
         }
-        return false
+
+        // Closing delimiters of a multiline string should follow the defined indentation. The Swift compiler requires
+        // those delimiters to be on their own line so we need to consider the number of tokens as well as the upper
+        // bounds.
+        return tokensInLine.count > 1 || line.byteRange.upperBound < firstToken.range.upperBound
     }
 
     /// Validates whether the indentation of a specific line is valid based on the indentation of the previous line.

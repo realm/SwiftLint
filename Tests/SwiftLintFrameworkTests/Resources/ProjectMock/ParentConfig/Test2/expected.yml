@@ -2,7 +2,10 @@ opt_in_rules:
   - private_action
 
 disabled_rules:
+  - empty_count
   - force_cast
+  - private_outlet
+  - trailing_closure
 
 line_length: 80
 

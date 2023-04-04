@@ -233,10 +233,7 @@ internal extension Configuration {
 
                 // Only use parent disabled / optIn if child config doesn't tell the opposite
                 return .default(
-                    disabled: Set(childDisabled).union(Set(disabled.filter { !childOptIn.contains($0) }))
-                        .filter {
-                            !isOptInRule($0, allRulesWrapped: newAllRulesWrapped)
-                        },
+                    disabled: Set(childDisabled).union(Set(disabled.filter { !childOptIn.contains($0) })),
                     optIn: Set(childOptIn).union(Set(optIn.filter { !childDisabled.contains($0) }))
                         .filter {
                             isOptInRule($0, allRulesWrapped: newAllRulesWrapped)

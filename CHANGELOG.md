@@ -343,6 +343,9 @@
   to `false.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4843](https://github.com/realm/SwiftLint/issues/4843)
+* Removed support for disable and enable commands in multiline comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * The internal module structure for SwiftLint has changed to split the
   monolithic `SwiftLintFramework` into new `SwiftLintCore` for core linter
@@ -466,10 +469,6 @@
   contain characters that must be escaped in regular expression.  
   [Moly](https://github.com/kyounh12)
   [#4655](https://github.com/realm/SwiftLint/pull/4655)
-
-* Removed support for disable and enable commands in multiline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 #### Experimental
 

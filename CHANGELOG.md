@@ -751,9 +751,8 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4860](https://github.com/realm/SwiftLint/issues/4860)
 
-* Fixes superfluous warning for rules that were configured or reconfigured
-  in a child configuration file, but which were enabled via a parent
-  configuration file.  
+* Fixes superfluous warnings about configurations for rules that were not
+  enabled, when the rules were enabled in a parent cnofiguration.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4858](https://github.com/realm/SwiftLint/issues/4858)
 

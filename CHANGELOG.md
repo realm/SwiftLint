@@ -434,6 +434,10 @@
 
 * Fix false positives in `indentation_width` rule.  
   [Sven Münnich](https://github.com/svenmuennich)
+* Fix false positives for superfluous_disable_command, and removed
+  support for disable and enable commands in multline comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * Do not trigger `reduce_boolean` on `reduce` methods with a first named
   argument that is different from `into`.  
@@ -638,11 +642,6 @@
   by `disable` commands.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4788](https://github.com/realm/SwiftLint/issues/4788)
-
-* Fix false positives for superfluous_disable_command, and removed
-  support for disable and enable commands in multline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * Fixed correction for `trailing_comma` rule wrongly removing trailing
   comments.  

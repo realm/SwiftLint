@@ -184,7 +184,7 @@ extension Configuration {
     ) {
         for key in dict.keys where !validGlobalKeys.contains(key) {
             guard let identifier = ruleList.identifier(for: key),
-                let rule = ruleList.list[identifier] else {
+                let ruleType = ruleList.list[identifier] else {
                     continue
             }
 
@@ -195,7 +195,7 @@ extension Configuration {
                 return
 
             case .only(let onlyRules):
-                if Set(onlyRules).isDisjoint(with: rule.description.allIdentifiers) {
+                if Set(onlyRules).isDisjoint(with: ruleType.description.allIdentifiers) {
                     queuedPrintError("\(message), but it is not present on " +
                         "'\(Key.onlyRules.rawValue)'.")
                 }
@@ -239,9 +239,9 @@ extension Configuration {
         parentConfiguration: Configuration?,
         disabledRules: Set<String>,
         optInRules: Set<String>,
-        rule: Rule.Type
+        ruleType: Rule.Type
     ) {
-        if rule is OptInRule.Type {
+        if ruleType is OptInRule.Type {
             var allOptInRules = optInRules
             if let parentConfiguration {
                 switch parentConfiguration.rulesMode {
@@ -253,11 +253,11 @@ extension Configuration {
                     allOptInRules.formUnion(parentOptInRules)
                 }
             }
-            if Set(allOptInRules).isDisjoint(with: rule.description.allIdentifiers) {
+            if Set(allOptInRules).isDisjoint(with: ruleType.description.allIdentifiers) {
                 queuedPrintError("\(message), but it is not enabled on " +
                                  "'\(Key.optInRules.rawValue)'.")
             }
-        } else if Set(disabledRules).isSuperset(of: rule.description.allIdentifiers) {
+        } else if Set(disabledRules).isSuperset(of: ruleType.description.allIdentifiers) {
             queuedPrintError("\(message), but it is disabled on " +
                 "'\(Key.disabledRules.rawValue)'.")
         }

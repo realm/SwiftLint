@@ -234,7 +234,7 @@ extension Configuration {
         }
     }
 
-    private static func validateConfiguredRulesAreEnabled(
+    private static func validateConfiguredRuleIsEnabled(
         message: String,
         parentConfiguration: Configuration?,
         disabledRules: Set<String>,

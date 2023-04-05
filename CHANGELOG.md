@@ -752,7 +752,7 @@
   [#4860](https://github.com/realm/SwiftLint/issues/4860)
 
 * Fixes superfluous warnings about configurations for rules that were not
-  enabled, when the rules were enabled in a parent cnofiguration.  
+  enabled, when the rules were enabled in a parent configuration.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4858](https://github.com/realm/SwiftLint/issues/4858)
 

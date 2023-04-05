@@ -190,6 +190,7 @@
 
 * Trigger `prefer_self_in_static_references` rule on more type references.  
   [SimplyDanny](https://github.com/SimplyDanny)
+
 * Adds an `unneeded_synthesized_initializer` rule, based on
   `swift-format`'s `UseSynthesizedInitializer` rule, which warns
   when a defined initializer would have been automatically

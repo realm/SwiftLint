@@ -434,6 +434,7 @@
 
 * Fix false positives in `indentation_width` rule.  
   [Sven Münnich](https://github.com/svenmuennich)
+
 * Fix false positives for superfluous_disable_command, and removed
   support for disable and enable commands in multline comments.  
   [Martin Redington](https://github.com/mildm8nnered)

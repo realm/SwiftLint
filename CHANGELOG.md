@@ -56,6 +56,7 @@
 
 * Fix false positives in `indentation_width` rule.  
   [Sven Münnich](https://github.com/svenmuennich)
+
 * Fix false positives for superfluous_disable_command, and improved
   command parsing in multiline strings.  
   [Martin Redington](https://github.com/mildm8nnered)

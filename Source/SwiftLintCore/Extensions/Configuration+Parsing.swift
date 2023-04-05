@@ -228,7 +228,7 @@ extension Configuration {
                     parentConfiguration: parentConfiguration,
                     disabledRules: disabledRules,
                     optInRules: optInRules,
-                    rule: rule
+                    ruleType: ruleType
                 )
             }
         }

@@ -198,6 +198,7 @@
 
 * Fix false positives in `indentation_width` rule.  
   [Sven Münnich](https://github.com/svenmuennich)
+
 * Fix false positives on `redundant_objc_attribute` rule for enums
   and private members.  
   [Martin Redington](https://github.com/mildm8nnered)

@@ -97,7 +97,7 @@ struct FixMeRule: CorrectableRule, ConfigurationProviderRule {
             invalidEndSpacesPattern,
             invalidSpacesAfterHyphenPattern,
             invalidLowercasePattern,
-            missingColonPattern, // here
+            missingColonPattern,
             threeSlashesInsteadOfTwo
         ].joined(separator: "|")
     }

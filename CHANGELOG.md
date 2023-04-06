@@ -25,6 +25,10 @@
 
 * Trigger `prefer_self_in_static_references` rule on more type references.
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Add new `disallow_top_level_variables` rule that disallows declaring variables
+  and constants as the top-level declarations.
+  [Andrii Zinoviev](https://github.com/shivatinker)
 
 #### Bug Fixes
 

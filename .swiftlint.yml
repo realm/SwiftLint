@@ -15,6 +15,7 @@ disabled_rules:
   - closure_body_length
   - conditional_returns_on_newline
   - convenience_type
+  - disallow_top_level_variables
   - discouraged_optional_collection
   - explicit_acl
   - explicit_enum_raw_value

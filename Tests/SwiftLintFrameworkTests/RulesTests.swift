@@ -7,6 +7,10 @@ class RulesTests: XCTestCase {
                    testMultiByteOffsets: false, testShebang: false)
     }
 
+    func testFixMe() {
+        verifyRule(FixMeRule.description, skipCommentTests: true)
+    }
+
     func testMark() {
         verifyRule(MarkRule.description, skipCommentTests: true)
     }

@@ -10,6 +10,9 @@
 
 #### Enhancements
 
+* Add new `fixme` rule which warns when FIXME comment style is not in a valid format.
+  [j-war](https://github.com/j-war)
+
 * Add new `superfluous_else` rule that triggers on `if`-statements when an
   attached `else`-block can be removed, because all branches of the previous
   `if`-block(s) would certainly exit the current scope already.  

@@ -73,6 +73,7 @@ let builtInRules: [Rule.Type] = [
     FileNameRule.self,
     FileTypesOrderRule.self,
     FirstWhereRule.self,
+    FixMeRule.self,
     FlatMapOverMapReduceRule.self,
     ForWhereRule.self,
     ForceCastRule.self,

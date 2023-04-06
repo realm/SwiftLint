@@ -422,6 +422,12 @@ class FirstWhereRuleGeneratedTests: XCTestCase {
     }
 }
 
+class FixMeGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(FixMeRule.description)
+    }
+}
+
 class FlatMapOverMapReduceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FlatMapOverMapReduceRule.description)

@@ -161,10 +161,10 @@ folder by default. To instruct Xcode where to find SwiftLint, you can either add
 if [[ "$(uname -m)" = x86_64* ]]; then
   prefie="/usr/local/bin/"
 else
-  prefie="/opt/homebrew/bin/"    
+  prefie="/opt/homebrew/bin/"
 fi
 
-if which $prefie/swiftformat >/dev/null; then
+if which $prefie/swiftlint >/dev/null; then
   $prefie/swiftlint
 else
   echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"

@@ -158,9 +158,14 @@ folder by default. To instruct Xcode where to find SwiftLint, you can either add
 `/opt/homebrew/bin` to the `PATH` environment variable in your build phase
 
 ```bash
-export PATH="$PATH:/opt/homebrew/bin"
-if which swiftlint > /dev/null; then
-  swiftlint
+if [[ "$(uname -m)" = x86_64* ]]; then
+  prefie="/usr/local/bin/"
+else
+  prefie="/opt/homebrew/bin/"    
+fi
+
+if which $prefie/swiftformat >/dev/null; then
+  $prefie/swiftlint
 else
   echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
 fi

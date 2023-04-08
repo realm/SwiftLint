@@ -259,7 +259,7 @@ internal extension Configuration {
                 // Allow parent only rules that weren't disabled via the child config
                 // & opt-ins from the child config
                 return .only(Set(
-                    childOptIn + onlyRules.filter { !childDisabled.contains($0) }
+                    childOptIn.union(onlyRules).filter { !childDisabled.contains($0) }
                 ))
 
             case .allEnabled:

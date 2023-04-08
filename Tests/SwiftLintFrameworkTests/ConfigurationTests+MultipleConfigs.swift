@@ -300,7 +300,52 @@ extension ConfigurationTests {
             Configuration()
         )
     }
+    
+    func testParentChildOptInAndDisable() {
+//        let expectedResults = "0101111100001111"
+        let expectedResults = "0100111100000000"
+        XCTAssertEqual(expectedResults.count, 4 * 4)
+        func format(_ value: Bool) -> String {
+            (value ? " " : "") + " \(value)"
+        }
+        for i in 0..<expectedResults.count {
+            let enabledInParent = i & 1 == 1
+            let disabledInParent = i & 2 == 2
+            let enabledInChild = i & 4 == 4
+            let disabledInChild = i & 8 == 8
+            let result = isEnabledInChild(
+                ruleType: ImplicitReturnRule.self,
+                enabledInParent: enabledInParent,
+                disabledInParent: disabledInParent,
+                enabledInChild: enabledInChild,
+                disabledInChild: disabledInChild
+            )
+            // print(">>>> \(i) \(format(enabledInParent)) \(format(disabledInParent)) \(format(enabledInChild)) \(format(disabledInChild)) \(format(result))")
+            let expectedResult = expectedResults[expectedResults.index(expectedResults.startIndex, offsetBy: i)] == "1"
+            XCTAssertEqual(expectedResult, result)
+        }
+    }
 
+    private func isEnabledInChild(
+        ruleType: Rule.Type,
+        enabledInParent: Bool,
+        disabledInParent: Bool,
+        enabledInChild: Bool,
+        disabledInChild: Bool
+    ) -> Bool {
+        let ruleIdentifier = ruleType.description.identifier
+        let parentConfiguration = Configuration(rulesMode: .default(
+            disabled: disabledInParent ? [ruleIdentifier] : [],
+            optIn: enabledInParent ? [ruleIdentifier] : []
+        ))
+        let childConfiguration = Configuration(rulesMode: .default(
+            disabled: disabledInChild ? [ruleIdentifier] : [],
+            optIn: enabledInChild ? [ruleIdentifier] : []
+        ))
+        let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
+        return mergedConfiguration.contains(rule: ruleType)
+    }
+    
     // MARK: - Remote Configs
     func testValidRemoteChildConfig() {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild)

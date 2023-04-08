@@ -344,6 +344,39 @@ extension ConfigurationTests {
             XCTAssertEqual(expectedResult, result)
         }
     }
+
+    func testParentChildOnlyRulesAndDisable() {
+        func isEnabledInChild(
+            ruleType: Rule.Type,
+            enabledInChild: Bool,
+            disabledInChild: Bool
+        ) -> Bool {
+            let ruleIdentifier = ruleType.description.identifier
+            let parentConfiguration = Configuration(rulesMode:.only([ruleIdentifier]))
+            let childConfiguration = Configuration(rulesMode: .default(
+                disabled: disabledInChild ? [ruleIdentifier] : [],
+                optIn: enabledInChild ? [ruleIdentifier] : []
+            ))
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
+            return mergedConfiguration.contains(rule: ruleType)
+        }
+        let expectedResults = "1100"
+        XCTAssertEqual(expectedResults.count, 2 * 2)
+        func format(_ value: Bool) -> String {
+            (value ? " " : "") + " \(value)"
+        }
+        for i in 0..<expectedResults.count {
+            let enabledInChild = i & 1 == 1
+            let disabledInChild = i & 2 == 2
+            let result = isEnabledInChild(
+                ruleType: ImplicitReturnRule.self,
+                enabledInChild: enabledInChild,
+                disabledInChild: disabledInChild
+            )
+            print(">>>> \(i) \(format(enabledInChild)) \(format(disabledInChild)) \(format(result))")
+            let expectedResult = expectedResults[expectedResults.index(expectedResults.startIndex, offsetBy: i)] == "1"
+            XCTAssertEqual(expectedResult, result)
+        }
     }
     
     // MARK: - Remote Configs

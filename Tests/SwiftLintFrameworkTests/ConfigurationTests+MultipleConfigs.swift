@@ -302,6 +302,25 @@ extension ConfigurationTests {
     }
     
     func testParentChildOptInAndDisable() {
+        func isEnabledInChild(
+            ruleType: Rule.Type,
+            enabledInParent: Bool,
+            disabledInParent: Bool,
+            enabledInChild: Bool,
+            disabledInChild: Bool
+        ) -> Bool {
+            let ruleIdentifier = ruleType.description.identifier
+            let parentConfiguration = Configuration(rulesMode: .default(
+                disabled: disabledInParent ? [ruleIdentifier] : [],
+                optIn: enabledInParent ? [ruleIdentifier] : []
+            ))
+            let childConfiguration = Configuration(rulesMode: .default(
+                disabled: disabledInChild ? [ruleIdentifier] : [],
+                optIn: enabledInChild ? [ruleIdentifier] : []
+            ))
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
+            return mergedConfiguration.contains(rule: ruleType)
+        }
 //        let expectedResults = "0101111100001111"
         let expectedResults = "0100111100000000"
         XCTAssertEqual(expectedResults.count, 4 * 4)
@@ -325,25 +344,6 @@ extension ConfigurationTests {
             XCTAssertEqual(expectedResult, result)
         }
     }
-
-    private func isEnabledInChild(
-        ruleType: Rule.Type,
-        enabledInParent: Bool,
-        disabledInParent: Bool,
-        enabledInChild: Bool,
-        disabledInChild: Bool
-    ) -> Bool {
-        let ruleIdentifier = ruleType.description.identifier
-        let parentConfiguration = Configuration(rulesMode: .default(
-            disabled: disabledInParent ? [ruleIdentifier] : [],
-            optIn: enabledInParent ? [ruleIdentifier] : []
-        ))
-        let childConfiguration = Configuration(rulesMode: .default(
-            disabled: disabledInChild ? [ruleIdentifier] : [],
-            optIn: enabledInChild ? [ruleIdentifier] : []
-        ))
-        let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
-        return mergedConfiguration.contains(rule: ruleType)
     }
     
     // MARK: - Remote Configs

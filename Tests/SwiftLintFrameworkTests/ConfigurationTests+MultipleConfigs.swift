@@ -351,14 +351,14 @@ extension ConfigurationTests {
     func testParentChildOnlyRulesAndDisable() {
         func isEnabledInChild(
             ruleType: Rule.Type,
-            enabledInChild: Bool,
+            optedInInChild: Bool,
             disabledInChild: Bool
         ) -> Bool {
             let ruleIdentifier = ruleType.description.identifier
             let parentConfiguration = Configuration(rulesMode:.only([ruleIdentifier]))
             let childConfiguration = Configuration(rulesMode: .default(
                 disabled: disabledInChild ? [ruleIdentifier] : [],
-                optIn: enabledInChild ? [ruleIdentifier] : []
+                optIn: optedInInChild ? [ruleIdentifier] : []
             ))
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
             return mergedConfiguration.contains(rule: ruleType)
@@ -369,14 +369,14 @@ extension ConfigurationTests {
             (value ? " " : "") + " \(value)"
         }
         for i in 0..<expectedResults.count {
-            let enabledInChild = i & 1 == 1
+            let optedInInChild = i & 1 == 1
             let disabledInChild = i & 2 == 2
             let result = isEnabledInChild(
                 ruleType: ImplicitReturnRule.self,
-                enabledInChild: enabledInChild,
+                optedInInChild: optedInInChild,
                 disabledInChild: disabledInChild
             )
-            print(">>>> \(i) \(format(enabledInChild)) \(format(disabledInChild)) \(format(result))")
+            print(">>>> \(i) \(format(optedInInChild)) \(format(disabledInChild)) \(format(result))")
             XCTAssertEqual(expectedResults[i], result)
         }
     }

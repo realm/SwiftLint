@@ -304,19 +304,19 @@ extension ConfigurationTests {
     func testParentChildOptInAndDisable() {
         func isEnabledInChild(
             ruleType: Rule.Type,
-            enabledInParent: Bool,
+            optedInInParent: Bool,
             disabledInParent: Bool,
-            enabledInChild: Bool,
+            optedInInChild: Bool,
             disabledInChild: Bool
         ) -> Bool {
             let ruleIdentifier = ruleType.description.identifier
             let parentConfiguration = Configuration(rulesMode: .default(
                 disabled: disabledInParent ? [ruleIdentifier] : [],
-                optIn: enabledInParent ? [ruleIdentifier] : []
+                optIn: optedInInParent ? [ruleIdentifier] : []
             ))
             let childConfiguration = Configuration(rulesMode: .default(
                 disabled: disabledInChild ? [ruleIdentifier] : [],
-                optIn: enabledInChild ? [ruleIdentifier] : []
+                optIn: optedInInChild ? [ruleIdentifier] : []
             ))
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
             return mergedConfiguration.contains(rule: ruleType)
@@ -332,18 +332,18 @@ extension ConfigurationTests {
             (value ? " " : "") + " \(value)"
         }
         for i in 0..<expectedResults.count {
-            let enabledInParent = i & 1 == 1
+            let optedInInParent = i & 1 == 1
             let disabledInParent = i & 2 == 2
-            let enabledInChild = i & 4 == 4
+            let optedInInChild = i & 4 == 4
             let disabledInChild = i & 8 == 8
             let result = isEnabledInChild(
                 ruleType: ImplicitReturnRule.self,
-                enabledInParent: enabledInParent,
+                optedInInParent: optedInInParent,
                 disabledInParent: disabledInParent,
-                enabledInChild: enabledInChild,
+                optedInInChild: optedInInChild,
                 disabledInChild: disabledInChild
             )
-            // print(">>>> \(i) \(format(enabledInParent)) \(format(disabledInParent)) \(format(enabledInChild)) \(format(disabledInChild)) \(format(result))")
+            // print(">>>> \(i) \(format(optedInInParent)) \(format(disabledInParent)) \(format(optedInInChild)) \(format(disabledInChild)) \(format(result))")
             XCTAssertEqual(expectedResults[i], result)
         }
     }

@@ -302,6 +302,28 @@ extension ConfigurationTests {
     }
 
     func testParentChildOptInAndDisable() {
+        let ruleType = ImplicitReturnRule.self
+        //        let expectedResults = "0101111100001111"
+        //        let expectedResults = "0100111100000000"
+        let expectedResults = [
+            false, true, false, false, true, true, true, true,
+            false, false, false, false, false, false, false, false
+        ]
+        testParentChildOptInAndDisable(ruleType: ruleType, expectedResults: expectedResults)
+    }
+
+    func testParentChildOptInAndDisableForDefaultRule() {
+        let ruleType = BlanketDisableCommandRule.self
+        //        let expectedResults = "0101111100001111"
+        //        let expectedResults = "0100111100000000"
+        let expectedResults = [
+            true, true, false, false, true, true, true, true,
+            false, false, false, false, false, false, false, false
+        ]
+        testParentChildOptInAndDisable(ruleType: ruleType, expectedResults: expectedResults)
+    }
+
+    private func testParentChildOptInAndDisable(ruleType: Rule.Type, expectedResults: [Bool]) {
         func isEnabledInChild(
             ruleType: Rule.Type,
             optedInInParent: Bool,
@@ -321,12 +343,6 @@ extension ConfigurationTests {
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
             return mergedConfiguration.contains(rule: ruleType)
         }
-//        let expectedResults = "0101111100001111"
-//        let expectedResults = "0100111100000000"
-        let expectedResults = [
-            false, true, false, false, true, true, true, true,
-            false, false, false, false, false, false, false, false
-        ]
         XCTAssertEqual(expectedResults.count, 4 * 4)
         for index in 0..<expectedResults.count {
             let optedInInParent = index & 1 != 0
@@ -334,13 +350,15 @@ extension ConfigurationTests {
             let optedInInChild = index & 4 != 0
             let disabledInChild = index & 8 != 0
             let result = isEnabledInChild(
-                ruleType: ImplicitReturnRule.self,
+                ruleType: ruleType,
                 optedInInParent: optedInInParent,
                 disabledInParent: disabledInParent,
                 optedInInChild: optedInInChild,
                 disabledInChild: disabledInChild
             )
-            XCTAssertEqual(result, expectedResults[index])
+            let message = "optedInInParent = \(optedInInParent), disabledInParent = \(disabledInParent), " +
+                          "optedInInChild = \(optedInInChild), disabledInChild = \(disabledInChild)"
+            XCTAssertEqual(result, expectedResults[index], message)
         }
     }
 

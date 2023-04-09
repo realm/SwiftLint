@@ -328,11 +328,11 @@ extension ConfigurationTests {
             false, false, false, false, false, false, false, false
         ]
         XCTAssertEqual(expectedResults.count, 4 * 4)
-        for i in 0..<expectedResults.count {
-            let optedInInParent = i & 1 != 0
-            let disabledInParent = i & 2 != 0
-            let optedInInChild = i & 4 != 0
-            let disabledInChild = i & 8 != 0
+        for index in 0..<expectedResults.count {
+            let optedInInParent = index & 1 != 0
+            let disabledInParent = index & 2 != 0
+            let optedInInChild = index & 4 != 0
+            let disabledInChild = index & 8 != 0
             let result = isEnabledInChild(
                 ruleType: ImplicitReturnRule.self,
                 optedInInParent: optedInInParent,
@@ -340,7 +340,7 @@ extension ConfigurationTests {
                 optedInInChild: optedInInChild,
                 disabledInChild: disabledInChild
             )
-            XCTAssertEqual(expectedResults[i], result)
+            XCTAssertEqual(expectedResults[index], result)
         }
     }
 
@@ -361,15 +361,15 @@ extension ConfigurationTests {
         }
         let expectedResults = [ true, true, false, false ]
         XCTAssertEqual(expectedResults.count, 2 * 2)
-        for i in 0..<expectedResults.count {
-            let optedInInChild = i & 1 != 0
-            let disabledInChild = i & 2 != 0
+        for index in 0..<expectedResults.count {
+            let optedInInChild = index & 1 != 0
+            let disabledInChild = index & 2 != 0
             let result = isEnabledInChild(
                 ruleType: ImplicitReturnRule.self,
                 optedInInChild: optedInInChild,
                 disabledInChild: disabledInChild
             )
-            XCTAssertEqual(expectedResults[i], result)
+            XCTAssertEqual(expectedResults[index], result)
         }
     }
 

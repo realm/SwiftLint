@@ -322,7 +322,11 @@ extension ConfigurationTests {
             return mergedConfiguration.contains(rule: ruleType)
         }
 //        let expectedResults = "0101111100001111"
-        let expectedResults = "0100111100000000"
+//        let expectedResults = "0100111100000000"
+        let expectedResults = [
+            false, true, false, false, true, true, true, true,
+            false, false, false, false, false, false, false, false,
+        ]
         XCTAssertEqual(expectedResults.count, 4 * 4)
         func format(_ value: Bool) -> String {
             (value ? " " : "") + " \(value)"
@@ -340,8 +344,7 @@ extension ConfigurationTests {
                 disabledInChild: disabledInChild
             )
             // print(">>>> \(i) \(format(enabledInParent)) \(format(disabledInParent)) \(format(enabledInChild)) \(format(disabledInChild)) \(format(result))")
-            let expectedResult = expectedResults[expectedResults.index(expectedResults.startIndex, offsetBy: i)] == "1"
-            XCTAssertEqual(expectedResult, result)
+            XCTAssertEqual(expectedResults[i], result)
         }
     }
 
@@ -360,7 +363,7 @@ extension ConfigurationTests {
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
             return mergedConfiguration.contains(rule: ruleType)
         }
-        let expectedResults = "1100"
+        let expectedResults = [ true, true, false, false ]
         XCTAssertEqual(expectedResults.count, 2 * 2)
         func format(_ value: Bool) -> String {
             (value ? " " : "") + " \(value)"
@@ -374,8 +377,7 @@ extension ConfigurationTests {
                 disabledInChild: disabledInChild
             )
             print(">>>> \(i) \(format(enabledInChild)) \(format(disabledInChild)) \(format(result))")
-            let expectedResult = expectedResults[expectedResults.index(expectedResults.startIndex, offsetBy: i)] == "1"
-            XCTAssertEqual(expectedResult, result)
+            XCTAssertEqual(expectedResults[i], result)
         }
     }
     

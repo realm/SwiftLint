@@ -303,8 +303,6 @@ extension ConfigurationTests {
 
     func testParentChildOptInAndDisable() {
         let ruleType = ImplicitReturnRule.self
-        //        let expectedResults = "0101111100001111"
-        //        let expectedResults = "0100111100000000"
         let expectedResults = [
             false, true, false, false, true, true, true, true,
             false, false, false, false, false, false, false, false
@@ -314,8 +312,6 @@ extension ConfigurationTests {
 
     func testParentChildOptInAndDisableForDefaultRule() {
         let ruleType = BlanketDisableCommandRule.self
-        //        let expectedResults = "0101111100001111"
-        //        let expectedResults = "0100111100000000"
         let expectedResults = [
             true, true, false, false, true, true, true, true,
             false, false, false, false, false, false, false, false
@@ -324,7 +320,7 @@ extension ConfigurationTests {
     }
 
     private func testParentChildOptInAndDisable(ruleType: Rule.Type, expectedResults: [Bool]) {
-        func isEnabledInChild(
+        func isEnabledInMergedConfiguration(
             ruleType: Rule.Type,
             optedInInParent: Bool,
             disabledInParent: Bool,
@@ -349,7 +345,7 @@ extension ConfigurationTests {
             let disabledInParent = index & 2 != 0
             let optedInInChild = index & 4 != 0
             let disabledInChild = index & 8 != 0
-            let result = isEnabledInChild(
+            let result = isEnabledInMergedConfiguration(
                 ruleType: ruleType,
                 optedInInParent: optedInInParent,
                 disabledInParent: disabledInParent,
@@ -363,7 +359,7 @@ extension ConfigurationTests {
     }
 
     func testParentChildOnlyRulesAndDisable() {
-        func isEnabledInChild(
+        func isEnabledInMergedConfiguration(
             ruleType: Rule.Type,
             optedInInChild: Bool,
             disabledInChild: Bool
@@ -382,12 +378,13 @@ extension ConfigurationTests {
         for index in 0..<expectedResults.count {
             let optedInInChild = index & 1 != 0
             let disabledInChild = index & 2 != 0
-            let result = isEnabledInChild(
+            let result = isEnabledInMergedConfiguration(
                 ruleType: ImplicitReturnRule.self,
                 optedInInChild: optedInInChild,
                 disabledInChild: disabledInChild
             )
-            XCTAssertEqual(result, expectedResults[index])
+            let message = "optedInInChild = \(optedInInChild), disabledInChild = \(disabledInChild)"
+            XCTAssertEqual(result, expectedResults[index], message)
         }
     }
 

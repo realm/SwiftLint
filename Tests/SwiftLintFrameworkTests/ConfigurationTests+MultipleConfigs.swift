@@ -358,14 +358,34 @@ extension ConfigurationTests {
         }
     }
 
-    func testParentChildOnlyRulesAndDisable() {
+    func testParentOnlyRulesAndChildOptInAndDisabled() {
+        let ruleType = ImplicitReturnRule.self
+        let parentConfiguration = Configuration(rulesMode: .only([ruleType.description.identifier]))
+        let expectedResults = [ true, true, false, false ]
+        testParentConfigurationAndChildOptInAndDisabled(
+            parentConfiguration, ruleType: ruleType, expectedResults: expectedResults
+        )
+    }
+
+    func testParentAllRulesAndChildOptInAndDisabled() {
+        let ruleType = ImplicitReturnRule.self
+        let parentConfiguration = Configuration(rulesMode: .allEnabled)
+        let expectedResults = [ true, true, false, false ]
+        testParentConfigurationAndChildOptInAndDisabled(
+            parentConfiguration, ruleType: ruleType, expectedResults: expectedResults
+        )
+    }
+
+    private func testParentConfigurationAndChildOptInAndDisabled(
+        _ parentConfiguration: Configuration,
+        ruleType: Rule.Type,
+        expectedResults: [Bool]
+    ) {
         func isEnabledInMergedConfiguration(
-            ruleType: Rule.Type,
             optedInInChild: Bool,
             disabledInChild: Bool
         ) -> Bool {
             let ruleIdentifier = ruleType.description.identifier
-            let parentConfiguration = Configuration(rulesMode: .only([ruleIdentifier]))
             let childConfiguration = Configuration(rulesMode: .default(
                 disabled: disabledInChild ? [ruleIdentifier] : [],
                 optIn: optedInInChild ? [ruleIdentifier] : []
@@ -373,15 +393,12 @@ extension ConfigurationTests {
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
             return mergedConfiguration.contains(rule: ruleType)
         }
-        let expectedResults = [ true, true, false, false ]
         XCTAssertEqual(expectedResults.count, 2 * 2)
         for index in 0..<expectedResults.count {
             let optedInInChild = index & 1 != 0
             let disabledInChild = index & 2 != 0
             let result = isEnabledInMergedConfiguration(
-                ruleType: ImplicitReturnRule.self,
-                optedInInChild: optedInInChild,
-                disabledInChild: disabledInChild
+                optedInInChild: optedInInChild, disabledInChild: disabledInChild
             )
             let message = "optedInInChild = \(optedInInChild), disabledInChild = \(disabledInChild)"
             XCTAssertEqual(result, expectedResults[index], message)

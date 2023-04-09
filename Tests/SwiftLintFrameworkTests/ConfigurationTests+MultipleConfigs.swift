@@ -340,7 +340,7 @@ extension ConfigurationTests {
                 optedInInChild: optedInInChild,
                 disabledInChild: disabledInChild
             )
-            XCTAssertEqual(expectedResults[index], result)
+            XCTAssertEqual(result, expectedResults[index])
         }
     }
 
@@ -369,7 +369,7 @@ extension ConfigurationTests {
                 optedInInChild: optedInInChild,
                 disabledInChild: disabledInChild
             )
-            XCTAssertEqual(expectedResults[index], result)
+            XCTAssertEqual(result, expectedResults[index])
         }
     }
 

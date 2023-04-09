@@ -332,10 +332,10 @@ extension ConfigurationTests {
             (value ? " " : "") + " \(value)"
         }
         for i in 0..<expectedResults.count {
-            let optedInInParent = i & 1 == 1
-            let disabledInParent = i & 2 == 2
-            let optedInInChild = i & 4 == 4
-            let disabledInChild = i & 8 == 8
+            let optedInInParent = i & 1 != 0
+            let disabledInParent = i & 2 != 0
+            let optedInInChild = i & 4 != 0
+            let disabledInChild = i & 8 != 0
             let result = isEnabledInChild(
                 ruleType: ImplicitReturnRule.self,
                 optedInInParent: optedInInParent,
@@ -369,8 +369,8 @@ extension ConfigurationTests {
             (value ? " " : "") + " \(value)"
         }
         for i in 0..<expectedResults.count {
-            let optedInInChild = i & 1 == 1
-            let disabledInChild = i & 2 == 2
+            let optedInInChild = i & 1 != 0
+            let disabledInChild = i & 2 != 0
             let result = isEnabledInChild(
                 ruleType: ImplicitReturnRule.self,
                 optedInInChild: optedInInChild,

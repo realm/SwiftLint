@@ -300,7 +300,7 @@ extension ConfigurationTests {
             Configuration()
         )
     }
-    
+
     func testParentChildOptInAndDisable() {
         func isEnabledInChild(
             ruleType: Rule.Type,
@@ -325,12 +325,9 @@ extension ConfigurationTests {
 //        let expectedResults = "0100111100000000"
         let expectedResults = [
             false, true, false, false, true, true, true, true,
-            false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false
         ]
         XCTAssertEqual(expectedResults.count, 4 * 4)
-        func format(_ value: Bool) -> String {
-            (value ? " " : "") + " \(value)"
-        }
         for i in 0..<expectedResults.count {
             let optedInInParent = i & 1 != 0
             let disabledInParent = i & 2 != 0
@@ -343,7 +340,6 @@ extension ConfigurationTests {
                 optedInInChild: optedInInChild,
                 disabledInChild: disabledInChild
             )
-            // print(">>>> \(i) \(format(optedInInParent)) \(format(disabledInParent)) \(format(optedInInChild)) \(format(disabledInChild)) \(format(result))")
             XCTAssertEqual(expectedResults[i], result)
         }
     }
@@ -355,7 +351,7 @@ extension ConfigurationTests {
             disabledInChild: Bool
         ) -> Bool {
             let ruleIdentifier = ruleType.description.identifier
-            let parentConfiguration = Configuration(rulesMode:.only([ruleIdentifier]))
+            let parentConfiguration = Configuration(rulesMode: .only([ruleIdentifier]))
             let childConfiguration = Configuration(rulesMode: .default(
                 disabled: disabledInChild ? [ruleIdentifier] : [],
                 optIn: optedInInChild ? [ruleIdentifier] : []
@@ -365,9 +361,6 @@ extension ConfigurationTests {
         }
         let expectedResults = [ true, true, false, false ]
         XCTAssertEqual(expectedResults.count, 2 * 2)
-        func format(_ value: Bool) -> String {
-            (value ? " " : "") + " \(value)"
-        }
         for i in 0..<expectedResults.count {
             let optedInInChild = i & 1 != 0
             let disabledInChild = i & 2 != 0
@@ -376,11 +369,10 @@ extension ConfigurationTests {
                 optedInInChild: optedInInChild,
                 disabledInChild: disabledInChild
             )
-            print(">>>> \(i) \(format(optedInInChild)) \(format(disabledInChild)) \(format(result))")
             XCTAssertEqual(expectedResults[i], result)
         }
     }
-    
+
     // MARK: - Remote Configs
     func testValidRemoteChildConfig() {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild)

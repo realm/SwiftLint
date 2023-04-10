@@ -35,6 +35,11 @@
   Violations within test classes will now be ignored by default.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4896](https://github.com/realm/SwiftLint/issues/4896)
+* Stop enforcing calls to super from the override functions `setUp()`,
+  `tearDown()`, `setUpWithError()`, and `tearDownWithError()` in `XCTestCase`
+  subclasses.
+  [AndrewDMontgomery](https://github.com/andrewdmontgomery)
+  [#4875](https://github.com/realm/SwiftLint/pull/4875)
 
 #### Bug Fixes
 

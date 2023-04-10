@@ -26,12 +26,7 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatab
         "viewDidDisappear(_:)",
         "viewDidLoad()",
         "viewWillAppear(_:)",
-        "viewWillDisappear(_:)",
-        // XCTestCase
-        "setUp()",
-        "setUpWithError()",
-        "tearDown()",
-        "tearDownWithError()"
+        "viewWillDisappear(_:)"
     ]
 
     private(set) var severityConfiguration = SeverityConfiguration(.warning)

@@ -14,30 +14,6 @@ internal struct TestCaseAccessibilityRuleExamples {
                 return nestedMember
             }
 
-            override static func setUp() {
-                super.setUp()
-            }
-
-            override func setUp() {
-                super.setUp()
-            }
-
-            override func setUpWithError() throws {
-                try super.setUpWithError()
-            }
-
-            override static func tearDown() {
-                super.tearDown()
-            }
-
-            override func tearDown() {
-                super.tearDown()
-            }
-
-            override func tearDownWithError() {
-                try super.tearDownWithError()
-            }
-
             override func someFutureXCTestFunction() {
                 super.someFutureXCTestFunction()
             }

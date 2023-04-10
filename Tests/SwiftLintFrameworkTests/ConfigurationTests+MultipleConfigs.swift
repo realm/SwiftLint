@@ -307,21 +307,7 @@ extension ConfigurationTests {
             false, true, false, false, true, true, true, true,
             false, false, false, false, false, false, false, false
         ]
-        testParentChildOptInAndDisable(ruleType: ruleType, expectedResults: expectedResults)
-    }
-
-    func testParentChildOptInAndDisableForDefaultRule() {
-        let ruleType = BlanketDisableCommandRule.self
-        let expectedResults = [
-            true, true, false, false, true, true, true, true,
-            false, false, false, false, false, false, false, false
-        ]
-        testParentChildOptInAndDisable(ruleType: ruleType, expectedResults: expectedResults)
-    }
-
-    private func testParentChildOptInAndDisable(ruleType: Rule.Type, expectedResults: [Bool]) {
         func isEnabledInMergedConfiguration(
-            ruleType: Rule.Type,
             optedInInParent: Bool,
             disabledInParent: Bool,
             optedInInChild: Bool,
@@ -346,7 +332,6 @@ extension ConfigurationTests {
             let optedInInChild = index & 4 != 0
             let disabledInChild = index & 8 != 0
             let result = isEnabledInMergedConfiguration(
-                ruleType: ruleType,
                 optedInInParent: optedInInParent,
                 disabledInParent: disabledInParent,
                 optedInInChild: optedInInChild,
@@ -354,6 +339,36 @@ extension ConfigurationTests {
             )
             let message = "optedInInParent = \(optedInInParent), disabledInParent = \(disabledInParent), " +
                           "optedInInChild = \(optedInInChild), disabledInChild = \(disabledInChild)"
+            XCTAssertEqual(result, expectedResults[index], message)
+        }
+    }
+
+    func testParentChildDisableForDefaultRule() {
+        let ruleType = BlanketDisableCommandRule.self
+        let expectedResults = [true, false, false, false]
+        func isEnabledInMergedConfiguration(
+            disabledInParent: Bool,
+            disabledInChild: Bool
+        ) -> Bool {
+            let ruleIdentifier = ruleType.description.identifier
+            let parentConfiguration = Configuration(
+                rulesMode: .default(disabled: disabledInParent ? [ruleIdentifier] : [], optIn: [])
+            )
+            let childConfiguration = Configuration(
+                rulesMode: .default(disabled: disabledInChild ? [ruleIdentifier] : [], optIn: [])
+            )
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
+            return mergedConfiguration.contains(rule: ruleType)
+        }
+        XCTAssertEqual(expectedResults.count, 2 * 2)
+        for index in 0..<expectedResults.count {
+            let disabledInParent = index & 1 != 0
+            let disabledInChild = index & 2 != 0
+            let result = isEnabledInMergedConfiguration(
+                disabledInParent: disabledInParent,
+                disabledInChild: disabledInChild
+            )
+            let message = "disabledInParent = \(disabledInParent), disabledInChild = \(disabledInChild)"
             XCTAssertEqual(result, expectedResults[index], message)
         }
     }

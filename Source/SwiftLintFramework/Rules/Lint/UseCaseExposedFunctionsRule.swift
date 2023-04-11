@@ -19,8 +19,7 @@ struct UseCaseExposedFunctionsRule: ASTRule, ConfigurationProviderRule {
     func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
                     // Only proceed to check functional logic files.
-        guard dictionary.name != nil,
-              dictionary.name!.hasSuffix("Logic") || dictionary.name!.hasSuffix("UseCase"),
+        guard dictionary.name?.hasSuffix("Logic") ?? false || dictionary.name?.hasSuffix("UseCase") ?? false,
               dictionary.substructure.isNotEmpty
         else { return [] }
 

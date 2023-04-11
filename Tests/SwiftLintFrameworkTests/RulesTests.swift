@@ -28,4 +28,8 @@ class RulesTests: XCTestCase {
     func testUseCaseExposedFunctions() {
         verifyRule(UseCaseExposedFunctionsRule.description)
     }
+
+     func testUseCaseExposedFunctionName() {
+        verifyRule(UseCaseExposedFunctionNameRule.description)
+    }
 }

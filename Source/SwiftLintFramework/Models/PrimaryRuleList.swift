@@ -230,7 +230,8 @@ let builtInRules: [Rule.Type] = [
     XCTFailMessageRule.self,
     XCTSpecificMatcherRule.self,
     YodaConditionRule.self,
-    UseCaseExposedFunctionsRule.self
+    UseCaseExposedFunctionsRule.self,
+    UseCaseExposedFunctionNameRule.self,
 ]
 
 /// The rule list containing all available rules built into SwiftLint as well as native custom rules.

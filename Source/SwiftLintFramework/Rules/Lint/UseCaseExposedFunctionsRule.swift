@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-struct UseCaseExposedFunctionsRule: ASTRule, ConfigurationProviderRule {
+struct UseCaseExposedFunctionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.error)
 
     init() {}
@@ -16,43 +16,71 @@ struct UseCaseExposedFunctionsRule: ASTRule, ConfigurationProviderRule {
         triggeringExamples: UseCaseExposedFunctionsRuleExamples.triggeringExamples
     )
 
-    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
-                    // Only proceed to check functional logic files.
-        guard dictionary.name?.hasSuffix("Logic") ?? false || dictionary.name?.hasSuffix("UseCase") ?? false,
-              dictionary.substructure.isNotEmpty
-        else { return [] }
-
-        let classFunctions: [SourceKittenDictionary] = dictionary.substructure.filter {
-            $0.accessibility != .private && isFunction(structure: $0)
-        }
-
-        // The same rule applies to both classes and struct as you need an initializer function for your logic construct
-        if (kind == .class || kind == .struct) && classFunctions.count > 2 {
-            return [
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severityConfiguration.severity,
-                               location: Location(file: file,
-                                                  byteOffset: ByteCount(classFunctions[2].offset?.value ?? 1)),
-                               reason: message)
-            ]
-        }
-        // This applies to only protocols are they cannot be initialized
-        if kind == .protocol && classFunctions.count > 1 {
-            return [
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severityConfiguration.severity,
-                               location: Location(file: file,
-                                                  byteOffset: ByteCount(classFunctions[1].offset?.value ?? 1)),
-                               reason: message)
-            ]
-        }
-        return []
+     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func isFunction(structure: SourceKittenDictionary) -> Bool {
-        let kind = structure.kind
-        return kind == nil ? false : kind == "source.lang.swift.decl.function.method.instance"
+private extension UseCaseExposedFunctionsRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            .allExcept(ClassDeclSyntax.self, ProtocolDeclSyntax.self, StructDeclSyntax.self)
+        }
+
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            if node.isLogicClass && node.members.nonPrivateFunctions.count > 1 {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+
+            return .skipChildren
+        }
+
+        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+            if node.isLogicProtocol && node.members.nonPrivateFunctions.count > 1 {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+
+            return .skipChildren
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            if node.isLogicStruct && node.members.nonPrivateFunctions.count > 1 {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+
+            return .skipChildren
+        }
+    }
+}
+
+private extension ClassDeclSyntax {
+    // Check that it is a logic class
+    var isLogicClass: Bool {
+        identifier.text.hasSuffix("Logic") || identifier.text.hasSuffix("UseCase")
+    }
+}
+
+private extension StructDeclSyntax {
+    // Check that it is a logic struct
+    var isLogicStruct: Bool {
+        identifier.text.hasSuffix("Logic") || identifier.text.hasSuffix("UseCase")
+    }
+}
+
+private extension ProtocolDeclSyntax {
+    // Check that it is a logic struct
+    var isLogicProtocol: Bool {
+        identifier.text.hasSuffix("Logic") || identifier.text.hasSuffix("UseCase")
+    }
+}
+
+private extension MemberDeclBlockSyntax {
+    var nonPrivateFunctions: [MemberDeclListSyntax.Element] {
+        members.filter { member in
+            guard let function: FunctionDeclSyntax = member.decl.as(FunctionDeclSyntax.self) else { return false }
+
+            return function.modifiers?.contains(where: { $0.name.tokenKind != .keyword(.private) }) ?? true
+        }
     }
 }
 
@@ -93,6 +121,15 @@ internal struct UseCaseExposedFunctionsRuleExamples {
             }
             func callAsFunction() -> String {
                 return "call"
+            }
+        }
+        """),
+        Example("""
+        class MyLogic {
+            init() {}
+
+            func get(fire: String) -> Int {
+                return 35
             }
         }
         """)
@@ -137,6 +174,18 @@ internal struct UseCaseExposedFunctionsRuleExamples {
                 return 35
             }
             public func callAsFunction() -> String {
+                return "call"
+            }
+        }
+        """),
+        Example("""
+        class MyLogic {
+            init() {}
+
+            func get(fire: String) -> Int {
+                return 35
+            }
+            func callAsFunction() -> String {
                 return "call"
             }
         }

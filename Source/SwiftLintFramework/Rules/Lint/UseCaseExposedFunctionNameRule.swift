@@ -23,24 +23,24 @@ struct UseCaseExposedFunctionNameRule: SwiftSyntaxRule, ConfigurationProviderRul
 
 private extension UseCaseExposedFunctionNameRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type]{
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
             .allExcept(ClassDeclSyntax.self, ProtocolDeclSyntax.self, StructDeclSyntax.self)
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            if (node.isLogicClass && 
-                node.members.nonPrivateFunctions.count == 1 && 
-                !node.members.nonPrivateFunctions[0].isCallAsFunction) {
+            if node.isLogicClass &&
+               node.members.nonPrivateFunctions.count == 1 &&
+               !node.members.nonPrivateFunctions[0].isCallAsFunction {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
-            
+
             return .skipChildren
         }
 
         override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            if (node.isLogicProtocol && 
-                node.members.nonPrivateFunctions.count == 1 && 
-                !node.members.nonPrivateFunctions[0].isCallAsFunction) {
+            if node.isLogicProtocol &&
+               node.members.nonPrivateFunctions.count == 1 &&
+               !node.members.nonPrivateFunctions[0].isCallAsFunction {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
 
@@ -48,9 +48,9 @@ private extension UseCaseExposedFunctionNameRule {
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            if (node.isLogicStruct && 
-                node.members.nonPrivateFunctions.count == 1 && 
-                !node.members.nonPrivateFunctions[0].isCallAsFunction) {
+            if node.isLogicStruct &&
+               node.members.nonPrivateFunctions.count == 1 &&
+               !node.members.nonPrivateFunctions[0].isCallAsFunction {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
 
@@ -82,12 +82,11 @@ private extension ProtocolDeclSyntax {
 
 private extension MemberDeclBlockSyntax {
     var nonPrivateFunctions: [MemberDeclListSyntax.Element] {
-        let functions = members.filter { member in
-                guard let function: FunctionDeclSyntax = member.decl.as(FunctionDeclSyntax.self) else { return false }
-                
-                return function.modifiers?.contains(where: { $0.name.tokenKind != .keyword(.private) }) ?? true
-            }
-        return functions
+        members.filter { member in
+            guard let function: FunctionDeclSyntax = member.decl.as(FunctionDeclSyntax.self) else { return false }
+
+            return function.modifiers?.contains(where: { $0.name.tokenKind != .keyword(.private) }) ?? true
+        }
     }
 }
 

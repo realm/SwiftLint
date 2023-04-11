@@ -24,7 +24,7 @@ struct UseCaseExposedFunctionsRule: ASTRule, ConfigurationProviderRule {
         else { return [] }
 
         let classFunctions: [SourceKittenDictionary] = dictionary.substructure.filter {
-            $0.accessibility == .public && isFunction(structure: $0)
+            $0.accessibility != .private && isFunction(structure: $0)
         }
 
         // The same rule applies to both classes and struct as you need an initializer function for your logic construct
@@ -81,11 +81,19 @@ internal struct UseCaseExposedFunctionsRuleExamples {
 
             public func callAsFunction() -> AnyPublisher<Void, Never> {}
 
-            func getOutput() -> Int {}
-
-            func setInput() {}
-
             private func computeInput() {}
+        }
+        """),
+        Example("""
+        class MyLogic {
+            init() {}
+
+            private func get(fire: String) -> Int {
+                return 35
+            }
+            func callAsFunction() -> String {
+                return "call"
+            }
         }
         """)
     ]
@@ -114,6 +122,18 @@ internal struct UseCaseExposedFunctionsRuleExamples {
             public init() {}
 
             public func get(fire: String) -> Int {
+                return 35
+            }
+            public func callAsFunction() -> String {
+                return "call"
+            }
+        }
+        """),
+        Example("""
+        class MyLogic {
+            init() {}
+
+            func get(fire: String) -> Int {
                 return 35
             }
             public func callAsFunction() -> String {

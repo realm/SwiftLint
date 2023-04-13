@@ -26,6 +26,11 @@
 * Trigger `prefer_self_in_static_references` rule on more type references.
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Adds a new `reporters` subcommand, to improve discoverability of
+  reporters.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4819](https://github.com/realm/SwiftLint/issues/4819)
+
 #### Bug Fixes
 
 * Fix `lower_acl_than_parent` rule rewriter by preserving leading whitespace.  
@@ -151,11 +156,6 @@
 * Adds a new `summary` reporter, that displays the number of violations
   of each rule in a text table.  
   [Martin Redington](https://github.com/mildm8nnered)
-
-* Adds a new `reporters` subcommand, to improve discoverability of
-  reporters.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4819](https://github.com/realm/SwiftLint/issues/4819)
 
 #### Bug Fixes
 

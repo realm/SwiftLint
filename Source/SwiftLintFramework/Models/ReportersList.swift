@@ -1,5 +1,5 @@
 // Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
-// This was edited
+// DO NOT EDIT
 
 /// The reporters list containing all the reporters built into SwiftLint.
 public let reportersList: [Reporter.Type] = [

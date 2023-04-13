@@ -24,4 +24,4 @@ steps:
       - echo "+++ Run Sourcery"
       - make --always-make sourcery
       - echo "+++ Diff Files"
-      - "! git diff -U0 | grep '^[-+][^-+]' | grep --invert-match '// Generated using Sourcery'"
+      - git diff-index --quiet HEAD

@@ -33,15 +33,15 @@ all: build
 sourcery: Source/SwiftLintFramework/Models/PrimaryRuleList.swift Source/SwiftLintFramework/Models/ReportersList.swift Tests/GeneratedTests/GeneratedTests.swift
 
 Source/SwiftLintFramework/Models/PrimaryRuleList.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/PrimaryRuleList.stencil
-	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/PrimaryRuleList.stencil --output .sourcery
+	./tools/sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/PrimaryRuleList.stencil --output .sourcery
 	mv .sourcery/PrimaryRuleList.generated.swift Source/SwiftLintFramework/Models/PrimaryRuleList.swift
 
 Source/SwiftLintFramework/Models/ReportersList.swift: Source/SwiftLintFramework/Reporters/*.swift .sourcery/ReportersList.stencil
-	sourcery --sources Source/SwiftLintFramework/Reporters --templates .sourcery/ReportersList.stencil --output .sourcery
+	./tools/sourcery --sources Source/SwiftLintFramework/Reporters --templates .sourcery/ReportersList.stencil --output .sourcery
 	mv .sourcery/ReportersList.generated.swift Source/SwiftLintFramework/Models/ReportersList.swift
 
 Tests/GeneratedTests/GeneratedTests.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/GeneratedTests.stencil
-	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/GeneratedTests.stencil --output .sourcery
+	./tools/sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/GeneratedTests.stencil --output .sourcery
 	mv .sourcery/GeneratedTests.generated.swift Tests/GeneratedTests/GeneratedTests.swift
 
 test: clean_xcode

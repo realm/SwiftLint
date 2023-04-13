@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -euo pipefail
+
+bazel run \
+  --run_under="cd $PWD && " \
+  --noshow_progress \
+  --show_result=0 \
+  --ui_event_filters=-INFO \
+  @Sourcery//:Sourcery -- "$@"

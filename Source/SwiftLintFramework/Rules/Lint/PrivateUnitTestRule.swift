@@ -224,17 +224,17 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
             return (nil, declKeyword)
         }
         var filteredModifiers = [DeclModifierSyntax]()
-        var leadingTrivia = Trivia.zero
+        var leadingTrivia = Trivia()
         for modifier in modifiers {
-            let accumulatedLeadingTrivia = leadingTrivia + (modifier.leadingTrivia ?? .zero)
+            let accumulatedLeadingTrivia = leadingTrivia + (modifier.leadingTrivia)
             if modifier.name.tokenKind == .keyword(.private) {
                 leadingTrivia = accumulatedLeadingTrivia
             } else {
                 filteredModifiers.append(modifier.with(\.leadingTrivia, accumulatedLeadingTrivia))
-                leadingTrivia = .zero
+                leadingTrivia = Trivia()
             }
         }
-        let declKeyword = declKeyword.with(\.leadingTrivia, leadingTrivia + (declKeyword.leadingTrivia ?? .zero))
+        let declKeyword = declKeyword.with(\.leadingTrivia, leadingTrivia + (declKeyword.leadingTrivia))
         return (ModifierListSyntax(filteredModifiers), declKeyword)
     }
 }

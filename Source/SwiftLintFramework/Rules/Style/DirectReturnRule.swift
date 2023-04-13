@@ -245,9 +245,9 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
                 item: .stmt(StmtSyntax(returnStmt.with(\.expression, initExpression)))
             ))
         } else {
-            let leadingTrivia = (varDecl.leadingTrivia?.withoutTrailingIndentation ?? .zero)
-                              + (varDecl.trailingTrivia ?? .zero)
-                              + (returnStmt.leadingTrivia?.withFirstEmptyLineRemoved ?? .zero)
+            let leadingTrivia = varDecl.leadingTrivia.withoutTrailingIndentation +
+                varDecl.trailingTrivia +
+                returnStmt.leadingTrivia.withFirstEmptyLineRemoved
             newStmtList.append(
                 CodeBlockItemSyntax(
                     item: .stmt(

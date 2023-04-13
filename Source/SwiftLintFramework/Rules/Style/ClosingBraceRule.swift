@@ -63,7 +63,7 @@ private extension ClosingBraceRule {
             }
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-            return super.visit(node.with(\.trailingTrivia, .zero))
+            return super.visit(node.with(\.trailingTrivia, Trivia()))
         }
     }
 }

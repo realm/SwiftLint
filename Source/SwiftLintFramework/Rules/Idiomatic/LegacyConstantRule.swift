@@ -63,8 +63,8 @@ private extension LegacyConstantRule {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
             return ("\(raw: correction)" as ExprSyntax)
-                .with(\.leadingTrivia, node.leadingTrivia ?? .zero)
-                .with(\.trailingTrivia, node.trailingTrivia ?? .zero)
+                .with(\.leadingTrivia, node.leadingTrivia)
+                .with(\.trailingTrivia, node.trailingTrivia)
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
@@ -78,8 +78,8 @@ private extension LegacyConstantRule {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
             return ("\(raw: calledExpression.identifier.text).pi" as ExprSyntax)
-                .with(\.leadingTrivia, node.leadingTrivia ?? .zero)
-                .with(\.trailingTrivia, node.trailingTrivia ?? .zero)
+                .with(\.leadingTrivia, node.leadingTrivia)
+                .with(\.trailingTrivia, node.trailingTrivia)
         }
     }
 }

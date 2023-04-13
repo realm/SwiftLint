@@ -47,13 +47,13 @@ private extension BlockBasedKVORule {
                   case let parameterList = node.signature.input.parameterList,
                   parameterList.count == 4,
                   node.identifier.text == "observeValue",
-                  parameterList.compactMap(\.firstName?.text) == ["forKeyPath", "of", "change", "context"]
+                  parameterList.map(\.firstName.text) == ["forKeyPath", "of", "change", "context"]
             else {
                 return
             }
 
             let types = parameterList
-                .compactMap { $0.type?.trimmedDescription.replacingOccurrences(of: " ", with: "") }
+                .map { $0.type.trimmedDescription.replacingOccurrences(of: " ", with: "") }
             let firstTypes = ["String?", "Any?", "[NSKeyValueChangeKey:Any]?", "UnsafeMutableRawPointer?"]
             let secondTypes = ["String?", "Any?", "Dictionary<NSKeyValueChangeKey,Any>?", "UnsafeMutableRawPointer?"]
             if types == firstTypes || types == secondTypes {

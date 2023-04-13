@@ -140,7 +140,7 @@ private extension ClosureSignatureSyntax {
 
         if let input = input?.as(ClosureParamListSyntax.self) {
             positions.append(contentsOf: input.map(\.positionAfterSkippingLeadingTrivia))
-        } else if let input = input?.as(ParameterClauseSyntax.self) {
+        } else if let input = input?.as(ClosureParameterClauseSyntax.self) {
             positions.append(contentsOf: input.parameterList.map(\.positionAfterSkippingLeadingTrivia))
         }
 

@@ -82,8 +82,8 @@ enum LegacyFunctionRuleHelper {
             }
 
             return expr
-                .with(\.leadingTrivia, node.leadingTrivia ?? .zero)
-                .with(\.trailingTrivia, node.trailingTrivia ?? .zero)
+                .with(\.leadingTrivia, node.leadingTrivia)
+                .with(\.trailingTrivia, node.trailingTrivia)
         }
     }
 }

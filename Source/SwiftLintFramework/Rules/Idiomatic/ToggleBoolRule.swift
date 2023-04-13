@@ -79,8 +79,8 @@ private extension ToggleBoolRule {
                 )
                 .removingLast()
                 .removingLast()
-                .with(\.leadingTrivia, node.leadingTrivia ?? .zero)
-                .with(\.trailingTrivia, node.trailingTrivia ?? .zero)
+                .with(\.leadingTrivia, node.leadingTrivia)
+                .with(\.trailingTrivia, node.trailingTrivia)
 
             return super.visit(newNode)
         }

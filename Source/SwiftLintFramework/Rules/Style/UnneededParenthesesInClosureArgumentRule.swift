@@ -89,9 +89,9 @@ struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule,
 
 private final class Visitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: ClosureSignatureSyntax) {
-        guard let clause = node.input?.as(ParameterClauseSyntax.self),
-              !clause.parameterList.contains(where: { $0.type != nil }),
-              clause.parameterList.isNotEmpty else {
+        guard let clause = node.input?.as(ClosureParameterClauseSyntax.self),
+              clause.parameterList.isNotEmpty,
+              clause.parameterList.allSatisfy({ $0.type == nil }) else {
             return
         }
 
@@ -111,19 +111,16 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
     override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
         guard
-            let clause = node.input?.as(ParameterClauseSyntax.self),
-            !clause.parameterList.contains(where: { $0.type != nil }),
+            let clause = node.input?.as(ClosureParameterClauseSyntax.self),
             clause.parameterList.isNotEmpty,
+            clause.parameterList.allSatisfy({ $0.type == nil }),
             !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
         else {
             return super.visit(node)
         }
 
         let items = clause.parameterList.enumerated().compactMap { idx, param -> ClosureParamSyntax? in
-            guard let name = param.firstName else {
-                return nil
-            }
-
+            let name = param.firstName
             let isLast = idx == clause.parameterList.count - 1
             return ClosureParamSyntax(
                 name: name,

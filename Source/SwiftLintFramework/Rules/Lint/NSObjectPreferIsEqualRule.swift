@@ -56,11 +56,9 @@ private extension FunctionDeclSyntax {
             parameterList.count == 2,
             let lhs = parameterList.first,
             let rhs = parameterList.last,
-            lhs.firstName?.text == "lhs",
-            rhs.firstName?.text == "rhs",
-            let lhsTypeDescription = lhs.type?.trimmedDescription,
-            let rhsTypeDescription = rhs.type?.trimmedDescription,
-            lhsTypeDescription == rhsTypeDescription
+            lhs.firstName.text == "lhs",
+            rhs.firstName.text == "rhs",
+            lhs.type.trimmedDescription == rhs.type.trimmedDescription
         else {
             return false
         }

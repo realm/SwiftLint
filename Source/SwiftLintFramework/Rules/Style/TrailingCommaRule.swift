@@ -135,7 +135,7 @@ private extension TrailingCommaRule {
             switch (lastElement.trailingComma, mandatoryComma) {
             case (let commaToken?, false):
                 correctionPositions.append(commaToken.positionAfterSkippingLeadingTrivia)
-                let newTrailingTrivia = (lastElement.valueExpression.trailingTrivia ?? .zero)
+                let newTrailingTrivia = (lastElement.valueExpression.trailingTrivia)
                     .appending(trivia: commaToken.leadingTrivia)
                     .appending(trivia: commaToken.trailingTrivia)
                 let newNode = node
@@ -154,7 +154,7 @@ private extension TrailingCommaRule {
                         with: lastElement
                             .with(\.trailingTrivia, [])
                             .with(\.trailingComma, .commaToken())
-                            .with(\.trailingTrivia, lastElement.trailingTrivia ?? .zero)
+                            .with(\.trailingTrivia, lastElement.trailingTrivia)
                     )
                 return super.visit(newNode)
             case (_, true), (nil, false):
@@ -177,7 +177,7 @@ private extension TrailingCommaRule {
                         with: lastElement
                             .with(\.trailingComma, nil)
                             .with(\.trailingTrivia,
-                                  (lastElement.expression.trailingTrivia ?? .zero)
+                                  (lastElement.expression.trailingTrivia)
                                         .appending(trivia: commaToken.leadingTrivia)
                                         .appending(trivia: commaToken.trailingTrivia)
                             )
@@ -190,7 +190,7 @@ private extension TrailingCommaRule {
                     with: lastElement
                         .with(\.expression, lastElement.expression.with(\.trailingTrivia, []))
                         .with(\.trailingComma, .commaToken())
-                        .with(\.trailingTrivia, lastElement.expression.trailingTrivia ?? .zero)
+                        .with(\.trailingTrivia, lastElement.expression.trailingTrivia)
                 )
                 return super.visit(newNode)
             case (_, true), (nil, false):

@@ -252,8 +252,8 @@ private extension ModifierListSyntax {
                 \.name,
                 .keyword(
                     .private,
-                    leadingTrivia: fileprivateModifier.leadingTrivia ?? .zero,
-                    trailingTrivia: fileprivateModifier.trailingTrivia ?? .zero
+                    leadingTrivia: fileprivateModifier.leadingTrivia,
+                    trailingTrivia: fileprivateModifier.trailingTrivia
                 )
             )
         )

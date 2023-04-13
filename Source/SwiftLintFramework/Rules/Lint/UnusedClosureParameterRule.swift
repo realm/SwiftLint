@@ -69,16 +69,13 @@ private extension UnusedClosureParameterRule {
                 .walk(tree: node.statements, handler: \.identifiers)
 
             guard let params = input.as(ClosureParamListSyntax.self) else {
-                guard let params = input.as(ParameterClauseSyntax.self) else {
+                guard let params = input.as(ClosureParameterClauseSyntax.self) else {
                     return super.visit(node)
                 }
 
                 var newParams = params
                 for (index, param) in params.parameterList.enumerated() {
-                    guard let name = param.firstName else {
-                        continue
-                    }
-
+                    let name = param.firstName
                     if name.tokenKind == .wildcard {
                         continue
                     } else if referencedIdentifiers.contains(name.text.removingDollarsAndBackticks) {
@@ -148,17 +145,15 @@ private extension ClosureExprSyntax {
                     name: param.name.text.removingDollarsAndBackticks
                 )
             }
-        } else if let params = signature?.input?.as(ParameterClauseSyntax.self)?.parameterList {
+        } else if let params = signature?.input?.as(ClosureParameterClauseSyntax.self)?.parameterList {
             return params.compactMap { param in
-                if param.firstName?.tokenKind == .wildcard {
+                if param.firstName.tokenKind == .wildcard {
                     return nil
                 }
-                return param.firstName.map { name in
-                    ClosureParam(
-                        position: name.positionAfterSkippingLeadingTrivia,
-                        name: name.text.removingDollarsAndBackticks
-                    )
-                }
+                return ClosureParam(
+                    position: param.firstName.positionAfterSkippingLeadingTrivia,
+                    name: param.firstName.text.removingDollarsAndBackticks
+                )
             }
         } else {
             return []

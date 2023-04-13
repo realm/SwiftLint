@@ -122,7 +122,7 @@ private extension UnusedControlFlowLabelRule {
                 return super.visit(node)
             }
 
-            let newNode = node.statement.with(\.leadingTrivia, node.leadingTrivia ?? .zero)
+            let newNode = node.statement.with(\.leadingTrivia, node.leadingTrivia)
             correctionPositions.append(violationPosition)
             return visit(newNode).as(StmtSyntax.self) ?? newNode
         }

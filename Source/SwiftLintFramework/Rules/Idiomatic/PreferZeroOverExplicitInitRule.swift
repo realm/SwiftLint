@@ -80,8 +80,8 @@ private extension PreferZeroOverExplicitInitRule {
                 .with(\.base, "\(raw: name)")
             return super.visit(
                 newNode
-                    .with(\.leadingTrivia, node.leadingTrivia ?? .zero)
-                    .with(\.trailingTrivia, node.trailingTrivia ?? .zero)
+                    .with(\.leadingTrivia, node.leadingTrivia)
+                    .with(\.trailingTrivia, node.trailingTrivia)
             )
         }
     }

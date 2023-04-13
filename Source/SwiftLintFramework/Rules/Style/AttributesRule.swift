@@ -68,10 +68,10 @@ private extension AttributesRule {
             }
 
             let hasMultipleNewlines = node.children(viewMode: .sourceAccurate).enumerated().contains { index, element in
-                if index > 0 && element.leadingTrivia?.hasMultipleNewlines == true {
+                if index > 0 && element.leadingTrivia.hasMultipleNewlines == true {
                     return true
                 } else {
-                    return element.trailingTrivia?.hasMultipleNewlines == true
+                    return element.trailingTrivia.hasMultipleNewlines == true
                 }
             }
 

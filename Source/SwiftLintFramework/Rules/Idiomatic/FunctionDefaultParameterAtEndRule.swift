@@ -104,20 +104,20 @@ private extension FunctionSignatureSyntax {
 
 private extension FunctionParameterSyntax {
     var isClosure: Bool {
-        if isEscaping || type?.as(FunctionTypeSyntax.self) != nil {
+        if isEscaping || type.is(FunctionTypeSyntax.self) {
             return true
         }
 
-        if let optionalType = type?.as(OptionalTypeSyntax.self),
+        if let optionalType = type.as(OptionalTypeSyntax.self),
            let tuple = optionalType.wrappedType.as(TupleTypeSyntax.self) {
             return tuple.elements.onlyElement?.type.as(FunctionTypeSyntax.self) != nil
         }
 
-        if let tuple = type?.as(TupleTypeSyntax.self) {
+        if let tuple = type.as(TupleTypeSyntax.self) {
             return tuple.elements.onlyElement?.type.as(FunctionTypeSyntax.self) != nil
         }
 
-        if let attrType = type?.as(AttributedTypeSyntax.self) {
+        if let attrType = type.as(AttributedTypeSyntax.self) {
             return attrType.baseType.is(FunctionTypeSyntax.self)
         }
 
@@ -125,7 +125,7 @@ private extension FunctionParameterSyntax {
     }
 
     var isEscaping: Bool {
-        guard let attrType = type?.as(AttributedTypeSyntax.self) else {
+        guard let attrType = type.as(AttributedTypeSyntax.self) else {
             return false
         }
 

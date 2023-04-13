@@ -170,9 +170,9 @@ private extension RedundantOptionalInitializationRule {
                     return newBinding
                 }
                 if binding.trailingComma != nil {
-                    return newBinding.with(\.typeAnnotation, binding.typeAnnotation?.with(\.trailingTrivia, .zero))
+                    return newBinding.with(\.typeAnnotation, binding.typeAnnotation?.with(\.trailingTrivia, Trivia()))
                 }
-                return newBinding.with(\.trailingTrivia, binding.initializer?.trailingTrivia ?? .zero)
+                return newBinding.with(\.trailingTrivia, binding.initializer?.trailingTrivia ?? Trivia())
             })
 
             return super.visit(node.with(\.bindings, newBindings))

@@ -66,7 +66,7 @@ private extension TrailingSemicolonRule {
             }
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-            return .unknown("").with(\.trailingTrivia, node.trailingTrivia ?? .zero)
+            return .unknown("").with(\.trailingTrivia, node.trailingTrivia)
         }
     }
 }

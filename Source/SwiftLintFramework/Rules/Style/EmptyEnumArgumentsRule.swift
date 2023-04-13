@@ -222,7 +222,7 @@ private extension FunctionCallExprSyntax {
 
         if argumentList.allSatisfy({ $0.expression.is(DiscardAssignmentExprSyntax.self) }) {
             let newCalledExpression = calledExpression
-                .with(\.trailingTrivia, rightParen?.trailingTrivia ?? .zero)
+                .with(\.trailingTrivia, rightParen?.trailingTrivia ?? Trivia())
             let newExpression = self
                 .with(\.calledExpression, ExprSyntax(newCalledExpression))
                 .with(\.leftParen, nil)

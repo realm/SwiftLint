@@ -37,6 +37,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4860](https://github.com/realm/SwiftLint/issues/4860)
 
+* Ignore block comments in `let_var_whitespace` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4871](https://github.com/realm/SwiftLint/issues/4871)
+
 * Fix false positives in `indentation_width` rule.  
   [Sven Münnich](https://github.com/svenmuennich)
 

@@ -16,7 +16,7 @@ has_app_changes = !modified_files.grep(/Source/).empty?
 has_test_changes = !modified_files.grep(/Tests/).empty?
 has_danger_changes = !modified_files.grep(/Dangerfile|tools\/oss-check|Gemfile/).empty?
 has_package_changes = !modified_files.grep(/Package\.swift/).empty?
-has_bazel_changes = !modified_files.grep(/\.bazelrc|\.bazelversion|WORKSPACE|bazel\/|BUILD/).empty?
+has_bazel_changes = !modified_files.grep(/\.bazelrc|\.bazelversion|WORKSPACE|bazel\/|BUILD|MODULE\.bazel/).empty?
 
 # Add a CHANGELOG entry for app changes
 if !modified_files.include?('CHANGELOG.md') && has_app_changes

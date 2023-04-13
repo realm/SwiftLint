@@ -19,3 +19,9 @@ steps:
     commands:
       - echo "+++ Test"
       - bazel test --test_output=streamed --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
+  - label: "Sourcery"
+    commands:
+      - echo "+++ Run Sourcery"
+      - make --always-make sourcery
+      - echo "+++ Diff Files"
+      - "! git diff -U0 | grep '^[-+][^-+]' | grep --invert-match '// Generated using Sourcery'"

@@ -2,15 +2,6 @@ trigger:
 - main
 
 jobs:
-- job: Sourcery
-  pool:
-    vmImage: 'macOS-12'
-  steps:
-    - script: make --always-make sourcery
-      displayName: Generate sources
-    - script: "! git diff -U0 | grep '^[-+][^-+]' | grep --invert-match '// Generated using Sourcery'"
-      displayName: Check changed files ignoring Sourcery's version
-
 - job: Linux
   pool:
     vmImage: 'ubuntu-20.04'

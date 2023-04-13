@@ -8,7 +8,7 @@ module(
 bazel_dep(name = "platforms", version = "0.0.6")
 bazel_dep(name = "rules_apple", version = "2.2.0", repo_name = "build_bazel_rules_apple")
 bazel_dep(name = "rules_swift", version = "1.7.1", repo_name = "build_bazel_rules_swift")
-bazel_dep(name = "rules_xcodeproj", version = "1.3.3")
+bazel_dep(name = "rules_xcodeproj", version = "1.4.0")
 bazel_dep(name = "sourcekitten", version = "0.34.1", repo_name = "com_github_jpsim_sourcekitten")
 bazel_dep(name = "swift_argument_parser", version = "1.2.1", repo_name = "sourcekitten_com_github_apple_swift_argument_parser")
 bazel_dep(name = "yams", version = "5.0.5", repo_name = "sourcekitten_com_github_jpsim_yams")

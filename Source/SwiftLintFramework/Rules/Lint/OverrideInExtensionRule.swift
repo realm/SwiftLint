@@ -61,7 +61,7 @@ private extension OverrideInExtensionRule {
 
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.modifiers.containsOverride {
-                violations.append(node.bindingKeyword .positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 

@@ -15,7 +15,7 @@ jobs:
 
 - job: Linux
   pool:
-    vmImage: 'ubuntu-latest'
+    vmImage: 'ubuntu-20.04'
   strategy:
     maxParallel: 10
     matrix:

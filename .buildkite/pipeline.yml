@@ -24,4 +24,4 @@ steps:
       - echo "+++ Run Sourcery"
       - make --always-make sourcery
       - echo "+++ Diff Files"
-      - git diff-index --quiet HEAD
+      - git diff --quiet HEAD

@@ -3,11 +3,12 @@ GEM
   specs:
     CFPropertyList (3.0.6)
       rexml
-    activesupport (7.0.4.3)
+    activesupport (6.1.7.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
     addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
     algoliasearch (1.27.5)
@@ -151,12 +152,14 @@ GEM
       colored2 (~> 3.1)
       nanaimo (~> 0.3.0)
       rexml (~> 3.2.4)
+    zeitwerk (2.6.7)
 
 PLATFORMS
   arm64-darwin-21
   ruby
 
 DEPENDENCIES
+  activesupport (~> 6.0)
   cocoapods
   danger
   jazzy

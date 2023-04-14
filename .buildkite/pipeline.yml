@@ -11,6 +11,8 @@ steps:
       - swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
   - label: "Danger"
     commands:
+      - echo "--- Install Bundler"
+      - gem install bundler
       - echo "--- Bundle Install"
       - bundle install
       - echo "+++ Run Danger"

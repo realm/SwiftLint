@@ -10,6 +10,8 @@ jobs:
     matrix:
       swift57:
         containerImage: swift:5.7
+      swift58:
+        containerImage: swift:5.8
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES

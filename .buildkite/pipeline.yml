@@ -11,10 +11,12 @@ steps:
       - swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
   - label: "Danger"
     commands:
-      - echo "--- Build Danger"
-      - bazel build //tools:danger
+      - echo "--- Install Bundler"
+      - gem install bundler
+      - echo "--- Bundle Install"
+      - bundle install
       - echo "+++ Run Danger"
-      - ./bazel-bin/tools/danger --verbose
+      - bundle exec danger --verbose
   - label: "TSan Tests"
     commands:
       - echo "+++ Test"

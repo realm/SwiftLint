@@ -1,35 +1,5 @@
 workspace(name = "SwiftLint")
 
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-
-git_repository(
-    name = "bazelruby_rules_ruby",
-    commit = "cc2f5ce961f7fa34557264dd05c7597e634f31e1",
-    remote = "https://github.com/bazelruby/rules_ruby.git",
-    shallow_since = "1679251731 -0700",
-)
-
-load(
-    "@bazelruby_rules_ruby//ruby:deps.bzl",
-    "rules_ruby_dependencies",
-    "rules_ruby_select_sdk",
-)
-
-rules_ruby_dependencies()
-
-rules_ruby_select_sdk(version = "host")
-
-load(
-    "@bazelruby_rules_ruby//ruby:defs.bzl",
-    "ruby_bundle",
-)
-
-ruby_bundle(
-    name = "bundle",
-    gemfile = "//:Gemfile",
-    gemfile_lock = "//:Gemfile.lock",
-)
-
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(

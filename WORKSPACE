@@ -4,9 +4,9 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
     name = "bazelruby_rules_ruby",
-    commit = "c93a6814b6193572c7c8b677b560314f52b31962",
+    commit = "cc2f5ce961f7fa34557264dd05c7597e634f31e1",
     remote = "https://github.com/bazelruby/rules_ruby.git",
-    shallow_since = "1651264604 -0700",
+    shallow_since = "1679251731 -0700",
 )
 
 load(

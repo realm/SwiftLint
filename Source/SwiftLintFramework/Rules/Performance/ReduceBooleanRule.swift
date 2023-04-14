@@ -12,7 +12,8 @@ struct ReduceBooleanRule: SwiftSyntaxRule, ConfigurationProviderRule {
         kind: .performance,
         nonTriggeringExamples: [
             Example("nums.reduce(0) { $0.0 + $0.1 }"),
-            Example("nums.reduce(0.0) { $0.0 + $0.1 }")
+            Example("nums.reduce(0.0) { $0.0 + $0.1 }"),
+            Example("nums.reduce(initial: true) { $0.0 && $0.1 == 3 }")
         ],
         triggeringExamples: [
             Example("let allNines = nums.↓reduce(true) { $0.0 && $0.1 == 9 }"),
@@ -22,7 +23,8 @@ struct ReduceBooleanRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("let allNines = nums.↓reduce(true, { $0.0 && $0.1 == 9 })"),
             Example("let anyNines = nums.↓reduce(false, { $0.0 || $0.1 == 9 })"),
             Example("let allValid = validators.↓reduce(true, { $0 && $1(input) })"),
-            Example("let anyValid = validators.↓reduce(false, { $0 || $1(input) })")
+            Example("let anyValid = validators.↓reduce(false, { $0 || $1(input) })"),
+            Example("nums.reduce(into: true) { (r: inout Bool, s) in r = r && (s == 3) }")
         ]
     )
 
@@ -38,6 +40,7 @@ private extension ReduceBooleanRule {
                 let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
                 calledExpression.name.text == "reduce",
                 let firstArgument = node.argumentList.first,
+                firstArgument.label?.text ?? "into" == "into",
                 let bool = firstArgument.expression.as(BooleanLiteralExprSyntax.self)
             else {
                 return

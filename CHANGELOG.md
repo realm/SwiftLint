@@ -40,6 +40,11 @@
 * Fix false positives in `indentation_width` rule.  
   [Sven Münnich](https://github.com/svenmuennich)
 
+* Do not trigger `reduce_boolean` on `reduce` methods with a first named
+  argument that is different from `into`.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4894](https://github.com/realm/SwiftLint/issues/4894)
+
 ## 0.51.0: bzllint
 
 #### Breaking

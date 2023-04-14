@@ -17,7 +17,7 @@ load(
 
 rules_ruby_dependencies()
 
-rules_ruby_select_sdk(version = "2.7.5")
+rules_ruby_select_sdk(version = "host")
 
 load(
     "@bazelruby_rules_ruby//ruby:defs.bzl",

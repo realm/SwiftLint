@@ -7,7 +7,7 @@ github_file_prefix: https://github.com/realm/SwiftLint/tree/main
 swift_build_tool: spm
 theme: fullwidth
 clean: true
-copyright: '© 2022 [JP Simard](https://jpsim.com) under MIT.'
+copyright: '© 2023 [JP Simard](https://jpsim.com) under MIT.'
 
 documentation: rule_docs/*.md
 hide_unlisted_documentation: true

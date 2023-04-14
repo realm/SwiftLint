@@ -10,6 +10,8 @@ jobs:
     matrix:
       swift57:
         containerImage: swift:5.7
+      swift58:
+        containerImage: swift:5.8
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
@@ -23,7 +25,7 @@ jobs:
 #     maxParallel: 10
 #     matrix:
 #       xcode14:
-#         DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
+#         DEVELOPER_DIR: /Applications/Xcode_14.3.app
 #   steps:
 #     - script: |
 #         sw_vers
@@ -35,7 +37,7 @@ jobs:
   pool:
     vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.4.1.app
+    DEVELOPER_DIR: /Applications/Xcode_14.3.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -48,7 +50,7 @@ jobs:
   pool:
     vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
+    DEVELOPER_DIR: /Applications/Xcode_14.3.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs

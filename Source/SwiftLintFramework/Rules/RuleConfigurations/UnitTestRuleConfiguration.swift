@@ -1,6 +1,7 @@
 public typealias BalancedXCTestLifecycleConfiguration = UnitTestRuleConfiguration
 public typealias EmptyXCTestMethodConfiguration = UnitTestRuleConfiguration
 public typealias SingleTestClassConfiguration = UnitTestRuleConfiguration
+public typealias NoMagicNumbersRuleConfiguration = UnitTestRuleConfiguration
 
 public struct UnitTestRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public private(set) var severityConfiguration = SeverityConfiguration(.warning)

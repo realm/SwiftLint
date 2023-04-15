@@ -113,22 +113,22 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
     // MARK: - Public
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate, testClasses: configuration.testParentClasses)
+        Visitor(viewMode: .sourceAccurate, testParentClasses: configuration.testParentClasses)
     }
 }
 
 private extension BalancedXCTestLifecycleRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let testClasses: Set<String>
+        private let testParentClasses: Set<String>
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
-        init(viewMode: SyntaxTreeViewMode, testClasses: Set<String>) {
-            self.testClasses = testClasses
+        init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
+            self.testParentClasses = testParentClasses
             super.init(viewMode: viewMode)
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            guard node.isXCTestCase(testClasses) else {
+            guard node.isXCTestCase(testParentClasses) else {
                 return
             }
 

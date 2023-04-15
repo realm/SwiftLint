@@ -40,7 +40,17 @@ struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
                 @Attribute
                 func f() {}
             """),
-            Example("var x: Int {\n\tlet a = 0\n\treturn a\n}\n") // don't trigger on local vars
+            Example("var x: Int {\n\tlet a = 0\n\treturn a\n}\n"), // don't trigger on local vars
+            Example("""
+            struct S {
+                static var test: String { /* Comment block */
+                    let s = "!"
+                    return "Test" + s
+                }
+
+                func f() {}
+            }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("var x = 1\n↓x = 2\n"),
@@ -213,7 +223,11 @@ struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
         for token in syntaxMap.tokens where token.kind == .comment ||
                                             token.kind == .docComment {
             let startLine = file.line(byteOffset: token.offset)
-            let endLine = file.line(byteOffset: token.offset + token.length)
+            var endLine = file.line(byteOffset: token.offset + token.length)
+
+            if file.contents(for: token)?.starts(with: "/*") == true {
+                endLine += 1
+            }
 
             if startLine <= endLine {
                 result.formUnion(Set(startLine...endLine))

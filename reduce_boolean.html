@@ -344,6 +344,8 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="n">nums</span><span class="o">.</span><span class="nf">reduce</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="mi">0</span> <span class="o">+</span> <span class="nv">$0</span><span class="o">.</span><span class="mi">1</span> <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="n">nums</span><span class="o">.</span><span class="nf">reduce</span><span class="p">(</span><span class="nv">initial</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nv">$0</span><span class="o">.</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">3</span> <span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">allNines</span> <span class="o">=</span> <span class="n">nums</span><span class="o">.</span><span class="err">↓</span><span class="nf">reduce</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nv">$0</span><span class="o">.</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">9</span> <span class="p">}</span>
 </code></pre>
@@ -360,6 +362,8 @@
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">allValid</span> <span class="o">=</span> <span class="n">validators</span><span class="o">.</span><span class="err">↓</span><span class="nf">reduce</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">&amp;&amp;</span> <span class="nv">$1</span><span class="p">(</span><span class="n">input</span><span class="p">)</span> <span class="p">})</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">anyValid</span> <span class="o">=</span> <span class="n">validators</span><span class="o">.</span><span class="err">↓</span><span class="nf">reduce</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">||</span> <span class="nv">$1</span><span class="p">(</span><span class="n">input</span><span class="p">)</span> <span class="p">})</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">nums</span><span class="o">.</span><span class="nf">reduce</span><span class="p">(</span><span class="nv">into</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">r</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Bool</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">in</span> <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="p">}</span>
 </code></pre>
 
           </div>

@@ -52,7 +52,7 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderR
     init() {}
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let classes = TestClassVisitor(viewMode: .sourceAccurate, testClasses: configuration.testParentClasses)
+        let classes = TestClassVisitor(viewMode: .sourceAccurate, testParentClasses: configuration.testParentClasses)
             .walk(tree: file.syntaxTree, handler: \.violations)
 
         guard classes.count > 1 else { return [] }
@@ -67,16 +67,16 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderR
 }
 
 private class TestClassVisitor: ViolationsSyntaxVisitor {
-    private let testClasses: Set<String>
+    private let testParentClasses: Set<String>
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
-    init(viewMode: SyntaxTreeViewMode, testClasses: Set<String>) {
-        self.testClasses = testClasses
+    init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
+        self.testParentClasses = testParentClasses
         super.init(viewMode: viewMode)
     }
 
     override func visitPost(_ node: ClassDeclSyntax) {
-        guard node.inheritanceClause.containsInheritedType(inheritedTypes: testClasses) else {
+        guard node.inheritanceClause.containsInheritedType(inheritedTypes: testParentClasses) else {
             return
         }
 

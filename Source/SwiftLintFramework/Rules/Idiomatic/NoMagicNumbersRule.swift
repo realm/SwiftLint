@@ -3,7 +3,7 @@ import SwiftSyntax
 struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     init() {}
 
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = NoMagicNumbersRuleConfiguration()
 
     static let description = RuleDescription(
         identifier: "no_magic_numbers",
@@ -44,6 +44,20 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
                 case positive = 2
                 case negative = -2
             }
+            """),
+            Example("""
+            class FooTests: XCTestCase {
+                let array: [Int] = []
+                let bar = array[42]
+            }
+            """),
+            Example("""
+            class FooTests: XCTestCase {
+                class Bar {
+                    let array: [Int] = []
+                    let bar = array[42]
+                }
+            }
             """)
         ],
         triggeringExamples: [
@@ -57,20 +71,27 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate, testParentClasses: configuration.testParentClasses)
     }
 }
 
 private extension NoMagicNumbersRule {
     final class Visitor: ViolationsSyntaxVisitor {
+        private let testParentClasses: Set<String>
+
+        init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
+            self.testParentClasses = testParentClasses
+            super.init(viewMode: viewMode)
+        }
+
         override func visitPost(_ node: FloatLiteralExprSyntax) {
-            if node.floatingDigits.isMagicNumber {
+            if node.isMemberOfATestClass(testParentClasses) == false, node.floatingDigits.isMagicNumber {
                 violations.append(node.floatingDigits.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
-            if node.digits.isMagicNumber {
+            if node.isMemberOfATestClass(testParentClasses) == false, node.digits.isMagicNumber {
                 violations.append(node.digits.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -90,5 +111,21 @@ private extension TokenSyntax {
         }
         return !grandparent.is(InitializerClauseSyntax.self)
             && grandparent.as(PrefixOperatorExprSyntax.self)?.parent?.is(InitializerClauseSyntax.self) != true
+    }
+}
+
+private extension ExprSyntaxProtocol {
+    func isMemberOfATestClass(_ testParentClasses: Set<String>) -> Bool {
+        var parent = parent
+        while parent != nil {
+            if
+                let classDecl = parent?.as(ClassDeclSyntax.self),
+                classDecl.isXCTestCase(testParentClasses)
+            {
+                return true
+            }
+            parent = parent?.parent
+        }
+        return false
     }
 }

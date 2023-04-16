@@ -337,7 +337,7 @@
 <li><strong>Kind:</strong> idiomatic</li>
 <li><strong>Analyzer rule:</strong> No</li>
 <li><strong>Minimum Swift compiler version:</strong> 5.0.0</li>
-<li><strong>Default configuration:</strong> warning</li>
+<li><strong>Default configuration:</strong> severity: warning, test_parent_classes: [&ldquo;QuickSpec&rdquo;, &ldquo;XCTestCase&rdquo;]</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">foo</span> <span class="o">=</span> <span class="mi">123</span>
@@ -375,6 +375,18 @@
 <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Example</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
     <span class="k">case</span> <span class="n">positive</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="k">case</span> <span class="n">negative</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">FooTests</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">array</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">let</span> <span class="nv">bar</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="mi">42</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">FooTests</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
+    <span class="kd">class</span> <span class="kt">Bar</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">array</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">let</span> <span class="nv">bar</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="mi">42</span><span class="p">]</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>

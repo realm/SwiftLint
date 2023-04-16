@@ -31,7 +31,7 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4819](https://github.com/realm/SwiftLint/issues/4819)
 
-* Adds `test_parent_classes` option to the `magic_numbers` rule.
+* Adds `test_parent_classes` option to the `no_magic_numbers` rule.
   Violations within test classes will now be ignored by default.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4896](https://github.com/realm/SwiftLint/issues/4896)

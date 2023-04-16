@@ -120,18 +120,12 @@ private extension ExprSyntaxProtocol {
         while parent != nil {
             if
                 let classDecl = parent?.as(ClassDeclSyntax.self),
-                classDecl.isTestClass(testParentClasses: testParentClasses)
+                classDecl.isXCTestCase(testParentClasses)
             {
                 return true
             }
             parent = parent?.parent
         }
         return false
-    }
-}
-
-private extension ClassDeclSyntax {
-    func isTestClass(testParentClasses: Set<String>) -> Bool {
-        inheritanceClause.containsInheritedType(inheritedTypes: testParentClasses)
     }
 }

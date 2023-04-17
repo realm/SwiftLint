@@ -52,10 +52,12 @@ let package = Package(
                 .product(name: "SwiftParser", package: "swift-syntax"),
                 .product(name: "SwiftOperators", package: "swift-syntax"),
                 "SwiftyTextTable",
+                .target(name: "DyldWarningWorkaround", condition: .when(platforms: [.macOS])),
                 "Yams",
                 .product(name: "CryptoSwift", package: "CryptoSwift", condition: .when(platforms: [.linux]))
             ]
         ),
+        .target(name: "DyldWarningWorkaround"),
         .target(
             name: "SwiftLintTestHelpers",
             dependencies: [

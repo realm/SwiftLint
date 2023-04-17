@@ -60,6 +60,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4894](https://github.com/realm/SwiftLint/issues/4894)
 
+* Workaround dyld warning about SwiftSyntax classes.  
+  [keith](https://github.com/keith)
+  [#4782](https://github.com/realm/SwiftLint/issues/4782)
+
 ## 0.51.0: bzllint
 
 #### Breaking

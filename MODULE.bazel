@@ -17,7 +17,7 @@ bazel_dep(name = "yams", version = "5.0.5", repo_name = "sourcekitten_com_github
 swiftlint_repos = use_extension("//bazel:repos.bzl", "swiftlint_repos_bzlmod")
 use_repo(
     swiftlint_repos,
-    "com_github_apple_swift_syntax",
+    "SwiftSyntax",
     "com_github_johnsundell_collectionconcurrencykit",
     "com_github_krzyzanowskim_cryptoswift",
     "swiftlint_com_github_scottrhoyt_swifty_text_table",

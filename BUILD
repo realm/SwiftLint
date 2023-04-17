@@ -21,8 +21,12 @@ swift_library(
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [
+        "@SwiftSyntax//:IDEUtils_opt",
+        "@SwiftSyntax//:SwiftOperators_opt",
+        "@SwiftSyntax//:SwiftParserDiagnostics_opt",
+        "@SwiftSyntax//:SwiftSyntaxBuilder_opt",
+        "@SwiftSyntax//:SwiftSyntax_opt",
         "@com_github_jpsim_sourcekitten//:SourceKittenFramework",
-        "@com_github_apple_swift_syntax//:optlibs",
         "@sourcekitten_com_github_jpsim_yams//:Yams",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ] + select({
@@ -80,9 +84,9 @@ filegroup(
 filegroup(
     name = "release_files",
     srcs = [
-        "MODULE.bazel",
         "BUILD",
         "LICENSE",
+        "MODULE.bazel",
         "//:LintInputs",
         "//Tests:BUILD",
         "//bazel:release_files",

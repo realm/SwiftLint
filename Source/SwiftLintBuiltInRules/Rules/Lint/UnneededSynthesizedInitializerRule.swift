@@ -103,8 +103,7 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
     ) -> Bool {
         guard initializerParameters.count == storedProperties.count else { return false }
         for (idx, parameter) in initializerParameters.enumerated() {
-            guard let paramId = parameter.firstName, parameter.secondName == nil else { return false }
-            guard let paramType = parameter.type else { return false }
+            guard parameter.secondName == nil else { return false }
 
             let property = storedProperties[idx]
             let propertyId = property.firstIdentifier
@@ -122,9 +121,9 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
             }
 
             if
-                propertyId.identifier.text != paramId.text
+                propertyId.identifier.text != parameter.firstName.text
                     || propertyType.description.trimmingCharacters(in: .whitespaces) !=
-                    paramType.description.trimmingCharacters(in: .whitespacesAndNewlines)
+                    parameter.type.description.trimmingCharacters(in: .whitespacesAndNewlines)
             {
                 return false
             }

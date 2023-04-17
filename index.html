@@ -469,8 +469,11 @@ Insert the following as the script:</p>
 <p>That is because Homebrew on Apple Silicon installs the binaries into the <code>/opt/homebrew/bin</code>
 folder by default. To instruct Xcode where to find SwiftLint, you can either add
 <code>/opt/homebrew/bin</code> to the <code>PATH</code> environment variable in your build phase</p>
-<pre class="highlight shell"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PATH</span><span class="s2">:/opt/homebrew/bin"</span>
-<span class="k">if </span>which swiftlint <span class="o">&gt;</span> /dev/null<span class="p">;</span> <span class="k">then
+<pre class="highlight shell"><code><span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">uname</span> <span class="nt">-m</span><span class="si">)</span><span class="s2">"</span> <span class="o">==</span> arm64 <span class="o">]]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"/opt/homebrew/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+<span class="k">fi
+
+if </span>which swiftlint <span class="o">&gt;</span> /dev/null<span class="p">;</span> <span class="k">then
   </span>swiftlint
 <span class="k">else
   </span><span class="nb">echo</span> <span class="s2">"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"</span>

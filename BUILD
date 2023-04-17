@@ -21,13 +21,13 @@ swift_library(
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [
-        "@com_github_jpsim_sourcekitten//:SourceKittenFramework",
         "@com_github_apple_swift_syntax//:optlibs",
+        "@com_github_jpsim_sourcekitten//:SourceKittenFramework",
         "@sourcekitten_com_github_jpsim_yams//:Yams",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ] + select({
         "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
-        "//conditions:default": [],
+        "//conditions:default": [":DyldWarningWorkaround"],
     }),
 )
 
@@ -64,6 +64,16 @@ apple_universal_binary(
     visibility = ["//visibility:public"],
 )
 
+cc_library(
+    name = "DyldWarningWorkaround",
+    srcs = [
+        "Source/DyldWarningWorkaround/DyldWarningWorkaround.c",
+        "Source/DyldWarningWorkaround/include/objc_dupclass.h",
+    ],
+    includes = ["Source/DyldWarningWorkaround/include"],
+    alwayslink = True,
+)
+
 # Linting
 
 filegroup(
@@ -80,9 +90,9 @@ filegroup(
 filegroup(
     name = "release_files",
     srcs = [
-        "MODULE.bazel",
         "BUILD",
         "LICENSE",
+        "MODULE.bazel",
         "//:LintInputs",
         "//Tests:BUILD",
         "//bazel:release_files",

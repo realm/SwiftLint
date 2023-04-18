@@ -8,8 +8,8 @@ struct XCTSpecificMatcherRuleConfiguration: SeverityBasedRuleConfiguration, Equa
     }
 
     private enum ConfigurationKey: String {
-        case severity = "severity"
-        case matchers = "matchers"
+        case severity
+        case matchers
     }
 
     var consoleDescription: String {

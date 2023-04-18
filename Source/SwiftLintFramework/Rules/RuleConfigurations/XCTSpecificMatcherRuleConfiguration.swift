@@ -3,8 +3,8 @@ struct XCTSpecificMatcherRuleConfiguration: SeverityBasedRuleConfiguration, Equa
     private(set) var matchers = Set(Matcher.allCases)
 
     enum Matcher: String, Hashable, CaseIterable {
-        case singleArgument = "single-argument"
-        case doubleArgument = "double-argument"
+        case oneArgumentAsserts = "one-argument-asserts"
+        case twoArgumentAsserts = "two-argument-asserts"
     }
 
     private enum ConfigurationKey: String {

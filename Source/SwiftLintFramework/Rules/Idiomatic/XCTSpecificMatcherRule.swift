@@ -30,13 +30,13 @@ private extension XCTSpecificMatcherRule {
         }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if configuration.matchers.contains(.doubleArgument),
+            if configuration.matchers.contains(.twoArgumentAsserts),
                let suggestion = TwoArgsXCTAssert.violations(in: node) {
                 violations.append(ReasonedRuleViolation(
                     position: node.positionAfterSkippingLeadingTrivia,
                     reason: "Prefer the specific matcher '\(suggestion)' instead"
                 ))
-            } else if configuration.matchers.contains(.singleArgument),
+            } else if configuration.matchers.contains(.oneArgumentAsserts),
                let suggestion = OneArgXCTAssert.violations(in: node) {
                 violations.append(ReasonedRuleViolation(
                     position: node.positionAfterSkippingLeadingTrivia,

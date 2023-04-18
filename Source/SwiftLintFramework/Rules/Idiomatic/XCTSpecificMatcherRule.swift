@@ -2,7 +2,7 @@ import SwiftOperators
 import SwiftSyntax
 
 struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = XCTSpecificMatcherRuleConfiguration()
 
     init() {}
 
@@ -16,14 +16,28 @@ struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationProvider
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
+        Visitor(configuration: configuration)
     }
 }
 
 private extension XCTSpecificMatcherRule {
     final class Visitor: ViolationsSyntaxVisitor {
+        let configuration: XCTSpecificMatcherRuleConfiguration
+
+        init(configuration: XCTSpecificMatcherRuleConfiguration) {
+            self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
+        }
+
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if let suggestion = TwoArgsXCTAssert.violations(in: node) ?? OneArgXCTAssert.violations(in: node) {
+            if configuration.matchers.contains(.doubleArgument),
+               let suggestion = TwoArgsXCTAssert.violations(in: node) {
+                violations.append(ReasonedRuleViolation(
+                    position: node.positionAfterSkippingLeadingTrivia,
+                    reason: "Prefer the specific matcher '\(suggestion)' instead"
+                ))
+            } else if configuration.matchers.contains(.singleArgument),
+               let suggestion = OneArgXCTAssert.violations(in: node) {
                 violations.append(ReasonedRuleViolation(
                     position: node.positionAfterSkippingLeadingTrivia,
                     reason: "Prefer the specific matcher '\(suggestion)' instead"

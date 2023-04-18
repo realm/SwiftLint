@@ -19,8 +19,11 @@
   [kimdv](https://github.com/kimdv)
 
 * Extend `xct_specific_matcher` rule to check for boolean asserts on (un)equal
-  comparisons.  
+  comparisons. The rule can be configured with the matchers that should trigger
+  rule violations. By default, all matchers trigger, but that can be limited to
+  just `one-argument-asserts` or `two-argument-asserts`.  
   [SimplyDanny](https://github.com/SimplyDanny)
+  [JP Simard](https://github.com/jpsim)
   [#3726](https://github.com/realm/SwiftLint/issues/3726)
 
 * Trigger `prefer_self_in_static_references` rule on more type references.

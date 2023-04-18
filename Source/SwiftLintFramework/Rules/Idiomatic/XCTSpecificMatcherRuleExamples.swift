@@ -50,7 +50,13 @@ internal struct XCTSpecificMatcherRuleExamples {
         Example("XCTAssertEqual(foo?.bar, toto())"),
         Example("XCTAssertEqual(foo?.bar, .toto(.zoo))"),
         Example("XCTAssertEqual(toto(), foo?.bar)"),
-        Example("XCTAssertEqual(.toto(.zoo), foo?.bar)")
+        Example("XCTAssertEqual(.toto(.zoo), foo?.bar)"),
+
+        // Configurations Disabled
+        Example("XCTAssertEqual(foo, true)",
+                configuration: ["matchers": ["one-argument-asserts"]]),
+        Example("XCTAssert(foo == bar)",
+                configuration: ["matchers": ["two-argument-asserts"]])
     ]
 
     static let triggeringExamples = [

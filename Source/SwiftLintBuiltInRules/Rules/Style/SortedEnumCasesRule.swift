@@ -92,7 +92,7 @@ private extension SortedEnumCasesRule {
                 return .skipChildren
             }
 
-            let cases = node.members.members.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
+            let cases = node.memberBlock.members.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
             let sortedCases = cases
                 .sorted(by: { $0.elements.first!.identifier.text < $1.elements.first!.identifier.text })
 

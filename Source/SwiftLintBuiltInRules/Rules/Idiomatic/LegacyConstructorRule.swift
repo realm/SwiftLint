@@ -165,9 +165,9 @@ private extension LegacyConstructorRule {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
 
-            let arguments = TupleExprElementListSyntax(node.argumentList.map { elem in
+            let arguments = TupleExprElementListSyntax(node.argumentList.enumerated().map { index, elem in
                 elem
-                    .with(\.label, .identifier(args[elem.indexInParent]))
+                    .with(\.label, .identifier(args[index]))
                     .with(\.colon, .colonToken(trailingTrivia: .space))
             })
             let newExpression = identifierExpr.with(

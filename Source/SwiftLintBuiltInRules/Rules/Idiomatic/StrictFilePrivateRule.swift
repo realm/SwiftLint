@@ -194,7 +194,7 @@ private extension StrictFilePrivateRule {
                 return
             }
             if let varDecl = grandparent.as(VariableDeclSyntax.self) {
-                let isSpecificForSetter = node.detail?.detail.tokenKind == .keyword(.set)
+                let isSpecificForSetter = node.detail?.detail.tokenKind == .identifier("set")
                 let firstImplementingProtocol = varDecl.bindings
                     .flatMap { binding in
                         let pattern = binding.pattern

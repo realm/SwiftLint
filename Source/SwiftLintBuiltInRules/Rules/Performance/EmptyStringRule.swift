@@ -33,14 +33,15 @@ private extension EmptyStringRule {
             guard
                 // Empty string literal: `""`, `#""#`, etc.
                 node.segments.onlyElement?.contentLength == .zero,
-                let previousToken = node.previousToken,
+                let previousToken = node.previousToken(viewMode: .sourceAccurate),
                 // On the rhs of an `==` or `!=` operator
                 previousToken.tokenKind.isEqualityComparison,
-                let violationPosition = previousToken.previousToken?.endPositionBeforeTrailingTrivia
+                let secondPreviousToken = previousToken.previousToken(viewMode: .sourceAccurate)
             else {
                 return
             }
 
+            let violationPosition = secondPreviousToken.endPositionBeforeTrailingTrivia
             violations.append(violationPosition)
         }
     }

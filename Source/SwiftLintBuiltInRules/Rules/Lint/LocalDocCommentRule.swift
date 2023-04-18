@@ -1,4 +1,4 @@
-import IDEUtils
+import SwiftIDEUtils
 import SwiftSyntax
 
 struct LocalDocCommentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {

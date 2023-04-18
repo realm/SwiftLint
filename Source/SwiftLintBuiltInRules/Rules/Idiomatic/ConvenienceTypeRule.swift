@@ -125,13 +125,21 @@ private extension ConvenienceTypeRule {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            if hasViolation(inheritance: node.inheritanceClause, attributes: node.attributes, members: node.members) {
+            if hasViolation(
+                inheritance: node.inheritanceClause,
+                attributes: node.attributes,
+                members: node.memberBlock
+            ) {
                 violations.append(node.structKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            if hasViolation(inheritance: node.inheritanceClause, attributes: node.attributes, members: node.members) {
+            if hasViolation(
+                inheritance: node.inheritanceClause,
+                attributes: node.attributes,
+                members: node.memberBlock
+            ) {
                 violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
             }
         }

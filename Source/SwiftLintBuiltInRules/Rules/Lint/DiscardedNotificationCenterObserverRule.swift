@@ -79,9 +79,9 @@ private extension DiscardedNotificationCenterObserverRule {
             } else if node.parent?.is(ArrayElementSyntax.self) == true {
                 return // result is an array literal element
             } else if
-                let previousToken = node.previousToken,
+                let previousToken = node.previousToken(viewMode: .sourceAccurate),
                 case .equal = previousToken.tokenKind,
-                previousToken.previousToken?.tokenKind != .wildcard
+                previousToken.previousToken(viewMode: .sourceAccurate)?.tokenKind != .wildcard
             {
                 return // result is assigned to something other than the wildcard keyword (`_`)
             }

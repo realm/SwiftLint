@@ -177,9 +177,7 @@ private extension DuplicateConditionsRule {
 
             let positionsByConditions = statementChain
                 .reduce(into: [Set<String>: [AbsolutePosition]]()) { acc, elt in
-                    let conditions = elt.conditions.map {
-                        $0.condition.debugDescription(includeChildren: true, includeTrivia: false)
-                    }
+                    let conditions = elt.conditions.map { $0.condition.trimmedDescription }
                     let location = elt.conditions.positionAfterSkippingLeadingTrivia
                     acc[Set(conditions), default: []].append(location)
                 }
@@ -197,10 +195,10 @@ private extension DuplicateConditionsRule {
                     for caseItem in caseLabel.caseItems {
                         let pattern = caseItem
                             .pattern
-                            .debugDescription(includeChildren: true, includeTrivia: false)
+                            .trimmedDescription
                         let whereClause = caseItem
                             .whereClause?
-                            .debugDescription(includeChildren: true, includeTrivia: false)
+                            .trimmedDescription
                             ?? ""
                         let location = caseItem.positionAfterSkippingLeadingTrivia
                         acc[pattern + whereClause, default: []].append(location)

@@ -87,7 +87,7 @@ private extension NumberSeparatorRule {
             }
 
             let newNode = node.with(\.floatingDigits,
-                                    node.floatingDigits.withKind(.floatingLiteral(violation.correction)))
+                                    node.floatingDigits.with(\.tokenKind, .floatingLiteral(violation.correction)))
             correctionPositions.append(violation.position)
             return super.visit(newNode)
         }
@@ -100,7 +100,7 @@ private extension NumberSeparatorRule {
                 return super.visit(node)
             }
 
-            let newNode = node.with(\.digits, node.digits.withKind(.integerLiteral(violation.correction)))
+            let newNode = node.with(\.digits, node.digits.with(\.tokenKind, .integerLiteral(violation.correction)))
             correctionPositions.append(violation.position)
             return super.visit(newNode)
         }

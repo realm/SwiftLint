@@ -52,7 +52,7 @@ private extension TestCaseAccessibilityRule {
 
             violations.append(
                 contentsOf: XCTestClassVisitor(allowedPrefixes: allowedPrefixes)
-                    .walk(tree: node.members, handler: \.violations)
+                    .walk(tree: node.memberBlock, handler: \.violations)
             )
         }
     }

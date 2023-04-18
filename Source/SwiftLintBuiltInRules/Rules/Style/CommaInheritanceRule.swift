@@ -95,7 +95,7 @@ private final class CommaInheritanceRuleVisitor: SyntaxVisitor {
 
             for ampersand in composition.elements.compactMap(\.ampersand) {
                 let position: AbsolutePosition
-                if let previousToken = ampersand.previousToken {
+                if let previousToken = ampersand.previousToken(viewMode: .sourceAccurate) {
                     position = previousToken.endPositionBeforeTrailingTrivia
                 } else {
                     position = ampersand.position

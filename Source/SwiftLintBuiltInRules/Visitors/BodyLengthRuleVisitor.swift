@@ -34,8 +34,8 @@ final class BodyLengthRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: EnumDeclSyntax) {
         if kind == .type {
             registerViolations(
-                getLeftBrace: { node.members.leftBrace },
-                getRightBrace: { node.members.rightBrace },
+                getLeftBrace: { node.memberBlock.leftBrace },
+                getRightBrace: { node.memberBlock.rightBrace },
                 getViolationNode: { node.enumKeyword }
             )
         }
@@ -44,8 +44,8 @@ final class BodyLengthRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: ClassDeclSyntax) {
         if kind == .type {
             registerViolations(
-                getLeftBrace: { node.members.leftBrace },
-                getRightBrace: { node.members.rightBrace },
+                getLeftBrace: { node.memberBlock.leftBrace },
+                getRightBrace: { node.memberBlock.rightBrace },
                 getViolationNode: { node.classKeyword }
             )
         }
@@ -54,8 +54,8 @@ final class BodyLengthRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: StructDeclSyntax) {
         if kind == .type {
             registerViolations(
-                getLeftBrace: { node.members.leftBrace },
-                getRightBrace: { node.members.rightBrace },
+                getLeftBrace: { node.memberBlock.leftBrace },
+                getRightBrace: { node.memberBlock.rightBrace },
                 getViolationNode: { node.structKeyword }
             )
         }
@@ -64,8 +64,8 @@ final class BodyLengthRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: ActorDeclSyntax) {
         if kind == .type {
             registerViolations(
-                getLeftBrace: { node.members.leftBrace },
-                getRightBrace: { node.members.rightBrace },
+                getLeftBrace: { node.memberBlock.leftBrace },
+                getRightBrace: { node.memberBlock.rightBrace },
                 getViolationNode: { node.actorKeyword }
             )
         }

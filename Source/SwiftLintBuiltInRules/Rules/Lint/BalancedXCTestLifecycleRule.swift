@@ -127,7 +127,7 @@ private extension BalancedXCTestLifecycleRule {
             }
 
             let methods = SetupTearDownVisitor(viewMode: .sourceAccurate)
-                .walk(tree: node.members, handler: \.methods)
+                .walk(tree: node.memberBlock, handler: \.methods)
             guard methods.contains(.setUp) != methods.contains(.tearDown) else {
                 return
             }

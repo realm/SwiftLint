@@ -198,7 +198,7 @@ private extension PatternSyntax {
 private extension FunctionCallExprSyntax {
     var argumentsHasViolation: Bool {
         !calledExpression.is(IdentifierExprSyntax.self) &&
-            calledExpression.as(MemberAccessExprSyntax.self)?.lastToken?.tokenKind != .keyword(.`init`) &&
+            calledExpression.as(MemberAccessExprSyntax.self)?.isInit == false &&
             argumentList.allSatisfy(\.expression.isDiscardAssignmentOrFunction)
     }
 
@@ -244,5 +244,11 @@ private extension ExprSyntax {
     var isDiscardAssignmentOrFunction: Bool {
         self.is(DiscardAssignmentExprSyntax.self) ||
             (self.as(FunctionCallExprSyntax.self)?.argumentsHasViolation == true)
+    }
+}
+
+private extension MemberAccessExprSyntax {
+    var isInit: Bool {
+        lastToken(viewMode: .sourceAccurate)?.tokenKind == .keyword(.`init`)
     }
 }

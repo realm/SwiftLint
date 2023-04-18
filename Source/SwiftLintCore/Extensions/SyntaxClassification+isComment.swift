@@ -1,4 +1,4 @@
-import IDEUtils
+import SwiftIDEUtils
 
 public extension SyntaxClassification {
     // True if it is any kind of comment.

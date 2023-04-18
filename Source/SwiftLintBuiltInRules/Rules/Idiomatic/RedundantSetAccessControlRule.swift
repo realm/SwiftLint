@@ -142,7 +142,7 @@ private extension DeclSyntax {
 
 private extension ModifierListSyntax {
     var setAccessor: DeclModifierSyntax? {
-        first { $0.detail?.detail.tokenKind == .keyword(.set) }
+        first { $0.detail?.detail.tokenKind == .identifier("set") }
     }
 
     var getAccessor: DeclModifierSyntax? {

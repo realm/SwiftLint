@@ -172,8 +172,8 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
     }
 
     private func violation(operatorToken: TokenSyntax) -> (ByteRange, String)? {
-        guard let previousToken = operatorToken.previousToken,
-              let nextToken = operatorToken.nextToken else {
+        guard let previousToken = operatorToken.previousToken(viewMode: .sourceAccurate),
+              let nextToken = operatorToken.nextToken(viewMode: .sourceAccurate) else {
             return nil
         }
 

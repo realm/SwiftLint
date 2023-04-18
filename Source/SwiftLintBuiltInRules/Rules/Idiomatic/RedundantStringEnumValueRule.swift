@@ -71,7 +71,7 @@ private extension RedundantStringEnumValueRule {
                 return
             }
 
-            let enumsWithExplicitValues = node.members.members
+            let enumsWithExplicitValues = node.memberBlock.members
                 .flatMap { member -> EnumCaseElementListSyntax in
                     guard let enumCaseDecl = member.decl.as(EnumCaseDeclSyntax.self) else {
                         return EnumCaseElementListSyntax([])

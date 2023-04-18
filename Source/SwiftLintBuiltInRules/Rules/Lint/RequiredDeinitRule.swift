@@ -75,7 +75,7 @@ private extension RequiredDeinitRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ClassDeclSyntax) {
             let visitor = DeinitVisitor(viewMode: .sourceAccurate)
-            if !visitor.walk(tree: node.members, handler: \.hasDeinit) {
+            if !visitor.walk(tree: node.memberBlock, handler: \.hasDeinit) {
                 violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
             }
         }

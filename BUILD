@@ -18,7 +18,7 @@ swift_library(
     module_name = "SwiftLintCore",
     visibility = ["//visibility:public"],
     deps = [
-        "@SwiftSyntax//:IDEUtils_opt",
+        "@SwiftSyntax//:SwiftIDEUtils_opt",
         "@SwiftSyntax//:SwiftOperators_opt",
         "@SwiftSyntax//:SwiftParserDiagnostics_opt",
         "@SwiftSyntax//:SwiftSyntaxBuilder_opt",

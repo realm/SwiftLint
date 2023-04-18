@@ -2,8 +2,8 @@
 import Darwin
 #endif
 import Foundation
-import IDEUtils
 import SourceKittenFramework
+import SwiftIDEUtils
 import SwiftOperators
 import SwiftParser
 import SwiftParserDiagnostics

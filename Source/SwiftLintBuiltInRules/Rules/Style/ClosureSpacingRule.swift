@@ -168,7 +168,8 @@ private extension TokenSyntax {
     var hasSingleSpaceToItsLeft: Bool {
         if case .spaces(1) = Array(leadingTrivia).last {
             return true
-        } else if let previousToken, case .spaces(1) = Array(previousToken.trailingTrivia).last {
+        } else if let previousToken = previousToken(viewMode: .sourceAccurate),
+                  case .spaces(1) = Array(previousToken.trailingTrivia).last {
             return true
         } else {
             return false
@@ -178,7 +179,8 @@ private extension TokenSyntax {
     var hasSingleSpaceToItsRight: Bool {
         if case .spaces(1) = trailingTrivia.first {
             return true
-        } else if let nextToken, case .spaces(1) = nextToken.leadingTrivia.first {
+        } else if let nextToken = nextToken(viewMode: .sourceAccurate),
+                  case .spaces(1) = nextToken.leadingTrivia.first {
             return true
         } else {
             return false
@@ -206,7 +208,7 @@ private extension TokenSyntax {
     }
 
     var hasAllowedNoSpaceLeftToken: Bool {
-        let previousTokenKind = parent?.previousToken?.tokenKind
+        let previousTokenKind = parent?.previousToken(viewMode: .sourceAccurate)?.tokenKind
         return previousTokenKind == .leftParen || previousTokenKind == .leftSquareBracket
     }
 
@@ -226,9 +228,10 @@ private extension TokenSyntax {
         ]
         if case .newlines = trailingTrivia.first {
             return true
-        } else if case .newlines = nextToken?.leadingTrivia.first {
+        } else if case .newlines = nextToken(viewMode: .sourceAccurate)?.leadingTrivia.first {
             return true
-        } else if let nextToken, allowedKinds.contains(nextToken.tokenKind) {
+        } else if let nextToken = nextToken(viewMode: .sourceAccurate),
+                  allowedKinds.contains(nextToken.tokenKind) {
             return true
         } else {
             return false

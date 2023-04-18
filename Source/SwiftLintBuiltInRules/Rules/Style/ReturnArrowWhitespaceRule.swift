@@ -127,7 +127,8 @@ private struct ArrowViolation {
 
 private extension TokenSyntax {
     var arrowViolation: ArrowViolation? {
-        guard let previousToken, let nextToken else {
+        guard let previousToken = previousToken(viewMode: .sourceAccurate),
+              let nextToken = nextToken(viewMode: .sourceAccurate) else {
             return nil
         }
 

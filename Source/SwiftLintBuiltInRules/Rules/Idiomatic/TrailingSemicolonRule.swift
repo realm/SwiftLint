@@ -72,6 +72,9 @@ private extension TrailingSemicolonRule {
 private extension TokenSyntax {
     var isTrailingSemicolon: Bool {
         tokenKind == .semicolon &&
-            (trailingTrivia.containsNewlines() || (nextToken?.leadingTrivia.containsNewlines() == true))
+            (
+                trailingTrivia.containsNewlines() ||
+                    (nextToken(viewMode: .sourceAccurate)?.leadingTrivia.containsNewlines() == true)
+            )
     }
 }

@@ -54,9 +54,11 @@ internal struct XCTSpecificMatcherRuleExamples {
 
         // Configurations Disabled
         Example("XCTAssertEqual(foo, true)",
-                configuration: ["matchers": ["one-argument-asserts"]]),
+                configuration: ["matchers": ["one-argument-asserts"]],
+                excludeFromDocumentation: true),
         Example("XCTAssert(foo == bar)",
-                configuration: ["matchers": ["two-argument-asserts"]])
+                configuration: ["matchers": ["two-argument-asserts"]],
+                excludeFromDocumentation: true)
     ]
 
     static let triggeringExamples = [

@@ -1,3 +1,4 @@
+import Foundation
 public extension Configuration {
     /// Returns the rule for the specified ID, if configured in this configuration.
     ///
@@ -21,7 +22,7 @@ public extension Configuration {
         /// The default rules mode, which will enable all rules that aren't defined as being opt-in
         /// (conforming to the `OptInRule` protocol), minus the rules listed in `disabled`, plus the rules listed in
         /// `optIn`.
-        case `default`(disabled: Set<String>, optIn: Set<String>)
+        case `default`(disabled: Set<String>, optIn: Set<String>, disabledRulesForFiles: DisabledRulesForFiles)
 
         /// Only enable the rules explicitly listed.
         case only(Set<String>)
@@ -34,7 +35,8 @@ public extension Configuration {
             onlyRules: [String],
             optInRules: [String],
             disabledRules: [String],
-            analyzerRules: [String]
+            analyzerRules: [String],
+            disabledRulesForFiles: [String: [NSRegularExpression]]
         ) throws {
             func warnAboutDuplicates(in identifiers: [String]) {
                 if Set(identifiers).count != identifiers.count {
@@ -73,16 +75,19 @@ public extension Configuration {
                 }
 
                 warnAboutDuplicates(in: effectiveOptInRules + analyzerRules)
-                self = .default(disabled: Set(disabledRules), optIn: Set(effectiveOptInRules + analyzerRules))
+                self = .default(disabled: Set(disabledRules),
+                                optIn: Set(effectiveOptInRules + analyzerRules),
+                                disabledRulesForFiles: disabledRulesForFiles)
             }
         }
 
         internal func applied(aliasResolver: (String) -> String) -> RulesMode {
             switch self {
-            case let .default(disabled, optIn):
+            case let .default(disabled, optIn, disabledRulesForFiles):
                 return .default(
                     disabled: Set(disabled.map(aliasResolver)),
-                    optIn: Set(optIn.map(aliasResolver))
+                    optIn: Set(optIn.map(aliasResolver)),
+                    disabledRulesForFiles: disabledRulesForFiles
                 )
 
             case let .only(onlyRules):

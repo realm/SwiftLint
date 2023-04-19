@@ -54,7 +54,8 @@ extension ConfigurationTests {
     func testOnlyRulesMerging() {
         let baseConfiguration = Configuration(rulesMode: .default(disabled: [],
                                                                   optIn: [ForceTryRule.description.identifier,
-                                                                          ForceCastRule.description.identifier]))
+                                                                          ForceCastRule.description.identifier],
+                                                                  disabledRulesForFiles: [:]))
         let onlyConfiguration = Configuration(rulesMode: .only([TodoRule.description.identifier]))
         XCTAssertTrue(baseConfiguration.contains(rule: TodoRule.self))
         XCTAssertEqual(onlyConfiguration.rules.count, 1)

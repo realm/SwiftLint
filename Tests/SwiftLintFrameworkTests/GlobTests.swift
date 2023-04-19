@@ -71,7 +71,8 @@ final class GlobTests: XCTestCase {
                 "Level1/Level2/Level2.swift",
                 "Level1/Level2/Level3/Level3.swift",
                 "NestedConfig/Test/Main.swift",
-                "NestedConfig/Test/Sub/Sub.swift"
+                "NestedConfig/Test/Sub/Sub.swift",
+                "IntentionalViolations/TooManyParameters.swift"
             ].map(mockPath.stringByAppendingPathComponent)
         )
 

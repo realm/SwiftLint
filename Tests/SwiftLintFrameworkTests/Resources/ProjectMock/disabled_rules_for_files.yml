@@ -1,0 +1,4 @@
+disabled_rules_for_files:
+  function_parameter_count:
+    - TooManyParameters.swift
+

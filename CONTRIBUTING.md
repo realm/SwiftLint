@@ -1,3 +1,9 @@
+## Tutorial
+
+If you'd like to write a SwiftLint rule but aren't sure how to start,
+please watch and follow along with
+[this video tutorial](https://vimeo.com/819268038).
+
 ## Pull Requests
 
 All changes, no matter how trivial, must be done via pull request. Commits

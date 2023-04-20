@@ -5,8 +5,6 @@ struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
                                          ConfigurationProviderRule, SubstitutionCorrectableRule {
     var configuration = TestCaseAccessibilityConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "test_case_accessibility",
         name: "Test Case Accessibility",

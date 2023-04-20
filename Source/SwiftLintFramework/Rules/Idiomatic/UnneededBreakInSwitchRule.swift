@@ -15,8 +15,6 @@ private func embedInSwitch(
 struct UnneededBreakInSwitchRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "unneeded_break_in_switch",
         name: "Unneeded Break in Switch",

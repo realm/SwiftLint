@@ -3,8 +3,6 @@ import SwiftSyntax
 struct LegacyConstructorRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "legacy_constructor",
         name: "Legacy Constructor",

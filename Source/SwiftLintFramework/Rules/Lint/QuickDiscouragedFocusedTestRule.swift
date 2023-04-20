@@ -3,8 +3,6 @@ import SwiftSyntax
 struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "quick_discouraged_focused_test",
         name: "Quick Discouraged Focused Test",

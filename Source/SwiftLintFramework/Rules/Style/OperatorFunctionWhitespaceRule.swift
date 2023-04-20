@@ -3,8 +3,6 @@ import SwiftSyntax
 struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "operator_whitespace",
         name: "Operator Function Whitespace",

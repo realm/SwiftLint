@@ -3,8 +3,6 @@ import SwiftSyntax
 struct DirectReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static var description = RuleDescription(
         identifier: "direct_return",
         name: "Direct Return",

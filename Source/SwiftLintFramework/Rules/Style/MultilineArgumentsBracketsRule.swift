@@ -3,8 +3,6 @@ import SwiftSyntax
 struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "multiline_arguments_brackets",
         name: "Multiline Arguments Brackets",

@@ -3,8 +3,6 @@ import SwiftSyntax
 struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = EmptyXCTestMethodConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "empty_xctest_method",
         name: "Empty XCTest Method",

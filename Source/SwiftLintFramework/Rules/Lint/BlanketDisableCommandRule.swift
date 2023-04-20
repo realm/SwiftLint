@@ -1,8 +1,6 @@
 struct BlanketDisableCommandRule: ConfigurationProviderRule {
     var configuration = BlanketDisableCommandConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "blanket_disable_command",
         name: "Blanket Disable Command",

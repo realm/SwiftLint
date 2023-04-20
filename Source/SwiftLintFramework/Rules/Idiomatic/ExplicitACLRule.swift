@@ -6,8 +6,6 @@ private typealias SourceKittenElement = SourceKittenDictionary
 struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "explicit_acl",
         name: "Explicit ACL",

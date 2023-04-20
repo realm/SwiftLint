@@ -3,8 +3,6 @@ import SwiftSyntax
 struct RedundantSetAccessControlRule: ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "redundant_set_access_control",
         name: "Redundant Access Control for Setter",

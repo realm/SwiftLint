@@ -3,8 +3,6 @@ import SwiftSyntax
 struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "fallthrough",
         name: "Fallthrough",

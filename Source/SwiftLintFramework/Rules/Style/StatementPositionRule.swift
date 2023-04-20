@@ -5,8 +5,6 @@ struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
     var configuration = StatementConfiguration(statementMode: .default,
                                                severity: SeverityConfiguration(.warning))
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "statement_position",
         name: "Statement Position",

@@ -3,8 +3,6 @@ import SwiftSyntax
 struct RedundantStringEnumValueRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "redundant_string_enum_value",
         name: "Redundant String Enum Value",

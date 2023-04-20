@@ -3,8 +3,6 @@ import SwiftSyntax
 struct UnusedControlFlowLabelRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "unused_control_flow_label",
         name: "Unused Control Flow Label",

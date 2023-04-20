@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "explicit_self",
         name: "Explicit Self",

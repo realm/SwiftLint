@@ -3,8 +3,6 @@ import SwiftSyntax
 struct PreferNimbleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "prefer_nimble",
         name: "Prefer Nimble",

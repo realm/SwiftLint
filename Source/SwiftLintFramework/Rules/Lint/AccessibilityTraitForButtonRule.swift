@@ -10,8 +10,6 @@ import SourceKittenFramework
 struct AccessibilityTraitForButtonRule: ASTRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "accessibility_trait_for_button",
         name: "Accessibility Trait for Button",

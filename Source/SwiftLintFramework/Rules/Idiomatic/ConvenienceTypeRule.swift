@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ConvenienceTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "convenience_type",
         name: "Convenience Type",

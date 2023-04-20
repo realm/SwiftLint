@@ -3,8 +3,6 @@ import SwiftSyntax
 struct VerticalParameterAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "vertical_parameter_alignment",
         name: "Vertical Parameter Alignment",

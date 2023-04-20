@@ -3,8 +3,6 @@ import SwiftSyntax
 struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "redundant_optional_initialization",
         name: "Redundant Optional Initialization",

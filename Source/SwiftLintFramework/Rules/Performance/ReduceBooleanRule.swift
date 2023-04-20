@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ReduceBooleanRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "reduce_boolean",
         name: "Reduce Boolean",

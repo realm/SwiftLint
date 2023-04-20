@@ -3,8 +3,6 @@ import SwiftSyntax
 struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "nslocalizedstring_require_bundle",
         name: "NSLocalizedString Require Bundle",

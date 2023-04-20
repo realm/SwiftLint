@@ -5,8 +5,6 @@ import SwiftSyntax
 struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "closure_spacing",
         name: "Closure Spacing",

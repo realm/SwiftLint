@@ -4,8 +4,6 @@ import SwiftSyntax
 struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = XCTSpecificMatcherRuleConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "xct_specific_matcher",
         name: "XCTest Specific Matcher",

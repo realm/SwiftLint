@@ -3,8 +3,6 @@ import SwiftSyntax
 struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "legacy_multiple",
         name: "Legacy Multiple",

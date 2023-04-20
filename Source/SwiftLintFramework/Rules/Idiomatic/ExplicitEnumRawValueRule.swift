@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ExplicitEnumRawValueRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "explicit_enum_raw_value",
         name: "Explicit Enum Raw Value",

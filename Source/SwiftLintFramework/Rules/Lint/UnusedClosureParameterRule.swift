@@ -4,8 +4,6 @@ import SwiftSyntaxBuilder
 struct UnusedClosureParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "unused_closure_parameter",
         name: "Unused Closure Parameter",

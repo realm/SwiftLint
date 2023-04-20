@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "protocol_property_accessors_order",
         name: "Protocol Property Accessors Order",

@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "leading_whitespace",
         name: "Leading Whitespace",

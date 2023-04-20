@@ -9,8 +9,6 @@ struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
         nestedTypeSeparator: "."
     )
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "file_name",
         name: "File Name",

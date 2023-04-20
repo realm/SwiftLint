@@ -5,8 +5,6 @@ import SwiftSyntax
 struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "syntactic_sugar",
         name: "Syntactic Sugar",

@@ -4,8 +4,6 @@ struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
     private typealias Version = DeploymentTargetConfiguration.Version
     var configuration = DeploymentTargetConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "deployment_target",
         name: "Deployment Target",

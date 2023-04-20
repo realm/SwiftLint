@@ -6,8 +6,6 @@ private let defaultDescriptionReason = "Limit vertical whitespace to a single em
 struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
     var configuration = VerticalWhitespaceConfiguration(maxEmptyLines: 1)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "vertical_whitespace",
         name: "Vertical Whitespace",

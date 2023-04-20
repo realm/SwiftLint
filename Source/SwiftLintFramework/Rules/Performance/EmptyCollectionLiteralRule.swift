@@ -3,8 +3,6 @@ import SwiftSyntax
 struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "empty_collection_literal",
         name: "Empty Collection Literal",

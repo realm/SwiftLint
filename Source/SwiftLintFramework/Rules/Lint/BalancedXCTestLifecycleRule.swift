@@ -108,8 +108,6 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
 
     // MARK: - Life cycle
 
-    init() {}
-
     // MARK: - Public
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {

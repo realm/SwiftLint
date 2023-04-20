@@ -3,8 +3,6 @@ import SwiftSyntax
 struct UnusedEnumeratedRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "unused_enumerated",
         name: "Unused Enumerated",

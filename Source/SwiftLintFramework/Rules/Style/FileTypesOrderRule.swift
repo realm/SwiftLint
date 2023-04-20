@@ -6,8 +6,6 @@ struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
 
     var configuration = FileTypesOrderConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "file_types_order",
         name: "File Types Order",

@@ -31,8 +31,6 @@ private let legacyObjcTypes = [
 struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "legacy_objc_type",
         name: "Legacy Objective-C Reference Type",

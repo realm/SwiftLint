@@ -3,8 +3,6 @@ import SwiftSyntax
 struct BlockBasedKVORule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "block_based_kvo",
         name: "Block Based KVO",

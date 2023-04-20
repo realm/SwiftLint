@@ -5,8 +5,6 @@ import SourceKittenFramework
 struct PeriodSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, OptInRule, SubstitutionCorrectableRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "period_spacing",
         name: "Period Spacing",

@@ -4,8 +4,6 @@ import SwiftSyntax
 struct NSNumberInitAsFunctionReferenceRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "ns_number_init_as_function_reference",
         name: "NSNumber Init as Function Reference",

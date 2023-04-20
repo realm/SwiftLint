@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "void_return",
         name: "Void Return",

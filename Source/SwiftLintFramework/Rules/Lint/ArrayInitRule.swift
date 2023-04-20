@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "array_init",
         name: "Array Init",

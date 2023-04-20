@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ProhibitedSuperRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     var configuration = ProhibitedSuperConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "prohibited_super_call",
         name: "Prohibited Calls to Super",

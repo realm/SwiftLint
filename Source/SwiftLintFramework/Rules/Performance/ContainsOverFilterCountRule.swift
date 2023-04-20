@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "contains_over_filter_count",
         name: "Contains over Filter Count",

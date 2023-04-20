@@ -22,8 +22,6 @@ struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Collectin
         relatedUSRsToSkip: ["s:7SwiftUI15PreviewProviderP"]
     )
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "unused_declaration",
         name: "Unused Declaration",

@@ -5,8 +5,6 @@ import SwiftSyntax
 struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
     var configuration = ColonConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "colon",
         name: "Colon Spacing",

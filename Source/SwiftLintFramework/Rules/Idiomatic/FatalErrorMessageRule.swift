@@ -3,8 +3,6 @@ import SwiftSyntax
 struct FatalErrorMessageRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "fatal_error_message",
         name: "Fatal Error Message",

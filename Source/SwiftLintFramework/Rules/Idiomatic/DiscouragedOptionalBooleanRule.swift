@@ -3,8 +3,6 @@ import SwiftSyntax
 struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "discouraged_optional_boolean",
         name: "Discouraged Optional Boolean",

@@ -6,8 +6,6 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, Configurati
                                     SourceKitFreeRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "comma_inheritance",
         name: "Comma Inheritance Rule",

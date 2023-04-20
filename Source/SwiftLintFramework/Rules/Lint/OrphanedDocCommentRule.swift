@@ -3,8 +3,6 @@ import IDEUtils
 struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "orphaned_doc_comment",
         name: "Orphaned Doc Comment",

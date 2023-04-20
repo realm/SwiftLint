@@ -70,8 +70,6 @@ import SwiftSyntax
 struct RequiredEnumCaseRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = RequiredEnumCaseRuleConfiguration()
 
-    init() {}
-
     private static let exampleConfiguration = [
         "NetworkResponsable": ["success": "warning", "error": "warning", "notConnected": "warning"]
     ]

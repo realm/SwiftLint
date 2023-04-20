@@ -5,8 +5,6 @@ import SourceKittenFramework
 struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, SubstitutionCorrectableRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "comment_spacing",
         name: "Comment Spacing",

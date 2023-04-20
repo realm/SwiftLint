@@ -1,8 +1,6 @@
 import SwiftSyntax
 
 struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    init() {}
-
     var configuration = NoMagicNumbersRuleConfiguration()
 
     static let description = RuleDescription(

@@ -16,8 +16,6 @@ struct PrivateSubjectRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
 
     // MARK: - Life cycle
 
-    init() {}
-
     // MARK: - Public
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {

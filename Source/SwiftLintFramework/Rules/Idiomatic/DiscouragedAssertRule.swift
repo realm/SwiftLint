@@ -27,8 +27,6 @@ struct DiscouragedAssertRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderR
 
     // MARK: - Life cycle
 
-    init() {}
-
     // MARK: - Public
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {

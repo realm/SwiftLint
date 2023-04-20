@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ReduceIntoRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static var description = RuleDescription(
         identifier: "reduce_into",
         name: "Reduce into",

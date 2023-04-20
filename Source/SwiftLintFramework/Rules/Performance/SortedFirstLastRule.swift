@@ -3,8 +3,6 @@ import SwiftSyntax
 struct SortedFirstLastRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "sorted_first_last",
         name: "Min or Max over Sorted First or Last",

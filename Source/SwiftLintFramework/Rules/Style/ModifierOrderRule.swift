@@ -18,8 +18,6 @@ struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, Correct
         ]
     )
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "modifier_order",
         name: "Modifier Order",

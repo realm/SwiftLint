@@ -3,8 +3,6 @@ import SwiftSyntax
 struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
     var configuration = PrivateOverFilePrivateRuleConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "private_over_fileprivate",
         name: "Private over Fileprivate",

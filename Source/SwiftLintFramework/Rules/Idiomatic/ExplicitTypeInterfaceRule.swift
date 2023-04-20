@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = ExplicitTypeInterfaceConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "explicit_type_interface",
         name: "Explicit Type Interface",

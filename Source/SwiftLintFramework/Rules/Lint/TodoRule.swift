@@ -11,8 +11,6 @@ extension SyntaxKind {
 struct TodoRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "todo",
         name: "Todo",

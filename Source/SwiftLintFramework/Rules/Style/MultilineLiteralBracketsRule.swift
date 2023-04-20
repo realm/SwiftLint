@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "multiline_literal_brackets",
         name: "Multiline Literal Brackets",

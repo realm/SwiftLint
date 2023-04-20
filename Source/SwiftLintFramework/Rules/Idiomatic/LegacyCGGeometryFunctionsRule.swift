@@ -1,8 +1,6 @@
 struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "legacy_cggeometry_functions",
         name: "Legacy CGGeometry Functions",

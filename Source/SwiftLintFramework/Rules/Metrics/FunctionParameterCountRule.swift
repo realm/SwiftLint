@@ -3,8 +3,6 @@ import SwiftSyntax
 struct FunctionParameterCountRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = FunctionParameterCountConfiguration(warning: 5, error: 8)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "function_parameter_count",
         name: "Function Parameter Count",

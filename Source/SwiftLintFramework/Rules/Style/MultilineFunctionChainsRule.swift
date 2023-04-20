@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "multiline_function_chains",
         name: "Multiline Function Chains",

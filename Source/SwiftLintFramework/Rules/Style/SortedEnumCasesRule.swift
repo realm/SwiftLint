@@ -3,8 +3,6 @@ import SwiftSyntax
 struct SortedEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "sorted_enum_cases",
         name: "Sorted Enum Cases",

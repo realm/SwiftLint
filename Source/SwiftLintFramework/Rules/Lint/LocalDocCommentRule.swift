@@ -4,8 +4,6 @@ import SwiftSyntax
 struct LocalDocCommentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "local_doc_comment",
         name: "Local Doc Comment",

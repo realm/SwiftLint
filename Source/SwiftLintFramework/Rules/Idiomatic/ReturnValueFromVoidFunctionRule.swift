@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "return_value_from_void_function",
         name: "Return Value from Void Function",

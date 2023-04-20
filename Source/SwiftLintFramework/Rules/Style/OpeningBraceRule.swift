@@ -64,8 +64,6 @@ private extension SwiftLintFile {
 struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
     var configuration = OpeningBraceConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "opening_brace",
         name: "Opening Brace Spacing",

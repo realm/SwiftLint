@@ -3,8 +3,6 @@ import SwiftSyntax
 struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "void_function_in_ternary",
         name: "Void Function in Ternary",

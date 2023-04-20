@@ -3,8 +3,6 @@ import SwiftSyntax
 struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     private static let operators = ["==", "!=", "===", "!==", ">", ">=", "<", "<="]
 
     static let description = RuleDescription(

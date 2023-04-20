@@ -3,8 +3,6 @@ import SwiftSyntax
 struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "function_default_parameter_at_end",
         name: "Function Default Parameter at End",

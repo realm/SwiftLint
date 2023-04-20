@@ -5,8 +5,6 @@ import SwiftSyntax
 struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
     var configuration = OperatorUsageWhitespaceConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "operator_usage_whitespace",
         name: "Operator Usage Whitespace",

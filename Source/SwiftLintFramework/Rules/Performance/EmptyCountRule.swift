@@ -3,8 +3,6 @@ import SwiftSyntax
 struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     var configuration = EmptyCountConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "empty_count",
         name: "Empty Count",

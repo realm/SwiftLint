@@ -3,8 +3,6 @@ import SourceKittenFramework
 struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "vertical_parameter_alignment_on_call",
         name: "Vertical Parameter Alignment on Call",

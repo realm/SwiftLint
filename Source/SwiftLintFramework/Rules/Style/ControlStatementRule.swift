@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "control_statement",
         name: "Control Statement",

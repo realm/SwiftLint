@@ -3,8 +3,6 @@ import SwiftSyntax
 struct FlatMapOverMapReduceRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "flatmap_over_map_reduce",
         name: "Flat Map over Map Reduce",

@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "implicit_getter",
         name: "Implicit Getter",

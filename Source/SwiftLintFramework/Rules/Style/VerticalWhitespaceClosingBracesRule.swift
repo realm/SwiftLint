@@ -10,8 +10,6 @@ private extension SwiftLintFile {
 struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
     var configuration = Configuration()
 
-    init() {}
-
     private let pattern = "((?:\\n[ \\t]*)+)(\\n[ \\t]*[)}\\]])"
     private let trivialLinePattern = "((?:\\n[ \\t]*)+)(\\n[ \\t)}\\]]*$)"
 }

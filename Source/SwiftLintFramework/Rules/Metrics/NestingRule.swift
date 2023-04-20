@@ -6,8 +6,6 @@ struct NestingRule: ConfigurationProviderRule {
                                              functionLevelWarning: 2,
                                              functionLevelError: nil)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "nesting",
         name: "Nesting",

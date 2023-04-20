@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     var configuration = TrailingClosureConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "trailing_closure",
         name: "Trailing Closure",

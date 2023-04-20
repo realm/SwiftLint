@@ -3,8 +3,6 @@ import SwiftSyntax
 struct WeakDelegateRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "weak_delegate",
         name: "Weak Delegate",

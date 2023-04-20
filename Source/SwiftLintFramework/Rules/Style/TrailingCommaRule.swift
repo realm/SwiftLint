@@ -3,8 +3,6 @@ import SwiftSyntax
 struct TrailingCommaRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = TrailingCommaConfiguration()
 
-    init() {}
-
     private static let triggeringExamples: [Example] = [
         Example("let foo = [1, 2, 3↓,]\n"),
         Example("let foo = [1, 2, 3↓, ]\n"),

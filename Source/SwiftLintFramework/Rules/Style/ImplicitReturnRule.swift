@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, OptInRule {
     var configuration = ImplicitReturnConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "implicit_return",
         name: "Implicit Return",

@@ -3,8 +3,6 @@ import SwiftSyntax
 struct XCTFailMessageRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "xctfail_message",
         name: "XCTFail Message",

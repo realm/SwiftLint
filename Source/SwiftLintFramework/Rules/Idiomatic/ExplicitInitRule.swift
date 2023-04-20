@@ -4,8 +4,6 @@ import SwiftSyntaxBuilder
 struct ExplicitInitRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "explicit_init",
         name: "Explicit Init",

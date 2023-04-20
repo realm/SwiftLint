@@ -3,8 +3,6 @@ import SwiftSyntax
 struct LegacyRandomRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static var description = RuleDescription(
         identifier: "legacy_random",
         name: "Legacy Random",

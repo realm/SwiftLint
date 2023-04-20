@@ -3,8 +3,6 @@ import SourceKittenFramework
 struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "no_grouping_extension",
         name: "No Grouping Extension",

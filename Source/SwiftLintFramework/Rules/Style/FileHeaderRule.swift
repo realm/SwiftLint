@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
     var configuration = FileHeaderConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "file_header",
         name: "File Header",

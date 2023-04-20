@@ -3,8 +3,6 @@ import SwiftSyntax
 struct InclusiveLanguageRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = InclusiveLanguageConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "inclusive_language",
         name: "Inclusive Language",

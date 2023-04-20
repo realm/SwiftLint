@@ -3,8 +3,6 @@ import SwiftSyntax
 struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static var description = RuleDescription(
         identifier: "discouraged_none_name",
         name: "Discouraged None Name",

@@ -3,8 +3,6 @@ import SwiftSyntax
 struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "private_outlet",
         name: "Private Outlets",

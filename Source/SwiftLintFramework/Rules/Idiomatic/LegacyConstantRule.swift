@@ -4,8 +4,6 @@ import SwiftSyntaxBuilder
 struct LegacyConstantRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "legacy_constant",
         name: "Legacy Constant",

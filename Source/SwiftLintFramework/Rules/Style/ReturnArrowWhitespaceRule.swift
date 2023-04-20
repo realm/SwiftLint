@@ -4,8 +4,6 @@ import SwiftSyntax
 struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "return_arrow_whitespace",
         name: "Returning Whitespace",

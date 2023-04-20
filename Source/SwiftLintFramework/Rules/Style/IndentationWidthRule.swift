@@ -45,8 +45,6 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     )
 
     // MARK: - Initializers
-    init() {}
-
     // MARK: - Methods: Validation
     func validate(file: SwiftLintFile) -> [StyleViolation] { // swiftlint:disable:this function_body_length
         var violations: [StyleViolation] = []

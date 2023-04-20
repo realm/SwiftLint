@@ -11,8 +11,6 @@ struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
         "var", "func"
     ]
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "duplicate_imports",
         name: "Duplicate Imports",

@@ -3,8 +3,6 @@ import SwiftSyntax
 struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "ibinspectable_in_extension",
         name: "IBInspectable in Extension",

@@ -3,8 +3,6 @@ import SwiftSyntax
 struct NotificationCenterDetachmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "notification_center_detachment",
         name: "Notification Center Detachment",

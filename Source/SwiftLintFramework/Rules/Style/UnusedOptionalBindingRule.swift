@@ -3,8 +3,6 @@ import SwiftSyntax
 struct UnusedOptionalBindingRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: false)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "unused_optional_binding",
         name: "Unused Optional Binding",

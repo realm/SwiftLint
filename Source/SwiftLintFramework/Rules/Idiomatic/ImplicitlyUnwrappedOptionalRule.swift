@@ -6,8 +6,6 @@ struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRu
         severityConfiguration: SeverityConfiguration(.warning)
     )
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "implicitly_unwrapped_optional",
         name: "Implicitly Unwrapped Optional",

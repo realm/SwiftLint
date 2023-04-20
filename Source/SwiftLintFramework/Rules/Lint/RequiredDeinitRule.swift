@@ -66,8 +66,6 @@ struct RequiredDeinitRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
         ]
     )
 
-    init() {}
-
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }

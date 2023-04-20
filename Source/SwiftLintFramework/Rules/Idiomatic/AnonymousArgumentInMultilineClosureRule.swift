@@ -3,8 +3,6 @@ import SwiftSyntax
 struct AnonymousArgumentInMultilineClosureRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "anonymous_argument_in_multiline_closure",
         name: "Anonymous Argument in Multiline Closure",

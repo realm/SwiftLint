@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = ObjectLiteralConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "object_literal",
         name: "Object Literal",

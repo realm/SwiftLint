@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "nimble_operator",
         name: "Nimble Operator",

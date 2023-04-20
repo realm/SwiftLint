@@ -1,8 +1,6 @@
 struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "invalid_swiftlint_command",
         name: "Invalid SwiftLint Command",

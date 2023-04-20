@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "extension_access_modifier",
         name: "Extension Access Modifier",

@@ -12,8 +12,6 @@ import SourceKittenFramework
 struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "accessibility_label_for_image",
         name: "Accessibility Label for Image",

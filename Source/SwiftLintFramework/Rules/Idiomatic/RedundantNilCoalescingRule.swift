@@ -3,8 +3,6 @@ import SwiftSyntax
 struct RedundantNilCoalescingRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "redundant_nil_coalescing",
         name: "Redundant Nil Coalescing",

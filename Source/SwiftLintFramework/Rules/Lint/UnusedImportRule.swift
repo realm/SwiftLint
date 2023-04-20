@@ -7,8 +7,6 @@ struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
     var configuration = UnusedImportConfiguration(severity: .warning, requireExplicitImports: false,
                                                   allowedTransitiveImports: [], alwaysKeepImports: [])
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "unused_import",
         name: "Unused Import",

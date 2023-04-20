@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "multiline_parameters_brackets",
         name: "Multiline Parameters Brackets",

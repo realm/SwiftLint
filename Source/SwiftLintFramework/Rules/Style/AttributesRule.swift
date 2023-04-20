@@ -3,8 +3,6 @@ import SwiftSyntax
 struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = AttributesConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "attributes",
         name: "Attributes",

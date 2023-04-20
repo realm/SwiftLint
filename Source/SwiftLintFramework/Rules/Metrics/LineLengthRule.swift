@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct LineLengthRule: ConfigurationProviderRule {
     var configuration = LineLengthConfiguration(warning: 120, error: 200)
 
-    init() {}
-
     private let commentKinds = SyntaxKind.commentKinds
     private let nonCommentKinds = SyntaxKind.allKinds.subtracting(SyntaxKind.commentKinds)
     private let functionKinds = SwiftDeclarationKind.functionKinds

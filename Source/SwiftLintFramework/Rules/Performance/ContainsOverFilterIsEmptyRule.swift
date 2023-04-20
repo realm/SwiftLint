@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ContainsOverFilterIsEmptyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "contains_over_filter_is_empty",
         name: "Contains over Filter is Empty",

@@ -3,8 +3,6 @@ import SwiftSyntax
 struct SuperfluousElseRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static var description = RuleDescription(
         identifier: "superfluous_else",
         name: "Superfluous Else",

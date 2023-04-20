@@ -3,8 +3,6 @@ import SwiftSyntax
 struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "unowned_variable_capture",
         name: "Unowned Variable Capture",

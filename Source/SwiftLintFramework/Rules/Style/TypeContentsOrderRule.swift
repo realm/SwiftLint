@@ -5,8 +5,6 @@ struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
 
     var configuration = TypeContentsOrderConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "type_contents_order",
         name: "Type Contents Order",

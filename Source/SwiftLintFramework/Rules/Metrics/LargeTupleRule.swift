@@ -3,8 +3,6 @@ import SwiftSyntax
 struct LargeTupleRule: SourceKitFreeRule, ConfigurationProviderRule {
     var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "large_tuple",
         name: "Large Tuple",

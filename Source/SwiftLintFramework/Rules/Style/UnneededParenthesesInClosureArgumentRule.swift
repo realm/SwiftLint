@@ -4,8 +4,6 @@ struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule,
                                                         SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "unneeded_parentheses_in_closure_argument",
         name: "Unneeded Parentheses in Closure Argument",

@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "mark",
         name: "Mark",

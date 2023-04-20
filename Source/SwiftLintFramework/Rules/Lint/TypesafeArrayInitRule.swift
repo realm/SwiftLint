@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "typesafe_array_init",
         name: "Type-safe Array Init",

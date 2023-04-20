@@ -154,8 +154,6 @@ struct CaptureVariableRule: ConfigurationProviderRule, AnalyzerRule, CollectingR
 
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> CaptureVariableRule.FileInfo {
         file.declaredVariables(compilerArguments: compilerArguments)
     }

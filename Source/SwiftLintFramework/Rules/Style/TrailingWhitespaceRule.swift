@@ -5,8 +5,6 @@ struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
     var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
                                                         ignoresComments: true)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "trailing_whitespace",
         name: "Trailing Whitespace",

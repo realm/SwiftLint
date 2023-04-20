@@ -8,8 +8,6 @@ private let attributeNamesImplyingObjc: Set<String> = [
 struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "redundant_objc_attribute",
         name: "Redundant @objc Attribute",

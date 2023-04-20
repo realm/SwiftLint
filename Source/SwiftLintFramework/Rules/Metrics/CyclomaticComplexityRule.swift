@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
     var configuration = CyclomaticComplexityConfiguration(warning: 10, error: 20)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "cyclomatic_complexity",
         name: "Cyclomatic Complexity",

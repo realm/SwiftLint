@@ -26,8 +26,6 @@ private func wrapInFunc(_ str: String, file: StaticString = #file, line: UInt = 
 struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "empty_enum_arguments",
         name: "Empty Enum Arguments",

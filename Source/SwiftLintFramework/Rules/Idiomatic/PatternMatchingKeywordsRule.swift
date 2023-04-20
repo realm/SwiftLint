@@ -3,8 +3,6 @@ import SwiftSyntax
 struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "pattern_matching_keywords",
         name: "Pattern Matching Keywords",

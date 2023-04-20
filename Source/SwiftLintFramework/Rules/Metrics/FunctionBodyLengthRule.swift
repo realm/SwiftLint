@@ -1,8 +1,6 @@
 struct FunctionBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityLevelsConfiguration(warning: 50, error: 100)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "function_body_length",
         name: "Function Body Length",

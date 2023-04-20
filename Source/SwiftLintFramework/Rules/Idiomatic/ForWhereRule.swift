@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ForWhereRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = ForWhereRuleConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "for_where",
         name: "Prefer For-Where",

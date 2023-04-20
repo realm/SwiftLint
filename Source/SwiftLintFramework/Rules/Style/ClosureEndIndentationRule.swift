@@ -4,8 +4,6 @@ import SourceKittenFramework
 struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "closure_end_indentation",
         name: "Closure End Indentation",

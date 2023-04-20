@@ -21,8 +21,6 @@ extension String {
 struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "trailing_newline",
         name: "Trailing Newline",

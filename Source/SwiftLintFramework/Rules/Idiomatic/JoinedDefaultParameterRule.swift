@@ -3,8 +3,6 @@ import SwiftSyntax
 struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "joined_default_parameter",
         name: "Joined Default Parameter",

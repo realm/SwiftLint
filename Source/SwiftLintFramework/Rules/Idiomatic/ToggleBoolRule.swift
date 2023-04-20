@@ -4,8 +4,6 @@ import SwiftSyntaxBuilder
 struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static var description = RuleDescription(
         identifier: "toggle_bool",
         name: "Toggle Bool",

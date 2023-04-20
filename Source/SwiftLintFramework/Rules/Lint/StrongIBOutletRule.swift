@@ -3,8 +3,6 @@ import SwiftSyntax
 struct StrongIBOutletRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "strong_iboutlet",
         name: "Strong IBOutlet",

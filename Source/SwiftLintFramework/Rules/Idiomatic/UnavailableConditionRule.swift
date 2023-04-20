@@ -3,8 +3,6 @@ import SwiftSyntax
 struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "unavailable_condition",
         name: "Unavailable Condition",

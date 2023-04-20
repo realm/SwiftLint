@@ -7,8 +7,6 @@ struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule, SourceKitFreeR
         excluded: []
     )
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "file_name_no_space",
         name: "File Name no Space",

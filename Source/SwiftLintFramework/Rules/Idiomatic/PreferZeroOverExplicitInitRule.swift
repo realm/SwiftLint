@@ -34,8 +34,6 @@ struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule, Co
         ]
     )
 
-    init() {}
-
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }

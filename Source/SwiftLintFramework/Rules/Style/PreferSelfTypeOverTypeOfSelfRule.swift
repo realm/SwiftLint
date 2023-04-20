@@ -105,8 +105,6 @@ struct PreferSelfTypeOverTypeOfSelfRule: SwiftSyntaxCorrectableRule, OptInRule, 
         ]
     )
 
-    init() {}
-
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }

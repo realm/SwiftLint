@@ -49,8 +49,6 @@ private extension Sequence where Element == Line {
 struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "sorted_imports",
         name: "Sorted Imports",

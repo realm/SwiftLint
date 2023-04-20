@@ -11,8 +11,6 @@ private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt 
 struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "switch_case_on_newline",
         name: "Cases on Newline",

@@ -3,8 +3,6 @@ import SwiftSyntax
 struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "compiler_protocol_init",
         name: "Compiler Protocol Init",

@@ -79,8 +79,6 @@ struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, Conf
         deprecatedAliases: ["if_let_shadowing"]
     )
 
-    init() {}
-
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }

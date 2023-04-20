@@ -3,8 +3,6 @@ import SwiftSyntax
 struct RawValueForCamelCasedCodableEnumRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "raw_value_for_camel_cased_codable_enum",
         name: "Raw Value for Camel Cased Codable Enum",

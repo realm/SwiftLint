@@ -3,8 +3,6 @@ import SwiftSyntax
 struct ForceTryRule: ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration(.error)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "force_try",
         name: "Force Try",

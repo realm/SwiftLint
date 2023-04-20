@@ -7,8 +7,6 @@ struct GenericTypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
                                           maxLengthWarning: 20,
                                           maxLengthError: 1000)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "generic_type_name",
         name: "Generic Type Name",

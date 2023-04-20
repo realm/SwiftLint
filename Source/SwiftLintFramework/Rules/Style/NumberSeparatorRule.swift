@@ -8,8 +8,6 @@ struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, Configuration
         excludeRanges: []
     )
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "number_separator",
         name: "Number Separator",

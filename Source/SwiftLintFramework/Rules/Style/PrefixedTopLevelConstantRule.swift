@@ -3,8 +3,6 @@ import SwiftSyntax
 struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = PrefixedConstantRuleConfiguration(onlyPrivateMembers: false)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "prefixed_toplevel_constant",
         name: "Prefixed Top-Level Constant",

@@ -4,8 +4,6 @@ import SwiftSyntax
 struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = TypeNameRuleConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "type_name",
         name: "Type Name",

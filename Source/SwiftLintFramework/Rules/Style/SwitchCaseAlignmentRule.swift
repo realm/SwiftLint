@@ -3,8 +3,6 @@ import SwiftSyntax
 struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SwitchCaseAlignmentConfiguration()
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "switch_case_alignment",
         name: "Switch and Case Statement Alignment",

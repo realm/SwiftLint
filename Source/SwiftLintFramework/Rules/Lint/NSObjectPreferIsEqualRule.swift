@@ -3,8 +3,6 @@ import SwiftSyntax
 struct NSObjectPreferIsEqualRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "nsobject_prefer_isequal",
         name: "NSObject Prefer isEqual",

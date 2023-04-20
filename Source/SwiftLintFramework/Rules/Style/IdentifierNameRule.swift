@@ -8,8 +8,6 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                                           maxLengthError: 60,
                                           excluded: ["id"])
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "identifier_name",
         name: "Identifier Name",

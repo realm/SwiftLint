@@ -13,8 +13,6 @@ struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRul
         return configuration.cacheDescription
     }
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "private_unit_test",
         name: "Private Unit Test",

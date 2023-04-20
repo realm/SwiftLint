@@ -1,5 +1,10 @@
 *
-!Plugins
+!.bazelrc
+!.bazelversion
+!bazel
+!tools/bazelw
+!BUILD
+!ci.bazelrc
+!MODULE.bazel
 !Source
-!Tests
-!Package.*
+!WORKSPACE

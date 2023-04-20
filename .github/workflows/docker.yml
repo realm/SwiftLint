@@ -29,17 +29,29 @@ jobs:
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
       with:
         platforms: linux/amd64,linux/arm64
     - name: Log in to GitHub registry
-      uses: docker/login-action@v1
+      uses: docker/login-action@v2
       with:
         username: ${{ github.actor }}
         password:  ${{ secrets.GITHUB_TOKEN }}
         registry: ghcr.io
-    - uses: docker/build-push-action@v2
+    - name: Configure BuildBuddy
+      run: |
+        cat > ci.bazelrc <<EOF
+        build --bes_results_url=https://app.buildbuddy.io/invocation/
+        build --bes_backend=grpcs://remote.buildbuddy.io
+        build --remote_cache=grpcs://remote.buildbuddy.io
+        build --remote_timeout=3600
+        build --remote_header=x-buildbuddy-api-key=$BUILDBUDDY_API_KEY
+        EOF
+      env:
+        BUILDBUDDY_API_KEY: ${{ secrets.BUILDBUDDY_API_KEY }}
+    - uses: docker/build-push-action@v4
       with:
+        context: .
         platforms: linux/amd64,linux/arm64
         push: true
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}

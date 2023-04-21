@@ -36,10 +36,10 @@ def swiftlint_repos(bzlmod = False):
 
     http_archive(
         name = "com_github_krzyzanowskim_cryptoswift",
-        sha256 = "da391c5c958dfbe35f461772b9a680f5cf5018ccc358ef92a5d8eb9eeb168004",
+        sha256 = "ad561c63d1e7954dbadd88cf5588efe43236c382ea7dc964996c09e87b7d4fd1",
         build_file = "@SwiftLint//bazel:CryptoSwift.BUILD",
-        strip_prefix = "CryptoSwift-1.7.0",
-        url = "https://github.com/krzyzanowskim/CryptoSwift/archive/refs/tags/1.7.0.tar.gz",
+        strip_prefix = "CryptoSwift-1.7.1",
+        url = "https://github.com/krzyzanowskim/CryptoSwift/archive/refs/tags/1.7.1.tar.gz",
     )
 
 def _swiftlint_repos_bzlmod(_):

@@ -47,6 +47,7 @@
 * Add new `type_member_order` opt-in rule that checks variables and functions to
   ensure they are in alphabetical order.
   [Al Wold](https://github.com/alwold)
+  [#4919](https://github.com/realm/SwiftLint/pull/4919)
 
 #### Bug Fixes
 

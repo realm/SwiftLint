@@ -43,6 +43,10 @@
   subclasses.  
   [AndrewDMontgomery](https://github.com/andrewdmontgomery)
   [#4875](https://github.com/realm/SwiftLint/pull/4875)
+  
+* Add new `type_member_order` opt-in rule that checks variables and functions to
+  ensure they are in alphabetical order.
+  [Al Wold](https://github.com/alwold)
 
 #### Bug Fixes
 

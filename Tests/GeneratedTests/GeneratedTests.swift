@@ -1190,6 +1190,12 @@ class TypeContentsOrderRuleGeneratedTests: XCTestCase {
     }
 }
 
+class TypeMemberOrderRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TypeMemberOrderRule.description)
+    }
+}
+
 class TypeNameRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeNameRule.description)

@@ -24,6 +24,7 @@
   * Closure used in a struct declaration (`self` can always be omitted)
   * Anonymous closures that are directly called (`{ ... }()`) as they are
     definitly not escaping
+  * Weakly captured `self` with explicit unwrapping
 
   [SimplyDanny](https://github.com/SimplyDanny)
   [#59](https://github.com/realm/SwiftLint/issues/59)

@@ -30,9 +30,11 @@ struct RedundantSelfInClosureRule: SwiftSyntaxRule, CorrectableRule, Configurati
                         f { [weak self] in
                             self?.x = 1
                             self?.g()
+                            guard let self = self ?? C() else { return }
+                            self?.x = 1
                         }
                         C().f { self.x = 1 }
-                        f { [weak self] in if let self { self.x = 1 } }
+                        f { [weak self] in if let self { x = 1 } }
                     }
                 }
             """)
@@ -82,6 +84,29 @@ struct RedundantSelfInClosureRule: SwiftSyntaxRule, CorrectableRule, Configurati
                         f { [unowned self] in ↓self.x = 1 }
                         f { [self = self] in ↓self.x = 1 }
                         f { [s = self] in s.x = 1 }
+                    }
+                }
+            """),
+            Example("""
+                class C {
+                    var x = 0
+                    func f(_ work: @escaping () -> Void) { work() }
+                    func g() {
+                        f { [weak self] in
+                            self?.x = 1
+                            guard let self else { return }
+                            ↓self.x = 1
+                        }
+                        f { [weak self] in
+                            self?.x = 1
+                            if let self = self else { ↓self.x = 1 }
+                            self?.x = 1
+                        }
+                        f { [weak self] in
+                            self?.x = 1
+                            while let self else { ↓self.x = 1 }
+                            self?.x = 1
+                        }
                     }
                 }
             """)
@@ -240,7 +265,7 @@ private class ScopeVisitor: ViolationsSyntaxVisitor {
 }
 
 private class ExplicitSelfVisitor: ViolationsSyntaxVisitor {
-    private let typeDeclarationKind: TypeDeclarationKind
+    private let typeDeclKind: TypeDeclarationKind
     private let functionCallType: FunctionCallType
     private let selfCaptureKind: SelfCaptureKind
 
@@ -249,17 +274,17 @@ private class ExplicitSelfVisitor: ViolationsSyntaxVisitor {
     init(typeDeclarationKind: TypeDeclarationKind,
          functionCallType: FunctionCallType,
          selfCaptureKind: SelfCaptureKind) {
-        self.typeDeclarationKind = typeDeclarationKind
+        self.typeDeclKind = typeDeclarationKind
         self.functionCallType = functionCallType
         self.selfCaptureKind = selfCaptureKind
         super.init(viewMode: .sourceAccurate)
     }
 
     override func visitPost(_ node: MemberAccessExprSyntax) {
-        guard node.isSelfAccess else {
+        guard node.base?.as(IdentifierExprSyntax.self)?.isSelf == true else {
             return
         }
-        if typeDeclarationKind == .likeStruct || functionCallType == .anonymousClosure || selfCaptureKind == .strong {
+        if typeDeclKind == .likeStruct || functionCallType == .anonymousClosure || selfCaptureKind != .uncaptured {
             corrections.append(
                 (start: node.positionAfterSkippingLeadingTrivia, end: node.dot.endPositionBeforeTrailingTrivia)
             )

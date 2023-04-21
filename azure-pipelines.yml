@@ -33,18 +33,6 @@ jobs:
 #       displayName: Version Informations
 #     - script: xcodebuild -scheme swiftlint test -destination "platform=macOS" OTHER_SWIFT_FLAGS="\$(inherited) -D DISABLE_FOCUSED_EXAMPLES"
 #       displayName: xcodebuild test
-- job: CocoaPods
-  pool:
-    vmImage: 'macOS-12'
-  variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.4.1.app
-  steps:
-    - script: bundle install --path vendor/bundle
-      displayName: bundle install
-    - script: bundle exec pod repo update
-      displayName: pod repo update
-    - script: bundle exec pod lib lint --verbose
-      displayName: pod lib lint
 
 - job: jazzy
   pool:

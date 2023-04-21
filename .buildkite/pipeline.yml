@@ -27,3 +27,13 @@ steps:
       - make --always-make sourcery
       - echo "+++ Diff Files"
       - git diff --quiet HEAD
+  - label: "CocoaPods"
+    commands:
+      - echo "--- Install Bundler"
+      - gem install bundler
+      - echo "--- Bundle Install"
+      - bundle install
+      - echo "--- pod repo update"
+      - bundle exec pod repo update
+      - echo "+++ pod lib lint"
+      - bundle exec pod lib lint --verbose

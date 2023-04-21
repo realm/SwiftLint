@@ -1,6 +1,6 @@
 # SwiftLint
 
-SwiftLint 是一个用于强制检查 Swift 代码风格和规定的一个工具，基本上以 [Ray Wenderlich's Swift 代码风格指南](https://github.com/raywenderlich/swift-style-guide)为基础。
+SwiftLint 是一个用于强制检查 Swift 代码风格和规定的一个工具，基本上以 [Kodeco's Swift 代码风格指南](https://github.com/kodecocodes/swift-style-guide)为基础。
 
 SwiftLint Hook 了 [Clang](http://clang.llvm.org) 和 [SourceKit](http://www.jpsim.com/uncovering-sourcekit) 从而能够使用 [AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) 来表示源代码文件的更多精确结果。
 

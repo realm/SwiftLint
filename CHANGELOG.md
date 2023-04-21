@@ -26,11 +26,10 @@
   [JP Simard](https://github.com/jpsim)
   [#3726](https://github.com/realm/SwiftLint/issues/3726)
 
-* Trigger `prefer_self_in_static_references` rule on more type references.
+* Trigger `prefer_self_in_static_references` rule on more type references.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* Adds a new `reporters` subcommand, to improve discoverability of
-  reporters.  
+* Adds a new `reporters` command, to improve discoverability of reporters.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4819](https://github.com/realm/SwiftLint/issues/4819)
 
@@ -63,7 +62,7 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4894](https://github.com/realm/SwiftLint/issues/4894)
 
-* Workaround dyld warning about SwiftSyntax classes.  
+* Work around dyld warning about duplicate SwiftSyntax classes.  
   [keith](https://github.com/keith)
   [#4782](https://github.com/realm/SwiftLint/issues/4782)
 

@@ -80,9 +80,14 @@ private extension TypeMemberOrderRule {
             guard let variableType = node.declarationType else { return }
 
             let identifier = normalizedIdentifier(for: node)
-            if let lastIdentifier = states.last?.lastIdentifier, identifier < lastIdentifier.name, variableType != .localVariable {
+            if let lastIdentifier = states.last?.lastIdentifier,
+               identifier < lastIdentifier.name,
+               variableType != .localVariable {
                 if variableType == lastIdentifier.type || !configuration.separateByMemberTypes {
-                    violations.append(ReasonedRuleViolation(position: node.identifier.position, reason: "\(node.identifier.text) should be before \(lastIdentifier.name)"))
+                    violations.append(
+                        ReasonedRuleViolation(
+                            position: node.identifier.position,
+                            reason: "\(node.identifier.text) should be before \(lastIdentifier.name)"))
                 }
             }
             states[states.count - 1].lastIdentifier = (type: variableType, name: identifier)
@@ -91,7 +96,9 @@ private extension TypeMemberOrderRule {
         override func visitPost(_ node: FunctionDeclSyntax) {
             if let lastIdentifier = states.last?.lastIdentifier, node.resolvedName() < lastIdentifier.name {
                 if node.declarationType == lastIdentifier.type || !configuration.separateByMemberTypes {
-                    violations.append(ReasonedRuleViolation(position: node.identifier.position, reason: "\(node.resolvedName()) should be before \(lastIdentifier.name)"))
+                    violations.append(ReasonedRuleViolation(
+                        position: node.identifier.position,
+                        reason: "\(node.resolvedName()) should be before \(lastIdentifier.name)"))
                 }
             }
             states[states.count - 1].lastIdentifier = (type: node.declarationType, name: node.resolvedName())

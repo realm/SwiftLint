@@ -1,6 +1,6 @@
 # SwiftLint
 
-SwiftLint는 스위프트 스타일 및 컨벤션을 강제하기 위한 도구로, [Ray Wenderlich 스위프트 스타일 가이드](https://github.com/raywenderlich/swift-style-guide)에 대략적인 기반을 두고 있습니다.
+SwiftLint는 스위프트 스타일 및 컨벤션을 강제하기 위한 도구로, [Kodeco 스위프트 스타일 가이드](https://github.com/kodecocodes/swift-style-guide)에 대략적인 기반을 두고 있습니다.
 
 SwiftLint는 좀 더 정확한 결과를 위해 [Clang](http://clang.llvm.org)과 [SourceKit](http://www.jpsim.com/uncovering-sourcekit)에 연결하여 소스 파일의 [AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) 표현을 사용합니다.
 

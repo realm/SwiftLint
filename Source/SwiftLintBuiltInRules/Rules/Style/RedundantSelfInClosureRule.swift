@@ -86,31 +86,8 @@ struct RedundantSelfInClosureRule: SwiftSyntaxRule, CorrectableRule, Configurati
                         f { [s = self] in s.x = 1 }
                     }
                 }
-            """),
-            Example("""
-                class C {
-                    var x = 0
-                    func f(_ work: @escaping () -> Void) { work() }
-                    func g() {
-                        f { [weak self] in
-                            self?.x = 1
-                            guard let self else { return }
-                            ↓self.x = 1
-                        }
-                        f { [weak self] in
-                            self?.x = 1
-                            if let self = self else { ↓self.x = 1 }
-                            self?.x = 1
-                        }
-                        f { [weak self] in
-                            self?.x = 1
-                            while let self else { ↓self.x = 1 }
-                            self?.x = 1
-                        }
-                    }
-                }
             """)
-        ],
+        ] + triggeringCompilerSpecificExamples,
         corrections: [
             Example("""
                 struct S {
@@ -137,6 +114,36 @@ struct RedundantSelfInClosureRule: SwiftSyntaxRule, CorrectableRule, Configurati
             """)
         ]
     )
+
+#if compiler(>=5.8)
+    private static let triggeringCompilerSpecificExamples = [
+        Example("""
+            class C {
+                var x = 0
+                func f(_ work: @escaping () -> Void) { work() }
+                func g() {
+                    f { [weak self] in
+                        self?.x = 1
+                        guard let self else { return }
+                        ↓self.x = 1
+                    }
+                    f { [weak self] in
+                        self?.x = 1
+                        if let self = self else { ↓self.x = 1 }
+                        self?.x = 1
+                    }
+                    f { [weak self] in
+                        self?.x = 1
+                        while let self else { ↓self.x = 1 }
+                        self?.x = 1
+                    }
+                }
+            }
+        """)
+    ]
+#else
+    private static let triggeringCompilerSpecificExamples = [Example]()
+#endif
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         ScopeVisitor(viewMode: .sourceAccurate)
@@ -281,10 +288,7 @@ private class ExplicitSelfVisitor: ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: MemberAccessExprSyntax) {
-        guard node.base?.as(IdentifierExprSyntax.self)?.isSelf == true else {
-            return
-        }
-        if typeDeclKind == .likeStruct || functionCallType == .anonymousClosure || selfCaptureKind != .uncaptured {
+        if node.base?.as(IdentifierExprSyntax.self)?.isSelf == true, isSelfRedundant {
             corrections.append(
                 (start: node.positionAfterSkippingLeadingTrivia, end: node.dot.endPositionBeforeTrailingTrivia)
             )
@@ -294,5 +298,18 @@ private class ExplicitSelfVisitor: ViolationsSyntaxVisitor {
     override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
         // Will be handled separately by the parent visitor.
         .skipChildren
+    }
+
+    var isSelfRedundant: Bool {
+        if typeDeclKind == .likeStruct || functionCallType == .anonymousClosure {
+            return true
+        }
+        if selfCaptureKind == .strong && SwiftVersion.current >= .fiveDotThree {
+            return true
+        }
+        if selfCaptureKind == .weak && SwiftVersion.current >= .fiveDotEight {
+            return true
+        }
+        return false
     }
 }

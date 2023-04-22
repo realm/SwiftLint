@@ -92,7 +92,7 @@ struct SwitchCaseSort: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
             case default:
                 break
             }
-            """)
+            """),
         ]
     )
 }
@@ -137,8 +137,6 @@ private extension SwitchCaseSort {
             if caseNamesToSort != sortedCaseNames {
                 violations.append(node.switchKeyword.positionAfterSkippingLeadingTrivia)
             }
-
-            return
         }
     }
 }

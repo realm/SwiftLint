@@ -3,6 +3,8 @@ import SwiftSyntax
 struct SwitchCaseSort: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
+    init() {}
+
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
@@ -100,7 +102,7 @@ struct SwitchCaseSort: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
 private extension SwitchCaseSort {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: SwitchExprSyntax) {
-            guard node.cases.isNotEmpty else {
+            guard node.cases.count > 0 else {
                 return
             }
 
@@ -110,7 +112,7 @@ private extension SwitchCaseSort {
                 if let caseSyntax = caseListSyntax.as(SwitchCaseSyntax.self) {
                     switch caseSyntax.label {
                     case let .default(defaultLabelSyntax):
-                        print(defaultLabelSyntax)
+                        continue // TODO: violation if it is not at the end?
                     case let .case(caseLabelSyntax):
                         if caseLabelSyntax.caseItems.count == 1 {
                             // get the name for top level sortation

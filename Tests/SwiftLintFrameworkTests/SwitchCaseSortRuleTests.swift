@@ -3,7 +3,6 @@ import XCTest
 
 class SwitchCaseSortTests: XCTestCase {
     func testSwitchCaseSortExpression() {
-        let baseDescription = SwitchCaseSort.description
-        verifyRule(baseDescription)
+        verifyRule(SwitchCaseSort.description)
     }
 }

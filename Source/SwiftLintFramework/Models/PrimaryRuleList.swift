@@ -190,6 +190,7 @@ let builtInRules: [Rule.Type] = [
     SuperfluousElseRule.self,
     SwitchCaseAlignmentRule.self,
     SwitchCaseOnNewlineRule.self,
+    SwitchCaseSortRule.self,
     SyntacticSugarRule.self,
     TestCaseAccessibilityRule.self,
     TodoRule.self,

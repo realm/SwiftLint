@@ -1,12 +1,16 @@
 import SwiftSyntax
 
-struct SwitchCaseSort: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+struct SwitchCaseSortRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
     init() {}
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
+    }
+
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter()
     }
 
     static let description = RuleDescription(
@@ -49,16 +53,6 @@ struct SwitchCaseSort: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
             """),
             Example("""
             switch foo {
-            case .b:
-                break
-            case .a:
-                break
-            case .c, .f, .d:
-                break
-            }
-            """),
-            Example("""
-            switch foo {
             case .a:
                 break
             case .b:
@@ -80,8 +74,24 @@ struct SwitchCaseSort: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
             }
             """),
             Example("""
+            switch foo {
+            ↓case .b, .a, .c:
+                break
+            }
+            """),
+            Example("""
+            switch foo {
+            case .a:
+                break
+            ↓case .c, .b:
+                break
+            }
+            """),
+            Example("""
             ↓switch foo {
-            case .b, .a, .c:
+            case .z:
+                break
+            ↓case .c, .b:
                 break
             }
             """),
@@ -99,46 +109,95 @@ struct SwitchCaseSort: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     )
 }
 
-private extension SwitchCaseSort {
+private extension SwitchCaseSortRule {
+//    final class Visitor: ViolationsSyntaxVisitor {
+//        override func visitPost(_ node: SwitchExprSyntax) {
+//            guard node.cases.isNotEmpty else {
+//                return
+//            }
+//
+//            var caseNamesToSort = [String]()
+//
+//            for caseListSyntax in node.cases {
+//                switch caseListSyntax {
+//                case let .switchCase(caseSyntax):
+//                    switch caseSyntax.label {
+//                    case let .default(defaultLabelSyntax):
+//                        // xcode already warns if default is not at the end?
+//                        continue
+//                    case let .case(caseLabelSyntax):
+//                        if caseLabelSyntax.caseItems.isEmpty {
+//                            continue
+//                        }
+//                        if caseLabelSyntax.caseItems.count == 1 {
+//                            // get the name for top level sortation
+//                            let name = sortableName(for: caseLabelSyntax.caseItems.first!)
+//                            caseNamesToSort.append(name)
+//                        } else { // multiple items in one case expression
+//                            // sort them among themselves
+//                            var caseNames = [String]()
+//                            for caseItem in caseLabelSyntax.caseItems {
+//                                let name = sortableName(for: caseItem)
+//                                caseNames.append(name)
+//                            }
+//                            let sortedCaseNames = caseNames.sorted()
+//                            if caseNames != sortedCaseNames {
+//                                violations.append(caseLabelSyntax.positionAfterSkippingLeadingTrivia)
+//                            }
+//                            caseNamesToSort.append(sortedCaseNames.first!)
+//                        }
+//                    }
+//                case .ifConfigDecl:
+//                    continue
+//                }
+//            }
+//
+//            let sortedCaseNames = caseNamesToSort.sorted()
+//            if caseNamesToSort != sortedCaseNames {
+//                violations.append(node.switchKeyword.positionAfterSkippingLeadingTrivia)
+//            }
+//        }
+//    }
+
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: SwitchExprSyntax) {
-            guard node.cases.count > 0 else {
+            guard node.cases.isNotEmpty else {
                 return
             }
 
-            var caseNamesToSort = [String]()
-
-            for caseListSyntax in node.cases {
-                if let caseSyntax = caseListSyntax.as(SwitchCaseSyntax.self) {
-                    switch caseSyntax.label {
-                    case let .default(defaultLabelSyntax):
-                        continue // TODO: violation if it is not at the end?
-                    case let .case(caseLabelSyntax):
-                        if caseLabelSyntax.caseItems.count == 1 {
-                            // get the name for top level sortation
-                            let name = sortableName(for: caseLabelSyntax.caseItems.first!)
-                            caseNamesToSort.append(name)
-                        } else { // multiple items in one case expression
-                            // sort them among themselves
-                            var caseNames = [String]()
-                            for caseItem in caseLabelSyntax.caseItems {
-                                let name = sortableName(for: caseItem)
-                                caseNames.append(name)
-                            }
-                            let sortedCaseNames = caseNames.sorted()
-                            if caseNames != sortedCaseNames {
-                                violations.append(caseLabelSyntax.positionAfterSkippingLeadingTrivia)
-                            }
-                            caseNamesToSort.append(sortedCaseNames.first!)
-                        }
-                    }
+            let caseNamesToSort = node.cases.compactMap { caseListSyntax -> String? in
+                guard case let .switchCase(caseSyntax) = caseListSyntax,
+                      case let .case(caseLabelSyntax) = caseSyntax.label,
+                      !caseLabelSyntax.caseItems.isEmpty else {
+                    return nil
                 }
+
+                let caseNames = caseLabelSyntax.caseItems.map(sortableName).sorted()
+                if caseNames != caseLabelSyntax.caseItems.map(sortableName) {
+                    violations.append(caseLabelSyntax.positionAfterSkippingLeadingTrivia)
+                }
+
+                return caseNames.first
             }
 
             let sortedCaseNames = caseNamesToSort.sorted()
             if caseNamesToSort != sortedCaseNames {
                 violations.append(node.switchKeyword.positionAfterSkippingLeadingTrivia)
             }
+        }
+    }
+}
+
+private extension SwitchCaseSortRule {
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+
+        override func visit(_ node: SwitchExprSyntax) -> ExprSyntax {
+            guard node.cases.isNotEmpty else {
+                return super.visit(node)
+            }
+
+            return super.visit(node)
         }
     }
 }
@@ -155,7 +214,7 @@ private func sortableName(for caseItemSyntax: CaseItemSyntax) -> String {
                 // ignore interpolation and join the string literals
                 case let .stringSegment(segment):
                     return segment.content.text
-                case .expressionSegment: // string interpolation
+                case .expressionSegment: // string interpolation part
                     return ""
                 }
             }.joined()
@@ -164,5 +223,22 @@ private func sortableName(for caseItemSyntax: CaseItemSyntax) -> String {
             return identifierExpression.identifier.text
         }
     }
-    return "" // TODO: return String? = nil
+    return "" // return String? = nil
+}
+
+private func sortableName(for caseLabelSyntax: SwitchCaseLabelSyntax) -> String {
+    if let item = caseLabelSyntax.caseItems.first {
+        return sortableName(for: item)
+    }
+    return ""
+}
+
+private func byName(_ lhs: CaseItemSyntax, _ rhs: CaseItemSyntax) -> Bool {
+    sortableName(for: lhs) < sortableName(for: rhs)
+}
+
+private func byName(_ lhs: SwitchCaseLabelSyntax, _ rhs: SwitchCaseLabelSyntax) -> Bool {
+    let newLhs = SwitchCaseLabelSyntax(caseItems: CaseItemListSyntax(lhs.caseItems.sorted(by: byName)))
+    let newRhs = SwitchCaseLabelSyntax(caseItems: CaseItemListSyntax(rhs.caseItems.sorted(by: byName)))
+    return sortableName(for: newLhs) < sortableName(for: newRhs)
 }

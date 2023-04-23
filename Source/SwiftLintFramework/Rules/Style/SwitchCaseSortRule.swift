@@ -29,55 +29,6 @@ struct SwitchCaseSortRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule
 }
 
 private extension SwitchCaseSortRule {
-//    final class Visitor: ViolationsSyntaxVisitor {
-//        override func visitPost(_ node: SwitchExprSyntax) {
-//            guard node.cases.isNotEmpty else {
-//                return
-//            }
-//
-//            var caseNamesToSort = [String]()
-//
-//            for caseListSyntax in node.cases {
-//                switch caseListSyntax {
-//                case let .switchCase(caseSyntax):
-//                    switch caseSyntax.label {
-//                    case let .default(defaultLabelSyntax):
-//                        // xcode already warns if default is not at the end?
-//                        continue
-//                    case let .case(caseLabelSyntax):
-//                        if caseLabelSyntax.caseItems.isEmpty {
-//                            continue
-//                        }
-//                        if caseLabelSyntax.caseItems.count == 1 {
-//                            // get the name for top level sortation
-//                            let name = sortableName(for: caseLabelSyntax.caseItems.first!)
-//                            caseNamesToSort.append(name)
-//                        } else { // multiple items in one case expression
-//                            // sort them among themselves
-//                            var caseNames = [String]()
-//                            for caseItem in caseLabelSyntax.caseItems {
-//                                let name = sortableName(for: caseItem)
-//                                caseNames.append(name)
-//                            }
-//                            let sortedCaseNames = caseNames.sorted()
-//                            if caseNames != sortedCaseNames {
-//                                violations.append(caseLabelSyntax.positionAfterSkippingLeadingTrivia)
-//                            }
-//                            caseNamesToSort.append(sortedCaseNames.first!)
-//                        }
-//                    }
-//                case .ifConfigDecl:
-//                    continue
-//                }
-//            }
-//
-//            let sortedCaseNames = caseNamesToSort.sorted()
-//            if caseNamesToSort != sortedCaseNames {
-//                violations.append(node.switchKeyword.positionAfterSkippingLeadingTrivia)
-//            }
-//        }
-//    }
-
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: SwitchExprSyntax) {
             guard node.cases.isNotEmpty else {
@@ -144,56 +95,32 @@ private extension SwitchCaseSortRule {
 private func sort(_ cases: SwitchCaseListSyntax) -> SwitchCaseListSyntax {
     var elements = [SwitchCaseListSyntax.Element]()
     for caseListElement in cases {
-        guard case let .switchCase(caseSyntax) = caseListElement,
-              case let .case(caseLabelSyntax) = caseSyntax.label,
-              !caseLabelSyntax.caseItems.isEmpty else {
+        // only sort normal switch cases, not the ones with #if...#endif
+        guard case let .switchCase(caseSyntax) = caseListElement else {
             return cases
         }
+        // if it's a case statement with multiple items sort them inside first
+        if case let .case(caseLabelSyntax) = caseSyntax.label,
+                    !caseLabelSyntax.caseItems.isEmpty {
         elements.append(.switchCase(caseSyntax.with(\.label, .case(sort(caseLabelSyntax)))))
+        } else { // default or single cases
+            elements.append(caseListElement)
+        }
     }
 
-//    if cases.count == 1,
-//       let caseLabelSyntax = cases.first,
-//       case let .switchCase(switchCaseSyntax) = caseLabelSyntax,
-//       case let .case(switchCaseLabelSyntax) = switchCaseSyntax.label {
-//        var newSwitchCase: SwitchCaseSyntax = switchCaseSyntax
-//
-//        newSwitchCase.label = .case(sort(switchCaseLabelSyntax))
-//
-    ////            let newSwitchCase = SwitchCaseSyntax(
-    ////                label: .case(sort(switchCaseLabelSyntax)),
-    ////                statements: switchCaseSyntax.statements
-    ////            )
-//        return SwitchCaseListSyntax([.switchCase(newSwitchCase)])
-//    }
-//
     return SwitchCaseListSyntax(elements.sorted(by: byName))
 }
 
 private func sort(_ caseLabel: SwitchCaseLabelSyntax) -> SwitchCaseLabelSyntax {
-    // remove trailing commas then sort them, then join them with commas
+    // remove trailing commas, then sort them, then join them with commas
     let sortedItems = caseLabel.caseItems
-            .map { $0.with(\.trailingComma, nil) }
-            .sorted(by: byName)
-            .enumerated()
-            .map { index, item in
-                index == caseLabel.caseItems.count - 1 ? item : item.with(\.trailingComma, ", ")
-            }
-        return caseLabel.with(\.caseItems, CaseItemListSyntax(sortedItems))
-    
-//    let itemsNoComma = caseLabel.caseItems.map { item in
-//        item.with(\.trailingComma, nil)
-//    }
-//
-//    let sortedNoComma = itemsNoComma.sorted(by: byName)
-//    let sortedWithComma = sortedNoComma.enumerated().map { index, item in
-//        if index == sortedNoComma.count - 1 {
-//            return item
-//        } else {
-//            return item.with(\.trailingComma, ",")
-//        }
-//    }
-//    return caseLabel.with(\.caseItems, CaseItemListSyntax(sortedWithComma))
+        .map { $0.with(\.trailingComma, nil) }
+        .sorted(by: byName)
+        .enumerated()
+        .map { index, item in
+            index == caseLabel.caseItems.count - 1 ? item : item.with(\.trailingComma, ", ")
+        }
+    return caseLabel.with(\.caseItems, CaseItemListSyntax(sortedItems))
 }
 
 private func sortableName(for caseItemSyntax: CaseItemSyntax) -> String? {
@@ -424,17 +351,19 @@ private let examples: (triggering: [Example], nonTriggering: [Example], correcti
     return (triggering, nonTriggering, corrections)
 }()
 
-
 enum Foo {
-    case a, b, c
+    case a
+    case b
+    case c
 }
+
 func dene() {
     let foo = Foo.a
     switch foo {
     case .a:
         break
-    case .b, .c:
+    case .b,
+         .c:
         break
     }
 }
-

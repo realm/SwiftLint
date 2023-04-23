@@ -431,18 +431,14 @@ private let examples: (triggering: [Example], nonTriggering: [Example], correcti
         """#)
     )
 
-    let corrections: [Example: Example] = {
-        var result: [Example: Example] = [:]
-        for (triggering, correction) in zip(triggering, nonTriggering) {
-            // correction location is always before switch keyword
-            let toBeCorrectted = triggering.with(
-                code: triggering.code.replacingOccurrences(of: "↓", with: "")
-                    .replacingOccurrences(of: "switch", with: "↓switch")
-            )
-            result[toBeCorrectted] = correction
-        }
-        return result
-    }()
+    let corrections: [Example: Example] = zip(triggering, nonTriggering).reduce(into: [:]) { result, pair in
+        // correction location is always before switch keyword
+        let toBeCorrected = pair.0.with(
+            code: pair.0.code.replacingOccurrences(of: "↓", with: "")
+                .replacingOccurrences(of: "switch", with: "↓switch")
+        )
+        result[toBeCorrected] = pair.1
+    }
 
     return (triggering, nonTriggering, corrections)
 }()

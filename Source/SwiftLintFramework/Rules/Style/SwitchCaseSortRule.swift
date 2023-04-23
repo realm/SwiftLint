@@ -350,20 +350,3 @@ private let examples: (triggering: [Example], nonTriggering: [Example], correcti
 
     return (triggering, nonTriggering, corrections)
 }()
-
-enum Foo {
-    case a
-    case b
-    case c
-}
-
-func dene() {
-    let foo = Foo.a
-    switch foo {
-    case .a:
-        break
-    case .b,
-         .c:
-        break
-    }
-}

@@ -188,45 +188,45 @@ private enum SelfCaptureKind {
 }
 
 private class ScopeVisitor: ViolationsSyntaxVisitor {
-    private var typeDeclarations = [TypeDeclarationKind]()
-    private var functionCalls = [FunctionCallType]()
-    private var selfCaptures = [SelfCaptureKind]()
+    private var typeDeclarations = Stack<TypeDeclarationKind>()
+    private var functionCalls = Stack<FunctionCallType>()
+    private var selfCaptures = Stack<SelfCaptureKind>()
 
     private(set) var corrections = [(start: AbsolutePosition, end: AbsolutePosition)]()
 
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .extensionsAndProtocols }
 
     override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-        typeDeclarations.append(.likeClass)
+        typeDeclarations.push(.likeClass)
         return .visitChildren
     }
 
     override func visitPost(_ node: ActorDeclSyntax) {
-        _ = typeDeclarations.popLast()
+        typeDeclarations.pop()
     }
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        typeDeclarations.append(.likeClass)
+        typeDeclarations.push(.likeClass)
         return .visitChildren
     }
 
     override func visitPost(_ node: ClassDeclSyntax) {
-        _ = typeDeclarations.popLast()
+        typeDeclarations.pop()
     }
 
     override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
         if let selfItem = node.signature?.capture?.items?.first(where: \.capturesSelf) {
-            selfCaptures.append(selfItem.capturesWeakly ? .weak : .strong)
+            selfCaptures.push(selfItem.capturesWeakly ? .weak : .strong)
         } else {
-            selfCaptures.append(.uncaptured)
+            selfCaptures.push(.uncaptured)
         }
         return .visitChildren
     }
 
     override func visitPost(_ node: ClosureExprSyntax) {
-        guard let activeTypeDeclarationKind = typeDeclarations.last,
-              let activeFunctionCallType = functionCalls.last,
-              let activeSelfCaptureKind = selfCaptures.last else {
+        guard let activeTypeDeclarationKind = typeDeclarations.peek(),
+              let activeFunctionCallType = functionCalls.peek(),
+              let activeSelfCaptureKind = selfCaptures.peek() else {
             return
         }
         let localCorrections = ExplicitSelfVisitor(
@@ -236,38 +236,38 @@ private class ScopeVisitor: ViolationsSyntaxVisitor {
         ).walk(tree: node.statements, handler: \.corrections)
         violations.append(contentsOf: localCorrections.map(\.start))
         corrections.append(contentsOf: localCorrections)
-        _ = selfCaptures.popLast()
+        selfCaptures.pop()
     }
 
     override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-        typeDeclarations.append(.likeStruct)
+        typeDeclarations.push(.likeStruct)
         return .visitChildren
     }
 
     override func visitPost(_ node: EnumDeclSyntax) {
-        _ = typeDeclarations.popLast()
+        typeDeclarations.pop()
     }
 
     override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
         if node.calledExpression.is(ClosureExprSyntax.self) {
-            functionCalls.append(.anonymousClosure)
+            functionCalls.push(.anonymousClosure)
         } else {
-            functionCalls.append(.function)
+            functionCalls.push(.function)
         }
         return .visitChildren
     }
 
     override func visitPost(_ node: FunctionCallExprSyntax) {
-        _ = functionCalls.popLast()
+        functionCalls.pop()
     }
 
     override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-        typeDeclarations.append(.likeStruct)
+        typeDeclarations.push(.likeStruct)
         return .visitChildren
     }
 
     override func visitPost(_ node: StructDeclSyntax) {
-        _ = typeDeclarations.popLast()
+        typeDeclarations.pop()
     }
 }
 

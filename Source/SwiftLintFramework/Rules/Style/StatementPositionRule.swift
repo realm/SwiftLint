@@ -44,6 +44,8 @@ struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
             Example("  }\n\n  catch {"),
             Example("\n\n  }\n  catch {"),
             Example("\"}\nelse{\""),
+            Example("if true { return }\nelse {}"),
+            Example("do { try foo() }\ncatch {}"),
             Example("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
             Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)")
         ],
@@ -131,29 +133,36 @@ private extension StatementPositionRule {
     }
 
     // match literal '}'
-    // preceded by whitespace (or nothing)
+    // preceded by 1) more than one non-whitespace 2) whitespace 3) nothing
     // followed by 1) nothing, 2) two+ whitespace/newlines or 3) newlines or tabs
-    // followed by newline and the same amount of whitespace then 'else' or 'catch' literals
-    static let uncuddledPattern = "([ \t]*)\\}(\\n+)?([ \t]*)\\b(else|catch)\\b"
+    // followed by newline then 'else' or 'catch'
+    static let uncuddledPattern = "(\\S+)?([ \\t]*)\\}(\\n+)?([ \\t]*)\\b(else|catch)\\b"
 
     static let uncuddledRegex = regex(uncuddledPattern, options: [])
 
     static func uncuddledMatchValidator(contents: StringView) -> ((NSTextCheckingResult)
         -> NSTextCheckingResult?) {
             return { match in
-                if match.numberOfRanges != 5 {
+                if match.numberOfRanges != 6 {
                     return match
                 }
-                if match.range(at: 2).length == 0 {
+
+                if match.range(at: 3).length == 0 {
                     return match
                 }
-                let range1 = match.range(at: 1)
-                let range2 = match.range(at: 3)
-                let whitespace1 = contents.string.substring(from: range1.location, length: range1.length)
-                let whitespace2 = contents.string.substring(from: range2.location, length: range2.length)
-                if whitespace1 == whitespace2 {
-                    return nil
+                
+                // Only if there is no non-space prefix,
+                // check equal indentation condition
+                if match.range(at: 1).length == 0 {
+                    let range1 = match.range(at: 2)
+                    let range2 = match.range(at: 4)
+                    let whitespace1 = contents.string.substring(from: range1.location, length: range1.length)
+                    let whitespace2 = contents.string.substring(from: range2.location, length: range2.length)
+                    if whitespace1 == whitespace2 {
+                        return nil
+                    }
                 }
+                
                 return match
             }
     }
@@ -194,9 +203,9 @@ private extension StatementPositionRule {
         var corrections = [Correction]()
 
         for match in validMatches.reversed() {
-            let range1 = match.range(at: 1)
-            let range2 = match.range(at: 3)
-            let newlineRange = match.range(at: 2)
+            let range1 = match.range(at: 2)
+            let range2 = match.range(at: 4)
+            let newlineRange = match.range(at: 3)
             var whitespace = contents.bridge().substring(with: range1)
             let newLines: String
             if newlineRange.location != NSNotFound {

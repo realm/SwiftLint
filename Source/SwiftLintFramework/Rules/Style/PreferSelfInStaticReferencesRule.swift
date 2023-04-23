@@ -59,57 +59,57 @@ private class Visitor: ViolationsSyntaxVisitor {
         case skipReferences
     }
 
-    private var parentDeclScopes = [ParentDeclBehavior]()
-    private var variableDeclScopes = [VariableDeclBehavior]()
+    private var parentDeclScopes = Stack<ParentDeclBehavior>()
+    private var variableDeclScopes = Stack<VariableDeclBehavior>()
     private(set) var corrections = [(start: AbsolutePosition, end: AbsolutePosition)]()
 
     override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.append(.likeClass(name: node.identifier.text))
+        parentDeclScopes.push(.likeClass(name: node.identifier.text))
         return .skipChildren
     }
 
     override func visitPost(_ node: ActorDeclSyntax) {
-        _ = parentDeclScopes.popLast()
+        parentDeclScopes.pop()
     }
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.append(.likeClass(name: node.identifier.text))
+        parentDeclScopes.push(.likeClass(name: node.identifier.text))
         return .visitChildren
     }
 
     override func visitPost(_ node: ClassDeclSyntax) {
-        _ = parentDeclScopes.popLast()
+        parentDeclScopes.pop()
     }
 
     override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
-        variableDeclScopes.append(.handleReferences)
+        variableDeclScopes.push(.handleReferences)
         return .visitChildren
     }
 
     override func visitPost(_ node: CodeBlockSyntax) {
-        _ = variableDeclScopes.popLast()
+        variableDeclScopes.pop()
     }
 
     override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.append(.likeStruct(node.identifier.text))
+        parentDeclScopes.push(.likeStruct(node.identifier.text))
         return .visitChildren
     }
 
     override func visitPost(_ node: EnumDeclSyntax) {
-        _ = parentDeclScopes.popLast()
+        parentDeclScopes.pop()
     }
 
     override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.append(.skipReferences)
+        parentDeclScopes.push(.skipReferences)
         return .visitChildren
     }
 
     override func visitPost(_ node: ExtensionDeclSyntax) {
-        _ = parentDeclScopes.popLast()
+        parentDeclScopes.pop()
     }
 
     override func visit(_ node: MemberAccessExprSyntax) -> SyntaxVisitorContinueKind {
-        if case .likeClass = parentDeclScopes.last {
+        if case .likeClass = parentDeclScopes.peek() {
             if node.name.tokenKind == .keyword(.self) {
                 return .skipChildren
             }
@@ -124,62 +124,62 @@ private class Visitor: ViolationsSyntaxVisitor {
               !parent.is(ArrayElementSyntax.self) else {
             return
         }
-        if parent.is(FunctionCallExprSyntax.self), case .likeClass = parentDeclScopes.last {
+        if parent.is(FunctionCallExprSyntax.self), case .likeClass = parentDeclScopes.peek() {
             return
         }
         addViolation(on: node.identifier)
     }
 
     override func visit(_ node: MemberDeclBlockSyntax) -> SyntaxVisitorContinueKind {
-        if case .likeClass = parentDeclScopes.last {
-            variableDeclScopes.append(.skipReferences)
+        if case .likeClass = parentDeclScopes.peek() {
+            variableDeclScopes.push(.skipReferences)
         } else {
-            variableDeclScopes.append(.handleReferences)
+            variableDeclScopes.push(.handleReferences)
         }
         return .visitChildren
     }
 
     override func visitPost(_ node: MemberDeclBlockSyntax) {
-        _ = variableDeclScopes.popLast()
+        variableDeclScopes.pop()
     }
 
     override func visit(_ node: MacroExpansionExprSyntax) -> SyntaxVisitorContinueKind {
-        if case .likeClass = parentDeclScopes.last, case .identifier("selector") = node.macro.tokenKind {
+        if case .likeClass = parentDeclScopes.peek(), case .identifier("selector") = node.macro.tokenKind {
             return .visitChildren
         }
         return .skipChildren
     }
 
     override func visit(_ node: ParameterClauseSyntax) -> SyntaxVisitorContinueKind {
-        if case .likeStruct = parentDeclScopes.last {
+        if case .likeStruct = parentDeclScopes.peek() {
             return .visitChildren
         }
         return .skipChildren
     }
 
     override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.append(.skipReferences)
+        parentDeclScopes.push(.skipReferences)
         return .skipChildren
     }
 
     override func visitPost(_ node: ProtocolDeclSyntax) {
-        _ = parentDeclScopes.popLast()
+        parentDeclScopes.pop()
     }
 
     override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.append(.likeStruct(node.identifier.text))
+        parentDeclScopes.push(.likeStruct(node.identifier.text))
         return .visitChildren
     }
 
     override func visitPost(_ node: StructDeclSyntax) {
-        _ = parentDeclScopes.popLast()
+        parentDeclScopes.pop()
     }
 
     override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
         guard let parent = node.parent else {
             return
         }
-        if case .likeClass = parentDeclScopes.last,
+        if case .likeClass = parentDeclScopes.peek(),
            parent.is(GenericArgumentSyntax.self) || parent.is(ReturnClauseSyntax.self) {
             // Type is a generic parameter or the return type of a function.
             return
@@ -191,7 +191,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visit(_ node: TypeAnnotationSyntax) -> SyntaxVisitorContinueKind {
-        guard case .likeStruct = parentDeclScopes.last else {
+        guard case .likeStruct = parentDeclScopes.peek() else {
             return .skipChildren
         }
         if let varDecl = node.parent?.parent?.parent?.as(VariableDeclSyntax.self) {
@@ -208,14 +208,14 @@ private class Visitor: ViolationsSyntaxVisitor {
             // Variable declaration is a computed property.
             return .visitChildren
         }
-        if case .handleReferences = variableDeclScopes.last {
+        if case .handleReferences = variableDeclScopes.peek() {
             return .visitChildren
         }
         return .skipChildren
     }
 
     private func addViolation(on node: TokenSyntax) {
-        if let parentName = parentDeclScopes.last?.parentName, node.tokenKind == .identifier(parentName) {
+        if let parentName = parentDeclScopes.peek()?.parentName, node.tokenKind == .identifier(parentName) {
             violations.append(node.positionAfterSkippingLeadingTrivia)
             corrections.append(
                 (start: node.positionAfterSkippingLeadingTrivia, end: node.endPositionBeforeTrailingTrivia)

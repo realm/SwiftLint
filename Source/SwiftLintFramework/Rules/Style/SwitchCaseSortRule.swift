@@ -382,6 +382,30 @@ private let examples: (triggering: [Example], nonTriggering: [Example], correcti
         }
         """)
     )
+    triggering.append(
+        Example(#"""
+        ↓switch foo {
+        case "c \(bar)": // bar is a variable
+            break
+        case "a":
+            break
+        case "b":
+            break
+        }
+        """#)
+    )
+    nonTriggering.append(
+        Example(#"""
+        switch foo {
+        case "a":
+            break
+        case "b":
+            break
+        case "c \(bar)": // bar is a variable
+            break
+        }
+        """#)
+    )
 
     let corrections: [Example: Example] = {
         var result: [Example: Example] = [:]

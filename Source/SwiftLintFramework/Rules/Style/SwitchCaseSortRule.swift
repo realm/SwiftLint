@@ -101,8 +101,8 @@ private func sort(_ cases: SwitchCaseListSyntax) -> SwitchCaseListSyntax {
         }
         // if it's a case statement with multiple items sort them inside first
         if case let .case(caseLabelSyntax) = caseSyntax.label,
-                    !caseLabelSyntax.caseItems.isEmpty {
-        elements.append(.switchCase(caseSyntax.with(\.label, .case(sort(caseLabelSyntax)))))
+           !caseLabelSyntax.caseItems.isEmpty {
+            elements.append(.switchCase(caseSyntax.with(\.label, .case(sort(caseLabelSyntax)))))
         } else { // default or single cases
             elements.append(caseListElement)
         }
@@ -330,6 +330,54 @@ private let examples: (triggering: [Example], nonTriggering: [Example], correcti
         case .d:
             break
         case default:
+            break
+        }
+        """)
+    )
+//    triggering.append(
+//        Example("""
+//        ↓switch foo {
+//        case .d:
+//            break
+//        case default:
+//            break
+//        case .a:
+//            break
+//        }
+//        """)
+//    )
+//    nonTriggering.append(
+//        Example("""
+//        switch foo {
+//        case .a:
+//            break
+//        case .d:
+//            break
+//        case default:
+//            break
+//        }
+//        """)
+//    )
+    triggering.append(
+        Example("""
+        ↓switch foo {
+        case "c":
+            break
+        case "a":
+            break
+        case "b":
+            break
+        }
+        """)
+    )
+    nonTriggering.append(
+        Example("""
+        switch foo {
+        case "a":
+            break
+        case "b":
+            break
+        case "c":
             break
         }
         """)

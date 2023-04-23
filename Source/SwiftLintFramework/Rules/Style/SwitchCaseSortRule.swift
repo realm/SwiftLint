@@ -317,7 +317,7 @@ private let examples: (triggering: [Example], nonTriggering: [Example], correcti
             break
         case .a:
             break
-        case default:
+        default:
             break
         }
         """)
@@ -329,17 +329,18 @@ private let examples: (triggering: [Example], nonTriggering: [Example], correcti
             break
         case .d:
             break
-        case default:
+        default:
             break
         }
         """)
     )
 //    triggering.append(
+//        // this is a compiler error, so need to handle it: Additional 'case' blocks cannot appear after the 'default' block of a 'switch'
 //        Example("""
 //        ↓switch foo {
 //        case .d:
 //            break
-//        case default:
+//        default:
 //            break
 //        case .a:
 //            break
@@ -353,7 +354,7 @@ private let examples: (triggering: [Example], nonTriggering: [Example], correcti
 //            break
 //        case .d:
 //            break
-//        case default:
+//        default:
 //            break
 //        }
 //        """)

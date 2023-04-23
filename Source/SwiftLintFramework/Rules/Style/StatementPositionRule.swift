@@ -150,7 +150,7 @@ private extension StatementPositionRule {
                 if match.range(at: 3).length == 0 {
                     return match
                 }
-                
+
                 // Only if there is no non-space prefix,
                 // check equal indentation condition
                 if match.range(at: 1).length == 0 {
@@ -162,7 +162,7 @@ private extension StatementPositionRule {
                         return nil
                     }
                 }
-                
+
                 return match
             }
     }

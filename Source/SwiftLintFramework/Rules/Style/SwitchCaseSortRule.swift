@@ -134,7 +134,7 @@ private func sortableName(for caseItemSyntax: CaseItemSyntax) -> String? {
                 switch segment {
                 // ignore interpolation and join the string literals
                 case let .stringSegment(segment):
-                    return segment.content.text
+                    return segment.content.text.removingCommonLeadingWhitespaceFromLines()
                 case .expressionSegment: // string interpolation part
                     return ""
                 }
@@ -402,6 +402,30 @@ private let examples: (triggering: [Example], nonTriggering: [Example], correcti
         case "b":
             break
         case "c \(bar)": // bar is a variable
+            break
+        }
+        """#)
+    )
+    triggering.append(
+        Example(#"""
+        ↓switch foo {
+        case "\(bar) c": // bar is a variable
+            break
+        case "a":
+            break
+        case "b":
+            break
+        }
+        """#)
+    )
+    nonTriggering.append(
+        Example(#"""
+        switch foo {
+        case "a":
+            break
+        case "b":
+            break
+        case "\(bar) c": // bar is a variable
             break
         }
         """#)

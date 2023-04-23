@@ -44,6 +44,11 @@
   subclasses.  
   [AndrewDMontgomery](https://github.com/andrewdmontgomery)
   [#4875](https://github.com/realm/SwiftLint/pull/4875)
+  
+* Allow one-line statements for the uncuddled mode 
+  in the `statement_position` rule.  
+  [enebin](https://github.com/enebin)
+  [#4632](https://github.com/realm/SwiftLint/issues/4632)
 
 #### Bug Fixes
 

@@ -239,14 +239,6 @@ Add SwiftLint to a target using the `plugins` parameter.
 ),
 ```
 
-
-### AppCode
-
-To integrate SwiftLint with AppCode, install
-[this plugin](https://plugins.jetbrains.com/plugin/9175) and configure
-SwiftLint's installed path in the plugin's preferences.
-The `fix` action is available via `⌥⏎`.
-
 ### Visual Studio Code
 
 To integrate SwiftLint with [vscode](https://code.visualstudio.com), install the

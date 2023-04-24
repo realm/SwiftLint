@@ -107,6 +107,78 @@ enum SwitchCaseSortRuleExamples {
             }
             """)
         )
+        triggering.append(
+            Example("""
+            ↓switch foo {
+            case Action.d:
+                break
+            case .a:
+                break
+            default:
+                break
+            }
+            """)
+        )
+        nonTriggering.append(
+            Example("""
+            switch foo {
+            case .a:
+                break
+            case Action.d:
+                break
+            default:
+                break
+            }
+            """)
+        )
+        triggering.append(
+            Example("""
+            ↓switch foo {
+            case let .b(associated):
+                break
+            case let .a(associated):
+                break
+            case let .c(associated):
+                break
+            }
+            """)
+        )
+        nonTriggering.append(
+            Example("""
+            switch foo {
+            case let .a(associated):
+                break
+            case let .b(associated):
+                break
+            case let .c(associated):
+                break
+            }
+            """)
+        )
+        triggering.append(
+            Example("""
+            ↓switch foo {
+            case let Action.b(associated):
+                break
+            case let .a(associated):
+                break
+            case let .c(associated):
+                break
+            }
+            """)
+        )
+        nonTriggering.append(
+            Example("""
+            switch foo {
+            case let .a(associated):
+                break
+            case let Action.b(associated):
+                break
+            case let .c(associated):
+                break
+            }
+            """)
+        )
         //    triggering.append(
         //        // this is a compiler error, no need to handle it:
         //        // Additional 'case' blocks cannot appear after the 'default' block of a 'switch'

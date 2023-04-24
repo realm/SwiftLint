@@ -123,33 +123,44 @@ private func sort(_ caseLabel: SwitchCaseLabelSyntax) -> SwitchCaseLabelSyntax {
     return caseLabel.with(\.caseItems, CaseItemListSyntax(sortedItems))
 }
 
+private func sortableName(for expressionPattern: ExpressionPatternSyntax) -> String? {
+    if let memberAccessExpression = expressionPattern.expression
+        .as(MemberAccessExprSyntax.self) {
+        return memberAccessExpression.name.text
+    } else if let stringLiteralExpression = expressionPattern.expression
+        .as(StringLiteralExprSyntax.self) {
+        let segments = stringLiteralExpression.segments.map { segment in
+            switch segment {
+            // ignore interpolation and join the string literals
+            case let .stringSegment(segment):
+                return segment.content.text.removingCommonLeadingWhitespaceFromLines()
+            case .expressionSegment: // string interpolation part
+                return ""
+            }
+        }.joined()
+        return segments.isEmpty ? nil : segments
+    } else if let integerExpression = expressionPattern.expression
+        .as(IntegerLiteralExprSyntax.self) {
+        return integerExpression.digits.text
+    } else if let floatExpression = expressionPattern.expression
+        .as(FloatLiteralExprSyntax.self) {
+        return floatExpression.floatingDigits.text
+    } else if let identifierExpression = expressionPattern.expression
+        .as(IdentifierExprSyntax.self) {
+        return identifierExpression.identifier.text
+    } else if let functionCall = expressionPattern.expression.as(FunctionCallExprSyntax.self),
+              let memberAccess = functionCall.calledExpression.as(MemberAccessExprSyntax.self) {
+        return memberAccess.name.text
+    }
+    return nil
+}
+
 private func sortableName(for caseItemSyntax: CaseItemSyntax) -> String? {
     if let expressionPattern = caseItemSyntax.pattern.as(ExpressionPatternSyntax.self) {
-        if let memberAccessExpression = expressionPattern.expression
-            .as(MemberAccessExprSyntax.self) {
-            return memberAccessExpression.name.text
-        } else if let stringLiteralExpression = expressionPattern.expression
-            .as(StringLiteralExprSyntax.self) {
-            let segments = stringLiteralExpression.segments.map { segment in
-                switch segment {
-                // ignore interpolation and join the string literals
-                case let .stringSegment(segment):
-                    return segment.content.text.removingCommonLeadingWhitespaceFromLines()
-                case .expressionSegment: // string interpolation part
-                    return ""
-                }
-            }.joined()
-            return segments.isEmpty ? nil : segments
-        } else if let integerExpression = expressionPattern.expression
-            .as(IntegerLiteralExprSyntax.self) {
-            return integerExpression.digits.text
-        } else if let floatExpression = expressionPattern.expression
-            .as(FloatLiteralExprSyntax.self) {
-            return floatExpression.floatingDigits.text
-        } else if let identifierExpression = expressionPattern.expression
-            .as(IdentifierExprSyntax.self) {
-            return identifierExpression.identifier.text
-        }
+        return sortableName(for: expressionPattern)
+    } else if let valueExpression = caseItemSyntax.pattern.as(ValueBindingPatternSyntax.self)?.valuePattern
+        .as(ExpressionPatternSyntax.self) {
+        return sortableName(for: valueExpression)
     }
     return nil
 }

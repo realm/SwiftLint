@@ -837,7 +837,21 @@ only configurable rule list, there are no equivalents for <code>disabled_rules</
 
 <p>You can also use environment variables in your configuration file,
 by using <code>${SOME_VARIABLE}</code> in a string.</p>
-<h4 id='defining-custom-rules' class='heading'>Defining Custom Rules</h4>
+<h3 id='defining-custom-rules' class='heading'>Defining Custom Rules</h3>
+
+<p>In addition to the rules that the main SwiftLint project ships with, SwiftLint
+can also run two types of custom rules that you can define yourself in your own
+projects:</p>
+<h4 id='1-swift-custom-rules' class='heading'>1. Swift Custom Rules</h4>
+
+<p>These rules are written the same way as the Swift-based rules that ship with
+SwiftLint so they&rsquo;re fast, accurate, can leverage SwiftSyntax, can be unit
+tested, and more.</p>
+
+<p>Using these requires building SwiftLint with Bazel as described in
+<a href="https://vimeo.com/820572803">this video</a> or its associated code in
+<a href="https://github.com/jpsim/swiftlint-bazel-example">github.com/jpsim/swiftlint-bazel-example</a>.</p>
+<h4 id='2-regex-custom-rules' class='heading'>2. Regex Custom Rules</h4>
 
 <p>You can define custom regex-based rules in your configuration file using the
 following syntax:</p>
@@ -903,6 +917,9 @@ are all the possible syntax kinds:</p>
 
 <p>If using custom rules in combination with <code>only_rules</code>, make sure to add
 <code><a href="custom_rules.html">custom_rules</a></code> as an item under <code>only_rules</code>.</p>
+
+<p>Unlike Swift custom rules, you can use official SwiftLint builds
+(e.g. from Homebrew) to run regex custom rules.</p>
 <h3 id='auto-correct' class='heading'>Auto-correct</h3>
 
 <p>SwiftLint can automatically correct certain violations. Files on disk are

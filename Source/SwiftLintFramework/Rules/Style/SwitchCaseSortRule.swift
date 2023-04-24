@@ -140,6 +140,12 @@ private func sortableName(for caseItemSyntax: CaseItemSyntax) -> String? {
                 }
             }.joined()
             return segments.isEmpty ? nil : segments
+        } else if let integerExpression = expressionPattern.expression
+            .as(IntegerLiteralExprSyntax.self) {
+            return integerExpression.digits.text
+        } else if let floatExpression = expressionPattern.expression
+            .as(FloatLiteralExprSyntax.self) {
+            return floatExpression.floatingDigits.text
         } else if let identifierExpression = expressionPattern.expression
             .as(IdentifierExprSyntax.self) {
             return identifierExpression.identifier.text
@@ -335,7 +341,8 @@ private let examples: (triggering: [Example], nonTriggering: [Example], correcti
         """)
     )
 //    triggering.append(
-//        // this is a compiler error, so need to handle it: Additional 'case' blocks cannot appear after the 'default' block of a 'switch'
+//        // this is a compiler error, so need to handle it: Additional 'case' blocks cannot appear after the 'default'
+//        /block of a 'switch'
 //        Example("""
 //        ↓switch foo {
 //        case .d:
@@ -430,6 +437,54 @@ private let examples: (triggering: [Example], nonTriggering: [Example], correcti
             break
         }
         """#)
+    )
+    triggering.append(
+        Example("""
+        ↓switch foo {
+        case 2:
+            break
+        case 1:
+            break
+        case 3:
+            break
+        }
+        """)
+    )
+    nonTriggering.append(
+        Example("""
+        switch foo {
+        case 1:
+            break
+        case 2:
+            break
+        case 3:
+            break
+        }
+        """)
+    )
+    triggering.append(
+        Example("""
+        ↓switch foo {
+        case 2.2:
+            break
+        case 1.1:
+            break
+        case 3.3:
+            break
+        }
+        """)
+    )
+    nonTriggering.append(
+        Example("""
+        switch foo {
+        case 1.1:
+            break
+        case 2.2:
+            break
+        case 3.3:
+            break
+        }
+        """)
     )
 
     let corrections: [Example: Example] = zip(triggering, nonTriggering).reduce(into: [:]) { result, pair in

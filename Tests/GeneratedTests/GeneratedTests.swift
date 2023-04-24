@@ -740,6 +740,12 @@ class NimbleOperatorRuleGeneratedTests: XCTestCase {
     }
 }
 
+class NoConstantConditionRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NoConstantConditionRule.description)
+    }
+}
+
 class NoExtensionAccessModifierRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoExtensionAccessModifierRule.description)

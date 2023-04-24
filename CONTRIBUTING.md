@@ -1,8 +1,11 @@
-## Tutorial
+## Tutorials
 
 If you'd like to write a SwiftLint rule but aren't sure how to start,
 please watch and follow along with
 [this video tutorial](https://vimeo.com/819268038).
+
+To learn how to write custom rules in your own projects, you can watch
+and follow along with [this video tutorial](https://vimeo.com/820572803).
 
 ## Pull Requests
 

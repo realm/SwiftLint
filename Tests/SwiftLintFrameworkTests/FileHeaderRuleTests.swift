@@ -190,6 +190,7 @@ class FileHeaderRuleTests: XCTestCase {
 
         // Non triggering tests
         XCTAssert(try validate(fileName: "FileHeaderEmpty.swift", using: configuration).isEmpty)
+        XCTAssert(try validate(fileName: "DocumentedType.swift", using: configuration).isEmpty)
 
         // Triggering tests
         XCTAssertEqual(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration).count, 1)

@@ -46,7 +46,7 @@
   [#4875](https://github.com/realm/SwiftLint/pull/4875)
 
 * Adds `sorted_switch_cases` rule which warns when switch cases are not 
-  alphabetically sorted, and sorts them as correction.
+  alphabetically sorted, and sorts them as correction.  
   [atacan](https://github.com/atacan)
 
 #### Bug Fixes

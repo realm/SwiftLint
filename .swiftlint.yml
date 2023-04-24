@@ -48,6 +48,7 @@ disabled_rules:
   - switch_case_on_newline
   - trailing_closure
   - type_contents_order
+  - type_member_order
   - unused_capture_list
   - vertical_whitespace_between_cases
 

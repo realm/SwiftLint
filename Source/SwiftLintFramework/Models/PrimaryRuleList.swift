@@ -201,6 +201,7 @@ let builtInRules: [Rule.Type] = [
     TrailingWhitespaceRule.self,
     TypeBodyLengthRule.self,
     TypeContentsOrderRule.self,
+    TypeMemberOrderRule.self,
     TypeNameRule.self,
     TypesafeArrayInitRule.self,
     UnavailableConditionRule.self,

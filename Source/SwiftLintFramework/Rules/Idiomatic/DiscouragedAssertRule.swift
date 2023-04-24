@@ -1,8 +1,6 @@
 import SwiftSyntax
 
 struct DiscouragedAssertRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    // MARK: - Properties
-
     var configuration = SeverityConfiguration(.warning)
 
     static let description = RuleDescription(
@@ -24,10 +22,6 @@ struct DiscouragedAssertRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderR
             Example(#"↓assert(   false    , "foobar")"#)
         ]
     )
-
-    // MARK: - Life cycle
-
-    // MARK: - Public
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)

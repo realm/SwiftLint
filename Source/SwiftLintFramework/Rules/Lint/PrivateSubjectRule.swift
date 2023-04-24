@@ -1,8 +1,6 @@
 import SwiftSyntax
 
 struct PrivateSubjectRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    // MARK: - Properties
-
     var configuration = SeverityConfiguration(.warning)
 
     static let description = RuleDescription(
@@ -13,10 +11,6 @@ struct PrivateSubjectRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
         nonTriggeringExamples: PrivateSubjectRuleExamples.nonTriggeringExamples,
         triggeringExamples: PrivateSubjectRuleExamples.triggeringExamples
     )
-
-    // MARK: - Life cycle
-
-    // MARK: - Public
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)

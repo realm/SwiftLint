@@ -1,8 +1,6 @@
 import SwiftSyntax
 
 struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    // MARK: - Properties
-
     var configuration = BalancedXCTestLifecycleConfiguration()
 
     static let description = RuleDescription(
@@ -106,14 +104,12 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
         ]
     )
 
-    // MARK: - Life cycle
-
-    // MARK: - Public
-
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate, testParentClasses: configuration.testParentClasses)
     }
 }
+
+// MARK: - Private
 
 private extension BalancedXCTestLifecycleRule {
     final class Visitor: ViolationsSyntaxVisitor {
@@ -152,8 +148,6 @@ private extension BalancedXCTestLifecycleRule {
         }
     }
 }
-
-// MARK: - Private
 
 private enum XCTMethod {
     case setUp

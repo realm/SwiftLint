@@ -108,7 +108,7 @@ enum SwitchCaseSortRuleExamples {
             """)
         )
         //    triggering.append(
-        //        // this is a compiler error, so need to handle it:
+        //        // this is a compiler error, no need to handle it:
         //        // Additional 'case' blocks cannot appear after the 'default' block of a 'switch'
         //        Example("""
         //        ↓switch foo {

@@ -43,6 +43,7 @@ disabled_rules:
   - required_deinit
   - self_binding
   - sorted_enum_cases
+  - sorted_switch_cases
   - strict_fileprivate
   - superfluous_else
   - switch_case_on_newline

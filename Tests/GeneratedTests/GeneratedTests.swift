@@ -1124,6 +1124,12 @@ class SwitchCaseOnNewlineRuleGeneratedTests: XCTestCase {
     }
 }
 
+class SwitchCaseSortRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(SwitchCaseSortRule.description)
+    }
+}
+
 class SyntacticSugarRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SyntacticSugarRule.description)

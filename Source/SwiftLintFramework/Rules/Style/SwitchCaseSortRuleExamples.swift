@@ -107,32 +107,32 @@ enum SwitchCaseSortRuleExamples {
             }
             """)
         )
-    //    triggering.append(
-    //        // this is a compiler error, so need to handle it: Additional 'case' blocks cannot appear after the 'default'
-    //        /block of a 'switch'
-    //        Example("""
-    //        ↓switch foo {
-    //        case .d:
-    //            break
-    //        default:
-    //            break
-    //        case .a:
-    //            break
-    //        }
-    //        """)
-    //    )
-    //    nonTriggering.append(
-    //        Example("""
-    //        switch foo {
-    //        case .a:
-    //            break
-    //        case .d:
-    //            break
-    //        default:
-    //            break
-    //        }
-    //        """)
-    //    )
+        //    triggering.append(
+        //        // this is a compiler error, so need to handle it:
+        //        // Additional 'case' blocks cannot appear after the 'default' block of a 'switch'
+        //        Example("""
+        //        ↓switch foo {
+        //        case .d:
+        //            break
+        //        default:
+        //            break
+        //        case .a:
+        //            break
+        //        }
+        //        """)
+        //    )
+        //    nonTriggering.append(
+        //        Example("""
+        //        switch foo {
+        //        case .a:
+        //            break
+        //        case .d:
+        //            break
+        //        default:
+        //            break
+        //        }
+        //        """)
+        //    )
         triggering.append(
             Example("""
             ↓switch foo {
@@ -265,5 +265,4 @@ enum SwitchCaseSortRuleExamples {
 
         return (triggering, nonTriggering, corrections)
     }()
-
 }

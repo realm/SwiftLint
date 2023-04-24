@@ -556,7 +556,23 @@ reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, codeclimate, ju
 You can also use environment variables in your configuration file,
 by using `${SOME_VARIABLE}` in a string.
 
-#### Defining Custom Rules
+### Defining Custom Rules
+
+In addition to the rules that the main SwiftLint project ships with, SwiftLint
+can also run two types of custom rules that you can define yourself in your own
+projects:
+
+#### 1. Swift Custom Rules
+
+These rules are written the same way as the Swift-based rules that ship with
+SwiftLint so they're fast, accurate, can leverage SwiftSyntax, can be unit
+tested, and more.
+
+Using these requires building SwiftLint with Bazel as described in
+[this video](https://vimeo.com/820572803) or its associated code in
+[github.com/jpsim/swiftlint-bazel-example](https://github.com/jpsim/swiftlint-bazel-example).
+
+#### 2. Regex Custom Rules
 
 You can define custom regex-based rules in your configuration file using the
 following syntax:
@@ -620,6 +636,9 @@ which match to `keyword` and `identifier` in the above list.
 
 If using custom rules in combination with `only_rules`, make sure to add
 `custom_rules` as an item under `only_rules`.
+
+Unlike Swift custom rules, you can use official SwiftLint builds
+(e.g. from Homebrew) to run regex custom rules.
 
 ### Auto-correct
 

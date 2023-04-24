@@ -36,12 +36,14 @@ private extension SwitchCaseSortRule {
             }
 
             let caseNamesToSort = node.cases.compactMap { caseListSyntax -> String? in
+                // only sort normal switch cases, not the ones with #if...#endif
                 guard case let .switchCase(caseSyntax) = caseListSyntax,
                       case let .case(caseLabelSyntax) = caseSyntax.label,
                       !caseLabelSyntax.caseItems.isEmpty else {
                     return nil
                 }
 
+                // sort the multi-item case in itself, then compare the first item with other cases
                 let caseNames = caseLabelSyntax.caseItems.compactMap(sortableName)
                 let caseNamesSorted = caseNames.sorted()
                 if caseNames != caseNamesSorted {
@@ -81,9 +83,7 @@ private extension SwitchCaseSortRule {
             if node.cases.description != newCases.description {
                 var newNode = node
                 newNode.cases = newCases
-                print("🦜", node, "\n", newNode)
                 correctionPositions.append(node.switchKeyword.positionAfterSkippingLeadingTrivia)
-                print("📍", correctionPositions)
                 return super.visit(newNode)
             }
 

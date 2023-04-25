@@ -12,17 +12,17 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, O
         kind: .style,
         nonTriggeringExamples: [
             Example("if let self = self { return }"),
-            Example("guard let self = self else else { return }"),
+            Example("guard let self = self else { return }"),
             Example("if let this = this { return }"),
-            Example("guard let this = this else else { return }"),
+            Example("guard let this = this else { return }"),
             Example("if let this = self { return }", configuration: ["bind_identifier": "this"]),
-            Example("guard let this = self else else { return }", configuration: ["bind_identifier": "this"])
+            Example("guard let this = self else { return }", configuration: ["bind_identifier": "this"])
         ],
         triggeringExamples: [
             Example("if let ↓`self` = self { return }"),
-            Example("guard let ↓`self` = self else else { return }"),
+            Example("guard let ↓`self` = self else { return }"),
             Example("if let ↓this = self { return }"),
-            Example("guard let ↓this = self else else { return }"),
+            Example("guard let ↓this = self else { return }"),
             Example("if let ↓self = self { return }", configuration: ["bind_identifier": "this"]),
             Example("guard let ↓self = self else { return }", configuration: ["bind_identifier": "this"]),
             Example("if let ↓self { return }", configuration: ["bind_identifier": "this"]),
@@ -31,12 +31,12 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, O
         corrections: [
             Example("if let ↓`self` = self { return }"):
                 Example("if let self = self { return }"),
-            Example("guard let ↓`self` = self else else { return }"):
-                Example("guard let self = self else else { return }"),
+            Example("guard let ↓`self` = self else { return }"):
+                Example("guard let self = self else { return }"),
             Example("if let ↓this = self { return }"):
                 Example("if let self = self { return }"),
-            Example("guard let ↓this = self else else { return }"):
-                Example("guard let self = self else else { return }"),
+            Example("guard let ↓this = self else { return }"):
+                Example("guard let self = self else { return }"),
             Example("if let ↓self = self { return }", configuration: ["bind_identifier": "this"]):
                 Example("if let this = self { return }", configuration: ["bind_identifier": "this"]),
             Example("if let ↓self { return }", configuration: ["bind_identifier": "this"]):

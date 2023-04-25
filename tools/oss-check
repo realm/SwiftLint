@@ -303,7 +303,6 @@ end
   Repo.new('PocketCasts', 'Automattic/pocket-casts-ios'),
   Repo.new('Quick', 'Quick/Quick'),
   Repo.new('Realm', 'realm/realm-swift'),
-  Repo.new('SourceKitten', 'jpsim/SourceKitten'),
   Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
   Repo.new('Swift', 'apple/swift'),
   Repo.new('VLC', 'videolan/vlc-ios'),

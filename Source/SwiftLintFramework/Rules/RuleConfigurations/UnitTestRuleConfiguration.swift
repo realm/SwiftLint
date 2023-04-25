@@ -1,18 +1,18 @@
-public typealias BalancedXCTestLifecycleConfiguration = UnitTestRuleConfiguration
-public typealias EmptyXCTestMethodConfiguration = UnitTestRuleConfiguration
-public typealias SingleTestClassConfiguration = UnitTestRuleConfiguration
-public typealias NoMagicNumbersRuleConfiguration = UnitTestRuleConfiguration
+typealias BalancedXCTestLifecycleConfiguration = UnitTestRuleConfiguration
+typealias EmptyXCTestMethodConfiguration = UnitTestRuleConfiguration
+typealias SingleTestClassConfiguration = UnitTestRuleConfiguration
+typealias NoMagicNumbersRuleConfiguration = UnitTestRuleConfiguration
 
-public struct UnitTestRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    public private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
+struct UnitTestRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)" +
             ", test_parent_classes: \(testParentClasses.sorted())"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -26,7 +26,7 @@ public struct UnitTestRuleConfiguration: SeverityBasedRuleConfiguration, Equatab
         }
     }
 
-    public var severity: ViolationSeverity {
+    var severity: ViolationSeverity {
         return severityConfiguration.severity
     }
 }

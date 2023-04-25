@@ -178,6 +178,9 @@
   This results in errors being silently discarded, which may be unexpected.
   See this forum thread for more details: https://forums.swift.org/t/56066  
   [kylebshr](https://github.com/kylebshr)
+* Adds `grouping` option to the `sorted_imports` rule.  
+  [hiltonc](https://github.com/hiltonc)
+  [#4935](https://github.com/realm/SwiftLint/pull/4935)
 
 #### Bug Fixes
 

@@ -1,29 +1,35 @@
 import Foundation
 import SourceKittenFramework
 
-extension Line {
-    fileprivate var contentRange: NSRange {
+fileprivate extension Line {
+    var contentRange: NSRange {
         return NSRange(location: range.location, length: content.bridge().length)
     }
 
     // `Line` in this rule always contains word import
+    // This method returns contents of line that are before import
+    func importAttributes() -> String {
+        return content[importAttributesRange()].trimmingCharacters(in: .whitespaces)
+    }
+
+    // `Line` in this rule always contains word import
     // This method returns contents of line that are after import
-    private func importModule() -> Substring {
+    func importModule() -> Substring {
         return content[importModuleRange()]
     }
 
-    fileprivate func importModuleRange() -> Range<String.Index> {
+    func importAttributesRange() -> Range<String.Index> {
+        let rangeOfImport = content.range(of: "import")
+        precondition(rangeOfImport != nil)
+        return content.startIndex..<rangeOfImport!.lowerBound
+    }
+
+    func importModuleRange() -> Range<String.Index> {
         let rangeOfImport = content.range(of: "import")
         precondition(rangeOfImport != nil)
         let moduleStart = content.rangeOfCharacter(from: CharacterSet.whitespaces.inverted, options: [],
                                                    range: rangeOfImport!.upperBound..<content.endIndex)
         return moduleStart!.lowerBound..<content.endIndex
-    }
-
-    // Case insensitive comparison of contents of the line
-    // after the word `import`
-    fileprivate static func <= (lhs: Line, rhs: Line) -> Bool {
-        return lhs.importModule().lowercased() <= rhs.importModule().lowercased()
     }
 }
 
@@ -47,88 +53,17 @@ private extension Sequence where Element == Line {
 }
 
 struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = SortedImportsConfiguration()
 
+    private static let examples = SortedImportsRuleExamples.self
     static let description = RuleDescription(
         identifier: "sorted_imports",
         name: "Sorted Imports",
         description: "Imports should be sorted",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("import AAA\nimport BBB\nimport CCC\nimport DDD"),
-            Example("import Alamofire\nimport API"),
-            Example("import labc\nimport Ldef"),
-            Example("import BBB\n// comment\nimport AAA\nimport CCC"),
-            Example("@testable import AAA\nimport   CCC"),
-            Example("import AAA\n@testable import   CCC"),
-            Example("""
-            import EEE.A
-            import FFF.B
-            #if os(Linux)
-            import DDD.A
-            import EEE.B
-            #else
-            import CCC
-            import DDD.B
-            #endif
-            import AAA
-            import BBB
-            """)
-        ],
-        triggeringExamples: [
-            Example("import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC"),
-            Example("import DDD\n// comment\nimport CCC\nimport ↓AAA"),
-            Example("@testable import CCC\nimport   ↓AAA"),
-            Example("import CCC\n@testable import   ↓AAA"),
-            Example("""
-            import FFF.B
-            import ↓EEE.A
-            #if os(Linux)
-            import DDD.A
-            import EEE.B
-            #else
-            import DDD.B
-            import ↓CCC
-            #endif
-            import AAA
-            import BBB
-            """)
-        ],
-        corrections: [
-            Example("import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC"):
-                Example("import AAA\nimport BBB\nimport CCC\nimport ZZZ"),
-            Example("import BBB // comment\nimport ↓AAA"): Example("import AAA\nimport BBB // comment"),
-            Example("import BBB\n// comment\nimport CCC\nimport ↓AAA"):
-                Example("import BBB\n// comment\nimport AAA\nimport CCC"),
-            Example("@testable import CCC\nimport  ↓AAA"): Example("import  AAA\n@testable import CCC"),
-            Example("import CCC\n@testable import  ↓AAA"): Example("@testable import  AAA\nimport CCC"),
-            Example("""
-            import FFF.B
-            import ↓EEE.A
-            #if os(Linux)
-            import DDD.A
-            import EEE.B
-            #else
-            import DDD.B
-            import ↓CCC
-            #endif
-            import AAA
-            import BBB
-            """):
-            Example("""
-            import EEE.A
-            import FFF.B
-            #if os(Linux)
-            import DDD.A
-            import EEE.B
-            #else
-            import CCC
-            import DDD.B
-            #endif
-            import AAA
-            import BBB
-            """)
-        ]
+        nonTriggeringExamples: examples.nonTriggeringExamples,
+        triggeringExamples: examples.triggeringExamples,
+        corrections: examples.corrections
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
@@ -136,7 +71,7 @@ struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule 
         return violatingOffsets(inGroups: groups).map { index -> StyleViolation in
             let location = Location(file: file, characterOffset: index)
             return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
+                                  severity: configuration.severity.severity,
                                   location: location)
         }
     }
@@ -162,7 +97,7 @@ struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule 
         return groups.flatMap { group in
             return zip(group, group.dropFirst()).reduce(into: []) { violatingOffsets, groupPair in
                 let (previous, current) = groupPair
-                let isOrderedCorrectly = previous <= current
+                let isOrderedCorrectly = should(previous, comeBefore: current)
                 if isOrderedCorrectly {
                     return
                 }
@@ -170,6 +105,24 @@ struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule 
                                                         to: current.importModuleRange().lowerBound)
                 violatingOffsets.append(current.range.location + distance)
             }
+        }
+    }
+
+    /// - returns: whether `lhs` should come before `rhs` based on a comparison of the contents of the import lines
+    private func should(_ lhs: Line, comeBefore rhs: Line) -> Bool {
+        switch configuration.grouping {
+        case .attributes:
+            let lhsAttributes = lhs.importAttributes()
+            let rhsAttributes = rhs.importAttributes()
+            if lhsAttributes != rhsAttributes {
+                if lhsAttributes.isEmpty != rhsAttributes.isEmpty {
+                    return rhsAttributes.isEmpty
+                }
+                return lhsAttributes < rhsAttributes
+            }
+            return lhs.importModule().lowercased() <= rhs.importModule().lowercased()
+        case .name:
+            return lhs.importModule().lowercased() <= rhs.importModule().lowercased()
         }
     }
 
@@ -186,7 +139,7 @@ struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule 
         }
 
         let correctedContents = NSMutableString(string: file.contents)
-        for group in groups.map({ $0.sorted(by: <=) }) {
+        for group in groups.map({ $0.sorted(by: should(_:comeBefore:)) }) {
             guard let first = group.first?.contentRange else {
                 continue
             }

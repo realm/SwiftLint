@@ -46,7 +46,7 @@ internal extension Configuration {
                     onlyRulesRuleIdentifiers.contains(type(of: tuple.rule).description.identifier)
                 }.map { $0.rule }
 
-            case var .default(disabledRuleIdentifiers, optInRuleIdentifiers):
+            case var .default(disabledRuleIdentifiers, optInRuleIdentifiers, _):
                 customRulesFilter = { !disabledRuleIdentifiers.contains($0.identifier) }
                 disabledRuleIdentifiers = validate(ruleIds: disabledRuleIdentifiers, valid: validRuleIdentifiers)
                 optInRuleIdentifiers = validate(optInRuleIds: optInRuleIdentifiers, valid: validRuleIdentifiers)
@@ -76,7 +76,7 @@ internal extension Configuration {
 
         lazy var disabledRuleIdentifiers: [String] = {
             switch mode {
-            case let .default(disabled, _):
+            case let .default(disabled, _, disabledRulesForFiles):
                 return validate(ruleIds: disabled, valid: validRuleIdentifiers, silent: true)
                     .sorted(by: <)
 
@@ -148,12 +148,13 @@ internal extension Configuration {
             let validRuleIdentifiers = self.validRuleIdentifiers.union(child.validRuleIdentifiers)
             let newMode: RulesMode
             switch child.mode {
-            case let .default(childDisabled, childOptIn):
+            case let .default(childDisabled, childOptIn, childDisabledRulesForFiles):
                 newMode = mergeDefaultMode(
                     newAllRulesWrapped: newAllRulesWrapped,
                     child: child,
                     childDisabled: childDisabled,
                     childOptIn: childOptIn,
+                    childDisabledRulesForFiles: childDisabledRulesForFiles,
                     validRuleIdentifiers: validRuleIdentifiers
                 )
 
@@ -221,15 +222,17 @@ internal extension Configuration {
             child: RulesWrapper,
             childDisabled: Set<String>,
             childOptIn: Set<String>,
+            childDisabledRulesForFiles: DisabledRulesForFiles,
             validRuleIdentifiers: Set<String>
         ) -> RulesMode {
             let childDisabled = child.validate(ruleIds: childDisabled, valid: validRuleIdentifiers)
             let childOptIn = child.validate(optInRuleIds: childOptIn, valid: validRuleIdentifiers)
 
             switch mode { // Switch parent's mode. Child is in default mode.
-            case var .default(disabled, optIn):
+            case var .default(disabled, optIn, disabledRulesForFiles):
                 disabled = validate(ruleIds: disabled, valid: validRuleIdentifiers)
                 optIn = child.validate(optInRuleIds: optIn, valid: validRuleIdentifiers)
+                disabledRulesForFiles = disabledRulesForFiles.merging(childDisabledRulesForFiles) { _, new in new }
 
                 // Only use parent disabled / optIn if child config doesn't tell the opposite
                 return .default(
@@ -240,7 +243,8 @@ internal extension Configuration {
                     optIn: Set(childOptIn).union(Set(optIn.filter { !childDisabled.contains($0) }))
                         .filter {
                             isOptInRule($0, allRulesWrapped: newAllRulesWrapped)
-                        }
+                        },
+                    disabledRulesForFiles: disabledRulesForFiles
                 )
 
             case var .only(onlyRules):
@@ -277,7 +281,8 @@ internal extension Configuration {
                             !childDisabled.contains($0)
                             && isOptInRule($0, allRulesWrapped: newAllRulesWrapped)
                         }
-                    )
+                    ),
+                    disabledRulesForFiles: childDisabledRulesForFiles
                 )
             }
         }

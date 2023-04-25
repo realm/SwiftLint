@@ -85,10 +85,23 @@ private extension Rule {
             ruleTime = nil
         }
 
+        let disabledRulesForFiles: DisabledRulesForFiles = {
+            if case .default(_, _, let disabledRulesForFiles) = configuration.rulesMode {
+                return disabledRulesForFiles
+            } else {
+                return .empty
+            }
+        }()
+
         let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
             return (violation, regions.first { $0.contains(violation.location) })
-        }.partitioned { _, region in
-            return region?.isRuleEnabled(self) ?? true
+        }.partitioned { violation, region in
+            if disabledRulesForFiles.isDisabled(ruleIdentifier: violation.ruleIdentifier,
+                                                file: file) {
+                return false
+            } else {
+                return region?.isRuleEnabled(self) ?? true
+            }
         }
 
         let ruleIDs = Self.description.allIdentifiers +

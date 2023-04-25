@@ -51,6 +51,10 @@ disabled_rules:
   - unused_capture_list
   - vertical_whitespace_between_cases
 
+disabled_rules_for_files:
+  function_parameter_count:
+    - \w+\+RulesWrapper.swift
+
 attributes:
   always_on_line_above:
     - "@OptionGroup"

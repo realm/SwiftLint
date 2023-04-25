@@ -1,11 +1,14 @@
 // swiftlint:disable:next blanket_disable_command
 // swiftlint:disable inclusive_language - To ease migration from `whitelist_rules`
 
+import Foundation
+
 extension Configuration {
     // MARK: - Subtypes
     internal enum Key: String, CaseIterable {
         case cachePath = "cache_path"
         case disabledRules = "disabled_rules"
+        case disabledRulesForFiles = "disabled_rules_for_files"
         case enabledRules = "enabled_rules" // deprecated in favor of optInRules
         case excluded = "excluded"
         case included = "included"
@@ -76,7 +79,8 @@ extension Configuration {
             onlyRules: onlyRules,
             optInRules: optInRules,
             disabledRules: disabledRules,
-            analyzerRules: analyzerRules
+            analyzerRules: analyzerRules,
+            disabledRulesForFiles: try Self.getDisabledRulesForFilesIfValid(from: dict) ?? [:]
         )
 
         Self.validateConfiguredRulesAreEnabled(
@@ -101,6 +105,24 @@ extension Configuration {
     // MARK: - Methods: Validations
     private static func validKeys(ruleList: RuleList) -> Set<String> {
         return validGlobalKeys.union(ruleList.allValidIdentifiers())
+    }
+
+    private static func getDisabledRulesForFilesIfValid(from dict: [String: Any]) throws -> DisabledRulesForFiles? {
+        do {
+            if let rawDisabledRulesForFiles = dict[Key.disabledRulesForFiles.rawValue] {
+                if let disabledRulesForFiles = rawDisabledRulesForFiles as? [String: [String]] {
+                    return Dictionary(uniqueKeysWithValues: try disabledRulesForFiles.map { key, values in
+                        (key, try values.map { try NSRegularExpression(pattern: $0) })
+                    })
+                }
+            }
+        } catch {
+            throw ConfigurationError.generic(
+                "Unable to parse disabled rules for files regexp: \(error.localizedDescription)"
+            )
+        }
+
+        return nil
     }
 
     private static func getIndentationLogIfInvalid(from dict: [String: Any]) -> IndentationStyle {
@@ -193,7 +215,7 @@ extension Configuration {
                         "'\(Key.onlyRules.rawValue)'.")
                 }
 
-            case let .default(disabled: disabledRules, optIn: optInRules):
+            case let .default(disabled: disabledRules, optIn: optInRules, disabledRulesForFiles: _):
                 if rule is OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {
                     queuedPrintError("\(message), but it is not enabled on " +
                         "'\(Key.optInRules.rawValue)'.")

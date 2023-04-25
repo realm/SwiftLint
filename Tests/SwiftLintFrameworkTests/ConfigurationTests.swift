@@ -292,7 +292,7 @@ class ConfigurationTests: SwiftLintTestCase {
         let expectedFilenames = [
             "DirectoryLevel1.swift",
             "Level0.swift", "Level1.swift", "Level2.swift", "Level3.swift",
-            "Main.swift", "Sub.swift"
+            "Main.swift", "Sub.swift", "TooManyParameters.swift"
         ]
 
         XCTAssertEqual(Set(expectedFilenames), Set(filenames))
@@ -429,7 +429,12 @@ extension ConfigurationTests {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(
             excludedPaths: [
-                "Level1/Level2", "Directory.swift", "ChildConfig", "ParentConfig", "NestedConfig"
+                "Level1/Level2",
+                "Directory.swift",
+                "ChildConfig",
+                "ParentConfig",
+                "NestedConfig",
+                "IntentionalViolations"
             ]
         )
         let paths = configuration.lintablePaths(inPath: ".",
@@ -443,7 +448,12 @@ extension ConfigurationTests {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(
             excludedPaths: [
-                "Level1", "Directory.swift/DirectoryLevel1.swift", "ChildConfig", "ParentConfig", "NestedConfig"
+                "Level1",
+                "Directory.swift/DirectoryLevel1.swift",
+                "ChildConfig",
+                "ParentConfig",
+                "NestedConfig",
+                "IntentionalViolations"
             ]
         )
         let paths = configuration.lintablePaths(inPath: ".",

@@ -8,8 +8,8 @@ Pod::Spec.new do |s|
   s.source                    = { http: "#{s.homepage}/releases/download/#{s.version}/portable_swiftlint.zip" }
   s.preserve_paths            = '*'
   s.exclude_files             = '**/file.zip'
-  s.ios.deployment_target     = '9.0'
-  s.macos.deployment_target   = '10.10'
-  s.tvos.deployment_target    = '9.0'
-  s.watchos.deployment_target = '2.0'
+  s.ios.deployment_target     = '11.0'
+  s.macos.deployment_target   = '10.13'
+  s.tvos.deployment_target    = '11.0'
+  s.watchos.deployment_target = '7.0'
 end

@@ -101,7 +101,6 @@ public protocol ConfigurationProviderRule: Rule {
 }
 
 /// A rule that can correct violations.
-@_spi(TestHelper)
 public protocol CorrectableRule: Rule {
     /// Attempts to correct the violations to this rule in the specified file.
     ///

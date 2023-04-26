@@ -1,5 +1,4 @@
 /// A value describing a SwiftLint violation that was corrected.
-@_spi(TestHelper)
 public struct Correction: Equatable {
     /// The description of the rule for which this correction was applied.
     public let ruleDescription: RuleDescription

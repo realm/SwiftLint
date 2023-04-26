@@ -1,3 +1,4 @@
+@testable import SwiftLintCore
 @_spi(TestHelper)
 @testable import SwiftLintFramework
 import SwiftLintTestHelpers

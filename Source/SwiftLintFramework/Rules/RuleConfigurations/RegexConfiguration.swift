@@ -1,15 +1,25 @@
 import Foundation
 import SourceKittenFramework
 
+/// A rule configuration used for defining custom rules in yaml.
 public struct RegexConfiguration: SeverityBasedRuleConfiguration, Hashable, CacheDescriptionProvider {
+    /// The identifier for this custom rule.
     public let identifier: String
+    /// The name for this custom rule.
     public var name: String?
+    /// The message to be presented when producing violations.
     public var message = "Regex matched"
+    /// The regular expression to apply to trigger violations for this custom rule.
     public var regex: NSRegularExpression!
+    /// Regular expressions to include when matching the file path.
     public var included: [NSRegularExpression] = []
+    /// Regular expressions to exclude when matching the file path.
     public var excluded: [NSRegularExpression] = []
+    /// The syntax kinds to exclude from matches. If the regex matched syntax kinds from this list, it would
+    /// be ignored and not count as a rule violation.
     public var excludedMatchKinds = Set<SyntaxKind>()
     public var severityConfiguration = SeverityConfiguration(.warning)
+    /// The index of the regex capture group to match.
     public var captureGroup: Int = 0
 
     public var consoleDescription: String {
@@ -35,11 +45,15 @@ public struct RegexConfiguration: SeverityBasedRuleConfiguration, Hashable, Cach
         queuedFatalError("Could not serialize regex configuration for cache")
     }
 
+    /// The `RuleDescription` for the custom rule defined here.
     public var description: RuleDescription {
         return RuleDescription(identifier: identifier, name: name ?? identifier,
                                description: "", kind: .style)
     }
 
+    /// Create a `RegexConfiguration` with the specified identifier, with other properties to be set later.
+    ///
+    /// - parameter identifier: The rule identifier to use.
     public init(identifier: String) {
         self.identifier = identifier
     }

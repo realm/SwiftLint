@@ -148,9 +148,6 @@
                 <a class="nav-group-task-link" href="Enums/RuleListError.html">RuleListError</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/SwiftExpressionKind.html">SwiftExpressionKind</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/ViolationSeverity.html">ViolationSeverity</a>
               </li>
             </ul>
@@ -159,28 +156,13 @@
             <a class="nav-group-name-link" href="Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Extensions/EnumDeclSyntax.html">EnumDeclSyntax</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Extensions/FileManager.html">FileManager</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Extensions/String.html">String</a>
+                <a class="nav-group-task-link" href="Extensions/Array.html">Array</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a class="nav-group-name-link" href="Functions.html">Functions</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework16queuedFatalError_4file4lines5NeverOSS_s12StaticStringVSutF">queuedFatalError(_:file:line:)</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework11queuedPrintyyxlF">queuedPrint(_:)</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework16queuedPrintErroryySSF">queuedPrintError(_:)</a>
-              </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework12reporterFrom10identifierAA8Reporter_pXpSS_tF">reporterFrom(identifier:)</a>
               </li>
@@ -199,6 +181,9 @@
                 <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework17AnyCollectingRuleP">AnyCollectingRule</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CacheDescriptionProvider.html">CacheDescriptionProvider</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/CollectingRule.html">CollectingRule</a>
               </li>
               <li class="nav-group-task">
@@ -206,9 +191,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/CorrectableRule.html">CorrectableRule</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/LintableFileManager.html">LintableFileManager</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework9OptInRuleP">OptInRule</a>
@@ -227,6 +209,15 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework17SourceKitFreeRuleP">SourceKitFreeRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SubstitutionCorrectableASTRule.html">SubstitutionCorrectableASTRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SubstitutionCorrectableRule.html">SubstitutionCorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SwiftSyntaxCorrectableRule.html">SwiftSyntaxCorrectableRule</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/SwiftSyntaxRule.html">SwiftSyntaxRule</a>
@@ -253,12 +244,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/Configuration.html">Configuration</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/Configuration/IndentationStyle.html">– IndentationStyle</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/Configuration/RulesMode.html">– RulesMode</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/Correction.html">Correction</a>
@@ -300,7 +285,7 @@
                 <a class="nav-group-task-link" href="Structs/SonarQubeReporter.html">SonarQubeReporter</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/SourceKittenDictionary.html">SourceKittenDictionary</a>
+                <a class="nav-group-task-link" href="Structs/Stack.html">Stack</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/StyleViolation.html">StyleViolation</a>
@@ -349,30 +334,18 @@
 <li><strong>Default configuration:</strong> severity: warning, only_enforce_before_trivial_lines: false</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span>
-  <span class="mi">1</span>
-<span class="p">])</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nf">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>
-    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="p">[</span>
-<span class="mi">1</span><span class="p">,</span>
-<span class="mi">2</span><span class="p">,</span>
-<span class="mi">3</span>
-<span class="p">]</span>
-</code></pre>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span>
     <span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
     <span class="nv">y</span><span class="p">:</span><span class="mi">6</span>
 <span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span>
+  <span class="mi">1</span>
+<span class="p">])</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
   <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
@@ -388,6 +361,18 @@
   <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">mul</span> <span class="o">*=</span> <span class="n">i</span> <span class="p">}</span>
   <span class="k">return</span> <span class="n">mul</span>
 <span class="p">}])</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="p">[</span>
+<span class="mi">1</span><span class="p">,</span>
+<span class="mi">2</span><span class="p">,</span>
+<span class="mi">3</span>
+<span class="p">]</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
   <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
@@ -420,15 +405,19 @@
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
+<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span>
+    <span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="nv">y</span><span class="p">:</span><span class="mi">6</span>
+<span class="err">↓</span>
+<span class="p">)</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span>
   <span class="mi">1</span>
 <span class="err">↓</span>
 <span class="p">])</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nf">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>
-    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-  <span class="p">}</span>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
 <span class="err">↓</span>
 <span class="p">}</span>
 </code></pre>
@@ -436,24 +425,6 @@
   <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
 <span class="err">↓</span>
 
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="p">[</span>
-<span class="mi">1</span><span class="p">,</span>
-<span class="mi">2</span><span class="p">,</span>
-<span class="mi">3</span>
-<span class="err">↓</span>
-<span class="p">]</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span>
-    <span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="nv">y</span><span class="p">:</span><span class="mi">6</span>
-<span class="err">↓</span>
-<span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
-<span class="err">↓</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span><span class="n">foo</span> <span class="p">{</span>
@@ -467,6 +438,20 @@
   <span class="k">return</span> <span class="n">mul</span>
 <span class="err">↓</span>
 <span class="p">}])</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="err">↓</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="p">[</span>
+<span class="mi">1</span><span class="p">,</span>
+<span class="mi">2</span><span class="p">,</span>
+<span class="mi">3</span>
+<span class="err">↓</span>
+<span class="p">]</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
   <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>

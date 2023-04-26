@@ -10,10 +10,11 @@ public struct Correction: Equatable {
         return "\(location) Corrected \(ruleDescription.name)"
     }
 
-    public init (
-        ruleDescription: RuleDescription,
-        location: Location
-    ) {
+    /// Memberwise initializer.
+    ///
+    /// - parameter ruleDescription: The description of the rule for which this correction was applied.
+    /// - parameter location:        The location of the original violation that was corrected.
+    public init(ruleDescription: RuleDescription, location: Location) {
         self.ruleDescription = ruleDescription
         self.location = location
     }

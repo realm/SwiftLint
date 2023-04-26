@@ -206,6 +206,9 @@
                 <a class="nav-group-task-link" href="../Protocols/ConfigurationProviderRule.html">ConfigurationProviderRule</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/CorrectableRule.html">CorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/LintableFileManager.html">LintableFileManager</a>
               </li>
               <li class="nav-group-task">
@@ -257,6 +260,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/Configuration/RulesMode.html">– RulesMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Correction.html">Correction</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/Example.html">Example</a>
@@ -559,7 +565,7 @@ violations for these examples wherever <code>↓</code> markers are located.</p>
                         <p>Pairs of Swift source examples, where keys are examples that trigger violations for this rule, and the values
 are the expected value after applying corrections with the rule.</p>
 
-<p>Rules that aren&rsquo;t correctable (conforming to the <code>CorrectableRule</code> protocol) should leave property empty.</p>
+<p>Rules that aren&rsquo;t correctable (conforming to the <code><a href="../Protocols/CorrectableRule.html">CorrectableRule</a></code> protocol) should leave property empty.</p>
 
 <p>These examples are used for testing purposes if the rule conforms to <code>AutomaticTestableRule</code>. Tests will
 validate that the rule corrects all keys to their corresponding values.</p>

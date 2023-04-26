@@ -13,6 +13,8 @@ documentation: rule_docs/*.md
 hide_unlisted_documentation: true
 custom_categories_unlisted_prefix: ''
 exclude:
+  # TODO: Document extensions
+  - Source/SwiftLintFramework/Extensions/*.swift
   - Source/SwiftLintFramework/Rules/**/*.swift
 custom_categories:
   - name: Rules

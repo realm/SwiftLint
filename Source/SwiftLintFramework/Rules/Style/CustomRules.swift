@@ -1,16 +1,10 @@
 import Foundation
 
-private extension Region {
-    func isRuleDisabled(customRuleIdentifier: String) -> Bool {
-        return disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
-    }
-}
-
 // MARK: - CustomRulesConfiguration
 
 struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     var consoleDescription: String { return "user-defined" }
-    internal var cacheDescription: String {
+    var cacheDescription: String {
         return customRuleConfigurations
             .sorted { $0.identifier < $1.identifier }
             .map { $0.cacheDescription }
@@ -41,7 +35,7 @@ struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionP
 // MARK: - CustomRules
 
 struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
-    internal var cacheDescription: String {
+    var cacheDescription: String {
         return configuration.cacheDescription
     }
 
@@ -91,5 +85,11 @@ struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
                 return !region.isRuleDisabled(customRuleIdentifier: configuration.identifier)
             }
         }
+    }
+}
+
+private extension Region {
+    func isRuleDisabled(customRuleIdentifier: String) -> Bool {
+        return disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
     }
 }

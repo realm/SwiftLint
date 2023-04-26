@@ -86,7 +86,6 @@ swift_library(
     srcs = ["GeneratedTests/GeneratedTests.swift"],
     module_name = "GeneratedTests",
     deps = [
-        "//:SwiftLintFramework",
         ":SwiftLintTestHelpers",
     ],
 )

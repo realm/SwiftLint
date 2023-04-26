@@ -2,15 +2,15 @@
 import SystemConfiguration
 #endif
 
-/// Helper class providing the static helper method `isConnectedToNetwork()`
-internal class Reachability {
+/// Helper enum providing the static var `connectivityStatus`
+enum Reachability {
     enum ConnectivityStatus {
         case connected, disconnected, unknown
     }
 
     /// Returns whether the device is connected to a network, if known.
     /// On Linux, this always evaluates to `nil`.
-    internal static var connectivityStatus: ConnectivityStatus {
+    static var connectivityStatus: ConnectivityStatus {
 #if os(Linux)
         return .unknown
 #else

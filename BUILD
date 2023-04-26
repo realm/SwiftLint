@@ -13,12 +13,9 @@ load(
 # Targets
 
 swift_library(
-    name = "SwiftLintFramework",
-    srcs = glob(
-        ["Source/SwiftLintFramework/**/*.swift"],
-        exclude = ["Source/SwiftLintFramework/Rules/ExcludedFromBazel/ExtraRules.swift"],
-    ) + ["@swiftlint_extra_rules//:extra_rules"],
-    module_name = "SwiftLintFramework",
+    name = "SwiftLintCore",
+    srcs = glob(["Source/SwiftLintCore/**/*.swift"]),
+    module_name = "SwiftLintCore",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_apple_swift_syntax//:optlibs",
@@ -29,6 +26,19 @@ swift_library(
         "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
         "//conditions:default": [":DyldWarningWorkaround"],
     }),
+)
+
+swift_library(
+    name = "SwiftLintFramework",
+    srcs = glob(
+        ["Source/SwiftLintFramework/**/*.swift"],
+        exclude = ["Source/SwiftLintFramework/Rules/ExcludedFromBazel/ExtraRules.swift"],
+    ) + ["@swiftlint_extra_rules//:extra_rules"],
+    module_name = "SwiftLintFramework",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":SwiftLintCore",
+    ],
 )
 
 swift_library(

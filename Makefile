@@ -169,7 +169,7 @@ endif
 	$(eval NEW_VERSION_AND_NAME := $(filter-out $@,$(MAKECMDGOALS)))
 	$(eval NEW_VERSION := $(shell echo $(NEW_VERSION_AND_NAME) | sed 's/:.*//' ))
 	@sed -i '' 's/## Main/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
-	@sed 's/__VERSION__/$(NEW_VERSION)/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
+	@sed 's/__VERSION__/$(NEW_VERSION)/g' tools/Version.swift.template > Source/SwiftLintCore/Models/Version.swift
 	@sed -e '3s/.*/    version = "$(NEW_VERSION)",/' -i '' MODULE.bazel
 	make clean
 	make package

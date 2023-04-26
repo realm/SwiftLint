@@ -1,4 +1,3 @@
-@testable import SwiftLintFramework
 import XCTest
 
 final class StringExtensionTests: SwiftLintTestCase {

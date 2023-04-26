@@ -91,8 +91,10 @@ private extension SwiftLintFile {
         -> [[String: SourceKitRepresentable]] {
         return try byteOffsets.compactMap { offset in
             if isExplicitAccess(at: offset) { return nil }
-            var cursorInfo = try Request.cursorInfo(file: self.path!, offset: offset,
-                                                    arguments: compilerArguments).sendIfNotDisabled()
+            let cursorInfoRequest = Request.cursorInfoWithoutSymbolGraph(
+                file: self.path!, offset: offset, arguments: compilerArguments
+            )
+            var cursorInfo = try cursorInfoRequest.sendIfNotDisabled()
 
             // Accessing a `projectedValue` of a property wrapper (e.g. `self.$foo`) or the property wrapper itself
             // (e.g. `self._foo`) results in an incorrect `key.length` (it does not account for the identifier

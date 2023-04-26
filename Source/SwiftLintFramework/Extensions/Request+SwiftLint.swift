@@ -11,7 +11,7 @@ extension Request {
         return try send()
     }
 
-    static func cursorInfo(file: String, offset: ByteCount, arguments: [String]) -> Request {
+    static func cursorInfoWithoutSymbolGraph(file: String, offset: ByteCount, arguments: [String]) -> Request {
         .customRequest(request: [
             "key.request": UID("source.request.cursorinfo"),
             "key.name": file,

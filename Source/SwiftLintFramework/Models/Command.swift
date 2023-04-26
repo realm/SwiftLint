@@ -45,12 +45,17 @@ public struct Command: Equatable {
         action != .invalid && modifier != .invalid && !ruleIdentifiers.isEmpty
     }
 
+    /// The action (verb) that SwiftLint should perform when interpreting this command.
     internal let action: Action
+    /// The identifiers for the rules associated with this command.
     internal let ruleIdentifiers: Set<RuleIdentifier>
+    /// The line in the source file where this command is defined.
     internal let line: Int
+    /// The character offset within the line in the source file where this command is defined.
     internal let character: Int?
+    /// This command's modifier, if any.
     internal let modifier: Modifier?
-    /// Currently unused but parsed separate from rule identifiers
+    /// The comment following this command's `-` delimiter, if any.
     internal let trailingComment: String?
 
     /// Creates a command based on the specified parameters.

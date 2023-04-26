@@ -43,19 +43,23 @@ let package = Package(
             ]
         ),
         .target(
-            name: "SwiftLintFramework",
+            name: "SwiftLintCore",
             dependencies: [
+                .product(name: "CryptoSwift", package: "CryptoSwift", condition: .when(platforms: [.linux])),
+                .target(name: "DyldWarningWorkaround", condition: .when(platforms: [.macOS])),
                 .product(name: "IDEUtils", package: "swift-syntax"),
                 .product(name: "SourceKittenFramework", package: "SourceKitten"),
+                .product(name: "SwiftOperators", package: "swift-syntax"),
+                .product(name: "SwiftParser", package: "swift-syntax"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
-                .product(name: "SwiftParser", package: "swift-syntax"),
-                .product(name: "SwiftOperators", package: "swift-syntax"),
-                "SwiftyTextTable",
-                .target(name: "DyldWarningWorkaround", condition: .when(platforms: [.macOS])),
-                "Yams",
-                .product(name: "CryptoSwift", package: "CryptoSwift", condition: .when(platforms: [.linux]))
+                .product(name: "SwiftyTextTable", package: "SwiftyTextTable"),
+                .product(name: "Yams", package: "Yams"),
             ]
+        ),
+        .target(
+            name: "SwiftLintFramework",
+            dependencies: ["SwiftLintCore"]
         ),
         .target(name: "DyldWarningWorkaround"),
         .target(

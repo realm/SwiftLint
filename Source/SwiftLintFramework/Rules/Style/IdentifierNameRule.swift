@@ -142,4 +142,12 @@ private extension String {
         let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
         return operators.contains(where: hasPrefix)
     }
+
+    func nameStrippingLeadingUnderscoreIfPrivate(_ dict: SourceKittenDictionary) -> String {
+        if let acl = dict.accessibility,
+            acl.isPrivate && first == "_" {
+            return String(self[index(after: startIndex)...])
+        }
+        return self
+    }
 }

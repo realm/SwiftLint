@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-extension SourceRange {
+public extension SourceRange {
     /// Check if a position is contained within this range.
     ///
     /// - parameter position:          The position to check.

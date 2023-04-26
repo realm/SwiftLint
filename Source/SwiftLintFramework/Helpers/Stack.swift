@@ -1,31 +1,43 @@
 /// A basic stack type implementing the LIFO principle - only the last inserted element can be accessed and removed.
-struct Stack<Element> {
+public struct Stack<Element> {
     private var elements = [Element]()
 
-    var isEmpty: Bool {
+    /// Creates an empty `Stack`.
+    public init() {}
+
+    /// True if the stack has no elements. False otherwise.
+    public var isEmpty: Bool {
         elements.isEmpty
     }
 
-    var count: Int {
+    /// The number of elements in this stack.
+    public var count: Int {
         elements.count
     }
 
-    mutating func push(_ element: Element) {
+    /// Pushes (appends) an element onto the stack.
+    ///
+    /// - parameter element: The element to push onto the stack.
+    public mutating func push(_ element: Element) {
         elements.append(element)
     }
 
+    /// Removes and returns the last element of the stack.
+    ///
+    /// - returns: The last element of the stack if the stack is not empty; otherwise, nil.
     @discardableResult
-    mutating func pop() -> Element? {
+    public mutating func pop() -> Element? {
         elements.popLast()
     }
 
-    func peek() -> Element? {
+    /// Returns the last element of the stack if the stack is not empty; otherwise, nil.
+    public func peek() -> Element? {
         elements.last
     }
 }
 
 extension Stack: CustomDebugStringConvertible where Element == CustomDebugStringConvertible {
-    var debugDescription: String {
+    public var debugDescription: String {
         let intermediateElements = count > 1 ? elements[1 ..< count - 1] : []
         return """
             Stack with \(count) elements:

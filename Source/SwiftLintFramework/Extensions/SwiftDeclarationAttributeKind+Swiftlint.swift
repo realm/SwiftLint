@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-extension SwiftDeclarationAttributeKind {
+public extension SwiftDeclarationAttributeKind {
     static var attributesRequiringFoundation: Set<SwiftDeclarationAttributeKind> {
         return [
             .objc,
@@ -24,7 +24,7 @@ extension SwiftDeclarationAttributeKind {
         case `dynamic`
         case atPrefixed
 
-        init?(rawAttribute: String) {
+        public init?(rawAttribute: String) {
             let allModifierGroups: Set<SwiftDeclarationAttributeKind.ModifierGroup> = [
                 .acl, .setterACL, .mutators, .override, .owned, .atPrefixed, .dynamic, .final, .typeMethods,
                 .required, .convenience, .lazy
@@ -40,7 +40,7 @@ extension SwiftDeclarationAttributeKind {
             }
         }
 
-        var swiftDeclarationAttributeKinds: Set<SwiftDeclarationAttributeKind> {
+        public var swiftDeclarationAttributeKinds: Set<SwiftDeclarationAttributeKind> {
             switch self {
             case .acl:
                 return [
@@ -94,7 +94,7 @@ extension SwiftDeclarationAttributeKind {
             }
         }
 
-        var debugDescription: String {
+        public var debugDescription: String {
             return self.rawValue
         }
     }

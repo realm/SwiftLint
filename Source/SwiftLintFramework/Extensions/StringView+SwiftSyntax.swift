@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-extension StringView {
+public extension StringView {
     /// Converts two absolute positions from SwiftSyntax to a valid `NSRange` if possible.
     ///
     /// - parameter start: Starting position.

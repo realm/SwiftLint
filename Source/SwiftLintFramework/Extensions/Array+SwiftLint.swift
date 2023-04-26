@@ -1,6 +1,6 @@
 import Dispatch
 
-extension Array where Element: Equatable {
+public extension Array where Element: Equatable {
     /// The elements in this array, discarding duplicates after the first one.
     /// Order-preserving.
     var unique: [Element] {
@@ -12,7 +12,7 @@ extension Array where Element: Equatable {
     }
 }
 
-extension Array where Element: Hashable {
+public extension Array where Element: Hashable {
     /// Produces an array containing the passed `obj` value.
     /// If `obj` is an array already, return it.
     /// If `obj` is a set, copy its elements to a new array.
@@ -33,7 +33,7 @@ extension Array where Element: Hashable {
     }
 }
 
-extension Array {
+public extension Array {
     /// Produces an array containing the passed `obj` value.
     /// If `obj` is an array already, return it.
     /// If `obj` is a value of type `Element`, return a single-item array containing it.
@@ -67,8 +67,7 @@ extension Array {
     ///
     /// - returns: The elements failing the `belongsInSecondPartition` test, followed by the elements passing the
     ///            `belongsInSecondPartition` test.
-    @_spi(TestHelper)
-    public func partitioned(by belongsInSecondPartition: (Element) throws -> Bool) rethrows ->
+    func partitioned(by belongsInSecondPartition: (Element) throws -> Bool) rethrows ->
         (first: ArraySlice<Element>, second: ArraySlice<Element>) {
             var copy = self
             let pivot = try copy.partition(by: belongsInSecondPartition)
@@ -80,8 +79,7 @@ extension Array {
     /// - parameter transform: The transformation to apply to each element.
     ///
     /// - returns: The result of applying `transform` on every element and flattening the results.
-    @_spi(TestHelper)
-    public func parallelFlatMap<T>(transform: (Element) -> [T]) -> [T] {
+    func parallelFlatMap<T>(transform: (Element) -> [T]) -> [T] {
         return parallelMap(transform: transform).flatMap { $0 }
     }
 
@@ -110,10 +108,9 @@ extension Array {
     }
 }
 
-extension Collection {
+public extension Collection {
     /// Whether this collection has one or more element.
-    @_spi(TestHelper)
-    public var isNotEmpty: Bool {
+    var isNotEmpty: Bool {
         return !isEmpty
     }
 

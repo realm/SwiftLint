@@ -3,10 +3,10 @@ import SourceKittenFramework
 import SwiftSyntax
 
 // workaround for https://bugs.swift.org/browse/SR-10121 so we can use `Self` in a closure
-protocol SwiftLintSyntaxVisitor: SyntaxVisitor {}
+public protocol SwiftLintSyntaxVisitor: SyntaxVisitor {}
 extension SyntaxVisitor: SwiftLintSyntaxVisitor {}
 
-extension SwiftLintSyntaxVisitor {
+public extension SwiftLintSyntaxVisitor {
     func walk<T, SyntaxType: SyntaxProtocol>(tree: SyntaxType, handler: (Self) -> T) -> T {
 #if DEBUG
         // workaround for stack overflow when running in debug
@@ -44,7 +44,7 @@ extension SwiftLintSyntaxVisitor {
     }
 }
 
-extension SyntaxProtocol {
+public extension SyntaxProtocol {
     func windowsOfThreeTokens() -> [(TokenSyntax, TokenSyntax, TokenSyntax)] {
         Array(tokens(viewMode: .sourceAccurate))
             .windows(ofCount: 3)
@@ -61,7 +61,7 @@ extension SyntaxProtocol {
     }
 }
 
-extension AbsolutePosition {
+public extension AbsolutePosition {
     func isContainedIn(regions: [SourceRange], locationConverter: SourceLocationConverter) -> Bool {
         regions.contains { region in
             region.contains(self, locationConverter: locationConverter)
@@ -69,13 +69,13 @@ extension AbsolutePosition {
     }
 }
 
-extension ByteSourceRange {
+public extension ByteSourceRange {
     func toSourceKittenByteRange() -> ByteRange {
         ByteRange(location: ByteCount(offset), length: ByteCount(length))
     }
 }
 
-extension ClassDeclSyntax {
+public extension ClassDeclSyntax {
     func isXCTestCase(_ testParentClasses: Set<String>) -> Bool {
         guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
             return false
@@ -85,7 +85,7 @@ extension ClassDeclSyntax {
     }
 }
 
-extension ExprSyntax {
+public extension ExprSyntax {
     var asFunctionCall: FunctionCallExprSyntax? {
         if let functionCall = self.as(FunctionCallExprSyntax.self) {
             return functionCall
@@ -99,19 +99,19 @@ extension ExprSyntax {
     }
 }
 
-extension StringLiteralExprSyntax {
+public extension StringLiteralExprSyntax {
     var isEmptyString: Bool {
         segments.onlyElement?.contentLength == .zero
     }
 }
 
-extension TokenKind {
+public extension TokenKind {
     var isEqualityComparison: Bool {
         self == .binaryOperator("==") || self == .binaryOperator("!=")
     }
 }
 
-extension ModifierListSyntax? {
+public extension ModifierListSyntax? {
     var containsLazy: Bool {
         contains(tokenKind: .keyword(.lazy))
     }
@@ -160,26 +160,26 @@ extension ModifierListSyntax? {
     }
 }
 
-extension AttributeSyntax {
+public extension AttributeSyntax {
     var attributeNameText: String {
         attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text ??
             attributeName.description
     }
 }
 
-extension AttributeListSyntax? {
+public extension AttributeListSyntax? {
     func contains(attributeNamed attributeName: String) -> Bool {
         self?.contains { $0.as(AttributeSyntax.self)?.attributeNameText == attributeName } == true
     }
 }
 
-extension TokenKind {
+public extension TokenKind {
     var isUnavailableKeyword: Bool {
         self == .keyword(.unavailable) || self == .identifier("unavailable")
     }
 }
 
-extension VariableDeclSyntax {
+public extension VariableDeclSyntax {
     var isIBOutlet: Bool {
         attributes.contains(attributeNamed: "IBOutlet")
     }
@@ -220,7 +220,7 @@ public extension EnumDeclSyntax {
     }
 }
 
-extension FunctionDeclSyntax {
+public extension FunctionDeclSyntax {
     var isIBAction: Bool {
         attributes.contains(attributeNamed: "IBAction")
     }
@@ -251,7 +251,7 @@ extension FunctionDeclSyntax {
     }
 }
 
-extension AccessorBlockSyntax {
+public extension AccessorBlockSyntax {
     var getAccessor: AccessorDeclSyntax? {
         accessors.first { accessor in
             accessor.accessorKind.tokenKind == .keyword(.get)
@@ -273,7 +273,7 @@ extension AccessorBlockSyntax {
     }
 }
 
-extension TypeInheritanceClauseSyntax? {
+public extension TypeInheritanceClauseSyntax? {
     func containsInheritedType(inheritedTypes: Set<String>) -> Bool {
         self?.inheritedTypeCollection.contains { elem in
             guard let simpleType = elem.typeName.as(SimpleTypeIdentifierSyntax.self) else {
@@ -285,7 +285,7 @@ extension TypeInheritanceClauseSyntax? {
     }
 }
 
-extension Trivia {
+public extension Trivia {
     func containsNewlines() -> Bool {
         contains { piece in
             if case .newlines = piece {
@@ -312,7 +312,7 @@ extension Trivia {
     }
 }
 
-extension TriviaPiece {
+public extension TriviaPiece {
     var isHorizontalWhitespace: Bool {
         switch self {
         case .spaces, .tabs:
@@ -323,7 +323,7 @@ extension TriviaPiece {
     }
 }
 
-extension IntegerLiteralExprSyntax {
+public extension IntegerLiteralExprSyntax {
     var isZero: Bool {
         guard case let .integerLiteral(number) = digits.tokenKind else {
             return false
@@ -333,7 +333,7 @@ extension IntegerLiteralExprSyntax {
     }
 }
 
-extension FloatLiteralExprSyntax {
+public extension FloatLiteralExprSyntax {
     var isZero: Bool {
         guard case let .floatingLiteral(number) = floatingDigits.tokenKind else {
             return false

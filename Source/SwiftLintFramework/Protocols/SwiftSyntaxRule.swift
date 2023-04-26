@@ -112,7 +112,7 @@ public struct ReasonedRuleViolation: Comparable {
 
 /// Extension for arrays of `ReasonedRuleViolation`s that provides the automatic conversion of
 /// `AbsolutePosition`s into `ReasonedRuleViolation`s (without a specific reason).
-extension Array where Element == ReasonedRuleViolation {
+public extension Array where Element == ReasonedRuleViolation {
     /// Append a minimal violation for the specified position.
     ///
     /// - parameter position: The position for the violation to append.
@@ -131,9 +131,9 @@ extension Array where Element == ReasonedRuleViolation {
 /// A SwiftSyntax `SyntaxVisitor` that produces absolute positions where violations should be reported.
 open class ViolationsSyntaxVisitor: SyntaxVisitor {
     /// Positions in a source file where violations should be reported.
-    internal var violations: [ReasonedRuleViolation] = []
+    public var violations: [ReasonedRuleViolation] = []
     /// List of declaration types that shall be skipped while traversing the AST.
-    internal var skippableDeclarations: [DeclSyntaxProtocol.Type] { [] }
+    open var skippableDeclarations: [DeclSyntaxProtocol.Type] { [] }
 
     override open func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
         skippableDeclarations.contains { $0 == ActorDeclSyntax.self } ? .skipChildren : .visitChildren
@@ -172,7 +172,7 @@ open class ViolationsSyntaxVisitor: SyntaxVisitor {
     }
 }
 
-extension Array where Element == DeclSyntaxProtocol.Type {
+public extension Array where Element == DeclSyntaxProtocol.Type {
     /// All visitable declaration syntax types.
     static let all: Self = [
         ActorDeclSyntax.self,

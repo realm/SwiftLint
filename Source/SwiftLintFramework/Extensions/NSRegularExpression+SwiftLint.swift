@@ -14,8 +14,8 @@ private struct RegexCacheKey: Hashable {
     }
 }
 
-extension NSRegularExpression {
-    internal static func cached(pattern: String, options: Options? = nil) throws -> NSRegularExpression {
+public extension NSRegularExpression {
+    static func cached(pattern: String, options: Options? = nil) throws -> NSRegularExpression {
         let options = options ?? [.anchorsMatchLines, .dotMatchesLineSeparators]
         let key = RegexCacheKey(pattern: pattern, options: options)
         regexCacheLock.lock()
@@ -29,19 +29,19 @@ extension NSRegularExpression {
         return result
     }
 
-    internal func matches(in stringView: StringView,
-                          options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
+    func matches(in stringView: StringView,
+                 options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
         return matches(in: stringView.string, options: options, range: stringView.range)
     }
 
-    internal func matches(in stringView: StringView,
-                          options: NSRegularExpression.MatchingOptions = [],
-                          range: NSRange) -> [NSTextCheckingResult] {
+    func matches(in stringView: StringView,
+                 options: NSRegularExpression.MatchingOptions = [],
+                 range: NSRange) -> [NSTextCheckingResult] {
         return matches(in: stringView.string, options: options, range: range)
     }
 
-    internal func matches(in file: SwiftLintFile,
-                          options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
+    func matches(in file: SwiftLintFile,
+                 options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
         return matches(in: file.stringView.string, options: options, range: file.stringView.range)
     }
 }

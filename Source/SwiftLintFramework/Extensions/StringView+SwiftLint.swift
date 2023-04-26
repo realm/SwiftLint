@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-extension StringView {
+public extension StringView {
     /// Converts a line and column position in a code snippet to a byte offset.
     /// - Parameters:
     ///   - line: Line in code snippet

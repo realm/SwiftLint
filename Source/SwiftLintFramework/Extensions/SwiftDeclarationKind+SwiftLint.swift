@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
-extension SwiftDeclarationKind {
-    internal static let variableKinds: Set<SwiftDeclarationKind> = [
+public extension SwiftDeclarationKind {
+    static let variableKinds: Set<SwiftDeclarationKind> = [
         .varClass,
         .varGlobal,
         .varInstance,
@@ -10,7 +10,7 @@ extension SwiftDeclarationKind {
         .varStatic
     ]
 
-    internal static let functionKinds: Set<SwiftDeclarationKind> = [
+    static let functionKinds: Set<SwiftDeclarationKind> = [
         .functionAccessorAddress,
         .functionAccessorDidset,
         .functionAccessorGetter,
@@ -27,7 +27,7 @@ extension SwiftDeclarationKind {
         .functionSubscript
     ]
 
-    internal static let typeKinds: Set<SwiftDeclarationKind> = [
+    static let typeKinds: Set<SwiftDeclarationKind> = [
         .class,
         .struct,
         .typealias,
@@ -35,7 +35,7 @@ extension SwiftDeclarationKind {
         .enum
     ]
 
-    internal static let extensionKinds: Set<SwiftDeclarationKind> = [
+    static let extensionKinds: Set<SwiftDeclarationKind> = [
         .extension,
         .extensionClass,
         .extensionEnum,

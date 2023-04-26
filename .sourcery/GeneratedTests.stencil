@@ -1,5 +1,5 @@
-@testable import SwiftLintCore
 @_spi(TestHelper)
+@testable import SwiftLintCore
 @testable import SwiftLintFramework
 import SwiftLintTestHelpers
 

@@ -1,5 +1,5 @@
 @_spi(TestHelper)
-@testable import SwiftLintFramework
+@testable import SwiftLintCore
 import XCTest
 
 class SourceKitCrashTests: SwiftLintTestCase {

@@ -1,7 +1,3 @@
-private let _registerAllRulesOnceImpl: Void = {
-    RuleRegistry.shared.register(rules: builtInRules + extraRules())
-}()
-
 /// Container to register and look up SwiftLint rules.
 public final class RuleRegistry {
     private var registeredRules = [Rule.Type]()
@@ -32,10 +28,5 @@ public final class RuleRegistry {
     /// - returns: The rule matching the specified ID, if one was found.
     public func rule(forID id: String) -> Rule.Type? {
         return list.list[id]
-    }
-
-    /// Register all rules. Should only be called once before any SwiftLint code is executed.
-    public static func registerAllRulesOnce() {
-        _ = _registerAllRulesOnceImpl
     }
 }

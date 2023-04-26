@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 @_spi(TestHelper)
 import SwiftLintFramework
 import SwiftLintTestHelpers

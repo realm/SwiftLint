@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+@testable import SwiftLintCore
 @testable import SwiftLintFramework
 import XCTest
 

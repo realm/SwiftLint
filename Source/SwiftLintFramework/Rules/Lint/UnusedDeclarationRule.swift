@@ -193,7 +193,9 @@ private extension SwiftLintFile {
     }
 
     func cursorInfo(at byteOffset: ByteCount, compilerArguments: [String]) -> SourceKittenDictionary? {
-        let request = Request.cursorInfo(file: path!, offset: byteOffset, arguments: compilerArguments)
+        let request = Request.cursorInfoWithoutSymbolGraph(
+            file: path!, offset: byteOffset, arguments: compilerArguments
+        )
         return (try? request.sendIfNotDisabled()).map(SourceKittenDictionary.init)
     }
 

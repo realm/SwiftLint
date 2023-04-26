@@ -162,8 +162,9 @@ private extension SwiftLintFile {
             if SyntaxKind.kindsWithoutModuleInfo.contains(tokenKind) {
                 continue
             }
-            let cursorInfoRequest = Request.cursorInfo(file: path!, offset: token.offset,
-                                                       arguments: compilerArguments)
+            let cursorInfoRequest = Request.cursorInfoWithoutSymbolGraph(
+                file: path!, offset: token.offset, arguments: compilerArguments
+            )
             guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled()).map(SourceKittenDictionary.init) else {
                 queuedPrintError("Could not get cursor info")
                 continue
@@ -215,7 +216,7 @@ private extension SwiftLintFile {
                 // Filter already processed tokens such as static methods that are not operators
                 guard !processedTokenOffsets.contains(ByteCount(offset)) else { continue }
 
-                let cursorInfoRequest = Request.cursorInfo(file: path!, offset: ByteCount(offset), arguments: arguments)
+                let cursorInfoRequest = Request.cursorInfoWithoutSymbolGraph(file: path!, offset: ByteCount(offset), arguments: arguments)
                 guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled())
                     .map(SourceKittenDictionary.init) else {
                     queuedPrintError("Could not get cursor info")

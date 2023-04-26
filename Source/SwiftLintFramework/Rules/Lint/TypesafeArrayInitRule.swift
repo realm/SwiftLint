@@ -72,7 +72,9 @@ struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
                 guard let offset = getOffset(in: file, at: violation.location) else {
                     return false
                 }
-                let cursorInfo = Request.cursorInfo(file: filePath, offset: offset, arguments: compilerArguments)
+                let cursorInfo = Request.cursorInfoWithoutSymbolGraph(
+                    file: filePath, offset: offset, arguments: compilerArguments
+                )
                 guard let request = try? cursorInfo.sendIfNotDisabled() else {
                     return false
                 }

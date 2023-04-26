@@ -62,8 +62,9 @@ number_separator:
   minimum_length: 5
 file_name:
   excluded:
-    - SwiftSyntax+SwiftLint.swift
+    - Exports.swift
     - GeneratedTests.swift
+    - SwiftSyntax+SwiftLint.swift
     - TestHelpers.swift
 
 balanced_xctest_lifecycle: &unit_test_configuration
@@ -101,3 +102,4 @@ custom_rules:
 unused_import:
   always_keep_imports:
     - SwiftSyntaxBuilder # we can't detect uses of string interpolation of swift syntax nodes
+    - SwiftLintFramework # now that this is a wrapper around other modules, don't treat as unused

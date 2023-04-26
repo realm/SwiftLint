@@ -281,7 +281,6 @@ public struct CollectedLinter {
     /// - parameter storage: The storage object containing all collected info.
     ///
     /// - returns: All corrections that were applied.
-    @_spi(TestHelper)
     public func correct(using storage: RuleStorage) -> [Correction] {
         if let violations = cachedStyleViolations()?.0, violations.isEmpty {
             return []

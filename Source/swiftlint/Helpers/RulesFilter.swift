@@ -1,4 +1,3 @@
-@_spi(TestHelper)
 import SwiftLintFramework
 
 extension RulesFilter {

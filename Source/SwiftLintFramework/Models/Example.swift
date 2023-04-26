@@ -147,7 +147,7 @@ extension Example: Comparable {
     }
 }
 
-extension Array where Element == Example {
+public extension Array where Element == Example {
     /// Make these examples skip wrapping in comment tests.
     func skipWrappingInCommentTests() -> Self {
         map { $0.skipWrappingInCommentTest() }

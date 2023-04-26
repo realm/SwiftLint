@@ -63,27 +63,27 @@ public protocol Rule {
     func validate(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation]
 }
 
-extension Rule {
-    public func validate(file: SwiftLintFile, using storage: RuleStorage,
-                         compilerArguments: [String]) -> [StyleViolation] {
+public extension Rule {
+    func validate(file: SwiftLintFile, using storage: RuleStorage,
+                  compilerArguments: [String]) -> [StyleViolation] {
         return validate(file: file, compilerArguments: compilerArguments)
     }
 
-    public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         return validate(file: file)
     }
 
-    public func isEqualTo(_ rule: Rule) -> Bool {
+    func isEqualTo(_ rule: Rule) -> Bool {
         return Self.description == type(of: rule).description
     }
 
-    public func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
+    func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
         // no-op: only CollectingRules mutate their storage
     }
 
     /// The cache description which will be used to determine if a previous
     /// cached value is still valid given the new cache value.
-    internal var cacheDescription: String {
+    var cacheDescription: String {
         return (self as? CacheDescriptionProvider)?.cacheDescription ?? configurationDescription
     }
 }
@@ -130,7 +130,6 @@ public protocol CorrectableRule: Rule {
     func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction]
 }
 
-@_spi(TestHelper)
 public extension CorrectableRule {
     func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
         return correct(file: file)
@@ -142,7 +141,6 @@ public extension CorrectableRule {
 
 /// A correctable rule that can apply its corrections by replacing the content of ranges in the offending file with
 /// updated content.
-@_spi(TestHelper)
 public protocol SubstitutionCorrectableRule: CorrectableRule {
     /// Returns the NSString-based `NSRange`s to be replaced in the specified file.
     ///
@@ -160,7 +158,6 @@ public protocol SubstitutionCorrectableRule: CorrectableRule {
     func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)?
 }
 
-@_spi(TestHelper)
 public extension SubstitutionCorrectableRule {
     func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
@@ -184,7 +181,6 @@ public extension SubstitutionCorrectableRule {
 }
 
 /// A `SubstitutionCorrectableRule` that is also an `ASTRule`.
-@_spi(TestHelper)
 public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, ASTRule {
     /// Returns the NSString-based `NSRange`s to be replaced in the specified file.
     ///
@@ -220,7 +216,6 @@ public extension AnalyzerRule {
 }
 
 /// :nodoc:
-@_spi(TestHelper)
 public extension AnalyzerRule where Self: CorrectableRule {
     func correct(file: SwiftLintFile) -> [Correction] {
         queuedFatalError("Must call `correct(file:compilerArguments:)` for AnalyzerRule")

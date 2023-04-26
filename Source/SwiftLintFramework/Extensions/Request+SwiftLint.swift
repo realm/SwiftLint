@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-extension Request {
+public extension Request {
     static let disableSourceKit = ProcessInfo.processInfo.environment["SWIFTLINT_DISABLE_SOURCEKIT"] != nil
 
     func sendIfNotDisabled() throws -> [String: SourceKitRepresentable] {

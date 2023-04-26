@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-extension SwiftLintFile {
+public extension SwiftLintFile {
     /// This function determines if given a scope with a left/right brace, such as a function, closure, type, etc, how
     /// many lines the "body" spans when you ignore lines only containing comments and/or whitespace.
     ///

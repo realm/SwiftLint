@@ -4,10 +4,10 @@ import SourceKittenFramework
 /// A unit of Swift source code, either on disk or in memory.
 public final class SwiftLintFile {
     /// The underlying SourceKitten file.
-    let file: File
+    public let file: File
     let id: UUID
     /// Whether or not this is a file generated for testing purposes.
-    private(set) var isTestFile = false
+    public private(set) var isTestFile = false
     /// A file is virtual if it is not backed by a filesystem path.
     private(set) var isVirtual = false
 

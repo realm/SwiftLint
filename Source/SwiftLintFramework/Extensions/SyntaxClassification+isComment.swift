@@ -1,6 +1,6 @@
 import IDEUtils
 
-extension SyntaxClassification {
+public extension SyntaxClassification {
     // True if it is any kind of comment.
     var isComment: Bool {
         switch self {

@@ -1,13 +1,13 @@
 import SourceKittenFramework
 
-extension SourceKittenDictionary {
+public extension SourceKittenDictionary {
     /// Returns array of tuples containing "key.kind" and "byteRange" from Structure
     /// that contains the byte offset. Returns all kinds if no parameter specified.
     ///
     /// - parameter byteOffset: Int?
     ///
     /// - returns: The kinds and byte ranges.
-    internal func kinds(forByteOffset byteOffset: ByteCount? = nil)
+    func kinds(forByteOffset byteOffset: ByteCount? = nil)
         -> [(kind: String, byteRange: ByteRange)] {
         var results = [(kind: String, byteRange: ByteRange)]()
 
@@ -27,7 +27,7 @@ extension SourceKittenDictionary {
         return results
     }
 
-    internal func structures(forByteOffset byteOffset: ByteCount) -> [SourceKittenDictionary] {
+    func structures(forByteOffset byteOffset: ByteCount) -> [SourceKittenDictionary] {
         var results = [SourceKittenDictionary]()
 
         func parse(_ dictionary: SourceKittenDictionary) {

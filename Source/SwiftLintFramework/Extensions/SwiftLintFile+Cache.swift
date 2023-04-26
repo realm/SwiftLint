@@ -101,7 +101,7 @@ extension SwiftLintFile {
         return id
     }
 
-    internal var sourcekitdFailed: Bool {
+    public var sourcekitdFailed: Bool {
         get {
             return responseCache.get(self) == nil
         }
@@ -123,7 +123,7 @@ extension SwiftLintFile {
         }
     }
 
-    internal var parserDiagnostics: [String]? {
+    public var parserDiagnostics: [String]? {
         if parserDiagnosticsDisabledForTests {
             return nil
         }
@@ -133,9 +133,9 @@ extension SwiftLintFile {
             .map(\.message)
     }
 
-    internal var linesWithTokens: Set<Int> { linesWithTokensCache.get(self) }
+    public var linesWithTokens: Set<Int> { linesWithTokensCache.get(self) }
 
-    internal var structureDictionary: SourceKittenDictionary {
+    public var structureDictionary: SourceKittenDictionary {
         guard let structureDictionary = structureDictionaryCache.get(self) else {
             if let handler = assertHandler {
                 handler()
@@ -146,9 +146,9 @@ extension SwiftLintFile {
         return structureDictionary
     }
 
-    internal var syntaxClassifications: SyntaxClassifications { syntaxClassificationsCache.get(self) }
+    public var syntaxClassifications: SyntaxClassifications { syntaxClassificationsCache.get(self) }
 
-    internal var syntaxMap: SwiftLintSyntaxMap {
+    public var syntaxMap: SwiftLintSyntaxMap {
         guard let syntaxMap = syntaxMapCache.get(self) else {
             if let handler = assertHandler {
                 handler()
@@ -159,16 +159,17 @@ extension SwiftLintFile {
         return syntaxMap
     }
 
-    internal var syntaxTree: SourceFileSyntax { syntaxTreeCache.get(self) }
+    public var syntaxTree: SourceFileSyntax { syntaxTreeCache.get(self) }
 
-    internal var foldedSyntaxTree: SourceFileSyntax? { foldedSyntaxTreeCache.get(self) }
+    public var foldedSyntaxTree: SourceFileSyntax? { foldedSyntaxTreeCache.get(self) }
 
-    internal var locationConverter: SourceLocationConverter { locationConverterCache.get(self) }
+    public var locationConverter: SourceLocationConverter { locationConverterCache.get(self) }
 
-    internal var commands: [Command] { commandsCache.get(self).filter { $0.isValid } }
-    internal var invalidCommands: [Command] { commandsCache.get(self).filter { !$0.isValid } }
+    public var commands: [Command] { commandsCache.get(self).filter { $0.isValid } }
 
-    internal var syntaxTokensByLines: [[SwiftLintSyntaxToken]] {
+    public var invalidCommands: [Command] { commandsCache.get(self).filter { !$0.isValid } }
+
+    public var syntaxTokensByLines: [[SwiftLintSyntaxToken]] {
         guard let syntaxTokensByLines = syntaxTokensByLinesCache.get(self) else {
             if let handler = assertHandler {
                 handler()
@@ -179,7 +180,7 @@ extension SwiftLintFile {
         return syntaxTokensByLines
     }
 
-    internal var syntaxKindsByLines: [[SourceKittenFramework.SyntaxKind]] {
+    public var syntaxKindsByLines: [[SourceKittenFramework.SyntaxKind]] {
         guard let syntaxKindsByLines = syntaxKindsByLinesCache.get(self) else {
             if let handler = assertHandler {
                 handler()

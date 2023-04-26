@@ -1,4 +1,4 @@
-extension RandomAccessCollection where Index == Int {
+public extension RandomAccessCollection where Index == Int {
     /// Returns the first index in which an element of the collection satisfies the given predicate.
     /// The collection assumed to be sorted. If collection is not have sorted values the result is undefined.
     ///

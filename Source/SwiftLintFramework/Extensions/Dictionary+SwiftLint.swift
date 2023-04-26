@@ -21,7 +21,7 @@ public struct SourceKittenDictionary {
     /// Creates a SourceKitten dictionary given a `Dictionary<String, SourceKitRepresentable>` input.
     ///
     /// - parameter value: The input dictionary/
-    init(_ value: [String: SourceKitRepresentable]) {
+    public init(_ value: [String: SourceKitRepresentable]) {
         self.value = value
 
         let substructure = value["key.substructure"] as? [SourceKitRepresentable] ?? []
@@ -37,123 +37,123 @@ public struct SourceKittenDictionary {
     }
 
     /// Body length
-    var bodyLength: ByteCount? {
+    public var bodyLength: ByteCount? {
         return (value["key.bodylength"] as? Int64).map(ByteCount.init)
     }
 
     /// Body offset.
-    var bodyOffset: ByteCount? {
+    public var bodyOffset: ByteCount? {
         return (value["key.bodyoffset"] as? Int64).map(ByteCount.init)
     }
 
     /// Body byte range.
-    var bodyByteRange: ByteRange? {
+    public var bodyByteRange: ByteRange? {
         guard let offset = bodyOffset, let length = bodyLength else { return nil }
         return ByteRange(location: offset, length: length)
     }
 
     /// Kind.
-    var kind: String? {
+    public var kind: String? {
         return value["key.kind"] as? String
     }
 
     /// Length.
-    var length: ByteCount? {
+    public var length: ByteCount? {
         return (value["key.length"] as? Int64).map(ByteCount.init)
     }
     /// Name.
-    var name: String? {
+    public var name: String? {
         return value["key.name"] as? String
     }
 
     /// Name length.
-    var nameLength: ByteCount? {
+    public var nameLength: ByteCount? {
         return (value["key.namelength"] as? Int64).map(ByteCount.init)
     }
 
     /// Name offset.
-    var nameOffset: ByteCount? {
+    public var nameOffset: ByteCount? {
         return (value["key.nameoffset"] as? Int64).map(ByteCount.init)
     }
 
     /// Byte range of name.
-    var nameByteRange: ByteRange? {
+    public var nameByteRange: ByteRange? {
         guard let offset = nameOffset, let length = nameLength else { return nil }
         return ByteRange(location: offset, length: length)
     }
 
     /// Offset.
-    var offset: ByteCount? {
+    public var offset: ByteCount? {
         return (value["key.offset"] as? Int64).map(ByteCount.init)
     }
 
     /// Returns byte range starting from `offset` with `length` bytes
-    var byteRange: ByteRange? {
+    public var byteRange: ByteRange? {
         guard let offset, let length else { return nil }
         return ByteRange(location: offset, length: length)
     }
 
     /// Setter accessibility.
-    var setterAccessibility: String? {
+    public var setterAccessibility: String? {
         return value["key.setter_accessibility"] as? String
     }
 
     /// Type name.
-    var typeName: String? {
+    public var typeName: String? {
         return value["key.typename"] as? String
     }
 
     /// Documentation length.
-    var docLength: ByteCount? {
+    public var docLength: ByteCount? {
         return (value["key.doclength"] as? Int64).flatMap(ByteCount.init)
     }
 
     /// The attribute for this dictionary, as returned by SourceKit.
-    var attribute: String? {
+    public var attribute: String? {
         return value["key.attribute"] as? String
     }
 
     /// Module name in `@import` expressions.
-    var moduleName: String? {
+    public var moduleName: String? {
         return value["key.modulename"] as? String
     }
 
     /// The line number for this declaration.
-    var line: Int64? {
+    public var line: Int64? {
         return value["key.line"] as? Int64
     }
 
     /// The column number for this declaration.
-    var column: Int64? {
+    public var column: Int64? {
         return value["key.column"] as? Int64
     }
 
     /// The `SwiftDeclarationAttributeKind` values associated with this dictionary.
-    var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
+    public var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
         return swiftAttributes.compactMap { $0.attribute }
             .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
     }
 
     /// The fully preserved SourceKitten dictionaries for all the attributes associated with this dictionary.
-    var swiftAttributes: [SourceKittenDictionary] {
+    public var swiftAttributes: [SourceKittenDictionary] {
         let array = value["key.attributes"] as? [SourceKitRepresentable] ?? []
         return array.compactMap { $0 as? [String: SourceKitRepresentable] }
             .map(Self.init)
     }
 
-    var elements: [SourceKittenDictionary] {
+    public var elements: [SourceKittenDictionary] {
         let elements = value["key.elements"] as? [SourceKitRepresentable] ?? []
         return elements.compactMap { $0 as? [String: SourceKitRepresentable] }
         .map(Self.init)
     }
 
-    var entities: [SourceKittenDictionary] {
+    public var entities: [SourceKittenDictionary] {
         let entities = value["key.entities"] as? [SourceKitRepresentable] ?? []
         return entities.compactMap { $0 as? [String: SourceKitRepresentable] }
             .map(Self.init)
     }
 
-    var enclosedVarParameters: [SourceKittenDictionary] {
+    public var enclosedVarParameters: [SourceKittenDictionary] {
         return substructure.flatMap { subDict -> [SourceKittenDictionary] in
             if subDict.declarationKind == .varParameter {
                 return [subDict]
@@ -166,7 +166,7 @@ public struct SourceKittenDictionary {
         }
     }
 
-    var enclosedArguments: [SourceKittenDictionary] {
+    public var enclosedArguments: [SourceKittenDictionary] {
         return substructure.flatMap { subDict -> [SourceKittenDictionary] in
             guard subDict.expressionKind == .argument else {
                 return []
@@ -176,7 +176,7 @@ public struct SourceKittenDictionary {
         }
     }
 
-    var inheritedTypes: [String] {
+    public var inheritedTypes: [String] {
         let array = value["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
         return array.compactMap { ($0 as? [String: String]).flatMap { $0["key.name"] } }
     }
@@ -189,7 +189,7 @@ extension SourceKittenDictionary {
     /// - parameter traverseBlock: block that will be called for each substructure in the dictionary.
     ///
     /// - returns: The list of substructure dictionaries with updated values from the traverse block.
-    func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
+    public func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
         var result: [T] = []
         traverseDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
         return result
@@ -212,7 +212,7 @@ extension SourceKittenDictionary {
     /// - parameter traverseBlock: block that will be called for each entity in the dictionary.
     ///
     /// - returns: The list of entity dictionaries with updated values from the traverse block.
-    func traverseEntitiesDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> T?) -> [T] {
+    public func traverseEntitiesDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> T?) -> [T] {
         var result: [T] = []
         traverseEntitiesDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
         return result
@@ -230,7 +230,7 @@ extension SourceKittenDictionary {
     }
 }
 
-extension Dictionary where Key == Example {
+public extension Dictionary where Key == Example {
     /// Returns a dictionary with SwiftLint violation markers (↓) removed from keys.
     ///
     /// - returns: A new `Dictionary`.

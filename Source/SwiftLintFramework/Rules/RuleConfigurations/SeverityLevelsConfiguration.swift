@@ -19,21 +19,21 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
     }
 
     /// The threshold for a violation to be a warning.
-    var warning: Int
+    public var warning: Int
     /// The threshold for a violation to be an error.
-    var error: Int?
+    public var error: Int?
 
     /// Create a `SeverityLevelsConfiguration` based on the sepecified `warning` and `error` thresholds.
     ///
     /// - parameter warning: The threshold for a violation to be a warning.
     /// - parameter error:   The threshold for a violation to be an error.
-    init(warning: Int, error: Int? = nil) {
+    public init(warning: Int, error: Int? = nil) {
         self.warning = warning
         self.error = error
     }
 
     /// The rule parameters that define the thresholds that should map to each severity.
-    var params: [RuleParameter<Int>] {
+    public var params: [RuleParameter<Int>] {
         if let error {
             return [RuleParameter(severity: .error, value: error),
                     RuleParameter(severity: .warning, value: warning)]

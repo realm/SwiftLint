@@ -1,7 +1,6 @@
 import SwiftSyntax
 
 /// A SwiftLint CorrectableRule that performs its corrections using a SwiftSyntax `SyntaxRewriter`.
-@_spi(TestHelper)
 public protocol SwiftSyntaxCorrectableRule: SwiftSyntaxRule, CorrectableRule {
     /// Produce a `ViolationsSyntaxRewriter` for the given file.
     ///
@@ -11,7 +10,6 @@ public protocol SwiftSyntaxCorrectableRule: SwiftSyntaxRule, CorrectableRule {
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter?
 }
 
-@_spi(TestHelper)
 public extension SwiftSyntaxCorrectableRule {
     func correct(file: SwiftLintFile) -> [Correction] {
         guard let rewriter = makeRewriter(file: file),

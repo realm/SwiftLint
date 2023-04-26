@@ -16,7 +16,7 @@ public enum AccessControlLevel: String, CustomStringConvertible {
     /// Initializes an access control level by its Swift source keyword value.
     ///
     /// - parameter value: The value used to describe this level in Swift source code.
-    internal init?(description value: String) {
+    public init?(description value: String) {
         switch value {
         case "private": self = .private
         case "fileprivate": self = .fileprivate
@@ -45,7 +45,7 @@ public enum AccessControlLevel: String, CustomStringConvertible {
     }
 
     /// Returns true if is `private` or `fileprivate`
-    var isPrivate: Bool {
+    public var isPrivate: Bool {
         return self == .private || self == .fileprivate
     }
 }

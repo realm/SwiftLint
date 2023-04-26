@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-extension SyntaxKind {
+public extension SyntaxKind {
     init(shortName: Swift.String) throws {
         let prefix = "source.lang.swift.syntaxtype."
         guard let kind = SyntaxKind(rawValue: prefix + shortName.lowercased()) else {

@@ -26,7 +26,7 @@ public struct RegexConfiguration: SeverityBasedRuleConfiguration, Hashable, Cach
         return "\(severity.rawValue): \(regex.pattern)"
     }
 
-    internal var cacheDescription: String {
+    public var cacheDescription: String {
         let jsonObject: [String] = [
             identifier,
             name ?? "",

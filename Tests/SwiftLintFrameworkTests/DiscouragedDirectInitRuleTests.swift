@@ -1,4 +1,4 @@
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
 
 class DiscouragedDirectInitRuleTests: SwiftLintTestCase {
     private let baseDescription = DiscouragedDirectInitRule.description

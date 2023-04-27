@@ -2,7 +2,7 @@
 // DO NOT EDIT
 
 /// The rule list containing all available rules built into SwiftLint.
-let builtInRules: [Rule.Type] = [
+public let builtInRules: [Rule.Type] = [
     AccessibilityLabelForImageRule.self,
     AccessibilityTraitForButtonRule.self,
     AnonymousArgumentInMultilineClosureRule.self,

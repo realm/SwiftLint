@@ -30,18 +30,18 @@ VERSION_STRING=$(shell ./tools/get-version)
 
 all: build
 
-sourcery: Source/SwiftLintFramework/Models/BuiltInRules.swift Source/SwiftLintCore/Models/ReportersList.swift Tests/GeneratedTests/GeneratedTests.swift
+sourcery: Source/SwiftLintBuiltInRules/Models/BuiltInRules.swift Source/SwiftLintCore/Models/ReportersList.swift Tests/GeneratedTests/GeneratedTests.swift
 
-Source/SwiftLintFramework/Models/BuiltInRules.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/BuiltInRules.stencil
-	./tools/sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/BuiltInRules.stencil --output .sourcery
-	mv .sourcery/BuiltInRules.generated.swift Source/SwiftLintFramework/Models/BuiltInRules.swift
+Source/SwiftLintBuiltInRules/Models/BuiltInRules.swift: Source/SwiftLintBuiltInRules/Rules/**/*.swift .sourcery/BuiltInRules.stencil
+	./tools/sourcery --sources Source/SwiftLintBuiltInRules/Rules --templates .sourcery/BuiltInRules.stencil --output .sourcery
+	mv .sourcery/BuiltInRules.generated.swift Source/SwiftLintBuiltInRules/Models/BuiltInRules.swift
 
 Source/SwiftLintCore/Models/ReportersList.swift: Source/SwiftLintCore/Reporters/*.swift .sourcery/ReportersList.stencil
 	./tools/sourcery --sources Source/SwiftLintCore/Reporters --templates .sourcery/ReportersList.stencil --output .sourcery
 	mv .sourcery/ReportersList.generated.swift Source/SwiftLintCore/Models/ReportersList.swift
 
 Tests/GeneratedTests/GeneratedTests.swift: Source/SwiftLint*/Rules/**/*.swift .sourcery/GeneratedTests.stencil
-	./tools/sourcery --sources Source/SwiftLintCore/Rules --sources Source/SwiftLintFramework/Rules --templates .sourcery/GeneratedTests.stencil --output .sourcery
+	./tools/sourcery --sources Source/SwiftLintCore/Rules --sources Source/SwiftLintBuiltInRules/Rules --templates .sourcery/GeneratedTests.stencil --output .sourcery
 	mv .sourcery/GeneratedTests.generated.swift Tests/GeneratedTests/GeneratedTests.swift
 
 test: clean_xcode

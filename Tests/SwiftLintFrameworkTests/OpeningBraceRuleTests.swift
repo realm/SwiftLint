@@ -1,4 +1,4 @@
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
 
 class OpeningBraceRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length

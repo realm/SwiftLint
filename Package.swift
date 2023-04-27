@@ -58,12 +58,20 @@ let package = Package(
             ]
         ),
         .target(
+            name: "SwiftLintBuiltInRules",
+            dependencies: ["SwiftLintCore"]
+        ),
+        .target(
             name: "SwiftLintExtraRules",
             dependencies: ["SwiftLintCore"]
         ),
         .target(
             name: "SwiftLintFramework",
-            dependencies: ["SwiftLintCore", "SwiftLintExtraRules"]
+            dependencies: [
+                "SwiftLintBuiltInRules",
+                "SwiftLintCore",
+                "SwiftLintExtraRules"
+            ]
         ),
         .target(name: "DyldWarningWorkaround"),
         .target(

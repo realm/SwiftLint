@@ -1,4 +1,4 @@
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
 
 final class PrefixedTopLevelConstantRuleTests: SwiftLintTestCase {
     func testPrivateOnly() {

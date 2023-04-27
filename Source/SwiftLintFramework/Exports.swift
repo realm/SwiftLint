@@ -1,3 +1,4 @@
+@_exported import SwiftLintBuiltInRules
 @_exported import SwiftLintCore
 import SwiftLintExtraRules
 

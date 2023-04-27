@@ -1,5 +1,5 @@
 import SourceKittenFramework
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
 import XCTest
 
 private let fixturesDirectory = #file.bridge()

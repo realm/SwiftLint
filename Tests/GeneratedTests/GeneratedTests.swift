@@ -1,8 +1,8 @@
 // Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+@testable import SwiftLintBuiltInRules
 @_spi(TestHelper)
 @testable import SwiftLintCore
-@testable import SwiftLintFramework
 import SwiftLintTestHelpers
 
 // swiftlint:disable:next blanket_disable_command

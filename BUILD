@@ -29,6 +29,16 @@ swift_library(
 )
 
 swift_library(
+    name = "SwiftLintBuiltInRules",
+    srcs = glob(["Source/SwiftLintBuiltInRules/**/*.swift"]),
+    module_name = "SwiftLintBuiltInRules",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":SwiftLintCore",
+    ],
+)
+
+swift_library(
     name = "SwiftLintExtraRules",
     srcs = [
         "Source/SwiftLintExtraRules/Exports.swift",
@@ -49,6 +59,7 @@ swift_library(
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [
+        ":SwiftLintBuiltInRules",
         ":SwiftLintCore",
         ":SwiftLintExtraRules",
     ],

@@ -1,4 +1,4 @@
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
 
 class CyclomaticComplexityRuleTests: SwiftLintTestCase {
     private lazy var complexSwitchExample: Example = {

@@ -3,7 +3,7 @@ load("@com_github_jpsim_sourcekitten//bazel:repos.bzl", "sourcekitten_repos")
 
 def _extra_swift_sources_impl(ctx):
     ctx.file("WORKSPACE", "")
-    ctx.file("empty.swift", "func extraRules() -> [Rule.Type] { [] }")
+    ctx.file("empty.swift", "public func extraRules() -> [Rule.Type] { [] }")
     label = ":empty"
     if ctx.attr.srcs:
         label = ctx.attr.srcs

@@ -14,8 +14,8 @@ private extension Command {
     }
 }
 
-class CommandTests: SwiftLintTestCase {
 // swiftlint:disable:next type_body_length
+class CommandTests: SwiftLintTestCase {
     // MARK: Command Creation
 
     func testNoCommandsInEmptyFile() {

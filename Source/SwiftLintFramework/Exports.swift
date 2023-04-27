@@ -1,4 +1,5 @@
 @_exported import SwiftLintCore
+import SwiftLintExtraRules
 
 private let _registerAllRulesOnceImpl: Void = {
     RuleRegistry.shared.register(rules: builtInRules + coreRules + extraRules())

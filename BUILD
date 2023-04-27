@@ -29,15 +29,28 @@ swift_library(
 )
 
 swift_library(
+    name = "SwiftLintExtraRules",
+    srcs = [
+        "Source/SwiftLintExtraRules/Exports.swift",
+        "@swiftlint_extra_rules//:extra_rules",
+    ],
+    module_name = "SwiftLintExtraRules",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":SwiftLintCore",
+    ],
+)
+
+swift_library(
     name = "SwiftLintFramework",
     srcs = glob(
         ["Source/SwiftLintFramework/**/*.swift"],
-        exclude = ["Source/SwiftLintFramework/Rules/ExcludedFromBazel/ExtraRules.swift"],
-    ) + ["@swiftlint_extra_rules//:extra_rules"],
+    ),
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintCore",
+        ":SwiftLintExtraRules",
     ],
 )
 

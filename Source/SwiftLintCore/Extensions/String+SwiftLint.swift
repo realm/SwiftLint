@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-extension String {
-    internal func hasTrailingWhitespace() -> Bool {
+public extension String {
+    func hasTrailingWhitespace() -> Bool {
         if isEmpty {
             return false
         }
@@ -14,20 +14,12 @@ extension String {
         return false
     }
 
-    internal func isUppercase() -> Bool {
+    func isUppercase() -> Bool {
         return self == uppercased()
     }
 
-    internal func isLowercase() -> Bool {
+    func isLowercase() -> Bool {
         return self == lowercased()
-    }
-
-    internal func nameStrippingLeadingUnderscoreIfPrivate(_ dict: SourceKittenDictionary) -> String {
-        if let acl = dict.accessibility,
-            acl.isPrivate && first == "_" {
-            return String(self[index(after: startIndex)...])
-        }
-        return self
     }
 
     private subscript (range: Range<Int>) -> String {
@@ -39,21 +31,21 @@ extension String {
         queuedFatalError("invalid range")
     }
 
-    internal func substring(from: Int, length: Int? = nil) -> String {
+    func substring(from: Int, length: Int? = nil) -> String {
         if let length {
             return self[from..<from + length]
         }
         return String(self[index(startIndex, offsetBy: from, limitedBy: endIndex)!...])
     }
 
-    internal func lastIndex(of search: String) -> Int? {
+    func lastIndex(of search: String) -> Int? {
         if let range = range(of: search, options: [.literal, .backwards]) {
             return distance(from: startIndex, to: range.lowerBound)
         }
         return nil
     }
 
-    internal func nsrangeToIndexRange(_ nsrange: NSRange) -> Range<Index>? {
+    func nsrangeToIndexRange(_ nsrange: NSRange) -> Range<Index>? {
         guard nsrange.location != NSNotFound else {
             return nil
         }
@@ -70,22 +62,22 @@ extension String {
         return fromIndex..<toIndex
     }
 
-    internal var fullNSRange: NSRange {
+    var fullNSRange: NSRange {
         return NSRange(location: 0, length: utf16.count)
     }
 
     /// Returns a new string, converting the path to a canonical absolute path.
     ///
     /// - returns: A new `String`.
-    public func absolutePathStandardized() -> String {
+    func absolutePathStandardized() -> String {
         return bridge().absolutePathRepresentation().bridge().standardizingPath
     }
 
-    internal var isFile: Bool {
+    var isFile: Bool {
         exists(isDirectory: false)
     }
 
-    internal var isDirectory: Bool {
+    var isDirectory: Bool {
         exists(isDirectory: true)
     }
 
@@ -103,14 +95,14 @@ extension String {
     /// Count the number of occurrences of the given character in `self`
     /// - Parameter character: Character to count
     /// - Returns: Number of times `character` occurs in `self`
-    public func countOccurrences(of character: Character) -> Int {
+    func countOccurrences(of character: Character) -> Int {
         return self.reduce(0, {
             $1 == character ? $0 + 1 : $0
         })
     }
 
     /// If self is a path, this method can be used to get a path expression relative to a root directory
-    public func path(relativeTo rootDirectory: String) -> String {
+    func path(relativeTo rootDirectory: String) -> String {
         let normalizedRootDir = rootDirectory.bridge().standardizingPath
         let normalizedSelf = bridge().standardizingPath
         if normalizedRootDir.isEmpty {
@@ -131,7 +123,7 @@ extension String {
         }
     }
 
-    internal func deletingPrefix(_ prefix: String) -> String {
+    func deletingPrefix(_ prefix: String) -> String {
         guard hasPrefix(prefix) else { return self }
         return String(dropFirst(prefix.count))
     }

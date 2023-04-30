@@ -155,7 +155,7 @@ extension Configuration {
                     let collected = await counter.next()
                     if skipFile {
                         queuedPrintError("""
-                            Skipping '\(outputFilename)' (\(collected)/\(total)) \
+                            warning: Skipping '\(outputFilename)' (\(collected)/\(total)) \
                             because its compiler arguments could not be found
                             """)
                     } else {

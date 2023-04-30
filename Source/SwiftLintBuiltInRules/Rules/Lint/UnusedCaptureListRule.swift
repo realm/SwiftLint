@@ -2,7 +2,7 @@ import SwiftSyntax
 
 private let warnDeprecatedOnceImpl: Void = {
     queuedPrintError("""
-        The `\(UnusedCaptureListRule.description.identifier)` rule is now deprecated and will be completely \
+        warning: The `\(UnusedCaptureListRule.description.identifier)` rule is now deprecated and will be completely \
         removed in a future release due to an equivalent warning issued by the Swift compiler.
         """
     )

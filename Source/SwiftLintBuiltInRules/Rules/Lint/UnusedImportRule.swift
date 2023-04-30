@@ -86,7 +86,7 @@ struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
     private func importUsage(in file: SwiftLintFile, compilerArguments: [String]) -> [ImportUsage] {
         guard compilerArguments.isNotEmpty else {
             queuedPrintError("""
-                Attempted to lint file at path '\(file.path ?? "...")' with the \
+                warning: Attempted to lint file at path '\(file.path ?? "...")' with the \
                 \(Self.description.identifier) rule without any compiler arguments.
                 """)
             return []

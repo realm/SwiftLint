@@ -43,7 +43,7 @@ struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
     private func violationRanges(in file: SwiftLintFile, compilerArguments: [String]) -> [NSRange] {
         guard compilerArguments.isNotEmpty else {
             queuedPrintError("""
-                Attempted to lint file at path '\(file.path ?? "...")' with the \
+                warning: Attempted to lint file at path '\(file.path ?? "...")' with the \
                 \(Self.description.identifier) rule without any compiler arguments.
                 """)
             return []

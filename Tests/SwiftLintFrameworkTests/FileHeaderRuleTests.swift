@@ -184,4 +184,17 @@ class FileHeaderRuleTests: SwiftLintTestCase {
         XCTAssertEqual(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration1).count, 1)
         XCTAssertEqual(try validate(fileName: "FileNameMatchingComplex.swift", using: configuration2).count, 1)
     }
+
+    func testFileHeaderShouldBeEmpty() {
+        let configuration = ["forbidden_pattern": "."]
+
+        // Non triggering tests
+        XCTAssert(try validate(fileName: "FileHeaderEmpty.swift", using: configuration).isEmpty)
+        XCTAssert(try validate(fileName: "DocumentedType.swift", using: configuration).isEmpty)
+
+        // Triggering tests
+        XCTAssertEqual(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration).count, 1)
+        XCTAssertEqual(try validate(fileName: "FileNameMismatch.swift", using: configuration).count, 1)
+        XCTAssertEqual(try validate(fileName: "FileNameMissing.swift", using: configuration).count, 1)
+    }
 }

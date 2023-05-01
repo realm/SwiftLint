@@ -43,6 +43,10 @@
   subclasses.  
   [AndrewDMontgomery](https://github.com/andrewdmontgomery)
   [#4875](https://github.com/realm/SwiftLint/pull/4875)
+  
+* Prepend `warning: ` to error messages so that they show in Xcode.  
+  [whiteio](https://github.com/whiteio)
+  [#4923](https://github.com/realm/SwiftLint/issues/4923)
 
 #### Bug Fixes
 

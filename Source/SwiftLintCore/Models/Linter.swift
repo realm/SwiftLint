@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 private let warnSourceKitFailedOnceImpl: Void = {
-    queuedPrintError("SourceKit-based rules will be skipped because sourcekitd has failed.")
+    queuedPrintError("warning: SourceKit-based rules will be skipped because sourcekitd has failed.")
 }()
 
 private func warnSourceKitFailedOnce() {
@@ -245,8 +245,8 @@ public struct CollectedLinter {
         }
 
         for (deprecatedIdentifier, identifier) in deprecatedToValidIdentifier {
-            queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
-                "completely removed in a future release.")
+            queuedPrintError("warning: '\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and " +
+                "will be completely removed in a future release.")
         }
 
         // Free some memory used for this file's caches. They shouldn't be needed after this point.
@@ -288,7 +288,7 @@ public struct CollectedLinter {
 
         if let parserDiagnostics = file.parserDiagnostics, parserDiagnostics.isNotEmpty {
             queuedPrintError(
-                "Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
+                "warning: Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
             )
             queuedPrintError(toJSON(["diagnostics": parserDiagnostics]))
             return []

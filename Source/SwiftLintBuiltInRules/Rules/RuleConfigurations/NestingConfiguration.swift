@@ -36,8 +36,8 @@ struct NestingConfiguration: RuleConfiguration, Equatable {
         } else if let statementLevelConfiguration = configurationDict["statement_level"] {
             queuedPrintError(
                 """
-                'statement_level' has been renamed to 'function_level' and will be completely removed in a future \
-                release.
+                warning: 'statement_level' has been renamed to 'function_level' and will be completely removed \
+                in a future release.
                 """
             )
             try functionLevel.apply(configuration: statementLevelConfiguration)

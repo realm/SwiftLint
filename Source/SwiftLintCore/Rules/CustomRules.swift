@@ -23,7 +23,7 @@ struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionP
             do {
                 try ruleConfiguration.apply(configuration: value)
             } catch {
-                queuedPrintError("Invalid configuration for custom rule '\(key)'.")
+                queuedPrintError("warning: Invalid configuration for custom rule '\(key)'.")
                 continue
             }
 

@@ -170,7 +170,9 @@ internal extension Configuration.FileGraph.FilePath {
 
     private mutating func handleFileWriteFailure(urlString: String, cachedFilePath: String?) throws -> String {
         if let cachedFilePath {
-            queuedPrintError("Unable to cache remote config from \"\(urlString)\". Using cached version as a fallback.")
+            queuedPrintError(
+                "warning: Unable to cache remote config from \"\(urlString)\". Using cached version as a fallback."
+            )
             self = .existing(path: cachedFilePath)
             return cachedFilePath
         } else {

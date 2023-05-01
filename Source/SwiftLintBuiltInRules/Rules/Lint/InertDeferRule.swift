@@ -2,8 +2,8 @@ import SwiftSyntax
 
 private let warnDeprecatedOnceImpl: Void = {
     queuedPrintError("""
-        The `\(InertDeferRule.description.identifier)` rule is now deprecated and will be completely \
-        removed in a future release due to an equivalent warning issued by the Swift compiler.
+        warning: The `\(InertDeferRule.description.identifier)` rule is now deprecated and will be \
+        completely removed in a future release due to an equivalent warning issued by the Swift compiler.
         """
     )
 }()

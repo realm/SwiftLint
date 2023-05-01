@@ -134,7 +134,7 @@ public struct Configuration {
     ) {
         if let pinnedVersion, pinnedVersion != Version.current.value {
             queuedPrintError(
-                "Currently running SwiftLint \(Version.current.value) but " +
+                "warning: Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion)."
             )
             exit(2)

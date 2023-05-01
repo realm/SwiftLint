@@ -109,7 +109,7 @@ extension Configuration {
                 return indentationStyle
             }
 
-            queuedPrintError("Invalid configuration for '\(Key.indentation)'. Falling back to default.")
+            queuedPrintError("warning: Invalid configuration for '\(Key.indentation)'. Falling back to default.")
             return .default
         }
 
@@ -139,7 +139,7 @@ extension Configuration {
 
         // Deprecation warning for "whitelist_rules"
         if dict[Key.whitelistRules.rawValue] != nil {
-            queuedPrintError("'\(Key.whitelistRules.rawValue)' has been renamed to " +
+            queuedPrintError("warning: '\(Key.whitelistRules.rawValue)' has been renamed to " +
                 "'\(Key.onlyRules.rawValue)' and will be completely removed in a " +
                 "future release.")
         }

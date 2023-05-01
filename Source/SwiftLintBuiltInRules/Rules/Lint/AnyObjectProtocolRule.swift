@@ -2,7 +2,7 @@ import SwiftSyntax
 
 private let warnDeprecatedOnceImpl: Void = {
     queuedPrintError("""
-        The `anyobject_protocol` rule is now deprecated and will be completely removed in a future release.
+        warning: The `anyobject_protocol` rule is now deprecated and will be completely removed in a future release.
         """
     )
 }()

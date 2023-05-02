@@ -58,11 +58,9 @@ struct AccessibilityLabelForImageRule: ASTRule, OptInRule {
                                    severity: configuration.severity,
                                    location: Location(file: file, byteOffset: offset))
                 )
-            }
-
-            // If dictionary did not represent an Image, recursively check substructure,
-            // unless it's a container that hides its children from accessibility or is labeled.
-            else if dictionary.substructure.isNotEmpty {
+            } else if dictionary.substructure.isNotEmpty {
+                // If dictionary did not represent an Image, recursively check substructure,
+                // unless it's a container that hides its children from accessibility or is labeled.
                 if dictionary.hasAccessibilityHiddenModifier(in: file) ||
                     dictionary.hasAccessibilityElementChildrenIgnoreModifier(in: file) ||
                     dictionary.hasAccessibilityLabelModifier(in: file) {

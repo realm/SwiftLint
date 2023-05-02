@@ -323,6 +323,12 @@
   [Thi Doãn](https://github.com/thii)
   [JP Simard](https://github.com/jpsim)
   [#4737](https://github.com/realm/SwiftLint/issues/4737)
+  
+* Refactor `statement_position` rule to use `SwiftSyntax` and 
+  fix failure in one-line statements.  
+  [enebin](https://github.com/enebin)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4632](https://github.com/realm/SwiftLint/issues/4632)
 
 * Fix false negatives for the `unneeded_synthesized_initializer` rule
   for nested structs in classes.  

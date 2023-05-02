@@ -70,6 +70,10 @@
   [keith](https://github.com/keith)
   [#4782](https://github.com/realm/SwiftLint/issues/4782)
 
+* Move `excludedPaths` out of iteration loop in favor of dependency injection  
+  [andyyhope](https://github.com/andyyhope)
+  [#4844](https://github.com/realm/SwiftLint/issues/4844)
+
 ## 0.51.0: bzllint
 
 #### Breaking

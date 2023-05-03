@@ -362,6 +362,12 @@ class ExplicitTopLevelACLRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class ExplicitTryTaskRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ExplicitTryTaskRule.description)
+    }
+}
+
 class ExplicitTypeInterfaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitTypeInterfaceRule.description)

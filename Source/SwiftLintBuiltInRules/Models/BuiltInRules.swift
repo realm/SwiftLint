@@ -62,6 +62,7 @@ public let builtInRules: [Rule.Type] = [
     ExplicitInitRule.self,
     ExplicitSelfRule.self,
     ExplicitTopLevelACLRule.self,
+    ExplicitTryTaskRule.self,
     ExplicitTypeInterfaceRule.self,
     ExtensionAccessModifierRule.self,
     FallthroughRule.self,

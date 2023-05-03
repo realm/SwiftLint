@@ -332,7 +332,7 @@ extension SimpleTypeIdentifierSyntax: SyntaxWithGenericClause {
 
 extension SpecializeExprSyntax: SyntaxWithGenericClause {
     var typeName: String? {
-        expression.as(IdentifierExprSyntax.self)?.firstToken?.text ??
+        expression.as(IdentifierExprSyntax.self)?.firstToken(viewMode: .sourceAccurate)?.text ??
             expression.as(MemberAccessExprSyntax.self)?.name.text
     }
     var genericArguments: GenericArgumentClauseSyntax? { genericArgumentClause }

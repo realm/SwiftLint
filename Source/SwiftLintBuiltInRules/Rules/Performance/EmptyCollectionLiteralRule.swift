@@ -36,10 +36,10 @@ private extension EmptyCollectionLiteralRule {
         override func visitPost(_ node: TokenSyntax) {
             guard
                 node.tokenKind.isEqualityComparison,
-                let violationPosition = node.previousToken?.endPositionBeforeTrailingTrivia,
-                let expectedLeftSquareBracketToken = node.nextToken,
+                let violationPosition = node.previousToken(viewMode: .sourceAccurate)?.endPositionBeforeTrailingTrivia,
+                let expectedLeftSquareBracketToken = node.nextToken(viewMode: .sourceAccurate),
                 expectedLeftSquareBracketToken.tokenKind == .leftSquareBracket,
-                let expectedColonToken = expectedLeftSquareBracketToken.nextToken,
+                let expectedColonToken = expectedLeftSquareBracketToken.nextToken(viewMode: .sourceAccurate),
                 expectedColonToken.tokenKind == .colon || expectedColonToken.tokenKind == .rightSquareBracket
             else {
                 return

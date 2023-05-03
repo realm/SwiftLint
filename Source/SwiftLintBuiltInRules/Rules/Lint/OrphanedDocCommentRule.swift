@@ -1,4 +1,4 @@
-import IDEUtils
+import SwiftIDEUtils
 
 struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)

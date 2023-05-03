@@ -95,6 +95,6 @@ private extension IdenticalOperandsRule {
 
 private extension ExprSyntax {
     var normalizedDescription: String {
-        debugDescription(includeChildren: true, includeTrivia: false)
+        debugDescription(includeTrivia: false)
     }
 }

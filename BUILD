@@ -18,7 +18,11 @@ swift_library(
     module_name = "SwiftLintCore",
     visibility = ["//visibility:public"],
     deps = [
-        "@com_github_apple_swift_syntax//:optlibs",
+        "@SwiftSyntax//:SwiftIDEUtils_opt",
+        "@SwiftSyntax//:SwiftOperators_opt",
+        "@SwiftSyntax//:SwiftParserDiagnostics_opt",
+        "@SwiftSyntax//:SwiftSyntaxBuilder_opt",
+        "@SwiftSyntax//:SwiftSyntax_opt",
         "@com_github_jpsim_sourcekitten//:SourceKittenFramework",
         "@sourcekitten_com_github_jpsim_yams//:Yams",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",

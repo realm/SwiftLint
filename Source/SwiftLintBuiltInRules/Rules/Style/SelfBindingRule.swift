@@ -121,7 +121,7 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
             let newPattern = PatternSyntax(
                 identifierPattern
                     .with(\.identifier,
-                          identifierPattern.identifier.withKind(.identifier(bindIdentifier))
+                          identifierPattern.identifier.with(\.tokenKind, .identifier(bindIdentifier))
                 )
             )
 
@@ -132,7 +132,7 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
             let newPattern = PatternSyntax(
                 identifierPattern
                     .with(\.identifier,
-                          identifierPattern.identifier.withKind(.identifier(bindIdentifier)))
+                          identifierPattern.identifier.with(\.tokenKind, .identifier(bindIdentifier)))
             )
 
             let newInitializer = InitializerClauseSyntax(

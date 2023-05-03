@@ -68,9 +68,10 @@ private extension ClosingBraceRule {
 
 private extension TokenSyntax {
     var hasClosingBraceViolation: Bool {
-        guard tokenKind == .rightBrace,
-           let nextToken,
-           nextToken.tokenKind == .rightParen
+        guard
+            tokenKind == .rightBrace,
+            let nextToken = nextToken(viewMode: .sourceAccurate),
+            nextToken.tokenKind == .rightParen
         else {
             return false
         }

@@ -52,6 +52,16 @@ struct UnhandledTryInTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
 
               try something()
             }
+            """),
+            Example("""
+            let task = Task {
+              try await myThrowingFunction()
+            }
+            """),
+            Example("""
+            var task = Task {
+              try await myThrowingFunction()
+            }
             """)
         ],
         triggeringExamples: [
@@ -81,6 +91,18 @@ struct UnhandledTryInTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
                 print(e)
               }
             }
+            """),
+            Example("""
+            ↓Task {
+              do {
+                throw FooError.bar
+              }
+            }
+            """),
+            Example("""
+            ↓Task {
+              throw FooError.bar
+            }
             """)
         ]
     )
@@ -95,10 +117,12 @@ private extension UnhandledTryInTaskRule {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let typeIdentifier = node.calledExpression.as(IdentifierExprSyntax.self) {
                 if typeIdentifier.identifier.text == "Task" {
-                    let throwsVisitor = ThrowsVisitor(viewMode: .sourceAccurate)
-                    throwsVisitor.walk(node)
-                    if throwsVisitor.doesThrow {
-                        violations.append(node.calledExpression.positionAfterSkippingLeadingTrivia)
+                    if node.parent?.is(InitializerClauseSyntax.self) == false {
+                        let throwsVisitor = ThrowsVisitor(viewMode: .sourceAccurate)
+                        throwsVisitor.walk(node)
+                        if throwsVisitor.doesThrow {
+                            violations.append(node.calledExpression.positionAfterSkippingLeadingTrivia)
+                        }
                     }
                 }
             }
@@ -138,5 +162,9 @@ private final class ThrowsVisitor: SyntaxVisitor {
         if node.questionOrExclamationMark == nil {
             doesThrow = true
         }
+    }
+
+    override func visitPost(_ node: ThrowStmtSyntax) {
+        doesThrow = true
     }
 }

@@ -203,7 +203,7 @@ public let builtInRules: [Rule.Type] = [
     TypesafeArrayInitRule.self,
     UnavailableConditionRule.self,
     UnavailableFunctionRule.self,
-    UnhandledTryInTaskRule.self,
+    UnhandledThrowingTaskRule.self,
     UnneededBreakInSwitchRule.self,
     UnneededParenthesesInClosureArgumentRule.self,
     UnownedVariableCaptureRule.self,

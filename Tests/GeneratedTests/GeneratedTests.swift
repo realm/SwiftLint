@@ -1214,9 +1214,9 @@ class UnavailableFunctionRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-class UnhandledTryInTaskRuleGeneratedTests: SwiftLintTestCase {
+class UnhandledThrowingTaskRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(UnhandledTryInTaskRule.description)
+        verifyRule(UnhandledThrowingTaskRule.description)
     }
 }
 

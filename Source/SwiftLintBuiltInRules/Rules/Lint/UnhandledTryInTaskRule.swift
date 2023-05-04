@@ -1,12 +1,12 @@
 import SwiftSyntax
 
-struct UnhandledTryInTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
+struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration(.error)
 
     static let description = RuleDescription(
-        identifier: "unhandled_try_in_task",
-        name: "Unhandled Try in Task",
-        description: "Errors thrown inside of this task are not handled",
+        identifier: "unhandled_throwing_task",
+        name: "Unhandled Throwing Task",
+        description: "Errors thrown inside this task are not handled",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -62,6 +62,16 @@ struct UnhandledTryInTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
             var task = Task {
               try await myThrowingFunction()
             }
+            """),
+            Example("""
+            try await Task {
+              try await myThrowingFunction()
+            }.value
+            """),
+            Example("""
+            executor.task = Task {
+              try await isolatedOpen(.init(executor.asUnownedSerialExecutor()))
+            }
             """)
         ],
         triggeringExamples: [
@@ -103,6 +113,16 @@ struct UnhandledTryInTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
             ↓Task {
               throw FooError.bar
             }
+            """),
+            Example("""
+            ↓Task<_, _> {
+              throw FooError.bar
+            }
+            """),
+            Example("""
+            ↓Task<Void,_> {
+              throw FooError.bar
+            }
             """)
         ]
     )
@@ -112,21 +132,69 @@ struct UnhandledTryInTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
     }
 }
 
-private extension UnhandledTryInTaskRule {
+private extension UnhandledThrowingTaskRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if let typeIdentifier = node.calledExpression.as(IdentifierExprSyntax.self) {
-                if typeIdentifier.identifier.text == "Task" {
-                    if node.parent?.is(InitializerClauseSyntax.self) == false {
-                        let throwsVisitor = ThrowsVisitor(viewMode: .sourceAccurate)
-                        throwsVisitor.walk(node)
-                        if throwsVisitor.doesThrow {
-                            violations.append(node.calledExpression.positionAfterSkippingLeadingTrivia)
-                        }
-                    }
-                }
+            if node.hasViolation {
+                violations.append(node.calledExpression.positionAfterSkippingLeadingTrivia)
             }
         }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var hasViolation: Bool {
+        isTaskWithImplicitErrorType &&
+            doesThrow &&
+            !(isAssigned || isValueAccessed)
+    }
+
+    var isTaskWithImplicitErrorType: Bool {
+        if let typeIdentifier = calledExpression.as(IdentifierExprSyntax.self),
+           typeIdentifier.identifier.text == "Task" {
+            return true
+        }
+
+        if let specializedExpression = calledExpression.as(SpecializeExprSyntax.self),
+           let typeIdentifier = specializedExpression.expression.as(IdentifierExprSyntax.self),
+           typeIdentifier.identifier.text == "Task",
+           let lastGeneric = specializedExpression.genericArgumentClause
+            .arguments.last?.argumentType.as(SimpleTypeIdentifierSyntax.self),
+           lastGeneric.typeName == "_" {
+            return true
+        }
+
+        return false
+    }
+
+    var isAssigned: Bool {
+        guard let parent else {
+            return false
+        }
+
+        if parent.is(InitializerClauseSyntax.self) {
+            return true
+        }
+
+        if let list = parent.as(ExprListSyntax.self),
+           list.contains(where: { $0.is(AssignmentExprSyntax.self) }) {
+            return true
+        }
+
+        return false
+    }
+
+    var isValueAccessed: Bool {
+        guard let parent = parent?.as(MemberAccessExprSyntax.self) else {
+            return false
+        }
+
+        return parent.name.text == "value"
+    }
+
+    var doesThrow: Bool {
+        ThrowsVisitor(viewMode: .sourceAccurate)
+            .walk(tree: self, handler: \.doesThrow)
     }
 }
 

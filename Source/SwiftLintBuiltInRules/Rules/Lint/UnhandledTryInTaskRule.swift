@@ -15,9 +15,28 @@ struct UnhandledTryInTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
             }
             """),
             Example("""
+            Task {
+              try? await myThrowingFunction()
+            }
+            """),
+            Example("""
+            Task {
+              try! await myThrowingFunction()
+            }
+            """),
+            Example("""
             Task<Void, String> {
               let text = try myThrowingFunction()
               return text
+            }
+            """),
+            Example("""
+            Task {
+              do {
+                try myThrowingFunction()
+              } catch let e {
+                print(e)
+              }
             }
             """),
             Example("""
@@ -92,12 +111,20 @@ private final class ThrowsVisitor: SyntaxVisitor {
 
     override func visit(_ node: DoStmtSyntax) -> SyntaxVisitorContinueKind {
         // If there are no catch clauses, visit children to see if there are any try expressions.
-        guard let catchClauses = node.catchClauses else {
+        guard let lastCatchClause = node.catchClauses?.last else {
             return .visitChildren
         }
 
-        // If none of the catch clauses handle all items, then we also need to visit children.
-        guard catchClauses.contains(where: { ($0.catchItems ?? []).isEmpty }) else {
+        let catchItems = lastCatchClause.catchItems ?? []
+
+        // If there are no catch items in the last clause, we'll catch all errors thrown - all good here!
+        if catchItems.isEmpty {
+            return .skipChildren
+        }
+
+        // If we have a value binding pattern, only an IdentifierPatternSyntax will catch any error, visit children for `try`s.
+        guard let pattern = catchItems.last?.pattern?.as(ValueBindingPatternSyntax.self),
+              pattern.valuePattern.is(IdentifierPatternSyntax.self) else {
             return .visitChildren
         }
 
@@ -106,6 +133,8 @@ private final class ThrowsVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: TryExprSyntax) {
-        doesThrow = true
+        if node.questionOrExclamationMark == nil {
+            doesThrow = true
+        }
     }
 }

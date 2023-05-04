@@ -70,7 +70,8 @@
   [keith](https://github.com/keith)
   [#4782](https://github.com/realm/SwiftLint/issues/4782)
 
-* Move `excludedPaths` out of iteration loop in favor of dependency injection  
+* Move `excludedPaths(fileManager:)` operation out of linting iterations
+  in favor of dependency injection to improve build speeds for Swift Plugin.   
   [andyyhope](https://github.com/andyyhope)
   [#4844](https://github.com/realm/SwiftLint/issues/4844)
 

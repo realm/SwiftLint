@@ -117,12 +117,14 @@ private final class ThrowsVisitor: SyntaxVisitor {
 
         let catchItems = lastCatchClause.catchItems ?? []
 
-        // If there are no catch items in the last clause, we'll catch all errors thrown - all good here!
+        // If there are no catch items in the last clause,
+        // we'll catch all errors thrown - all good here!
         if catchItems.isEmpty {
             return .skipChildren
         }
 
-        // If we have a value binding pattern, only an IdentifierPatternSyntax will catch any error, visit children for `try`s.
+        // If we have a value binding pattern, only an IdentifierPatternSyntax
+        // will catch any error, visit children for `try`s.
         guard let pattern = catchItems.last?.pattern?.as(ValueBindingPatternSyntax.self),
               pattern.valuePattern.is(IdentifierPatternSyntax.self) else {
             return .visitChildren

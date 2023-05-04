@@ -362,12 +362,6 @@ class ExplicitTopLevelACLRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-class ExplicitTryTaskRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExplicitTryTaskRule.description)
-    }
-}
-
 class ExplicitTypeInterfaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitTypeInterfaceRule.description)
@@ -1217,6 +1211,12 @@ class UnavailableConditionRuleGeneratedTests: SwiftLintTestCase {
 class UnavailableFunctionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnavailableFunctionRule.description)
+    }
+}
+
+class UnhandledTryInTaskRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnhandledTryInTaskRule.description)
     }
 }
 

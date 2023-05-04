@@ -108,7 +108,7 @@ extension Configuration {
     /// - parameter fileManager: The file manager to get child paths in a given parent location.
     ///
     /// - returns: The expanded excluded file paths.
-    public func excludedPaths(fileManager: LintableFileManager) -> [String] {
+    public func excludedPaths(fileManager: LintableFileManager = FileManager.default) -> [String] {
         return excludedPaths
             .flatMap(Glob.resolveGlob)
             .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }

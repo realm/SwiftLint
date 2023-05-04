@@ -227,8 +227,7 @@ extension Configuration {
                 return filterExcludedPathsByPrefix(in: scriptInputPaths)
                     .map(SwiftLintFile.init(pathDeferringReading:))
             } else {
-                let excluded = excludedPaths(fileManager: FileManager.default)
-                return filterExcludedPaths(excluded, in: scriptInputPaths)
+                return filterExcludedPaths(excludedPaths(), in: scriptInputPaths)
                     .map(SwiftLintFile.init(pathDeferringReading:))
             }
         }
@@ -242,14 +241,13 @@ extension Configuration {
 
             queuedPrintError("\(visitor.action) Swift files \(filesInfo)")
         }
-        let excludedPaths = excludedPaths(fileManager: FileManager.default)
         return visitor.paths.flatMap {
             self.lintableFiles(
                 inPath: $0,
                 forceExclude: visitor.forceExclude,
                 excludeBy: visitor.useExcludingByPrefix
                     ? .prefix
-                    : .paths(excludedPaths: excludedPaths))
+                    : .paths(excludedPaths: excludedPaths()))
         }
     }
 

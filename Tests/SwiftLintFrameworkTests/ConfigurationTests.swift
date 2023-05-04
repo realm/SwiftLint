@@ -342,7 +342,7 @@ class ConfigurationTests: SwiftLintTestCase {
             excludedPaths: [Mock.Dir.level3.stringByAppendingPathComponent("*.swift")]
         )
 
-        let excludedPaths = configuration.excludedPaths(fileManager: FileManager.default)
+        let excludedPaths = configuration.excludedPaths()
         let lintablePaths = configuration.lintablePaths(inPath: "",
                                                         forceExclude: false,
                                                         excludeBy: .paths(excludedPaths: excludedPaths))

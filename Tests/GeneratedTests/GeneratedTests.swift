@@ -980,6 +980,12 @@ class RedundantOptionalInitializationRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class RedundantSelfInClosureRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantSelfInClosureRule.description)
+    }
+}
+
 class RedundantSetAccessControlRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantSetAccessControlRule.description)

@@ -328,7 +328,6 @@ public extension IntegerLiteralExprSyntax {
         guard case let .integerLiteral(number) = digits.tokenKind else {
             return false
         }
-
         return number.isZero
     }
 }
@@ -338,8 +337,29 @@ public extension FloatLiteralExprSyntax {
         guard case let .floatingLiteral(number) = floatingDigits.tokenKind else {
             return false
         }
-
         return number.isZero
+    }
+}
+
+public extension IdentifierExprSyntax {
+    var isSelf: Bool {
+        identifier.text == "self"
+    }
+}
+
+public extension MemberAccessExprSyntax {
+    var isSelfAccess: Bool {
+        base?.as(IdentifierExprSyntax.self)?.isSelf == true
+    }
+}
+
+public extension ClosureCaptureItemSyntax {
+    var capturesSelf: Bool {
+        expression.as(IdentifierExprSyntax.self)?.isSelf == true
+    }
+
+    var capturesWeakly: Bool {
+        specifier?.specifier.text == "weak"
     }
 }
 

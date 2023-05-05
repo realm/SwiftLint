@@ -18,6 +18,17 @@
 * Add `sorted_enum_cases` rule which warns when enum cases are not sorted.  
   [kimdv](https://github.com/kimdv)
 
+* Add new `redundant_self_in_closure` rule that triggers in closures on
+  explicitly used `self` when it's actually not needed due to:
+  * Strongly captured `self` (`{ [self] in ... }`)
+  * Closure used in a struct declaration (`self` can always be omitted)
+  * Anonymous closures that are directly called (`{ ... }()`) as they are
+    definitly not escaping
+  * Weakly captured `self` with explicit unwrapping
+
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#59](https://github.com/realm/SwiftLint/issues/59)
+
 * Extend `xct_specific_matcher` rule to check for boolean asserts on (un)equal
   comparisons. The rule can be configured with the matchers that should trigger
   rule violations. By default, all matchers trigger, but that can be limited to

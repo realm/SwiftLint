@@ -157,7 +157,7 @@ private extension AttributeListSyntax {
                     return (attribute, .sameLineAsDeclaration)
                 } else if configuration.alwaysOnNewLine.contains(atPrefixedName) {
                     return (attribute, .dedicatedLine)
-                } else if attribute.argument != nil {
+                } else if attribute.argument != nil, configuration.attributesWithArgumentsAlwaysOnNewLine {
                     return (attribute, .dedicatedLine)
                 }
 
@@ -165,20 +165,9 @@ private extension AttributeListSyntax {
             }
     }
 
-    var hasAttributeWithKeypathArgument: Bool {
-        contains { element in
-            switch element {
-            case .attribute(let attribute):
-                return attribute.hasKeypathArgument
-            case .ifConfigDecl:
-                return false
-            }
-        }
-    }
-
     // swiftlint:disable:next cyclomatic_complexity
     func makeHelper(locationConverter: SourceLocationConverter) -> RuleHelper? {
-        guard let parent, !hasAttributeWithKeypathArgument else {
+        guard let parent else {
             return nil
         }
 
@@ -224,11 +213,5 @@ private extension AttributeListSyntax {
             keywordLine: keywordLine,
             shouldBeOnSameLine: shouldBeOnSameLine
         )
-    }
-}
-
-private extension AttributeSyntax {
-    var hasKeypathArgument: Bool {
-        argument?.as(TupleExprElementListSyntax.self)?.first?.expression.is(KeyPathExprSyntax.self) == true
     }
 }

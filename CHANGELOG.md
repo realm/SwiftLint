@@ -2,7 +2,14 @@
 
 #### Breaking
 
-* None.
+* The `attributes` rule now expects attributes with arguments to be placed
+  on their own line above the declaration they are supposed to influence.
+  This applies to attributes with any kinds of arguments including single
+  key path arguments which were previously handled in a different way. This
+  behavior can be turned off by setting `attributes_with_arguments_always_on_line_above`
+  to `false.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4843](https://github.com/realm/SwiftLint/issues/4843)
 
 #### Experimental
 
@@ -58,6 +65,14 @@
 * Prepend `warning: ` to error messages so that they show in Xcode.  
   [whiteio](https://github.com/whiteio)
   [#4923](https://github.com/realm/SwiftLint/issues/4923)
+
+* The `attributes` rule received a new boolean option
+  `attributes_with_arguments_always_on_line_above` which is `true` by default.
+  Setting it to `false` ensures that attributes with arguments like
+  `@Persisted(primaryKey: true)` don't violate the rule if they are on the same
+  line with the variable declaration.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4843](https://github.com/realm/SwiftLint/issues/4843)
 
 #### Bug Fixes
 

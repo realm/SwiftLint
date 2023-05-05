@@ -1,5 +1,6 @@
 struct AttributesConfiguration: SeverityBasedRuleConfiguration, Equatable {
     var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var attributesWithArgumentsAlwaysOnNewLine = true
     private(set) var alwaysOnSameLine = Set<String>()
     private(set) var alwaysOnNewLine = Set<String>()
 
@@ -18,6 +19,11 @@ struct AttributesConfiguration: SeverityBasedRuleConfiguration, Equatable {
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
+        }
+
+        if let attributesWithArgumentsAlwaysOnNewLine
+                = configuration["attributes_with_arguments_always_on_line_above"] as? Bool {
+            self.attributesWithArgumentsAlwaysOnNewLine = attributesWithArgumentsAlwaysOnNewLine
         }
 
         if let alwaysOnSameLine = configuration["always_on_same_line"] as? [String] {

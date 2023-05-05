@@ -128,7 +128,7 @@ struct UnusedDeclarationRuleExamples {
           "hello"
         }
         """)
-    ] + platformSpecificNonTriggeringExamples
+    ] + platformSpecificNonTriggeringExamples + versionSpecificNonTriggeringExamples
 
     static let triggeringExamples = [
         Example("""
@@ -300,5 +300,21 @@ struct UnusedDeclarationRuleExamples {
 #else
     private static let platformSpecificNonTriggeringExamples = [Example]()
     private static let platformSpecificTriggeringExamples = [Example]()
+#endif
+
+#if compiler(>=5.8)
+    private static let versionSpecificNonTriggeringExamples = [
+        Example("""
+            struct S {
+                var i: Int? = nil
+                func f() {
+                    if let i { print(i) }
+                }
+            }
+            S().f()
+        """)
+    ]
+#else
+    private static let versionSpecificNonTriggeringExamples = [Example]()
 #endif
 }

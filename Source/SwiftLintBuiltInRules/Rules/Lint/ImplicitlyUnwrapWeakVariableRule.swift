@@ -1,11 +1,9 @@
-
-import SwiftSyntax
 import SourceKittenFramework
+import SwiftSyntax
 
 struct ImplicitlyUnwrapWeakVariableRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
-    
     var configuration = SeverityConfiguration(.warning)
-    
+
     static var description = RuleDescription(
         identifier: "implicitly_unwrapped_weak",
         name: "Implicitly Unwrapped Weak Variable",
@@ -37,7 +35,7 @@ struct ImplicitlyUnwrapWeakVariableRule: ConfigurationProviderRule, SwiftSyntaxR
             """)
         ]
     )
-    
+
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
@@ -45,12 +43,11 @@ struct ImplicitlyUnwrapWeakVariableRule: ConfigurationProviderRule, SwiftSyntaxR
 
 private extension ImplicitlyUnwrapWeakVariableRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        
         override func visitPost(_ node: VariableDeclSyntax) {
             guard !node.isIBOutlet, node.weakOrUnownedModifier != nil else {
                 return
             }
-            
+
             if node.bindings.first?.typeAnnotation?.type.as(ImplicitlyUnwrappedOptionalTypeSyntax.self) != nil {
                 violations.append(node.endPositionBeforeTrailingTrivia)
             }

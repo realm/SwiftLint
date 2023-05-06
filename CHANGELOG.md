@@ -114,6 +114,13 @@
   At the same time, make it an opt-in rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4615](https://github.com/realm/SwiftLint/issues/4615)
+  
+* Interpret strings in `excluded` option of `identifier_name`, 
+  `type_name` and `generic_type_name` rules as regular expression. Existing
+  configurations should remain working without notice as long as they don't
+  contain characters that must be escaped in regular expression.  
+  [Moly](https://github.com/kyounh12)
+  [#4655](https://github.com/realm/SwiftLint/pull/4655)
 
 #### Experimental
 
@@ -147,11 +154,6 @@
 * Add rule identifier to output of Emoji reporter.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4707](https://github.com/realm/SwiftLint/issues/4707)
-
-* Interpret strings in `excluded` option of `identifier_name`, 
-  `type_name` and `generic_type_name` rules as regex.  
-  [Moly](https://github.com/kyounh12)
-  [#4655](https://github.com/realm/SwiftLint/pull/4655)
 
 * Add new `direct_return` rule that triggers on `return` statements returning
   variables that have been declared in the statement before only.  

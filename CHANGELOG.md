@@ -343,6 +343,7 @@
   to `false.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4843](https://github.com/realm/SwiftLint/issues/4843)
+
 * Removed support for disable and enable commands in multiline comments.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4798](https://github.com/realm/SwiftLint/issues/4798)
@@ -403,7 +404,7 @@
   subclasses.  
   [AndrewDMontgomery](https://github.com/andrewdmontgomery)
   [#4875](https://github.com/realm/SwiftLint/pull/4875)
-  
+
 * Prepend `warning: ` to error messages so that they show in Xcode.  
   [whiteio](https://github.com/whiteio)
   [#4923](https://github.com/realm/SwiftLint/issues/4923)

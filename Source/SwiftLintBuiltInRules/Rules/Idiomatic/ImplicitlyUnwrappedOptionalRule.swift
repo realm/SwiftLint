@@ -17,7 +17,13 @@ struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRu
             Example("@IBOutlet var label: [UILabel!]"),
             Example("if !boolean {}"),
             Example("let int: Int? = 42"),
-            Example("let int: Int? = nil")
+            Example("let int: Int? = nil"),
+            Example("""
+            class MyClass {
+                @IBOutlet
+                weak var bar: SomeObject!
+            }
+            """, configuration: ["mode": "all_except_iboutlets"], excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("let label: ↓UILabel!"),
@@ -29,7 +35,12 @@ struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRu
             Example("let int: ↓Int! = nil"),
             Example("var int: ↓Int! = 42"),
             Example("let collection: AnyCollection<↓Int!>"),
-            Example("func foo(int: ↓Int!) {}")
+            Example("func foo(int: ↓Int!) {}"),
+            Example("""
+            class MyClass {
+                weak var bar: ↓SomeObject!
+            }
+            """)
         ]
     )
 

@@ -362,25 +362,29 @@
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">int</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">label</span><span class="p">:</span> <span class="err">↓</span><span class="kt">UILabel</span><span class="o">!</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">IBOutlet</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">IBOutlet</span><span class="p">:</span> <span class="err">↓</span><span class="kt">UILabel</span><span class="o">!</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">labels</span><span class="p">:</span> <span class="p">[</span><span class="kt">UILabel</span><span class="o">!</span><span class="p">]</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">labels</span><span class="p">:</span> <span class="p">[</span><span class="err">↓</span><span class="kt">UILabel</span><span class="o">!</span><span class="p">]</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">ints</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="o">!</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">42</span><span class="p">,</span> <span class="kc">nil</span><span class="p">,</span> <span class="mi">42</span><span class="p">]</span>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">ints</span><span class="p">:</span> <span class="p">[</span><span class="err">↓</span><span class="kt">Int</span><span class="o">!</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">42</span><span class="p">,</span> <span class="kc">nil</span><span class="p">,</span> <span class="mi">42</span><span class="p">]</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">IBOutlet</span><span class="o">!</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">label</span><span class="p">:</span> <span class="err">↓</span><span class="kt">IBOutlet</span><span class="o">!</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">int</span><span class="p">:</span> <span class="kt">Int</span><span class="o">!</span> <span class="o">=</span> <span class="mi">42</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">int</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Int</span><span class="o">!</span> <span class="o">=</span> <span class="mi">42</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">int</span><span class="p">:</span> <span class="kt">Int</span><span class="o">!</span> <span class="o">=</span> <span class="kc">nil</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">int</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Int</span><span class="o">!</span> <span class="o">=</span> <span class="kc">nil</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">int</span><span class="p">:</span> <span class="kt">Int</span><span class="o">!</span> <span class="o">=</span> <span class="mi">42</span>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">int</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Int</span><span class="o">!</span> <span class="o">=</span> <span class="mi">42</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">collection</span><span class="p">:</span> <span class="kt">AnyCollection</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">!&gt;</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">collection</span><span class="p">:</span> <span class="kt">AnyCollection</span><span class="o">&lt;</span><span class="err">↓</span><span class="kt">Int</span><span class="o">!&gt;</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span><span class="nv">int</span><span class="p">:</span> <span class="kt">Int</span><span class="o">!</span><span class="p">)</span> <span class="p">{}</span>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span><span class="nv">int</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Int</span><span class="o">!</span><span class="p">)</span> <span class="p">{}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">MyClass</span> <span class="p">{</span>
+    <span class="k">weak</span> <span class="k">var</span> <span class="nv">bar</span><span class="p">:</span> <span class="err">↓</span><span class="kt">SomeObject</span><span class="o">!</span>
+<span class="p">}</span>
 </code></pre>
 
           </div>

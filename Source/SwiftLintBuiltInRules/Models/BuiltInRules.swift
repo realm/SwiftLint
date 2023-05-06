@@ -86,6 +86,7 @@ public let builtInRules: [Rule.Type] = [
     IdentifierNameRule.self,
     ImplicitGetterRule.self,
     ImplicitReturnRule.self,
+    ImplicitlyUnwrapWeakVariableRule.self,
     ImplicitlyUnwrappedOptionalRule.self,
     InclusiveLanguageRule.self,
     IndentationWidthRule.self,

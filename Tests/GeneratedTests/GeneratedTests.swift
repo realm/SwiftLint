@@ -506,6 +506,12 @@ class ImplicitReturnRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class ImplicitlyUnwrapWeakVariableRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ImplicitlyUnwrapWeakVariableRule.description)
+    }
+}
+
 class ImplicitlyUnwrappedOptionalRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ImplicitlyUnwrappedOptionalRule.description)

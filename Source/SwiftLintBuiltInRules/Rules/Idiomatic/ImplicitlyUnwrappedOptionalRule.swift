@@ -20,16 +20,16 @@ struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRu
             Example("let int: Int? = nil")
         ],
         triggeringExamples: [
-            Example("let label: UILabel!"),
-            Example("let IBOutlet: UILabel!"),
-            Example("let labels: [UILabel!]"),
-            Example("var ints: [Int!] = [42, nil, 42]"),
-            Example("let label: IBOutlet!"),
-            Example("let int: Int! = 42"),
-            Example("let int: Int! = nil"),
-            Example("var int: Int! = 42"),
-            Example("let collection: AnyCollection<Int!>"),
-            Example("func foo(int: Int!) {}")
+            Example("let label: ↓UILabel!"),
+            Example("let IBOutlet: ↓UILabel!"),
+            Example("let labels: [↓UILabel!]"),
+            Example("var ints: [↓Int!] = [42, nil, 42]"),
+            Example("let label: ↓IBOutlet!"),
+            Example("let int: ↓Int! = 42"),
+            Example("let int: ↓Int! = nil"),
+            Example("var int: ↓Int! = 42"),
+            Example("let collection: AnyCollection<↓Int!>"),
+            Example("func foo(int: ↓Int!) {}")
         ]
     )
 

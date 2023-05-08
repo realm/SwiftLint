@@ -6,7 +6,7 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
     static let description = RuleDescription(
         identifier: "unhandled_throwing_task",
         name: "Unhandled Throwing Task",
-        description: "Errors thrown inside this task are not handled",
+        description: "Errors thrown inside this task are not handled (see this forum thread for more details: https://forums.swift.org/t/task-initializer-with-throwing-closure-swallows-error/56066)",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -123,6 +123,24 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
             ↓Task<Void,_> {
               throw FooError.bar
             }
+            """),
+            Example("""
+            ↓Task {
+              do {
+                try foo()
+              } catch {
+                try bar()
+              }
+            }
+            """),
+            Example("""
+            ↓Task {
+              do {
+                try foo()
+              } catch {
+                throw BarError()
+              }
+            }
             """)
         ]
     )
@@ -198,6 +216,8 @@ private extension FunctionCallExprSyntax {
     }
 }
 
+/// If the `doesThrow` property is true after visiting, then this node throws an error that is "unhandled."
+/// Try statements inside a `do` with a `catch` that handles all errors will not be marked as throwing.
 private final class ThrowsVisitor: SyntaxVisitor {
     var doesThrow = false
 
@@ -209,20 +229,19 @@ private final class ThrowsVisitor: SyntaxVisitor {
 
         let catchItems = lastCatchClause.catchItems ?? []
 
-        // If there are no catch items in the last clause,
-        // we'll catch all errors thrown - all good here!
-        if catchItems.isEmpty {
-            return .skipChildren
-        }
-
-        // If we have a value binding pattern, only an IdentifierPatternSyntax
-        // will catch any error, visit children for `try`s.
-        guard let pattern = catchItems.last?.pattern?.as(ValueBindingPatternSyntax.self),
-              pattern.valuePattern.is(IdentifierPatternSyntax.self) else {
+        // If we have a value binding pattern, only an IdentifierPatternSyntax will catch
+        // any error; if it's not an IdentifierPatternSyntax, we need to visit children.
+        if let pattern = catchItems.last?.pattern?.as(ValueBindingPatternSyntax.self),
+           !pattern.valuePattern.is(IdentifierPatternSyntax.self) {
             return .visitChildren
         }
 
-        // Any `try`s are handled by the catch clauses, no throwing here!
+        // Check the catch clause tree for unhandled throws.
+        if ThrowsVisitor(viewMode: .sourceAccurate).walk(tree: lastCatchClause, handler: \.doesThrow) {
+            doesThrow = true
+        }
+
+        // We don't need to visit children of the `do` node, since all errors are handled by the catch.
         return .skipChildren
     }
 

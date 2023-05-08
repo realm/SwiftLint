@@ -21,8 +21,8 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, Configura
         name: "Unneeded Synthesized Initializer",
         description: "This initializer would be synthesized automatically - you do not need to define it",
         kind: .lint,
-        nonTriggeringExamples: [], // UnneededSynthesizedInitializerRuleExamples.nonTriggering,
-        triggeringExamples: [], // UnneededSynthesizedInitializerRuleExamples.triggering
+        nonTriggeringExamples: UnneededSynthesizedInitializerRuleExamples.nonTriggering,
+        triggeringExamples: UnneededSynthesizedInitializerRuleExamples.triggering,
         corrections: UnneededSynthesizedInitializerRuleExamples.corrections
     )
 

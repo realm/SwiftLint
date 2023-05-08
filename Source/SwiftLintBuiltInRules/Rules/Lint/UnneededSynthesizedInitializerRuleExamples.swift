@@ -286,16 +286,136 @@ enum UnneededSynthesizedInitializerRuleExamples {
         Example("""
                 struct Foo {
                     let bar: String
-                
-                   ↓init(bar: String) {
+
+                   init(bar: String) {
                         self.bar = bar
                     }
                 }
-                """):
+                """): Example("""
+                              struct Foo {
+                                  let bar: String
+                              }
+                              """),
         Example("""
                 struct Foo {
-                    let bar: String
+                    var bar: String
+
+                    init(bar: String) {
+                        self.bar = bar
+                    }
                 }
-                """)
+                """): Example("""
+                              struct Foo {
+                                  var bar: String
+                              }
+                              """),
+        Example("""
+                private struct Foo {
+                    let bar: String
+
+                    init(bar: String) {
+                        self.bar = bar
+                    }
+                }
+                """): Example("""
+                              private struct Foo {
+                                  let bar: String
+                              }
+                              """),
+        Example("""
+                fileprivate struct Foo {
+                    let bar: String
+
+                    init(bar: String) {
+                        self.bar = bar
+                    }
+                }
+                """): Example("""
+                              fileprivate struct Foo {
+                                  let bar: String
+                              }
+                              """),
+        Example("""
+                internal struct Foo {
+                    fileprivate var bar: String
+
+                    fileprivate init(bar: String) {
+                        self.bar = bar
+                    }
+                }
+                """): Example("""
+                              internal struct Foo {
+                                  fileprivate var bar: String
+                              }
+                              """),
+        Example("""
+                internal struct Foo {
+                    private var bar: String
+
+                    private init(bar: String) {
+                        self.bar = bar
+                    }
+                }
+                """): Example("""
+                              internal struct Foo {
+                                  private var bar: String
+                              }
+                              """),
+        Example("""
+                struct Foo {
+                    var foo: String
+                    var bar: String
+
+                    init(foo: String, bar: String) {
+                        self.foo = foo
+                        self.bar = bar
+                    }
+                }
+                """): Example("""
+                              struct Foo {
+                                  var foo: String
+                                  var bar: String
+                              }
+                              """),
+        Example("""
+                internal struct Foo {
+                    var bar: String
+
+                    internal init(bar: String) {
+                        self.bar = bar
+                    }
+                }
+                """): Example("""
+                              internal struct Foo {
+                                  var bar: String
+                              }
+                              """),
+        Example("""
+                struct Foo {
+                    var bar: String = ""
+
+                    init() {
+                        // empty initializer will be generated automatically
+                        // when all vars have default values
+                    }
+                }
+                """): Example("""
+                              struct Foo {
+                                  var bar: String = ""
+                              }
+                              """),
+        Example("""
+                struct Foo {
+                    var bar: String = ""
+
+                    init() {
+                        // empty initializer
+                    }
+                }
+                """): Example("""
+                              struct Foo {
+                                  var bar: String = ""
+                              }
+                              """)
     ]
 }

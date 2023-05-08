@@ -68,14 +68,16 @@ private extension UnneededSynthesizedInitializerRule {
             unneededInitializers = node.unneededInitializers.filter {
                 !$0.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             }
-            correctionPositions.append(contentsOf: unneededInitializers.map { $0.positionAfterSkippingLeadingTrivia })
             return super.visit(node)
         }
         
         override func visit(_ node: InitializerDeclSyntax) -> DeclSyntax {
             if unneededInitializers.contains(node) {
+                correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
                 let expr: DeclSyntax = ""
                 return expr
+                    .with(\.leadingTrivia, node.leadingTrivia)
+                    .with(\.trailingTrivia, node.trailingTrivia)
             }
             return super.visit(node)
         }

@@ -242,9 +242,23 @@ enum UnneededSynthesizedInitializerRuleExamples {
                     var bar: String = ""
 
                    ↓init() {
-                        // do nothing here
+                        // empty initializer will be generated automatically
+                        // when all vars have default values
                     }
                 }
-                """).focused()
+                """),
+        Example("""
+                struct Foo {
+                    var bar: String = ""
+
+                   ↓init() {
+                        // empty initializer
+                    }
+
+                   ↓init(bar: String = "") {
+                        self.bar = bar
+                    }
+                }
+                """)
     ]
 }

@@ -39,35 +39,20 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, Configura
 
 private extension UnneededSynthesizedInitializerRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private(set) var unneededInitializerVisitor: UnneededInitializerVisitor
-        
-        override init(viewMode: SyntaxTreeViewMode) {
-            unneededInitializerVisitor = UnneededInitializerVisitor(viewMode: viewMode)
-            super.init(viewMode: viewMode)
-        }
-        
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            let result = unneededInitializerVisitor.visit(node)
-            if
-                unneededInitializerVisitor.unneededInitializers.isNotEmpty,
-                unneededInitializerVisitor.unneededInitializers.count > violations.count
-            {
-                violations += unneededInitializerVisitor.unneededInitializers.dropFirst(violations.count).map {
-                    let initializerType = $0.parameterList.isEmpty ? "default" : "memberwise"
-                    let reason = "This \(initializerType) initializer would be synthesized automatically - " +
-                    "you do not need to define it"
-                    return ReasonedRuleViolation(position: $0.positionAfterSkippingLeadingTrivia, reason: reason)
-                }
+            violations += node.unneededInitializers.map {
+                let initializerType = $0.parameterList.isEmpty ? "default" : "memberwise"
+                let reason = "This \(initializerType) initializer would be synthesized automatically - " +
+                "you do not need to define it"
+                return ReasonedRuleViolation(position: $0.positionAfterSkippingLeadingTrivia, reason: reason)
             }
-            return result
+            return .skipChildren
         }
     }
-}
 
-private extension UnneededSynthesizedInitializerRule {
     final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         var correctionPositions: [SwiftSyntax.AbsolutePosition] = []
-        
+
         // private(set) var correctionPositions: [AbsolutePosition] = []
         let locationConverter: SourceLocationConverter
         let disabledRegions: [SourceRange]
@@ -81,21 +66,11 @@ private extension UnneededSynthesizedInitializerRule {
             return super.visit(node)
         }
     }
-
-}
-
-private final class UnneededInitializerVisitor: SyntaxVisitor {
-    private(set) var unneededInitializers: Array<InitializerDeclSyntax> = []
-
-    override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-        unneededInitializers += node.unneededInitializers
-        return .skipChildren
-    }
 }
 
 private extension StructDeclSyntax {
     var unneededInitializers: [InitializerDeclSyntax] {
-        let extraneousInitializers = extraneousInitializers(self)
+        let extraneousInitializers = extraneousInitializers()
         let initializersCount = memberBlock.members.filter { $0.decl.is(InitializerDeclSyntax.self) }.count
         if extraneousInitializers.count == initializersCount {
             return extraneousInitializers
@@ -105,12 +80,12 @@ private extension StructDeclSyntax {
 
     // Collects all of the initializers that could be replaced by the synthesized memberwise
     // initializer(s).
-    private func extraneousInitializers(_ node: StructDeclSyntax) -> [InitializerDeclSyntax] {
+    private func extraneousInitializers() -> [InitializerDeclSyntax] {
         // swiftlint:disable:previous cyclomatic_complexity
         var storedProperties: [VariableDeclSyntax] = []
         var initializers: [InitializerDeclSyntax] = []
 
-        for memberItem in node.memberBlock.members {
+        for memberItem in memberBlock.members {
             let member = memberItem.decl
             // Collect all stored variables into a list
             if let varDecl = member.as(VariableDeclSyntax.self) {
@@ -262,7 +237,6 @@ private extension StructDeclSyntax {
         }
     }
 }
-
 
 private extension ModifierListSyntax {
     var accessLevelModifier: DeclModifierSyntax? { first { $0.isAccessLevelModifier } }

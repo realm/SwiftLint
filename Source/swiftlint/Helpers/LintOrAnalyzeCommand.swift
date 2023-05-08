@@ -27,6 +27,7 @@ enum LintOrAnalyzeMode {
 struct LintOrAnalyzeCommand {
     static func run(_ options: LintOrAnalyzeOptions) async throws {
         if options.inProcessSourcekit {
+            // TODO: [08/11/2024] Remove deprecation warning after ~2 years.
             queuedPrintError(
                 """
                 warning: The --in-process-sourcekit option is deprecated. \

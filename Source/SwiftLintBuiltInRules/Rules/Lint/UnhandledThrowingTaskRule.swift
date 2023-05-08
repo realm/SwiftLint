@@ -6,7 +6,10 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
     static let description = RuleDescription(
         identifier: "unhandled_throwing_task",
         name: "Unhandled Throwing Task",
-        description: "Errors thrown inside this task are not handled (see this forum thread for more details: https://forums.swift.org/t/task-initializer-with-throwing-closure-swallows-error/56066)",
+        description: "Errors thrown inside this task are not handled, which may be unexpected. " +
+            "Handle errors inside the task, or use `try await` to access the Tasks value and handle errors." +
+            "(see this forum thread for more details: " +
+            "https://forums.swift.org/t/task-initializer-with-throwing-closure-swallows-error/56066)",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

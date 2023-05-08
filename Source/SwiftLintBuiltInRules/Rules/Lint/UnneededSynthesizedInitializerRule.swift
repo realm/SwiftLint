@@ -21,8 +21,9 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, Configura
         name: "Unneeded Synthesized Initializer",
         description: "This initializer would be synthesized automatically - you do not need to define it",
         kind: .lint,
-        nonTriggeringExamples: UnneededSynthesizedInitializerRuleExamples.nonTriggering,
-        triggeringExamples: UnneededSynthesizedInitializerRuleExamples.triggering
+        nonTriggeringExamples: [], // UnneededSynthesizedInitializerRuleExamples.nonTriggering,
+        triggeringExamples: [], // UnneededSynthesizedInitializerRuleExamples.triggering
+        corrections: UnneededSynthesizedInitializerRuleExamples.corrections
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
@@ -52,7 +53,8 @@ private extension UnneededSynthesizedInitializerRule {
 
     final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         var correctionPositions: [SwiftSyntax.AbsolutePosition] = []
-
+        private var unneededInitializers: [InitializerDeclSyntax] = []
+        
         // private(set) var correctionPositions: [AbsolutePosition] = []
         let locationConverter: SourceLocationConverter
         let disabledRegions: [SourceRange]
@@ -63,11 +65,17 @@ private extension UnneededSynthesizedInitializerRule {
         }
 
         override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
-            let unneededInitializers = node.unneededInitializers.filter {
+            unneededInitializers = node.unneededInitializers.filter {
                 !$0.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             }
-            guard unneededInitializers.isNotEmpty else {
-                return super.visit(node)
+            correctionPositions.append(contentsOf: unneededInitializers.map { $0.positionAfterSkippingLeadingTrivia })
+            return super.visit(node)
+        }
+        
+        override func visit(_ node: InitializerDeclSyntax) -> DeclSyntax {
+            if unneededInitializers.contains(node) {
+                let expr: DeclSyntax = ""
+                return expr
             }
             return super.visit(node)
         }

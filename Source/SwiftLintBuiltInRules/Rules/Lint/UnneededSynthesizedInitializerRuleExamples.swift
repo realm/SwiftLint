@@ -281,4 +281,21 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 }
                 """)
     ]
+    
+    static let corrections = [
+        Example("""
+                struct Foo {
+                    let bar: String
+                
+                   ↓init(bar: String) {
+                        self.bar = bar
+                    }
+                }
+                """):
+        Example("""
+                struct Foo {
+                    let bar: String
+                }
+                """)
+    ]
 }

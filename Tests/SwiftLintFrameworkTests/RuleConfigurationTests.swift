@@ -9,7 +9,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
                        "max_length": ["warning": 170, "error": 700],
                        "excluded": "id",
                        "allowed_symbols": ["$"],
-                       "validates_start_with_lowercase": false] as [String: Any]
+                       "validates_start_with_lowercase": "warning"] as [String: Any]
         var nameConfig = NameConfiguration(minLengthWarning: 0,
                                            minLengthError: 0,
                                            maxLengthWarning: 0,
@@ -20,13 +20,28 @@ class RuleConfigurationTests: SwiftLintTestCase {
                                      maxLengthError: 700,
                                      excluded: ["id"],
                                      allowedSymbols: ["$"],
-                                     validatesStartWithLowercase: false)
+                                     validatesStartWithLowercase: .warning)
         do {
             try nameConfig.apply(configuration: config)
             XCTAssertEqual(nameConfig, comp)
         } catch {
             XCTFail("Did not configure correctly")
         }
+    }
+
+    func testNameConfigurationWithDeprecatedBooleanSeverity() throws {
+        var nameConfig = NameConfiguration(minLengthWarning: 0,
+                                           minLengthError: 0,
+                                           maxLengthWarning: 0,
+                                           maxLengthError: 0)
+
+        XCTAssertEqual(nameConfig.validatesStartWithLowercase, .error)
+
+        try nameConfig.apply(configuration: ["validates_start_with_lowercase": false])
+        XCTAssertNil(nameConfig.validatesStartWithLowercase)
+
+        try nameConfig.apply(configuration: ["validates_start_with_lowercase": true])
+        XCTAssertEqual(nameConfig.validatesStartWithLowercase, .error)
     }
 
     func testNameConfigurationThrowsOnBadConfig() {

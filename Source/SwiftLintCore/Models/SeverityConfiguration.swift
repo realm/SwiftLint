@@ -1,5 +1,10 @@
 /// A rule configuration that allows specifying the desired severity level for violations.
 public struct SeverityConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    /// Configuration with a warning severity.
+    public static let error = Self(.error)
+    /// Configuration with an error severity.
+    public static let warning = Self(.warning)
+
     public var consoleDescription: String {
         return severity.rawValue
     }

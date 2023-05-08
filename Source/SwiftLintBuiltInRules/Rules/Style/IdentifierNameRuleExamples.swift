@@ -27,7 +27,11 @@ internal struct IdentifierNameRuleExamples {
     ]
 
     static let triggeringExamples = [
-        Example("↓let MyLet = 0"),
+        Example(
+            "↓let MyLet = 0",
+            configuration: ["validates_start_with_lowercase": true],
+            excludeFromDocumentation: true
+        ),
         Example("↓let _myLet = 0"),
         Example("private ↓let myLet_ = 0"),
         Example("↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
@@ -36,7 +40,15 @@ internal struct IdentifierNameRuleExamples {
         Example("↓let i = 0"),
         Example("↓var aa = 0"),
         Example("private ↓let _i = 0"),
-        Example("↓func IsOperator(name: String) -> Bool"),
-        Example("enum Foo { case ↓MyEnum }")
+        Example(
+            "↓func IsOperator(name: String) -> Bool",
+            configuration: ["validates_start_with_lowercase": "warning"],
+            excludeFromDocumentation: true
+        ),
+        Example(
+            "enum Foo { case ↓MyEnum }",
+            configuration: ["validates_start_with_lowercase": "error"],
+            excludeFromDocumentation: true
+        )
     ]
 }

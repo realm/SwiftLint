@@ -69,13 +69,12 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             guard !firstCharacterIsAllowed else {
                 return []
             }
-            let requiresCaseCheck = configuration.validatesStartWithLowercase
-            if requiresCaseCheck &&
+            if let requiresCaseCheck = configuration.validatesStartWithLowercase,
                 kind != .varStatic && name.isViolatingCase && !name.isOperator {
                 let reason = "\(type) name '\(name)' should start with a lowercase character"
                 return [
                     StyleViolation(ruleDescription: description,
-                                   severity: .error,
+                                   severity: requiresCaseCheck.severity,
                                    location: Location(file: file, byteOffset: offset),
                                    reason: reason)
                 ]

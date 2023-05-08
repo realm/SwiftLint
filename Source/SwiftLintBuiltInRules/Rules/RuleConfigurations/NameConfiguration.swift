@@ -2,18 +2,21 @@ import Foundation
 
 struct NameConfiguration: RuleConfiguration, Equatable {
     var consoleDescription: String {
-        return "(min_length) \(minLength.shortConsoleDescription), " +
+        var output = "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription), " +
             "excluded: \(excludedRegularExpressions.map { $0.pattern }.sorted()), " +
-            "allowed_symbols: \(allowedSymbolsSet.sorted()), " +
-            "validates_start_with_lowercase: \(validatesStartWithLowercase)"
+            "allowed_symbols: \(allowedSymbolsSet.sorted())"
+        if let requiresCaseCheck = validatesStartWithLowercase {
+            output += ", validates_start_with_lowercase: \(requiresCaseCheck.severity)"
+        }
+        return output
     }
 
     var minLength: SeverityLevelsConfiguration
     var maxLength: SeverityLevelsConfiguration
     var excludedRegularExpressions: Set<NSRegularExpression>
     private var allowedSymbolsSet: Set<String>
-    var validatesStartWithLowercase: Bool
+    var validatesStartWithLowercase: SeverityConfiguration?
 
     var minLengthThreshold: Int {
         return max(minLength.warning, minLength.error ?? minLength.warning)
@@ -33,7 +36,7 @@ struct NameConfiguration: RuleConfiguration, Equatable {
          maxLengthError: Int,
          excluded: [String] = [],
          allowedSymbols: [String] = [],
-         validatesStartWithLowercase: Bool = true) {
+         validatesStartWithLowercase: SeverityConfiguration? = .error) {
         minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
         self.excludedRegularExpressions = Set(excluded.compactMap {
@@ -63,8 +66,17 @@ struct NameConfiguration: RuleConfiguration, Equatable {
             self.allowedSymbolsSet = Set(allowedSymbols)
         }
 
-        if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? Bool {
-            self.validatesStartWithLowercase = validatesStartWithLowercase
+        if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? String {
+            var severity = SeverityConfiguration.warning
+            try severity.apply(configuration: validatesStartWithLowercase)
+            self.validatesStartWithLowercase = severity
+        } else if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? Bool {
+            self.validatesStartWithLowercase = validatesStartWithLowercase ? .error : nil
+            queuedPrintError("""
+                warning: The \"validates_start_with_lowercase\" configuration now expects a severity (warning or \
+                error). The boolean value 'true' will still enable it as an error. It is now deprecated and will be \
+                removed in a future release.
+                """)
         }
     }
 }

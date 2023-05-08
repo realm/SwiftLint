@@ -48,8 +48,11 @@ private extension UnneededSynthesizedInitializerRule {
         
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
             let result = unneededInitializerVisitor.visit(node)
-            if unneededInitializerVisitor.unneededInitializers.isNotEmpty {
-                violations = unneededInitializerVisitor.unneededInitializers.map {
+            if
+                unneededInitializerVisitor.unneededInitializers.isNotEmpty,
+                unneededInitializerVisitor.unneededInitializers.count > violations.count
+            {
+                violations += unneededInitializerVisitor.unneededInitializers.dropFirst(violations.count).map {
                     let initializerType = $0.parameterList.isEmpty ? "default" : "memberwise"
                     let reason = "This \(initializerType) initializer would be synthesized automatically - " +
                     "you do not need to define it"

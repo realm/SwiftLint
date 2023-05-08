@@ -159,6 +159,26 @@ enum UnneededSynthesizedInitializerRuleExamples {
                        self.parent = parent
                     }
                 }
+                """),
+        Example("""
+                internal struct Foo {
+                    var bar: String = ""
+                    var baz: Int = 0
+
+                    // these initializers must be declared
+                    init() { }
+
+                    init(bar: String = "", baz: Int = 0) {
+                        self.bar = bar
+                        self.baz = baz
+                    }
+
+                    // because manually declared initializers block
+                    // synthesization
+                    init(bar: String) {
+                        self.bar = bar
+                    }
+                }
                 """)
     ]
 

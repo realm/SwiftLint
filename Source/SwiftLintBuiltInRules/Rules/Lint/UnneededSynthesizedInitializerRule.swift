@@ -63,6 +63,12 @@ private extension UnneededSynthesizedInitializerRule {
         }
 
         override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
+            let unneededInitializers = node.unneededInitializers.filter {
+                !$0.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            }
+            guard unneededInitializers.isNotEmpty else {
+                return super.visit(node)
+            }
             return super.visit(node)
         }
     }

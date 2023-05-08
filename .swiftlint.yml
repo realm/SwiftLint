@@ -47,6 +47,7 @@ disabled_rules:
   - strict_fileprivate
   - superfluous_else
   - switch_case_on_newline
+  - todo
   - trailing_closure
   - type_contents_order
   - unused_capture_list

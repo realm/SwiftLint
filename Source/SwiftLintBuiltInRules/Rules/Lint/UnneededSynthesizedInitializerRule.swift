@@ -39,7 +39,7 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         // The synthesized memberwise initializer(s) are only created when there are no initializers.
         // If there are other initializers that cannot be replaced by a synthesized memberwise
         // initializer, then all of the initializers must remain.
-        let initializersCount = node.members.members.filter { $0.decl.is(InitializerDeclSyntax.self) }.count
+        let initializersCount = node.memberBlock.members.filter { $0.decl.is(InitializerDeclSyntax.self) }.count
         if extraneousInitializers.count == initializersCount {
             extraneousInitializers.forEach {
                 violations.append($0.positionAfterSkippingLeadingTrivia)
@@ -56,7 +56,7 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         var storedProperties: [VariableDeclSyntax] = []
         var initializers: [InitializerDeclSyntax] = []
 
-        for memberItem in node.members.members {
+        for memberItem in node.memberBlock.members {
             let member = memberItem.decl
             // Collect all stored variables into a list
             if let varDecl = member.as(VariableDeclSyntax.self) {

@@ -1,6 +1,3 @@
-// swiftlint:disable:next blanket_disable_command
-// swiftlint:disable inclusive_language - To ease migration from `whitelist_rules`
-
 extension Configuration {
     // MARK: - Subtypes
     internal enum Key: String, CaseIterable {
@@ -12,10 +9,8 @@ extension Configuration {
         case optInRules = "opt_in_rules"
         case reporter = "reporter"
         case swiftlintVersion = "swiftlint_version"
-        case useNestedConfigs = "use_nested_configs" // deprecated, always enabled
         case warningThreshold = "warning_threshold"
         case onlyRules = "only_rules"
-        case whitelistRules = "whitelist_rules" // deprecated in favor of onlyRules
         case indentation = "indentation"
         case analyzerRules = "analyzer_rules"
         case allowZeroLintableFiles = "allow_zero_lintable_files"
@@ -49,8 +44,7 @@ extension Configuration {
         let optInRules = defaultStringArray(dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue])
         let disabledRules = defaultStringArray(dict[Key.disabledRules.rawValue])
 
-        // Use either the new 'only_rules' or fallback to the deprecated 'whitelist_rules'
-        let onlyRules = defaultStringArray(dict[Key.onlyRules.rawValue] ?? dict[Key.whitelistRules.rawValue])
+        let onlyRules = defaultStringArray(dict[Key.onlyRules.rawValue])
         let analyzerRules = defaultStringArray(dict[Key.analyzerRules.rawValue])
 
         Self.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
@@ -127,20 +121,6 @@ extension Configuration {
         if dict[Key.enabledRules.rawValue] != nil {
             queuedPrintError("warning: '\(Key.enabledRules.rawValue)' has been renamed to " +
                 "'\(Key.optInRules.rawValue)' and will be completely removed in a " +
-                "future release.")
-        }
-
-        // Deprecation warning for "use_nested_configs"
-        if dict[Key.useNestedConfigs.rawValue] != nil {
-            queuedPrintError("warning: Support for '\(Key.useNestedConfigs.rawValue)' has " +
-                "been deprecated and its value is now ignored. Nested configuration files are " +
-                "now always considered.")
-        }
-
-        // Deprecation warning for "whitelist_rules"
-        if dict[Key.whitelistRules.rawValue] != nil {
-            queuedPrintError("warning: '\(Key.whitelistRules.rawValue)' has been renamed to " +
-                "'\(Key.onlyRules.rawValue)' and will be completely removed in a " +
                 "future release.")
         }
 

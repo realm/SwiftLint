@@ -76,17 +76,17 @@ private extension UnneededSynthesizedInitializerRule {
 
 private extension StructDeclSyntax {
     var unneededInitializers: [InitializerDeclSyntax] {
-        let extraneousInitializers = extraneousInitializers()
+        let unneededInitializers = findUnneededInitializers()
         let initializersCount = memberBlock.members.filter { $0.decl.is(InitializerDeclSyntax.self) }.count
-        if extraneousInitializers.count == initializersCount {
-            return extraneousInitializers
+        if unneededInitializers.count == initializersCount {
+            return unneededInitializers
         }
         return []
     }
 
     // Collects all of the initializers that could be replaced by the synthesized memberwise
     // initializer(s).
-    private func extraneousInitializers() -> [InitializerDeclSyntax] {
+    private func findUnneededInitializers() -> [InitializerDeclSyntax] {
         // swiftlint:disable:previous cyclomatic_complexity
         var storedProperties: [VariableDeclSyntax] = []
         var initializers: [InitializerDeclSyntax] = []
@@ -110,7 +110,7 @@ private extension StructDeclSyntax {
             }
         }
 
-        var extraneousInitializers = [InitializerDeclSyntax]()
+        var unneededInitializers = [InitializerDeclSyntax]()
         for initializer in initializers {
             guard
                 self.initializerParameters(initializer.parameterList, match: storedProperties)
@@ -129,9 +129,9 @@ private extension StructDeclSyntax {
             guard initializer.isInlinable == false else {
                 continue
             }
-            extraneousInitializers.append(initializer)
+            unneededInitializers.append(initializer)
         }
-        return extraneousInitializers
+        return unneededInitializers
     }
 
     private func noParameterInitializer(_ storedProperties: [VariableDeclSyntax]) -> Bool {

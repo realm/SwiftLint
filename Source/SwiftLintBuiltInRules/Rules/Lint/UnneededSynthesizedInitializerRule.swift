@@ -54,7 +54,7 @@ private extension UnneededSynthesizedInitializerRule {
     final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         var correctionPositions: [SwiftSyntax.AbsolutePosition] = []
         private var unneededInitializers: [InitializerDeclSyntax] = []
-        
+
         // private(set) var correctionPositions: [AbsolutePosition] = []
         let locationConverter: SourceLocationConverter
         let disabledRegions: [SourceRange]
@@ -70,7 +70,7 @@ private extension UnneededSynthesizedInitializerRule {
             }
             return super.visit(node)
         }
-        
+
         override func visit(_ node: InitializerDeclSyntax) -> DeclSyntax {
             if unneededInitializers.contains(node) {
                 correctionPositions.append(node.positionAfterSkippingLeadingTrivia)

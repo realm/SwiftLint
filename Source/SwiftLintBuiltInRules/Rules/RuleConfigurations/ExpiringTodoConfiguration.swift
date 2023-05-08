@@ -7,11 +7,6 @@ struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
 
         fileprivate(set) var opening: String
         fileprivate(set) var closing: String
-
-        init(opening: String, closing: String) {
-            self.opening = opening
-            self.closing = closing
-        }
     }
 
     var consoleDescription: String {

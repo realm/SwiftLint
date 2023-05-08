@@ -25,6 +25,7 @@ extension SwiftLint {
         func run() async throws {
             let allPaths: [String]
             if let path {
+                // TODO: [06/14/2024] Remove deprecation warning after ~2 years.
                 queuedPrintError("""
                     warning: The --path option is deprecated. Pass the path(s) to lint last to the swiftlint command.
                     """)

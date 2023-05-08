@@ -1,5 +1,6 @@
 import SwiftSyntax
 
+// TODO: [09/07/2024] Remove deprecation warning after ~2 years.
 private let warnDeprecatedOnceImpl: Void = {
     queuedPrintError("""
         warning: The `anyobject_protocol` rule is now deprecated and will be completely removed in a future release.

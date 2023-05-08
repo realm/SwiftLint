@@ -40,7 +40,10 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         let initializersCount = node.memberBlock.members.filter { $0.decl.is(InitializerDeclSyntax.self) }.count
         if extraneousInitializers.count == initializersCount {
             extraneousInitializers.forEach {
-                violations.append($0.positionAfterSkippingLeadingTrivia)
+                let initializerType = $0.parameterList.isEmpty ? "default" : "memberwise"
+                let reason = "This \(initializerType) initializer would be synthesized automatically - " +
+                             "you do not need to define it"                
+                violations.append(ReasonedRuleViolation(position: $0.positionAfterSkippingLeadingTrivia, reason: reason))
             }
         }
 
@@ -75,13 +78,12 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
 
         var extraneousInitializers = [InitializerDeclSyntax]()
         for initializer in initializers {
-            let initializerParameters = initializer.signature.input.parameterList
             guard
-                self.initializerParameters(initializerParameters, match: storedProperties)
+                self.initializerParameters(initializer.parameterList, match: storedProperties)
             else {
                 continue
             }
-            guard initializerParameters.isEmpty || initializerBody(initializer.body, matches: storedProperties) else {
+            guard initializer.parameterList.isEmpty || initializerBody(initializer.body, matches: storedProperties) else {
                 continue
             }
             guard initializerModifiers(initializer.modifiers, match: storedProperties) else {
@@ -220,6 +222,7 @@ private extension DeclModifierSyntax {
 private extension InitializerDeclSyntax {
     var hasThrowsOrRethrowsKeyword: Bool { signature.effectSpecifiers?.throwsSpecifier != nil }
     var isInlinable: Bool { attributes.contains(attributeNamed: "inlinable") }
+    var parameterList: FunctionParameterListSyntax { signature.input.parameterList }
 }
 
 private extension VariableDeclSyntax {

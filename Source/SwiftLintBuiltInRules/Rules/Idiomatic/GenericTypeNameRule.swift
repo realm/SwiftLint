@@ -75,13 +75,13 @@ private extension GenericTypeNameRule {
                         severity: .error
                     )
                 )
-            } else if configuration.validatesStartWithLowercase &&
+            } else if let requiresCaseCheck = configuration.validatesStartWithLowercase,
                 !String(name[name.startIndex]).isUppercase() {
                 violations.append(
                     ReasonedRuleViolation(
                         position: node.positionAfterSkippingLeadingTrivia,
                         reason: "Generic type name '\(name)' should start with an uppercase character",
-                        severity: .error
+                        severity: requiresCaseCheck.severity
                     )
                 )
             } else if let severity = configuration.severity(forLength: name.count) {

@@ -88,17 +88,19 @@ private final class UnneededInitializerVisitor: SyntaxVisitor {
     private(set) var unneededInitializers: Array<InitializerDeclSyntax> = []
 
     override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-        let extraneousInitializers = extraneousInitializers(node)
-
-        // The synthesized memberwise initializer(s) are only created when there are no initializers.
-        // If there are other initializers that cannot be replaced by a synthesized memberwise
-        // initializer, then all of the initializers must remain.
-        let initializersCount = node.memberBlock.members.filter { $0.decl.is(InitializerDeclSyntax.self) }.count
-        if extraneousInitializers.count == initializersCount {
-            unneededInitializers += extraneousInitializers
-        }
-
+        unneededInitializers += node.unneededInitializers
         return .skipChildren
+    }
+}
+
+private extension StructDeclSyntax {
+    var unneededInitializers: [InitializerDeclSyntax] {
+        let extraneousInitializers = extraneousInitializers(self)
+        let initializersCount = memberBlock.members.filter { $0.decl.is(InitializerDeclSyntax.self) }.count
+        if extraneousInitializers.count == initializersCount {
+            return extraneousInitializers
+        }
+        return []
     }
 
     // Collects all of the initializers that could be replaced by the synthesized memberwise
@@ -260,6 +262,7 @@ private final class UnneededInitializerVisitor: SyntaxVisitor {
         }
     }
 }
+
 
 private extension ModifierListSyntax {
     var accessLevelModifier: DeclModifierSyntax? { first { $0.isAccessLevelModifier } }

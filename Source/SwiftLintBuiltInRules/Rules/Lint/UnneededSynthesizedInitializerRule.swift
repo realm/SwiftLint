@@ -16,8 +16,6 @@ import SwiftSyntax
 struct UnneededSynthesizedInitializerRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
-    init() {}
-
     static let description = RuleDescription(
         identifier: "unneeded_synthesized_initializer",
         name: "Unneeded Synthesized Initializer",
@@ -77,12 +75,13 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
 
         var extraneousInitializers = [InitializerDeclSyntax]()
         for initializer in initializers {
+            let initializerParameters = initializer.signature.input.parameterList
             guard
-                initializerParameters(initializer.signature.input.parameterList, match: storedProperties)
+                self.initializerParameters(initializerParameters, match: storedProperties)
             else {
                 continue
             }
-            guard initializerBody(initializer.body, matches: storedProperties) else {
+            guard initializerParameters.isEmpty || initializerBody(initializer.body, matches: storedProperties) else {
                 continue
             }
             guard initializerModifiers(initializer.modifiers, match: storedProperties) else {
@@ -96,12 +95,23 @@ private class UnneededSynthesizedInitializerVisitor: ViolationsSyntaxVisitor {
         return extraneousInitializers
     }
 
+    private func noParameterInitializer(_ storedProperties: [VariableDeclSyntax]) -> Bool {
+        for storedProperty in storedProperties where storedProperty.bindingKeyword.tokenKind == .keyword(.var) {
+            guard storedProperty.bindings.first?.initializer != nil else {
+                return false
+            }
+        }
+        return true
+    }
+
     // Do the initializer parameters match the stored properties of the struct?
     private func initializerParameters(
         _ initializerParameters: FunctionParameterListSyntax,
         match storedProperties: [VariableDeclSyntax]
     ) -> Bool {
+        guard initializerParameters.isNotEmpty else { return noParameterInitializer(storedProperties) }
         guard initializerParameters.count == storedProperties.count else { return false }
+
         for (idx, parameter) in initializerParameters.enumerated() {
             guard parameter.secondName == nil else { return false }
 

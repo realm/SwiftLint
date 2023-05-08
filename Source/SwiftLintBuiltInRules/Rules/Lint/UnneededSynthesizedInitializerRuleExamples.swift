@@ -236,6 +236,15 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """)
+                """),
+        Example("""
+                struct Foo {
+                    var bar: String = ""
+
+                   ↓init() {
+                        // do nothing here
+                    }
+                }
+                """).focused()
     ]
 }

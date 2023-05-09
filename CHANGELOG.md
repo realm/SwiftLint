@@ -183,7 +183,6 @@
   to sort groups of imports defined by their preceding attributes
   (e.g. `@testable`, `@_exported`, ...).  
   [hiltonc](https://github.com/hiltonc)
-  [#4935](https://github.com/realm/SwiftLint/pull/4935)
 
 #### Bug Fixes
 

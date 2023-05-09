@@ -1,4 +1,3 @@
-
 struct SortedImportsConfiguration: RuleConfiguration, Equatable {
     typealias Parent = SortedImportsRule
 
@@ -7,12 +6,12 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
         /// insensitive comparison of the imported module name.
         case attributes
         /// Sorts import lines based on a case insensitive comparison of the imported module name.
-        case name
+        case names
 
         init(value: Any) throws {
             if let string = value as? String,
                let value = Self(rawValue: string) {
-                self = value
+               self = value
             } else {
                 throw Issue.unknownConfiguration(ruleID: Parent.identifier)
             }
@@ -20,7 +19,7 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
     }
 
     private(set) var severity = SeverityConfiguration<Parent>(.warning)
-    private(set) var grouping = SortedImportsGroupingConfiguration.name
+    private(set) var grouping = SortedImportsGroupingConfiguration.names
 
     var consoleDescription: String {
         return "severity: \(severity.consoleDescription)"

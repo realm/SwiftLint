@@ -55,15 +55,14 @@ private extension Sequence where Element == Line {
 struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SortedImportsConfiguration()
 
-    private static let examples = SortedImportsRuleExamples.self
     static let description = RuleDescription(
         identifier: "sorted_imports",
         name: "Sorted Imports",
         description: "Imports should be sorted",
         kind: .style,
-        nonTriggeringExamples: examples.nonTriggeringExamples,
-        triggeringExamples: examples.triggeringExamples,
-        corrections: examples.corrections
+        nonTriggeringExamples: SortedImportsRuleExamples.nonTriggeringExamples,
+        triggeringExamples: SortedImportsRuleExamples.triggeringExamples,
+        corrections: SortedImportsRuleExamples.corrections
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
@@ -120,10 +119,10 @@ struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule 
                 }
                 return lhsAttributes < rhsAttributes
             }
-            return lhs.importModule().lowercased() <= rhs.importModule().lowercased()
-        case .name:
-            return lhs.importModule().lowercased() <= rhs.importModule().lowercased()
+        case .names:
+            break
         }
+        return lhs.importModule().lowercased() <= rhs.importModule().lowercased()
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {

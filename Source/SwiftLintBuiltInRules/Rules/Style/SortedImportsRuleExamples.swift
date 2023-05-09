@@ -21,9 +21,9 @@ internal struct SortedImportsRuleExamples {
         import AAA
         import BBB
         """),
-        Example("@testable import AAA\n  @testable import BBB", configuration: groupByAttributesConfiguration),
-        Example("@testable import BBB\n  import AAA", configuration: groupByAttributesConfiguration),
-        Example("@_exported import BBB\n  @testable import AAA", configuration: groupByAttributesConfiguration)
+        Example("@testable import AAA\n  @testable import BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("@testable import BBB\n  import AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("@_exported import BBB\n  @testable import AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true)
     ]
 
     static let triggeringExamples = [
@@ -44,10 +44,10 @@ internal struct SortedImportsRuleExamples {
         import AAA
         import BBB
         """),
-        Example("  @testable import BBB\n@testable import ↓AAA", configuration: groupByAttributesConfiguration),
-        Example("  import AAA\n@testable import ↓BBB", configuration: groupByAttributesConfiguration),
-        Example("  import BBB\n@testable import ↓AAA", configuration: groupByAttributesConfiguration),
-        Example("  @testable import AAA\n@_exported import ↓BBB", configuration: groupByAttributesConfiguration)
+        Example("  @testable import BBB\n@testable import ↓AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("  import AAA\n@testable import ↓BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("  import BBB\n@testable import ↓AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("  @testable import AAA\n@_exported import ↓BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true)
     ]
 
     static let corrections = [
@@ -84,13 +84,13 @@ internal struct SortedImportsRuleExamples {
         import AAA
         import BBB
         """),
-        Example("  @testable import BBB\n@testable import ↓AAA", configuration: groupByAttributesConfiguration):
+        Example("  @testable import BBB\n@testable import ↓AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
             Example("@testable import AAA\n  @testable import BBB"),
-        Example("  import AAA\n@testable import ↓BBB", configuration: groupByAttributesConfiguration):
+        Example("  import AAA\n@testable import ↓BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
             Example("@testable import BBB\n  import AAA"),
-        Example("  import BBB\n@testable import ↓AAA", configuration: groupByAttributesConfiguration):
+        Example("  import BBB\n@testable import ↓AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
             Example("@testable import AAA\n  import BBB"),
-        Example("  @testable import AAA\n@_exported import ↓BBB", configuration: groupByAttributesConfiguration):
+        Example("  @testable import AAA\n@_exported import ↓BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
             Example("@_exported import BBB\n  @testable import AAA")
     ]
 }

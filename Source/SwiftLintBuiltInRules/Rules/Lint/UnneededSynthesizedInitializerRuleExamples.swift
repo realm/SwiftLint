@@ -6,7 +6,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 struct Foo {
                     let bar: String
 
-                    // synthesized initializer would not be private
+                    // Synthesized initializer would not be private.
                     private init(bar: String) {
                         self.bar = bar
                     }
@@ -16,7 +16,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 struct Foo {
                     var bar: String
 
-                    // synthesized initializer would not be private
+                    // Synthesized initializer would not be private.
                     private init(bar: String) {
                         self.bar = bar
                     }
@@ -26,7 +26,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 struct Foo {
                     let bar: String
 
-                    // synthesized initializer would not be fileprivate
+                    // Synthesized initializer would not be fileprivate.
                     fileprivate init(bar: String) {
                         self.bar = bar
                     }
@@ -36,7 +36,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 struct Foo {
                     let bar: String
 
-                    // synthesized initializer would not prepend "foo"
+                    // Synthesized initializer would not prepend "foo".
                     init(bar: String) {
                         self.bar = "foo" + bar
                     }
@@ -46,7 +46,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 internal struct Foo {
                     let bar: String
 
-                    // failable initializer
+                    // Failable initializer
                     init?(bar: String) {
                         self.bar = bar
                     }
@@ -56,7 +56,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 internal struct Foo {
                     let bar: String
 
-                    // initializer throws
+                    // Initializer throws
                     init(bar: String) throws {
                         self.bar = bar
                     }
@@ -66,7 +66,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 internal struct Foo {
                     let bar: String
 
-                    // different argument labels
+                    // Different argument labels
                     init(_ bar: String) {
                         self.bar = bar
                     }
@@ -76,7 +76,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 internal struct Foo {
                     var bar: String = "foo"
 
-                    // different default values
+                    // Different default values
                     init(bar: String = "bar") {
                         self.bar = bar
                     }
@@ -138,7 +138,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                     var foo: String
                     var bar: String
 
-                    // ordering of args is different from properties
+                    // Ordering of args is different from properties.
                     init(bar: String, foo: String) {
                         self.foo = foo
                         self.bar = bar
@@ -166,7 +166,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                     var bar: String = ""
                     var baz: Int = 0
 
-                    // these initializers must be declared
+                    // These initializers must be declared.
                     init() { }
 
                     init(bar: String = "", baz: Int = 0) {
@@ -174,8 +174,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.baz = baz
                     }
 
-                    // because manually declared initializers block
-                    // synthesization
+                    // Because manually declared initializers block
+                    // synthesization.
                     init(bar: String) {
                         self.bar = bar
                     }
@@ -263,8 +263,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                     var bar: String = ""
 
                    ↓init() {
-                        // empty initializer will be generated automatically
-                        // when all vars have default values
+                        // Empty initializer will be generated automatically
+                        // when all vars have default values.
                     }
                 }
                 """),
@@ -273,7 +273,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                     var bar: String = ""
 
                    ↓init() {
-                        // empty initializer
+                        // Empty initializer
                     }
 
                    ↓init(bar: String = "") {
@@ -302,7 +302,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                     }
 
                     func baz() {
-                        // padding
+                        // Padding
                     }
                 }
                 """): Example("""
@@ -310,7 +310,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                                   let bar: String
 
                                   func baz() {
-                                      // padding
+                                      // Padding
                                   }
                               }
                               """),
@@ -413,8 +413,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                     var bar: String = ""
 
                    ↓init() {
-                        // empty initializer will be generated automatically
-                        // when all vars have default values
+                        // Empty initializer will be generated automatically
+                        // when all vars have default values.
                     }
                 }
                 """): Example("""

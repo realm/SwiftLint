@@ -166,7 +166,7 @@ private extension StructDeclSyntax {
 
             let property = storedProperties[idx]
             let propertyId = property.firstIdentifier
-            guard let propertyType = property.bindings.first?.typeAnnotation?.type else { return false }
+            let propertyType = property.bindings.first?.typeAnnotation?.type
 
             // Ensure that parameters that correspond to properties declared using 'var' have a default
             // argument that is identical to the property's default value. Otherwise, a default argument
@@ -181,8 +181,8 @@ private extension StructDeclSyntax {
 
             if
                 propertyId.identifier.text != parameter.firstName.text
-                    || propertyType.description.trimmingCharacters(in: .whitespaces) !=
-                    parameter.type.description.trimmingCharacters(in: .whitespacesAndNewlines)
+                    || (propertyType != nil && propertyType?.description.trimmingCharacters(in: .whitespaces) !=
+                    parameter.type.description.trimmingCharacters(in: .whitespacesAndNewlines))
             {
                 return false
             }

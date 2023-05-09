@@ -280,6 +280,15 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
+                """),
+        Example("""
+                struct Foo {
+                    var bar = ""
+
+                   ↓init(bar: String = "") {
+                        self.bar = bar
+                    }
+                }
                 """)
     ]
 

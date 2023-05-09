@@ -300,17 +300,25 @@ enum UnneededSynthesizedInitializerRuleExamples {
                    ↓init(bar: String) {
                         self.bar = bar
                     }
+
+                    func baz() {
+                        // padding
+                    }
                 }
                 """): Example("""
                               struct Foo {
                                   let bar: String
+
+                                  func baz() {
+                                      // padding
+                                  }
                               }
                               """),
         Example("""
                 struct Foo {
                     var bar: String
 
-                   ↓init(bar: String) {
+                    init(bar: String) {
                         self.bar = bar
                     }
                 }
@@ -323,7 +331,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 private struct Foo {
                     let bar: String
 
-                   ↓init(bar: String) {
+                    init(bar: String) {
                         self.bar = bar
                     }
                 }
@@ -336,7 +344,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 fileprivate struct Foo {
                     let bar: String
 
-                   ↓init(bar: String) {
+                    init(bar: String) {
                         self.bar = bar
                     }
                 }
@@ -349,7 +357,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 internal struct Foo {
                     fileprivate var bar: String
 
-                   ↓fileprivate init(bar: String) {
+                    fileprivate init(bar: String) {
                         self.bar = bar
                     }
                 }
@@ -362,7 +370,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 internal struct Foo {
                     private var bar: String
 
-                   ↓private init(bar: String) {
+                    private init(bar: String) {
                         self.bar = bar
                     }
                 }
@@ -376,7 +384,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                     var foo: String
                     var bar: String
 
-                   ↓init(foo: String, bar: String) {
+                    init(foo: String, bar: String) {
                         self.foo = foo
                         self.bar = bar
                     }
@@ -391,7 +399,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 internal struct Foo {
                     var bar: String
 
-                   ↓internal init(bar: String) {
+                    internal init(bar: String) {
                         self.bar = bar
                     }
                 }
@@ -404,7 +412,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 struct Foo {
                     var bar: String = ""
 
-                    ↓init() {
+                    init() {
                         // empty initializer will be generated automatically
                         // when all vars have default values
                     }

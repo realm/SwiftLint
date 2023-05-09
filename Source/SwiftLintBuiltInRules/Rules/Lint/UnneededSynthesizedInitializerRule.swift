@@ -55,7 +55,6 @@ private extension UnneededSynthesizedInitializerRule {
         var correctionPositions: [AbsolutePosition] = []
         private var unneededInitializers: [InitializerDeclSyntax] = []
 
-        // private(set) var correctionPositions: [AbsolutePosition] = []
         let locationConverter: SourceLocationConverter
         let disabledRegions: [SourceRange]
 
@@ -103,7 +102,7 @@ private extension StructDeclSyntax {
 
         for memberItem in memberBlock.members {
             let member = memberItem.decl
-            // Collect all stored variables into a list
+            // Collect all stored variables into a list.
             if let varDecl = member.as(VariableDeclSyntax.self) {
                 let modifiers = varDecl.modifiers
                 if modifiers == nil {
@@ -112,7 +111,7 @@ private extension StructDeclSyntax {
                 }
                 guard !modifiers.isStatic else { continue }
                 storedProperties.append(varDecl)
-                // Collect any possible redundant initializers into a list
+                // Collect any possible redundant initializers into a list.
             } else if let initDecl = member.as(InitializerDeclSyntax.self) {
                 guard initDecl.optionalMark == nil else { continue }
                 guard initDecl.hasThrowsOrRethrowsKeyword == false else { continue }

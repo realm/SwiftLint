@@ -179,6 +179,9 @@
   See this forum thread for more details: https://forums.swift.org/t/56066  
   [kylebshr](https://github.com/kylebshr)
 * Adds `grouping` option to the `sorted_imports` rule.  
+* Add `grouping` option to the `sorted_imports` rule allowing
+  to sort groups of imports defined by their preceding attributes
+  (e.g. `@testable`, `@_exported`, ...).  
   [hiltonc](https://github.com/hiltonc)
   [#4935](https://github.com/realm/SwiftLint/pull/4935)
 

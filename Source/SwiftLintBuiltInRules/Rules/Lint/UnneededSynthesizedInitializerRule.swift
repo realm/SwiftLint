@@ -52,7 +52,7 @@ private extension UnneededSynthesizedInitializerRule {
     }
 
     final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        var correctionPositions: [SwiftSyntax.AbsolutePosition] = []
+        var correctionPositions: [AbsolutePosition] = []
         private var unneededInitializers: [InitializerDeclSyntax] = []
 
         // private(set) var correctionPositions: [AbsolutePosition] = []

@@ -65,6 +65,8 @@ private extension ImplicitlyUnwrappedOptionalRule {
                 return .visitChildren
             case .allExceptIBOutlets:
                 return node.isIBOutlet ? .skipChildren : .visitChildren
+            case .weakExceptIBOutlets:
+                return (node.isIBOutlet || node.weakOrUnownedModifier == nil) ? .skipChildren : .visitChildren
             }
         }
     }

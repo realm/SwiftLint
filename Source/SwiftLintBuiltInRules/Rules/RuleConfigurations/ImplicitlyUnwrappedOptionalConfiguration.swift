@@ -7,6 +7,7 @@ struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration,
     enum ImplicitlyUnwrappedOptionalModeConfiguration: String, AcceptableByConfigurationElement {
         case all = "all"
         case allExceptIBOutlets = "all_except_iboutlets"
+        case weakExceptIBOutlets = "weak_except_iboutlets"
 
         init(value: Any) throws {
             if let string = (value as? String)?.lowercased(),

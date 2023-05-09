@@ -23,7 +23,8 @@ internal struct SortedImportsRuleExamples {
         """),
         Example("@testable import AAA\n  @testable import BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         Example("@testable import BBB\n  import AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
-        Example("@_exported import BBB\n  @testable import AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true)
+        Example("@_exported import BBB\n  @testable import AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("@_exported @testable import BBB\n  import AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true)
     ]
 
     static let triggeringExamples = [
@@ -47,7 +48,8 @@ internal struct SortedImportsRuleExamples {
         Example("  @testable import BBB\n@testable import ↓AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         Example("  import AAA\n@testable import ↓BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         Example("  import BBB\n@testable import ↓AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
-        Example("  @testable import AAA\n@_exported import ↓BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true)
+        Example("  @testable import AAA\n@_exported import ↓BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("  import AAA\n@_exported @testable import ↓BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true)
     ]
 
     static let corrections = [
@@ -91,6 +93,8 @@ internal struct SortedImportsRuleExamples {
         Example("  import BBB\n@testable import ↓AAA", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
             Example("@testable import AAA\n  import BBB"),
         Example("  @testable import AAA\n@_exported import ↓BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
-            Example("@_exported import BBB\n  @testable import AAA")
+            Example("@_exported import BBB\n  @testable import AAA"),
+        Example("  import AAA\n@_exported @testable import ↓BBB", configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
+            Example("@_exported @testable import BBB\n  import AAA")
     ]
 }

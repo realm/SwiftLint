@@ -19,8 +19,7 @@ public extension SwiftSyntaxCorrectableRule {
             return []
         }
 
-        file.write(newTree.description)
-        return rewriter
+        let corrections = rewriter
             .correctionPositions
             .sorted()
             .map { position in
@@ -29,6 +28,8 @@ public extension SwiftSyntaxCorrectableRule {
                     location: Location(file: file, position: position)
                 )
             }
+        file.write(newTree.description)
+        return corrections
     }
 }
 

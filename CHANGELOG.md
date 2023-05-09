@@ -193,8 +193,8 @@
 
 * Adds an `unneeded_synthesized_initializer` rule, based on
   `swift-format`'s `UseSynthesizedInitializer` rule, which warns
-  when a defined initializer would have been automatically
-  synthesized.  
+  when a defined default or memberwise initializer would have been
+  automatically synthesized.  
   [Martin Redington](https://github.com/mildm8nnered)
 
 * Adds a new `reporters` command, to improve discoverability of reporters.  

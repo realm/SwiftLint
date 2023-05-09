@@ -94,8 +94,8 @@ private extension StructDeclSyntax {
         return []
     }
 
-    // Collects all of the initializers that could be replaced by the synthesized memberwise
-    // initializer(s).
+    // Collects all of the initializers that could be replaced by the synthesized
+    // memberwise or default initializer(s).
     private func findUnneededInitializers() -> [InitializerDeclSyntax] {
         // swiftlint:disable:previous cyclomatic_complexity
         var storedProperties: [VariableDeclSyntax] = []
@@ -153,7 +153,7 @@ private extension StructDeclSyntax {
         return true
     }
 
-    // Do the initializer parameters match the stored properties of the struct?
+    // Are the initializer parameters empty, or do they match the stored properties of the struct?
     private func initializerParameters(
         _ initializerParameters: FunctionParameterListSyntax,
         match storedProperties: [VariableDeclSyntax]

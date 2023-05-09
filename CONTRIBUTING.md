@@ -91,6 +91,8 @@ triggeringExamples: [
 ]
 ```
 
+[Here's a video from @jpsim quickly demonstrating how to add a new custom Rule](https://vimeo.com/820572803)
+
 ### `ConfigurationProviderRule`
 
 If your rule supports user-configurable options via `.swiftlint.yml`, you can

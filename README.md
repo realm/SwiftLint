@@ -1,5 +1,6 @@
 # SwiftLint
 
+
 A tool to enforce Swift style and conventions, loosely based on the now archived [GitHub Swift Style Guide](https://github.com/github/swift-style-guide). SwiftLint enforces the style guide rules that are generally accepted by the Swift community. These rules are well described in popular style guides like [Kodeco's Swift Style Guide](https://github.com/kodecocodes/swift-style-guide).
 
 SwiftLint hooks into [Clang](http://clang.llvm.org) and

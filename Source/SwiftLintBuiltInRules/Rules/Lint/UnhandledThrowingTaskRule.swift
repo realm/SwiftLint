@@ -6,10 +6,12 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
     static let description = RuleDescription(
         identifier: "unhandled_throwing_task",
         name: "Unhandled Throwing Task",
-        description: "Errors thrown inside this task are not handled, which may be unexpected. " +
-            "Handle errors inside the task, or use `try await` to access the Tasks value and handle errors." +
-            "(see this forum thread for more details: " +
-            "https://forums.swift.org/t/task-initializer-with-throwing-closure-swallows-error/56066)",
+        description: """
+            Errors thrown inside this task are not handled, which may be unexpected. \
+            Handle errors inside the task, or use `try await` to access the Tasks value and handle errors. \
+            See this forum thread for more details: \
+            https://forums.swift.org/t/task-initializer-with-throwing-closure-swallows-error/56066)
+            """,
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -225,6 +227,11 @@ private final class ThrowsVisitor: SyntaxVisitor {
     var doesThrow = false
 
     override func visit(_ node: DoStmtSyntax) -> SyntaxVisitorContinueKind {
+        // No need to continue traversing if we already throw.
+        if doesThrow {
+            return .skipChildren
+        }
+
         // If there are no catch clauses, visit children to see if there are any try expressions.
         guard let lastCatchClause = node.catchClauses?.last else {
             return .visitChildren

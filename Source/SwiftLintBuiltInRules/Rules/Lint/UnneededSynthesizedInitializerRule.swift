@@ -110,34 +110,17 @@ private extension StructDeclSyntax {
                 }
             } else if let initDecl = member.as(InitializerDeclSyntax.self) {
                 // Collect any possible redundant initializers into a list.
-                guard initDecl.optionalMark == nil else { continue }
-                guard initDecl.hasThrowsOrRethrowsKeyword == false else { continue }
+                guard initDecl.optionalMark == nil, !initDecl.hasThrowsOrRethrowsKeyword else { continue }
                 initializers.append(initDecl)
             }
         }
 
-        var unneededInitializers = [InitializerDeclSyntax]()
-        for initializer in initializers {
-            guard
-                self.initializerParameters(initializer.parameterList, match: storedProperties)
-            else {
-                continue
-            }
-            guard
-                initializer.parameterList.isEmpty ||
-                initializerBody(initializer.body, matches: storedProperties)
-            else {
-                continue
-            }
-            guard initializerModifiers(initializer.modifiers, match: storedProperties) else {
-                continue
-            }
-            guard initializer.isInlinable == false else {
-                continue
-            }
-            unneededInitializers.append(initializer)
+        return initializers.filter {
+            self.initializerParameters($0.parameterList, match: storedProperties) &&
+            ($0.parameterList.isEmpty || initializerBody($0.body, matches: storedProperties)) &&
+            initializerModifiers($0.modifiers, match: storedProperties) &&
+            $0.isInlinable == false
         }
-        return unneededInitializers
     }
 
     private func noParameterInitializer(_ storedProperties: [VariableDeclSyntax]) -> Bool {

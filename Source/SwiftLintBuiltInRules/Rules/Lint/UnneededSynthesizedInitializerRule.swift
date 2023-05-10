@@ -105,14 +105,11 @@ private extension StructDeclSyntax {
             // Collect all stored variables into a list.
             if let varDecl = member.as(VariableDeclSyntax.self) {
                 let modifiers = varDecl.modifiers
-                if modifiers == nil {
+                if modifiers == nil || !modifiers.isStatic {
                     storedProperties.append(varDecl)
-                    continue
                 }
-                guard !modifiers.isStatic else { continue }
-                storedProperties.append(varDecl)
-                // Collect any possible redundant initializers into a list.
             } else if let initDecl = member.as(InitializerDeclSyntax.self) {
+                // Collect any possible redundant initializers into a list.
                 guard initDecl.optionalMark == nil else { continue }
                 guard initDecl.hasThrowsOrRethrowsKeyword == false else { continue }
                 initializers.append(initDecl)

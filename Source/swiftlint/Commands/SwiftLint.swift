@@ -2,6 +2,8 @@ import ArgumentParser
 import Foundation
 import SwiftLintFramework
 
+// Touch
+
 @main
 struct SwiftLint: AsyncParsableCommand {
     static let configuration: CommandConfiguration = {

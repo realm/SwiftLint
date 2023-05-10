@@ -11,6 +11,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4843](https://github.com/realm/SwiftLint/issues/4843)
 
+* The internal module structure for SwiftLint has changed to split the
+  monolithic `SwiftLintFramework` into new `SwiftLintCore` for core linter
+  infrastructure, `SwiftLintBuiltInRules` for built-in rules and
+  `SwiftLintExtraRules` to add your own native rules to SwiftLint.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Experimental
 
 * None.

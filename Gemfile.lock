@@ -151,6 +151,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  arm64-darwin-22
 
 DEPENDENCIES
   cocoapods
@@ -158,4 +159,4 @@ DEPENDENCIES
   jazzy
 
 BUNDLED WITH
-   2.3.8
+   2.4.12

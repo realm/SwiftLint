@@ -19,7 +19,8 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, Configura
     static let description = RuleDescription(
         identifier: "unneeded_synthesized_initializer",
         name: "Unneeded Synthesized Initializer",
-        description: "Default or memberwise initializers that will be automatically synthesized do not need to be manually defined",
+        description: "Default or memberwise initializers that will be automatically synthesized " +
+                     "do not need to be manually defined",
         kind: .idiomatic,
         nonTriggeringExamples: UnneededSynthesizedInitializerRuleExamples.nonTriggering,
         triggeringExamples: UnneededSynthesizedInitializerRuleExamples.triggering,
@@ -96,7 +97,6 @@ private extension StructDeclSyntax {
     // Collects all of the initializers that could be replaced by the synthesized
     // memberwise or default initializer(s).
     private func findUnneededInitializers() -> [InitializerDeclSyntax] {
-        // swiftlint:disable:previous cyclomatic_complexity
         var storedProperties: [VariableDeclSyntax] = []
         var initializers: [InitializerDeclSyntax] = []
 
@@ -253,12 +253,7 @@ private extension InitializerDeclSyntax {
 
 private extension VariableDeclSyntax {
     var identifiers: [IdentifierPatternSyntax] {
-        var ids: [IdentifierPatternSyntax] = []
-        for binding in bindings {
-            guard let id = binding.pattern.as(IdentifierPatternSyntax.self) else { continue }
-            ids.append(id)
-        }
-        return ids
+        bindings.compactMap { $0.pattern.as(IdentifierPatternSyntax.self) }
     }
 
     var firstIdentifier: IdentifierPatternSyntax { identifiers[0] }

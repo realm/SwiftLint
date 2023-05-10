@@ -1220,6 +1220,12 @@ class UnavailableFunctionRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class UnhandledThrowingTaskRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnhandledThrowingTaskRule.description)
+    }
+}
+
 class UnneededBreakInSwitchRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededBreakInSwitchRule.description)

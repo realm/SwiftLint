@@ -10,7 +10,7 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
             Errors thrown inside this task are not handled, which may be unexpected. \
             Handle errors inside the task, or use `try await` to access the Tasks value and handle errors. \
             See this forum thread for more details: \
-            https://forums.swift.org/t/task-initializer-with-throwing-closure-swallows-error/56066)
+            https://forums.swift.org/t/task-initializer-with-throwing-closure-swallows-error/56066
             """,
         kind: .lint,
         nonTriggeringExamples: [

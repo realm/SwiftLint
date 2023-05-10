@@ -83,8 +83,8 @@
 * Add new `unhandled_throwing_task` rule that triggers when a Task with an
   implicit error type has unhandled trys or errors thrown inside its body.
   This results in errors being silently discarded, which may be unexpected.
+  See this forum thread for more details: https://forums.swift.org/t/56066  
   [kylebshr](https://github.com/kylebshr)
-  [#4958](https://github.com/realm/SwiftLint/pull/4958)
 
 #### Bug Fixes
 

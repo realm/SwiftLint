@@ -80,6 +80,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4843](https://github.com/realm/SwiftLint/issues/4843)
 
+* Add new `unhandled_throwing_task` rule that triggers when a Task with an
+  implicit error type has unhandled trys or errors thrown inside its body.
+  This results in errors being silently discarded, which may be unexpected.
+  [kylebshr](https://github.com/kylebshr)
+  [#4958](https://github.com/realm/SwiftLint/pull/4958)
+
 #### Bug Fixes
 
 * Fix `lower_acl_than_parent` rule rewriter by preserving leading whitespace.  

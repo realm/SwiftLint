@@ -19,8 +19,8 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, Configura
     static let description = RuleDescription(
         identifier: "unneeded_synthesized_initializer",
         name: "Unneeded Synthesized Initializer",
-        description: "This initializer would be synthesized automatically - you do not need to define it",
-        kind: .lint,
+        description: "Default or memberwise initializers that will be automatically synthesized do not need to be manually defined",
+        kind: .idiomatic,
         nonTriggeringExamples: UnneededSynthesizedInitializerRuleExamples.nonTriggering,
         triggeringExamples: UnneededSynthesizedInitializerRuleExamples.triggering,
         corrections: UnneededSynthesizedInitializerRuleExamples.corrections

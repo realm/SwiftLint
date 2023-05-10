@@ -82,15 +82,15 @@ internal struct AttributesRuleExamples {
         final class AppDelegate: NSAppDelegate {}
         """),
         Example(#"""
+        @_spi(Private) import SomeFramework
+
+        @_spi(Private)
         final class MyView: View {
-          @SwiftUI.Environment(\.colorScheme) var colorScheme: ColorScheme
+            @SwiftUI.Environment(\.colorScheme) var first: ColorScheme
+            @Environment(\.colorScheme) var second: ColorScheme
+            @Persisted(primaryKey: true) var id: Int
         }
-        """#),
-        Example(#"""
-        final class MyView: View {
-          @Environment(\.colorScheme) var colorScheme: ColorScheme
-        }
-        """#)
+        """#, configuration: ["attributes_with_arguments_always_on_line_above": false], excludeFromDocumentation: true)
     ]
 
     static let triggeringExamples = [
@@ -124,6 +124,16 @@ internal struct AttributesRuleExamples {
         Example("@GKInspectable\n ↓var maxSpeed: Float"),
         Example("@discardableResult ↓func a() -> Int"),
         Example("@objc\n @discardableResult ↓func a() -> Int"),
-        Example("@objc\n\n @discardableResult\n ↓func a() -> Int")
+        Example("@objc\n\n @discardableResult\n ↓func a() -> Int"),
+        Example(#"""
+        struct S: View {
+            @Environment(\.colorScheme) ↓var first: ColorScheme
+            @Persisted var id: Int
+            @FetchRequest(
+                  animation: nil
+            )
+            var entities: FetchedResults
+        }
+        """#, excludeFromDocumentation: true)
     ]
 }

@@ -346,7 +346,7 @@
 <li><strong>Kind:</strong> style</li>
 <li><strong>Analyzer rule:</strong> No</li>
 <li><strong>Minimum Swift compiler version:</strong> 5.0.0</li>
-<li><strong>Default configuration:</strong> (min_length) w/e: 3/2, (max_length) w/e: 40/60, excluded: [&ldquo;^id$&rdquo;], allowed_symbols: [], validates_start_with_lowercase: true</li>
+<li><strong>Default configuration:</strong> (min_length) w/e: 3/2, (max_length) w/e: 40/60, excluded: [&ldquo;^id$&rdquo;], allowed_symbols: [], validates_start_with_lowercase: error</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">myLet</span> <span class="o">=</span> <span class="mi">0</span>
@@ -386,8 +386,6 @@
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">let</span> <span class="nv">MyLet</span> <span class="o">=</span> <span class="mi">0</span>
-</code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="k">let</span> <span class="nv">_myLet</span> <span class="o">=</span> <span class="mi">0</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">private</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">myLet_</span> <span class="o">=</span> <span class="mi">0</span>
@@ -403,10 +401,6 @@
 <pre class="highlight swift"><code><span class="err">↓</span><span class="k">var</span> <span class="nv">aa</span> <span class="o">=</span> <span class="mi">0</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">private</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">_i</span> <span class="o">=</span> <span class="mi">0</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="kd">func</span> <span class="kt">IsOperator</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="k">case</span> <span class="err">↓</span><span class="kt">MyEnum</span> <span class="p">}</span>
 </code></pre>
 
           </div>

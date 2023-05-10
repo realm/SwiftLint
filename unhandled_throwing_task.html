@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>vertical_whitespace_closing_braces  Reference</title>
+    <title>unhandled_throwing_task  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -15,7 +15,7 @@
   <body>
 
 
-    <a title="vertical_whitespace_closing_braces  Reference"></a>
+    <a title="unhandled_throwing_task  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -49,7 +49,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">SwiftLintCore Reference</a>
       <img class="carat" src="img/carat.png" alt=""/>
-      vertical_whitespace_closing_braces  Reference
+      unhandled_throwing_task  Reference
     </p>
 
     <div class="content-wrapper">
@@ -335,143 +335,130 @@
         <section class="section">
           <div class="section-content top-matter">
             
-            <h1 id='vertical-whitespace-before-closing-braces' class='heading'>Vertical Whitespace before Closing Braces</h1>
+            <h1 id='unhandled-throwing-task' class='heading'>Unhandled Throwing Task</h1>
 
-<p>Don&rsquo;t include vertical whitespace (empty line) before closing braces</p>
+<p>Errors thrown inside this task are not handled, which may be unexpected. Handle errors inside the task, or use <code>try await</code> to access the Tasks value and handle errors. See this forum thread for more details: <a href="https://forums.swift.org/t/task-initializer-with-throwing-closure-swallows-error/56066">https://forums.swift.org/t/task-initializer-with-throwing-closure-swallows-error/56066</a></p>
 
 <ul>
-<li><strong>Identifier:</strong> vertical_whitespace_closing_braces</li>
-<li><strong>Enabled by default:</strong> No</li>
-<li><strong>Supports autocorrection:</strong> Yes</li>
-<li><strong>Kind:</strong> style</li>
+<li><strong>Identifier:</strong> unhandled_throwing_task</li>
+<li><strong>Enabled by default:</strong> Yes</li>
+<li><strong>Supports autocorrection:</strong> No</li>
+<li><strong>Kind:</strong> lint</li>
 <li><strong>Analyzer rule:</strong> No</li>
 <li><strong>Minimum Swift compiler version:</strong> 5.0.0</li>
-<li><strong>Default configuration:</strong> severity: warning, only_enforce_before_trivial_lines: false</li>
+<li><strong>Default configuration:</strong> error</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kt">Task</span><span class="o">&lt;</span><span class="kt">Void</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="k">await</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span>
-  <span class="mi">1</span>
-<span class="p">])</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span><span class="n">foo</span> <span class="p">{</span>
-  <span class="k">var</span> <span class="nv">sum</span> <span class="o">=</span> <span class="mi">0</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
-  <span class="k">return</span> <span class="n">sum</span>
-
-<span class="p">},</span> <span class="n">foo</span> <span class="p">{</span>
-  <span class="k">var</span> <span class="nv">mul</span> <span class="o">=</span> <span class="mi">1</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">mul</span> <span class="o">*=</span> <span class="n">i</span> <span class="p">}</span>
-  <span class="k">return</span> <span class="n">mul</span>
-<span class="p">}])</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="p">[</span>
-<span class="mi">1</span><span class="p">,</span>
-<span class="mi">2</span><span class="p">,</span>
-<span class="mi">3</span>
-<span class="p">]</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span>
-    <span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="nv">y</span><span class="p">:</span><span class="mi">6</span>
-<span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">try</span><span class="p">?</span> <span class="k">await</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">try!</span> <span class="k">await</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nf">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>
-    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kt">Task</span><span class="o">&lt;</span><span class="kt">Void</span><span class="p">,</span> <span class="kt">String</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="nv">text</span> <span class="o">=</span> <span class="k">try</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">text</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">do</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">e</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="kc">true</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">someFunction</span><span class="p">()</span> <span class="k">throws</span> <span class="p">{</span>
+  <span class="kt">Task</span> <span class="p">{</span>
+    <span class="nf">anotherFunction</span><span class="p">()</span>
+    <span class="k">do</span> <span class="p">{</span>
+      <span class="k">try</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+      <span class="nf">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">try</span> <span class="nf">something</span><span class="p">()</span>
+<span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="n">num</span> <span class="k">in</span> <span class="kc">true</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">task</span> <span class="o">=</span> <span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="k">await</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
+<span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="cm">/*
-    class X {
-
-        let x = 5
-
-    }
-*/</span>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">task</span> <span class="o">=</span> <span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="k">await</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
+<span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="n">bool1</span> <span class="p">{</span>
-  <span class="c1">// do something</span>
-  <span class="c1">// do something</span>
-
-<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">bool2</span> <span class="p">{</span>
-  <span class="c1">// do something</span>
-  <span class="c1">// do something</span>
-  <span class="c1">// do something</span>
-
-<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-  <span class="c1">// do something</span>
-  <span class="c1">// do something</span>
+<pre class="highlight swift"><code><span class="k">try</span> <span class="k">await</span> <span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="k">await</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
+<span class="p">}</span><span class="o">.</span><span class="n">value</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">executor</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="k">await</span> <span class="nf">isolatedOpen</span><span class="p">(</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="nf">asUnownedSerialExecutor</span><span class="p">()))</span>
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
-<span class="err">↓</span>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="k">await</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span>
-  <span class="mi">1</span>
-<span class="err">↓</span>
-<span class="p">])</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span><span class="n">foo</span> <span class="p">{</span>
-  <span class="k">var</span> <span class="nv">sum</span> <span class="o">=</span> <span class="mi">0</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
-  <span class="k">return</span> <span class="n">sum</span>
-
-<span class="p">},</span> <span class="n">foo</span> <span class="p">{</span>
-  <span class="k">var</span> <span class="nv">mul</span> <span class="o">=</span> <span class="mi">1</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">mul</span> <span class="o">*=</span> <span class="n">i</span> <span class="p">}</span>
-  <span class="k">return</span> <span class="n">mul</span>
-<span class="err">↓</span>
-<span class="p">}])</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="p">[</span>
-<span class="mi">1</span><span class="p">,</span>
-<span class="mi">2</span><span class="p">,</span>
-<span class="mi">3</span>
-<span class="err">↓</span>
-<span class="p">]</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span>
-    <span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="nv">y</span><span class="p">:</span><span class="mi">6</span>
-<span class="err">↓</span>
-<span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
-<span class="err">↓</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="nv">text</span> <span class="o">=</span> <span class="k">try</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">text</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
-<span class="err">↓</span>
-
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nf">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>
-    <span class="nf">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">do</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
   <span class="p">}</span>
-<span class="err">↓</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">do</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">e</span> <span class="k">as</span> <span class="kt">FooError</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">do</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="kt">FooError</span><span class="o">.</span><span class="n">bar</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">throw</span> <span class="kt">FooError</span><span class="o">.</span><span class="n">bar</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span><span class="o">&lt;</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="k">throw</span> <span class="kt">FooError</span><span class="o">.</span><span class="n">bar</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span><span class="o">&lt;</span><span class="kt">Void</span><span class="p">,</span><span class="n">_</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="k">throw</span> <span class="kt">FooError</span><span class="o">.</span><span class="n">bar</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">do</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="nf">foo</span><span class="p">()</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="nf">bar</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">do</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="nf">foo</span><span class="p">()</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="kt">BarError</span><span class="p">()</span>
+  <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 

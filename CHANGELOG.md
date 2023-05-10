@@ -1,3 +1,26 @@
+## Main
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Let the `validates_start_with_lowercase` option in name configurations
+  expect a severity (warning or error). Not setting it disables the check.
+  Boolean values are now deprecated. A `true` value enables the check as an
+  error for the time being to keep the previous behavior.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#2180](https://github.com/realm/SwiftLint/issues/2180)
+
 ## 0.52.0: Crisp Clear Pleats
 
 #### Breaking
@@ -91,13 +114,6 @@
 * Fix `lower_acl_than_parent` rule rewriter by preserving leading whitespace.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4860](https://github.com/realm/SwiftLint/issues/4860)
-
-* Let the `validates_start_with_lowercase` option in name configurations
-  expect a severity (warning or error). Not setting it disables the check.
-  Boolean values are now deprecated. A `true` value enables the check as an
-  error for the time being to keep the previous behavior.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#2180](https://github.com/realm/SwiftLint/issues/2180)
 
 * Ignore block comments in `let_var_whitespace` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

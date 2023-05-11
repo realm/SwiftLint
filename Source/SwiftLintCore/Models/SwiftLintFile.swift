@@ -5,11 +5,12 @@ import SourceKittenFramework
 public final class SwiftLintFile {
     /// The underlying SourceKitten file.
     public let file: File
-    let id: UUID
+    /// The associated unique identifier for this file.
+    public let id: UUID
     /// Whether or not this is a file generated for testing purposes.
     public private(set) var isTestFile = false
     /// A file is virtual if it is not backed by a filesystem path.
-    private(set) var isVirtual = false
+    public private(set) var isVirtual = false
 
     /// Creates a `SwiftLintFile` with a SourceKitten `File`.
     ///

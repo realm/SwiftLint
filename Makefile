@@ -121,6 +121,7 @@ zip_linux_release:
 	chmod +x "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
+	gh release upload "$(VERSION_STRING)" swiftlint_linux.zip
 
 package: build
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))

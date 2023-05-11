@@ -8,16 +8,8 @@ For SwiftLint contributors, follow these steps to cut a release:
     * Top Loading
     * Fresh Out Of The Dryer
 1. Make sure you have the latest stable Xcode version installed and
-  `xcode-select`ed.
+  `xcode-select`ed
 1. Release new version: `make release "0.2.0: Tumble Dry"`
 1. Wait for the Docker CI job to finish then run: `make zip_linux_release`
-1. Create a GitHub release: https://github.com/realm/SwiftLint/releases/new
-    * Specify the tag you just pushed from the dropdown.
-    * Set the release title to the new version number & release name.
-    * Add the changelog section to the release description text box.
-    * Upload the bazel tarball & SHA-256 signature, pkg installer,
-      portable zip, macos artifactbundle zip, and Linux zip
-      you just built to the GitHub release binaries.
-    * Click "Publish release".
 1. Publish to Homebrew and CocoaPods trunk: `make publish`
 1. Celebrate. :tada:

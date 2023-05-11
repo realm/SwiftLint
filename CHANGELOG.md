@@ -465,8 +465,8 @@
   At the same time, make it an opt-in rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4615](https://github.com/realm/SwiftLint/issues/4615)
-  
-* Interpret strings in `excluded` option of `identifier_name`, 
+
+* Interpret strings in `excluded` option of `identifier_name`,
   `type_name` and `generic_type_name` rules as regular expression. Existing
   configurations should remain working without notice as long as they don't
   contain characters that must be escaped in regular expression.  

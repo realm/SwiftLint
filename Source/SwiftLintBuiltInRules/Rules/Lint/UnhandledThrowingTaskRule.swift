@@ -77,6 +77,11 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule {
             executor.task = Task {
               try await isolatedOpen(.init(executor.asUnownedSerialExecutor()))
             }
+            """),
+            Example("""
+            let result = await Task {
+              throw CancellationError()
+            }.result
             """)
         ],
         triggeringExamples: [
@@ -169,7 +174,7 @@ private extension FunctionCallExprSyntax {
     var hasViolation: Bool {
         isTaskWithImplicitErrorType &&
             doesThrow &&
-            !(isAssigned || isValueAccessed)
+            !(isAssigned || isValueOrResultAccessed)
     }
 
     var isTaskWithImplicitErrorType: Bool {
@@ -207,12 +212,12 @@ private extension FunctionCallExprSyntax {
         return false
     }
 
-    var isValueAccessed: Bool {
+    var isValueOrResultAccessed: Bool {
         guard let parent = parent?.as(MemberAccessExprSyntax.self) else {
             return false
         }
 
-        return parent.name.text == "value"
+        return parent.name.text == "value" || parent.name.text == "result"
     }
 
     var doesThrow: Bool {

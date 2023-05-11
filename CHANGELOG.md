@@ -21,6 +21,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#2180](https://github.com/realm/SwiftLint/issues/2180)
 
+* Fixed a false positive in `unhandled_throwing_task`.
+  [kylebshr](https://github.com/kylebshr)
+  [#4984](https://github.com/realm/SwiftLint/issues/4984)
+
 ## 0.52.0: Crisp Clear Pleats
 
 #### Breaking

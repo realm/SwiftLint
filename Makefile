@@ -121,6 +121,7 @@ zip_linux_release:
 	chmod +x "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
+	gh release upload "$(VERSION_STRING)" swiftlint_linux.zip
 
 package: build
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))
@@ -181,6 +182,7 @@ endif
 	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
 	git push origin HEAD
 	git push origin $(NEW_VERSION)
+	./tools/create-github-release.sh "$(NEW_VERSION)"
 
 %:
 	@:

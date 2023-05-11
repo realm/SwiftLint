@@ -403,6 +403,10 @@
   <span class="k">try</span> <span class="k">await</span> <span class="nf">isolatedOpen</span><span class="p">(</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="nf">asUnownedSerialExecutor</span><span class="p">()))</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">await</span> <span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">throw</span> <span class="kt">CancellationError</span><span class="p">()</span>
+<span class="p">}</span><span class="o">.</span><span class="n">result</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span> <span class="p">{</span>
   <span class="k">try</span> <span class="k">await</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>

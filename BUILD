@@ -102,12 +102,17 @@ apple_universal_binary(
     visibility = ["//visibility:public"],
 )
 
-cc_library(
-    name = "DyldWarningWorkaround",
+filegroup(
+    name = "DyldWarningWorkaroundSources",
     srcs = [
         "Source/DyldWarningWorkaround/DyldWarningWorkaround.c",
         "Source/DyldWarningWorkaround/include/objc_dupclass.h",
     ],
+)
+
+cc_library(
+    name = "DyldWarningWorkaround",
+    srcs = ["//:DyldWarningWorkaroundSources"],
     includes = ["Source/DyldWarningWorkaround/include"],
     alwayslink = True,
 )
@@ -131,6 +136,7 @@ filegroup(
         "BUILD",
         "LICENSE",
         "MODULE.bazel",
+        "//:DyldWarningWorkaroundSources",
         "//:LintInputs",
         "//Tests:BUILD",
         "//bazel:release_files",

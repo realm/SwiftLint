@@ -191,12 +191,6 @@
 * Trigger `prefer_self_in_static_references` rule on more type references.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* Adds an `unneeded_synthesized_initializer` rule, based on
-  `swift-format`'s `UseSynthesizedInitializer` rule, which warns
-  when a defined default or memberwise initializer would have been
-  automatically synthesized.  
-  [Martin Redington](https://github.com/mildm8nnered)
-
 * Adds a new `reporters` command, to improve discoverability of reporters.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4819](https://github.com/realm/SwiftLint/issues/4819)

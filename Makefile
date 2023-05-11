@@ -181,6 +181,7 @@ endif
 	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
 	git push origin HEAD
 	git push origin $(NEW_VERSION)
+	./tools/create-github-release.sh "$(NEW_VERSION)"
 
 %:
 	@:

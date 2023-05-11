@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+version="$1"
+
 # Release Notes Section
 
 in_top_changelog_section=0
@@ -99,7 +101,6 @@ bazel run @SwiftLint//:swiftlint -- --help
 EOF
 )
 
-version="$(./tools/get-version)"
 bazel_sha="$(cut -d' ' -f1 bazel.tar.gz.sha256 | sed '0d')"
 
 echo "$bazel_section" \

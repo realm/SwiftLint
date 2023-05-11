@@ -58,7 +58,12 @@ internal struct XCTSpecificMatcherRuleExamples {
                 excludeFromDocumentation: true),
         Example("XCTAssert(foo == bar)",
                 configuration: ["matchers": ["two-argument-asserts"]],
-                excludeFromDocumentation: true)
+                excludeFromDocumentation: true),
+
+        // Skip if one operand might be a type or a tuple
+        Example("XCTAssert(foo.self == bar)"),
+        Example("XCTAssertTrue(type(of: foo) != Int.self)"),
+        Example("XCTAssertTrue(a == (1, 3, 5)")
     ]
 
     static let triggeringExamples = [

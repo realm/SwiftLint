@@ -5,6 +5,7 @@ import SourceKittenFramework
 public final class SwiftLintFile {
     /// The underlying SourceKitten file.
     public let file: File
+    /// The associated unique identifier for this file.
     public let id: UUID
     /// Whether or not this is a file generated for testing purposes.
     public private(set) var isTestFile = false

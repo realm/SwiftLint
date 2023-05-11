@@ -37,6 +37,15 @@ struct RedundantSelfInClosureRule: SwiftSyntaxRule, CorrectableRule, Configurati
                         f { [weak self] in if let self { x = 1 } }
                     }
                 }
+            """),
+            Example("""
+                struct S {
+                    var x = 0
+                    func f(_ work: @escaping () -> Void) { work() }
+                    func g(x: Int) {
+                        f { self.x = x }
+                    }
+                }
             """)
         ],
         triggeringExamples: [
@@ -287,8 +296,20 @@ private class ExplicitSelfVisitor: ViolationsSyntaxVisitor {
         super.init(viewMode: .sourceAccurate)
     }
 
+    override func visit(_ node: SequenceExprSyntax) -> SyntaxVisitorContinueKind {
+        let elements = node.elements
+        if elements.count == 3,
+           let assignee = elements.first?.as(MemberAccessExprSyntax.self), assignee.isBaseSelf,
+           elements.dropFirst(1).first?.is(AssignmentExprSyntax.self) == true,
+           elements.dropFirst(2).first?.as(IdentifierExprSyntax.self)?.identifier.text == assignee.name.text {
+            // We have something like `self.x = x` which is quite common and should thus be skipped.
+            return .skipChildren
+        }
+        return .visitChildren
+    }
+
     override func visitPost(_ node: MemberAccessExprSyntax) {
-        if node.base?.as(IdentifierExprSyntax.self)?.isSelf == true, isSelfRedundant {
+        if node.isBaseSelf, isSelfRedundant {
             corrections.append(
                 (start: node.positionAfterSkippingLeadingTrivia, end: node.dot.endPositionBeforeTrailingTrivia)
             )
@@ -311,5 +332,11 @@ private class ExplicitSelfVisitor: ViolationsSyntaxVisitor {
             return true
         }
         return false
+    }
+}
+
+private extension MemberAccessExprSyntax {
+    var isBaseSelf: Bool {
+        base?.as(IdentifierExprSyntax.self)?.isSelf == true
     }
 }

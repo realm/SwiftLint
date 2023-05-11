@@ -10,7 +10,10 @@
 
 #### Enhancements
 
-* None.
+* Exclude simple assignments of the form `self.x = x` from being reported by
+  the `redundant_self_in_closure` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4988](https://github.com/realm/SwiftLint/issues/4988)
 
 #### Bug Fixes
 

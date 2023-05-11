@@ -21,9 +21,13 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#2180](https://github.com/realm/SwiftLint/issues/2180)
 
-* Fixed a false positive in `unhandled_throwing_task`.
+* Fixed a false positive in `unhandled_throwing_task`.  
   [kylebshr](https://github.com/kylebshr)
   [#4984](https://github.com/realm/SwiftLint/issues/4984)
+
+* Fix Bazel release tarball for compiling on macOS.  
+  [JP Simard](https://github.com/jpsim)
+  [#4985](https://github.com/realm/SwiftLint/issues/4985)
 
 ## 0.52.0: Crisp Clear Pleats
 

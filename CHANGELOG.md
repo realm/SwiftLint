@@ -139,7 +139,9 @@
 
 #### Breaking
 
-* None.
+* Removed support for disable and enable commands in multiline comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 #### Experimental
 
@@ -330,6 +332,10 @@
 * Fix Bazel release tarball for compiling on macOS.  
   [JP Simard](https://github.com/jpsim)
   [#4985](https://github.com/realm/SwiftLint/issues/4985)
+* Fix false positives for superfluous_disable_command, and removed
+  support for disable and enable commands in multline comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 ## 0.52.0: Crisp Clear Pleats
 
@@ -343,10 +349,6 @@
   to `false.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4843](https://github.com/realm/SwiftLint/issues/4843)
-
-* Removed support for disable and enable commands in multiline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * The internal module structure for SwiftLint has changed to split the
   monolithic `SwiftLintFramework` into new `SwiftLintCore` for core linter
@@ -435,11 +437,6 @@
 
 * Fix false positives in `indentation_width` rule.  
   [Sven Münnich](https://github.com/svenmuennich)
-
-* Fix false positives for superfluous_disable_command, and removed
-  support for disable and enable commands in multline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * Do not trigger `reduce_boolean` on `reduce` methods with a first named
   argument that is different from `into`.  

@@ -301,6 +301,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
 
+                    // A comment that should be preserved.
                     func baz() {
                         // Padding
                     }
@@ -309,6 +310,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                               struct Foo {
                                   let bar: String
 
+                                  // A comment that should be preserved.
                                   func baz() {
                                       // Padding
                                   }

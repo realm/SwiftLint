@@ -20,7 +20,7 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, Configura
         identifier: "unneeded_synthesized_initializer",
         name: "Unneeded Synthesized Initializer",
         description: "Default or memberwise initializers that will be automatically synthesized " +
-                     "do not need to be manually defined",
+                     "do not need to be manually defined.",
         kind: .idiomatic,
         nonTriggeringExamples: UnneededSynthesizedInitializerRuleExamples.nonTriggering,
         triggeringExamples: UnneededSynthesizedInitializerRuleExamples.triggering,

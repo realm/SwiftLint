@@ -207,8 +207,7 @@ private extension StructDeclSyntax {
 
         for variable in storedProperties {
             let id = variable.firstIdentifier.identifier.text
-            guard statements.contains(id) else { return false }
-            guard let idx = statements.firstIndex(of: id) else { return false }
+            guard statements.contains(id), let idx = statements.firstIndex(of: id) else { return false }
             statements.remove(at: idx)
         }
         return statements.isEmpty
@@ -247,9 +246,15 @@ private extension DeclModifierSyntax {
 }
 
 private extension InitializerDeclSyntax {
-    var hasThrowsOrRethrowsKeyword: Bool { signature.effectSpecifiers?.throwsSpecifier != nil }
-    var isInlinable: Bool { attributes.contains(attributeNamed: "inlinable") }
-    var parameterList: FunctionParameterListSyntax { signature.input.parameterList }
+    var hasThrowsOrRethrowsKeyword: Bool {
+        signature.effectSpecifiers?.throwsSpecifier != nil
+    }
+    var isInlinable: Bool {
+        attributes.contains(attributeNamed: "inlinable")
+    }
+    var parameterList: FunctionParameterListSyntax {
+        signature.input.parameterList
+    }
 }
 
 private extension VariableDeclSyntax {

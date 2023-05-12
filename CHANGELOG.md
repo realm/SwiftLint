@@ -245,6 +245,10 @@
   declarations in classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5009](https://github.com/realm/SwiftLint/issues/5009)
+* Fix false positives for superfluous_disable_command, and removed
+  support for disable and enable commands in multline comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * Do not trigger `prefer_self_in_static_references` rule on collection types in
   classes, but on initializers like `[C]()` in all types.  
@@ -332,10 +336,6 @@
 * Fix Bazel release tarball for compiling on macOS.  
   [JP Simard](https://github.com/jpsim)
   [#4985](https://github.com/realm/SwiftLint/issues/4985)
-* Fix false positives for superfluous_disable_command, and removed
-  support for disable and enable commands in multline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 ## 0.52.0: Crisp Clear Pleats
 

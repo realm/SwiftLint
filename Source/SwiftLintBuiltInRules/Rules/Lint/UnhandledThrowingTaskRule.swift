@@ -97,6 +97,13 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule, Op
                 try await someThrowingFunction()
               }
             }
+            """),
+            Example("""
+            Task {
+              return Result {
+                  try someThrowingFunc()
+              }
+            }
             """)
         ],
         triggeringExamples: [
@@ -273,6 +280,22 @@ private final class ThrowsVisitor: SyntaxVisitor {
 
         // We don't need to visit children of the `do` node, since all errors are handled by the catch.
         return .skipChildren
+    }
+
+    override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
+        // No need to continue traversing if we already throw.
+        if doesThrow {
+            return .skipChildren
+        }
+
+        // Result initializers with trailing closures handle thrown errors.
+        if let typeIdentifier = node.calledExpression.as(IdentifierExprSyntax.self),
+           typeIdentifier.identifier.text == "Result",
+           node.trailingClosure != nil {
+            return .skipChildren
+        }
+
+        return .visitChildren
     }
 
     override func visitPost(_ node: TryExprSyntax) {

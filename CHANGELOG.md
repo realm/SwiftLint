@@ -23,7 +23,8 @@
   [JP Simard](https://github.com/jpsim)
   [#4987](https://github.com/realm/SwiftLint/issues/4987)
 
-* Fix `unhandled_throwing_task` false positives when the `Task` is returned.  
+* Fix `unhandled_throwing_task` false positives when the `Task` is returned or
+  where the throwing code is handled in a `Result` initializer.  
   [JP Simard](https://github.com/jpsim)
   [#4987](https://github.com/realm/SwiftLint/issues/4987)
 

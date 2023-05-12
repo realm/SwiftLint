@@ -151,10 +151,13 @@ private extension StructDeclSyntax {
             // Ensure that parameters that correspond to properties declared using 'var' have a default
             // argument that is identical to the property's default value. Otherwise, a default argument
             // doesn't match the memberwise initializer.
-            let isVarDecl = property.bindingKeyword.tokenKind == .keyword(.var)
-            if isVarDecl, let initializer = property.bindings.first?.initializer {
-                guard let defaultArg = parameter.defaultArgument else { return false }
-                guard initializer.value.description == defaultArg.value.description else { return false }
+            if property.bindingKeyword.tokenKind == .keyword(.var),
+               let initializer = property.bindings.first?.initializer
+            {
+                guard
+                    let defaultArg = parameter.defaultArgument,
+                    initializer.value.description == defaultArg.value.description
+                else { return false }
             } else if parameter.defaultArgument != nil {
                 return false
             }

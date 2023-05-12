@@ -82,6 +82,21 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule, Op
             let result = await Task {
               throw CancellationError()
             }.result
+            """),
+            Example("""
+            func makeTask() -> Task<String, Error> {
+              return Task {
+                try await someThrowingFunction()
+              }
+            }
+            """),
+            Example("""
+            func makeTask() -> Task<String, Error> {
+              // Implicit return
+              Task {
+                try await someThrowingFunction()
+              }
+            }
             """)
         ],
         triggeringExamples: [
@@ -174,7 +189,7 @@ private extension FunctionCallExprSyntax {
     var hasViolation: Bool {
         isTaskWithImplicitErrorType &&
             doesThrow &&
-            !(isAssigned || isValueOrResultAccessed)
+            !(isAssigned || isValueOrResultAccessed || isReturnValue)
     }
 
     var isTaskWithImplicitErrorType: Bool {
@@ -268,5 +283,28 @@ private final class ThrowsVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: ThrowStmtSyntax) {
         doesThrow = true
+    }
+}
+
+private extension SyntaxProtocol {
+    var isExplicitReturnValue: Bool {
+        parent?.is(ReturnStmtSyntax.self) == true
+    }
+
+    var isImplicitReturnValue: Bool {
+        // 4th parent: FunctionDecl
+        // 3rd parent: | CodeBlock
+        // 2nd parent:   | CodeBlockItemList
+        // 1st parent:     | CodeBlockItem
+        // Current node:     | FunctionDeclSyntax
+        guard let possibleFunctionDecl = parent?.parent?.parent?.parent?.as(FunctionDeclSyntax.self) else {
+            return false
+        }
+
+        return possibleFunctionDecl.body?.statements.count == 1
+    }
+
+    var isReturnValue: Bool {
+        isExplicitReturnValue || isImplicitReturnValue
     }
 }

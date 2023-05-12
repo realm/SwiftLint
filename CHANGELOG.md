@@ -23,6 +23,10 @@
   [JP Simard](https://github.com/jpsim)
   [#4987](https://github.com/realm/SwiftLint/issues/4987)
 
+* Fix `unhandled_throwing_task` false positives when the `Task` is returned.  
+  [JP Simard](https://github.com/jpsim)
+  [#4987](https://github.com/realm/SwiftLint/issues/4987)
+
 ## 0.52.1: Crisp Clear Pleats
 
 #### Breaking

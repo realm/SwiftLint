@@ -5,11 +5,6 @@ public struct Stack<Element> {
     /// Creates an empty `Stack`.
     public init() {}
 
-    /// True if the stack has no elements. False otherwise.
-    public var isEmpty: Bool {
-        elements.isEmpty
-    }
-
     /// The number of elements in this stack.
     public var count: Int {
         elements.count

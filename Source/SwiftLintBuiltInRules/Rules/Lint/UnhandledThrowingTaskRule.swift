@@ -82,6 +82,28 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule, Op
             let result = await Task {
               throw CancellationError()
             }.result
+            """),
+            Example("""
+            func makeTask() -> Task<String, Error> {
+              return Task {
+                try await someThrowingFunction()
+              }
+            }
+            """),
+            Example("""
+            func makeTask() -> Task<String, Error> {
+              // Implicit return
+              Task {
+                try await someThrowingFunction()
+              }
+            }
+            """),
+            Example("""
+            Task {
+              return Result {
+                  try someThrowingFunc()
+              }
+            }
             """)
         ],
         triggeringExamples: [
@@ -151,6 +173,13 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule, Op
                 throw BarError()
               }
             }
+            """),
+            Example("""
+            func doTask() {
+              ↓Task {
+                try await someThrowingFunction()
+              }
+            }
             """)
         ]
     )
@@ -174,7 +203,7 @@ private extension FunctionCallExprSyntax {
     var hasViolation: Bool {
         isTaskWithImplicitErrorType &&
             doesThrow &&
-            !(isAssigned || isValueOrResultAccessed)
+            !(isAssigned || isValueOrResultAccessed || isReturnValue)
     }
 
     var isTaskWithImplicitErrorType: Bool {
@@ -260,6 +289,22 @@ private final class ThrowsVisitor: SyntaxVisitor {
         return .skipChildren
     }
 
+    override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
+        // No need to continue traversing if we already throw.
+        if doesThrow {
+            return .skipChildren
+        }
+
+        // Result initializers with trailing closures handle thrown errors.
+        if let typeIdentifier = node.calledExpression.as(IdentifierExprSyntax.self),
+           typeIdentifier.identifier.text == "Result",
+           node.trailingClosure != nil {
+            return .skipChildren
+        }
+
+        return .visitChildren
+    }
+
     override func visitPost(_ node: TryExprSyntax) {
         if node.questionOrExclamationMark == nil {
             doesThrow = true
@@ -268,5 +313,32 @@ private final class ThrowsVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: ThrowStmtSyntax) {
         doesThrow = true
+    }
+}
+
+private extension SyntaxProtocol {
+    var isExplicitReturnValue: Bool {
+        parent?.is(ReturnStmtSyntax.self) == true
+    }
+
+    var isImplicitReturnValue: Bool {
+        // 4th parent: FunctionDecl
+        // 3rd parent: | CodeBlock
+        // 2nd parent:   | CodeBlockItemList
+        // 1st parent:     | CodeBlockItem
+        // Current node:     | FunctionDeclSyntax
+        guard
+            let parentFunctionDecl = parent?.parent?.parent?.parent?.as(FunctionDeclSyntax.self),
+            parentFunctionDecl.body?.statements.count == 1,
+            parentFunctionDecl.signature.output != nil
+        else {
+            return false
+        }
+
+        return true
+    }
+
+    var isReturnValue: Bool {
+        isExplicitReturnValue || isImplicitReturnValue
     }
 }

@@ -31,6 +31,10 @@
   declarations in classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5009](https://github.com/realm/SwiftLint/issues/5009)
+* Fix false positives on `redundant_objc_attribute` rule for enums
+  and private members.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4633](https://github.com/realm/SwiftLint/issues/4633)
 
 * Fix autocorrect for `CGIntersectionRect` in `legacy_cggeometry_functions`
   rule.  
@@ -97,10 +101,6 @@
 * Fix Bazel release tarball for compiling on macOS.  
   [JP Simard](https://github.com/jpsim)
   [#4985](https://github.com/realm/SwiftLint/issues/4985)
-* Fix false positives on `redundant_objc_attribute` rule for enums
-  and private members.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4633](https://github.com/realm/SwiftLint/issues/4633)
 
 ## 0.52.0: Crisp Clear Pleats
 

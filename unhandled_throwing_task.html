@@ -407,6 +407,25 @@
   <span class="k">throw</span> <span class="kt">CancellationError</span><span class="p">()</span>
 <span class="p">}</span><span class="o">.</span><span class="n">result</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">makeTask</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Task</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kt">Task</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="k">await</span> <span class="nf">someThrowingFunction</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">makeTask</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Task</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="c1">// Implicit return</span>
+  <span class="kt">Task</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="k">await</span> <span class="nf">someThrowingFunction</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kt">Task</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kt">Result</span> <span class="p">{</span>
+      <span class="k">try</span> <span class="nf">someThrowingFunc</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Task</span> <span class="p">{</span>
   <span class="k">try</span> <span class="k">await</span> <span class="nf">myThrowingFunction</span><span class="p">()</span>
@@ -462,6 +481,12 @@
     <span class="k">try</span> <span class="nf">foo</span><span class="p">()</span>
   <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
     <span class="k">throw</span> <span class="kt">BarError</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">doTask</span><span class="p">()</span> <span class="p">{</span>
+  <span class="err">↓</span><span class="kt">Task</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="k">await</span> <span class="nf">someThrowingFunction</span><span class="p">()</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>

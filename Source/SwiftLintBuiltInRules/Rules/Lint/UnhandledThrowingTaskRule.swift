@@ -173,6 +173,13 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule, Op
                 throw BarError()
               }
             }
+            """),
+            Example("""
+            func doTask() {
+              ↓Task {
+                try await someThrowingFunction()
+              }
+            }
             """)
         ]
     )
@@ -320,11 +327,15 @@ private extension SyntaxProtocol {
         // 2nd parent:   | CodeBlockItemList
         // 1st parent:     | CodeBlockItem
         // Current node:     | FunctionDeclSyntax
-        guard let possibleFunctionDecl = parent?.parent?.parent?.parent?.as(FunctionDeclSyntax.self) else {
+        guard
+            let parentFunctionDecl = parent?.parent?.parent?.parent?.as(FunctionDeclSyntax.self),
+            parentFunctionDecl.body?.statements.count == 1,
+            parentFunctionDecl.signature.output != nil
+        else {
             return false
         }
 
-        return possibleFunctionDecl.body?.statements.count == 1
+        return true
     }
 
     var isReturnValue: Bool {

@@ -183,6 +183,7 @@ endif
 	git push origin HEAD
 	git push origin $(NEW_VERSION)
 	./tools/create-github-release.sh "$(NEW_VERSION)"
+	make publish
 
 %:
 	@:

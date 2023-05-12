@@ -20,7 +20,7 @@ steps:
   - label: "TSan Tests"
     commands:
       - echo "+++ Test"
-      - bazel test --test_output=streamed --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
+      - bazel test --test_output=errors --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
   - label: "Sourcery"
     commands:
       - echo "+++ Run Sourcery"

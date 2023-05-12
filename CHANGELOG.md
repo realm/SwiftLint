@@ -19,7 +19,7 @@
 
 * Make `unhandled_throwing_task` opt-in instead of enabled by default. The rule
   is still prone to false positives at this point, so this makes enabling the
-  rule a conscious decision by end-users instead of enabled by default.  
+  rule a conscious decision by end-users.  
   [JP Simard](https://github.com/jpsim)
   [#4987](https://github.com/realm/SwiftLint/issues/4987)
 

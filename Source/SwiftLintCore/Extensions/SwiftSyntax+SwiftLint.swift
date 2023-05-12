@@ -147,10 +147,6 @@ public extension ModifierListSyntax? {
         }
     }
 
-    var isFinal: Bool {
-        contains(tokenKind: .keyword(.final))
-    }
-
     private func contains(tokenKind: TokenKind) -> Bool {
         guard let modifiers = self else {
             return false
@@ -344,12 +340,6 @@ public extension FloatLiteralExprSyntax {
 public extension IdentifierExprSyntax {
     var isSelf: Bool {
         identifier.text == "self"
-    }
-}
-
-public extension MemberAccessExprSyntax {
-    var isSelfAccess: Bool {
-        base?.as(IdentifierExprSyntax.self)?.isSelf == true
     }
 }
 

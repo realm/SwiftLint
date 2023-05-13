@@ -110,8 +110,7 @@ private extension StructDeclSyntax {
                 }
             } else if let initDecl = member.as(InitializerDeclSyntax.self),
                       initDecl.optionalMark == nil,
-                      !initDecl.hasThrowsOrRethrowsKeyword
-            {
+                      !initDecl.hasThrowsOrRethrowsKeyword {
                 // Collect any possible redundant initializers into a list.
                 initializers.append(initDecl)
             }
@@ -152,8 +151,7 @@ private extension StructDeclSyntax {
             // argument that is identical to the property's default value. Otherwise, a default argument
             // doesn't match the memberwise initializer.
             if property.bindingKeyword.tokenKind == .keyword(.var),
-               let initializer = property.bindings.first?.initializer
-            {
+               let initializer = property.bindings.first?.initializer {
                 guard
                     let defaultArg = parameter.defaultArgument,
                     initializer.value.description == defaultArg.value.description
@@ -163,8 +161,7 @@ private extension StructDeclSyntax {
             }
 
             if propertyId.identifier.text != parameter.firstName.text ||
-                (propertyTypeDescription != nil && propertyTypeDescription != parameter.typeDescription)
-            {
+                (propertyTypeDescription != nil && propertyTypeDescription != parameter.typeDescription) {
                 return false
             }
         }
@@ -197,7 +194,7 @@ private extension StructDeclSyntax {
                     leftName = element.name.text
                 case .assignmentExpr(let element) where element.assignToken.tokenKind != .equal:
                     return false
-                case .assignmentExpr(_):
+                case .assignmentExpr:
                     break
                 case .identifierExpr(let element):
                     rightName = element.identifier.text

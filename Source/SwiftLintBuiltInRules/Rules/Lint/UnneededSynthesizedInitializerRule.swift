@@ -178,8 +178,9 @@ private extension StructDeclSyntax {
         _ initializerBody: CodeBlockSyntax?,
         matches storedProperties: [VariableDeclSyntax]
     ) -> Bool {
-        guard let initializerBody else { return false }
-        guard storedProperties.count == initializerBody.statements.count else { return false }
+        guard let initializerBody, storedProperties.count == initializerBody.statements.count else {
+            return false
+        }
 
         var statements: [String] = []
         for statement in initializerBody.statements {
@@ -196,8 +197,10 @@ private extension StructDeclSyntax {
                         return false
                     }
                     leftName = element.name.text
-                case .assignmentExpr(let element):
-                    guard element.assignToken.tokenKind == .equal else { return false }
+                case .assignmentExpr(let element) where element.assignToken.tokenKind != .equal:
+                    return false
+                case .assignmentExpr(_):
+                    break
                 case .identifierExpr(let element):
                     rightName = element.identifier.text
                 default:

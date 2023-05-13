@@ -71,11 +71,25 @@ private enum OneArgXCTAssert: String {
               let matcher = Self(rawValue: name),
               let argument = node.argumentList.first?.expression.as(SequenceExprSyntax.self),
               let folded = try? OperatorTable.standardOperators.foldSingle(argument),
-              let binOp = folded.as(InfixOperatorExprSyntax.self)?.operatorOperand.as(BinaryOperatorExprSyntax.self),
-              let kind = Comparison(rawValue: binOp.operatorToken.text) else {
+              let operatorExpr = folded.as(InfixOperatorExprSyntax.self),
+              let binOp = operatorExpr.operatorOperand.as(BinaryOperatorExprSyntax.self),
+              let kind = Comparison(rawValue: binOp.operatorToken.text),
+              accept(operand: operatorExpr.leftOperand), accept(operand: operatorExpr.rightOperand) else {
             return nil
         }
         return matcher.suggestion(for: kind)
+    }
+
+    private static func accept(operand: ExprSyntax) -> Bool {
+        // Check if the expression could be a type object like `String.self`. Note, however, that `1.self`
+        // is also valid Swift. There is no way to be sure here.
+        if operand.as(MemberAccessExprSyntax.self)?.name.text == "self" {
+            return false
+        }
+        if operand.as(TupleExprSyntax.self)?.elementList.count ?? 0 > 1 {
+            return false
+        }
+        return true
     }
 }
 

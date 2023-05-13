@@ -10,7 +10,11 @@
 
 #### Enhancements
 
-* None.
+* Silence `xct_specific_matcher` rule on "one argument asserts" if there are
+  potential types or tuples involved in the comparison as types and tuples do
+  not conform to `Equatable`.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4990](https://github.com/realm/SwiftLint/issues/4990)
 
 #### Bug Fixes
 

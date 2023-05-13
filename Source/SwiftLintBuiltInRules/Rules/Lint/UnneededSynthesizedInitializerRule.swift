@@ -151,7 +151,7 @@ private extension StructDeclSyntax {
             // argument that is identical to the property's default value. Otherwise, a default argument
             // doesn't match the memberwise initializer.
             if property.bindingKeyword.tokenKind == .keyword(.var),
-               let initializer = property.bindings.first?.initializer {
+               let initializer = property.initializer {
                 guard
                     let defaultArg = parameter.defaultArgument,
                     initializer.value.description == defaultArg.value.description
@@ -273,6 +273,9 @@ private extension VariableDeclSyntax {
     }
     var typeDescription: String? {
         bindings.first?.typeAnnotation?.type.description.trimmingCharacters(in: .whitespaces)
+    }
+    var initializer: InitializerClauseSyntax? {
+        bindings.first?.initializer
     }
 }
 

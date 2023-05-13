@@ -146,7 +146,7 @@ private extension StructDeclSyntax {
 
             let property = storedProperties[idx]
             let propertyId = property.firstIdentifier
-            let propertyType = property.bindings.first?.typeAnnotation?.type
+            let propertyTypeDescription = property.typeDescription
 
             // Ensure that parameters that correspond to properties declared using 'var' have a default
             // argument that is identical to the property's default value. Otherwise, a default argument
@@ -162,10 +162,8 @@ private extension StructDeclSyntax {
                 return false
             }
 
-            if
-                propertyId.identifier.text != parameter.firstName.text
-                    || (propertyType != nil && propertyType?.description.trimmingCharacters(in: .whitespaces) !=
-                    parameter.type.description.trimmingCharacters(in: .whitespacesAndNewlines))
+            if propertyId.identifier.text != parameter.firstName.text ||
+                (propertyTypeDescription != nil && propertyTypeDescription != parameter.typeDescription)
             {
                 return false
             }
@@ -263,12 +261,22 @@ private extension InitializerDeclSyntax {
     }
 }
 
+private extension FunctionParameterSyntax {
+    var typeDescription: String {
+        type.description.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
 private extension VariableDeclSyntax {
     var identifiers: [IdentifierPatternSyntax] {
         bindings.compactMap { $0.pattern.as(IdentifierPatternSyntax.self) }
     }
-
-    var firstIdentifier: IdentifierPatternSyntax { identifiers[0] }
+    var firstIdentifier: IdentifierPatternSyntax {
+        identifiers[0]
+    }
+    var typeDescription: String? {
+        bindings.first?.typeAnnotation?.type.description.trimmingCharacters(in: .whitespaces)
+    }
 }
 
 // Defines the access levels which may be assigned to a synthesized memberwise initializer.

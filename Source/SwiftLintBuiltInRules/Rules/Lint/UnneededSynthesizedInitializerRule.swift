@@ -152,16 +152,12 @@ private extension StructDeclSyntax {
             // doesn't match the memberwise initializer.
             if property.bindingKeyword.tokenKind == .keyword(.var),
                let initializer = property.initializer {
-                guard
-                    let defaultArg = parameter.defaultArgument,
-                    initializer.value.description == defaultArg.value.description
-                else { return false }
-            } else if parameter.defaultArgument != nil {
-                return false
-            }
-
-            if propertyId.identifier.text != parameter.firstName.text ||
-                (propertyTypeDescription != nil && propertyTypeDescription != parameter.typeDescription) {
+                guard initializer.value.description == parameter.defaultArgument?.value.description else {
+                    return false
+                }
+            } else if parameter.defaultArgument != nil ||
+                      propertyId.identifier.text != parameter.firstName.text ||
+                      (propertyTypeDescription != nil && propertyTypeDescription != parameter.typeDescription) {
                 return false
             }
         }

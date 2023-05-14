@@ -71,12 +71,15 @@ struct NameConfiguration: RuleConfiguration, Equatable {
             try severity.apply(configuration: validatesStartWithLowercase)
             self.validatesStartWithLowercase = severity
         } else if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? Bool {
+            // TODO: [05/10/2025] Remove deprecation warning after ~2 years.
             self.validatesStartWithLowercase = validatesStartWithLowercase ? .error : nil
-            queuedPrintError("""
-                warning: The \"validates_start_with_lowercase\" configuration now expects a severity (warning or \
+            Issue.genericWarning(
+                """
+                The \"validates_start_with_lowercase\" configuration now expects a severity (warning or \
                 error). The boolean value 'true' will still enable it as an error. It is now deprecated and will be \
                 removed in a future release.
-                """)
+                """
+            ).print()
         }
     }
 }

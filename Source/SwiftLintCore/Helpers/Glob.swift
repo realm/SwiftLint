@@ -60,7 +60,7 @@ struct Glob {
             }
         } catch {
             directories = []
-            queuedPrintError("Error parsing file system item: \(error)")
+            Issue.genericWarning("Error parsing file system item: \(error)").print()
         }
 
         // Check the base directory for the glob star as well.

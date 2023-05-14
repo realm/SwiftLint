@@ -41,7 +41,7 @@ public extension Configuration {
                     let duplicateRules = identifiers.reduce(into: [String: Int]()) { $0[$1, default: 0] += 1 }
                         .filter { $0.1 > 1 }
                     for duplicateRule in duplicateRules {
-                        queuedPrintError("warning: '\(duplicateRule.0)' is listed \(duplicateRule.1) times")
+                        Issue.listedMultipleTime(ruleID: duplicateRule.0, times: duplicateRule.1).print()
                     }
                 }
             }

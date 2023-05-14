@@ -92,7 +92,7 @@ extension Configuration {
         do {
             try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
         } catch {
-            queuedPrintError("Error while creating cache: " + error.localizedDescription)
+            Issue.genericWarning("Cannot create cache: " + error.localizedDescription).print()
         }
 
         return folder

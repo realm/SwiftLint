@@ -2,11 +2,7 @@ import SwiftSyntax
 
 // TODO: [12/23/2024] Remove deprecation warning after ~2 years.
 private let warnDeprecatedOnceImpl: Void = {
-    queuedPrintError("""
-        warning: The `\(InertDeferRule.description.identifier)` rule is now deprecated and will be \
-        completely removed in a future release due to an equivalent warning issued by the Swift compiler.
-        """
-    )
+    Issue.ruleDeprecated(ruleID: InertDeferRule.description.identifier).print()
 }()
 
 private func warnDeprecatedOnce() {

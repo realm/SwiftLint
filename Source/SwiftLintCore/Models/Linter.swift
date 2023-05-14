@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 private let warnSourceKitFailedOnceImpl: Void = {
-    queuedPrintError("warning: SourceKit-based rules will be skipped because sourcekitd has failed.")
+    Issue.genericWarning("SourceKit-based rules will be skipped because sourcekitd has failed.").print()
 }()
 
 private func warnSourceKitFailedOnce() {
@@ -245,8 +245,7 @@ public struct CollectedLinter {
         }
 
         for (deprecatedIdentifier, identifier) in deprecatedToValidIdentifier {
-            queuedPrintError("warning: '\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and " +
-                "will be completely removed in a future release.")
+            Issue.renamedIdentifier(old: deprecatedIdentifier, new: identifier).print()
         }
 
         // Free some memory used for this file's caches. They shouldn't be needed after this point.

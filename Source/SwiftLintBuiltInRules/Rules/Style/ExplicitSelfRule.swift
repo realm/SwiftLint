@@ -42,10 +42,7 @@ struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
 
     private func violationRanges(in file: SwiftLintFile, compilerArguments: [String]) -> [NSRange] {
         guard compilerArguments.isNotEmpty else {
-            queuedPrintError("""
-                warning: Attempted to lint file at path '\(file.path ?? "...")' with the \
-                \(Self.description.identifier) rule without any compiler arguments.
-                """)
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
             return []
         }
 
@@ -72,7 +69,7 @@ struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
 
         return cursorsMissingExplicitSelf.compactMap { cursorInfo in
             guard let byteOffset = (cursorInfo["swiftlint.offset"] as? Int64).flatMap(ByteCount.init) else {
-                queuedPrintError("couldn't convert offsets")
+                Issue.genericWarning("Cannot convert offsets in '\(Self.description.identifier)' rule.").print()
                 return nil
             }
 

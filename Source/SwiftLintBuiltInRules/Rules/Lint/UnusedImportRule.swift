@@ -85,10 +85,7 @@ struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
 
     private func importUsage(in file: SwiftLintFile, compilerArguments: [String]) -> [ImportUsage] {
         guard compilerArguments.isNotEmpty else {
-            queuedPrintError("""
-                warning: Attempted to lint file at path '\(file.path ?? "...")' with the \
-                \(Self.description.identifier) rule without any compiler arguments.
-                """)
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
             return []
         }
 
@@ -166,7 +163,7 @@ private extension SwiftLintFile {
                 file: path!, offset: token.offset, arguments: compilerArguments
             )
             guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled()).map(SourceKittenDictionary.init) else {
-                queuedPrintError("Could not get cursor info")
+                Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.description.identifier).print()
                 continue
             }
             if nextIsModuleImport {
@@ -198,7 +195,7 @@ private extension SwiftLintFile {
     func operatorImports(arguments: [String], processedTokenOffsets: Set<ByteCount>) -> Set<String> {
         guard let index = (try? Request.index(file: path!, arguments: arguments).sendIfNotDisabled())
             .map(SourceKittenDictionary.init) else {
-            queuedPrintError("Could not get index")
+            Issue.indexingError(path: path, ruleID: UnusedImportRule.description.identifier).print()
             return []
         }
 
@@ -221,7 +218,7 @@ private extension SwiftLintFile {
                 )
                 guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled())
                     .map(SourceKittenDictionary.init) else {
-                    queuedPrintError("Could not get cursor info")
+                    Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.description.identifier).print()
                     continue
                 }
 

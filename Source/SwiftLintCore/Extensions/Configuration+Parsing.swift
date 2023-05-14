@@ -102,8 +102,7 @@ extension Configuration {
             if let indentationStyle = Self.IndentationStyle(rawIndentation) {
                 return indentationStyle
             }
-
-            queuedPrintError("warning: Invalid configuration for '\(Key.indentation)'. Falling back to default.")
+            Issue.invalidConfiguration(ruleID: Key.indentation.rawValue).print()
             return .default
         }
 
@@ -119,9 +118,7 @@ extension Configuration {
     ) {
         // Deprecation warning for "enabled_rules"
         if dict[Key.enabledRules.rawValue] != nil {
-            queuedPrintError("warning: '\(Key.enabledRules.rawValue)' has been renamed to " +
-                "'\(Key.optInRules.rawValue)' and will be completely removed in a " +
-                "future release.")
+            Issue.renamedIdentifier(old: Key.enabledRules.rawValue, new: Key.optInRules.rawValue).print()
         }
 
         // Deprecation warning for rules
@@ -135,10 +132,7 @@ extension Configuration {
         }
 
         for (deprecatedIdentifier, identifier) in deprecatedUsages {
-            queuedPrintError(
-                "warning: '\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be "
-                    + "completely removed in a future release."
-            )
+            Issue.renamedIdentifier(old: deprecatedIdentifier, new: identifier).print()
         }
     }
 
@@ -146,7 +140,7 @@ extension Configuration {
         // Log an error when supplying invalid keys in the configuration dictionary
         let invalidKeys = Set(dict.keys).subtracting(validKeys(ruleList: ruleList))
         if invalidKeys.isNotEmpty {
-            queuedPrintError("warning: Configuration contains invalid keys:\n\(invalidKeys)")
+            Issue.invalidConfigurationKeys(invalidKeys.sorted()).print()
         }
     }
 
@@ -161,7 +155,7 @@ extension Configuration {
                     continue
             }
 
-            let message = "warning: Found a configuration for '\(identifier)' rule"
+            let message = "Found a configuration for '\(identifier)' rule"
 
             switch rulesMode {
             case .allEnabled:
@@ -169,17 +163,14 @@ extension Configuration {
 
             case .only(let onlyRules):
                 if Set(onlyRules).isDisjoint(with: rule.description.allIdentifiers) {
-                    queuedPrintError("\(message), but it is not present on " +
-                        "'\(Key.onlyRules.rawValue)'.")
+                    Issue.genericWarning("\(message), but it is not present on '\(Key.onlyRules.rawValue)'.").print()
                 }
 
             case let .default(disabled: disabledRules, optIn: optInRules):
                 if rule is OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {
-                    queuedPrintError("\(message), but it is not enabled on " +
-                        "'\(Key.optInRules.rawValue)'.")
+                    Issue.genericWarning("\(message), but it is not enabled on '\(Key.optInRules.rawValue)'.").print()
                 } else if Set(disabledRules).isSuperset(of: rule.description.allIdentifiers) {
-                    queuedPrintError("\(message), but it is disabled on " +
-                        "'\(Key.disabledRules.rawValue)'.")
+                    Issue.genericWarning("\(message), but it is disabled on '\(Key.disabledRules.rawValue)'.").print()
                 }
             }
         }
@@ -192,10 +183,12 @@ extension Configuration {
         Set(analyzerRules).intersection(optInRules)
             .sorted()
             .forEach {
-                queuedPrintError("""
-                    warning: '\($0)' should be listed in the 'analyzer_rules' configuration section \
-                    for more clarity as it is only run by 'swiftlint analyze'
-                    """)
+                Issue.genericWarning(
+                    """
+                    '\($0)' should be listed in the 'analyzer_rules' configuration section \
+                    for more clarity as it is only run by 'swiftlint analyze'.
+                    """
+                ).print()
             }
     }
 }

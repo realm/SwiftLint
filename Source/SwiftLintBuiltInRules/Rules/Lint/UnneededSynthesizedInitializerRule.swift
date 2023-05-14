@@ -178,7 +178,7 @@ private extension StructDeclSyntax {
             guard let exp = statement.item.as(SequenceExprSyntax.self) else {
                 return false
             }
-            
+
             var leftName = ""
             var rightName = ""
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ConfigurationError Enumeration Reference</title>
+    <title>Issue Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Enum/ConfigurationError" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Enum/Issue" class="dashAnchor"></a>
 
-    <a title="ConfigurationError Enumeration Reference"></a>
+    <a title="Issue Enumeration Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -50,7 +50,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">SwiftLintCore Reference</a>
       <img class="carat" src="../img/carat.png" alt=""/>
-      ConfigurationError Enumeration Reference
+      Issue Enumeration Reference
     </p>
 
     <div class="content-wrapper">
@@ -137,10 +137,10 @@
                 <a class="nav-group-task-link" href="../Enums/AccessControlLevel.html">AccessControlLevel</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Enums/ConfigurationError.html">ConfigurationError</a>
+                <a class="nav-group-task-link" href="../Enums/ExecutableInfo.html">ExecutableInfo</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Enums/ExecutableInfo.html">ExecutableInfo</a>
+                <a class="nav-group-task-link" href="../Enums/Issue.html">Issue</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/RuleIdentifier.html">RuleIdentifier</a>
@@ -335,18 +335,18 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>ConfigurationError</h1>
+            <h1>Issue</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ConfigurationError</span> <span class="p">:</span> <span class="kt">Error</span><span class="p">,</span> <span class="kt">Equatable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Issue</span> <span class="p">:</span> <span class="kt">LocalizedError</span><span class="p">,</span> <span class="kt">Equatable</span></code></pre>
 
                 </div>
               </div>
-            <p>All possible configuration errors.</p>
+            <p>All possible SwiftLint issues which are printed as warnings by default.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/ConfigurationError.swift#L2-L14">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Issue.swift#L4-L47">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -358,9 +358,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore18ConfigurationErrorO07unknownD0yA2CmF"></a>
+                    <a name="/s:13SwiftLintCore5IssueO20unknownConfigurationyA2CmF"></a>
                     <a name="//apple_ref/swift/Element/unknownConfiguration" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore18ConfigurationErrorO07unknownD0yA2CmF">unknownConfiguration</a>
+                    <a class="token" href="#/s:13SwiftLintCore5IssueO20unknownConfigurationyA2CmF">unknownConfiguration</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -380,7 +380,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/ConfigurationError.swift#L4">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Issue.swift#L6">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -388,9 +388,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore18ConfigurationErrorO28ambiguousMatchKindParametersyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/ambiguousMatchKindParameters" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore18ConfigurationErrorO28ambiguousMatchKindParametersyA2CmF">ambiguousMatchKindParameters</a>
+                    <a name="/s:13SwiftLintCore5IssueO14genericWarningyACSScACmF"></a>
+                    <a name="//apple_ref/swift/Element/genericWarning(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore5IssueO14genericWarningyACSScACmF">genericWarning(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -398,19 +398,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The configuration had both <code>match_kind</code> and <code>excluded_match_kind</code> parameters.</p>
+                        <p>A generic warning specified by a string.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">ambiguousMatchKindParameters</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">genericWarning</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/ConfigurationError.swift#L7">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Issue.swift#L9">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -418,9 +418,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore18ConfigurationErrorO7genericyACSScACmF"></a>
-                    <a name="//apple_ref/swift/Element/generic(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore18ConfigurationErrorO7genericyACSScACmF">generic(_:<wbr>)</a>
+                    <a name="/s:13SwiftLintCore5IssueO11deprecationyACSS_tcACmF"></a>
+                    <a name="//apple_ref/swift/Element/deprecation(ruleID:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore5IssueO11deprecationyACSS_tcACmF">deprecation(ruleID:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -428,19 +428,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A generic configuration error specified by a string.</p>
+                        <p>A deprecation warning for a rule.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">generic</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">deprecation</span><span class="p">(</span><span class="nv">ruleID</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/ConfigurationError.swift#L10">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Issue.swift#L12">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -448,9 +448,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore18ConfigurationErrorO19initialFileNotFoundyACSS_tcACmF"></a>
+                    <a name="/s:13SwiftLintCore5IssueO19initialFileNotFoundyACSS_tcACmF"></a>
                     <a name="//apple_ref/swift/Element/initialFileNotFound(path:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore18ConfigurationErrorO19initialFileNotFoundyACSS_tcACmF">initialFileNotFound(path:<wbr>)</a>
+                    <a class="token" href="#/s:13SwiftLintCore5IssueO19initialFileNotFoundyACSS_tcACmF">initialFileNotFound(path:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -470,7 +470,37 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/ConfigurationError.swift#L13">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Issue.swift#L15">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore5IssueO11yamlParsingyACSScACmF"></a>
+                    <a name="//apple_ref/swift/Element/yamlParsing(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore5IssueO11yamlParsingyACSScACmF">yamlParsing(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An error that occurred when parsing YAML.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">yamlParsing</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Issue.swift#L18">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

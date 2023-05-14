@@ -125,26 +125,25 @@ private extension StructDeclSyntax {
         }
     }
 
-    private func noParameterInitializer(_ storedProperties: [VariableDeclSyntax]) -> Bool {
-        for storedProperty in storedProperties where storedProperty.bindingKeyword.tokenKind == .keyword(.var) {
-            guard storedProperty.bindings.first?.initializer != nil else {
-                return false
-            }
-        }
-        return true
-    }
-
     // Are the initializer parameters empty, or do they match the stored properties of the struct?
     private func initializerParameters(
         _ initializerParameters: FunctionParameterListSyntax,
         match storedProperties: [VariableDeclSyntax]
     ) -> Bool {
-        guard initializerParameters.isNotEmpty else { return noParameterInitializer(storedProperties) }
-        guard initializerParameters.count == storedProperties.count else { return false }
+        if initializerParameters.isEmpty {
+            // Are all properties initialized?
+            return storedProperties.allSatisfy {
+                $0.bindingKeyword.tokenKind == .keyword(.var) && $0.bindings.first?.initializer != nil
+            }
+        }
+        guard initializerParameters.count == storedProperties.count else {
+            return false
+        }
 
         for (idx, parameter) in initializerParameters.enumerated() {
-            guard parameter.secondName == nil else { return false }
-
+            guard parameter.secondName == nil else {
+                return false
+            }
             let property = storedProperties[idx]
             let propertyId = property.firstIdentifier
             let propertyTypeDescription = property.typeDescription
@@ -152,8 +151,7 @@ private extension StructDeclSyntax {
             // Ensure that parameters that correspond to properties declared using 'var' have a default
             // argument that is identical to the property's default value. Otherwise, a default argument
             // doesn't match the memberwise initializer.
-            if property.bindingKeyword.tokenKind == .keyword(.var),
-               let initializer = property.initializer {
+            if property.bindingKeyword.tokenKind == .keyword(.var), let initializer = property.initializer {
                 guard initializer.value.description == parameter.defaultArgument?.value.description else {
                     return false
                 }
@@ -177,16 +175,17 @@ private extension StructDeclSyntax {
 
         var statements: [String] = []
         for statement in initializerBody.statements {
-            guard let exp = statement.item.as(SequenceExprSyntax.self) else { return false }
+            guard let exp = statement.item.as(SequenceExprSyntax.self) else {
+                return false
+            }
+            
             var leftName = ""
             var rightName = ""
 
             for element in exp.elements {
                 switch Syntax(element).as(SyntaxEnum.self) {
                 case .memberAccessExpr(let element):
-                    guard let base = element.base,
-                          base.description.trimmingCharacters(in: .whitespacesAndNewlines) == "self"
-                    else {
+                    guard element.isBaseSelf else {
                         return false
                     }
                     leftName = element.name.text
@@ -200,13 +199,17 @@ private extension StructDeclSyntax {
                     return false
                 }
             }
-            guard leftName == rightName else { return false }
+            guard leftName == rightName else {
+                return false
+            }
             statements.append(leftName)
         }
 
         for variable in storedProperties {
             let id = variable.firstIdentifier.identifier.text
-            guard statements.contains(id), let idx = statements.firstIndex(of: id) else { return false }
+            guard statements.contains(id), let idx = statements.firstIndex(of: id) else {
+                return false
+            }
             statements.remove(at: idx)
         }
         return statements.isEmpty
@@ -218,29 +221,28 @@ private extension StructDeclSyntax {
         _ modifiers: ModifierListSyntax?,
         match storedProperties: [VariableDeclSyntax]
     ) -> Bool {
-        let synthesizedAccessLevel = synthesizedInitializerAccessLevel(using: storedProperties)
         let accessLevel = modifiers?.accessLevelModifier
-        switch synthesizedAccessLevel {
+        switch synthesizedInitializerAccessLevel(using: storedProperties) {
         case .internal:
             // No explicit access level or internal are equivalent.
             return accessLevel == nil || accessLevel!.name.tokenKind == .keyword(.internal)
         case .fileprivate:
-            return accessLevel != nil && accessLevel!.name.tokenKind == .keyword(.fileprivate)
+            return accessLevel?.name.tokenKind == .keyword(.fileprivate)
         case .private:
-            return accessLevel != nil && accessLevel!.name.tokenKind == .keyword(.private)
+            return accessLevel?.name.tokenKind == .keyword(.private)
         }
     }
 }
 
 private extension ModifierListSyntax {
-    var accessLevelModifier: DeclModifierSyntax? { first { $0.isAccessLevelModifier } }
+    var accessLevelModifier: DeclModifierSyntax? {
+        first(where: \.isAccessLevelModifier)
+    }
 }
 
 private extension DeclModifierSyntax {
     var isAccessLevelModifier: Bool {
-        let tokenKind = name.tokenKind
-        return tokenKind == .keyword(.public) || tokenKind == .keyword(.private) ||
-               tokenKind == .keyword(.fileprivate) || tokenKind == .keyword(.internal)
+        [.public, .private, .fileprivate, .internal].map(TokenKind.keyword).contains(name.tokenKind)
     }
 }
 
@@ -289,7 +291,9 @@ private enum AccessLevel {
 private func synthesizedInitializerAccessLevel(using storedProperties: [VariableDeclSyntax]) -> AccessLevel {
     var hasFileprivate = false
     for property in storedProperties {
-        guard let modifiers = property.modifiers else { continue }
+        guard let modifiers = property.modifiers else {
+            continue
+        }
 
         // Private takes precedence, so finding 1 private property defines the access level.
         if modifiers.contains(where: { $0.name.tokenKind == .keyword(.private) && $0.detail == nil }) {

@@ -337,6 +337,12 @@ public extension FloatLiteralExprSyntax {
     }
 }
 
+public extension MemberAccessExprSyntax {
+    var isBaseSelf: Bool {
+        base?.as(IdentifierExprSyntax.self)?.isSelf == true
+    }
+}
+
 public extension IdentifierExprSyntax {
     var isSelf: Bool {
         identifier.text == "self"

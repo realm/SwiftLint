@@ -12,7 +12,7 @@ struct UnusedOptionalBindingConfiguration: SeverityBasedRuleConfiguration, Equat
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         if let ignoreOptionalTry = configuration["ignore_optional_try"] as? Bool {

@@ -59,7 +59,7 @@ struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         if let approachingExpiryConfiguration = configurationDict["approaching_expiry_severity"] {

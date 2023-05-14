@@ -11,7 +11,7 @@ struct TypeNameRuleConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
         try nameConfiguration.apply(configuration: configuration)
 

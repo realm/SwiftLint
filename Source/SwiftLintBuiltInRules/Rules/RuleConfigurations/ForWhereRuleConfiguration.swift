@@ -8,7 +8,7 @@ struct ForWhereRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         allowForAsFilter = configuration["allow_for_as_filter"] as? Bool ?? false

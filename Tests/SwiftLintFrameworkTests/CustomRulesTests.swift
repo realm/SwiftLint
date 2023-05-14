@@ -60,7 +60,7 @@ class CustomRulesTests: SwiftLintTestCase {
     func testCustomRuleConfigurationThrows() {
         let config = 17
         var customRulesConfig = CustomRulesConfiguration()
-        checkError(ConfigurationError.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration) {
             try customRulesConfig.apply(configuration: config)
         }
     }
@@ -76,7 +76,10 @@ class CustomRulesTests: SwiftLintTestCase {
         ]
 
         var configuration = RegexConfiguration(identifier: "my_custom_rule")
-        checkError(ConfigurationError.ambiguousMatchKindParameters) {
+        let expectedError = Issue.genericWarning(
+            "The configuration keys 'match_kinds' and 'excluded_match_kinds' cannot appear at the same time."
+        )
+        checkError(expectedError) {
             try configuration.apply(configuration: configDict)
         }
     }

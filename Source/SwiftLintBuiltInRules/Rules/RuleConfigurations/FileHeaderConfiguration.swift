@@ -35,7 +35,7 @@ struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: String] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         // Cache the created regexes if possible.

@@ -60,7 +60,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
         private static func parseVersion(string: String) throws -> (Int, Int, Int) {
             func parseNumber(_ string: String) throws -> Int {
                 guard let number = Int(string) else {
-                    throw ConfigurationError.unknownConfiguration
+                    throw Issue.unknownConfiguration
                 }
                 return number
             }
@@ -68,7 +68,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
             let parts = string.components(separatedBy: ".")
             switch parts.count {
             case 0:
-                throw ConfigurationError.unknownConfiguration
+                throw Issue.unknownConfiguration
             case 1:
                 return (try parseNumber(parts[0]), 0, 0)
             case 2:
@@ -128,7 +128,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
         for (key, value) in configuration {
             if key == "severity", let value = value as? String {
@@ -136,7 +136,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
                 continue
             }
             guard let target = targets[key] else {
-                throw ConfigurationError.unknownConfiguration
+                throw Issue.unknownConfiguration
             }
             try target.update(using: value)
             if let extensionConfigurationKey = target.platform.appExtensionCounterpart?.configurationKey,

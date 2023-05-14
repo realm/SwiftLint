@@ -13,7 +13,7 @@ struct TrailingClosureConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         onlySingleMutedParameter = (configuration["only_single_muted_parameter"] as? Bool == true)

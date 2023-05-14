@@ -25,7 +25,7 @@ struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equat
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
         for (key, value) in configuration {
             switch (key, value) {
@@ -36,7 +36,7 @@ struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equat
             case ("allow_redundancy", let allowRedundancy as Bool):
                 self.allowRedundancy = allowRedundancy
             default:
-                throw ConfigurationError.unknownConfiguration
+                throw Issue.unknownConfiguration
             }
         }
     }

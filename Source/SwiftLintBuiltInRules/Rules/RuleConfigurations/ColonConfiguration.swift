@@ -11,7 +11,7 @@ struct ColonConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         flexibleRightSpacing = configuration["flexible_right_spacing"] as? Bool == true

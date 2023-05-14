@@ -14,7 +14,7 @@ struct OpeningBraceConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         if let severityString = configuration[ConfigurationKey.severity.rawValue] as? String {

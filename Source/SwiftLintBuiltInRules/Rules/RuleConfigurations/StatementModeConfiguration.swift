@@ -7,7 +7,7 @@ enum StatementModeConfiguration: String {
             let value = Self(rawValue: string) {
             self = value
         } else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
     }
 }
@@ -23,7 +23,7 @@ struct StatementConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
         if let statementModeConfiguration = configurationDict["statement_mode"] {
             try statementMode = StatementModeConfiguration(value: statementModeConfiguration)

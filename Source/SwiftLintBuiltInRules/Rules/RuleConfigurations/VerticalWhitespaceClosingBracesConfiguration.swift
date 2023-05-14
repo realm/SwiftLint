@@ -15,12 +15,12 @@ struct VerticalWhitespaceClosingBracesConfiguration: RuleConfiguration, Equatabl
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         for (string, value) in configuration {
             guard let key = ConfigurationKey(rawValue: string) else {
-                throw ConfigurationError.unknownConfiguration
+                throw Issue.unknownConfiguration
             }
 
             switch (key, value) {
@@ -29,7 +29,7 @@ struct VerticalWhitespaceClosingBracesConfiguration: RuleConfiguration, Equatabl
             case (.onlyEnforceBeforeTrivialLines, let boolValue as Bool):
                 onlyEnforceBeforeTrivialLines = boolValue
             default:
-                throw ConfigurationError.unknownConfiguration
+                throw Issue.unknownConfiguration
             }
         }
     }

@@ -262,7 +262,7 @@ private enum FileGraphInitializationResult {
 
     init(error: Error, hasCustomConfigurationFiles: Bool) {
         switch error {
-        case let ConfigurationError.initialFileNotFound(path):
+        case let Issue.initialFileNotFound(path):
             if hasCustomConfigurationFiles {
                 self = .error(message: "SwiftLint Configuration Error: Could not read file at path: \(path)")
             } else {
@@ -270,9 +270,9 @@ private enum FileGraphInitializationResult {
                 // -> don't handle as error
                 self = .initialImplicitFileNotFound
             }
-        case let ConfigurationError.generic(message):
+        case let Issue.genericWarning(message):
             self = .error(message: "SwiftLint Configuration Error: \(message)")
-        case let YamlParserError.yamlParsing(message):
+        case let Issue.yamlParsing(message):
             self = .error(message: "YML Parsing Error: \(message)")
         default:
             self = .error(message: error.localizedDescription)

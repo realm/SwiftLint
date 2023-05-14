@@ -38,7 +38,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
                                                  typeLevelError: nil,
                                                  functionLevelWarning: 0,
                                                  functionLevelError: nil)
-        checkError(ConfigurationError.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration) {
             try nestingConfig.apply(configuration: config)
         }
     }
@@ -70,7 +70,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
     func testSeverityConfigurationThrowsOnBadConfig() {
         let config = 17
         var severityConfig = SeverityConfiguration(.warning)
-        checkError(ConfigurationError.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration) {
             try severityConfig.apply(configuration: config)
         }
     }
@@ -101,7 +101,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
     func testRegexConfigurationThrows() {
         let config = 17
         var regexConfig = RegexConfiguration(identifier: "")
-        checkError(ConfigurationError.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration) {
             try regexConfig.apply(configuration: config)
         }
     }
@@ -121,7 +121,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
         let config = "unknown"
         var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
                                                             ignoresComments: true)
-        checkError(ConfigurationError.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration) {
             try configuration.apply(configuration: config)
         }
     }
@@ -303,7 +303,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
         var configuration = ModifierOrderConfiguration()
         let config = ["severity": "warning", "preferred_modifier_order": ["specialize"]]  as [String: Any]
 
-        checkError(ConfigurationError.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration) {
             try configuration.apply(configuration: config)
         }
     }
@@ -311,7 +311,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
     func testModifierOrderConfigurationThrowsOnNonModifiableGroup() {
         var configuration = ModifierOrderConfiguration()
         let config = ["severity": "warning", "preferred_modifier_order": ["atPrefixed"]]  as [String: Any]
-        checkError(ConfigurationError.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration) {
             try configuration.apply(configuration: config)
         }
     }

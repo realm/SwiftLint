@@ -83,7 +83,7 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
     func testLineLengthConfigurationThrowsOnBadConfig() {
         let config = "unknown"
         var configuration = LineLengthConfiguration(warning: 100, error: 150)
-        checkError(ConfigurationError.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration) {
             try configuration.apply(configuration: config)
         }
     }
@@ -97,7 +97,7 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
 
         for badConfig in badConfigs {
             var configuration = LineLengthConfiguration(warning: 100, error: 150)
-            checkError(ConfigurationError.unknownConfiguration) {
+            checkError(Issue.unknownConfiguration) {
                 try configuration.apply(configuration: badConfig)
             }
         }

@@ -1,12 +1,6 @@
 import Foundation
 import Yams
 
-// MARK: - YamlParsingError
-
-internal enum YamlParserError: Error, Equatable {
-    case yamlParsing(String)
-}
-
 // MARK: - YamlParser
 
 /// An interface for parsing YAML.
@@ -25,7 +19,7 @@ public struct YamlParser {
             return try Yams.load(yaml: yaml, .default,
                                  .swiftlintConstructor(env: env)) as? [String: Any] ?? [:]
         } catch {
-            throw YamlParserError.yamlParsing("\(error)")
+            throw Issue.yamlParsing("\(error)")
         }
     }
 }

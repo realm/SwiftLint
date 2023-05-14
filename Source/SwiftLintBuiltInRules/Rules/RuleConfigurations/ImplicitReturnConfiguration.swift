@@ -23,13 +23,13 @@ struct ImplicitReturnConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         if let includedKinds = configuration["included"] as? [String] {
             self.includedKinds = try Set(includedKinds.map {
                 guard let kind = ReturnKind(rawValue: $0) else {
-                    throw ConfigurationError.unknownConfiguration
+                    throw Issue.unknownConfiguration
                 }
 
                 return kind

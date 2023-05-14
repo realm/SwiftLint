@@ -60,7 +60,7 @@ extension Configuration {
         } catch let RuleListError.duplicatedConfigurations(ruleType) {
             let aliases = ruleType.description.deprecatedAliases.map { "'\($0)'" }.joined(separator: ", ")
             let identifier = ruleType.description.identifier
-            throw ConfigurationError.generic(
+            throw Issue.genericWarning(
                 "Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases)."
             )
         }

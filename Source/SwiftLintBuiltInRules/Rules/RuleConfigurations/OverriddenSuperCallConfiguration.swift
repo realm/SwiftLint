@@ -47,7 +47,7 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatab
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         if let severityString = configuration["severity"] as? String {

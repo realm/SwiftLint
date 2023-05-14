@@ -14,7 +14,7 @@ struct MultilineArgumentsConfiguration: RuleConfiguration, SeverityBasedRuleConf
             guard
                 let string = (value as? String)?.lowercased(),
                 let value = Self(rawValue: string) else {
-                    throw ConfigurationError.unknownConfiguration
+                    throw Issue.unknownConfiguration
             }
 
             self = value
@@ -33,7 +33,7 @@ struct MultilineArgumentsConfiguration: RuleConfiguration, SeverityBasedRuleConf
     }
 
     mutating func apply(configuration: Any) throws {
-        let error = ConfigurationError.unknownConfiguration
+        let error = Issue.unknownConfiguration
 
         guard let configuration = configuration as? [String: Any] else {
             throw error

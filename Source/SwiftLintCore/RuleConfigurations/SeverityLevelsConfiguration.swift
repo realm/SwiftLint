@@ -50,7 +50,7 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
             warning = (configDict["warning"] as? Int) ?? warning
             error = configDict["error"] as? Int
         } else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
     }
 }

@@ -61,7 +61,7 @@ public struct RegexConfiguration: SeverityBasedRuleConfiguration, Hashable, Cach
     public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any],
             let regexString = configurationDict["regex"] as? String else {
-                throw ConfigurationError.unknownConfiguration
+                throw Issue.unknownConfiguration
         }
 
         regex = try .cached(pattern: regexString)
@@ -93,7 +93,7 @@ public struct RegexConfiguration: SeverityBasedRuleConfiguration, Hashable, Cach
         }
         if let captureGroup = configurationDict["capture_group"] as? Int {
             guard (0 ... regex.numberOfCaptureGroups).contains(captureGroup) else {
-                throw ConfigurationError.unknownConfiguration
+                throw Issue.unknownConfiguration
             }
             self.captureGroup = captureGroup
         }
@@ -133,7 +133,9 @@ public struct RegexConfiguration: SeverityBasedRuleConfiguration, Hashable, Cach
         case (nil, nil):
             return .init()
         case (.some, .some):
-            throw ConfigurationError.ambiguousMatchKindParameters
+            throw Issue.genericWarning(
+                "The configuration keys 'match_kinds' and 'excluded_match_kinds' cannot appear at the same time."
+            )
         }
     }
 }

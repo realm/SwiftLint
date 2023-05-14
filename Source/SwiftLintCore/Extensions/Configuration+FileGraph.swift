@@ -120,7 +120,7 @@ public extension Configuration {
                 // Local vertices are allowed to have local / remote references
                 // Remote vertices are only allowed to have remote references
                 if vertix.originatesFromRemote && !referencedVertix.originatesFromRemote {
-                    throw ConfigurationError.generic("Remote configs are not allowed to reference local configs.")
+                    throw Issue.genericWarning("Remote configs are not allowed to reference local configs.")
                 } else {
                     let existingVertix = findPossiblyExistingVertix(sameAs: referencedVertix)
                     let existingVertixCopy = existingVertix.map { $0.copy(withNewRootDirectory: rootDirectory) }
@@ -169,7 +169,7 @@ public extension Configuration {
                 // Please note that the equality check (`==`), not the identity check (`===`) is used
                 let children = edges.filter { $0.parent == stack.last }.map { $0.child! }
                 if stack.contains(where: children.contains) {
-                    throw ConfigurationError.generic("There's a cycle of child / parent config references. "
+                    throw Issue.genericWarning("There's a cycle of child / parent config references. "
                         + "Please check the hierarchy of configuration files passed via the command line "
                         + "and the childConfig / parentConfig entries within them.")
                 }
@@ -180,13 +180,13 @@ public extension Configuration {
 
             // Detect ambiguities
             if (edges.contains { edge in edges.filter { $0.parent == edge.parent }.count > 1 }) {
-                throw ConfigurationError.generic("There's an ambiguity in the child / parent configuration tree: "
+                throw Issue.genericWarning("There's an ambiguity in the child / parent configuration tree: "
                     + "More than one parent is declared for a specific configuration, "
                     + "where there should only be exactly one.")
             }
 
             if (edges.contains { edge in edges.filter { $0.child == edge.child }.count > 1 }) {
-                throw ConfigurationError.generic("There's an ambiguity in the child / parent configuration tree: "
+                throw Issue.genericWarning("There's an ambiguity in the child / parent configuration tree: "
                     + "More than one child is declared for a specific configuration, "
                     + "where there should only be exactly one.")
             }
@@ -196,7 +196,7 @@ public extension Configuration {
                 let startingVertix = (vertices.first { vertix in !edges.contains { $0.child == vertix } })
             else {
                 guard vertices.isEmpty else {
-                    throw ConfigurationError.generic("Unknown Configuration Error")
+                    throw Issue.genericWarning("Unknown Configuration Error")
                 }
 
                 return []
@@ -206,7 +206,7 @@ public extension Configuration {
             while let vertix = (edges.first { $0.parent == verticesToMerge.last }?.child) {
                 guard !verticesToMerge.contains(vertix) else {
                     // This shouldn't happen on a cycle free graph but let's safeguard
-                    throw ConfigurationError.generic("Unknown Configuration Error")
+                    throw Issue.genericWarning("Unknown Configuration Error")
                 }
 
                 verticesToMerge.append(vertix)

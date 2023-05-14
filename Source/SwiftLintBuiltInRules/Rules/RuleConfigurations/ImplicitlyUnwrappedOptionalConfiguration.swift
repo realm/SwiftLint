@@ -8,7 +8,7 @@ enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
             let value = Self(rawValue: string) {
             self = value
         } else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
     }
 }
@@ -29,7 +29,7 @@ struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration,
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         if let modeString = configuration["mode"] {

@@ -55,7 +55,7 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         } else if let configDict = configuration as? [String: Any], configDict.isNotEmpty {
             for (string, value) in configDict {
                 guard let key = ConfigurationKey(rawValue: string) else {
-                    throw ConfigurationError.unknownConfiguration
+                    throw Issue.unknownConfiguration
                 }
                 switch (key, value) {
                 case (.error, let intValue as Int):
@@ -65,11 +65,11 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
                 case (.ignoresCaseStatements, let boolValue as Bool):
                     ignoresCaseStatements = boolValue
                 default:
-                    throw ConfigurationError.unknownConfiguration
+                    throw Issue.unknownConfiguration
                 }
             }
         } else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
     }
 }

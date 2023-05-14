@@ -13,7 +13,7 @@ struct OperatorUsageWhitespaceConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         linesLookAround = configuration["lines_look_around"] as? Int ?? 2

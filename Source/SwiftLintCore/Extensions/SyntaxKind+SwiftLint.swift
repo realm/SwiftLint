@@ -4,7 +4,7 @@ public extension SyntaxKind {
     init(shortName: Swift.String) throws {
         let prefix = "source.lang.swift.syntaxtype."
         guard let kind = SyntaxKind(rawValue: prefix + shortName.lowercased()) else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
         self = kind
     }

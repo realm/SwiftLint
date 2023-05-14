@@ -11,7 +11,7 @@ struct ObjectLiteralConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         imageLiteral = configuration["image_literal"] as? Bool ?? true

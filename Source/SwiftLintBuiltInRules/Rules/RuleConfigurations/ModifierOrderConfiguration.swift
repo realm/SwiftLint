@@ -19,14 +19,14 @@ struct ModifierOrderConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         if let preferredModifierOrder = configuration["preferred_modifier_order"] as? [String] {
             self.preferredModifierOrder = try preferredModifierOrder.map {
                 guard let modifierGroup = SwiftDeclarationAttributeKind.ModifierGroup(rawValue: $0),
                       modifierGroup != .atPrefixed else {
-                    throw ConfigurationError.unknownConfiguration
+                    throw Issue.unknownConfiguration
                 }
 
                 return modifierGroup

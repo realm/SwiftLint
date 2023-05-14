@@ -50,7 +50,7 @@ public extension Configuration {
                 self = .allEnabled
             } else if onlyRules.isNotEmpty {
                 if disabledRules.isNotEmpty || optInRules.isNotEmpty {
-                    throw ConfigurationError.generic(
+                    throw Issue.genericWarning(
                         "'\(Configuration.Key.disabledRules.rawValue)' or " +
                             "'\(Configuration.Key.optInRules.rawValue)' cannot be used in combination " +
                         "with '\(Configuration.Key.onlyRules.rawValue)'"

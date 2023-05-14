@@ -77,7 +77,7 @@ struct LineLengthConfiguration: RuleConfiguration, Equatable {
     ///
     /// - throws: Throws if the configuration value isn't properly formatted.
     private mutating func applyDictionary(configuration: Any) throws {
-        let error = ConfigurationError.unknownConfiguration
+        let error = Issue.unknownConfiguration
         guard let configDict = configuration as? [String: Any],
             configDict.isNotEmpty else {
             throw error

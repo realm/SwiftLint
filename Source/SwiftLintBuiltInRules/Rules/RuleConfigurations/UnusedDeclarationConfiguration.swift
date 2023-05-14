@@ -23,12 +23,12 @@ struct UnusedDeclarationConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configDict = configuration as? [String: Any], configDict.isNotEmpty else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         for (string, value) in configDict {
             guard let key = ConfigurationKey(rawValue: string) else {
-                throw ConfigurationError.unknownConfiguration
+                throw Issue.unknownConfiguration
             }
             switch (key, value) {
             case (.severity, let stringValue as String):
@@ -39,10 +39,10 @@ struct UnusedDeclarationConfiguration: RuleConfiguration, Equatable {
                 if let usrs = [String].array(of: value) {
                     relatedUSRsToSkip.formUnion(usrs)
                 } else {
-                    throw ConfigurationError.unknownConfiguration
+                    throw Issue.unknownConfiguration
                 }
             default:
-                throw ConfigurationError.unknownConfiguration
+                throw Issue.unknownConfiguration
             }
         }
     }

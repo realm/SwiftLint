@@ -12,7 +12,7 @@ struct PrivateOutletRuleConfiguration: SeverityBasedRuleConfiguration, Equatable
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         allowPrivateSet = (configuration["allow_private_set"] as? Bool == true)

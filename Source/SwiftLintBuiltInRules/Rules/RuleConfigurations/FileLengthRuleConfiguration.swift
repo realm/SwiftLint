@@ -27,7 +27,7 @@ struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
         } else if let configDict = configuration as? [String: Any], configDict.isNotEmpty {
             for (string, value) in configDict {
                 guard let key = ConfigurationKey(rawValue: string) else {
-                    throw ConfigurationError.unknownConfiguration
+                    throw Issue.unknownConfiguration
                 }
                 switch (key, value) {
                 case (.error, let intValue as Int):
@@ -37,11 +37,11 @@ struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
                 case (.ignoreCommentOnlyLines, let boolValue as Bool):
                     ignoreCommentOnlyLines = boolValue
                 default:
-                    throw ConfigurationError.unknownConfiguration
+                    throw Issue.unknownConfiguration
                 }
             }
         } else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
     }
 }

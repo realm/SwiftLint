@@ -32,7 +32,7 @@ struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let dict = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         if let shouldExcludeExtensions = dict["excludes_extensions"] as? Bool {
@@ -64,7 +64,7 @@ struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
                 let rules: [RuleParameter<AccessControlLevel>] = try array
                     .map { val -> RuleParameter<AccessControlLevel> in
                         guard let acl = AccessControlLevel(description: val) else {
-                            throw ConfigurationError.unknownConfiguration
+                            throw Issue.unknownConfiguration
                         }
                         return RuleParameter<AccessControlLevel>(severity: severity, value: acl)
                     }
@@ -78,7 +78,7 @@ struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
         }
 
         guard parameters.count == parameters.map({ $0.value }).unique.count else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         return parameters.isNotEmpty ? parameters : nil

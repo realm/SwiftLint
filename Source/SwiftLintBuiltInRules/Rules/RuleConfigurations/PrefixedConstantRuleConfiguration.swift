@@ -12,7 +12,7 @@ struct PrefixedConstantRuleConfiguration: SeverityBasedRuleConfiguration, Equata
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         onlyPrivateMembers = (configuration["only_private"] as? Bool == true)

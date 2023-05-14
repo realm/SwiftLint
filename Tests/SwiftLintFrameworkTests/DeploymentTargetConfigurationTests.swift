@@ -137,7 +137,7 @@ class DeploymentTargetConfigurationTests: SwiftLintTestCase {
 
         for badConfig in badConfigs {
             var configuration = DeploymentTargetConfiguration()
-            checkError(ConfigurationError.unknownConfiguration) {
+            checkError(Issue.unknownConfiguration) {
                 try configuration.apply(configuration: badConfig)
             }
         }

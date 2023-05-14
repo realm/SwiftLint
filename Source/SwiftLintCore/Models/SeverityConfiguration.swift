@@ -27,7 +27,7 @@ public struct SeverityConfiguration: SeverityBasedRuleConfiguration, Equatable {
         let configDict = configuration as? [String: Any]
         guard let severityString: String = configString ?? configDict?["severity"] as? String,
             let severity = ViolationSeverity(rawValue: severityString.lowercased()) else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
         self.severity = severity
     }

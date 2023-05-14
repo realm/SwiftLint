@@ -12,7 +12,7 @@ struct TransitiveModuleConfiguration: Equatable {
             let importedModule = configurationDict["module"] as? String,
             let transitivelyImportedModules = configurationDict["allowed_transitive_imports"] as? [String]
         else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
         self.importedModule = importedModule
         self.transitivelyImportedModules = transitivelyImportedModules
@@ -46,7 +46,7 @@ struct UnusedImportConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         if let severityConfiguration = configurationDict["severity"] {

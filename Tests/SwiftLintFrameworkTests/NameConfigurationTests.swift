@@ -48,7 +48,7 @@ class NameConfigurationTests: SwiftLintTestCase {
                                            minLengthError: 0,
                                            maxLengthWarning: 0,
                                            maxLengthError: 0)
-        checkError(ConfigurationError.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration) {
             try nameConfig.apply(configuration: config)
         }
     }

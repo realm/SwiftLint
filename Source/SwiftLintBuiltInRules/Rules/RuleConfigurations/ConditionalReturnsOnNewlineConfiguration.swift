@@ -8,7 +8,7 @@ struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration,
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
+            throw Issue.unknownConfiguration
         }
 
         ifOnly = configuration["if_only"] as? Bool ?? false

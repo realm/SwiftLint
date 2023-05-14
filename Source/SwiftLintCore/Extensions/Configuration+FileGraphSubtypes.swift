@@ -74,8 +74,8 @@ internal extension Configuration.FileGraph {
         private func read(at path: String) throws -> String {
             guard !path.isEmpty && FileManager.default.fileExists(atPath: path) else {
                 throw isInitialVertix ?
-                    ConfigurationError.initialFileNotFound(path: path) :
-                    ConfigurationError.generic("File \(path) can't be found.")
+                    Issue.initialFileNotFound(path: path) :
+                    Issue.genericWarning("File \(path) can't be found.")
             }
 
             return try String(contentsOfFile: path, encoding: .utf8)

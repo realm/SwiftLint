@@ -146,6 +146,7 @@ enum PreferSelfInStaticReferencesRuleExamples {
         """, excludeFromDocumentation: true),
         Example("""
             class C {
+                typealias A = C
                 let d: C? = nil
                 var c: C { C() }
                 init() {}
@@ -155,6 +156,7 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
             }
             final class D {
+                typealias A = D
                 let c: D? = nil
                 var d: D { D() }
                 init() {}
@@ -164,6 +166,7 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
             }
             struct S {
+                typealias A = ↓S
                 // let s: S? = nil // Struct cannot contain itself
                 var t: ↓S { ↓S() }
                 init() {}

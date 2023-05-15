@@ -190,6 +190,13 @@ private class Visitor: ViolationsSyntaxVisitor {
         }
     }
 
+    override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
+        if case .likeClass = parentDeclScopes.peek() {
+            return .skipChildren
+        }
+        return .visitChildren
+    }
+
     override func visit(_ node: TypeAnnotationSyntax) -> SyntaxVisitorContinueKind {
         guard case .likeStruct = parentDeclScopes.peek() else {
             return .skipChildren

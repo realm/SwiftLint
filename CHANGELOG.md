@@ -18,7 +18,10 @@
 
 #### Bug Fixes
 
-* None.
+* Do not trigger `prefer_self_in_static_references` rule on `typealias`
+  declarations in classes.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5009](https://github.com/realm/SwiftLint/issues/5009)
 
 ## 0.52.2: Crisper Clearer Pleats
 

@@ -20,6 +20,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4990](https://github.com/realm/SwiftLint/issues/4990)
 
+* Add `grouping` option to the `sorted_imports` rule allowing
+  to sort groups of imports defined by their preceding attributes
+  (e.g. `@testable`, `@_exported`, ...).  
+  [hiltonc](https://github.com/hiltonc)
+
 #### Bug Fixes
 
 * Do not trigger `prefer_self_in_static_references` rule on `typealias`
@@ -178,11 +183,6 @@
   This results in errors being silently discarded, which may be unexpected.
   See this forum thread for more details: https://forums.swift.org/t/56066  
   [kylebshr](https://github.com/kylebshr)
-* Adds `grouping` option to the `sorted_imports` rule.  
-* Add `grouping` option to the `sorted_imports` rule allowing
-  to sort groups of imports defined by their preceding attributes
-  (e.g. `@testable`, `@_exported`, ...).  
-  [hiltonc](https://github.com/hiltonc)
 
 #### Bug Fixes
 

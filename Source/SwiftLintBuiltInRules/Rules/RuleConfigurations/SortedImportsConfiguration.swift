@@ -7,15 +7,6 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
         case attributes
         /// Sorts import lines based on a case insensitive comparison of the imported module name.
         case names
-
-        init(value: Any) throws {
-            if let string = value as? String,
-               let value = Self(rawValue: string) {
-               self = value
-            } else {
-                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-            }
-        }
     }
 
     private(set) var severity = SeverityConfiguration<Parent>(.warning)
@@ -31,8 +22,12 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let grouping = configuration["grouping"] as? String {
-            self.grouping = try SortedImportsGroupingConfiguration(value: grouping)
+        if let rawGrouping = configuration["grouping"] as? String {
+            if let grouping = SortedImportsGroupingConfiguration(rawValue: rawGrouping) {
+                self.grouping = grouping
+            } else {
+                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+            }
         }
         if let severityString = configuration["severity"] as? String {
             try severity.apply(configuration: severityString)

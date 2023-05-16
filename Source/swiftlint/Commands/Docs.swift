@@ -15,7 +15,7 @@ extension SwiftLint {
             var subPage = ""
             if let ruleID {
                 if RuleRegistry.shared.rule(forID: ruleID) == nil {
-                    queuedPrintError("warning: There is no rule named '\(ruleID)'. Opening rule directory instead.")
+                    Issue.genericWarning("There is no rule named '\(ruleID)'. Opening rule directory instead.").print()
                     subPage = "rule-directory.html"
                 } else {
                     subPage = ruleID + ".html"

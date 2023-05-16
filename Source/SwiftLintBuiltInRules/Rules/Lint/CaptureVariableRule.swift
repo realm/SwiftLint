@@ -263,10 +263,7 @@ private extension SwiftLintFile {
             let path = self.path,
             let response = try? Request.index(file: path, arguments: compilerArguments).sendIfNotDisabled()
         else {
-            queuedPrintError("""
-                warning: Could not index file at path '\(self.path ?? "...")' with the \
-                \(CaptureVariableRule.description.identifier) rule.
-                """)
+            Issue.indexingError(path: path, ruleID: CaptureVariableRule.description.identifier).print()
             return nil
         }
 

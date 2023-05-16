@@ -2,11 +2,7 @@ import SwiftSyntax
 
 // TODO: [12/22/2024] Remove deprecation warning after ~2 years.
 private let warnDeprecatedOnceImpl: Void = {
-    queuedPrintError("""
-        warning: The `\(UnusedCaptureListRule.description.identifier)` rule is now deprecated and will be completely \
-        removed in a future release due to an equivalent warning issued by the Swift compiler.
-        """
-    )
+    Issue.ruleDeprecated(ruleID: UnusedCaptureListRule.description.identifier).print()
 }()
 
 private func warnDeprecatedOnce() {

@@ -154,10 +154,12 @@ extension Configuration {
                     let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
                     let collected = await counter.next()
                     if skipFile {
-                        queuedPrintError("""
-                            warning: Skipping '\(outputFilename)' (\(collected)/\(total)) \
+                        Issue.genericWarning(
+                            """
+                            Skipping '\(outputFilename)' (\(collected)/\(total)) \
                             because its compiler arguments could not be found
-                            """)
+                            """
+                        ).print()
                     } else {
                         queuedPrintError("Collecting '\(outputFilename)' (\(collected)/\(total))")
                     }

@@ -34,27 +34,18 @@ struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Collectin
 
     func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
         guard compilerArguments.isNotEmpty else {
-            queuedPrintError("""
-                warning: Attempted to lint file at path '\(file.path ?? "...")' with the \
-                \(Self.description.identifier) rule without any compiler arguments.
-                """)
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
             return .empty
         }
 
         guard let index = file.index(compilerArguments: compilerArguments), index.value.isNotEmpty else {
-            queuedPrintError("""
-                warning: Could not index file at path '\(file.path ?? "...")' with the \
-                \(Self.description.identifier) rule.
-                """)
+            Issue.indexingError(path: file.path, ruleID: Self.description.identifier).print()
             return .empty
         }
 
         guard let editorOpen = (try? Request.editorOpen(file: file.file).sendIfNotDisabled())
                 .map(SourceKittenDictionary.init) else {
-            queuedPrintError("""
-                warning: Could not open file at path '\(file.path ?? "...")' with the \
-                \(Self.description.identifier) rule.
-                """)
+            Issue.fileNotReadable(path: file.path, ruleID: Self.description.identifier).print()
             return .empty
         }
 

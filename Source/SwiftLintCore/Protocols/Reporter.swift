@@ -34,7 +34,7 @@ public extension Reporter {
 /// - returns: The reporter type.
 public func reporterFrom(identifier: String) -> Reporter.Type {
     guard let reporter = reportersList.first(where: { $0.identifier == identifier }) else {
-        queuedFatalError("no reporter with identifier '\(identifier)' available.")
+        queuedFatalError("No reporter with identifier '\(identifier)' available.")
     }
     return reporter
 }

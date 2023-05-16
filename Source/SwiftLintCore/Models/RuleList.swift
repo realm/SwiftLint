@@ -56,7 +56,7 @@ public struct RuleList {
                     initializedWithNonEmptyConfiguration: isConfigured
                 )
             } catch {
-                queuedPrintError("warning: Invalid configuration for '\(identifier)'. Falling back to default.")
+                Issue.invalidConfiguration(ruleID: identifier).print()
                 rules[identifier] = (ruleType.init(), false)
             }
         }

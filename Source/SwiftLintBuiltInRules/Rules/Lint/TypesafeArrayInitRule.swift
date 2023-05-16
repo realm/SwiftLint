@@ -61,10 +61,7 @@ struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
             return []
         }
         guard compilerArguments.isNotEmpty else {
-            queuedPrintError("""
-                warning: Attempted to lint file at path '\(file.path ?? "...")' with the \
-                \(Self.description.identifier) rule without any compiler arguments.
-                """)
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
             return []
         }
         return Self.parentRule.validate(file: file)

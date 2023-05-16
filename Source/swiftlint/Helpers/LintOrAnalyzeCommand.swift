@@ -274,7 +274,7 @@ private class LintOrAnalyzeResultBuilder {
             do {
                 try Data().write(to: URL(fileURLWithPath: outFile))
             } catch {
-                queuedPrintError("warning: Could not write to file at path \(outFile)")
+                Issue.fileNotWritable(path: outFile).print()
             }
         }
     }
@@ -303,7 +303,7 @@ private extension LintOrAnalyzeOptions {
             fileUpdater.write(Data((string + "\n").utf8))
             fileUpdater.closeFile()
         } catch {
-            queuedPrintError("warning: Could not write to file at path \(outFile)")
+            Issue.fileNotWritable(path: outFile).print()
         }
     }
 }

@@ -25,6 +25,11 @@
   (e.g. `@testable`, `@_exported`, ...).  
   [hiltonc](https://github.com/hiltonc)
 
+* Add new `--quiet-deprecation-warnings` flag that silences deprecation
+  warnings that would otherwise be printed to the console.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4989](https://github.com/realm/SwiftLint/issues/4989)
+
 * Do not trigger `redundant_self_in_closure` rule when another idenfier `x` in
   scope shadows the field accessed by `self.x` to avoid semantical changes.  
   [SimplyDanny](https://github.com/SimplyDanny)

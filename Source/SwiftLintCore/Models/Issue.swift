@@ -47,6 +47,9 @@ public enum Issue: LocalizedError, Equatable {
     /// An error that occurred when parsing YAML.
     case yamlParsing(String)
 
+    /// Flag to enable warnings for deprecations being printed to the console. Printing is enabled by default.
+    public static var printDeprecationWarnings = true
+
     /// Wraps any `Error` into a `SwiftLintError.genericWarning` if it is not already a `SwiftLintError`.
     ///
     /// - parameter error: Any `Error`.
@@ -75,6 +78,9 @@ public enum Issue: LocalizedError, Equatable {
 
     /// Print the issue to the console.
     public func print() {
+        if case .ruleDeprecated = self, !Self.printDeprecationWarnings {
+            return
+        }
         queuedPrintError(errorDescription)
     }
 

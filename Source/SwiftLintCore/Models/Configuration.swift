@@ -218,26 +218,21 @@ public struct Configuration {
             self.fileGraph = fileGraph
             setCached(forIdentifier: cacheIdentifier)
         } catch {
-            let errorString: String
-            let initializationResult = FileGraphInitializationResult(
-                error: error, hasCustomConfigurationFiles: hasCustomConfigurationFiles
-            )
-            switch initializationResult {
-            case .initialImplicitFileNotFound:
-                // Silently fall back to default
+            if case Issue.initialFileNotFound = error, !hasCustomConfigurationFiles {
+                // The initial configuration file wasn't found, but the user didn't explicitly specify one
+                // Don't handle as error. Instead, silently fall back to default.
                 self.init(rulesMode: rulesMode, cachePath: cachePath)
                 return
-            case .error(let message):
-                errorString = message
             }
-
             if useDefaultConfigOnFailure ?? !hasCustomConfigurationFiles {
                 // No files were explicitly specified, so maybe the user doesn't want a config at all -> warn
-                queuedPrintError("warning: \(errorString) – Falling back to default configuration")
+                queuedPrintError(
+                    "\(Issue.wrap(error: error).errorDescription) – Falling back to default configuration"
+                )
                 self.init(rulesMode: rulesMode, cachePath: cachePath)
             } else {
                 // Files that were explicitly specified could not be loaded -> fail
-                queuedPrintError("error: \(errorString)")
+                queuedPrintError(Issue.wrap(error: error).asError.localizedDescription)
                 queuedFatalError("Could not read configuration")
             }
         }
@@ -251,31 +246,6 @@ public struct Configuration {
 
         excludedPaths = excludedPaths.map {
             $0.bridge().absolutePathRepresentation(rootDirectory: previousBasePath).path(relativeTo: newBasePath)
-        }
-    }
-}
-
-// MARK: - FileGraphInitializationResult
-private enum FileGraphInitializationResult {
-    case initialImplicitFileNotFound
-    case error(message: String)
-
-    init(error: Error, hasCustomConfigurationFiles: Bool) {
-        switch error {
-        case let Issue.initialFileNotFound(path):
-            if hasCustomConfigurationFiles {
-                self = .error(message: "SwiftLint Configuration Error: Could not read file at path: \(path)")
-            } else {
-                // The initial configuration file wasn't found, but the user didn't explicitly specify one
-                // -> don't handle as error
-                self = .initialImplicitFileNotFound
-            }
-        case let Issue.genericWarning(message):
-            self = .error(message: "SwiftLint Configuration Error: \(message)")
-        case let Issue.yamlParsing(message):
-            self = .error(message: "YML Parsing Error: \(message)")
-        default:
-            self = .error(message: error.localizedDescription)
         }
     }
 }

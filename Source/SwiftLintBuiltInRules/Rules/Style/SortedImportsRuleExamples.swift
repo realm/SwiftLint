@@ -2,12 +2,34 @@ internal struct SortedImportsRuleExamples {
     private static let groupByAttributesConfiguration = ["grouping": "attributes"]
 
     static let nonTriggeringExamples = [
-        Example("import AAA\nimport BBB\nimport CCC\nimport DDD"),
-        Example("import Alamofire\nimport API"),
-        Example("import labc\nimport Ldef"),
-        Example("import BBB\n// comment\nimport AAA\nimport CCC"),
-        Example("@testable import AAA\nimport   CCC"),
-        Example("import AAA\n@testable import   CCC"),
+        Example("""
+        import AAA
+        import BBB
+        import CCC
+        import DDD
+        """),
+        Example("""
+        import Alamofire
+        import API
+        """),
+        Example("""
+        import labc
+        import Ldef
+        """),
+        Example("""
+        import BBB
+        // comment
+        import AAA
+        import CCC
+        """),
+        Example("""
+        @testable import AAA
+        import   CCC
+        """),
+        Example("""
+        import AAA
+        @testable import   CCC
+        """),
         Example("""
         import EEE.A
         import FFF.B
@@ -40,10 +62,26 @@ internal struct SortedImportsRuleExamples {
     ]
 
     static let triggeringExamples = [
-        Example("import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC"),
-        Example("import DDD\n// comment\nimport CCC\nimport ↓AAA"),
-        Example("@testable import CCC\nimport   ↓AAA"),
-        Example("import CCC\n@testable import   ↓AAA"),
+        Example("""
+        import AAA
+        import ZZZ
+        import ↓BBB
+        import CCC
+        """),
+        Example("""
+        import DDD
+        // comment
+        import CCC
+        import ↓AAA
+        """),
+        Example("""
+        @testable import CCC
+        import   ↓AAA
+        """),
+        Example("""
+        import CCC
+        @testable import   ↓AAA
+        """),
         Example("""
         import FFF.B
         import ↓EEE.A
@@ -80,13 +118,51 @@ internal struct SortedImportsRuleExamples {
     ]
 
     static let corrections = [
-        Example("import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC"):
-            Example("import AAA\nimport BBB\nimport CCC\nimport ZZZ"),
-        Example("import BBB // comment\nimport ↓AAA"): Example("import AAA\nimport BBB // comment"),
-        Example("import BBB\n// comment\nimport CCC\nimport ↓AAA"):
-            Example("import BBB\n// comment\nimport AAA\nimport CCC"),
-        Example("@testable import CCC\nimport  ↓AAA"): Example("import  AAA\n@testable import CCC"),
-        Example("import CCC\n@testable import  ↓AAA"): Example("@testable import  AAA\nimport CCC"),
+        Example("""
+        import AAA
+        import ZZZ
+        import ↓BBB
+        import CCC
+        """):
+            Example("""
+            import AAA
+            import BBB
+            import CCC
+            import ZZZ
+            """),
+        Example("""
+        import BBB // comment
+        import ↓AAA
+        """): Example("""
+              import AAA
+              import BBB // comment
+              """),
+        Example("""
+        import BBB
+        // comment
+        import CCC
+        import ↓AAA
+        """):
+            Example("""
+            import BBB
+            // comment
+            import AAA
+            import CCC
+            """),
+        Example("""
+        @testable import CCC
+        import  ↓AAA
+        """): Example("""
+              import  AAA
+              @testable import CCC
+              """),
+        Example("""
+        import CCC
+        @testable import  ↓AAA
+        """): Example("""
+              @testable import  AAA
+              import CCC
+              """),
         Example("""
         import FFF.B
         import ↓EEE.A
@@ -116,7 +192,7 @@ internal struct SortedImportsRuleExamples {
         Example("""
           @testable import BBB
         @testable import ↓AAA
-        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
+        """, configuration: groupByAttributesConfiguration):
             Example("""
             @testable import AAA
               @testable import BBB
@@ -124,7 +200,7 @@ internal struct SortedImportsRuleExamples {
         Example("""
           import AAA
         @testable import ↓BBB
-        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
+        """, configuration: groupByAttributesConfiguration):
             Example("""
             @testable import BBB
               import AAA
@@ -132,7 +208,7 @@ internal struct SortedImportsRuleExamples {
         Example("""
           import BBB
         @testable import ↓AAA
-        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
+        """, configuration: groupByAttributesConfiguration):
             Example("""
             @testable import AAA
               import BBB
@@ -140,7 +216,7 @@ internal struct SortedImportsRuleExamples {
         Example("""
           @testable import AAA
         @_exported import ↓BBB
-        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
+        """, configuration: groupByAttributesConfiguration):
             Example("""
             @_exported import BBB
               @testable import AAA
@@ -148,7 +224,7 @@ internal struct SortedImportsRuleExamples {
         Example("""
           import AAA
         @_exported @testable import ↓BBB
-        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true):
+        """, configuration: groupByAttributesConfiguration):
             Example("""
             @_exported @testable import BBB
               import AAA

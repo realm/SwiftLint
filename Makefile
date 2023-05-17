@@ -184,6 +184,9 @@ endif
 	git push origin $(NEW_VERSION)
 	./tools/create-github-release.sh "$(NEW_VERSION)"
 	make publish
+	./tools/add-new-changelog-section.sh
+	git commit -a -m "Add new changelog section"
+	git push origin HEAD
 
 %:
 	@:

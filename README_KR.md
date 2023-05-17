@@ -75,7 +75,10 @@ fi
 그 이유는, 애플 실리콘 기반 맥에서 Homebrew는 기본적으로 바이너리들을 `/opt/homebrew/bin`에 저장하기 때문입니다. SwiftLint가 어디 있는지 찾는 것을 Xcode에 알려주기 위해, build phase에서 `/opt/homebrew/bin`를 `PATH` 환경 변수에 동시에 추가하여야 합니다.
 
 ```bash
-export PATH="$PATH:/opt/homebrew/bin"
+if [[ "$(uname -m)" == arm64 ]]; then
+    export PATH="/opt/homebrew/bin:$PATH"
+fi
+
 if which swiftlint > /dev/null; then
   swiftlint
 else

@@ -1,5 +1,7 @@
 struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = ProhibitedSuperRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     var excluded = [String]()
     var included = ["*"]
 
@@ -24,7 +26,7 @@ struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severityString = configuration["severity"] as? String {

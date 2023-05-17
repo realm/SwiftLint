@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     // List of all possible import kinds
     static let importKinds = [

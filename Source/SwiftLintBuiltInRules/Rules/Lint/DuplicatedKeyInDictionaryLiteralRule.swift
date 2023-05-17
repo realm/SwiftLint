@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct DuplicatedKeyInDictionaryLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
         identifier: "duplicated_key_in_dictionary_literal",

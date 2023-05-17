@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "function_default_parameter_at_end",

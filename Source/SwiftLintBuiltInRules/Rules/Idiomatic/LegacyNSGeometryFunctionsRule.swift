@@ -1,5 +1,5 @@
 struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "legacy_nsgeometry_functions",

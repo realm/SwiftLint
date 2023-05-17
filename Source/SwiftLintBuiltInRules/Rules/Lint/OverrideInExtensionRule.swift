@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "override_in_extension",

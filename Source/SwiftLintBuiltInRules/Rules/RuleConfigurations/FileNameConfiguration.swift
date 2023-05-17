@@ -1,4 +1,6 @@
 struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    typealias Parent = FileNameRule
+
     var consoleDescription: String {
         return "(severity) \(severityConfiguration.consoleDescription), " +
             "excluded: \(excluded.sorted()), " +
@@ -7,7 +9,7 @@ struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
             "nested_type_separator: \(nestedTypeSeparator)"
     }
 
-    private(set) var severityConfiguration = SeverityConfiguration.warning
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     private(set) var excluded = Set<String>(["main.swift", "LinuxMain.swift"])
     private(set) var prefixPattern = ""
     private(set) var suffixPattern = "\\+.*"
@@ -15,7 +17,7 @@ struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severity = configurationDict["severity"] {

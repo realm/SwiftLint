@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct MultipleClosuresWithTrailingClosureRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "multiple_closures_with_trailing_closure",

@@ -1,9 +1,9 @@
 /// A rule configuration that allows specifying the desired severity level for violations.
-public struct SeverityConfiguration: SeverityBasedRuleConfiguration, Equatable {
+public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable {
     /// Configuration with a warning severity.
-    public static let error = Self(.error)
+    public static var error: Self { Self(.error) }
     /// Configuration with an error severity.
-    public static let warning = Self(.warning)
+    public static var warning: Self { Self(.warning) }
 
     public var consoleDescription: String {
         return severity.rawValue
@@ -27,7 +27,7 @@ public struct SeverityConfiguration: SeverityBasedRuleConfiguration, Equatable {
         let configDict = configuration as? [String: Any]
         guard let severityString: String = configString ?? configDict?["severity"] as? String,
             let severity = ViolationSeverity(rawValue: severityString.lowercased()) else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
         }
         self.severity = severity
     }

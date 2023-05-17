@@ -1,5 +1,7 @@
 struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = SwitchCaseAlignmentRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var indentedCases = false
 
     init() {}
@@ -10,7 +12,7 @@ struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatab
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         indentedCases = configuration["indented_cases"] as? Bool ?? false

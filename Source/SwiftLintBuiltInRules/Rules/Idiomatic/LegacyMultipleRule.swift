@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "legacy_multiple",

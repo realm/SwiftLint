@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "redundant_optional_initialization",

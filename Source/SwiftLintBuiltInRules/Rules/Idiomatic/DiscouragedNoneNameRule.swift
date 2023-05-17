@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
         identifier: "discouraged_none_name",

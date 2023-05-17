@@ -48,9 +48,9 @@ struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRu
 
 private extension ImplicitlyUnwrappedOptionalRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let mode: ImplicitlyUnwrappedOptionalModeConfiguration
+        private let mode: ConfigurationType.ImplicitlyUnwrappedOptionalModeConfiguration
 
-        init(mode: ImplicitlyUnwrappedOptionalModeConfiguration) {
+        init(mode: ConfigurationType.ImplicitlyUnwrappedOptionalModeConfiguration) {
             self.mode = mode
             super.init(viewMode: .sourceAccurate)
         }

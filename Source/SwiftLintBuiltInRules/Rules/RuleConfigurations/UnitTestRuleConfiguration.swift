@@ -1,10 +1,10 @@
-typealias BalancedXCTestLifecycleConfiguration = UnitTestRuleConfiguration
-typealias EmptyXCTestMethodConfiguration = UnitTestRuleConfiguration
-typealias SingleTestClassConfiguration = UnitTestRuleConfiguration
-typealias NoMagicNumbersRuleConfiguration = UnitTestRuleConfiguration
+typealias BalancedXCTestLifecycleConfiguration = UnitTestRuleConfiguration<BalancedXCTestLifecycleRule>
+typealias EmptyXCTestMethodConfiguration = UnitTestRuleConfiguration<EmptyXCTestMethodRule>
+typealias SingleTestClassConfiguration = UnitTestRuleConfiguration<SingleTestClassRule>
+typealias NoMagicNumbersRuleConfiguration = UnitTestRuleConfiguration<NoMagicNumbersRule>
 
-struct UnitTestRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+struct UnitTestRuleConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 
     var consoleDescription: String {
@@ -14,7 +14,7 @@ struct UnitTestRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severityString = configuration["severity"] as? String {

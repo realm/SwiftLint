@@ -6,7 +6,9 @@ private enum ConfigurationKey: String {
 }
 
 struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = InclusiveLanguageRule
+
+    var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private var additionalTerms: Set<String>?
     private var overrideTerms: Set<String>?
     private var overrideAllowedTerms: Set<String>?
@@ -38,7 +40,7 @@ struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severityString = configuration[ConfigurationKey.severity.rawValue] {

@@ -1,4 +1,6 @@
 struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {
+    typealias Parent = RequiredEnumCaseRule
+
     struct RequiredCase: Hashable {
         var name: String
         var severity: ViolationSeverity
@@ -32,7 +34,7 @@ struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let config = configuration as? [String: [String: String]] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         register(protocols: config)

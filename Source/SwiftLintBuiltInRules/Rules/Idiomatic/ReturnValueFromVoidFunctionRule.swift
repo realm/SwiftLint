@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "return_value_from_void_function",

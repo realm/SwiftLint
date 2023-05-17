@@ -39,7 +39,7 @@ class ImplicitlyUnwrappedOptionalConfigurationTests: SwiftLintTestCase {
                 severityConfiguration: SeverityConfiguration(.warning)
             )
 
-            checkError(Issue.unknownConfiguration) {
+            checkError(Issue.unknownConfiguration(ruleID: ImplicitlyUnwrappedOptionalRule.description.identifier)) {
                 try configuration.apply(configuration: badConfig)
             }
         }

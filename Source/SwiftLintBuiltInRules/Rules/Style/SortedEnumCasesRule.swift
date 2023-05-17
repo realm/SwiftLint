@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct SortedEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "sorted_enum_cases",

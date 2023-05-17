@@ -11,7 +11,7 @@ private func wrapExample(
 }
 
 struct TypeBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityLevelsConfiguration(warning: 250, error: 350)
+    var configuration = SeverityLevelsConfiguration<Self>(warning: 250, error: 350)
 
     static let description = RuleDescription(
         identifier: "type_body_length",

@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "explicit_self",

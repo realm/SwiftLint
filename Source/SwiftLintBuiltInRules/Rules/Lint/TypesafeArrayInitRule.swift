@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "typesafe_array_init",

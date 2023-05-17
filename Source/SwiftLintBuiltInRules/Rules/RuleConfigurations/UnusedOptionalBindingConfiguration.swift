@@ -1,5 +1,7 @@
 struct UnusedOptionalBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = UnusedOptionalBindingRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var ignoreOptionalTry = false
 
     var consoleDescription: String {
@@ -8,7 +10,7 @@ struct UnusedOptionalBindingConfiguration: SeverityBasedRuleConfiguration, Equat
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let ignoreOptionalTry = configuration["ignore_optional_try"] as? Bool {

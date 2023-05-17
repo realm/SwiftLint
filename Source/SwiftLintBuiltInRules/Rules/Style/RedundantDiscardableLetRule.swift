@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct RedundantDiscardableLetRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "redundant_discardable_let",

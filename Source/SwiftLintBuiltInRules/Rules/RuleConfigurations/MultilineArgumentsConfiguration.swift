@@ -5,6 +5,8 @@ private enum ConfigurationKey: String {
 }
 
 struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    typealias Parent = MultilineArgumentsRule
+
     enum FirstArgumentLocation: String {
         case anyLine = "any_line"
         case sameLine = "same_line"
@@ -14,14 +16,14 @@ struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatabl
             guard
                 let string = (value as? String)?.lowercased(),
                 let value = Self(rawValue: string) else {
-                    throw Issue.unknownConfiguration
+                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
             }
 
             self = value
         }
     }
 
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var firstArgumentLocation = FirstArgumentLocation.anyLine
     private(set) var onlyEnforceAfterFirstClosureOnFirstLine = false
 
@@ -33,7 +35,7 @@ struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatabl
     }
 
     mutating func apply(configuration: Any) throws {
-        let error = Issue.unknownConfiguration
+        let error = Issue.unknownConfiguration(ruleID: Parent.identifier)
 
         guard let configuration = configuration as? [String: Any] else {
             throw error

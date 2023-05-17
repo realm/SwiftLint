@@ -9,7 +9,7 @@ extension SyntaxKind {
 }
 
 struct TodoRule: ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "todo",

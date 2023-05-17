@@ -152,7 +152,7 @@ struct CaptureVariableRule: ConfigurationProviderRule, AnalyzerRule, CollectingR
         requiresFileOnDisk: true
     )
 
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> CaptureVariableRule.FileInfo {
         file.declaredVariables(compilerArguments: compilerArguments)

@@ -4,7 +4,9 @@ private enum ConfigurationKey: String {
 }
 
 struct EmptyCountConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.error)
+    typealias Parent = EmptyCountRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.error)
     private(set) var onlyAfterDot = false
 
     var consoleDescription: String {
@@ -14,7 +16,7 @@ struct EmptyCountConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severityString = configuration[ConfigurationKey.severity.rawValue] as? String {

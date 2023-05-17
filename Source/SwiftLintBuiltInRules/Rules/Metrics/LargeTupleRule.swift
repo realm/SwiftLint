@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct LargeTupleRule: SourceKitFreeRule, ConfigurationProviderRule {
-    var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
+    var configuration = SeverityLevelsConfiguration<Self>(warning: 2, error: 3)
 
     static let description = RuleDescription(
         identifier: "large_tuple",

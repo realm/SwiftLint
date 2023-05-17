@@ -3,7 +3,7 @@ import SwiftSyntax
 // MARK: - ClosureSpacingRule
 
 struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "closure_spacing",

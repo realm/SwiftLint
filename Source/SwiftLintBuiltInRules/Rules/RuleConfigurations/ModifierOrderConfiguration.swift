@@ -1,7 +1,9 @@
 import SourceKittenFramework
 
 struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = ModifierOrderRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var preferredModifierOrder = [SwiftDeclarationAttributeKind.ModifierGroup]()
 
     var consoleDescription: String {
@@ -19,14 +21,14 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let preferredModifierOrder = configuration["preferred_modifier_order"] as? [String] {
             self.preferredModifierOrder = try preferredModifierOrder.map {
                 guard let modifierGroup = SwiftDeclarationAttributeKind.ModifierGroup(rawValue: $0),
                       modifierGroup != .atPrefixed else {
-                    throw Issue.unknownConfiguration
+                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
                 }
 
                 return modifierGroup

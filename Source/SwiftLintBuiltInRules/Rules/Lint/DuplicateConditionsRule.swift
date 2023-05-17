@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct DuplicateConditionsRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.error)
+    var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
         identifier: "duplicate_conditions",

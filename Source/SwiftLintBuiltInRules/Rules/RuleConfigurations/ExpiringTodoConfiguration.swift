@@ -1,4 +1,7 @@
 struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
+    typealias Parent = ExpiringTodoRule
+    typealias Severity = SeverityConfiguration<Parent>
+
     struct DelimiterConfiguration: Equatable {
         static let `default`: DelimiterConfiguration = .init(opening: "[", closing: "]")
 
@@ -24,11 +27,11 @@ struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
         return descriptions.joined(separator: ", ")
     }
 
-    private(set) var approachingExpirySeverity: SeverityConfiguration
+    private(set) var approachingExpirySeverity: Severity
 
-    private(set) var expiredSeverity: SeverityConfiguration
+    private(set) var expiredSeverity: Severity
 
-    private(set) var badFormattingSeverity: SeverityConfiguration
+    private(set) var badFormattingSeverity: Severity
 
     // swiftlint:disable:next todo
     /// The number of days prior to expiry before the TODO emits a violation
@@ -41,9 +44,9 @@ struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
     private(set) var dateSeparator: String
 
     init(
-        approachingExpirySeverity: SeverityConfiguration = .init(.warning),
-        expiredSeverity: SeverityConfiguration = .init(.error),
-        badFormattingSeverity: SeverityConfiguration = .init(.error),
+        approachingExpirySeverity: Severity = .init(.warning),
+        expiredSeverity: Severity = .init(.error),
+        badFormattingSeverity: Severity = .init(.error),
         approachingExpiryThreshold: Int = 15,
         dateFormat: String = "MM/dd/yyyy",
         dateDelimiters: DelimiterConfiguration = .default,
@@ -59,7 +62,7 @@ struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let approachingExpiryConfiguration = configurationDict["approaching_expiry_severity"] {

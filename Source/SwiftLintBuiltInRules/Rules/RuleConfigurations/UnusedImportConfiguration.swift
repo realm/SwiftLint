@@ -1,6 +1,6 @@
 /// The configuration payload mapping an imported module to a set of modules that are allowed to be
 /// transitively imported.
-struct TransitiveModuleConfiguration: Equatable {
+struct TransitiveModuleConfiguration<Parent: Rule>: Equatable {
     /// The module imported in a source file.
     let importedModule: String
     /// The set of modules that can be transitively imported by `importedModule`.
@@ -12,7 +12,7 @@ struct TransitiveModuleConfiguration: Equatable {
             let importedModule = configurationDict["module"] as? String,
             let transitivelyImportedModules = configurationDict["allowed_transitive_imports"] as? [String]
         else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
         self.importedModule = importedModule
         self.transitivelyImportedModules = transitivelyImportedModules
@@ -20,6 +20,8 @@ struct TransitiveModuleConfiguration: Equatable {
 }
 
 struct UnusedImportConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    typealias Parent = UnusedImportRule
+
     var consoleDescription: String {
         return [
             "severity: \(severityConfiguration.consoleDescription)",
@@ -29,15 +31,15 @@ struct UnusedImportConfiguration: SeverityBasedRuleConfiguration, Equatable {
         ].joined(separator: ", ")
     }
 
-    private(set) var severityConfiguration = SeverityConfiguration.warning
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     private(set) var requireExplicitImports = false
-    private(set) var allowedTransitiveImports = [TransitiveModuleConfiguration]()
+    private(set) var allowedTransitiveImports = [TransitiveModuleConfiguration<Parent>]()
     /// A set of modules to never remove the imports of.
     private(set) var alwaysKeepImports = [String]()
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severity = configurationDict["severity"] {

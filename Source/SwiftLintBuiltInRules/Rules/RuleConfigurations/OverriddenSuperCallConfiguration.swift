@@ -1,4 +1,6 @@
 struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    typealias Parent = OverriddenSuperCallRule
+
     private let defaultIncluded = [
         // NSObject
         "awakeFromNib()",
@@ -29,7 +31,7 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatab
         "viewWillDisappear(_:)"
     ]
 
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     var excluded: [String] = []
     var included: [String] = ["*"]
 
@@ -47,7 +49,7 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatab
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severityString = configuration["severity"] as? String {

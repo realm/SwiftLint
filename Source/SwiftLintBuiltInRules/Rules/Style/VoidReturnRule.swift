@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "void_return",

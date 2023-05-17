@@ -5,8 +5,10 @@ private enum ConfigurationKey: String {
 }
 
 struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable {
+    typealias Parent = FunctionParameterCountRule
+
     private(set) var ignoresDefaultParameters = true
-    private(set) var severityConfiguration = SeverityLevelsConfiguration(warning: 5, error: 8)
+    private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 5, error: 8)
 
     var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)" +
@@ -22,7 +24,7 @@ struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable {
         } else if let configDict = configuration as? [String: Any], configDict.isNotEmpty {
             for (string, value) in configDict {
                 guard let key = ConfigurationKey(rawValue: string) else {
-                    throw Issue.unknownConfiguration
+                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
                 }
                 switch (key, value) {
                 case (.error, let intValue as Int):
@@ -32,11 +34,11 @@ struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable {
                 case (.ignoresDefaultParameters, let boolValue as Bool):
                     ignoresDefaultParameters = boolValue
                 default:
-                    throw Issue.unknownConfiguration
+                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
                 }
             }
         } else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
     }
 }

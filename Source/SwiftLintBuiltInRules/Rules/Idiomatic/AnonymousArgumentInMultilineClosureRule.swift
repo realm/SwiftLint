@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct AnonymousArgumentInMultilineClosureRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "anonymous_argument_in_multiline_closure",

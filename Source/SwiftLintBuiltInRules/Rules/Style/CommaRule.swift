@@ -3,7 +3,7 @@ import SourceKittenFramework
 import SwiftSyntax
 
 struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "comma",

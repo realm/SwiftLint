@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ForceTryRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    var configuration = SeverityConfiguration(.error)
+    var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
         identifier: "force_try",

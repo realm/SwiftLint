@@ -8,7 +8,7 @@ import SourceKittenFramework
 /// buttons that open a URL in an external browser we use the link trait instead. This rule attempts to catch uses of
 /// the SwiftUI `.onTapGesture` modifier where the `.isButton` or `.isLink` trait is not explicitly applied.
 struct AccessibilityTraitForButtonRule: ASTRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "accessibility_trait_for_button",

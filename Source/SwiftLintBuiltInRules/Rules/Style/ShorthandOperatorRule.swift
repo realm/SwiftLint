@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ShorthandOperatorRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    var configuration = SeverityConfiguration(.error)
+    var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
         identifier: "shorthand_operator",

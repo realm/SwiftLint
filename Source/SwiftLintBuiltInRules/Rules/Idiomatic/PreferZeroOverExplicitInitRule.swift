@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "prefer_zero_over_explicit_init",

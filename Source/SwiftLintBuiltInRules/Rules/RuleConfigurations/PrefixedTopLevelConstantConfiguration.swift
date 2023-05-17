@@ -1,5 +1,7 @@
 struct PrefixedTopLevelConstantConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = PrefixedTopLevelConstantRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var onlyPrivateMembers = false
 
     var consoleDescription: String {
@@ -8,7 +10,7 @@ struct PrefixedTopLevelConstantConfiguration: SeverityBasedRuleConfiguration, Eq
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         onlyPrivateMembers = (configuration["only_private"] as? Bool == true)

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ReduceBooleanRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "reduce_boolean",

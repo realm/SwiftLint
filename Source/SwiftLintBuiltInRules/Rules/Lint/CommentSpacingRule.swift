@@ -3,7 +3,7 @@ import SourceKittenFramework
 import SwiftIDEUtils
 
 struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, SubstitutionCorrectableRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "comment_spacing",

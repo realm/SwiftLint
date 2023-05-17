@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "joined_default_parameter",

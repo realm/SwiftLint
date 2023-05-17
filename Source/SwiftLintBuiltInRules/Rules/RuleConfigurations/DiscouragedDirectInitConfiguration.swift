@@ -3,7 +3,9 @@ private func toExplicitInitMethod(typeName: String) -> String {
 }
 
 struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = DiscouragedDirectInitRule
+
+    var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
     var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)" + ", types: \(discouragedInits.sorted(by: <))"
@@ -25,7 +27,7 @@ struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equat
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severityString = configuration["severity"] as? String {

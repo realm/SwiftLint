@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ClosingBraceRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "closing_brace",

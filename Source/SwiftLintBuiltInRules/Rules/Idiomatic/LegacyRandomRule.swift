@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct LegacyRandomRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
         identifier: "legacy_random",

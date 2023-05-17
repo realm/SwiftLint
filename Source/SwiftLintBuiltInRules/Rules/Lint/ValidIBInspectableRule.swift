@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "valid_ibinspectable",

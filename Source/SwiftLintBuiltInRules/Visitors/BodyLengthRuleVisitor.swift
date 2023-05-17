@@ -1,9 +1,9 @@
 import SwiftSyntax
 
-final class BodyLengthRuleVisitor: ViolationsSyntaxVisitor {
+final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor {
     private let kind: Kind
     private let file: SwiftLintFile
-    private let configuration: SeverityLevelsConfiguration
+    private let configuration: SeverityLevelsConfiguration<Parent>
     private let locationConverter: SourceLocationConverter
 
     enum Kind {
@@ -23,7 +23,7 @@ final class BodyLengthRuleVisitor: ViolationsSyntaxVisitor {
         }
     }
 
-    init(kind: Kind, file: SwiftLintFile, configuration: SeverityLevelsConfiguration) {
+    init(kind: Kind, file: SwiftLintFile, configuration: SeverityLevelsConfiguration<Parent>) {
         self.kind = kind
         self.file = file
         self.configuration = configuration

@@ -1,4 +1,6 @@
 struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
+    typealias Parent = MissingDocsRule
+
     private(set) var parameters = [
         RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
         RuleParameter<AccessControlLevel>(severity: .warning, value: .public)
@@ -32,7 +34,7 @@ struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let dict = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let shouldExcludeExtensions = dict["excludes_extensions"] as? Bool {
@@ -64,7 +66,7 @@ struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
                 let rules: [RuleParameter<AccessControlLevel>] = try array
                     .map { val -> RuleParameter<AccessControlLevel> in
                         guard let acl = AccessControlLevel(description: val) else {
-                            throw Issue.unknownConfiguration
+                            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
                         }
                         return RuleParameter<AccessControlLevel>(severity: severity, value: acl)
                     }
@@ -78,7 +80,7 @@ struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
         }
 
         guard parameters.count == parameters.map({ $0.value }).unique.count else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         return parameters.isNotEmpty ? parameters : nil

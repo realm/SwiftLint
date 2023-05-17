@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
-    var configuration = SeverityConfiguration(.error)
+    var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
         identifier: "unhandled_throwing_task",

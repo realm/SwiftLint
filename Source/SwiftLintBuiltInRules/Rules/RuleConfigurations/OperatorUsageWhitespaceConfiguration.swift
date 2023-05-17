@@ -1,5 +1,7 @@
 struct OperatorUsageWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = OperatorUsageWhitespaceRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var linesLookAround = 2
     private(set) var skipAlignedConstants = true
     private(set) var allowedNoSpaceOperators: [String] = ["...", "..<"]
@@ -13,7 +15,7 @@ struct OperatorUsageWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equ
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         linesLookAround = configuration["lines_look_around"] as? Int ?? 2

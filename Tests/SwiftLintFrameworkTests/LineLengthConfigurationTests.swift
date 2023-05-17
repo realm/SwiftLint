@@ -2,13 +2,13 @@
 import XCTest
 
 class LineLengthConfigurationTests: SwiftLintTestCase {
-    private let severityLevels = SeverityLevelsConfiguration(warning: 100, error: 150)
+    private let severityLevels = SeverityLevelsConfiguration<LineLengthRule>(warning: 100, error: 150)
 
     func testLineLengthConfigurationInitializerSetsLength() {
         let configuration1 = LineLengthConfiguration(length: severityLevels)
         XCTAssertEqual(configuration1.length, severityLevels)
 
-        let length2 = SeverityLevelsConfiguration(warning: 100, error: nil)
+        let length2 = SeverityLevelsConfiguration<LineLengthRule>(warning: 100, error: nil)
         let configuration2 = LineLengthConfiguration(length: length2)
         XCTAssertEqual(configuration2.length, length2)
     }
@@ -62,7 +62,7 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
     func testLineLengthConfigurationThrowsOnBadConfig() {
         let config = "unknown"
         var configuration = LineLengthConfiguration(length: severityLevels)
-        checkError(Issue.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration(ruleID: LineLengthRule.description.identifier)) {
             try configuration.apply(configuration: config)
         }
     }
@@ -76,7 +76,7 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
 
         for badConfig in badConfigs {
             var configuration = LineLengthConfiguration(length: severityLevels)
-            checkError(Issue.unknownConfiguration) {
+            checkError(Issue.unknownConfiguration(ruleID: LineLengthRule.description.identifier)) {
                 try configuration.apply(configuration: badConfig)
             }
         }
@@ -87,11 +87,11 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
 
         let warning1 = 100
         let error1 = 100
-        let length1 = SeverityLevelsConfiguration(warning: warning1, error: error1)
+        let length1 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning1, error: error1)
         let config1 = [warning1, error1]
 
         let warning2 = 150
-        let length2 = SeverityLevelsConfiguration(warning: warning2, error: nil)
+        let length2 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2, error: nil)
         let config2 = [warning2]
 
         do {
@@ -110,7 +110,7 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
 
         let warning1 = 100
         let error1 = 100
-        let length1 = SeverityLevelsConfiguration(warning: warning1, error: error1)
+        let length1 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning1, error: error1)
         let config1: [String: Any] = ["warning": warning1,
                                       "error": error1,
                                       "ignores_urls": true,
@@ -119,10 +119,10 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
 
         let warning2 = 200
         let error2 = 200
-        let length2 = SeverityLevelsConfiguration(warning: warning2, error: error2)
+        let length2 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2, error: error2)
         let config2: [String: Int] = ["warning": warning2, "error": error2]
 
-        let length3 = SeverityLevelsConfiguration(warning: warning2, error: error2)
+        let length3 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2, error: error2)
         let config3: [String: Bool] = ["ignores_urls": false,
                                        "ignores_function_declarations": false,
                                        "ignores_comments": false]

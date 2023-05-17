@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct VerticalParameterAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "vertical_parameter_alignment",

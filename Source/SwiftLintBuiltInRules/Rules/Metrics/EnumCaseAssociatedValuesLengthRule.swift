@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = SeverityLevelsConfiguration(warning: 5, error: 6)
+    var configuration = SeverityLevelsConfiguration<Self>(warning: 5, error: 6)
 
     static let description = RuleDescription(
         identifier: "enum_case_associated_values_count",
@@ -43,9 +43,9 @@ struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, Configura
 
 private extension EnumCaseAssociatedValuesLengthRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: SeverityLevelsConfiguration
+        private let configuration: ConfigurationType
 
-        init(configuration: SeverityLevelsConfiguration) {
+        init(configuration: ConfigurationType) {
             self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }

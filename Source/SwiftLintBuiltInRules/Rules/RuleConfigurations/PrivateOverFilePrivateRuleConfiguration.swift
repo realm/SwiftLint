@@ -1,5 +1,7 @@
 struct PrivateOverFilePrivateRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = PrivateOverFilePrivateRule
+
+    var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     var validateExtensions = false
 
     var consoleDescription: String {
@@ -10,7 +12,7 @@ struct PrivateOverFilePrivateRuleConfiguration: SeverityBasedRuleConfiguration, 
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severityString = configuration["severity"] as? String {

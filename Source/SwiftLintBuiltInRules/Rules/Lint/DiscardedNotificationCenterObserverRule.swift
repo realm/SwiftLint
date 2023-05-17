@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct DiscardedNotificationCenterObserverRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "discarded_notification_center_observer",

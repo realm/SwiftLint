@@ -29,9 +29,9 @@ struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, ConfigurationPr
 
 private extension DiscouragedObjectLiteralRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: ObjectLiteralConfiguration
+        private let configuration: ConfigurationType
 
-        init(configuration: ObjectLiteralConfiguration) {
+        init(configuration: ConfigurationType) {
             self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }

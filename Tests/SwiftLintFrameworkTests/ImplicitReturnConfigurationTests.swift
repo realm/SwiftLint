@@ -27,7 +27,7 @@ class ImplicitReturnConfigurationTests: SwiftLintTestCase {
         var configuration = ImplicitReturnConfiguration()
         let config = ["included": ["foreach"]] as [String: Any]
 
-        checkError(Issue.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration(ruleID: ImplicitReturnRule.description.identifier)) {
             try configuration.apply(configuration: config)
         }
     }

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "nslocalizedstring_require_bundle",

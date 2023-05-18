@@ -12,7 +12,7 @@ enum StatementModeConfiguration: String {
     }
 }
 
-struct StatementConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct StatementPositionConfiguration: SeverityBasedRuleConfiguration, Equatable {
     var consoleDescription: String {
         return "(statement_mode) \(statementMode.rawValue), " +
             "(severity) \(severityConfiguration.consoleDescription)"

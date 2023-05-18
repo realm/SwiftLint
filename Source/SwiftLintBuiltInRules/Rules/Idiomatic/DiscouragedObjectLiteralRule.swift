@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = ObjectLiteralConfiguration()
+    var configuration = DiscouragedObjectLiteralConfiguration()
 
     static let description = RuleDescription(
         identifier: "discouraged_object_literal",

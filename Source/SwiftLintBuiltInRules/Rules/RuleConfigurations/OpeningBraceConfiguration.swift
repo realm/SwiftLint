@@ -3,7 +3,7 @@ private enum ConfigurationKey: String {
     case allowMultilineFunc = "allow_multiline_func"
 }
 
-struct OpeningBraceConfiguration: RuleConfiguration, Equatable {
+struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var allowMultilineFunc = false
 

@@ -1,4 +1,4 @@
-struct ImplicitReturnConfiguration: RuleConfiguration, Equatable {
+struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
     enum ReturnKind: String, CaseIterable {
         case closure
         case function

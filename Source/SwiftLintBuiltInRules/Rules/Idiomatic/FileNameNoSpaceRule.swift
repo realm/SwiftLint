@@ -23,7 +23,7 @@ struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule, SourceKitFreeR
         }
 
         return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity.severity,
+                               severity: configuration.severity,
                                location: Location(file: filePath, line: 1))]
     }
 }

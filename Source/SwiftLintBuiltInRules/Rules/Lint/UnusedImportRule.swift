@@ -21,7 +21,7 @@ struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         return importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
             StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity.severity,
+                           severity: configuration.severity,
                            location: Location(file: file, characterOffset: importUsage.violationRange?.location ?? 1),
                            reason: importUsage.violationReason)
         }

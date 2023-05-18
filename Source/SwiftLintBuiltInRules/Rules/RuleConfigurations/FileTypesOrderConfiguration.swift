@@ -6,7 +6,7 @@ enum FileType: String {
     case libraryContentProvider = "library_content_provider"
 }
 
-struct FileTypesOrderConfiguration: RuleConfiguration, Equatable {
+struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var order: [[FileType]] = [
         [.supportingType],

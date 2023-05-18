@@ -16,7 +16,7 @@ enum TypeContent: String {
     case deinitializer = "deinitializer"
 }
 
-struct TypeContentsOrderConfiguration: RuleConfiguration, Equatable {
+struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var order: [[TypeContent]] = [
         [.case],

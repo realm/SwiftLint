@@ -12,14 +12,14 @@ enum StatementModeConfiguration: String {
     }
 }
 
-struct StatementConfiguration: RuleConfiguration, Equatable {
+struct StatementConfiguration: SeverityBasedRuleConfiguration, Equatable {
     var consoleDescription: String {
         return "(statement_mode) \(statementMode.rawValue), " +
-            "(severity) \(severity.consoleDescription)"
+            "(severity) \(severityConfiguration.consoleDescription)"
     }
 
     var statementMode: StatementModeConfiguration
-    var severity: SeverityConfiguration
+    var severityConfiguration: SeverityConfiguration
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
@@ -28,8 +28,8 @@ struct StatementConfiguration: RuleConfiguration, Equatable {
         if let statementModeConfiguration = configurationDict["statement_mode"] {
             try statementMode = StatementModeConfiguration(value: statementModeConfiguration)
         }
-        if let severityConfiguration = configurationDict["severity"] {
-            try severity.apply(configuration: severityConfiguration)
+        if let severity = configurationDict["severity"] {
+            try severityConfiguration.apply(configuration: severity)
         }
     }
 }

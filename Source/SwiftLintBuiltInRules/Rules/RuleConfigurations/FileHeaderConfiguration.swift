@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct FileHeaderConfiguration: RuleConfiguration, Equatable {
+struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private static let fileNamePlaceholder = "SWIFTLINT_CURRENT_FILENAME"
     private static let stringRegexOptions: NSRegularExpression.Options = [.ignoreMetacharacters]
     private static let patternRegexOptions: NSRegularExpression.Options =

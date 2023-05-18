@@ -1,3 +1,5 @@
+typealias DiscouragedObjectLiteralConfiguration = ObjectLiteralConfiguration
+
 struct ObjectLiteralConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var imageLiteral = true

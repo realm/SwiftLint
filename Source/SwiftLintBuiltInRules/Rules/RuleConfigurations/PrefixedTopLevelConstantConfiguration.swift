@@ -1,4 +1,4 @@
-struct PrefixedConstantRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct PrefixedTopLevelConstantConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var onlyPrivateMembers = false
 

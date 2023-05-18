@@ -31,7 +31,9 @@
   declarations in classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5009](https://github.com/realm/SwiftLint/issues/5009)
-* Fix autocorrect for `CGIntersectionRect` in `legacy_cggeometry_functions`  
+
+* Fix autocorrect for `CGIntersectionRect` in `legacy_cggeometry_functions`
+  rule.  
   [Haoocen](https://github.com/Haoocen)
   [#5023](https://github.com/realm/SwiftLint/pull/5023)
 

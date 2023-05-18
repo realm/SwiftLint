@@ -1,4 +1,4 @@
-struct PrivateOverFilePrivateRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct PrivateOverFilePrivateConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = PrivateOverFilePrivateRule
 
     var severityConfiguration = SeverityConfiguration<Parent>(.warning)

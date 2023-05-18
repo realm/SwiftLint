@@ -1,4 +1,4 @@
-struct ComputedAccessorsOrderRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct ComputedAccessorsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ComputedAccessorsOrderRule
 
     enum Order: String {

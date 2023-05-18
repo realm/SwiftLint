@@ -1,4 +1,4 @@
-struct TypeNameRuleConfiguration: RuleConfiguration, Equatable {
+struct TypeNameConfiguration: RuleConfiguration, Equatable {
     typealias Parent = TypeNameRule
 
     private(set) var nameConfiguration = NameConfiguration<Parent>(minLengthWarning: 3,

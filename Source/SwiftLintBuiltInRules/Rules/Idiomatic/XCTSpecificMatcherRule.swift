@@ -2,7 +2,7 @@ import SwiftOperators
 import SwiftSyntax
 
 struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = XCTSpecificMatcherRuleConfiguration()
+    var configuration = XCTSpecificMatcherConfiguration()
 
     static let description = RuleDescription(
         identifier: "xct_specific_matcher",
@@ -20,9 +20,9 @@ struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationProvider
 
 private extension XCTSpecificMatcherRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        let configuration: XCTSpecificMatcherRuleConfiguration
+        let configuration: XCTSpecificMatcherConfiguration
 
-        init(configuration: XCTSpecificMatcherRuleConfiguration) {
+        init(configuration: XCTSpecificMatcherConfiguration) {
             self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }

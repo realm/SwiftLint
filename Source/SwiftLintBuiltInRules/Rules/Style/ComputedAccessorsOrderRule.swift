@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    var configuration = ComputedAccessorsOrderRuleConfiguration()
+    var configuration = ComputedAccessorsOrderConfiguration()
 
     static let description = RuleDescription(
         identifier: "computed_accessors_order",
@@ -22,9 +22,9 @@ private final class ComputedAccessorsOrderRuleVisitor: ViolationsSyntaxVisitor {
         case `subscript`, property
     }
 
-    private let expectedOrder: ComputedAccessorsOrderRuleConfiguration.Order
+    private let expectedOrder: ComputedAccessorsOrderConfiguration.Order
 
-    init(expectedOrder: ComputedAccessorsOrderRuleConfiguration.Order) {
+    init(expectedOrder: ComputedAccessorsOrderConfiguration.Order) {
         self.expectedOrder = expectedOrder
         super.init(viewMode: .sourceAccurate)
     }
@@ -59,7 +59,7 @@ private final class ComputedAccessorsOrderRuleVisitor: ViolationsSyntaxVisitor {
 }
 
 private extension AccessorBlockSyntax {
-    var order: ComputedAccessorsOrderRuleConfiguration.Order? {
+    var order: ComputedAccessorsOrderConfiguration.Order? {
         guard accessors.count == 2, accessors.map(\.body).allSatisfy({ $0 != nil }) else {
             return nil
         }

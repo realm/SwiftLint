@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
-    var configuration = PrivateOverFilePrivateRuleConfiguration()
+    var configuration = PrivateOverFilePrivateConfiguration()
 
     static let description = RuleDescription(
         identifier: "private_over_fileprivate",

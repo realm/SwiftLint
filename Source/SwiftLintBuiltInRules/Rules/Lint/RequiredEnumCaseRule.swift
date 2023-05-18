@@ -68,7 +68,7 @@ import SwiftSyntax
 /// }
 /// ````
 struct RequiredEnumCaseRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = RequiredEnumCaseRuleConfiguration()
+    var configuration = RequiredEnumCaseConfiguration()
 
     private static let exampleConfiguration = [
         "NetworkResponsable": ["success": "warning", "error": "warning", "notConnected": "warning"]
@@ -138,9 +138,9 @@ struct RequiredEnumCaseRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRu
 
 private extension RequiredEnumCaseRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: RequiredEnumCaseRuleConfiguration
+        private let configuration: RequiredEnumCaseConfiguration
 
-        init(configuration: RequiredEnumCaseRuleConfiguration) {
+        init(configuration: RequiredEnumCaseConfiguration) {
             self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }

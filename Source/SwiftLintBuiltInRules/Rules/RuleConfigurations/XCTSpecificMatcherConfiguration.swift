@@ -1,4 +1,4 @@
-struct XCTSpecificMatcherRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct XCTSpecificMatcherConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = XCTSpecificMatcherRule
 
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)

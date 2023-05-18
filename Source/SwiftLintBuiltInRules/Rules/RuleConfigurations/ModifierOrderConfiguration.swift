@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-struct ModifierOrderConfiguration: RuleConfiguration, Equatable {
+struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var preferredModifierOrder = [SwiftDeclarationAttributeKind.ModifierGroup]()
 

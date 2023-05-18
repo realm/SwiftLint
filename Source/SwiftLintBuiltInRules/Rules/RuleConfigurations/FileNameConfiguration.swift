@@ -1,13 +1,13 @@
-struct FileNameConfiguration: RuleConfiguration, Equatable {
+struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
     var consoleDescription: String {
-        return "(severity) \(severity.consoleDescription), " +
+        return "(severity) \(severityConfiguration.consoleDescription), " +
             "excluded: \(excluded.sorted()), " +
             "prefix_pattern: \(prefixPattern), " +
             "suffix_pattern: \(suffixPattern), " +
             "nested_type_separator: \(nestedTypeSeparator)"
     }
 
-    private(set) var severity: SeverityConfiguration
+    private(set) var severityConfiguration: SeverityConfiguration
     private(set) var excluded: Set<String>
     private(set) var prefixPattern: String
     private(set) var suffixPattern: String
@@ -15,7 +15,7 @@ struct FileNameConfiguration: RuleConfiguration, Equatable {
 
     init(severity: ViolationSeverity, excluded: [String] = [],
          prefixPattern: String = "", suffixPattern: String = "\\+.*", nestedTypeSeparator: String = ".") {
-        self.severity = SeverityConfiguration(severity)
+        self.severityConfiguration = SeverityConfiguration(severity)
         self.excluded = Set(excluded)
         self.prefixPattern = prefixPattern
         self.suffixPattern = suffixPattern
@@ -27,8 +27,8 @@ struct FileNameConfiguration: RuleConfiguration, Equatable {
             throw Issue.unknownConfiguration
         }
 
-        if let severityConfiguration = configurationDict["severity"] {
-            try severity.apply(configuration: severityConfiguration)
+        if let severity = configurationDict["severity"] {
+            try severityConfiguration.apply(configuration: severity)
         }
         if let excluded = [String].array(of: configurationDict["excluded"]) {
             self.excluded = Set(excluded)

@@ -19,17 +19,17 @@ struct TransitiveModuleConfiguration: Equatable {
     }
 }
 
-struct UnusedImportConfiguration: RuleConfiguration, Equatable {
+struct UnusedImportConfiguration: SeverityBasedRuleConfiguration, Equatable {
     var consoleDescription: String {
         return [
-            "severity: \(severity.consoleDescription)",
+            "severity: \(severityConfiguration.consoleDescription)",
             "require_explicit_imports: \(requireExplicitImports)",
             "allowed_transitive_imports: \(allowedTransitiveImports)",
             "always_keep_imports: \(alwaysKeepImports)"
         ].joined(separator: ", ")
     }
 
-    private(set) var severity: SeverityConfiguration
+    private(set) var severityConfiguration: SeverityConfiguration
     private(set) var requireExplicitImports: Bool
     private(set) var allowedTransitiveImports: [TransitiveModuleConfiguration]
     /// A set of modules to never remove the imports of.
@@ -38,7 +38,7 @@ struct UnusedImportConfiguration: RuleConfiguration, Equatable {
     init(severity: ViolationSeverity, requireExplicitImports: Bool,
          allowedTransitiveImports: [TransitiveModuleConfiguration],
          alwaysKeepImports: [String]) {
-        self.severity = SeverityConfiguration(severity)
+        self.severityConfiguration = SeverityConfiguration(severity)
         self.requireExplicitImports = requireExplicitImports
         self.allowedTransitiveImports = allowedTransitiveImports
         self.alwaysKeepImports = alwaysKeepImports
@@ -49,8 +49,8 @@ struct UnusedImportConfiguration: RuleConfiguration, Equatable {
             throw Issue.unknownConfiguration
         }
 
-        if let severityConfiguration = configurationDict["severity"] {
-            try severity.apply(configuration: severityConfiguration)
+        if let severity = configurationDict["severity"] {
+            try severityConfiguration.apply(configuration: severity)
         }
         if let requireExplicitImports = configurationDict["require_explicit_imports"] as? Bool {
             self.requireExplicitImports = requireExplicitImports

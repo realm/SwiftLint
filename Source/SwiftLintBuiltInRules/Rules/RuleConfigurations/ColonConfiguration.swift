@@ -1,4 +1,4 @@
-struct ColonConfiguration: RuleConfiguration, Equatable {
+struct ColonConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var flexibleRightSpacing = false
     private(set) var applyToDictionaries = true

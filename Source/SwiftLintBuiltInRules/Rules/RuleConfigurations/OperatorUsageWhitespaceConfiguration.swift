@@ -1,4 +1,4 @@
-struct OperatorUsageWhitespaceConfiguration: RuleConfiguration, Equatable {
+struct OperatorUsageWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var linesLookAround = 2
     private(set) var skipAlignedConstants = true

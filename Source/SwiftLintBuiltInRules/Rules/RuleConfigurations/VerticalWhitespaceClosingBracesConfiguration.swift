@@ -1,5 +1,5 @@
 // swiftlint:disable:next type_name
-struct VerticalWhitespaceClosingBracesConfiguration: RuleConfiguration, Equatable {
+struct VerticalWhitespaceClosingBracesConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private enum ConfigurationKey: String {
         case severity = "severity"
         case onlyEnforceBeforeTrivialLines = "only_enforce_before_trivial_lines"

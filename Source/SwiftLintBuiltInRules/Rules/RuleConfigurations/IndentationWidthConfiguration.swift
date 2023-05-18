@@ -1,4 +1,4 @@
-struct IndentationWidthConfiguration: RuleConfiguration, Equatable {
+struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration, Equatable {
     var consoleDescription: String {
         return "severity: \("severity: \(severityConfiguration.consoleDescription)"), "
             + "indentation_width: \(indentationWidth), "

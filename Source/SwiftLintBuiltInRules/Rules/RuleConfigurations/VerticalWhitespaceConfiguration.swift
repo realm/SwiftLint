@@ -1,4 +1,4 @@
-struct VerticalWhitespaceConfiguration: RuleConfiguration, Equatable {
+struct VerticalWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var maxEmptyLines: Int
 

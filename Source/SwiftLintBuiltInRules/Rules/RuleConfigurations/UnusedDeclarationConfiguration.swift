@@ -4,7 +4,7 @@ private enum ConfigurationKey: String {
     case relatedUSRsToSkip = "related_usrs_to_skip"
 }
 
-struct UnusedDeclarationConfiguration: RuleConfiguration, Equatable {
+struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var includePublicAndOpen: Bool
     private(set) var severityConfiguration: SeverityConfiguration
     private(set) var relatedUSRsToSkip: Set<String>

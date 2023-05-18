@@ -1,4 +1,4 @@
-struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
+struct TrailingWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     var severityConfiguration = SeverityConfiguration(.warning)
     var ignoresEmptyLines = false
     var ignoresComments = true

@@ -54,26 +54,20 @@ class NameConfigurationTests: SwiftLintTestCase {
     }
 
     func testNameConfigurationMinLengthThreshold() {
-        var nameConfig = NameConfiguration(minLengthWarning: 7,
+        let nameConfig = NameConfiguration(minLengthWarning: 7,
                                            minLengthError: 17,
                                            maxLengthWarning: 0,
                                            maxLengthError: 0,
                                            excluded: [])
         XCTAssertEqual(nameConfig.minLengthThreshold, 17)
-
-        nameConfig.minLength.error = nil
-        XCTAssertEqual(nameConfig.minLengthThreshold, 7)
     }
 
     func testNameConfigurationMaxLengthThreshold() {
-        var nameConfig = NameConfiguration(minLengthWarning: 0,
+        let nameConfig = NameConfiguration(minLengthWarning: 0,
                                            minLengthError: 0,
                                            maxLengthWarning: 17,
                                            maxLengthError: 7,
                                            excluded: [])
         XCTAssertEqual(nameConfig.maxLengthThreshold, 7)
-
-        nameConfig.maxLength.error = nil
-        XCTAssertEqual(nameConfig.maxLengthThreshold, 17)
     }
 }

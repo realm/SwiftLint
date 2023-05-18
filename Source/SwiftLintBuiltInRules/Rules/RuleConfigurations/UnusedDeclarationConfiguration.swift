@@ -5,20 +5,14 @@ private enum ConfigurationKey: String {
 }
 
 struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var includePublicAndOpen: Bool
-    private(set) var severityConfiguration: SeverityConfiguration
-    private(set) var relatedUSRsToSkip: Set<String>
+    private(set) var severityConfiguration = SeverityConfiguration.error
+    private(set) var includePublicAndOpen = false
+    private(set) var relatedUSRsToSkip = Set(["s:7SwiftUI15PreviewProviderP"])
 
     var consoleDescription: String {
         return "\(ConfigurationKey.severity.rawValue): \(severityConfiguration.severity.rawValue), " +
             "\(ConfigurationKey.includePublicAndOpen.rawValue): \(includePublicAndOpen), " +
             "\(ConfigurationKey.relatedUSRsToSkip.rawValue): \(relatedUSRsToSkip.sorted())"
-    }
-
-    init(severity: ViolationSeverity, includePublicAndOpen: Bool, relatedUSRsToSkip: Set<String>) {
-        self.includePublicAndOpen = includePublicAndOpen
-        self.severityConfiguration = SeverityConfiguration(severity)
-        self.relatedUSRsToSkip = relatedUSRsToSkip
     }
 
     mutating func apply(configuration: Any) throws {

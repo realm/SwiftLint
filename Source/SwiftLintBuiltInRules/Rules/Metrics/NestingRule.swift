@@ -1,10 +1,7 @@
 import SourceKittenFramework
 
 struct NestingRule: ConfigurationProviderRule {
-    var configuration = NestingConfiguration(typeLevelWarning: 1,
-                                             typeLevelError: nil,
-                                             functionLevelWarning: 2,
-                                             functionLevelError: nil)
+    var configuration = NestingConfiguration()
 
     static let description = RuleDescription(
         identifier: "nesting",

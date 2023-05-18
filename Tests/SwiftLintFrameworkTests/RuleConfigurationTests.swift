@@ -4,6 +4,11 @@ import SourceKittenFramework
 import XCTest
 
 class RuleConfigurationTests: SwiftLintTestCase {
+    private let defaultNestingConfiguration = NestingConfiguration(
+        typeLevel: SeverityLevelsConfiguration(warning: 0),
+        functionLevel: SeverityLevelsConfiguration(warning: 0)
+    )
+
     func testNestingConfigurationSetsCorrectly() {
         let config = [
             "type_level": [
@@ -15,10 +20,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
             "check_nesting_in_closures_and_statements": false,
             "always_allow_one_type_in_functions": true
         ] as [String: Any]
-        var nestingConfig = NestingConfiguration(typeLevelWarning: 0,
-                                                 typeLevelError: nil,
-                                                 functionLevelWarning: 0,
-                                                 functionLevelError: nil)
+        var nestingConfig = defaultNestingConfiguration
         do {
             try nestingConfig.apply(configuration: config)
             XCTAssertEqual(nestingConfig.typeLevel.warning, 7)
@@ -34,10 +36,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
 
     func testNestingConfigurationThrowsOnBadConfig() {
         let config = 17
-        var nestingConfig = NestingConfiguration(typeLevelWarning: 0,
-                                                 typeLevelError: nil,
-                                                 functionLevelWarning: 0,
-                                                 functionLevelError: nil)
+        var nestingConfig = defaultNestingConfiguration
         checkError(Issue.unknownConfiguration) {
             try nestingConfig.apply(configuration: config)
         }
@@ -201,9 +200,11 @@ class RuleConfigurationTests: SwiftLintTestCase {
     }
 
     func testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration() {
-        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                            ignoresComments: true)
-        configuration.severityConfiguration.severity = .warning
+        var configuration = TrailingWhitespaceConfiguration(
+            severityConfiguration: .warning,
+            ignoresEmptyLines: false,
+            ignoresComments: true
+        )
 
         do {
             try configuration.apply(configuration: ["severity": "error"])

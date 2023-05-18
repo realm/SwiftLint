@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false)
+    var configuration = PrivateOutletRuleConfiguration()
 
     static let description = RuleDescription(
         identifier: "private_outlet",

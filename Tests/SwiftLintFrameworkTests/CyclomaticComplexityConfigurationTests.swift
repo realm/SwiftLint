@@ -6,25 +6,31 @@ class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
         let warning = 10
         let error = 30
         let level = SeverityLevelsConfiguration(warning: warning, error: error)
-        let configuration1 = CyclomaticComplexityConfiguration(warning: warning, error: error)
+        let configuration1 = CyclomaticComplexityConfiguration(length: level)
         XCTAssertEqual(configuration1.length, level)
 
         let length2 = SeverityLevelsConfiguration(warning: warning, error: nil)
-        let configuration2 = CyclomaticComplexityConfiguration(warning: warning, error: nil)
+        let configuration2 = CyclomaticComplexityConfiguration(length: length2)
         XCTAssertEqual(configuration2.length, length2)
     }
 
     func testCyclomaticComplexityConfigurationInitializerSetsIgnoresCaseStatements() {
-        let configuration1 = CyclomaticComplexityConfiguration(warning: 10, error: 30,
-                                                               ignoresCaseStatements: true)
+        let configuration1 = CyclomaticComplexityConfiguration(
+            length: SeverityLevelsConfiguration(warning: 10, error: 30),
+            ignoresCaseStatements: true
+        )
         XCTAssertTrue(configuration1.ignoresCaseStatements)
 
-        let configuration2 = CyclomaticComplexityConfiguration(warning: 0, error: 30)
+        let configuration2 = CyclomaticComplexityConfiguration(
+            length: SeverityLevelsConfiguration(warning: 10, error: 30)
+        )
         XCTAssertFalse(configuration2.ignoresCaseStatements)
     }
 
     func testCyclomaticComplexityConfigurationApplyConfigurationWithDictionary() throws {
-        var configuration = CyclomaticComplexityConfiguration(warning: 0, error: 0)
+        var configuration = CyclomaticComplexityConfiguration(
+            length: SeverityLevelsConfiguration(warning: 0, error: 0)
+        )
 
         let warning1 = 10
         let error1 = 30
@@ -60,7 +66,9 @@ class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
         ]
 
         for badConfig in badConfigs {
-            var configuration = CyclomaticComplexityConfiguration(warning: 100, error: 150)
+            var configuration = CyclomaticComplexityConfiguration(
+                length: SeverityLevelsConfiguration(warning: 100, error: 150)
+            )
             checkError(Issue.unknownConfiguration) {
                 try configuration.apply(configuration: badConfig)
             }
@@ -68,11 +76,23 @@ class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
     }
 
     func testCyclomaticComplexityConfigurationCompares() {
-        let config1 = CyclomaticComplexityConfiguration(warning: 10, error: 30)
-        let config2 = CyclomaticComplexityConfiguration(warning: 10, error: 30, ignoresCaseStatements: true)
-        let config3 = CyclomaticComplexityConfiguration(warning: 10, error: 30, ignoresCaseStatements: false)
-        let config4 = CyclomaticComplexityConfiguration(warning: 10, error: 40)
-        let config5 = CyclomaticComplexityConfiguration(warning: 20, error: 30)
+        let config1 = CyclomaticComplexityConfiguration(
+            length: SeverityLevelsConfiguration(warning: 10, error: 30)
+        )
+        let config2 = CyclomaticComplexityConfiguration(
+            length: SeverityLevelsConfiguration(warning: 10, error: 30),
+            ignoresCaseStatements: true
+        )
+        let config3 = CyclomaticComplexityConfiguration(
+            length: SeverityLevelsConfiguration(warning: 10, error: 30),
+            ignoresCaseStatements: false
+        )
+        let config4 = CyclomaticComplexityConfiguration(
+            length: SeverityLevelsConfiguration(warning: 10, error: 40)
+        )
+        let config5 = CyclomaticComplexityConfiguration(
+            length: SeverityLevelsConfiguration(warning: 20, error: 30)
+        )
         XCTAssertNotEqual(config1, config2)
         XCTAssertEqual(config1, config3)
         XCTAssertNotEqual(config1, config4)

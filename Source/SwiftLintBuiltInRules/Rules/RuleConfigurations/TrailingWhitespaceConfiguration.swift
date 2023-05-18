@@ -1,17 +1,12 @@
 struct TrailingWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.warning)
-    var ignoresEmptyLines = false
-    var ignoresComments = true
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var ignoresEmptyLines = false
+    private(set) var ignoresComments = true
 
     var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)" +
             ", ignores_empty_lines: \(ignoresEmptyLines)" +
             ", ignores_comments: \(ignoresComments)"
-    }
-
-    init(ignoresEmptyLines: Bool, ignoresComments: Bool) {
-        self.ignoresEmptyLines = ignoresEmptyLines
-        self.ignoresComments = ignoresComments
     }
 
     mutating func apply(configuration: Any) throws {

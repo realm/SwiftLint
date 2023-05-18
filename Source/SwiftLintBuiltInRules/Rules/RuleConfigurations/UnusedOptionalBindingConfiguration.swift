@@ -1,13 +1,9 @@
 struct UnusedOptionalBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var ignoreOptionalTry: Bool
+    private(set) var ignoreOptionalTry = false
 
     var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)" + ", ignore_optional_try: \(ignoreOptionalTry)"
-    }
-
-    init(ignoreOptionalTry: Bool) {
-        self.ignoreOptionalTry = ignoreOptionalTry
     }
 
     mutating func apply(configuration: Any) throws {

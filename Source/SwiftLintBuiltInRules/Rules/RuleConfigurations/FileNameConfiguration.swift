@@ -7,20 +7,11 @@ struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
             "nested_type_separator: \(nestedTypeSeparator)"
     }
 
-    private(set) var severityConfiguration: SeverityConfiguration
-    private(set) var excluded: Set<String>
-    private(set) var prefixPattern: String
-    private(set) var suffixPattern: String
-    private(set) var nestedTypeSeparator: String
-
-    init(severity: ViolationSeverity, excluded: [String] = [],
-         prefixPattern: String = "", suffixPattern: String = "\\+.*", nestedTypeSeparator: String = ".") {
-        self.severityConfiguration = SeverityConfiguration(severity)
-        self.excluded = Set(excluded)
-        self.prefixPattern = prefixPattern
-        self.suffixPattern = suffixPattern
-        self.nestedTypeSeparator = nestedTypeSeparator
-    }
+    private(set) var severityConfiguration = SeverityConfiguration.warning
+    private(set) var excluded = Set<String>(["main.swift", "LinuxMain.swift"])
+    private(set) var prefixPattern = ""
+    private(set) var suffixPattern = "\\+.*"
+    private(set) var nestedTypeSeparator = "."
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {

@@ -2,8 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
-    var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                        ignoresComments: true)
+    var configuration = TrailingWhitespaceConfiguration()
 
     static let description = RuleDescription(
         identifier: "trailing_whitespace",

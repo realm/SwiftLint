@@ -12,11 +12,11 @@ struct NameConfiguration: RuleConfiguration, Equatable {
         return output
     }
 
-    var minLength: SeverityLevelsConfiguration
-    var maxLength: SeverityLevelsConfiguration
-    var excludedRegularExpressions: Set<NSRegularExpression>
+    private(set) var minLength: SeverityLevelsConfiguration
+    private(set) var maxLength: SeverityLevelsConfiguration
+    private(set) var excludedRegularExpressions: Set<NSRegularExpression>
+    private(set) var validatesStartWithLowercase: SeverityConfiguration?
     private var allowedSymbolsSet: Set<String>
-    var validatesStartWithLowercase: SeverityConfiguration?
 
     var minLengthThreshold: Int {
         return max(minLength.warning, minLength.error ?? minLength.warning)

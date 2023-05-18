@@ -4,13 +4,8 @@ struct FileNameNoSpaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
             "excluded: \(excluded.sorted())"
     }
 
-    private(set) var severityConfiguration: SeverityConfiguration
-    private(set) var excluded: Set<String>
-
-    init(severity: ViolationSeverity, excluded: [String] = []) {
-        self.severityConfiguration = SeverityConfiguration(severity)
-        self.excluded = Set(excluded)
-    }
+    private(set) var severityConfiguration: SeverityConfiguration = .warning
+    private(set) var excluded = Set<String>()
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct FunctionParameterCountRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = FunctionParameterCountConfiguration(warning: 5, error: 8)
+    var configuration = FunctionParameterCountConfiguration()
 
     static let description = RuleDescription(
         identifier: "function_parameter_count",

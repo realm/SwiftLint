@@ -1,10 +1,7 @@
 import SwiftSyntax
 
 struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    var configuration = ImplicitlyUnwrappedOptionalConfiguration(
-        mode: .allExceptIBOutlets,
-        severityConfiguration: SeverityConfiguration(.warning)
-    )
+    var configuration = ImplicitlyUnwrappedOptionalConfiguration()
 
     static let description = RuleDescription(
         identifier: "implicitly_unwrapped_optional",

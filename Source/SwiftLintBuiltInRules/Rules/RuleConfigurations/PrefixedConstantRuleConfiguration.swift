@@ -1,13 +1,9 @@
 struct PrefixedConstantRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.warning)
-    var onlyPrivateMembers = false
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var onlyPrivateMembers = false
 
     var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)" + ", only_private: \(onlyPrivateMembers)"
-    }
-
-    init(onlyPrivateMembers: Bool) {
-        self.onlyPrivateMembers = onlyPrivateMembers
     }
 
     mutating func apply(configuration: Any) throws {

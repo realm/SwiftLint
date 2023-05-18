@@ -22,13 +22,14 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let rawGrouping = configuration["grouping"] as? String {
-            if let grouping = SortedImportsGroupingConfiguration(rawValue: rawGrouping) {
-                self.grouping = grouping
-            } else {
+        if let rawGrouping = configuration["grouping"] {
+            guard let rawGrouping = rawGrouping as? String,
+                  let grouping = SortedImportsGroupingConfiguration(rawValue: rawGrouping) else {
                 throw Issue.unknownConfiguration(ruleID: Parent.identifier)
             }
+            self.grouping = grouping
         }
+
         if let severityString = configuration["severity"] as? String {
             try severity.apply(configuration: severityString)
         }

@@ -12,7 +12,7 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
             ", \(ConfigurationKey.ignoresCaseStatements.rawValue): \(ignoresCaseStatements)"
     }
 
-    static let defaultComplexityStatements: Set<StatementKind> = [
+    private static let defaultComplexityStatements: Set<StatementKind> = [
         .forEach,
         .if,
         .guard,
@@ -22,11 +22,10 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         .case
     ]
 
-    private(set) var length: SeverityLevelsConfiguration
+    private(set) var length = SeverityLevelsConfiguration(warning: 10, error: 20)
+    private(set) var complexityStatements = Self.defaultComplexityStatements
 
-    private(set) var complexityStatements: Set<StatementKind>
-
-    private(set) var ignoresCaseStatements: Bool {
+    private(set) var ignoresCaseStatements = false {
         didSet {
             if ignoresCaseStatements {
                 complexityStatements.remove(.case)
@@ -38,12 +37,6 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
 
     var params: [RuleParameter<Int>] {
         return length.params
-    }
-
-    init(warning: Int, error: Int?, ignoresCaseStatements: Bool = false) {
-        self.length = SeverityLevelsConfiguration(warning: warning, error: error)
-        self.complexityStatements = Self.defaultComplexityStatements
-        self.ignoresCaseStatements = ignoresCaseStatements
     }
 
     mutating func apply(configuration: Any) throws {

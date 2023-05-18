@@ -1,13 +1,9 @@
 struct PrivateOutletRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    var allowPrivateSet = false
+    private(set) var allowPrivateSet = false
 
     var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)" + ", allow_private_set: \(allowPrivateSet)"
-    }
-
-    init(allowPrivateSet: Bool) {
-        self.allowPrivateSet = allowPrivateSet
     }
 
     mutating func apply(configuration: Any) throws {

@@ -1,12 +1,12 @@
 import Foundation
+import SwiftLintCore
 
 struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, CacheDescriptionProvider {
-    let identifier: String
-    var name: String?
-    var message = "Regex matched."
-    var regex: NSRegularExpression!
-    var included: NSRegularExpression?
-    var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var name: String?
+    private(set) var message = "Unit test marked `private` will not be run by XCTest."
+    private(set) var regex = SwiftLintCore.regex("XCTestCase")
+    private(set) var included: NSRegularExpression?
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
 
     var consoleDescription: String {
         return "\(severity.rawValue): \(regex.pattern)"
@@ -14,7 +14,7 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, 
 
     var cacheDescription: String {
         let jsonObject: [String] = [
-            identifier,
+            "private_unit_test",
             name ?? "",
             message,
             regex.pattern,
@@ -26,10 +26,6 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, 
               return jsonString
         }
         queuedFatalError("Could not serialize private unit test configuration for cache")
-    }
-
-    init(identifier: String) {
-        self.identifier = identifier
     }
 
     mutating func apply(configuration: Any) throws {

@@ -5,17 +5,12 @@ private enum ConfigurationKey: String {
 }
 
 struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable {
-    private(set) var ignoresDefaultParameters: Bool
-    private(set) var severityConfiguration: SeverityLevelsConfiguration
+    private(set) var ignoresDefaultParameters = true
+    private(set) var severityConfiguration = SeverityLevelsConfiguration(warning: 5, error: 8)
 
     var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)" +
         ", \(ConfigurationKey.ignoresDefaultParameters.rawValue): \(ignoresDefaultParameters)"
-    }
-
-    init(warning: Int, error: Int?, ignoresDefaultParameters: Bool = true) {
-        self.ignoresDefaultParameters = ignoresDefaultParameters
-        self.severityConfiguration = SeverityLevelsConfiguration(warning: warning, error: error)
     }
 
     mutating func apply(configuration: Any) throws {

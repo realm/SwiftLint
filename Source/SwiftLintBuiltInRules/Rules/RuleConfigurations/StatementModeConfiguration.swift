@@ -18,8 +18,8 @@ struct StatementConfiguration: SeverityBasedRuleConfiguration, Equatable {
             "(severity) \(severityConfiguration.consoleDescription)"
     }
 
-    var statementMode: StatementModeConfiguration
-    var severityConfiguration: SeverityConfiguration
+    private(set) var statementMode = StatementModeConfiguration.default
+    private(set) var severityConfiguration = SeverityConfiguration.warning
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {

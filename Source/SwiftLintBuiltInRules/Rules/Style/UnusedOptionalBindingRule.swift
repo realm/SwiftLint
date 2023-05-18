@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct UnusedOptionalBindingRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: false)
+    var configuration = UnusedOptionalBindingConfiguration()
 
     static let description = RuleDescription(
         identifier: "unused_optional_binding",

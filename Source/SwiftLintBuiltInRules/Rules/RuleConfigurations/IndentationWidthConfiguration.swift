@@ -7,25 +7,11 @@ struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration, Equatable 
             + "include_multiline_strings: \(includeMultilineStrings)"
     }
 
-    private(set) var severityConfiguration: SeverityConfiguration
-    private(set) var indentationWidth: Int
-    private(set) var includeComments: Bool
-    private(set) var includeCompilerDirectives: Bool
-    private(set) var includeMultilineStrings: Bool
-
-    init(
-        severity: ViolationSeverity,
-        indentationWidth: Int,
-        includeComments: Bool,
-        includeCompilerDirectives: Bool,
-        includeMultilineStrings: Bool
-    ) {
-        self.severityConfiguration = SeverityConfiguration(severity)
-        self.indentationWidth = indentationWidth
-        self.includeComments = includeComments
-        self.includeCompilerDirectives = includeCompilerDirectives
-        self.includeMultilineStrings = includeMultilineStrings
-    }
+    private(set) var severityConfiguration = SeverityConfiguration.warning
+    private(set) var indentationWidth = 4
+    private(set) var includeComments = true
+    private(set) var includeCompilerDirectives = true
+    private(set) var includeMultilineStrings = true
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {

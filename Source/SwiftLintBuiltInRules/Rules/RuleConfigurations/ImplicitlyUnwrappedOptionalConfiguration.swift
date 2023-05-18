@@ -14,13 +14,8 @@ enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
 }
 
 struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration: SeverityConfiguration
-    private(set) var mode: ImplicitlyUnwrappedOptionalModeConfiguration
-
-    init(mode: ImplicitlyUnwrappedOptionalModeConfiguration, severityConfiguration: SeverityConfiguration) {
-        self.mode = mode
-        self.severityConfiguration = severityConfiguration
-    }
+    private(set) var mode = ImplicitlyUnwrappedOptionalModeConfiguration.allExceptIBOutlets
+    private(set) var severityConfiguration = SeverityConfiguration.warning
 
     var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)" +

@@ -2,8 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
-    var configuration = StatementConfiguration(statementMode: .default,
-                                               severityConfiguration: SeverityConfiguration(.warning))
+    var configuration = StatementConfiguration()
 
     static let description = RuleDescription(
         identifier: "statement_position",

@@ -2,10 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
-    var configuration = FileNameNoSpaceConfiguration(
-        severity: .warning,
-        excluded: []
-    )
+    var configuration = FileNameNoSpaceConfiguration()
 
     static let description = RuleDescription(
         identifier: "file_name_no_space",

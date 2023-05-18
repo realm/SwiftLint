@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct LineLengthRule: ConfigurationProviderRule {
-    var configuration = LineLengthConfiguration(warning: 120, error: 200)
+    var configuration = LineLengthConfiguration()
 
     private let commentKinds = SyntaxKind.commentKinds
     private let nonCommentKinds = SyntaxKind.allKinds.subtracting(SyntaxKind.commentKinds)

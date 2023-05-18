@@ -6,22 +6,10 @@ struct NestingConfiguration: RuleConfiguration, Equatable {
             + ", (always_allow_one_type_in_functions) \(alwaysAllowOneTypeInFunctions)"
     }
 
-    var typeLevel: SeverityLevelsConfiguration
-    var functionLevel: SeverityLevelsConfiguration
-    var checkNestingInClosuresAndStatements: Bool
-    var alwaysAllowOneTypeInFunctions: Bool
-
-    init(typeLevelWarning: Int,
-         typeLevelError: Int?,
-         functionLevelWarning: Int,
-         functionLevelError: Int?,
-         checkNestingInClosuresAndStatements: Bool = true,
-         alwaysAllowOneTypeInFunctions: Bool = false) {
-        self.typeLevel = SeverityLevelsConfiguration(warning: typeLevelWarning, error: typeLevelError)
-        self.functionLevel = SeverityLevelsConfiguration(warning: functionLevelWarning, error: functionLevelError)
-        self.checkNestingInClosuresAndStatements = checkNestingInClosuresAndStatements
-        self.alwaysAllowOneTypeInFunctions = alwaysAllowOneTypeInFunctions
-    }
+    private(set) var typeLevel = SeverityLevelsConfiguration(warning: 1)
+    private(set) var functionLevel = SeverityLevelsConfiguration(warning: 2)
+    private(set) var checkNestingInClosuresAndStatements = true
+    private(set) var alwaysAllowOneTypeInFunctions = false
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {

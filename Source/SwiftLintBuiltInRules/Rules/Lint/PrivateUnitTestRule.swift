@@ -2,12 +2,7 @@ import Foundation
 import SwiftSyntax
 
 struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, CacheDescriptionProvider {
-    var configuration: PrivateUnitTestConfiguration = {
-        var configuration = PrivateUnitTestConfiguration(identifier: "private_unit_test")
-        configuration.message = "Unit test marked `private` will not be run by XCTest."
-        configuration.regex = regex("XCTestCase")
-        return configuration
-    }()
+    var configuration = PrivateUnitTestConfiguration()
 
     var cacheDescription: String {
         return configuration.cacheDescription

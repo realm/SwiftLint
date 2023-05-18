@@ -29,20 +29,11 @@ struct UnusedImportConfiguration: SeverityBasedRuleConfiguration, Equatable {
         ].joined(separator: ", ")
     }
 
-    private(set) var severityConfiguration: SeverityConfiguration
-    private(set) var requireExplicitImports: Bool
-    private(set) var allowedTransitiveImports: [TransitiveModuleConfiguration]
+    private(set) var severityConfiguration = SeverityConfiguration.warning
+    private(set) var requireExplicitImports = false
+    private(set) var allowedTransitiveImports = [TransitiveModuleConfiguration]()
     /// A set of modules to never remove the imports of.
-    private(set) var alwaysKeepImports: [String]
-
-    init(severity: ViolationSeverity, requireExplicitImports: Bool,
-         allowedTransitiveImports: [TransitiveModuleConfiguration],
-         alwaysKeepImports: [String]) {
-        self.severityConfiguration = SeverityConfiguration(severity)
-        self.requireExplicitImports = requireExplicitImports
-        self.allowedTransitiveImports = allowedTransitiveImports
-        self.alwaysKeepImports = alwaysKeepImports
-    }
+    private(set) var alwaysKeepImports = [String]()
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {

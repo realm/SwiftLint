@@ -1,13 +1,7 @@
 import SwiftSyntax
 
 struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
-    var configuration = FileNameConfiguration(
-        severity: .warning,
-        excluded: ["main.swift", "LinuxMain.swift"],
-        prefixPattern: "",
-        suffixPattern: "\\+.*",
-        nestedTypeSeparator: "."
-    )
+    var configuration = FileNameConfiguration()
 
     static let description = RuleDescription(
         identifier: "file_name",

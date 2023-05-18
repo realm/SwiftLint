@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = PrefixedConstantRuleConfiguration(onlyPrivateMembers: false)
+    var configuration = PrefixedConstantRuleConfiguration()
 
     static let description = RuleDescription(
         identifier: "prefixed_toplevel_constant",

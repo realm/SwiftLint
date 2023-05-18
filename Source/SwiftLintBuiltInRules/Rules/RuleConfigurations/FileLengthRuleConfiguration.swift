@@ -5,17 +5,12 @@ private enum ConfigurationKey: String {
 }
 
 struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
-    private(set) var ignoreCommentOnlyLines: Bool
-    private(set) var severityConfiguration: SeverityLevelsConfiguration
+    private(set) var severityConfiguration = SeverityLevelsConfiguration(warning: 400, error: 1000)
+    private(set) var ignoreCommentOnlyLines = false
 
     var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)" +
             ", \(ConfigurationKey.ignoreCommentOnlyLines.rawValue): \(ignoreCommentOnlyLines)"
-    }
-
-    init(warning: Int, error: Int?, ignoreCommentOnlyLines: Bool = false) {
-        self.ignoreCommentOnlyLines = ignoreCommentOnlyLines
-        self.severityConfiguration = SeverityLevelsConfiguration(warning: warning, error: error)
     }
 
     mutating func apply(configuration: Any) throws {

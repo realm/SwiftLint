@@ -16,11 +16,7 @@ struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Collectin
 
     typealias FileInfo = FileUSRs
 
-    var configuration = UnusedDeclarationConfiguration(
-        severity: .error,
-        includePublicAndOpen: false,
-        relatedUSRsToSkip: ["s:7SwiftUI15PreviewProviderP"]
-    )
+    var configuration = UnusedDeclarationConfiguration()
 
     static let description = RuleDescription(
         identifier: "unused_declaration",

@@ -4,7 +4,7 @@ import XCTest
 class UnusedDeclarationConfigurationTests: XCTestCase {
     func testParseConfiguration() throws {
         var testee = UnusedDeclarationConfiguration(
-            severity: .warning,
+            severityConfiguration: .warning,
             includePublicAndOpen: false,
             relatedUSRsToSkip: []
         )

@@ -2,7 +2,7 @@ import SwiftSyntax
 
 struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule,
                                                         SwiftSyntaxCorrectableRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "unneeded_parentheses_in_closure_argument",

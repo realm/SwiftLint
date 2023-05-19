@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "multiline_literal_brackets",

@@ -2,7 +2,7 @@ import SwiftIDEUtils
 import SwiftSyntax
 
 struct LocalDocCommentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "local_doc_comment",

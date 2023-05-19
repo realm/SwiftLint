@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    var configuration = ObjectLiteralConfiguration()
+    var configuration = ObjectLiteralConfiguration<Self>()
 
     static let description = RuleDescription(
         identifier: "object_literal",

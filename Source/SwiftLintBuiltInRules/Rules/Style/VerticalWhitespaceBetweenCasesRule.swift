@@ -8,7 +8,7 @@ private extension SwiftLintFile {
 }
 
 struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     private static let nonTriggeringExamples: [Example] = [
         Example("""

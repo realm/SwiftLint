@@ -10,7 +10,7 @@ private func warnDeprecatedOnce() {
 }
 
 struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "inert_defer",

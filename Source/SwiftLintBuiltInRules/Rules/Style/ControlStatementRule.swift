@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "control_statement",

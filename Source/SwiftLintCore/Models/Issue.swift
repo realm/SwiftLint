@@ -3,7 +3,7 @@ import Foundation
 /// All possible SwiftLint issues which are printed as warnings by default.
 public enum Issue: LocalizedError, Equatable {
     /// The configuration didn't match internal expectations.
-    case unknownConfiguration
+    case unknownConfiguration(ruleID: String)
 
     /// Rule is listed multiple times in the configuration.
     case listedMultipleTime(ruleID: String, times: Int)
@@ -80,8 +80,8 @@ public enum Issue: LocalizedError, Equatable {
 
     private var message: String {
         switch self {
-        case .unknownConfiguration:
-            return "Invalid configuration. Falling back to default."
+        case let .unknownConfiguration(id):
+            return "Invalid configuration for '\(id)' rule. Falling back to default."
         case let .listedMultipleTime(id, times):
             return "'\(id)' is listed \(times) times in the configuration."
         case let .renamedIdentifier(old, new):

@@ -5,11 +5,11 @@ class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
     func testCyclomaticComplexityConfigurationInitializerSetsLevels() {
         let warning = 10
         let error = 30
-        let level = SeverityLevelsConfiguration(warning: warning, error: error)
+        let level = SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: warning, error: error)
         let configuration1 = CyclomaticComplexityConfiguration(length: level)
         XCTAssertEqual(configuration1.length, level)
 
-        let length2 = SeverityLevelsConfiguration(warning: warning, error: nil)
+        let length2 = SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: warning, error: nil)
         let configuration2 = CyclomaticComplexityConfiguration(length: length2)
         XCTAssertEqual(configuration2.length, length2)
     }
@@ -34,14 +34,14 @@ class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
 
         let warning1 = 10
         let error1 = 30
-        let length1 = SeverityLevelsConfiguration(warning: warning1, error: error1)
+        let length1 = SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: warning1, error: error1)
         let config1: [String: Any] = ["warning": warning1,
                                       "error": error1,
                                       "ignores_case_statements": true]
 
         let warning2 = 20
         let error2 = 40
-        let length2 = SeverityLevelsConfiguration(warning: warning2, error: error2)
+        let length2 = SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: warning2, error: error2)
         let config2: [String: Int] = ["warning": warning2, "error": error2]
         let config3: [String: Bool] = ["ignores_case_statements": false]
 
@@ -67,9 +67,9 @@ class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
 
         for badConfig in badConfigs {
             var configuration = CyclomaticComplexityConfiguration(
-                length: SeverityLevelsConfiguration(warning: 100, error: 150)
+                length: SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: 100, error: 150)
             )
-            checkError(Issue.unknownConfiguration) {
+            checkError(Issue.unknownConfiguration(ruleID: CyclomaticComplexityRule.description.identifier)) {
                 try configuration.apply(configuration: badConfig)
             }
         }

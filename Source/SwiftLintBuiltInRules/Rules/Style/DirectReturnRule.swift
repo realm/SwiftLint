@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct DirectReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
         identifier: "direct_return",

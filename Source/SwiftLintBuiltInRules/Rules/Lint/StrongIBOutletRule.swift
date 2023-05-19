@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct StrongIBOutletRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "strong_iboutlet",

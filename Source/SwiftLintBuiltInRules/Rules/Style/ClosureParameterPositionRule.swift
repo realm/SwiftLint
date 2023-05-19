@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ClosureParameterPositionRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "closure_parameter_position",

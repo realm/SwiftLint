@@ -1,5 +1,7 @@
 struct TrailingCommaConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = TrailingCommaRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var mandatoryComma: Bool
 
     var consoleDescription: String {
@@ -12,7 +14,7 @@ struct TrailingCommaConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         mandatoryComma = (configuration["mandatory_comma"] as? Bool == true)

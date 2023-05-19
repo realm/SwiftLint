@@ -4,7 +4,9 @@ private enum ConfigurationKey: String {
 }
 
 struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = OpeningBraceRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var allowMultilineFunc = false
 
     var consoleDescription: String {
@@ -14,7 +16,7 @@ struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severityString = configuration[ConfigurationKey.severity.rawValue] as? String {

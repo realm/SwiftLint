@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ExplicitEnumRawValueRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "explicit_enum_raw_value",

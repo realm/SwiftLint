@@ -2,11 +2,11 @@ import Foundation
 import SourceKittenFramework
 
 struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
-    var configuration = NameConfiguration(minLengthWarning: 3,
-                                          minLengthError: 2,
-                                          maxLengthWarning: 40,
-                                          maxLengthError: 60,
-                                          excluded: ["id"])
+    var configuration = NameConfiguration<Self>(minLengthWarning: 3,
+                                                minLengthError: 2,
+                                                maxLengthWarning: 40,
+                                                maxLengthError: 60,
+                                                excluded: ["id"])
 
     static let description = RuleDescription(
         identifier: "identifier_name",
@@ -51,7 +51,7 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                     ]
                 }
 
-                if let severity = severity(forLength: name.count) {
+                if let severity = configuration.severity(forLength: name.count) {
                     let reason = "\(type) name '\(name)' should be between " +
                         "\(configuration.minLengthThreshold) and " +
                         "\(configuration.maxLengthThreshold) characters long"

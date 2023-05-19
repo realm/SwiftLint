@@ -5,7 +5,9 @@ private enum ConfigurationKey: String {
 }
 
 struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration.error
+    typealias Parent = UnusedDeclarationRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>.error
     private(set) var includePublicAndOpen = false
     private(set) var relatedUSRsToSkip = Set(["s:7SwiftUI15PreviewProviderP"])
 
@@ -17,12 +19,12 @@ struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable
 
     mutating func apply(configuration: Any) throws {
         guard let configDict = configuration as? [String: Any], configDict.isNotEmpty else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         for (string, value) in configDict {
             guard let key = ConfigurationKey(rawValue: string) else {
-                throw Issue.unknownConfiguration
+                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
             }
             switch (key, value) {
             case (.severity, let stringValue as String):
@@ -33,10 +35,10 @@ struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable
                 if let usrs = [String].array(of: value) {
                     relatedUSRsToSkip.formUnion(usrs)
                 } else {
-                    throw Issue.unknownConfiguration
+                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
                 }
             default:
-                throw Issue.unknownConfiguration
+                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
             }
         }
     }

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
         identifier: "shorthand_optional_binding",

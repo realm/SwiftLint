@@ -1,10 +1,12 @@
 struct ComputedAccessorsOrderRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    typealias Parent = ComputedAccessorsOrderRule
+
     enum Order: String {
         case getSet = "get_set"
         case setGet = "set_get"
     }
 
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var order = Order.getSet
 
     var consoleDescription: String {
@@ -14,7 +16,7 @@ struct ComputedAccessorsOrderRuleConfiguration: SeverityBasedRuleConfiguration, 
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let orderString = configuration["order"] as? String,

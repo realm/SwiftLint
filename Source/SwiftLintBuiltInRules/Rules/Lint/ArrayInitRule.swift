@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "array_init",

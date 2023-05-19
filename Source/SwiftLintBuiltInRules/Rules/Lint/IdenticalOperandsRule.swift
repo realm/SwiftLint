@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     private static let operators = ["==", "!=", "===", "!==", ">", ">=", "<", "<="]
 

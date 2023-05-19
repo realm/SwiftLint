@@ -1,23 +1,25 @@
-public struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    public private(set) var allowedRuleIdentifiers: Set<String> = [
+struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    typealias Parent = BlanketDisableCommandRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var allowedRuleIdentifiers: Set<String> = [
         "file_header",
         "file_length",
         "file_name",
         "file_name_no_space",
         "single_test_class"
     ]
-    public private(set) var alwaysBlanketDisableRuleIdentifiers: Set<String> = []
+    private(set) var alwaysBlanketDisableRuleIdentifiers: Set<String> = []
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         "severity: \(severityConfiguration.consoleDescription)" +
         ", allowed_rules: \(allowedRuleIdentifiers.sorted())" +
         ", always_blanket_disable: \(alwaysBlanketDisableRuleIdentifiers.sorted())"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severityString = configuration["severity"] as? String {
@@ -33,7 +35,7 @@ public struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration
         }
     }
 
-    public var severity: ViolationSeverity {
+    var severity: ViolationSeverity {
         severityConfiguration.severity
     }
 }

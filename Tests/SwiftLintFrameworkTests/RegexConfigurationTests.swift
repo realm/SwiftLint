@@ -3,12 +3,12 @@ import XCTest
 
 class RegexConfigurationTests: SwiftLintTestCase {
     func testShouldValidateIsTrueByDefault() {
-        let config = RegexConfiguration(identifier: "example")
+        let config = RegexConfiguration<RuleMock>(identifier: "example")
         XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
     }
 
     func testShouldValidateWithSingleExluded() throws {
-        var config = RegexConfiguration(identifier: "example")
+        var config = RegexConfiguration<RuleMock>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "excluded": "Tests/.*\\.swift"
@@ -19,7 +19,7 @@ class RegexConfigurationTests: SwiftLintTestCase {
     }
 
     func testShouldValidateWithArrayExluded() throws {
-        var config = RegexConfiguration(identifier: "example")
+        var config = RegexConfiguration<RuleMock>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "excluded": [
@@ -34,7 +34,7 @@ class RegexConfigurationTests: SwiftLintTestCase {
     }
 
     func testShouldValidateWithSingleIncluded() throws {
-        var config = RegexConfiguration(identifier: "example")
+        var config = RegexConfiguration<RuleMock>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "included": "App/.*\\.swift"
@@ -46,7 +46,7 @@ class RegexConfigurationTests: SwiftLintTestCase {
     }
 
     func testShouldValidateWithArrayIncluded() throws {
-        var config = RegexConfiguration(identifier: "example")
+        var config = RegexConfiguration<RuleMock>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "included": [
@@ -61,7 +61,7 @@ class RegexConfigurationTests: SwiftLintTestCase {
     }
 
     func testShouldValidateWithIncludedAndExcluded() throws {
-        var config = RegexConfiguration(identifier: "example")
+        var config = RegexConfiguration<RuleMock>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "included": [

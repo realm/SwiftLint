@@ -10,7 +10,7 @@ import SourceKittenFramework
 /// not accessibility elements. Known false positives for Images created in a separate function from where they
 /// have accessibility properties applied.
 struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "accessibility_label_for_image",

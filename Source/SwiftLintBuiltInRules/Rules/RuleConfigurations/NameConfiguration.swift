@@ -1,6 +1,9 @@
 import Foundation
 
-struct NameConfiguration: RuleConfiguration, Equatable {
+struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
+    typealias Severity = SeverityConfiguration<Parent>
+    typealias SeverityLevels = SeverityLevelsConfiguration<Parent>
+
     var consoleDescription: String {
         var output = "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription), " +
@@ -12,10 +15,10 @@ struct NameConfiguration: RuleConfiguration, Equatable {
         return output
     }
 
-    private(set) var minLength: SeverityLevelsConfiguration
-    private(set) var maxLength: SeverityLevelsConfiguration
+    private(set) var minLength: SeverityLevels
+    private(set) var maxLength: SeverityLevels
     private(set) var excludedRegularExpressions: Set<NSRegularExpression>
-    private(set) var validatesStartWithLowercase: SeverityConfiguration?
+    private(set) var validatesStartWithLowercase: SeverityConfiguration<Parent>?
     private var allowedSymbolsSet: Set<String>
 
     var minLengthThreshold: Int {
@@ -36,9 +39,9 @@ struct NameConfiguration: RuleConfiguration, Equatable {
          maxLengthError: Int,
          excluded: [String] = [],
          allowedSymbols: [String] = [],
-         validatesStartWithLowercase: SeverityConfiguration? = .error) {
-        minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
-        maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
+         validatesStartWithLowercase: Severity? = .error) {
+        minLength = SeverityLevels(warning: minLengthWarning, error: minLengthError)
+        maxLength = SeverityLevels(warning: maxLengthWarning, error: maxLengthError)
         self.excludedRegularExpressions = Set(excluded.compactMap {
             try? NSRegularExpression.cached(pattern: "^\($0)$")
         })
@@ -48,7 +51,7 @@ struct NameConfiguration: RuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let minLengthConfiguration = configurationDict["min_length"] {
@@ -67,7 +70,7 @@ struct NameConfiguration: RuleConfiguration, Equatable {
         }
 
         if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? String {
-            var severity = SeverityConfiguration.warning
+            var severity = Severity.warning
             try severity.apply(configuration: validatesStartWithLowercase)
             self.validatesStartWithLowercase = severity
         } else if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? Bool {
@@ -81,14 +84,6 @@ struct NameConfiguration: RuleConfiguration, Equatable {
                 """
             ).print()
         }
-    }
-}
-
-// MARK: - ConfigurationProviderRule extensions
-
-extension ConfigurationProviderRule where ConfigurationType == NameConfiguration {
-    func severity(forLength length: Int) -> ViolationSeverity? {
-        return configuration.severity(forLength: length)
     }
 }
 

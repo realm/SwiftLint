@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct NotificationCenterDetachmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "notification_center_detachment",

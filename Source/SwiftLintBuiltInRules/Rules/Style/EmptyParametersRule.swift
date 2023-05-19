@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct EmptyParametersRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "empty_parameters",

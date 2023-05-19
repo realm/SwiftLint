@@ -88,6 +88,11 @@ public extension Rule {
     }
 }
 
+public extension Rule {
+    /// The rule's unique identifier which is the same as `Rule.description.identifier`.
+    static var identifier: String { description.identifier }
+}
+
 /// A rule that is not enabled by default. Rules conforming to this need to be explicitly enabled by users.
 public protocol OptInRule: Rule {}
 

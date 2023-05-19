@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "optional_enum_case_matching",

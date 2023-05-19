@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "let_var_whitespace",

@@ -10,6 +10,10 @@
 
 #### Enhancements
 
+* Mention a rule's identifier in the console message that is printed when the
+  rule's associated configuration entry contains invalid values.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Silence `xct_specific_matcher` rule on "one argument asserts" if there are
   potential types or tuples involved in the comparison as types and tuples do
   not conform to `Equatable`.  

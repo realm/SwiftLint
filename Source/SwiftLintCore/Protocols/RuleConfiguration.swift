@@ -1,5 +1,8 @@
 /// A configuration value for a rule to allow users to modify its behavior.
-public protocol RuleConfiguration {
+public protocol RuleConfiguration<Parent> {
+    /// The type of the rule that's using this configuration.
+    associatedtype Parent: Rule
+
     /// A human-readable description for this configuration and its applied values.
     var consoleDescription: String { get }
 
@@ -15,13 +18,13 @@ public protocol RuleConfiguration {
     /// - parameter ruleConfiguration: The rule configuration to compare against.
     ///
     /// - returns: Whether the specified configuration is equivalent to the current value.
-    func isEqualTo(_ ruleConfiguration: RuleConfiguration) -> Bool
+    func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool
 }
 
 /// A configuration for a rule that allows to configure at least the severity.
 public protocol SeverityBasedRuleConfiguration: RuleConfiguration {
     /// The configuration of a rule's severity.
-    var severityConfiguration: SeverityConfiguration { get }
+    var severityConfiguration: SeverityConfiguration<Parent> { get }
 }
 
 public extension SeverityBasedRuleConfiguration {
@@ -32,7 +35,7 @@ public extension SeverityBasedRuleConfiguration {
 }
 
 public extension RuleConfiguration where Self: Equatable {
-    func isEqualTo(_ ruleConfiguration: RuleConfiguration) -> Bool {
+    func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool {
         return self == ruleConfiguration as? Self
     }
 }

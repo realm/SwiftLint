@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "strict_fileprivate",

@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableASTRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "redundant_void_return",

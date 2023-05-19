@@ -5,7 +5,9 @@ private enum ConfigurationKey: String {
 }
 
 struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityLevelsConfiguration(warning: 400, error: 1000)
+    typealias Parent = FileLengthRule
+
+    private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 400, error: 1000)
     private(set) var ignoreCommentOnlyLines = false
 
     var consoleDescription: String {
@@ -22,7 +24,7 @@ struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
         } else if let configDict = configuration as? [String: Any], configDict.isNotEmpty {
             for (string, value) in configDict {
                 guard let key = ConfigurationKey(rawValue: string) else {
-                    throw Issue.unknownConfiguration
+                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
                 }
                 switch (key, value) {
                 case (.error, let intValue as Int):
@@ -32,11 +34,11 @@ struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
                 case (.ignoreCommentOnlyLines, let boolValue as Bool):
                     ignoreCommentOnlyLines = boolValue
                 default:
-                    throw Issue.unknownConfiguration
+                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
                 }
             }
         } else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
     }
 }

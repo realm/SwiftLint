@@ -1,5 +1,7 @@
 struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = ConditionalReturnsOnNewlineRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var ifOnly = false
 
     var consoleDescription: String {
@@ -8,7 +10,7 @@ struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration,
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         ifOnly = configuration["if_only"] as? Bool ?? false

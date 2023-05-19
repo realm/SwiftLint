@@ -1,5 +1,5 @@
 struct ClosureBodyLengthRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityLevelsConfiguration(warning: 30, error: 100)
+    var configuration = SeverityLevelsConfiguration<Self>(warning: 30, error: 100)
 
     static let description = RuleDescription(
         identifier: "closure_body_length",

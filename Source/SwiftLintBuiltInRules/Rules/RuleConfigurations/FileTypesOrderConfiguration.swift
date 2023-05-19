@@ -7,7 +7,9 @@ enum FileType: String {
 }
 
 struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = FileTypesOrderRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var order: [[FileType]] = [
         [.supportingType],
         [.mainType],
@@ -23,7 +25,7 @@ struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         var customOrder = [[FileType]]()

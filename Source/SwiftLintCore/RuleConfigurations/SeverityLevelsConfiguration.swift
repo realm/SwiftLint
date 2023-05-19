@@ -1,5 +1,5 @@
 /// A rule configuration that allows specifying thresholds for `warning` and `error` severities.
-public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
+public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         let errorString: String
         if let errorValue = error {
@@ -50,7 +50,7 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
             warning = (configDict["warning"] as? Int) ?? warning
             error = configDict["error"] as? Int
         } else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
         }
     }
 }

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct IsDisjointRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "is_disjoint",

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "lower_acl_than_parent",

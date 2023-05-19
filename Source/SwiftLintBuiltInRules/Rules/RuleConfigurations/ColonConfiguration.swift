@@ -1,5 +1,7 @@
 struct ColonConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = ColonRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var flexibleRightSpacing = false
     private(set) var applyToDictionaries = true
 
@@ -11,7 +13,7 @@ struct ColonConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         flexibleRightSpacing = configuration["flexible_right_spacing"] as? Bool == true

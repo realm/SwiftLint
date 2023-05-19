@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ClassDelegateProtocolRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "class_delegate_protocol",

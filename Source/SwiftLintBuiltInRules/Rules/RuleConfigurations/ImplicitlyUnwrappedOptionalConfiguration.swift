@@ -1,21 +1,23 @@
-// swiftlint:disable:next type_name
-enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
-    case all = "all"
-    case allExceptIBOutlets = "all_except_iboutlets"
+struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    typealias Parent = ImplicitlyUnwrappedOptionalRule
 
-    init(value: Any) throws {
-        if let string = (value as? String)?.lowercased(),
-            let value = Self(rawValue: string) {
-            self = value
-        } else {
-            throw Issue.unknownConfiguration
+    // swiftlint:disable:next type_name
+    enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
+        case all = "all"
+        case allExceptIBOutlets = "all_except_iboutlets"
+
+        init(value: Any) throws {
+            if let string = (value as? String)?.lowercased(),
+               let value = Self(rawValue: string) {
+                self = value
+            } else {
+                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+            }
         }
     }
-}
 
-struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var mode = ImplicitlyUnwrappedOptionalModeConfiguration.allExceptIBOutlets
-    private(set) var severityConfiguration = SeverityConfiguration.warning
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
 
     var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)" +
@@ -24,7 +26,7 @@ struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration,
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let modeString = configuration["mode"] {

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct BlockBasedKVORule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "block_based_kvo",

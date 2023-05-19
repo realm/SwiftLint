@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "untyped_error_in_catch",

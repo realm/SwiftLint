@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct MarkRule: CorrectableRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "mark",

@@ -20,21 +20,21 @@ class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
 
     func testInvalidKeyInCustomConfiguration() {
         var config = ExplicitTypeInterfaceConfiguration()
-        checkError(Issue.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration(ruleID: ExplicitTypeInterfaceRule.description.identifier)) {
             try config.apply(configuration: ["invalidKey": "error"])
         }
     }
 
     func testInvalidTypeOfCustomConfiguration() {
         var config = ExplicitTypeInterfaceConfiguration()
-        checkError(Issue.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration(ruleID: ExplicitTypeInterfaceRule.description.identifier)) {
             try config.apply(configuration: "invalidKey")
         }
     }
 
     func testInvalidTypeOfValueInCustomConfiguration() {
         var config = ExplicitTypeInterfaceConfiguration()
-        checkError(Issue.unknownConfiguration) {
+        checkError(Issue.unknownConfiguration(ruleID: ExplicitTypeInterfaceRule.description.identifier)) {
             try config.apply(configuration: ["severity": 1])
         }
     }

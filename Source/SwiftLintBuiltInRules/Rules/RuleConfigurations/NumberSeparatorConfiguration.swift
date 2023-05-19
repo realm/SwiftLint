@@ -1,5 +1,7 @@
 struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = NumberSeparatorRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var minimumLength: Int
     private(set) var minimumFractionLength: Int?
     private(set) var excludeRanges: [Range<Double>]
@@ -24,7 +26,7 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let minimumLength = configuration["minimum_length"] as? Int {

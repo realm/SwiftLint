@@ -2,7 +2,7 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 
 struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
         identifier: "toggle_bool",

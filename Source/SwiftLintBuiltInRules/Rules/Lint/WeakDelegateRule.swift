@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct WeakDelegateRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "weak_delegate",

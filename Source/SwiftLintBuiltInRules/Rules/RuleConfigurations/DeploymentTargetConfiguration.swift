@@ -1,4 +1,6 @@
 struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    typealias Parent = DeploymentTargetRule
+
     enum Platform: String {
         case iOS
         case iOSApplicationExtension
@@ -60,7 +62,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
         private static func parseVersion(string: String) throws -> (Int, Int, Int) {
             func parseNumber(_ string: String) throws -> Int {
                 guard let number = Int(string) else {
-                    throw Issue.unknownConfiguration
+                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
                 }
                 return number
             }
@@ -68,7 +70,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
             let parts = string.components(separatedBy: ".")
             switch parts.count {
             case 0:
-                throw Issue.unknownConfiguration
+                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
             case 1:
                 return (try parseNumber(parts[0]), 0, 0)
             case 2:
@@ -103,7 +105,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
     private(set) var tvOSDeploymentTarget = Version(platform: .tvOS, major: 9)
     private(set) var tvOSAppExtensionDeploymentTarget = Version(platform: .tvOSApplicationExtension, major: 9)
 
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
     private let targets: [String: Version]
 
@@ -128,7 +130,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
         for (key, value) in configuration {
             if key == "severity", let value = value as? String {
@@ -136,7 +138,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
                 continue
             }
             guard let target = targets[key] else {
-                throw Issue.unknownConfiguration
+                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
             }
             try target.update(using: value)
             if let extensionConfigurationKey = target.platform.appExtensionCounterpart?.configurationKey,

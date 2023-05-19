@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "protocol_property_accessors_order",

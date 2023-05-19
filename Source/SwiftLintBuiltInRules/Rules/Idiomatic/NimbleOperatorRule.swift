@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "nimble_operator",

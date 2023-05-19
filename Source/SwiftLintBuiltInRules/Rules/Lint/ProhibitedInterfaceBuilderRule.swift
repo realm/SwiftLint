@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "prohibited_interface_builder",

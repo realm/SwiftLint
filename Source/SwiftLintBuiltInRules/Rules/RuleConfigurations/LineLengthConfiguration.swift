@@ -8,6 +8,8 @@ private enum ConfigurationKey: String {
 }
 
 struct LineLengthConfiguration: RuleConfiguration, Equatable {
+    typealias Parent = LineLengthRule
+
     var consoleDescription: String {
         return length.consoleDescription +
                ", ignores_urls: \(ignoresURLs)" +
@@ -16,7 +18,7 @@ struct LineLengthConfiguration: RuleConfiguration, Equatable {
                ", ignores_interpolated_strings: \(ignoresInterpolatedStrings)"
     }
 
-    private(set) var length = SeverityLevelsConfiguration(warning: 120, error: 200)
+    private(set) var length = SeverityLevelsConfiguration<Parent>(warning: 120, error: 200)
     private(set) var ignoresURLs = false
     private(set) var ignoresFunctionDeclarations = false
     private(set) var ignoresComments = false
@@ -56,7 +58,7 @@ struct LineLengthConfiguration: RuleConfiguration, Equatable {
     ///
     /// - throws: Throws if the configuration value isn't properly formatted.
     private mutating func applyDictionary(configuration: Any) throws {
-        let error = Issue.unknownConfiguration
+        let error = Issue.unknownConfiguration(ruleID: Parent.identifier)
         guard let configDict = configuration as? [String: Any],
             configDict.isNotEmpty else {
             throw error

@@ -7,6 +7,8 @@ private enum ConfigurationKey: String {
 }
 
 struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
+    typealias Parent = CyclomaticComplexityRule
+
     var consoleDescription: String {
         return length.consoleDescription +
             ", \(ConfigurationKey.ignoresCaseStatements.rawValue): \(ignoresCaseStatements)"
@@ -22,7 +24,7 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         .case
     ]
 
-    private(set) var length = SeverityLevelsConfiguration(warning: 10, error: 20)
+    private(set) var length = SeverityLevelsConfiguration<Parent>(warning: 10, error: 20)
     private(set) var complexityStatements = Self.defaultComplexityStatements
 
     private(set) var ignoresCaseStatements = false {
@@ -48,7 +50,7 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         } else if let configDict = configuration as? [String: Any], configDict.isNotEmpty {
             for (string, value) in configDict {
                 guard let key = ConfigurationKey(rawValue: string) else {
-                    throw Issue.unknownConfiguration
+                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
                 }
                 switch (key, value) {
                 case (.error, let intValue as Int):
@@ -58,11 +60,11 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
                 case (.ignoresCaseStatements, let boolValue as Bool):
                     ignoresCaseStatements = boolValue
                 default:
-                    throw Issue.unknownConfiguration
+                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
                 }
             }
         } else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
     }
 }

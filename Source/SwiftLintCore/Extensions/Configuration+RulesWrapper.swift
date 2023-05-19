@@ -32,7 +32,7 @@ internal extension Configuration {
             if let cachedResultingRules { return cachedResultingRules }
 
             // Calculate value
-            let customRulesFilter: (RegexConfiguration) -> (Bool)
+            let customRulesFilter: (RegexConfiguration<CustomRules>) -> (Bool)
             var resultingRules = [Rule]()
             switch mode {
             case .allEnabled:

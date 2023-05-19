@@ -1,4 +1,6 @@
 struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    typealias Parent = IndentationWidthRule
+
     var consoleDescription: String {
         return "severity: \("severity: \(severityConfiguration.consoleDescription)"), "
             + "indentation_width: \(indentationWidth), "
@@ -7,7 +9,7 @@ struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration, Equatable 
             + "include_multiline_strings: \(includeMultilineStrings)"
     }
 
-    private(set) var severityConfiguration = SeverityConfiguration.warning
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     private(set) var indentationWidth = 4
     private(set) var includeComments = true
     private(set) var includeCompilerDirectives = true
@@ -15,7 +17,7 @@ struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration, Equatable 
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let config = configurationDict["severity"] {

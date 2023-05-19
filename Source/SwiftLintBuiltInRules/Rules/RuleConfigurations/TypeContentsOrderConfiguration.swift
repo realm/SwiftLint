@@ -17,7 +17,9 @@ enum TypeContent: String {
 }
 
 struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = TypeContentsOrderRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var order: [[TypeContent]] = [
         [.case],
         [.typeAlias, .associatedType],
@@ -42,7 +44,7 @@ struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         var customOrder = [[TypeContent]]()

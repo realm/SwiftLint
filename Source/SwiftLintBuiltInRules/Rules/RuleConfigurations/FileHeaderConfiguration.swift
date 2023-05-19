@@ -2,12 +2,14 @@ import Foundation
 import SourceKittenFramework
 
 struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    typealias Parent = FileHeaderRule
+
     private static let fileNamePlaceholder = "SWIFTLINT_CURRENT_FILENAME"
     private static let stringRegexOptions: NSRegularExpression.Options = [.ignoreMetacharacters]
     private static let patternRegexOptions: NSRegularExpression.Options =
         [.anchorsMatchLines, .dotMatchesLineSeparators]
 
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private var requiredString: String?
     private var requiredPattern: String?
     private var forbiddenString: String?
@@ -35,7 +37,7 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: String] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         // Cache the created regexes if possible.

@@ -1,5 +1,7 @@
 struct XCTSpecificMatcherRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    typealias Parent = XCTSpecificMatcherRule
+
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var matchers = Set(Matcher.allCases)
 
     enum Matcher: String, Hashable, CaseIterable {
@@ -21,7 +23,7 @@ struct XCTSpecificMatcherRuleConfiguration: SeverityBasedRuleConfiguration, Equa
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
         if let severityString = configuration[ConfigurationKey.severity.rawValue] as? String {

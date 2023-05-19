@@ -2,11 +2,13 @@ import Foundation
 import SwiftLintCore
 
 struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, CacheDescriptionProvider {
+    typealias Parent = PrivateUnitTestRule
+
     private(set) var name: String?
     private(set) var message = "Unit test marked `private` will not be run by XCTest."
     private(set) var regex = SwiftLintCore.regex("XCTestCase")
     private(set) var included: NSRegularExpression?
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
     var consoleDescription: String {
         return "\(severity.rawValue): \(regex.pattern)"
@@ -30,7 +32,7 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, 
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration
+            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
         if let regexString = configurationDict["regex"] as? String {
             regex = try .cached(pattern: regexString)

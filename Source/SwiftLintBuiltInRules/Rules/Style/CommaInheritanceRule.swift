@@ -4,7 +4,7 @@ import SwiftSyntax
 
 struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule,
                                     SourceKitFreeRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "comma_inheritance",

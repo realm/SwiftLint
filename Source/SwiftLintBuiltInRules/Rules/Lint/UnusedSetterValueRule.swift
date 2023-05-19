@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "unused_setter_value",

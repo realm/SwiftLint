@@ -339,14 +339,14 @@
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RuleConfiguration</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RuleConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span></code></pre>
 
                 </div>
               </div>
             <p>A configuration value for a rule to allow users to modify its behavior.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/RuleConfiguration.swift#L2-L19">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/RuleConfiguration.swift#L2-L22">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -355,6 +355,36 @@
           <div class="section-content">
             <div class="task-group">
               <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore17RuleConfigurationP6ParentQa"></a>
+                    <a name="//apple_ref/swift/Alias/Parent" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore17RuleConfigurationP6ParentQa">Parent</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The type of the rule that&rsquo;s using this configuration.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/Rule.html">Rule</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/RuleConfiguration.swift#L4">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -380,7 +410,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/RuleConfiguration.swift#L4">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/RuleConfiguration.swift#L7">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -434,7 +464,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/RuleConfiguration.swift#L11">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/RuleConfiguration.swift#L14">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -442,9 +472,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore17RuleConfigurationP9isEqualToySbAaB_pF"></a>
+                    <a name="/s:13SwiftLintCore17RuleConfigurationP9isEqualToySbqd__AaBRd__lF"></a>
                     <a name="//apple_ref/swift/Method/isEqualTo(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore17RuleConfigurationP9isEqualToySbAaB_pF">isEqualTo(_:<wbr>)</a>
+                    <a class="token" href="#/s:13SwiftLintCore17RuleConfigurationP9isEqualToySbqd__AaBRd__lF">isEqualTo(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -459,7 +489,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">isEqualTo</span><span class="p">(</span><span class="n">_</span> <span class="nv">ruleConfiguration</span><span class="p">:</span> <span class="kt">RuleConfiguration</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">isEqualTo</span><span class="p">(</span><span class="n">_</span> <span class="nv">ruleConfiguration</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">RuleConfiguration</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
                       </div>
@@ -487,7 +517,7 @@
                         <p>Whether the specified configuration is equivalent to the current value.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/RuleConfiguration.swift#L18">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/RuleConfiguration.swift#L21">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

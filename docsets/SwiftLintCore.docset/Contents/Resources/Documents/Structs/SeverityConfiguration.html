@@ -339,7 +339,7 @@
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SeverityConfiguration</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/SeverityBasedRuleConfiguration.html">SeverityBasedRuleConfiguration</a></span><span class="p">,</span> <span class="kt">Equatable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SeverityConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/SeverityBasedRuleConfiguration.html">SeverityBasedRuleConfiguration</a></span><span class="p">,</span> <span class="kt">Equatable</span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/Rule.html">Rule</a></span></code></pre>
 
                 </div>
               </div>
@@ -358,9 +358,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore21SeverityConfigurationV5errorACvpZ"></a>
+                    <a name="/s:13SwiftLintCore21SeverityConfigurationV5errorACyxGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/error" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore21SeverityConfigurationV5errorACvpZ">error</a>
+                    <a class="token" href="#/s:13SwiftLintCore21SeverityConfigurationV5errorACyxGvpZ">error</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -375,7 +375,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">SeverityConfiguration</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">error</span><span class="p">:</span> <span class="p">`</span><span class="nv">Self</span><span class="p">`</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -388,9 +388,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore21SeverityConfigurationV7warningACvpZ"></a>
+                    <a name="/s:13SwiftLintCore21SeverityConfigurationV7warningACyxGvpZ"></a>
                     <a name="//apple_ref/swift/Variable/warning" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore21SeverityConfigurationV7warningACvpZ">warning</a>
+                    <a class="token" href="#/s:13SwiftLintCore21SeverityConfigurationV7warningACyxGvpZ">warning</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -405,7 +405,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">warning</span><span class="p">:</span> <span class="kt">SeverityConfiguration</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">warning</span><span class="p">:</span> <span class="p">`</span><span class="nv">Self</span><span class="p">`</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -447,9 +447,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore30SeverityBasedRuleConfigurationP08severityG0AA0dG0Vvp"></a>
+                    <a name="/s:13SwiftLintCore30SeverityBasedRuleConfigurationP08severityG0AA0dG0Vy6ParentQzGvp"></a>
                     <a name="//apple_ref/swift/Property/severityConfiguration" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore30SeverityBasedRuleConfigurationP08severityG0AA0dG0Vvp">severityConfiguration</a>
+                    <a class="token" href="#/s:13SwiftLintCore30SeverityBasedRuleConfigurationP08severityG0AA0dG0Vy6ParentQzGvp">severityConfiguration</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -476,9 +476,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore21SeverityConfigurationVyAcA09ViolationD0Ocfc"></a>
+                    <a name="/s:13SwiftLintCore21SeverityConfigurationVyACyxGAA09ViolationD0Ocfc"></a>
                     <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore21SeverityConfigurationVyAcA09ViolationD0Ocfc">init(_:<wbr>)</a>
+                    <a class="token" href="#/s:13SwiftLintCore21SeverityConfigurationVyACyxGAA09ViolationD0Ocfc">init(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">

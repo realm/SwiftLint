@@ -68,7 +68,7 @@ struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationP
             Example("↓CGRectInset(rect, 5.0, -7.0)\n"): Example("rect.insetBy(dx: 5.0, dy: -7.0)\n"),
             Example("↓CGRectOffset(rect, -2, 8.3)\n"): Example("rect.offsetBy(dx: -2, dy: 8.3)\n"),
             Example("↓CGRectUnion(rect1, rect2)\n"): Example("rect1.union(rect2)\n"),
-            Example("↓CGRectIntersection( rect1 ,rect2)\n"): Example("rect1.intersect(rect2)\n"),
+            Example("↓CGRectIntersection( rect1 ,rect2)\n"): Example("rect1.intersection(rect2)\n"),
             Example("↓CGRectContainsRect( rect1,rect2     )\n"): Example("rect1.contains(rect2)\n"),
             Example("↓CGRectContainsPoint(rect  ,point)\n"): Example("rect.contains(point)\n"),
             Example("↓CGRectIntersectsRect(  rect1,rect2 )\n"): Example("rect1.intersects(rect2)\n"),
@@ -97,7 +97,7 @@ struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationP
         "CGRectContainsRect": .function(name: "contains", argumentLabels: [""]),
         "CGRectContainsPoint": .function(name: "contains", argumentLabels: [""]),
         "CGRectIntersectsRect": .function(name: "intersects", argumentLabels: [""]),
-        "CGRectIntersection": .function(name: "intersect", argumentLabels: [""])
+        "CGRectIntersection": .function(name: "intersection", argumentLabels: [""])
     ]
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {

@@ -13,7 +13,7 @@ struct RedundantObjcAttributeRuleExamples {
         class Foo {
             var bar: Any?
             @objc
-            class Bar {
+            class Bar: NSObject {
                 @objc
                 var foo: Any?
             }
@@ -59,14 +59,15 @@ struct RedundantObjcAttributeRuleExamples {
         Example("""
         @objcMembers
         class Foo {
+            @objc
             class Bar: NSObject {
-                @objc var foo: Any
+                @objc var foo: Any?
             }
         }
         """),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             @objc class Bar {}
         }
         """),
@@ -74,6 +75,59 @@ struct RedundantObjcAttributeRuleExamples {
         extension BlockEditorSettings {
             @objc(addElementsObject:)
             @NSManaged public func addToElements(_ value: BlockEditorSettingElement)
+        }
+        """),
+        Example("""
+        @objcMembers
+        public class Foo: NSObject {
+            @objc
+            private func handler(_ notification: Notification) {
+            }
+
+            func registerForNotifications() {
+                NotificationCenter.default.addObserver(self, selector: #selector(handler(_:)), name: nil, object: nil)
+            }
+        }
+        """),
+        Example("""
+        class Foo: NSObject { }
+
+        @objc extension Foo {
+            @objc enum Bar: Int {
+               case bar
+            }
+
+            var bar: Bar { .bar }
+        }
+        """),
+        Example("""
+        class Foo: NSObject { }
+
+        @objc extension Foo {
+            @objc private enum Baz: Int {
+              case baz
+            }
+
+            private var baz: Baz { .baz }
+        }
+        """),
+        Example("""
+        @objcMembers
+        internal class Foo: NSObject {
+            @objc
+            private var baz: Int = 1
+
+            var x: Any? {
+                value(forKey: "baz")
+            }
+        }
+        """),
+        Example("""
+        @objcMembers
+        class Foo: NSObject {
+            @objc enum Bar: Int {
+               case bar
+            }
         }
         """)
     ]
@@ -90,13 +144,13 @@ struct RedundantObjcAttributeRuleExamples {
         Example("↓@objc @IBDesignable class Foo {}"),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             ↓@objc var bar: Any?
         }
         """),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             ↓@objc var bar: Any?
             ↓@objc var foo: Any?
             @objc
@@ -126,7 +180,7 @@ struct RedundantObjcAttributeRuleExamples {
         """),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             @objcMembers
             class Bar: NSObject {
                 ↓@objc var foo: Any
@@ -160,23 +214,23 @@ struct RedundantObjcAttributeRuleExamples {
         Example("↓@objc @IBDesignable class Foo {}"): Example("@IBDesignable class Foo {}"),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             ↓@objc var bar: Any?
         }
         """):
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             var bar: Any?
         }
         """),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             ↓@objc var bar: Any?
             ↓@objc var foo: Any?
             @objc
-            class Bar {
+            class Bar: NSObject {
                 @objc
                 var foo2: Any?
             }
@@ -184,11 +238,11 @@ struct RedundantObjcAttributeRuleExamples {
         """):
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             var bar: Any?
             var foo: Any?
             @objc
-            class Bar {
+            class Bar: NSObject {
                 @objc
                 var foo2: Any?
             }
@@ -230,7 +284,7 @@ struct RedundantObjcAttributeRuleExamples {
         """),
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             @objcMembers
             class Bar: NSObject {
                 ↓@objc var foo: Any
@@ -239,7 +293,7 @@ struct RedundantObjcAttributeRuleExamples {
         """):
         Example("""
         @objcMembers
-        class Foo {
+        class Foo: NSObject {
             @objcMembers
             class Bar: NSObject {
                 var foo: Any

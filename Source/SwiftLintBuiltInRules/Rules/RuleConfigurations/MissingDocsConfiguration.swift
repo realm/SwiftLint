@@ -1,4 +1,4 @@
-struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
+struct MissingDocsConfiguration: RuleConfiguration, Equatable {
     typealias Parent = MissingDocsRule
 
     private(set) var parameters = [

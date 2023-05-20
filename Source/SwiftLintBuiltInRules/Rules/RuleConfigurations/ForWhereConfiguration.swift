@@ -1,4 +1,4 @@
-struct ForWhereRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct ForWhereConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ForWhereRule
 
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)

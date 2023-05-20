@@ -1,8 +1,8 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class RequiredEnumCaseRuleConfigurationTests: SwiftLintTestCase {
-    private typealias RuleConfiguration = RequiredEnumCaseRuleConfiguration
+class RequiredEnumCaseConfigurationTests: SwiftLintTestCase {
+    private typealias RuleConfiguration = RequiredEnumCaseConfiguration
     private typealias RequiredCase = RuleConfiguration.RequiredCase
 
     private static let protocol1 = "RequiredProtocol"

@@ -318,7 +318,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
     }
 
     func testComputedAccessorsOrderRuleConfiguration() throws {
-        var configuration = ComputedAccessorsOrderRuleConfiguration()
+        var configuration = ComputedAccessorsOrderConfiguration()
         let config = ["severity": "error", "order": "set_get"]
         try configuration.apply(configuration: config)
 

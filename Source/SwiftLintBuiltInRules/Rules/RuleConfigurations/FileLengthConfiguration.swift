@@ -4,7 +4,7 @@ private enum ConfigurationKey: String {
     case ignoreCommentOnlyLines = "ignore_comment_only_lines"
 }
 
-struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
+struct FileLengthConfiguration: RuleConfiguration, Equatable {
     typealias Parent = FileLengthRule
 
     private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 400, error: 1000)

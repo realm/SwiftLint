@@ -2,7 +2,7 @@ import Foundation
 import SwiftSyntax
 
 struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = TypeNameRuleConfiguration()
+    var configuration = TypeNameConfiguration()
 
     static let description = RuleDescription(
         identifier: "type_name",
@@ -24,9 +24,9 @@ struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
 
 private extension TypeNameRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: TypeNameRuleConfiguration
+        private let configuration: TypeNameConfiguration
 
-        init(configuration: TypeNameRuleConfiguration) {
+        init(configuration: TypeNameConfiguration) {
             self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }

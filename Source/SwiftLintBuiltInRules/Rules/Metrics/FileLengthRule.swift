@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
 struct FileLengthRule: ConfigurationProviderRule {
-    var configuration = FileLengthRuleConfiguration()
+    var configuration = FileLengthConfiguration()
 
     static let description = RuleDescription(
         identifier: "file_length",

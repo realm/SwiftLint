@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct ForWhereRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = ForWhereRuleConfiguration()
+    var configuration = ForWhereConfiguration()
 
     static let description = RuleDescription(
         identifier: "for_where",

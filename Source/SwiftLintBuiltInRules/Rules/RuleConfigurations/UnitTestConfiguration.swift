@@ -1,9 +1,9 @@
-typealias BalancedXCTestLifecycleConfiguration = UnitTestRuleConfiguration<BalancedXCTestLifecycleRule>
-typealias EmptyXCTestMethodConfiguration = UnitTestRuleConfiguration<EmptyXCTestMethodRule>
-typealias SingleTestClassConfiguration = UnitTestRuleConfiguration<SingleTestClassRule>
-typealias NoMagicNumbersRuleConfiguration = UnitTestRuleConfiguration<NoMagicNumbersRule>
+typealias BalancedXCTestLifecycleConfiguration = UnitTestConfiguration<BalancedXCTestLifecycleRule>
+typealias EmptyXCTestMethodConfiguration = UnitTestConfiguration<EmptyXCTestMethodRule>
+typealias SingleTestClassConfiguration = UnitTestConfiguration<SingleTestClassRule>
+typealias NoMagicNumbersConfiguration = UnitTestConfiguration<NoMagicNumbersRule>
 
-struct UnitTestRuleConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable {
+struct UnitTestConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 

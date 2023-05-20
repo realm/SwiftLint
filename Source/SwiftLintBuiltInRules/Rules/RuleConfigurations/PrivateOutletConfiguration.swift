@@ -1,4 +1,4 @@
-struct PrivateOutletRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct PrivateOutletConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = PrivateOutletRule
 
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)

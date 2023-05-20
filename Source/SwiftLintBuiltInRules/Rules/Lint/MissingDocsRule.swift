@@ -45,12 +45,12 @@ private extension SwiftLintFile {
 
 struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
     init() {
-        configuration = MissingDocsRuleConfiguration()
+        configuration = MissingDocsConfiguration()
     }
 
-    typealias ConfigurationType = MissingDocsRuleConfiguration
+    typealias ConfigurationType = MissingDocsConfiguration
 
-    var configuration: MissingDocsRuleConfiguration
+    var configuration: MissingDocsConfiguration
 
     static let description = RuleDescription(
         identifier: "missing_docs",

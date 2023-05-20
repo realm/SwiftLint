@@ -245,6 +245,7 @@
   declarations in classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5009](https://github.com/realm/SwiftLint/issues/5009)
+
 * Fix false positives for superfluous_disable_command, and removed
   support for disable and enable commands in multline comments.  
   [Martin Redington](https://github.com/mildm8nnered)

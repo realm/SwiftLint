@@ -24,6 +24,7 @@
   to sort groups of imports defined by their preceding attributes
   (e.g. `@testable`, `@_exported`, ...).  
   [hiltonc](https://github.com/hiltonc)
+
 * Adds an `unneeded_synthesized_initializer` rule, based on
   `swift-format`'s `UseSynthesizedInitializer` rule, which warns
   when a defined default or memberwise initializer would have been

@@ -29,6 +29,24 @@ public struct Stack<Element> {
     public func peek() -> Element? {
         elements.last
     }
+
+    /// Check whether the sequence contains an element that satisfies the given predicate.
+    ///
+    /// - parameter predicate: A closure that takes an element of the sequence
+    ///   and returns whether it represents a match.
+    /// - returns: `true` if the sequence contains an element that satisfies `predicate`.
+    public func contains(where predicate: (Element) -> Bool) -> Bool {
+        elements.contains(where: predicate)
+    }
+
+    /// Modify the last element.
+    ///
+    /// - parameter modifier: A function to applied to the last element to modify it in place.
+    public mutating func modifyLast(by modifier: (inout Element) -> Void) {
+        if elements.isNotEmpty {
+            modifier(&elements[count - 1])
+        }
+    }
 }
 
 extension Stack: CustomDebugStringConvertible where Element == CustomDebugStringConvertible {

@@ -1,5 +1,7 @@
 import SwiftSyntax
 
+// swiftlint:disable file_length
+
 struct RedundantSelfInClosureRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -40,10 +42,52 @@ struct RedundantSelfInClosureRule: SwiftSyntaxRule, CorrectableRule, Configurati
             """),
             Example("""
                 struct S {
-                    var x = 0
+                    var x = 0, error = 0, exception = 0
+                    var y: Int?, z: Int?, u: Int, v: Int?, w: Int?
+                    func f(_ work: @escaping (Int) -> Void) { work() }
+                    func g(x: Int) {
+                        f { u in
+                            self.x = x
+                            let x = 1
+                            self.x = 2
+                            if let y, let v {
+                                self.y = 3
+                                self.v = 1
+                            }
+                            guard let z else {
+                                let v = 4
+                                self.x = 5
+                                self.v = 6
+                                return
+                            }
+                            self.z = 7
+                            while let v { self.v = 8 }
+                            for w in [Int]() { self.w = 9 }
+                            self.u = u
+                            do {} catch { self.error = 10 }
+                            do {} catch let exception { self.exception = 11 }
+                        }
+                    }
+                }
+            """),
+            Example("""
+                enum E {
+                    case a(Int)
+                    case b(Int, Int)
+                }
+                struct S {
+                    var x: E = .a(3), y: Int, z: Int
                     func f(_ work: @escaping () -> Void) { work() }
                     func g(x: Int) {
-                        f { self.x = x }
+                        f {
+                            switch x {
+                            case let .a(y):
+                                self.y = 1
+                            case .b(let y, var z):
+                                self.y = 2
+                                self.z = 3
+                            }
+                        }
                     }
                 }
             """)
@@ -95,7 +139,44 @@ struct RedundantSelfInClosureRule: SwiftSyntaxRule, CorrectableRule, Configurati
                         f { [s = self] in s.x = 1 }
                     }
                 }
-            """)
+            """),
+            Example("""
+                struct S {
+                    var x = 0
+                    var y: Int?, z: Int?, v: Int?, w: Int?
+                    func f(_ work: @escaping () -> Void) { work() }
+                    func g(w: Int, _ v: Int) {
+                        f {
+                            self.w = 1
+                            ↓self.x = 2
+                            if let y { ↓self.x = 3 }
+                            else { ↓self.y = 3 }
+                            guard let z else {
+                                ↓self.z = 4
+                                ↓self.x = 5
+                                return
+                            }
+                            ↓self.y = 6
+                            while let y { ↓self.x = 7 }
+                            for y in [Int]() { ↓self.x = 8 }
+                            self.v = 9
+                            do {
+                                let x = 10
+                                self.x = 11
+                            }
+                            ↓self.x = 12
+                        }
+                    }
+                }
+            """),
+            Example("""
+                struct S {
+                    func f(_ work: @escaping () -> Void) { work() }
+                    func g() {
+                        f { let g = ↓self.g() }
+                    }
+                }
+            """, excludeFromDocumentation: true)
         ] + triggeringCompilerSpecificExamples,
         corrections: [
             Example("""
@@ -155,11 +236,11 @@ struct RedundantSelfInClosureRule: SwiftSyntaxRule, CorrectableRule, Configurati
 #endif
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ScopeVisitor(viewMode: .sourceAccurate)
+        ContextVisitor()
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {
-        let ranges = ScopeVisitor(viewMode: .sourceAccurate)
+        let ranges = ContextVisitor()
             .walk(file: file, handler: \.corrections)
             .compactMap { file.stringView.NSRange(start: $0.start, end: $0.end) }
             .filter { file.ruleEnabled(violatingRange: $0, for: self) != nil }
@@ -196,7 +277,7 @@ private enum SelfCaptureKind {
     case uncaptured
 }
 
-private class ScopeVisitor: ViolationsSyntaxVisitor {
+private class ContextVisitor: DeclaredIdentifiersTrackingVisitor {
     private var typeDeclarations = Stack<TypeDeclarationKind>()
     private var functionCalls = Stack<FunctionCallType>()
     private var selfCaptures = Stack<SelfCaptureKind>()
@@ -241,7 +322,8 @@ private class ScopeVisitor: ViolationsSyntaxVisitor {
         let localCorrections = ExplicitSelfVisitor(
             typeDeclarationKind: activeTypeDeclarationKind,
             functionCallType: activeFunctionCallType,
-            selfCaptureKind: activeSelfCaptureKind
+            selfCaptureKind: activeSelfCaptureKind,
+            scope: scope
         ).walk(tree: node.statements, handler: \.corrections)
         violations.append(contentsOf: localCorrections.map(\.start))
         corrections.append(contentsOf: localCorrections)
@@ -280,7 +362,7 @@ private class ScopeVisitor: ViolationsSyntaxVisitor {
     }
 }
 
-private class ExplicitSelfVisitor: ViolationsSyntaxVisitor {
+private class ExplicitSelfVisitor: DeclaredIdentifiersTrackingVisitor {
     private let typeDeclKind: TypeDeclarationKind
     private let functionCallType: FunctionCallType
     private let selfCaptureKind: SelfCaptureKind
@@ -289,27 +371,16 @@ private class ExplicitSelfVisitor: ViolationsSyntaxVisitor {
 
     init(typeDeclarationKind: TypeDeclarationKind,
          functionCallType: FunctionCallType,
-         selfCaptureKind: SelfCaptureKind) {
+         selfCaptureKind: SelfCaptureKind,
+         scope: Scope) {
         self.typeDeclKind = typeDeclarationKind
         self.functionCallType = functionCallType
         self.selfCaptureKind = selfCaptureKind
-        super.init(viewMode: .sourceAccurate)
-    }
-
-    override func visit(_ node: SequenceExprSyntax) -> SyntaxVisitorContinueKind {
-        let elements = node.elements
-        if elements.count == 3,
-           let assignee = elements.first?.as(MemberAccessExprSyntax.self), assignee.isBaseSelf,
-           elements.dropFirst(1).first?.is(AssignmentExprSyntax.self) == true,
-           elements.dropFirst(2).first?.as(IdentifierExprSyntax.self)?.identifier.text == assignee.name.text {
-            // We have something like `self.x = x` which is quite common and should thus be skipped.
-            return .skipChildren
-        }
-        return .visitChildren
+        super.init(scope: scope)
     }
 
     override func visitPost(_ node: MemberAccessExprSyntax) {
-        if node.isBaseSelf, isSelfRedundant {
+        if !hasSeenDeclaration(for: node.name.text), node.isBaseSelf, isSelfRedundant {
             corrections.append(
                 (start: node.positionAfterSkippingLeadingTrivia, end: node.dot.endPositionBeforeTrailingTrivia)
             )

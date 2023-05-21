@@ -25,6 +25,11 @@
   (e.g. `@testable`, `@_exported`, ...).  
   [hiltonc](https://github.com/hiltonc)
 
+* Do not trigger `redundant_self_in_closure` rule when another idenfier `x` in
+  scope shadows the field accessed by `self.x` to avoid semantical changes.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5010](https://github.com/realm/SwiftLint/issues/5010)
+
 #### Bug Fixes
 
 * Do not trigger `prefer_self_in_static_references` rule on `typealias`

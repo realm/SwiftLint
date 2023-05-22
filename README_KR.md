@@ -185,7 +185,7 @@ $ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 
 SwiftLint에는 200개가 넘는 룰들이 있고, 스위프트 커뮤니티(바로 여러분들!)는 이를 지속적으로 발전시켜 가고 있습니다. [풀 리퀘스트](CONTRIBUTING.md)는 언제나 환영입니다.
 
-현재 구현된 룰 전체를 확인하려면 [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)를 살펴보세요.
+현재 구현된 룰 전체를 확인하려면 [Source/SwiftLintBuiltInRules/Rules](Source/SwiftLintBuiltInRules/Rules)를 살펴보세요.
 
 `opt_in_rules`는 기본적으로 비활성화되어 있습니다. (즉, 설정 파일에서 명시적으로 해당 룰을 활성화해야 합니다.)
 

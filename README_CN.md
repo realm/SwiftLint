@@ -167,7 +167,7 @@ SwiftLint 已经包含了超过 75 条规则，并且我们希望 Swift 社区�
 
 你可以在 [Rule Directory](https://realm.github.io/SwiftLint/rule-directory.html) 找到规则的更新列表和更多信息。
 
-你也可以检视 [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules) 目录来查看它们的实现。
+你也可以检视 [Source/SwiftLintBuiltInRules/Rules](Source/SwiftLintBuiltInRules/Rules) 目录来查看它们的实现。
 
 `opt_in_rules` 默认是关闭的（即，你需要在你的配置文件中明确地打开它们）。
 

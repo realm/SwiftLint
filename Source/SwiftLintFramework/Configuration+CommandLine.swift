@@ -69,7 +69,7 @@ private func fileCount(from envVar: String) throws(SwiftLintError) -> Int {
     return count
 }
 
-#if os(Linux)
+#if os(Linux) || os(Windows)
 private func autoreleasepool<T>(block: () -> T) -> T { block() }
 #endif
 

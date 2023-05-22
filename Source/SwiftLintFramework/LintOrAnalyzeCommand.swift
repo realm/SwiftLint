@@ -444,7 +444,7 @@ private actor CorrectionsBuilder {
 }
 
 private func memoryUsage() -> String? {
-#if os(Linux)
+#if os(Linux) || os(Windows)
     return nil
 #else
     var info = mach_task_basic_info()

@@ -64,7 +64,7 @@ $ make docker_test
 
 ## Rules
 
-New rules should be added in the `Source/SwiftLintFramework/Rules` directory.
+New rules should be added in the `Source/SwiftLintBuiltInRules/Rules` directory.
 
 Rules should conform to either the `Rule` or `ASTRule` protocols.
 
@@ -104,11 +104,11 @@ configuration object via the `configuration` property:
 * If none of the provided `RuleConfiguration`s are applicable, you can create one
   specifically for your rule.
 
-See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintFramework/Rules/Idiomatic/ForceCastRule.swift)
+See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintBuiltInRules/Rules/Idiomatic/ForceCastRule.swift)
 for a rule that allows severity configuration,
-[`FileLengthRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintFramework/Rules/Metrics/FileLengthRule.swift)
+[`FileLengthRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintBuiltInRules/Rules/Metrics/FileLengthRule.swift)
 for a rule that has multiple severity levels,
-[`IdentifierNameRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintFramework/Rules/Style/IdentifierNameRule.swift)
+[`IdentifierNameRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintBuiltInRules/Rules/Style/IdentifierNameRule.swift)
 for a rule that allows name evaluation configuration:
 
 ``` yaml

@@ -11,7 +11,7 @@ public extension Configuration {
 
         private let ignoreParentAndChildConfigs: Bool
 
-        private var vertices: Set<Vertix>
+        private var vertices: Set<Vertex>
         private var edges: Set<Edge>
 
         private var isBuilt = false
@@ -19,7 +19,7 @@ public extension Configuration {
         // MARK: - Initializers
         internal init(commandLineChildConfigs: [String], rootDirectory: String, ignoreParentAndChildConfigs: Bool) {
             let verticesArray = commandLineChildConfigs.map { config in
-                Vertix(string: config, rootDirectory: rootDirectory, isInitialVertix: true)
+                Vertex(string: config, rootDirectory: rootDirectory, isInitialVertex: true)
             }
             vertices = Set(verticesArray)
             edges = Set(zip(verticesArray, verticesArray.dropFirst()).map { Edge(parent: $0.0, child: $0.1) })
@@ -59,8 +59,8 @@ public extension Configuration {
         internal func includesFile(atPath path: String) -> Bool {
             guard isBuilt else { return false }
 
-            return vertices.contains { vertix in
-                if case let .existing(filePath) = vertix.filePath {
+            return vertices.contains { vertex in
+                if case let .existing(filePath) = vertex.filePath {
                     return path == filePath
                 }
 
@@ -70,19 +70,19 @@ public extension Configuration {
 
         // MARK: Building
         private mutating func build() throws {
-            for vertix in vertices {
-                try process(vertix: vertix)
+            for vertex in vertices {
+                try process(vertex: vertex)
             }
 
             isBuilt = true
         }
 
         private mutating func process(
-            vertix: Vertix,
+            vertex: Vertex,
             remoteConfigTimeoutOverride: TimeInterval? = nil,
             remoteConfigTimeoutIfCachedOverride: TimeInterval? = nil
         ) throws {
-            try vertix.build(
+            try vertex.build(
                 remoteConfigTimeout: remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeout,
                 remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCachedOverride
                     ?? remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeoutIfCached
@@ -91,13 +91,13 @@ public extension Configuration {
             if !ignoreParentAndChildConfigs {
                 try processPossibleReference(
                     ofType: .childConfig,
-                    from: vertix,
+                    from: vertex,
                     remoteConfigTimeoutOverride: remoteConfigTimeoutOverride,
                     remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCachedOverride
                 )
                 try processPossibleReference(
                     ofType: .parentConfig,
-                    from: vertix,
+                    from: vertex,
                     remoteConfigTimeoutOverride: remoteConfigTimeoutOverride,
                     remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCachedOverride
                 )
@@ -106,46 +106,46 @@ public extension Configuration {
 
         private mutating func processPossibleReference(
             ofType type: EdgeType,
-            from vertix: Vertix,
+            from vertex: Vertex,
             remoteConfigTimeoutOverride: TimeInterval?,
             remoteConfigTimeoutIfCachedOverride: TimeInterval?
         ) throws {
             let key = type == .childConfig ? Configuration.Key.childConfig.rawValue
                 : Configuration.Key.parentConfig.rawValue
 
-            if let reference = vertix.configurationDict[key] as? String {
-                let referencedVertix = Vertix(string: reference, rootDirectory: vertix.rootDirectory,
-                                              isInitialVertix: false)
+            if let reference = vertex.configurationDict[key] as? String {
+                let referencedVertex = Vertex(string: reference, rootDirectory: vertex.rootDirectory,
+                                              isInitialVertex: false)
 
                 // Local vertices are allowed to have local / remote references
                 // Remote vertices are only allowed to have remote references
-                if vertix.originatesFromRemote && !referencedVertix.originatesFromRemote {
+                if vertex.originatesFromRemote && !referencedVertex.originatesFromRemote {
                     throw Issue.genericWarning("Remote configs are not allowed to reference local configs.")
                 } else {
-                    let existingVertix = findPossiblyExistingVertix(sameAs: referencedVertix)
-                    let existingVertixCopy = existingVertix.map { $0.copy(withNewRootDirectory: rootDirectory) }
+                    let existingVertex = findPossiblyExistingVertex(sameAs: referencedVertex)
+                    let existingVertexCopy = existingVertex.map { $0.copy(withNewRootDirectory: rootDirectory) }
 
                     edges.insert(
                         type == .childConfig
-                            ? Edge(parent: vertix, child: existingVertixCopy ?? referencedVertix)
-                            : Edge(parent: existingVertixCopy ?? referencedVertix, child: vertix)
+                            ? Edge(parent: vertex, child: existingVertexCopy ?? referencedVertex)
+                            : Edge(parent: existingVertexCopy ?? referencedVertex, child: vertex)
                     )
 
-                    if existingVertix == nil {
-                        vertices.insert(referencedVertix)
+                    if existingVertex == nil {
+                        vertices.insert(referencedVertex)
 
-                        // Use timeout config from vertix / parent of vertix if some
+                        // Use timeout config from vertex / parent of vertex if some
                         let remoteConfigTimeout =
-                            vertix.configurationDict[Configuration.Key.remoteConfigTimeout.rawValue]
+                            vertex.configurationDict[Configuration.Key.remoteConfigTimeout.rawValue]
                                 as? TimeInterval
-                                ?? remoteConfigTimeoutOverride // from vertix parent
+                                ?? remoteConfigTimeoutOverride // from vertex parent
                         let remoteConfigTimeoutIfCached =
-                            vertix.configurationDict[Configuration.Key.remoteConfigTimeoutIfCached.rawValue]
+                            vertex.configurationDict[Configuration.Key.remoteConfigTimeoutIfCached.rawValue]
                                 as? TimeInterval
-                                ?? remoteConfigTimeoutIfCachedOverride // from vertix parent
+                                ?? remoteConfigTimeoutIfCachedOverride // from vertex parent
 
                         try process(
-                            vertix: referencedVertix,
+                            vertex: referencedVertex,
                             remoteConfigTimeoutOverride: remoteConfigTimeout,
                             remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCached
                         )
@@ -154,10 +154,10 @@ public extension Configuration {
             }
         }
 
-        private func findPossiblyExistingVertix(sameAs vertix: Vertix) -> Vertix? {
+        private func findPossiblyExistingVertex(sameAs vertex: Vertex) -> Vertex? {
             return vertices.first {
-                $0.originalRemoteString != nil && $0.originalRemoteString == vertix.originalRemoteString
-            } ?? vertices.first { $0.filePath == vertix.filePath }
+                $0.originalRemoteString != nil && $0.originalRemoteString == vertex.originalRemoteString
+            } ?? vertices.first { $0.filePath == vertex.filePath }
         }
 
         // MARK: Validating
@@ -165,7 +165,7 @@ public extension Configuration {
         /// If successful, returns array of configuration dicts that represents the graph
         private func validate() throws -> [(configurationDict: [String: Any], rootDirectory: String)] {
             // Detect cycles via back-edge detection during DFS
-            func walkDown(stack: [Vertix]) throws {
+            func walkDown(stack: [Vertex]) throws {
                 // Please note that the equality check (`==`), not the identity check (`===`) is used
                 let children = edges.filter { $0.parent == stack.last }.map { $0.child! }
                 if stack.contains(where: children.contains) {
@@ -193,7 +193,7 @@ public extension Configuration {
 
             // The graph should be like an array if validation passed -> return that array
             guard
-                let startingVertix = (vertices.first { vertix in !edges.contains { $0.child == vertix } })
+                let startingVertex = (vertices.first { vertex in !edges.contains { $0.child == vertex } })
             else {
                 guard vertices.isEmpty else {
                     throw Issue.genericWarning("Unknown Configuration Error")
@@ -202,14 +202,14 @@ public extension Configuration {
                 return []
             }
 
-            var verticesToMerge = [startingVertix]
-            while let vertix = (edges.first { $0.parent == verticesToMerge.last }?.child) {
-                guard !verticesToMerge.contains(vertix) else {
+            var verticesToMerge = [startingVertex]
+            while let vertex = (edges.first { $0.parent == verticesToMerge.last }?.child) {
+                guard !verticesToMerge.contains(vertex) else {
                     // This shouldn't happen on a cycle free graph but let's safeguard
                     throw Issue.genericWarning("Unknown Configuration Error")
                 }
 
-                verticesToMerge.append(vertix)
+                verticesToMerge.append(vertex)
             }
 
             return verticesToMerge.map {

@@ -7,8 +7,8 @@ internal extension Configuration.FileGraph {
         case existing(path: String)
     }
 
-    // MARK: - Vertix
-    class Vertix: Hashable {
+    // MARK: - Vertex
+    class Vertex: Hashable {
         internal let originalRemoteString: String?
         internal var originatesFromRemote: Bool { originalRemoteString != nil }
         internal var rootDirectory: String {
@@ -22,11 +22,11 @@ internal extension Configuration.FileGraph {
         }
 
         private let originalRootDirectory: String
-        let isInitialVertix: Bool
+        let isInitialVertex: Bool
         private(set) var filePath: FilePath
         private(set) var configurationDict: [String: Any] = [:]
 
-        init(string: String, rootDirectory: String, isInitialVertix: Bool) {
+        init(string: String, rootDirectory: String, isInitialVertex: Bool) {
             originalRootDirectory = rootDirectory
             if string.hasPrefix("http://") || string.hasPrefix("https://") {
                 originalRemoteString = string
@@ -37,25 +37,25 @@ internal extension Configuration.FileGraph {
                     path: string.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
                 )
             }
-            self.isInitialVertix = isInitialVertix
+            self.isInitialVertex = isInitialVertex
         }
 
-        init(originalRemoteString: String?, originalRootDirectory: String, filePath: FilePath, isInitialVertix: Bool) {
+        init(originalRemoteString: String?, originalRootDirectory: String, filePath: FilePath, isInitialVertex: Bool) {
             self.originalRemoteString = originalRemoteString
             self.originalRootDirectory = originalRootDirectory
             self.filePath = filePath
-            self.isInitialVertix = isInitialVertix
+            self.isInitialVertex = isInitialVertex
         }
 
-        internal func copy(withNewRootDirectory rootDirectory: String) -> Vertix {
-            let vertix = Vertix(
+        internal func copy(withNewRootDirectory rootDirectory: String) -> Vertex {
+            let vertex = Vertex(
                 originalRemoteString: originalRemoteString,
                 originalRootDirectory: rootDirectory,
                 filePath: filePath,
-                isInitialVertix: isInitialVertix
+                isInitialVertex: isInitialVertex
             )
-            vertix.configurationDict = configurationDict
-            return vertix
+            vertex.configurationDict = configurationDict
+            return vertex
         }
 
         internal func build(
@@ -73,7 +73,7 @@ internal extension Configuration.FileGraph {
 
         private func read(at path: String) throws -> String {
             guard !path.isEmpty && FileManager.default.fileExists(atPath: path) else {
-                throw isInitialVertix ?
+                throw isInitialVertex ?
                     Issue.initialFileNotFound(path: path) :
                     Issue.genericWarning("File \(path) can't be found.")
             }
@@ -81,7 +81,7 @@ internal extension Configuration.FileGraph {
             return try String(contentsOfFile: path, encoding: .utf8)
         }
 
-        internal static func == (lhs: Vertix, rhs: Vertix) -> Bool {
+        internal static func == (lhs: Vertex, rhs: Vertex) -> Bool {
             return lhs.filePath == rhs.filePath
                 && lhs.originalRemoteString == rhs.originalRemoteString
                 && lhs.rootDirectory == rhs.rootDirectory
@@ -96,8 +96,8 @@ internal extension Configuration.FileGraph {
 
     // MARK: - Edge
     struct Edge: Hashable {
-        var parent: Vertix!
-        var child: Vertix!
+        var parent: Vertex!
+        var child: Vertex!
     }
 
     // MARK: - EdgeType

@@ -37,14 +37,14 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         }
         """),
         Example("""
-        internal static func == (lhs: Vertix, rhs: Vertix) -> Bool {
+        internal static func == (lhs: Vertex, rhs: Vertex) -> Bool {
             return lhs.filePath == rhs.filePath
                 && lhs.originalRemoteString == rhs.originalRemoteString
                 && lhs.rootDirectory == rhs.rootDirectory
         }
         """),
         Example("""
-        internal static func == (lhs: Vertix, rhs: Vertix) -> Bool {
+        internal static func == (lhs: Vertex, rhs: Vertex) -> Bool {
             return lhs.filePath == rhs.filePath &&
                 lhs.originalRemoteString == rhs.originalRemoteString &&
                 lhs.rootDirectory == rhs.rootDirectory

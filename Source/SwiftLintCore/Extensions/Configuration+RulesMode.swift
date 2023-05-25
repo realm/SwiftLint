@@ -82,8 +82,10 @@ public extension Configuration {
                     effectiveAnalyzerRules = analyzerRules
                 }
 
-                warnAboutDuplicates(in: effectiveOptInRules + effectiveAnalyzerRules)
-                self = .default(disabled: Set(disabledRules), optIn: Set(effectiveOptInRules + effectiveAnalyzerRules))
+                let optInRules = (effectiveOptInRules + effectiveAnalyzerRules)
+                    .filter { $0 != RuleIdentifier.all.stringRepresentation }
+                warnAboutDuplicates(in: optInRules)
+                self = .default(disabled: Set(disabledRules), optIn: Set(optInRules))
             }
         }
 

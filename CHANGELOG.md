@@ -25,6 +25,11 @@
   (e.g. `@testable`, `@_exported`, ...).  
   [hiltonc](https://github.com/hiltonc)
 
+* Add `all` pseudo-rule for `analyzer_rules` - enables all analyzer rules
+  that are not listed in `disabled_rules`.
+  [woxtu](https://github.com/woxtu)
+  [#4999](https://github.com/realm/SwiftLint/issues/4999)
+
 #### Bug Fixes
 
 * Do not trigger `prefer_self_in_static_references` rule on `typealias`

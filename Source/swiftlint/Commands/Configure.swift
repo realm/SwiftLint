@@ -12,13 +12,13 @@ extension SwiftLint {
         static let configuration = CommandConfiguration(abstract: "Configure SwiftLint")
 
         @Flag(help: "Colorize output regardless of terminal settings.")
-        var colorizeOutput = false
+        var colorize = false
         @Flag(help: "Do not colorize output regardless of terminal settings.")
-        var noColorizeOutput = false
+        var noColorize = false
 
-        private lazy var shouldColorizeOutput: Bool = {
-            terminalSupportsColor() && (!noColorizeOutput || colorizeOutput)
-        }()
+        private var shouldColorizeOutput: Bool {
+            terminalSupportsColor() && (!noColorize || colorize)
+        }
 
         func run() throws {
             doYouWantToContinue("Welcome to SwiftLint! Do you want to continue? (Y/n)")
@@ -26,28 +26,26 @@ extension SwiftLint {
         }
 
         private func doYouWantToContinue(_ message: String) {
-            if !askUser(message) {
+            if !askUser(message, colorizeOutput: shouldColorizeOutput) {
                 ExitHelper.successfullyExit()
             }
         }
+    }
+}
 
-        private func askUser(_ message: String) -> Bool {
-            // let colorizeOutput = shouldColorizeOutput
-            let colorizedMessage = true ? message.boldify : message
-            while true {
-                print(colorizedMessage, terminator: " ")
-                if let character = readLine() {
-                    if character == "" || character.lowercased() == "y" {
-                        return true
-                    } else if character.lowercased() == "n" {
-                        return false
-                    } else {
-                        print("Invalid Response")
-                    }
-                }
+private func askUser(_ message: String, colorizeOutput: Bool) -> Bool {
+    let colorizedMessage = colorizeOutput ? message.boldify : message
+    while true {
+        print(colorizedMessage, terminator: " ")
+        if let character = readLine() {
+            if character == "" || character.lowercased() == "y" {
+                return true
+            } else if character.lowercased() == "n" {
+                return false
+            } else {
+                print("Invalid Response")
             }
         }
-
     }
 }
 
@@ -55,8 +53,6 @@ private func print(_ message: String, terminator: String = "\n") {
     Swift.print(message, terminator: terminator)
     fflush(stdout)
 }
-
-
 
 private func terminalSupportsColor() -> Bool {
     if

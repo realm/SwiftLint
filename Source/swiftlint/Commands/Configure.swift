@@ -22,7 +22,26 @@ extension SwiftLint {
 
         func run() throws {
             doYouWantToContinue("Welcome to SwiftLint! Do you want to continue? (Y/n)")
+            checkForExistingConfiguration()
+            checkForExistingChildConfigurations()
             ExitHelper.successfullyExit()
+        }
+
+        private func checkForExistingConfiguration() {
+            print("Checking for existing .swiftlint.yml configuration file.")
+            if FileManager.default.fileExists(atPath: ".swiftlint.yml") {
+                doYouWantToContinue("Found an existing .swiftlint.yml configuration file - do you want to continue? (Y/n)")
+            }
+        }
+
+        private func checkForExistingChildConfigurations() {
+            print("Checking for any other .swiftlint.yml configuration files.")
+            let files = FileManager.default.filesMatching(".swiftlint.yml").filter { $0 != ".swiftlint.yml" }
+            if files.isNotEmpty {
+                print("Found existing child configurations:\n")
+                files.forEach { print($0) }
+                doYouWantToContinue("\nDo you want to continue? (Y/n)")
+            }
         }
 
         private func doYouWantToContinue(_ message: String) {
@@ -66,6 +85,19 @@ private func terminalSupportsColor() -> Bool {
 
 private extension String {
     var boldify: String {
-        "\u{001B}[0;1m\(self)"
+        "\u{001B}[0;1m\(self)\u{001B}[0;0m"
+    }
+}
+
+private extension FileManager {
+    func filesMatching(_ fileName: String) -> [String] {
+        var results: [String] = []
+        let directoryEnumerator = enumerator(atPath: currentDirectoryPath)
+        while let file = directoryEnumerator?.nextObject() as? String {
+            if file.hasSuffix(".swiftlint.yml") {
+                results.append(file)
+            }
+        }
+        return results
     }
 }

@@ -25,7 +25,8 @@ extension SwiftLint {
             checkForExistingConfiguration()
             checkForExistingChildConfigurations()
             let topLevelDirectories = checkForSwiftFiles()
-            try await checkForExistingViolations(topLevelDirectories)
+            let rulesToDisable = try await checkForExistingViolations(topLevelDirectories)
+            print("rulesToDisable = \(rulesToDisable)")
             ExitHelper.successfullyExit()
         }
 
@@ -73,8 +74,12 @@ extension SwiftLint {
             }
         }
 
-        private func checkForExistingViolations(_ topLevelDirectories: [String]) async throws {
+        private func checkForExistingViolations(_ topLevelDirectories: [String]) async throws -> [String] {
+            print("Checking for violations.")
             let configuration = try writeTemporaryConfigurationFile(topLevelDirectories)
+            defer {
+                try? FileManager.default.removeItem(atPath: configuration)
+            }
 
             let options = LintOrAnalyzeOptions(
                 mode: .lint,
@@ -101,12 +106,18 @@ extension SwiftLint {
                 inProcessSourcekit: false
             )
 
-            _ = try await LintOrAnalyzeCommand.lintOrAnalyze(options)
+            let violations = try await LintOrAnalyzeCommand.lintOrAnalyze(options)
+            if violations.isNotEmpty {
+                if askUser("\nDo you want to disable all of the SwiftLint rules with existing violations?") {
+                    return violations.map { $0.ruleIdentifier }.unique()
+                }
+            }
+            return []
         }
 
         private func writeTemporaryConfigurationFile(_ topLevelDirectories: [String]) throws -> String {
             var configuration = "included:\n"
-            topLevelDirectories.forEach { configuration += "  - \($0)" }
+            topLevelDirectories.forEach { configuration += "  - \($0)\n" }
             configuration += "opt_in_rules:\n  - all\n"
             let filename = ".\(UUID().uuidString).swiftlint.yml"
             try configuration.write(toFile: filename, atomically: true, encoding: .utf8)

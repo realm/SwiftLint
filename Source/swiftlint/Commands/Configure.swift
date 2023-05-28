@@ -37,7 +37,7 @@ extension SwiftLint {
 
         private func checkForExistingChildConfigurations() {
             print("Checking for any other .swiftlint.yml configuration files.")
-            let files = FileManager.default.filesMatching(".swiftlint.yml").filter { $0 != ".swiftlint.yml" }
+            let files = FileManager.default.filesWithSuffix(".swiftlint.yml").filter { $0 != ".swiftlint.yml" }
             if files.isNotEmpty {
                 print("Found existing child configurations:\n")
                 files.forEach { print($0) }
@@ -47,7 +47,7 @@ extension SwiftLint {
 
         private func checkForSwiftFiles() -> [String] {
             print("Checking for .swift files.")
-            let topLevelDirectories = FileManager.default.filesMatching(".swift")
+            let topLevelDirectories = FileManager.default.filesWithSuffix(".swift")
                 .compactMap { $0.firstPathComponent }
                 .unique()
                 .filter { !$0.isSwiftFile() }
@@ -128,7 +128,7 @@ private extension String {
 }
 
 private extension FileManager {
-    func filesMatching(_ fileName: String) -> [String] {
+    func filesWithSuffix(_ fileName: String) -> [String] {
         var results: [String] = []
         let directoryEnumerator = enumerator(atPath: currentDirectoryPath)
         while let file = directoryEnumerator?.nextObject() as? String {

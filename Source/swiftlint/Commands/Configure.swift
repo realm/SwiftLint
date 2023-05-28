@@ -12,12 +12,14 @@ extension SwiftLint {
         static let configuration = CommandConfiguration(abstract: "Configure SwiftLint")
 
         @Flag(help: "Colorize output regardless of terminal settings.")
-        var colorize = false
+        var color = false
         @Flag(help: "Do not colorize output regardless of terminal settings.")
-        var noColorize = false
+        var noColor = false
+        @Flag(help: "Complete setup automatically.")
+        var auto = false
 
         private var shouldColorizeOutput: Bool {
-            terminalSupportsColor() && (!noColorize || colorize)
+            terminalSupportsColor() && (!noColor || color)
         }
 
         func run() async throws {
@@ -133,7 +135,7 @@ extension SwiftLint {
         }
 
         private func askUser(_ message: String) -> Bool {
-            swiftlint.askUser(message, colorizeOutput: shouldColorizeOutput)
+            swiftlint.askUser(message, colorizeOutput: shouldColorizeOutput, auto: auto)
         }
 
         private func doYouWantToContinue(_ message: String) {
@@ -144,11 +146,14 @@ extension SwiftLint {
     }
 }
 
-private func askUser(_ message: String, colorizeOutput: Bool) -> Bool {
+private func askUser(_ message: String, colorizeOutput: Bool, auto: Bool) -> Bool {
     let message = "\(message) (Y/n)"
     let colorizedMessage = colorizeOutput ? message.boldify : message
     while true {
-        print(colorizedMessage, terminator: " ")
+        print(colorizedMessage, terminator: auto ? "\n" : " ")
+        if auto {
+            return true
+        }
         if let character = readLine() {
             if character == "" || character.lowercased() == "y" {
                 return true

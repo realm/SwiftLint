@@ -8,7 +8,7 @@ import SwiftLintFramework
 #endif
 
 extension SwiftLint {
-    struct Configure: ParsableCommand {
+    struct Configure: AsyncParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Configure SwiftLint")
 
         @Flag(help: "Colorize output regardless of terminal settings.")
@@ -20,12 +20,12 @@ extension SwiftLint {
             terminalSupportsColor() && (!noColorize || colorize)
         }
 
-        func run() throws {
+        func run() async throws {
             doYouWantToContinue("Welcome to SwiftLint! Do you want to continue?")
             checkForExistingConfiguration()
             checkForExistingChildConfigurations()
             let topLevelDirectories = checkForSwiftFiles()
-            try checkForExistingViolations(topLevelDirectories)
+            try await checkForExistingViolations(topLevelDirectories)
             ExitHelper.successfullyExit()
         }
 
@@ -73,8 +73,35 @@ extension SwiftLint {
             }
         }
 
-        private func checkForExistingViolations(_ topLevelDirectories: [String]) throws {
+        private func checkForExistingViolations(_ topLevelDirectories: [String]) async throws {
             let configuration = try writeTemporaryConfigurationFile(topLevelDirectories)
+
+            let options = LintOrAnalyzeOptions(
+                mode: .lint,
+                paths: [""],
+                useSTDIN: false,
+                configurationFiles: [configuration],
+                strict: false,
+                lenient: true,
+                forceExclude: false,
+                useExcludingByPrefix: false,
+                useScriptInputFiles: false,
+                benchmark: false,
+                reporter: "summary",
+                quiet: false,
+                output: nil,
+                progress: true,
+                cachePath: nil,
+                ignoreCache: false,
+                enableAllRules: true,
+                autocorrect: false,
+                format: false,
+                compilerLogPath: nil,
+                compileCommands: nil,
+                inProcessSourcekit: false
+            )
+
+            _ = try await LintOrAnalyzeCommand.lintOrAnalyze(options)
         }
 
         private func writeTemporaryConfigurationFile(_ topLevelDirectories: [String]) throws -> String {

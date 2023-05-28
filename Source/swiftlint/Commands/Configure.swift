@@ -25,7 +25,7 @@ extension SwiftLint {
             checkForExistingConfiguration()
             checkForExistingChildConfigurations()
             let topLevelDirectories = checkForSwiftFiles()
-            let rulesToDisable = try await checkForExistingViolations(topLevelDirectories)
+            let rulesToDisable = try await rulesToDisable(topLevelDirectories)
             print("rulesToDisable = \(rulesToDisable)")
             ExitHelper.successfullyExit()
         }
@@ -74,7 +74,8 @@ extension SwiftLint {
             }
         }
 
-        private func checkForExistingViolations(_ topLevelDirectories: [String]) async throws -> [String] {
+        private func rulesToDisable(_ topLevelDirectories: [String]) async throws -> [String] {
+            var ruleIdentifiersToDisable: [String] = []
             print("Checking for violations.")
             let configuration = try writeTemporaryConfigurationFile(topLevelDirectories)
             defer {
@@ -109,10 +110,17 @@ extension SwiftLint {
             let violations = try await LintOrAnalyzeCommand.lintOrAnalyze(options)
             if violations.isNotEmpty {
                 if askUser("\nDo you want to disable all of the SwiftLint rules with existing violations?") {
-                    return violations.map { $0.ruleIdentifier }.unique()
+                    let dictionary = Dictionary(grouping: violations) { $0.ruleIdentifier }
+                    ruleIdentifiersToDisable = dictionary.keys.sorted {
+                        if dictionary[$0]!.count != dictionary[$1]!.count {
+                            return dictionary[$0]!.count > dictionary[$1]!.count
+                        } else {
+                            return $0 > $1
+                        }
+                    }
                 }
             }
-            return []
+            return ruleIdentifiersToDisable
         }
 
         private func writeTemporaryConfigurationFile(_ topLevelDirectories: [String]) throws -> String {

@@ -25,6 +25,7 @@ extension SwiftLint {
             checkForExistingConfiguration()
             checkForExistingChildConfigurations()
             let topLevelDirectories = checkForSwiftFiles()
+            try checkForExistingViolations(topLevelDirectories)
             ExitHelper.successfullyExit()
         }
 
@@ -70,6 +71,19 @@ extension SwiftLint {
                 doYouWantToContinue("\nDo you want to continue? (Y/n)")
                 return []
             }
+        }
+
+        private func checkForExistingViolations(_ topLevelDirectories: [String]) throws {
+            let configuration = try writeTemporaryConfigurationFile(topLevelDirectories)
+        }
+
+        private func writeTemporaryConfigurationFile(_ topLevelDirectories: [String]) throws -> String {
+            var configuration = "included:\n"
+            topLevelDirectories.forEach { configuration += "  - \($0)" }
+            configuration += "opt_in_rules:\n  - all\n"
+            let filename = ".\(UUID().uuidString).swiftlint.yml"
+            try configuration.write(toFile: filename, atomically: true, encoding: .utf8)
+            return filename
         }
 
         private func askUser(_ message: String) -> Bool {

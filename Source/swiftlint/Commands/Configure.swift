@@ -21,16 +21,17 @@ extension SwiftLint {
         }
 
         func run() throws {
-            doYouWantToContinue("Welcome to SwiftLint! Do you want to continue? (Y/n)")
+            doYouWantToContinue("Welcome to SwiftLint! Do you want to continue?")
             checkForExistingConfiguration()
             checkForExistingChildConfigurations()
+            let topLevelDirectories = checkForSwiftFiles()
             ExitHelper.successfullyExit()
         }
 
         private func checkForExistingConfiguration() {
             print("Checking for existing .swiftlint.yml configuration file.")
             if FileManager.default.fileExists(atPath: ".swiftlint.yml") {
-                doYouWantToContinue("Found an existing .swiftlint.yml configuration file - do you want to continue? (Y/n)")
+                doYouWantToContinue("Found an existing .swiftlint.yml configuration file - do you want to continue?")
             }
         }
 
@@ -40,12 +41,43 @@ extension SwiftLint {
             if files.isNotEmpty {
                 print("Found existing child configurations:\n")
                 files.forEach { print($0) }
-                doYouWantToContinue("\nDo you want to continue? (Y/n)")
+                doYouWantToContinue("\nDo you want to continue?")
             }
         }
 
+        private func checkForSwiftFiles() -> [String] {
+            print("Checking for .swift files.")
+            let topLevelDirectories = FileManager.default.filesMatching(".swift")
+                .compactMap { $0.firstPathComponent }
+                .unique()
+                .filter { !$0.isSwiftFile() }
+            if topLevelDirectories.isNotEmpty {
+                print("Found .swift files in the following top level directories:\n")
+                topLevelDirectories.forEach { print($0) }
+                if askUser("\nDo you want SwiftLint to scan all of those directories?") {
+                    return topLevelDirectories
+                } else {
+                    var selectedDirectories: [String] = []
+                    for topLevelDirectory in topLevelDirectories {
+                        if askUser("Do you want SwiftLint to scan the \(topLevelDirectory) directory?") {
+                            selectedDirectories.append(topLevelDirectory)
+                        }
+                    }
+                    return selectedDirectories
+                }
+            } else {
+                print("No .swift files found.")
+                doYouWantToContinue("\nDo you want to continue? (Y/n)")
+                return []
+            }
+        }
+
+        private func askUser(_ message: String) -> Bool {
+            swiftlint.askUser(message, colorizeOutput: shouldColorizeOutput)
+        }
+
         private func doYouWantToContinue(_ message: String) {
-            if !askUser(message, colorizeOutput: shouldColorizeOutput) {
+            if !askUser(message) {
                 ExitHelper.successfullyExit()
             }
         }
@@ -53,6 +85,7 @@ extension SwiftLint {
 }
 
 private func askUser(_ message: String, colorizeOutput: Bool) -> Bool {
+    let message = "\(message) (Y/n)"
     let colorizedMessage = colorizeOutput ? message.boldify : message
     while true {
         print(colorizedMessage, terminator: " ")
@@ -87,6 +120,11 @@ private extension String {
     var boldify: String {
         "\u{001B}[0;1m\(self)\u{001B}[0;0m"
     }
+
+    var firstPathComponent: String? {
+        let components = components(separatedBy: "/")
+        return components.first
+    }
 }
 
 private extension FileManager {
@@ -94,10 +132,17 @@ private extension FileManager {
         var results: [String] = []
         let directoryEnumerator = enumerator(atPath: currentDirectoryPath)
         while let file = directoryEnumerator?.nextObject() as? String {
-            if file.hasSuffix(".swiftlint.yml") {
+            if file.hasSuffix(fileName) {
                 results.append(file)
             }
         }
         return results
+    }
+}
+
+private extension Sequence where Iterator.Element: Hashable {
+    func unique() -> [Iterator.Element] {
+        var seen: Set<Iterator.Element> = []
+        return filter { seen.insert($0).inserted }
     }
 }

@@ -129,6 +129,13 @@ extension SwiftLint {
                     }
                 }
             }
+
+            let deprecatedRuleIdentifiers = Set(RuleRegistry.shared.deprecatedRuleIdentifiers).subtracting(ruleIdentifiersToDisable)
+            if deprecatedRuleIdentifiers.isNotEmpty {
+                if askUser("\nDo you want to disable any deprecated rules?") {
+                    ruleIdentifiersToDisable.append(contentsOf: deprecatedRuleIdentifiers.sorted())
+                }
+            }
             return ruleIdentifiersToDisable
         }
 
@@ -255,5 +262,13 @@ private extension FileManager {
             }
         }
         return results
+    }
+}
+
+private extension RuleRegistry {
+    var deprecatedRuleIdentifiers: [String] {
+        RuleRegistry.shared.list.list.compactMap { ruleID, ruleType in
+            ruleType is DeprecatedRule.Type ? ruleID : nil
+        }
     }
 }

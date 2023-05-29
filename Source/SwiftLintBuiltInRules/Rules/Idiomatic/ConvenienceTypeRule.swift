@@ -214,17 +214,17 @@ private extension AttributeListSyntax? {
 
 private extension AttributeListSyntax? {
     var hasUnavailableAttribute: Bool {
-        guard let attrs = self else {
+        guard let attributes = self else {
             return false
         }
 
         return attrs.contains { elem in
-            guard let attr = elem.as(AttributeSyntax.self),
-                  let arguments = attr.argument?.as(AvailabilitySpecListSyntax.self) else {
+            guard let attributes = elem.as(AttributeSyntax.self),
+                  let arguments = attributes.argument?.as(AvailabilitySpecListSyntax.self) else {
                 return false
             }
 
-            return attr.attributeNameText == "available" && arguments.contains { arg in
+            return attributes.attributeNameText == "available" && arguments.contains { arg in
                 arg.entry.as(TokenSyntax.self)?.tokenKind.isUnavailableKeyword == true
             }
         }

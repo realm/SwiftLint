@@ -30,24 +30,24 @@ extension SwiftLint {
             checkForExistingChildConfigurations()
             let topLevelDirectories = checkForSwiftFiles()
             let rulesToDisable = try await rulesToDisable(topLevelDirectories)
-            try writeConfiguration(topLevelDirectories, rulesToDisable)
+            _ = try writeConfiguration(topLevelDirectories, rulesToDisable)
             ExitHelper.successfullyExit()
         }
 
         private func checkForExistingConfiguration() {
             print("Checking for existing \(Configuration.defaultFileName) configuration file.")
             if hasExistingConfiguration() {
-                doYouWantToContinue("Found an existing \(Configuration.defaultFileName) configuration file - do you want to continue?")
+                doYouWantToContinue("Found an existing \(Configuration.defaultFileName) configuration file - Do you want to continue?")
             }
         }
 
         private func hasExistingConfiguration() -> Bool {
-            FileManager.default.fileExists(atPath: \(Configuration.defaultFileName))
+            FileManager.default.fileExists(atPath: Configuration.defaultFileName)
         }
 
         private func checkForExistingChildConfigurations() {
             print("Checking for any other \(Configuration.defaultFileName) configuration files.")
-            let files = FileManager.default.filesWithSuffix(\(Configuration.defaultFileName)).filter { $0 != \(Configuration.defaultFileName) }
+            let files = FileManager.default.filesWithSuffix(Configuration.defaultFileName).filter { $0 != Configuration.defaultFileName }
             if files.isNotEmpty {
                 print("Found existing child configurations:\n")
                 files.forEach { print($0) }

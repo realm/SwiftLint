@@ -153,9 +153,10 @@ extension SwiftLint {
                 } else {
                     print("Found an existing configuration.")
                     if !askUser("Do you want to exit without overwriting the existing configuration?") {
-                        doYouWantToContinue("Overwrite the existing configuration?")
-                        try writeConfiguration(configuration)
-                        return true
+                        if askUser("Do you want to overwrite the existing configuration?") {
+                            try writeConfiguration(configuration)
+                            return true
+                        }
                     }
                 }
             } else {

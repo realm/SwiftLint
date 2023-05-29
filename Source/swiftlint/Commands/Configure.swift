@@ -59,7 +59,7 @@ extension SwiftLint {
             print("Checking for .swift files.")
             let topLevelDirectories = FileManager.default.filesWithSuffix(".swift")
                 .compactMap { $0.firstPathComponent }
-                .unique()
+                .unique
                 .filter { !$0.isSwiftFile() }
             if topLevelDirectories.isNotEmpty {
                 print("Found .swift files in the following top level directories:\n")
@@ -135,7 +135,7 @@ extension SwiftLint {
             var configuration = configuration(forTopLevelDirectories: topLevelDirectories)
             configuration += "disabled_rules:\n"
             rulesToDisable.forEach { configuration += "  - \($0)\n" }
-            print("Proposed configuration\n\n")
+            print("Proposed configuration\n")
             print(configuration)
             if hasExistingConfiguration() {
                 if auto && overwrite {
@@ -172,7 +172,7 @@ extension SwiftLint {
         }
 
         private func writeTemporaryConfigurationFile(_ topLevelDirectories: [String]) throws -> String {
-            var configuration = configuration(forTopLevelDirectories: topLevelDirectories)
+            let configuration = configuration(forTopLevelDirectories: topLevelDirectories)
             let filename = ".\(UUID().uuidString)\(Configuration.defaultFileName)"
             try configuration.write(toFile: filename, atomically: true, encoding: .utf8)
             return filename
@@ -229,10 +229,8 @@ private extension String {
     var boldify: String {
         "\u{001B}[0;1m\(self)\u{001B}[0;0m"
     }
-
     var firstPathComponent: String? {
-        let components = components(separatedBy: "/")
-        return components.first
+        components(separatedBy: "/").first
     }
 }
 
@@ -246,12 +244,5 @@ private extension FileManager {
             }
         }
         return results
-    }
-}
-
-private extension Sequence where Iterator.Element: Hashable {
-    func unique() -> [Iterator.Element] {
-        var seen: Set<Iterator.Element> = []
-        return filter { seen.insert($0).inserted }
     }
 }

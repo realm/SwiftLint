@@ -26,13 +26,21 @@ extension SwiftLint {
         }
 
         func run() async throws {
+            while try await configure() == false, auto == false {
+                if askUser("Do you want to start over?") == false {
+                    break
+                }
+            }
+            ExitHelper.successfullyExit()
+        }
+
+        func configure() async throws -> Bool {
             doYouWantToContinue("Welcome to SwiftLint! Do you want to continue?")
             checkForExistingConfiguration()
             checkForExistingChildConfigurations()
             let topLevelDirectories = checkForSwiftFiles()
             let rulesToDisable = try await rulesToDisable(topLevelDirectories)
-            _ = try writeConfiguration(topLevelDirectories, rulesToDisable)
-            ExitHelper.successfullyExit()
+            return try writeConfiguration(topLevelDirectories, rulesToDisable)
         }
 
         private func checkForExistingConfiguration() {

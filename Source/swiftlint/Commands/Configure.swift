@@ -39,8 +39,9 @@ extension SwiftLint {
             checkForExistingConfiguration()
             checkForExistingChildConfigurations()
             let topLevelDirectories = checkForSwiftFiles()
-            let rulesToDisable = try await rulesToDisable(topLevelDirectories)
-            return try writeConfiguration(topLevelDirectories, rulesToDisable)
+            let rulesIdentifiersToDisable = try await rulesToDisable(topLevelDirectories)
+            let analyzerRuleIdentifiers = analyzerRulesToEnable()
+            return try writeConfiguration(topLevelDirectories, rulesIdentifiersToDisable, analyzerRuleIdentifiers)
         }
 
         private func checkForExistingConfiguration() {
@@ -147,10 +148,27 @@ extension SwiftLint {
             return ruleIdentifiersToDisable
         }
 
-        private func writeConfiguration(_ topLevelDirectories: [String], _ rulesToDisable: [String]) throws -> Bool {
+        private func analyzerRulesToEnable() -> [String] {
+            let analyzerRuleIdentifiers = RuleRegistry.shared.analyzerRuleIdentifiers.sorted()
+            if askUser("\nDo you want to enable all (\(analyzerRuleIdentifiers.count)) of the analyzer rules?") {
+return analyzerRuleIdentifiers
+            } else {
+                return []
+            }
+        }
+
+        private func writeConfiguration(
+            _ topLevelDirectories: [String],
+            _ ruleIdentifiersToDisable: [String],
+            _ analyzerRuleIdentifiers: [String]
+        ) throws -> Bool {
             var configuration = configuration(forTopLevelDirectories: topLevelDirectories)
             configuration += "disabled_rules:\n"
-            rulesToDisable.forEach { configuration += "  - \($0)\n" }
+            ruleIdentifiersToDisable.forEach { configuration += "  - \($0)\n" }
+            if analyzerRuleIdentifiers.isNotEmpty {
+                configuration += "analyzer_rules:\n"
+                analyzerRuleIdentifiers.forEach { configuration += "  - \($0)\n" }
+            }
             print("Proposed configuration\n")
             print(configuration)
             if hasExistingConfiguration() {
@@ -278,6 +296,11 @@ private extension RuleRegistry {
     var deprecatedRuleIdentifiers: [String] {
         RuleRegistry.shared.list.list.compactMap { ruleID, ruleType in
             ruleType is DeprecatedRule.Type ? ruleID : nil
+        }
+    }
+    var analyzerRuleIdentifiers: [String] {
+        RuleRegistry.shared.list.list.compactMap { ruleID, ruleType in
+            ruleType is AnalyzerRule.Type ? ruleID : nil
         }
     }
 }

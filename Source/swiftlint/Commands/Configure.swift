@@ -1,4 +1,5 @@
 import ArgumentParser
+import ArgumentParser
 import Foundation
 import SwiftLintFramework
 #if os(Linux)
@@ -145,6 +146,7 @@ extension SwiftLint {
                 } else {
                     print("Found an existing configuration.")
                     if !askUser("Do you want to exit without overwriting the existing configuration?") {
+                        doYouWantToContinue("Overwrite the existing configuration?")
                         try writeConfiguration(configuration)
                         return true
                     }
@@ -164,18 +166,27 @@ extension SwiftLint {
             try configuration.write(toFile: Configuration.defaultFileName, atomically: true, encoding: .utf8)
         }
 
-        private func configuration(forTopLevelDirectories topLevelDirectories: [String]) -> String {
+        private func configuration(forTopLevelDirectories topLevelDirectories: [String], path: String? = nil) -> String {
             var configuration = "included:\n"
-            topLevelDirectories.forEach { configuration += "  - \($0)\n" }
+            topLevelDirectories.forEach {
+                let absolutePath: String
+                if let path = path {
+                    absolutePath = path.bridge().appendingPathComponent($0)
+                } else {
+                    absolutePath = $0
+                }
+                configuration += "  - \(absolutePath)\n"
+            }
             configuration += "opt_in_rules:\n  - all\n"
             return configuration
         }
 
         private func writeTemporaryConfigurationFile(_ topLevelDirectories: [String]) throws -> String {
-            let configuration = configuration(forTopLevelDirectories: topLevelDirectories)
+            let configuration = configuration(forTopLevelDirectories: topLevelDirectories, path: FileManager.default.currentDirectoryPath)
             let filename = ".\(UUID().uuidString)\(Configuration.defaultFileName)"
-            try configuration.write(toFile: filename, atomically: true, encoding: .utf8)
-            return filename
+            let filePath = FileManager.default.temporaryDirectory.path.bridge().appendingPathComponent(filename)
+            try configuration.write(toFile: filePath, atomically: true, encoding: .utf8)
+            return filePath
         }
 
         private func askUser(_ message: String) -> Bool {

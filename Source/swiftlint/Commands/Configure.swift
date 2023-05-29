@@ -17,6 +17,8 @@ extension SwiftLint {
         var noColor = false
         @Flag(help: "Complete setup automatically.")
         var auto = false
+        @Flag(help: "In automatic mode, overwrite any existing configuration.")
+        var overwrite = false
 
         private var shouldColorizeOutput: Bool {
             terminalSupportsColor() && (!noColor || color)
@@ -28,20 +30,24 @@ extension SwiftLint {
             checkForExistingChildConfigurations()
             let topLevelDirectories = checkForSwiftFiles()
             let rulesToDisable = try await rulesToDisable(topLevelDirectories)
-            print("rulesToDisable = \(rulesToDisable)")
+            try writeConfiguration(topLevelDirectories, rulesToDisable)
             ExitHelper.successfullyExit()
         }
 
         private func checkForExistingConfiguration() {
-            print("Checking for existing .swiftlint.yml configuration file.")
-            if FileManager.default.fileExists(atPath: ".swiftlint.yml") {
-                doYouWantToContinue("Found an existing .swiftlint.yml configuration file - do you want to continue?")
+            print("Checking for existing \(Configuration.defaultFileName) configuration file.")
+            if hasExistingConfiguration() {
+                doYouWantToContinue("Found an existing \(Configuration.defaultFileName) configuration file - do you want to continue?")
             }
         }
 
+        private func hasExistingConfiguration() -> Bool {
+            FileManager.default.fileExists(atPath: \(Configuration.defaultFileName))
+        }
+
         private func checkForExistingChildConfigurations() {
-            print("Checking for any other .swiftlint.yml configuration files.")
-            let files = FileManager.default.filesWithSuffix(".swiftlint.yml").filter { $0 != ".swiftlint.yml" }
+            print("Checking for any other \(Configuration.defaultFileName) configuration files.")
+            let files = FileManager.default.filesWithSuffix(\(Configuration.defaultFileName)).filter { $0 != \(Configuration.defaultFileName) }
             if files.isNotEmpty {
                 print("Found existing child configurations:\n")
                 files.forEach { print($0) }
@@ -125,11 +131,49 @@ extension SwiftLint {
             return ruleIdentifiersToDisable
         }
 
-        private func writeTemporaryConfigurationFile(_ topLevelDirectories: [String]) throws -> String {
+        private func writeConfiguration(_ topLevelDirectories: [String], _ rulesToDisable: [String]) throws -> Bool {
+            var configuration = configuration(forTopLevelDirectories: topLevelDirectories)
+            configuration += "disabled_rules:\n"
+            rulesToDisable.forEach { configuration += "  - \($0)\n" }
+            print("Proposed configuration\n\n")
+            print(configuration)
+            if hasExistingConfiguration() {
+                if auto && overwrite {
+                    print("Overwriting existing configuration.")
+                    try writeConfiguration(configuration)
+                    return true
+                } else {
+                    print("Found an existing configuration.")
+                    if !askUser("Do you want to exit without overwriting the existing configuration?") {
+                        try writeConfiguration(configuration)
+                        return true
+                    }
+                }
+            } else {
+                if askUser("Do you want to save the configuration?") {
+                    try writeConfiguration(configuration)
+                    return true
+                }
+            }
+
+            return false
+        }
+
+        private func writeConfiguration(_ configuration: String) throws {
+            print("Saving configuration to \(Configuration.defaultFileName)")
+            try configuration.write(toFile: Configuration.defaultFileName, atomically: true, encoding: .utf8)
+        }
+
+        private func configuration(forTopLevelDirectories topLevelDirectories: [String]) -> String {
             var configuration = "included:\n"
             topLevelDirectories.forEach { configuration += "  - \($0)\n" }
             configuration += "opt_in_rules:\n  - all\n"
-            let filename = ".\(UUID().uuidString).swiftlint.yml"
+            return configuration
+        }
+
+        private func writeTemporaryConfigurationFile(_ topLevelDirectories: [String]) throws -> String {
+            var configuration = configuration(forTopLevelDirectories: topLevelDirectories)
+            let filename = ".\(UUID().uuidString)\(Configuration.defaultFileName)"
             try configuration.write(toFile: filename, atomically: true, encoding: .utf8)
             return filename
         }

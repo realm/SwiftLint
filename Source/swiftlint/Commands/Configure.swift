@@ -39,9 +39,14 @@ extension SwiftLint {
             checkForExistingConfiguration()
             checkForExistingChildConfigurations()
             let topLevelDirectories = checkForSwiftFiles()
+            let allowZeroLintableFiles = topLevelDirectories.isEmpty ? allowZeroLintableFiles() : false
             let rulesIdentifiersToDisable = try await rulesToDisable(topLevelDirectories)
             let analyzerRuleIdentifiers = analyzerRulesToEnable()
-            return try writeConfiguration(topLevelDirectories, rulesIdentifiersToDisable, analyzerRuleIdentifiers)
+            return try writeConfiguration(
+                topLevelDirectories,
+                allowZeroLintableFiles,
+                rulesIdentifiersToDisable,
+                analyzerRuleIdentifiers)
         }
 
         private func checkForExistingConfiguration() {
@@ -90,6 +95,10 @@ extension SwiftLint {
                 doYouWantToContinue("\nDo you want to continue? (Y/n)")
                 return []
             }
+        }
+
+        private func allowZeroLintableFiles() -> Bool {
+            false
         }
 
         private func rulesToDisable(_ topLevelDirectories: [String]) async throws -> [String] {
@@ -159,10 +168,14 @@ return analyzerRuleIdentifiers
 
         private func writeConfiguration(
             _ topLevelDirectories: [String],
+            _ allowZeroLintableFiles: Bool,
             _ ruleIdentifiersToDisable: [String],
             _ analyzerRuleIdentifiers: [String]
         ) throws -> Bool {
             var configuration = configuration(forTopLevelDirectories: topLevelDirectories)
+            if allowZeroLintableFiles {
+                configuration += "allow_zero_lintable_files: true\n"
+            }
             configuration += "disabled_rules:\n"
             ruleIdentifiersToDisable.forEach { configuration += "  - \($0)\n" }
             if analyzerRuleIdentifiers.isNotEmpty {

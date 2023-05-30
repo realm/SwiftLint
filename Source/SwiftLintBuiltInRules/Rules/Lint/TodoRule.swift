@@ -1,13 +1,5 @@
 import Foundation
-import SourceKittenFramework
 import SwiftSyntax
-
-extension SourceKittenFramework.SyntaxKind {
-    /// Returns if the syntax kind is comment-like.
-    var isCommentLike: Bool {
-        return Self.commentKinds.contains(self)
-    }
-}
 
 struct TodoRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)

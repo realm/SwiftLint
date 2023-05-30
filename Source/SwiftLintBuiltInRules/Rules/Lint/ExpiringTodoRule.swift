@@ -120,3 +120,10 @@ private extension Date {
         return Calendar.current.compare(.init(), to: self, toGranularity: .day) == .orderedAscending
     }
 }
+
+private extension SyntaxKind {
+   /// Returns if the syntax kind is comment-like.
+   var isCommentLike: Bool {
+       return Self.commentKinds.contains(self)
+   }
+}

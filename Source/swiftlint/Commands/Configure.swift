@@ -1,5 +1,4 @@
 import ArgumentParser
-import ArgumentParser
 import Foundation
 import SwiftLintFramework
 #if os(Linux)
@@ -52,7 +51,10 @@ extension SwiftLint {
         private func checkForExistingConfiguration() {
             print("Checking for existing \(Configuration.defaultFileName) configuration file.")
             if hasExistingConfiguration() {
-                doYouWantToContinue("Found an existing \(Configuration.defaultFileName) configuration file - Do you want to continue?")
+                doYouWantToContinue(
+                    "Found an existing \(Configuration.defaultFileName) configuration file"
+                    + " - Do you want to continue?"
+                )
             }
         }
 
@@ -62,7 +64,10 @@ extension SwiftLint {
 
         private func checkForExistingChildConfigurations() {
             print("Checking for any other \(Configuration.defaultFileName) configuration files.")
-            let files = FileManager.default.filesWithSuffix(Configuration.defaultFileName).filter { $0 != Configuration.defaultFileName }
+
+            let files = FileManager.default.filesWithSuffix(Configuration.defaultFileName).filter {
+                $0 != Configuration.defaultFileName
+            }
             if files.isNotEmpty {
                 print("Found existing child configurations:\n")
                 files.forEach { print($0) }
@@ -83,9 +88,9 @@ extension SwiftLint {
                     return topLevelDirectories
                 } else {
                     var selectedDirectories: [String] = []
-                    for topLevelDirectory in topLevelDirectories {
-                        if askUser("Do you want SwiftLint to scan the \(topLevelDirectory) directory?") {
-                            selectedDirectories.append(topLevelDirectory)
+                    topLevelDirectories.forEach {
+                        if askUser("Do you want SwiftLint to scan the \($0) directory?") {
+                            selectedDirectories.append($0)
                         }
                     }
                     return selectedDirectories
@@ -148,10 +153,11 @@ extension SwiftLint {
                 }
             }
 
-            let deprecatedRuleIdentifiers = Set(RuleRegistry.shared.deprecatedRuleIdentifiers).subtracting(ruleIdentifiersToDisable)
-            if deprecatedRuleIdentifiers.isNotEmpty {
+            let deprecatedRuleIdentifiers = Set(RuleRegistry.shared.deprecatedRuleIdentifiers)
+            let undisableDeprecatedRuleIdentifiers = deprecatedRuleIdentifiers.subtracting(ruleIdentifiersToDisable)
+            if undisableDeprecatedRuleIdentifiers.isNotEmpty {
                 if askUser("\nDo you want to disable any deprecated rules?") {
-                    ruleIdentifiersToDisable.append(contentsOf: deprecatedRuleIdentifiers.sorted())
+                    ruleIdentifiersToDisable.append(contentsOf: undisableDeprecatedRuleIdentifiers.sorted())
                 }
             }
             return ruleIdentifiersToDisable
@@ -160,7 +166,7 @@ extension SwiftLint {
         private func analyzerRulesToEnable() -> [String] {
             let analyzerRuleIdentifiers = RuleRegistry.shared.analyzerRuleIdentifiers.sorted()
             if askUser("\nDo you want to enable all (\(analyzerRuleIdentifiers.count)) of the analyzer rules?") {
-return analyzerRuleIdentifiers
+                return analyzerRuleIdentifiers
             } else {
                 return []
             }
@@ -216,11 +222,14 @@ return analyzerRuleIdentifiers
             try configuration.write(toFile: Configuration.defaultFileName, atomically: true, encoding: .utf8)
         }
 
-        private func configuration(forTopLevelDirectories topLevelDirectories: [String], path: String? = nil) -> String {
+        private func configuration(
+            forTopLevelDirectories topLevelDirectories: [String],
+            path: String? = nil
+        ) -> String {
             var configuration = "included:\n"
             topLevelDirectories.forEach {
                 let absolutePath: String
-                if let path = path {
+                if let path {
                     absolutePath = path.bridge().appendingPathComponent($0)
                 } else {
                     absolutePath = $0
@@ -232,7 +241,10 @@ return analyzerRuleIdentifiers
         }
 
         private func writeTemporaryConfigurationFile(_ topLevelDirectories: [String]) throws -> String {
-            let configuration = configuration(forTopLevelDirectories: topLevelDirectories, path: FileManager.default.currentDirectoryPath)
+            let configuration = configuration(
+                forTopLevelDirectories: topLevelDirectories,
+                path: FileManager.default.currentDirectoryPath
+            )
             let filename = ".\(UUID().uuidString)\(Configuration.defaultFileName)"
             let filePath = FileManager.default.temporaryDirectory.path.bridge().appendingPathComponent(filename)
             try configuration.write(toFile: filePath, atomically: true, encoding: .utf8)
@@ -260,7 +272,7 @@ private func askUser(_ message: String, colorizeOutput: Bool, auto: Bool) -> Boo
             return true
         }
         if let character = readLine() {
-            if character == "" || character.lowercased() == "y" {
+            if character.isEmpty || character.lowercased() == "y" {
                 return true
             } else if character.lowercased() == "n" {
                 return false

@@ -94,7 +94,7 @@ extension SwiftLint {
 
         private func rulesToDisable(_ topLevelDirectories: [String]) async throws -> [String] {
             var ruleIdentifiersToDisable: [String] = []
-            print("Checking for violations.")
+            print("Checking for violations. This may take some time.")
             let configuration = try writeTemporaryConfigurationFile(topLevelDirectories)
             defer {
                 try? FileManager.default.removeItem(atPath: configuration)
@@ -171,6 +171,9 @@ return analyzerRuleIdentifiers
             }
             print("Proposed configuration\n")
             print(configuration)
+            if askUser("Does that look good?") == false {
+                return false
+            }
             if hasExistingConfiguration() {
                 if auto && overwrite {
                     print("Overwriting existing configuration.")

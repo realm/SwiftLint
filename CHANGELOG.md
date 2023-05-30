@@ -30,6 +30,9 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5010](https://github.com/realm/SwiftLint/issues/5010)
 
+* Rewrite `todo` rule with SwiftSyntax.  
+  [woxtu](https://github.com/woxtu)
+
 #### Bug Fixes
 
 * The option `validates_start_with_lowercase` can now be disabled by setting it

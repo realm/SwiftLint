@@ -766,6 +766,9 @@
   automatically synthesized.  
   [Martin Redington](https://github.com/mildm8nnered)
 
+* Rewrite `missing_docs` rule with SwiftSyntax.
+  [woxtu](https://github.com/woxtu)
+
 #### Bug Fixes
 
 * The option `validates_start_with_lowercase` can now be disabled by setting it

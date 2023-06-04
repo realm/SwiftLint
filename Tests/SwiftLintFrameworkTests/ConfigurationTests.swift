@@ -240,7 +240,7 @@ class ConfigurationTests: SwiftLintTestCase {
             case "directory/ExcludedFile.swift": filesToLint = ["directory/ExcludedFile.swift"]
             default: XCTFail("Should not be called with path \(path)")
             }
-            return filesToLint.map { $0.absolutePathStandardized() }
+            return filesToLint.absolutePathsStandardized()
         }
 
         func modificationDate(forFileAtPath path: String) -> Date? {
@@ -257,55 +257,69 @@ class ConfigurationTests: SwiftLintTestCase {
     }
 
     func testExcludedPaths() {
+        let fileManager = TestFileManager()
         let configuration = Configuration(includedPaths: ["directory"],
                                           excludedPaths: ["directory/excluded",
                                                           "directory/ExcludedFile.swift"])
-        let paths = configuration.lintablePaths(inPath: "", forceExclude: false, fileManager: TestFileManager())
-        XCTAssertEqual(
-            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
-            paths
-        )
+
+        let excludedPaths = configuration.excludedPaths(fileManager: fileManager)
+        let paths = configuration.lintablePaths(inPath: "",
+                                                forceExclude: false,
+                                                excludeBy: .paths(excludedPaths: excludedPaths),
+                                                fileManager: fileManager)
+        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"].absolutePathsStandardized(), paths)
     }
 
     func testForceExcludesFile() {
+        let fileManager = TestFileManager()
         let configuration = Configuration(excludedPaths: ["directory/ExcludedFile.swift"])
-        let paths = configuration.lintablePaths(inPath: "directory/ExcludedFile.swift", forceExclude: true,
-                                                fileManager: TestFileManager())
+        let excludedPaths = configuration.excludedPaths(fileManager: fileManager)
+        let paths = configuration.lintablePaths(inPath: "directory/ExcludedFile.swift",
+                                                forceExclude: true,
+                                                excludeBy: .paths(excludedPaths: excludedPaths),
+                                                fileManager: fileManager)
         XCTAssertEqual([], paths)
     }
 
     func testForceExcludesFileNotPresentInExcluded() {
+        let fileManager = TestFileManager()
         let configuration = Configuration(includedPaths: ["directory"],
                                           excludedPaths: ["directory/ExcludedFile.swift", "directory/excluded"])
-        let paths = configuration.lintablePaths(inPath: "", forceExclude: true, fileManager: TestFileManager())
-        XCTAssertEqual(
-            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
-            paths
-        )
+        let excludedPaths = configuration.excludedPaths(fileManager: fileManager)
+        let paths = configuration.lintablePaths(inPath: "",
+                                                forceExclude: true,
+                                                excludeBy: .paths(excludedPaths: excludedPaths),
+                                                fileManager: fileManager)
+        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"].absolutePathsStandardized(), paths)
     }
 
     func testForceExcludesDirectory() {
+        let fileManager = TestFileManager()
         let configuration = Configuration(excludedPaths: ["directory/excluded", "directory/ExcludedFile.swift"])
-        let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
-                                                fileManager: TestFileManager())
-        XCTAssertEqual(
-            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
-            paths
-        )
+        let excludedPaths = configuration.excludedPaths(fileManager: fileManager)
+        let paths = configuration.lintablePaths(inPath: "directory",
+                                                forceExclude: true,
+                                                excludeBy: .paths(excludedPaths: excludedPaths),
+                                                fileManager: fileManager)
+        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"].absolutePathsStandardized(), paths)
     }
 
     func testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre() {
+        let fileManager = TestFileManager()
         let configuration = Configuration(excludedPaths: ["directory/excluded", "directory/ExcludedFile.swift"])
-        let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
-                                                fileManager: TestFileManager())
-        XCTAssertEqual(
-            ["directory/File1.swift", "directory/File2.swift"].map { $0.absolutePathStandardized() },
-            paths
-        )
+        let excludedPaths = configuration.excludedPaths(fileManager: fileManager)
+        let paths = configuration.lintablePaths(inPath: "directory",
+                                                forceExclude: true,
+                                                excludeBy: .paths(excludedPaths: excludedPaths),
+                                                fileManager: fileManager)
+        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"].absolutePathsStandardized(), paths)
     }
 
     func testLintablePaths() {
-        let paths = Configuration.default.lintablePaths(inPath: Mock.Dir.level0, forceExclude: false)
+        let excluded = Configuration.default.excludedPaths(fileManager: TestFileManager())
+        let paths = Configuration.default.lintablePaths(inPath: Mock.Dir.level0,
+                                                        forceExclude: false,
+                                                        excludeBy: .paths(excludedPaths: excluded))
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         let expectedFilenames = [
             "DirectoryLevel1.swift",
@@ -317,7 +331,9 @@ class ConfigurationTests: SwiftLintTestCase {
     }
 
     func testLintablePathsWithDirectory() {
-        let paths = Configuration.default.lintablePaths(inPath: Mock.Dir.level1, forceExclude: false)
+        let paths = Configuration.default.lintablePaths(
+            inPath: Mock.Dir.level1, forceExclude: false, excludeBy: .prefix
+        )
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         let expectedFilenames = ["Level1.swift", "Level2.swift", "Level3.swift"]
         XCTAssertEqual(Set(expectedFilenames), Set(filenames))
@@ -326,7 +342,9 @@ class ConfigurationTests: SwiftLintTestCase {
     func testGlobIncludePaths() {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(includedPaths: ["**/Level2"])
-        let paths = configuration.lintablePaths(inPath: Mock.Dir.level0, forceExclude: true)
+        let paths = configuration.lintablePaths(inPath: Mock.Dir.level0,
+                                                forceExclude: true,
+                                                excludeBy: .paths(excludedPaths: configuration.excludedPaths))
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         let expectedFilenames = [
             "DirectoryLevel1.swift",
@@ -348,7 +366,11 @@ class ConfigurationTests: SwiftLintTestCase {
             excludedPaths: [Mock.Dir.level3.stringByAppendingPathComponent("*.swift")]
         )
 
-        XCTAssertEqual(configuration.lintablePaths(inPath: "", forceExclude: false), [])
+        let excludedPaths = configuration.excludedPaths()
+        let lintablePaths = configuration.lintablePaths(inPath: "",
+                                                        forceExclude: false,
+                                                        excludeBy: .paths(excludedPaths: excludedPaths))
+        XCTAssertEqual(lintablePaths, [])
     }
 
     // MARK: - Testing Configuration Equality
@@ -439,7 +461,7 @@ extension ConfigurationTests {
                                                           "Level1/Level2/Level3"])
         let paths = configuration.lintablePaths(inPath: Mock.Dir.level0,
                                                 forceExclude: false,
-                                                excludeByPrefix: true)
+                                                excludeBy: .prefix)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         let expectedFilenames = [
             "DirectoryLevel1.swift",
@@ -456,7 +478,7 @@ extension ConfigurationTests {
         let configuration = Configuration(excludedPaths: ["Level1/Level2/Level3/Level3.swift"])
         let paths = configuration.lintablePaths(inPath: "Level1/Level2/Level3/Level3.swift",
                                                 forceExclude: true,
-                                                excludeByPrefix: true)
+                                                excludeBy: .prefix)
         XCTAssertEqual([], paths)
     }
 
@@ -466,7 +488,7 @@ extension ConfigurationTests {
                                           excludedPaths: ["Level1/Level1.swift"])
         let paths = configuration.lintablePaths(inPath: "Level1",
                                                 forceExclude: true,
-                                                excludeByPrefix: true)
+                                                excludeBy: .prefix)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         XCTAssertEqual(["Level2.swift", "Level3.swift"], filenames)
     }
@@ -480,7 +502,7 @@ extension ConfigurationTests {
         )
         let paths = configuration.lintablePaths(inPath: ".",
                                                 forceExclude: true,
-                                                excludeByPrefix: true)
+                                                excludeBy: .prefix)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         XCTAssertEqual(["Level0.swift", "Level1.swift"], filenames)
     }
@@ -494,7 +516,7 @@ extension ConfigurationTests {
         )
         let paths = configuration.lintablePaths(inPath: ".",
                                                 forceExclude: true,
-                                                excludeByPrefix: true)
+                                                excludeBy: .prefix)
         let filenames = paths.map { $0.bridge().lastPathComponent }
         XCTAssertEqual(["Level0.swift"], filenames)
     }
@@ -506,7 +528,7 @@ extension ConfigurationTests {
             excludedPaths: ["Level1/*/*.swift", "Level1/*/*/*.swift"])
         let paths = configuration.lintablePaths(inPath: "Level1",
                                                 forceExclude: false,
-                                                excludeByPrefix: true)
+                                                excludeBy: .prefix)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         XCTAssertEqual(filenames, ["Level1.swift"])
     }
@@ -555,5 +577,11 @@ extension ConfigurationTests {
 
         XCTAssertEqual(configuration1.cachePath, "cache/path/1")
         XCTAssertEqual(configuration2.cachePath, "cache/path/1")
+    }
+}
+
+private extension Sequence where Element == String {
+    func absolutePathsStandardized() -> [String] {
+        map { $0.absolutePathStandardized() }
     }
 }

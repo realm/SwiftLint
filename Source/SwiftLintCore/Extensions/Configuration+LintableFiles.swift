@@ -70,6 +70,8 @@ extension Configuration {
             let pathsForPath = fileManager.filesToLint(inPath: path, rootDirectory: nil)
             return excludePaths(from: pathsForPath)
         }
+
+        Issue.noSuchFileOrDirectory(path: path).print()
         return []
     }
 

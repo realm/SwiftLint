@@ -35,6 +35,9 @@ public enum Issue: LocalizedError, Equatable {
     /// The file at `path` is not writable.
     case fileNotWritable(path: String)
 
+    /// No file or directory found at `path`.
+    case noSuchFileOrDirectory(path: String)
+
     /// The file at `path` cannot be indexed by a specific rule.
     case indexingError(path: String?, ruleID: String)
 
@@ -109,6 +112,8 @@ public enum Issue: LocalizedError, Equatable {
             return "Cannot open or read file at path '\(path ?? "...")' within '\(id)' rule."
         case let .fileNotWritable(path):
             return "Cannot write to file at path '\(path)'."
+        case let .noSuchFileOrDirectory(path):
+            return "No file or directory found at '\(path)'."
         case let .indexingError(path, id):
             return "Cannot index file at path '\(path ?? "...")' within '\(id)' rule."
         case let .missingCompilerArguments(path, id):

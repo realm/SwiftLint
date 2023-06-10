@@ -106,7 +106,7 @@ public let builtInRules: [Rule.Type] = [
     LegacyRandomRule.self,
     LetVarWhitespaceRule.self,
     LineLengthRule.self,
-    LiteralExpressionEndIdentationRule.self,
+    LiteralExpressionEndIndentationRule.self,
     LocalDocCommentRule.self,
     LowerACLThanParentRule.self,
     MarkRule.self,

@@ -4,19 +4,23 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ModifierOrderRule
 
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    private(set) var preferredModifierOrder = [SwiftDeclarationAttributeKind.ModifierGroup]()
+    private(set) var preferredModifierOrder: [SwiftDeclarationAttributeKind.ModifierGroup] = [
+        .override,
+        .acl,
+        .setterACL,
+        .dynamic,
+        .mutators,
+        .lazy,
+        .final,
+        .required,
+        .convenience,
+        .typeMethods,
+        .owned
+    ]
 
     var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription)"
             + ", preferred_modifier_order: \(preferredModifierOrder)"
-    }
-
-    init() {
-        self.preferredModifierOrder = []
-    }
-
-    init(preferredModifierOrder: [SwiftDeclarationAttributeKind.ModifierGroup] = []) {
-        self.preferredModifierOrder = preferredModifierOrder
     }
 
     mutating func apply(configuration: Any) throws {

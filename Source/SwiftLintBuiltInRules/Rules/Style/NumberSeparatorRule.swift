@@ -2,11 +2,7 @@ import Foundation
 import SwiftSyntax
 
 struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    var configuration = NumberSeparatorConfiguration(
-        minimumLength: 0,
-        minimumFractionLength: nil,
-        excludeRanges: []
-    )
+    var configuration = NumberSeparatorConfiguration()
 
     static let description = RuleDescription(
         identifier: "number_separator",

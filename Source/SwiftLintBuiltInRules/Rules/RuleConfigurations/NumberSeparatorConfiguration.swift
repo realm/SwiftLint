@@ -2,9 +2,9 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = NumberSeparatorRule
 
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    private(set) var minimumLength: Int
+    private(set) var minimumLength = 0
     private(set) var minimumFractionLength: Int?
-    private(set) var excludeRanges: [Range<Double>]
+    private(set) var excludeRanges = [Range<Double>]()
 
     var consoleDescription: String {
         let minimumFractionLengthDescription: String
@@ -16,12 +16,6 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
         return "severity: \(severityConfiguration.consoleDescription)"
             + ", minimum_length: \(minimumLength)"
             + minimumFractionLengthDescription
-    }
-
-    init(minimumLength: Int, minimumFractionLength: Int?, excludeRanges: [Range<Double>]) {
-        self.minimumLength = minimumLength
-        self.minimumFractionLength = minimumFractionLength
-        self.excludeRanges = excludeRanges
     }
 
     mutating func apply(configuration: Any) throws {

@@ -42,6 +42,11 @@
   [Haoocen](https://github.com/Haoocen)
   [#5023](https://github.com/realm/SwiftLint/pull/5023)
 
+* Fix false positives on `sorted_first_last` rule when `first`/`last` have
+  a predicate.
+  [woxtu](https://github.com/woxtu)
+  [#3023](https://github.com/realm/SwiftLint/issues/3023)
+
 ## 0.52.2: Crisper Clearer Pleats
 
 #### Breaking

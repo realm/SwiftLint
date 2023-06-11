@@ -21,7 +21,11 @@ struct SortedFirstLastRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRul
             Example("myList.sorted().firstIndex(where: someFunction)"),
             Example("myList.sorted().lastIndex(where: someFunction)"),
             Example("myList.sorted().firstIndex { $0 == key }"),
-            Example("myList.sorted().lastIndex { $0 == key }")
+            Example("myList.sorted().lastIndex { $0 == key }"),
+            Example("myList.sorted().first(where: someFunction)"),
+            Example("myList.sorted().last(where: someFunction)"),
+            Example("myList.sorted().first { $0 == key }"),
+            Example("myList.sorted().last { $0 == key }")
         ],
         triggeringExamples: [
             Example("↓myList.sorted().first\n"),
@@ -50,6 +54,7 @@ private extension SortedFirstLastRule {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
                 node.name.text == "first" || node.name.text == "last",
+                node.parent?.is(FunctionCallExprSyntax.self) != true,
                 let firstBase = node.base?.asFunctionCall,
                 let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
                 firstBaseCalledExpression.name.text == "sorted",

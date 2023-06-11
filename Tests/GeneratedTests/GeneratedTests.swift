@@ -1088,6 +1088,12 @@ class StatementPositionRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class StaticImmutablePropertiesRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(StaticImmutablePropertiesRule.description)
+    }
+}
+
 class StaticOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StaticOperatorRule.description)

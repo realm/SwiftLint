@@ -183,6 +183,7 @@ public let builtInRules: [Rule.Type] = [
     SortedFirstLastRule.self,
     SortedImportsRule.self,
     StatementPositionRule.self,
+    StaticImmutablePropertiesRule.self,
     StaticOperatorRule.self,
     StrictFilePrivateRule.self,
     StrongIBOutletRule.self,

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptInRule {
+struct LiteralExpressionEndIndentationRule: Rule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -141,7 +141,7 @@ struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptI
     fileprivate static let notWhitespace = regex("[^\\s]")
 }
 
-extension LiteralExpressionEndIdentationRule: CorrectableRule {
+extension LiteralExpressionEndIndentationRule: CorrectableRule {
     func correct(file: SwiftLintFile) -> [Correction] {
         let allViolations = violations(in: file).reversed().filter { violation in
             guard let nsRange = file.stringView.byteRangeToNSRange(violation.range) else {
@@ -206,7 +206,7 @@ extension LiteralExpressionEndIdentationRule: CorrectableRule {
     }
 }
 
-extension LiteralExpressionEndIdentationRule {
+extension LiteralExpressionEndIndentationRule {
     fileprivate struct Violation {
         var indentationRanges: (expected: NSRange, actual: NSRange)
         var endOffset: ByteCount

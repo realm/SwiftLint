@@ -14,9 +14,9 @@ struct LegacyRandomRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("Float.random(in: 0 ..< 1)\n")
         ],
         triggeringExamples: [
-            Example("↓arc4random(10)\n"),
+            Example("↓arc4random()\n"),
             Example("↓arc4random_uniform(83)\n"),
-            Example("↓drand48(52)\n")
+            Example("↓drand48()\n")
         ]
     )
 

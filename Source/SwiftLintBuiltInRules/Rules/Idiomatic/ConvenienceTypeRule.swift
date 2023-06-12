@@ -218,7 +218,7 @@ private extension AttributeListSyntax? {
             return false
         }
 
-        return attrs.contains { elem in
+        return attributes.contains { elem in
             guard let attributes = elem.as(AttributeSyntax.self),
                   let arguments = attributes.argument?.as(AvailabilitySpecListSyntax.self) else {
                 return false

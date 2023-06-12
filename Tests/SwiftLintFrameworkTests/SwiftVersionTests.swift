@@ -5,6 +5,8 @@ final class SwiftVersionTests: SwiftLintTestCase {
     func testDetectSwiftVersion() {
 #if compiler(>=6.0.0)
         let version = "6.0.0"
+#elseif compiler(>=5.9.0)
+        let version = "5.9.0"
 #elseif compiler(>=5.8.1)
         let version = "5.8.1"
 #elseif compiler(>=5.8.0)

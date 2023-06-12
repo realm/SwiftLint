@@ -29,10 +29,6 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 static let k = { C.i }()
                 let h = C.i
                 @GreaterThan(C.j) var k: Int
-                func f() {
-                    _ = [Int: C]()
-                    _ = [C]()
-                }
             }
         """, excludeFromDocumentation: true),
         Example("""
@@ -104,6 +100,14 @@ enum PreferSelfInStaticReferencesRuleExamples {
             }
         """),
         Example("""
+            class C {
+                func f() {
+                    _ = [↓C]()
+                    _ = [Int: ↓C]()
+                }
+            }
+        """),
+        Example("""
             struct S {
                 let j: Int
                 static let i = 1
@@ -149,31 +153,37 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 typealias A = C
                 let d: C? = nil
                 var c: C { C() }
+                let b: [C] = [C]()
                 init() {}
                 func f(e: C) -> C {
                     let f: C = C()
                     return f
                 }
+                func g(a: [C]) -> [C] { a }
             }
             final class D {
                 typealias A = D
                 let c: D? = nil
                 var d: D { D() }
+                let b: [D] = [D]()
                 init() {}
                 func f(e: D) -> D {
                     let f: D = D()
                     return f
                 }
+                func g(a: [D]) -> [D] { a }
             }
             struct S {
                 typealias A = ↓S
                 // let s: S? = nil // Struct cannot contain itself
                 var t: ↓S { ↓S() }
+                let b: [↓S] = [↓S]()
                 init() {}
                 func f(e: ↓S) -> ↓S {
                     let f: ↓S = ↓S()
                     return f
                 }
+                func g(a: [↓S]) -> [↓S] { a }
             }
         """, excludeFromDocumentation: true)
     ]

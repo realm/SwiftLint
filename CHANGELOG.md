@@ -32,6 +32,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5009](https://github.com/realm/SwiftLint/issues/5009)
 
+* Do not trigger `prefer_self_in_static_references` rule on collection types in
+  classes, but on initializers like `[C]()` in all types.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5042](https://github.com/realm/SwiftLint/issues/5042)
+
 * Fix false positives on `redundant_objc_attribute` rule for enums
   and private members.  
   [Martin Redington](https://github.com/mildm8nnered)
@@ -43,7 +48,7 @@
   [#5023](https://github.com/realm/SwiftLint/pull/5023)
 
 * Fix false positives on `sorted_first_last` rule when `first`/`last` have
-  a predicate.
+  a predicate.  
   [woxtu](https://github.com/woxtu)
   [#3023](https://github.com/realm/SwiftLint/issues/3023)
 

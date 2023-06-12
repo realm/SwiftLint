@@ -118,10 +118,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: IdentifierExprSyntax) {
-        guard let parent = node.parent,
-              !parent.is(SpecializeExprSyntax.self),
-              !parent.is(DictionaryElementSyntax.self),
-              !parent.is(ArrayElementSyntax.self) else {
+        guard let parent = node.parent, !parent.is(SpecializeExprSyntax.self) else {
             return
         }
         if parent.is(FunctionCallExprSyntax.self), case .likeClass = parentDeclScopes.peek() {
@@ -166,6 +163,13 @@ private class Visitor: ViolationsSyntaxVisitor {
         parentDeclScopes.pop()
     }
 
+    override func visit(_ node: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
+        if case .likeStruct = parentDeclScopes.peek() {
+            return .visitChildren
+        }
+        return .skipChildren
+    }
+
     override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
         parentDeclScopes.push(.likeStruct(node.identifier.text))
         return .visitChildren
@@ -179,9 +183,8 @@ private class Visitor: ViolationsSyntaxVisitor {
         guard let parent = node.parent else {
             return
         }
-        if case .likeClass = parentDeclScopes.peek(),
-           parent.is(GenericArgumentSyntax.self) || parent.is(ReturnClauseSyntax.self) {
-            // Type is a generic parameter or the return type of a function.
+        if case .likeClass = parentDeclScopes.peek(), parent.is(GenericArgumentSyntax.self) {
+            // Type is a generic parameter in a class.
             return
         }
         if node.genericArguments == nil {
@@ -202,8 +205,10 @@ private class Visitor: ViolationsSyntaxVisitor {
             return .skipChildren
         }
         if let varDecl = node.parent?.parent?.parent?.as(VariableDeclSyntax.self) {
-            if varDecl.parent?.is(CodeBlockItemSyntax.self) == true || varDecl.bindings.onlyElement?.accessor != nil {
-                // Is either a local variable declaration or a computed property.
+            if varDecl.parent?.is(CodeBlockItemSyntax.self) == true // Local variable declaration
+                || varDecl.bindings.onlyElement?.accessor != nil    // Computed property
+                || !node.type.is(SimpleTypeIdentifierSyntax.self)   // Complex or collection type
+            {
                 return .visitChildren
             }
         }

@@ -56,20 +56,18 @@ extension SwitchCaseAlignmentRule {
 
         override func visitPost(_ node: SwitchExprSyntax) {
             let switchPosition = node.switchKeyword.positionAfterSkippingLeadingTrivia
-            guard
-                let switchColumn = locationConverter.location(for: switchPosition).column,
-                node.cases.isNotEmpty,
-                let firstCasePosition = node.cases.first?.positionAfterSkippingLeadingTrivia,
-                let firstCaseColumn = locationConverter.location(for: firstCasePosition).column
+            let switchColumn = locationConverter.location(for: switchPosition).column
+            guard node.cases.isNotEmpty,
+                let firstCasePosition = node.cases.first?.positionAfterSkippingLeadingTrivia
             else {
                 return
             }
 
+            let firstCaseColumn = locationConverter.location(for: firstCasePosition).column
+
             for `case` in node.cases where `case`.is(SwitchCaseSyntax.self) {
                 let casePosition = `case`.positionAfterSkippingLeadingTrivia
-                guard let caseColumn = locationConverter.location(for: casePosition).column else {
-                    continue
-                }
+                let caseColumn = locationConverter.location(for: casePosition).column
 
                 let hasViolation = (indentedCases && caseColumn <= switchColumn) ||
                     (!indentedCases && caseColumn != switchColumn) ||

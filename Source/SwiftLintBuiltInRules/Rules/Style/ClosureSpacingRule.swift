@@ -153,8 +153,8 @@ private extension ClosureExprSyntax {
     func shouldCheckForClosureSpacingRule(locationConverter: SourceLocationConverter) -> Bool {
         guard parent?.is(PostfixUnaryExprSyntax.self) == false, // Workaround for Regex literals
               (rightBrace.position.utf8Offset - leftBrace.position.utf8Offset) > 1, // Allow '{}'
-              let startLine = startLocation(converter: locationConverter).line,
-              let endLine = endLocation(converter: locationConverter).line,
+              case let startLine = startLocation(converter: locationConverter).line,
+              case let endLine = endLocation(converter: locationConverter).line,
               startLine == endLine // Only check single-line closures
         else {
             return false

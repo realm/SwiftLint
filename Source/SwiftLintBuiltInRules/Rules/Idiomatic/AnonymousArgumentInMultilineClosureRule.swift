@@ -48,12 +48,7 @@ private extension AnonymousArgumentInMultilineClosureRule {
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             let startLocation = locationConverter.location(for: node.leftBrace.positionAfterSkippingLeadingTrivia)
             let endLocation = locationConverter.location(for: node.rightBrace.endPositionBeforeTrailingTrivia)
-
-            guard let startLine = startLocation.line, let endLine = endLocation.line, startLine != endLine else {
-                return .skipChildren
-            }
-
-            return .visitChildren
+            return startLocation.line == endLocation.line ? .skipChildren : .visitChildren
         }
 
         override func visitPost(_ node: IdentifierExprSyntax) {

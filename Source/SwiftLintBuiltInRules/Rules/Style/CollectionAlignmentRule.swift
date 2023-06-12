@@ -55,12 +55,11 @@ private extension CollectionAlignmentRule {
             return zip(remainingKeyLocations.indices, remainingKeyLocations)
                 .compactMap { index, location -> AbsolutePosition? in
                     let previousLocation = keyLocations[index - 1]
-                    guard let previousLine = previousLocation.line,
-                          let locationLine = location.line,
-                          let firstKeyColumn = firstKeyLocation.column,
-                          let locationColumn = location.column,
-                          previousLine < locationLine,
-                          firstKeyColumn != locationColumn else {
+                    let previousLine = previousLocation.line
+                    let locationLine = location.line
+                    let firstKeyColumn = firstKeyLocation.column
+                    let locationColumn = location.column
+                    guard previousLine < locationLine, firstKeyColumn != locationColumn else {
                         return nil
                     }
 

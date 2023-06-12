@@ -50,10 +50,7 @@ private extension MultilineParametersRule {
             var linesWithParameters = Set<Int>()
 
             for position in parameterPositions {
-                guard let line = locationConverter.location(for: position).line else {
-                    continue
-                }
-
+                let line = locationConverter.location(for: position).line
                 linesWithParameters.insert(line)
                 numberOfParameters += 1
             }

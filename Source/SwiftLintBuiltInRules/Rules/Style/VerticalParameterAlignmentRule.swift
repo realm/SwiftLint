@@ -42,10 +42,7 @@ private extension VerticalParameterAlignmentRule {
             let paramLocations = params.compactMap { param -> (position: AbsolutePosition, line: Int, column: Int)? in
                 let position = param.positionAfterSkippingLeadingTrivia
                 let location = locationConverter.location(for: position)
-                guard let line = location.line, let column = location.column else {
-                    return nil
-                }
-                return (position, line, column)
+                return (position, location.line, location.column)
             }
 
             guard let firstParamLoc = paramLocations.first else { return [] }

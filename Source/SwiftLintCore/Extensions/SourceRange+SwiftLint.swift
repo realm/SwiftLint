@@ -8,8 +8,8 @@ public extension SourceRange {
     ///
     /// - returns: Whether the specified position is contained within this range.
     func contains(_ position: AbsolutePosition, locationConverter: SourceLocationConverter) -> Bool {
-        let startPosition = locationConverter.position(ofLine: start.line ?? 1, column: start.column ?? 1)
-        let endPosition = locationConverter.position(ofLine: end.line ?? 1, column: end.column ?? 1)
+        let startPosition = locationConverter.position(ofLine: start.line, column: start.column)
+        let endPosition = locationConverter.position(ofLine: end.line, column: end.column)
         return startPosition <= position && position <= endPosition
     }
 }

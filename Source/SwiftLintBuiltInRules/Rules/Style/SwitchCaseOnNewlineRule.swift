@@ -75,14 +75,12 @@ private extension SwitchCaseOnNewlineRule {
         }
 
         override func visitPost(_ node: SwitchCaseSyntax) {
-            guard let caseEndLine = locationConverter.location(for: node.label.endPositionBeforeTrailingTrivia).line,
-                  case let statementsPosition = node.statements.positionAfterSkippingLeadingTrivia,
-                  let statementStartLine = locationConverter.location(for: statementsPosition).line,
-                  statementStartLine == caseEndLine else {
-                return
+            let caseEndLine = locationConverter.location(for: node.label.endPositionBeforeTrailingTrivia).line
+            let statementsPosition = node.statements.positionAfterSkippingLeadingTrivia
+            let statementStartLine = locationConverter.location(for: statementsPosition).line
+            if statementStartLine == caseEndLine {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
-
-            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

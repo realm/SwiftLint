@@ -47,10 +47,11 @@ public extension SwiftLintFile {
                     let sourceRange = token
                         .trimmed
                         .sourceRange(converter: locationConverter)
-                    let startLine = sourceRange.start.line!
-                    let endLine = sourceRange.end.line!
+                    let startLine = sourceRange.start.line
+                    let endLine = sourceRange.end.line
                     linesWithTokens.formUnion(startLine...endLine)
-                } else if let line = locationConverter.location(for: token.positionAfterSkippingLeadingTrivia).line {
+                } else {
+                    let line = locationConverter.location(for: token.positionAfterSkippingLeadingTrivia).line
                     linesWithTokens.insert(line)
                 }
             }

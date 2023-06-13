@@ -171,16 +171,10 @@ private class ExplicitSelfVisitor: DeclaredIdentifiersTrackingVisitor {
     }
 
     var isSelfRedundant: Bool {
-        if typeDeclKind == .likeStruct || functionCallType == .anonymousClosure {
-            return true
-        }
-        if selfCaptureKind == .strong && SwiftVersion.current >= .fiveDotThree {
-            return true
-        }
-        if selfCaptureKind == .weak && SwiftVersion.current >= .fiveDotEight {
-            return true
-        }
-        return false
+           typeDeclKind == .likeStruct
+        || functionCallType == .anonymousClosure
+        || selfCaptureKind == .strong && SwiftVersion.current >= .fiveDotThree
+        || selfCaptureKind == .weak && SwiftVersion.current >= .fiveDotEight
     }
 }
 

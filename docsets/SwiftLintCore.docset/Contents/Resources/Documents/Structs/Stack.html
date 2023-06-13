@@ -103,6 +103,9 @@
                 <a class="nav-group-task-link" href="../Classes/CustomRuleTimer.html">CustomRuleTimer</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/DeclaredIdentifiersTrackingVisitor.html">DeclaredIdentifiersTrackingVisitor</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/LinterCache.html">LinterCache</a>
               </li>
               <li class="nav-group-task">
@@ -347,7 +350,7 @@
             <p>A basic stack type implementing the LIFO principle - only the last inserted element can be accessed and removed.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Helpers/Stack.swift#L2-L32">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Helpers/Stack.swift#L2-L50">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -530,6 +533,109 @@
                     </section>
                   </div>
                 </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore5StackV8contains5whereS2bxXE_tF"></a>
+                    <a name="//apple_ref/swift/Method/contains(where:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore5StackV8contains5whereS2bxXE_tF">contains(where:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Check whether the sequence contains an element that satisfies the given predicate.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">contains</span><span class="p">(</span><span class="k">where</span> <span class="nv">predicate</span><span class="p">:</span> <span class="p">(</span><span class="kt">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>predicate</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that takes an element of the sequence
+and returns whether it represents a match.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p><code>true</code> if the sequence contains an element that satisfies <code>predicate</code>.</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Helpers/Stack.swift#L38-L40">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore5StackV10modifyLast2byyyxzXE_tF"></a>
+                    <a name="//apple_ref/swift/Method/modifyLast(by:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore5StackV10modifyLast2byyyxzXE_tF">modifyLast(by:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Modify the last element.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">modifyLast</span><span class="p">(</span><span class="n">by</span> <span class="nv">modifier</span><span class="p">:</span> <span class="p">(</span><span class="k">inout</span> <span class="kt">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>modifier</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A function to applied to the last element to modify it in place.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Helpers/Stack.swift#L45-L49">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
               </ul>
             </div>
             <div class="task-group">
@@ -567,7 +673,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Helpers/Stack.swift#L35-L43">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Helpers/Stack.swift#L53-L61">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

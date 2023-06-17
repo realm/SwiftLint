@@ -3,22 +3,20 @@ import Foundation
 struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     typealias Severity = SeverityConfiguration<Parent>
     typealias SeverityLevels = SeverityLevelsConfiguration<Parent>
+    typealias StartWithLowercaseConfiguration = ChildOptionSeverityConfiguration<Parent>
 
     var consoleDescription: String {
-        var output = "(min_length) \(minLength.shortConsoleDescription), " +
+        "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription), " +
             "excluded: \(excludedRegularExpressions.map { $0.pattern }.sorted()), " +
-            "allowed_symbols: \(allowedSymbolsSet.sorted())"
-        if let requiresCaseCheck = validatesStartWithLowercase {
-            output += ", validates_start_with_lowercase: \(requiresCaseCheck.severity)"
-        }
-        return output
+            "allowed_symbols: \(allowedSymbolsSet.sorted()), " +
+            "validates_start_with_lowercase: \(validatesStartWithLowercase.consoleDescription)"
     }
 
     private(set) var minLength: SeverityLevels
     private(set) var maxLength: SeverityLevels
     private(set) var excludedRegularExpressions: Set<NSRegularExpression>
-    private(set) var validatesStartWithLowercase: SeverityConfiguration<Parent>?
+    private(set) var validatesStartWithLowercase: StartWithLowercaseConfiguration
     private var allowedSymbolsSet: Set<String>
 
     var minLengthThreshold: Int {
@@ -39,7 +37,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
          maxLengthError: Int,
          excluded: [String] = [],
          allowedSymbols: [String] = [],
-         validatesStartWithLowercase: Severity? = .error) {
+         validatesStartWithLowercase: StartWithLowercaseConfiguration = .error) {
         minLength = SeverityLevels(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevels(warning: maxLengthWarning, error: maxLengthError)
         self.excludedRegularExpressions = Set(excluded.compactMap {
@@ -70,12 +68,10 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
         }
 
         if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? String {
-            var severity = Severity.warning
-            try severity.apply(configuration: validatesStartWithLowercase)
-            self.validatesStartWithLowercase = severity
+            try self.validatesStartWithLowercase.apply(configuration: validatesStartWithLowercase)
         } else if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? Bool {
             // TODO: [05/10/2025] Remove deprecation warning after ~2 years.
-            self.validatesStartWithLowercase = validatesStartWithLowercase ? .error : nil
+            self.validatesStartWithLowercase = validatesStartWithLowercase ? .error : .off
             Issue.genericWarning(
                 """
                 The \"validates_start_with_lowercase\" configuration now expects a severity (warning or \

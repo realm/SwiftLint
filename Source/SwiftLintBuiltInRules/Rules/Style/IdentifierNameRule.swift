@@ -41,13 +41,15 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
             let type = self.type(for: kind)
             if !isFunction {
-                let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
-                if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
+                if !configuration.allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: name)) {
                     return [
                         StyleViolation(ruleDescription: description,
                                        severity: .error,
                                        location: Location(file: file, byteOffset: offset),
-                                       reason: "\(type) name '\(name)' should only contain alphanumeric characters")
+                                       reason: """
+                                            \(type) name '\(name)' should only contain alphanumeric and other \
+                                            allowed characters
+                                            """)
                     ]
                 }
 
@@ -64,9 +66,7 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 }
             }
 
-            let firstCharacterIsAllowed = configuration.allowedSymbols
-                .isSuperset(of: CharacterSet(charactersIn: String(firstCharacter)))
-            guard !firstCharacterIsAllowed else {
+            if configuration.allowedSymbols.contains(String(firstCharacter)) {
                 return []
             }
             if let caseCheckSeverity = configuration.validatesStartWithLowercase.severity,

@@ -59,6 +59,50 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
     }
 
+    func testStartsWithLowercaseCheck() {
+        let triggeringExamples = [
+            Example("↓let MyLet = 0"),
+            Example("enum Foo { case ↓MyCase }"),
+            Example("↓func IsOperator(name: String) -> Bool { true }")
+        ]
+        let nonTriggeringExamples = [
+            Example("let myLet = 0"),
+            Example("enum Foo { case myCase }"),
+            Example("func isOperator(name: String) -> Bool { true }")
+        ]
+
+        verifyRule(
+            IdentifierNameRule.description
+                .with(triggeringExamples: triggeringExamples)
+                .with(nonTriggeringExamples: nonTriggeringExamples),
+            ruleConfiguration: ["validates_start_with_lowercase": true]
+        )
+
+        verifyRule(
+            IdentifierNameRule.description
+                .with(triggeringExamples: [])
+                .with(nonTriggeringExamples: nonTriggeringExamples + triggeringExamples.removingViolationMarkers()),
+            ruleConfiguration: ["validates_start_with_lowercase": false]
+        )
+    }
+
+    func testStartsWithLowercaseCheckInCombinationWithAllowedSymbols() {
+        verifyRule(
+            IdentifierNameRule.description
+                .with(triggeringExamples: [
+                    Example("↓let OneLet = 0")
+                ])
+                .with(nonTriggeringExamples: [
+                    Example("let MyLet = 0"),
+                    Example("enum Foo { case myCase }")
+                ]),
+            ruleConfiguration: [
+                "validates_start_with_lowercase": true,
+                "allowed_symbols": ["M"]
+            ] as [String: Any]
+        )
+    }
+
     func testLinuxCrashOnEmojiNames() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamples = [

@@ -9,7 +9,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
         "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription), " +
             "excluded: \(excludedRegularExpressions.map { $0.pattern }.sorted()), " +
-            "allowed_symbols: \(allowedSymbolsSet.sorted()), " +
+            "allowed_symbols: \(allowedSymbols.sorted()), " +
             "validates_start_with_lowercase: \(validatesStartWithLowercase.consoleDescription)"
     }
 
@@ -17,7 +17,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     private(set) var maxLength: SeverityLevels
     private(set) var excludedRegularExpressions: Set<NSRegularExpression>
     private(set) var validatesStartWithLowercase: StartWithLowercaseConfiguration
-    private var allowedSymbolsSet: Set<String>
+    private(set) var allowedSymbols: Set<String>
 
     var minLengthThreshold: Int {
         return max(minLength.warning, minLength.error ?? minLength.warning)
@@ -27,8 +27,8 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
         return min(maxLength.warning, maxLength.error ?? maxLength.warning)
     }
 
-    var allowedSymbols: CharacterSet {
-        return CharacterSet(charactersIn: allowedSymbolsSet.joined())
+    var allowedSymbolsAndAlphanumerics: CharacterSet {
+        CharacterSet(charactersIn: allowedSymbols.joined()).union(.alphanumerics)
     }
 
     init(minLengthWarning: Int,
@@ -43,7 +43,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
         self.excludedRegularExpressions = Set(excluded.compactMap {
             try? NSRegularExpression.cached(pattern: "^\($0)$")
         })
-        self.allowedSymbolsSet = Set(allowedSymbols)
+        self.allowedSymbols = Set(allowedSymbols)
         self.validatesStartWithLowercase = validatesStartWithLowercase
     }
 
@@ -64,7 +64,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
             })
         }
         if let allowedSymbols = [String].array(of: configurationDict["allowed_symbols"]) {
-            self.allowedSymbolsSet = Set(allowedSymbols)
+            self.allowedSymbols = Set(allowedSymbols)
         }
 
         if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? String {

@@ -92,12 +92,10 @@ private extension TypeNameRule {
                 .strippingBackticks()
                 .strippingLeadingUnderscoreIfPrivate(modifiers: modifiers)
                 .strippingTrailingSwiftUIPreviewProvider(inheritedTypes: inheritedTypes)
-            let allowedSymbols = nameConfiguration.allowedSymbols.union(.alphanumerics)
-
-            if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
+            if !nameConfiguration.allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: name)) {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
-                    reason: "Type name '\(name)' should only contain alphanumeric characters",
+                    reason: "Type name '\(name)' should only contain alphanumeric and other allowed characters",
                     severity: .error
                 )
             } else if let caseCheckSeverity = nameConfiguration.validatesStartWithLowercase.severity,

@@ -66,12 +66,13 @@ private extension GenericTypeNameRule {
             let name = node.name.text
             guard !name.isEmpty, !configuration.shouldExclude(name: name) else { return }
 
-            let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
-            if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
+            if !configuration.allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: name)) {
                 violations.append(
                     ReasonedRuleViolation(
                         position: node.positionAfterSkippingLeadingTrivia,
-                        reason: "Generic type name '\(name)' should only contain alphanumeric characters",
+                        reason: """
+                            Generic type name '\(name)' should only contain alphanumeric and other allowed characters
+                            """,
                         severity: .error
                     )
                 )

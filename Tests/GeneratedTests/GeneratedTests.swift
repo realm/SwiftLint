@@ -626,9 +626,9 @@ class LineLengthRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-class LiteralExpressionEndIdentationRuleGeneratedTests: SwiftLintTestCase {
+class LiteralExpressionEndIndentationRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(LiteralExpressionEndIdentationRule.description)
+        verifyRule(LiteralExpressionEndIndentationRule.description)
     }
 }
 

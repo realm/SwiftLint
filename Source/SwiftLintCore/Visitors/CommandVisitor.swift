@@ -30,7 +30,7 @@ private extension Trivia {
         for trivia in self {
             triviaOffset += trivia.sourceLength
             switch trivia {
-            case .lineComment(let comment), .blockComment(let comment):
+            case .lineComment(let comment):
                 guard let lower = comment.range(of: "swiftlint:")?.lowerBound else {
                     break
                 }

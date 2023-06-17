@@ -29,6 +29,21 @@ class NameConfigurationTests: SwiftLintTestCase {
         }
     }
 
+    func testCaseCheck() throws {
+        var nameConfig = TesteeType(minLengthWarning: 0,
+                                    minLengthError: 0,
+                                    maxLengthWarning: 0,
+                                    maxLengthError: 0)
+
+        XCTAssertEqual(nameConfig.validatesStartWithLowercase, .error)
+
+        try nameConfig.apply(configuration: ["validates_start_with_lowercase": "off"])
+        XCTAssertEqual(nameConfig.validatesStartWithLowercase, .off)
+
+        try nameConfig.apply(configuration: ["validates_start_with_lowercase": "warning"])
+        XCTAssertEqual(nameConfig.validatesStartWithLowercase, .warning)
+    }
+
     func testNameConfigurationWithDeprecatedBooleanSeverity() throws {
         var nameConfig = TesteeType(minLengthWarning: 0,
                                     minLengthError: 0,
@@ -38,7 +53,7 @@ class NameConfigurationTests: SwiftLintTestCase {
         XCTAssertEqual(nameConfig.validatesStartWithLowercase, .error)
 
         try nameConfig.apply(configuration: ["validates_start_with_lowercase": false])
-        XCTAssertNil(nameConfig.validatesStartWithLowercase)
+        XCTAssertEqual(nameConfig.validatesStartWithLowercase, .off)
 
         try nameConfig.apply(configuration: ["validates_start_with_lowercase": true])
         XCTAssertEqual(nameConfig.validatesStartWithLowercase, .error)

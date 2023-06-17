@@ -100,12 +100,12 @@ private extension TypeNameRule {
                     reason: "Type name '\(name)' should only contain alphanumeric characters",
                     severity: .error
                 )
-            } else if let requiresCaseCheck = nameConfiguration.validatesStartWithLowercase,
+            } else if let caseCheckSeverity = nameConfiguration.validatesStartWithLowercase.severity,
                 name.first?.isLowercase == true {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
                     reason: "Type name '\(name)' should start with an uppercase character",
-                    severity: requiresCaseCheck.severity
+                    severity: caseCheckSeverity
                 )
             } else if let severity = nameConfiguration.severity(forLength: name.count) {
                 return ReasonedRuleViolation(

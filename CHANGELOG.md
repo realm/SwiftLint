@@ -32,6 +32,11 @@
 
 #### Bug Fixes
 
+* The option `validates_start_with_lowercase` can now be disabled by setting it
+  to `off`.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5036](https://github.com/realm/SwiftLint/issues/5036)
+
 * Do not trigger `prefer_self_in_static_references` rule on `typealias`
   declarations in classes.  
   [SimplyDanny](https://github.com/SimplyDanny)

@@ -32,18 +32,14 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         return validateName(dictionary: dictionary, kind: kind).map { name, offset in
-            guard let firstCharacter = name.first else { return [] }
-
-            guard !configuration.shouldExclude(name: name) else { return [] }
-
-            let isFunction = SwiftDeclarationKind.functionKinds.contains(kind)
-            let description = Self.description
-
+            guard let firstCharacter = name.first, !configuration.shouldExclude(name: name) else {
+                return []
+            }
             let type = self.type(for: kind)
-            if !isFunction {
+            if !SwiftDeclarationKind.functionKinds.contains(kind) {
                 if !configuration.allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: name)) {
                     return [
-                        StyleViolation(ruleDescription: description,
+                        StyleViolation(ruleDescription: Self.description,
                                        severity: .error,
                                        location: Location(file: file, byteOffset: offset),
                                        reason: """
@@ -73,7 +69,7 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 kind != .varStatic && name.isViolatingCase && !name.isOperator {
                 let reason = "\(type) name '\(name)' should start with a lowercase character"
                 return [
-                    StyleViolation(ruleDescription: description,
+                    StyleViolation(ruleDescription: Self.description,
                                    severity: caseCheckSeverity,
                                    location: Location(file: file, byteOffset: offset),
                                    reason: reason)

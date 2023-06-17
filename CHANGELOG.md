@@ -245,15 +245,6 @@
   declarations in classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5009](https://github.com/realm/SwiftLint/issues/5009)
-* Fix false positives for superfluous_disable_command, and removed
-  support for disable and enable commands in multline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
-
-* Fix false positives for superfluous_disable_command, and removed
-  support for disable and enable commands in multline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * Do not trigger `prefer_self_in_static_references` rule on collection types in
   classes, but on initializers like `[C]()` in all types.  
@@ -274,8 +265,9 @@
   a predicate.  
   [woxtu](https://github.com/woxtu)
   [#3023](https://github.com/realm/SwiftLint/issues/3023)
+
 * Fix false positives for superfluous_disable_command, and removed
-  support for disable and enable commands in multiline comments.  
+  support for disable and enable commands in multline comments.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
@@ -415,7 +407,7 @@
   subclasses.  
   [AndrewDMontgomery](https://github.com/andrewdmontgomery)
   [#4875](https://github.com/realm/SwiftLint/pull/4875)
-
+  
 * Prepend `warning: ` to error messages so that they show in Xcode.  
   [whiteio](https://github.com/whiteio)
   [#4923](https://github.com/realm/SwiftLint/issues/4923)
@@ -474,8 +466,8 @@
   At the same time, make it an opt-in rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4615](https://github.com/realm/SwiftLint/issues/4615)
-
-* Interpret strings in `excluded` option of `identifier_name`,
+  
+* Interpret strings in `excluded` option of `identifier_name`, 
   `type_name` and `generic_type_name` rules as regular expression. Existing
   configurations should remain working without notice as long as they don't
   contain characters that must be escaped in regular expression.  

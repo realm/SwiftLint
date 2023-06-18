@@ -21,8 +21,6 @@ struct ReduceIntoInsteadOfLoop: ConfigurationProviderRule, SwiftSyntaxRule, OptI
 
 fileprivate extension ReduceIntoInsteadOfLoop {
     final class Visitor: ViolationsSyntaxVisitor {
-        /// Collects all VariableDecl of collection types, finds a ForInStmt, and checks if the ForInStmts
-        /// body references one of the earlier encounterd VariableDecls.
         override func visitPost(_ node: CodeBlockItemListSyntax) {
             // reduce into forInStmts and variableDecls map
             guard let all = node.allVariableDeclsForInStatmts() else {
@@ -30,9 +28,7 @@ fileprivate extension ReduceIntoInsteadOfLoop {
             }
             // reduce variableDecls into the ones we're interested in
             let selected = all.reduce(into: [ForInStmtSyntax: [VariableDeclSyntax]]()) { partialResult, element in
-                // we're interested in a couple of variable decls:
-                // * fully type declared
-                // * implicitly declared by initializer
+                // we're interested fully type declared and implicitly declared by initializer
                 let interestingVariableDecls = element.value.filter { variableDecl in
                     return variableDecl.isTypeAnnotatedAndInitializer
                         || variableDecl.isCollectionTypeInitializer
@@ -98,8 +94,7 @@ private extension CodeBlockItemListSyntax {
         guard !indexed.isEmpty else {
             return nil
         }
-        // Attach VariableDecls to ForInStmt. Note that we only attach VariableDecls that
-        // are at the same level of scope of the ForInStmt.
+        // only VariableDecls on same level of scope of the ForInStmt.
         let result = self.reduce(into: [ForInStmtSyntax: [VariableDeclSyntax]]()) { partialResult, codeBlockItem in
             guard let variableDecl = codeBlockItem.as(VariableDeclSyntax.self) else {
                 return
@@ -119,9 +114,7 @@ private extension CodeBlockItemListSyntax {
 }
 
 private extension VariableDeclSyntax {
-    /// Is type declared with initializer
-    /// E.g:
-    ///  `: Set<> = []`, `: Array<> = []`, or `: Dictionary<> = [:]`
+    /// Is type declared with initializer: `: Set<> = []`, `: Array<> = []`, or `: Dictionary<> = [:]`
     var isTypeAnnotatedAndInitializer: Bool {
         guard self.isVar && self.identifier != nil,
               let idIndex = self.firstIndexOf(IdentifierPatternSyntax.self) else {
@@ -137,9 +130,7 @@ private extension VariableDeclSyntax {
         return initializerClause.isTypeInitializer(for: type)
     }
 
-    /// Is initialized with empty collection
-    /// E.g.
-    /// `= Set<Int>(), = Array<Int>(), = Dictionary[:]`
+    /// Is initialized with empty collection: `= Set<Int>(), = Array<Int>(), = Dictionary[:]`
     /// but a couple of more, see `InitializerClauseExprSyntax.isCollectionInitializer`
     var isCollectionTypeInitializer: Bool {
         guard self.isVar && self.identifier != nil,
@@ -167,7 +158,6 @@ private extension VariableDeclSyntax {
 }
 
 private extension TypeAnnotationSyntax {
-    /// Returns collection's type name, or `nil` if unknown
     func collectionDeclarationType() -> CollectionType? {
         if let genericTypeName = self.genericCollectionDeclarationType() {
             return genericTypeName
@@ -180,9 +170,7 @@ private extension TypeAnnotationSyntax {
         }
     }
 
-    /// var x: Set<>
-    /// var x: Array<>
-    /// var x: Dictionary<>
+    /// var x: Set<>, var x: Array<>, var x: Dictionary<>
     func genericCollectionDeclarationType() -> CollectionType? {
         guard let simpleTypeIdentifier = self.type.as(SimpleTypeIdentifierSyntax.self),
               let genericArgumentClause = simpleTypeIdentifier.genericArgumentClause,
@@ -221,16 +209,11 @@ private extension TypeAnnotationSyntax {
 
 private extension InitializerClauseSyntax {
     /// ---
-    /// If `nil` we don't know the type and investigate the following, which is a
-    /// `FunctionCallExpr`:
-    ///
+    /// If `nil` we don't know the type and investigate the following, which is a`FunctionCallExpr`:
     ///     var x = Set<T>(...)
     ///     var y = Array<T>(...)
     ///     var z = Dictionary<K, V>(...)
-    ///
-    /// Otherwise we investigate, which checks for `FunctionCallExpr`,
-    /// `MemberAccessExpr`, `DictionaryExpr` and `ArrayExpr`:
-    ///
+    /// Otherwise checks for `FunctionCallExpr`,`MemberAccessExpr`,`DictionaryExpr` and `ArrayExpr`:
     /// 1. `= Set<T>(...)`  | `Set(...)`  |  `.init(...)`  |  `[]`
     /// 2. `= Array<T>(...)` | `Array(...)` | `.init(...)` | `[]`
     /// 3. `= Dictionary<K, V>()` | `Dictionary()` | `.init(..)` | `[:]`
@@ -242,9 +225,7 @@ private extension InitializerClauseSyntax {
                 return CollectionType.names[name] != nil
             }
         }
-        guard self.equal.tokenKind == .equal else {
-            return false
-        }
+        guard self.equal.tokenKind == .equal else { return false }
         if let functionCallExpr = self.value.as(FunctionCallExprSyntax.self) {
             // either construction using explicit specialisation, or general construction
             if let specializeExpr = functionCallExpr.calledExpression.as(SpecializeExprSyntax.self),
@@ -270,24 +251,18 @@ private extension InitializerClauseSyntax {
 }
 
 private extension ForInStmtSyntax {
-    /// Checks whether a ForInStmtSyntax references the vars in `variables`.
-    /// Defers to `CodeBlockItemSyntax.referencedVariable(for:)`
     func referencedVariables(for variables: [VariableDeclSyntax]?) -> Set<ReferencedVariable>? {
         guard let variables, !variables.isEmpty,
               let codeBlock = self.body.as(CodeBlockSyntax.self),
               let codeBlockItemList = codeBlock.statements.as(CodeBlockItemListSyntax.self) else {
             return nil
         }
-        // check whether each of the items references a var
         let references: Set<ReferencedVariable> = codeBlockItemList.reduce(into: .init(), { partialResult, codeBlock in
-            // see if each codeblock item references variable
-            // one variable reference should be plenty, so it covers semicolon-ized statements:
-            // someMutation(); someOtherMutation()
+            // no need to cover one liner: someMutation(); someOtherMutation()
             variables.forEach { variableDecl in
-                guard let referenced = codeBlock.referencedVariable(for: variableDecl) else {
-                    return
+                if let referenced = codeBlock.referencedVariable(for: variableDecl) {
+                    partialResult.insert(referenced)
                 }
-                partialResult.insert(referenced)
             }
         })
         return references.isEmpty ? nil : references

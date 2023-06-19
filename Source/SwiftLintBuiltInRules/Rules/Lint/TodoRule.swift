@@ -46,7 +46,7 @@ private extension Trivia {
         var violations = [ReasonedRuleViolation]()
         for piece in self {
             violations.append(contentsOf: piece.violations(offset: position))
-            position = position.advanced(by: piece.sourceLength.utf8Length)
+            position += piece.sourceLength
         }
         return violations
     }
@@ -60,12 +60,11 @@ private extension TriviaPiece {
                 .lineComment(let comment),
                 .docBlockComment(let comment),
                 .docLineComment(let comment):
-            var violations = [ReasonedRuleViolation]()
-            // swiftlint:disable:next force_try
-            for result in try! NSRegularExpression.cached(pattern: #"\b((?:TODO|FIXME)(?::|\b))"#)
-                .matches(in: comment, range: NSRange(comment.startIndex..., in: comment)) {
-                guard let annotationRange = Range(result.range(at: 1), in: comment) else {
-                    break
+            let matches = regex(#"\b((?:TODO|FIXME)(?::|\b))"#)
+                .matches(in: comment, range: comment.bridge().fullNSRange)
+            return matches.reduce(into: []) { violations, match in
+                guard let annotationRange = Range(match.range(at: 1), in: comment) else {
+                    return
                 }
 
                 let maxLengthOfMessage = 30
@@ -84,14 +83,12 @@ private extension TriviaPiece {
                     reason = "\(kind) should be resolved (\(message))"
                 }
 
-                violations.append(ReasonedRuleViolation(
+                let violation = ReasonedRuleViolation(
                     position: offset.advanced(by: comment[..<annotationRange.lowerBound].utf8.count),
                     reason: reason
-                ))
+                )
+                violations.append(violation)
             }
-
-            return violations
-
         default:
             return []
         }
@@ -101,8 +98,8 @@ private extension TriviaPiece {
 private extension String {
     func truncated(maxLength: Int) -> String {
         if utf16.count > maxLength {
-            let index = index(startIndex, offsetBy: maxLength, limitedBy: endIndex) ?? endIndex
-            return self[..<index] + "..."
+            let end = index(startIndex, offsetBy: maxLength, limitedBy: endIndex) ?? endIndex
+            return self[..<end] + "..."
         } else {
             return self
         }

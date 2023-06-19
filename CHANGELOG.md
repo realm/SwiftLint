@@ -387,6 +387,10 @@
 
 #### Enhancements
 
+* Extend `implicitly_unwrapped_optional` rule with a new mode `weak_except_iboutlets`
+  that only checks `weak` variable with force-unwrapping operator.
+  [Ricky Tan](https://github.com/rickytan)
+
 * Add new `superfluous_else` rule that triggers on `if`-statements when an
   attached `else`-block can be removed, because all branches of the previous
   `if`-block(s) would certainly exit the current scope already.  

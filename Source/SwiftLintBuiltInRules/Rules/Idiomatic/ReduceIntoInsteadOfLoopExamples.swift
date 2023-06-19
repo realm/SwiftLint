@@ -1,22 +1,4 @@
-//    var encountered1: Set<Int> = []
-//    var encountered1a = Set<Int>()
-//    var encountered1b: Set<Int> = Set()
-//    var encountered1c: Set<Int> = .init()
-//    var encountered2: [String] = []
-//    var encountered2a = [String]()
-//    var encountered2b: [String] = [1, 2, 3, 4]
-//    var encountered2c: [String] = Array<String>(contentsOf: other)
-//    var encountered3: Array<String> = []
-//    var encountered4: Dictionary<Int, String> = []
-//    var encountered4b: [String: Int] = [:]
-//    var encountered4c: [String: Int] = ["2": 2, "3": 3]
-//    for eachN in someArray {
-//        encountered.insert(eachN)
-//        encountered1[2] = 45
-//        let newSet = encountered.popFirst()
-//    }
-
-internal extension ReduceIntoInsteadOfLoop {
+internal struct ReduceIntoInsteadOfLoopExamples {
     static let nonTriggeringExamples: [Example] = [
 //        Example("""
 //        class Foo {
@@ -77,4 +59,20 @@ internal extension ReduceIntoInsteadOfLoop {
     ]
 }
 
-
+//    var encountered1: Set<Int> = []
+//    var encountered1a = Set<Int>()
+//    var encountered1b: Set<Int> = Set()
+//    var encountered1c: Set<Int> = .init()
+//    var encountered2: [String] = []
+//    var encountered2a = [String]()
+//    var encountered2b: [String] = [1, 2, 3, 4]
+//    var encountered2c: [String] = Array<String>(contentsOf: other)
+//    var encountered3: Array<String> = []
+//    var encountered4: Dictionary<Int, String> = []
+//    var encountered4b: [String: Int] = [:]
+//    var encountered4c: [String: Int] = ["2": 2, "3": 3]
+//    for eachN in someArray {
+//        encountered.insert(eachN)
+//        encountered1[2] = 45
+//        let newSet = encountered.popFirst()
+//    }

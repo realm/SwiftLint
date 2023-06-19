@@ -8,8 +8,8 @@ struct ReduceIntoInsteadOfLoop: ConfigurationProviderRule, SwiftSyntaxRule, OptI
         name: "Reduce Into Instead Of Loop",
         description: "Prefer using reduce(into:) instead of a loop",
         kind: .idiomatic,
-        nonTriggeringExamples: nonTriggeringExamples,
-        triggeringExamples: triggeringExamples
+        nonTriggeringExamples: ReduceIntoInsteadOfLoopExamples.nonTriggeringExamples,
+        triggeringExamples: ReduceIntoInsteadOfLoopExamples.triggeringExamples
     )
 
     init() {}

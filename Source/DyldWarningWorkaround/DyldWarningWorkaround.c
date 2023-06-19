@@ -12,4 +12,9 @@ OBJC_DUPCLASS(_TtC11SwiftSyntax23SourceLocationConverter);
 OBJC_DUPCLASS(_TtC11SwiftSyntax26IncrementalParseTransition);
 OBJC_DUPCLASS(_TtC11SwiftSyntax35IncrementalParseReusedNodeCollector);
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wexcess-initializers"
+OBJC_DUPCLASS(_TtC11SwiftParserP33_78149DB072C20084E7D780D86E26C3AF41StringLiteralExpressionIndentationChecker);
+#pragma clang diagnostic pop
+
 #endif // __APPLE__

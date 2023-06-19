@@ -228,6 +228,9 @@
   `unallowed_symbols_severity`. It accepts the two values `warning` and `error`
   (default) as usual.  
   [SimplyDanny](https://github.com/SimplyDanny)
+* Extend `implicitly_unwrapped_optional` rule with a new mode `weak_except_iboutlets`
+  that only checks `weak` variable with force-unwrapping operator.
+  [Ricky Tan](https://github.com/rickytan)
 
 * Mention a rule's identifier in the console message that is printed when the
   rule's associated configuration entry contains invalid values.  
@@ -386,10 +389,6 @@
 * None.
 
 #### Enhancements
-
-* Extend `implicitly_unwrapped_optional` rule with a new mode `weak_except_iboutlets`
-  that only checks `weak` variable with force-unwrapping operator.
-  [Ricky Tan](https://github.com/rickytan)
 
 * Add new `superfluous_else` rule that triggers on `if`-statements when an
   attached `else`-block can be removed, because all branches of the previous

@@ -47,7 +47,7 @@ private extension UnneededSynthesizedInitializerRule {
             violations += node.unneededInitializers.map {
                 let initializerType = $0.parameterList.isEmpty ? "default" : "memberwise"
                 let reason = "This \(initializerType) initializer would be synthesized automatically - " +
-                "you do not need to define it"
+                    "you do not need to define it"
                 return ReasonedRuleViolation(position: $0.positionAfterSkippingLeadingTrivia, reason: reason)
             }
             return .skipChildren

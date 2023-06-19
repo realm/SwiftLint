@@ -50,7 +50,7 @@ private extension UnneededSynthesizedInitializerRule {
                     "you do not need to define it"
                 return ReasonedRuleViolation(position: $0.positionAfterSkippingLeadingTrivia, reason: reason)
             }
-            return .skipChildren
+            return .visitChildren
         }
     }
 

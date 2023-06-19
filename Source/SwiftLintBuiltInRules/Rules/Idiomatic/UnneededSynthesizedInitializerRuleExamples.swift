@@ -289,6 +289,17 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
+                """),
+        Example("""
+                struct Outer {
+                    struct Inner {
+                        let prop: Int
+
+                       ↓init(prop: Int) {
+                            self.prop = prop
+                        }
+                    }
+                }
                 """)
     ]
 
@@ -423,6 +434,23 @@ enum UnneededSynthesizedInitializerRuleExamples {
                               struct Foo {
                                   var bar: String = ""
                               }
-                              """)
+                              """),
+        Example("""
+                struct Outer {
+                    struct Inner {
+                        let prop: Int
+
+                       ↓init(prop: Int) {
+                            self.prop = prop
+                        }
+                    }
+                }
+                """): Example("""
+                struct Outer {
+                    struct Inner {
+                        let prop: Int
+                    }
+                }
+                """)
     ]
 }

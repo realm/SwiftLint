@@ -1,13 +1,8 @@
-//
-//  ReduceIntoInsteadOfLoop+Models.swift
-//  SwiftLintBuiltInRules
-//
-//  Created by Alfons Hoogervorst on 19/06/2023.
-//
 import SwiftSyntax
 
+typealias ReduceIntoInsteadOfLoopModels = ReduceIntoInsteadOfLoop
+
 internal extension ReduceIntoInsteadOfLoop {
-    
     struct ReferencedVariable: Hashable {
         let name: String
         let position: AbsolutePosition
@@ -18,21 +13,21 @@ internal extension ReduceIntoInsteadOfLoop {
             hasher.combine(self.position.utf8Offset)
             hasher.combine(self.kind)
         }
+    }
 
-        enum Kind: Hashable {
-            case method(name: String, arguments: Int)
-            case assignment(subscript: Bool)
+    enum Kind: Hashable {
+        case method(name: String, arguments: Int)
+        case assignment(subscript: Bool)
 
-            func hash(into hasher: inout Hasher) {
-                switch self {
-                case let .method(name, arguments):
-                    hasher.combine("method")
-                    hasher.combine(name)
-                    hasher.combine(arguments)
-                case let .assignment(`subscript`):
-                    hasher.combine("assignment")
-                    hasher.combine(`subscript`)
-                }
+        func hash(into hasher: inout Hasher) {
+            switch self {
+            case let .method(name, arguments):
+                hasher.combine("method")
+                hasher.combine(name)
+                hasher.combine(arguments)
+            case let .assignment(`subscript`):
+                hasher.combine("assignment")
+                hasher.combine(`subscript`)
             }
         }
     }
@@ -57,5 +52,4 @@ internal extension ReduceIntoInsteadOfLoop {
             }
         }()
     }
-
 }

@@ -25,7 +25,7 @@
   (e.g. `@testable`, `@_exported`, ...).  
   [hiltonc](https://github.com/hiltonc)
 
-* Add new `--quiet-deprecation-warnings` flag that silences deprecation
+* Add new `--silence-deprecation-warnings` flag that silences deprecation
   warnings that would otherwise be printed to the console.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4989](https://github.com/realm/SwiftLint/issues/4989)

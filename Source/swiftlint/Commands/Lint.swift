@@ -13,6 +13,8 @@ extension SwiftLint {
         var useSTDIN = false
         @Flag(help: quietOptionDescription(for: .lint))
         var quiet = false
+        @Flag(help: "Don't print deprecation warnings.")
+        var silenceDeprecationWarnings = false
         @Option(help: "The directory of the cache used when linting.")
         var cachePath: String?
         @Flag(help: "Ignore cache when linting.")
@@ -23,6 +25,8 @@ extension SwiftLint {
         var paths = [String]()
 
         func run() async throws {
+            Issue.printDeprecationWarnings = !silenceDeprecationWarnings
+
             let allPaths: [String]
             if let path {
                 // TODO: [06/14/2024] Remove deprecation warning after ~2 years.

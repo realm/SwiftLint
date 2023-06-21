@@ -25,12 +25,6 @@
   (e.g. `@testable`, `@_exported`, ...).  
   [hiltonc](https://github.com/hiltonc)
 
-* Adds an `unneeded_synthesized_initializer` rule, based on
-  `swift-format`'s `UseSynthesizedInitializer` rule, which warns
-  when a defined default or memberwise initializer would have been
-  automatically synthesized.  
-  [Martin Redington](https://github.com/mildm8nnered)
-
 * Add new `--silence-deprecation-warnings` flag that silences deprecation
   warnings that would otherwise be printed to the console.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -43,6 +37,12 @@
 
 * Rewrite `todo` rule with SwiftSyntax.  
   [woxtu](https://github.com/woxtu)
+
+* Adds an `unneeded_synthesized_initializer` rule, based on
+  `swift-format`'s `UseSynthesizedInitializer` rule, which warns
+  when a defined default or memberwise initializer would have been
+  automatically synthesized.  
+  [Martin Redington](https://github.com/mildm8nnered)
 
 #### Bug Fixes
 

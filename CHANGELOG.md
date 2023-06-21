@@ -10,7 +10,10 @@
 
 #### Enhancements
 
-* None.
+* Handle static `spec` methods in `quick_discouraged_call` rule. The method
+  type changed from an instance method to a class method in Quick 7.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5072](https://github.com/realm/SwiftLint/issues/5072)
 
 #### Bug Fixes
 

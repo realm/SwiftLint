@@ -187,6 +187,15 @@ internal struct QuickDiscouragedCallRuleExamples {
         """),
         Example("""
         class TotoTests: QuickSpec {
+           override static func spec() {
+               describe("foo") {
+                   let foo = ↓Foo()
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
                    let foo = ↓Foo()

@@ -177,9 +177,3 @@ private class ExplicitSelfVisitor: DeclaredIdentifiersTrackingVisitor {
         || selfCaptureKind == .weak && SwiftVersion.current >= .fiveDotEight
     }
 }
-
-private extension MemberAccessExprSyntax {
-    var isBaseSelf: Bool {
-        base?.as(IdentifierExprSyntax.self)?.isSelf == true
-    }
-}

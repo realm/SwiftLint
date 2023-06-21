@@ -1238,6 +1238,12 @@ class UnneededParenthesesInClosureArgumentRuleGeneratedTests: SwiftLintTestCase 
     }
 }
 
+class UnneededSynthesizedInitializerRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnneededSynthesizedInitializerRule.description)
+    }
+}
+
 class UnownedVariableCaptureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnownedVariableCaptureRule.description)

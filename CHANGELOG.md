@@ -38,6 +38,12 @@
 * Rewrite `todo` rule with SwiftSyntax.  
   [woxtu](https://github.com/woxtu)
 
+* Adds an `unneeded_synthesized_initializer` rule, based on
+  `swift-format`'s `UseSynthesizedInitializer` rule, which warns
+  when a defined default or memberwise initializer would have been
+  automatically synthesized.  
+  [Martin Redington](https://github.com/mildm8nnered)
+
 #### Bug Fixes
 
 * The option `validates_start_with_lowercase` can now be disabled by setting it

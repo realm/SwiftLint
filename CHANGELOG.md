@@ -267,7 +267,7 @@
   [#3023](https://github.com/realm/SwiftLint/issues/3023)
 
 * Fix false positives for superfluous_disable_command, and removed
-  support for disable and enable commands in multline comments.  
+  support for disable and enable commands in multiline comments.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4798](https://github.com/realm/SwiftLint/issues/4798)
 

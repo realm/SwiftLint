@@ -1,3 +1,21 @@
+## Main
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
 ## 0.52.3: Duplicate Hampers
 
 #### Breaking

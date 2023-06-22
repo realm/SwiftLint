@@ -14,7 +14,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positives for the `unneeded_synthesized_initializer` rule, when
+  no argument initializers had side-effects.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5075](https://github.com/realm/SwiftLint/issues/5075)
 
 ## 0.52.3: Duplicate Hampers
 

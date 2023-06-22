@@ -139,6 +139,7 @@ extension SwiftLint {
                 inProcessSourcekit: false
             )
 
+            Issue.printDeprecationWarnings = false
             let violations = try await LintOrAnalyzeCommand.lintOrAnalyze(options)
             if violations.isNotEmpty {
                 if askUser("\nDo you want to disable all of the SwiftLint rules with existing violations?") {

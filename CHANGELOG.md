@@ -10,6 +10,11 @@
 
 #### Enhancements
 
+* Make severity for unallowed symbols configurable. The option name is
+  `unallowed_symbols_severity`. It accepts the two values `warning` and `error`
+  (default) as usual.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Mention a rule's identifier in the console message that is printed when the
   rule's associated configuration entry contains invalid values.  
   [SimplyDanny](https://github.com/SimplyDanny)

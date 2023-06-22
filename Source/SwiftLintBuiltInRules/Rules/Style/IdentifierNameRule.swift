@@ -40,7 +40,7 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 if !configuration.allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: name)) {
                     return [
                         StyleViolation(ruleDescription: Self.description,
-                                       severity: .error,
+                                       severity: configuration.unallowedSymbolsSeverity.severity,
                                        location: Location(file: file, byteOffset: offset),
                                        reason: """
                                             \(type) name '\(name)' should only contain alphanumeric and other \

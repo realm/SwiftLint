@@ -87,4 +87,17 @@ class NameConfigurationTests: SwiftLintTestCase {
                                     excluded: [])
         XCTAssertEqual(nameConfig.maxLengthThreshold, 7)
     }
+
+    func testUnallowedSymbolsSeverity() throws {
+        var nameConfig = TesteeType(minLengthWarning: 3,
+                                    minLengthError: 1,
+                                    maxLengthWarning: 17,
+                                    maxLengthError: 22,
+                                    unallowedSymbolsSeverity: .warning)
+        XCTAssertEqual(nameConfig.unallowedSymbolsSeverity, .warning)
+
+        try nameConfig.apply(configuration: ["unallowed_symbols_severity": "error"])
+
+        XCTAssertEqual(nameConfig.unallowedSymbolsSeverity, .error)
+    }
 }

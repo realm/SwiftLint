@@ -76,6 +76,12 @@
   [woxtu](https://github.com/woxtu)
   [#3023](https://github.com/realm/SwiftLint/issues/3023)
 
+* Work around dyld warning about duplicate SwiftSyntax classes with Xcode 15
+  betas.  
+  [keith](https://github.com/keith)
+  [JP Simard](https://github.com/jpsim)
+  [#4782](https://github.com/realm/SwiftLint/issues/4782)
+
 ## 0.52.2: Crisper Clearer Pleats
 
 #### Breaking

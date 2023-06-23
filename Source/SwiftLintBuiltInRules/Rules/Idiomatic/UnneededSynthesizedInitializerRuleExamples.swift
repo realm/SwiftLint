@@ -180,6 +180,23 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
+                """),
+        Example("""
+                struct Foo {
+                    init() {
+                        print("perform side effect")
+                    }
+                }
+                """),
+        Example("""
+                struct Foo {
+                    var bar: Int = 0
+
+                    init(bar: Int = 0) {
+                        self.bar = bar
+                        print("perform side effect")
+                    }
+                }
                 """)
     ]
 

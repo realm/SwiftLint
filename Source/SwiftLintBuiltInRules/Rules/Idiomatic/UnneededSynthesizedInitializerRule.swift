@@ -120,7 +120,8 @@ private extension StructDeclSyntax {
 
         return initializers.filter {
             self.initializerParameters($0.parameterList, match: storedProperties) &&
-            ($0.parameterList.isEmpty || initializerBody($0.body, matches: storedProperties)) &&
+            (($0.parameterList.isEmpty && hasNoSideEffects($0.body)) ||
+             initializerBody($0.body, matches: storedProperties)) &&
             initializerModifiers($0.modifiers, match: storedProperties) && !$0.isInlinable
         }
     }
@@ -213,6 +214,13 @@ private extension StructDeclSyntax {
             statements.remove(at: idx)
         }
         return statements.isEmpty
+    }
+
+    private func hasNoSideEffects(_ initializerBody: CodeBlockSyntax?) -> Bool {
+        guard let initializerBody else {
+            return true
+        }
+        return initializerBody.statements.isEmpty
     }
 
     // Does the actual access level of an initializer match the access level of the synthesized

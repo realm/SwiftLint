@@ -222,7 +222,6 @@ private extension StructDeclSyntax {
         return initializerBody.statements.isEmpty
     }
 
-
     // Does the actual access level of an initializer match the access level of the synthesized
     // memberwise initializer?
     private func initializerModifiers(

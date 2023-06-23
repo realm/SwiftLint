@@ -174,6 +174,10 @@
   trailing comments.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5081](https://github.com/realm/SwiftLint/issues/5081)
+* Fix false positives for superfluous_disable_command, and removed
+  support for disable and enable commands in multiline comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * Fix false positives for the `private_subject` rule when creating subjects
   inside initializers.  
@@ -265,11 +269,6 @@
   a predicate.  
   [woxtu](https://github.com/woxtu)
   [#3023](https://github.com/realm/SwiftLint/issues/3023)
-
-* Fix false positives for superfluous_disable_command, and removed
-  support for disable and enable commands in multiline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * Work around dyld warning about duplicate SwiftSyntax classes with Xcode 15
   betas.  

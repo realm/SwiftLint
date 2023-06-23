@@ -20,10 +20,11 @@ struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
         }
 
         let specDeclarations = testClasses.flatMap { classDict in
-            return classDict.substructure.filter {
-                return $0.name == "spec()" && $0.enclosedVarParameters.isEmpty &&
-                    $0.declarationKind == .functionMethodInstance &&
-                    $0.enclosedSwiftAttributes.contains(.override)
+            classDict.substructure.filter { structure in
+                   structure.name == "spec()"
+                && structure.enclosedVarParameters.isEmpty
+                && [.functionMethodInstance, .functionMethodStatic].contains(structure.declarationKind)
+                && structure.enclosedSwiftAttributes.contains(.override)
             }
         }
 

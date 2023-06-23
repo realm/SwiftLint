@@ -120,7 +120,8 @@ private extension StructDeclSyntax {
 
         return initializers.filter {
             self.initializerParameters($0.parameterList, match: storedProperties) &&
-            (($0.parameterList.isEmpty && hasNoSideEffects($0.body)) || initializerBody($0.body, matches: storedProperties)) &&
+            (($0.parameterList.isEmpty && hasNoSideEffects($0.body)) ||
+             initializerBody($0.body, matches: storedProperties)) &&
             initializerModifiers($0.modifiers, match: storedProperties) && !$0.isInlinable
         }
     }

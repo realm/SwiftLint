@@ -33,7 +33,7 @@ extension SwiftLint {
             ExitHelper.successfullyExit()
         }
 
-        func configure() async throws -> Bool {
+        private func configure() async throws -> Bool {
             doYouWantToContinue("Welcome to SwiftLint! Do you want to continue?")
             checkForExistingConfiguration()
             checkForExistingChildConfigurations()
@@ -108,6 +108,21 @@ extension SwiftLint {
 
         private func rulesToDisable(_ topLevelDirectories: [String]) async throws -> [String] {
             var ruleIdentifiersToDisable: [String] = []
+            if topLevelDirectories.isNotEmpty {
+                ruleIdentifiersToDisable.append(contentsOf: try await checkExistingViolations(topLevelDirectories))
+            }
+            let deprecatedRuleIdentifiers = Set(RuleRegistry.shared.deprecatedRuleIdentifiers)
+            let undisableDeprecatedRuleIdentifiers = deprecatedRuleIdentifiers.subtracting(ruleIdentifiersToDisable)
+            if undisableDeprecatedRuleIdentifiers.isNotEmpty {
+                if askUser("\nDo you want to disable any deprecated rules?") {
+                    ruleIdentifiersToDisable.append(contentsOf: undisableDeprecatedRuleIdentifiers.sorted())
+                }
+            }
+            return ruleIdentifiersToDisable
+        }
+
+        private func checkExistingViolations(_ topLevelDirectories: [String]) async throws -> [String] {
+            var ruleIdentifiersToDisable: [String] = []
             print("Checking for violations. This may take some time.")
             let configuration = try writeTemporaryConfigurationFile(topLevelDirectories)
             defer {
@@ -154,13 +169,6 @@ extension SwiftLint {
                 }
             }
 
-            let deprecatedRuleIdentifiers = Set(RuleRegistry.shared.deprecatedRuleIdentifiers)
-            let undisableDeprecatedRuleIdentifiers = deprecatedRuleIdentifiers.subtracting(ruleIdentifiersToDisable)
-            if undisableDeprecatedRuleIdentifiers.isNotEmpty {
-                if askUser("\nDo you want to disable any deprecated rules?") {
-                    ruleIdentifiersToDisable.append(contentsOf: undisableDeprecatedRuleIdentifiers.sorted())
-                }
-            }
             return ruleIdentifiersToDisable
         }
 

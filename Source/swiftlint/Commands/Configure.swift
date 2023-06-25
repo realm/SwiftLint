@@ -96,8 +96,7 @@ extension SwiftLint {
                     return selectedDirectories
                 }
             } else {
-                print("No .swift files found.")
-                doYouWantToContinue("\nDo you want to continue?")
+                doYouWantToContinue("No .swift files found. Do you want to continue?")
                 return []
             }
         }

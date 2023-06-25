@@ -125,7 +125,7 @@ extension SwiftLint {
                 useExcludingByPrefix: false,
                 useScriptInputFiles: false,
                 benchmark: false,
-                reporter: "summary",
+                reporter: SummaryReporter.identifier,
                 quiet: false,
                 output: nil,
                 progress: true,

@@ -97,13 +97,13 @@ extension SwiftLint {
                 }
             } else {
                 print("No .swift files found.")
-                doYouWantToContinue("\nDo you want to continue? (Y/n)")
+                doYouWantToContinue("\nDo you want to continue?")
                 return []
             }
         }
 
         private func allowZeroLintableFiles() -> Bool {
-            false
+            askUser("Do you want SwiftLint to succeed even if there are no files to lint?")
         }
 
         private func rulesToDisable(_ topLevelDirectories: [String]) async throws -> [String] {

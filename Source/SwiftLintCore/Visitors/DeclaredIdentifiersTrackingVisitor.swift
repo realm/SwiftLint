@@ -23,46 +23,25 @@ open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
         scope.contains { $0.contains(identifier) }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     override open func visit(_ node: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
         guard let parent = node.parent, !parent.is(SourceFileSyntax.self), let grandParent = parent.parent else {
             return .visitChildren
         }
         scope.openChildScope()
         if let ifStmt = grandParent.as(IfExprSyntax.self), parent.keyPathInParent != \IfExprSyntax.elseBody {
-            collectIdentifiers(fromConditions: ifStmt.conditions)
+            collectIdentifiers(from: ifStmt.conditions)
         } else if let whileStmt = grandParent.as(WhileStmtSyntax.self) {
-            collectIdentifiers(fromConditions: whileStmt.conditions)
+            collectIdentifiers(from: whileStmt.conditions)
         } else if let pattern = grandParent.as(ForInStmtSyntax.self)?.pattern {
-            collectIdentifiers(fromPattern: pattern)
+            collectIdentifiers(from: pattern)
         } else if let parameters = grandParent.as(FunctionDeclSyntax.self)?.signature.input.parameterList {
-            parameters.forEach { scope.addToCurrentScope(($0.secondName ?? $0.firstName).text) }
-        } else if let input = parent.as(ClosureExprSyntax.self)?.signature?.input {
-            switch input {
-            case let .input(parameters):
-                parameters.parameterList.forEach { scope.addToCurrentScope(($0.secondName ?? $0.firstName).text) }
-            case let .simpleInput(parameters):
-                parameters.forEach { scope.addToCurrentScope($0.name.text) }
-            }
+            collectIdentifiers(from: parameters)
+        } else if let closureParameters = parent.as(ClosureExprSyntax.self)?.signature?.input {
+            collectIdentifiers(from: closureParameters)
         } else if let switchCase = parent.as(SwitchCaseSyntax.self)?.label.as(SwitchCaseLabelSyntax.self) {
-            switchCase.caseItems
-                .compactMap { $0.pattern.as(ValueBindingPatternSyntax.self)?.valuePattern ?? $0.pattern }
-                .compactMap { $0.as(ExpressionPatternSyntax.self)?.expression.asFunctionCall }
-                .compactMap { $0.argumentList.as(TupleExprElementListSyntax.self) }
-                .flatMap { $0 }
-                .compactMap { $0.expression.as(UnresolvedPatternExprSyntax.self) }
-                .compactMap { $0.pattern.as(ValueBindingPatternSyntax.self)?.valuePattern ?? $0.pattern }
-                .compactMap { $0.as(IdentifierPatternSyntax.self) }
-                .forEach { scope.addToCurrentScope($0.identifier.text) }
+            collectIdentifiers(from: switchCase)
         } else if let catchClause = grandParent.as(CatchClauseSyntax.self) {
-            if let items = catchClause.catchItems {
-                items
-                    .compactMap { $0.pattern?.as(ValueBindingPatternSyntax.self)?.valuePattern }
-                    .forEach(collectIdentifiers(fromPattern:))
-            } else {
-                // A catch clause without explicit catch items has an implicit `error` variable in scope.
-                scope.addToCurrentScope("error")
-            }
+            collectIdentifiers(from: catchClause)
         }
         return .visitChildren
     }
@@ -74,22 +53,58 @@ open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
     override open func visitPost(_ node: VariableDeclSyntax) {
         if node.parent?.is(MemberDeclListItemSyntax.self) != true {
             for binding in node.bindings {
-                collectIdentifiers(fromPattern: binding.pattern)
+                collectIdentifiers(from: binding.pattern)
             }
         }
     }
 
     override open func visitPost(_ node: GuardStmtSyntax) {
-        collectIdentifiers(fromConditions: node.conditions)
+        collectIdentifiers(from: node.conditions)
     }
 
-    private func collectIdentifiers(fromConditions conditions: ConditionElementListSyntax) {
+    private func collectIdentifiers(from parameters: FunctionParameterListSyntax) {
+        parameters.forEach { scope.addToCurrentScope(($0.secondName ?? $0.firstName).text) }
+    }
+
+    private func collectIdentifiers(from closureParameters: ClosureSignatureSyntax.Input) {
+        switch closureParameters {
+        case let .input(parameters):
+            parameters.parameterList.forEach { scope.addToCurrentScope(($0.secondName ?? $0.firstName).text) }
+        case let .simpleInput(parameters):
+            parameters.forEach { scope.addToCurrentScope($0.name.text) }
+        }
+    }
+
+    private func collectIdentifiers(from switchCase: SwitchCaseLabelSyntax) {
+        switchCase.caseItems
+            .compactMap { $0.pattern.as(ValueBindingPatternSyntax.self)?.valuePattern ?? $0.pattern }
+            .compactMap { $0.as(ExpressionPatternSyntax.self)?.expression.asFunctionCall }
+            .compactMap { $0.argumentList.as(TupleExprElementListSyntax.self) }
+            .flatMap { $0 }
+            .compactMap { $0.expression.as(UnresolvedPatternExprSyntax.self) }
+            .compactMap { $0.pattern.as(ValueBindingPatternSyntax.self)?.valuePattern ?? $0.pattern }
+            .compactMap { $0.as(IdentifierPatternSyntax.self) }
+            .forEach { scope.addToCurrentScope($0.identifier.text) }
+    }
+
+    private func collectIdentifiers(from catchClause: CatchClauseSyntax) {
+        if let items = catchClause.catchItems {
+            items
+                .compactMap { $0.pattern?.as(ValueBindingPatternSyntax.self)?.valuePattern }
+                .forEach(collectIdentifiers(from:))
+        } else {
+            // A catch clause without explicit catch items has an implicit `error` variable in scope.
+            scope.addToCurrentScope("error")
+        }
+    }
+
+    private func collectIdentifiers(from conditions: ConditionElementListSyntax) {
         conditions
             .compactMap { $0.condition.as(OptionalBindingConditionSyntax.self)?.pattern }
-            .forEach { collectIdentifiers(fromPattern: $0) }
+            .forEach { collectIdentifiers(from: $0) }
     }
 
-    private func collectIdentifiers(fromPattern pattern: PatternSyntax) {
+    private func collectIdentifiers(from pattern: PatternSyntax) {
         if let name = pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
             scope.addToCurrentScope(name)
         }

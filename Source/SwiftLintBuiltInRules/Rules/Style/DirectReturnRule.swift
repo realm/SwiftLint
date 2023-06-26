@@ -146,6 +146,26 @@ struct DirectReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, 
                 }
             """),
             Example("""
+                func f() -> UIView {
+                    let view = instantiateView() as! UIView // swiftlint:disable:this force_cast
+                    return view
+                }
+            """): Example("""
+                func f() -> UIView {
+                    return instantiateView() as! UIView // swiftlint:disable:this force_cast
+                }
+            """),
+            Example("""
+                func f() -> UIView {
+                    let view = instantiateView() as! UIView // swiftlint:disable:this force_cast
+                    return view // return the view
+                }
+            """): Example("""
+                func f() -> UIView {
+                    return instantiateView() as! UIView // swiftlint:disable:this force_cast // return the view
+                }
+            """),
+            Example("""
                 func f() -> Bool {
                     let b  :  Bool  =  true
                     return b
@@ -244,8 +264,10 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
             ))
         } else {
             let leadingTrivia = varDecl.leadingTrivia.withoutTrailingIndentation +
-                varDecl.trailingTrivia +
                 returnStmt.leadingTrivia.withFirstEmptyLineRemoved
+            let trailingTrivia = varDecl.trailingTrivia.withoutTrailingIndentation +
+                returnStmt.trailingTrivia
+
             newStmtList.append(
                 CodeBlockItemSyntax(
                     item: .stmt(
@@ -253,6 +275,7 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
                             returnStmt
                                 .with(\.expression, initExpression)
                                 .with(\.leadingTrivia, leadingTrivia)
+                                .with(\.trailingTrivia, trailingTrivia)
                         )
                     )
                 )

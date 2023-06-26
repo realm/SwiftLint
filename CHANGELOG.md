@@ -22,6 +22,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5075](https://github.com/realm/SwiftLint/issues/5075)
 
+* Fix auto-correction for the `direct_return` rule, when statements have
+  trailing comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5081](https://github.com/realm/SwiftLint/issues/5081)
+
 ## 0.52.3: Duplicate Hampers
 
 #### Breaking

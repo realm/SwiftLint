@@ -72,6 +72,33 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 let c: C = C()
                 func f(c: C) -> KeyPath<C, Int> { \\Self.i }
             }
+        """, excludeFromDocumentation: true),
+        Example("""
+            class C1<T> {}
+            class C2: C1<C2> {}
+        """, excludeFromDocumentation: true),
+        Example("""
+                class C1<T> {}
+                class C2: C1<C2.C3> {
+                    class C3 {}
+                }
+                """, excludeFromDocumentation: true),
+        Example("""
+            class C1<T> {}
+            class C2: C1<C2.C3.C4> {
+                class C3 {
+                    class C4 {}
+                }
+            }
+        """, excludeFromDocumentation: true),
+        Example("""
+            class S1<T> {
+                class S2 {}
+                func f() {
+                    let s1 = S1<S1.S2>()
+                    let s2 = S1<S1>()
+                }
+            }
         """, excludeFromDocumentation: true)
     ]
 
@@ -184,6 +211,14 @@ enum PreferSelfInStaticReferencesRuleExamples {
                     return f
                 }
                 func g(a: [↓S]) -> [↓S] { a }
+            }
+        """, excludeFromDocumentation: true),
+        Example("""
+            class T {
+                let child: T
+                init(input: Any) {
+                    child = (input as! T).child
+                }
             }
         """, excludeFromDocumentation: true)
     ]

@@ -179,6 +179,13 @@ private class Visitor: ViolationsSyntaxVisitor {
         parentDeclScopes.pop()
     }
 
+    override func visit(_ node: GenericArgumentListSyntax) -> SyntaxVisitorContinueKind {
+        if case .likeClass = parentDeclScopes.peek() {
+            return .skipChildren
+        }
+        return .visitChildren
+    }
+
     override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
         guard let parent = node.parent else {
             return

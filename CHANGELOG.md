@@ -172,6 +172,10 @@
   [JP Simard](https://github.com/jpsim)
   [#4985](https://github.com/realm/SwiftLint/issues/4985)
 
+* Fix false positive for `prefer_self_in_static_references` when a class inherits from
+  another class with generic types.  
+  [kasrababaei](https://github.com/kasrababaei)
+
 ## 0.52.0: Crisp Clear Pleats
 
 #### Breaking

@@ -22,6 +22,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5075](https://github.com/realm/SwiftLint/issues/5075)
 
+* Ignore `switch` expressions assigned to variables in `switch_case_alignment`
+  rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5080](https://github.com/realm/SwiftLint/issues/5080)
+
 * Fix auto-correction for the `direct_return` rule, when statements have
   trailing comments.  
   [Martin Redington](https://github.com/mildm8nnered)

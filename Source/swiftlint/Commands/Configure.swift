@@ -113,7 +113,8 @@ extension SwiftLint {
             let deprecatedRuleIdentifiers = Set(RuleRegistry.shared.deprecatedRuleIdentifiers)
             let undisabledDeprecatedRuleIdentifiers = deprecatedRuleIdentifiers.subtracting(ruleIdentifiersToDisable)
             if undisabledDeprecatedRuleIdentifiers.isNotEmpty {
-                if askUser("\nDo you want to disable all (\(undisabledDeprecatedRuleIdentifiers.count)) of the deprecated rules?") {
+                let count = undisabledDeprecatedRuleIdentifiers.count
+                if askUser("\nDo you want to disable all (\(count)) of the deprecated rules?") {
                     ruleIdentifiersToDisable.append(contentsOf: undisabledDeprecatedRuleIdentifiers.sorted())
                 }
             }

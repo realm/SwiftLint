@@ -793,24 +793,24 @@ only configurable rule list, there are no equivalents for <code>disabled_rules</
   <span class="pi">-</span> <span class="s">comma</span>
   <span class="pi">-</span> <span class="s">control_statement</span>
 <span class="na">opt_in_rules</span><span class="pi">:</span> <span class="c1"># some rules are turned off by default, so you need to opt-in</span>
-  <span class="pi">-</span> <span class="s">empty_count</span> <span class="c1"># Find all the available rules by running: `swiftlint rules`</span>
+  <span class="pi">-</span> <span class="s">empty_count</span> <span class="c1"># find all the available rules by running: `swiftlint rules`</span>
 
 <span class="c1"># Alternatively, specify all rules explicitly by uncommenting this option:</span>
 <span class="c1"># only_rules: # delete `disabled_rules` &amp; `opt_in_rules` if using this</span>
 <span class="c1">#   - empty_parameters</span>
 <span class="c1">#   - vertical_whitespace</span>
 
-<span class="na">analyzer_rules</span><span class="pi">:</span> <span class="c1"># Rules run by `swiftlint analyze`</span>
+<span class="na">analyzer_rules</span><span class="pi">:</span> <span class="c1"># rules run by `swiftlint analyze`</span>
   <span class="pi">-</span> <span class="s">explicit_self</span>
 
-<span class="na">included</span><span class="pi">:</span> <span class="c1"># paths to include during linting. `--path` is ignored if present.</span>
+<span class="na">included</span><span class="pi">:</span> <span class="c1"># case-sensitive paths to include during linting. `--path` is ignored if present</span>
   <span class="pi">-</span> <span class="s">Source</span>
-<span class="na">excluded</span><span class="pi">:</span> <span class="c1"># paths to ignore during linting. Takes precedence over `included`.</span>
+<span class="na">excluded</span><span class="pi">:</span> <span class="c1"># case-sensitive paths to ignore during linting. Takes precedence over `included`</span>
   <span class="pi">-</span> <span class="s">Carthage</span>
   <span class="pi">-</span> <span class="s">Pods</span>
   <span class="pi">-</span> <span class="s">Source/ExcludedFolder</span>
   <span class="pi">-</span> <span class="s">Source/ExcludedFile.swift</span>
-  <span class="pi">-</span> <span class="s">Source/*/ExcludedFile.swift</span> <span class="c1"># Exclude files with a wildcard</span>
+  <span class="pi">-</span> <span class="s">Source/*/ExcludedFile.swift</span> <span class="c1"># exclude files with a wildcard</span>
 
 <span class="c1"># If true, SwiftLint will not fail if no lintable files are found.</span>
 <span class="na">allow_zero_lintable_files</span><span class="pi">:</span> <span class="no">false</span>

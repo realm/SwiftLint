@@ -496,24 +496,24 @@ disabled_rules: # rule identifiers turned on by default to exclude from running
   - comma
   - control_statement
 opt_in_rules: # some rules are turned off by default, so you need to opt-in
-  - empty_count # Find all the available rules by running: `swiftlint rules`
+  - empty_count # find all the available rules by running: `swiftlint rules`
 
 # Alternatively, specify all rules explicitly by uncommenting this option:
 # only_rules: # delete `disabled_rules` & `opt_in_rules` if using this
 #   - empty_parameters
 #   - vertical_whitespace
 
-analyzer_rules: # Rules run by `swiftlint analyze`
+analyzer_rules: # rules run by `swiftlint analyze`
   - explicit_self
 
-included: # case-sensitive paths to include during linting. `--path` is ignored if present.
+included: # case-sensitive paths to include during linting. `--path` is ignored if present
   - Source
-excluded: # case-sensitive paths to ignore during linting. Takes precedence over `included`.
+excluded: # case-sensitive paths to ignore during linting. Takes precedence over `included`
   - Carthage
   - Pods
   - Source/ExcludedFolder
   - Source/ExcludedFile.swift
-  - Source/*/ExcludedFile.swift # Exclude files with a wildcard
+  - Source/*/ExcludedFile.swift # exclude files with a wildcard
 
 # If true, SwiftLint will not fail if no lintable files are found.
 allow_zero_lintable_files: false

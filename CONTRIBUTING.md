@@ -137,7 +137,7 @@ If your rule is configurable, but does not fit the pattern of
 * This initializer must throw if it does not understand the configuration, or
   it cannot be fully initialized with the configuration and default values.
 * By convention, a failing initializer throws
-  `ConfigurationError.UnknownConfiguration`.
+  `Issue.unknownConfiguration(ruleID: Parent.identifier)`.
 * If this initializer fails, your rule will be initialized with its default
   values by calling `init()`.
 

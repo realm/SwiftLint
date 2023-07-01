@@ -88,7 +88,7 @@ extension SwitchCaseAlignmentRule {
 
                 let reason = """
                     Case statements should \
-                    \(indentedCases ? "be indented within" : "vertically align with") \
+                    \(indentedCases ? "be indented within" : "vertically aligned with") \
                     their enclosing switch statement
                     """
 

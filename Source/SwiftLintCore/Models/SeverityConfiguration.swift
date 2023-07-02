@@ -1,5 +1,6 @@
 /// A rule configuration that allows specifying the desired severity level for violations.
-public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable {
+public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable,
+                                                   AcceptableByConfigurationElement {
     /// Configuration with a warning severity.
     public static var error: Self { Self(.error) }
     /// Configuration with an error severity.
@@ -31,4 +32,6 @@ public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguratio
         }
         self.severity = severity
     }
+
+    public func asOption() -> OptionType { severity.asOption() }
 }

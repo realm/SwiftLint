@@ -310,7 +310,7 @@ public extension AcceptableByConfigurationElement {
 ///    levels: warning: 1
 ///            error: 2
 ///    ```
-/// 3. A ``SeverityConfiguration`` is always inlined.
+/// 3. ``SeverityConfiguration`` and ``ChildOptionSeverityConfiguration`` are always inlined.
 @propertyWrapper
 public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: AnyConfigurationElement,
                                                                                      Equatable {
@@ -413,12 +413,6 @@ extension NSRegularExpression: AcceptableByConfigurationElement, Comparable {
     }
 }
 
-extension ViolationSeverity: AcceptableByConfigurationElement {
-    public func asOption() -> OptionType {
-        .symbol(rawValue)
-    }
-}
-
 public extension RuleConfiguration {
     func asOption() -> OptionType {
         .nested(.from(configuration: self))
@@ -429,11 +423,5 @@ public extension RuleConfiguration {
             return .from(configuration: self)
         }
         return RuleConfigurationDescription(options: [key => asOption()])
-    }
-}
-
-extension SeverityConfiguration: AcceptableByConfigurationElement {
-    public func asOption() -> OptionType {
-        severity.asOption()
     }
 }

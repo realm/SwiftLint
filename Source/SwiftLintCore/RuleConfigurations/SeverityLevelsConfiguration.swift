@@ -7,14 +7,6 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Equa
     @ConfigurationElement(key: "error")
     public var error: Int?
 
-    /// A condensed console description.
-    public var shortConsoleDescription: String {
-        if let errorValue = error {
-            return "w/e: \(warning)/\(errorValue)"
-        }
-        return "w: \(warning)"
-    }
-
     /// Create a `SeverityLevelsConfiguration` based on the sepecified `warning` and `error` thresholds.
     ///
     /// - parameter warning: The threshold for a violation to be a warning.

@@ -274,6 +274,9 @@ public extension AcceptableByConfigurationElement {
     }
 }
 
+/// An option type that does not need a key when used in a ``ConfigurationElement``. Its value will be inlined.
+public protocol InlinableOptionType {}
+
 /// A single parameter of a rule configuration.
 ///
 /// Apply it to a simple (e.g. boolean) property like
@@ -335,9 +338,9 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
 
     /// Constructor for a `ConfigurationElement` without a key.
     ///
-    /// Only `RuleConfiguration`s are allowed to have an empty key. The configuration will be inlined into its
+    /// ``InlinableOptionType``s are allowed to have an empty key. The configuration will be inlined into its
     /// parent configuration in this specific case.
-    public init(wrappedValue value: T) where T: RuleConfiguration {
+    public init(wrappedValue value: T) where T: InlinableOptionType {
         self.init(wrappedValue: value, key: "")
     }
 }
@@ -412,6 +415,8 @@ extension NSRegularExpression: AcceptableByConfigurationElement, Comparable {
         lhs.pattern < rhs.pattern
     }
 }
+
+// MARK: RuleConfiguration conformances
 
 public extension RuleConfiguration {
     func asOption() -> OptionType {

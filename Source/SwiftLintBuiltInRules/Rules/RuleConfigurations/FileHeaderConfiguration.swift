@@ -13,13 +13,13 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "required_string")
-    private var requiredString: String? = nil
+    private var requiredString: String?
     @ConfigurationElement(key: "required_pattern")
-    private var requiredPattern: String? = nil
+    private var requiredPattern: String?
     @ConfigurationElement(key: "forbidden_string")
-    private var forbiddenString: String? = nil
+    private var forbiddenString: String?
     @ConfigurationElement(key: "forbidden_pattern")
-    private var forbiddenPattern: String? = nil
+    private var forbiddenPattern: String?
 
     private var _forbiddenRegex: NSRegularExpression?
     private var _requiredRegex: NSRegularExpression?

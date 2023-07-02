@@ -8,7 +8,7 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
     @ConfigurationElement(key: "minimum_length")
     private(set) var minimumLength = 0
     @ConfigurationElement(key: "minimum_fraction_length")
-    private(set) var minimumFractionLength: Int? = nil
+    private(set) var minimumFractionLength: Int?
 
     private(set) var excludeRanges = [Range<Double>]()
 

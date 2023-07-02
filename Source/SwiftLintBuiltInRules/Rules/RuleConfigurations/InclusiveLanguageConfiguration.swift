@@ -13,11 +13,11 @@ struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable
     @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "additional_terms")
-    private(set) var additionalTerms: Set<String>? = nil
+    private(set) var additionalTerms: Set<String>?
     @ConfigurationElement(key: "override_terms")
-    private(set) var overrideTerms: Set<String>? = nil
+    private(set) var overrideTerms: Set<String>?
     @ConfigurationElement(key: "override_allowed_terms")
-    private(set) var overrideAllowedTerms: Set<String>? = nil
+    private(set) var overrideAllowedTerms: Set<String>?
     private(set) var allTerms: [String]
     private(set) var allAllowedTerms: Set<String>
 

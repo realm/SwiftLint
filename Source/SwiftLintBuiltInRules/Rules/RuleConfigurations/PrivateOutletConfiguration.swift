@@ -1,13 +1,12 @@
+import SwiftLintCore
+
 struct PrivateOutletConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = PrivateOutletRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "allow_private_set")
     private(set) var allowPrivateSet = false
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "allow_private_set" => .flag(allowPrivateSet)
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

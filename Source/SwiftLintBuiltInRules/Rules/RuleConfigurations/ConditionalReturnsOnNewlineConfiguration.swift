@@ -8,11 +8,6 @@ struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration,
     @ConfigurationElement(key: "if_only")
     private(set) var ifOnly = false
 
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "if_only" => .flag(ifOnly)
-    }
-
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)

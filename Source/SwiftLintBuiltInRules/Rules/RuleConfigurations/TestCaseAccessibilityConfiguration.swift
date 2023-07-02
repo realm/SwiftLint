@@ -1,15 +1,14 @@
+import SwiftLintCore
+
 struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TestCaseAccessibilityRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "allowed_prefixes")
     private(set) var allowedPrefixes: Set<String> = []
+    @ConfigurationElement(key: "test_parent_classes")
     private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "allowed_prefixes" => .list(allowedPrefixes.sorted().map { .string($0) })
-        "test_parent_classes" => .list(testParentClasses.sorted().map { .symbol($0) })
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

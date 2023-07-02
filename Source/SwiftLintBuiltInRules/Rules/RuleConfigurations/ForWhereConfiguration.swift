@@ -1,13 +1,12 @@
+import SwiftLintCore
+
 struct ForWhereConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ForWhereRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "allow_for_as_filter")
     private(set) var allowForAsFilter = false
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "allow_for_as_filter" => .flag(allowForAsFilter)
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

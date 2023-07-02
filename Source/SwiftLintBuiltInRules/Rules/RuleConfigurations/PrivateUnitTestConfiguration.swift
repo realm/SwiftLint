@@ -12,11 +12,6 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, 
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "regex" => .string(regex.pattern)
-    }
-
     var cacheDescription: String {
         let jsonObject: [String] = [
             "private_unit_test",

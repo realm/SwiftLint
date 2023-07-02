@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 struct MissingDocsConfiguration: RuleConfiguration, Equatable {
     typealias Parent = MissingDocsRule
 
@@ -5,10 +7,12 @@ struct MissingDocsConfiguration: RuleConfiguration, Equatable {
         RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
         RuleParameter<AccessControlLevel>(severity: .warning, value: .public)
     ]
+
     @ConfigurationElement(key: "excludes_extensions")
     private(set) var excludesExtensions = true
     @ConfigurationElement(key: "excludes_inherited_types")
     private(set) var excludesInheritedTypes = true
+    @ConfigurationElement(key: "excludes_trivial_init")
     private(set) var excludesTrivialInit = false
 
     var parameterDescription: RuleConfigurationDescription? {

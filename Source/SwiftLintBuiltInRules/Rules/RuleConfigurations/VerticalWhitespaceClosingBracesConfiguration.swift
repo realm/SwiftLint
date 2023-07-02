@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 // swiftlint:disable:next type_name
 struct VerticalWhitespaceClosingBracesConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = VerticalWhitespaceClosingBracesRule
@@ -7,13 +9,10 @@ struct VerticalWhitespaceClosingBracesConfiguration: SeverityBasedRuleConfigurat
         case onlyEnforceBeforeTrivialLines = "only_enforce_before_trivial_lines"
     }
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: ConfigurationKey.onlyEnforceBeforeTrivialLines.rawValue)
     private(set) var onlyEnforceBeforeTrivialLines = false
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        ConfigurationKey.onlyEnforceBeforeTrivialLines.rawValue => .flag(onlyEnforceBeforeTrivialLines)
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

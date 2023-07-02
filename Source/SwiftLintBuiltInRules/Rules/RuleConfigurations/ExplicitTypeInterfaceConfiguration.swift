@@ -1,26 +1,30 @@
+import SwiftLintCore
+
 struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ExplicitTypeInterfaceRule
 
-    enum VariableKind: String, CaseIterable {
+    enum VariableKind: String, CaseIterable, AcceptableByConfigurationElement {
         case instance
         case local
         case `static`
         case `class`
 
         static let all = Set(allCases)
+
+        func asOption() -> SwiftLintCore.OptionType {
+            .symbol(rawValue)
+        }
     }
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-
-    private(set) var allowedKinds = VariableKind.all
-
+    @ConfigurationElement(key: "excluded")
+    private(set) var excluded = [VariableKind]()
+    @ConfigurationElement(key: "allow_redundancy")
     private(set) var allowRedundancy = false
 
-    var parameterDescription: RuleConfigurationDescription? {
-        let excludedKinds = VariableKind.all.subtracting(allowedKinds).map(\.rawValue).sorted()
-        severityConfiguration
-        "excluded" => .list(excludedKinds.map { .symbol($0) })
-        "allow_redundancy" => .flag(allowRedundancy)
+    var allowedKinds: Set<VariableKind> {
+        VariableKind.all.subtracting(excluded)
     }
 
     mutating func apply(configuration: Any) throws {
@@ -32,7 +36,7 @@ struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equat
             case ("severity", let severityString as String):
                 try severityConfiguration.apply(configuration: severityString)
             case ("excluded", let excludedStrings as [String]):
-                allowedKinds.subtract(excludedStrings.compactMap(VariableKind.init(rawValue:)))
+                self.excluded = excludedStrings.compactMap(VariableKind.init).unique
             case ("allow_redundancy", let allowRedundancy as Bool):
                 self.allowRedundancy = allowRedundancy
             default:

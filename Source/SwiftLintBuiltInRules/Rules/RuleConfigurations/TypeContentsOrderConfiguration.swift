@@ -17,9 +17,7 @@ enum TypeContent: String, AcceptableByConfigurationElement {
     case `subscript` = "subscript"
     case deinitializer = "deinitializer"
 
-    func asOption() -> OptionType {
-        .symbol(rawValue)
-    }
+    func asOption() -> OptionType { .symbol(rawValue) }
 }
 
 struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {

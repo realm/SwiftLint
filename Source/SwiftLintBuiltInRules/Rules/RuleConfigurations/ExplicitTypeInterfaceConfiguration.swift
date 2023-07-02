@@ -11,9 +11,7 @@ struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equat
 
         static let all = Set(allCases)
 
-        func asOption() -> SwiftLintCore.OptionType {
-            .symbol(rawValue)
-        }
+        func asOption() -> SwiftLintCore.OptionType { .symbol(rawValue) }
     }
 
     @ConfigurationElement

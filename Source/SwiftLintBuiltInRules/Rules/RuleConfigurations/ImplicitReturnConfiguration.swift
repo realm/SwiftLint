@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-struct ImplicitReturnConfiguration: RuleConfiguration, Equatable {
+struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ImplicitReturnRule
 
     enum ReturnKind: String, CaseIterable, AcceptableByConfigurationElement, Comparable {
@@ -8,9 +8,7 @@ struct ImplicitReturnConfiguration: RuleConfiguration, Equatable {
         case function
         case getter
 
-        func asOption() -> OptionType {
-            .symbol(rawValue)
-        }
+        func asOption() -> OptionType { .symbol(rawValue) }
 
         static func < (lhs: Self, rhs: Self) -> Bool {
             lhs.rawValue < rhs.rawValue

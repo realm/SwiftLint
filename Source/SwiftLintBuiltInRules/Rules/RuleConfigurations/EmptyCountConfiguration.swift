@@ -8,7 +8,7 @@ private enum ConfigurationKey: String {
 struct EmptyCountConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = EmptyCountRule
 
-    @ConfigurationElement(key: ConfigurationKey.severity.rawValue)
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.error)
     @ConfigurationElement(key: ConfigurationKey.onlyAfterDot.rawValue)
     private(set) var onlyAfterDot = false

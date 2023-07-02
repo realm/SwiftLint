@@ -8,10 +8,10 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// The name for this custom rule.
     public var name: String?
     /// The message to be presented when producing violations.
-    public var message = "Regex matched."
+    public var message = "Regex matched"
     /// The regular expression to apply to trigger violations for this custom rule.
     @ConfigurationElement(key: "regex")
-    var regex: NSRegularExpression! = nil
+    var regex: NSRegularExpression!
     /// Regular expressions to include when matching the file path.
     public var included: [NSRegularExpression] = []
     /// Regular expressions to exclude when matching the file path.

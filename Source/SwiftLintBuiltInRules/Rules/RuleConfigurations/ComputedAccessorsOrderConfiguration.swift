@@ -7,9 +7,7 @@ struct ComputedAccessorsOrderConfiguration: SeverityBasedRuleConfiguration, Equa
         case getSet = "get_set"
         case setGet = "set_get"
 
-        func asOption() -> OptionType {
-            .symbol(rawValue)
-        }
+        func asOption() -> OptionType { .symbol(rawValue) }
     }
 
     @ConfigurationElement

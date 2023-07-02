@@ -24,9 +24,7 @@ struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatabl
             self = value
         }
 
-        func asOption() -> OptionType {
-            .symbol(rawValue)
-        }
+        func asOption() -> OptionType { .symbol(rawValue) }
     }
 
     @ConfigurationElement

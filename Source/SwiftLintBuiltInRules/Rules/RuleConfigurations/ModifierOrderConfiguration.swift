@@ -44,7 +44,5 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
 }
 
 extension SwiftDeclarationAttributeKind.ModifierGroup: AcceptableByConfigurationElement {
-    public func asOption() -> OptionType {
-        .symbol(rawValue)
-    }
+    public func asOption() -> OptionType { .symbol(rawValue) }
 }

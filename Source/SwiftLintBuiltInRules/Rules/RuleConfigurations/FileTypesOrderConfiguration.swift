@@ -7,12 +7,10 @@ enum FileType: String, AcceptableByConfigurationElement {
     case previewProvider = "preview_provider"
     case libraryContentProvider = "library_content_provider"
 
-    func asOption() -> OptionType {
-        .symbol(rawValue)
-    }
+    func asOption() -> OptionType { .symbol(rawValue) }
 }
 
-struct FileTypesOrderConfiguration: RuleConfiguration, Equatable {
+struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileTypesOrderRule
 
     @ConfigurationElement

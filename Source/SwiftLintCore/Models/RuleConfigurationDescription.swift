@@ -275,7 +275,7 @@ public extension AcceptableByConfigurationElement {
 }
 
 /// An option type that does not need a key when used in a ``ConfigurationElement``. Its value will be inlined.
-public protocol InlinableOptionType {}
+public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 
 /// A single parameter of a rule configuration.
 ///
@@ -284,7 +284,7 @@ public protocol InlinableOptionType {}
 /// @ConfigurationElement(key: "name")
 /// var property = true
 /// ```
-/// If the wrapped element is itself a ``RuleConfiguration`` there are three options for its representation
+/// If the wrapped element is an ``InlinableOptionType``, there are two options for its representation
 /// in the documentation:
 ///
 /// 1. It can be inlined into the parent configuration. For that, do not provide a name as an argument. E.g.
@@ -436,7 +436,7 @@ public extension SeverityConfiguration {
         if key.isEmpty {
             return description
         }
-        guard let option = description.options.onlyElement?.value, case .symbol(_) = option else {
+        guard let option = description.options.onlyElement?.value, case .symbol = option else {
             queuedFatalError(
                 """
                 Severity configurations must have exaclty one option that is a violation severity.

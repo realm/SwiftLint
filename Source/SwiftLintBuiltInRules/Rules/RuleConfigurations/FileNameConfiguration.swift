@@ -3,7 +3,7 @@ import SwiftLintCore
 struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileNameRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "excluded")
     private(set) var excluded = Set<String>(["main.swift", "LinuxMain.swift"])

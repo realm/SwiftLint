@@ -19,7 +19,7 @@ struct StatementPositionConfiguration: SeverityBasedRuleConfiguration, Equatable
         func asOption() -> OptionType { .symbol(rawValue) }
     }
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "statement_mode")
     private(set) var statementMode = StatementModeConfiguration.default

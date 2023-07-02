@@ -3,7 +3,7 @@ import SwiftLintCore
 struct XCTSpecificMatcherConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = XCTSpecificMatcherRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: ConfigurationKey.matchers.rawValue)
     private(set) var matchers = Matcher.allCases

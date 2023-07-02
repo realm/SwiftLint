@@ -3,7 +3,7 @@ import SwiftLintCore
 struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TestCaseAccessibilityRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allowed_prefixes")
     private(set) var allowedPrefixes: Set<String> = []

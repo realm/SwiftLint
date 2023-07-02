@@ -4,13 +4,14 @@ import SwiftLintCore
 struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, CacheDescriptionProvider {
     typealias Parent = PrivateUnitTestRule
 
-    private(set) var name: String?
-    private(set) var message = "Unit test marked `private` will not be run by XCTest."
-    @ConfigurationElement(key: "regex")
-    private(set) var regex = SwiftLintCore.regex("XCTestCase")
-    private(set) var included: NSRegularExpression?
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "regex")
+    private(set) var regex = SwiftLintCore.regex("XCTestCase")
+
+    private(set) var name: String?
+    private(set) var message = "Unit test marked `private` will not be run by XCTest."
+    private(set) var included: NSRegularExpression?
 
     var cacheDescription: String {
         let jsonObject: [String] = [

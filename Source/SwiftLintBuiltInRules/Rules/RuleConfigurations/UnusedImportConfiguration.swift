@@ -30,7 +30,7 @@ struct TransitiveModuleConfiguration<Parent: Rule>: Equatable, AcceptableByConfi
 struct UnusedImportConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = UnusedImportRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "require_explicit_imports")
     private(set) var requireExplicitImports = false

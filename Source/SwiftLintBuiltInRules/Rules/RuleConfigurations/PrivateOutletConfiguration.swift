@@ -3,7 +3,7 @@ import SwiftLintCore
 struct PrivateOutletConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = PrivateOutletRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allow_private_set")
     private(set) var allowPrivateSet = false

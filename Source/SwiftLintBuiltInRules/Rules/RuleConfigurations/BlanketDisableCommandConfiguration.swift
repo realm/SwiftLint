@@ -3,7 +3,7 @@ import SwiftLintCore
 struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = BlanketDisableCommandRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allowed_rules")
     private(set) var allowedRuleIdentifiers: Set<String> = [

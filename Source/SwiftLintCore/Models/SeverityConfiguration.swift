@@ -6,8 +6,8 @@ public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguratio
     /// Configuration with an error severity.
     public static var warning: Self { Self(.warning) }
 
-    @ConfigurationElement
-    var severity: ViolationSeverity
+    @ConfigurationElement(key: "severity")
+    var severity = ViolationSeverity.warning
 
     public var severityConfiguration: SeverityConfiguration {
         self
@@ -29,6 +29,4 @@ public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguratio
         }
         self.severity = severity
     }
-
-    public func asOption() -> OptionType { severity.asOption() }
 }

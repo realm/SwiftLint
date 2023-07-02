@@ -8,7 +8,7 @@ private enum ConfigurationKey: String {
 struct SelfBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = SelfBindingRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: ConfigurationKey.bindIdentifier.rawValue)
     private(set) var bindIdentifier = "self"

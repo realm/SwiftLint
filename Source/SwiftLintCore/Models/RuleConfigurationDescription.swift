@@ -313,7 +313,6 @@ public protocol InlinableOptionType {}
 ///    levels: warning: 1
 ///            error: 2
 ///    ```
-/// 3. ``SeverityConfiguration`` and ``ChildOptionSeverityConfiguration`` are always inlined.
 @propertyWrapper
 public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: AnyConfigurationElement,
                                                                                      Equatable {
@@ -428,5 +427,22 @@ public extension RuleConfiguration {
             return .from(configuration: self)
         }
         return RuleConfigurationDescription(options: [key => asOption()])
+    }
+}
+
+public extension SeverityConfiguration {
+    func asDescription(with key: String) -> RuleConfigurationDescription {
+        let description = RuleConfigurationDescription.from(configuration: self)
+        if key.isEmpty {
+            return description
+        }
+        guard let option = description.options.onlyElement?.value, case .symbol(_) = option else {
+            queuedFatalError(
+                """
+                Severity configurations must have exaclty one option that is a violation severity.
+                """
+            )
+        }
+        return RuleConfigurationDescription(options: [key => option])
     }
 }

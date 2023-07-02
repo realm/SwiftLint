@@ -3,7 +3,7 @@ import SwiftLintCore
 struct TrailingWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TrailingWhitespaceRule
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "ignores_empty_lines")
     private(set) var ignoresEmptyLines = false

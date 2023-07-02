@@ -9,7 +9,7 @@ struct VerticalWhitespaceClosingBracesConfiguration: SeverityBasedRuleConfigurat
         case onlyEnforceBeforeTrivialLines = "only_enforce_before_trivial_lines"
     }
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: ConfigurationKey.onlyEnforceBeforeTrivialLines.rawValue)
     private(set) var onlyEnforceBeforeTrivialLines = false

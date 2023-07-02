@@ -9,7 +9,7 @@ private enum ConfigurationKey: String {
 struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = UnusedDeclarationRule
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.error
     @ConfigurationElement(key: ConfigurationKey.includePublicAndOpen.rawValue)
     private(set) var includePublicAndOpen = false

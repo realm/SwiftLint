@@ -13,7 +13,7 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
         func asOption() -> OptionType { .symbol(rawValue) }
     }
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "grouping")
     private(set) var grouping = SortedImportsGroupingConfiguration.names

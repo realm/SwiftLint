@@ -4,7 +4,7 @@ import SwiftLintCore
 struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, CacheDescriptionProvider {
     typealias Parent = PrivateUnitTestRule
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "regex")
     private(set) var regex = SwiftLintCore.regex("XCTestCase")

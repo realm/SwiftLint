@@ -10,7 +10,7 @@ private enum ConfigurationKey: String {
 struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = InclusiveLanguageRule
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "additional_terms")
     private(set) var additionalTerms: Set<String>? = nil

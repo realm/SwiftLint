@@ -23,8 +23,10 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         var severity = ViolationSeverity.warning
         @ConfigurationElement(key: "list")
         var list: [OptionType?] = [.flag(true), .string("value")]
+        @ConfigurationElement
+        var severityConfig = SeverityConfiguration<Parent>(.error)
         @ConfigurationElement(key: "SEVERITY")
-        var renamedSeverity = SeverityConfiguration<Parent>(.warning)
+        var renamedSeverityConfig = SeverityConfiguration<Parent>(.warning)
         @ConfigurationElement
         var inlinedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 1, error: 2)
         @ConfigurationElement(key: "levels")
@@ -47,6 +49,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             double: 2.1; \
             severity: warning; \
             list: [true, "value"]; \
+            severity: error; \
             SEVERITY: warning; \
             warning: 1; \
             error: 2; \
@@ -113,6 +116,14 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             </td>
             <td>
             [true, &quot;value&quot;]
+            </td>
+            </tr>
+            <tr>
+            <td>
+            severity
+            </td>
+            <td>
+            error
             </td>
             </tr>
             <tr>

@@ -12,7 +12,7 @@ struct ComputedAccessorsOrderConfiguration: SeverityBasedRuleConfiguration, Equa
         }
     }
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "order")
     private(set) var order = Order.getSet

@@ -3,7 +3,7 @@ import SwiftLintCore
 struct OperatorUsageWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = OperatorUsageWhitespaceRule
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "lines_look_around")
     private(set) var linesLookAround = 2

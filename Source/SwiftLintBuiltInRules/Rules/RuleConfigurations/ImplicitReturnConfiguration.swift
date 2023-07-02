@@ -19,7 +19,7 @@ struct ImplicitReturnConfiguration: RuleConfiguration, Equatable {
 
     static let defaultIncludedKinds = Set(ReturnKind.allCases)
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "included")
     private(set) var includedKinds = Self.defaultIncludedKinds

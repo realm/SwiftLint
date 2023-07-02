@@ -6,7 +6,7 @@ typealias SingleTestClassConfiguration = UnitTestConfiguration<SingleTestClassRu
 typealias NoMagicNumbersConfiguration = UnitTestConfiguration<NoMagicNumbersRule>
 
 struct UnitTestConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable {
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "test_parent_classes")
     private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]

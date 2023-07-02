@@ -15,7 +15,7 @@ enum FileType: String, AcceptableByConfigurationElement {
 struct FileTypesOrderConfiguration: RuleConfiguration, Equatable {
     typealias Parent = FileTypesOrderRule
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "order")
     private(set) var order: [[FileType]] = [

@@ -29,7 +29,7 @@ struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatabl
         }
     }
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: ConfigurationKey.firstArgumentLocation.rawValue)
     private(set) var firstArgumentLocation = FirstArgumentLocation.anyLine

@@ -3,7 +3,7 @@ import SwiftLintCore
 struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = IndentationWidthRule
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "indentation_width")
     private(set) var indentationWidth = 4

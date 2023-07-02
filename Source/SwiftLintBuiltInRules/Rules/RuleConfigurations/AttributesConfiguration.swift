@@ -3,7 +3,7 @@ import SwiftLintCore
 struct AttributesConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = AttributesRule
 
-    @ConfigurationElement(key: "severity")
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "attributes_with_arguments_always_on_line_above")
     private(set) var attributesWithArgumentsAlwaysOnNewLine = true

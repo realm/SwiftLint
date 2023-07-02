@@ -25,11 +25,7 @@ extension SwiftLint {
         }
 
         func run() async throws {
-            while try await configure() == false, auto == false {
-                if askUser("Do you want to start over?") == false {
-                    break
-                }
-            }
+            _ = try await configure()
             ExitHelper.successfullyExit()
         }
 
@@ -45,7 +41,8 @@ extension SwiftLint {
                 topLevelDirectories,
                 allowZeroLintableFiles,
                 rulesIdentifiersToDisable,
-                analyzerRuleIdentifiers)
+                analyzerRuleIdentifiers
+            )
         }
 
         private func checkForExistingConfiguration() {

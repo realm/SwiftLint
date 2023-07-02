@@ -36,7 +36,7 @@ public struct RuleConfigurationDescription: Equatable {
         }
     }
 
-    public static func from(configuration: any RuleConfiguration) -> Self {
+    static func from(configuration: any RuleConfiguration) -> Self {
         // Prefer custom descriptions.
         if let customDescription = configuration.parameterDescription {
             return customDescription
@@ -190,32 +190,40 @@ extension OptionType: Documentable {
 /// A result builder creating configuration descriptions.
 @resultBuilder
 public struct RuleConfigurationDescriptionBuilder {
+    /// :nodoc:
     public typealias Description = RuleConfigurationDescription
 
+    /// :nodoc:
     public static func buildBlock(_ components: Description...) -> Description {
         Self.buildArray(components)
     }
 
+    /// :nodoc:
     public static func buildOptional(_ component: Description?) -> Description {
         component ?? Description(options: [])
     }
 
+    /// :nodoc:
     public static func buildEither(first component: Description) -> Description {
         component
     }
 
+    /// :nodoc:
     public static func buildEither(second component: Description) -> Description {
         component
     }
 
+    /// :nodoc:
     public static func buildExpression(_ expression: RuleConfigurationOption) -> Description {
         Description(options: [expression])
     }
 
+    /// :nodoc:
     public static func buildExpression(_ expression: any RuleConfiguration) -> Description {
         Description.from(configuration: expression)
     }
 
+    /// :nodoc:
     public static func buildArray(_ components: [Description]) -> Description {
         Description(options: components.flatMap { $0.options })
     }
@@ -316,13 +324,20 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 @propertyWrapper
 public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: AnyConfigurationElement,
                                                                                      Equatable {
+    /// Wrapped option value.
     public var wrappedValue: T
-    let key: String
+
+    private let key: String
 
     fileprivate var description: RuleConfigurationDescription {
         wrappedValue.asDescription(with: key)
     }
 
+    /// Default constructor.
+    ///
+    /// - Parameters:
+    ///   - value: Value to be wrapped.
+    ///   - key: Name of the option.
     public init(wrappedValue value: T, key: String) {
         self.wrappedValue = value
         self.key = key
@@ -331,6 +346,8 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// Constructor for optional values.
     ///
     /// It allows to skip explicit initialization with `nil` of the property.
+    ///
+    /// - Parameter value: Value to be wrapped.
     public init<Wrapped>(key: String) where T == Wrapped? {
         self.init(wrappedValue: nil, key: key)
     }
@@ -339,6 +356,8 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///
     /// ``InlinableOptionType``s are allowed to have an empty key. The configuration will be inlined into its
     /// parent configuration in this specific case.
+    ///
+    /// - Parameter value: Value to be wrapped.
     public init(wrappedValue value: T) where T: InlinableOptionType {
         self.init(wrappedValue: value, key: "")
     }
@@ -431,6 +450,8 @@ public extension RuleConfiguration {
 }
 
 public extension SeverityConfiguration {
+    /// Severity configurations are special in that they shall not be nested when an option name is provided.
+    /// Instead, their only option value must be used together with the option name.
     func asDescription(with key: String) -> RuleConfigurationDescription {
         let description = RuleConfigurationDescription.from(configuration: self)
         if key.isEmpty {

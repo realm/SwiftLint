@@ -1,4 +1,5 @@
 @testable import SwiftLintBuiltInRules
+@testable import SwiftLintCore
 import XCTest
 
 class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {

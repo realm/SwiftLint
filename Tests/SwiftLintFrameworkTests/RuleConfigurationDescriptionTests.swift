@@ -1,6 +1,8 @@
 @testable import SwiftLintCore
 import XCTest
 
+// swiftlint:disable file_length
+
 class RuleConfigurationDescriptionTests: XCTestCase {
     private struct TestConfiguration: RuleConfiguration {
         typealias Parent = RuleMock // swiftlint:disable:this nesting

@@ -37,11 +37,13 @@ extension SwiftLint {
             let allowZeroLintableFiles = topLevelDirectories.isEmpty ? allowZeroLintableFiles() : false
             let rulesIdentifiersToDisable = try await rulesToDisable(topLevelDirectories)
             let analyzerRuleIdentifiers = analyzerRulesToEnable()
+            let reporterIdentifier = reporterIdentifier()
             return try writeConfiguration(
                 topLevelDirectories,
                 allowZeroLintableFiles,
                 rulesIdentifiersToDisable,
-                analyzerRuleIdentifiers
+                analyzerRuleIdentifiers,
+                reporterIdentifier
             )
         }
 
@@ -178,11 +180,33 @@ extension SwiftLint {
             }
         }
 
+        private func reporterIdentifier() -> String {
+            var reporterIdentifier = XcodeReporter.identifier
+            if askUser("Do you want to use the default (\(reporterIdentifier) reporter?") {
+                return reporterIdentifier
+            }
+            reporterIdentifier = ""
+            while !isValidReporterIdentifier(reporterIdentifier) {
+                if reporterIdentifier.isNotEmpty {
+                    print("'\(reporterIdentifier)' is not a valid reporter identifier")
+                }
+                print("Available reporters:")
+                print(Reporters.reportersTable())
+                reporterIdentifier = askUserWhichReporter()
+            }
+            return reporterIdentifier
+        }
+
+        private func isValidReporterIdentifier(_ reporterIdentifier: String) -> Bool {
+            reportersList.contains { $0.identifier == reporterIdentifier }
+        }
+
         private func writeConfiguration(
             _ topLevelDirectories: [String],
             _ allowZeroLintableFiles: Bool,
             _ ruleIdentifiersToDisable: [String],
-            _ analyzerRuleIdentifiers: [String]
+            _ analyzerRuleIdentifiers: [String],
+            _ reporterIdentifier: String
         ) throws -> Bool {
             var configuration = configuration(forTopLevelDirectories: topLevelDirectories)
             if allowZeroLintableFiles {
@@ -194,6 +218,7 @@ extension SwiftLint {
                 configuration += "analyzer_rules:\n"
                 analyzerRuleIdentifiers.forEach { configuration += "  - \($0)\n" }
             }
+            configuration += "reporter: \(reporterIdentifier)"
             print("Proposed configuration\n")
             print(configuration)
             if askUser("Does that look good?") == false {
@@ -264,6 +289,19 @@ extension SwiftLint {
         private func doYouWantToContinue(_ message: String) {
             if !askUser(message) {
                 ExitHelper.successfullyExit()
+            }
+        }
+
+        private func askUserWhichReporter() -> String {
+            let message = "Which reporter would you like to use?"
+            let colorizedMessage = shouldColorizeOutput ? message.boldify : message
+            while true {
+                print(colorizedMessage, terminator: " ")
+                if let reporterIdentifier = readLine() {
+                    if reporterIdentifier.isNotEmpty {
+                        return reporterIdentifier
+                    }
+                }
             }
         }
     }

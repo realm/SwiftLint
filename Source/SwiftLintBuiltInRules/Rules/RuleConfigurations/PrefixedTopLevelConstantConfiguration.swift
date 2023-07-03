@@ -1,12 +1,12 @@
+import SwiftLintCore
+
 struct PrefixedTopLevelConstantConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = PrefixedTopLevelConstantRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "only_private")
     private(set) var onlyPrivateMembers = false
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" + ", only_private: \(onlyPrivateMembers)"
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

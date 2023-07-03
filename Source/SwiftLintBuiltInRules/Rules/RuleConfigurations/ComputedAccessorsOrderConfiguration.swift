@@ -1,18 +1,19 @@
+import SwiftLintCore
+
 struct ComputedAccessorsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ComputedAccessorsOrderRule
 
-    enum Order: String {
+    enum Order: String, AcceptableByConfigurationElement {
         case getSet = "get_set"
         case setGet = "set_get"
+
+        func asOption() -> OptionType { .symbol(rawValue) }
     }
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "order")
     private(set) var order = Order.getSet
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)"
-            + ", order: \(order.rawValue)"
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

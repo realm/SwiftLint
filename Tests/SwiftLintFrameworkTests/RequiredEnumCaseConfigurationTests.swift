@@ -37,31 +37,15 @@ class RequiredEnumCaseConfigurationTests: SwiftLintTestCase {
     }
 
     func testConsoleDescriptionReturnsAllConfiguredProtocols() {
-        let expected = "[" +
-            "protocol: \"NetworkResults\", " +
-            "cases: [" +
-                "[name: \"error\", severity: \"warning\"]" +
-            "]" +
-        "], [" +
-            "protocol: \"RequiredProtocol\", " +
-            "cases: [" +
-                "[name: \"error\", severity: \"warning\"], " +
-                "[name: \"success\", severity: \"warning\"]" +
-            "]" +
-        "]"
-        XCTAssertEqual(config.consoleDescription, expected)
+        let expected = "NetworkResults: error: warning; RequiredProtocol: error: warning; success: warning"
+        XCTAssertEqual(config.parameterDescription?.oneLiner(), expected)
     }
 
     func testConsoleDescriptionReturnsNoConfiguredProtocols() {
-        let expected = "No protocols configured.  In config add 'required_enum_case' to 'opt_in_rules' and " +
-            "config using :\n\n" +
-            "'required_enum_case:\n" +
-            "  {Protocol Name}:\n" +
-            "    {Case Name}:{warning|error}\n" +
-            "    {Case Name}:{warning|error}\n"
+        let expected = "{Protocol Name}: {Case Name 1}: {warning|error}; {Case Name 2}: {warning|error}"
 
         config.protocols.removeAll()
-        XCTAssertEqual(config.consoleDescription, expected)
+        XCTAssertEqual(config.parameterDescription?.oneLiner(), expected)
     }
 
     private func validateRulesExistForProtocol1() {

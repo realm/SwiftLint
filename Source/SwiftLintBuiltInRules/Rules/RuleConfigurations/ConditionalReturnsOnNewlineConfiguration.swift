@@ -1,12 +1,12 @@
+import SwiftLintCore
+
 struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ConditionalReturnsOnNewlineRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "if_only")
     private(set) var ifOnly = false
-
-    var consoleDescription: String {
-        return ["severity: \(severityConfiguration.consoleDescription)", "if_only: \(ifOnly)"].joined(separator: ", ")
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

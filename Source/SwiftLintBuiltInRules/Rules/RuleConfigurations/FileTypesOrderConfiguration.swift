@@ -1,15 +1,21 @@
-enum FileType: String {
+import SwiftLintCore
+
+enum FileType: String, AcceptableByConfigurationElement {
     case supportingType = "supporting_type"
     case mainType = "main_type"
     case `extension` = "extension"
     case previewProvider = "preview_provider"
     case libraryContentProvider = "library_content_provider"
+
+    func asOption() -> OptionType { .symbol(rawValue) }
 }
 
 struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileTypesOrderRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "order")
     private(set) var order: [[FileType]] = [
         [.supportingType],
         [.mainType],
@@ -17,11 +23,6 @@ struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
         [.previewProvider],
         [.libraryContentProvider]
     ]
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", order: \(String(describing: order))"
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

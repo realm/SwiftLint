@@ -1,12 +1,11 @@
+import SwiftLintCore
+
 struct FileNameNoSpaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileNameNoSpaceRule
 
-    var consoleDescription: String {
-        return "(severity) \(severityConfiguration.consoleDescription), " +
-            "excluded: \(excluded.sorted())"
-    }
-
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
+    @ConfigurationElement(key: "excluded")
     private(set) var excluded = Set<String>()
 
     mutating func apply(configuration: Any) throws {

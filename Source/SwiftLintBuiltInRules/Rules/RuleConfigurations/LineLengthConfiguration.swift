@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 private enum ConfigurationKey: String {
     case warning = "warning"
     case error = "error"
@@ -10,18 +12,15 @@ private enum ConfigurationKey: String {
 struct LineLengthConfiguration: RuleConfiguration, Equatable {
     typealias Parent = LineLengthRule
 
-    var consoleDescription: String {
-        return length.consoleDescription +
-               ", ignores_urls: \(ignoresURLs)" +
-               ", ignores_function_declarations: \(ignoresFunctionDeclarations)" +
-               ", ignores_comments: \(ignoresComments)" +
-               ", ignores_interpolated_strings: \(ignoresInterpolatedStrings)"
-    }
-
+    @ConfigurationElement
     private(set) var length = SeverityLevelsConfiguration<Parent>(warning: 120, error: 200)
+    @ConfigurationElement(key: ConfigurationKey.ignoresURLs.rawValue)
     private(set) var ignoresURLs = false
+    @ConfigurationElement(key: ConfigurationKey.ignoresFunctionDeclarations.rawValue)
     private(set) var ignoresFunctionDeclarations = false
+    @ConfigurationElement(key: ConfigurationKey.ignoresComments.rawValue)
     private(set) var ignoresComments = false
+    @ConfigurationElement(key: ConfigurationKey.ignoresInterpolatedStrings.rawValue)
     private(set) var ignoresInterpolatedStrings = false
 
     var params: [RuleParameter<Int>] {

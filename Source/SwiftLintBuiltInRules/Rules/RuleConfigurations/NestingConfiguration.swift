@@ -1,17 +1,16 @@
+import SwiftLintCore
+
 struct NestingConfiguration: RuleConfiguration, Equatable {
     typealias Parent = NestingRule
     typealias Severity = SeverityLevelsConfiguration<Parent>
 
-    var consoleDescription: String {
-        return "(type_level) \(typeLevel.shortConsoleDescription)"
-            + ", (function_level) \(functionLevel.shortConsoleDescription)"
-            + ", (check_nesting_in_closures_and_statements) \(checkNestingInClosuresAndStatements)"
-            + ", (always_allow_one_type_in_functions) \(alwaysAllowOneTypeInFunctions)"
-    }
-
+    @ConfigurationElement(key: "type_level")
     private(set) var typeLevel = Severity(warning: 1)
+    @ConfigurationElement(key: "function_level")
     private(set) var functionLevel = Severity(warning: 2)
+    @ConfigurationElement(key: "check_nesting_in_closures_and_statements")
     private(set) var checkNestingInClosuresAndStatements = true
+    @ConfigurationElement(key: "always_allow_one_type_in_functions")
     private(set) var alwaysAllowOneTypeInFunctions = false
 
     mutating func apply(configuration: Any) throws {

@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 private func toExplicitInitMethod(typeName: String) -> String {
     return "\(typeName).init"
 }
@@ -5,25 +7,19 @@ private func toExplicitInitMethod(typeName: String) -> String {
 struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = DiscouragedDirectInitRule
 
+    @ConfigurationElement
     var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" + ", types: \(discouragedInits.sorted(by: <))"
-    }
-
-    private(set) var discouragedInits: Set<String>
-
-    private let defaultDiscouragedInits = [
+    private static let defaultDiscouragedInits = [
         "Bundle",
         "NSError",
         "UIDevice"
     ]
 
-    init() {
-        discouragedInits = Set(defaultDiscouragedInits + defaultDiscouragedInits.map(toExplicitInitMethod))
-    }
-
-    // MARK: - RuleConfiguration
+    @ConfigurationElement(key: "types")
+    private(set) var discouragedInits = Set(
+        Self.defaultDiscouragedInits + Self.defaultDiscouragedInits.map(toExplicitInitMethod)
+    )
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

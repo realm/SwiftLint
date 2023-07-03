@@ -1,16 +1,16 @@
+import SwiftLintCore
+
 struct AttributesConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = AttributesRule
 
-    var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "attributes_with_arguments_always_on_line_above")
     private(set) var attributesWithArgumentsAlwaysOnNewLine = true
+    @ConfigurationElement(key: "always_on_same_line")
     private(set) var alwaysOnSameLine = Set<String>()
+    @ConfigurationElement(key: "always_on_line_above")
     private(set) var alwaysOnNewLine = Set<String>()
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", always_on_same_line: \(alwaysOnSameLine.sorted())" +
-            ", always_on_line_above: \(alwaysOnNewLine.sorted())"
-    }
 
     init(alwaysOnSameLine: [String] = ["@IBAction", "@NSManaged"],
          alwaysInNewLine: [String] = []) {

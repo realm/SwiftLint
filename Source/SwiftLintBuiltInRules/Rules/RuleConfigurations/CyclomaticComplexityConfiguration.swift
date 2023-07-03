@@ -1,4 +1,5 @@
 import SourceKittenFramework
+import SwiftLintCore
 
 private enum ConfigurationKey: String {
     case warning = "warning"
@@ -8,11 +9,6 @@ private enum ConfigurationKey: String {
 
 struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
     typealias Parent = CyclomaticComplexityRule
-
-    var consoleDescription: String {
-        return length.consoleDescription +
-            ", \(ConfigurationKey.ignoresCaseStatements.rawValue): \(ignoresCaseStatements)"
-    }
 
     private static let defaultComplexityStatements: Set<StatementKind> = [
         .forEach,
@@ -24,9 +20,11 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         .case
     ]
 
+    @ConfigurationElement
     private(set) var length = SeverityLevelsConfiguration<Parent>(warning: 10, error: 20)
     private(set) var complexityStatements = Self.defaultComplexityStatements
 
+    @ConfigurationElement(key: ConfigurationKey.ignoresCaseStatements.rawValue)
     private(set) var ignoresCaseStatements = false {
         didSet {
             if ignoresCaseStatements {
@@ -46,7 +44,7 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
             configurationArray.isNotEmpty {
             let warning = configurationArray[0]
             let error = (configurationArray.count > 1) ? configurationArray[1] : nil
-            length = SeverityLevelsConfiguration(warning: warning, error: error)
+            length = SeverityLevelsConfiguration<Parent>(warning: warning, error: error)
         } else if let configDict = configuration as? [String: Any], configDict.isNotEmpty {
             for (string, value) in configDict {
                 guard let key = ConfigurationKey(rawValue: string) else {

@@ -1,25 +1,23 @@
 import Foundation
+import SwiftLintCore
 
 struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     typealias Severity = SeverityConfiguration<Parent>
     typealias SeverityLevels = SeverityLevelsConfiguration<Parent>
     typealias StartWithLowercaseConfiguration = ChildOptionSeverityConfiguration<Parent>
 
-    var consoleDescription: String {
-        "(min_length) \(minLength.shortConsoleDescription), " +
-            "(max_length) \(maxLength.shortConsoleDescription), " +
-            "excluded: \(excludedRegularExpressions.map { $0.pattern }.sorted()), " +
-            "allowed_symbols: \(allowedSymbols.sorted()), " +
-            "unallowed_symbols_severity: \(unallowedSymbolsSeverity.consoleDescription), " +
-            "validates_start_with_lowercase: \(validatesStartWithLowercase.consoleDescription)"
-    }
-
-    private(set) var minLength: SeverityLevels
-    private(set) var maxLength: SeverityLevels
-    private(set) var excludedRegularExpressions: Set<NSRegularExpression>
-    private(set) var allowedSymbols: Set<String>
-    private(set) var unallowedSymbolsSeverity: Severity
-    private(set) var validatesStartWithLowercase: StartWithLowercaseConfiguration
+    @ConfigurationElement(key: "min_length")
+    private(set) var minLength = SeverityLevels(warning: 0, error: 0)
+    @ConfigurationElement(key: "max_length")
+    private(set) var maxLength = SeverityLevels(warning: 0, error: 0)
+    @ConfigurationElement(key: "excluded")
+    private(set) var excludedRegularExpressions = Set<NSRegularExpression>()
+    @ConfigurationElement(key: "allowed_symbols")
+    private(set) var allowedSymbols = Set<String>()
+    @ConfigurationElement(key: "unallowed_symbols_severity")
+    private(set) var unallowedSymbolsSeverity = Severity.error
+    @ConfigurationElement(key: "validates_start_with_lowercase")
+    private(set) var validatesStartWithLowercase = StartWithLowercaseConfiguration.error
 
     var minLengthThreshold: Int {
         return max(minLength.warning, minLength.error ?? minLength.warning)

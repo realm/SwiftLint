@@ -1,4 +1,5 @@
 @testable import SwiftLintBuiltInRules
+@testable import SwiftLintCore
 import XCTest
 
 class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
@@ -43,8 +44,8 @@ class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
         var config = ExplicitTypeInterfaceConfiguration()
         try config.apply(configuration: ["excluded": ["class", "instance"]])
         XCTAssertEqual(
-            config.consoleDescription,
-            "severity: warning, excluded: [\"class\", \"instance\"], allow_redundancy: false"
+            RuleConfigurationDescription.from(configuration: config).oneLiner(),
+            "severity: warning; excluded: [class, instance]; allow_redundancy: false"
         )
     }
 }

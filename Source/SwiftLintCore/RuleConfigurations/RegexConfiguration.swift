@@ -10,7 +10,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// The message to be presented when producing violations.
     public var message = "Regex matched"
     /// The regular expression to apply to trigger violations for this custom rule.
-    public var regex: NSRegularExpression!
+    @ConfigurationElement(key: "regex")
+    var regex: NSRegularExpression!
     /// Regular expressions to include when matching the file path.
     public var included: [NSRegularExpression] = []
     /// Regular expressions to exclude when matching the file path.
@@ -18,13 +19,10 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// The syntax kinds to exclude from matches. If the regex matched syntax kinds from this list, it would
     /// be ignored and not count as a rule violation.
     public var excludedMatchKinds = Set<SyntaxKind>()
+    @ConfigurationElement
     public var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     /// The index of the regex capture group to match.
     public var captureGroup: Int = 0
-
-    public var consoleDescription: String {
-        return "\(severity.rawValue): \(regex.pattern)"
-    }
 
     public var cacheDescription: String {
         let jsonObject: [String] = [
@@ -36,7 +34,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             excluded.map(\.pattern).joined(separator: ","),
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
                 .map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
-            severityConfiguration.consoleDescription
+            severity.rawValue
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
           let jsonString = String(data: jsonData, encoding: .utf8) {

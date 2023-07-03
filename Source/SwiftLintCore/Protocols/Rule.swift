@@ -6,8 +6,9 @@ public protocol Rule {
     /// A verbose description of many of this rule's properties.
     static var description: RuleDescription { get }
 
-    /// A description of how this rule has been configured to run.
-    var configurationDescription: String { get }
+    /// A description of how this rule has been configured to run. It can be built using the annotated result builder.
+    @RuleConfigurationDescriptionBuilder
+    var configurationDescription: Documentable { get }
 
     /// A default initializer for rules. All rules need to be trivially initializable.
     init()
@@ -84,7 +85,7 @@ public extension Rule {
     /// The cache description which will be used to determine if a previous
     /// cached value is still valid given the new cache value.
     var cacheDescription: String {
-        return (self as? CacheDescriptionProvider)?.cacheDescription ?? configurationDescription
+        (self as? CacheDescriptionProvider)?.cacheDescription ?? configurationDescription.oneLiner()
     }
 }
 

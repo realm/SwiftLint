@@ -103,7 +103,7 @@ private extension TextTable {
                 ruleType.description.kind.rawValue,
                 (rule is AnalyzerRule) ? "yes" : "no",
                 (rule is SourceKitFreeRule) ? "no" : "yes",
-                truncate((configuredRule ?? rule).configurationDescription)
+                truncate((configuredRule ?? rule).configurationDescription.oneLiner())
             ])
         }
     }

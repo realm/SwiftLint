@@ -325,6 +325,8 @@ class RuleConfigurationTests: SwiftLintTestCase {
         XCTAssertEqual(configuration.severityConfiguration.severity, .error)
         XCTAssertEqual(configuration.order, .setGet)
 
-        XCTAssertEqual(configuration.consoleDescription, "severity: error, order: set_get")
+        XCTAssertEqual(
+            RuleConfigurationDescription.from(configuration: configuration).oneLiner(),
+            "severity: error; order: set_get")
     }
 }

@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileHeaderRule
@@ -9,31 +10,21 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private static let patternRegexOptions: NSRegularExpression.Options =
         [.anchorsMatchLines, .dotMatchesLineSeparators]
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "required_string")
     private var requiredString: String?
+    @ConfigurationElement(key: "required_pattern")
     private var requiredPattern: String?
+    @ConfigurationElement(key: "forbidden_string")
     private var forbiddenString: String?
+    @ConfigurationElement(key: "forbidden_pattern")
     private var forbiddenPattern: String?
 
     private var _forbiddenRegex: NSRegularExpression?
     private var _requiredRegex: NSRegularExpression?
 
     private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
-
-    var consoleDescription: String {
-        let requiredStringDescription = requiredString ?? "None"
-        let requiredPatternDescription = requiredPattern ?? "None"
-        let forbiddenStringDescription = forbiddenString ?? "None"
-        let forbiddenPatternDescription = forbiddenPattern ?? "None"
-
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", required_string: \(requiredStringDescription)" +
-            ", required_pattern: \(requiredPatternDescription)" +
-            ", forbidden_string: \(forbiddenStringDescription)" +
-            ", forbidden_pattern: \(forbiddenPatternDescription)"
-    }
-
-    init() {}
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: String] else {

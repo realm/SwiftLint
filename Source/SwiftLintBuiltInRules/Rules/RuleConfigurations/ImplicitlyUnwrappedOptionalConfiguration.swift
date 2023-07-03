@@ -1,8 +1,10 @@
+import SwiftLintCore
+
 struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ImplicitlyUnwrappedOptionalRule
 
     // swiftlint:disable:next type_name
-    enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
+    enum ImplicitlyUnwrappedOptionalModeConfiguration: String, AcceptableByConfigurationElement {
         case all = "all"
         case allExceptIBOutlets = "all_except_iboutlets"
 
@@ -14,15 +16,14 @@ struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration,
                 throw Issue.unknownConfiguration(ruleID: Parent.identifier)
             }
         }
+
+        func asOption() -> OptionType { .symbol(rawValue) }
     }
 
-    private(set) var mode = ImplicitlyUnwrappedOptionalModeConfiguration.allExceptIBOutlets
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", mode: \(mode.rawValue)"
-    }
+    @ConfigurationElement(key: "mode")
+    private(set) var mode = ImplicitlyUnwrappedOptionalModeConfiguration.allExceptIBOutlets
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

@@ -1,21 +1,22 @@
+import SwiftLintCore
+
 struct SortedImportsConfiguration: RuleConfiguration, Equatable {
     typealias Parent = SortedImportsRule
 
-    enum SortedImportsGroupingConfiguration: String {
+    enum SortedImportsGroupingConfiguration: String, AcceptableByConfigurationElement {
         /// Sorts import lines based on any import attributes (e.g. `@testable`, `@_exported`, etc.), followed by a case
         /// insensitive comparison of the imported module name.
         case attributes
         /// Sorts import lines based on a case insensitive comparison of the imported module name.
         case names
+
+        func asOption() -> OptionType { .symbol(rawValue) }
     }
 
+    @ConfigurationElement
     private(set) var severity = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "grouping")
     private(set) var grouping = SortedImportsGroupingConfiguration.names
-
-    var consoleDescription: String {
-        return "severity: \(severity.consoleDescription)"
-            + ", grouping: \(grouping)"
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

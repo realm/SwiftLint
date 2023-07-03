@@ -1,7 +1,9 @@
+import SwiftLintCore
+
 struct StatementPositionConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = StatementPositionRule
 
-    enum StatementModeConfiguration: String {
+    enum StatementModeConfiguration: String, AcceptableByConfigurationElement {
         case `default` = "default"
         case uncuddledElse = "uncuddled_else"
 
@@ -13,15 +15,14 @@ struct StatementPositionConfiguration: SeverityBasedRuleConfiguration, Equatable
                 throw Issue.unknownConfiguration(ruleID: Parent.identifier)
             }
         }
+
+        func asOption() -> OptionType { .symbol(rawValue) }
     }
 
-    var consoleDescription: String {
-        return "(statement_mode) \(statementMode.rawValue), " +
-            "(severity) \(severityConfiguration.consoleDescription)"
-    }
-
-    private(set) var statementMode = StatementModeConfiguration.default
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
+    @ConfigurationElement(key: "statement_mode")
+    private(set) var statementMode = StatementModeConfiguration.default
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {

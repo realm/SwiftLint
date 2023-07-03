@@ -1,4 +1,6 @@
-enum TypeContent: String {
+import SwiftLintCore
+
+enum TypeContent: String, AcceptableByConfigurationElement {
     case `case` = "case"
     case typeAlias = "type_alias"
     case associatedType = "associated_type"
@@ -14,12 +16,16 @@ enum TypeContent: String {
     case otherMethod = "other_method"
     case `subscript` = "subscript"
     case deinitializer = "deinitializer"
+
+    func asOption() -> OptionType { .symbol(rawValue) }
 }
 
 struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TypeContentsOrderRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "order")
     private(set) var order: [[TypeContent]] = [
         [.case],
         [.typeAlias, .associatedType],
@@ -36,11 +42,6 @@ struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable
         [.subscript],
         [.deinitializer]
     ]
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", order: \(String(describing: order))"
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

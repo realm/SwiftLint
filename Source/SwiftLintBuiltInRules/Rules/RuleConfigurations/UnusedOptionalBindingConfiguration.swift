@@ -1,12 +1,12 @@
+import SwiftLintCore
+
 struct UnusedOptionalBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = UnusedOptionalBindingRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "ignore_optional_try")
     private(set) var ignoreOptionalTry = false
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" + ", ignore_optional_try: \(ignoreOptionalTry)"
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

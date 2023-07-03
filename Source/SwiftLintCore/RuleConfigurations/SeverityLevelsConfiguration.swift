@@ -1,26 +1,10 @@
 /// A rule configuration that allows specifying thresholds for `warning` and `error` severities.
 public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
-        let errorString: String
-        if let errorValue = error {
-            errorString = ", error: \(errorValue)"
-        } else {
-            errorString = ""
-        }
-        return "warning: \(warning)" + errorString
-    }
-
-    /// A condensed console description.
-    public var shortConsoleDescription: String {
-        if let errorValue = error {
-            return "w/e: \(warning)/\(errorValue)"
-        }
-        return "w: \(warning)"
-    }
-
     /// The threshold for a violation to be a warning.
-    public var warning: Int
+    @ConfigurationElement(key: "warning")
+    public var warning: Int = 12
     /// The threshold for a violation to be an error.
+    @ConfigurationElement(key: "error")
     public var error: Int?
 
     /// Create a `SeverityLevelsConfiguration` based on the sepecified `warning` and `error` thresholds.

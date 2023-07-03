@@ -1,9 +1,12 @@
 import SourceKittenFramework
+import SwiftLintCore
 
 struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ModifierOrderRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "preferred_modifier_order")
     private(set) var preferredModifierOrder: [SwiftDeclarationAttributeKind.ModifierGroup] = [
         .override,
         .acl,
@@ -17,11 +20,6 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
         .typeMethods,
         .owned
     ]
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)"
-            + ", preferred_modifier_order: \(preferredModifierOrder)"
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
@@ -43,4 +41,8 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
+}
+
+extension SwiftDeclarationAttributeKind.ModifierGroup: AcceptableByConfigurationElement {
+    public func asOption() -> OptionType { .symbol(rawValue) }
 }

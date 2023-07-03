@@ -1,14 +1,12 @@
+import SwiftLintCore
+
 struct CollectionAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = CollectionAlignmentRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "align_colons")
     private(set) var alignColons = false
-
-    init() {}
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" + ", align_colons: \(alignColons)"
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

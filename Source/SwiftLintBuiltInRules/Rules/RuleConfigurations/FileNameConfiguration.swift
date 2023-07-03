@@ -1,18 +1,17 @@
+import SwiftLintCore
+
 struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileNameRule
 
-    var consoleDescription: String {
-        return "(severity) \(severityConfiguration.consoleDescription), " +
-            "excluded: \(excluded.sorted()), " +
-            "prefix_pattern: \(prefixPattern), " +
-            "suffix_pattern: \(suffixPattern), " +
-            "nested_type_separator: \(nestedTypeSeparator)"
-    }
-
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
+    @ConfigurationElement
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "excluded")
     private(set) var excluded = Set<String>(["main.swift", "LinuxMain.swift"])
+    @ConfigurationElement(key: "prefix_pattern")
     private(set) var prefixPattern = ""
+    @ConfigurationElement(key: "suffix_pattern")
     private(set) var suffixPattern = "\\+.*"
+    @ConfigurationElement(key: "nested_type_separator")
     private(set) var nestedTypeSeparator = "."
 
     mutating func apply(configuration: Any) throws {

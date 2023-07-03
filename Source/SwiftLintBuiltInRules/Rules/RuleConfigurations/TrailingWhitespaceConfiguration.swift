@@ -1,15 +1,14 @@
+import SwiftLintCore
+
 struct TrailingWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TrailingWhitespaceRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "ignores_empty_lines")
     private(set) var ignoresEmptyLines = false
+    @ConfigurationElement(key: "ignores_comments")
     private(set) var ignoresComments = true
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", ignores_empty_lines: \(ignoresEmptyLines)" +
-            ", ignores_comments: \(ignoresComments)"
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

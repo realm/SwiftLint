@@ -1,29 +1,29 @@
+import SwiftLintCore
+
 struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ExplicitTypeInterfaceRule
 
-    enum VariableKind: String, CaseIterable {
+    enum VariableKind: String, CaseIterable, AcceptableByConfigurationElement {
         case instance
         case local
         case `static`
         case `class`
 
         static let all = Set(allCases)
+
+        func asOption() -> SwiftLintCore.OptionType { .symbol(rawValue) }
     }
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-
-    private(set) var allowedKinds = VariableKind.all
-
+    @ConfigurationElement(key: "excluded")
+    private(set) var excluded = [VariableKind]()
+    @ConfigurationElement(key: "allow_redundancy")
     private(set) var allowRedundancy = false
 
-    var consoleDescription: String {
-        let excludedKinds = VariableKind.all.subtracting(allowedKinds).map(\.rawValue).sorted()
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", excluded: \(excludedKinds)" +
-            ", allow_redundancy: \(allowRedundancy)"
+    var allowedKinds: Set<VariableKind> {
+        VariableKind.all.subtracting(excluded)
     }
-
-    init() {}
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
@@ -34,7 +34,7 @@ struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equat
             case ("severity", let severityString as String):
                 try severityConfiguration.apply(configuration: severityString)
             case ("excluded", let excludedStrings as [String]):
-                allowedKinds.subtract(excludedStrings.compactMap(VariableKind.init(rawValue:)))
+                self.excluded = excludedStrings.compactMap(VariableKind.init).unique
             case ("allow_redundancy", let allowRedundancy as Bool):
                 self.allowRedundancy = allowRedundancy
             default:

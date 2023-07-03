@@ -1,24 +1,23 @@
+import SwiftLintCore
+
 struct XCTSpecificMatcherConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = XCTSpecificMatcherRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    private(set) var matchers = Set(Matcher.allCases)
+    @ConfigurationElement(key: ConfigurationKey.matchers.rawValue)
+    private(set) var matchers = Matcher.allCases
 
-    enum Matcher: String, Hashable, CaseIterable {
+    enum Matcher: String, Hashable, CaseIterable, AcceptableByConfigurationElement {
         case oneArgumentAsserts = "one-argument-asserts"
         case twoArgumentAsserts = "two-argument-asserts"
+
+        func asOption() -> OptionType { .symbol(rawValue) }
     }
 
     private enum ConfigurationKey: String {
         case severity
         case matchers
-    }
-
-    var consoleDescription: String {
-        return [
-            "severity: \(severityConfiguration.consoleDescription)",
-            "\(ConfigurationKey.matchers): \(matchers.map(\.rawValue).sorted().joined(separator: ", "))"
-        ].joined(separator: ", ")
     }
 
     mutating func apply(configuration: Any) throws {
@@ -31,7 +30,7 @@ struct XCTSpecificMatcherConfiguration: SeverityBasedRuleConfiguration, Equatabl
         }
 
         if let matchers = configuration[ConfigurationKey.matchers.rawValue] as? [String] {
-            self.matchers = Set(matchers.compactMap(Matcher.init(rawValue:)))
+            self.matchers = matchers.compactMap(Matcher.init)
         }
     }
 }

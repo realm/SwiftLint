@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 private enum ConfigurationKey: String {
     case warning = "warning"
     case error = "error"
@@ -7,13 +9,10 @@ private enum ConfigurationKey: String {
 struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable {
     typealias Parent = FunctionParameterCountRule
 
-    private(set) var ignoresDefaultParameters = true
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 5, error: 8)
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-        ", \(ConfigurationKey.ignoresDefaultParameters.rawValue): \(ignoresDefaultParameters)"
-    }
+    @ConfigurationElement(key: "ignores_default_parameters")
+    private(set) var ignoresDefaultParameters = true
 
     mutating func apply(configuration: Any) throws {
         if let configurationArray = [Int].array(of: configuration),

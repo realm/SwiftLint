@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 private enum ConfigurationKey: String {
     case severity = "severity"
     case includePublicAndOpen = "include_public_and_open"
@@ -7,15 +9,12 @@ private enum ConfigurationKey: String {
 struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = UnusedDeclarationRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.error
+    @ConfigurationElement(key: ConfigurationKey.includePublicAndOpen.rawValue)
     private(set) var includePublicAndOpen = false
+    @ConfigurationElement(key: ConfigurationKey.relatedUSRsToSkip.rawValue)
     private(set) var relatedUSRsToSkip = Set(["s:7SwiftUI15PreviewProviderP"])
-
-    var consoleDescription: String {
-        return "\(ConfigurationKey.severity.rawValue): \(severityConfiguration.severity.rawValue), " +
-            "\(ConfigurationKey.includePublicAndOpen.rawValue): \(includePublicAndOpen), " +
-            "\(ConfigurationKey.relatedUSRsToSkip.rawValue): \(relatedUSRsToSkip.sorted())"
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configDict = configuration as? [String: Any], configDict.isNotEmpty else {

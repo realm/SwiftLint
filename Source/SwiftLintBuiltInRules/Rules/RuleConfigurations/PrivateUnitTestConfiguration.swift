@@ -4,15 +4,14 @@ import SwiftLintCore
 struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, CacheDescriptionProvider {
     typealias Parent = PrivateUnitTestRule
 
+    @ConfigurationElement
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "regex")
+    private(set) var regex = SwiftLintCore.regex("XCTestCase")
+
     private(set) var name: String?
     private(set) var message = "Unit test marked `private` will not be run by XCTest."
-    private(set) var regex = SwiftLintCore.regex("XCTestCase")
     private(set) var included: NSRegularExpression?
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-
-    var consoleDescription: String {
-        return "\(severity.rawValue): \(regex.pattern)"
-    }
 
     var cacheDescription: String {
         let jsonObject: [String] = [
@@ -21,7 +20,7 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, 
             message,
             regex.pattern,
             included?.pattern ?? "",
-            severityConfiguration.consoleDescription
+            severityConfiguration.severity.rawValue
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
           let jsonString = String(data: jsonData, encoding: .utf8) {

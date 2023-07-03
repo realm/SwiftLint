@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 private enum ConfigurationKey: String {
     case severity = "severity"
     case allowMultilineFunc = "allow_multiline_func"
@@ -6,13 +8,10 @@ private enum ConfigurationKey: String {
 struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = OpeningBraceRule
 
+    @ConfigurationElement(key: ConfigurationKey.severity.rawValue)
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: ConfigurationKey.allowMultilineFunc.rawValue)
     private(set) var allowMultilineFunc = false
-
-    var consoleDescription: String {
-        return ["severity: \(severityConfiguration.consoleDescription)",
-                "\(ConfigurationKey.allowMultilineFunc): \(allowMultilineFunc)"].joined(separator: ", ")
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

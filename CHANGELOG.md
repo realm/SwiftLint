@@ -15,6 +15,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5072](https://github.com/realm/SwiftLint/issues/5072)
 
+* Prettify the rule configuration presentation on the command line as well as
+  on the website.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
 
 * Fix false positives for the `unneeded_synthesized_initializer` rule, when

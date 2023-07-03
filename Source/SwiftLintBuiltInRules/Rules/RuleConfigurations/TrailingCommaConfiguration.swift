@@ -1,16 +1,12 @@
+import SwiftLintCore
+
 struct TrailingCommaConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TrailingCommaRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    private(set) var mandatoryComma: Bool
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" + ", mandatory_comma: \(mandatoryComma)"
-    }
-
-    init(mandatoryComma: Bool = false) {
-        self.mandatoryComma = mandatoryComma
-    }
+    @ConfigurationElement(key: "mandatory_comma")
+    private(set) var mandatoryComma = false
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

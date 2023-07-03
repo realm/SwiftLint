@@ -42,6 +42,10 @@ open class ViolationsSyntaxVisitor: SyntaxVisitor {
     override open func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
         skippableDeclarations.contains { $0 == StructDeclSyntax.self } ? .skipChildren : .visitChildren
     }
+
+    override open func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+        skippableDeclarations.contains { $0 == InitializerDeclSyntax.self } ? .skipChildren : .visitChildren
+    }
 }
 
 public extension Array where Element == DeclSyntaxProtocol.Type {

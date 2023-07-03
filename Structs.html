@@ -146,6 +146,9 @@
                 <a class="nav-group-task-link" href="Enums/Issue.html">Issue</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/OptionType.html">OptionType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/RuleIdentifier.html">RuleIdentifier</a>
               </li>
               <li class="nav-group-task">
@@ -168,6 +171,27 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Extensions/Array.html">Array</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Bool.html">Bool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Double.html">Double</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Int.html">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/NSRegularExpression.html">NSRegularExpression</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Optional.html">Optional</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Set.html">Set</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/String.html">String</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -183,6 +207,9 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/ASTRule.html">ASTRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/AcceptableByConfigurationElement.html">AcceptableByConfigurationElement</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/AnalyzerRule.html">AnalyzerRule</a>
@@ -201,6 +228,12 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/CorrectableRule.html">CorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Documentable.html">Documentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols.html#/s:13SwiftLintCore9OptInRuleP">OptInRule</a>
@@ -259,6 +292,9 @@
                 <a class="nav-group-task-link" href="Structs/Configuration.html">Configuration</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ConfigurationElement.html">ConfigurationElement</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/Correction.html">Correction</a>
               </li>
               <li class="nav-group-task">
@@ -284,6 +320,15 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/RelativePathReporter.html">RelativePathReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleConfigurationDescription.html">RuleConfigurationDescription</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:13SwiftLintCore35RuleConfigurationDescriptionBuilderV">RuleConfigurationDescriptionBuilder</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleConfigurationOption.html">RuleConfigurationOption</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/RuleDescription.html">RuleDescription</a>
@@ -436,12 +481,12 @@ case it&rsquo;s active.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ChildOptionSeverityConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/RuleConfiguration.html">RuleConfiguration</a></span><span class="p">,</span> <span class="kt">Equatable</span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ChildOptionSeverityConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/RuleConfiguration.html">RuleConfiguration</a></span><span class="p">,</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt"><a href="Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a></span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/ChildOptionSeverityConfiguration.swift#L3-L34">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/ChildOptionSeverityConfiguration.swift#L3-L32">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -704,6 +749,228 @@ non-triggering style</p>
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:13SwiftLintCore28RuleConfigurationDescriptionV"></a>
+                    <a name="//apple_ref/swift/Struct/RuleConfigurationDescription" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore28RuleConfigurationDescriptionV">RuleConfigurationDescription</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Description of a rule configuration.</p>
+
+                        <a href="Structs/RuleConfigurationDescription.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RuleConfigurationDescription</span> <span class="p">:</span> <span class="kt">Equatable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">RuleConfigurationDescription</span><span class="p">:</span> <span class="kt"><a href="Protocols/Documentable.html">Documentable</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L19-L66">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore23RuleConfigurationOptionV"></a>
+                    <a name="//apple_ref/swift/Struct/RuleConfigurationOption" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore23RuleConfigurationOptionV">RuleConfigurationOption</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A single option of a <code><a href="Structs/RuleConfigurationDescription.html">RuleConfigurationDescription</a></code>.</p>
+
+                        <a href="Structs/RuleConfigurationOption.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RuleConfigurationOption</span> <span class="p">:</span> <span class="kt">Equatable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">RuleConfigurationOption</span><span class="p">:</span> <span class="kt"><a href="Protocols/Documentable.html">Documentable</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L91-L97">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Result%20builder"></a>
+                <a name="//apple_ref/swift/Section/Result builder" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Result%20builder"></a>
+                  <h3 class="section-name"><span>Result builder</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore35RuleConfigurationDescriptionBuilderV"></a>
+                    <a name="//apple_ref/swift/Struct/RuleConfigurationDescriptionBuilder" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore35RuleConfigurationDescriptionBuilderV">RuleConfigurationDescriptionBuilder</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A result builder creating configuration descriptions.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@resultBuilder</span>
+<span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RuleConfigurationDescriptionBuilder</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L192-L230">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Property%20wrapper"></a>
+                <a name="//apple_ref/swift/Section/Property wrapper" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Property%20wrapper"></a>
+                  <h3 class="section-name"><span>Property wrapper</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore20ConfigurationElementV"></a>
+                    <a name="//apple_ref/swift/Struct/ConfigurationElement" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementV">ConfigurationElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A single parameter of a rule configuration.</p>
+
+<p>Apply it to a simple (e.g. boolean) property like</p>
+<pre class="highlight swift"><code><span class="kd">@ConfigurationElement</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="s">"name"</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">property</span> <span class="o">=</span> <span class="kc">true</span>
+</code></pre>
+
+<p>If the wrapped element is an <code><a href="Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a></code>, there are two options for its representation
+in the documentation:</p>
+
+<ol>
+<li>It can be inlined into the parent configuration. For that, do not provide a name as an argument. E.g.
+<code>swift
+@ConfigurationElement(key: &quot;name&quot;)
+var property = true
+@ConfigurationElement
+var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
+</code>
+will be documented as a linear list:
+<code>
+name: true
+warning: 1
+error: 2
+</code></li>
+<li>It can be represented as a separate nested configuration. In this case, it must have a name. E.g.
+<code>swift
+@ConfigurationElement(key: &quot;name&quot;)
+var property = true
+@ConfigurationElement(key: &quot;levels&quot;)
+var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
+</code>
+will have a nested configuration section:
+<code>
+name: true
+levels: warning: 1
+       error: 2
+</code></li>
+</ol>
+
+                        <a href="Structs/ConfigurationElement.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@propertyWrapper</span>
+<span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ConfigurationElement</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="Protocols/AcceptableByConfigurationElement.html">AcceptableByConfigurationElement</a></span> <span class="o">&amp;</span> <span class="kt">Equatable</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt">AnyConfigurationElement</span><span class="p">,</span>
+                                                                                     <span class="kt">Equatable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L325-L364">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore21SeverityConfigurationV"></a>
+                    <a name="//apple_ref/swift/Struct/SeverityConfiguration" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore21SeverityConfigurationV">SeverityConfiguration</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A rule configuration that allows specifying the desired severity level for violations.</p>
+
+                        <a href="Structs/SeverityConfiguration.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SeverityConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/SeverityBasedRuleConfiguration.html">SeverityBasedRuleConfiguration</a></span><span class="p">,</span> <span class="kt">Equatable</span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SeverityConfiguration.swift#L2-L31">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:13SwiftLintCore15RuleDescriptionV"></a>
                     <a name="//apple_ref/swift/Struct/RuleDescription" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SwiftLintCore15RuleDescriptionV">RuleDescription</a>
@@ -791,37 +1058,6 @@ non-triggering style</p>
                       </div>
                       <div class="slightly-smaller">
                         <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleParameter.swift#L2-L16">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SwiftLintCore21SeverityConfigurationV"></a>
-                    <a name="//apple_ref/swift/Struct/SeverityConfiguration" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore21SeverityConfigurationV">SeverityConfiguration</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A rule configuration that allows specifying the desired severity level for violations.</p>
-
-                        <a href="Structs/SeverityConfiguration.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SeverityConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/SeverityBasedRuleConfiguration.html">SeverityBasedRuleConfiguration</a></span><span class="p">,</span> <span class="kt">Equatable</span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SeverityConfiguration.swift#L2-L34">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1237,7 +1473,7 @@ non-triggering style</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/RuleConfigurations/RegexConfiguration.swift#L5-L150">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/RuleConfigurations/RegexConfiguration.swift#L5-L148">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1268,7 +1504,7 @@ non-triggering style</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/RuleConfigurations/SeverityLevelsConfiguration.swift#L2-L56">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/RuleConfigurations/SeverityLevelsConfiguration.swift#L2-L40">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

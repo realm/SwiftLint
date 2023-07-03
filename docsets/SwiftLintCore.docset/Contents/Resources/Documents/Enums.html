@@ -146,6 +146,9 @@
                 <a class="nav-group-task-link" href="Enums/Issue.html">Issue</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/OptionType.html">OptionType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/RuleIdentifier.html">RuleIdentifier</a>
               </li>
               <li class="nav-group-task">
@@ -168,6 +171,27 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Extensions/Array.html">Array</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Bool.html">Bool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Double.html">Double</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Int.html">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/NSRegularExpression.html">NSRegularExpression</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Optional.html">Optional</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Set.html">Set</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/String.html">String</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -183,6 +207,9 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/ASTRule.html">ASTRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/AcceptableByConfigurationElement.html">AcceptableByConfigurationElement</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/AnalyzerRule.html">AnalyzerRule</a>
@@ -201,6 +228,12 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/CorrectableRule.html">CorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Documentable.html">Documentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols.html#/s:13SwiftLintCore9OptInRuleP">OptInRule</a>
@@ -259,6 +292,9 @@
                 <a class="nav-group-task-link" href="Structs/Configuration.html">Configuration</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ConfigurationElement.html">ConfigurationElement</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/Correction.html">Correction</a>
               </li>
               <li class="nav-group-task">
@@ -284,6 +320,15 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/RelativePathReporter.html">RelativePathReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleConfigurationDescription.html">RuleConfigurationDescription</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:13SwiftLintCore35RuleConfigurationDescriptionBuilderV">RuleConfigurationDescriptionBuilder</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleConfigurationOption.html">RuleConfigurationOption</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/RuleDescription.html">RuleDescription</a>
@@ -453,6 +498,39 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:13SwiftLintCore10OptionTypeO"></a>
+                    <a name="//apple_ref/swift/Enum/OptionType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore10OptionTypeO">OptionType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Type of an option.</p>
+
+                        <a href="Enums/OptionType.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">OptionType</span> <span class="p">:</span> <span class="kt">Equatable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">OptionType</span><span class="p">:</span> <span class="kt"><a href="Protocols/Documentable.html">Documentable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">OptionType</span><span class="p">:</span> <span class="kt"><a href="Protocols/AcceptableByConfigurationElement.html">AcceptableByConfigurationElement</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L119-L138">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:13SwiftLintCore14RuleIdentifierO"></a>
                     <a name="//apple_ref/swift/Enum/RuleIdentifier" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SwiftLintCore14RuleIdentifierO">RuleIdentifier</a>
@@ -595,12 +673,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ViolationSeverity</span> <span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">Codable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ViolationSeverity</span> <span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt"><a href="Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/ViolationSeverity.swift#L2-L13">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/ViolationSeverity.swift#L2-L15">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

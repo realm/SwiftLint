@@ -39,23 +39,6 @@ struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
     @ConfigurationElement(key: "date_separator")
     private(set) var dateSeparator = "/"
 
-    init(
-        approachingExpirySeverity: Severity = .init(.warning),
-        expiredSeverity: Severity = .init(.error),
-        badFormattingSeverity: Severity = .init(.error),
-        approachingExpiryThreshold: Int = 15,
-        dateFormat: String = "MM/dd/yyyy",
-        dateDelimiters: DelimiterConfiguration = .default,
-        dateSeparator: String = "/") {
-        self.approachingExpirySeverity = approachingExpirySeverity
-        self.expiredSeverity = expiredSeverity
-        self.badFormattingSeverity = badFormattingSeverity
-        self.approachingExpiryThreshold = approachingExpiryThreshold
-        self.dateDelimiters = dateDelimiters
-        self.dateFormat = dateFormat
-        self.dateSeparator = dateSeparator
-    }
-
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)

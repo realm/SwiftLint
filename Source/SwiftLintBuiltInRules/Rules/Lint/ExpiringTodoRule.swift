@@ -44,7 +44,7 @@ struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
         ].skipWrappingInCommentTests()
     )
 
-    var configuration: ExpiringTodoConfiguration = .init()
+    var configuration = ExpiringTodoConfiguration()
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         let regex = #"""

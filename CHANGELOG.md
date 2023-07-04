@@ -36,6 +36,10 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5081](https://github.com/realm/SwiftLint/issues/5081)
 
+* Fix false positives for the `private_subject` rule when creating subjects
+  inside initializers.  
+  [kasrababaei](https://github.com/kasrababaei)
+
 ## 0.52.3: Duplicate Hampers
 
 #### Breaking

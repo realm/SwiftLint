@@ -8,15 +8,9 @@ struct AttributesConfiguration: SeverityBasedRuleConfiguration, Equatable {
     @ConfigurationElement(key: "attributes_with_arguments_always_on_line_above")
     private(set) var attributesWithArgumentsAlwaysOnNewLine = true
     @ConfigurationElement(key: "always_on_same_line")
-    private(set) var alwaysOnSameLine = Set<String>()
+    private(set) var alwaysOnSameLine = Set<String>(["@IBAction", "@NSManaged"])
     @ConfigurationElement(key: "always_on_line_above")
     private(set) var alwaysOnNewLine = Set<String>()
-
-    init(alwaysOnSameLine: [String] = ["@IBAction", "@NSManaged"],
-         alwaysInNewLine: [String] = []) {
-        self.alwaysOnSameLine = Set(alwaysOnSameLine)
-        self.alwaysOnNewLine = Set(alwaysOnNewLine)
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

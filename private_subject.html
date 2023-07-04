@@ -474,6 +474,14 @@ warning
         <span class="kt">CurrentValueSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">goodSubject</span><span class="p">:</span> <span class="kt">CurrentValueSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span>
+    <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">goodSubject</span> <span class="o">=</span> <span class="kt">CurrentValueSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">goosSubject</span> <span class="o">=</span> <span class="n">goodSubject</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">goodSubject</span> <span class="o">=</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
 <span class="p">}</span>

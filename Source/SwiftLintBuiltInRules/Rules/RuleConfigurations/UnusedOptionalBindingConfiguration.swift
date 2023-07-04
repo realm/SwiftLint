@@ -3,7 +3,7 @@ import SwiftLintCore
 struct UnusedOptionalBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = UnusedOptionalBindingRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "ignore_optional_try")
     private(set) var ignoreOptionalTry = false
@@ -13,11 +13,11 @@ struct UnusedOptionalBindingConfiguration: SeverityBasedRuleConfiguration, Equat
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let ignoreOptionalTry = configuration["ignore_optional_try"] as? Bool {
+        if let ignoreOptionalTry = configuration[$ignoreOptionalTry] as? Bool {
             self.ignoreOptionalTry = ignoreOptionalTry
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

@@ -4,14 +4,9 @@ import SwiftLintCore
 struct VerticalWhitespaceClosingBracesConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = VerticalWhitespaceClosingBracesRule
 
-    private enum ConfigurationKey: String {
-        case severity = "severity"
-        case onlyEnforceBeforeTrivialLines = "only_enforce_before_trivial_lines"
-    }
-
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(key: ConfigurationKey.onlyEnforceBeforeTrivialLines.rawValue)
+    @ConfigurationElement(key: "only_enforce_before_trivial_lines")
     private(set) var onlyEnforceBeforeTrivialLines = false
 
     mutating func apply(configuration: Any) throws {
@@ -20,14 +15,10 @@ struct VerticalWhitespaceClosingBracesConfiguration: SeverityBasedRuleConfigurat
         }
 
         for (string, value) in configuration {
-            guard let key = ConfigurationKey(rawValue: string) else {
-                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-            }
-
-            switch (key, value) {
-            case (.severity, let stringValue as String):
+            switch (string, value) {
+            case ($severityConfiguration, let stringValue as String):
                 try severityConfiguration.apply(configuration: stringValue)
-            case (.onlyEnforceBeforeTrivialLines, let boolValue as Bool):
+            case ($onlyEnforceBeforeTrivialLines, let boolValue as Bool):
                 onlyEnforceBeforeTrivialLines = boolValue
             default:
                 throw Issue.unknownConfiguration(ruleID: Parent.identifier)

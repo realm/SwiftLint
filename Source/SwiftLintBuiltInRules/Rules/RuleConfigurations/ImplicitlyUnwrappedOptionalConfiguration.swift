@@ -20,7 +20,7 @@ struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration,
         func asOption() -> OptionType { .symbol(rawValue) }
     }
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "mode")
     private(set) var mode = ImplicitlyUnwrappedOptionalModeConfiguration.allExceptIBOutlets
@@ -30,11 +30,11 @@ struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration,
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let modeString = configuration["mode"] {
+        if let modeString = configuration[$mode] {
             try mode = ImplicitlyUnwrappedOptionalModeConfiguration(value: modeString)
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

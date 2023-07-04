@@ -327,10 +327,11 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// Wrapped option value.
     public var wrappedValue: T
 
-    private let key: String
+    /// The option's name. This field can only be accessed by the element's name prefixed with a `$`.
+    public let projectedValue: String
 
     fileprivate var description: RuleConfigurationDescription {
-        wrappedValue.asDescription(with: key)
+        wrappedValue.asDescription(with: projectedValue)
     }
 
     /// Default constructor.
@@ -340,7 +341,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///   - key: Name of the option.
     public init(wrappedValue value: T, key: String) {
         self.wrappedValue = value
-        self.key = key
+        self.projectedValue = key
     }
 
     /// Constructor for optional values.
@@ -352,7 +353,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
         self.init(wrappedValue: nil, key: key)
     }
 
-    /// Constructor for a `ConfigurationElement` without a key.
+    /// Constructor for a ``ConfigurationElement`` without a key.
     ///
     /// ``InlinableOptionType``s are allowed to have an empty key. The configuration will be inlined into its
     /// parent configuration in this specific case.

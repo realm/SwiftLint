@@ -3,7 +3,7 @@ import SwiftLintCore
 typealias DiscouragedObjectLiteralConfiguration = ObjectLiteralConfiguration<DiscouragedObjectLiteralRule>
 
 struct ObjectLiteralConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable {
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "image_literal")
     private(set) var imageLiteral = true
@@ -15,10 +15,10 @@ struct ObjectLiteralConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration,
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        imageLiteral = configuration["image_literal"] as? Bool ?? true
-        colorLiteral = configuration["color_literal"] as? Bool ?? true
+        imageLiteral = configuration[$imageLiteral] as? Bool ?? true
+        colorLiteral = configuration[$colorLiteral] as? Bool ?? true
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

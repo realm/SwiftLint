@@ -10,7 +10,7 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private static let patternRegexOptions: NSRegularExpression.Options =
         [.anchorsMatchLines, .dotMatchesLineSeparators]
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "required_string")
     private var requiredString: String?
@@ -34,33 +34,33 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
         // Cache the created regexes if possible.
         // If the pattern contains the SWIFTLINT_CURRENT_FILENAME placeholder,
         // the regex will be recompiled for each validated file.
-        if let requiredString = configuration["required_string"] {
+        if let requiredString = configuration[$requiredString] {
             self.requiredString = requiredString
             if !requiredString.contains(Self.fileNamePlaceholder) {
                 _requiredRegex = try NSRegularExpression(pattern: requiredString,
                                                          options: Self.stringRegexOptions)
             }
-        } else if let requiredPattern = configuration["required_pattern"] {
+        } else if let requiredPattern = configuration[$requiredPattern] {
             self.requiredPattern = requiredPattern
             if !requiredPattern.contains(Self.fileNamePlaceholder) {
                 _requiredRegex = try .cached(pattern: requiredPattern)
             }
         }
 
-        if let forbiddenString = configuration["forbidden_string"] {
+        if let forbiddenString = configuration[$forbiddenString] {
             self.forbiddenString = forbiddenString
             if !forbiddenString.contains(Self.fileNamePlaceholder) {
                 _forbiddenRegex = try NSRegularExpression(pattern: forbiddenString,
                                                           options: Self.stringRegexOptions)
             }
-        } else if let forbiddenPattern = configuration["forbidden_pattern"] {
+        } else if let forbiddenPattern = configuration[$forbiddenPattern] {
             self.forbiddenPattern = forbiddenPattern
             if !forbiddenPattern.contains(Self.fileNamePlaceholder) {
                 _forbiddenRegex = try .cached(pattern: forbiddenPattern)
             }
         }
 
-        if let severityString = configuration["severity"] {
+        if let severityString = configuration[$severityConfiguration] {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

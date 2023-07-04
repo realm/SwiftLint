@@ -19,7 +19,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// The syntax kinds to exclude from matches. If the regex matched syntax kinds from this list, it would
     /// be ignored and not count as a rule violation.
     public var excludedMatchKinds = Set<SyntaxKind>()
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     public var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     /// The index of the regex capture group to match.
     public var captureGroup: Int = 0
@@ -58,7 +58,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
 
     public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any],
-            let regexString = configurationDict["regex"] as? String else {
+            let regexString = configurationDict[$regex] as? String else {
             throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
         }
 
@@ -86,7 +86,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         if let message = configurationDict["message"] as? String {
             self.message = message
         }
-        if let severityString = configurationDict["severity"] as? String {
+        if let severityString = configurationDict[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
         if let captureGroup = configurationDict["capture_group"] as? Int {

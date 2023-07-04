@@ -10,7 +10,7 @@ struct ComputedAccessorsOrderConfiguration: SeverityBasedRuleConfiguration, Equa
         func asOption() -> OptionType { .symbol(rawValue) }
     }
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "order")
     private(set) var order = Order.getSet
@@ -20,12 +20,12 @@ struct ComputedAccessorsOrderConfiguration: SeverityBasedRuleConfiguration, Equa
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let orderString = configuration["order"] as? String,
+        if let orderString = configuration[$order] as? String,
             let order = Order(rawValue: orderString) {
             self.order = order
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

@@ -1,19 +1,13 @@
 import SwiftLintCore
 
-private enum ConfigurationKey: String {
-    case severity = "severity"
-    case includePublicAndOpen = "include_public_and_open"
-    case relatedUSRsToSkip = "related_usrs_to_skip"
-}
-
 struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = UnusedDeclarationRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.error
-    @ConfigurationElement(key: ConfigurationKey.includePublicAndOpen.rawValue)
+    @ConfigurationElement(key: "include_public_and_open")
     private(set) var includePublicAndOpen = false
-    @ConfigurationElement(key: ConfigurationKey.relatedUSRsToSkip.rawValue)
+    @ConfigurationElement(key: "related_usrs_to_skip")
     private(set) var relatedUSRsToSkip = Set(["s:7SwiftUI15PreviewProviderP"])
 
     mutating func apply(configuration: Any) throws {
@@ -22,15 +16,12 @@ struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable
         }
 
         for (string, value) in configDict {
-            guard let key = ConfigurationKey(rawValue: string) else {
-                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-            }
-            switch (key, value) {
-            case (.severity, let stringValue as String):
+            switch (string, value) {
+            case ($severityConfiguration, let stringValue as String):
                 try severityConfiguration.apply(configuration: stringValue)
-            case (.includePublicAndOpen, let boolValue as Bool):
+            case ($includePublicAndOpen, let boolValue as Bool):
                 includePublicAndOpen = boolValue
-            case (.relatedUSRsToSkip, let value):
+            case ($relatedUSRsToSkip, let value):
                 if let usrs = [String].array(of: value) {
                     relatedUSRsToSkip.formUnion(usrs)
                 } else {

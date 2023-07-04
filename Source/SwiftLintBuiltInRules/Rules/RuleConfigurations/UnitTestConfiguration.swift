@@ -6,7 +6,7 @@ typealias SingleTestClassConfiguration = UnitTestConfiguration<SingleTestClassRu
 typealias NoMagicNumbersConfiguration = UnitTestConfiguration<NoMagicNumbersRule>
 
 struct UnitTestConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable {
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "test_parent_classes")
     private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
@@ -16,11 +16,11 @@ struct UnitTestConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equa
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        if let extraTestParentClasses = configuration["test_parent_classes"] as? [String] {
+        if let extraTestParentClasses = configuration[$testParentClasses] as? [String] {
             self.testParentClasses.formUnion(extraTestParentClasses)
         }
     }

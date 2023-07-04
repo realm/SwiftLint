@@ -17,7 +17,7 @@ struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     static let defaultIncludedKinds = Set(ReturnKind.allCases)
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "included")
     private(set) var includedKinds = Self.defaultIncludedKinds
@@ -31,7 +31,7 @@ struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let includedKinds = configuration["included"] as? [String] {
+        if let includedKinds = configuration[$includedKinds] as? [String] {
             self.includedKinds = try Set(includedKinds.map {
                 guard let kind = ReturnKind(rawValue: $0) else {
                     throw Issue.unknownConfiguration(ruleID: Parent.identifier)
@@ -41,7 +41,7 @@ struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
             })
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

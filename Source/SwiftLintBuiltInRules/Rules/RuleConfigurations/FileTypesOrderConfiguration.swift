@@ -13,7 +13,7 @@ enum FileType: String, AcceptableByConfigurationElement {
 struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileTypesOrderRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "order")
     private(set) var order: [[FileType]] = [
@@ -30,7 +30,7 @@ struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
         }
 
         var customOrder = [[FileType]]()
-        if let custom = configuration["order"] as? [Any] {
+        if let custom = configuration[$order] as? [Any] {
             for entry in custom {
                 if let singleEntry = entry as? String {
                     if let fileType = FileType(rawValue: singleEntry) {

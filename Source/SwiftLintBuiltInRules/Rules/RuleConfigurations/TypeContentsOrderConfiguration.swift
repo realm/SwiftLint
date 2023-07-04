@@ -23,7 +23,7 @@ enum TypeContent: String, AcceptableByConfigurationElement {
 struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TypeContentsOrderRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "order")
     private(set) var order: [[TypeContent]] = [
@@ -49,7 +49,7 @@ struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable
         }
 
         var customOrder = [[TypeContent]]()
-        if let custom = configuration["order"] as? [Any] {
+        if let custom = configuration[$order] as? [Any] {
             for entry in custom {
                 if let singleEntry = entry as? String {
                     if let typeContent = TypeContent(rawValue: singleEntry) {

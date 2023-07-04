@@ -3,7 +3,7 @@ import SwiftLintCore
 struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = SwitchCaseAlignmentRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "indented_cases")
     private(set) var indentedCases = false
@@ -13,9 +13,9 @@ struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatab
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        indentedCases = configuration["indented_cases"] as? Bool ?? false
+        indentedCases = configuration[$indentedCases] as? Bool ?? false
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

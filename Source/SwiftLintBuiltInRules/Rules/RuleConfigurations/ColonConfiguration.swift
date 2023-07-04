@@ -3,7 +3,7 @@ import SwiftLintCore
 struct ColonConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ColonRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "flexible_right_spacing")
     private(set) var flexibleRightSpacing = false
@@ -15,10 +15,10 @@ struct ColonConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        flexibleRightSpacing = configuration["flexible_right_spacing"] as? Bool == true
-        applyToDictionaries = configuration["apply_to_dictionaries"] as? Bool ?? true
+        flexibleRightSpacing = configuration[$flexibleRightSpacing] as? Bool == true
+        applyToDictionaries = configuration[$applyToDictionaries] as? Bool ?? true
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

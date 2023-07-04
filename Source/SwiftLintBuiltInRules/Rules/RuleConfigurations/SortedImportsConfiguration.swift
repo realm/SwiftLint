@@ -13,7 +13,7 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
         func asOption() -> OptionType { .symbol(rawValue) }
     }
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "grouping")
     private(set) var grouping = SortedImportsGroupingConfiguration.names
@@ -23,7 +23,7 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let rawGrouping = configuration["grouping"] {
+        if let rawGrouping = configuration[$grouping] {
             guard let rawGrouping = rawGrouping as? String,
                   let grouping = SortedImportsGroupingConfiguration(rawValue: rawGrouping) else {
                 throw Issue.unknownConfiguration(ruleID: Parent.identifier)
@@ -31,7 +31,7 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
             self.grouping = grouping
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severity] as? String {
             try severity.apply(configuration: severityString)
         }
     }

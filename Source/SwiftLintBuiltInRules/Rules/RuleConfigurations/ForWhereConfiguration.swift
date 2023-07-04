@@ -3,7 +3,7 @@ import SwiftLintCore
 struct ForWhereConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ForWhereRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allow_for_as_filter")
     private(set) var allowForAsFilter = false
@@ -13,9 +13,9 @@ struct ForWhereConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        allowForAsFilter = configuration["allow_for_as_filter"] as? Bool ?? false
+        allowForAsFilter = configuration[$allowForAsFilter] as? Bool ?? false
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

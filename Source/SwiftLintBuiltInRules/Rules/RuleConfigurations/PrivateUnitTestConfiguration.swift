@@ -4,7 +4,7 @@ import SwiftLintCore
 struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, CacheDescriptionProvider {
     typealias Parent = PrivateUnitTestRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "regex")
     private(set) var regex = SwiftLintCore.regex("XCTestCase")
@@ -33,7 +33,7 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, 
         guard let configurationDict = configuration as? [String: Any] else {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
-        if let regexString = configurationDict["regex"] as? String {
+        if let regexString = configurationDict[$regex] as? String {
             regex = try .cached(pattern: regexString)
         }
         if let includedString = configurationDict["included"] as? String {
@@ -45,7 +45,7 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, 
         if let message = configurationDict["message"] as? String {
             self.message = message
         }
-        if let severityString = configurationDict["severity"] as? String {
+        if let severityString = configurationDict[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

@@ -3,9 +3,9 @@ import SwiftLintCore
 struct XCTSpecificMatcherConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = XCTSpecificMatcherRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(key: ConfigurationKey.matchers.rawValue)
+    @ConfigurationElement(key: "matchers")
     private(set) var matchers = Matcher.allCases
 
     enum Matcher: String, Hashable, CaseIterable, AcceptableByConfigurationElement {
@@ -15,21 +15,16 @@ struct XCTSpecificMatcherConfiguration: SeverityBasedRuleConfiguration, Equatabl
         func asOption() -> OptionType { .symbol(rawValue) }
     }
 
-    private enum ConfigurationKey: String {
-        case severity
-        case matchers
-    }
-
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let severityString = configuration[ConfigurationKey.severity.rawValue] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        if let matchers = configuration[ConfigurationKey.matchers.rawValue] as? [String] {
+        if let matchers = configuration[$matchers] as? [String] {
             self.matchers = matchers.compactMap(Matcher.init)
         }
     }

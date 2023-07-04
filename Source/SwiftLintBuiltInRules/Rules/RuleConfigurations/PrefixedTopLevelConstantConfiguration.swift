@@ -3,7 +3,7 @@ import SwiftLintCore
 struct PrefixedTopLevelConstantConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = PrefixedTopLevelConstantRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "only_private")
     private(set) var onlyPrivateMembers = false
@@ -13,9 +13,9 @@ struct PrefixedTopLevelConstantConfiguration: SeverityBasedRuleConfiguration, Eq
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        onlyPrivateMembers = (configuration["only_private"] as? Bool == true)
+        onlyPrivateMembers = (configuration[$onlyPrivateMembers] as? Bool == true)
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

@@ -3,7 +3,7 @@ import SwiftLintCore
 struct TrailingWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TrailingWhitespaceRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "ignores_empty_lines")
     private(set) var ignoresEmptyLines = false
@@ -15,10 +15,10 @@ struct TrailingWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatabl
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        ignoresEmptyLines = (configuration["ignores_empty_lines"] as? Bool == true)
-        ignoresComments = (configuration["ignores_comments"] as? Bool == true)
+        ignoresEmptyLines = (configuration[$ignoresEmptyLines] as? Bool == true)
+        ignoresComments = (configuration[$ignoresComments] as? Bool == true)
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

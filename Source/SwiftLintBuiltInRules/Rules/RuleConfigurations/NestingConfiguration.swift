@@ -18,10 +18,10 @@ struct NestingConfiguration: RuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let typeLevelConfiguration = configurationDict["type_level"] {
+        if let typeLevelConfiguration = configurationDict[$typeLevel] {
             try typeLevel.apply(configuration: typeLevelConfiguration)
         }
-        if let functionLevelConfiguration = configurationDict["function_level"] {
+        if let functionLevelConfiguration = configurationDict[$functionLevel] {
             try functionLevel.apply(configuration: functionLevelConfiguration)
         } else if let statementLevelConfiguration = configurationDict["statement_level"] {
             queuedPrintError(
@@ -33,9 +33,9 @@ struct NestingConfiguration: RuleConfiguration, Equatable {
             try functionLevel.apply(configuration: statementLevelConfiguration)
         }
         checkNestingInClosuresAndStatements =
-            configurationDict["check_nesting_in_closures_and_statements"] as? Bool ?? true
+            configurationDict[$checkNestingInClosuresAndStatements] as? Bool ?? true
         alwaysAllowOneTypeInFunctions =
-            configurationDict["always_allow_one_type_in_functions"] as? Bool ?? false
+            configurationDict[$alwaysAllowOneTypeInFunctions] as? Bool ?? false
     }
 
     func severity(with config: Severity, for level: Int) -> ViolationSeverity? {

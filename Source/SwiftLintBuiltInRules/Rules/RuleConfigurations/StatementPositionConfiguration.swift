@@ -19,7 +19,7 @@ struct StatementPositionConfiguration: SeverityBasedRuleConfiguration, Equatable
         func asOption() -> OptionType { .symbol(rawValue) }
     }
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "statement_mode")
     private(set) var statementMode = StatementModeConfiguration.default
@@ -28,10 +28,10 @@ struct StatementPositionConfiguration: SeverityBasedRuleConfiguration, Equatable
         guard let configurationDict = configuration as? [String: Any] else {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
-        if let statementModeConfiguration = configurationDict["statement_mode"] {
+        if let statementModeConfiguration = configurationDict[$statementMode] {
             try statementMode = StatementModeConfiguration(value: statementModeConfiguration)
         }
-        if let severity = configurationDict["severity"] {
+        if let severity = configurationDict[$severityConfiguration] {
             try severityConfiguration.apply(configuration: severity)
         }
     }

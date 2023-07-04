@@ -23,9 +23,9 @@ struct MissingDocsConfiguration: RuleConfiguration, Equatable {
                 severity.rawValue => .list(values.map(\.value.description).sorted().map { .symbol($0) })
             }
         }
-        "excludes_extensions" => .flag(excludesExtensions)
-        "excludes_inherited_types" => .flag(excludesInheritedTypes)
-        "excludes_trivial_init" => .flag(excludesTrivialInit)
+        $excludesExtensions => .flag(excludesExtensions)
+        $excludesInheritedTypes => .flag(excludesInheritedTypes)
+        $excludesTrivialInit => .flag(excludesTrivialInit)
     }
 
     mutating func apply(configuration: Any) throws {
@@ -33,15 +33,15 @@ struct MissingDocsConfiguration: RuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let shouldExcludeExtensions = dict["excludes_extensions"] as? Bool {
+        if let shouldExcludeExtensions = dict[$excludesExtensions] as? Bool {
             excludesExtensions = shouldExcludeExtensions
         }
 
-        if let shouldExcludeInheritedTypes = dict["excludes_inherited_types"] as? Bool {
+        if let shouldExcludeInheritedTypes = dict[$excludesInheritedTypes] as? Bool {
             excludesInheritedTypes = shouldExcludeInheritedTypes
         }
 
-        if let excludesTrivialInit = dict["excludes_trivial_init"] as? Bool {
+        if let excludesTrivialInit = dict[$excludesTrivialInit] as? Bool {
             self.excludesTrivialInit = excludesTrivialInit
         }
 

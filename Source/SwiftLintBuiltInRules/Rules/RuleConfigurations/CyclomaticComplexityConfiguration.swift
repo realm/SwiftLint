@@ -1,12 +1,6 @@
 import SourceKittenFramework
 import SwiftLintCore
 
-private enum ConfigurationKey: String {
-    case warning = "warning"
-    case error = "error"
-    case ignoresCaseStatements = "ignores_case_statements"
-}
-
 struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
     typealias Parent = CyclomaticComplexityRule
 
@@ -24,7 +18,7 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
     private(set) var length = SeverityLevelsConfiguration<Parent>(warning: 10, error: 20)
     private(set) var complexityStatements = Self.defaultComplexityStatements
 
-    @ConfigurationElement(key: ConfigurationKey.ignoresCaseStatements.rawValue)
+    @ConfigurationElement(key: "ignores_case_statements")
     private(set) var ignoresCaseStatements = false {
         didSet {
             if ignoresCaseStatements {
@@ -47,15 +41,12 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
             length = SeverityLevelsConfiguration<Parent>(warning: warning, error: error)
         } else if let configDict = configuration as? [String: Any], configDict.isNotEmpty {
             for (string, value) in configDict {
-                guard let key = ConfigurationKey(rawValue: string) else {
-                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-                }
-                switch (key, value) {
-                case (.error, let intValue as Int):
+                switch (string, value) {
+                case ("error", let intValue as Int):
                     length.error = intValue
-                case (.warning, let intValue as Int):
+                case ("warning", let intValue as Int):
                     length.warning = intValue
-                case (.ignoresCaseStatements, let boolValue as Bool):
+                case ($ignoresCaseStatements, let boolValue as Bool):
                     ignoresCaseStatements = boolValue
                 default:
                     throw Issue.unknownConfiguration(ruleID: Parent.identifier)

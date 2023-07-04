@@ -3,7 +3,7 @@ import SwiftLintCore
 struct OperatorUsageWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = OperatorUsageWhitespaceRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "lines_look_around")
     private(set) var linesLookAround = 2
@@ -17,12 +17,12 @@ struct OperatorUsageWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equ
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        linesLookAround = configuration["lines_look_around"] as? Int ?? 2
-        skipAlignedConstants = configuration["skip_aligned_constants"] as? Bool ?? true
+        linesLookAround = configuration[$linesLookAround] as? Int ?? 2
+        skipAlignedConstants = configuration[$skipAlignedConstants] as? Bool ?? true
         allowedNoSpaceOperators =
-            configuration["allowed_no_space_operators"] as? [String] ?? ["...", "..<"]
+            configuration[$allowedNoSpaceOperators] as? [String] ?? ["...", "..<"]
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

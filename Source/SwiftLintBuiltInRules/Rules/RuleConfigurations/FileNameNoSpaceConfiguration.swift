@@ -3,7 +3,7 @@ import SwiftLintCore
 struct FileNameNoSpaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileNameNoSpaceRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "excluded")
     private(set) var excluded = Set<String>()
@@ -13,10 +13,10 @@ struct FileNameNoSpaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let severity = configurationDict["severity"] {
+        if let severity = configurationDict[$severityConfiguration] {
             try severityConfiguration.apply(configuration: severity)
         }
-        if let excluded = [String].array(of: configurationDict["excluded"]) {
+        if let excluded = [String].array(of: configurationDict[$excluded]) {
             self.excluded = Set(excluded)
         }
     }

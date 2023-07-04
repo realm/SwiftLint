@@ -1,17 +1,11 @@
 import SwiftLintCore
 
-private enum ConfigurationKey: String {
-    case warning = "warning"
-    case error = "error"
-    case ignoreCommentOnlyLines = "ignore_comment_only_lines"
-}
-
 struct FileLengthConfiguration: RuleConfiguration, Equatable {
     typealias Parent = FileLengthRule
 
     @ConfigurationElement
     private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 400, error: 1000)
-    @ConfigurationElement(key: ConfigurationKey.ignoreCommentOnlyLines.rawValue)
+    @ConfigurationElement(key: "ignore_comment_only_lines")
     private(set) var ignoreCommentOnlyLines = false
 
     mutating func apply(configuration: Any) throws {
@@ -22,15 +16,12 @@ struct FileLengthConfiguration: RuleConfiguration, Equatable {
             severityConfiguration = SeverityLevelsConfiguration(warning: warning, error: error)
         } else if let configDict = configuration as? [String: Any], configDict.isNotEmpty {
             for (string, value) in configDict {
-                guard let key = ConfigurationKey(rawValue: string) else {
-                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-                }
-                switch (key, value) {
-                case (.error, let intValue as Int):
+                switch (string, value) {
+                case ("error", let intValue as Int):
                     severityConfiguration.error = intValue
-                case (.warning, let intValue as Int):
+                case ("warning", let intValue as Int):
                     severityConfiguration.warning = intValue
-                case (.ignoreCommentOnlyLines, let boolValue as Bool):
+                case ($ignoreCommentOnlyLines, let boolValue as Bool):
                     ignoreCommentOnlyLines = boolValue
                 default:
                     throw Issue.unknownConfiguration(ruleID: Parent.identifier)

@@ -1,11 +1,5 @@
 import SwiftLintCore
 
-private enum ConfigurationKey: String {
-    case severity = "severity"
-    case firstArgumentLocation = "first_argument_location"
-    case onlyEnforceAfterFirstClosureOnFirstLine = "only_enforce_after_first_closure_on_first_line"
-}
-
 struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = MultilineArgumentsRule
 
@@ -27,11 +21,11 @@ struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatabl
         func asOption() -> OptionType { .symbol(rawValue) }
     }
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(key: ConfigurationKey.firstArgumentLocation.rawValue)
+    @ConfigurationElement(key: "first_argument_location")
     private(set) var firstArgumentLocation = FirstArgumentLocation.anyLine
-    @ConfigurationElement(key: ConfigurationKey.onlyEnforceAfterFirstClosureOnFirstLine.rawValue)
+    @ConfigurationElement(key: "only_enforce_after_first_closure_on_first_line")
     private(set) var onlyEnforceAfterFirstClosureOnFirstLine = false
 
     mutating func apply(configuration: Any) throws {
@@ -42,16 +36,12 @@ struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatabl
         }
 
         for (string, value) in configuration {
-            guard let key = ConfigurationKey(rawValue: string) else {
-                throw error
-            }
-
-            switch (key, value) {
-            case (.firstArgumentLocation, _):
+            switch (string, value) {
+            case ($firstArgumentLocation, _):
                 try firstArgumentLocation = FirstArgumentLocation(value: value)
-            case (.severity, let stringValue as String):
+            case ($severityConfiguration, let stringValue as String):
                 try severityConfiguration.apply(configuration: stringValue)
-            case (.onlyEnforceAfterFirstClosureOnFirstLine, let boolValue as Bool):
+            case ($onlyEnforceAfterFirstClosureOnFirstLine, let boolValue as Bool):
                 onlyEnforceAfterFirstClosureOnFirstLine = boolValue
             default:
                 throw error

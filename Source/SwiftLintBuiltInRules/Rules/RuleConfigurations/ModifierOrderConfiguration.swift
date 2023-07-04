@@ -4,7 +4,7 @@ import SwiftLintCore
 struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ModifierOrderRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "preferred_modifier_order")
     private(set) var preferredModifierOrder: [SwiftDeclarationAttributeKind.ModifierGroup] = [
@@ -26,7 +26,7 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let preferredModifierOrder = configuration["preferred_modifier_order"] as? [String] {
+        if let preferredModifierOrder = configuration[$preferredModifierOrder] as? [String] {
             self.preferredModifierOrder = try preferredModifierOrder.map {
                 guard let modifierGroup = SwiftDeclarationAttributeKind.ModifierGroup(rawValue: $0),
                       modifierGroup != .atPrefixed else {
@@ -37,7 +37,7 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
             }
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

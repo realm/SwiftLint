@@ -44,22 +44,22 @@ struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let approachingExpiryConfiguration = configurationDict["approaching_expiry_severity"] {
+        if let approachingExpiryConfiguration = configurationDict[$approachingExpirySeverity] {
             try approachingExpirySeverity.apply(configuration: approachingExpiryConfiguration)
         }
-        if let expiredConfiguration = configurationDict["expired_severity"] {
+        if let expiredConfiguration = configurationDict[$expiredSeverity] {
             try expiredSeverity.apply(configuration: expiredConfiguration)
         }
-        if let badFormattingConfiguration = configurationDict["bad_formatting_severity"] {
+        if let badFormattingConfiguration = configurationDict[$badFormattingSeverity] {
             try badFormattingSeverity.apply(configuration: badFormattingConfiguration)
         }
-        if let approachingExpiryThreshold = configurationDict["approaching_expiry_threshold"] as? Int {
+        if let approachingExpiryThreshold = configurationDict[$approachingExpiryThreshold] as? Int {
             self.approachingExpiryThreshold = approachingExpiryThreshold
         }
-        if let dateFormat = configurationDict["date_format"] as? String {
+        if let dateFormat = configurationDict[$dateFormat] as? String {
             self.dateFormat = dateFormat
         }
-        if let dateDelimiters = configurationDict["date_delimiters"] as? [String: String] {
+        if let dateDelimiters = configurationDict[$dateDelimiters] as? [String: String] {
             if let openingDelimiter = dateDelimiters["opening"] {
                 self.dateDelimiters.opening = openingDelimiter
             }
@@ -67,7 +67,7 @@ struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
                 self.dateDelimiters.closing = closingDelimiter
             }
         }
-        if let dateSeparator = configurationDict["date_separator"] as? String {
+        if let dateSeparator = configurationDict[$dateSeparator] as? String {
             self.dateSeparator = dateSeparator
         }
     }

@@ -30,9 +30,9 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Equa
             warning = configurationArray[0]
             error = (configurationArray.count > 1) ? configurationArray[1] : nil
         } else if let configDict = configuration as? [String: Int?],
-            configDict.isNotEmpty, Set(configDict.keys).isSubset(of: ["warning", "error"]) {
-            warning = (configDict["warning"] as? Int) ?? warning
-            error = configDict["error"] as? Int
+            configDict.isNotEmpty, Set(configDict.keys).isSubset(of: [$warning, $error]) {
+            warning = (configDict[$warning] as? Int) ?? warning
+            error = configDict[$error] as? Int
         } else {
             throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
         }

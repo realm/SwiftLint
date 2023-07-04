@@ -1,16 +1,11 @@
 import SwiftLintCore
 
-private enum ConfigurationKey: String {
-    case severity = "severity"
-    case bindIdentifier = "bind_identifier"
-}
-
 struct SelfBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = SelfBindingRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(key: ConfigurationKey.bindIdentifier.rawValue)
+    @ConfigurationElement(key: "bind_identifier")
     private(set) var bindIdentifier = "self"
 
     mutating func apply(configuration: Any) throws {
@@ -18,10 +13,10 @@ struct SelfBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let severityString = configuration[ConfigurationKey.severity.rawValue] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        bindIdentifier = configuration[ConfigurationKey.bindIdentifier.rawValue] as? String ?? "self"
+        bindIdentifier = configuration[$bindIdentifier] as? String ?? "self"
     }
 }

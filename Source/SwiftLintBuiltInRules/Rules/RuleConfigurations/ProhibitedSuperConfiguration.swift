@@ -3,7 +3,7 @@ import SwiftLintCore
 struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ProhibitedSuperRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "excluded")
     private(set) var excluded = [String]()
@@ -26,15 +26,15 @@ struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        if let excluded = [String].array(of: configuration["excluded"]) {
+        if let excluded = [String].array(of: configuration[$excluded]) {
             self.excluded = excluded
         }
 
-        if let included = [String].array(of: configuration["included"]) {
+        if let included = [String].array(of: configuration[$included]) {
             self.included = included
         }
 

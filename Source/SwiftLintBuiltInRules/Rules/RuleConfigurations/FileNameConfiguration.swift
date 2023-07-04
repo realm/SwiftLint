@@ -3,7 +3,7 @@ import SwiftLintCore
 struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileNameRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "excluded")
     private(set) var excluded = Set<String>(["main.swift", "LinuxMain.swift"])
@@ -19,19 +19,19 @@ struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let severity = configurationDict["severity"] {
+        if let severity = configurationDict[$severityConfiguration] {
             try severityConfiguration.apply(configuration: severity)
         }
-        if let excluded = [String].array(of: configurationDict["excluded"]) {
+        if let excluded = [String].array(of: configurationDict[$excluded]) {
             self.excluded = Set(excluded)
         }
-        if let prefixPattern = configurationDict["prefix_pattern"] as? String {
+        if let prefixPattern = configurationDict[$prefixPattern] as? String {
             self.prefixPattern = prefixPattern
         }
-        if let suffixPattern = configurationDict["suffix_pattern"] as? String {
+        if let suffixPattern = configurationDict[$suffixPattern] as? String {
             self.suffixPattern = suffixPattern
         }
-        if let nestedTypeSeparator = configurationDict["nested_type_separator"] as? String {
+        if let nestedTypeSeparator = configurationDict[$nestedTypeSeparator] as? String {
             self.nestedTypeSeparator = nestedTypeSeparator
         }
     }

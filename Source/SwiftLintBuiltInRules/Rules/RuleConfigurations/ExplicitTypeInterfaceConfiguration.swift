@@ -14,7 +14,7 @@ struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equat
         func asOption() -> SwiftLintCore.OptionType { .symbol(rawValue) }
     }
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "excluded")
     private(set) var excluded = [VariableKind]()
@@ -31,11 +31,11 @@ struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equat
         }
         for (key, value) in configuration {
             switch (key, value) {
-            case ("severity", let severityString as String):
+            case ($severityConfiguration, let severityString as String):
                 try severityConfiguration.apply(configuration: severityString)
-            case ("excluded", let excludedStrings as [String]):
+            case ($excluded, let excludedStrings as [String]):
                 self.excluded = excludedStrings.compactMap(VariableKind.init).unique
-            case ("allow_redundancy", let allowRedundancy as Bool):
+            case ($allowRedundancy, let allowRedundancy as Bool):
                 self.allowRedundancy = allowRedundancy
             default:
                 throw Issue.unknownConfiguration(ruleID: Parent.identifier)

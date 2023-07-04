@@ -30,7 +30,7 @@ struct TransitiveModuleConfiguration<Parent: Rule>: Equatable, AcceptableByConfi
 struct UnusedImportConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = UnusedImportRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "require_explicit_imports")
     private(set) var requireExplicitImports = false
@@ -45,16 +45,16 @@ struct UnusedImportConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let severity = configurationDict["severity"] {
+        if let severity = configurationDict[$severityConfiguration] {
             try severityConfiguration.apply(configuration: severity)
         }
-        if let requireExplicitImports = configurationDict["require_explicit_imports"] as? Bool {
+        if let requireExplicitImports = configurationDict[$requireExplicitImports] as? Bool {
             self.requireExplicitImports = requireExplicitImports
         }
-        if let allowedTransitiveImports = configurationDict["allowed_transitive_imports"] as? [Any] {
+        if let allowedTransitiveImports = configurationDict[$allowedTransitiveImports] as? [Any] {
             self.allowedTransitiveImports = try allowedTransitiveImports.map(TransitiveModuleConfiguration.init)
         }
-        if let alwaysKeepImports = configurationDict["always_keep_imports"] as? [String] {
+        if let alwaysKeepImports = configurationDict[$alwaysKeepImports] as? [String] {
             self.alwaysKeepImports = alwaysKeepImports
         }
     }

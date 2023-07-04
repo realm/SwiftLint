@@ -3,7 +3,7 @@ import SwiftLintCore
 struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = IndentationWidthRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "indentation_width")
     private(set) var indentationWidth = 4
@@ -19,23 +19,23 @@ struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration, Equatable 
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let config = configurationDict["severity"] {
+        if let config = configurationDict[$severityConfiguration] {
             try severityConfiguration.apply(configuration: config)
         }
 
-        if let indentationWidth = configurationDict["indentation_width"] as? Int, indentationWidth >= 1 {
+        if let indentationWidth = configurationDict[$indentationWidth] as? Int, indentationWidth >= 1 {
             self.indentationWidth = indentationWidth
         }
 
-        if let includeComments = configurationDict["include_comments"] as? Bool {
+        if let includeComments = configurationDict[$includeComments] as? Bool {
             self.includeComments = includeComments
         }
 
-        if let includeCompilerDirectives = configurationDict["include_compiler_directives"] as? Bool {
+        if let includeCompilerDirectives = configurationDict[$includeCompilerDirectives] as? Bool {
             self.includeCompilerDirectives = includeCompilerDirectives
         }
 
-        if let includeMultilineStrings = configurationDict["include_multiline_strings"] as? Bool {
+        if let includeMultilineStrings = configurationDict[$includeMultilineStrings] as? Bool {
             self.includeMultilineStrings = includeMultilineStrings
         }
     }

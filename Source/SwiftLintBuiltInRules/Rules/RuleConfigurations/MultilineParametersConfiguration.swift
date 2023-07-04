@@ -3,7 +3,7 @@ import SwiftLintCore
 struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = MultilineParametersRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allows_single_line")
     private(set) var allowsSingleLine = true
@@ -13,9 +13,9 @@ struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration, Equatab
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        allowsSingleLine = configuration["allows_single_line"] as? Bool ?? true
+        allowsSingleLine = configuration[$allowsSingleLine] as? Bool ?? true
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

@@ -7,7 +7,7 @@ private func toExplicitInitMethod(typeName: String) -> String {
 struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = DiscouragedDirectInitRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
     private static let defaultDiscouragedInits = [
@@ -26,11 +26,11 @@ struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equat
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        if let types = [String].array(of: configuration["types"]) {
+        if let types = [String].array(of: configuration[$discouragedInits]) {
             discouragedInits = Set(types + types.map(toExplicitInitMethod))
         }
     }

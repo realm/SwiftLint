@@ -3,7 +3,7 @@ import SwiftLintCore
 struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = NumberSeparatorRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "minimum_length")
     private(set) var minimumLength = 0
@@ -17,11 +17,11 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let minimumLength = configuration["minimum_length"] as? Int {
+        if let minimumLength = configuration[$minimumLength] as? Int {
             self.minimumLength = minimumLength
         }
 
-        if let minimumFractionLength = configuration["minimum_fraction_length"] as? Int {
+        if let minimumFractionLength = configuration[$minimumFractionLength] as? Int {
             self.minimumFractionLength = minimumFractionLength
         }
 
@@ -32,7 +32,7 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
             }
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

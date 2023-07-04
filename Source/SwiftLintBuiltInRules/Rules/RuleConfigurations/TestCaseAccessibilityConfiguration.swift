@@ -3,7 +3,7 @@ import SwiftLintCore
 struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TestCaseAccessibilityRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allowed_prefixes")
     private(set) var allowedPrefixes: Set<String> = []
@@ -15,15 +15,15 @@ struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equat
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        if let allowedPrefixes = configuration["allowed_prefixes"] as? [String] {
+        if let allowedPrefixes = configuration[$allowedPrefixes] as? [String] {
             self.allowedPrefixes = Set(allowedPrefixes)
         }
 
-        if let extraTestParentClasses = configuration["test_parent_classes"] as? [String] {
+        if let extraTestParentClasses = configuration[$testParentClasses] as? [String] {
             self.testParentClasses.formUnion(extraTestParentClasses)
         }
     }

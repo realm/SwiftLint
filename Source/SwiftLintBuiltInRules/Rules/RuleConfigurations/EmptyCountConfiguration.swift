@@ -1,16 +1,11 @@
 import SwiftLintCore
 
-private enum ConfigurationKey: String {
-    case severity = "severity"
-    case onlyAfterDot = "only_after_dot"
-}
-
 struct EmptyCountConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = EmptyCountRule
 
-    @ConfigurationElement
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.error)
-    @ConfigurationElement(key: ConfigurationKey.onlyAfterDot.rawValue)
+    @ConfigurationElement(key: "only_after_dot")
     private(set) var onlyAfterDot = false
 
     mutating func apply(configuration: Any) throws {
@@ -18,10 +13,10 @@ struct EmptyCountConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let severityString = configuration[ConfigurationKey.severity.rawValue] as? String {
+        if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        onlyAfterDot = configuration[ConfigurationKey.onlyAfterDot.rawValue] as? Bool ?? false
+        onlyAfterDot = configuration[$onlyAfterDot] as? Bool ?? false
     }
 }

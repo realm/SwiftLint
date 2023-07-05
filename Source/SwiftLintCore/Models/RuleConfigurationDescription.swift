@@ -13,6 +13,9 @@ public protocol Documentable {
     ///
     /// - Returns: A "one liner" describing the object.
     func oneLiner() -> String
+
+    /// Indicate if the item has some content that is useful to document.
+    var hasContent: Bool { get }
 }
 
 /// Description of a rule configuration.
@@ -66,12 +69,16 @@ public struct RuleConfigurationDescription: Equatable {
 }
 
 extension RuleConfigurationDescription: Documentable {
+    public var hasContent: Bool {
+        options.isNotEmpty
+    }
+
     public func oneLiner() -> String {
         options.map { $0.oneLiner() }.joined(separator: "; ")
     }
 
     public func markdown() -> String {
-        guard options.isNotEmpty else {
+        guard hasContent else {
             return ""
         }
         return """
@@ -97,6 +104,10 @@ public struct RuleConfigurationOption: Equatable {
 }
 
 extension RuleConfigurationOption: Documentable {
+    public var hasContent: Bool {
+        self != .noOptions
+    }
+
     public func markdown() -> String {
         """
         <tr>
@@ -138,6 +149,10 @@ public enum OptionType: Equatable {
 }
 
 extension OptionType: Documentable {
+    public var hasContent: Bool {
+        self != .empty
+    }
+
     public func markdown() -> String {
         switch self {
         case .empty:

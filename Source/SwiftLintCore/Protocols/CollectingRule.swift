@@ -149,24 +149,6 @@ public extension CollectingCorrectableRule where Self: AnalyzerRule {
     }
 }
 
-public extension ConfigurationProviderRule {
-    init(configuration: Any) throws {
-        self.init()
-        try self.configuration.apply(configuration: configuration)
-    }
-
-    func isEqualTo(_ rule: Rule) -> Bool {
-        if let rule = rule as? Self {
-            return configuration.isEqualTo(rule.configuration)
-        }
-        return false
-    }
-
-    var configurationDescription: Documentable {
-        RuleConfigurationDescription.from(configuration: configuration)
-    }
-}
-
 // MARK: - == Implementations
 
 /// :nodoc:

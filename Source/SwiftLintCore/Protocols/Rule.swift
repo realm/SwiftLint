@@ -106,6 +106,24 @@ public protocol ConfigurationProviderRule: Rule {
     var configuration: ConfigurationType { get set }
 }
 
+public extension ConfigurationProviderRule {
+    init(configuration: Any) throws {
+        self.init()
+        try self.configuration.apply(configuration: configuration)
+    }
+
+    func isEqualTo(_ rule: Rule) -> Bool {
+        if let rule = rule as? Self {
+            return configuration.isEqualTo(rule.configuration)
+        }
+        return false
+    }
+
+    var configurationDescription: Documentable {
+        RuleConfigurationDescription.from(configuration: configuration)
+    }
+}
+
 /// A rule that can correct violations.
 public protocol CorrectableRule: Rule {
     /// Attempts to correct the violations to this rule in the specified file.

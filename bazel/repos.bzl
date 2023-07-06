@@ -20,9 +20,9 @@ def swiftlint_repos(bzlmod = False):
 
     http_archive(
         name = "SwiftSyntax",
-        sha256 = "bbdf1934ec07c7f047f0356b39c977de74a213d52e9f3ef5708cb995b605ef98",
-        strip_prefix = "swift-syntax-509.0.0-swift-DEVELOPMENT-SNAPSHOT-2023-06-17-a",
-        url = "https://github.com/apple/swift-syntax/archive/refs/tags/509.0.0-swift-DEVELOPMENT-SNAPSHOT-2023-06-17-a.tar.gz",
+        sha256 = "74f0fb48a07d12e6865dd955ec4c64e25b04764c23f0dad176d88951e49c8ffd",
+        strip_prefix = "swift-syntax-509.0.0-swift-DEVELOPMENT-SNAPSHOT-2023-07-04-a",
+        url = "https://github.com/apple/swift-syntax/archive/refs/tags/509.0.0-swift-DEVELOPMENT-SNAPSHOT-2023-07-04-a.tar.gz",
     )
 
     http_archive(

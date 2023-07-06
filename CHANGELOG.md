@@ -1,4 +1,4 @@
-## Main
+## 0.52.4: Lid Switch
 
 #### Breaking
 

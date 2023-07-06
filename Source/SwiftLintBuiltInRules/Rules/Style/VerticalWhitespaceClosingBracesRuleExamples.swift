@@ -28,7 +28,7 @@ internal struct VerticalWhitespaceClosingBracesRuleExamples {
           // do something
           // do something
         }
-        """, configuration: beforeTrivialLinesConfiguration)
+        """, configuration: beforeTrivialLinesConfiguration, excludeFromDocumentation: true)
     ]
 
     static let violatingToValidExamples = [

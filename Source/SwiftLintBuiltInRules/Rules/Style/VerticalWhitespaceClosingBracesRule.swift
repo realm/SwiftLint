@@ -9,9 +9,9 @@ struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule, Configur
         name: "Vertical Whitespace before Closing Braces",
         description: "Don't include vertical whitespace (empty line) before closing braces",
         kind: .style,
-        nonTriggeringExamples: VerticalWhitespaceClosingBracesRuleExamples.violatingToValidExamples.values +
+        nonTriggeringExamples: VerticalWhitespaceClosingBracesRuleExamples.violatingToValidExamples.values.sorted() +
                                VerticalWhitespaceClosingBracesRuleExamples.nonTriggeringExamples,
-        triggeringExamples: Array(VerticalWhitespaceClosingBracesRuleExamples.violatingToValidExamples.keys),
+        triggeringExamples: Array(VerticalWhitespaceClosingBracesRuleExamples.violatingToValidExamples.keys.sorted()),
         corrections: VerticalWhitespaceClosingBracesRuleExamples.violatingToValidExamples.removingViolationMarkers()
     )
 

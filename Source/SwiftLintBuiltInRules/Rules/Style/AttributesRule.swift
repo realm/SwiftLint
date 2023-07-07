@@ -3,12 +3,15 @@ import SwiftSyntax
 struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = AttributesConfiguration()
 
+    let attributeWithParametersString = configuration.attributesWithArgumentsAlwaysOnNewLine ?
+        ", variables with attributes " : ""
+
     static let description = RuleDescription(
         identifier: "attributes",
         name: "Attributes",
         description: """
-            Attributes should be on their own lines in functions and types, but on the same line as variables and \
-            imports
+            Attributes should be on their own lines in functions \(attributesWithParametersString)and types, but on\
+            the same line as variables and imports
             """,
         kind: .style,
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,

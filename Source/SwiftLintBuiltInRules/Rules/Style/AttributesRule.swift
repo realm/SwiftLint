@@ -9,7 +9,7 @@ struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
         description: """
             Attributes should be on their own lines in functions and types, but on the same line as variables and \
             imports except when they have properties and attributes_with_arguments_always_on_line_above is true \
-            which is the default.
+            which is the default
             """,
         kind: .style,
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,

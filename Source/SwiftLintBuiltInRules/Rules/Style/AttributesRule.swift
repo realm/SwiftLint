@@ -10,7 +10,7 @@ struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
         identifier: "attributes",
         name: "Attributes",
         description: """
-            Attributes should be on their own lines in functions \(attributesWithParametersString)and types, but on\
+            Attributes should be on their own lines in functions \(attributeWithParametersString)and types, but on\
             the same line as variables and imports
             """,
         kind: .style,

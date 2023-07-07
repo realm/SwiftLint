@@ -3,9 +3,6 @@ import SwiftSyntax
 struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = AttributesConfiguration()
 
-    let attributeWithParametersString = configuration.attributesWithArgumentsAlwaysOnNewLine ?
-        "" : ""
-
     static let description = RuleDescription(
         identifier: "attributes",
         name: "Attributes",

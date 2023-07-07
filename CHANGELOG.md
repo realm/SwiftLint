@@ -10,6 +10,9 @@
   supported but is deprecated. It's recommended to use the list
   `test_parent_classes` instead which accepts names of parent test classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
+* Removed support for disable and enable commands in multiline comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 #### Experimental
 
@@ -106,6 +109,10 @@
   for nested structs in classes.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5120](https://github.com/realm/SwiftLint/issues/5120)
+* Fix false positives for superfluous_disable_command, and removed
+  support for disable and enable commands in multiline comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * Fix some unexpected rule enablement interactions between parent and
   child configurations.  
@@ -139,9 +146,7 @@
 
 #### Breaking
 
-* Removed support for disable and enable commands in multiline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
+* None.
 
 #### Experimental
 
@@ -174,11 +179,6 @@
   trailing comments.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5081](https://github.com/realm/SwiftLint/issues/5081)
-
-* Fix false positives for superfluous_disable_command, and removed
-  support for disable and enable commands in multiline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * Fix false positives for the `private_subject` rule when creating subjects
   inside initializers.  

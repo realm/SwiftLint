@@ -419,6 +419,10 @@
   [Thi Doãn](https://github.com/thii)
   [JP Simard](https://github.com/jpsim)
   [#4737](https://github.com/realm/SwiftLint/issues/4737)
+* Fixes superfluous warnings about configurations for rules that were not
+  enabled, when the rules were enabled in a parent configuration.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4858](https://github.com/realm/SwiftLint/issues/4858)
 
 * Fix false negatives for the `unneeded_synthesized_initializer` rule
   for nested structs in classes.  
@@ -750,11 +754,6 @@
 * Fix `lower_acl_than_parent` rule rewriter by preserving leading whitespace.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4860](https://github.com/realm/SwiftLint/issues/4860)
-
-* Fixes superfluous warnings about configurations for rules that were not
-  enabled, when the rules were enabled in a parent configuration.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4858](https://github.com/realm/SwiftLint/issues/4858)
 
 * Ignore block comments in `let_var_whitespace` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

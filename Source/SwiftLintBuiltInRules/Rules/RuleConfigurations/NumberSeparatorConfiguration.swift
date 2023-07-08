@@ -9,7 +9,7 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var minimumLength = 0
     @ConfigurationElement(key: "minimum_fraction_length")
     private(set) var minimumFractionLength: Int?
-
+    @ConfigurationElement(key: "exclude_ranges")
     private(set) var excludeRanges = [Range<Double>]()
 
     mutating func apply(configuration: Any) throws {
@@ -25,9 +25,11 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
             self.minimumFractionLength = minimumFractionLength
         }
 
-        if let excludeRanges = configuration["exclude_ranges"] as? [[String: Any]] {
+        if let excludeRanges = configuration[$excludeRanges] as? [[String: Any]] {
             self.excludeRanges = excludeRanges.compactMap { dict in
-                guard let min = dict["min"] as? Double, let max = dict["max"] as? Double else { return nil }
+                guard let min = dict["min"] as? Double, let max = dict["max"] as? Double else {
+                    return nil
+                }
                 return min ..< max
             }
         }

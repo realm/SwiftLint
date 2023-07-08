@@ -14,7 +14,8 @@
 
 #### Bug Fixes
 
-* None.
+* Document `exclude_ranges` option for `number_separator` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ## 0.52.4: Lid Switch
 

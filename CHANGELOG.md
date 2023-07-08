@@ -17,6 +17,9 @@
 * Document `exclude_ranges` option for `number_separator` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Make sure `severity` is configurable for `type_contents_order` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 ## 0.52.4: Lid Switch
 
 #### Breaking

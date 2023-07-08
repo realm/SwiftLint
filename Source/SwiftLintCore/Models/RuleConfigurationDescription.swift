@@ -337,17 +337,14 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 ///            error: 2
 ///    ```
 @propertyWrapper
-public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: AnyConfigurationElement,
-                                                                                     Equatable {
+public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: Equatable {
     /// Wrapped option value.
     public var wrappedValue: T
 
     /// The option's name. This field can only be accessed by the element's name prefixed with a `$`.
-    public let projectedValue: String
+    public var projectedValue: String { key }
 
-    fileprivate var description: RuleConfigurationDescription {
-        wrappedValue.asDescription(with: projectedValue)
-    }
+    private let key: String
 
     /// Default constructor.
     ///
@@ -356,7 +353,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///   - key: Name of the option.
     public init(wrappedValue value: T, key: String) {
         self.wrappedValue = value
-        self.projectedValue = key
+        self.key = key
     }
 
     /// Constructor for optional values.
@@ -376,6 +373,12 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// - Parameter value: Value to be wrapped.
     public init(wrappedValue value: T) where T: InlinableOptionType {
         self.init(wrappedValue: value, key: "")
+    }
+}
+
+extension ConfigurationElement: AnyConfigurationElement {
+    fileprivate var description: RuleConfigurationDescription {
+        wrappedValue.asDescription(with: key)
     }
 }
 
@@ -440,13 +443,9 @@ extension Double: AcceptableByConfigurationElement {
     }
 }
 
-extension NSRegularExpression: AcceptableByConfigurationElement, Comparable {
+extension NSRegularExpression: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         .string(pattern)
-    }
-
-    public static func < (lhs: NSRegularExpression, rhs: NSRegularExpression) -> Bool {
-        lhs.pattern < rhs.pattern
     }
 }
 

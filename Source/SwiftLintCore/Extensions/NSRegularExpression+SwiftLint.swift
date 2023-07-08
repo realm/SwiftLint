@@ -14,6 +14,12 @@ private struct RegexCacheKey: Hashable {
     }
 }
 
+extension NSRegularExpression: Comparable {
+    public static func < (lhs: NSRegularExpression, rhs: NSRegularExpression) -> Bool {
+        lhs.pattern < rhs.pattern
+    }
+}
+
 public extension NSRegularExpression {
     static func cached(pattern: String, options: Options? = nil) throws -> NSRegularExpression {
         let options = options ?? [.anchorsMatchLines, .dotMatchesLineSeparators]

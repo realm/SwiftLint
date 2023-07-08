@@ -391,8 +391,7 @@
                 <div class="language">
                   
                   <pre class="highlight swift"><code><span class="kd">@propertyWrapper</span>
-<span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ConfigurationElement</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/AcceptableByConfigurationElement.html">AcceptableByConfigurationElement</a></span> <span class="o">&amp;</span> <span class="kt">Equatable</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt">AnyConfigurationElement</span><span class="p">,</span>
-                                                                                     <span class="kt">Equatable</span></code></pre>
+<span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ConfigurationElement</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">Equatable</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/AcceptableByConfigurationElement.html">AcceptableByConfigurationElement</a></span></code></pre>
 
                 </div>
               </div>
@@ -436,7 +435,7 @@ levels: warning: 1
 </ol>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L340-L380">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L340-L377">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -470,7 +469,7 @@ levels: warning: 1
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L343">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L342">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -495,12 +494,12 @@ levels: warning: 1
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">projectedValue</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">projectedValue</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L346">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L345">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -561,7 +560,7 @@ levels: warning: 1
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L357-L360">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L354-L357">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -612,7 +611,7 @@ levels: warning: 1
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L367-L369">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L364-L366">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -664,7 +663,7 @@ parent configuration in this specific case.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L377-L379">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L374-L376">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

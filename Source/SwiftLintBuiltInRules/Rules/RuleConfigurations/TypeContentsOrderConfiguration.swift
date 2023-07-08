@@ -48,22 +48,22 @@ struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        var customOrder = [[TypeContent]]()
+        if let severityValue = configuration[$severityConfiguration] as? String {
+            try severityConfiguration.apply(configuration: severityValue)
+        }
+
         if let custom = configuration[$order] as? [Any] {
+            order.removeAll()
             for entry in custom {
                 if let singleEntry = entry as? String {
                     if let typeContent = TypeContent(rawValue: singleEntry) {
-                        customOrder.append([typeContent])
+                        order.append([typeContent])
                     }
                 } else if let arrayEntry = entry as? [String] {
                     let typeContents = arrayEntry.compactMap { TypeContent(rawValue: $0) }
-                    customOrder.append(typeContents)
+                    order.append(typeContents)
                 }
             }
-        }
-
-        if customOrder.isNotEmpty {
-            self.order = customOrder
         }
     }
 }

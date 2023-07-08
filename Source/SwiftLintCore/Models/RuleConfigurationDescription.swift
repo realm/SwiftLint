@@ -449,6 +449,12 @@ extension NSRegularExpression: AcceptableByConfigurationElement {
     }
 }
 
+extension Range: AcceptableByConfigurationElement {
+    public func asOption() -> OptionType {
+        .symbol("\(lowerBound) ..< \(upperBound)")
+    }
+}
+
 // MARK: RuleConfiguration conformances
 
 public extension RuleConfiguration {

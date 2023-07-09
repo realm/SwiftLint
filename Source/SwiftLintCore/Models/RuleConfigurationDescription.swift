@@ -16,6 +16,11 @@ public protocol Documentable {
 
     /// Indicate if the item has some content that is useful to document.
     var hasContent: Bool { get }
+
+    /// Convert an object to YAML as used in `.swiftlint.yml`.
+    ///
+    /// - Returns: A YAML snippet that can be used in configuration files.
+    func yaml() -> String
 }
 
 /// Description of a rule configuration.
@@ -39,7 +44,7 @@ public struct RuleConfigurationDescription: Equatable {
         }
     }
 
-    static func from(configuration: any RuleConfiguration) -> Self {
+    static func from(configuration: some RuleConfiguration) -> Self {
         // Prefer custom descriptions.
         if let customDescription = configuration.parameterDescription {
             return customDescription
@@ -92,6 +97,10 @@ extension RuleConfigurationDescription: Documentable {
             </table>
             """
     }
+
+    public func yaml() -> String {
+        options.map { $0.yaml() }.joined(separator: "\n")
+    }
 }
 
 /// A single option of a ``RuleConfigurationDescription``.
@@ -123,6 +132,16 @@ extension RuleConfigurationOption: Documentable {
 
     public func oneLiner() -> String {
         "\(key): \(value.oneLiner())"
+    }
+
+    public func yaml() -> String {
+        if case .nested = value {
+            return """
+                \(key):
+                \(value.yaml().indent(by: 2))
+                """
+        }
+        return "\(key): \(value.yaml())"
     }
 }
 
@@ -177,6 +196,10 @@ extension OptionType: Documentable {
     }
 
     public func oneLiner() -> String {
+        yaml()
+    }
+
+    public func yaml() -> String {
         switch self {
         case .empty:
             queuedFatalError("Empty options shall not be serialized.")
@@ -195,7 +218,7 @@ extension OptionType: Documentable {
         case let .list(options):
             return "[" + options.map { $0.oneLiner() }.joined(separator: ", ") + "]"
         case let .nested(value):
-            return value.oneLiner()
+            return value.yaml()
         }
     }
 }

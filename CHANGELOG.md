@@ -45,6 +45,10 @@
   [keith](https://github.com/keith)
   [5139](https://github.com/realm/SwiftLint/pull/5139)
 
+* Show a rule's active YAML configuration in output of 
+  `swiftlint rules <rule>`.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
 
 * Fix false positive in `control_statement` rule that triggered on conditions
@@ -68,7 +72,7 @@
 * Make sure `severity` is configurable for `type_contents_order` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* Bazel: mark `rules_xcodeproj` as a dev dependency.  
+* Bazel: Mark `rules_xcodeproj` as a development dependency.  
   [Thi Doãn](https://github.com/thii)
   [JP Simard](https://github.com/jpsim)
   [#4737](https://github.com/realm/SwiftLint/issues/4737)

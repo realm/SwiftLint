@@ -24,34 +24,38 @@ extension SwiftLint {
         var ruleID: String?
 
         func run() throws {
+            let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
             if let ruleID {
                 guard let rule = RuleRegistry.shared.rule(forID: ruleID) else {
                     throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")
                 }
-
-                rule.description.printDescription()
+                printDescription(for: rule, with: configuration)
                 return
             }
-
-            let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
             let rulesFilter = RulesFilter(enabledRules: configuration.rules)
             let rules = rulesFilter.getRules(excluding: .excludingOptions(byCommandLineOptions: rulesFilterOptions))
             let table = TextTable(ruleList: rules, configuration: configuration, verbose: verbose)
             print(table.render())
             ExitHelper.successfullyExit()
         }
-    }
-}
 
-private extension RuleDescription {
-    func printDescription() {
-        print("\(consoleDescription)")
+        func printDescription(for ruleType: Rule.Type, with configuration: Configuration) {
+            let description = ruleType.description
+            print("\(description.consoleDescription)")
 
-        guard !triggeringExamples.isEmpty else { return }
+            let rule = configuration.configuredRule(forID: ruleType.identifier) ?? ruleType.init()
+            if rule.configurationDescription.hasContent {
+                print("\nConfiguration (YAML):\n")
+                print("  \(description.identifier):")
+                print(rule.configurationDescription.yaml().indent(by: 4))
+            }
 
-        print("\nTriggering Examples (violation is marked with '↓'):")
-        for (index, example) in triggeringExamples.enumerated() {
-            print("\nExample #\(index + 1)\n\n\(example.code.indent(by: 4))")
+            guard description.triggeringExamples.isNotEmpty else { return }
+
+            print("\nTriggering Examples (violations are marked with '↓'):")
+            for (index, example) in description.triggeringExamples.enumerated() {
+                print("\nExample #\(index + 1)\n\n\(example.code.indent(by: 4))")
+            }
         }
     }
 }

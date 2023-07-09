@@ -119,4 +119,10 @@ public extension String {
         guard hasPrefix(prefix) else { return self }
         return String(dropFirst(prefix.count))
     }
+
+    func indent(by spaces: Int) -> String {
+        components(separatedBy: "\n")
+            .map { String(repeating: " ", count: spaces) + $0 }
+            .joined(separator: "\n")
+    }
 }

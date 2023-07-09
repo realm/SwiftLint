@@ -79,7 +79,11 @@ extension RuleConfigurationDescription: Documentable {
     }
 
     public func oneLiner() -> String {
-        options.map { $0.oneLiner() }.joined(separator: "; ")
+        oneLiner(separator: ";")
+    }
+
+    fileprivate func oneLiner(separator: String) -> String {
+        options.map { $0.oneLiner() }.joined(separator: "\(separator) ")
     }
 
     public func markdown() -> String {
@@ -186,7 +190,10 @@ extension OptionType: Documentable {
     }
 
     public func oneLiner() -> String {
-        yaml()
+        if case let .nested(value) = self {
+            return value.oneLiner(separator: ",")
+        }
+        return yaml()
     }
 
     public func yaml() -> String {

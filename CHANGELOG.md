@@ -20,6 +20,11 @@
 * Make sure `severity` is configurable for `type_contents_order` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Bazel: mark `rules_xcodeproj` as a dev dependency.  
+  [Thi Doãn](https://github.com/thii)
+  [JP Simard](https://github.com/jpsim)
+  [#4737](https://github.com/realm/SwiftLint/issues/4737)
+
 ## 0.52.4: Lid Switch
 
 #### Breaking

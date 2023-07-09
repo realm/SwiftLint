@@ -13,4 +13,19 @@ final class StringExtensionTests: SwiftLintTestCase {
         XCTAssertEqual("Test", "Root////Folder///Test/".path(relativeTo: "Root//Folder////"))
         XCTAssertEqual("Root/Folder/Test", "Root/Folder/Test/".path(relativeTo: ""))
     }
+
+    func testIndent() {
+        XCTAssertEqual("string".indent(by: 3), "   string")
+        XCTAssertEqual(" string".indent(by: 2), "   string")
+        XCTAssertEqual("""
+            1
+            2
+            3
+            """.indent(by: 2), """
+              1
+              2
+              3
+            """
+        )
+    }
 }

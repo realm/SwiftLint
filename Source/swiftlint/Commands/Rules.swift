@@ -49,14 +49,9 @@ private extension RuleDescription {
 
         guard !triggeringExamples.isEmpty else { return }
 
-        func indent(_ string: String) -> String {
-            return string.components(separatedBy: "\n")
-                .map { "    \($0)" }
-                .joined(separator: "\n")
-        }
         print("\nTriggering Examples (violation is marked with '↓'):")
         for (index, example) in triggeringExamples.enumerated() {
-            print("\nExample #\(index + 1)\n\n\(indent(example.code))")
+            print("\nExample #\(index + 1)\n\n\(example.code.indent(by: 4))")
         }
     }
 }

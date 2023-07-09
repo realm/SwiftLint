@@ -174,20 +174,10 @@ extension OptionType: Documentable {
 
     public func markdown() -> String {
         switch self {
-        case .empty:
-            queuedFatalError("Empty options shall not be serialized.")
-        case let .flag(value):
-            return String(describing: value)
+        case .empty, .flag, .symbol, .integer, .float, .severity:
+            return yaml()
         case let .string(value):
             return "&quot;" + value + "&quot;"
-        case let .symbol(value):
-            return value
-        case let .integer(value):
-            return String(describing: value)
-        case let .float(value):
-            return String(describing: value)
-        case let .severity(value):
-            return value.rawValue
         case let .list(options):
             return "[" + options.map { $0.markdown() }.joined(separator: ", ") + "]"
         case let .nested(value):

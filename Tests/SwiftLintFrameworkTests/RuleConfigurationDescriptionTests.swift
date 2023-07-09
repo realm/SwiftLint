@@ -427,7 +427,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             """)
 
         XCTAssertEqual(description.oneLiner(), """
-            flag: true; nested 1: integer: 2; nested 2: float: 42.1; symbol: value; string: "value"
+            flag: true; nested 1: integer: 2, nested 2: float: 42.1, symbol: value; string: "value"
             """)
 
         XCTAssertEqual(description.yaml(), """

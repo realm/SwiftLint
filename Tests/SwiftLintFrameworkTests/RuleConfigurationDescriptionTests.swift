@@ -3,6 +3,7 @@ import XCTest
 
 // swiftlint:disable file_length
 
+// swiftlint:disable:next type_body_length
 class RuleConfigurationDescriptionTests: XCTestCase {
     private struct TestConfiguration: RuleConfiguration {
         typealias Parent = RuleMock // swiftlint:disable:this nesting
@@ -175,6 +176,22 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             </tbody>
             </table>
             """)
+
+        XCTAssertEqual(description.yaml(), """
+            flag: true
+            string: "value"
+            symbol: value
+            integer: 2
+            double: 2.1
+            severity: warning
+            list: [true, "value"]
+            severity: error
+            SEVERITY: warning
+            warning: 1
+            error: 2
+            levels:
+              warning: 3
+            """)
     }
 
     func testPrefersParameterDescription() {
@@ -212,6 +229,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             </tbody>
             </table>
             """)
+        XCTAssertEqual(description.yaml(), "visible: true")
     }
 
     func testEmptyDescription() {
@@ -219,6 +237,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
 
         XCTAssertTrue(description.oneLiner().isEmpty)
         XCTAssertTrue(description.markdown().isEmpty)
+        XCTAssertTrue(description.yaml().isEmpty)
     }
 
     // swiftlint:disable:next function_body_length
@@ -302,6 +321,16 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         XCTAssertEqual(description.oneLiner(), """
             flag: true; string: "value"; symbol: value; integer: -12; float: 42.0; \
             severity: error; list: [value, "value", 12.8]
+            """)
+
+        XCTAssertEqual(description.yaml(), """
+            flag: true
+            string: "value"
+            symbol: value
+            integer: -12
+            float: 42.0
+            severity: error
+            list: [value, "value", 12.8]
             """)
     }
 
@@ -399,6 +428,16 @@ class RuleConfigurationDescriptionTests: XCTestCase {
 
         XCTAssertEqual(description.oneLiner(), """
             flag: true; nested 1: integer: 2; nested 2: float: 42.1; symbol: value; string: "value"
+            """)
+
+        XCTAssertEqual(description.yaml(), """
+            flag: true
+            nested 1:
+              integer: 2
+              nested 2:
+                float: 42.1
+              symbol: value
+            string: "value"
             """)
     }
 

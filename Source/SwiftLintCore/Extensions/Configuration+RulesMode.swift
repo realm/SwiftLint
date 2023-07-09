@@ -6,13 +6,13 @@ public extension Configuration {
     /// - returns: The rule for the specified ID, if configured in this configuration.
     func configuredRule(forID ruleID: String) -> Rule? {
         rules.first { rule in
-            guard type(of: rule).description.identifier == ruleID else {
-                return false
-            }
-            guard let customRules = rule as? CustomRules else {
+            if type(of: rule).description.identifier == ruleID {
+                if let customRules = rule as? CustomRules {
+                    return customRules.configuration.customRuleConfigurations.isNotEmpty
+                }
                 return true
             }
-            return !customRules.configuration.customRuleConfigurations.isEmpty
+            return false
         }
     }
 

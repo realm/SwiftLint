@@ -4,11 +4,6 @@ load(
     "swift_binary",
     "swift_library",
 )
-load(
-    "@rules_xcodeproj//xcodeproj:defs.bzl",
-    "xcode_schemes",
-    "xcodeproj",
-)
 
 # Targets
 
@@ -162,39 +157,6 @@ COPYFILE_DISABLE=1 tar czvfh "$${outs[0]}" \
   *
 shasum -a 256 "$${outs[0]}" > "$${outs[1]}"
     """,
-)
-
-# Xcode Integration
-
-xcodeproj(
-    name = "xcodeproj",
-    project_name = "SwiftLint",
-    schemes = [
-        xcode_schemes.scheme(
-            name = "SwiftLint",
-            launch_action = xcode_schemes.launch_action(
-                "swiftlint",
-                args = [
-                    "--progress",
-                ],
-            ),
-            test_action = xcode_schemes.test_action([
-                "//Tests:CLITests",
-                "//Tests:SwiftLintFrameworkTests",
-                "//Tests:GeneratedTests",
-                "//Tests:IntegrationTests",
-                "//Tests:ExtraRulesTests",
-            ]),
-        ),
-    ],
-    top_level_targets = [
-        "//:swiftlint",
-        "//Tests:CLITests",
-        "//Tests:SwiftLintFrameworkTests",
-        "//Tests:GeneratedTests",
-        "//Tests:IntegrationTests",
-        "//Tests:ExtraRulesTests",
-    ],
 )
 
 # Analyze

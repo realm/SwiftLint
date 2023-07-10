@@ -83,7 +83,7 @@ private extension AttributesRule {
 
                 violations.append(
                     ReasonedRuleViolation(
-                        position: node.funcKeyword.positionAfterSkippingLeadingTrivia,
+                        position: helper.violationPosition,
                         reason: reason,
                         severity: configuration.severityConfiguration.severity
                     )

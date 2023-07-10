@@ -29,19 +29,8 @@ struct StatementPositionRule: CorrectableRule {
         ]
     )
 
-    static let uncuddledDescription = RuleDescription(
-        identifier: "statement_position",
-        name: "Statement Position",
-        description: "Else and catch should be on the next line, with equal indentation to the " +
-        "previous declaration",
-        kind: .style,
-        nonTriggeringExamples: StatementPositionRuleExamples.nonTriggeringExamples(.uncuddledElse),
-        triggeringExamples: StatementPositionRuleExamples.triggeringExamples(.uncuddledElse),
-        corrections: StatementPositionRuleExamples.corrections(.uncuddledElse)
-    )
-
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        return Visitor(statementMode: configuration.statementMode)
+        Visitor(statementMode: configuration.statementMode)
     }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {

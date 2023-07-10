@@ -25,8 +25,7 @@
   (e.g. `@testable`, `@_exported`, ...).  
   [hiltonc](https://github.com/hiltonc)
 
-* Rewrite `discouraged_optional_collection` rule with SwiftSyntax and match
-  the behavior of the rule to `discouraged_optional_boolean` rule.
+* Rewrite `discouraged_optional_collection` rule with SwiftSyntax.  
   [woxtu](https://github.com/woxtu)
 
 #### Bug Fixes

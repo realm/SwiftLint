@@ -49,7 +49,7 @@ private extension AttributesRule {
                 attributesAndPlacements: attributesAndPlacements,
                 attributesWithArgumentsAlwaysOnNewLine: configuration.attributesWithArgumentsAlwaysOnNewLine
             )
-            
+
             switch hasViolation {
             case .argumentsAlwaysOnNewLineViolation:
                 let reason = "Attributes with arguments or inside always_on_line_above must be on a new line instead of the same line"

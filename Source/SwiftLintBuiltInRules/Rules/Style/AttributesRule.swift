@@ -52,7 +52,10 @@ private extension AttributesRule {
 
             switch hasViolation {
             case .argumentsAlwaysOnNewLineViolation:
-                let reason = "Attributes with arguments or inside always_on_line_above must be on a new line instead of the same line"
+                let reason = """
+                    Attributes with arguments or inside always_on_line_above must be on a new line \
+                    instead of the same line
+                    """
 
                 violations.append(
                     ReasonedRuleViolation(

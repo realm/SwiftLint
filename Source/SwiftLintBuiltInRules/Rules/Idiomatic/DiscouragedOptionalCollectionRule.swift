@@ -57,7 +57,13 @@ private extension TypeSyntax {
         if `is`(ArrayTypeSyntax.self) || `is`(DictionaryTypeSyntax.self) {
             return true
         } else {
-            return `as`(SimpleTypeIdentifierSyntax.self)?.name.text == "Set"
+            if let type = `as`(SimpleTypeIdentifierSyntax.self),
+               type.name.text == "Set",
+               type.genericArgumentClause?.arguments.count == 1 {
+                return true
+            } else {
+                return false
+            }
         }
     }
 }
@@ -67,11 +73,13 @@ private extension ExprSyntax {
         if `is`(ArrayExprSyntax.self) || `is`(DictionaryExprSyntax.self) {
             return true
         } else {
-            return `as`(SpecializeExprSyntax.self)?
-                .expression
-                .as(IdentifierExprSyntax.self)?
-                .identifier
-                .text == "Set"
+            if let expr = `as`(SpecializeExprSyntax.self),
+               expr.expression.as(IdentifierExprSyntax.self)?.identifier.text == "Set",
+               expr.genericArgumentClause.arguments.count == 1 {
+                return true
+            } else {
+                return false
+            }
         }
     }
 }

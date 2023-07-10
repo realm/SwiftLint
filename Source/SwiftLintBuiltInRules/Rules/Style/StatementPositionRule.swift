@@ -6,7 +6,9 @@ struct StatementPositionRule: CorrectableRule {
     static let description = RuleDescription(
         identifier: "statement_position",
         name: "Statement Position",
-        description: "Else and catch should be on the same line, one space after the previous declaration",
+        description: """
+            'else' and 'catch' keywords should be at a fixed position relative to the previous block.
+        """,
         kind: .style,
         nonTriggeringExamples: [
             Example("} else if {"),
@@ -30,50 +32,84 @@ struct StatementPositionRule: CorrectableRule {
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(statementMode: configuration.statementMode)
+        Visitor(config: configuration)
     }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file),
-            statementMode: configuration.statementMode
+            config: configuration
         )
     }
 }
 
 private extension StatementPositionRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let statementMode: StatementMode
+        private let config: ConfigurationType
 
-        init(statementMode: StatementMode) {
-            self.statementMode = statementMode
+        init(config: ConfigurationType) {
+            self.config = config
             super.init(viewMode: .sourceAccurate)
         }
 
         override func visitPost(_ node: IfExprSyntax) {
-            switch statementMode {
+            switch config.statementMode {
             case .default:
                 if let position = node.defaultModeViolationPosition()?.position {
-                    violations.append(position)
+                    violations.append(
+                        ReasonedRuleViolation(
+                            position: position,
+                            reason: """
+                                'else' should be on the same line, one space after the closing brace of \
+                                the previous 'if' block
+                            """,
+                            severity: config.severity
+                        )
+                    )
                 }
             case .uncuddledElse:
                 if let position = node.uncuddledModeViolationPosition()?.position {
-                    violations.append(position)
+                    violations.append(
+                        ReasonedRuleViolation(
+                            position: position,
+                            reason: """
+                                'else' should be on the next line, with equal indentation to the previous 'if' keyword
+                            """,
+                            severity: config.severity
+                        )
+                    )
                 }
             }
         }
 
         override func visitPost(_ node: DoStmtSyntax) {
-            switch statementMode {
+            switch config.statementMode {
             case .default:
-                if let positions = node.defaultModeViolationPositions()?.positions {
-                    violations.append(contentsOf: positions)
-                }
+                node.defaultModeViolationPositions()?.positions
+                    .map {
+                        ReasonedRuleViolation(
+                            position: $0,
+                            reason: """
+                                'catch' should be on the same line, one space after the closing brace of \
+                                the previous block
+                            """,
+                            severity: config.severity
+                        )
+                    }
+                    .forEach { violations.append($0) }
             case .uncuddledElse:
-                if let positions = node.uncuddledModeViolationPositions()?.positions {
-                    violations.append(contentsOf: positions)
-                }
+                node.uncuddledModeViolationPositions()?.positions
+                    .map {
+                        ReasonedRuleViolation(
+                            position: $0,
+                            reason: """
+                                'catch' should be on the next line, with equal indentation to the previous 'do' keyword
+                            """,
+                            severity: config.severity
+                        )
+                    }
+                    .forEach { violations.append($0) }
             }
         }
     }
@@ -85,14 +121,14 @@ private extension StatementPositionRule {
         private let locationConverter: SourceLocationConverter
         private let disabledRegions: [SourceRange]
 
-        private let statementMode: StatementMode
+        private let config: ConfigurationType
 
         init(locationConverter: SourceLocationConverter,
              disabledRegions: [SourceRange],
-             statementMode: StatementMode) {
+             config: ConfigurationType) {
             self.locationConverter = locationConverter
             self.disabledRegions = disabledRegions
-            self.statementMode = statementMode
+            self.config = config
         }
 
         override func visit(_ node: IfExprSyntax) -> ExprSyntax {
@@ -101,7 +137,7 @@ private extension StatementPositionRule {
             }
 
             let newNode: IfExprSyntax
-            switch statementMode {
+            switch config.statementMode {
             case .default:
                 guard
                     let (position, correctedNode) = node.defaultModeViolationPosition()
@@ -132,7 +168,7 @@ private extension StatementPositionRule {
 
             var newNode = node
 
-            switch statementMode {
+            switch config.statementMode {
             case .default:
                 guard let (positions, correctedNode) = node.defaultModeViolationPositions()
                 else {

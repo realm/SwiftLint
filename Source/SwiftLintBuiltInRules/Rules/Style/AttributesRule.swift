@@ -8,8 +8,7 @@ struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
         name: "Attributes",
         description: """
             Attributes should be on their own lines in functions and types, but on the same line as variables and \
-            imports except when they have properties and attributes_with_arguments_always_on_line_above is true \
-            which is the default
+            imports
             """,
         kind: .style,
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
@@ -77,6 +76,18 @@ private extension AttributesRule {
             if hasMultipleNewlines {
                 violations.append(helper.violationPosition)
                 return
+            }
+
+            if configuration.attributesWithArgumentsAlwaysOnNewLine {
+                let reason = "Attributes with arguments must be on a new line instead of the same line"
+
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: node.funcKeyword.positionAfterSkippingLeadingTrivia,
+                        reason: reason,
+                        severity: configuration.severityConfiguration.severity
+                    )
+                )
             }
         }
     }

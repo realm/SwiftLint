@@ -47,7 +47,7 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
                 ruleDescription: Self.description,
                 severity: configuration.severityConfiguration.severity,
                 location: Location(file: file.path, line: eachLineSection.lastLine.index),
-                reason: configuredDescriptionReason + "; currently \(eachLineSection.linesToRemove + 1) adj test: \(eachLineSection.isFunctionAdjacent)"
+                reason: configuredDescriptionReason + "; currently \(eachLineSection.linesToRemove + 1)"
             )
         }
     }
@@ -120,7 +120,9 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         return blankLinesSections
     }
 
-    private func findFunctionLineExtents(in file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [ClosedRange<Int>] {
+    private func findFunctionLineExtents(
+        in file: SwiftLintFile, dictionary: SourceKittenDictionary
+    ) -> [ClosedRange<Int>] {
         let substructureExtents = dictionary.substructure.flatMap {
             findFunctionLineExtents(in: file, dictionary: $0)
         }
@@ -151,8 +153,7 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
             return false
         }
         return functionLineExtents.first(where: {
-            lastBlankLineIndex == $0.lowerBound - 1 ||
-            firstBlankLineIndex - 1 == $0.upperBound + 1
+            lastBlankLineIndex == $0.lowerBound - 1 || firstBlankLineIndex - 1 == $0.upperBound + 1
         }) != nil
     }
 
@@ -163,7 +164,8 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         var indexOfLinesToDelete = [Int]()
 
         for section in linesSections {
-            let linesToRemove = section.linesToRemove - configuration.maxEmptyLines(isFunctionAdjacent: section.isFunctionAdjacent) + 1
+            let linesToRemove =
+                section.linesToRemove - configuration.maxEmptyLines(isFunctionAdjacent: section.isFunctionAdjacent) + 1
             let start = section.lastLine.index - linesToRemove
             indexOfLinesToDelete.append(contentsOf: start..<section.lastLine.index)
         }
@@ -198,7 +200,6 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         return []
     }
 }
-
 
 private extension VerticalWhitespaceConfiguration {
     func maxEmptyLines(isFunctionAdjacent: Bool) -> Int {

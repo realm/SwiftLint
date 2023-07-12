@@ -152,9 +152,9 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         else {
             return false
         }
-        return functionLineExtents.first(where: {
+        return functionLineExtents.contains(where: {
             lastBlankLineIndex == $0.lowerBound - 1 || firstBlankLineIndex - 1 == $0.upperBound + 1
-        }) != nil
+        })
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {

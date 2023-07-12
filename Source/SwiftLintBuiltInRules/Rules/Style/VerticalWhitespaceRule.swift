@@ -29,11 +29,19 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
 
-    private var configuredDescriptionReason: String {
-        guard configuration.maxEmptyLines == 1 else {
-            return "Limit vertical whitespace to maximum \(configuration.maxEmptyLines) empty lines"
+    private func violationReason(for lineSection: LineSection) -> String {
+        let whereString: String
+        if configuration.maxEmptyLines != configuration.maxEmptyLinesBetweenFunctions &&
+            lineSection.isFunctionAdjacent {
+            whereString = "between functions "
+        } else {
+            whereString = ""
         }
-        return defaultDescriptionReason
+        let maxEmptyLines = configuration.maxEmptyLines(isFunctionAdjacent: lineSection.isFunctionAdjacent)
+        let maxLinesString = maxEmptyLines == 1 ? "a single empty line" : "maximum \(maxEmptyLines) empty lines"
+
+        return "Limit vertical whitespace \(whereString)to \(maxLinesString); " +
+               "currently \(lineSection.linesToRemove + 1)"
     }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
@@ -47,7 +55,7 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
                 ruleDescription: Self.description,
                 severity: configuration.severityConfiguration.severity,
                 location: Location(file: file.path, line: eachLineSection.lastLine.index),
-                reason: configuredDescriptionReason + "; currently \(eachLineSection.linesToRemove + 1)"
+                reason: violationReason(for: eachLineSection)
             )
         }
     }

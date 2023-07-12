@@ -42,17 +42,20 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
             return []
         }
 
-        return linesSections.map { eachLastLine, eachSectionCount in
+        return linesSections.map { eachLineSection in
             return StyleViolation(
                 ruleDescription: Self.description,
                 severity: configuration.severityConfiguration.severity,
-                location: Location(file: file.path, line: eachLastLine.index),
-                reason: configuredDescriptionReason + "; currently \(eachSectionCount + 1)"
+                location: Location(file: file.path, line: eachLineSection.lastLine.index),
+                reason: configuredDescriptionReason + "; currently \(eachLineSection.linesToRemove + 1)"
             )
         }
     }
 
-    private typealias LineSection = (lastLine: Line, linesToRemove: Int)
+    private struct LineSection {
+        let lastLine: Line
+        let linesToRemove: Int
+    }
 
     private func violatingLineSections(in file: SwiftLintFile) -> [LineSection] {
         let nonSpaceRegex = regex("\\S", options: [])
@@ -69,13 +72,13 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         // filtering out violations in comments and strings
         let stringAndComments = SyntaxKind.commentAndStringKinds
         let syntaxMap = file.syntaxMap
-        let result = blankLinesSections.compactMap { eachSection -> (lastLine: Line, linesToRemove: Int)? in
+        let result = blankLinesSections.compactMap { eachSection -> LineSection? in
             guard let lastLine = eachSection.last else {
                 return nil
             }
             let kindInSection = syntaxMap.kinds(inByteRange: lastLine.byteRange)
             if stringAndComments.isDisjoint(with: kindInSection) {
-                return (lastLine, eachSection.count)
+                return LineSection(lastLine: lastLine, linesToRemove: eachSection.count)
             }
 
             return nil

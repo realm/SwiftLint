@@ -47,7 +47,7 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
                 ruleDescription: Self.description,
                 severity: configuration.severityConfiguration.severity,
                 location: Location(file: file.path, line: eachLineSection.lastLine.index),
-                reason: configuredDescriptionReason + "; currently \(eachLineSection.linesToRemove + 1)"
+                reason: configuredDescriptionReason + "; currently \(eachLineSection.linesToRemove + 1) adj test: \(eachLineSection.isFunctionAdjacent)"
             )
         }
     }
@@ -55,6 +55,7 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
     private struct LineSection {
         let lastLine: Line
         let linesToRemove: Int
+        let isFunctionAdjacent: Bool
     }
 
     private func violatingLineSections(in file: SwiftLintFile) -> [LineSection] {
@@ -72,13 +73,21 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         // filtering out violations in comments and strings
         let stringAndComments = SyntaxKind.commentAndStringKinds
         let syntaxMap = file.syntaxMap
+        // identifying context of blank lines
+        let functionLineExtents = findFunctionLineExtents(in: file, dictionary: file.structureDictionary)
         let result = blankLinesSections.compactMap { eachSection -> LineSection? in
             guard let lastLine = eachSection.last else {
                 return nil
             }
             let kindInSection = syntaxMap.kinds(inByteRange: lastLine.byteRange)
+            // determine if blank line section is next to the beginning or end of a function declaration
+            let isFunctionAdjacent = isAdjacentToFunction(eachSection, functionLineExtents: functionLineExtents)
             if stringAndComments.isDisjoint(with: kindInSection) {
-                return LineSection(lastLine: lastLine, linesToRemove: eachSection.count)
+                return LineSection(
+                    lastLine: lastLine,
+                    linesToRemove: eachSection.count,
+                    isFunctionAdjacent: isFunctionAdjacent
+                )
             }
 
             return nil
@@ -107,6 +116,53 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         }
 
         return blankLinesSections
+    }
+
+    private func findFunctionLineExtents(in file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [ClosedRange<Int>] {
+//        let functionKinds: Set<SwiftDeclarationKind> = [
+//            .functionConstructor, .functionDestructor, .functionFree,
+//            .functionMethodClass, .functionMethodInstance, .functionMethodStatic,
+//            .functionOperator, .functionOperatorInfix, .functionOperatorPrefix,
+//            .functionOperatorPostfix, .functionSubscript
+//        ]
+
+        let substructureExtents = dictionary.substructure.flatMap {
+            findFunctionLineExtents(in: file, dictionary: $0)
+        }
+
+        guard
+            let rawKind = dictionary.kind,
+            let kind = SwiftDeclarationKind(rawValue: rawKind),
+            SwiftDeclarationKind.functionKinds.contains(kind),
+            let offset = dictionary.offset,
+            let length = dictionary.length,
+            let firstLineIndex = file.lines.first(where: { $0.byteRange.contains(offset) })?.index,
+            let lastLineIndex = file.lines.first(where: { $0.byteRange.contains(offset + length - 1) })?.index
+        else {
+            return substructureExtents
+        }
+        return substructureExtents + [firstLineIndex...lastLineIndex]
+    }
+
+    private func isAdjacentToFunction(_ blankLines: [Line], functionLineExtents: [ClosedRange<Int>]) -> Bool {
+        // Assumes that blankLines consistents of consecutive lines, in order.
+        // Important to note: extractSections() does not include the first blank line of a sequence of blank lines!
+        // It only includes the lines that would have to be removed if correcting.
+        // (This also implies that `max_empty_lines: 0` will be treated as `max_empty_lines: 1`)
+        guard
+            let firstBlankLineIndex = blankLines.first?.index,
+            let lastBlankLineIndex = blankLines.last?.index
+        else {
+            return false
+        }
+
+        for eachLineExtent in functionLineExtents {
+            if lastBlankLineIndex == eachLineExtent.lowerBound - 1 ||
+                firstBlankLineIndex - 1 == eachLineExtent.upperBound + 1 {
+                return true
+            }
+        }
+        return false
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {

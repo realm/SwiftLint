@@ -101,7 +101,10 @@ class AttributesRuleTests: SwiftLintTestCase {
             Example("@Environment(\\.presentationMode) private var presentationMode")
         ]
         let triggeringExamples = [
-            Example("@Environment(\\.presentationMode)\nprivate var presentationMode")
+            Example("""
+            @Environment(\\.presentationMode)
+            private ↓var presentationMode
+            """)
         ]
 
         let argumentsAlwaysOnLineDescription = AttributesRule.description
@@ -117,7 +120,7 @@ class AttributesRuleTests: SwiftLintTestCase {
             Example("@Environment(\\.presentationMode)\nprivate var presentationMode")
         ]
         let triggeringExamples = [
-            Example("@Environment(\\.presentationMode) private var presentationMode")
+            Example("@Environment(\\.presentationMode) private ↓var presentationMode")
         ]
 
         let argumentsAlwaysOnLineDescription = AttributesRule.description

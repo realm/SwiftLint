@@ -28,7 +28,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 static private(set) var i = 0, j = C.i
                 static let k = { C.i }()
                 let h = C.i
-                @GreaterThan(C.j) var k: Int
+                var n: Int = C.k { didSet { m += 1 } }
+                @GreaterThan(C.j) var m: Int
             }
         """, excludeFromDocumentation: true),
         Example("""

@@ -14,6 +14,12 @@
 
 #### Bug Fixes
 
+* Fix bug in `prefer_self_in_static_references` rule that triggered on
+  initializers of computed properties in classes when the property had an
+  accessor block.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5118](https://github.com/realm/SwiftLint/issues/5118)
+
 * Document `exclude_ranges` option for `number_separator` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
 

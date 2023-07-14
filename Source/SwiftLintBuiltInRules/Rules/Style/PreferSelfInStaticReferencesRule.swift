@@ -72,6 +72,13 @@ private class Visitor: ViolationsSyntaxVisitor {
         parentDeclScopes.pop()
     }
 
+    override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
+        if case .skipReferences = variableDeclScopes.peek() {
+            return .skipChildren
+        }
+        return .visitChildren
+    }
+
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
         parentDeclScopes.push(.likeClass(name: node.identifier.text))
         return .visitChildren
@@ -125,6 +132,13 @@ private class Visitor: ViolationsSyntaxVisitor {
             return
         }
         addViolation(on: node.identifier)
+    }
+
+    override func visit(_ node: InitializerClauseSyntax) -> SyntaxVisitorContinueKind {
+        if case .skipReferences = variableDeclScopes.peek() {
+            return .skipChildren
+        }
+        return .visitChildren
     }
 
     override func visit(_ node: MemberDeclBlockSyntax) -> SyntaxVisitorContinueKind {
@@ -218,17 +232,6 @@ private class Visitor: ViolationsSyntaxVisitor {
             {
                 return .visitChildren
             }
-        }
-        return .skipChildren
-    }
-
-    override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-        if node.bindings.onlyElement?.accessor != nil {
-            // Variable declaration is a computed property.
-            return .visitChildren
-        }
-        if case .handleReferences = variableDeclScopes.peek() {
-            return .visitChildren
         }
         return .skipChildren
     }

@@ -10,7 +10,7 @@ of your source files for more accurate results.
 [![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
 [![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=main)](https://codecov.io/github/realm/SwiftLint?branch=main)
 
-![](https://github.com/realm/SwiftLint/blob/main/assets/screenshot.png?raw=true)
+![](https://github.com/realm/SwiftLint/blob/main/assets/screenshot.png)
 
 This project adheres to the [Contributor Covenant Code of Conduct](https://realm.io/conduct).
 By participating, you are expected to uphold this code. Please report
@@ -147,7 +147,7 @@ To do this select the project in the file navigator, then select the primary app
 target, and go to Build Phases. Click the + and select "New Run Script Phase".
 Insert the following as the script:
 
-![](https://github.com/realm/SwiftLint/blob/main/assets/runscript.png?raw=true)
+![](https://github.com/realm/SwiftLint/blob/main/assets/runscript.png)
 
 If you installed SwiftLint via Homebrew on Apple Silicon, you might experience this warning:
 
@@ -213,7 +213,7 @@ Select the target you want to add linting to and open the `Build Phases` inspect
 Open `Run Build Tool Plug-ins` and select the `+` button.
 Select `SwiftLintPlugin` from the list and add it to the project.
 
-![](https://github.com/realm/SwiftLint/blob/main/assets/select-swiftlint-plugin.png?raw=true)
+![](https://github.com/realm/SwiftLint/blob/main/assets/select-swiftlint-plugin.png)
 
 For unattended use (e.g. on CI), you can disable the package validation dialog by
 
@@ -599,7 +599,7 @@ custom_rules:
 
 This is what the output would look like:
 
-![](https://github.com/realm/SwiftLint/blob/main/assets/custom-rule.png?raw=true)
+![](https://github.com/realm/SwiftLint/blob/main/assets/custom-rule.png)
 
 You can filter the matches by providing one or more `match_kinds`, which will
 reject matches that include syntax kinds that are not present in this list. Here
@@ -783,7 +783,7 @@ other `.swiftlint.yml` files somewhere within the directory. **So if you want to
 
 ## About
 
-<img src="https://github.com/realm/SwiftLint/blob/main/assets/realm.png?raw=true" width="184" />
+<img src="https://github.com/realm/SwiftLint/blob/main/assets/realm.png" width="184" />
 
 SwiftLint is maintained and funded by Realm Inc. The names and logos for
 Realm are trademarks of Realm Inc.
@@ -793,7 +793,7 @@ See [our other open source projects](https://github.com/realm),
 read [our blog](https://realm.io/news), or say hi on twitter
 ([@realm](https://twitter.com/realm)).
 
-<img src="https://github.com/realm/SwiftLint/blob/main/assets/macstadium.png?raw=true" width="184" />
+<img src="https://github.com/realm/SwiftLint/blob/main/assets/macstadium.png" width="184" />
 
 Our thanks to MacStadium for providing a Mac Mini to run our performance
 tests.

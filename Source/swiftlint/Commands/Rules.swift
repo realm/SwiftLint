@@ -10,6 +10,8 @@ import Foundation
 import SwiftLintFramework
 import SwiftyTextTable
 
+private typealias SortedRules = [(String, Rule.Type)]
+
 extension SwiftLint {
     struct Rules: ParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Display the list of rules and their identifiers")
@@ -20,6 +22,8 @@ extension SwiftLint {
         var rulesFilterOptions: RulesFilterOptions
         @Flag(name: .shortAndLong, help: "Display full configuration details")
         var verbose = false
+        @Flag(help: "Print only the YAML configuration(s)")
+        var configOnly = false
         @Argument(help: "The rule identifier to display description for")
         var ruleID: String?
 
@@ -30,20 +34,35 @@ extension SwiftLint {
                     throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")
                 }
                 printDescription(for: rule, with: configuration)
+                ExitHelper.successfullyExit()
                 return
             }
-            let rulesFilter = RulesFilter(enabledRules: configuration.rules)
-            let rules = rulesFilter.getRules(excluding: .excludingOptions(byCommandLineOptions: rulesFilterOptions))
-            let table = TextTable(ruleList: rules, configuration: configuration, verbose: verbose)
-            print(table.render())
+            let rules = RulesFilter(enabledRules: configuration.rules)
+                .getRules(excluding: .excludingOptions(byCommandLineOptions: rulesFilterOptions))
+                .list
+                .sorted { $0.0 < $1.0 }
+            if configOnly {
+                rules
+                    .map(\.value)
+                    .map { configuration.configuredRule(forID: $0.identifier) ?? $0.init() }
+                    .forEach { printConfig(for: $0) }
+            } else {
+                let table = TextTable(ruleList: rules, configuration: configuration, verbose: verbose)
+                print(table.render())
+            }
             ExitHelper.successfullyExit()
         }
 
         func printDescription(for ruleType: Rule.Type, with configuration: Configuration) {
             let description = ruleType.description
-            print("\(description.consoleDescription)")
 
             let rule = configuration.configuredRule(forID: ruleType.identifier) ?? ruleType.init()
+            if configOnly {
+                printConfig(for: rule)
+                return
+            }
+
+            print("\(description.consoleDescription)")
             if rule.configurationDescription.hasContent {
                 print("\nConfiguration (YAML):\n")
                 print("  \(description.identifier):")
@@ -57,13 +76,20 @@ extension SwiftLint {
                 print("\nExample #\(index + 1)\n\n\(example.code.indent(by: 4))")
             }
         }
+
+        private func printConfig(for rule: Rule) {
+            if rule.configurationDescription.hasContent {
+                print("\(type(of: rule).identifier):")
+                print(rule.configurationDescription.yaml().indent(by: 2))
+            }
+        }
     }
 }
 
 // MARK: - SwiftyTextTable
 
 private extension TextTable {
-    init(ruleList: RuleList, configuration: Configuration, verbose: Bool) {
+    init(ruleList: SortedRules, configuration: Configuration, verbose: Bool) {
         let columns = [
             TextTableColumn(header: "identifier"),
             TextTableColumn(header: "opt-in"),
@@ -75,7 +101,6 @@ private extension TextTable {
             TextTableColumn(header: "configuration")
         ]
         self.init(columns: columns)
-        let sortedRules = ruleList.list.sorted { $0.0 < $1.0 }
         func truncate(_ string: String) -> String {
             let stringWithNoNewlines = string.replacingOccurrences(of: "\n", with: "\\n")
             let minWidth = "configuration".count - "...".count
@@ -91,7 +116,7 @@ private extension TextTable {
             }
             return stringWithNoNewlines
         }
-        for (ruleID, ruleType) in sortedRules {
+        for (ruleID, ruleType) in ruleList {
             let rule = ruleType.init()
             let configuredRule = configuration.configuredRule(forID: ruleID)
             addRow(values: [

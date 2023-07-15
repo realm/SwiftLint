@@ -52,6 +52,10 @@
 * Add `invokeTest()` to `overridden_super_call` defaults.  
   [DylanBettermannDD](https://github.com/DylanBettermannDD)
 
+* Add `--config-only` option to `rules` command allowing to print only the YAML
+  configuration of a single or all rules.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
 
 * Fix false positive in `control_statement` rule that triggered on conditions

@@ -31,6 +31,11 @@
   [JP Simard](https://github.com/jpsim)
   [#4737](https://github.com/realm/SwiftLint/issues/4737)
 
+* Fix false negatives for the `unneeded_synthesized_initializer` rule
+  for nested structs in classes.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5120](https://github.com/realm/SwiftLint/issues/5120)
+
 ## 0.52.4: Lid Switch
 
 #### Breaking

@@ -317,6 +317,17 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         }
                     }
                 }
+                """),
+        Example("""
+                class Foo {
+                    struct Bar {
+                        let baz: Int
+
+                       ↓init(baz: Int) {
+                            self.baz = baz
+                        }
+                    }
+                }
                 """)
     ]
 

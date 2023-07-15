@@ -10,13 +10,13 @@ of your source files for more accurate results.
 [![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
 [![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=main)](https://codecov.io/github/realm/SwiftLint?branch=main)
 
-![](assets/screenshot.png)
+![](https://github.com/realm/SwiftLint/blob/main/assets/screenshot.png?raw=true)
 
 This project adheres to the [Contributor Covenant Code of Conduct](https://realm.io/conduct).
 By participating, you are expected to uphold this code. Please report
 unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 
-> Language Switch: [中文](README_CN.md), [한국어](README_KR.md).
+> Language Switch: [中文](https://github.com/realm/SwiftLint/blob/main/README_CN.md), [한국어](https://github.com/realm/SwiftLint/blob/main/README_KR.md).
 
 ## Installation
 
@@ -136,7 +136,7 @@ bazel run -c opt @SwiftLint//:swiftlint
 To get a high-level overview of recommended ways to integrate SwiftLint into your project,
 we encourage you to watch this presentation or read the transcript:
 
-[![Presentation](assets/presentation.svg)](https://youtu.be/9Z1nTMTejqU)
+[![Presentation](https://raw.githubusercontent.com/realm/SwiftLint/205e5a90d30e52e058c6091b60fa48ffd3178335/assets/presentation.svg)](https://youtu.be/9Z1nTMTejqU)
 
 ### Xcode
 
@@ -147,7 +147,7 @@ To do this select the project in the file navigator, then select the primary app
 target, and go to Build Phases. Click the + and select "New Run Script Phase".
 Insert the following as the script:
 
-![](assets/runscript.png)
+![](https://github.com/realm/SwiftLint/blob/main/assets/runscript.png?raw=true)
 
 If you installed SwiftLint via Homebrew on Apple Silicon, you might experience this warning:
 
@@ -213,7 +213,7 @@ Select the target you want to add linting to and open the `Build Phases` inspect
 Open `Run Build Tool Plug-ins` and select the `+` button.
 Select `SwiftLintPlugin` from the list and add it to the project.
 
-![](assets/select-swiftlint-plugin.png)
+![](https://github.com/realm/SwiftLint/blob/main/assets/select-swiftlint-plugin.png?raw=true)
 
 For unattended use (e.g. on CI), you can disable the package validation dialog by
 
@@ -396,7 +396,7 @@ SwiftLint can be configured using `entry` to apply fixes and fail on errors:
 
 Over 200 rules are included in SwiftLint and the Swift community (that's you!)
 continues to contribute more over time.
-[Pull requests](CONTRIBUTING.md) are encouraged.
+[Pull requests](https://github.com/realm/SwiftLint/blob/main/CONTRIBUTING.md) are encouraged.
 
 You can find an updated list of rules and more information about them
 [here](https://realm.github.io/SwiftLint/rule-directory.html).
@@ -599,7 +599,7 @@ custom_rules:
 
 This is what the output would look like:
 
-![](assets/custom-rule.png)
+![](https://github.com/realm/SwiftLint/blob/main/assets/custom-rule.png?raw=true)
 
 You can filter the matches by providing one or more `match_kinds`, which will
 reject matches that include syntax kinds that are not present in this list. Here
@@ -779,11 +779,11 @@ other `.swiftlint.yml` files somewhere within the directory. **So if you want to
 
 ## License
 
-[MIT licensed.](LICENSE)
+[MIT licensed.](https://github.com/realm/SwiftLint/blob/main/LICENSE)
 
 ## About
 
-<img src="assets/realm.png" width="184" />
+<img src="https://github.com/realm/SwiftLint/blob/main/assets/realm.png?raw=true" width="184" />
 
 SwiftLint is maintained and funded by Realm Inc. The names and logos for
 Realm are trademarks of Realm Inc.
@@ -793,7 +793,7 @@ See [our other open source projects](https://github.com/realm),
 read [our blog](https://realm.io/news), or say hi on twitter
 ([@realm](https://twitter.com/realm)).
 
-<img src="assets/macstadium.png" width="184" />
+<img src="https://github.com/realm/SwiftLint/blob/main/assets/macstadium.png?raw=true" width="184" />
 
 Our thanks to MacStadium for providing a Mac Mini to run our performance
 tests.

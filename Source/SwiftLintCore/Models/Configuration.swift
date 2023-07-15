@@ -127,7 +127,7 @@ public struct Configuration {
         excludedPaths: [String] = [],
         indentation: IndentationStyle = .default,
         warningThreshold: Int? = nil,
-        reporter: String = XcodeReporter.identifier,
+        reporter: String? = nil,
         cachePath: String? = nil,
         pinnedVersion: String? = nil,
         allowZeroLintableFiles: Bool = false
@@ -153,7 +153,7 @@ public struct Configuration {
             excludedPaths: excludedPaths,
             indentation: indentation,
             warningThreshold: warningThreshold,
-            reporter: reporter,
+            reporter: reporter ?? XcodeReporter.identifier,
             cachePath: cachePath,
             allowZeroLintableFiles: allowZeroLintableFiles
         )

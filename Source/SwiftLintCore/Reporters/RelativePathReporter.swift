@@ -1,12 +1,12 @@
 /// Reports violations with relative paths.
-public struct RelativePathReporter: Reporter {
+struct RelativePathReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "relative-path"
-    public static let isRealtime = true
-    public static let description = "Reports violations with relative paths."
+    static let identifier = "relative-path"
+    static let isRealtime = true
+    static let description = "Reports violations with relative paths."
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         return violations.map(generateForSingleViolation).joined(separator: "\n")
     }
 

@@ -1,13 +1,13 @@
 /// Reports violations as XML conforming to the Checkstyle specification, as defined here:
 /// https://www.jetbrains.com/help/teamcity/xml-report-processing.html
-public struct CheckstyleReporter: Reporter {
+struct CheckstyleReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "checkstyle"
-    public static let isRealtime = false
-    public static let description = "Reports violations as Checkstyle XML."
+    static let identifier = "checkstyle"
+    static let isRealtime = false
+    static let description = "Reports violations as Checkstyle XML."
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         return [
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">",
             violations

@@ -1,14 +1,14 @@
 import SourceKittenFramework
 
 /// Reports violations in SonarQube import format.
-public struct SonarQubeReporter: Reporter {
+struct SonarQubeReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "sonarqube"
-    public static let isRealtime = false
-    public static let description = "Reports violations in SonarQube import format."
+    static let identifier = "sonarqube"
+    static let isRealtime = false
+    static let description = "Reports violations in SonarQube import format."
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         return toJSON(["issues": violations.map(dictionary(for:))])
     }
 

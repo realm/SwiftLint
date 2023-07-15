@@ -2,7 +2,8 @@
 
 #### Breaking
 
-* None.
+* Hide all `Reporter`s from SwiftLint's' public interface.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Experimental
 

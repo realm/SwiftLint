@@ -41,7 +41,9 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, Configura
 
 private extension UnneededSynthesizedInitializerRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(StructDeclSyntax.self) }
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            .allExcept(StructDeclSyntax.self, ClassDeclSyntax.self)
+        }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
             violations += node.unneededInitializers.map {

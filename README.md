@@ -136,7 +136,7 @@ bazel run -c opt @SwiftLint//:swiftlint
 To get a high-level overview of recommended ways to integrate SwiftLint into your project,
 we encourage you to watch this presentation or read the transcript:
 
-[![Presentation](https://raw.githubusercontent.com/realm/SwiftLint/205e5a90d30e52e058c6091b60fa48ffd3178335/assets/presentation.svg)](https://youtu.be/9Z1nTMTejqU)
+[![Presentation](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/presentation.svg)](https://youtu.be/9Z1nTMTejqU)
 
 ### Xcode
 

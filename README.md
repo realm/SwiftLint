@@ -396,7 +396,7 @@ SwiftLint can be configured using `entry` to apply fixes and fail on errors:
 
 Over 200 rules are included in SwiftLint and the Swift community (that's you!)
 continues to contribute more over time.
-[Pull requests](https://raw.githubusercontent.com/realm/SwiftLint/main/CONTRIBUTING.md) are encouraged.
+[Pull requests](https://github.com/realm/SwiftLint/blob/main/CONTRIBUTING.md) are encouraged.
 
 You can find an updated list of rules and more information about them
 [here](https://realm.github.io/SwiftLint/rule-directory.html).
@@ -779,7 +779,7 @@ other `.swiftlint.yml` files somewhere within the directory. **So if you want to
 
 ## License
 
-[MIT licensed.](https://raw.githubusercontent.com/realm/SwiftLint/main/LICENSE)
+[MIT licensed.](https://github.com/realm/SwiftLint/blob/main/LICENSE)
 
 ## About
 

@@ -46,12 +46,30 @@ private extension AttributesRule {
 
             let hasViolation = helper.hasViolation(
                 locationConverter: locationConverter,
-                attributesAndPlacements: attributesAndPlacements
+                attributesAndPlacements: attributesAndPlacements,
+                attributesWithArgumentsAlwaysOnNewLine: configuration.attributesWithArgumentsAlwaysOnNewLine
             )
 
-            if hasViolation {
+            switch hasViolation {
+            case .argumentsAlwaysOnNewLineViolation:
+                let reason = """
+                    Attributes with arguments or inside always_on_line_above must be on a new line \
+                    instead of the same line
+                    """
+
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: helper.violationPosition,
+                        reason: reason,
+                        severity: configuration.severityConfiguration.severity
+                    )
+                )
+                return
+            case .violation:
                 violations.append(helper.violationPosition)
                 return
+            case .noViolation:
+                break
             }
 
             let linesForAttributes = attributesAndPlacements
@@ -112,6 +130,12 @@ private enum AttributePlacement {
     case dedicatedLine
 }
 
+private enum Violation {
+    case argumentsAlwaysOnNewLineViolation
+    case noViolation
+    case violation
+}
+
 private struct RuleHelper {
     let violationPosition: AbsolutePosition
     let keywordLine: Int
@@ -119,8 +143,9 @@ private struct RuleHelper {
 
     func hasViolation(
         locationConverter: SourceLocationConverter,
-        attributesAndPlacements: [(AttributeSyntax, AttributePlacement)]
-    ) -> Bool {
+        attributesAndPlacements: [(AttributeSyntax, AttributePlacement)],
+        attributesWithArgumentsAlwaysOnNewLine: Bool
+    ) -> (Violation) {
         var linesWithAttributes: Set<Int> = [keywordLine]
         for (attribute, placement) in attributesAndPlacements {
             guard let attributeStartLine = attribute.startLine(locationConverter: locationConverter) else {
@@ -130,18 +155,22 @@ private struct RuleHelper {
             switch placement {
             case .sameLineAsDeclaration:
                 if attributeStartLine != keywordLine {
-                    return true
+                    return .violation
                 }
             case .dedicatedLine:
                 let hasViolation = attributeStartLine == keywordLine ||
                     linesWithAttributes.contains(attributeStartLine)
                 linesWithAttributes.insert(attributeStartLine)
                 if hasViolation {
-                    return true
+                    if attributesWithArgumentsAlwaysOnNewLine && shouldBeOnSameLine {
+                        return .argumentsAlwaysOnNewLineViolation
+                    } else {
+                        return .violation
+                    }
                 }
             }
         }
-        return false
+        return .noViolation
     }
 }
 

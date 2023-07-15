@@ -95,4 +95,39 @@ class AttributesRuleTests: SwiftLintTestCase {
                    ruleConfiguration: ["always_on_same_line": ["@discardableResult", "@objc",
                                                                "@IBAction", "@IBDesignable"]])
     }
+
+    func testAttributesWithArgumentsAlwaysOnLineAboveFalse() {
+        let nonTriggeringExamples = [
+            Example("@Environment(\\.presentationMode) private var presentationMode")
+        ]
+        let triggeringExamples = [
+            Example("""
+            @Environment(\\.presentationMode)
+            private ↓var presentationMode
+            """)
+        ]
+
+        let argumentsAlwaysOnLineDescription = AttributesRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+
+        verifyRule(argumentsAlwaysOnLineDescription,
+                   ruleConfiguration: ["attributes_with_arguments_always_on_line_above": false])
+    }
+
+    func testAttributesWithArgumentsAlwaysOnLineAboveTrue() {
+        let nonTriggeringExamples = [
+            Example("@Environment(\\.presentationMode)\nprivate var presentationMode")
+        ]
+        let triggeringExamples = [
+            Example("@Environment(\\.presentationMode) private ↓var presentationMode")
+        ]
+
+        let argumentsAlwaysOnLineDescription = AttributesRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+
+        verifyRule(argumentsAlwaysOnLineDescription,
+                   ruleConfiguration: ["attributes_with_arguments_always_on_line_above": true])
+    }
 }

@@ -41,7 +41,7 @@ public struct Stack<Element> {
 
     /// Modify the last element.
     ///
-    /// - parameter modifier: A function to applied to the last element to modify it in place.
+    /// - parameter modifier: A function to be applied to the last element to modify the same in place.
     public mutating func modifyLast(by modifier: (inout Element) -> Void) {
         if elements.isNotEmpty {
             modifier(&elements[count - 1])

@@ -56,6 +56,10 @@
   configuration of a single or all rules.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Add `--default-config` option to `rules` command allowing to use default
+  values for configurations being printed for a single rule or all rules.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
 
 * Fix false positive in `control_statement` rule that triggered on conditions

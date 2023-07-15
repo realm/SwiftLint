@@ -24,6 +24,8 @@ extension SwiftLint {
         var verbose = false
         @Flag(help: "Print only the YAML configuration(s)")
         var configOnly = false
+        @Flag(help: "Print default configuration(s)")
+        var defaultConfig = false
         @Argument(help: "The rule identifier to display description for")
         var ruleID: String?
 
@@ -44,19 +46,24 @@ extension SwiftLint {
             if configOnly {
                 rules
                     .map(\.value)
-                    .map { configuration.configuredRule(forID: $0.identifier) ?? $0.init() }
+                    .map { createInstance(of: $0, using: configuration, configure: !defaultConfig) }
                     .forEach { printConfig(for: $0) }
             } else {
-                let table = TextTable(ruleList: rules, configuration: configuration, verbose: verbose)
+                let table = TextTable(
+                    ruleList: rules,
+                    configuration: configuration,
+                    verbose: verbose,
+                    defaultConfig: defaultConfig
+                )
                 print(table.render())
             }
             ExitHelper.successfullyExit()
         }
 
-        func printDescription(for ruleType: Rule.Type, with configuration: Configuration) {
+        private func printDescription(for ruleType: Rule.Type, with configuration: Configuration) {
             let description = ruleType.description
 
-            let rule = configuration.configuredRule(forID: ruleType.identifier) ?? ruleType.init()
+            let rule = createInstance(of: ruleType, using: configuration, configure: !defaultConfig)
             if configOnly {
                 printConfig(for: rule)
                 return
@@ -83,13 +90,19 @@ extension SwiftLint {
                 print(rule.configurationDescription.yaml().indent(by: 2))
             }
         }
+
+        private func createInstance(of ruleType: Rule.Type, using config: Configuration, configure: Bool) -> Rule {
+            configure
+                ? config.configuredRule(forID: ruleType.identifier) ?? ruleType.init()
+                : ruleType.init()
+        }
     }
 }
 
 // MARK: - SwiftyTextTable
 
 private extension TextTable {
-    init(ruleList: SortedRules, configuration: Configuration, verbose: Bool) {
+    init(ruleList: SortedRules, configuration: Configuration, verbose: Bool, defaultConfig: Bool) {
         let columns = [
             TextTableColumn(header: "identifier"),
             TextTableColumn(header: "opt-in"),
@@ -127,7 +140,7 @@ private extension TextTable {
                 ruleType.description.kind.rawValue,
                 (rule is AnalyzerRule) ? "yes" : "no",
                 (rule is SourceKitFreeRule) ? "no" : "yes",
-                truncate((configuredRule ?? rule).configurationDescription.oneLiner())
+                truncate((defaultConfig ? rule : configuredRule ?? rule).configurationDescription.oneLiner())
             ])
         }
     }

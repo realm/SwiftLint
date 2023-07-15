@@ -10,7 +10,11 @@
 
 #### Enhancements
 
-* None.
+* Show specific violation message for the `attributes` rule when the option
+  `always_on_line_above` or `attributes_with_arguments_always_on_line_above`
+  is involved.  
+  [chrisngabp](https://github.com/chrisngabp)
+  [5103](https://github.com/realm/SwiftLint/issues/5103)
 
 #### Bug Fixes
 

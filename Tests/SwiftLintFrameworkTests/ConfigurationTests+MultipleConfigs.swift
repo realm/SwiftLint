@@ -302,33 +302,34 @@ extension ConfigurationTests {
     }
 
     func testParentChildOptInAndDisable() {
-        // swiftlint:disable:next large_tuple
-        typealias TestCase = (
-            optedInInParent: Bool,
-            disabledInParent: Bool,
-            optedInInChild: Bool,
-            disabledInChild: Bool,
-            isEnabled: Bool
-        )
+        struct TestCase: Equatable {
+            let optedInInParent: Bool
+            let disabledInParent: Bool
+            let optedInInChild: Bool
+            let disabledInChild: Bool
+            let isEnabled: Bool
+        }
         let testCases: [TestCase] = [
-            (false, false, false, false, false),
-            (true, false, false, false, true),
-            (false, true, false, false, false),
-            (true, true, false, false, false),
-            (false, false, true, false, true),
-            (true, false, true, false, true),
-            (false, true, true, false, true),
-            (true, true, true, false, true),
-            (false, false, false, true, false),
-            (true, false, false, true, false),
-            (false, true, false, true, false),
-            (true, true, false, true, false),
-            (false, false, true, true, false),
-            (true, false, true, true, false),
-            (false, true, true, true, false),
-            (true, true, true, true, false)
+            // swiftlint:disable line_length
+            TestCase(optedInInParent: false, disabledInParent: false, optedInInChild: false, disabledInChild: false, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: false, optedInInChild: false, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInParent: false, disabledInParent: true, optedInInChild: false, disabledInChild: false, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: true, optedInInChild: false, disabledInChild: false, isEnabled: false),
+            TestCase(optedInInParent: false, disabledInParent: false, optedInInChild: true, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInParent: true, disabledInParent: false, optedInInChild: true, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInParent: false, disabledInParent: true, optedInInChild: true, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInParent: true, disabledInParent: true, optedInInChild: true, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInParent: false, disabledInParent: false, optedInInChild: false, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: false, optedInInChild: false, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: false, disabledInParent: true, optedInInChild: false, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: true, optedInInChild: false, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: false, disabledInParent: false, optedInInChild: true, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: false, optedInInChild: true, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: false, disabledInParent: true, optedInInChild: true, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: true, optedInInChild: true, disabledInChild: true, isEnabled: false)
+            // swiftlint:enable line_length
         ]
-        XCTAssertEqual(testCases.count, 4 * 4)
+        XCTAssertEqual(testCases.unique.count, 4 * 4)
         let ruleType = ImplicitReturnRule.self
         let ruleIdentifier = ruleType.description.identifier
         for testCase in testCases {
@@ -350,18 +351,18 @@ extension ConfigurationTests {
     }
 
     func testParentChildDisableForDefaultRule() {
-        typealias TestCase = (
-            disabledInParent: Bool,
-            disabledInChild: Bool,
-            isEnabled: Bool
-        )
+        struct TestCase: Equatable {
+            let disabledInParent: Bool
+            let disabledInChild: Bool
+            let isEnabled: Bool
+        }
         let testCases: [TestCase] = [
-            (false, false, true),
-            (true, false, false),
-            (false, true, false),
-            (true, true, false)
+            TestCase(disabledInParent: false, disabledInChild: false, isEnabled: true),
+            TestCase(disabledInParent: true, disabledInChild: false, isEnabled: false),
+            TestCase(disabledInParent: false, disabledInChild: true, isEnabled: false),
+            TestCase(disabledInParent: true, disabledInChild: true, isEnabled: false)
         ]
-        XCTAssertEqual(testCases.count, 2 * 2)
+        XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = BlanketDisableCommandRule.self
         let ruleIdentifier = ruleType.description.identifier
         for testCase in testCases {
@@ -379,19 +380,20 @@ extension ConfigurationTests {
         }
     }
 
-    private typealias OptedInAndDisabledInChildTestCase = (
-        optedInInChild: Bool,
-        disabledInChild: Bool,
-        isEnabled: Bool
-    )
+    private struct OptedInAndDisabledInChildTestCase: Equatable {
+        let optedInInChild: Bool
+        let disabledInChild: Bool
+        let isEnabled: Bool
+    }
 
     func testParentOnlyRulesAndChildOptInAndDisabled() {
         let testCases: [OptedInAndDisabledInChildTestCase] = [
-            (false, false, true),
-            (true, false, true),
-            (false, true, false),
-            (true, true, false)
+            OptedInAndDisabledInChildTestCase(optedInInChild: false, disabledInChild: false, isEnabled: true),
+            OptedInAndDisabledInChildTestCase(optedInInChild: true, disabledInChild: false, isEnabled: true),
+            OptedInAndDisabledInChildTestCase(optedInInChild: false, disabledInChild: true, isEnabled: false),
+            OptedInAndDisabledInChildTestCase(optedInInChild: true, disabledInChild: true, isEnabled: false)
         ]
+        XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = ImplicitReturnRule.self
         let parentConfiguration = Configuration(rulesMode: .only([ruleType.description.identifier]))
         testParentConfigurationAndChildOptInAndDisabled(
@@ -401,11 +403,12 @@ extension ConfigurationTests {
 
     func testParentAllRulesAndChildOptInAndDisabled() {
         let testCases: [OptedInAndDisabledInChildTestCase] = [
-            (false, false, true),
-            (true, false, true),
-            (false, true, false),
-            (true, true, false)
+            OptedInAndDisabledInChildTestCase(optedInInChild: false, disabledInChild: false, isEnabled: true),
+            OptedInAndDisabledInChildTestCase(optedInInChild: true, disabledInChild: false, isEnabled: true),
+            OptedInAndDisabledInChildTestCase(optedInInChild: false, disabledInChild: true, isEnabled: false),
+            OptedInAndDisabledInChildTestCase(optedInInChild: true, disabledInChild: true, isEnabled: false)
         ]
+        XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = ImplicitReturnRule.self
         let parentConfiguration = Configuration(rulesMode: .allEnabled)
         testParentConfigurationAndChildOptInAndDisabled(

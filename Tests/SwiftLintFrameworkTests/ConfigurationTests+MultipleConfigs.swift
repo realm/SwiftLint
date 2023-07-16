@@ -380,48 +380,22 @@ extension ConfigurationTests {
         }
     }
 
-    private struct OptedInAndDisabledInChildTestCase: Equatable {
-        let optedInInChild: Bool
-        let disabledInChild: Bool
-        let isEnabled: Bool
-    }
-
     func testParentOnlyRulesAndChildOptInAndDisabled() {
-        let testCases: [OptedInAndDisabledInChildTestCase] = [
-            OptedInAndDisabledInChildTestCase(optedInInChild: false, disabledInChild: false, isEnabled: true),
-            OptedInAndDisabledInChildTestCase(optedInInChild: true, disabledInChild: false, isEnabled: true),
-            OptedInAndDisabledInChildTestCase(optedInInChild: false, disabledInChild: true, isEnabled: false),
-            OptedInAndDisabledInChildTestCase(optedInInChild: true, disabledInChild: true, isEnabled: false)
+        struct TestCase: Equatable {
+            let optedInInChild: Bool
+            let disabledInChild: Bool
+            let isEnabled: Bool
+        }
+        let testCases: [TestCase] = [
+            TestCase(optedInInChild: false, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInChild: true, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInChild: false, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInChild: true, disabledInChild: true, isEnabled: false)
         ]
         XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = ImplicitReturnRule.self
-        let parentConfiguration = Configuration(rulesMode: .only([ruleType.description.identifier]))
-        testParentConfigurationAndChildOptInAndDisabled(
-            parentConfiguration, ruleType: ruleType, testCases: testCases
-        )
-    }
-
-    func testParentAllRulesAndChildOptInAndDisabled() {
-        let testCases: [OptedInAndDisabledInChildTestCase] = [
-            OptedInAndDisabledInChildTestCase(optedInInChild: false, disabledInChild: false, isEnabled: true),
-            OptedInAndDisabledInChildTestCase(optedInInChild: true, disabledInChild: false, isEnabled: true),
-            OptedInAndDisabledInChildTestCase(optedInInChild: false, disabledInChild: true, isEnabled: false),
-            OptedInAndDisabledInChildTestCase(optedInInChild: true, disabledInChild: true, isEnabled: false)
-        ]
-        XCTAssertEqual(testCases.unique.count, 2 * 2)
-        let ruleType = ImplicitReturnRule.self
-        let parentConfiguration = Configuration(rulesMode: .allEnabled)
-        testParentConfigurationAndChildOptInAndDisabled(
-            parentConfiguration, ruleType: ruleType, testCases: testCases
-        )
-    }
-
-    private func testParentConfigurationAndChildOptInAndDisabled(
-        _ parentConfiguration: Configuration,
-        ruleType: Rule.Type,
-        testCases: [OptedInAndDisabledInChildTestCase]
-    ) {
         let ruleIdentifier = ruleType.description.identifier
+        let parentConfiguration = Configuration(rulesMode: .only([ruleIdentifier]))
         for testCase in testCases {
             let childConfiguration = Configuration(rulesMode: .default(
                 disabled: testCase.disabledInChild ? [ruleIdentifier] : [],
@@ -429,7 +403,7 @@ extension ConfigurationTests {
             ))
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
-            let message = "optedInInChild = \(testCase.optedInInChild), disabledInChild = \(testCase.disabledInChild)"
+            let message = "optedInInChild = \(testCase.optedInInChild) disabledInChild = \(testCase.disabledInChild)"
             XCTAssertEqual(isEnabled, testCase.isEnabled, message)
         }
     }

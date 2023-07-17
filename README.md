@@ -601,6 +601,13 @@ This is what the output would look like:
 
 ![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/custom-rule.png)
 
+It is important to note that the regular expression pattern is used with the flags `s`
+and `m` enabled, that is `.`
+[matches newlines](https://developer.apple.com/documentation/foundation/nsregularexpression/options/1412529-dotmatcheslineseparators)
+and `^`/`$` 
+[match the start and end of lines](https://developer.apple.com/documentation/foundation/nsregularexpression/options/1408263-anchorsmatchlines),
+respectively. If you do not want to have `.` match newlines, for example, the regex can be prepended by `(?-s)`. 
+
 You can filter the matches by providing one or more `match_kinds`, which will
 reject matches that include syntax kinds that are not present in this list. Here
 are all the possible syntax kinds:

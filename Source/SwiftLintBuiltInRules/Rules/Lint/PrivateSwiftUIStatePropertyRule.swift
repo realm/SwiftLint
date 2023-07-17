@@ -10,8 +10,40 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
         name: "Private SwiftUI @State Properties",
         description: "SwiftUI's state properties should be private",
         kind: .lint,
-        nonTriggeringExamples: PrivateSwiftUIStatePropertyRuleExamples.nonTriggeringExamples,
-        triggeringExamples: PrivateSwiftUIStatePropertyRuleExamples.triggeringExamples
+        nonTriggeringExamples: [
+            Example("""
+            struct ContentView: View {
+                @State private var isPlaying: Bool = false
+            }
+            """
+            ),
+            Example("""
+            struct ContentView: View {
+                @State fileprivate var isPlaying: Bool = false
+            }
+            """
+            ),
+            Example("""
+            struct ContentView: View {
+                var isPlaying = false
+            }
+            """
+            ),
+            Example("""
+            struct ContentView: View {
+                @StateObject var foo = Foo()
+            }
+            """
+            )
+        ],
+        triggeringExamples: [
+            Example("""
+            struct ContentView: View {
+                @State ↓var isPlaying: Bool = false
+            }
+            """
+            )
+        ]
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {

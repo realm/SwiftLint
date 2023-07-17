@@ -121,7 +121,7 @@ bazel run -c opt @SwiftLint//:swiftlint
 
 我们鼓励你观看本次报告，来获得将 SwiftLint 整合到你的项目中的推荐方式的一个高层次概括：
 
-[![Presentation](assets/presentation.svg)](https://academy.realm.io/posts/slug-jp-simard-swiftlint/)
+[![Presentation](assets/presentation.svg)](https://youtu.be/9Z1nTMTejqU)
 
 ### Xcode
 

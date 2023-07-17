@@ -52,7 +52,7 @@ $ mint install realm/SwiftLint
 
 프로젝트에 SwiftLint를 통합하기 위한 권장 사용 방식의 전반적인 개요를 알고 싶다면, 아래 프레젠테이션 영상을 보거나 스크립트를 읽어보면 좋습니다.
 
-[![Presentation](assets/presentation.svg)](https://academy.realm.io/posts/slug-jp-simard-swiftlint/)
+[![Presentation](assets/presentation.svg)](https://youtu.be/9Z1nTMTejqU)
 
 ### Xcode
 

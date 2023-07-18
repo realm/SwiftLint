@@ -41,6 +41,13 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
             class Foo: ObservableObject {
                 @State var bar = Bar()
             }
+            """),
+            Example("""
+            extension MyObject {
+                struct ContentView: View {
+                    @State private var isPlaying: Bool = false
+                }
+            }
             """)
         ],
         triggeringExamples: [
@@ -53,6 +60,13 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
             final class ContentView: View {
                 @State ↓var isPlaying: Bool = false
             }
+            """),
+            Example("""
+            extension MyObject {
+                struct ContentView: View {
+                    @State ↓var isPlaying: Bool = false
+                }
+            }
             """)
         ]
     )
@@ -64,6 +78,10 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
 
 private extension PrivateSwiftUIStatePropertyRule {
     final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            [EnumDeclSyntax.self, FunctionDeclSyntax.self, ProtocolDeclSyntax.self, VariableDeclSyntax.self]
+        }
+
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
             guard let inheritedTypeCollection = node.inheritanceClause?.inheritedTypeCollection else {
                 return .skipChildren

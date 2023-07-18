@@ -48,8 +48,12 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
             struct ContentView: View {
                 @State ↓var isPlaying: Bool = false
             }
-            """
-            )
+            """),
+            Example("""
+            final class ContentView: View {
+                @State ↓var isPlaying: Bool = false
+            }
+            """)
         ]
     )
 
@@ -60,8 +64,13 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
 
 private extension PrivateSwiftUIStatePropertyRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
-            .allExcept(StructDeclSyntax.self)
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            guard let inheritedTypeCollection = node.inheritanceClause?.inheritedTypeCollection else {
+                return .skipChildren
+            }
+
+            let inheritedTypes = inheritedTypeCollection.typeNames
+            return inheritedTypes.contains("View") ? .visitChildren : .skipChildren
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -69,11 +78,7 @@ private extension PrivateSwiftUIStatePropertyRule {
                 return .skipChildren
             }
 
-            let inheritedTypes = Set(inheritedTypeCollection
-                .compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }
-                .map(\.name.text)
-            )
-
+            let inheritedTypes = inheritedTypeCollection.typeNames
             return inheritedTypes.contains("View") ? .visitChildren : .skipChildren
         }
 
@@ -88,6 +93,12 @@ private extension PrivateSwiftUIStatePropertyRule {
 
             violations.append(decl.bindingKeyword.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
+
+private extension InheritedTypeListSyntax {
+    var typeNames: [String] {
+        compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }.map(\.name.text)
     }
 }
 

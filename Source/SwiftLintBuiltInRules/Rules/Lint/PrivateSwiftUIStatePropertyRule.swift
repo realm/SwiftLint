@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-/// Rule to require that any state properties in SwiftUI be declared as private.
+/// Require that any state properties in SwiftUI be declared as private
+///
 /// State properties should only be accessible from inside the View's body, or from methods called by it
 struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
@@ -34,7 +35,12 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
                 @StateObject var foo = Foo()
             }
             """
-            )
+            ),
+            Example("""
+            struct Foo {
+                @State var bar = false
+            }
+            """)
         ],
         triggeringExamples: [
             Example("""
@@ -53,6 +59,19 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
 
 private extension PrivateSwiftUIStatePropertyRule {
     final class Visitor: ViolationsSyntaxVisitor {
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            guard let inheritedTypeCollection = node.inheritanceClause?.inheritedTypeCollection else {
+                return .skipChildren
+            }
+
+            let inheritedTypes = Set(inheritedTypeCollection
+                .compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }
+                .map(\.name.text)
+            )
+
+            return inheritedTypes.contains("View") ? .visitChildren : .skipChildren
+        }
+
         override func visitPost(_ node: MemberDeclListItemSyntax) {
             guard
                 let decl = node.decl.as(VariableDeclSyntax.self),

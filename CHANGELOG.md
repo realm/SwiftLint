@@ -109,6 +109,7 @@
   for nested structs in classes.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5120](https://github.com/realm/SwiftLint/issues/5120)
+
 * Fix false positives for superfluous_disable_command, and removed
   support for disable and enable commands in multiline comments.  
   [Martin Redington](https://github.com/mildm8nnered)

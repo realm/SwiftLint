@@ -66,4 +66,17 @@ class VerticalWhitespaceRuleTests: SwiftLintTestCase {
         verifyRule(maxEmptyLinesBetweenFunctionsDescription,
                    ruleConfiguration: ["max_empty_lines_between_functions": 2])
     }
+
+    func testAutoCorrectionWithMaxEmptyLinesBetweenFunctions() {
+        let maxEmptyLinesBetweenFunctionsDescription = VerticalWhitespaceRule.description
+            .with(nonTriggeringExamples: [])
+            .with(triggeringExamples: [])
+            .with(corrections: [
+                Example("let b = 0\n\n↓\n↓\n↓\n\nfunc aaa() {}\n"): Example("let b = 0\n\n\nfunc aaa() {}\n"),
+                Example("let b = 0\n\n\nfunc aaa() {}\n"): Example("let b = 0\n\n\nfunc aaa() {}\n")
+            ])
+
+        verifyRule(maxEmptyLinesBetweenFunctionsDescription,
+                   ruleConfiguration: ["max_empty_lines_between_functions": 2])
+    }
 }

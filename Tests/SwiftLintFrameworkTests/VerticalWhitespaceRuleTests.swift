@@ -52,4 +52,18 @@ class VerticalWhitespaceRuleTests: SwiftLintTestCase {
             XCTFail("A vertical whitespace violation should have been triggered!")
         }
     }
+
+    func testAttributesWithMaxEmptyLinesBetweenFunctions() {
+        // Test with custom `max_empty_lines_between_functions`
+        let maxEmptyLinesBetweenFunctionsDescription = VerticalWhitespaceRule.description
+            .with(nonTriggeringExamples: [Example("let aaaa = 0\n\n\nfunc bbb() {\n}")])
+            .with(triggeringExamples: [
+                Example("func aaa() {\n}\n\n\n\nstruct BBBB {}"),
+                Example("let aaaa = 0\n\n\n")
+            ])
+            .with(corrections: [:])
+
+        verifyRule(maxEmptyLinesBetweenFunctionsDescription,
+                   ruleConfiguration: ["max_empty_lines_between_functions": 2])
+    }
 }

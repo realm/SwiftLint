@@ -79,4 +79,22 @@ class VerticalWhitespaceRuleTests: SwiftLintTestCase {
         verifyRule(maxEmptyLinesBetweenFunctionsDescription,
                    ruleConfiguration: ["max_empty_lines_between_functions": 2])
     }
+
+    func testViolationMessageWithMaxEmptyLinesBetweenFunctions() {
+        guard let config = makeConfig(["max_empty_lines_between_functions": 2], ruleID) else {
+            XCTFail("Failed to create configuration")
+            return
+        }
+        let allViolations = violations(Example("func aaaa() {}\n\n\n\nlet bbb = 2\n"), config: config)
+
+        let verticalWhiteSpaceViolation = allViolations.first { $0.ruleIdentifier == ruleID }
+        if let violation = verticalWhiteSpaceViolation {
+            XCTAssertEqual(
+                violation.reason,
+                "Limit vertical whitespace between functions to maximum 2 empty lines; currently 3"
+            )
+        } else {
+            XCTFail("A vertical whitespace violation should have been triggered!")
+        }
+    }
 }

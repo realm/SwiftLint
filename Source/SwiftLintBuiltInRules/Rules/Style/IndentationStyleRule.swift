@@ -80,7 +80,18 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 \t\t  \ttabbed content
                 \t\t\"""
                 }
-                """)
+                """),
+            Example(
+                """
+                // - include_multiline_comments: false
+                /*
+                class Foo {
+                \tlet tabLine = true
+                    let spaceLine = true
+                }
+                */
+                """,
+                configuration: IndentationStyleConfiguration.testMultilineComment),
         ],
         triggeringExamples: [
             Example(
@@ -89,7 +100,18 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 \tlet tabLine = true
                 ↓    let spaceLine = true
                 }
-                """),
+                """,
+                testWrappingInComment: false),
+            Example(
+                """
+                /*
+                class Foo {
+                \tlet tabLine = true
+                ↓    let spaceLine = true
+                }
+                */
+                """,
+                testWrappingInComment: false),
             Example(
                 """
                 class Foo {
@@ -100,7 +122,8 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 \t↓ \tprint(arg)
                 \t}
                 }
-                """),
+                """,
+                testWrappingInComment: false),
             Example(
                 """
                 class Foo {
@@ -111,7 +134,8 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 \t↓ print(arg)
                 \t}
                 }
-                """),
+                """,
+                testWrappingInComment: false),
             Example(
                 """
                 class Foo {
@@ -122,21 +146,23 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 ↓ \t\tprint(arg)
                 \t}
                 }
-                """),
-
+                """,
+                testWrappingInComment: false),
             Example(
                 """
                 abcd(bar: "far",
                 \t baz: 0,
                 ↓     bat: false)
-                """),
+                """,
+                testWrappingInComment: false),
             Example(
                 """
                 abcd(
                     bar: "far",
                 ↓\tbaz: 0,
                 ↓\tbat: false)
-                """),
+                """,
+                testWrappingInComment: false),
             Example(
                 """
                 // - tab_width: 4
@@ -144,7 +170,8 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 \t↓     baz: 0,
                 \t↓ bat: false)
                 """,
-                configuration: IndentationStyleConfiguration.testTabWidth),
+                configuration: IndentationStyleConfiguration.testTabWidth,
+                testWrappingInComment: false),
             Example(
                 """
                 // - include_multiline_strings: true
@@ -157,7 +184,8 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 \t\t\"""
                 }
                 """,
-                configuration: IndentationStyleConfiguration.testMultilineString),
+                configuration: IndentationStyleConfiguration.testMultilineString,
+                testWrappingInComment: false),
         ]
     )
 
@@ -171,14 +199,16 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
             fileStyle = configuration.preferredStyle
         }
 
-
         for line in file.lines {
             let indentationForThisLine = getIndentation(for: line)
             let indentationCharacterCount = indentationForThisLine.count
 
             guard indentationCharacterCount > 0 else { continue }
 
-            if ignoreMultilineStrings(line: line, in: file) { continue }
+            if
+                ignoreMultilineStrings(line: line, in: file) ||
+                ignoreMultilineComments(line: line, in: file)
+            { continue }
 
             guard let firstLineIndentation = indentationForThisLine.first else { continue }
 
@@ -251,6 +281,21 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
         // Closing delimiters of a multiline string should follow the defined indentation. The Swift compiler requires
         // those delimiters to be on their own line so we need to consider the number of tokens as well as the upper
         // bounds.
+        return tokensInLine.count > 1 || line.byteRange.upperBound < firstToken.range.upperBound
+    }
+
+    // steal the logic from multiline strings above :D
+    private func ignoreMultilineComments(line: Line, in file: SwiftLintFile) -> Bool {
+        guard configuration.includeMultilineComments == false else { return false }
+
+        let tokensInLine = file.syntaxMap.tokens(inByteRange: line.byteRange)
+        guard
+            let firstToken = tokensInLine.first,
+            firstToken.kind == .comment,
+            firstToken.range.lowerBound < line.byteRange.lowerBound else {
+            return false
+        }
+
         return tokensInLine.count > 1 || line.byteRange.upperBound < firstToken.range.upperBound
     }
 

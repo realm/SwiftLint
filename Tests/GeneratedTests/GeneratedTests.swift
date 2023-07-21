@@ -526,8 +526,7 @@ class InclusiveLanguageRuleGeneratedTests: SwiftLintTestCase {
 
 class IndentationStyleRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-		// skipping comments test because it is expected to trigger from within comments.
-        verifyRule(IndentationStyleRule.description, skipCommentTests: true)
+        verifyRule(IndentationStyleRule.description)
     }
 }
 

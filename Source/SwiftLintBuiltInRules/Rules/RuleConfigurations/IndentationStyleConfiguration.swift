@@ -7,6 +7,8 @@ struct IndentationStyleConfiguration: SeverityBasedRuleConfiguration, Equatable 
 	private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
 	@ConfigurationElement(key: "include_multiline_strings")
 	private(set) var includeMultilineStrings = false
+	@ConfigurationElement(key: "include_multiline_comments")
+	private(set) var includeMultilineComments = true
 	@ConfigurationElement(key: "per_file")
 	private(set) var perFile = true
 	@ConfigurationElement(key: "preferred_style")
@@ -16,6 +18,7 @@ struct IndentationStyleConfiguration: SeverityBasedRuleConfiguration, Equatable 
 
 	static let testTabWidth: [String: Any] = ["tab_width": 4]
 	static let testMultilineString: [String: Any] = ["include_multiline_strings": true]
+	static let testMultilineComment: [String: Any] = ["include_multiline_comments": false]
 
 	enum PreferredStyle: String, AcceptableByConfigurationElement {
 		case tabs
@@ -47,6 +50,10 @@ struct IndentationStyleConfiguration: SeverityBasedRuleConfiguration, Equatable 
 
 		if let includeMultilineStrings = configurationDict[$includeMultilineStrings] as? Bool {
 			self.includeMultilineStrings = includeMultilineStrings
+		}
+
+		if let includeMultilineComments = configurationDict[$includeMultilineComments] as? Bool {
+			self.includeMultilineComments = includeMultilineComments
 		}
 
 		self.tabWidth = configurationDict[$tabWidth] as? Int

@@ -151,9 +151,9 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 class Foo {
                 \tlet multiLineString = \"""
                 \t\tcontent
-                \t\t    more content
-                \t\t  most content
-                \t\t  \ttabbed content
+                \t\t↓    more content
+                \t\t↓  most content
+                \t\t↓  \ttabbed content
                 \t\t\"""
                 }
                 """,

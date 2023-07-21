@@ -126,6 +126,7 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 """),
             Example(
                 """
+                // - tab_width: 4
                 abcd(bar: "far",
                 \t↓     baz: 0,
                 \t↓ bat: false)

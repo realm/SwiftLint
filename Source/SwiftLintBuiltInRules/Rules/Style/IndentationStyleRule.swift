@@ -19,19 +19,22 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
             """,
         kind: .style,
         nonTriggeringExamples: [
-            Example("""
+            Example(
+                """
                 class Foo {
                     let tabLine = false
                     let spaceLine = true
                 }
                 """),
-            Example("""
+            Example(
+                """
                 class Foo {
                 \tlet tabLine = true
                 \tlet spaceLine = false
                 }
                 """),
-            Example("""
+            Example(
+                """
                 class Foo {
                 \tlet tabLine = true
                 \tlet spaceLine = false
@@ -41,23 +44,27 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 \t}
                 }
                 """),
-            Example("""
+            Example(
+                """
                 abcd(bar: "far",
                      baz: 0,
                      bat: false)
                 """),
-            Example("""
+            Example(
+                """
                 abcd(
                     bar: "far",
                     baz: 0,
                     bat: false)
                 """),
-            Example("""
+            Example(
+                """
                 abcd(bar: "far",
                 \t baz: 0,
                 \t bat: false)
                 """),
-            Example("""
+            Example(
+                """
                 abcd(
                 \tbar: "far",
                 \tbaz: 0,
@@ -76,13 +83,15 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 """)
         ],
         triggeringExamples: [
-            Example("""
+            Example(
+                """
                 class Foo {
                 \tlet tabLine = true
                 ↓    let spaceLine = true
                 }
                 """),
-            Example("""
+            Example(
+                """
                 class Foo {
                 \tlet tabLine = true
                 \tlet spaceLine = false
@@ -92,7 +101,8 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 \t}
                 }
                 """),
-            Example("""
+            Example(
+                """
                 class Foo {
                 \tlet tabLine = true
                 \tlet spaceLine = false
@@ -102,7 +112,8 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 \t}
                 }
                 """),
-            Example("""
+            Example(
+                """
                 class Foo {
                 \tlet tabLine = true
                 \tlet spaceLine = false
@@ -113,12 +124,14 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 }
                 """),
 
-            Example("""
+            Example(
+                """
                 abcd(bar: "far",
                 \t baz: 0,
                 ↓     bat: false)
                 """),
-            Example("""
+            Example(
+                """
                 abcd(
                     bar: "far",
                 ↓\tbaz: 0,

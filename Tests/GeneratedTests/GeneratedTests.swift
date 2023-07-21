@@ -1232,6 +1232,12 @@ class UnneededBreakInSwitchRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class UnneededOverrideRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnneededOverrideRule.description)
+    }
+}
+
 class UnneededParenthesesInClosureArgumentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededParenthesesInClosureArgumentRule.description)

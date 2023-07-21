@@ -19,6 +19,11 @@
 * Rewrite `control_statement` rule using SwiftSyntax.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Add `unneeded_override` rule to remove function overrides that only
+  call super.  
+  [keith](https://github.com/keith)
+  [5139](https://github.com/realm/SwiftLint/pull/5139)
+
 #### Bug Fixes
 
 * Fix false positive in `control_statement` rule that triggered on conditions

@@ -91,7 +91,7 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 }
                 */
                 """,
-                configuration: IndentationStyleConfiguration.testMultilineComment),
+                configuration: IndentationStyleConfiguration.testMultilineComment)
         ],
         triggeringExamples: [
             Example(
@@ -185,7 +185,7 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 }
                 """,
                 configuration: IndentationStyleConfiguration.testMultilineString,
-                testWrappingInComment: false),
+                testWrappingInComment: false)
         ]
     )
 
@@ -247,7 +247,6 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                     if
                         previousLineSetsNonstandardIndentationExpectation(line, in: file) &&
                         validateSpacesEnding(indentationForThisLine) {
-
                         continue
                     }
 
@@ -346,7 +345,7 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
         return openParens > 0 || openSquares > 0
     }
 
-    static private let indentationCharactersSet = Set(" \t")
+    private static let indentationCharactersSet = Set(" \t")
     private func getIndentation(for line: Line) -> String.SubSequence {
         line.content.prefix(while: { Self.indentationCharactersSet.contains($0) })
     }
@@ -371,7 +370,6 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
         if
             let tabWidth = configuration.tabWidth,
             spacesCount >= tabWidth {
-
             return false
         }
 

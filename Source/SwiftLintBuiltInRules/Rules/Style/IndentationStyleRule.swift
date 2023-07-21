@@ -191,7 +191,7 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
 
     // MARK: - Initializers
     // MARK: - Methods: Validation
-    func validate(file: SwiftLintFile) -> [StyleViolation] { // swiftlint:disable:this function_body_length
+    func validate(file: SwiftLintFile) -> [StyleViolation] { // swiftlint:disable:this cyclomatic_complexity
         var violations: [StyleViolation] = []
 
         var fileStyle: ConfigurationType.PreferredStyle?
@@ -224,7 +224,7 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                     fileStyle = .tabs
                     confirmedFileStyle = .tabs
                 default:
-                    fatalError(
+                    queuedFatalError(
                         "Somehow a non tab or space made it into indentation: '\(firstLineIndentation)'" +
                         " aka \(firstLineIndentation.unicodeScalars)")
                 }
@@ -298,7 +298,9 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
         return tokensInLine.count > 1 || line.byteRange.upperBound < firstToken.range.upperBound
     }
 
-    /// Allow for situations where the style is to keep the first method argument or array member on the same line as the call site.
+    /// Allow for situations where the style is to keep the first method argument or array member on the same line as
+    /// the call site.
+    ///
     /// for example:
     /// ```swift
     /// func abcd(efg: String,
@@ -312,7 +314,8 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
     /// ```
     ///
     /// These don't necessarily line up nicely on the 2,3,4,8 space indentation or whatever tab width you have set.
-    private func previousLineSetsNonstandardIndentationExpectation(_ currentLine: Line, in file: SwiftLintFile) -> Bool {
+    private
+    func previousLineSetsNonstandardIndentationExpectation(_ currentLine: Line, in file: SwiftLintFile) -> Bool {
         guard
             currentLine.index > 1
         else { return false }
@@ -346,11 +349,13 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
     }
 
     private static let indentationCharactersSet = Set(" \t")
+
     private func getIndentation(for line: Line) -> String.SubSequence {
         line.content.prefix(while: { Self.indentationCharactersSet.contains($0) })
     }
 
-    /// Checks to make sure that in tab mode indentation, any spaces are only at the end and are, at most, tabWidth-1 in quantity, if tabWidth is set.
+    /// Checks to make sure that in tab mode indentation, any spaces are only at the end and are, at most, tabWidth-1
+    /// in quantity, if tabWidth is set.
     private func validateSpacesEnding(_ indentation: String.SubSequence) -> Bool {
         guard indentation.first == "\t" else { return false }
 
@@ -363,7 +368,9 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
             case " ":
                 spacesCount += 1
             default:
-                fatalError("Somehow a non tab or space made it into indentation: '\(indentation)' aka \(indentation.unicodeScalars)")
+                queuedFatalError(
+                    "Somehow a non tab or space made it into indentation: '\(indentation)' " +
+                    "aka \(indentation.unicodeScalars)")
             }
         }
 

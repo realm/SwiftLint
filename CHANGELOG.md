@@ -283,6 +283,13 @@
 * Rewrite `control_statement` rule using SwiftSyntax.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Add rule `indentation_style`. Warns when tabs and spaces are mixed within the
+  same file and allows for setting your entire project to either tabs OR 
+  spaces. Also allows for spaces to finesse placement at the end of a tabbed 
+  indentation.  
+  [Michael Redig](https://github.com/mredig)
+  [PR 5144](https://github.com/realm/SwiftLint/pull/5144)
+
 * Add new `non_overridable_class_declaration` rule that triggers on `class`
   function and variable declarations in final classes that are not final
   themselves or private.  

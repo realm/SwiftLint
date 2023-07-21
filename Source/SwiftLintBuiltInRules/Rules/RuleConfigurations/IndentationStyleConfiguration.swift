@@ -15,6 +15,7 @@ struct IndentationStyleConfiguration: SeverityBasedRuleConfiguration, Equatable 
 	private(set) var tabWidth: Int?
 
 	static let testTabWidth: [String: Any] = ["tab_width": 4]
+	static let testMultilineString: [String: Any] = ["include_multiline_strings": true]
 
 	enum PreferredStyle: String, AcceptableByConfigurationElement {
 		case tabs

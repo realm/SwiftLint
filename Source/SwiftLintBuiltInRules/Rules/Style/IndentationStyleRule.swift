@@ -63,6 +63,17 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 \tbaz: 0,
                 \tbat: false)
                 """),
+            Example(
+                """
+                class Foo {
+                \tlet multiLineString = \"""
+                \t\tcontent
+                \t\t    more content
+                \t\t  most content
+                \t\t  \ttabbed content
+                \t\t\"""
+                }
+                """)
         ],
         triggeringExamples: [
             Example("""
@@ -120,6 +131,19 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                 \t↓ bat: false)
                 """,
                 configuration: IndentationStyleConfiguration.testTabWidth),
+            Example(
+                """
+                // - include_multiline_strings: true
+                class Foo {
+                \tlet multiLineString = \"""
+                \t\tcontent
+                \t\t    more content
+                \t\t  most content
+                \t\t  \ttabbed content
+                \t\t\"""
+                }
+                """,
+                configuration: IndentationStyleConfiguration.testMultilineString),
         ]
     )
 

@@ -57,8 +57,8 @@ with Swift Package Manager on Linux. When contributing code changes, please
 ensure that all three supported build methods continue to work and pass tests.
 
 ```shell
-$ xcodebuild -scheme swiftlint test
-$ swift test
+$ xcodebuild -scheme swiftlint clean test -destination 'platform=macOS' | xcpretty
+$ swift test | xcpretty
 $ make docker_test
 ```
 

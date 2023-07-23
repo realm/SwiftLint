@@ -32,7 +32,8 @@ struct IdentifierNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
 
 extension IdentifierNameRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        typealias Parent = IdentifierNameRule
+        typealias Parent = IdentifierNameRule // swiftlint:disable:this nesting
+
         private var configuration: NameConfiguration<Parent>
         private var configurationStack: [NameConfiguration<Parent>] = []
 
@@ -111,31 +112,26 @@ extension IdentifierNameRule {
                 else { queuedFatalError("No declaration node") }
 
                 // alphanumeric characters
-                let validationName = nodeIsPrivate(previousNodes: previousNodes) ? privateName(name) : name
-                guard
-                    validate(name: validationName, isValidWithin: configuration.allowedSymbolsAndAlphanumerics)
-                else {
-                    let reason = "\(identifierType.rawValue.localizedCapitalized) name '\(name)' should only contain alphanumeric and other allowed characters"
-                    let violation = ReasonedRuleViolation(
-                        position: previousNode.positionAfterSkippingLeadingTrivia,
+                let nameForValidation = nodeIsPrivate(previousNodes: previousNodes) ? privateName(name) : name
+                let nameValidation = validate(
+                    name: nameForValidation,
+                    of: identifierType,
+                    isValidWithin: configuration.allowedSymbolsAndAlphanumerics)
+                if case .fail(let reason, let severity) = nameValidation {
+                    appendViolation(
+                        at: previousNode.positionAfterSkippingLeadingTrivia,
                         reason: reason,
-                        severity: configuration.unallowedSymbolsSeverity.severity)
-                    violations.append(violation)
+                        severity: severity)
                     return
                 }
 
                 // identifier length
-                if let severity = configuration.severity(forLength: name.count) {
-                    let reason = """
-                    \(identifierType.rawValue.localizedCapitalized) name '\(name)' should be between \
-                    \(configuration.minLengthThreshold) and \(configuration.maxLengthThreshold) characters long \
-                    (\(name.count) characters)
-                    """
-                    let violation = ReasonedRuleViolation(
-                        position: previousNode.positionAfterSkippingLeadingTrivia,
+                let lengthValidation = validateLength(of: name, ofType: identifierType, previousNode: previousNode)
+                if case .fail(let reason, let severity) = lengthValidation {
+                    appendViolation(
+                        at: previousNode.positionAfterSkippingLeadingTrivia,
                         reason: reason,
                         severity: severity)
-                    violations.append(violation)
                     return
                 }
 
@@ -147,11 +143,9 @@ extension IdentifierNameRule {
                     configuration.allowedSymbols.contains(firstCharacter) == false
                 else { return }
 
-                // nix CamelCase values.
-                if
-                    let severity = configuration.validatesStartWithLowercase.severity,
-                    identifier.text.first?.isUppercase == true,
-                    nameIsViolatingCase(name) {
+                // nix CapitalCase values.
+                let camelValidation = validateCamelCase(of: name, ofType: identifierType, previousNodes: previousNodes)
+                if case .fail(let reason, let severity) = camelValidation {
                     let locationOffset: Int
                     switch identifierType {
                     case .enumElement:
@@ -163,15 +157,10 @@ extension IdentifierNameRule {
                             .location(for: previousNode.positionAfterSkippingLeadingTrivia)
                             .offset
                     }
-                    let reasoned = ReasonedRuleViolation(
-                        position: AbsolutePosition(utf8Offset: locationOffset),
-                        reason: "\(identifierType.rawValue.localizedCapitalized) name '\(name)' should start with a lowercase character",
+                    appendViolation(
+                        at: AbsolutePosition(utf8Offset: locationOffset),
+                        reason: reason,
                         severity: severity)
-
-                    // make an exeption for CamelCase static var/let
-                    if nodeIsStaticVariable(previousNodes) == false {
-                        violations.append(reasoned)
-                    }
                 }
             }
 
@@ -241,9 +230,67 @@ extension IdentifierNameRule {
 			return secondCharacter.isLowercase
 		}
 
-		private func validate(name: String, isValidWithin characterSet: CharacterSet) -> Bool {
-			characterSet.isSuperset(of: CharacterSet(charactersIn: name))
-		}
+        private func validate(
+            name: String,
+            of identifierType: IdentifierType,
+            isValidWithin characterSet: CharacterSet) -> Validation {
+                guard characterSet.isSuperset(of: CharacterSet(charactersIn: name)) else {
+                    let reason = """
+                        \(identifierType.rawValue.localizedCapitalized) name '\(name)' should only contain \
+                        alphanumeric and other allowed characters
+                        """
+                    return .fail(reason: reason, severity: configuration.unallowedSymbolsSeverity.severity)
+                }
+                return .pass
+            }
+
+        private func validateLength(
+            of name: String,
+            ofType identifierType: IdentifierType,
+            previousNode: TokenSyntax) -> Validation {
+                if let severity = configuration.severity(forLength: name.count) {
+                    let reason = """
+                        \(identifierType.rawValue.localizedCapitalized) name '\(name)' should be between \
+                        \(configuration.minLengthThreshold) and \(configuration.maxLengthThreshold) characters long \
+                        (\(name.count) characters)
+                        """
+                    return .fail(reason: reason, severity: severity)
+                }
+                return .pass
+            }
+
+        private func validateCamelCase(
+            of name: String,
+            ofType identifierType: IdentifierType,
+            previousNodes: [TokenSyntax]) -> Validation {
+                if
+                    let severity = configuration.validatesStartWithLowercase.severity,
+                    name.first?.isUppercase == true,
+                    nameIsViolatingCase(name) {
+                    let reason = """
+                        \(identifierType.rawValue.localizedCapitalized) name '\(name)' should start \
+                        with a lowercase character
+                        """
+                    // make an exeption for CamelCase static var/let
+                    if nodeIsStaticVariable(previousNodes) == false {
+                        return .fail(reason: reason, severity: severity)
+                    }
+                }
+                return .pass
+            }
+
+        @discardableResult
+        private func appendViolation(
+            at position: AbsolutePosition,
+            reason: String,
+            severity: ViolationSeverity) -> ReasonedRuleViolation {
+                let violation = ReasonedRuleViolation(
+                    position: position,
+                    reason: reason,
+                    severity: severity)
+                violations.append(violation)
+                return violation
+            }
 
         private func cleanupName(_ name: String) -> String {
             guard
@@ -254,6 +301,11 @@ extension IdentifierNameRule {
             let oneInFront = name.index(after: name.startIndex)
             let oneInBack = name.index(before: name.endIndex)
             return String(name[oneInFront..<oneInBack])
+        }
+
+        enum Validation { // swiftlint:disable:this nesting
+            case pass
+            case fail(reason: String, severity: ViolationSeverity)
         }
 	}
 }

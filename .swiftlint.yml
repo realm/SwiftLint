@@ -62,6 +62,7 @@ attributes:
 identifier_name:
   excluded:
     - id
+  previous_function_behavior: true
 large_tuple: 3
 number_separator:
   minimum_length: 5

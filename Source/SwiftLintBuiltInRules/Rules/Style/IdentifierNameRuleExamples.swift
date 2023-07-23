@@ -37,13 +37,17 @@ internal struct IdentifierNameRuleExamples {
                 excludeFromDocumentation: true),
         Example(
             "private func h1(_ text: String) -> String { \"# \\(text)\" }",
-            configuration: ["evaluate_func_name_length": false],
+            configuration: ["previous_function_behavior": true],
             excludeFromDocumentation: true),
         Example(
             """
             func hasAccessibilityElementChildrenIgnoreModifier(in file: SwiftLintFile) -> Bool { false }
             """,
-            configuration: ["evaluate_func_name_length": false],
+            configuration: ["previous_function_behavior": true],
+            excludeFromDocumentation: true),
+        Example(
+            "func testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters() {}",
+            configuration: ["previous_function_behavior": true],
             excludeFromDocumentation: true)
     ]
 
@@ -93,6 +97,7 @@ internal struct IdentifierNameRuleExamples {
         Example(
             """
             ↓func hasAccessibilityElementChildrenIgnoreModifier(in file: SwiftLintFile) -> Bool { false }
-            """)
+            """),
+        Example("↓func testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters() {}")
     ]
 }

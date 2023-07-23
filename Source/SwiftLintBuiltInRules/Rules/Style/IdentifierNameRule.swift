@@ -235,6 +235,9 @@ extension IdentifierNameRule {
             name: String,
             of identifierType: IdentifierType,
             isValidWithin characterSet: CharacterSet) -> Validation {
+                if identifierType == .function, configuration.previousFunctionBehavior {
+                    return .pass
+                }
                 guard characterSet.isSuperset(of: CharacterSet(charactersIn: name)) else {
                     let reason = """
                         \(identifierType.rawValue.localizedCapitalized) name '\(name)' should only contain \
@@ -249,7 +252,7 @@ extension IdentifierNameRule {
             of name: String,
             ofType identifierType: IdentifierType,
             previousNode: TokenSyntax) -> Validation {
-                if identifierType == .function, configuration.evaluateFuncNameLength == false {
+                if identifierType == .function, configuration.previousFunctionBehavior {
                     return .pass
                 }
                 if let severity = configuration.severity(forLength: name.count) {

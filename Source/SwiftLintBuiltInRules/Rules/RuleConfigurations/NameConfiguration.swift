@@ -22,12 +22,14 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     @ConfigurationElement(key: "ignore_min_length_for_short_closure_content")
     private(set) var ignoreMinLengthForShortClosureContent = false
     /// Only valid for `identifier_name`
-    /// Before this update, the rule effectively made this `false`, but I believe that to be a bug and not intentional.
-    /// The code was `if !SwiftDeclarationKind.functionKinds.contains(kind) {` which is incredibly hard to follow
-    /// double negative logic, plus the description for the rule made no indication that functions were excluded from
-    /// this rule. Hence, I'm defaulting to `true`.
-    @ConfigurationElement(key: "evaluate_func_name_length")
-    private(set) var evaluateFuncNameLength = true
+    /// Before this update, the code skipped over functions in evaluating both their length and their special
+    /// characters. The code read `if !SwiftDeclarationKind.functionKinds.contains(kind) {` which is incredibly hard
+    /// to follow double negative logic, plus the description for the rule made no indication that functions were
+    /// excluded from this rule. And given the history of this rule as previously being variables only, but refactored
+    /// to the generic concept of identifiers (which should include function *identifiers*, this leads me to believe it
+    /// was unintentional. Hence, I'm defaulting to `false`.
+    @ConfigurationElement(key: "previous_function_behavior")
+    private(set) var previousFunctionBehavior = false
 
     var minLengthThreshold: Int {
         return max(minLength.warning, minLength.error ?? minLength.warning)
@@ -50,7 +52,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
          unallowedSymbolsSeverity: Severity = .error,
          validatesStartWithLowercase: StartWithLowercaseConfiguration = .error,
          ignoreMinLengthForShortClosureContent: Bool = false,
-         evaluateFuncNameLength: Bool = true) {
+         previousFunctionBehavior: Bool = false) {
         minLength = SeverityLevels(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevels(warning: maxLengthWarning, error: maxLengthError)
         self.excludedRegularExpressions = Set(excluded.compactMap {
@@ -60,7 +62,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
         self.unallowedSymbolsSeverity = unallowedSymbolsSeverity
         self.validatesStartWithLowercase = validatesStartWithLowercase
         self.ignoreMinLengthForShortClosureContent = ignoreMinLengthForShortClosureContent
-        self.evaluateFuncNameLength = evaluateFuncNameLength
+        self.previousFunctionBehavior = previousFunctionBehavior
     }
 
     mutating func apply(configuration: Any) throws {
@@ -101,8 +103,8 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
         if let ignoreMinLengthForClosures = configurationDict[$ignoreMinLengthForShortClosureContent] as? Bool {
             self.ignoreMinLengthForShortClosureContent = ignoreMinLengthForClosures
         }
-        if let evaluateFuncNameLength = configurationDict[$evaluateFuncNameLength] as? Bool {
-            self.evaluateFuncNameLength = evaluateFuncNameLength
+        if let previousFunctionBehavior = configurationDict[$previousFunctionBehavior] as? Bool {
+            self.previousFunctionBehavior = previousFunctionBehavior
         }
     }
 }

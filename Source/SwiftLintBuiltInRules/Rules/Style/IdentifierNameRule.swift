@@ -36,7 +36,7 @@ extension IdentifierNameRule {
         private var configuration: NameConfiguration<Parent>
         private var configurationStack: [NameConfiguration<Parent>] = []
 
-        static private let maximumClosureLineCount = 10
+        private static let maximumClosureLineCount = 10
 
         let sourceLocationConverter: SourceLocationConverter
 
@@ -72,7 +72,6 @@ extension IdentifierNameRule {
             if
                 configuration.ignoreMinLengthForShortClosureContent,
                 closureLineCount(node) <= Self.maximumClosureLineCount {
-
                 do {
                     let currentConfig = self.configuration
 
@@ -89,7 +88,6 @@ extension IdentifierNameRule {
             if
                 configuration.ignoreMinLengthForShortClosureContent,
                 closureLineCount(node) <= Self.maximumClosureLineCount  {
-
                 configuration = configurationStack.popLast() ?? configuration
             }
         }
@@ -154,7 +152,6 @@ extension IdentifierNameRule {
                     let severity = configuration.validatesStartWithLowercase.severity,
                     identifier.text.first?.isUppercase == true,
                     nameIsViolatingCase(name) {
-
                     let locationOffset: Int
                     switch identifierType {
                     case .enumElement:
@@ -185,7 +182,6 @@ extension IdentifierNameRule {
 			while
 				let previous = current?.previousToken(viewMode: .sourceAccurate),
 				out.count < 3 {
-
 				defer { current = current?.previousToken(viewMode: .sourceAccurate) }
 				out.append(previous)
 			}
@@ -194,7 +190,7 @@ extension IdentifierNameRule {
 		}
 
 		private func nodeIsPrivate(previousNodes: [TokenSyntax]) -> Bool {
-			previousNodes.contains(where: { $0.tokenKind == .keyword(.private)} )
+			previousNodes.contains(where: { $0.tokenKind == .keyword(.private) })
 		}
 
         private func privateName(_ name: String) -> String {
@@ -207,16 +203,16 @@ extension IdentifierNameRule {
         }
 
         private func nodeIsVariable(previousNodes: [TokenSyntax]) -> Bool {
-            previousNodes.contains(where: { $0.tokenKind == .keyword(.let)} ) ||
-            previousNodes.contains(where: { $0.tokenKind == .keyword(.var)} )
+            previousNodes.contains(where: { $0.tokenKind == .keyword(.let) }) ||
+            previousNodes.contains(where: { $0.tokenKind == .keyword(.var) })
         }
 
 		private func nodeIsStatic(previousNodes: [TokenSyntax]) -> Bool {
-			previousNodes.contains(where: { $0.tokenKind == .keyword(.static)} )
+			previousNodes.contains(where: { $0.tokenKind == .keyword(.static) })
 		}
 
 		private func nodeIsOverridden(previousNodes: [TokenSyntax]) -> Bool {
-			previousNodes.contains(where: { $0.tokenKind == .keyword(.override) } )
+			previousNodes.contains(where: { $0.tokenKind == .keyword(.override) })
 		}
 
 		private func closureLineCount(_ node: ClosureExprSyntax) -> Int {

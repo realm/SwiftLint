@@ -52,6 +52,12 @@ extension IdentifierNameRule {
             let identifier = node.identifier
             let name = identifier.text
 
+            switch node.identifier.tokenKind {
+            case .binaryOperator, .prefixOperator, .postfixOperator:
+                return
+            default: break
+            }
+
             validateIdentifierNode(identifier, withName: name)
         }
 

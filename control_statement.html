@@ -418,121 +418,66 @@ warning
 </table></li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="n">condition</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">if</span> <span class="n">condition</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">||</span> <span class="n">b</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">||</span> <span class="n">d</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">||</span> <span class="n">b</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">||</span> <span class="n">d</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="p">(</span><span class="n">min</span><span class="o">...</span><span class="n">max</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">if</span> <span class="p">(</span><span class="n">min</span><span class="o">...</span><span class="n">max</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="nf">renderGif</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">if</span> <span class="nf">renderGif</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">renderGif</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
 </code></pre>
-<pre class="highlight swift"><code><span class="k">for</span> <span class="n">item</span> <span class="k">in</span> <span class="n">collection</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">guard</span> <span class="n">condition</span> <span class="k">else</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">in</span> <span class="n">dictionary</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">while</span> <span class="n">condition</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">for</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">in</span> <span class="nf">enumerate</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{}</span> <span class="k">while</span> <span class="n">condition</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">for</span> <span class="k">var</span> <span class="nv">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">42</span><span class="p">;</span> <span class="n">index</span><span class="o">++</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span> <span class="p">;</span> <span class="p">}</span> <span class="k">while</span> <span class="n">condition</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">guard</span> <span class="n">condition</span> <span class="k">else</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">switch</span> <span class="n">foo</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">while</span> <span class="n">condition</span> <span class="p">{</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="p">}</span> <span class="k">while</span> <span class="n">condition</span> <span class="p">{</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span> <span class="p">;</span> <span class="p">}</span> <span class="k">while</span> <span class="n">condition</span> <span class="p">{</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="k">switch</span> <span class="n">foo</span> <span class="p">{</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-<span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="kt">NSError</span> <span class="p">{</span>
-<span class="p">}</span>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="kt">NSError</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">()</span><span class="o">.</span><span class="nf">catch</span><span class="p">(</span><span class="nv">all</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="nf">max</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">c</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">if</span> <span class="nf">max</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">c</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">switch</span> <span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">switch</span> <span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span> <span class="p">{}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="p">(</span><span class="nf">f</span><span class="p">()</span> <span class="p">{</span> <span class="nf">g</span><span class="p">()</span> <span class="p">{}</span> <span class="p">})</span> <span class="p">{}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{}</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span> <span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span> <span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span> <span class="p">(</span><span class="n">condition</span> <span class="o">==</span> <span class="n">endIndex</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span> <span class="p">(</span><span class="n">condition</span> <span class="o">==</span> <span class="n">endIndex</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span> <span class="p">((</span><span class="n">a</span> <span class="o">||</span> <span class="n">b</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">||</span> <span class="n">d</span><span class="p">))</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span> <span class="p">((</span><span class="n">a</span> <span class="o">||</span> <span class="n">b</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">||</span> <span class="n">d</span><span class="p">))</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span> <span class="p">((</span><span class="n">min</span><span class="o">...</span><span class="n">max</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">value</span><span class="p">))</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span> <span class="p">((</span><span class="n">min</span><span class="o">...</span><span class="n">max</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">value</span><span class="p">))</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">for</span> <span class="p">(</span><span class="n">item</span> <span class="k">in</span> <span class="n">collection</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="nf">guard</span> <span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">for</span> <span class="p">(</span><span class="k">var</span> <span class="nv">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">42</span><span class="p">;</span> <span class="n">index</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="k">while</span> <span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">for</span><span class="p">(</span><span class="n">item</span> <span class="k">in</span> <span class="n">collection</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="k">while</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">for</span><span class="p">(</span><span class="k">var</span> <span class="nv">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">42</span><span class="p">;</span> <span class="n">index</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span> <span class="p">;</span> <span class="p">}</span> <span class="err">↓</span><span class="k">while</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="nf">guard</span> <span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span> <span class="p">;</span> <span class="p">}</span> <span class="err">↓</span><span class="k">while</span> <span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">while</span> <span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="k">switch</span> <span class="p">(</span><span class="n">foo</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">while</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{}</span> <span class="err">↓</span><span class="nf">catch</span><span class="p">(</span><span class="k">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="kt">NSError</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="p">}</span> <span class="err">↓</span><span class="k">while</span> <span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="p">}</span> <span class="err">↓</span><span class="k">while</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span> <span class="p">;</span> <span class="p">}</span> <span class="err">↓</span><span class="k">while</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span> <span class="p">;</span> <span class="p">}</span> <span class="err">↓</span><span class="k">while</span> <span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">switch</span> <span class="p">(</span><span class="n">foo</span><span class="p">)</span> <span class="p">{</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-<span class="p">}</span> <span class="err">↓</span><span class="nf">catch</span><span class="p">(</span><span class="k">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="kt">NSError</span><span class="p">)</span> <span class="p">{</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span> <span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="k">if</span> <span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre>
 
           </div>

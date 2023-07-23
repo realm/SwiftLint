@@ -16,7 +16,15 @@
   [chrisngabp](https://github.com/chrisngabp)
   [5103](https://github.com/realm/SwiftLint/issues/5103)
 
+* Rewrite `control_statement` rule using SwiftSyntax.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
+
+* Fix false positive in `control_statement` rule that triggered on conditions
+  with trailing closures where parentheses are recommended by the compiler.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5135](https://github.com/realm/SwiftLint/issues/5135)
 
 * Fix bug in `prefer_self_in_static_references` rule that triggered on
   initializers of computed properties in classes when the property had an

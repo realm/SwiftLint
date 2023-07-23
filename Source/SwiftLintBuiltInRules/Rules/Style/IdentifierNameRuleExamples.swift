@@ -29,7 +29,7 @@ internal struct IdentifierNameRuleExamples {
     static let triggeringExamples = [
         Example(
             "↓let MyLet = 0",
-            configuration: ["validates_start_with_lowercase": true],
+            configuration: ["validates_start_with_lowercase": "warning"],
             excludeFromDocumentation: true
         ),
         Example("↓let _myLet = 0"),

@@ -2,7 +2,10 @@
 
 #### Breaking
 
-* None.
+* `identifier_name` now evaluates function names for both length and non 
+  alphanumeric violations. Set the option 
+  `previous_function_behavior: true` in your config file to revert to older 
+  behavior
 
 #### Experimental
 
@@ -18,6 +21,10 @@
 
 * Rewrite `control_statement` rule using SwiftSyntax.  
   [SimplyDanny](https://github.com/SimplyDanny)
+* `identifier_name` now has the option to ignore minimum variable length 
+  within short closures.  
+  [mredig](https://github.com/mredig)
+  [5140](https://github.com/realm/SwiftLint/pull/5140)
 
 #### Bug Fixes
 
@@ -51,6 +58,11 @@
   for nested structs in classes.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5120](https://github.com/realm/SwiftLint/issues/5120)
+
+* `identifier_name` behavior corrected for accuracy to its description. See the
+  breaking change for more info  
+  [mredig](https://github.com/mredig)
+  [5140](https://github.com/realm/SwiftLint/pull/5140)  
 
 ## 0.52.4: Lid Switch
 

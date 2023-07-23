@@ -187,7 +187,7 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
     }
 }
 
-private class ClosureExprFinder: SyntaxTransformVisitor {
+private class TrailingClosureFinder: SyntaxTransformVisitor {
     func visitAny(_ node: Syntax) -> Bool {
         false
     }
@@ -204,7 +204,7 @@ private class ClosureExprFinder: SyntaxTransformVisitor {
 private extension ExprSyntax {
     var unwrapped: ExprSyntax? {
         if let expr = self.as(TupleExprSyntax.self)?.elementList.onlyElement?.expression {
-            return ClosureExprFinder().visit(expr) ? nil : expr
+            return TrailingClosureFinder().visit(expr) ? nil : expr
         }
         return nil
     }

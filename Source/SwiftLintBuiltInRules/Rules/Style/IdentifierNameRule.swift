@@ -68,6 +68,32 @@ extension IdentifierNameRule {
             validateIdentifierNode(node.identifier, ofType: .variable)
         }
 
+        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+            if
+                configuration.ignoreMinLengthForShortClosureContent,
+                closureLineCount(node) <= Self.maximumClosureLineCount {
+
+                do {
+                    let currentConfig = self.configuration
+
+                    try configuration.apply(configuration: ["min_length": 0])
+                    configurationStack.append(currentConfig)
+                } catch {
+                    queuedFatalError("Failed creating temporary config")
+                }
+            }
+            return .visitChildren
+        }
+
+        override func visitPost(_ node: ClosureExprSyntax) {
+            if
+                configuration.ignoreMinLengthForShortClosureContent,
+                closureLineCount(node) <= Self.maximumClosureLineCount  {
+
+                configuration = configurationStack.popLast() ?? configuration
+            }
+        }
+
         private func validateIdentifierNode(
             _ identifier: TokenSyntax,
             ofType identifierType: IdentifierType) {

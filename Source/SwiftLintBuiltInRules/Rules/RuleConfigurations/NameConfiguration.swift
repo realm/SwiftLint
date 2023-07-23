@@ -18,6 +18,9 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     private(set) var unallowedSymbolsSeverity = Severity.error
     @ConfigurationElement(key: "validates_start_with_lowercase")
     private(set) var validatesStartWithLowercase = StartWithLowercaseConfiguration.error
+    /// Only valid for `identifier_name`
+    @ConfigurationElement(key: "ignore_min_length_for_short_closure_content")
+    private(set) var ignoreMinLengthForShortClosureContent = false
 
     var minLengthThreshold: Int {
         return max(minLength.warning, minLength.error ?? minLength.warning)
@@ -83,6 +86,9 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
                 removed in a future release.
                 """
             ).print()
+        }
+        if let makeExceptionForInitClosure = configurationDict[$ignoreMinLengthForShortClosureContent] as? Bool {
+            self.ignoreMinLengthForShortClosureContent = makeExceptionForInitClosure
         }
     }
 }

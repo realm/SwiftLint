@@ -16,6 +16,9 @@
   [chrisngabp](https://github.com/chrisngabp)
   [5103](https://github.com/realm/SwiftLint/issues/5103)
 
+* Rewrite `control_statement` rule using SwiftSyntax.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
 
 * Fix bug in `prefer_self_in_static_references` rule that triggered on

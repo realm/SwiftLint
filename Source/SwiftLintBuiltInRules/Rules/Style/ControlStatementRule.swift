@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
+struct ControlStatementRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -12,145 +11,230 @@ struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorrectableR
             "conditionals or arguments in parentheses",
         kind: .style,
         nonTriggeringExamples: [
-            Example("if condition {\n"),
-            Example("if (a, b) == (0, 1) {\n"),
-            Example("if (a || b) && (c || d) {\n"),
-            Example("if (min...max).contains(value) {\n"),
-            Example("if renderGif(data) {\n"),
-            Example("renderGif(data)\n"),
-            Example("for item in collection {\n"),
-            Example("for (key, value) in dictionary {\n"),
-            Example("for (index, value) in enumerate(array) {\n"),
-            Example("for var index = 0; index < 42; index++ {\n"),
-            Example("guard condition else {\n"),
-            Example("while condition {\n"),
-            Example("} while condition {\n"),
-            Example("do { ; } while condition {\n"),
-            Example("switch foo {\n"),
-            Example("do {\n} catch let error as NSError {\n}"),
+            Example("if condition {}"),
+            Example("if (a, b) == (0, 1) {}"),
+            Example("if (a || b) && (c || d) {}"),
+            Example("if (min...max).contains(value) {}"),
+            Example("if renderGif(data) {}"),
+            Example("renderGif(data)"),
+            Example("guard condition else {}"),
+            Example("while condition {}"),
+            Example("do {} while condition {}"),
+            Example("do { ; } while condition {}"),
+            Example("switch foo {}"),
+            Example("do {} catch let error as NSError {}"),
             Example("foo().catch(all: true) {}"),
-            Example("if max(a, b) < c {\n"),
-            Example("switch (lhs, rhs) {\n")
+            Example("if max(a, b) < c {}"),
+            Example("switch (lhs, rhs) {}")
         ],
         triggeringExamples: [
-            Example("↓if (condition) {\n"),
-            Example("↓if(condition) {\n"),
-            Example("↓if (condition == endIndex) {\n"),
-            Example("↓if ((a || b) && (c || d)) {\n"),
-            Example("↓if ((min...max).contains(value)) {\n"),
-            Example("↓for (item in collection) {\n"),
-            Example("↓for (var index = 0; index < 42; index++) {\n"),
-            Example("↓for(item in collection) {\n"),
-            Example("↓for(var index = 0; index < 42; index++) {\n"),
-            Example("↓guard (condition) else {\n"),
-            Example("↓while (condition) {\n"),
-            Example("↓while(condition) {\n"),
-            Example("} ↓while (condition) {\n"),
-            Example("} ↓while(condition) {\n"),
-            Example("do { ; } ↓while(condition) {\n"),
-            Example("do { ; } ↓while (condition) {\n"),
-            Example("↓switch (foo) {\n"),
-            Example("do {\n} ↓catch(let error as NSError) {\n}"),
-            Example("↓if (max(a, b) < c) {\n")
+            Example("↓if (condition) {}"),
+            Example("↓if(condition) {}"),
+            Example("↓if (condition == endIndex) {}"),
+            Example("↓if ((a || b) && (c || d)) {}"),
+            Example("↓if ((min...max).contains(value)) {}"),
+            Example("↓guard (condition) else {}"),
+            Example("↓while (condition) {}"),
+            Example("↓while(condition) {}"),
+            Example("do { ; } ↓while(condition) {}"),
+            Example("do { ; } ↓while (condition) {}"),
+            Example("↓switch (foo) {}"),
+            Example("do {} ↓catch(let error as NSError) {}"),
+            Example("↓if (max(a, b) < c) {}")
         ],
         corrections: [
-            Example("↓if (condition) {\n"): Example("if condition {\n"),
-            Example("↓if(condition) {\n"): Example("if condition {\n"),
-            Example("↓if (condition == endIndex) {\n"): Example("if condition == endIndex {\n"),
-            Example("↓if ((a || b) && (c || d)) {\n"): Example("if (a || b) && (c || d) {\n"),
-            Example("↓if ((min...max).contains(value)) {\n"): Example("if (min...max).contains(value) {\n"),
-            Example("↓for (item in collection) {\n"): Example("for item in collection {\n"),
-            Example("↓for (var index = 0; index < 42; index++) {\n"):
-                Example("for var index = 0; index < 42; index++ {\n"),
-            Example("↓for(item in collection) {\n"): Example("for item in collection {\n"),
-            Example("↓for(var index = 0; index < 42; index++) {\n"):
-                Example("for var index = 0; index < 42; index++ {\n"),
-            Example("↓guard (condition) else {\n"): Example("guard condition else {\n"),
-            Example("↓while (condition) {\n"): Example("while condition {\n"),
-            Example("↓while(condition) {\n"): Example("while condition {\n"),
-            Example("} ↓while (condition) {\n"): Example("} while condition {\n"),
-            Example("} ↓while(condition) {\n"): Example("} while condition {\n"),
-            Example("do { ; } ↓while(condition) {\n"): Example("do { ; } while condition {\n"),
-            Example("do { ; } ↓while (condition) {\n"): Example("do { ; } while condition {\n"),
-            Example("↓switch (foo) {\n"): Example("switch foo {\n"),
-            Example("do {\n} ↓catch(let error as NSError) {\n}"): Example("do {\n} catch let error as NSError {\n}"),
-            Example("↓if (max(a, b) < c) {\n"): Example("if max(a, b) < c {\n")
+            Example("↓if (condition) {}"): Example("if condition {}"),
+            Example("↓if(condition) {}"): Example("if condition {}"),
+            Example("↓if (condition == endIndex) {}"): Example("if condition == endIndex {}"),
+            Example("↓if ((a || b) && (c || d)) {}"): Example("if (a || b) && (c || d) {}"),
+            Example("↓if ((min...max).contains(value)) {}"): Example("if (min...max).contains(value) {}"),
+            Example("↓guard (condition) else {}"): Example("guard condition else {}"),
+            Example("↓while (condition) {}"): Example("while condition {}"),
+            Example("↓while(condition) {}"): Example("while condition {}"),
+            Example("do {} ↓while (condition) {}"): Example("do {} while condition {}"),
+            Example("do {} ↓while(condition) {}"): Example("do {} while condition {}"),
+            Example("do { ; } ↓while(condition) {}"): Example("do { ; } while condition {}"),
+            Example("do { ; } ↓while (condition) {}"): Example("do { ; } while condition {}"),
+            Example("↓switch (foo) {}"): Example("switch foo {}"),
+            Example("do {} ↓catch(let error as NSError) {}"): Example("do {} catch let error as NSError {}"),
+            Example("↓if (max(a, b) < c) {}"): Example("if max(a, b) < c {}"),
+            Example("""
+            if (a),
+               ( b == 1 ) {}
+            """): Example("""
+                if a,
+                   b == 1 {}
+                """)
         ]
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map { match -> StyleViolation in
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: match.location))
+    func makeVisitor(file: SwiftLintCore.SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+
+    func makeRewriter(file: SwiftLintCore.SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private final class Visitor: ViolationsSyntaxVisitor {
+    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+
+    override func visitPost(_ node: CatchClauseSyntax) {
+        if node.catchItems?.haveParens == true {
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 
-    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let statements = ["if", "for", "guard", "switch", "while", "catch"]
-        let statementPatterns: [String] = statements.map { statement -> String in
-            let isGuard = statement == "guard"
-            let isSwitch = statement == "switch"
-            let elsePattern = isGuard ? "else\\s*" : ""
-            let clausePattern = isSwitch ? "[^,{]*" : "[^{]*"
-            return "\(statement)\\s*\\(\(clausePattern)\\)\\s*\(elsePattern)\\{"
-        }
-        return statementPatterns.flatMap { pattern -> [NSRange] in
-            return file.match(pattern: pattern)
-                .filter { match, syntaxKinds -> Bool in
-                    let matchString = file.contents.substring(from: match.location, length: match.length)
-                    return !isFalsePositive(matchString, syntaxKind: syntaxKinds.first)
-                }
-                .map { $0.0 }
-                .filter { match -> Bool in
-                    let contents = file.stringView
-                    guard let byteOffset = contents.NSRangeToByteRange(start: match.location, length: 1)?.location,
-                        let outerKind = file.structureDictionary.structures(forByteOffset: byteOffset).last else {
-                            return true
-                    }
-
-                    return outerKind.expressionKind != .call
-                }
+    override func visitPost(_ node: GuardStmtSyntax) {
+        if node.conditions.haveParens {
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        var violationString = file.stringView.substring(with: violationRange)
-        if violationString.contains("(") && violationString.contains(")") {
-            if let openingIndex = violationString.firstIndex(of: "(") {
-                let replacement = violationString[violationString.index(before: openingIndex)] == " " ? "" : " "
-                violationString.replaceSubrange(openingIndex...openingIndex, with: replacement)
-            }
-            if let closingIndex = violationString.lastIndex(of: ")" as Character) {
-                let replacement = violationString[violationString.index(after: closingIndex)] == " " ? "" : " "
-                violationString.replaceSubrange(closingIndex...closingIndex, with: replacement)
-            }
+    override func visitPost(_ node: IfExprSyntax) {
+        if node.conditions.haveParens {
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
-        return (violationRange, violationString)
     }
 
-    private func isFalsePositive(_ content: String, syntaxKind: SyntaxKind?) -> Bool {
-        if syntaxKind != .keyword {
-            return true
+    override func visitPost(_ node: SwitchExprSyntax) {
+        if node.expression.tupleElement != nil {
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
+    }
 
-        guard let lastClosingParenthesePosition = content.lastIndex(of: ")") else {
-            return false
+    override func visitPost(_ node: WhileStmtSyntax) {
+        if node.conditions.haveParens {
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
 
-        var depth = 0
-        var index = 0
-        for char in content {
-            if char == ")" {
-                if index != lastClosingParenthesePosition && depth == 1 {
-                    return true
-                }
-                depth -= 1
-            } else if char == "(" {
-                depth += 1
+private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    private(set) var correctionPositions: [AbsolutePosition] = []
+    let locationConverter: SourceLocationConverter
+    let disabledRegions: [SourceRange]
+
+    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+        self.locationConverter = locationConverter
+        self.disabledRegions = disabledRegions
+    }
+
+    override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
+        guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+              let items = node.catchItems, items.haveParens == true else {
+            return super.visit(node)
+        }
+        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+        let node = node
+            .with(\.catchKeyword, node.catchKeyword.with(\.trailingTrivia, .space))
+            .with(\.catchItems, items.withoutParens)
+        return super.visit(node)
+    }
+
+    override func visit(_ node: GuardStmtSyntax) -> StmtSyntax {
+        guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+              node.conditions.haveParens else {
+            return super.visit(node)
+        }
+        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+        let node = node
+            .with(\.guardKeyword, node.guardKeyword.with(\.trailingTrivia, .space))
+            .with(\.conditions, node.conditions.withoutParens)
+        return super.visit(node)
+    }
+
+    override func visit(_ node: IfExprSyntax) -> ExprSyntax {
+        guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+              node.conditions.haveParens else {
+            return super.visit(node)
+        }
+        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+        let node = node
+            .with(\.ifKeyword, node.ifKeyword.with(\.trailingTrivia, .space))
+            .with(\.conditions, node.conditions.withoutParens)
+        return super.visit(node)
+    }
+
+    override func visit(_ node: SwitchExprSyntax) -> ExprSyntax {
+        guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+              let tupleElement = node.expression.tupleElement else {
+            return super.visit(node)
+        }
+        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+        let node = node
+            .with(\.switchKeyword, node.switchKeyword.with(\.trailingTrivia, .space))
+            .with(\.expression, tupleElement.with(\.trailingTrivia, .space))
+        return super.visit(node)
+    }
+
+    override func visit(_ node: WhileStmtSyntax) -> StmtSyntax {
+        guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+              node.conditions.haveParens else {
+            return super.visit(node)
+        }
+        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+        let node = node
+            .with(\.whileKeyword, node.whileKeyword.with(\.trailingTrivia, .space))
+            .with(\.conditions, node.conditions.withoutParens)
+        return super.visit(node)
+    }
+}
+
+private extension ExprSyntax {
+    var tupleElement: ExprSyntax? {
+        self.as(TupleExprSyntax.self)?.elementList.onlyElement?.expression
+    }
+}
+
+private extension ConditionElementListSyntax {
+    var haveParens: Bool {
+        contains { $0.condition.is(TupleExprSyntax.self) }
+    }
+
+    var withoutParens: Self {
+        let conditions = map { (element: ConditionElementSyntax) -> ConditionElementSyntax in
+            if let expression = element.condition.as(ExprSyntax.self)?.tupleElement {
+                return element
+                    .with(\.condition, .expression(expression))
+                    .with(\.leadingTrivia, element.leadingTrivia)
+                    .with(\.trailingTrivia, element.trailingTrivia)
             }
-            index += 1
+            return element
         }
-        return false
+        return Self(conditions)
+            .with(\.leadingTrivia, leadingTrivia)
+            .with(\.trailingTrivia, trailingTrivia)
+    }
+}
+
+private extension CatchItemListSyntax {
+    var haveParens: Bool {
+        contains { $0.tupleElement != nil }
+    }
+
+    var withoutParens: Self {
+        let items = map { (item: CatchItemSyntax) -> CatchItemSyntax in
+            if let expression = item.tupleElement {
+                return item
+                    .with(\.pattern, PatternSyntax(ExpressionPatternSyntax(expression: expression)))
+                    .with(\.leadingTrivia, item.leadingTrivia)
+                    .with(\.trailingTrivia, item.trailingTrivia)
+            }
+            return item
+        }
+        return Self(items)
+            .with(\.leadingTrivia, leadingTrivia)
+            .with(\.trailingTrivia, trailingTrivia)
+    }
+}
+
+private extension CatchItemSyntax {
+    var tupleElement: ExprSyntax? {
+        pattern?.as(ExpressionPatternSyntax.self)?.expression.tupleElement
     }
 }

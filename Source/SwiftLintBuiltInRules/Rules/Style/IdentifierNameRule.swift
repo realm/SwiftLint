@@ -49,6 +49,7 @@ extension IdentifierNameRule {
                 super.init(viewMode: .sourceAccurate)
             }
 
+        // MARK: - Conformance
         override func visitPost(_ node: EnumCaseElementSyntax) {
             validateIdentifierNode(node.identifier, ofType: .enumElement)
         }
@@ -164,20 +165,7 @@ extension IdentifierNameRule {
                 }
             }
 
-		private func lastThreeNodes(identifier node: TokenSyntax) -> [TokenSyntax] {
-			var out: [TokenSyntax] = []
-
-			var current: TokenSyntax? = node
-			while
-				let previous = current?.previousToken(viewMode: .sourceAccurate),
-				out.count < 3 {
-				defer { current = current?.previousToken(viewMode: .sourceAccurate) }
-				out.append(previous)
-			}
-
-			return out
-		}
-
+        // MARK: - Metadata
 		private func nodeIsPrivate(previousNodes: [TokenSyntax]) -> Bool {
 			previousNodes.contains(where: { $0.tokenKind == .keyword(.private) })
 		}
@@ -210,26 +198,39 @@ extension IdentifierNameRule {
 			return endLine - startLine
 		}
 
-		private func nameIsViolatingCase(_ name: String) -> Bool {
-			guard
-				let firstCharacter = name.first
-			else {
-				return true // Empty Identifier - should be impossible
-			}
-			if firstCharacter.isLowercase {
-				return false
-			}
+        enum IdentifierType: String { // swiftlint:disable:this nesting
+            case variable
+            case function
+            case enumElement = "enum element"
+        }
 
-			guard
-				let secondIndex = name.index(
-                    name.startIndex,
-                    offsetBy: 1,
-                    limitedBy: name.endIndex)
-			else { return true }
-			let secondCharacter = name[secondIndex]
-			return secondCharacter.isLowercase
-		}
+        // MARK: - Utility
+        private func cleanupName(_ name: String) -> String {
+            guard
+                name.first == "`",
+                name.last == "`",
+                name.count >= 3
+            else { return name }
+            let oneInFront = name.index(after: name.startIndex)
+            let oneInBack = name.index(before: name.endIndex)
+            return String(name[oneInFront..<oneInBack])
+        }
 
+        private func lastThreeNodes(identifier node: TokenSyntax) -> [TokenSyntax] {
+            var out: [TokenSyntax] = []
+
+            var current: TokenSyntax? = node
+            while
+                let previous = current?.previousToken(viewMode: .sourceAccurate),
+                out.count < 3 {
+                defer { current = current?.previousToken(viewMode: .sourceAccurate) }
+                out.append(previous)
+            }
+
+            return out
+        }
+
+        // MARK: - Validation
         private func validate(
             name: String,
             of identifierType: IdentifierType,
@@ -266,7 +267,7 @@ extension IdentifierNameRule {
                 if
                     let severity = configuration.validatesStartWithLowercase.severity,
                     name.first?.isUppercase == true,
-                    nameIsViolatingCase(name) {
+                    doesNameStartCapitalCase(name) {
                     let reason = """
                         \(identifierType.rawValue.localizedCapitalized) name '\(name)' should start \
                         with a lowercase character
@@ -278,6 +279,28 @@ extension IdentifierNameRule {
                 }
                 return .pass
             }
+
+        private func doesNameStartCapitalCase(_ name: String) -> Bool {
+            guard
+                let firstCharacter = name.first
+            else {
+                return true // name is empty - shouldn't be possible
+            }
+            if firstCharacter.isLowercase {
+                return false
+            }
+
+            guard
+                let secondIndex = name.index(
+                    name.startIndex,
+                    offsetBy: 1,
+                    limitedBy: name.endIndex)
+            else {
+                return true
+            }
+            let secondCharacter = name[secondIndex]
+            return secondCharacter.isLowercase
+        }
 
         @discardableResult
         private func appendViolation(
@@ -292,28 +315,9 @@ extension IdentifierNameRule {
                 return violation
             }
 
-        private func cleanupName(_ name: String) -> String {
-            guard
-                name.first == "`",
-                name.last == "`",
-                name.count >= 3
-            else { return name }
-            let oneInFront = name.index(after: name.startIndex)
-            let oneInBack = name.index(before: name.endIndex)
-            return String(name[oneInFront..<oneInBack])
-        }
-
         enum Validation { // swiftlint:disable:this nesting
             case pass
             case fail(reason: String, severity: ViolationSeverity)
         }
 	}
-}
-
-extension IdentifierNameRule {
-    enum IdentifierType: String {
-        case variable
-        case function
-        case enumElement = "enum element"
-    }
 }

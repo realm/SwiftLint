@@ -128,8 +128,8 @@ extension IdentifierNameRule {
                 if let severity = configuration.severity(forLength: name.count) {
                     let reason = """
                     \(identifierType.rawValue.localizedCapitalized) name '\(name)' should be between \
-                    \(configuration.minLengthThreshold) and \
-                    \(configuration.maxLengthThreshold) characters long
+                    \(configuration.minLengthThreshold) and \(configuration.maxLengthThreshold) characters long \
+                    (\(name.count) characters)
                     """
                     let violation = ReasonedRuleViolation(
                         position: previousNode.positionAfterSkippingLeadingTrivia,

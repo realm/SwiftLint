@@ -31,113 +31,126 @@ struct IdentifierNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
 }
 
 extension IdentifierNameRule {
-	final class Visitor: ViolationsSyntaxVisitor {
-		typealias Parent = IdentifierNameRule
-		private var configuration: NameConfiguration<Parent>
-		private var configurationStack: [NameConfiguration<Parent>] = []
+    final class Visitor: ViolationsSyntaxVisitor {
+        typealias Parent = IdentifierNameRule
+        private var configuration: NameConfiguration<Parent>
+        private var configurationStack: [NameConfiguration<Parent>] = []
 
-		static private let maximumClosureLineCount = 10
+        static private let maximumClosureLineCount = 10
 
-		let sourceLocationConverter: SourceLocationConverter
+        let sourceLocationConverter: SourceLocationConverter
 
-		init(
-			configuration: NameConfiguration<Parent>,
-			sourceLocationConverter: SourceLocationConverter) {
-				self.sourceLocationConverter = sourceLocationConverter
-				self.configuration = configuration
-				super.init(viewMode: .sourceAccurate)
-			}
+        init(
+            configuration: NameConfiguration<Parent>,
+            sourceLocationConverter: SourceLocationConverter) {
+                self.sourceLocationConverter = sourceLocationConverter
+                self.configuration = configuration
+                super.init(viewMode: .sourceAccurate)
+            }
+
+        override func visitPost(_ node: EnumCaseElementSyntax) {
+            validateIdentifierNode(node.identifier, ofType: .enumElement)
+        }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             let identifier = node.identifier
-            let name = identifier.text
 
-            switch node.identifier.tokenKind {
+            switch identifier.tokenKind {
             case .binaryOperator, .prefixOperator, .postfixOperator:
                 return
             default: break
             }
 
-            validateIdentifierNode(identifier, withName: name)
+            validateIdentifierNode(identifier, ofType: .function)
         }
 
         override func visitPost(_ node: IdentifierPatternSyntax) {
-            let identifier = node.identifier
-            let name = identifier.text
-
-            validateIdentifierNode(identifier, withName: name)
+            validateIdentifierNode(node.identifier, ofType: .variable)
         }
 
-        private func validateIdentifierNode(_ identifier: TokenSyntax, withName name: String) {
-            // confirm this node isn't in the exclusion list
-            // and that it has at least one character
-            guard
-                let firstCharacter = name.first.map(String.init),
-                configuration.shouldExclude(name: name) == false
-            else { return }
+        private func validateIdentifierNode(
+            _ identifier: TokenSyntax,
+            ofType identifierType: IdentifierType) {
+                let name = cleanupName(identifier.text)
+                // confirm this node isn't in the exclusion list
+                // and that it has at least one character
+                guard
+                    let firstCharacter = name.first.map(String.init),
+                    configuration.shouldExclude(name: name) == false
+                else { return }
 
-            // confirm this isn't an override
-            let previousNodes = lastThreeNodes(identifier: identifier)
-            guard nodeIsOverridden(previousNodes: previousNodes) == false else { return }
-            guard
-                let previousNode = previousNodes.first
-            else { queuedFatalError("No declaration node") }
+                // confirm this isn't an override
+                let previousNodes = lastThreeNodes(identifier: identifier)
+                guard nodeIsOverridden(previousNodes: previousNodes) == false else { return }
+                guard
+                    let previousNode = previousNodes.first
+                else { queuedFatalError("No declaration node") }
 
-            // alphanumeric characters
-            let validationName = nodeIsPrivate(previousNodes: previousNodes) ? privateName(name) : name
-            guard
-                validate(name: validationName, isValidWithin: configuration.allowedSymbolsAndAlphanumerics)
-            else {
-                let reason = "Variable name '\(name)' should only contain alphanumeric and other allowed characters"
-                let violation = ReasonedRuleViolation(
-                    position: previousNode.positionAfterSkippingLeadingTrivia,
-                    reason: reason,
-                    severity: configuration.unallowedSymbolsSeverity.severity)
-                violations.append(violation)
-                return
-            }
+                // alphanumeric characters
+                let validationName = nodeIsPrivate(previousNodes: previousNodes) ? privateName(name) : name
+                guard
+                    validate(name: validationName, isValidWithin: configuration.allowedSymbolsAndAlphanumerics)
+                else {
+                    let reason = "\(identifierType.rawValue.localizedCapitalized) name '\(name)' should only contain alphanumeric and other allowed characters"
+                    let violation = ReasonedRuleViolation(
+                        position: previousNode.positionAfterSkippingLeadingTrivia,
+                        reason: reason,
+                        severity: configuration.unallowedSymbolsSeverity.severity)
+                    violations.append(violation)
+                    return
+                }
 
-            // identifier length
-            if let severity = configuration.severity(forLength: name.count) {
-                let reason = """
-                    Variable name '\(name)' should be between \
+                // identifier length
+                if let severity = configuration.severity(forLength: name.count) {
+                    let reason = """
+                    \(identifierType.rawValue.localizedCapitalized) name '\(name)' should be between \
                     \(configuration.minLengthThreshold) and \
                     \(configuration.maxLengthThreshold) characters long
                     """
-                let violation = ReasonedRuleViolation(
-                    position: previousNode.positionAfterSkippingLeadingTrivia,
-                    reason: reason,
-                    severity: severity)
-                violations.append(violation)
-                return
-            }
+                    let violation = ReasonedRuleViolation(
+                        position: previousNode.positionAfterSkippingLeadingTrivia,
+                        reason: reason,
+                        severity: severity)
+                    violations.append(violation)
+                    return
+                }
 
-            // at this point, the characters are all valid, it's just a matter of checking
-            // specifics regarding conditions on character positioning
+                // at this point, the characters are all valid, it's just a matter of checking
+                // specifics regarding conditions on character positioning
 
-            // allowed starter symbols
-            guard
-                configuration.allowedSymbols.contains(firstCharacter) == false
-            else { return }
+                // allowed starter symbols
+                guard
+                    configuration.allowedSymbols.contains(firstCharacter) == false
+                else { return }
 
-            // nix CamelCase values.
-            if
-                identifier.text.first?.isUppercase == true,
-                nameIsViolatingCase(name) {
+                // nix CamelCase values.
+                if
+                    let severity = configuration.validatesStartWithLowercase.severity,
+                    identifier.text.first?.isUppercase == true,
+                    nameIsViolatingCase(name) {
 
-                let locationOffset = sourceLocationConverter
-                    .location(for: previousNode.positionAfterSkippingLeadingTrivia)
-                    .offset
-                let reasoned = ReasonedRuleViolation(
-                    position: AbsolutePosition(utf8Offset: locationOffset),
-                    severity: .warning)
+                    let locationOffset: Int
+                    switch identifierType {
+                    case .enumElement:
+                        locationOffset = sourceLocationConverter
+                            .location(for: identifier.positionAfterSkippingLeadingTrivia)
+                            .offset
+                    default:
+                        locationOffset = sourceLocationConverter
+                            .location(for: previousNode.positionAfterSkippingLeadingTrivia)
+                            .offset
+                    }
+                    let reasoned = ReasonedRuleViolation(
+                        position: AbsolutePosition(utf8Offset: locationOffset),
+                        reason: "\(identifierType.rawValue.localizedCapitalized) name '\(name)' should start with a lowercase character",
+                        severity: severity)
 
-                // make an exeption for CamelCase static var/let
-                if nodeIsStaticVariable(previousNodes) == false {
-                    violations.append(reasoned)
+                    // make an exeption for CamelCase static var/let
+                    if nodeIsStaticVariable(previousNodes) == false {
+                        violations.append(reasoned)
+                    }
                 }
             }
-        }
 
 		private func lastThreeNodes(identifier node: TokenSyntax) -> [TokenSyntax] {
 			var out: [TokenSyntax] = []
@@ -209,32 +222,24 @@ extension IdentifierNameRule {
 		private func validate(name: String, isValidWithin characterSet: CharacterSet) -> Bool {
 			characterSet.isSuperset(of: CharacterSet(charactersIn: name))
 		}
+
+        private func cleanupName(_ name: String) -> String {
+            guard
+                name.first == "`",
+                name.last == "`",
+                name.count >= 3
+            else { return name }
+            let oneInFront = name.index(after: name.startIndex)
+            let oneInBack = name.index(before: name.endIndex)
+            return String(name[oneInFront..<oneInBack])
+        }
 	}
 }
 
-private extension String {
-    var isViolatingCase: Bool {
-        let firstCharacter = String(self[startIndex])
-        guard firstCharacter.isUppercase() else {
-            return false
-        }
-        guard count > 1 else {
-            return true
-        }
-        let secondCharacter = String(self[index(after: startIndex)])
-        return secondCharacter.isLowercase()
-    }
-
-    var isOperator: Bool {
-        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
-        return operators.contains(where: hasPrefix)
-    }
-
-    func nameStrippingLeadingUnderscoreIfPrivate(_ dict: SourceKittenDictionary) -> String {
-        if let acl = dict.accessibility,
-            acl.isPrivate && first == "_" {
-            return String(self[index(after: startIndex)...])
-        }
-        return self
+extension IdentifierNameRule {
+    enum IdentifierType: String {
+        case variable
+        case function
+        case enumElement = "enum element"
     }
 }

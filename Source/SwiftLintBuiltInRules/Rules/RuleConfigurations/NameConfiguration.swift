@@ -21,6 +21,13 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     /// Only valid for `identifier_name`
     @ConfigurationElement(key: "ignore_min_length_for_short_closure_content")
     private(set) var ignoreMinLengthForShortClosureContent = false
+    /// Only valid for `identifier_name`
+    /// Before this update, the rule effectively made this `false`, but I believe that to be a bug and not intentional.
+    /// The code was `if !SwiftDeclarationKind.functionKinds.contains(kind) {` which is incredibly hard to follow
+    /// double negative logic, plus the description for the rule made no indication that functions were excluded from
+    /// this rule. Hence, I'm defaulting to `true`.
+    @ConfigurationElement(key: "evaluate_func_name_length")
+    private(set) var evaluateFuncNameLength = true
 
     var minLengthThreshold: Int {
         return max(minLength.warning, minLength.error ?? minLength.warning)
@@ -41,7 +48,9 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
          excluded: [String] = [],
          allowedSymbols: [String] = [],
          unallowedSymbolsSeverity: Severity = .error,
-         validatesStartWithLowercase: StartWithLowercaseConfiguration = .error) {
+         validatesStartWithLowercase: StartWithLowercaseConfiguration = .error,
+         ignoreMinLengthForShortClosureContent: Bool = false,
+         evaluateFuncNameLength: Bool = true) {
         minLength = SeverityLevels(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevels(warning: maxLengthWarning, error: maxLengthError)
         self.excludedRegularExpressions = Set(excluded.compactMap {
@@ -50,6 +59,8 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
         self.allowedSymbols = Set(allowedSymbols)
         self.unallowedSymbolsSeverity = unallowedSymbolsSeverity
         self.validatesStartWithLowercase = validatesStartWithLowercase
+        self.ignoreMinLengthForShortClosureContent = ignoreMinLengthForShortClosureContent
+        self.evaluateFuncNameLength = evaluateFuncNameLength
     }
 
     mutating func apply(configuration: Any) throws {
@@ -87,8 +98,11 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
                 """
             ).print()
         }
-        if let makeExceptionForInitClosure = configurationDict[$ignoreMinLengthForShortClosureContent] as? Bool {
-            self.ignoreMinLengthForShortClosureContent = makeExceptionForInitClosure
+        if let ignoreMinLengthForClosures = configurationDict[$ignoreMinLengthForShortClosureContent] as? Bool {
+            self.ignoreMinLengthForShortClosureContent = ignoreMinLengthForClosures
+        }
+        if let evaluateFuncNameLength = configurationDict[$evaluateFuncNameLength] as? Bool {
+            self.evaluateFuncNameLength = evaluateFuncNameLength
         }
     }
 }

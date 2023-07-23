@@ -249,6 +249,9 @@ extension IdentifierNameRule {
             of name: String,
             ofType identifierType: IdentifierType,
             previousNode: TokenSyntax) -> Validation {
+                if identifierType == .function, configuration.evaluateFuncNameLength == false {
+                    return .pass
+                }
                 if let severity = configuration.severity(forLength: name.count) {
                     let reason = """
                         \(identifierType.rawValue.localizedCapitalized) name '\(name)' should be between \

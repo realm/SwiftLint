@@ -34,7 +34,17 @@ internal struct IdentifierNameRuleExamples {
                 }
                 """,
                 configuration: ["ignore_min_length_for_short_closure_content": true],
-                excludeFromDocumentation: true)
+                excludeFromDocumentation: true),
+        Example(
+            "private func h1(_ text: String) -> String { \"# \\(text)\" }",
+            configuration: ["evaluate_func_name_length": false],
+            excludeFromDocumentation: true),
+        Example(
+            """
+            func hasAccessibilityElementChildrenIgnoreModifier(in file: SwiftLintFile) -> Bool { false }
+            """,
+            configuration: ["evaluate_func_name_length": false],
+            excludeFromDocumentation: true)
     ]
 
     static let triggeringExamples = [
@@ -69,6 +79,20 @@ internal struct IdentifierNameRuleExamples {
                     }()
                 }
                 """,
-                excludeFromDocumentation: true)
+                excludeFromDocumentation: true),
+
+        // previously passed, now error
+        Example("private ↓func h1(_ text: String) -> String { \"# \\(text)\" }"),
+        Example("↓func firstConfigurationFileInParentDirectories() -> Path? {}"),
+        Example(
+            """
+            ↓func bodyLineCountIgnoringCommentsAndWhitespace(
+                leftBraceLine: Int, rightBraceLine: Int
+            ) -> Int { 0 }
+            """),
+        Example(
+            """
+            ↓func hasAccessibilityElementChildrenIgnoreModifier(in file: SwiftLintFile) -> Bool { false }
+            """)
     ]
 }

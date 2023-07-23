@@ -25,7 +25,9 @@ struct ControlStatementRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRu
             Example("do {} catch let error as NSError {}"),
             Example("foo().catch(all: true) {}"),
             Example("if max(a, b) < c {}"),
-            Example("switch (lhs, rhs) {}")
+            Example("switch (lhs, rhs) {}"),
+            Example("if (f() { g() {} }) {}"),
+            Example("if (a + f() {} == 1) {}")
         ],
         triggeringExamples: [
             Example("↓if (condition) {}"),
@@ -84,31 +86,31 @@ private final class Visitor: ViolationsSyntaxVisitor {
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
     override func visitPost(_ node: CatchClauseSyntax) {
-        if node.catchItems?.haveParens == true {
+        if node.catchItems?.containSuperfluousParens == true {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 
     override func visitPost(_ node: GuardStmtSyntax) {
-        if node.conditions.haveParens {
+        if node.conditions.containSuperfluousParens {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 
     override func visitPost(_ node: IfExprSyntax) {
-        if node.conditions.haveParens {
+        if node.conditions.containSuperfluousParens {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 
     override func visitPost(_ node: SwitchExprSyntax) {
-        if node.expression.tupleElement != nil {
+        if node.expression.unwrapped != nil {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 
     override func visitPost(_ node: WhileStmtSyntax) {
-        if node.conditions.haveParens {
+        if node.conditions.containSuperfluousParens {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
@@ -126,7 +128,7 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
     override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
         guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              let items = node.catchItems, items.haveParens == true else {
+              let items = node.catchItems, items.containSuperfluousParens == true else {
             return super.visit(node)
         }
         correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
@@ -138,7 +140,7 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
     override func visit(_ node: GuardStmtSyntax) -> StmtSyntax {
         guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              node.conditions.haveParens else {
+              node.conditions.containSuperfluousParens else {
             return super.visit(node)
         }
         correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
@@ -150,7 +152,7 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
     override func visit(_ node: IfExprSyntax) -> ExprSyntax {
         guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              node.conditions.haveParens else {
+              node.conditions.containSuperfluousParens else {
             return super.visit(node)
         }
         correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
@@ -162,7 +164,7 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
     override func visit(_ node: SwitchExprSyntax) -> ExprSyntax {
         guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              let tupleElement = node.expression.tupleElement else {
+              let tupleElement = node.expression.unwrapped else {
             return super.visit(node)
         }
         correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
@@ -174,7 +176,7 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
     override func visit(_ node: WhileStmtSyntax) -> StmtSyntax {
         guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              node.conditions.haveParens else {
+              node.conditions.containSuperfluousParens else {
             return super.visit(node)
         }
         correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
@@ -185,20 +187,42 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
     }
 }
 
+private class ClosureExprFinder: SyntaxTransformVisitor {
+    func visitAny(_ node: Syntax) -> Bool {
+        false
+    }
+
+    func visit(_ node: FunctionCallExprSyntax) -> Bool {
+        node.trailingClosure != nil
+    }
+
+    func visit(_ node: SequenceExprSyntax) -> Bool {
+        node.elements.contains(where: visit)
+    }
+}
+
 private extension ExprSyntax {
-    var tupleElement: ExprSyntax? {
-        self.as(TupleExprSyntax.self)?.elementList.onlyElement?.expression
+    var unwrapped: ExprSyntax? {
+        if let expr = self.as(TupleExprSyntax.self)?.elementList.onlyElement?.expression {
+            return ClosureExprFinder().visit(expr) ? nil : expr
+        }
+        return nil
     }
 }
 
 private extension ConditionElementListSyntax {
-    var haveParens: Bool {
-        contains { $0.condition.is(TupleExprSyntax.self) }
+    var containSuperfluousParens: Bool {
+        contains {
+            if case let .expression(wrapped) = $0.condition {
+                return wrapped.unwrapped != nil
+            }
+            return false
+        }
     }
 
     var withoutParens: Self {
         let conditions = map { (element: ConditionElementSyntax) -> ConditionElementSyntax in
-            if let expression = element.condition.as(ExprSyntax.self)?.tupleElement {
+            if let expression = element.condition.as(ExprSyntax.self)?.unwrapped {
                 return element
                     .with(\.condition, .expression(expression))
                     .with(\.leadingTrivia, element.leadingTrivia)
@@ -213,13 +237,13 @@ private extension ConditionElementListSyntax {
 }
 
 private extension CatchItemListSyntax {
-    var haveParens: Bool {
-        contains { $0.tupleElement != nil }
+    var containSuperfluousParens: Bool {
+        contains { $0.unwrapped != nil }
     }
 
     var withoutParens: Self {
         let items = map { (item: CatchItemSyntax) -> CatchItemSyntax in
-            if let expression = item.tupleElement {
+            if let expression = item.unwrapped {
                 return item
                     .with(\.pattern, PatternSyntax(ExpressionPatternSyntax(expression: expression)))
                     .with(\.leadingTrivia, item.leadingTrivia)
@@ -234,7 +258,7 @@ private extension CatchItemListSyntax {
 }
 
 private extension CatchItemSyntax {
-    var tupleElement: ExprSyntax? {
-        pattern?.as(ExpressionPatternSyntax.self)?.expression.tupleElement
+    var unwrapped: ExprSyntax? {
+        pattern?.as(ExpressionPatternSyntax.self)?.expression.unwrapped
     }
 }

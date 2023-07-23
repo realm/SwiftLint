@@ -12,6 +12,12 @@ internal struct IdentifierNameRuleExamples {
         Example("func typeForKind(_ kind: SwiftDeclarationKind) -> String"),
         Example("func == (lhs: SyntaxToken, rhs: SyntaxToken) -> Bool"),
         Example("override func IsOperator(name: String) -> Bool"),
+        Example("""
+            func isOperator(name: String) -> Bool
+            private func isOperator(name: String) -> Bool
+            static func isOperator(name: String) -> Bool
+            static private func isOperator(name: String) -> Bool
+            """),
         Example("enum Foo { case `private` }"),
         Example("enum Foo { case value(String) }"),
         Example("""
@@ -41,7 +47,12 @@ internal struct IdentifierNameRuleExamples {
         Example("↓var aa = 0"),
         Example("private ↓let _i = 0"),
         Example(
-            "↓func IsOperator(name: String) -> Bool",
+            """
+            ↓func IsOperator(name: String) -> Bool
+            private ↓func IsPrivateOperator(name: String) -> Bool
+            static ↓func IsStaticOperator(name: String) -> Bool
+            static private ↓func IsPSOperator(name: String) -> Bool
+            """,
             configuration: ["validates_start_with_lowercase": "warning"],
             excludeFromDocumentation: true
         ),

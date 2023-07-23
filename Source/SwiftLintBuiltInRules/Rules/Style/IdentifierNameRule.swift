@@ -48,81 +48,95 @@ extension IdentifierNameRule {
 				super.init(viewMode: .sourceAccurate)
 			}
 
-		override func visitPost(_ node: IdentifierPatternSyntax) {
-			let identifier = node.identifier
-			let name = identifier.text
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            let identifier = node.identifier
+            let name = identifier.text
+
+            validateIdentifierNode(identifier, withName: name)
+        }
+
+        override func visitPost(_ node: IdentifierPatternSyntax) {
+            let identifier = node.identifier
+            let name = identifier.text
+
+            validateIdentifierNode(identifier, withName: name)
+        }
+
+        private func validateIdentifierNode(_ identifier: TokenSyntax, withName name: String) {
             // confirm this node isn't in the exclusion list
             // and that it has at least one character
-			guard
-				let firstCharacter = name.first.map(String.init),
-				configuration.shouldExclude(name: name) == false
-			else { return }
+            guard
+                let firstCharacter = name.first.map(String.init),
+                configuration.shouldExclude(name: name) == false
+            else { return }
 
             // confirm this isn't an override
-			let previousNodes = lastThreeNodes(from: node)
-			guard nodeIsOverridden(previousNodes: previousNodes) == false else { return }
-            guard let previousNode = previousNodes.first else { queuedFatalError("There should always be at least one previous node") }
+            let previousNodes = lastThreeNodes(identifier: identifier)
+            guard nodeIsOverridden(previousNodes: previousNodes) == false else { return }
+            guard
+                let previousNode = previousNodes.first
+            else { queuedFatalError("No declaration node") }
 
             // alphanumeric characters
             let validationName = nodeIsPrivate(previousNodes: previousNodes) ? privateName(name) : name
-			guard
-				validate(name: validationName, isValidWithin: configuration.allowedSymbolsAndAlphanumerics)
-			else {
-				let reason = "Variable name '\(name)' should only contain alphanumeric and other allowed characters"
-				let violation = ReasonedRuleViolation(
-					position: previousNode.positionAfterSkippingLeadingTrivia,
-					reason: reason,
-					severity: configuration.unallowedSymbolsSeverity.severity)
-				violations.append(violation)
-				return
-			}
+            guard
+                validate(name: validationName, isValidWithin: configuration.allowedSymbolsAndAlphanumerics)
+            else {
+                let reason = "Variable name '\(name)' should only contain alphanumeric and other allowed characters"
+                let violation = ReasonedRuleViolation(
+                    position: previousNode.positionAfterSkippingLeadingTrivia,
+                    reason: reason,
+                    severity: configuration.unallowedSymbolsSeverity.severity)
+                violations.append(violation)
+                return
+            }
 
             // identifier length
-			if let severity = configuration.severity(forLength: name.count) {
-				let reason = """
-					Variable name '\(name)' should be between \
-					\(configuration.minLengthThreshold) and \
-					\(configuration.maxLengthThreshold) characters long
-					"""
-				let violation = ReasonedRuleViolation(
-					position: previousNode.positionAfterSkippingLeadingTrivia,
-					reason: reason,
-					severity: severity)
-				violations.append(violation)
-				return
-			}
+            if let severity = configuration.severity(forLength: name.count) {
+                let reason = """
+                    Variable name '\(name)' should be between \
+                    \(configuration.minLengthThreshold) and \
+                    \(configuration.maxLengthThreshold) characters long
+                    """
+                let violation = ReasonedRuleViolation(
+                    position: previousNode.positionAfterSkippingLeadingTrivia,
+                    reason: reason,
+                    severity: severity)
+                violations.append(violation)
+                return
+            }
+
+            // at this point, the characters are all valid, it's just a matter of checking
+            // specifics regarding conditions on character positioning
 
             // allowed starter symbols
-			guard
-				configuration.allowedSymbols.contains(firstCharacter) == false
-			else { return }
-
-			guard
-				let previousNode = previousNodes.first
-			else { queuedFatalError("No declaration node") }
+            guard
+                configuration.allowedSymbols.contains(firstCharacter) == false
+            else { return }
 
             // nix CamelCase values.
-			if
-				identifier.text.first?.isUppercase == true,
-				nameIsViolatingCase(name) {
+            if
+                identifier.text.first?.isUppercase == true,
+                nameIsViolatingCase(name) {
 
-				if nodeIsStatic(previousNodes: previousNodes) == false {
-					let locationOffset = sourceLocationConverter
-						.location(for: previousNode.positionAfterSkippingLeadingTrivia)
-						.offset
-					let reasoned = ReasonedRuleViolation(
-						position: AbsolutePosition(utf8Offset: locationOffset),
-						severity: .warning)
-					violations.append(reasoned)
-				}
-			}
-		}
+                let locationOffset = sourceLocationConverter
+                    .location(for: previousNode.positionAfterSkippingLeadingTrivia)
+                    .offset
+                let reasoned = ReasonedRuleViolation(
+                    position: AbsolutePosition(utf8Offset: locationOffset),
+                    severity: .warning)
 
+                // make an exeption for CamelCase static var/let
+                if nodeIsStaticVariable(previousNodes) == false {
+                    violations.append(reasoned)
+                }
+            }
+        }
 
-		private func lastThreeNodes(from node: IdentifierPatternSyntax) -> [TokenSyntax] {
+		private func lastThreeNodes(identifier node: TokenSyntax) -> [TokenSyntax] {
 			var out: [TokenSyntax] = []
 
-			var current: TokenSyntax? = node.identifier
+			var current: TokenSyntax? = node
 			while
 				let previous = current?.previousToken(viewMode: .sourceAccurate),
 				out.count < 3 {
@@ -141,6 +155,15 @@ extension IdentifierNameRule {
         private func privateName(_ name: String) -> String {
             guard name.first == "_" else { return name }
             return String(name[name.index(after: name.startIndex)...])
+        }
+
+        private func nodeIsStaticVariable(_ previousNodes: [TokenSyntax]) -> Bool {
+            nodeIsStatic(previousNodes: previousNodes) && nodeIsVariable(previousNodes: previousNodes)
+        }
+
+        private func nodeIsVariable(previousNodes: [TokenSyntax]) -> Bool {
+            previousNodes.contains(where: { $0.tokenKind == .keyword(.let)} ) ||
+            previousNodes.contains(where: { $0.tokenKind == .keyword(.var)} )
         }
 
 		private func nodeIsStatic(previousNodes: [TokenSyntax]) -> Bool {

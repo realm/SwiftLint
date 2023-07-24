@@ -48,6 +48,11 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
                     @State private var isPlaying: Bool = false
                 }
             }
+            """),
+            Example("""
+            actor ContentView: View {
+                @State private var isPlaying: Bool = false
+            }
             """)
         ],
         triggeringExamples: [
@@ -67,6 +72,11 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
                     @State ↓var isPlaying: Bool = false
                 }
             }
+            """),
+            Example("""
+            actor ContentView: View {
+                @State ↓var isPlaying: Bool = false
+            }
             """)
         ]
     )
@@ -79,7 +89,7 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
 private extension PrivateSwiftUIStatePropertyRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
-            [EnumDeclSyntax.self, FunctionDeclSyntax.self, ProtocolDeclSyntax.self, VariableDeclSyntax.self]
+            [ProtocolDeclSyntax.self]
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -87,8 +97,7 @@ private extension PrivateSwiftUIStatePropertyRule {
                 return .skipChildren
             }
 
-            let inheritedTypes = inheritedTypeCollection.typeNames
-            return inheritedTypes.contains("View") ? .visitChildren : .skipChildren
+            return inheritedTypeCollection.conformsToViewProtocol ? .visitChildren : .skipChildren
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -96,8 +105,15 @@ private extension PrivateSwiftUIStatePropertyRule {
                 return .skipChildren
             }
 
-            let inheritedTypes = inheritedTypeCollection.typeNames
-            return inheritedTypes.contains("View") ? .visitChildren : .skipChildren
+            return inheritedTypeCollection.conformsToViewProtocol ? .visitChildren : .skipChildren
+        }
+
+        override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+            guard let inheritedTypeCollection = node.inheritanceClause?.inheritedTypeCollection else {
+                return .skipChildren
+            }
+
+            return inheritedTypeCollection.conformsToViewProtocol ? .visitChildren : .skipChildren
         }
 
         override func visitPost(_ node: MemberDeclListItemSyntax) {
@@ -117,6 +133,10 @@ private extension PrivateSwiftUIStatePropertyRule {
 private extension InheritedTypeListSyntax {
     var typeNames: [String] {
         compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }.map(\.name.text)
+    }
+
+    var conformsToViewProtocol: Bool {
+        typeNames.contains("View")
     }
 }
 

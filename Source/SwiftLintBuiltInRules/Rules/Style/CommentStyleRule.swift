@@ -26,37 +26,62 @@ struct CommentStyleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
 
 extension CommentStyleRule {
 	class Visitor: ViolationsSyntaxVisitor {
-		let allCommentRanges: [SyntaxClassifiedRange]
+		private let allCommentGroupings: [[SyntaxClassifiedRange]]
 		let file: SwiftLintFile
 
 		init(file: SwiftLintFile) {
 			self.file = file
 
-			var allCommentRanges: [SyntaxClassifiedRange] = []
-			for classificationRange in file.syntaxClassifications where classificationRange.kind.isComment || classificationRange.kind == .none {
-				allCommentRanges.append(classificationRange)
+			var rangeGroupings: [[SyntaxClassifiedRange]] = []
+			var commentsAccumulator: [SyntaxClassifiedRange] = []
+
+			func appendCommentsAccumulator() {
+				guard commentsAccumulator.isEmpty == false else { return }
+
+				rangeGroupings.append(commentsAccumulator)
+				commentsAccumulator.removeAll()
 			}
 
-			self.allCommentRanges = allCommentRanges
+			for classificationRange in file.syntaxClassifications {
+				switch classificationRange.kind {
+				case _ where classificationRange.kind.isComment == true:
+					if commentsAccumulator.last?.kind != classificationRange.kind {
+						appendCommentsAccumulator()
+					}
+					commentsAccumulator.append(classificationRange)
+				case .none:
+					if
+						let text = Self.convertToString(from: classificationRange, withOriginalString: file.contents),
+						text.countOccurrences(of: "\n") > 1 {
+
+						appendCommentsAccumulator()
+					}
+				default:
+					appendCommentsAccumulator()
+				}
+			}
+			appendCommentsAccumulator()
+
+			self.allCommentGroupings = rangeGroupings
 			super.init(viewMode: .sourceAccurate)
 		}
 
 		override func visitPost(_ node: SourceFileSyntax) {
-			for range in allCommentRanges {
-				switch range.kind {
-				case .lineComment:
-					visitPostComment(range)
-				case .blockComment:
-					visitPostBlockComment(range)
-					//				case .docLineComment:
-					//					docCommentRanges.append(classificationRange)
-					//				case .docBlockComment:
-					//					blockDocCommentRanges.append(classificationRange)
-				case .none:
-					break
-				default: break
-				}
-			}
+//			for range in allCommentRanges {
+//				switch range.kind {
+//				case .lineComment:
+//					visitPostComment(range)
+//				case .blockComment:
+//					visitPostBlockComment(range)
+//					//				case .docLineComment:
+//					//					docCommentRanges.append(classificationRange)
+//					//				case .docBlockComment:
+//					//					blockDocCommentRanges.append(classificationRange)
+//				case .none:
+//					break
+//				default: break
+//				}
+//			}
 		}
 
 		func visitPostComment(_ commentRange: SyntaxClassifiedRange) {
@@ -67,7 +92,7 @@ extension CommentStyleRule {
 
 		}
 
-		private func convertToString(from range: SyntaxClassifiedRange, withOriginalString originalString: String) -> String? {
+		private static func convertToString(from range: SyntaxClassifiedRange, withOriginalString originalString: String) -> String? {
 			let content = Data(originalString.utf8)[range.range.dataRange]
 			return String(data: content, encoding: .utf8)
 		}

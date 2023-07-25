@@ -308,6 +308,12 @@ extension ConfigurationTests {
             let optedInInChild: Bool
             let disabledInChild: Bool
             let isEnabled: Bool
+            var message: String {
+                "optedInInParent = \(optedInInParent) " +
+                "disabledInParent = \(disabledInParent) " +
+                "optedInInChild = \(optedInInChild) " +
+                "disabledInChild = \(disabledInChild)"
+            }
         }
         let testCases: [TestCase] = [
             // swiftlint:disable line_length
@@ -344,10 +350,7 @@ extension ConfigurationTests {
             ))
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
-            let message = "optedInInParent = \(testCase.optedInInParent) " +
-                          "disabledInParent = \(testCase.disabledInParent), " +
-            "optedInInChild = \(testCase.optedInInChild), disabledInChild = \(testCase.disabledInChild)"
-            XCTAssertEqual(isEnabled, testCase.isEnabled, message)
+            XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
         }
     }
 
@@ -356,6 +359,9 @@ extension ConfigurationTests {
             let disabledInParent: Bool
             let disabledInChild: Bool
             let isEnabled: Bool
+            var message: String {
+                "disabledInParent = \(disabledInParent) disabledInChild = \(disabledInChild)"
+            }
         }
         let testCases: [TestCase] = [
             TestCase(disabledInParent: false, disabledInChild: false, isEnabled: true),
@@ -376,9 +382,7 @@ extension ConfigurationTests {
             )
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
-            let message = "disabledInParent = \(testCase.disabledInParent) " +
-                          "disabledInChild = \(testCase.disabledInChild)"
-            XCTAssertEqual(isEnabled, testCase.isEnabled, message)
+            XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
         }
     }
 
@@ -387,6 +391,9 @@ extension ConfigurationTests {
             let optedInInChild: Bool
             let disabledInChild: Bool
             let isEnabled: Bool
+            var message: String {
+                "optedInInChild = \(optedInInChild) disabledInChild = \(disabledInChild)"
+            }
         }
         let testCases: [TestCase] = [
             TestCase(optedInInChild: false, disabledInChild: false, isEnabled: true),
@@ -406,8 +413,7 @@ extension ConfigurationTests {
             ))
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
-            let message = "optedInInChild = \(testCase.optedInInChild) disabledInChild = \(testCase.disabledInChild)"
-            XCTAssertEqual(isEnabled, testCase.isEnabled, message)
+            XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
         }
     }
 

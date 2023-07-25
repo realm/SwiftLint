@@ -365,6 +365,7 @@ extension ConfigurationTests {
         ]
         XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = BlanketDisableCommandRule.self
+        XCTAssertFalse(ruleType is OptInRule)
         let ruleIdentifier = ruleType.description.identifier
         for testCase in testCases {
             let parentConfiguration = Configuration(

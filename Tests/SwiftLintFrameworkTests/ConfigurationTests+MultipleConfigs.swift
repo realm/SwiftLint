@@ -530,4 +530,3 @@ private extension Rule {
         self is OptInRule
     }
 }
-

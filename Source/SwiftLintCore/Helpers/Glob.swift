@@ -41,17 +41,14 @@ struct Glob {
         guard pattern.contains("**") else {
             return [pattern]
         }
-
-        var results = [String]()
         var parts = pattern.components(separatedBy: "**")
         let firstPart = parts.removeFirst()
-        var lastPart = parts.joined(separator: "**")
-
         let fileManager = FileManager.default
-
-        var directories: [String]
-
+        guard firstPart.isEmpty || fileManager.fileExists(atPath: firstPart) else {
+            return []
+        }
         let searchPath = firstPart.isEmpty ? fileManager.currentDirectoryPath : firstPart
+        var directories = [String]()
         do {
             directories = try fileManager.subpathsOfDirectory(atPath: searchPath).compactMap { subpath in
                 let fullPath = firstPart.bridge().appendingPathComponent(subpath)
@@ -59,12 +56,14 @@ struct Glob {
                 return fullPath
             }
         } catch {
-            directories = []
             Issue.genericWarning("Error parsing file system item: \(error)").print()
         }
 
         // Check the base directory for the glob star as well.
         directories.insert(firstPart, at: 0)
+
+        var lastPart = parts.joined(separator: "**")
+        var results = [String]()
 
         // Include the globstar root directory ("dir/") in a pattern like "dir/**" or "dir/**/"
         if lastPart.isEmpty {

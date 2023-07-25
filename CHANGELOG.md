@@ -26,6 +26,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5135](https://github.com/realm/SwiftLint/issues/5135)
 
+* Fix runtime error when an excluded directory does not exist.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5078](https://github.com/realm/SwiftLint/issues/5078)
+
 * Fix bug in `prefer_self_in_static_references` rule that triggered on
   initializers of computed properties in classes when the property had an
   accessor block.  

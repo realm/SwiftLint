@@ -331,6 +331,7 @@ extension ConfigurationTests {
         ]
         XCTAssertEqual(testCases.unique.count, 4 * 4)
         let ruleType = ImplicitReturnRule.self
+        XCTAssertTrue(ruleType is OptInRule)
         let ruleIdentifier = ruleType.description.identifier
         for testCase in testCases {
             let parentConfiguration = Configuration(rulesMode: .default(
@@ -394,6 +395,7 @@ extension ConfigurationTests {
         ]
         XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = ImplicitReturnRule.self
+        XCTAssertTrue(ruleType is OptInRule)
         let ruleIdentifier = ruleType.description.identifier
         let parentConfiguration = Configuration(rulesMode: .only([ruleIdentifier]))
         for testCase in testCases {

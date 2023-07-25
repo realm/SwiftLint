@@ -5,6 +5,10 @@ struct CommentStyleRuleExamples {
 		passingExamples.flatMap { wrapExample($0, shouldBePassing: true) }
 	}
 
+	static func generateTriggeringExamples() -> [Example] {
+		failingExamples.flatMap { wrapExample($0, shouldBePassing: false) }
+	}
+
 	static let passingExamples = [
 		Example(
 			"""
@@ -62,13 +66,90 @@ struct CommentStyleRuleExamples {
 			*/
 
 			// This is
-			// three lines
+			// some single lines
 			// of comments
+			// and `comment_style` is set to `mixed
 			""",
-			configuration: ["comment_style": "mixed"],
-			excludeFromDocumentation: true),
+			configuration: ["comment_style": "mixed"]),
+		Example(
+			"""
+			// This is
+			// five lines
+			// of comments,
+			// with the mode set to "mixed"
+			// and `line_comment_threshold` for multiline set to 6
+			""",
+			configuration: [
+				"comment_style": "mixed",
+				"line_comment_threshold": 6,
+			]),
+		Example(
+			"""
+			/*
+			This is
+			a long
+			multiline comment,
+			with `comment_style` set to "mixed"
+			and `line_comment_threshold`
+			for multiline set to 4
+			*/
+
+			// and three lines
+			// of single line
+			// comments
+			""",
+			configuration: [
+				"comment_style": "mixed",
+				"line_comment_threshold": 4,
+			]),
 	]
 
+	static let failingExamples = [
+		Example(
+			"""
+			// This is a comment
+			↓/* This is a comment */
+			"""),
+		Example(
+			"""
+			/* This is a comment */
+			↓// This is a comment
+			"""),
+		Example(
+			"""
+			↓// This is a comment with config set to multiline
+			""",
+			configuration: ["comment_style": "multiline"]),
+		Example(
+			"""
+			↓/* This is a comment with config set to singleline */
+			""",
+			configuration: ["comment_style": "singleline"]),
+		Example(
+			"""
+			↓/* This is a comment with config set to singleline */
+			// This is a comment
+			""",
+			configuration: ["comment_style": "singleline"]),
+		Example(
+			"""
+			↓// This is a comment with config set to multiline
+			/* This is a comment */
+			""",
+			configuration: ["comment_style": "multiline"]),
+		Example(
+			"""
+			↓// This is
+			// five lines
+			// of comments,
+			// with the mode set to "mixed"
+			// and `line_comment_threshold` for multiline set to 5
+			""",
+			configuration: [
+				"comment_style": "mixed",
+				"line_comment_threshold": 5,
+			]),
+	]
 
 	private static func wrapExample(_ example: Example, shouldBePassing: Bool) -> [Example] {
 		let naked = example.with(code: """

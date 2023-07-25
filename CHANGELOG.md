@@ -21,6 +21,7 @@
 
 * Rewrite `control_statement` rule using SwiftSyntax.  
   [SimplyDanny](https://github.com/SimplyDanny)
+
 * `identifier_name` now has the option to ignore minimum variable length 
   within short closures.  
   [mredig](https://github.com/mredig)

@@ -17,7 +17,7 @@ struct CommentStyleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
 		kind: .style,
 		minSwiftVersion: .current,
 		nonTriggeringExamples: CommentStyleRuleExamples.generateNonTriggeringExamples(),
-		triggeringExamples: [])
+		triggeringExamples: CommentStyleRuleExamples.generateTriggeringExamples())
 
 	func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
 		Visitor(file: file)

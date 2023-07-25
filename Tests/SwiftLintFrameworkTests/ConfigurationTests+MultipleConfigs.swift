@@ -337,7 +337,7 @@ extension ConfigurationTests {
         ]
         XCTAssertEqual(testCases.unique.count, 4 * 4)
         let ruleType = ImplicitReturnRule.self
-        XCTAssertTrue(ruleType.isOptInRule)
+        XCTAssertTrue((ruleType as Any) is OptInRule.Type)
         let ruleIdentifier = ruleType.description.identifier
         for testCase in testCases {
             let parentConfiguration = Configuration(rulesMode: .default(
@@ -403,7 +403,7 @@ extension ConfigurationTests {
         ]
         XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = ImplicitReturnRule.self
-        XCTAssertTrue(ruleType.isOptInRule)
+        XCTAssertTrue((ruleType as Any) is OptInRule.Type)
         let ruleIdentifier = ruleType.description.identifier
         let parentConfiguration = Configuration(rulesMode: .only([ruleIdentifier]))
         for testCase in testCases {
@@ -522,11 +522,5 @@ extension ConfigurationTests {
         XCTAssertEqual(Set(configuration1.includedPaths), Set(configuration2.includedPaths))
 
         XCTAssertEqual(Set(configuration1.excludedPaths), Set(configuration2.excludedPaths))
-    }
-}
-
-private extension Rule {
-    static var isOptInRule: Bool {
-        self is OptInRule
     }
 }

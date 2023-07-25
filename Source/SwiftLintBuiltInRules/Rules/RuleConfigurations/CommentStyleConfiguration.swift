@@ -12,6 +12,9 @@ struct CommentStyleConfiguration: RuleConfiguration, Equatable {
 	/// Only valid when `comment_style` is set to `mixed`
 	@ConfigurationElement(key: "line_comment_threshold")
 	private(set) var lineCommentThreshold: Int? = nil
+	@ConfigurationElement(key: "severity")
+	private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+
 
 	mutating func apply(configuration: Any) throws {
 		guard
@@ -28,6 +31,10 @@ struct CommentStyleConfiguration: RuleConfiguration, Equatable {
 			commentStyle == .mixed,
 			let lineCommentThreshold: Int = configurationDict[key: $lineCommentThreshold] {
 			self.lineCommentThreshold = lineCommentThreshold
+		}
+
+		if let severityString: String = configurationDict[key: $severityConfiguration] {
+			try severityConfiguration.apply(configuration: severityString)
 		}
 	}
 }

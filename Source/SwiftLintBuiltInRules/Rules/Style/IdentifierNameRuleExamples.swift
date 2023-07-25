@@ -23,13 +23,38 @@ internal struct IdentifierNameRuleExamples {
                 class Foo {
                    static var Bar = 0
                 }
-                """)
+                """),
+        Example("""
+                class Foo {
+                    let operationQueue: OperationQueue = {
+                        let q = OperationQueue()
+                        q.maxConcurrentOperationCount = ProcessInfo.processInfo.activeProcessorCount
+                        return q
+                    }()
+                }
+                """,
+                configuration: ["ignore_min_length_for_short_closure_content": true],
+                excludeFromDocumentation: true),
+        Example(
+            "private func h1(_ text: String) -> String { \"# \\(text)\" }",
+            configuration: ["previous_function_behavior": true],
+            excludeFromDocumentation: true),
+        Example(
+            """
+            func hasAccessibilityElementChildrenIgnoreModifier(in file: SwiftLintFile) -> Bool { false }
+            """,
+            configuration: ["previous_function_behavior": true],
+            excludeFromDocumentation: true),
+        Example(
+            "func testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters() {}",
+            configuration: ["previous_function_behavior": true],
+            excludeFromDocumentation: true)
     ]
 
     static let triggeringExamples = [
         Example(
             "↓let MyLet = 0",
-            configuration: ["validates_start_with_lowercase": true],
+            configuration: ["validates_start_with_lowercase": "warning"],
             excludeFromDocumentation: true
         ),
         Example("↓let _myLet = 0"),
@@ -48,7 +73,31 @@ internal struct IdentifierNameRuleExamples {
         Example(
             "enum Foo { case ↓MyEnum }",
             configuration: ["validates_start_with_lowercase": "error"],
-            excludeFromDocumentation: true
-        )
+            excludeFromDocumentation: true),
+        Example("""
+                class Foo {
+                    let operationQueue: OperationQueue = {
+                        ↓let q = OperationQueue()
+                        q.maxConcurrentOperationCount = ProcessInfo.processInfo.activeProcessorCount
+                        return q
+                    }()
+                }
+                """,
+                excludeFromDocumentation: true),
+
+        // previously passed, now error
+        Example("private ↓func h1(_ text: String) -> String { \"# \\(text)\" }"),
+        Example("↓func firstConfigurationFileInParentDirectories() -> Path? {}"),
+        Example(
+            """
+            ↓func bodyLineCountIgnoringCommentsAndWhitespace(
+                leftBraceLine: Int, rightBraceLine: Int
+            ) -> Int { 0 }
+            """),
+        Example(
+            """
+            ↓func hasAccessibilityElementChildrenIgnoreModifier(in file: SwiftLintFile) -> Bool { false }
+            """),
+        Example("↓func testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters() {}")
     ]
 }

@@ -3,18 +3,20 @@
 class IdentifierNameRuleTests: SwiftLintTestCase {
     func testIdentifierNameWithExcluded() {
         let baseDescription = IdentifierNameRule.description
-        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            Example("let Apple = 0"),
-            Example("let some_apple = 0"),
-            Example("let Test123 = 0")
-        ]
-        let triggeringExamples = baseDescription.triggeringExamples + [
-            Example("let ap_ple = 0"),
-            Example("let AppleJuice = 0")
-        ]
+        let nonTriggeringExamples = baseDescription
+			.nonTriggeringExamples + [
+				Example("let Apple = 0"),
+				Example("let some_apple = 0"),
+				Example("let Test123 = 0")
+			]
+		let triggeringExamples = baseDescription
+			.triggeringExamples + [
+				Example("↓let ap_ple = 0"),
+				Example("↓let AppleJuice = 0")
+			]
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
                                                triggeringExamples: triggeringExamples)
-        verifyRule(description, ruleConfiguration: ["excluded": ["Apple", "some.*", ".*\\d+.*"]])
+        verifyRule(description, ruleConfiguration: ["excluded": ["Apple", "some.*", "T\\w*\\d+.*"]])
     }
 
     func testIdentifierNameWithAllowedSymbols() {
@@ -56,7 +58,7 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
+        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": "off"])
     }
 
     func testStartsWithLowercaseCheck() {
@@ -75,7 +77,7 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
             IdentifierNameRule.description
                 .with(triggeringExamples: triggeringExamples)
                 .with(nonTriggeringExamples: nonTriggeringExamples),
-            ruleConfiguration: ["validates_start_with_lowercase": true]
+            ruleConfiguration: ["validates_start_with_lowercase": "error"]
         )
 
         verifyRule(

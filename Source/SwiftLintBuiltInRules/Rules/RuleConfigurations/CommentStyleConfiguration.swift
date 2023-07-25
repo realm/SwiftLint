@@ -4,8 +4,14 @@ import SwiftLintCore
 struct CommentStyleConfiguration: RuleConfiguration, Equatable {
 	typealias Parent = CommentStyleRule
 
+	/// Set this value to enforce a comment style for the entire project. If unset, each file will be evaluated
+	/// individually and enforce consistency with whatever style appears first within the file.
 	@ConfigurationElement(key: "comment_style")
 	private(set) var commentStyle: Style? = nil
+	/// The number of single line comments allowed before requiring a multiline comment.
+	/// Only valid when `comment_style` is set to `mixed`
+	@ConfigurationElement(key: "line_comment_threshold")
+	private(set) var lineCommentThreshold: Int? = nil
 
 	mutating func apply(configuration: Any) throws {
 		guard
@@ -16,6 +22,12 @@ struct CommentStyleConfiguration: RuleConfiguration, Equatable {
 			let style = Style(rawValue: commentStyleString)
 			style != nil ? () : print("'\(commentStyleString)' invalid for comment style. No style enforce.")
 			self.commentStyle = commentStyle
+		}
+
+		if
+			commentStyle == .mixed,
+			let lineCommentThreshold: Int = configurationDict[key: $lineCommentThreshold] {
+			self.lineCommentThreshold = lineCommentThreshold
 		}
 	}
 }

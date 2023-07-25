@@ -6,6 +6,10 @@ final class GlobTests: SwiftLintTestCase {
         return testResourcesPath.stringByAppendingPathComponent("ProjectMock")
     }
 
+    func testNonExistingDirectory() {
+        XCTAssertTrue(Glob.resolveGlob("./bar/**").isEmpty)
+    }
+
     func testOnlyGlobForWildcard() {
         let files = Glob.resolveGlob("foo/bar.swift")
         XCTAssertEqual(files, ["foo/bar.swift"])

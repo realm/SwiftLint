@@ -5,7 +5,7 @@ struct CommentStyleConfiguration: RuleConfiguration, Equatable {
 	typealias Parent = CommentStyleRule
 
 	@ConfigurationElement(key: "comment_style")
-	private(set) var commentStyle: Style? = .multiline
+	private(set) var commentStyle: Style? = nil
 
 	mutating func apply(configuration: Any) throws {
 		guard
@@ -24,6 +24,7 @@ extension CommentStyleConfiguration {
 	enum Style: String, AcceptableByConfigurationElement {
 		case multiline
 		case singleline
+		case mixed
 
 		func asOption() -> SwiftLintCore.OptionType { .string(rawValue) }
 	}

@@ -20,25 +20,55 @@ struct CommentStyleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
 		triggeringExamples: CommentStyleRuleExamples.generateTriggeringExamples())
 
 	func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-		Visitor(file: file)
+		Visitor(configuration: configuration, file: file)
 	}
 }
 
 extension CommentStyleRule {
 	class Visitor: ViolationsSyntaxVisitor {
-		private let allCommentGroupings: [[SyntaxClassifiedRange]]
+		typealias Parent = CommentStyleRule
+		private let allCommentGroupings: [CommentGrouping]
 		let file: SwiftLintFile
 
-		init(file: SwiftLintFile) {
+		let configuration: Parent.ConfigurationType
+
+		typealias Style = Parent.ConfigurationType.Style
+		private var commentStyle: Style?
+
+		enum CommentGrouping {
+			case singleline([SyntaxClassifiedRange])
+			case multiline([SyntaxClassifiedRange])
+			case singlelineDoc([SyntaxClassifiedRange])
+			case multilineDoc([SyntaxClassifiedRange])
+		}
+
+		init(configuration: Parent.ConfigurationType, file: SwiftLintFile) {
+			self.configuration = configuration
 			self.file = file
 
-			var rangeGroupings: [[SyntaxClassifiedRange]] = []
+			var rangeGroupings: [CommentGrouping] = []
 			var commentsAccumulator: [SyntaxClassifiedRange] = []
 
 			func appendCommentsAccumulator() {
 				guard commentsAccumulator.isEmpty == false else { return }
 
-				rangeGroupings.append(commentsAccumulator)
+				guard
+					let kind = commentsAccumulator.first?.kind,
+					commentsAccumulator.allSatisfy({ $0.kind == kind })
+				else { queuedFatalError("Accumulator acquired mixed comment kind...") }
+
+				switch kind {
+				case .lineComment:
+					rangeGroupings.append(.singleline(commentsAccumulator))
+				case .blockComment:
+					rangeGroupings.append(.multiline(commentsAccumulator))
+				case .docLineComment:
+					rangeGroupings.append(.singlelineDoc(commentsAccumulator))
+				case .docBlockComment:
+					rangeGroupings.append(.multilineDoc(commentsAccumulator))
+				default:
+					queuedFatalError("non comment in comment accumulator")
+				}
 				commentsAccumulator.removeAll()
 			}
 
@@ -63,33 +93,93 @@ extension CommentStyleRule {
 			appendCommentsAccumulator()
 
 			self.allCommentGroupings = rangeGroupings
+			self.commentStyle = configuration.commentStyle
 			super.init(viewMode: .sourceAccurate)
 		}
 
 		override func visitPost(_ node: SourceFileSyntax) {
-//			for range in allCommentRanges {
-//				switch range.kind {
-//				case .lineComment:
-//					visitPostComment(range)
-//				case .blockComment:
-//					visitPostBlockComment(range)
-//					//				case .docLineComment:
-//					//					docCommentRanges.append(classificationRange)
-//					//				case .docBlockComment:
-//					//					blockDocCommentRanges.append(classificationRange)
-//				case .none:
-//					break
-//				default: break
-//				}
-//			}
+			for grouping in allCommentGroupings {
+				switch grouping {
+				case .singleline(let commentGroup):
+					visitPostComment(commentGroup)
+				case .multiline(let commentGroup):
+					visitPostBlockComment(commentGroup)
+				case .singlelineDoc(let commentGroup):
+					visitPostDocComment(commentGroup)
+				case .multilineDoc(let commentGroup):
+					visitPostBlockDockComment(commentGroup)
+				}
+			}
 		}
 
-		func visitPostComment(_ commentRange: SyntaxClassifiedRange) {
+		func visitPostComment(_ commentRangeGroup: [SyntaxClassifiedRange]) {
+			guard let firstCommentInGroup = commentRangeGroup.first else { return }
+			if case .fail(let reason, let severity) = validateCommentStyle(.singleline) {
+				appendViolation(
+					at: AbsolutePosition(utf8Offset: firstCommentInGroup.offset),
+					reason: reason,
+					severity: severity)
+				return
+			}
+
+			if case .fail(let reason, let severity) = validateSinglelineCommentLineLength(commentRangeGroup.count) {
+				appendViolation(
+					at: AbsolutePosition(utf8Offset: firstCommentInGroup.offset),
+					reason: reason,
+					severity: severity)
+				return
+			}
+		}
+
+		func visitPostBlockComment(_ commentRangeGroup: [SyntaxClassifiedRange]) {
+			guard let firstCommentInGroup = commentRangeGroup.first else { return }
+			if case .fail(let reason, let severity) = validateCommentStyle(.multiline) {
+				appendViolation(
+					at: AbsolutePosition(utf8Offset: firstCommentInGroup.offset),
+					reason: reason,
+					severity: severity)
+				return
+			}
+		}
+
+		func visitPostDocComment(_ commentRangeGroup: [SyntaxClassifiedRange]) {
 
 		}
 
-		func visitPostBlockComment(_ commentRange: SyntaxClassifiedRange) {
+		func visitPostBlockDockComment(_ commentRangeGroup: [SyntaxClassifiedRange]) {
 
+		}
+
+		private func validateCommentStyle(_ style: Style) -> Validation {
+			let commentStyle = self.commentStyle ?? style
+			self.commentStyle = commentStyle
+
+			switch commentStyle {
+			case .mixed:
+				return .pass
+			default:
+				guard style == commentStyle else {
+					return .fail(
+						reason: "\(style.rawValue.capitalized) comments not allowed",
+						severity: configuration.severityConfiguration.severity)
+				}
+				return .pass
+			}
+		}
+
+		private func validateSinglelineCommentLineLength(_ lineLength: Int) -> Validation {
+			guard
+				commentStyle == .mixed,
+				let threshold = configuration.lineCommentThreshold
+			else { return .pass }
+
+			if lineLength < threshold {
+				return .pass
+			} else {
+				return .fail(
+					reason: "Block comments required for comments spanning \(threshold) or more lines",
+					severity: configuration.severityConfiguration.severity)
+			}
 		}
 
 		private static func convertToString(from range: SyntaxClassifiedRange, withOriginalString originalString: String) -> String? {
@@ -103,6 +193,24 @@ extension CommentStyleRule {
 				content[i] = "_".utf8.first!
 			}
 			return String(data: content, encoding: .utf8)
+		}
+
+		@discardableResult
+		private func appendViolation(
+			at position: AbsolutePosition,
+			reason: String,
+			severity: ViolationSeverity) -> ReasonedRuleViolation {
+				let violation = ReasonedRuleViolation(
+					position: position,
+					reason: reason,
+					severity: severity)
+				violations.append(violation)
+				return violation
+			}
+
+		enum Validation { // swiftlint:disable:this nesting
+			case pass
+			case fail(reason: String, severity: ViolationSeverity)
 		}
 	}
 }

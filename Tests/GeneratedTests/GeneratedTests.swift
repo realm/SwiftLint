@@ -740,6 +740,12 @@ class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class NoDefaultSwitchInOperatorsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NoDefaultSwitchInOperatorsRule.description)
+    }
+}
+
 class NoExtensionAccessModifierRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoExtensionAccessModifierRule.description)

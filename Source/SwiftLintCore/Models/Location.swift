@@ -98,7 +98,7 @@ private extension Optional where Wrapped: Comparable {
             return lhs < rhs
         case (nil, _?):
             return true
-        default:
+        case (_, _):
             return false
         }
     }

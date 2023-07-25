@@ -10,7 +10,7 @@ struct CommentStyleConfiguration: RuleConfiguration, Equatable {
 	mutating func apply(configuration: Any) throws {
 		guard
 			let configurationDict = configuration as? [String: Any]
-		else { throw ConfigurationError.incorrectlyFormattedConfigurationDictionary }
+		else { throw Issue.unknownConfiguration(ruleID: Parent.identifier) }
 
 		if let commentStyleString: String = configurationDict[key: $commentStyle] {
 			let style = Style(rawValue: commentStyleString)
@@ -26,10 +26,6 @@ extension CommentStyleConfiguration {
 		case singleline
 
 		func asOption() -> SwiftLintCore.OptionType { .string(rawValue) }
-	}
-
-	enum ConfigurationError: Error {
-		case incorrectlyFormattedConfigurationDictionary
 	}
 }
 

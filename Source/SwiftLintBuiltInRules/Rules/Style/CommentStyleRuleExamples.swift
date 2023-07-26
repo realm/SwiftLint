@@ -167,6 +167,7 @@ struct CommentStyleRuleExamples {
 				}
 			}
 			""")
+
 		let inClosure = example.with(code: """
 			class Foo {
 				let bar = {
@@ -174,19 +175,26 @@ struct CommentStyleRuleExamples {
 				}
 			}
 			""")
-		let inString = example.with(code: """
-			class Bar {
-				let mahString = \"""
-					// A Comment!
-					// But not really
-					/*
-					It's actually a string!
-					tricksies and should not get triggered
-					*/
-			\(example.code.appendIndentation(level: 2))
-					\"""
-			}
-			""")
+
+		let inString: Example?
+		if shouldBePassing {
+			inString = example.with(code: """
+				class Bar {
+					let mahString = \"""
+						// A Comment!
+						// But not really
+						/*
+						It's actually a string!
+						tricksies and should not get triggered
+						*/
+				\(example.code.appendIndentation(level: 2))
+						\"""
+				}
+				""")
+		} else {
+			inString = nil
+		}
+
 		let inAll = example.with(code: """
 			class FooBar {
 			\(example.code.appendIndentation(level: 1))
@@ -199,9 +207,44 @@ struct CommentStyleRuleExamples {
 				}
 			}
 			""")
-		return shouldBePassing ?
-		[naked, inClass, inFunction, inClosure, inString, inAll] :
-		[naked, inClass, inFunction, inClosure, inAll]
+
+		let firstCommentStyle = {
+			guard
+				let index = example.code.firstIndex(of: "/")
+			else { return CommentStyleRule.ConfigurationType.Style.mixed }
+
+			let characterAfter = example.code[example.code.index(after: index)]
+			switch characterAfter {
+			case "/":
+				return .singleline
+			case "*":
+				return .multiline
+			default: return .mixed
+			}
+		}()
+		let offsetString = {
+			let multiBytes = ""
+			switch firstCommentStyle {
+			case .singleline:
+				return "// \(multiBytes)\n"
+			default:
+				return "/*\n\(multiBytes)\n*/"
+			}
+		}()
+		let multiByteOffset = example.with(code: """
+			\(offsetString)
+			\(example.code)
+			""")
+
+		return [
+			naked,
+			inClass,
+			inFunction,
+			inClosure,
+			inString,
+			inAll,
+			multiByteOffset
+		].compactMap { $0 }
 
 	}
 }

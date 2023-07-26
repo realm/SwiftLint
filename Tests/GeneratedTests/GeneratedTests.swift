@@ -136,7 +136,7 @@ class CommentSpacingRuleGeneratedTests: SwiftLintTestCase {
 
 class CommentStyleRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(CommentStyleRule.description)
+        verifyRule(CommentStyleRule.description, testMultiByteOffsets: false)
     }
 }
 

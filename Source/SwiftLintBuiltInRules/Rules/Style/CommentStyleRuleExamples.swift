@@ -276,9 +276,10 @@ struct CommentStyleRuleExamples {
 			isTriggering: Bool,
 			file: StaticString = #file,
 			line: UInt = #line) {
-				self.example = Example(code, configuration: configuration, file: file, line: line)
-				self.multibyteMode = multibyteMode
-				self.isTriggering = isTriggering
+				self.init(
+					example: Example(code, configuration: configuration, file: file, line: line),
+					multibyteMode: multibyteMode,
+					isTriggering: isTriggering)
 			}
 
 		init(example: Example, multibyteMode: Style? = nil, isTriggering: Bool) {

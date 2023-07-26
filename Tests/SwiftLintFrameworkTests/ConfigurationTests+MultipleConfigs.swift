@@ -301,6 +301,122 @@ extension ConfigurationTests {
         )
     }
 
+    func testParentChildOptInAndDisable() {
+        struct TestCase: Equatable {
+            let optedInInParent: Bool
+            let disabledInParent: Bool
+            let optedInInChild: Bool
+            let disabledInChild: Bool
+            let isEnabled: Bool
+            var message: String {
+                "optedInInParent = \(optedInInParent) " +
+                "disabledInParent = \(disabledInParent) " +
+                "optedInInChild = \(optedInInChild) " +
+                "disabledInChild = \(disabledInChild)"
+            }
+        }
+        let testCases: [TestCase] = [
+            // swiftlint:disable line_length
+            TestCase(optedInInParent: false, disabledInParent: false, optedInInChild: false, disabledInChild: false, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: false, optedInInChild: false, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInParent: false, disabledInParent: true, optedInInChild: false, disabledInChild: false, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: true, optedInInChild: false, disabledInChild: false, isEnabled: false),
+            TestCase(optedInInParent: false, disabledInParent: false, optedInInChild: true, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInParent: true, disabledInParent: false, optedInInChild: true, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInParent: false, disabledInParent: true, optedInInChild: true, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInParent: true, disabledInParent: true, optedInInChild: true, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInParent: false, disabledInParent: false, optedInInChild: false, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: false, optedInInChild: false, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: false, disabledInParent: true, optedInInChild: false, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: true, optedInInChild: false, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: false, disabledInParent: false, optedInInChild: true, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: false, optedInInChild: true, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: false, disabledInParent: true, optedInInChild: true, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInParent: true, disabledInParent: true, optedInInChild: true, disabledInChild: true, isEnabled: false)
+            // swiftlint:enable line_length
+        ]
+        XCTAssertEqual(testCases.unique.count, 4 * 4)
+        let ruleType = ImplicitReturnRule.self
+        XCTAssertTrue((ruleType as Any) is OptInRule.Type)
+        let ruleIdentifier = ruleType.description.identifier
+        for testCase in testCases {
+            let parentConfiguration = Configuration(rulesMode: .default(
+                disabled: testCase.disabledInParent ? [ruleIdentifier] : [],
+                optIn: testCase.optedInInParent ? [ruleIdentifier] : []
+            ))
+            let childConfiguration = Configuration(rulesMode: .default(
+                disabled: testCase.disabledInChild ? [ruleIdentifier] : [],
+                optIn: testCase.optedInInChild ? [ruleIdentifier] : []
+            ))
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
+            let isEnabled = mergedConfiguration.contains(rule: ruleType)
+            XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
+        }
+    }
+
+    func testParentChildDisableForDefaultRule() {
+        struct TestCase: Equatable {
+            let disabledInParent: Bool
+            let disabledInChild: Bool
+            let isEnabled: Bool
+            var message: String {
+                "disabledInParent = \(disabledInParent) disabledInChild = \(disabledInChild)"
+            }
+        }
+        let testCases: [TestCase] = [
+            TestCase(disabledInParent: false, disabledInChild: false, isEnabled: true),
+            TestCase(disabledInParent: true, disabledInChild: false, isEnabled: false),
+            TestCase(disabledInParent: false, disabledInChild: true, isEnabled: false),
+            TestCase(disabledInParent: true, disabledInChild: true, isEnabled: false)
+        ]
+        XCTAssertEqual(testCases.unique.count, 2 * 2)
+        let ruleType = BlanketDisableCommandRule.self
+        XCTAssertFalse(ruleType is OptInRule.Type)
+        let ruleIdentifier = ruleType.description.identifier
+        for testCase in testCases {
+            let parentConfiguration = Configuration(
+                rulesMode: .default(disabled: testCase.disabledInParent ? [ruleIdentifier] : [], optIn: [])
+            )
+            let childConfiguration = Configuration(
+                rulesMode: .default(disabled: testCase.disabledInChild ? [ruleIdentifier] : [], optIn: [])
+            )
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
+            let isEnabled = mergedConfiguration.contains(rule: ruleType)
+            XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
+        }
+    }
+
+    func testParentOnlyRulesAndChildOptInAndDisabled() {
+        struct TestCase: Equatable {
+            let optedInInChild: Bool
+            let disabledInChild: Bool
+            let isEnabled: Bool
+            var message: String {
+                "optedInInChild = \(optedInInChild) disabledInChild = \(disabledInChild)"
+            }
+        }
+        let testCases: [TestCase] = [
+            TestCase(optedInInChild: false, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInChild: true, disabledInChild: false, isEnabled: true),
+            TestCase(optedInInChild: false, disabledInChild: true, isEnabled: false),
+            TestCase(optedInInChild: true, disabledInChild: true, isEnabled: false)
+        ]
+        XCTAssertEqual(testCases.unique.count, 2 * 2)
+        let ruleType = ImplicitReturnRule.self
+        XCTAssertTrue((ruleType as Any) is OptInRule.Type)
+        let ruleIdentifier = ruleType.description.identifier
+        let parentConfiguration = Configuration(rulesMode: .only([ruleIdentifier]))
+        for testCase in testCases {
+            let childConfiguration = Configuration(rulesMode: .default(
+                disabled: testCase.disabledInChild ? [ruleIdentifier] : [],
+                optIn: testCase.optedInInChild ? [ruleIdentifier] : []
+            ))
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
+            let isEnabled = mergedConfiguration.contains(rule: ruleType)
+            XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
+        }
+    }
+
     // MARK: - Remote Configs
     func testValidRemoteChildConfig() {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild)

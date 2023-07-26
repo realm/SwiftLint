@@ -52,6 +52,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5120](https://github.com/realm/SwiftLint/issues/5120)
 
+* Fix some unexpected rule enablement interactions between parent and
+  child configurations.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4876](https://github.com/realm/SwiftLint/issues/4876)
+
 ## 0.52.4: Lid Switch
 
 #### Breaking

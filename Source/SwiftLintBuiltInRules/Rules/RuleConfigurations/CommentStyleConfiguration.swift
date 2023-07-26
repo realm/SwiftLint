@@ -24,7 +24,7 @@ struct CommentStyleConfiguration: RuleConfiguration, Equatable {
 		if let commentStyleString: String = configurationDict[key: $commentStyle] {
 			let style = Style(rawValue: commentStyleString)
 			style != nil ? () : print("'\(commentStyleString)' invalid for comment style. No style enforce.")
-			self.commentStyle = commentStyle
+			self.commentStyle = style
 		}
 
 		if

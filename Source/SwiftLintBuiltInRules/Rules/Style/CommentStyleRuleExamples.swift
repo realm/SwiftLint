@@ -249,6 +249,7 @@ struct CommentStyleRuleExamples {
 			\(exampleInfo.example.code)
 			""")
 
+		// disable comment wrapping and multibyte tests because they are already done within this file
 		return [
 			naked,
 			inClass,
@@ -258,7 +259,8 @@ struct CommentStyleRuleExamples {
 			inAll,
 			multiByteOffset
 		].compactMap { $0 }
-
+			.skipWrappingInCommentTests()
+			.skipMultiByteOffsetTests()
 	}
 
 	private struct ExampleInfo {

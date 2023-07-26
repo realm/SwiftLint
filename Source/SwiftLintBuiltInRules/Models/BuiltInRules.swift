@@ -206,6 +206,7 @@ public let builtInRules: [Rule.Type] = [
     UnavailableFunctionRule.self,
     UnhandledThrowingTaskRule.self,
     UnneededBreakInSwitchRule.self,
+    UnneededOverrideRule.self,
     UnneededParenthesesInClosureArgumentRule.self,
     UnneededSynthesizedInitializerRule.self,
     UnownedVariableCaptureRule.self,

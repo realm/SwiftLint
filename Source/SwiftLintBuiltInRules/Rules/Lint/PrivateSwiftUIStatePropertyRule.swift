@@ -93,27 +93,15 @@ private extension PrivateSwiftUIStatePropertyRule {
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard let inheritedTypeCollection = node.inheritanceClause?.inheritedTypeCollection else {
-                return .skipChildren
-            }
-
-            return inheritedTypeCollection.conformsToViewProtocol ? .visitChildren : .skipChildren
+            node.inheritanceClause?.conformsToViewProtocol == true ? .visitChildren : .skipChildren
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard let inheritedTypeCollection = node.inheritanceClause?.inheritedTypeCollection else {
-                return .skipChildren
-            }
-
-            return inheritedTypeCollection.conformsToViewProtocol ? .visitChildren : .skipChildren
+            node.inheritanceClause?.conformsToViewProtocol == true ? .visitChildren : .skipChildren
         }
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard let inheritedTypeCollection = node.inheritanceClause?.inheritedTypeCollection else {
-                return .skipChildren
-            }
-
-            return inheritedTypeCollection.conformsToViewProtocol ? .visitChildren : .skipChildren
+            node.inheritanceClause?.conformsToViewProtocol == true ? .visitChildren : .skipChildren
         }
 
         override func visitPost(_ node: MemberDeclListItemSyntax) {
@@ -127,6 +115,12 @@ private extension PrivateSwiftUIStatePropertyRule {
 
             violations.append(decl.bindingKeyword.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
+
+private extension TypeInheritanceClauseSyntax {
+    var conformsToViewProtocol: Bool {
+        inheritedTypeCollection.typeNames.contains("View")
     }
 }
 

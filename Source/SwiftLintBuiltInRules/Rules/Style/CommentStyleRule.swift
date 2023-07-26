@@ -72,7 +72,33 @@ extension CommentStyleRule {
 				commentsAccumulator.removeAll()
 			}
 
+			let commands = file.commands.filter { $0.ruleIdentifiers.contains(.single(identifier: Parent.description.identifier)) }
+			var disabledLines: Set<Int> = []
+			var rangeStart: Int?
+			for command in commands {
+				switch command.action {
+				case .disable:
+					rangeStart = command.line
+				case .enable:
+					guard let start = rangeStart else { queuedFatalError("Commands didn't make sense") }
+					for i in start..<command.line {
+						disabledLines.insert(i)
+					}
+					rangeStart = nil
+				default: break
+				}
+			}
+			if let rangeStart {
+				for i in rangeStart...file.lines.count {
+					disabledLines.insert(i)
+				}
+			}
+
+			let fileData = Data(file.contents.utf8)
 			for classificationRange in file.syntaxClassifications {
+				let location = file.locationConverter.location(for: AbsolutePosition(utf8Offset: classificationRange.offset))
+				guard disabledLines.contains(location.line) == false else { continue }
+
 				switch classificationRange.kind {
 				case _ where classificationRange.kind.isComment == true:
 					if commentsAccumulator.last?.kind != classificationRange.kind {
@@ -81,7 +107,7 @@ extension CommentStyleRule {
 					commentsAccumulator.append(classificationRange)
 				case .none:
 					if
-						let text = Self.convertToString(from: classificationRange, withOriginalString: file.contents),
+						let text = Self.convertToString(from: classificationRange, withOriginalStringData: fileData),
 						text.countOccurrences(of: "\n") > 1 {
 
 						appendCommentsAccumulator()
@@ -182,16 +208,8 @@ extension CommentStyleRule {
 			}
 		}
 
-		private static func convertToString(from range: SyntaxClassifiedRange, withOriginalString originalString: String) -> String? {
-			let content = Data(originalString.utf8)[range.range.dataRange]
-			return String(data: content, encoding: .utf8)
-		}
-
-		func replaceRangeWithHyphen(_ range: SyntaxClassifiedRange, originalString: String) -> String? {
-			var content = Data(originalString.utf8)
-			for i in range.range.dataRange {
-				content[i] = "_".utf8.first!
-			}
+		private static func convertToString(from range: SyntaxClassifiedRange, withOriginalStringData originalStringData: Data) -> String? {
+			let content = originalStringData[range.range.dataRange]
 			return String(data: content, encoding: .utf8)
 		}
 

@@ -2,29 +2,35 @@ import Foundation
 
 struct CommentStyleRuleExamples {
 	static func generateNonTriggeringExamples() -> [Example] {
-		passingExamples.flatMap { wrapExample($0, shouldBePassing: true) }
+		passingExamples.flatMap { wrapExample($0) }
 	}
 
 	static func generateTriggeringExamples() -> [Example] {
-		failingExamples.flatMap { wrapExample($0, shouldBePassing: false) }
+		failingExamples.flatMap { wrapExample($0) }
 	}
 
-	static let passingExamples = [
-		Example(
+	private static let passingExamples = [
+		ExampleInfo(
 			"""
 			// This is a comment
-			"""),
-		Example(
+			""",
+			multibyteMode: .singleline,
+			isTriggering: false),
+		ExampleInfo(
 			"""
 			/* This is a comment */
-			"""),
-		Example(
+			""",
+			multibyteMode: .multiline,
+			isTriggering: false),
+		ExampleInfo(
 			"""
 			// This is
 			// three lines
 			// of comments
-			"""),
-		Example(
+			""",
+			multibyteMode: .singleline,
+			isTriggering: false),
+		ExampleInfo(
 			"""
 			// This is
 			// three lines
@@ -32,8 +38,10 @@ struct CommentStyleRuleExamples {
 
 			// which then get separated by a single line
 			// before more comments
-			"""),
-		Example(
+			""",
+			multibyteMode: .singleline,
+			isTriggering: false),
+		ExampleInfo(
 			"""
 			// This is
 			// three lines
@@ -42,22 +50,26 @@ struct CommentStyleRuleExamples {
 
 			// which then get separated by two lines
 			// before more comments
-			"""),
-		Example(
+			""",
+			multibyteMode: .singleline,
+			isTriggering: false),
+		ExampleInfo(
 			"""
 			/* This is a
 			three line
 			comment */
-			"""),
-		Example(
+			""",
+			isTriggering: false),
+		ExampleInfo(
 			"""
 			/*
 			This is a
 			multiline
 			comment
 			*/
-			"""),
-		Example(
+			""",
+			isTriggering: false),
+		ExampleInfo(
 			"""
 			/*
 			This is a
@@ -70,8 +82,9 @@ struct CommentStyleRuleExamples {
 			// of comments
 			// and `comment_style` is set to `mixed
 			""",
-			configuration: ["comment_style": "mixed"]),
-		Example(
+			configuration: ["comment_style": "mixed"],
+			isTriggering: false),
+		ExampleInfo(
 			"""
 			// This is
 			// five lines
@@ -82,8 +95,9 @@ struct CommentStyleRuleExamples {
 			configuration: [
 				"comment_style": "mixed",
 				"line_comment_threshold": 6,
-			]),
-		Example(
+			],
+			isTriggering: false),
+		ExampleInfo(
 			"""
 			/*
 			This is
@@ -101,43 +115,55 @@ struct CommentStyleRuleExamples {
 			configuration: [
 				"comment_style": "mixed",
 				"line_comment_threshold": 4,
-			]),
+			],
+			isTriggering: false),
 	]
 
-	static let failingExamples = [
-		Example(
+	private static let failingExamples = [
+		ExampleInfo(
 			"""
 			// This is a comment
 			↓/* This is a comment */
-			"""),
-		Example(
+			""",
+			multibyteMode: .singleline,
+			isTriggering: true),
+		ExampleInfo(
 			"""
 			/* This is a comment */
 			↓// This is a comment
-			"""),
-		Example(
+			""",
+			multibyteMode: .multiline,
+			isTriggering: true),
+		ExampleInfo(
 			"""
 			↓// This is a comment with config set to multiline
 			""",
-			configuration: ["comment_style": "multiline"]),
-		Example(
+			configuration: ["comment_style": "multiline"],
+			multibyteMode: .multiline,
+			isTriggering: true),
+		ExampleInfo(
 			"""
 			↓/* This is a comment with config set to singleline */
 			""",
-			configuration: ["comment_style": "singleline"]),
-		Example(
+			configuration: ["comment_style": "singleline"],
+			multibyteMode: .singleline,
+			isTriggering: true),
+		ExampleInfo(
 			"""
 			↓/* This is a comment with config set to singleline */
 			// This is a comment
 			""",
-			configuration: ["comment_style": "singleline"]),
-		Example(
+			configuration: ["comment_style": "singleline"],
+			multibyteMode: .singleline,
+			isTriggering: true),
+		ExampleInfo(
 			"""
 			↓// This is a comment with config set to multiline
 			/* This is a comment */
 			""",
-			configuration: ["comment_style": "multiline"]),
-		Example(
+			configuration: ["comment_style": "multiline"],
+			isTriggering: true),
+		ExampleInfo(
 			"""
 			↓// This is
 			// five lines
@@ -148,37 +174,38 @@ struct CommentStyleRuleExamples {
 			configuration: [
 				"comment_style": "mixed",
 				"line_comment_threshold": 5,
-			]),
+			],
+			isTriggering: true),
 	]
 
-	private static func wrapExample(_ example: Example, shouldBePassing: Bool) -> [Example] {
-		let naked = example.with(code: """
-			\(example.code)
+	private static func wrapExample(_ exampleInfo: ExampleInfo) -> [Example] {
+		let naked = exampleInfo.example.with(code: """
+			\(exampleInfo.example.code)
 			""")
-		let inClass = example.with(code: """
+		let inClass = exampleInfo.example.with(code: """
 			class Foo {
-			\(example.code.appendIndentation(level: 1))
+			\(exampleInfo.example.code.appendIndentation(level: 1))
 			}
 			""")
-		let inFunction = example.with(code: """
+		let inFunction = exampleInfo.example.with(code: """
 			class Foo {
 				func bar() {
-			\(example.code.appendIndentation(level: 2))
+			\(exampleInfo.example.code.appendIndentation(level: 2))
 				}
 			}
 			""")
 
-		let inClosure = example.with(code: """
+		let inClosure = exampleInfo.example.with(code: """
 			class Foo {
 				let bar = {
-			\(example.code.appendIndentation(level: 2))
+			\(exampleInfo.example.code.appendIndentation(level: 2))
 				}
 			}
 			""")
 
 		let inString: Example?
-		if shouldBePassing {
-			inString = example.with(code: """
+		if exampleInfo.isTriggering == false {
+			inString = exampleInfo.example.with(code: """
 				class Bar {
 					let mahString = \"""
 						// A Comment!
@@ -187,7 +214,7 @@ struct CommentStyleRuleExamples {
 						It's actually a string!
 						tricksies and should not get triggered
 						*/
-				\(example.code.appendIndentation(level: 2))
+				\(exampleInfo.example.code.appendIndentation(level: 2))
 						\"""
 				}
 				""")
@@ -195,45 +222,31 @@ struct CommentStyleRuleExamples {
 			inString = nil
 		}
 
-		let inAll = example.with(code: """
+		let inAll = exampleInfo.example.with(code: """
 			class FooBar {
-			\(example.code.appendIndentation(level: 1))
+			\(exampleInfo.example.code.appendIndentation(level: 1))
 				let bar = {
-			\(example.code.appendIndentation(level: 2))
+			\(exampleInfo.example.code.appendIndentation(level: 2))
 				}
 
 				func bar() {
-			\(example.code.appendIndentation(level: 2))
+			\(exampleInfo.example.code.appendIndentation(level: 2))
 				}
 			}
 			""")
 
-		let firstCommentStyle = {
-			guard
-				let index = example.code.firstIndex(of: "/")
-			else { return CommentStyleRule.ConfigurationType.Style.mixed }
-
-			let characterAfter = example.code[example.code.index(after: index)]
-			switch characterAfter {
-			case "/":
-				return .singleline
-			case "*":
-				return .multiline
-			default: return .mixed
-			}
-		}()
 		let offsetString = {
-			let multiBytes = ""
-			switch firstCommentStyle {
+			let multiBytes = " 👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦 "
+			switch exampleInfo.multibyteMode {
 			case .singleline:
 				return "// \(multiBytes)\n"
 			default:
 				return "/*\n\(multiBytes)\n*/"
 			}
 		}()
-		let multiByteOffset = example.with(code: """
+		let multiByteOffset = exampleInfo.example.with(code: """
 			\(offsetString)
-			\(example.code)
+			\(exampleInfo.example.code)
 			""")
 
 		return [
@@ -246,6 +259,36 @@ struct CommentStyleRuleExamples {
 			multiByteOffset
 		].compactMap { $0 }
 
+	}
+
+	private struct ExampleInfo {
+		typealias Style = CommentStyleRule.ConfigurationType.Style
+		let example: Example
+		let multibyteMode: Style?
+		let isTriggering: Bool
+
+		init(
+			_ code: String,
+			configuration: [String: Any]? = nil,
+			multibyteMode: Style? = nil,
+			isTriggering: Bool,
+			file: StaticString = #file,
+			line: UInt = #line) {
+				self.example = Example(code, configuration: configuration, file: file, line: line)
+				self.multibyteMode = multibyteMode
+				self.isTriggering = isTriggering
+			}
+
+		init(example: Example, multibyteMode: Style? = nil, isTriggering: Bool) {
+			self.example = example
+			self.multibyteMode = multibyteMode
+			self.isTriggering = isTriggering
+		}
+
+		func editExample(_ block: (Example) -> Example) -> ExampleInfo {
+			let newExample = block(example)
+			return ExampleInfo(example: newExample, multibyteMode: multibyteMode, isTriggering: isTriggering)
+		}
 	}
 }
 

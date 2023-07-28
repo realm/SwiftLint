@@ -166,39 +166,39 @@ private extension PrivateSwiftUIStatePropertyRule {
         /// LIFO stack that is stores type inheritance clauses for each visited node
         /// The last value is the inheritance clause for the most recently visited node
         /// A nil value indicates that the node does not provide any inheritance clause
-        private var visitedTypeInheritances: [TypeInheritanceClauseSyntax?] = []
+        private var visitedTypeInheritances = Stack<TypeInheritanceClauseSyntax?>()
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            visitedTypeInheritances.append(node.inheritanceClause)
+            visitedTypeInheritances.push(node.inheritanceClause)
             return .visitChildren
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            visitedTypeInheritances.removeLast()
+            visitedTypeInheritances.pop()
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            visitedTypeInheritances.append(node.inheritanceClause)
+            visitedTypeInheritances.push(node.inheritanceClause)
             return .visitChildren
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            visitedTypeInheritances.removeLast()
+            visitedTypeInheritances.pop()
         }
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            visitedTypeInheritances.append(node.inheritanceClause)
+            visitedTypeInheritances.push(node.inheritanceClause)
             return .visitChildren
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            visitedTypeInheritances.removeLast()
+            visitedTypeInheritances.pop()
         }
 
         override func visitPost(_ node: MemberDeclListItemSyntax) {
             guard
                 let decl = node.decl.as(VariableDeclSyntax.self),
-                let inheritanceClause = visitedTypeInheritances.last as? TypeInheritanceClauseSyntax,
+                let inheritanceClause = visitedTypeInheritances.peek() as? TypeInheritanceClauseSyntax,
                 inheritanceClause.conformsToApplicableSwiftUIProtocol,
                 decl.attributes.hasStateAttribute,
                 !decl.modifiers.isPrivateOrFileprivate

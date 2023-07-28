@@ -13,6 +13,16 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
+            struct MyApp: App {
+                @State private var isPlaying: Bool = false
+            }
+            """),
+            Example("""
+            struct MyScene: Scene {
+                @State private var isPlaying: Bool = false
+            }
+            """),
+            Example("""
             struct ContentView: View {
                 @State private var isPlaying: Bool = false
             }
@@ -20,6 +30,13 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
             Example("""
             struct ContentView: View {
                 @State fileprivate var isPlaying: Bool = false
+            }
+            """),
+            Example("""
+            struct MyStruct {
+                struct ContentView: View {
+                    @State private var isPlaying: Bool = false
+                }
             }
             """),
             Example("""
@@ -57,8 +74,25 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
         ],
         triggeringExamples: [
             Example("""
+            struct MyApp: App {
+                @State ↓var isPlaying: Bool = false
+            }
+            """),
+            Example("""
+            struct MyScene: Scene {
+                @State ↓var isPlaying: Bool = false
+            }
+            """),
+            Example("""
             struct ContentView: View {
                 @State ↓var isPlaying: Bool = false
+            }
+            """),
+            Example("""
+            struct MyStruct {
+                struct ContentView: View {
+                    @State ↓var isPlaying: Bool = false
+                }
             }
             """),
             Example("""
@@ -92,21 +126,27 @@ private extension PrivateSwiftUIStatePropertyRule {
             [ProtocolDeclSyntax.self]
         }
 
+        private var isSwiftUIStatefulContext = false
+
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            node.inheritanceClause?.conformsToViewProtocol == true ? .visitChildren : .skipChildren
+            isSwiftUIStatefulContext = node.inheritanceClause?.conformsToApplicableSwiftUIProtocol ?? false
+            return .visitChildren
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            node.inheritanceClause?.conformsToViewProtocol == true ? .visitChildren : .skipChildren
+            isSwiftUIStatefulContext = node.inheritanceClause?.conformsToApplicableSwiftUIProtocol ?? false
+            return .visitChildren
         }
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            node.inheritanceClause?.conformsToViewProtocol == true ? .visitChildren : .skipChildren
+            isSwiftUIStatefulContext = node.inheritanceClause?.conformsToApplicableSwiftUIProtocol ?? false
+            return .visitChildren
         }
 
         override func visitPost(_ node: MemberDeclListItemSyntax) {
             guard
                 let decl = node.decl.as(VariableDeclSyntax.self),
+                isSwiftUIStatefulContext,
                 decl.attributes.hasStateAttribute,
                 !decl.modifiers.isPrivateOrFileprivate
             else {
@@ -119,18 +159,20 @@ private extension PrivateSwiftUIStatePropertyRule {
 }
 
 private extension TypeInheritanceClauseSyntax {
-    var conformsToViewProtocol: Bool {
-        inheritedTypeCollection.typeNames.contains("View")
+    static let applicableSwiftUIProtocols: Set<String> = ["View", "App", "Scene"]
+
+    var conformsToApplicableSwiftUIProtocol: Bool {
+        !inheritedTypeCollection.distinctTypeNames.isDisjoint(with: Self.applicableSwiftUIProtocols)
     }
 }
 
 private extension InheritedTypeListSyntax {
-    var typeNames: [String] {
-        compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }.map(\.name.text)
+    var distinctTypeNames: Set<String> {
+        Set(typeNames)
     }
 
-    var conformsToViewProtocol: Bool {
-        typeNames.contains("View")
+    var typeNames: [String] {
+        compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }.map(\.name.text)
     }
 }
 

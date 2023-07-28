@@ -163,7 +163,7 @@ private extension PrivateSwiftUIStatePropertyRule {
             [ProtocolDeclSyntax.self]
         }
 
-        /// LIFO stack that is stores type inheritance clauses for each visited node
+        /// LIFO stack that stores type inheritance clauses for each visited node
         /// The last value is the inheritance clause for the most recently visited node
         /// A nil value indicates that the node does not provide any inheritance clause
         private var visitedTypeInheritances = Stack<TypeInheritanceClauseSyntax?>()

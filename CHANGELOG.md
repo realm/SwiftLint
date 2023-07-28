@@ -19,6 +19,11 @@
 * Rewrite `control_statement` rule using SwiftSyntax.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Add new `private_swiftui_state_property` opt-in rule to encourage setting 
+  SwiftUI `@State` properties to private.  
+  [mt00chikin](https://github.com/mt00chikin)
+  [#3173](https://github.com/realm/SwiftLint/issues/3173)
+
 * Add `unneeded_override` rule to remove function overrides that only
   call super.  
   [keith](https://github.com/keith)

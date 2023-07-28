@@ -33,12 +33,31 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
             }
             """),
             Example("""
+            struct ContentView: View {
+                @State private var isPlaying: Bool = false
+
+                struct InnerView: View {
+                    @State private var showsIndicator: Bool = false
+                }
+            }
+            """),
+            Example("""
             struct MyStruct {
                 struct ContentView: View {
                     @State private var isPlaying: Bool = false
                 }
             }
             """),
+            Example("""
+            struct MyStruct {
+                struct ContentView: View {
+                    @State private var isPlaying: Bool = false
+                }
+
+                @State var nonTriggeringState: Bool = false
+            }
+            """),
+
             Example("""
             struct ContentView: View {
                 var isPlaying = false
@@ -89,10 +108,28 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
             }
             """),
             Example("""
+            struct ContentView: View {
+                struct InnerView: View {
+                    @State private var showsIndicator: Bool = false
+                }
+
+                @State ↓var isPlaying: Bool = false
+            }
+            """),
+            Example("""
             struct MyStruct {
                 struct ContentView: View {
                     @State ↓var isPlaying: Bool = false
                 }
+            }
+            """),
+            Example("""
+            struct MyStruct {
+                struct ContentView: View {
+                    @State ↓var isPlaying: Bool = false
+                }
+
+                @State var isPlaying: Bool = false
             }
             """),
             Example("""
@@ -126,27 +163,43 @@ private extension PrivateSwiftUIStatePropertyRule {
             [ProtocolDeclSyntax.self]
         }
 
-        private var isSwiftUIStatefulContext = false
+        /// LIFO stack that is stores type inheritance clauses for each visited node
+        /// The last value is the inheritance clause for the most recently visited node
+        /// A nil value indicates that the node does not provide any inheritance clause
+        private var visitedTypeInheritances: [TypeInheritanceClauseSyntax?] = []
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            isSwiftUIStatefulContext = node.inheritanceClause?.conformsToApplicableSwiftUIProtocol ?? false
+            visitedTypeInheritances.append(node.inheritanceClause)
             return .visitChildren
+        }
+
+        override func visitPost(_ node: ClassDeclSyntax) {
+            visitedTypeInheritances.removeLast()
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            isSwiftUIStatefulContext = node.inheritanceClause?.conformsToApplicableSwiftUIProtocol ?? false
+            visitedTypeInheritances.append(node.inheritanceClause)
             return .visitChildren
         }
 
+        override func visitPost(_ node: StructDeclSyntax) {
+            visitedTypeInheritances.removeLast()
+        }
+
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            isSwiftUIStatefulContext = node.inheritanceClause?.conformsToApplicableSwiftUIProtocol ?? false
+            visitedTypeInheritances.append(node.inheritanceClause)
             return .visitChildren
+        }
+
+        override func visitPost(_ node: ActorDeclSyntax) {
+            visitedTypeInheritances.removeLast()
         }
 
         override func visitPost(_ node: MemberDeclListItemSyntax) {
             guard
                 let decl = node.decl.as(VariableDeclSyntax.self),
-                isSwiftUIStatefulContext,
+                let inheritanceClause = visitedTypeInheritances.last as? TypeInheritanceClauseSyntax,
+                inheritanceClause.conformsToApplicableSwiftUIProtocol,
                 decl.attributes.hasStateAttribute,
                 !decl.modifiers.isPrivateOrFileprivate
             else {
@@ -162,17 +215,17 @@ private extension TypeInheritanceClauseSyntax {
     static let applicableSwiftUIProtocols: Set<String> = ["View", "App", "Scene"]
 
     var conformsToApplicableSwiftUIProtocol: Bool {
-        !inheritedTypeCollection.distinctTypeNames.isDisjoint(with: Self.applicableSwiftUIProtocols)
+        inheritedTypeCollection.containsInheritedType(inheritedTypes: Self.applicableSwiftUIProtocols)
     }
 }
 
 private extension InheritedTypeListSyntax {
-    var distinctTypeNames: Set<String> {
-        Set(typeNames)
-    }
+    func containsInheritedType(inheritedTypes: Set<String>) -> Bool {
+        contains {
+            guard let simpleType = $0.typeName.as(SimpleTypeIdentifierSyntax.self) else { return false }
 
-    var typeNames: [String] {
-        compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }.map(\.name.text)
+            return inheritedTypes.contains(simpleType.name.text)
+        }
     }
 }
 

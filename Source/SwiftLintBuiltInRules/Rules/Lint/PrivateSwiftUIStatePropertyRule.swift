@@ -2,14 +2,14 @@ import SwiftSyntax
 
 /// Require that any state properties in SwiftUI be declared as private
 ///
-/// State properties should only be accessible from inside the View's body, or from methods called by it
+/// State properties should only be accessible from inside a SwiftUI App, View, or Scene, or from methods called by it
 struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "private_swiftui_state",
         name: "Private SwiftUI @State Properties",
-        description: "SwiftUI's state properties should be private",
+        description: "SwiftUI state properties should be private",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

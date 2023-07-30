@@ -71,6 +71,13 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4876](https://github.com/realm/SwiftLint/issues/4876)
 
+* The `no_magic_numbers` rule will not trigger for violations in an
+  extension, if the extended class inherits from one of the specified
+  `test_parent_classes`, as long as the class declaration and the
+  extension are in the same source file.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5137](https://github.com/realm/SwiftLint/issues/5137)
+
 ## 0.52.4: Lid Switch
 
 #### Breaking

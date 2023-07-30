@@ -88,11 +88,11 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
             Example("let a = b + ↓2.0"),
             Example("Color.primary.opacity(isAnimate ? ↓0.1 : ↓1.5)"),
             Example("""
-            extension AVAsset {
-                enum VideoOrientation {
+            extension Foo {
+                enum Orientation {
                     case right, up, left, down
 
-                    static func fromVideoWithAngle(ofDegree degree: CGFloat) -> VideoOrientation? {
+                    static func fromAngle(ofDegree degree: CGFloat) -> Orientation? {
                         switch Int(degree) {
                         case 0: return .right
                         case ↓90: return .up
@@ -128,7 +128,7 @@ private extension NoMagicNumbersRule {
             let className = node.identifier.text
             if node.isXCTestCase(testParentClasses) {
                 testClasses.insert(className)
-                processPossibleViolations(forClassName: className)
+                removeViolations(forClassName: className)
             } else {
                 nonTestClasses.insert(className)
             }
@@ -154,13 +154,13 @@ private extension NoMagicNumbersRule {
             guard !node.isMemberOfATestClass(testParentClasses) else {
                 return
             }
-            if let extendedTypeName = node.extendedClassname() {
-                if testClasses.contains(extendedTypeName) == false {
+            if let extendedClassName = node.extendedClassName() {
+                if testClasses.contains(extendedClassName) == false {
                     violations.append(violation)
-                    if nonTestClasses.contains(extendedTypeName) == false {
-                        var possibleViolationsForClass = possibleViolations[extendedTypeName] ?? []
+                    if nonTestClasses.contains(extendedClassName) == false {
+                        var possibleViolationsForClass = possibleViolations[extendedClassName] ?? []
                         possibleViolationsForClass.append(violation)
-                        possibleViolations[extendedTypeName] = possibleViolationsForClass
+                        possibleViolations[extendedClassName] = possibleViolationsForClass
                     }
                 }
             } else {
@@ -168,13 +168,11 @@ private extension NoMagicNumbersRule {
             }
         }
 
-        private func processPossibleViolations(forClassName className: String) {
+        private func removeViolations(forClassName className: String) {
             guard let possibleViolationsForClass = possibleViolations[className] else {
                 return
             }
-            if testClasses.contains(className) {
-                violations.removeAll { possibleViolationsForClass.contains($0) }
-            }
+            violations.removeAll { possibleViolationsForClass.contains($0) }
             possibleViolations[className] = nil
         }
     }
@@ -211,7 +209,7 @@ private extension ExprSyntaxProtocol {
         return false
     }
 
-    func extendedClassname() -> String? {
+    func extendedClassName() -> String? {
         var parent = parent
         while parent != nil {
             if let extensionDecl = parent?.as(ExtensionDeclSyntax.self) {

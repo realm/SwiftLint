@@ -172,7 +172,8 @@ private extension NoMagicNumbersRule {
             guard let possibleViolationsForClass = possibleViolations[className] else {
                 return
             }
-            violations.removeAll { possibleViolationsForClass.contains($0) }
+            let violationsToRemove = Set(possibleViolationsForClass)
+            violations.removeAll { violationsToRemove.contains($0) }
             possibleViolations[className] = nil
         }
     }

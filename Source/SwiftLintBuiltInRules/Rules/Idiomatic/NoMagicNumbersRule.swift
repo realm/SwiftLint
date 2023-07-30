@@ -56,6 +56,28 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
                     let bar = array[42]
                 }
             }
+            """),
+            Example("""
+            class FooTests: XCTestCase {
+                let baz: [Int] = Array(repeating: 0, count: 10)
+            }
+
+            extension FooTests {
+                class Bar {
+                   let baz: [Int] = Array(repeating: 0, count: 10)
+                }
+            }
+            """),
+            Example("""
+            extension FooTests {
+                class Bar {
+                   let baz: [Int] = Array(repeating: 0, count: 10)
+                }
+            }
+
+            class FooTests: XCTestCase {
+                let baz: [Int] = Array(repeating: 0, count: 10)
+            }
             """)
         ],
         triggeringExamples: [
@@ -76,22 +98,65 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
 private extension NoMagicNumbersRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let testParentClasses: Set<String>
+        private var testClasses: Set<String> = []
+        private var nonTestClasses: Set<String> = []
+        private var possibleViolations: [String: [ReasonedRuleViolation]] = [:]
 
         init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
             self.testParentClasses = testParentClasses
             super.init(viewMode: viewMode)
         }
 
-        override func visitPost(_ node: FloatLiteralExprSyntax) {
-            if node.isMemberOfATestClass(testParentClasses) == false, node.floatingDigits.isMagicNumber {
-                violations.append(node.floatingDigits.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: ClassDeclSyntax) {
+            let className = node.trimmedDescription
+            if node.isXCTestCase(testParentClasses) {
+                testClasses.insert(className)
+            } else {
+                nonTestClasses.insert(className)
             }
+            processPossibleViolations(forClassName: className)
+        }
+
+        override func visitPost(_ node: FloatLiteralExprSyntax) {
+            guard node.floatingDigits.isMagicNumber else {
+                return
+            }
+            let violation = node.floatingDigits.positionAfterSkippingLeadingTrivia
+            process(violation: violation, forNode: node)
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
-            if node.isMemberOfATestClass(testParentClasses) == false, node.digits.isMagicNumber {
-                violations.append(node.digits.positionAfterSkippingLeadingTrivia)
+            guard node.digits.isMagicNumber else {
+                return
             }
+            let violation = node.digits.positionAfterSkippingLeadingTrivia
+            process(violation: violation, forNode: node)
+        }
+
+        private func process(violation: AbsolutePosition, forNode node: ExprSyntaxProtocol) {
+            guard !node.isMemberOfATestClass(testParentClasses) else {
+                return
+            }
+            if let extendedTypeName = node.extendedClassname() {
+                if testClasses.contains(extendedTypeName) {
+                    violations.append(violation)
+                } else if nonTestClasses.contains(extendedTypeName) == false {
+                    var possibleViolationsForClass = possibleViolations[extendedTypeName] ?? []
+                    possibleViolationsForClass.append(violation)
+                    possibleViolations[extendedTypeName] = possibleViolationsForClass
+                }
+            } else {
+                violations.append(violation)
+            }
+        }
+
+        private func processPossibleViolations(forClassName className: String) {
+            guard let possibleViolationsForClass = possibleViolations[className] else {
+                return
+            }
+            violations.append(contentsOf: possibleViolationsForClass)
+            violations.sort(by: { $0.position < $1.position })
+            possibleViolations[className] = nil
         }
     }
 }
@@ -125,5 +190,16 @@ private extension ExprSyntaxProtocol {
             parent = parent?.parent
         }
         return false
+    }
+
+    func extendedClassname() -> String? {
+        var parent = parent
+        while parent != nil {
+            if let extensionDecl = parent?.as(ExtensionDeclSyntax.self) {
+                return extensionDecl.extendedType.trimmedDescription
+            }
+            parent = parent?.parent
+        }
+        return nil
     }
 }

@@ -19,6 +19,10 @@
 * Rewrite `control_statement` rule using SwiftSyntax.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* The Homebrew formula for SwiftLint now also installs completion scripts for
+  Bash, Zsh and fish.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Add new `private_swiftui_state_property` opt-in rule to encourage setting 
   SwiftUI `@State` properties to private.  
   [mt00chikin](https://github.com/mt00chikin)

@@ -67,7 +67,7 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
                    let baz: [Int] = Array(repeating: 0, count: 10)
                 }
             }
-            """),
+            """).focused(),
             Example("""
             extension FooTests {
                 class Bar {
@@ -86,7 +86,24 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
             Example("array[↓42]"),
             Example("let box = array[↓12 + ↓14]"),
             Example("let a = b + ↓2.0"),
-            Example("Color.primary.opacity(isAnimate ? ↓0.1 : ↓1.5)")
+            Example("Color.primary.opacity(isAnimate ? ↓0.1 : ↓1.5)"),
+            Example("""
+            extension AVAsset {
+                enum VideoOrientation {
+                    case right, up, left, down
+
+                    static func fromVideoWithAngle(ofDegree degree: CGFloat) -> VideoOrientation? {
+                        switch Int(degree) {
+                        case 0: return .right
+                        case ↓90: return .up
+                        case ↓180: return .left
+                        case -↓90: return .down
+                        default: return nil
+                        }
+                    }
+                }
+            }
+            """)
         ]
     )
 
@@ -108,13 +125,13 @@ private extension NoMagicNumbersRule {
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            let className = node.trimmedDescription
+            let className = node.identifier.text
             if node.isXCTestCase(testParentClasses) {
                 testClasses.insert(className)
+                processPossibleViolations(forClassName: className)
             } else {
                 nonTestClasses.insert(className)
             }
-            processPossibleViolations(forClassName: className)
         }
 
         override func visitPost(_ node: FloatLiteralExprSyntax) {
@@ -138,12 +155,13 @@ private extension NoMagicNumbersRule {
                 return
             }
             if let extendedTypeName = node.extendedClassname() {
-                if testClasses.contains(extendedTypeName) {
+                if testClasses.contains(extendedTypeName) == false {
                     violations.append(violation)
-                } else if nonTestClasses.contains(extendedTypeName) == false {
-                    var possibleViolationsForClass = possibleViolations[extendedTypeName] ?? []
-                    possibleViolationsForClass.append(violation)
-                    possibleViolations[extendedTypeName] = possibleViolationsForClass
+                    if nonTestClasses.contains(extendedTypeName) == false {
+                        var possibleViolationsForClass = possibleViolations[extendedTypeName] ?? []
+                        possibleViolationsForClass.append(violation)
+                        possibleViolations[extendedTypeName] = possibleViolationsForClass
+                    }
                 }
             } else {
                 violations.append(violation)
@@ -154,8 +172,9 @@ private extension NoMagicNumbersRule {
             guard let possibleViolationsForClass = possibleViolations[className] else {
                 return
             }
-            violations.append(contentsOf: possibleViolationsForClass)
-            violations.sort(by: { $0.position < $1.position })
+            if testClasses.contains(className) {
+                violations.removeAll { possibleViolationsForClass.contains($0) }
+            }
             possibleViolations[className] = nil
         }
     }

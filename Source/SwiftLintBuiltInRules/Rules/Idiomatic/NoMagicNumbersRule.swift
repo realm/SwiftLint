@@ -67,7 +67,7 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
                    let baz: [Int] = Array(repeating: 0, count: 10)
                 }
             }
-            """).focused(),
+            """),
             Example("""
             extension FooTests {
                 class Bar {

@@ -414,21 +414,23 @@ public extension XCTestCase {
 
         // Disabled rule doesn't violate and disable command isn't superfluous
         for command in disableCommands {
-			let disabledTriggers = triggers
+            let disabledTriggers = triggers
                 .filter { $0.testDisableCommand }
                 .map { $0.with(code: command + $0.code) }
 
-			for trigger in disabledTriggers {
-				let violationsPartionedByType = makeViolations(trigger)
-					.partitioned { $0.ruleIdentifier == SuperfluousDisableCommandRule.description.identifier }
+            for trigger in disabledTriggers {
+                let violationsPartionedByType = makeViolations(trigger)
+                    .partitioned { $0.ruleIdentifier == SuperfluousDisableCommandRule.description.identifier }
 
-				XCTAssert(violationsPartionedByType.first.isEmpty,
-						  "Violation(s) still triggered although rule was disabled",
-						  file: trigger.file, line: trigger.line)
-				XCTAssert(violationsPartionedByType.second.isEmpty,
-						  "Disable command was superfluous since no violations(s) triggered",
-						  file: trigger.file, line: trigger.line)
-			}
+                XCTAssert(violationsPartionedByType.first.isEmpty,
+                          "Violation(s) still triggered although rule was disabled",
+                          file: trigger.file,
+                          line: trigger.line)
+                XCTAssert(violationsPartionedByType.second.isEmpty,
+                          "Disable command was superfluous since no violations(s) triggered",
+                          file: trigger.file,
+                          line: trigger.line)
+            }
         }
     }
 

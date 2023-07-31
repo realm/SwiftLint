@@ -12,7 +12,7 @@ struct CommentStyleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
 		name: "Comment Style",
 		description: """
 			Allows for options to enforce styling of comments. Should all comments be multiline comments? Should they be single
-			line? Or should there be a threshhold, where if x number of single line comments are in a row, should they be
+			line? Or should there be a threshold, where if x number of single line comments are in a row, should they be
 			multiline?
 			""",
 		kind: .style,

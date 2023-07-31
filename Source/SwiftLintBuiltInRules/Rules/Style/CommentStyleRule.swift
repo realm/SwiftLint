@@ -72,32 +72,22 @@ extension CommentStyleRule {
 				commentsAccumulator.removeAll()
 			}
 
-			let commands = file.commands.filter { $0.ruleIdentifiers.contains(.single(identifier: Parent.description.identifier)) }
-			var disabledLines: Set<Int> = []
-			var rangeStart: Int?
+			let commands = file.commands
+			var commandLines: Set<Int> = []
 			for command in commands {
 				switch command.action {
 				case .disable:
-					rangeStart = command.line
+					commandLines.insert(command.line)
 				case .enable:
-					guard let start = rangeStart else { queuedFatalError("Commands didn't make sense") }
-					for i in start..<command.line {
-						disabledLines.insert(i)
-					}
-					rangeStart = nil
+					commandLines.insert(command.line)
 				default: break
-				}
-			}
-			if let rangeStart {
-				for i in rangeStart...file.lines.count {
-					disabledLines.insert(i)
 				}
 			}
 
 			let fileData = Data(file.contents.utf8)
 			for classificationRange in file.syntaxClassifications {
 				let location = file.locationConverter.location(for: AbsolutePosition(utf8Offset: classificationRange.offset))
-				guard disabledLines.contains(location.line) == false else { continue }
+				guard commandLines.contains(location.line) == false else { continue }
 
 				switch classificationRange.kind {
 				case _ where classificationRange.kind.isComment == true:

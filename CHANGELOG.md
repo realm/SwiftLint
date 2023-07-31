@@ -33,6 +33,11 @@
   [keith](https://github.com/keith)
   [5139](https://github.com/realm/SwiftLint/pull/5139)
 
+* Add `comment_style` rules to allow specifying whether a project should have a
+  specific comment style, between multiline and single line comments.  
+  [Michael Redig](https://github.com/mredig)
+  [PR 5148](https://github.com/realm/SwiftLint/pull/5148)
+
 #### Bug Fixes
 
 * Fix false positive in `control_statement` rule that triggered on conditions

@@ -7,14 +7,13 @@ struct CommentStyleConfiguration: RuleConfiguration, Equatable {
 	/// Set this value to enforce a comment style for the entire project. If unset, each file will be evaluated
 	/// individually and enforce consistency with whatever style appears first within the file.
 	@ConfigurationElement(key: "comment_style")
-	private(set) var commentStyle: Style? = nil
+	private(set) var commentStyle: Style?
 	/// The number of single line comments allowed before requiring a multiline comment.
 	/// Only valid when `comment_style` is set to `mixed`
 	@ConfigurationElement(key: "line_comment_threshold")
-	private(set) var lineCommentThreshold: Int? = nil
+	private(set) var lineCommentThreshold: Int?
 	@ConfigurationElement(key: "severity")
 	private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-
 
 	mutating func apply(configuration: Any) throws {
 		guard
@@ -48,7 +47,6 @@ extension CommentStyleConfiguration {
 		func asOption() -> SwiftLintCore.OptionType { .string(rawValue) }
 	}
 }
-
 
 extension Dictionary where Key == String, Value == Any {
 	subscript<T>(key key: String) -> T? {

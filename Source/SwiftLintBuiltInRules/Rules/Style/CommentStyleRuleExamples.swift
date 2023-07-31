@@ -94,7 +94,7 @@ struct CommentStyleRuleExamples {
 			""",
 			configuration: [
 				"comment_style": "mixed",
-				"line_comment_threshold": 6,
+				"line_comment_threshold": 6
 			],
 			isTriggering: false),
 		ExampleInfo(
@@ -114,9 +114,9 @@ struct CommentStyleRuleExamples {
 			""",
 			configuration: [
 				"comment_style": "mixed",
-				"line_comment_threshold": 4,
+				"line_comment_threshold": 4
 			],
-			isTriggering: false),
+			isTriggering: false)
 	]
 
 	private static let failingExamples = [
@@ -173,11 +173,12 @@ struct CommentStyleRuleExamples {
 			""",
 			configuration: [
 				"comment_style": "mixed",
-				"line_comment_threshold": 5,
+				"line_comment_threshold": 5
 			],
-			isTriggering: true),
+			isTriggering: true)
 	]
 
+	// swiftlint:disable:next function_body_length
 	private static func wrapExample(_ exampleInfo: ExampleInfo) -> [Example] {
 		let naked = exampleInfo.example.with(code: """
 			\(exampleInfo.example.code)
@@ -264,8 +265,9 @@ struct CommentStyleRuleExamples {
 	}
 
 	private struct ExampleInfo {
-		typealias Style = CommentStyleRule.ConfigurationType.Style
 		let example: Example
+
+		typealias Style = CommentStyleRule.ConfigurationType.Style // swiftlint:disable:this nesting
 		let multibyteMode: Style?
 		let isTriggering: Bool
 

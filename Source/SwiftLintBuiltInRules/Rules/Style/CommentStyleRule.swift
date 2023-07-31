@@ -1,9 +1,10 @@
 import Foundation
-import SwiftSyntax
 import SwiftIDEUtils
+import SwiftSyntax
 
 struct CommentStyleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
 	typealias ConfigurationType = CommentStyleConfiguration
+
 	var configuration = ConfigurationType()
 
 	static let description = RuleDescription(
@@ -26,16 +27,17 @@ struct CommentStyleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
 
 extension CommentStyleRule {
 	class Visitor: ViolationsSyntaxVisitor {
-		typealias Parent = CommentStyleRule
+		typealias Parent = CommentStyleRule // swiftlint:disable:this nesting
+
 		private let allCommentGroupings: [CommentGrouping]
 		let file: SwiftLintFile
 
 		let configuration: Parent.ConfigurationType
 
-		typealias Style = Parent.ConfigurationType.Style
+		typealias Style = Parent.ConfigurationType.Style // swiftlint:disable:this nesting
 		private var commentStyle: Style?
 
-		enum CommentGrouping {
+		enum CommentGrouping { // swiftlint:disable:this nesting
 			case singleline([SyntaxClassifiedRange])
 			case multiline([SyntaxClassifiedRange])
 			case singlelineDoc([SyntaxClassifiedRange])
@@ -72,16 +74,8 @@ extension CommentStyleRule {
 				commentsAccumulator.removeAll()
 			}
 
-			let commands = file.commands
-			var commandLines: Set<Int> = []
-			for command in commands {
-				switch command.action {
-				case .disable:
-					commandLines.insert(command.line)
-				case .enable:
-					commandLines.insert(command.line)
-				default: break
-				}
+			let commandLines = file.commands.reduce(into: Set<Int>()) { commandLines, command in
+				commandLines.insert(command.line)
 			}
 
 			let fileData = Data(file.contents.utf8)
@@ -99,7 +93,6 @@ extension CommentStyleRule {
 					if
 						let text = Self.convertToString(from: classificationRange, withOriginalStringData: fileData),
 						text.countOccurrences(of: "\n") > 1 {
-
 						appendCommentsAccumulator()
 					}
 				default:
@@ -158,13 +151,9 @@ extension CommentStyleRule {
 			}
 		}
 
-		func visitPostDocComment(_ commentRangeGroup: [SyntaxClassifiedRange]) {
+		func visitPostDocComment(_ commentRangeGroup: [SyntaxClassifiedRange]) {}
 
-		}
-
-		func visitPostBlockDockComment(_ commentRangeGroup: [SyntaxClassifiedRange]) {
-
-		}
+		func visitPostBlockDockComment(_ commentRangeGroup: [SyntaxClassifiedRange]) {}
 
 		private func validateCommentStyle(_ style: Style) -> Validation {
 			let commentStyle = self.commentStyle ?? style
@@ -198,10 +187,12 @@ extension CommentStyleRule {
 			}
 		}
 
-		private static func convertToString(from range: SyntaxClassifiedRange, withOriginalStringData originalStringData: Data) -> String? {
-			let content = originalStringData[range.range.dataRange]
-			return String(data: content, encoding: .utf8)
-		}
+		private static func convertToString(
+			from range: SyntaxClassifiedRange,
+			withOriginalStringData originalStringData: Data) -> String? {
+				let content = originalStringData[range.range.dataRange]
+				return String(data: content, encoding: .utf8)
+			}
 
 		@discardableResult
 		private func appendViolation(
@@ -223,7 +214,7 @@ extension CommentStyleRule {
 	}
 }
 
-extension ByteSourceRange {
+private extension ByteSourceRange {
 	var dataRange: Range<Int> {
 		offset..<endOffset
 	}

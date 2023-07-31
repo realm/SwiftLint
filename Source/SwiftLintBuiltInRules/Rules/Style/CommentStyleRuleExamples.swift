@@ -292,6 +292,10 @@ struct CommentStyleRuleExamples {
 			let newExample = block(example)
 			return ExampleInfo(example: newExample, multibyteMode: multibyteMode, isTriggering: isTriggering)
 		}
+
+		func focused() -> ExampleInfo {
+			editExample { $0.focused() }
+		}
 	}
 }
 

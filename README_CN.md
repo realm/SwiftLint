@@ -316,6 +316,31 @@ $ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 
 在 Linux 上，SourceKit 默认需要位于 `/usr/lib/libsourcekitdInProc.so` 或者通过 `LINUX_SOURCEKIT_LIB_PATH` 环境变量进行指定。
 
+### 预提交
+
+SwiftLint 可以作为一个 [预提交](https://pre-commit.com/) 钩子运行。
+一当 [安装](https://pre-commit.com/#install)，把这个添加到在 root 路径中的
+`.pre-commit-config.yaml` 里：
+
+```yaml
+repos:
+  - repo: https://github.com/realm/SwiftLint
+    rev: 0.50.3
+    hooks:
+      - id: swiftlint
+```
+
+将 `rev` 调整为您选择的 SwiftLint 版本。可以使用 `pre-commit autoupdate` 来更新到当前版本。
+
+SwiftLint 可以使用 `entry` 进行配置以应用修复和报错：
+```yaml
+-   repo: https://github.com/realm/SwiftLint
+    rev: 0.50.3
+    hooks:
+    -   id: swiftlint
+        entry: swiftlint --fix --strict
+```
+
 ## 规则
 
 SwiftLint 已经包含了超过 200 条规则，并且我们希望 Swift 社区（就是你！）会在以后有更多的贡献，我们鼓励提交 [Pull Requests](CONTRIBUTING.md)。

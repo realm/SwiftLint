@@ -420,82 +420,22 @@ error
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">-=</span> <span class="mi">1</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">-=</span> <span class="n">variable</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">-=</span> <span class="n">bar</span><span class="o">.</span><span class="nf">method</span><span class="p">()</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">-</span> <span class="mi">1</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">-</span> <span class="mi">1</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">page</span> <span class="o">=</span> <span class="nf">ceilf</span><span class="p">(</span><span class="n">currentOffset</span> <span class="o">-</span> <span class="n">pageWidth</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">foo</span> <span class="o">-</span> <span class="n">bar</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">bar</span> <span class="o">-</span> <span class="n">foo</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="o">-=</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Foo</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">lhs</span> <span class="o">=</span> <span class="n">lhs</span> <span class="o">-</span> <span class="n">rhs</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">/=</span> <span class="mi">1</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">/=</span> <span class="n">variable</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">/=</span> <span class="n">bar</span><span class="o">.</span><span class="nf">method</span><span class="p">()</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">/</span> <span class="mi">1</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">/</span> <span class="mi">1</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">page</span> <span class="o">=</span> <span class="nf">ceilf</span><span class="p">(</span><span class="n">currentOffset</span> <span class="o">/</span> <span class="n">pageWidth</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">foo</span> <span class="o">/</span> <span class="n">bar</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">bar</span> <span class="o">/</span> <span class="n">foo</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="o">/=</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Foo</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">lhs</span> <span class="o">=</span> <span class="n">lhs</span> <span class="o">/</span> <span class="n">rhs</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">+=</span> <span class="mi">1</span>
-</code></pre>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">+=</span> <span class="n">variable</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">+=</span> <span class="n">bar</span><span class="o">.</span><span class="nf">method</span><span class="p">()</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">+</span> <span class="mi">1</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">+</span> <span class="mi">1</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">page</span> <span class="o">=</span> <span class="nf">ceilf</span><span class="p">(</span><span class="n">currentOffset</span> <span class="o">+</span> <span class="n">pageWidth</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">foo</span> <span class="o">+</span> <span class="n">bar</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">bar</span> <span class="o">+</span> <span class="n">foo</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="o">+=</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Foo</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">lhs</span> <span class="o">=</span> <span class="n">lhs</span> <span class="o">+</span> <span class="n">rhs</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">*=</span> <span class="mi">1</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">*=</span> <span class="n">variable</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">*=</span> <span class="n">bar</span><span class="o">.</span><span class="nf">method</span><span class="p">()</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">*</span> <span class="mi">1</span>
+<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">/</span> <span class="mi">1</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">*</span> <span class="mi">1</span>
+<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">+</span> <span class="mi">1</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">page</span> <span class="o">=</span> <span class="nf">ceilf</span><span class="p">(</span><span class="n">currentOffset</span> <span class="o">*</span> <span class="n">pageWidth</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">foo</span> <span class="o">*</span> <span class="n">bar</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">foo</span> <span class="o">/</span> <span class="n">bar</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">bar</span> <span class="o">*</span> <span class="n">foo</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">bar</span> <span class="o">+</span> <span class="n">foo</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="o">*=</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Foo</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">lhs</span> <span class="o">=</span> <span class="n">lhs</span> <span class="o">*</span> <span class="n">rhs</span>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="o">-=</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Foo</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">lhs</span> <span class="o">=</span> <span class="n">lhs</span> <span class="o">-</span> <span class="n">rhs</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">helloWorld</span> <span class="o">=</span> <span class="s">"world!"</span>
@@ -506,65 +446,15 @@ error
 <pre class="highlight swift"><code><span class="n">seconds</span> <span class="o">=</span> <span class="n">seconds</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">value</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">-</span> <span class="mi">1</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">-</span> <span class="n">aVariable</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">-</span> <span class="n">bar</span><span class="o">.</span><span class="nf">method</span><span class="p">()</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">=</span> <span class="n">foo</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">-</span> <span class="mi">1</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">self</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">-</span> <span class="mi">1</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">/</span> <span class="mi">1</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">*</span> <span class="mi">1</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">/</span> <span class="n">aVariable</span>
-
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">/</span> <span class="n">bar</span><span class="o">.</span><span class="nf">method</span><span class="p">()</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">-</span> <span class="n">bar</span><span class="o">.</span><span class="nf">method</span><span class="p">()</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">=</span> <span class="n">foo</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">/</span> <span class="mi">1</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">self</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">/</span> <span class="mi">1</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">+</span> <span class="mi">1</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">+</span> <span class="n">aVariable</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">+</span> <span class="n">bar</span><span class="o">.</span><span class="nf">method</span><span class="p">()</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">=</span> <span class="n">foo</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">+</span> <span class="mi">1</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">self</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">+</span> <span class="mi">1</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">*</span> <span class="mi">1</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">*</span> <span class="n">aVariable</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">*</span> <span class="n">bar</span><span class="o">.</span><span class="nf">method</span><span class="p">()</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">=</span> <span class="n">foo</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">*</span> <span class="mi">1</span>
-
+<pre class="highlight swift"><code><span class="err">↓</span><span class="n">foo</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">=</span> <span class="n">foo</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">-</span> <span class="mi">1</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="k">self</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">aProperty</span> <span class="o">*</span> <span class="mi">1</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">i</span> <span class="o">/</span> <span class="n">outputLength</span>
 </code></pre>

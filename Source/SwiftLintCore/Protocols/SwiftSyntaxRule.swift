@@ -138,4 +138,3 @@ public extension Set where Element == ReasonedRuleViolation {
         insert(ReasonedRuleViolation(position: position))
     }
 }
-

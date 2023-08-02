@@ -68,7 +68,7 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
                 let a = Int(3)
             }
             class MyTest: XCTestCase {}
-            """),
+            """)
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -82,7 +82,7 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
                     extension NSObject {
                         let a = Int(↓3)
                     }
-            """),
+            """)
         ]
     )
 

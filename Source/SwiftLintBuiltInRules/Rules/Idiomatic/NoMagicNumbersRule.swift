@@ -58,27 +58,17 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
             }
             """),
             Example("""
-            class FooTests: XCTestCase {
-                let baz: [Int] = Array(repeating: 0, count: 10)
-            }
-
-            extension FooTests {
-                class Bar {
-                   let baz: [Int] = Array(repeating: 0, count: 10)
-                }
+            class MyTest: XCTestCase {}
+            extension MyTest {
+                let a = Int(3)
             }
             """),
             Example("""
-            extension FooTests {
-                class Bar {
-                   let baz: [Int] = Array(repeating: 0, count: 10)
-                }
+            extension MyTest {
+                let a = Int(3)
             }
-
-            class FooTests: XCTestCase {
-                let baz: [Int] = Array(repeating: 0, count: 10)
-            }
-            """)
+            class MyTest: XCTestCase {}
+            """),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -88,22 +78,11 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
             Example("let a = b + ↓2.0"),
             Example("Color.primary.opacity(isAnimate ? ↓0.1 : ↓1.5)"),
             Example("""
-            extension Foo {
-                enum Orientation {
-                    case right, up, left, down
-
-                    static func fromAngle(ofDegree degree: CGFloat) -> Orientation? {
-                        switch Int(degree) {
-                        case 0: return .right
-                        case ↓90: return .up
-                        case ↓180: return .left
-                        case -↓90: return .down
-                        default: return nil
-                        }
+                    class MyTest: XCTestCase {}
+                    extension NSObject {
+                        let a = Int(↓3)
                     }
-                }
-            }
-            """)
+            """),
         ]
     )
 

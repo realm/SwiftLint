@@ -133,9 +133,9 @@ private extension NoMagicNumbersRule {
             }
             let violation = node.positionAfterSkippingLeadingTrivia
             if let extendedTypeName = node.extendedTypeName() {
-                if testClasses.contains(extendedTypeName) == false {
+                if !testClasses.contains(extendedTypeName) {
                     violations.append(violation)
-                    if nonTestClasses.contains(extendedTypeName) == false {
+                    if !nonTestClasses.contains(extendedTypeName) {
                         possibleViolations[extendedTypeName, default: []].insert(violation)
                     }
                 }

@@ -96,7 +96,7 @@ private extension NoMagicNumbersRule {
         private let testParentClasses: Set<String>
         private var testClasses: Set<String> = []
         private var nonTestClasses: Set<String> = []
-        private var possibleViolations: [String: [ReasonedRuleViolation]] = [:]
+        private var possibleViolations: [String: Set<ReasonedRuleViolation>] = [:]
 
         init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
             self.testParentClasses = testParentClasses
@@ -138,7 +138,7 @@ private extension NoMagicNumbersRule {
                     violations.append(violation)
                     if nonTestClasses.contains(extendedClassName) == false {
                         var possibleViolationsForClass = possibleViolations[extendedClassName] ?? []
-                        possibleViolationsForClass.append(violation)
+                        possibleViolationsForClass.insert(violation)
                         possibleViolations[extendedClassName] = possibleViolationsForClass
                     }
                 }
@@ -148,12 +148,11 @@ private extension NoMagicNumbersRule {
         }
 
         private func removeViolations(forClassName className: String) {
-            guard let possibleViolationsForClass = possibleViolations[className] else {
+            guard let violationsToRemove = possibleViolations[className] else {
                 return
             }
-            let violationsToRemove = Set(possibleViolationsForClass)
             violations.removeAll { violationsToRemove.contains($0) }
-            possibleViolations[className] = nil
+            possibleViolations.removeValue(forKey: className)
         }
     }
 }

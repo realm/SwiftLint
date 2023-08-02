@@ -117,22 +117,21 @@ private extension NoMagicNumbersRule {
             guard node.floatingDigits.isMagicNumber else {
                 return
             }
-            let violation = node.floatingDigits.positionAfterSkippingLeadingTrivia
-            process(violation: violation, forNode: node)
+            collectViolation(forNode: node)
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
             guard node.digits.isMagicNumber else {
                 return
             }
-            let violation = node.digits.positionAfterSkippingLeadingTrivia
-            process(violation: violation, forNode: node)
+            collectViolation(forNode: node)
         }
 
-        private func process(violation: AbsolutePosition, forNode node: ExprSyntaxProtocol) {
-            guard !node.isMemberOfATestClass(testParentClasses) else {
+        private func collectViolation(forNode node: ExprSyntaxProtocol) {
+            if node.isMemberOfATestClass(testParentClasses) {
                 return
             }
+            let violation = node.positionAfterSkippingLeadingTrivia
             if let extendedTypeName = node.extendedTypeName() {
                 if testClasses.contains(extendedTypeName) == false {
                     violations.append(violation)

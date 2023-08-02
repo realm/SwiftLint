@@ -133,13 +133,13 @@ private extension NoMagicNumbersRule {
             guard !node.isMemberOfATestClass(testParentClasses) else {
                 return
             }
-            if let extendedClassName = node.extendedClassName() {
-                if testClasses.contains(extendedClassName) == false {
+            if let extendedTypeName = node.extendedTypeName() {
+                if testClasses.contains(extendedTypeName) == false {
                     violations.append(violation)
-                    if nonTestClasses.contains(extendedClassName) == false {
-                        var possibleViolationsForClass = possibleViolations[extendedClassName] ?? []
+                    if nonTestClasses.contains(extendedTypeName) == false {
+                        var possibleViolationsForClass = possibleViolations[extendedTypeName] ?? []
                         possibleViolationsForClass.insert(violation)
-                        possibleViolations[extendedClassName] = possibleViolationsForClass
+                        possibleViolations[extendedTypeName] = possibleViolationsForClass
                     }
                 }
             } else {
@@ -188,7 +188,7 @@ private extension ExprSyntaxProtocol {
         return false
     }
 
-    func extendedClassName() -> String? {
+    func extendedTypeName() -> String? {
         var parent = parent
         while parent != nil {
             if let extensionDecl = parent?.as(ExtensionDeclSyntax.self) {

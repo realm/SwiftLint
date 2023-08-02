@@ -136,9 +136,7 @@ private extension NoMagicNumbersRule {
                 if testClasses.contains(extendedTypeName) == false {
                     violations.append(violation)
                     if nonTestClasses.contains(extendedTypeName) == false {
-                        var possibleViolationsForClass = possibleViolations[extendedTypeName] ?? []
-                        possibleViolationsForClass.insert(violation)
-                        possibleViolations[extendedTypeName] = possibleViolationsForClass
+                        possibleViolations[extendedTypeName, default: []].insert(violation)
                     }
                 }
             } else {

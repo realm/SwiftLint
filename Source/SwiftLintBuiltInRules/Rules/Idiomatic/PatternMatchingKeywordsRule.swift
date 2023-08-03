@@ -9,27 +9,27 @@ struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProviderRule, 
         description: "Combine multiple pattern matching bindings by moving keywords out of tuples",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "default",
-            "case 1",
-            "case bar",
-            "case let (x, y)",
-            "case .foo(let x)",
-            "case let .foo(x, y)",
-            "case .foo(let x), .bar(let x)",
-            "case .foo(let x, var y)",
-            "case var (x, y)",
-            "case .foo(var x)",
-            "case var .foo(x, y)"
+            Example("default"),
+            Example("case 1"),
+            Example("case bar"),
+            Example("case let (x, y)"),
+            Example("case .foo(let x)"),
+            Example("case let .foo(x, y)"),
+            Example("case .foo(let x), .bar(let x)"),
+            Example("case .foo(let x, var y)"),
+            Example("case var (x, y)"),
+            Example("case .foo(var x)"),
+            Example("case var .foo(x, y)")
         ].map(wrapInSwitch),
         triggeringExamples: [
-            "case (↓let x,  ↓let y)",
-            "case (↓let x,  ↓let y, .foo)",
-            "case (↓let x,  ↓let y, _)",
-            "case .foo(↓let x, ↓let y)",
-            "case (.yamlParsing(↓let x), .yamlParsing(↓let y))",
-            "case (↓var x,  ↓var y)",
-            "case .foo(↓var x, ↓var y)",
-            "case (.yamlParsing(↓var x), .yamlParsing(↓var y))"
+            Example("case (↓let x,  ↓let y)"),
+            Example("case (↓let x,  ↓let y, .foo)"),
+            Example("case (↓let x,  ↓let y, _)"),
+            Example("case .foo(↓let x, ↓let y)"),
+            Example("case (.yamlParsing(↓let x), .yamlParsing(↓let y))"),
+            Example("case (↓var x,  ↓var y)"),
+            Example("case .foo(↓var x, ↓var y)"),
+            Example("case (.yamlParsing(↓var x), .yamlParsing(↓var y))")
         ].map(wrapInSwitch)
     )
 

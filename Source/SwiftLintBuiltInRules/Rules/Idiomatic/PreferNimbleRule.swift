@@ -9,16 +9,16 @@ struct PreferNimbleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
         description: "Prefer Nimble matchers over XCTAssert functions",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "expect(foo) == 1",
-            "expect(foo).to(equal(1))"
+            Example("expect(foo) == 1"),
+            Example("expect(foo).to(equal(1))")
         ],
         triggeringExamples: [
-            "↓XCTAssertTrue(foo)",
-            "↓XCTAssertEqual(foo, 2)",
-            "↓XCTAssertNotEqual(foo, 2)",
-            "↓XCTAssertNil(foo)",
-            "↓XCTAssert(foo)",
-            "↓XCTAssertGreaterThan(foo, 10)"
+            Example("↓XCTAssertTrue(foo)"),
+            Example("↓XCTAssertEqual(foo, 2)"),
+            Example("↓XCTAssertNotEqual(foo, 2)"),
+            Example("↓XCTAssertNil(foo)"),
+            Example("↓XCTAssert(foo)"),
+            Example("↓XCTAssertGreaterThan(foo, 10)")
         ]
     )
 

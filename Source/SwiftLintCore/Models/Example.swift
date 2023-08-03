@@ -147,13 +147,6 @@ extension Example: Comparable {
     }
 }
 
-/// Allows to initialize an ``Example`` as `let example: Example = "..."`.
-extension Example: ExpressibleByStringInterpolation {
-    public init(stringLiteral value: String) {
-        self.init(value)
-    }
-}
-
 public extension Array where Element == Example {
     /// Make these examples skip wrapping in comment tests.
     func skipWrappingInCommentTests() -> Self {

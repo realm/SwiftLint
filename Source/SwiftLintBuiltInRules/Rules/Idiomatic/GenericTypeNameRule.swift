@@ -14,36 +14,36 @@ struct GenericTypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
                      "uppercase character and span between 1 and 20 characters in length.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "func foo<T>() {}\n",
-            "func foo<T>() -> T {}\n",
-            "func foo<T, U>(param: U) -> T {}\n",
-            "func foo<T: Hashable, U: Rule>(param: U) -> T {}\n",
-            "struct Foo<T> {}\n",
-            "class Foo<T> {}\n",
-            "enum Foo<T> {}\n",
-            "func run(_ options: NoOptions<CommandantError<()>>) {}\n",
-            "func foo(_ options: Set<type>) {}\n",
-            "func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool\n",
-            "func configureWith(data: Either<MessageThread, (project: Project, backing: Backing)>)\n",
-            "typealias StringDictionary<T> = Dictionary<String, T>\n",
-            "typealias BackwardTriple<T1, T2, T3> = (T3, T2, T1)\n",
-            "typealias DictionaryOfStrings<T : Hashable> = Dictionary<T, String>\n"
+            Example("func foo<T>() {}\n"),
+            Example("func foo<T>() -> T {}\n"),
+            Example("func foo<T, U>(param: U) -> T {}\n"),
+            Example("func foo<T: Hashable, U: Rule>(param: U) -> T {}\n"),
+            Example("struct Foo<T> {}\n"),
+            Example("class Foo<T> {}\n"),
+            Example("enum Foo<T> {}\n"),
+            Example("func run(_ options: NoOptions<CommandantError<()>>) {}\n"),
+            Example("func foo(_ options: Set<type>) {}\n"),
+            Example("func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool\n"),
+            Example("func configureWith(data: Either<MessageThread, (project: Project, backing: Backing)>)\n"),
+            Example("typealias StringDictionary<T> = Dictionary<String, T>\n"),
+            Example("typealias BackwardTriple<T1, T2, T3> = (T3, T2, T1)\n"),
+            Example("typealias DictionaryOfStrings<T : Hashable> = Dictionary<T, String>\n")
         ],
         triggeringExamples: [
-            "func foo<↓T_Foo>() {}\n",
-            "func foo<T, ↓U_Foo>(param: U_Foo) -> T {}\n",
-            "func foo<↓\(String(repeating: "T", count: 21))>() {}\n",
-            "func foo<↓type>() {}\n",
-            "typealias StringDictionary<↓T_Foo> = Dictionary<String, T_Foo>\n",
-            "typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)\n",
-            "typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>\n"
+            Example("func foo<↓T_Foo>() {}\n"),
+            Example("func foo<T, ↓U_Foo>(param: U_Foo) -> T {}\n"),
+            Example("func foo<↓\(String(repeating: "T", count: 21))>() {}\n"),
+            Example("func foo<↓type>() {}\n"),
+            Example("typealias StringDictionary<↓T_Foo> = Dictionary<String, T_Foo>\n"),
+            Example("typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)\n"),
+            Example("typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>\n")
         ] + ["class", "struct", "enum"].flatMap { type -> [Example] in
             return [
-                "\(type) Foo<↓T_Foo> {}\n",
-                "\(type) Foo<T, ↓U_Foo> {}\n",
-                "\(type) Foo<↓T_Foo, ↓U_Foo> {}\n",
-                "\(type) Foo<↓\(String(repeating: "T", count: 21))> {}\n",
-                "\(type) Foo<↓type> {}\n"
+                Example("\(type) Foo<↓T_Foo> {}\n"),
+                Example("\(type) Foo<T, ↓U_Foo> {}\n"),
+                Example("\(type) Foo<↓T_Foo, ↓U_Foo> {}\n"),
+                Example("\(type) Foo<↓\(String(repeating: "T", count: 21))> {}\n"),
+                Example("\(type) Foo<↓type> {}\n")
             ]
         }
     )

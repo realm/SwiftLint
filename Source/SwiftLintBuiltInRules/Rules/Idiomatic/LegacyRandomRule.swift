@@ -9,14 +9,14 @@ struct LegacyRandomRule: SwiftSyntaxRule, ConfigurationProviderRule {
         description: "Prefer using `type.random(in:)` over legacy functions",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("Int.random(in: 0..<10)\n"),
-            Example("Double.random(in: 8.6...111.34)\n"),
-            Example("Float.random(in: 0 ..< 1)\n")
+            "Int.random(in: 0..<10)\n",
+            "Double.random(in: 8.6...111.34)\n",
+            "Float.random(in: 0 ..< 1)\n"
         ],
         triggeringExamples: [
-            Example("↓arc4random()\n"),
-            Example("↓arc4random_uniform(83)\n"),
-            Example("↓drand48()\n")
+            "↓arc4random()\n",
+            "↓arc4random_uniform(83)\n",
+            "↓drand48()\n"
         ]
     )
 

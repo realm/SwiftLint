@@ -9,16 +9,16 @@ struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, ConfigurationPr
         description: "Prefer initializers over object literals",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("let image = UIImage(named: aVariable)"),
-            Example("let image = UIImage(named: \"interpolated \\(variable)\")"),
-            Example("let color = UIColor(red: value, green: value, blue: value, alpha: 1)"),
-            Example("let image = NSImage(named: aVariable)"),
-            Example("let image = NSImage(named: \"interpolated \\(variable)\")"),
-            Example("let color = NSColor(red: value, green: value, blue: value, alpha: 1)")
+            "let image = UIImage(named: aVariable)",
+            "let image = UIImage(named: \"interpolated \\(variable)\")",
+            "let color = UIColor(red: value, green: value, blue: value, alpha: 1)",
+            "let image = NSImage(named: aVariable)",
+            "let image = NSImage(named: \"interpolated \\(variable)\")",
+            "let color = NSColor(red: value, green: value, blue: value, alpha: 1)"
         ],
         triggeringExamples: [
-            Example("let image = ↓#imageLiteral(resourceName: \"image.jpg\")"),
-            Example("let color = ↓#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)")
+            "let image = ↓#imageLiteral(resourceName: \"image.jpg\")",
+            "let color = ↓#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)"
         ]
     )
 

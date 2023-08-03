@@ -1,56 +1,56 @@
 internal struct XCTSpecificMatcherRuleExamples {
-    static let nonTriggeringExamples = [
+    static let nonTriggeringExamples: [Example] = [
         // True/False
-        Example("XCTAssert(foo"),
-        Example("XCTAssertFalse(foo)"),
-        Example("XCTAssertTrue(foo)"),
+        "XCTAssert(foo)",
+        "XCTAssertFalse(foo)",
+        "XCTAssertTrue(foo)",
 
         // Nil/Not nil
-        Example("XCTAssertNil(foo)"),
-        Example("XCTAssertNotNil(foo)"),
+        "XCTAssertNil(foo)",
+        "XCTAssertNotNil(foo)",
 
         // Equal/Not equal
-        Example("XCTAssertEqual(foo, 2)"),
-        Example("XCTAssertNotEqual(foo, \"false\")"),
+        "XCTAssertEqual(foo, 2)",
+        "XCTAssertNotEqual(foo, \"false\")",
 
         // Arrays with key words
-        Example("XCTAssertEqual(foo, [1, 2, 3, true])"),
-        Example("XCTAssertEqual(foo, [1, 2, 3, false])"),
-        Example("XCTAssertEqual(foo, [1, 2, 3, nil])"),
-        Example("XCTAssertEqual(foo, [true, nil, true, nil])"),
-        Example("XCTAssertEqual([1, 2, 3, true], foo)"),
-        Example("XCTAssertEqual([1, 2, 3, false], foo)"),
-        Example("XCTAssertEqual([1, 2, 3, nil], foo)"),
-        Example("XCTAssertEqual([true, nil, true, nil], foo)"),
+        "XCTAssertEqual(foo, [1, 2, 3, true])",
+        "XCTAssertEqual(foo, [1, 2, 3, false])",
+        "XCTAssertEqual(foo, [1, 2, 3, nil])",
+        "XCTAssertEqual(foo, [true, nil, true, nil])",
+        "XCTAssertEqual([1, 2, 3, true], foo)",
+        "XCTAssertEqual([1, 2, 3, false], foo)",
+        "XCTAssertEqual([1, 2, 3, nil], foo)",
+        "XCTAssertEqual([true, nil, true, nil], foo)",
 
         // Inverted logic
-        Example("XCTAssertEqual(2, foo)"),
-        Example("XCTAssertNotEqual(\"false\"), foo)"),
-        Example("XCTAssertEqual(false, foo?.bar)"),
-        Example("XCTAssertEqual(true, foo?.bar)"),
+        "XCTAssertEqual(2, foo)",
+        "XCTAssertNotEqual(\"false\"), foo)",
+        "XCTAssertEqual(false, foo?.bar)",
+        "XCTAssertEqual(true, foo?.bar)",
 
         // Blank spaces
-        Example("XCTAssert(    foo  )"),
-        Example("XCTAssertFalse(  foo  )"),
-        Example("XCTAssertTrue(  foo  )"),
-        Example("XCTAssertNil(  foo  )"),
-        Example("XCTAssertNotNil(  foo  )"),
-        Example("XCTAssertEqual(  foo  , 2  )"),
-        Example("XCTAssertNotEqual(  foo, \"false\")"),
+        "XCTAssert(    foo  )",
+        "XCTAssertFalse(  foo  )",
+        "XCTAssertTrue(  foo  )",
+        "XCTAssertNil(  foo  )",
+        "XCTAssertNotNil(  foo  )",
+        "XCTAssertEqual(  foo  , 2  )",
+        "XCTAssertNotEqual(  foo, \"false\")",
 
         // Optionals
-        Example("XCTAssertEqual(foo?.bar, false)"),
-        Example("XCTAssertEqual(foo?.bar, true)"),
-        Example("XCTAssertNil(foo?.bar)"),
-        Example("XCTAssertNotNil(foo?.bar)"),
-        Example("XCTAssertEqual(foo?.bar, 2)"),
-        Example("XCTAssertNotEqual(foo?.bar, \"false\")"),
+        "XCTAssertEqual(foo?.bar, false)",
+        "XCTAssertEqual(foo?.bar, true)",
+        "XCTAssertNil(foo?.bar)",
+        "XCTAssertNotNil(foo?.bar)",
+        "XCTAssertEqual(foo?.bar, 2)",
+        "XCTAssertNotEqual(foo?.bar, \"false\")",
 
         // Function calls and enums
-        Example("XCTAssertEqual(foo?.bar, toto())"),
-        Example("XCTAssertEqual(foo?.bar, .toto(.zoo))"),
-        Example("XCTAssertEqual(toto(), foo?.bar)"),
-        Example("XCTAssertEqual(.toto(.zoo), foo?.bar)"),
+        "XCTAssertEqual(foo?.bar, toto())",
+        "XCTAssertEqual(foo?.bar, .toto(.zoo))",
+        "XCTAssertEqual(toto(), foo?.bar)",
+        "XCTAssertEqual(.toto(.zoo), foo?.bar)",
 
         // Configurations Disabled
         Example("XCTAssertEqual(foo, true)",
@@ -61,81 +61,81 @@ internal struct XCTSpecificMatcherRuleExamples {
                 excludeFromDocumentation: true),
 
         // Skip if one operand might be a type or a tuple
-        Example("XCTAssert(foo.self == bar)"),
-        Example("XCTAssertTrue(type(of: foo) != Int.self)"),
-        Example("XCTAssertTrue(a == (1, 3, 5)")
+        "XCTAssert(foo.self == bar)",
+        "XCTAssertTrue(type(of: foo) != Int.self)",
+        "XCTAssertTrue(a == (1, 3, 5)"
     ]
 
-    static let triggeringExamples = [
+    static let triggeringExamples: [Example] = [
         // Without message
-        Example("↓XCTAssertEqual(foo, true)"),
-        Example("↓XCTAssertEqual(foo, false)"),
-        Example("↓XCTAssertEqual(foo, nil)"),
-        Example("↓XCTAssertNotEqual(foo, true)"),
-        Example("↓XCTAssertNotEqual(foo, false)"),
-        Example("↓XCTAssertNotEqual(foo, nil)"),
+        "↓XCTAssertEqual(foo, true)",
+        "↓XCTAssertEqual(foo, false)",
+        "↓XCTAssertEqual(foo, nil)",
+        "↓XCTAssertNotEqual(foo, true)",
+        "↓XCTAssertNotEqual(foo, false)",
+        "↓XCTAssertNotEqual(foo, nil)",
 
         // Inverted logic (just in case...)
-        Example("↓XCTAssertEqual(true, foo)"),
-        Example("↓XCTAssertEqual(false, foo)"),
-        Example("↓XCTAssertEqual(nil, foo)"),
-        Example("↓XCTAssertNotEqual(true, foo)"),
-        Example("↓XCTAssertNotEqual(false, foo)"),
-        Example("↓XCTAssertNotEqual(nil, foo)"),
+        "↓XCTAssertEqual(true, foo)",
+        "↓XCTAssertEqual(false, foo)",
+        "↓XCTAssertEqual(nil, foo)",
+        "↓XCTAssertNotEqual(true, foo)",
+        "↓XCTAssertNotEqual(false, foo)",
+        "↓XCTAssertNotEqual(nil, foo)",
 
         // With message
-        Example("↓XCTAssertEqual(foo, true, \"toto\")"),
-        Example("↓XCTAssertEqual(foo, false, \"toto\")"),
-        Example("↓XCTAssertEqual(foo, nil, \"toto\")"),
-        Example("↓XCTAssertNotEqual(foo, true, \"toto\")"),
-        Example("↓XCTAssertNotEqual(foo, false, \"toto\")"),
-        Example("↓XCTAssertNotEqual(foo, nil, \"toto\")"),
-        Example("↓XCTAssertEqual(true, foo, \"toto\")"),
-        Example("↓XCTAssertEqual(false, foo, \"toto\")"),
-        Example("↓XCTAssertEqual(nil, foo, \"toto\")"),
-        Example("↓XCTAssertNotEqual(true, foo, \"toto\")"),
-        Example("↓XCTAssertNotEqual(false, foo, \"toto\")"),
-        Example("↓XCTAssertNotEqual(nil, foo, \"toto\")"),
+        "↓XCTAssertEqual(foo, true, \"toto\")",
+        "↓XCTAssertEqual(foo, false, \"toto\")",
+        "↓XCTAssertEqual(foo, nil, \"toto\")",
+        "↓XCTAssertNotEqual(foo, true, \"toto\")",
+        "↓XCTAssertNotEqual(foo, false, \"toto\")",
+        "↓XCTAssertNotEqual(foo, nil, \"toto\")",
+        "↓XCTAssertEqual(true, foo, \"toto\")",
+        "↓XCTAssertEqual(false, foo, \"toto\")",
+        "↓XCTAssertEqual(nil, foo, \"toto\")",
+        "↓XCTAssertNotEqual(true, foo, \"toto\")",
+        "↓XCTAssertNotEqual(false, foo, \"toto\")",
+        "↓XCTAssertNotEqual(nil, foo, \"toto\")",
 
         // Blank spaces
-        Example("↓XCTAssertEqual(foo,true)"),
-        Example("↓XCTAssertEqual( foo , false )"),
-        Example("↓XCTAssertEqual(  foo  ,  nil  )"),
+        "↓XCTAssertEqual(foo,true)",
+        "↓XCTAssertEqual( foo , false )",
+        "↓XCTAssertEqual(  foo  ,  nil  )",
 
         // Arrays
-        Example("↓XCTAssertEqual(true, [1, 2, 3, true].hasNumbers())"),
-        Example("↓XCTAssertEqual([1, 2, 3, true].hasNumbers(), true)"),
+        "↓XCTAssertEqual(true, [1, 2, 3, true].hasNumbers())",
+        "↓XCTAssertEqual([1, 2, 3, true].hasNumbers(), true)",
 
         // Optionals
-        Example("↓XCTAssertEqual(foo?.bar, nil)"),
-        Example("↓XCTAssertNotEqual(foo?.bar, nil)"),
+        "↓XCTAssertEqual(foo?.bar, nil)",
+        "↓XCTAssertNotEqual(foo?.bar, nil)",
 
         // Weird cases
-        Example("↓XCTAssertEqual(nil, true)"),
-        Example("↓XCTAssertEqual(nil, false)"),
-        Example("↓XCTAssertEqual(true, nil)"),
-        Example("↓XCTAssertEqual(false, nil)"),
-        Example("↓XCTAssertEqual(nil, nil)"),
-        Example("↓XCTAssertEqual(true, true)"),
-        Example("↓XCTAssertEqual(false, false)"),
+        "↓XCTAssertEqual(nil, true)",
+        "↓XCTAssertEqual(nil, false)",
+        "↓XCTAssertEqual(true, nil)",
+        "↓XCTAssertEqual(false, nil)",
+        "↓XCTAssertEqual(nil, nil)",
+        "↓XCTAssertEqual(true, true)",
+        "↓XCTAssertEqual(false, false)",
 
         // Equality with `==`
-        Example("↓XCTAssert(foo == bar)"),
-        Example("↓XCTAssertTrue(   foo  ==   bar  )"),
-        Example("↓XCTAssertFalse(1 == foo)"),
-        Example("↓XCTAssert(foo == bar, \"toto\")"),
+        "↓XCTAssert(foo == bar)",
+        "↓XCTAssertTrue(   foo  ==   bar  )",
+        "↓XCTAssertFalse(1 == foo)",
+        "↓XCTAssert(foo == bar, \"toto\")",
 
         // Inequality with `!=`
-        Example("↓XCTAssert(foo != bar)"),
-        Example("↓XCTAssertTrue(   foo  !=   bar  )"),
-        Example("↓XCTAssertFalse(1 != foo)"),
-        Example("↓XCTAssert(foo != bar, \"toto\")"),
+        "↓XCTAssert(foo != bar)",
+        "↓XCTAssertTrue(   foo  !=   bar  )",
+        "↓XCTAssertFalse(1 != foo)",
+        "↓XCTAssert(foo != bar, \"toto\")",
 
         // Comparison with `nil`
-        Example("↓XCTAssert(  foo   ==  nil)"),
-        Example("↓XCTAssert(nil == foo"),
-        Example("↓XCTAssertTrue(  foo   !=  nil)"),
-        Example("↓XCTAssertFalse(nil != foo"),
-        Example("↓XCTAssert(foo == nil, \"toto\")")
+        "↓XCTAssert(  foo   ==  nil)",
+        "↓XCTAssert(nil == foo",
+        "↓XCTAssertTrue(  foo   !=  nil)",
+        "↓XCTAssertFalse(nil != foo",
+        "↓XCTAssert(foo == nil, \"toto\")"
     ]
 }

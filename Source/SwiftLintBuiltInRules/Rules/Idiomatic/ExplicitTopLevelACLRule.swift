@@ -9,22 +9,22 @@ struct ExplicitTopLevelACLRule: SwiftSyntaxRule, OptInRule, ConfigurationProvide
         description: "Top-level declarations should specify Access Control Level keywords explicitly",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("internal enum A {}\n"),
-            Example("public final class B {}\n"),
-            Example("private struct C {}\n"),
-            Example("internal enum A {\n enum B {}\n}"),
-            Example("internal final class Foo {}"),
-            Example("internal\nclass Foo {}"),
-            Example("internal func a() {}\n"),
-            Example("extension A: Equatable {}"),
-            Example("extension A {}")
+            "internal enum A {}\n",
+            "public final class B {}\n",
+            "private struct C {}\n",
+            "internal enum A {\n enum B {}\n}",
+            "internal final class Foo {}",
+            "internal\nclass Foo {}",
+            "internal func a() {}\n",
+            "extension A: Equatable {}",
+            "extension A {}"
         ],
         triggeringExamples: [
-            Example("↓enum A {}\n"),
-            Example("final ↓class B {}\n"),
-            Example("↓struct C {}\n"),
-            Example("↓func a() {}\n"),
-            Example("internal let a = 0\n↓func b() {}\n")
+            "↓enum A {}\n",
+            "final ↓class B {}\n",
+            "↓struct C {}\n",
+            "↓func a() {}\n",
+            "internal let a = 0\n↓func b() {}\n"
         ]
     )
 

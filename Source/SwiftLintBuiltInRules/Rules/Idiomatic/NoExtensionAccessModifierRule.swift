@@ -9,15 +9,15 @@ struct NoExtensionAccessModifierRule: SwiftSyntaxRule, OptInRule, ConfigurationP
         description: "Prefer not to use extension access modifiers",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("extension String {}"),
-            Example("\n\n extension String {}")
+            "extension String {}",
+            "\n\n extension String {}"
         ],
         triggeringExamples: [
-            Example("↓private extension String {}"),
-            Example("↓public \n extension String {}"),
-            Example("↓open extension String {}"),
-            Example("↓internal extension String {}"),
-            Example("↓fileprivate extension String {}")
+            "↓private extension String {}",
+            "↓public \n extension String {}",
+            "↓open extension String {}",
+            "↓internal extension String {}",
+            "↓fileprivate extension String {}"
         ]
     )
 

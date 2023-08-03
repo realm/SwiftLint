@@ -9,20 +9,20 @@ struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, O
         description: "Prefer checking `isEmpty` over comparing collection to an empty array or dictionary literal",
         kind: .performance,
         nonTriggeringExamples: [
-            Example("myArray = []"),
-            Example("myArray.isEmpty"),
-            Example("!myArray.isEmpty"),
-            Example("myDict = [:]")
+            "myArray = []",
+            "myArray.isEmpty",
+            "!myArray.isEmpty",
+            "myDict = [:]"
         ],
         triggeringExamples: [
-            Example("myArray↓ == []"),
-            Example("myArray↓ != []"),
-            Example("myArray↓ == [ ]"),
-            Example("myDict↓ == [:]"),
-            Example("myDict↓ != [:]"),
-            Example("myDict↓ == [: ]"),
-            Example("myDict↓ == [ :]"),
-            Example("myDict↓ == [ : ]")
+            "myArray↓ == []",
+            "myArray↓ != []",
+            "myArray↓ == [ ]",
+            "myDict↓ == [:]",
+            "myDict↓ != [:]",
+            "myDict↓ == [: ]",
+            "myDict↓ == [ :]",
+            "myDict↓ == [ : ]"
         ]
     )
 

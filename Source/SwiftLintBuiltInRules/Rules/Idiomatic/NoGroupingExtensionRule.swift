@@ -9,15 +9,15 @@ struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
         description: "Extensions shouldn't be used to group code within the same source file",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("protocol Food {}\nextension Food {}\n"),
-            Example("class Apples {}\nextension Oranges {}\n"),
-            Example("class Box<T> {}\nextension Box where T: Vegetable {}\n")
+            "protocol Food {}\nextension Food {}\n",
+            "class Apples {}\nextension Oranges {}\n",
+            "class Box<T> {}\nextension Box where T: Vegetable {}\n"
         ],
         triggeringExamples: [
-            Example("enum Fruit {}\n↓extension Fruit {}\n"),
-            Example("↓extension Tea: Error {}\nstruct Tea {}\n"),
-            Example("class Ham { class Spam {}}\n↓extension Ham.Spam {}\n"),
-            Example("extension External { struct Gotcha {}}\n↓extension External.Gotcha {}\n")
+            "enum Fruit {}\n↓extension Fruit {}\n",
+            "↓extension Tea: Error {}\nstruct Tea {}\n",
+            "class Ham { class Spam {}}\n↓extension Ham.Spam {}\n",
+            "extension External { struct Gotcha {}}\n↓extension External.Gotcha {}\n"
         ]
     )
 

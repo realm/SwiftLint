@@ -10,19 +10,19 @@ struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
         kind: .performance,
         nonTriggeringExamples: ["first", "firstIndex"].flatMap { method in
             return [
-                Example("let \(method) = myList.\(method)(where: { $0 % 2 == 0 })\n"),
-                Example("let \(method) = myList.\(method) { $0 % 2 == 0 }\n")
+                "let \(method) = myList.\(method)(where: { $0 % 2 == 0 })\n",
+                "let \(method) = myList.\(method) { $0 % 2 == 0 }\n"
             ]
         },
         triggeringExamples: ["first", "firstIndex"].flatMap { method in
             return ["!=", "=="].flatMap { comparison in
                 return [
-                    Example("↓myList.\(method) { $0 % 2 == 0 } \(comparison) nil\n"),
-                    Example("↓myList.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil\n"),
-                    Example("↓myList.map { $0 + 1 }.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil\n"),
-                    Example("↓myList.\(method)(where: someFunction) \(comparison) nil\n"),
-                    Example("↓myList.map { $0 + 1 }.\(method) { $0 % 2 == 0 } \(comparison) nil\n"),
-                    Example("(↓myList.\(method) { $0 % 2 == 0 }) \(comparison) nil\n")
+                    "↓myList.\(method) { $0 % 2 == 0 } \(comparison) nil\n",
+                    "↓myList.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil\n",
+                    "↓myList.map { $0 + 1 }.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil\n",
+                    "↓myList.\(method)(where: someFunction) \(comparison) nil\n",
+                    "↓myList.map { $0 + 1 }.\(method) { $0 % 2 == 0 } \(comparison) nil\n",
+                    "(↓myList.\(method) { $0 % 2 == 0 }) \(comparison) nil\n"
                 ]
             }
         }

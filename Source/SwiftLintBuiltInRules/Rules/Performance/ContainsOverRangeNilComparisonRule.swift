@@ -9,16 +9,15 @@ struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, Configura
         description: "Prefer `contains` over `range(of:) != nil` and `range(of:) == nil`",
         kind: .performance,
         nonTriggeringExamples: [
-            Example("let range = myString.range(of: \"Test\")"),
-            Example("myString.contains(\"Test\")"),
-            Example("!myString.contains(\"Test\")"),
-            Example("resourceString.range(of: rule.regex, options: .regularExpression) != nil")
+            "let range = myString.range(of: \"Test\")",
+            "myString.contains(\"Test\")",
+            "!myString.contains(\"Test\")",
+            "resourceString.range(of: rule.regex, options: .regularExpression) != nil"
         ],
-        triggeringExamples: ["!=", "=="].flatMap { comparison in
-            return [
-                Example("↓myString.range(of: \"Test\") \(comparison) nil")
-            ]
-        }
+        triggeringExamples: [
+            "↓myString.range(of: \"Test\") != nil",
+            "↓myString.range(of: \"Test\") == nil"
+        ]
     )
 
     func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {

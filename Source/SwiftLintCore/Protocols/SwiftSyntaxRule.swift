@@ -127,14 +127,3 @@ public extension Array where Element == ReasonedRuleViolation {
         append(contentsOf: positions.map { ReasonedRuleViolation(position: $0) })
     }
 }
-
-/// Extension for sets of `ReasonedRuleViolation`s that provides the automatic conversion of
-/// `AbsolutePosition`s into `ReasonedRuleViolation`s (without a specific reason).
-public extension Set where Element == ReasonedRuleViolation {
-    /// Insert a minimal violation for the specified position.
-    ///
-    /// - parameter position: The position for the violation to be inserted.
-    mutating func insert(_ position: AbsolutePosition) {
-        insert(ReasonedRuleViolation(position: position))
-    }
-}

@@ -9,80 +9,80 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
         description: "Magic numbers should be replaced by named constants",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("var foo = 123"),
-            Example("static let bar: Double = 0.123"),
-            Example("let a = b + 1.0"),
-            Example("array[0] + array[1] "),
-            Example("let foo = 1_000.000_01"),
-            Example("// array[1337]"),
-            Example("baz(\"9999\")"),
-            Example("""
+            "var foo = 123",
+            "static let bar: Double = 0.123",
+            "let a = b + 1.0",
+            "array[0] + array[1] ",
+            "let foo = 1_000.000_01",
+            "// array[1337]",
+            "baz(\"9999\")",
+            """
             func foo() {
                 let x: Int = 2
                 let y = 3
                 let vector = [x, y, -1]
             }
-            """),
-            Example("""
+            """,
+            """
             class A {
                 var foo: Double = 132
                 static let bar: Double = 0.98
             }
-            """),
-            Example("""
+            """,
+            """
             @available(iOS 13, *)
             func version() {
                 if #available(iOS 13, OSX 10.10, *) {
                     return
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             enum Example: Int {
                 case positive = 2
                 case negative = -2
             }
-            """),
-            Example("""
+            """,
+            """
             class FooTests: XCTestCase {
                 let array: [Int] = []
                 let bar = array[42]
             }
-            """),
-            Example("""
+            """,
+            """
             class FooTests: XCTestCase {
                 class Bar {
                     let array: [Int] = []
                     let bar = array[42]
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class MyTest: XCTestCase {}
             extension MyTest {
                 let a = Int(3)
             }
-            """),
-            Example("""
+            """,
+            """
             extension MyTest {
                 let a = Int(3)
             }
             class MyTest: XCTestCase {}
-            """)
+            """,
         ],
         triggeringExamples: [
-            Example("foo(↓321)"),
-            Example("bar(↓1_000.005_01)"),
-            Example("array[↓42]"),
-            Example("let box = array[↓12 + ↓14]"),
-            Example("let a = b + ↓2.0"),
-            Example("Color.primary.opacity(isAnimate ? ↓0.1 : ↓1.5)"),
-            Example("""
+            "foo(↓321)",
+            "bar(↓1_000.005_01)",
+            "array[↓42]",
+            "let box = array[↓12 + ↓14]",
+            "let a = b + ↓2.0",
+            "Color.primary.opacity(isAnimate ? ↓0.1 : ↓1.5)",
+            """
                     class MyTest: XCTestCase {}
                     extension NSObject {
                         let a = Int(↓3)
                     }
-            """)
+            """,
         ]
     )
 

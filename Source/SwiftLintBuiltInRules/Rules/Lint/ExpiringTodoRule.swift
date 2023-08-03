@@ -25,22 +25,22 @@ struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
         description: "TODOs and FIXMEs should be resolved prior to their expiry date.",
         kind: .lint,
         nonTriggeringExamples: [
-            "// notaTODO:\n",
-            "// notaFIXME:\n",
-            "// TODO: [12/31/9999]\n",
-            "// TODO(note)\n",
-            "// FIXME(note)\n",
-            "/* FIXME: */\n",
-            "/* TODO: */\n",
-            "/** FIXME: */\n",
-            "/** TODO: */\n"
+            Example("// notaTODO:\n"),
+            Example("// notaFIXME:\n"),
+            Example("// TODO: [12/31/9999]\n"),
+            Example("// TODO(note)\n"),
+            Example("// FIXME(note)\n"),
+            Example("/* FIXME: */\n"),
+            Example("/* TODO: */\n"),
+            Example("/** FIXME: */\n"),
+            Example("/** TODO: */\n")
         ],
         triggeringExamples: [
-            "// TODO: [↓10/14/2019]\n",
-            "// FIXME: [↓10/14/2019]\n",
-            "// FIXME: [↓1/14/2019]\n",
-            "// FIXME: [↓10/14/2019]\n",
-            "// TODO: [↓9999/14/10]\n"
+            Example("// TODO: [↓10/14/2019]\n"),
+            Example("// FIXME: [↓10/14/2019]\n"),
+            Example("// FIXME: [↓1/14/2019]\n"),
+            Example("// FIXME: [↓10/14/2019]\n"),
+            Example("// TODO: [↓9999/14/10]\n")
         ].skipWrappingInCommentTests()
     )
 

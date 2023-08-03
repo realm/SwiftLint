@@ -9,17 +9,17 @@ struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, SwiftSyntaxRul
         description: "Operators should be surrounded by a single whitespace when defining them",
         kind: .style,
         nonTriggeringExamples: [
-            "func <| (lhs: Int, rhs: Int) -> Int {}\n",
-            "func <|< <A>(lhs: A, rhs: A) -> A {}\n",
-            "func abc(lhs: Int, rhs: Int) -> Int {}\n"
+            Example("func <| (lhs: Int, rhs: Int) -> Int {}\n"),
+            Example("func <|< <A>(lhs: A, rhs: A) -> A {}\n"),
+            Example("func abc(lhs: Int, rhs: Int) -> Int {}\n")
         ],
         triggeringExamples: [
-            "↓func <|(lhs: Int, rhs: Int) -> Int {}\n",   // no spaces after
-            "↓func <|<<A>(lhs: A, rhs: A) -> A {}\n",     // no spaces after
-            "↓func <|  (lhs: Int, rhs: Int) -> Int {}\n", // 2 spaces after
-            "↓func <|<  <A>(lhs: A, rhs: A) -> A {}\n",   // 2 spaces after
-            "↓func  <| (lhs: Int, rhs: Int) -> Int {}\n", // 2 spaces before
-            "↓func  <|< <A>(lhs: A, rhs: A) -> A {}\n"    // 2 spaces before
+            Example("↓func <|(lhs: Int, rhs: Int) -> Int {}\n"),   // no spaces after
+            Example("↓func <|<<A>(lhs: A, rhs: A) -> A {}\n"),     // no spaces after
+            Example("↓func <|  (lhs: Int, rhs: Int) -> Int {}\n"), // 2 spaces after
+            Example("↓func <|<  <A>(lhs: A, rhs: A) -> A {}\n"),   // 2 spaces after
+            Example("↓func  <| (lhs: Int, rhs: Int) -> Int {}\n"), // 2 spaces before
+            Example("↓func  <|< <A>(lhs: A, rhs: A) -> A {}\n")    // 2 spaces before
         ]
     )
 

@@ -9,14 +9,14 @@ struct IsDisjointRule: SwiftSyntaxRule, ConfigurationProviderRule {
         description: "Prefer using `Set.isDisjoint(with:)` over `Set.intersection(_:).isEmpty`",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "_ = Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)",
-            "let isObjc = !objcAttributes.isDisjoint(with: dictionary.enclosedSwiftAttributes)",
-            "_ = Set(syntaxKinds).intersection(commentAndStringKindsSet)",
-            "_ = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes)"
+            Example("_ = Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)"),
+            Example("let isObjc = !objcAttributes.isDisjoint(with: dictionary.enclosedSwiftAttributes)"),
+            Example("_ = Set(syntaxKinds).intersection(commentAndStringKindsSet)"),
+            Example("_ = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes)")
         ],
         triggeringExamples: [
-            "_ = Set(syntaxKinds).↓intersection(commentAndStringKindsSet).isEmpty",
-            "let isObjc = !objcAttributes.↓intersection(dictionary.enclosedSwiftAttributes).isEmpty"
+            Example("_ = Set(syntaxKinds).↓intersection(commentAndStringKindsSet).isEmpty"),
+            Example("let isObjc = !objcAttributes.↓intersection(dictionary.enclosedSwiftAttributes).isEmpty")
         ]
     )
 

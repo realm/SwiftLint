@@ -82,4 +82,19 @@ final class GlobTests: SwiftLintTestCase {
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("**/*.swift"))
         XCTAssertEqual(files.sorted(), expectedFiles.sorted())
     }
+
+    func testToRegex() {
+        XCTAssertEqual(Glob.toRegex("*?.(**)")?.pattern, "^[^/]*.\\.\\(.*\\).*$")
+        XCTAssertEqual(Glob.toRegex("a/b/c")?.pattern, "^a/b/c.*$")
+        XCTAssertEqual(Glob.toRegex("a//b")?.pattern, "^a/b.*$")
+        XCTAssertEqual(Glob.toRegex("/a/b/*")?.pattern, "^/a/b/[^/]*$")
+        XCTAssertEqual(Glob.toRegex("a/*.swift")?.pattern, "^a/[^/]*\\.swift.*$")
+        XCTAssertEqual(Glob.toRegex("**/a/*.swift")?.pattern, "^.*a/[^/]*\\.swift.*$")
+        XCTAssertEqual(Glob.toRegex("**/*.swift")?.pattern, "^.*\\.swift.*$")
+
+        XCTAssertEqual(Glob.toRegex("a/b", rootPath: "/tmp/")?.pattern, "^/tmp/a/b.*$")
+        XCTAssertEqual(Glob.toRegex("/tmp/a/b", rootPath: "/tmp/")?.pattern, "^/tmp/a/b.*$")
+        XCTAssertEqual(Glob.toRegex("/a/b", rootPath: "/tmp")?.pattern, "^/tmp/a/b.*$")
+        XCTAssertEqual(Glob.toRegex("**/*.swift", rootPath: "/tmp")?.pattern, "^/tmp/.*\\.swift.*$")
+    }
 }

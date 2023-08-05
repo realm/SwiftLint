@@ -36,6 +36,33 @@ struct Glob {
             .map { $0.absolutePathStandardized() }
     }
 
+    static func toRegex(_ pattern: String, rootPath: String = "") -> NSRegularExpression? {
+        var regexPattern = pattern
+            .replacingOccurrences(of: "**/*", with: "\0")
+            .replacingOccurrences(of: "**/", with: "\0")
+            .replacingOccurrences(of: ".", with: "\\.")
+            .replacingOccurrences(of: "?", with: ".")
+            .replacingOccurrences(of: "**", with: "\0")
+            .replacingOccurrences(of: "*", with: "[^/]*")
+            .replacingOccurrences(of: "\0", with: ".*")
+            .replacingOccurrences(of: "(", with: "\\(")
+            .replacingOccurrences(of: ")", with: "\\)")
+        if !pattern.starts(with: rootPath) {
+            regexPattern = rootPath + "/" + regexPattern
+        }
+        if !regexPattern.hasSuffix("*") {
+            regexPattern.append(".*")
+        }
+        regexPattern = regexPattern.replacingOccurrences(of: "//", with: "/")
+        guard let regex = try? NSRegularExpression.cached(pattern: "^\(regexPattern)$") else {
+            Issue.genericWarning("""
+                Pattern '\(pattern)' cannot be converted to a regular expression and is therefore ignored
+            """).print()
+            return nil
+        }
+        return regex
+    }
+
     // MARK: Private
 
     private static func expandGlobstar(pattern: String) -> [String] {

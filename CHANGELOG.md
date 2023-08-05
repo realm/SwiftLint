@@ -33,10 +33,6 @@
   [keith](https://github.com/keith)
   [5139](https://github.com/realm/SwiftLint/pull/5139)
 
-* Tests now highlight disable and superfluous failures inline in example code  
-  [mredig](https://github.com/mredig)
-  [5149](https://github.com/realm/SwiftLint/pull/5149)
-
 #### Bug Fixes
 
 * Fix false positive in `control_statement` rule that triggered on conditions

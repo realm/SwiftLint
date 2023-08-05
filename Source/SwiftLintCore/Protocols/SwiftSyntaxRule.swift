@@ -86,7 +86,7 @@ public extension SwiftSyntaxRule {
 }
 
 /// A violation produced by `ViolationsSyntaxVisitor`s.
-public struct ReasonedRuleViolation: Comparable {
+public struct ReasonedRuleViolation: Comparable, Hashable {
     /// The violation's position.
     public let position: AbsolutePosition
     /// A specific reason for the violation.

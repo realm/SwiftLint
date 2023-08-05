@@ -343,6 +343,9 @@
 
 * Add `invokeTest()` to `overridden_super_call` defaults.  
   [DylanBettermannDD](https://github.com/DylanBettermannDD)
+* Improve performance when exclude patterns resolve to a large set of files.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5018](https://github.com/realm/SwiftLint/issues/5018)
 
 * Add `--config-only` option to `rules` command allowing to print only the YAML
   configuration of a single or all rules.  

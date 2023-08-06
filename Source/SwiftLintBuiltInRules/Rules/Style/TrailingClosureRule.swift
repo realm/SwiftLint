@@ -10,21 +10,21 @@ struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         description: "Trailing closure syntax should be used whenever possible",
         kind: .style,
         nonTriggeringExamples: [
-            Example("foo.map { $0 + 1 }\n"),
-            Example("foo.bar()\n"),
-            Example("foo.reduce(0) { $0 + 1 }\n"),
-            Example("if let foo = bar.map({ $0 + 1 }) { }\n"),
-            Example("foo.something(param1: { $0 }, param2: { $0 + 1 })\n"),
-            Example("offsets.sorted { $0.offset < $1.offset }\n"),
+            Example("foo.map { $0 + 1 }"),
+            Example("foo.bar()"),
+            Example("foo.reduce(0) { $0 + 1 }"),
+            Example("if let foo = bar.map({ $0 + 1 }) { }"),
+            Example("foo.something(param1: { $0 }, param2: { $0 + 1 })"),
+            Example("offsets.sorted { $0.offset < $1.offset }"),
             Example("foo.something({ return 1 }())"),
             Example("foo.something({ return $0 }(1))"),
             Example("foo.something(0, { return 1 }())")
         ],
         triggeringExamples: [
-            Example("↓foo.map({ $0 + 1 })\n"),
-            Example("↓foo.reduce(0, combine: { $0 + 1 })\n"),
-            Example("↓offsets.sorted(by: { $0.offset < $1.offset })\n"),
-            Example("↓foo.something(0, { $0 + 1 })\n")
+            Example("↓foo.map({ $0 + 1 })"),
+            Example("↓foo.reduce(0, combine: { $0 + 1 })"),
+            Example("↓offsets.sorted(by: { $0.offset < $1.offset })"),
+            Example("↓foo.something(0, { $0 + 1 })")
         ]
     )
 

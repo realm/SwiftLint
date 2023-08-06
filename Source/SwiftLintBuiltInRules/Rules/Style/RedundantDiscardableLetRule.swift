@@ -9,20 +9,20 @@ struct RedundantDiscardableLetRule: SwiftSyntaxCorrectableRule, ConfigurationPro
         description: "Prefer `_ = foo()` over `let _ = foo()` when discarding a result from a function",
         kind: .style,
         nonTriggeringExamples: [
-            Example("_ = foo()\n"),
-            Example("if let _ = foo() { }\n"),
-            Example("guard let _ = foo() else { return }\n"),
+            Example("_ = foo()"),
+            Example("if let _ = foo() { }"),
+            Example("guard let _ = foo() else { return }"),
             Example("let _: ExplicitType = foo()"),
-            Example("while let _ = SplashStyle(rawValue: maxValue) { maxValue += 1 }\n"),
+            Example("while let _ = SplashStyle(rawValue: maxValue) { maxValue += 1 }"),
             Example("async let _ = await foo()")
         ],
         triggeringExamples: [
-            Example("↓let _ = foo()\n"),
-            Example("if _ = foo() { ↓let _ = bar() }\n")
+            Example("↓let _ = foo()"),
+            Example("if _ = foo() { ↓let _ = bar() }")
         ],
         corrections: [
-            Example("↓let _ = foo()\n"): Example("_ = foo()\n"),
-            Example("if _ = foo() { ↓let _ = bar() }\n"): Example("if _ = foo() { _ = bar() }\n")
+            Example("↓let _ = foo()"): Example("_ = foo()"),
+            Example("if _ = foo() { ↓let _ = bar() }"): Example("if _ = foo() { _ = bar() }")
         ]
     )
 

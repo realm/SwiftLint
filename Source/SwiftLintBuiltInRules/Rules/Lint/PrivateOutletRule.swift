@@ -9,12 +9,12 @@ struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule 
         description: "IBOutlets should be private to avoid leaking UIKit to higher layers",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("class Foo {\n  @IBOutlet private var label: UILabel?\n}\n"),
-            Example("class Foo {\n  @IBOutlet private var label: UILabel!\n}\n"),
-            Example("class Foo {\n  var notAnOutlet: UILabel\n}\n"),
-            Example("class Foo {\n  @IBOutlet weak private var label: UILabel?\n}\n"),
-            Example("class Foo {\n  @IBOutlet private weak var label: UILabel?\n}\n"),
-            Example("class Foo {\n  @IBOutlet fileprivate weak var label: UILabel?\n}\n"),
+            Example("class Foo {\n  @IBOutlet private var label: UILabel?\n}"),
+            Example("class Foo {\n  @IBOutlet private var label: UILabel!\n}"),
+            Example("class Foo {\n  var notAnOutlet: UILabel\n}"),
+            Example("class Foo {\n  @IBOutlet weak private var label: UILabel?\n}"),
+            Example("class Foo {\n  @IBOutlet private weak var label: UILabel?\n}"),
+            Example("class Foo {\n  @IBOutlet fileprivate weak var label: UILabel?\n}"),
             // allow_private_set
             Example(
                 "class Foo {\n  @IBOutlet private(set) var label: UILabel?\n}\n",
@@ -38,10 +38,10 @@ struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule 
             )
         ],
         triggeringExamples: [
-            Example("class Foo {\n  @IBOutlet ↓var label: UILabel?\n}\n"),
-            Example("class Foo {\n  @IBOutlet ↓var label: UILabel!\n}\n"),
-            Example("class Foo {\n  @IBOutlet private(set) ↓var label: UILabel?\n}\n"),
-            Example("class Foo {\n  @IBOutlet fileprivate(set) ↓var label: UILabel?\n}\n"),
+            Example("class Foo {\n  @IBOutlet ↓var label: UILabel?\n}"),
+            Example("class Foo {\n  @IBOutlet ↓var label: UILabel!\n}"),
+            Example("class Foo {\n  @IBOutlet private(set) ↓var label: UILabel?\n}"),
+            Example("class Foo {\n  @IBOutlet fileprivate(set) ↓var label: UILabel?\n}"),
             Example("""
             import Gridicons
 

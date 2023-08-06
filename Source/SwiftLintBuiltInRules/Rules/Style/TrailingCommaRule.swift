@@ -4,16 +4,16 @@ struct TrailingCommaRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule 
     var configuration = TrailingCommaConfiguration()
 
     private static let triggeringExamples: [Example] = [
-        Example("let foo = [1, 2, 3↓,]\n"),
-        Example("let foo = [1, 2, 3↓, ]\n"),
-        Example("let foo = [1, 2, 3   ↓,]\n"),
-        Example("let foo = [1: 2, 2: 3↓, ]\n"),
-        Example("struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n"),
-        Example("let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n"),
+        Example("let foo = [1, 2, 3↓,]"),
+        Example("let foo = [1, 2, 3↓, ]"),
+        Example("let foo = [1, 2, 3   ↓,]"),
+        Example("let foo = [1: 2, 2: 3↓, ]"),
+        Example("struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}"),
+        Example("let foo = [1, 2, 3↓,] + [4, 5, 6↓,]"),
         Example("let example = [ 1,\n2↓,\n // 3,\n]"),
-        Example("let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n"),
+        Example("let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]"),
         Example("class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}"),
-        Example("foo([1: \"\\(error)\"↓,])\n")
+        Example("foo([1: \"\\(error)\"↓,])")
     ]
 
     private static let corrections: [Example: Example] = {
@@ -34,14 +34,14 @@ struct TrailingCommaRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule 
         description: "Trailing commas in arrays and dictionaries should be avoided/enforced.",
         kind: .style,
         nonTriggeringExamples: [
-            Example("let foo = [1, 2, 3]\n"),
-            Example("let foo = []\n"),
-            Example("let foo = [:]\n"),
-            Example("let foo = [1: 2, 2: 3]\n"),
-            Example("let foo = [Void]()\n"),
+            Example("let foo = [1, 2, 3]"),
+            Example("let foo = []"),
+            Example("let foo = [:]"),
+            Example("let foo = [1: 2, 2: 3]"),
+            Example("let foo = [Void]()"),
             Example("let example = [ 1,\n 2\n // 3,\n]"),
-            Example("foo([1: \"\\(error)\"])\n"),
-            Example("let foo = [Int]()\n")
+            Example("foo([1: \"\\(error)\"])"),
+            Example("let foo = [Int]()")
         ],
         triggeringExamples: Self.triggeringExamples,
         corrections: Self.corrections

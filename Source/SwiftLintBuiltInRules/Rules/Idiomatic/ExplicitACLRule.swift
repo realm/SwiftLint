@@ -12,9 +12,9 @@ struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
         description: "All declarations should specify Access Control Level keywords explicitly",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("internal enum A {}\n"),
-            Example("public final class B {}\n"),
-            Example("private struct C {}\n"),
+            Example("internal enum A {}"),
+            Example("public final class B {}"),
+            Example("private struct C {}"),
             Example("internal enum A {\n internal enum B {}\n}"),
             Example("internal final class Foo {}"),
             Example("""
@@ -23,7 +23,7 @@ struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
               private let bar = 5
             }
             """),
-            Example("internal func a() { let a =  }\n"),
+            Example("internal func a() { let a =  }"),
             Example("private func a() { func innerFunction() { } }"),
             Example("private enum Foo { enum Bar { } }"),
             Example("private struct C { let d = 5 }"),
@@ -72,12 +72,12 @@ struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
             """)
         ],
         triggeringExamples: [
-            Example("↓enum A {}\n"),
-            Example("final ↓class B {}\n"),
-            Example("internal struct C { ↓let d = 5 }\n"),
-            Example("public struct C { ↓let d = 5 }\n"),
-            Example("func a() {}\n"),
-            Example("internal let a = 0\n↓func b() {}\n"),
+            Example("↓enum A {}"),
+            Example("final ↓class B {}"),
+            Example("internal struct C { ↓let d = 5 }"),
+            Example("public struct C { ↓let d = 5 }"),
+            Example("func a() {}"),
+            Example("internal let a = 0\n↓func b() {}"),
             Example("""
             extension Foo {
                 ↓func bar() {}

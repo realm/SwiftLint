@@ -9,18 +9,18 @@ struct WeakDelegateRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
         description: "Delegates should be weak to avoid reference cycles",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("class Foo {\n  weak var delegate: SomeProtocol?\n}\n"),
-            Example("class Foo {\n  weak var someDelegate: SomeDelegateProtocol?\n}\n"),
-            Example("class Foo {\n  weak var delegateScroll: ScrollDelegate?\n}\n"),
+            Example("class Foo {\n  weak var delegate: SomeProtocol?\n}"),
+            Example("class Foo {\n  weak var someDelegate: SomeDelegateProtocol?\n}"),
+            Example("class Foo {\n  weak var delegateScroll: ScrollDelegate?\n}"),
             // We only consider properties to be a delegate if it has "delegate" in its name
-            Example("class Foo {\n  var scrollHandler: ScrollDelegate?\n}\n"),
+            Example("class Foo {\n  var scrollHandler: ScrollDelegate?\n}"),
             // Only trigger on instance variables, not local variables
-            Example("func foo() {\n  var delegate: SomeDelegate\n}\n"),
+            Example("func foo() {\n  var delegate: SomeDelegate\n}"),
             // Only trigger when variable has the suffix "-delegate" to avoid false positives
-            Example("class Foo {\n  var delegateNotified: Bool?\n}\n"),
+            Example("class Foo {\n  var delegateNotified: Bool?\n}"),
             // There's no way to declare a property weak in a protocol
-            Example("protocol P {\n var delegate: AnyObject? { get set }\n}\n"),
-            Example("class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}\n"),
+            Example("protocol P {\n var delegate: AnyObject? { get set }\n}"),
+            Example("class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}"),
             Example("class Foo {\n var computedDelegate: ComputedDelegate {\n return bar() \n} \n}"),
             Example("""
             class Foo {
@@ -52,8 +52,8 @@ struct WeakDelegateRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
             Example("private var appDelegate: String?", excludeFromDocumentation: true)
         ],
         triggeringExamples: [
-            Example("class Foo {\n  ↓var delegate: SomeProtocol?\n}\n"),
-            Example("class Foo {\n  ↓var scrollDelegate: ScrollDelegate?\n}\n"),
+            Example("class Foo {\n  ↓var delegate: SomeProtocol?\n}"),
+            Example("class Foo {\n  ↓var scrollDelegate: ScrollDelegate?\n}"),
             Example("""
             class Foo {
                 ↓var delegate: SomeProtocol? {

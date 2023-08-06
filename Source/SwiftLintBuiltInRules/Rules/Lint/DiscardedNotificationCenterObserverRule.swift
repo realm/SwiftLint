@@ -10,25 +10,25 @@ struct DiscardedNotificationCenterObserverRule: SwiftSyntaxRule, ConfigurationPr
                      "returned should be stored so it can be removed later",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n"),
+            Example("let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }"),
             Example("""
             let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
             """),
             Example("func foo() -> Any {\n" +
             "   return nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n" +
-            "}\n"),
+            "}"),
             Example("var obs: [Any?] = []\n" +
-            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"),
+            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))"),
             Example("""
             var obs: [String: Any?] = []
             obs["foo"] = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
             """),
             Example("var obs: [Any?] = []\n" +
-            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"),
+            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))"),
             Example("func foo(_ notif: Any) {\n" +
             "   obs.append(notif)\n" +
             "}\n" +
-            "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"),
+            "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))"),
             Example("""
             var obs: [NSObjectProtocol] = [
                nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }),
@@ -37,9 +37,9 @@ struct DiscardedNotificationCenterObserverRule: SwiftSyntaxRule, ConfigurationPr
             """)
         ],
         triggeringExamples: [
-            Example("↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n"),
-            Example("_ = ↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n"),
-            Example("↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n"),
+            Example("↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }"),
+            Example("_ = ↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }"),
+            Example("↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })"),
             Example("""
             @discardableResult func foo() -> Any {
                return ↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })

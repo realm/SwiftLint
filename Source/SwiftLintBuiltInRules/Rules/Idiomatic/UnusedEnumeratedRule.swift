@@ -9,21 +9,21 @@ struct UnusedEnumeratedRule: SwiftSyntaxRule, ConfigurationProviderRule {
         description: "When the index or the item is not used, `.enumerated()` can be removed.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("for (idx, foo) in bar.enumerated() { }\n"),
-            Example("for (_, foo) in bar.enumerated().something() { }\n"),
-            Example("for (_, foo) in bar.something() { }\n"),
-            Example("for foo in bar.enumerated() { }\n"),
-            Example("for foo in bar { }\n"),
-            Example("for (idx, _) in bar.enumerated().something() { }\n"),
-            Example("for (idx, _) in bar.something() { }\n"),
-            Example("for idx in bar.indices { }\n"),
-            Example("for (section, (event, _)) in data.enumerated() {}\n")
+            Example("for (idx, foo) in bar.enumerated() { }"),
+            Example("for (_, foo) in bar.enumerated().something() { }"),
+            Example("for (_, foo) in bar.something() { }"),
+            Example("for foo in bar.enumerated() { }"),
+            Example("for foo in bar { }"),
+            Example("for (idx, _) in bar.enumerated().something() { }"),
+            Example("for (idx, _) in bar.something() { }"),
+            Example("for idx in bar.indices { }"),
+            Example("for (section, (event, _)) in data.enumerated() {}")
         ],
         triggeringExamples: [
-            Example("for (↓_, foo) in bar.enumerated() { }\n"),
-            Example("for (↓_, foo) in abc.bar.enumerated() { }\n"),
-            Example("for (↓_, foo) in abc.something().enumerated() { }\n"),
-            Example("for (idx, ↓_) in bar.enumerated() { }\n")
+            Example("for (↓_, foo) in bar.enumerated() { }"),
+            Example("for (↓_, foo) in abc.bar.enumerated() { }"),
+            Example("for (↓_, foo) in abc.something().enumerated() { }"),
+            Example("for (idx, ↓_) in bar.enumerated() { }")
         ]
     )
 

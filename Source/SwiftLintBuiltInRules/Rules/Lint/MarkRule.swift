@@ -10,9 +10,9 @@ struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         description: "MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("// MARK: good\n"),
-            Example("// MARK: - good\n"),
-            Example("// MARK: -\n"),
+            Example("// MARK: good"),
+            Example("// MARK: - good"),
+            Example("// MARK: -"),
             Example("// BOOKMARK"),
             Example("//BOOKMARK"),
             Example("// BOOKMARKS"),

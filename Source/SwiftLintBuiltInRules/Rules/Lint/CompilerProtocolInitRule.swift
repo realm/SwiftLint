@@ -10,14 +10,14 @@ struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
                      "shouldn't be called directly.",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("let set: Set<Int> = [1, 2]\n"),
-            Example("let set = Set(array)\n")
+            Example("let set: Set<Int> = [1, 2]"),
+            Example("let set = Set(array)")
         ],
         triggeringExamples: [
-            Example("let set = ↓Set(arrayLiteral: 1, 2)\n"),
-            Example("let set = ↓Set (arrayLiteral: 1, 2)\n"),
-            Example("let set = ↓Set.init(arrayLiteral: 1, 2)\n"),
-            Example("let set = ↓Set.init(arrayLiteral : 1, 2)\n")
+            Example("let set = ↓Set(arrayLiteral: 1, 2)"),
+            Example("let set = ↓Set (arrayLiteral: 1, 2)"),
+            Example("let set = ↓Set.init(arrayLiteral: 1, 2)"),
+            Example("let set = ↓Set.init(arrayLiteral : 1, 2)")
         ]
     )
 

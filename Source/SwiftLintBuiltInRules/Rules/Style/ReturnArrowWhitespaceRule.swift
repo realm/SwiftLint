@@ -11,12 +11,12 @@ struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, CorrectableRule, Configuratio
                      "separate line",
         kind: .style,
         nonTriggeringExamples: [
-            Example("func abc() -> Int {}\n"),
-            Example("func abc() -> [Int] {}\n"),
-            Example("func abc() -> (Int, Int) {}\n"),
-            Example("var abc = {(param: Int) -> Void in }\n"),
-            Example("func abc() ->\n    Int {}\n"),
-            Example("func abc()\n    -> Int {}\n"),
+            Example("func abc() -> Int {}"),
+            Example("func abc() -> [Int] {}"),
+            Example("func abc() -> (Int, Int) {}"),
+            Example("var abc = {(param: Int) -> Void in }"),
+            Example("func abc() ->\n    Int {}"),
+            Example("func abc()\n    -> Int {}"),
             Example("""
             func reallyLongFunctionMethods<T>(withParam1: Int, param2: String, param3: Bool) where T: AGenericConstraint
                 -> Int {
@@ -26,30 +26,30 @@ struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, CorrectableRule, Configuratio
             Example("typealias SuccessBlock = ((Data) -> Void)")
         ],
         triggeringExamples: [
-            Example("func abc()↓->Int {}\n"),
-            Example("func abc()↓->[Int] {}\n"),
-            Example("func abc()↓->(Int, Int) {}\n"),
-            Example("func abc()↓-> Int {}\n"),
-            Example("func abc()↓->   Int {}\n"),
-            Example("func abc()↓ ->Int {}\n"),
-            Example("func abc()↓  ->  Int {}\n"),
-            Example("var abc = {(param: Int)↓ ->Bool in }\n"),
-            Example("var abc = {(param: Int)↓->Bool in }\n"),
+            Example("func abc()↓->Int {}"),
+            Example("func abc()↓->[Int] {}"),
+            Example("func abc()↓->(Int, Int) {}"),
+            Example("func abc()↓-> Int {}"),
+            Example("func abc()↓->   Int {}"),
+            Example("func abc()↓ ->Int {}"),
+            Example("func abc()↓  ->  Int {}"),
+            Example("var abc = {(param: Int)↓ ->Bool in }"),
+            Example("var abc = {(param: Int)↓->Bool in }"),
             Example("typealias SuccessBlock = ((Data)↓->Void)"),
-            Example("func abc()\n  ↓->  Int {}\n"),
-            Example("func abc()\n ↓->  Int {}\n"),
-            Example("func abc()↓  ->\n  Int {}\n"),
-            Example("func abc()↓  ->\nInt {}\n")
+            Example("func abc()\n  ↓->  Int {}"),
+            Example("func abc()\n ↓->  Int {}"),
+            Example("func abc()↓  ->\n  Int {}"),
+            Example("func abc()↓  ->\nInt {}")
         ],
         corrections: [
-            Example("func abc()↓->Int {}\n"): Example("func abc() -> Int {}\n"),
-            Example("func abc()↓-> Int {}\n"): Example("func abc() -> Int {}\n"),
-            Example("func abc()↓ ->Int {}\n"): Example("func abc() -> Int {}\n"),
-            Example("func abc()↓  ->  Int {}\n"): Example("func abc() -> Int {}\n"),
-            Example("func abc()\n  ↓->  Int {}\n"): Example("func abc()\n  -> Int {}\n"),
-            Example("func abc()\n ↓->  Int {}\n"): Example("func abc()\n -> Int {}\n"),
-            Example("func abc()↓  ->\n  Int {}\n"): Example("func abc() ->\n  Int {}\n"),
-            Example("func abc()↓  ->\nInt {}\n"): Example("func abc() ->\nInt {}\n")
+            Example("func abc()↓->Int {}"): Example("func abc() -> Int {}"),
+            Example("func abc()↓-> Int {}"): Example("func abc() -> Int {}"),
+            Example("func abc()↓ ->Int {}"): Example("func abc() -> Int {}"),
+            Example("func abc()↓  ->  Int {}"): Example("func abc() -> Int {}"),
+            Example("func abc()\n  ↓->  Int {}"): Example("func abc()\n  -> Int {}"),
+            Example("func abc()\n ↓->  Int {}"): Example("func abc()\n -> Int {}"),
+            Example("func abc()↓  ->\n  Int {}"): Example("func abc() ->\n  Int {}"),
+            Example("func abc()↓  ->\nInt {}"): Example("func abc() ->\nInt {}")
         ]
     )
 

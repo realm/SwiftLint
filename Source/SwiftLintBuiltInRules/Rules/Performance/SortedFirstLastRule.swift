@@ -9,11 +9,11 @@ struct SortedFirstLastRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRul
         description: "Prefer using `min()` or `max()` over `sorted().first` or `sorted().last`",
         kind: .performance,
         nonTriggeringExamples: [
-            Example("let min = myList.min()\n"),
-            Example("let min = myList.min(by: { $0 < $1 })\n"),
-            Example("let min = myList.min(by: >)\n"),
-            Example("let max = myList.max()\n"),
-            Example("let max = myList.max(by: { $0 < $1 })\n"),
+            Example("let min = myList.min()"),
+            Example("let min = myList.min(by: { $0 < $1 })"),
+            Example("let min = myList.min(by: >)"),
+            Example("let max = myList.max()"),
+            Example("let max = myList.max(by: { $0 < $1 })"),
             Example("let message = messages.sorted(byKeyPath: #keyPath(Message.timestamp)).last"),
             Example(#"let message = messages.sorted(byKeyPath: "timestamp", ascending: false).first"#),
             Example("myList.sorted().firstIndex(of: key)"),
@@ -28,19 +28,19 @@ struct SortedFirstLastRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRul
             Example("myList.sorted().last { $0 == key }")
         ],
         triggeringExamples: [
-            Example("↓myList.sorted().first\n"),
-            Example("↓myList.sorted(by: { $0.description < $1.description }).first\n"),
-            Example("↓myList.sorted(by: >).first\n"),
-            Example("↓myList.map { $0 + 1 }.sorted().first\n"),
-            Example("↓myList.sorted(by: someFunction).first\n"),
-            Example("↓myList.map { $0 + 1 }.sorted { $0.description < $1.description }.first\n"),
-            Example("↓myList.sorted().last\n"),
-            Example("↓myList.sorted().last?.something()\n"),
-            Example("↓myList.sorted(by: { $0.description < $1.description }).last\n"),
-            Example("↓myList.map { $0 + 1 }.sorted().last\n"),
-            Example("↓myList.sorted(by: someFunction).last\n"),
-            Example("↓myList.map { $0 + 1 }.sorted { $0.description < $1.description }.last\n"),
-            Example("↓myList.map { $0 + 1 }.sorted { $0.first < $1.first }.last\n")
+            Example("↓myList.sorted().first"),
+            Example("↓myList.sorted(by: { $0.description < $1.description }).first"),
+            Example("↓myList.sorted(by: >).first"),
+            Example("↓myList.map { $0 + 1 }.sorted().first"),
+            Example("↓myList.sorted(by: someFunction).first"),
+            Example("↓myList.map { $0 + 1 }.sorted { $0.description < $1.description }.first"),
+            Example("↓myList.sorted().last"),
+            Example("↓myList.sorted().last?.something()"),
+            Example("↓myList.sorted(by: { $0.description < $1.description }).last"),
+            Example("↓myList.map { $0 + 1 }.sorted().last"),
+            Example("↓myList.sorted(by: someFunction).last"),
+            Example("↓myList.map { $0 + 1 }.sorted { $0.description < $1.description }.last"),
+            Example("↓myList.map { $0 + 1 }.sorted { $0.first < $1.first }.last")
         ]
     )
 

@@ -17,7 +17,7 @@ struct ClosingBraceRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
             Example("[].map({ ↓}\t)")
         ],
         corrections: [
-            Example("[].map({ ↓} )\n"): Example("[].map({ })\n")
+            Example("[].map({ ↓} )"): Example("[].map({ })")
         ]
     )
 

@@ -37,7 +37,7 @@ struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
         description: "Prefer Swift value types to bridged Objective-C reference types",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("var array = Array<Int>()\n"),
+            Example("var array = Array<Int>()"),
             Example("var calendar: Calendar? = nil"),
             Example("var formatter: NSDataDetector"),
             Example("var className: String = NSStringFromClass(MyClass.self)"),

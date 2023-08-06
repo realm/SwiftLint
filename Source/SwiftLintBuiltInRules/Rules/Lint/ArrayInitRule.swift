@@ -9,21 +9,21 @@ struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
         description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("Array(foo)\n"),
-            Example("foo.map { $0.0 }\n"),
-            Example("foo.map { $1 }\n"),
-            Example("foo.map { $0() }\n"),
-            Example("foo.map { ((), $0) }\n"),
-            Example("foo.map { $0! }\n"),
-            Example("foo.map { $0! /* force unwrap */ }\n"),
-            Example("foo.something { RouteMapper.map($0) }\n"),
-            Example("foo.map { !$0 }\n"),
-            Example("foo.map { /* a comment */ !$0 }\n")
+            Example("Array(foo)"),
+            Example("foo.map { $0.0 }"),
+            Example("foo.map { $1 }"),
+            Example("foo.map { $0() }"),
+            Example("foo.map { ((), $0) }"),
+            Example("foo.map { $0! }"),
+            Example("foo.map { $0! /* force unwrap */ }"),
+            Example("foo.something { RouteMapper.map($0) }"),
+            Example("foo.map { !$0 }"),
+            Example("foo.map { /* a comment */ !$0 }")
         ],
         triggeringExamples: [
-            Example("foo.↓map({ $0 })\n"),
-            Example("foo.↓map { $0 }\n"),
-            Example("foo.↓map { return $0 }\n"),
+            Example("foo.↓map({ $0 })"),
+            Example("foo.↓map { $0 }"),
+            Example("foo.↓map { return $0 }"),
             Example("""
                 foo.↓map { elem in
                     elem
@@ -44,8 +44,8 @@ struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
                     elem
                 }
             """),
-            Example("foo.↓map { $0 /* a comment */ }\n"),
-            Example("foo.↓map { /* a comment */ $0 }\n")
+            Example("foo.↓map { $0 /* a comment */ }"),
+            Example("foo.↓map { /* a comment */ $0 }")
         ]
     )
 

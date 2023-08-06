@@ -14,8 +14,8 @@ struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule 
             Example("func abc(a: String, b: String) { }"),
             Example("abc(a: \"string\", b: \"string\""),
             Example("enum a { case a, b, c }"),
-            Example("func abc(\n  a: String,  // comment\n  bcd: String // comment\n) {\n}\n"),
-            Example("func abc(\n  a: String,\n  bcd: String\n) {\n}\n"),
+            Example("func abc(\n  a: String,  // comment\n  bcd: String // comment\n) {\n}"),
+            Example("func abc(\n  a: String,\n  bcd: String\n) {\n}"),
             Example("#imageLiteral(resourceName: \"foo,bar,baz\")"),
             Example("""
                 kvcStringBuffer.advanced(by: rootKVCLength)
@@ -33,7 +33,7 @@ struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule 
             Example("func abc(a: String↓ ,b: String↓ ,c: String↓ ,d: String) { }"),
             Example("abc(a: \"string\"↓,b: \"string\""),
             Example("enum a { case a↓ ,b }"),
-            Example("let result = plus(\n    first: 3↓ , // #683\n    second: 4\n)\n"),
+            Example("let result = plus(\n    first: 3↓ , // #683\n    second: 4\n)"),
             Example("""
             Foo(
               parameter: a.b.c,
@@ -51,12 +51,12 @@ struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule 
             Example(#"Logger.logError("Hat is too large"↓,  info: [])"#)
         ],
         corrections: [
-            Example("func abc(a: String↓,b: String) {}\n"): Example("func abc(a: String, b: String) {}\n"),
-            Example("abc(a: \"string\"↓,b: \"string\"\n"): Example("abc(a: \"string\", b: \"string\"\n"),
-            Example("abc(a: \"string\"↓  ,  b: \"string\"\n"): Example("abc(a: \"string\", b: \"string\"\n"),
-            Example("enum a { case a↓  ,b }\n"): Example("enum a { case a, b }\n"),
-            Example("let a = [1↓,1]\nlet b = 1\nf(1, b)\n"): Example("let a = [1, 1]\nlet b = 1\nf(1, b)\n"),
-            Example("let a = [1↓,1↓,1↓,1]\n"): Example("let a = [1, 1, 1, 1]\n"),
+            Example("func abc(a: String↓,b: String) {}"): Example("func abc(a: String, b: String) {}"),
+            Example("abc(a: \"string\"↓,b: \"string\""): Example("abc(a: \"string\", b: \"string\""),
+            Example("abc(a: \"string\"↓  ,  b: \"string\""): Example("abc(a: \"string\", b: \"string\""),
+            Example("enum a { case a↓  ,b }"): Example("enum a { case a, b }"),
+            Example("let a = [1↓,1]\nlet b = 1\nf(1, b)"): Example("let a = [1, 1]\nlet b = 1\nf(1, b)"),
+            Example("let a = [1↓,1↓,1↓,1]"): Example("let a = [1, 1, 1, 1]"),
             Example("""
             Foo(
               parameter: a.b.c,

@@ -9,13 +9,13 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
         description: "Initializing an optional variable with nil is redundant",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("var myVar: Int?\n"),
-            Example("let myVar: Int? = nil\n"),
-            Example("var myVar: Int? = 0\n"),
-            Example("func foo(bar: Int? = 0) { }\n"),
-            Example("var myVar: Optional<Int>\n"),
-            Example("let myVar: Optional<Int> = nil\n"),
-            Example("var myVar: Optional<Int> = 0\n"),
+            Example("var myVar: Int?"),
+            Example("let myVar: Int? = nil"),
+            Example("var myVar: Int? = 0"),
+            Example("func foo(bar: Int? = 0) { }"),
+            Example("var myVar: Optional<Int>"),
+            Example("let myVar: Optional<Int> = nil"),
+            Example("var myVar: Optional<Int> = 0"),
             // properties with body should be ignored
             Example("""
             var foo: Int? {
@@ -49,9 +49,9 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
     )
 
     private static let triggeringExamples: [Example] = [
-        Example("var myVar: Int?↓ = nil\n"),
-        Example("var myVar: Optional<Int>↓ = nil\n"),
-        Example("var myVar: Int?↓=nil\n"),
+        Example("var myVar: Int?↓ = nil"),
+        Example("var myVar: Optional<Int>↓ = nil"),
+        Example("var myVar: Int?↓=nil"),
         Example("var myVar: Optional<Int>↓=nil\n)"),
         Example("""
               var myVar: String?↓ = nil {
@@ -66,10 +66,10 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
     ]
 
     private static let corrections: [Example: Example] = [
-        Example("var myVar: Int?↓ = nil\n"): Example("var myVar: Int?\n"),
-        Example("var myVar: Optional<Int>↓ = nil\n"): Example("var myVar: Optional<Int>\n"),
-        Example("var myVar: Int?↓=nil\n"): Example("var myVar: Int?\n"),
-        Example("var myVar: Optional<Int>↓=nil\n"): Example("var myVar: Optional<Int>\n"),
+        Example("var myVar: Int?↓ = nil"): Example("var myVar: Int?"),
+        Example("var myVar: Optional<Int>↓ = nil"): Example("var myVar: Optional<Int>"),
+        Example("var myVar: Int?↓=nil"): Example("var myVar: Int?"),
+        Example("var myVar: Optional<Int>↓=nil"): Example("var myVar: Optional<Int>"),
         Example("class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}"):
             Example("class C {\n#if true\nvar myVar: Int?\n#endif\n}"),
         Example("""

@@ -9,27 +9,27 @@ struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
         description: "Prefer checking `isEmpty` over comparing `count` to zero",
         kind: .performance,
         nonTriggeringExamples: [
-            Example("var count = 0\n"),
-            Example("[Int]().isEmpty\n"),
-            Example("[Int]().count > 1\n"),
-            Example("[Int]().count == 1\n"),
-            Example("[Int]().count == 0xff\n"),
-            Example("[Int]().count == 0b01\n"),
-            Example("[Int]().count == 0o07\n"),
-            Example("discount == 0\n"),
-            Example("order.discount == 0\n")
+            Example("var count = 0"),
+            Example("[Int]().isEmpty"),
+            Example("[Int]().count > 1"),
+            Example("[Int]().count == 1"),
+            Example("[Int]().count == 0xff"),
+            Example("[Int]().count == 0b01"),
+            Example("[Int]().count == 0o07"),
+            Example("discount == 0"),
+            Example("order.discount == 0")
         ],
         triggeringExamples: [
-            Example("[Int]().↓count == 0\n"),
-            Example("0 == [Int]().↓count\n"),
-            Example("[Int]().↓count==0\n"),
-            Example("[Int]().↓count > 0\n"),
-            Example("[Int]().↓count != 0\n"),
-            Example("[Int]().↓count == 0x0\n"),
-            Example("[Int]().↓count == 0x00_00\n"),
-            Example("[Int]().↓count == 0b00\n"),
-            Example("[Int]().↓count == 0o00\n"),
-            Example("↓count == 0\n")
+            Example("[Int]().↓count == 0"),
+            Example("0 == [Int]().↓count"),
+            Example("[Int]().↓count==0"),
+            Example("[Int]().↓count > 0"),
+            Example("[Int]().↓count != 0"),
+            Example("[Int]().↓count == 0x0"),
+            Example("[Int]().↓count == 0x00_00"),
+            Example("[Int]().↓count == 0b00"),
+            Example("[Int]().↓count == 0o00"),
+            Example("↓count == 0")
         ]
     )
 

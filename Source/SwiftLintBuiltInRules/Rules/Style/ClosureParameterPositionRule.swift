@@ -9,14 +9,14 @@ struct ClosureParameterPositionRule: SwiftSyntaxRule, ConfigurationProviderRule 
         description: "Closure parameters should be on the same line as opening brace",
         kind: .style,
         nonTriggeringExamples: [
-            Example("[1, 2].map { $0 + 1 }\n"),
-            Example("[1, 2].map({ $0 + 1 })\n"),
-            Example("[1, 2].map { number in\n number + 1 \n}\n"),
-            Example("[1, 2].map { number -> Int in\n number + 1 \n}\n"),
-            Example("[1, 2].map { (number: Int) -> Int in\n number + 1 \n}\n"),
-            Example("[1, 2].map { [weak self] number in\n number + 1 \n}\n"),
-            Example("[1, 2].something(closure: { number in\n number + 1 \n})\n"),
-            Example("let isEmpty = [1, 2].isEmpty()\n"),
+            Example("[1, 2].map { $0 + 1 }"),
+            Example("[1, 2].map({ $0 + 1 })"),
+            Example("[1, 2].map { number in\n number + 1 \n}"),
+            Example("[1, 2].map { number -> Int in\n number + 1 \n}"),
+            Example("[1, 2].map { (number: Int) -> Int in\n number + 1 \n}"),
+            Example("[1, 2].map { [weak self] number in\n number + 1 \n}"),
+            Example("[1, 2].something(closure: { number in\n number + 1 \n})"),
+            Example("let isEmpty = [1, 2].isEmpty()"),
             Example("""
             rlmConfiguration.migrationBlock.map { rlmMigration in
                 return { migration, schemaVersion in

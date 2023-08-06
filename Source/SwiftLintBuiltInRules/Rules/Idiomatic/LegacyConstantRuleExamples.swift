@@ -34,10 +34,10 @@ internal struct LegacyConstantRuleExamples {
         Example("↓NSZeroRect"): Example("NSRect.zero"),
         Example("↓NSZeroSize"): Example("NSSize.zero"),
         Example("↓CGRectNull"): Example("CGRect.null"),
-        Example("↓CGRectInfinite\n↓CGRectNull\n"): Example("CGRect.infinite\nCGRect.null\n"),
+        Example("↓CGRectInfinite\n↓CGRectNull"): Example("CGRect.infinite\nCGRect.null"),
         Example("↓CGFloat(M_PI)"): Example("CGFloat.pi"),
         Example("↓Float(M_PI)"): Example("Float.pi"),
-        Example("↓CGFloat(M_PI)\n↓Float(M_PI)\n"): Example("CGFloat.pi\nFloat.pi\n")
+        Example("↓CGFloat(M_PI)\n↓Float(M_PI)"): Example("CGFloat.pi\nFloat.pi")
     ]
 
     static let patterns = [

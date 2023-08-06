@@ -9,39 +9,39 @@ struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule 
         description: "IBOutlets should be private to avoid leaking UIKit to higher layers",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("class Foo {\n  @IBOutlet private var label: UILabel?\n}"),
-            Example("class Foo {\n  @IBOutlet private var label: UILabel!\n}"),
-            Example("class Foo {\n  var notAnOutlet: UILabel\n}"),
-            Example("class Foo {\n  @IBOutlet weak private var label: UILabel?\n}"),
-            Example("class Foo {\n  @IBOutlet private weak var label: UILabel?\n}"),
-            Example("class Foo {\n  @IBOutlet fileprivate weak var label: UILabel?\n}"),
+            Example("class Foo { @IBOutlet private var label: UILabel? }"),
+            Example("class Foo { @IBOutlet private var label: UILabel! }"),
+            Example("class Foo { var notAnOutlet: UILabel }"),
+            Example("class Foo { @IBOutlet weak private var label: UILabel? }"),
+            Example("class Foo { @IBOutlet private weak var label: UILabel? }"),
+            Example("class Foo { @IBOutlet fileprivate weak var label: UILabel? }"),
             // allow_private_set
             Example(
-                "class Foo {\n  @IBOutlet private(set) var label: UILabel?\n}\n",
+                "class Foo { @IBOutlet private(set) var label: UILabel? }",
                 configuration: ["allow_private_set": true]
             ),
             Example(
-                "class Foo {\n  @IBOutlet private(set) var label: UILabel!\n}\n",
+                "class Foo { @IBOutlet private(set) var label: UILabel! }",
                 configuration: ["allow_private_set": true]
             ),
             Example(
-                "class Foo {\n  @IBOutlet weak private(set) var label: UILabel?\n}\n",
+                "class Foo { @IBOutlet weak private(set) var label: UILabel? }",
                 configuration: ["allow_private_set": true]
             ),
             Example(
-                "class Foo {\n  @IBOutlet private(set) weak var label: UILabel?\n}\n",
+                "class Foo { @IBOutlet private(set) weak var label: UILabel? }",
                 configuration: ["allow_private_set": true]
             ),
             Example(
-                "class Foo {\n  @IBOutlet fileprivate(set) weak var label: UILabel?\n}\n",
+                "class Foo { @IBOutlet fileprivate(set) weak var label: UILabel? }",
                 configuration: ["allow_private_set": true]
             )
         ],
         triggeringExamples: [
-            Example("class Foo {\n  @IBOutlet ↓var label: UILabel?\n}"),
-            Example("class Foo {\n  @IBOutlet ↓var label: UILabel!\n}"),
-            Example("class Foo {\n  @IBOutlet private(set) ↓var label: UILabel?\n}"),
-            Example("class Foo {\n  @IBOutlet fileprivate(set) ↓var label: UILabel?\n}"),
+            Example("class Foo { @IBOutlet ↓var label: UILabel? }"),
+            Example("class Foo { @IBOutlet ↓var label: UILabel! }"),
+            Example("class Foo { @IBOutlet private(set) ↓var label: UILabel? }"),
+            Example("class Foo { @IBOutlet fileprivate(set) ↓var label: UILabel? }"),
             Example("""
             import Gridicons
 

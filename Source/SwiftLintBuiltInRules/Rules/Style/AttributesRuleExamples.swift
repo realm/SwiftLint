@@ -26,11 +26,16 @@ internal struct AttributesRuleExamples {
         Example("@objc(ABCThing)\n @available(iOS 9.0, *)\n class Thing {}"),
         Example("class Foo: NSObject {\n override var description: String { return \"\" }\n}"),
         Example("class Foo: NSObject {\n\n override func setUp() {}\n}"),
-        Example("@objc\nclass ⽺ {}\n"),
+        Example("@objc\nclass ⽺ {}"),
 
         // attribute with allowed empty new line above
-        Example("extension Property {\n\n @available(*, unavailable, renamed: \"isOptional\")\n" +
-            "public var optional: Bool { fatalError() }\n}"),
+        Example("""
+        extension Property {
+
+            @available(*, unavailable, renamed: \"isOptional\")
+            public var optional: Bool { fatalError() }
+        }
+        """),
         Example("@GKInspectable var maxSpeed: Float"),
         Example("@discardableResult\n func a() -> Int"),
         Example("@objc\n @discardableResult\n func a() -> Int"),

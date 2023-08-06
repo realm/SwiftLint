@@ -1,12 +1,16 @@
 internal struct MultilineArgumentsRuleExamples {
     static let nonTriggeringExamples = [
         Example("foo()"),
-        Example("foo(\n" +
-                    ")"),
+        Example("""
+        foo(
+        )
+        """),
         Example("foo { }"),
-        Example("foo {\n" +
-        "    \n" +
-        "}"),
+        Example("""
+        foo {
+
+        }
+        """),
         Example("foo(0)"),
         Example("foo(0, 1)"),
         Example("foo(0, 1) { }"),

@@ -14,21 +14,29 @@ struct DiscardedNotificationCenterObserverRule: SwiftSyntaxRule, ConfigurationPr
             Example("""
             let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
             """),
-            Example("func foo() -> Any {\n" +
-            "   return nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n" +
-            "}"),
-            Example("var obs: [Any?] = []\n" +
-            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))"),
+            Example("""
+            func foo() -> Any {
+                return nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
+            }
+            """),
+            Example("""
+            var obs: [Any?] = []
+            obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))
+            """),
             Example("""
             var obs: [String: Any?] = []
             obs["foo"] = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
             """),
-            Example("var obs: [Any?] = []\n" +
-            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))"),
-            Example("func foo(_ notif: Any) {\n" +
-            "   obs.append(notif)\n" +
-            "}\n" +
-            "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))"),
+            Example("""
+            var obs: [Any?] = []
+            obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))
+            """),
+            Example("""
+            func foo(_ notif: Any) {
+               obs.append(notif)
+            }
+            foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))
+            """),
             Example("""
             var obs: [NSObjectProtocol] = [
                nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }),

@@ -1,27 +1,35 @@
 enum UnusedClosureParameterRuleExamples {
     static let nonTriggering = [
-        Example("[1, 2].map { $0 + 1 }\n"),
-        Example("[1, 2].map({ $0 + 1 })\n"),
-        Example("[1, 2].map { number in\n number + 1 \n}\n"),
-        Example("[1, 2].map { _ in\n 3 \n}\n"),
-        Example("[1, 2].something { number, idx in\n return number * idx\n}\n"),
-        Example("let isEmpty = [1, 2].isEmpty()\n"),
-        Example("violations.sorted(by: { lhs, rhs in \n return lhs.location > rhs.location\n})\n"),
-        Example("rlmConfiguration.migrationBlock.map { rlmMigration in\n" +
-            "return { migration, schemaVersion in\n" +
-            "rlmMigration(migration.rlmMigration, schemaVersion)\n" +
-            "}\n" +
-        "}"),
-        Example("genericsFunc { (a: Type, b) in\n" +
-            "a + b\n" +
-        "}\n"),
-        Example("var label: UILabel = { (lbl: UILabel) -> UILabel in\n" +
-        "   lbl.backgroundColor = .red\n" +
-        "   return lbl\n" +
-        "}(UILabel())\n"),
-        Example("hoge(arg: num) { num in\n" +
-        "  return num\n" +
-        "}\n"),
+        Example("[1, 2].map { $0 + 1 }"),
+        Example("[1, 2].map({ $0 + 1 })"),
+        Example("[1, 2].map { number in\n number + 1 \n}"),
+        Example("[1, 2].map { _ in\n 3 \n}"),
+        Example("[1, 2].something { number, idx in\n return number * idx\n}"),
+        Example("let isEmpty = [1, 2].isEmpty()"),
+        Example("violations.sorted(by: { lhs, rhs in \n return lhs.location > rhs.location\n})"),
+        Example("""
+        rlmConfiguration.migrationBlock.map { rlmMigration in
+            return { migration, schemaVersion in
+                rlmMigration(migration.rlmMigration, schemaVersion)
+            }
+        }
+        """),
+        Example("""
+        genericsFunc { (a: Type, b) in
+            a + b
+        }
+        """),
+        Example("""
+        var label: UILabel = { (lbl: UILabel) -> UILabel in
+            lbl.backgroundColor = .red
+            return lbl
+        }(UILabel())
+        """),
+        Example("""
+        hoge(arg: num) { num in
+            return num
+        }
+        """),
         Example("""
         ({ (manager: FileManager) in
           print(manager)
@@ -58,16 +66,18 @@ enum UnusedClosureParameterRuleExamples {
     ]
 
     static let triggering = [
-        Example("[1, 2].map { ↓number in\n return 3\n}\n"),
-        Example("[1, 2].map { ↓number in\n return numberWithSuffix\n}\n"),
-        Example("[1, 2].map { ↓number in\n return 3 // number\n}\n"),
-        Example("[1, 2].map { ↓number in\n return 3 \"number\"\n}\n"),
-        Example("[1, 2].something { number, ↓idx in\n return number\n}\n"),
-        Example("genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n"),
-        Example("hoge(arg: num) { ↓num in\n" +
-        "}\n"),
-        Example("fooFunc { ↓아 in\n }"),
-        Example("func foo () {\n bar { ↓number in\n return 3\n}\n"),
+        Example("[1, 2].map { ↓number in\n return 3 }"),
+        Example("[1, 2].map { ↓number in\n return numberWithSuffix }"),
+        Example("[1, 2].map { ↓number in\n return 3 // number }"),
+        Example("[1, 2].map { ↓number in\n return 3 \"number\" }"),
+        Example("[1, 2].something { number, ↓idx in\n return number }"),
+        Example("genericsFunc { (↓number: TypeA, idx: TypeB) in return idx }"),
+        Example("""
+        hoge(arg: num) { ↓num in
+        }
+        """),
+        Example("fooFunc { ↓아 in }"),
+        Example("func foo () {\n bar { ↓number in return 3 }"),
         Example("""
         viewModel?.profileImage.didSet(weak: self) { (↓self, profileImage) in
             profileImageView.image = profileImage
@@ -90,26 +100,26 @@ enum UnusedClosureParameterRuleExamples {
     ]
 
     static let corrections = [
-        Example("[1, 2].map { ↓number in\n return 3\n}\n"):
-            Example("[1, 2].map { _ in\n return 3\n}\n"),
-        Example("[1, 2].map { ↓number in\n return numberWithSuffix\n}\n"):
-            Example("[1, 2].map { _ in\n return numberWithSuffix\n}\n"),
-        Example("[1, 2].map { ↓number in\n return 3 // number\n}\n"):
-            Example("[1, 2].map { _ in\n return 3 // number\n}\n"),
-        Example("[1, 2].something { number, ↓idx in\n return number\n}\n"):
-            Example("[1, 2].something { number, _ in\n return number\n}\n"),
-        Example("genericsFunc(closure: { (↓int: Int) -> Void in // do something\n})\n"):
-            Example("genericsFunc(closure: { (_: Int) -> Void in // do something\n})\n"),
-        Example("genericsFunc { (↓a, ↓b: Type) -> Void in\n}\n"):
-            Example("genericsFunc { (_, _: Type) -> Void in\n}\n"),
-        Example("genericsFunc { (↓a: Type, ↓b: Type) -> Void in\n}\n"):
-            Example("genericsFunc { (_: Type, _: Type) -> Void in\n}\n"),
-        Example("genericsFunc { (↓a: Type, ↓b) -> Void in\n}\n"):
-            Example("genericsFunc { (_: Type, _) -> Void in\n}\n"),
-        Example("genericsFunc { (a: Type, ↓b) -> Void in\nreturn a\n}\n"):
-            Example("genericsFunc { (a: Type, _) -> Void in\nreturn a\n}\n"),
-        Example("hoge(arg: num) { ↓num in\n}\n"):
-            Example("hoge(arg: num) { _ in\n}\n"),
+        Example("[1, 2].map { ↓number in return 3 }"):
+            Example("[1, 2].map { _ in return 3 }"),
+        Example("[1, 2].map { ↓number in return numberWithSuffix }"):
+            Example("[1, 2].map { _ in return numberWithSuffix }"),
+        Example("[1, 2].map { ↓number in return 3 // number }"):
+            Example("[1, 2].map { _ in return 3 // number }"),
+        Example("[1, 2].something { number, ↓idx in return number }"):
+            Example("[1, 2].something { number, _ in return number }"),
+        Example("genericsFunc(closure: { (↓int: Int) -> Void in // do something })"):
+            Example("genericsFunc(closure: { (_: Int) -> Void in // do something })"),
+        Example("genericsFunc { (↓a, ↓b: Type) -> Void in }"):
+            Example("genericsFunc { (_, _: Type) -> Void in }"),
+        Example("genericsFunc { (↓a: Type, ↓b: Type) -> Void in }"):
+            Example("genericsFunc { (_: Type, _: Type) -> Void in }"),
+        Example("genericsFunc { (↓a: Type, ↓b) -> Void in }"):
+            Example("genericsFunc { (_: Type, _) -> Void in }"),
+        Example("genericsFunc { (a: Type, ↓b) -> Void in return a }"):
+            Example("genericsFunc { (a: Type, _) -> Void in return a }"),
+        Example("hoge(arg: num) { ↓num in }"):
+            Example("hoge(arg: num) { _ in }"),
         Example("""
         func foo () {
           bar { ↓number in
@@ -124,8 +134,28 @@ enum UnusedClosureParameterRuleExamples {
               }
             }
             """),
-        Example("class C {\n #if true\n func f() {\n [1, 2].map { ↓number in\n return 3\n }\n }\n #endif\n}"):
-            Example("class C {\n #if true\n func f() {\n [1, 2].map { _ in\n return 3\n }\n }\n #endif\n}"),
+        Example("""
+        class C {
+        #if true
+            func f() {
+                [1, 2].map { ↓number in
+                    return 3
+                }
+            }
+        #endif
+        }
+        """):
+            Example("""
+            class C {
+            #if true
+                func f() {
+                    [1, 2].map { _ in
+                        return 3
+                    }
+                }
+            #endif
+            }
+            """),
         Example("""
         let failure: Failure = { ↓task, error in
             observer.sendFailed(error)

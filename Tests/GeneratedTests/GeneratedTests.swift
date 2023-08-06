@@ -770,6 +770,12 @@ class NoSpaceInMethodCallRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class NonOverridableClassDeclarationRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NonOverridableClassDeclarationRule.description)
+    }
+}
+
 class NotificationCenterDetachmentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NotificationCenterDetachmentRule.description)

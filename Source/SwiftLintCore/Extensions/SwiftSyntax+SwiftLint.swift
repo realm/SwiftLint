@@ -136,11 +136,18 @@ public extension ModifierListSyntax? {
         contains(tokenKind: .keyword(.fileprivate))
     }
 
+    var isPrivate: Bool {
+        contains(tokenKind: .keyword(.private))
+    }
+
+    var isFinal: Bool {
+        contains(tokenKind: .keyword(.final))
+    }
+
     var isPrivateOrFileprivate: Bool {
         guard let modifiers = self else {
             return false
         }
-
         return modifiers.contains { elem in
             (elem.name.tokenKind == .keyword(.private) || elem.name.tokenKind == .keyword(.fileprivate)) &&
                 elem.detail == nil
@@ -148,11 +155,7 @@ public extension ModifierListSyntax? {
     }
 
     private func contains(tokenKind: TokenKind) -> Bool {
-        guard let modifiers = self else {
-            return false
-        }
-
-        return modifiers.contains { $0.name.tokenKind == tokenKind }
+        self?.contains { $0.name.tokenKind == tokenKind } ?? false
     }
 }
 

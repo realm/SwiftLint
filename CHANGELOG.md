@@ -19,6 +19,11 @@
 * Rewrite `control_statement` rule using SwiftSyntax.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Add new `non_overridable_class_declaration` rule that triggers on `class`
+  function and variable declarations in final classes that are not final
+  themselves or private.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * The Homebrew formula for SwiftLint now also installs completion scripts for
   Bash, Zsh and fish.  
   [SimplyDanny](https://github.com/SimplyDanny)

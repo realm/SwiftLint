@@ -419,55 +419,45 @@ warning
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="nf">map</span><span class="p">({</span> <span class="nv">$0</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">})</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">number</span> <span class="k">in</span>
  <span class="n">number</span> <span class="o">+</span> <span class="mi">1</span> 
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span>
  <span class="mi">3</span> 
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">something</span> <span class="p">{</span> <span class="n">number</span><span class="p">,</span> <span class="n">idx</span> <span class="k">in</span>
  <span class="k">return</span> <span class="n">number</span> <span class="o">*</span> <span class="n">idx</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">isEmpty</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="nf">isEmpty</span><span class="p">()</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">violations</span><span class="o">.</span><span class="nf">sorted</span><span class="p">(</span><span class="nv">by</span><span class="p">:</span> <span class="p">{</span> <span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span> <span class="k">in</span> 
  <span class="k">return</span> <span class="n">lhs</span><span class="o">.</span><span class="n">location</span> <span class="o">&gt;</span> <span class="n">rhs</span><span class="o">.</span><span class="n">location</span>
 <span class="p">})</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">rlmConfiguration</span><span class="o">.</span><span class="n">migrationBlock</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">rlmMigration</span> <span class="k">in</span>
-<span class="k">return</span> <span class="p">{</span> <span class="n">migration</span><span class="p">,</span> <span class="n">schemaVersion</span> <span class="k">in</span>
-<span class="nf">rlmMigration</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">rlmMigration</span><span class="p">,</span> <span class="n">schemaVersion</span><span class="p">)</span>
-<span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="n">migration</span><span class="p">,</span> <span class="n">schemaVersion</span> <span class="k">in</span>
+        <span class="nf">rlmMigration</span><span class="p">(</span><span class="n">migration</span><span class="o">.</span><span class="n">rlmMigration</span><span class="p">,</span> <span class="n">schemaVersion</span><span class="p">)</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">genericsFunc</span> <span class="p">{</span> <span class="p">(</span><span class="nv">a</span><span class="p">:</span> <span class="k">Type</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">in</span>
-<span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span> <span class="o">=</span> <span class="p">{</span> <span class="p">(</span><span class="nv">lbl</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">UILabel</span> <span class="k">in</span>
-   <span class="n">lbl</span><span class="o">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">red</span>
-   <span class="k">return</span> <span class="n">lbl</span>
+    <span class="n">lbl</span><span class="o">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">red</span>
+    <span class="k">return</span> <span class="n">lbl</span>
 <span class="p">}(</span><span class="kt">UILabel</span><span class="p">())</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">hoge</span><span class="p">(</span><span class="nv">arg</span><span class="p">:</span> <span class="n">num</span><span class="p">)</span> <span class="p">{</span> <span class="n">num</span> <span class="k">in</span>
-  <span class="k">return</span> <span class="n">num</span>
+    <span class="k">return</span> <span class="n">num</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">({</span> <span class="p">(</span><span class="nv">manager</span><span class="p">:</span> <span class="kt">FileManager</span><span class="p">)</span> <span class="k">in</span>
   <span class="nf">print</span><span class="p">(</span><span class="n">manager</span><span class="p">)</span>
@@ -501,46 +491,29 @@ warning
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="err">↓</span><span class="n">number</span> <span class="k">in</span>
- <span class="k">return</span> <span class="mi">3</span>
-<span class="p">}</span>
-
+ <span class="k">return</span> <span class="mi">3</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="err">↓</span><span class="n">number</span> <span class="k">in</span>
- <span class="k">return</span> <span class="n">numberWithSuffix</span>
-<span class="p">}</span>
-
+ <span class="k">return</span> <span class="n">numberWithSuffix</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="err">↓</span><span class="n">number</span> <span class="k">in</span>
- <span class="k">return</span> <span class="mi">3</span> <span class="c1">// number</span>
-<span class="p">}</span>
-
+ <span class="k">return</span> <span class="mi">3</span> <span class="c1">// number }</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="err">↓</span><span class="n">number</span> <span class="k">in</span>
- <span class="k">return</span> <span class="mi">3</span> <span class="s">"number"</span>
-<span class="p">}</span>
-
+ <span class="k">return</span> <span class="mi">3</span> <span class="s">"number"</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">something</span> <span class="p">{</span> <span class="n">number</span><span class="p">,</span> <span class="err">↓</span><span class="n">idx</span> <span class="k">in</span>
- <span class="k">return</span> <span class="n">number</span>
-<span class="p">}</span>
-
+ <span class="k">return</span> <span class="n">number</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="n">genericsFunc</span> <span class="p">{</span> <span class="p">(</span><span class="err">↓</span><span class="nv">number</span><span class="p">:</span> <span class="kt">TypeA</span><span class="p">,</span> <span class="nv">idx</span><span class="p">:</span> <span class="kt">TypeB</span><span class="p">)</span> <span class="k">in</span> <span class="k">return</span> <span class="n">idx</span>
-<span class="p">}</span>
-
+<pre class="highlight swift"><code><span class="n">genericsFunc</span> <span class="p">{</span> <span class="p">(</span><span class="err">↓</span><span class="nv">number</span><span class="p">:</span> <span class="kt">TypeA</span><span class="p">,</span> <span class="nv">idx</span><span class="p">:</span> <span class="kt">TypeB</span><span class="p">)</span> <span class="k">in</span> <span class="k">return</span> <span class="n">idx</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">hoge</span><span class="p">(</span><span class="nv">arg</span><span class="p">:</span> <span class="n">num</span><span class="p">)</span> <span class="p">{</span> <span class="err">↓</span><span class="n">num</span> <span class="k">in</span>
 <span class="p">}</span>
-
 </code></pre>
-<pre class="highlight swift"><code><span class="n">fooFunc</span> <span class="p">{</span> <span class="err">↓</span><span class="n">아</span> <span class="k">in</span>
- <span class="p">}</span>
+<pre class="highlight swift"><code><span class="n">fooFunc</span> <span class="p">{</span> <span class="err">↓</span><span class="n">아</span> <span class="k">in</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span> <span class="p">()</span> <span class="p">{</span>
- <span class="n">bar</span> <span class="p">{</span> <span class="err">↓</span><span class="n">number</span> <span class="k">in</span>
- <span class="k">return</span> <span class="mi">3</span>
-<span class="p">}</span>
-
+ <span class="n">bar</span> <span class="p">{</span> <span class="err">↓</span><span class="n">number</span> <span class="k">in</span> <span class="k">return</span> <span class="mi">3</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">viewModel</span><span class="p">?</span><span class="o">.</span><span class="n">profileImage</span><span class="o">.</span><span class="nf">didSet</span><span class="p">(</span><span class="nv">weak</span><span class="p">:</span> <span class="k">self</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="err">↓</span><span class="k">self</span><span class="p">,</span> <span class="n">profileImage</span><span class="p">)</span> <span class="k">in</span>
     <span class="n">profileImageView</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">profileImage</span>

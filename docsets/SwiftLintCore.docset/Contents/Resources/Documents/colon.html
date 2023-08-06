@@ -435,84 +435,58 @@ true
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="kt">Void</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="p">[</span><span class="kt">Void</span><span class="p">:</span> <span class="kt">Void</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="p">(</span><span class="kt">Void</span><span class="p">,</span> <span class="kt">Void</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="p">([</span><span class="kt">Void</span><span class="p">],</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="p">[([</span><span class="kt">Void</span><span class="p">],</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="kt">String</span><span class="o">=</span><span class="s">"def"</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="kt">Int</span><span class="o">=</span><span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="kt">Enum</span><span class="o">=</span><span class="kt">Enum</span><span class="o">.</span><span class="kt">Value</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">(</span><span class="nv">def</span><span class="p">:</span> <span class="kt">Void</span><span class="p">)</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">(</span><span class="nv">def</span><span class="p">:</span> <span class="kt">Void</span><span class="p">,</span> <span class="nv">ghi</span><span class="p">:</span> <span class="kt">Void</span><span class="p">)</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"abc:"</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Void</span><span class="p">:</span> <span class="kt">Void</span><span class="p">]()</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">:</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">4</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">[</span><span class="s">"string"</span><span class="p">:</span> <span class="s">"string"</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">[</span><span class="s">"string:string"</span><span class="p">:</span> <span class="s">"string"</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Int</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span><span class="nv">bar</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Int</span><span class="p">])</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Int</span><span class="p">]</span> <span class="p">{</span> <span class="k">return</span> <span class="p">[:]</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="kt">Any</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="p">[</span><span class="kt">Any</span><span class="p">:</span> <span class="kt">Int</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="p">:</span> <span class="kt">Bar</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt">Bar</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">Equatable</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt">Bar</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">U</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt">Bar</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">Equatable</span><span class="o">&gt;</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">object</span><span class="o">.</span><span class="nf">method</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="cm">/* comment */</span> <span class="mi">5</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">switch</span> <span class="n">foo</span> <span class="p">{</span>
 <span class="k">case</span> <span class="o">.</span><span class="nv">bar</span><span class="p">:</span>
@@ -520,13 +494,11 @@ true
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">object</span><span class="o">.</span><span class="nf">method</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="s">"string"</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">object</span><span class="o">.</span><span class="nf">method</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span>
               <span class="s">"string"</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">object</span><span class="o">.</span><span class="nf">method</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="s">"string"</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span> <span class="p">{</span> <span class="nf">def</span><span class="p">(</span><span class="nv">ghi</span><span class="p">:</span> <span class="n">jkl</span><span class="p">)</span> <span class="p">}</span>
 </code></pre>
@@ -566,148 +538,100 @@ true
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span><span class="p">:</span><span class="kt">Void</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span><span class="p">:</span>  <span class="kt">Void</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span> <span class="p">:</span><span class="kt">Void</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Void</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span> <span class="p">:</span> <span class="p">[</span><span class="kt">Void</span><span class="p">:</span> <span class="kt">Void</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span> <span class="p">:</span> <span class="p">(</span><span class="kt">Void</span><span class="p">,</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span> <span class="p">:</span> <span class="p">([</span><span class="kt">Void</span><span class="p">],</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span> <span class="p">:</span> <span class="p">[([</span><span class="kt">Void</span><span class="p">],</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span><span class="p">:</span>  <span class="p">(</span><span class="kt">Void</span><span class="p">,</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span><span class="p">:</span>  <span class="p">([</span><span class="kt">Void</span><span class="p">],</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span><span class="p">:</span>  <span class="p">[([</span><span class="kt">Void</span><span class="p">],</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span> <span class="p">:</span><span class="kt">String</span><span class="o">=</span><span class="s">"def"</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span> <span class="p">:</span><span class="kt">Int</span><span class="o">=</span><span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span> <span class="p">:</span><span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span><span class="p">:</span><span class="kt">Int</span><span class="o">=</span><span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span><span class="p">:</span><span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span><span class="p">:</span><span class="kt">Enum</span><span class="o">=</span><span class="kt">Enum</span><span class="o">.</span><span class="kt">Value</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">(</span><span class="n">def</span><span class="err">↓</span><span class="p">:</span><span class="kt">Void</span><span class="p">)</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">(</span><span class="n">def</span><span class="err">↓</span><span class="p">:</span>  <span class="kt">Void</span><span class="p">)</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">(</span><span class="n">def</span><span class="err">↓</span> <span class="p">:</span><span class="kt">Void</span><span class="p">)</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">(</span><span class="n">def</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Void</span><span class="p">)</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">(</span><span class="nv">def</span><span class="p">:</span> <span class="kt">Void</span><span class="p">,</span> <span class="n">ghi</span><span class="err">↓</span> <span class="p">:</span><span class="kt">Void</span><span class="p">)</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Void</span><span class="err">↓</span><span class="p">:</span><span class="kt">Void</span><span class="p">]()</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Void</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Void</span><span class="p">]()</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Void</span><span class="err">↓</span><span class="p">:</span>  <span class="kt">Void</span><span class="p">]()</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Void</span><span class="err">↓</span> <span class="p">:</span>  <span class="kt">Void</span><span class="p">]()</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="err">↓</span> <span class="p">:</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">4</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="err">↓</span> <span class="p">:</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">3</span><span class="err">↓</span><span class="p">:</span>  <span class="mi">4</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Int</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="err">↓</span><span class="p">:</span><span class="kt">Int</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span><span class="nv">bar</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Int</span><span class="p">])</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span><span class="nv">bar</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="err">↓</span><span class="p">:</span><span class="kt">Int</span><span class="p">])</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Int</span><span class="p">]</span> <span class="p">{</span> <span class="k">return</span> <span class="p">[:]</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span><span class="err">↓</span><span class="p">:</span><span class="kt">Int</span><span class="p">]</span> <span class="p">{</span> <span class="k">return</span> <span class="p">[:]</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Any</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="p">[</span><span class="kt">Any</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Int</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Bar</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="err">↓</span><span class="p">:</span><span class="kt">Bar</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Bar</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="err">↓</span><span class="p">:</span><span class="kt">Bar</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">U</span><span class="o">&gt;</span><span class="err">↓</span><span class="p">:</span><span class="kt">Bar</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">Equatable</span><span class="o">&gt;</span><span class="err">↓</span><span class="p">:</span><span class="kt">Bar</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="o">&lt;</span><span class="kt">T</span><span class="err">↓</span><span class="p">:</span><span class="kt">Equatable</span><span class="o">&gt;</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="o">&lt;</span><span class="kt">T</span><span class="err">↓</span> <span class="p">:</span> <span class="kt">Equatable</span><span class="o">&gt;</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">object</span><span class="o">.</span><span class="nf">method</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="n">y</span><span class="err">↓</span> <span class="p">:</span> <span class="s">"string"</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">object</span><span class="o">.</span><span class="nf">method</span><span class="p">(</span><span class="n">x</span><span class="err">↓</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="s">"string"</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">object</span><span class="o">.</span><span class="nf">method</span><span class="p">(</span><span class="n">x</span><span class="err">↓</span><span class="p">:</span>  <span class="mi">5</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="s">"string"</span><span class="p">)</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span> <span class="p">{</span> <span class="nf">def</span><span class="p">(</span><span class="n">ghi</span><span class="err">↓</span><span class="p">:</span><span class="n">jkl</span><span class="p">)</span> <span class="p">}</span>
 </code></pre>

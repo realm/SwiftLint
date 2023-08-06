@@ -516,12 +516,11 @@ always_on_line_above
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@objc</span>
 <span class="kd">class</span> <span class="err">⽺</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Property</span> <span class="p">{</span>
 
- <span class="kd">@available</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">unavailable</span><span class="p">,</span> <span class="nv">renamed</span><span class="p">:</span> <span class="s">"isOptional"</span><span class="p">)</span>
-<span class="kd">public</span> <span class="k">var</span> <span class="nv">optional</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="nf">fatalError</span><span class="p">()</span> <span class="p">}</span>
+    <span class="kd">@available</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">unavailable</span><span class="p">,</span> <span class="nv">renamed</span><span class="p">:</span> <span class="s">"isOptional"</span><span class="p">)</span>
+    <span class="kd">public</span> <span class="k">var</span> <span class="nv">optional</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="nf">fatalError</span><span class="p">()</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@GKInspectable</span> <span class="k">var</span> <span class="nv">maxSpeed</span><span class="p">:</span> <span class="kt">Float</span>

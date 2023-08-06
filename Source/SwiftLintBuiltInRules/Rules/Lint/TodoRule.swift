@@ -10,18 +10,18 @@ struct TodoRule: SwiftSyntaxRule, ConfigurationProviderRule {
         description: "TODOs and FIXMEs should be resolved.",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("// notaTODO:\n"),
-            Example("// notaFIXME:\n")
+            Example("// notaTODO:"),
+            Example("// notaFIXME:")
         ],
         triggeringExamples: [
-            Example("// ↓TODO:\n"),
-            Example("// ↓FIXME:\n"),
-            Example("// ↓TODO(note)\n"),
-            Example("// ↓FIXME(note)\n"),
-            Example("/* ↓FIXME: */\n"),
-            Example("/* ↓TODO: */\n"),
-            Example("/** ↓FIXME: */\n"),
-            Example("/** ↓TODO: */\n")
+            Example("// ↓TODO:"),
+            Example("// ↓FIXME:"),
+            Example("// ↓TODO(note)"),
+            Example("// ↓FIXME(note)"),
+            Example("/* ↓FIXME: */"),
+            Example("/* ↓TODO: */"),
+            Example("/** ↓FIXME: */"),
+            Example("/** ↓TODO: */")
         ].skipWrappingInCommentTests()
     )
 

@@ -18,23 +18,23 @@ struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, Configurati
         description: "Prefer using `AnyObject` over `class` for class-only protocols",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("protocol SomeProtocol {}\n"),
-            Example("protocol SomeClassOnlyProtocol: AnyObject {}\n"),
-            Example("protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n"),
-            Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n")
+            Example("protocol SomeProtocol {}"),
+            Example("protocol SomeClassOnlyProtocol: AnyObject {}"),
+            Example("protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}"),
+            Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}")
         ],
         triggeringExamples: [
-            Example("protocol SomeClassOnlyProtocol: ↓class {}\n"),
-            Example("protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n"),
-            Example("@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n")
+            Example("protocol SomeClassOnlyProtocol: ↓class {}"),
+            Example("protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}"),
+            Example("@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}")
         ],
         corrections: [
-            Example("protocol SomeClassOnlyProtocol: ↓class {}\n"):
-                Example("protocol SomeClassOnlyProtocol: AnyObject {}\n"),
-            Example("protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n"):
-                Example("protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n"),
-            Example("@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n"):
-                Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n")
+            Example("protocol SomeClassOnlyProtocol: ↓class {}"):
+                Example("protocol SomeClassOnlyProtocol: AnyObject {}"),
+            Example("protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}"):
+                Example("protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}"),
+            Example("@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}"):
+                Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}")
         ]
     )
 

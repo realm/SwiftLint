@@ -10,40 +10,40 @@ struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
         description: "Prefer `-> Void` over `-> ()`",
         kind: .style,
         nonTriggeringExamples: [
-            Example("let abc: () -> Void = {}\n"),
-            Example("let abc: () -> (VoidVoid) = {}\n"),
-            Example("func foo(completion: () -> Void)\n"),
-            Example("let foo: (ConfigurationTests) -> () throws -> Void\n"),
-            Example("let foo: (ConfigurationTests) ->   () throws -> Void\n"),
-            Example("let foo: (ConfigurationTests) ->() throws -> Void\n"),
-            Example("let foo: (ConfigurationTests) -> () -> Void\n"),
-            Example("let foo: () -> () async -> Void\n"),
-            Example("let foo: () -> () async throws -> Void\n"),
-            Example("let foo: () -> () async -> Void\n"),
-            Example("func foo() -> () async throws -> Void {}\n"),
-            Example("func foo() async throws -> () async -> Void { return {} }\n")
+            Example("let abc: () -> Void = {}"),
+            Example("let abc: () -> (VoidVoid) = {}"),
+            Example("func foo(completion: () -> Void)"),
+            Example("let foo: (ConfigurationTests) -> () throws -> Void"),
+            Example("let foo: (ConfigurationTests) ->   () throws -> Void"),
+            Example("let foo: (ConfigurationTests) ->() throws -> Void"),
+            Example("let foo: (ConfigurationTests) -> () -> Void"),
+            Example("let foo: () -> () async -> Void"),
+            Example("let foo: () -> () async throws -> Void"),
+            Example("let foo: () -> () async -> Void"),
+            Example("func foo() -> () async throws -> Void {}"),
+            Example("func foo() async throws -> () async -> Void { return {} }")
         ],
         triggeringExamples: [
-            Example("let abc: () -> ↓() = {}\n"),
-            Example("let abc: () -> ↓(Void) = {}\n"),
-            Example("let abc: () -> ↓(   Void ) = {}\n"),
-            Example("func foo(completion: () -> ↓())\n"),
-            Example("func foo(completion: () -> ↓(   ))\n"),
-            Example("func foo(completion: () -> ↓(Void))\n"),
-            Example("let foo: (ConfigurationTests) -> () throws -> ↓()\n"),
-            Example("func foo() async -> ↓()\n"),
-            Example("func foo() async throws -> ↓()\n")
+            Example("let abc: () -> ↓() = {}"),
+            Example("let abc: () -> ↓(Void) = {}"),
+            Example("let abc: () -> ↓(   Void ) = {}"),
+            Example("func foo(completion: () -> ↓())"),
+            Example("func foo(completion: () -> ↓(   ))"),
+            Example("func foo(completion: () -> ↓(Void))"),
+            Example("let foo: (ConfigurationTests) -> () throws -> ↓()"),
+            Example("func foo() async -> ↓()"),
+            Example("func foo() async throws -> ↓()")
         ],
         corrections: [
-            Example("let abc: () -> ↓() = {}\n"): Example("let abc: () -> Void = {}\n"),
-            Example("let abc: () -> ↓(Void) = {}\n"): Example("let abc: () -> Void = {}\n"),
-            Example("let abc: () -> ↓(   Void ) = {}\n"): Example("let abc: () -> Void = {}\n"),
-            Example("func foo(completion: () -> ↓())\n"): Example("func foo(completion: () -> Void)\n"),
-            Example("func foo(completion: () -> ↓(   ))\n"): Example("func foo(completion: () -> Void)\n"),
-            Example("func foo(completion: () -> ↓(Void))\n"): Example("func foo(completion: () -> Void)\n"),
-            Example("let foo: (ConfigurationTests) -> () throws -> ↓()\n"):
-                Example("let foo: (ConfigurationTests) -> () throws -> Void\n"),
-            Example("func foo() async throws -> ↓()\n"): Example("func foo() async throws -> Void\n")
+            Example("let abc: () -> ↓() = {}"): Example("let abc: () -> Void = {}"),
+            Example("let abc: () -> ↓(Void) = {}"): Example("let abc: () -> Void = {}"),
+            Example("let abc: () -> ↓(   Void ) = {}"): Example("let abc: () -> Void = {}"),
+            Example("func foo(completion: () -> ↓())"): Example("func foo(completion: () -> Void)"),
+            Example("func foo(completion: () -> ↓(   ))"): Example("func foo(completion: () -> Void)"),
+            Example("func foo(completion: () -> ↓(Void))"): Example("func foo(completion: () -> Void)"),
+            Example("let foo: (ConfigurationTests) -> () throws -> ↓()"):
+                Example("let foo: (ConfigurationTests) -> () throws -> Void"),
+            Example("func foo() async throws -> ↓()"): Example("func foo() async throws -> Void")
         ]
     )
 

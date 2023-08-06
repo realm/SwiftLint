@@ -10,20 +10,20 @@ struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
         description: "Variable declarations should be separated from other statements by a blank line",
         kind: .style,
         nonTriggeringExamples: [
-            Example("let a = 0\nvar x = 1\n\nx = 2\n"),
-            Example("a = 5\n\nvar x = 1\n"),
-            Example("struct X {\n\tvar a = 0\n}\n"),
-            Example("let a = 1 +\n\t2\nlet b = 5\n"),
-            Example("var x: Int {\n\treturn 0\n}\n"),
-            Example("var x: Int {\n\tlet a = 0\n\n\treturn a\n}\n"),
-            Example("#if os(macOS)\nlet a = 0\n#endif\n"),
-            Example("#warning(\"TODO: remove it\")\nlet a = 0\n"),
-            Example("#error(\"TODO: remove it\")\nlet a = 0\n"),
-            Example("@available(swift 4)\nlet a = 0\n"),
+            Example("let a = 0\nvar x = 1\n\nx = 2"),
+            Example("a = 5\n\nvar x = 1"),
+            Example("struct X {\n\tvar a = 0\n}"),
+            Example("let a = 1 +\n\t2\nlet b = 5"),
+            Example("var x: Int {\n\treturn 0\n}"),
+            Example("var x: Int {\n\tlet a = 0\n\n\treturn a\n}"),
+            Example("#if os(macOS)\nlet a = 0\n#endif"),
+            Example("#warning(\"TODO: remove it\")\nlet a = 0"),
+            Example("#error(\"TODO: remove it\")\nlet a = 0"),
+            Example("@available(swift 4)\nlet a = 0"),
             Example("class C {\n\t@objc\n\tvar s: String = \"\"\n}"),
             Example("class C {\n\t@objc\n\tfunc a() {}\n}"),
-            Example("class C {\n\tvar x = 0\n\tlazy\n\tvar y = 0\n}\n"),
-            Example("@available(OSX, introduced: 10.6)\n@available(*, deprecated)\nvar x = 0\n"),
+            Example("class C {\n\tvar x = 0\n\tlazy\n\tvar y = 0\n}"),
+            Example("@available(OSX, introduced: 10.6)\n@available(*, deprecated)\nvar x = 0"),
             Example("""
             // swiftlint:disable superfluous_disable_command
             // swiftlint:disable force_cast
@@ -38,7 +38,7 @@ struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
                 @Attribute
                 func f() {}
             """),
-            Example("var x: Int {\n\tlet a = 0\n\treturn a\n}\n"), // don't trigger on local vars
+            Example("var x: Int {\n\tlet a = 0\n\treturn a\n}"), // don't trigger on local vars
             Example("""
             struct S {
                 static var test: String { /* Comment block */
@@ -51,12 +51,12 @@ struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
             """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
-            Example("var x = 1\n↓x = 2\n"),
-            Example("\na = 5\n↓var x = 1\n"),
-            Example("struct X {\n\tlet a\n\t↓func x() {}\n}\n"),
-            Example("var x = 0\n↓@objc func f() {}\n"),
-            Example("var x = 0\n↓@objc\n\tfunc f() {}\n"),
-            Example("@objc func f() {\n}\n↓var x = 0\n"),
+            Example("var x = 1\n↓x = 2"),
+            Example("\na = 5\n↓var x = 1"),
+            Example("struct X {\n\tlet a\n\t↓func x() {}\n}"),
+            Example("var x = 0\n↓@objc func f() {}"),
+            Example("var x = 0\n↓@objc\n\tfunc f() {}"),
+            Example("@objc func f() {\n}\n↓var x = 0"),
             Example("""
                 struct S {
                     func f() {}

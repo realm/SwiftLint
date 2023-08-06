@@ -10,21 +10,21 @@ struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, Op
         description: "Prefer `someBool.toggle()` over `someBool = !someBool`",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("isHidden.toggle()\n"),
-            Example("view.clipsToBounds.toggle()\n"),
+            Example("isHidden.toggle()"),
+            Example("view.clipsToBounds.toggle()"),
             Example("func foo() { abc.toggle() }"),
-            Example("view.clipsToBounds = !clipsToBounds\n"),
-            Example("disconnected = !connected\n"),
+            Example("view.clipsToBounds = !clipsToBounds"),
+            Example("disconnected = !connected"),
             Example("result = !result.toggle()")
         ],
         triggeringExamples: [
-            Example("↓isHidden = !isHidden\n"),
-            Example("↓view.clipsToBounds = !view.clipsToBounds\n"),
+            Example("↓isHidden = !isHidden"),
+            Example("↓view.clipsToBounds = !view.clipsToBounds"),
             Example("func foo() { ↓abc = !abc }")
         ],
         corrections: [
-            Example("↓isHidden = !isHidden\n"): Example("isHidden.toggle()\n"),
-            Example("↓view.clipsToBounds = !view.clipsToBounds\n"): Example("view.clipsToBounds.toggle()\n"),
+            Example("↓isHidden = !isHidden"): Example("isHidden.toggle()"),
+            Example("↓view.clipsToBounds = !view.clipsToBounds"): Example("view.clipsToBounds.toggle()"),
             Example("func foo() { ↓abc = !abc }"): Example("func foo() { abc.toggle() }")
         ]
     )

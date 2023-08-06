@@ -9,9 +9,9 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderR
         description: "Test files should contain a single QuickSpec or XCTestCase class.",
         kind: .style,
         nonTriggeringExamples: [
-            Example("class FooTests {  }\n"),
-            Example("class FooTests: QuickSpec {  }\n"),
-            Example("class FooTests: XCTestCase {  }\n")
+            Example("class FooTests {  }"),
+            Example("class FooTests: QuickSpec {  }"),
+            Example("class FooTests: XCTestCase {  }")
         ],
         triggeringExamples: [
             Example("""

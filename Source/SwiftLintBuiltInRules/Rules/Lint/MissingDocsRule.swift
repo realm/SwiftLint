@@ -94,11 +94,11 @@ struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
         ],
         triggeringExamples: [
             // public, undocumented
-            Example("public func a() {}\n"),
+            Example("public func a() {}"),
             // public, undocumented
-            Example("// regular comment\npublic func a() {}\n"),
+            Example("// regular comment\npublic func a() {}"),
             // public, undocumented
-            Example("/* regular comment */\npublic func a() {}\n"),
+            Example("/* regular comment */\npublic func a() {}"),
             // protocol member and inherited member are both undocumented
             Example("""
             /// docs

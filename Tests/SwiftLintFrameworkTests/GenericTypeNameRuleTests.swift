@@ -4,13 +4,13 @@ class GenericTypeNameRuleTests: SwiftLintTestCase {
     func testGenericTypeNameWithExcluded() {
         let baseDescription = GenericTypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            Example("func foo<apple> {}\n"),
-            Example("func foo<some_apple> {}\n"),
-            Example("func foo<test123> {}\n")
+            Example("func foo<apple> {}"),
+            Example("func foo<some_apple> {}"),
+            Example("func foo<test123> {}")
         ]
         let triggeringExamples = baseDescription.triggeringExamples + [
-            Example("func foo<ap_ple> {}\n"),
-            Example("func foo<appleJuice> {}\n")
+            Example("func foo<ap_ple> {}"),
+            Example("func foo<appleJuice> {}")
         ]
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
                                                triggeringExamples: triggeringExamples)
@@ -20,12 +20,12 @@ class GenericTypeNameRuleTests: SwiftLintTestCase {
     func testGenericTypeNameWithAllowedSymbols() {
         let baseDescription = GenericTypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            Example("func foo<T$>() {}\n"),
-            Example("func foo<T$, U%>(param: U%) -> T$ {}\n"),
-            Example("typealias StringDictionary<T$> = Dictionary<String, T$>\n"),
-            Example("class Foo<T$%> {}\n"),
-            Example("struct Foo<T$%> {}\n"),
-            Example("enum Foo<T$%> {}\n")
+            Example("func foo<T$>() {}"),
+            Example("func foo<T$, U%>(param: U%) -> T$ {}"),
+            Example("typealias StringDictionary<T$> = Dictionary<String, T$>"),
+            Example("class Foo<T$%> {}"),
+            Example("struct Foo<T$%> {}"),
+            Example("enum Foo<T$%> {}")
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
@@ -35,7 +35,7 @@ class GenericTypeNameRuleTests: SwiftLintTestCase {
     func testGenericTypeNameWithAllowedSymbolsAndViolation() {
         let baseDescription = GenericTypeNameRule.description
         let triggeringExamples = [
-            Example("func foo<↓T_$>() {}\n")
+            Example("func foo<↓T_$>() {}")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
@@ -45,10 +45,10 @@ class GenericTypeNameRuleTests: SwiftLintTestCase {
     func testGenericTypeNameWithIgnoreStartWithLowercase() {
         let baseDescription = GenericTypeNameRule.description
         let triggeringExamplesToRemove = [
-            Example("func foo<↓type>() {}\n"),
-            Example("class Foo<↓type> {}\n"),
-            Example("struct Foo<↓type> {}\n"),
-            Example("enum Foo<↓type> {}\n")
+            Example("func foo<↓type>() {}"),
+            Example("class Foo<↓type> {}"),
+            Example("struct Foo<↓type> {}"),
+            Example("enum Foo<↓type> {}")
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()

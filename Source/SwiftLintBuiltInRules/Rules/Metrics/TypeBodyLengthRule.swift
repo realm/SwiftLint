@@ -23,7 +23,7 @@ struct TypeBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
                 wrapExample(type, "let abc = 0\n", 249),
                 wrapExample(type, "\n", 251),
                 wrapExample(type, "// this is a comment\n", 251),
-                wrapExample(type, "let abc = 0\n", 249, "\n/* this is\na multiline comment\n*/\n")
+                wrapExample(type, "let abc = 0\n", 249, "\n/* this is\na multiline comment\n*/")
             ]
         }),
         triggeringExamples: ["class", "struct", "enum", "actor"].map({ type in

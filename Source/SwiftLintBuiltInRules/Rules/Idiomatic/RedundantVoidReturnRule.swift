@@ -10,17 +10,17 @@ struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectab
         description: "Returning Void in a function declaration is redundant",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("func foo() {}\n"),
-            Example("func foo() -> Int {}\n"),
-            Example("func foo() -> Int -> Void {}\n"),
-            Example("func foo() -> VoidResponse\n"),
-            Example("let foo: (Int) -> Void\n"),
-            Example("func foo() -> Int -> () {}\n"),
-            Example("let foo: (Int) -> ()\n"),
-            Example("func foo() -> ()?\n"),
-            Example("func foo() -> ()!\n"),
-            Example("func foo() -> Void?\n"),
-            Example("func foo() -> Void!\n"),
+            Example("func foo() {}"),
+            Example("func foo() -> Int {}"),
+            Example("func foo() -> Int -> Void {}"),
+            Example("func foo() -> VoidResponse"),
+            Example("let foo: (Int) -> Void"),
+            Example("func foo() -> Int -> () {}"),
+            Example("let foo: (Int) -> ()"),
+            Example("func foo() -> ()?"),
+            Example("func foo() -> ()!"),
+            Example("func foo() -> Void?"),
+            Example("func foo() -> Void!"),
             Example("""
             struct A {
                 subscript(key: String) {
@@ -30,13 +30,13 @@ struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectab
             """)
         ],
         triggeringExamples: [
-            Example("func foo()↓ -> Void {}\n"),
+            Example("func foo()↓ -> Void {}"),
             Example("""
             protocol Foo {
               func foo()↓ -> Void
             }
             """),
-            Example("func foo()↓ -> () {}\n"),
+            Example("func foo()↓ -> () {}"),
             Example("func foo()↓ -> ( ) {}"),
             Example("""
             protocol Foo {
@@ -45,12 +45,12 @@ struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectab
             """)
         ],
         corrections: [
-            Example("func foo()↓ -> Void {}\n"): Example("func foo() {}\n"),
-            Example("protocol Foo {\n func foo()↓ -> Void\n}\n"): Example("protocol Foo {\n func foo()\n}\n"),
-            Example("func foo()↓ -> () {}\n"): Example("func foo() {}\n"),
-            Example("protocol Foo {\n func foo()↓ -> ()\n}\n"): Example("protocol Foo {\n func foo()\n}\n"),
-            Example("protocol Foo {\n    #if true\n    func foo()↓ -> Void\n    #endif\n}\n"):
-                Example("protocol Foo {\n    #if true\n    func foo()\n    #endif\n}\n")
+            Example("func foo()↓ -> Void {}"): Example("func foo() {}"),
+            Example("protocol Foo {\n func foo()↓ -> Void\n}"): Example("protocol Foo {\n func foo()\n}"),
+            Example("func foo()↓ -> () {}"): Example("func foo() {}"),
+            Example("protocol Foo {\n func foo()↓ -> ()\n}"): Example("protocol Foo {\n func foo()\n}"),
+            Example("protocol Foo {\n    #if true\n    func foo()↓ -> Void\n    #endif\n}"):
+                Example("protocol Foo {\n    #if true\n    func foo()\n    #endif\n}")
         ]
     )
 

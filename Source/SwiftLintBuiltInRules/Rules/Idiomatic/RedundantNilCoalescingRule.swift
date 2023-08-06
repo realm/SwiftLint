@@ -10,14 +10,14 @@ struct RedundantNilCoalescingRule: OptInRule, SwiftSyntaxCorrectableRule, Config
             ", coalescing operator with nil as rhs is redundant",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("var myVar: Int?; myVar ?? 0\n")
+            Example("var myVar: Int?; myVar ?? 0")
         ],
         triggeringExamples: [
-            Example("var myVar: Int? = nil; myVar ↓?? nil\n")
+            Example("var myVar: Int? = nil; myVar ↓?? nil")
         ],
         corrections: [
-            Example("var myVar: Int? = nil; let foo = myVar↓ ?? nil\n"):
-                Example("var myVar: Int? = nil; let foo = myVar\n")
+            Example("var myVar: Int? = nil; let foo = myVar↓ ?? nil"):
+                Example("var myVar: Int? = nil; let foo = myVar")
         ]
     )
 

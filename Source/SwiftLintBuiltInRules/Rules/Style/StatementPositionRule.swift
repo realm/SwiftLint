@@ -24,9 +24,9 @@ struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
             Example("↓}\n\t  catch {")
         ],
         corrections: [
-            Example("↓}\n else {\n"): Example("} else {\n"),
-            Example("↓}\n   else if {\n"): Example("} else if {\n"),
-            Example("↓}\n catch {\n"): Example("} catch {\n")
+            Example("↓}\n else {"): Example("} else {"),
+            Example("↓}\n   else if {"): Example("} else if {"),
+            Example("↓}\n catch {"): Example("} catch {")
         ]
     )
 

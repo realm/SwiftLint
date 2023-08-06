@@ -80,8 +80,8 @@ struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
             Example("if\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }"),
             Example("while\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }"),
             Example("guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else\n{ }"),
-            Example("struct Rule {}\n"),
-            Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n"),
+            Example("struct Rule {}"),
+            Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}"),
             Example("""
                     func f(rect: CGRect) {
                         {
@@ -116,10 +116,10 @@ struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
             Example("if\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
             Example("while\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
             Example("guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else↓{ }"),
-            Example("struct Rule↓{}\n"),
-            Example("struct Rule\n↓{\n}\n"),
-            Example("struct Rule\n\n\t↓{\n}\n"),
-            Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n"),
+            Example("struct Rule↓{}"),
+            Example("struct Rule\n↓{\n}"),
+            Example("struct Rule\n\n\t↓{\n}"),
+            Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}"),
             Example("""
             // Get the current thread's TLS pointer. On first call for a given thread,
             // creates and initializes a new one.
@@ -161,15 +161,15 @@ struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
             """)
         ],
         corrections: [
-            Example("struct Rule↓{}\n"): Example("struct Rule {}\n"),
-            Example("struct Rule\n↓{\n}\n"): Example("struct Rule {\n}\n"),
-            Example("struct Rule\n\n\t↓{\n}\n"): Example("struct Rule {\n}\n"),
-            Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n"):
-                Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n"),
-            Example("[].map()↓{ $0 }\n"): Example("[].map() { $0 }\n"),
-            Example("[].map( ↓{ })\n"): Example("[].map({ })\n"),
-            Example("if a == b↓{ }\n"): Example("if a == b { }\n"),
-            Example("if\n\tlet a = b,\n\tlet c = d↓{ }\n"): Example("if\n\tlet a = b,\n\tlet c = d { }\n")
+            Example("struct Rule↓{}"): Example("struct Rule {}"),
+            Example("struct Rule\n↓{\n}"): Example("struct Rule {\n}"),
+            Example("struct Rule\n\n\t↓{\n}"): Example("struct Rule {\n}"),
+            Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}"):
+                Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}"),
+            Example("[].map()↓{ $0 }"): Example("[].map() { $0 }"),
+            Example("[].map( ↓{ })"): Example("[].map({ })"),
+            Example("if a == b↓{ }"): Example("if a == b { }"),
+            Example("if\n\tlet a = b,\n\tlet c = d↓{ }"): Example("if\n\tlet a = b,\n\tlet c = d { }")
         ]
     )
 

@@ -52,28 +52,28 @@ struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationP
             Example("↓CGRectIntersectsRect(rect1, rect2)")
         ],
         corrections: [
-            Example("↓CGRectGetWidth( rect  )\n"): Example("rect.width\n"),
-            Example("↓CGRectGetHeight(rect )\n"): Example("rect.height\n"),
-            Example("↓CGRectGetMinX( rect)\n"): Example("rect.minX\n"),
-            Example("↓CGRectGetMidX(  rect)\n"): Example("rect.midX\n"),
-            Example("↓CGRectGetMaxX( rect)\n"): Example("rect.maxX\n"),
-            Example("↓CGRectGetMinY(rect   )\n"): Example("rect.minY\n"),
-            Example("↓CGRectGetMidY(rect )\n"): Example("rect.midY\n"),
-            Example("↓CGRectGetMaxY( rect     )\n"): Example("rect.maxY\n"),
-            Example("↓CGRectIsNull(  rect    )\n"): Example("rect.isNull\n"),
-            Example("↓CGRectIsEmpty( rect )\n"): Example("rect.isEmpty\n"),
-            Example("↓CGRectIsInfinite( rect )\n"): Example("rect.isInfinite\n"),
-            Example("↓CGRectStandardize( rect)\n"): Example("rect.standardized\n"),
-            Example("↓CGRectIntegral(rect )\n"): Example("rect.integral\n"),
-            Example("↓CGRectInset(rect, 5.0, -7.0)\n"): Example("rect.insetBy(dx: 5.0, dy: -7.0)\n"),
-            Example("↓CGRectOffset(rect, -2, 8.3)\n"): Example("rect.offsetBy(dx: -2, dy: 8.3)\n"),
-            Example("↓CGRectUnion(rect1, rect2)\n"): Example("rect1.union(rect2)\n"),
-            Example("↓CGRectIntersection( rect1 ,rect2)\n"): Example("rect1.intersection(rect2)\n"),
-            Example("↓CGRectContainsRect( rect1,rect2     )\n"): Example("rect1.contains(rect2)\n"),
-            Example("↓CGRectContainsPoint(rect  ,point)\n"): Example("rect.contains(point)\n"),
-            Example("↓CGRectIntersectsRect(  rect1,rect2 )\n"): Example("rect1.intersects(rect2)\n"),
-            Example("↓CGRectIntersectsRect(rect1, rect2 )\n↓CGRectGetWidth(rect  )\n"):
-                Example("rect1.intersects(rect2)\nrect.width\n")
+            Example("↓CGRectGetWidth( rect  )"): Example("rect.width"),
+            Example("↓CGRectGetHeight(rect )"): Example("rect.height"),
+            Example("↓CGRectGetMinX( rect)"): Example("rect.minX"),
+            Example("↓CGRectGetMidX(  rect)"): Example("rect.midX"),
+            Example("↓CGRectGetMaxX( rect)"): Example("rect.maxX"),
+            Example("↓CGRectGetMinY(rect   )"): Example("rect.minY"),
+            Example("↓CGRectGetMidY(rect )"): Example("rect.midY"),
+            Example("↓CGRectGetMaxY( rect     )"): Example("rect.maxY"),
+            Example("↓CGRectIsNull(  rect    )"): Example("rect.isNull"),
+            Example("↓CGRectIsEmpty( rect )"): Example("rect.isEmpty"),
+            Example("↓CGRectIsInfinite( rect )"): Example("rect.isInfinite"),
+            Example("↓CGRectStandardize( rect)"): Example("rect.standardized"),
+            Example("↓CGRectIntegral(rect )"): Example("rect.integral"),
+            Example("↓CGRectInset(rect, 5.0, -7.0)"): Example("rect.insetBy(dx: 5.0, dy: -7.0)"),
+            Example("↓CGRectOffset(rect, -2, 8.3)"): Example("rect.offsetBy(dx: -2, dy: 8.3)"),
+            Example("↓CGRectUnion(rect1, rect2)"): Example("rect1.union(rect2)"),
+            Example("↓CGRectIntersection( rect1 ,rect2)"): Example("rect1.intersection(rect2)"),
+            Example("↓CGRectContainsRect( rect1,rect2     )"): Example("rect1.contains(rect2)"),
+            Example("↓CGRectContainsPoint(rect  ,point)"): Example("rect.contains(point)"),
+            Example("↓CGRectIntersectsRect(  rect1,rect2 )"): Example("rect1.intersects(rect2)"),
+            Example("↓CGRectIntersectsRect(rect1, rect2 )\n↓CGRectGetWidth(rect  )"):
+                Example("rect1.intersects(rect2)\nrect.width")
         ]
     )
 

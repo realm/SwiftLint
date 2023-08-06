@@ -9,9 +9,9 @@ struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
         description: "Force casts should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("NSNumber() as? Int\n")
+            Example("NSNumber() as? Int")
         ],
-        triggeringExamples: [ Example("NSNumber() ↓as! Int\n") ]
+        triggeringExamples: [ Example("NSNumber() ↓as! Int") ]
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {

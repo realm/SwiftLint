@@ -9,22 +9,22 @@ struct FirstWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
         description: "Prefer using `.first(where:)` over `.filter { }.first` in collections",
         kind: .performance,
         nonTriggeringExamples: [
-            Example("kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier\n"),
-            Example("myList.first(where: { $0 % 2 == 0 })\n"),
-            Example("match(pattern: pattern).filter { $0.first == .identifier }\n"),
-            Example("(myList.filter { $0 == 1 }.suffix(2)).first\n"),
+            Example("kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier"),
+            Example("myList.first(where: { $0 % 2 == 0 })"),
+            Example("match(pattern: pattern).filter { $0.first == .identifier }"),
+            Example("(myList.filter { $0 == 1 }.suffix(2)).first"),
             Example(#"collection.filter("stringCol = '3'").first"#),
             Example(#"realm?.objects(User.self).filter(NSPredicate(format: "email ==[c] %@", email)).first"#),
             Example(#"if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { print(pause) }"#)
         ],
         triggeringExamples: [
-            Example("↓myList.filter { $0 % 2 == 0 }.first\n"),
-            Example("↓myList.filter({ $0 % 2 == 0 }).first\n"),
-            Example("↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first\n"),
-            Example("↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first?.something()\n"),
-            Example("↓myList.filter(someFunction).first\n"),
-            Example("↓myList.filter({ $0 % 2 == 0 })\n.first\n"),
-            Example("(↓myList.filter { $0 == 1 }).first\n"),
+            Example("↓myList.filter { $0 % 2 == 0 }.first"),
+            Example("↓myList.filter({ $0 % 2 == 0 }).first"),
+            Example("↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first"),
+            Example("↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first?.something()"),
+            Example("↓myList.filter(someFunction).first"),
+            Example("↓myList.filter({ $0 % 2 == 0 })\n.first"),
+            Example("(↓myList.filter { $0 == 1 }).first"),
             Example(#"↓myListOfDict.filter { dict in dict["1"] }.first"#),
             Example(#"↓myListOfDict.filter { $0["someString"] }.first"#)
         ]

@@ -9,10 +9,10 @@ struct MultipleClosuresWithTrailingClosureRule: SwiftSyntaxRule, ConfigurationPr
         description: "Trailing closure syntax should not be used when passing more than one closure argument",
         kind: .style,
         nonTriggeringExamples: [
-            Example("foo.map { $0 + 1 }\n"),
-            Example("foo.reduce(0) { $0 + $1 }\n"),
-            Example("if let foo = bar.map({ $0 + 1 }) {\n\n}\n"),
-            Example("foo.something(param1: { $0 }, param2: { $0 + 1 })\n"),
+            Example("foo.map { $0 + 1 }"),
+            Example("foo.reduce(0) { $0 + $1 }"),
+            Example("if let foo = bar.map({ $0 + 1 }) {\n\n}"),
+            Example("foo.something(param1: { $0 }, param2: { $0 + 1 })"),
             Example("""
             UIView.animate(withDuration: 1.0) {
                 someView.alpha = 0.0

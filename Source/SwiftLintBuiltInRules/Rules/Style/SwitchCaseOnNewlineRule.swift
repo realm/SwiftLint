@@ -39,7 +39,7 @@ struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
              where lhsErrorCode > 10:
             return false
             """),
-            wrapInSwitch("case #selector(aFunction(_:)):\n return false\n"),
+            wrapInSwitch("case #selector(aFunction(_:)):\n return false"),
             Example("""
             do {
               let loadedToken = try tokenManager.decodeToken(from: response)
@@ -54,7 +54,7 @@ struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
             wrapInSwitch("↓case \"a string\": return false"),
             wrapInSwitch("↓case .myCase: return false // error from network"),
             wrapInSwitch("↓case let .myCase(value) where value > 10: return false"),
-            wrapInSwitch("↓case #selector(aFunction(_:)): return false\n"),
+            wrapInSwitch("↓case #selector(aFunction(_:)): return false"),
             wrapInSwitch("↓case let .myCase(value)\n where value > 10: return false"),
             wrapInSwitch("↓case .first,\n .second: return false")
         ]

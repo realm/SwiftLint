@@ -17,7 +17,7 @@ struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             Example("let foo = 2\n // Copyright")
         ],
         triggeringExamples: [
-            Example("// ↓Copyright\n"),
+            Example("// ↓Copyright"),
             Example("//\n// ↓Copyright"),
             Example("""
             //

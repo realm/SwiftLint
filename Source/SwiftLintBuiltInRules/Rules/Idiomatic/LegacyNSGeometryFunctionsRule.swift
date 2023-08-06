@@ -50,28 +50,28 @@ struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationP
             Example("↓NSIntersectsRect(rect1, rect2)")
         ],
         corrections: [
-            Example("↓NSWidth( rect  )\n"): Example("rect.width\n"),
-            Example("↓NSHeight(rect )\n"): Example("rect.height\n"),
-            Example("↓NSMinX( rect)\n"): Example("rect.minX\n"),
-            Example("↓NSMidX(  rect)\n"): Example("rect.midX\n"),
-            Example("↓NSMaxX( rect)\n"): Example("rect.maxX\n"),
-            Example("↓NSMinY(rect   )\n"): Example("rect.minY\n"),
-            Example("↓NSMidY(rect )\n"): Example("rect.midY\n"),
-            Example("↓NSMaxY( rect     )\n"): Example("rect.maxY\n"),
-            Example("↓NSEqualPoints( point1 , point2)\n"): Example("point1 == point2\n"),
-            Example("↓NSEqualSizes(size1,size2   )\n"): Example("size1 == size2\n"),
-            Example("↓NSEqualRects(  rect1,  rect2)\n"): Example("rect1 == rect2\n"),
-            Example("↓NSEdgeInsetsEqual(insets1, insets2)\n"): Example("insets1 == insets2\n"),
-            Example("↓NSIsEmptyRect( rect )\n"): Example("rect.isEmpty\n"),
-            Example("↓NSIntegralRect(rect )\n"): Example("rect.integral\n"),
-            Example("↓NSInsetRect(rect, 5.0, -7.0)\n"): Example("rect.insetBy(dx: 5.0, dy: -7.0)\n"),
-            Example("↓NSOffsetRect(rect, -2, 8.3)\n"): Example("rect.offsetBy(dx: -2, dy: 8.3)\n"),
-            Example("↓NSUnionRect(rect1, rect2)\n"): Example("rect1.union(rect2)\n"),
-            Example("↓NSContainsRect( rect1,rect2     )\n"): Example("rect1.contains(rect2)\n"),
-            Example("↓NSPointInRect(point  ,rect)\n"): Example("rect.contains(point)\n"), // note order of arguments
-            Example("↓NSIntersectsRect(  rect1,rect2 )\n"): Example("rect1.intersects(rect2)\n"),
-            Example("↓NSIntersectsRect(rect1, rect2 )\n↓NSWidth(rect  )\n"):
-                Example("rect1.intersects(rect2)\nrect.width\n"),
+            Example("↓NSWidth( rect  )"): Example("rect.width"),
+            Example("↓NSHeight(rect )"): Example("rect.height"),
+            Example("↓NSMinX( rect)"): Example("rect.minX"),
+            Example("↓NSMidX(  rect)"): Example("rect.midX"),
+            Example("↓NSMaxX( rect)"): Example("rect.maxX"),
+            Example("↓NSMinY(rect   )"): Example("rect.minY"),
+            Example("↓NSMidY(rect )"): Example("rect.midY"),
+            Example("↓NSMaxY( rect     )"): Example("rect.maxY"),
+            Example("↓NSEqualPoints( point1 , point2)"): Example("point1 == point2"),
+            Example("↓NSEqualSizes(size1,size2   )"): Example("size1 == size2"),
+            Example("↓NSEqualRects(  rect1,  rect2)"): Example("rect1 == rect2"),
+            Example("↓NSEdgeInsetsEqual(insets1, insets2)"): Example("insets1 == insets2"),
+            Example("↓NSIsEmptyRect( rect )"): Example("rect.isEmpty"),
+            Example("↓NSIntegralRect(rect )"): Example("rect.integral"),
+            Example("↓NSInsetRect(rect, 5.0, -7.0)"): Example("rect.insetBy(dx: 5.0, dy: -7.0)"),
+            Example("↓NSOffsetRect(rect, -2, 8.3)"): Example("rect.offsetBy(dx: -2, dy: 8.3)"),
+            Example("↓NSUnionRect(rect1, rect2)"): Example("rect1.union(rect2)"),
+            Example("↓NSContainsRect( rect1,rect2     )"): Example("rect1.contains(rect2)"),
+            Example("↓NSPointInRect(point  ,rect)"): Example("rect.contains(point)"), // note order of arguments
+            Example("↓NSIntersectsRect(  rect1,rect2 )"): Example("rect1.intersects(rect2)"),
+            Example("↓NSIntersectsRect(rect1, rect2 )\n↓NSWidth(rect  )"):
+                Example("rect1.intersects(rect2)\nrect.width"),
             Example("↓NSIntersectionRect(rect1, rect2)"): Example("rect1.intersection(rect2)")
         ]
     )

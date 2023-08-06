@@ -10,10 +10,10 @@ struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule,
         description: "Parentheses are not needed when declaring closure arguments",
         kind: .style,
         nonTriggeringExamples: [
-            Example("let foo = { (bar: Int) in }\n"),
-            Example("let foo = { bar, _  in }\n"),
-            Example("let foo = { bar in }\n"),
-            Example("let foo = { bar -> Bool in return true }\n"),
+            Example("let foo = { (bar: Int) in }"),
+            Example("let foo = { bar, _  in }"),
+            Example("let foo = { bar in }"),
+            Example("let foo = { bar -> Bool in return true }"),
             Example("""
             DispatchQueue.main.async { () -> Void in
                 doSomething()
@@ -26,9 +26,9 @@ struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule,
             """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
-            Example("call(arg: { ↓(bar) in })\n"),
-            Example("call(arg: { ↓(bar, _) in })\n"),
-            Example("let foo = { ↓(bar) -> Bool in return true }\n"),
+            Example("call(arg: { ↓(bar) in })"),
+            Example("call(arg: { ↓(bar, _) in })"),
+            Example("let foo = { ↓(bar) -> Bool in return true }"),
             Example("foo.map { ($0, $0) }.forEach { ↓(x, y) in }"),
             Example("foo.bar { [weak self] ↓(x, y) in }"),
             Example("""
@@ -62,12 +62,12 @@ struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule,
             """, excludeFromDocumentation: true)
         ],
         corrections: [
-            Example("call(arg: { ↓(bar) in })\n"): Example("call(arg: { bar in })\n"),
-            Example("call(arg: { ↓(bar, _) in })\n"): Example("call(arg: { bar, _ in })\n"),
-            Example("call(arg: { ↓(bar, _)in })\n"): Example("call(arg: { bar, _ in })\n"),
-            Example("let foo = { ↓(bar) -> Bool in return true }\n"):
-                Example("let foo = { bar -> Bool in return true }\n"),
-            Example("method { ↓(foo, bar) in }\n"): Example("method { foo, bar in }\n"),
+            Example("call(arg: { ↓(bar) in })"): Example("call(arg: { bar in })"),
+            Example("call(arg: { ↓(bar, _) in })"): Example("call(arg: { bar, _ in })"),
+            Example("call(arg: { ↓(bar, _)in })"): Example("call(arg: { bar, _ in })"),
+            Example("let foo = { ↓(bar) -> Bool in return true }"):
+                Example("let foo = { bar -> Bool in return true }"),
+            Example("method { ↓(foo, bar) in }"): Example("method { foo, bar in }"),
             Example("foo.map { ($0, $0) }.forEach { ↓(x, y) in }"): Example("foo.map { ($0, $0) }.forEach { x, y in }"),
             Example("foo.bar { [weak self] ↓(x, y) in }"): Example("foo.bar { [weak self] x, y in }")
         ]

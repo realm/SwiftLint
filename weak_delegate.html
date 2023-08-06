@@ -421,44 +421,36 @@ warning
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="k">weak</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">SomeProtocol</span><span class="p">?</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="k">weak</span> <span class="k">var</span> <span class="nv">someDelegate</span><span class="p">:</span> <span class="kt">SomeDelegateProtocol</span><span class="p">?</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="k">weak</span> <span class="k">var</span> <span class="nv">delegateScroll</span><span class="p">:</span> <span class="kt">ScrollDelegate</span><span class="p">?</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="k">var</span> <span class="nv">scrollHandler</span><span class="p">:</span> <span class="kt">ScrollDelegate</span><span class="p">?</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">SomeDelegate</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="k">var</span> <span class="nv">delegateNotified</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">?</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{</span>
  <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">AnyObject</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
  <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{</span>
  <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">AnyObject</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span>
 <span class="p">}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
  <span class="k">var</span> <span class="nv">computedDelegate</span><span class="p">:</span> <span class="kt">ComputedDelegate</span> <span class="p">{</span>
@@ -496,12 +488,10 @@ warning
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="err">↓</span><span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">SomeProtocol</span><span class="p">?</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="err">↓</span><span class="k">var</span> <span class="nv">scrollDelegate</span><span class="p">:</span> <span class="kt">ScrollDelegate</span><span class="p">?</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="err">↓</span><span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">SomeProtocol</span><span class="p">?</span> <span class="p">{</span>

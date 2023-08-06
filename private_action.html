@@ -421,88 +421,71 @@ warning
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">private</span> <span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">private</span> <span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">fileprivate</span> <span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">fileprivate</span> <span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">private</span> <span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">fileprivate</span> <span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">public</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">public</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">internal</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">internal</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">public</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="kd">internal</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">internal</span> <span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">@IBAction</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">barButtonTapped</span><span class="p">(</span><span class="n">_</span> <span class="nv">sender</span><span class="p">:</span> <span class="kt">UIButton</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-
 </code></pre>
 
           </div>

@@ -419,21 +419,16 @@ warning
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">if</span> <span class="n">foo</span> <span class="o">==</span> <span class="mi">42</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">if</span> <span class="n">foo</span> <span class="o">&lt;=</span> <span class="mf">42.42</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">guard</span> <span class="n">foo</span> <span class="o">&gt;=</span> <span class="mi">42</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">guard</span> <span class="n">foo</span> <span class="o">!=</span> <span class="s">"str str"</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">while</span> <span class="n">foo</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="p">{</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">while</span> <span class="n">foo</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="p">{</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">while</span> <span class="n">foo</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span> <span class="p">{}</span>
 </code></pre>
@@ -445,13 +440,10 @@ warning
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="mi">42</span> <span class="o">==</span> <span class="n">foo</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="mf">42.42</span> <span class="o">&gt;=</span> <span class="n">foo</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">guard</span> <span class="err">↓</span><span class="mi">42</span> <span class="o">&lt;=</span> <span class="n">foo</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">guard</span> <span class="err">↓</span><span class="s">"str str"</span> <span class="o">!=</span> <span class="n">foo</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
 </code></pre>

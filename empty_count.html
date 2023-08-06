@@ -427,62 +427,43 @@ false
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="n">isEmpty</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">1</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mh">0xff</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mb">0b01</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mo">0o07</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">discount</span> <span class="o">==</span> <span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">order</span><span class="o">.</span><span class="n">discount</span> <span class="o">==</span> <span class="mi">0</span>
-
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="err">↓</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="mi">0</span> <span class="o">==</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="err">↓</span><span class="n">count</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="err">↓</span><span class="n">count</span><span class="o">==</span><span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="err">↓</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="err">↓</span><span class="n">count</span> <span class="o">!=</span> <span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="err">↓</span><span class="n">count</span> <span class="o">==</span> <span class="mh">0x0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="err">↓</span><span class="n">count</span> <span class="o">==</span> <span class="mh">0x00_00</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="err">↓</span><span class="n">count</span> <span class="o">==</span> <span class="mb">0b00</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="err">↓</span><span class="n">count</span> <span class="o">==</span> <span class="mo">0o00</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span>
-
 </code></pre>
 
           </div>

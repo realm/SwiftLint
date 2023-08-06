@@ -427,19 +427,14 @@ false
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[:]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">3</span><span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Void</span><span class="p">]()</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">example</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">,</span>
  <span class="mi">2</span>
@@ -447,31 +442,23 @@ false
 <span class="p">]</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">([</span><span class="mi">1</span><span class="p">:</span> <span class="s">"</span><span class="se">\(</span><span class="n">error</span><span class="se">)</span><span class="s">"</span><span class="p">])</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]()</span>
-
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="err">↓</span><span class="p">,]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="err">↓</span><span class="p">,</span> <span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>   <span class="err">↓</span><span class="p">,]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">3</span><span class="err">↓</span><span class="p">,</span> <span class="p">]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Bar</span> <span class="p">{</span>
  <span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">3</span><span class="err">↓</span><span class="p">,</span> <span class="p">]</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="err">↓</span><span class="p">,]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="err">↓</span><span class="p">,]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">example</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">,</span>
 <span class="mi">2</span><span class="err">↓</span><span class="p">,</span>
@@ -479,7 +466,6 @@ false
 <span class="p">]</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">[</span><span class="s">"אבג"</span><span class="p">,</span> <span class="s">"αβγ"</span><span class="p">,</span> <span class="s">"🇺🇸"</span><span class="err">↓</span><span class="p">,]</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span>
  <span class="cp">#if true</span>
@@ -490,7 +476,6 @@ false
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">([</span><span class="mi">1</span><span class="p">:</span> <span class="s">"</span><span class="se">\(</span><span class="n">error</span><span class="se">)</span><span class="s">"</span><span class="err">↓</span><span class="p">,])</span>
-
 </code></pre>
 
           </div>

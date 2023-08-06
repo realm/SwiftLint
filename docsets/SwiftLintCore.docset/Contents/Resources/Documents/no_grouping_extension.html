@@ -420,32 +420,25 @@ warning
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">Food</span> <span class="p">{}</span>
 <span class="kd">extension</span> <span class="kt">Food</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Apples</span> <span class="p">{}</span>
 <span class="kd">extension</span> <span class="kt">Oranges</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Box</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">{}</span>
 <span class="kd">extension</span> <span class="kt">Box</span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Vegetable</span> <span class="p">{}</span>
-
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Fruit</span> <span class="p">{}</span>
 <span class="err">↓</span><span class="kd">extension</span> <span class="kt">Fruit</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kd">extension</span> <span class="kt">Tea</span><span class="p">:</span> <span class="kt">Error</span> <span class="p">{}</span>
 <span class="kd">struct</span> <span class="kt">Tea</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Ham</span> <span class="p">{</span> <span class="kd">class</span> <span class="kt">Spam</span> <span class="p">{}}</span>
 <span class="err">↓</span><span class="kd">extension</span> <span class="kt">Ham</span><span class="o">.</span><span class="kt">Spam</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">External</span> <span class="p">{</span> <span class="kd">struct</span> <span class="kt">Gotcha</span> <span class="p">{}}</span>
 <span class="err">↓</span><span class="kd">extension</span> <span class="kt">External</span><span class="o">.</span><span class="kt">Gotcha</span> <span class="p">{}</span>
-
 </code></pre>
 
           </div>

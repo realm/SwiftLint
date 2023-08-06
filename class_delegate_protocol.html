@@ -419,51 +419,36 @@ warning
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">FooDelegate</span><span class="p">:</span> <span class="kd">class</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">FooDelegate</span><span class="p">:</span> <span class="kd">class</span><span class="p">,</span> <span class="kt">BarDelegate</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">Foo</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">FooDelegate</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@objc</span> <span class="kd">protocol</span> <span class="kt">FooDelegate</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@objc</span><span class="p">(</span><span class="kt">MyFooDelegate</span><span class="p">)</span>
  <span class="kd">protocol</span> <span class="kt">FooDelegate</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">FooDelegate</span><span class="p">:</span> <span class="kt">BarDelegate</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">FooDelegate</span><span class="p">:</span> <span class="kt">AnyObject</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">FooDelegate</span><span class="p">:</span> <span class="kt">NSObjectProtocol</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">FooDelegate</span> <span class="k">where</span> <span class="k">Self</span><span class="p">:</span> <span class="kt">BarDelegate</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">FooDelegate</span> <span class="k">where</span> <span class="k">Self</span><span class="p">:</span> <span class="kt">AnyObject</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">FooDelegate</span> <span class="k">where</span> <span class="k">Self</span><span class="p">:</span> <span class="kt">NSObjectProtocol</span> <span class="p">{}</span>
-
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kd">protocol</span> <span class="kt">FooDelegate</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kd">protocol</span> <span class="kt">FooDelegate</span><span class="p">:</span> <span class="kt">Bar</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kd">protocol</span> <span class="kt">FooDelegate</span> <span class="k">where</span> <span class="k">Self</span><span class="p">:</span> <span class="kt">StringProtocol</span> <span class="p">{}</span>
-
 </code></pre>
 
           </div>

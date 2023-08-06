@@ -419,25 +419,18 @@ warning
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span><span class="nv">bar</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kc">nil</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="mi">0</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="p">{</span>
   <span class="k">if</span> <span class="n">bar</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span> <span class="p">}</span>
@@ -461,13 +454,10 @@ warning
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span><span class="err">↓</span> <span class="o">=</span> <span class="kc">nil</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="err">↓</span> <span class="o">=</span> <span class="kc">nil</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span><span class="err">↓</span><span class="o">=</span><span class="kc">nil</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="err">↓</span><span class="o">=</span><span class="kc">nil</span>
 <span class="p">)</span>

@@ -419,24 +419,18 @@ warning
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">{(</span><span class="nv">param</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="k">in</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span> <span class="o">-&gt;</span>
     <span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span>
     <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">reallyLongFunctionMethods</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">withParam1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">param3</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">AGenericConstraint</span>
     <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
@@ -447,49 +441,36 @@ warning
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span><span class="err">↓</span><span class="o">-&gt;</span><span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span><span class="err">↓</span><span class="o">-&gt;</span><span class="p">[</span><span class="kt">Int</span><span class="p">]</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span><span class="err">↓</span><span class="o">-&gt;</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span><span class="err">↓</span><span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span><span class="err">↓</span><span class="o">-&gt;</span>   <span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span><span class="err">↓</span> <span class="o">-&gt;</span><span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span><span class="err">↓</span>  <span class="o">-&gt;</span>  <span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">{(</span><span class="nv">param</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span><span class="err">↓</span> <span class="o">-&gt;</span><span class="kt">Bool</span> <span class="k">in</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">abc</span> <span class="o">=</span> <span class="p">{(</span><span class="nv">param</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span><span class="err">↓</span><span class="o">-&gt;</span><span class="kt">Bool</span> <span class="k">in</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">SuccessBlock</span> <span class="o">=</span> <span class="p">((</span><span class="kt">Data</span><span class="p">)</span><span class="err">↓</span><span class="o">-&gt;</span><span class="kt">Void</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span>
   <span class="err">↓</span><span class="o">-&gt;</span>  <span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span>
  <span class="err">↓</span><span class="o">-&gt;</span>  <span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span><span class="err">↓</span>  <span class="o">-&gt;</span>
   <span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span><span class="err">↓</span>  <span class="o">-&gt;</span>
 <span class="kt">Int</span> <span class="p">{}</span>
-
 </code></pre>
 
           </div>

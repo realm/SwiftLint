@@ -419,41 +419,30 @@ warning
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="n">kinds</span><span class="o">.</span><span class="nf">filter</span><span class="p">(</span><span class="n">excludingKinds</span><span class="o">.</span><span class="n">contains</span><span class="p">)</span><span class="o">.</span><span class="n">isEmpty</span> <span class="o">&amp;&amp;</span> <span class="n">kinds</span><span class="o">.</span><span class="n">last</span> <span class="o">==</span> <span class="o">.</span><span class="n">identifier</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">myList</span><span class="o">.</span><span class="nf">last</span><span class="p">(</span><span class="nv">where</span><span class="p">:</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">})</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">match</span><span class="p">(</span><span class="nv">pattern</span><span class="p">:</span> <span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">last</span> <span class="o">==</span> <span class="o">.</span><span class="n">identifier</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">(</span><span class="n">myList</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">}</span><span class="o">.</span><span class="nf">suffix</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">last</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">collection</span><span class="o">.</span><span class="nf">filter</span><span class="p">(</span><span class="s">"stringCol = '3'"</span><span class="p">)</span><span class="o">.</span><span class="n">last</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="n">myList</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">}</span><span class="o">.</span><span class="n">last</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="n">myList</span><span class="o">.</span><span class="nf">filter</span><span class="p">({</span> <span class="nv">$0</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">})</span><span class="o">.</span><span class="n">last</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="n">myList</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">}</span><span class="o">.</span><span class="nf">filter</span><span class="p">({</span> <span class="nv">$0</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">})</span><span class="o">.</span><span class="n">last</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="n">myList</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">}</span><span class="o">.</span><span class="nf">filter</span><span class="p">({</span> <span class="nv">$0</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">})</span><span class="o">.</span><span class="n">last</span><span class="p">?</span><span class="o">.</span><span class="nf">something</span><span class="p">()</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="n">myList</span><span class="o">.</span><span class="nf">filter</span><span class="p">(</span><span class="n">someFunction</span><span class="p">)</span><span class="o">.</span><span class="n">last</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="n">myList</span><span class="o">.</span><span class="nf">filter</span><span class="p">({</span> <span class="nv">$0</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">})</span>
 <span class="o">.</span><span class="n">last</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">(</span><span class="err">↓</span><span class="n">myList</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">})</span><span class="o">.</span><span class="n">last</span>
-
 </code></pre>
 
           </div>

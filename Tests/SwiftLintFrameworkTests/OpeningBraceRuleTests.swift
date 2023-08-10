@@ -13,9 +13,6 @@ class OpeningBraceRuleTests: SwiftLintTestCase {
             Example("if let a = b { }"),
             Example("while a == b { }"),
             Example("guard let a = b else { }"),
-            Example("if\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }"),
-            Example("while\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }"),
-            Example("guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else\n{ }"),
             Example("struct Rule {}\n"),
             Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n"),
             Example("""

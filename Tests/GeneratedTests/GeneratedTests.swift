@@ -134,6 +134,12 @@ class CommentSpacingRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class CommentStyleRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(CommentStyleRule.description)
+    }
+}
+
 class CompilerProtocolInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CompilerProtocolInitRule.description)

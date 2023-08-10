@@ -24,6 +24,7 @@ public let builtInRules: [Rule.Type] = [
     CommaInheritanceRule.self,
     CommaRule.self,
     CommentSpacingRule.self,
+    CommentStyleRule.self,
     CompilerProtocolInitRule.self,
     ComputedAccessorsOrderRule.self,
     ConditionalReturnsOnNewlineRule.self,

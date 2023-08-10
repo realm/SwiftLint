@@ -71,6 +71,8 @@ file_name:
     - GeneratedTests.swift
     - SwiftSyntax+SwiftLint.swift
     - TestHelpers.swift
+comment_style:
+  comment_style: mixed
 
 balanced_xctest_lifecycle: &unit_test_configuration
   test_parent_classes:

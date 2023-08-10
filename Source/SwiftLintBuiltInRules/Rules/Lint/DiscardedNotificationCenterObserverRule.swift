@@ -76,8 +76,7 @@ private extension DiscardedNotificationCenterObserverRule {
                 let thirdParent = secondParent.parent?.as(CodeBlockItemListSyntax.self),
                 let fourthParent = thirdParent.parent?.as(CodeBlockSyntax.self),
                 let fifthParent = fourthParent.parent?.as(FunctionDeclSyntax.self),
-                !fifthParent.attributes.hasDiscardableResultAttribute
-            {
+                !fifthParent.attributes.hasDiscardableResultAttribute {
                 return // result is returned from a function
             } else if node.parent?.is(LabeledExprSyntax.self) == true {
                 return // result is passed as an argument to a function
@@ -86,8 +85,7 @@ private extension DiscardedNotificationCenterObserverRule {
             } else if
                 let previousToken = node.previousToken(viewMode: .sourceAccurate),
                 case .equal = previousToken.tokenKind,
-                previousToken.previousToken(viewMode: .sourceAccurate)?.tokenKind != .wildcard
-            {
+                previousToken.previousToken(viewMode: .sourceAccurate)?.tokenKind != .wildcard {
                 return // result is assigned to something other than the wildcard keyword (`_`)
             }
 

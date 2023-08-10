@@ -192,8 +192,7 @@ private extension ExprSyntaxProtocol {
         while parent != nil {
             if
                 let classDecl = parent?.as(ClassDeclSyntax.self),
-                classDecl.isXCTestCase(testParentClasses)
-            {
+                classDecl.isXCTestCase(testParentClasses) {
                 return true
             }
             parent = parent?.parent

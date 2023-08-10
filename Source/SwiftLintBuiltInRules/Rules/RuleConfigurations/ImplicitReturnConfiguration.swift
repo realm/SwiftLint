@@ -7,6 +7,8 @@ struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
         case closure
         case function
         case getter
+        case `subscript`
+        case initializer
 
         func asOption() -> OptionType { .symbol(rawValue) }
 

@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, OptInRule {
+struct ImplicitReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = ImplicitReturnConfiguration()
 
     static let description = RuleDescription(
@@ -14,72 +13,78 @@ struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRul
         corrections: ImplicitReturnRuleExamples.corrections
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).compactMap {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
-    }
-
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
-    }
-
-    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let pattern = "(?:\\bin|\\{)\\s+(return\\s+)"
-        let contents = file.stringView
-
-        return file.matchesAndSyntaxKinds(matching: pattern).compactMap { result, kinds in
-            let range = result.range
-            guard kinds == [.keyword, .keyword] || kinds == [.keyword],
-                let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
-                case let kinds = file.structureDictionary.kinds(forByteOffset: byteRange.location),
-                let outerKindString = kinds.lastExcludingBrace()?.kind
-            else {
-                return nil
-            }
-
-            func isKindIncluded(_ kind: ImplicitReturnConfiguration.ReturnKind) -> Bool {
-                return self.configuration.isKindIncluded(kind)
-            }
-
-            if let outerKind = SwiftExpressionKind(rawValue: outerKindString),
-                isKindIncluded(.closure),
-                [.call, .argument, .closure].contains(outerKind) {
-                    return result.range(at: 1)
-            }
-
-            if let outerKind = SwiftDeclarationKind(rawValue: outerKindString),
-                (isKindIncluded(.function) && SwiftDeclarationKind.functionKinds.contains(outerKind)) ||
-                (isKindIncluded(.getter) && SwiftDeclarationKind.variableKinds.contains(outerKind)) {
-                    return result.range(at: 1)
-            }
-
-            return nil
-        }
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(config: configuration)
     }
 }
 
-private extension Array where Element == (kind: String, byteRange: ByteRange) {
-    func lastExcludingBrace() -> Element? {
-        guard SwiftVersion.current >= .fiveDotFour else {
-            return last
+private extension ImplicitReturnRule {
+    private class Visitor: ViolationsSyntaxVisitor {
+        private let config: ConfigurationType
+
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+
+        init(config: ConfigurationType) {
+            self.config = config
+            super.init(viewMode: .sourceAccurate)
         }
 
-        guard let last else {
-            return nil
+        override func visitPost(_ node: AccessorDeclSyntax) {
+            if config.isKindIncluded(.getter),
+               node.accessorSpecifier.tokenKind == .keyword(.get),
+               let body = node.body {
+                collectViolation(in: body.statements)
+            }
         }
 
-        guard last.kind == "source.lang.swift.stmt.brace", count > 1 else {
-            return last
+        override func visitPost(_ node: ClosureExprSyntax) {
+            if config.isKindIncluded(.closure) {
+                collectViolation(in: node.statements)
+            }
         }
 
-        let secondLast = self[endIndex - 2]
-        if SwiftExpressionKind(rawValue: secondLast.kind) == .closure {
-            return secondLast
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if config.isKindIncluded(.function),
+               let body = node.body {
+                collectViolation(in: body.statements)
+            }
         }
 
-        return last
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            if config.isKindIncluded(.initializer),
+               let body = node.body {
+                collectViolation(in: body.statements)
+            }
+        }
+
+        override func visitPost(_ node: PatternBindingSyntax) {
+            if config.isKindIncluded(.getter),
+               case let .getter(itemList) = node.accessorBlock?.accessors {
+                collectViolation(in: itemList)
+            }
+        }
+
+        override func visitPost(_ node: SubscriptDeclSyntax) {
+            if config.isKindIncluded(.subscript),
+               case let .getter(itemList) = node.accessorBlock?.accessors {
+                collectViolation(in: itemList)
+            }
+        }
+
+        private func collectViolation(in itemList: CodeBlockItemListSyntax) {
+            guard let returnStmt = itemList.onlyElement?.item.as(ReturnStmtSyntax.self) else {
+                return
+            }
+            let returnKeyword = returnStmt.returnKeyword
+            violations.append(returnKeyword.positionAfterSkippingLeadingTrivia)
+            violationCorrections.append(
+                ViolationCorrection(
+                    start: returnKeyword.positionAfterSkippingLeadingTrivia,
+                    end: returnKeyword.endPositionBeforeTrailingTrivia
+                            .advanced(by: returnStmt.expression == nil ? 0 : 1),
+                    replacement: ""
+                )
+            )
+        }
     }
 }

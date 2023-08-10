@@ -40,6 +40,10 @@
   [mt00chikin](https://github.com/mt00chikin)
   [#3173](https://github.com/realm/SwiftLint/issues/3173)
 
+* The `implicit_return` rule now supports the kinds `subscript` and
+  `initializer` in the `included` configuration list.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Add `unneeded_override` rule to remove function overrides that only
   call super.  
   [keith](https://github.com/keith)
@@ -84,6 +88,11 @@
 
 * Document `exclude_ranges` option for `number_separator` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
+
+* Rewrite `implicit_return` rule with SwiftSyntax fixing a few false positives
+  and false negatives in the process.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5161](https://github.com/realm/SwiftLint/issues/5161)
 
 * Make sure `severity` is configurable for `type_contents_order` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

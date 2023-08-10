@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct RedundantSelfInClosureRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule, OptInRule {
+struct RedundantSelfInClosureRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
@@ -15,27 +15,6 @@ struct RedundantSelfInClosureRule: SwiftSyntaxRule, CorrectableRule, Configurati
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         ContextVisitor()
-    }
-
-    func correct(file: SwiftLintFile) -> [Correction] {
-        let ranges = ContextVisitor()
-            .walk(file: file, handler: \.corrections)
-            .compactMap { file.stringView.NSRange(start: $0.start, end: $0.end) }
-            .filter { file.ruleEnabled(violatingRange: $0, for: self) != nil }
-            .reversed()
-
-        var corrections = [Correction]()
-        var contents = file.contents
-        for range in ranges {
-            let contentsNSString = contents.bridge()
-            contents = contentsNSString.replacingCharacters(in: range, with: "")
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: Self.description, location: location))
-        }
-
-        file.write(contents)
-
-        return corrections
     }
 }
 
@@ -59,8 +38,6 @@ private class ContextVisitor: DeclaredIdentifiersTrackingVisitor {
     private var typeDeclarations = Stack<TypeDeclarationKind>()
     private var functionCalls = Stack<FunctionCallType>()
     private var selfCaptures = Stack<SelfCaptureKind>()
-
-    private(set) var corrections = [(start: AbsolutePosition, end: AbsolutePosition)]()
 
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .extensionsAndProtocols }
 
@@ -97,14 +74,14 @@ private class ContextVisitor: DeclaredIdentifiersTrackingVisitor {
               let activeSelfCaptureKind = selfCaptures.peek() else {
             return
         }
-        let localCorrections = ExplicitSelfVisitor(
+        let localViolationCorrections = ExplicitSelfVisitor(
             typeDeclarationKind: activeTypeDeclarationKind,
             functionCallType: activeFunctionCallType,
             selfCaptureKind: activeSelfCaptureKind,
             scope: scope
-        ).walk(tree: node.statements, handler: \.corrections)
-        violations.append(contentsOf: localCorrections.map(\.start))
-        corrections.append(contentsOf: localCorrections)
+        ).walk(tree: node.statements, handler: \.violationCorrections)
+        violations.append(contentsOf: localViolationCorrections.map(\.start))
+        violationCorrections.append(contentsOf: localViolationCorrections)
         selfCaptures.pop()
     }
 
@@ -145,8 +122,6 @@ private class ExplicitSelfVisitor: DeclaredIdentifiersTrackingVisitor {
     private let functionCallType: FunctionCallType
     private let selfCaptureKind: SelfCaptureKind
 
-    private(set) var corrections = [(start: AbsolutePosition, end: AbsolutePosition)]()
-
     init(typeDeclarationKind: TypeDeclarationKind,
          functionCallType: FunctionCallType,
          selfCaptureKind: SelfCaptureKind,
@@ -159,8 +134,12 @@ private class ExplicitSelfVisitor: DeclaredIdentifiersTrackingVisitor {
 
     override func visitPost(_ node: MemberAccessExprSyntax) {
         if !hasSeenDeclaration(for: node.declName.baseName.text), node.isBaseSelf, isSelfRedundant {
-            corrections.append(
-                (start: node.positionAfterSkippingLeadingTrivia, end: node.period.endPositionBeforeTrailingTrivia)
+            violationCorrections.append(
+                ViolationCorrection(
+                    start: node.positionAfterSkippingLeadingTrivia,
+                    end: node.period.endPositionBeforeTrailingTrivia,
+                    replacement: ""
+                )
             )
         }
     }

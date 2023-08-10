@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule, OptInRule {
+struct PreferSelfInStaticReferencesRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
@@ -15,27 +15,6 @@ struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, Confi
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
-    }
-
-    func correct(file: SwiftLintFile) -> [Correction] {
-        let ranges = Visitor(viewMode: .sourceAccurate)
-            .walk(file: file, handler: \.corrections)
-            .compactMap { file.stringView.NSRange(start: $0.start, end: $0.end) }
-            .filter { file.ruleEnabled(violatingRange: $0, for: self) != nil }
-            .reversed()
-
-        var corrections = [Correction]()
-        var contents = file.contents
-        for range in ranges {
-            let contentsNSString = contents.bridge()
-            contents = contentsNSString.replacingCharacters(in: range, with: "Self")
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: Self.description, location: location))
-        }
-
-        file.write(contents)
-
-        return corrections
     }
 }
 
@@ -61,7 +40,6 @@ private class Visitor: ViolationsSyntaxVisitor {
 
     private var parentDeclScopes = Stack<ParentDeclBehavior>()
     private var variableDeclScopes = Stack<VariableDeclBehavior>()
-    private(set) var corrections = [(start: AbsolutePosition, end: AbsolutePosition)]()
 
     override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
         parentDeclScopes.push(.likeClass(name: node.name.text))
@@ -240,8 +218,12 @@ private class Visitor: ViolationsSyntaxVisitor {
     private func addViolation(on node: TokenSyntax) {
         if let parentName = parentDeclScopes.peek()?.parentName, node.tokenKind == .identifier(parentName) {
             violations.append(node.positionAfterSkippingLeadingTrivia)
-            corrections.append(
-                (start: node.positionAfterSkippingLeadingTrivia, end: node.endPositionBeforeTrailingTrivia)
+            violationCorrections.append(
+                ViolationCorrection(
+                    start: node.positionAfterSkippingLeadingTrivia,
+                    end: node.endPositionBeforeTrailingTrivia,
+                    replacement: "Self"
+                )
             )
         }
     }

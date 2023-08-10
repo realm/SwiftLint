@@ -1,7 +1,6 @@
-import Foundation
 import SwiftSyntax
 
-struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule {
+struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -56,47 +55,17 @@ struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, CorrectableRule, Configuratio
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
-
-    func correct(file: SwiftLintFile) -> [Correction] {
-        let violations = Visitor(viewMode: .sourceAccurate)
-            .walk(file: file, handler: \.corrections)
-            .compactMap { violation in
-                file.stringView.NSRange(start: violation.start, end: violation.end).map { range in
-                    (range: range, correction: violation.correction)
-                }
-            }
-            .filter {
-                file.ruleEnabled(violatingRange: $0.range, for: self) != nil
-            }
-
-        guard violations.isNotEmpty else { return [] }
-
-        let description = Self.description
-        var corrections = [Correction]()
-        var contents = file.contents
-        for violation in violations.sorted(by: { $0.range.location > $1.range.location }) {
-            let contentsNSString = contents.bridge()
-            contents = contentsNSString.replacingCharacters(in: violation.range, with: violation.correction)
-            let location = Location(file: file, characterOffset: violation.range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-
-        file.write(contents)
-        return corrections
-    }
 }
 
 private extension ReturnArrowWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private(set) var corrections: [ArrowViolation] = []
-
         override func visitPost(_ node: FunctionTypeSyntax) {
             guard let violation = node.returnClause.arrow.arrowViolation else {
                 return
             }
 
             violations.append(violation.start)
-            corrections.append(violation)
+            violationCorrections.append(violation)
         }
 
         override func visitPost(_ node: FunctionSignatureSyntax) {
@@ -105,7 +74,7 @@ private extension ReturnArrowWhitespaceRule {
             }
 
             violations.append(violation.start)
-            corrections.append(violation)
+            violationCorrections.append(violation)
         }
 
         override func visitPost(_ node: ClosureSignatureSyntax) {
@@ -114,19 +83,13 @@ private extension ReturnArrowWhitespaceRule {
             }
 
             violations.append(violation.start)
-            corrections.append(violation)
+            violationCorrections.append(violation)
         }
     }
 }
 
-private struct ArrowViolation {
-    let start: AbsolutePosition
-    let end: AbsolutePosition
-    let correction: String
-}
-
 private extension TokenSyntax {
-    var arrowViolation: ArrowViolation? {
+    var arrowViolation: ViolationCorrection? {
         guard let previousToken = previousToken(viewMode: .sourceAccurate),
               let nextToken = nextToken(viewMode: .sourceAccurate) else {
             return nil
@@ -159,6 +122,6 @@ private extension TokenSyntax {
             return nil
         }
 
-        return ArrowViolation(start: start, end: end, correction: correction)
+        return ViolationCorrection(start: start, end: end, replacement: correction)
     }
 }

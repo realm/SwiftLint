@@ -50,6 +50,12 @@ class BalancedXCTestLifecycleRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class BareInitRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(BareInitRule.description)
+    }
+}
+
 class BlanketDisableCommandRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(BlanketDisableCommandRule.description)

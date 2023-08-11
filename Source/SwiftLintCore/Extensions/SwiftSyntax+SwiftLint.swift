@@ -2,6 +2,8 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
+// swiftlint:disable file_length
+
 // workaround for https://bugs.swift.org/browse/SR-10121 so we can use `Self` in a closure
 public protocol SwiftLintSyntaxVisitor: SyntaxVisitor {}
 extension SyntaxVisitor: SwiftLintSyntaxVisitor {}
@@ -77,10 +79,10 @@ public extension ByteSourceRange {
 
 public extension ClassDeclSyntax {
     func isXCTestCase(_ testParentClasses: Set<String>) -> Bool {
-        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
+        guard let inheritanceList = inheritanceClause?.inheritedTypes else {
             return false
         }
-        let inheritedTypes = inheritanceList.compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text }
+        let inheritedTypes = inheritanceList.compactMap { $0.type.as(IdentifierTypeSyntax.self)?.name.text }
         return testParentClasses.intersection(inheritedTypes).isNotEmpty
     }
 }
@@ -90,7 +92,7 @@ public extension ExprSyntax {
         if let functionCall = self.as(FunctionCallExprSyntax.self) {
             return functionCall
         } else if let tuple = self.as(TupleExprSyntax.self),
-                  let firstElement = tuple.elementList.onlyElement,
+                  let firstElement = tuple.elements.onlyElement,
                   let functionCall = firstElement.expression.as(FunctionCallExprSyntax.self) {
             return functionCall
         } else {
@@ -101,7 +103,7 @@ public extension ExprSyntax {
 
 public extension StringLiteralExprSyntax {
     var isEmptyString: Bool {
-        segments.onlyElement?.contentLength == .zero
+        segments.onlyElement?.trimmedLength == .zero
     }
 }
 
@@ -111,7 +113,7 @@ public extension TokenKind {
     }
 }
 
-public extension ModifierListSyntax? {
+public extension DeclModifierListSyntax? {
     var containsLazy: Bool {
         contains(tokenKind: .keyword(.lazy))
     }
@@ -161,7 +163,7 @@ public extension ModifierListSyntax? {
 
 public extension AttributeSyntax {
     var attributeNameText: String {
-        attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text ??
+        attributeName.as(IdentifierTypeSyntax.self)?.name.text ??
             attributeName.description
     }
 }
@@ -198,7 +200,7 @@ public extension VariableDeclSyntax {
 public extension EnumDeclSyntax {
     /// True if this enum supports raw values
     var supportsRawValues: Bool {
-        guard let inheritedTypeCollection = inheritanceClause?.inheritedTypeCollection else {
+        guard let inheritedTypeCollection = inheritanceClause?.inheritedTypes else {
             return false
         }
 
@@ -210,7 +212,7 @@ public extension EnumDeclSyntax {
         ]
 
         return inheritedTypeCollection.contains { element in
-            guard let identifier = element.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text else {
+            guard let identifier = element.type.as(IdentifierTypeSyntax.self)?.name.text else {
                 return false
             }
 
@@ -226,10 +228,10 @@ public extension FunctionDeclSyntax {
 
     /// Returns the signature including arguments, e.g "setEditing(_:animated:)"
     func resolvedName() -> String {
-        var name = self.identifier.text
+        var name = self.name.text
         name += "("
 
-        let params = signature.input.parameterList.compactMap { param in
+        let params = signature.parameterClause.parameters.compactMap { param in
             param.firstName.text.appending(":")
         }
 
@@ -245,22 +247,18 @@ public extension FunctionDeclSyntax {
             return 0
         }
 
-        return SuperCallVisitor(expectedFunctionName: identifier.text)
+        return SuperCallVisitor(expectedFunctionName: name.text)
             .walk(tree: body, handler: \.superCallsCount)
     }
 }
 
 public extension AccessorBlockSyntax {
     var getAccessor: AccessorDeclSyntax? {
-        accessors.first { accessor in
-            accessor.accessorKind.tokenKind == .keyword(.get)
-        }
+        accessorsList.first { $0.accessorSpecifier.tokenKind == .keyword(.get) }
     }
 
     var setAccessor: AccessorDeclSyntax? {
-        accessors.first { accessor in
-            accessor.accessorKind.tokenKind == .keyword(.set)
-        }
+        accessorsList.first { $0.accessorSpecifier.tokenKind == .keyword(.set) }
     }
 
     var specifiesGetAccessor: Bool {
@@ -270,12 +268,19 @@ public extension AccessorBlockSyntax {
     var specifiesSetAccessor: Bool {
         setAccessor != nil
     }
+
+    var accessorsList: AccessorDeclListSyntax {
+        if case let .accessors(list) = accessors {
+            return list
+        }
+        return AccessorDeclListSyntax([])
+    }
 }
 
-public extension TypeInheritanceClauseSyntax? {
+public extension InheritanceClauseSyntax? {
     func containsInheritedType(inheritedTypes: Set<String>) -> Bool {
-        self?.inheritedTypeCollection.contains { elem in
-            guard let simpleType = elem.typeName.as(SimpleTypeIdentifierSyntax.self) else {
+        self?.inheritedTypes.contains { elem in
+            guard let simpleType = elem.type.as(IdentifierTypeSyntax.self) else {
                 return false
             }
 
@@ -324,7 +329,7 @@ public extension TriviaPiece {
 
 public extension IntegerLiteralExprSyntax {
     var isZero: Bool {
-        guard case let .integerLiteral(number) = digits.tokenKind else {
+        guard case let .integerLiteral(number) = literal.tokenKind else {
             return false
         }
         return number.isZero
@@ -333,7 +338,7 @@ public extension IntegerLiteralExprSyntax {
 
 public extension FloatLiteralExprSyntax {
     var isZero: Bool {
-        guard case let .floatingLiteral(number) = floatingDigits.tokenKind else {
+        guard case let .floatLiteral(number) = literal.tokenKind else {
             return false
         }
         return number.isZero
@@ -342,19 +347,19 @@ public extension FloatLiteralExprSyntax {
 
 public extension MemberAccessExprSyntax {
     var isBaseSelf: Bool {
-        base?.as(IdentifierExprSyntax.self)?.isSelf == true
+        base?.as(DeclReferenceExprSyntax.self)?.isSelf == true
     }
 }
 
-public extension IdentifierExprSyntax {
+public extension DeclReferenceExprSyntax {
     var isSelf: Bool {
-        identifier.text == "self"
+        baseName.text == "self"
     }
 }
 
-public extension ClosureCaptureItemSyntax {
+public extension ClosureCaptureSyntax {
     var capturesSelf: Bool {
-        expression.as(IdentifierExprSyntax.self)?.isSelf == true
+        expression.as(DeclReferenceExprSyntax.self)?.isSelf == true
     }
 
     var capturesWeakly: Bool {
@@ -389,8 +394,8 @@ private class SuperCallVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: FunctionCallExprSyntax) {
         guard let expr = node.calledExpression.as(MemberAccessExprSyntax.self),
-              expr.base?.as(SuperRefExprSyntax.self) != nil,
-              expr.name.text == expectedFunctionName else {
+              expr.base?.as(SuperExprSyntax.self) != nil,
+              expr.declName.baseName.text == expectedFunctionName else {
             return
         }
 

@@ -38,37 +38,37 @@ private extension InclusiveLanguageRule {
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
-        override func visitPost(_ node: TypealiasDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+        override func visitPost(_ node: TypeAliasDeclSyntax) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
@@ -79,14 +79,14 @@ private extension InclusiveLanguageRule {
             }
         }
 
-        override func visitPost(_ node: AssociatedtypeDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+        override func visitPost(_ node: AssociatedTypeDeclSyntax) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
@@ -102,12 +102,12 @@ private extension InclusiveLanguageRule {
         }
 
         override func visitPost(_ node: EnumCaseElementSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
-        override func visitPost(_ node: AccessorParameterSyntax) {
+        override func visitPost(_ node: AccessorParametersSyntax) {
             if let violation = violation(for: node.name) {
                 violations.append(violation)
             }

@@ -104,7 +104,7 @@ private final class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: SwitchExprSyntax) {
-        if node.expression.unwrapped != nil {
+        if node.subject.unwrapped != nil {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
@@ -164,13 +164,13 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
     override func visit(_ node: SwitchExprSyntax) -> ExprSyntax {
         guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              let tupleElement = node.expression.unwrapped else {
+              let tupleElement = node.subject.unwrapped else {
             return super.visit(node)
         }
         correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
         let node = node
             .with(\.switchKeyword, node.switchKeyword.with(\.trailingTrivia, .space))
-            .with(\.expression, tupleElement.with(\.trailingTrivia, .space))
+            .with(\.subject, tupleElement.with(\.trailingTrivia, .space))
         return super.visit(node)
     }
 
@@ -203,7 +203,7 @@ private class TrailingClosureFinder: SyntaxTransformVisitor {
 
 private extension ExprSyntax {
     var unwrapped: ExprSyntax? {
-        if let expr = self.as(TupleExprSyntax.self)?.elementList.onlyElement?.expression {
+        if let expr = self.as(TupleExprSyntax.self)?.elements.onlyElement?.expression {
             return TrailingClosureFinder().visit(expr) ? nil : expr
         }
         return nil

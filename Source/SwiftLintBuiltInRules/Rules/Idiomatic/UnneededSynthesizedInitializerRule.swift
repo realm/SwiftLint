@@ -136,7 +136,7 @@ private extension StructDeclSyntax {
         if initializerParameters.isEmpty {
             // Are all properties initialized?
             return storedProperties.allSatisfy {
-                $0.bindingKeyword.tokenKind == .keyword(.var) && $0.bindings.first?.initializer != nil
+                $0.bindingSpecifier.tokenKind == .keyword(.var) && $0.bindings.first?.initializer != nil
             }
         }
         guard initializerParameters.count == storedProperties.count else {
@@ -154,11 +154,11 @@ private extension StructDeclSyntax {
             // Ensure that parameters that correspond to properties declared using 'var' have a default
             // argument that is identical to the property's default value. Otherwise, a default argument
             // doesn't match the memberwise initializer.
-            if property.bindingKeyword.tokenKind == .keyword(.var), let initializer = property.initializer {
-                guard initializer.value.description == parameter.defaultArgument?.value.description else {
+            if property.bindingSpecifier.tokenKind == .keyword(.var), let initializer = property.initializer {
+                guard initializer.value.description == parameter.defaultValue?.value.description else {
                     return false
                 }
-            } else if parameter.defaultArgument != nil ||
+            } else if parameter.defaultValue != nil ||
                       propertyId.identifier.text != parameter.firstName.text ||
                       (propertyTypeDescription != nil && propertyTypeDescription != parameter.typeDescription) {
                 return false
@@ -191,13 +191,13 @@ private extension StructDeclSyntax {
                     guard element.isBaseSelf else {
                         return false
                     }
-                    leftName = element.name.text
-                case .assignmentExpr(let element) where element.assignToken.tokenKind != .equal:
+                    leftName = element.declName.baseName.text
+                case .assignmentExpr(let element) where element.equal.tokenKind != .equal:
                     return false
                 case .assignmentExpr:
                     break
-                case .identifierExpr(let element):
-                    rightName = element.identifier.text
+                case .declReferenceExpr(let element):
+                    rightName = element.baseName.text
                 default:
                     return false
                 }
@@ -228,7 +228,7 @@ private extension StructDeclSyntax {
     // Does the actual access level of an initializer match the access level of the synthesized
     // memberwise initializer?
     private func initializerModifiers(
-        _ modifiers: ModifierListSyntax?,
+        _ modifiers: DeclModifierListSyntax?,
         match storedProperties: [VariableDeclSyntax]
     ) -> Bool {
         let accessLevel = modifiers?.accessLevelModifier
@@ -244,7 +244,7 @@ private extension StructDeclSyntax {
     }
 }
 
-private extension ModifierListSyntax {
+private extension DeclModifierListSyntax {
     var accessLevelModifier: DeclModifierSyntax? {
         first(where: \.isAccessLevelModifier)
     }
@@ -264,7 +264,7 @@ private extension InitializerDeclSyntax {
         attributes.contains(attributeNamed: "inlinable")
     }
     var parameterList: FunctionParameterListSyntax {
-        signature.input.parameterList
+        signature.parameterClause.parameters
     }
 }
 

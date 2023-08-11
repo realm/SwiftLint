@@ -112,7 +112,7 @@ private extension SelfInPropertyInitializationRule {
                     continue
                 }
 
-                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
             }
         }
     }
@@ -126,8 +126,8 @@ private extension SelfInPropertyInitializationRule {
             super.init(viewMode: .sourceAccurate)
         }
 
-        override func visitPost(_ node: IdentifierExprSyntax) {
-            if node.identifier.tokenKind == identifier {
+        override func visitPost(_ node: DeclReferenceExprSyntax) {
+            if node.baseName.tokenKind == identifier, node.keyPathInParent != \MemberAccessExprSyntax.declName {
                 isTokenUsed = true
             }
         }

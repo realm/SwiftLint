@@ -57,7 +57,7 @@ private extension UnusedClosureParameterRule {
             guard
                 node.namedParameters.isNotEmpty,
                 let signature = node.signature,
-                let input = signature.input,
+                let input = signature.parameterClause,
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
@@ -66,46 +66,43 @@ private extension UnusedClosureParameterRule {
             let referencedIdentifiers = IdentifierReferenceVisitor(viewMode: .sourceAccurate)
                 .walk(tree: node.statements, handler: \.identifiers)
 
-            guard let params = input.as(ClosureParamListSyntax.self) else {
+            guard let params = input.as(ClosureShorthandParameterListSyntax.self) else {
                 guard let params = input.as(ClosureParameterClauseSyntax.self) else {
                     return super.visit(node)
                 }
-
                 var newParams = params
-                for (index, param) in params.parameterList.enumerated() {
+                for param in params.parameters {
                     let name = param.firstName
-                    if name.tokenKind == .wildcard {
-                        continue
-                    } else if referencedIdentifiers.contains(name.text.removingDollarsAndBackticks) {
+                    guard name.tokenKind != .wildcard,
+                          !referencedIdentifiers.contains(name.text.removingDollarsAndBackticks),
+                          let index = params.parameters.index(of: param) else {
                         continue
                     }
-
                     correctionPositions.append(name.positionAfterSkippingLeadingTrivia)
-                    let newParameterList = newParams.parameterList.replacing(
-                        childAt: index,
-                        with: param.with(\.firstName, name.with(\.tokenKind, .wildcard))
+                    let newParameterList = newParams.parameters.with(
+                        \.[index],
+                        param.with(\.firstName, name.with(\.tokenKind, .wildcard))
                     )
-                    newParams = newParams.with(\.parameterList, newParameterList)
+                    newParams = newParams.with(\.parameters, newParameterList)
                 }
-                let newNode = node.with(\.signature, signature.with(\.input, .init(newParams)))
+                let newNode = node.with(\.signature, signature.with(\.parameterClause, .init(newParams)))
                 return super.visit(newNode)
             }
 
             var newParams = params
-            for (index, param) in params.enumerated() {
-                if param.name.tokenKind == .wildcard {
-                    continue
-                } else if referencedIdentifiers.contains(param.name.text.removingDollarsAndBackticks) {
+            for param in params {
+                guard param.name.tokenKind != .wildcard,
+                      !referencedIdentifiers.contains(param.name.text.removingDollarsAndBackticks),
+                      let index = params.index(of: param) else {
                     continue
                 }
-
                 correctionPositions.append(param.name.positionAfterSkippingLeadingTrivia)
-                newParams = newParams.replacing(
-                    childAt: index,
-                    with: param.with(\.name, param.name.with(\.tokenKind, .wildcard))
+                newParams = newParams.with(
+                    \.[index],
+                    param.with(\.name, param.name.with(\.tokenKind, .wildcard))
                 )
             }
-            let newNode = node.with(\.signature, signature.with(\.input, .init(newParams)))
+            let newNode = node.with(\.signature, signature.with(\.parameterClause, .init(newParams)))
             return super.visit(newNode)
         }
     }
@@ -114,8 +111,10 @@ private extension UnusedClosureParameterRule {
 private final class IdentifierReferenceVisitor: SyntaxVisitor {
     private(set) var identifiers: Set<String> = []
 
-    override func visitPost(_ node: IdentifierExprSyntax) {
-        identifiers.insert(node.identifier.text.removingDollarsAndBackticks)
+    override func visitPost(_ node: DeclReferenceExprSyntax) {
+        if node.keyPathInParent != \MemberAccessExprSyntax.declName {
+            identifiers.insert(node.baseName.text.removingDollarsAndBackticks)
+        }
     }
 }
 
@@ -133,7 +132,7 @@ private struct ClosureParam {
 
 private extension ClosureExprSyntax {
     var namedParameters: [ClosureParam] {
-        if let params = signature?.input?.as(ClosureParamListSyntax.self) {
+        if let params = signature?.parameterClause?.as(ClosureShorthandParameterListSyntax.self) {
             return params.compactMap { param in
                 if param.name.tokenKind == .wildcard {
                     return nil
@@ -143,7 +142,7 @@ private extension ClosureExprSyntax {
                     name: param.name.text.removingDollarsAndBackticks
                 )
             }
-        } else if let params = signature?.input?.as(ClosureParameterClauseSyntax.self)?.parameterList {
+        } else if let params = signature?.parameterClause?.as(ClosureParameterClauseSyntax.self)?.parameters {
             return params.compactMap { param in
                 if param.firstName.tokenKind == .wildcard {
                     return nil

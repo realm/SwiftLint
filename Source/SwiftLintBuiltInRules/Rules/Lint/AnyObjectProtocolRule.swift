@@ -69,7 +69,7 @@ private extension AnyObjectProtocolRule {
         }
 
         override func visit(_ node: InheritedTypeSyntax) -> InheritedTypeSyntax {
-            let typeName = node.typeName
+            let typeName = node.type
             guard
                 typeName.is(ClassRestrictionTypeSyntax.self),
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
@@ -80,9 +80,9 @@ private extension AnyObjectProtocolRule {
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
             return super.visit(
                 node.with(
-                    \.typeName,
+                    \.type,
                     TypeSyntax(
-                        SimpleTypeIdentifierSyntax(name: .identifier("AnyObject"), genericArgumentClause: nil)
+                        IdentifierTypeSyntax(name: .identifier("AnyObject"), genericArgumentClause: nil)
                             .with(\.leadingTrivia, typeName.leadingTrivia)
                             .with(\.trailingTrivia, typeName.trailingTrivia)
                     )

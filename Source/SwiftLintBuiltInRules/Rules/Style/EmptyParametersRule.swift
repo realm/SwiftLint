@@ -73,7 +73,7 @@ private extension EmptyParametersRule {
             }
 
             correctionPositions.append(violationPosition)
-            return super.visit(node.with(\.arguments, TupleTypeElementListSyntax([])))
+            return super.visit(node.with(\.parameters, TupleTypeElementListSyntax([])))
         }
     }
 }
@@ -81,10 +81,10 @@ private extension EmptyParametersRule {
 private extension FunctionTypeSyntax {
     var emptyParametersViolationPosition: AbsolutePosition? {
         guard
-            let argument = arguments.onlyElement,
+            let argument = parameters.onlyElement,
             leftParen.presence == .present,
             rightParen.presence == .present,
-            let simpleType = argument.type.as(SimpleTypeIdentifierSyntax.self),
+            let simpleType = argument.type.as(IdentifierTypeSyntax.self),
             simpleType.typeName == "Void"
         else {
             return nil

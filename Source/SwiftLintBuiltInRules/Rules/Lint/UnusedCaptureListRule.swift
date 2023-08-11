@@ -159,23 +159,23 @@ private extension UnusedCaptureListRule {
             }
 
             let captureItemsWithNames = captureItems
-                .compactMap { item -> (name: String, item: ClosureCaptureItemSyntax)? in
+                .compactMap { item -> (name: String, item: ClosureCaptureSyntax)? in
                     if let name = item.name {
                         return (name.text, item)
-                    } else if let expr = item.expression.as(IdentifierExprSyntax.self) {
+                    } else if let expr = item.expression.as(DeclReferenceExprSyntax.self) {
                         // allow "[unowned self]"
-                        if expr.identifier.tokenKind == .keyword(.self),
+                        if expr.baseName.tokenKind == .keyword(.self),
                            item.specifier?.specifier.tokenKind == .keyword(.unowned) {
                             return nil
                         }
 
                         // allow "[self]" capture (SE-0269)
-                        if expr.identifier.tokenKind == .keyword(.self),
+                        if expr.baseName.tokenKind == .keyword(.self),
                            item.specifier == nil {
                             return nil
                         }
 
-                        return (expr.identifier.text, item)
+                        return (expr.baseName.text, item)
                     }
 
                     return nil
@@ -210,8 +210,8 @@ private final class IdentifierReferenceVisitor: SyntaxVisitor {
         super.init(viewMode: .sourceAccurate)
     }
 
-    override func visitPost(_ node: IdentifierExprSyntax) {
-        collectReference(by: node.identifier)
+    override func visitPost(_ node: DeclReferenceExprSyntax) {
+        collectReference(by: node.baseName)
     }
 
     override func visitPost(_ node: IdentifierPatternSyntax) {

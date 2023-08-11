@@ -59,12 +59,12 @@ private extension OverrideInExtensionRule {
 
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.modifiers.containsOverride {
-                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard let type = node.extendedType.as(SimpleTypeIdentifierSyntax.self),
+            guard let type = node.extendedType.as(IdentifierTypeSyntax.self),
                   !allowedExtensions.contains(type.name.text) else {
                 return .skipChildren
             }
@@ -80,6 +80,6 @@ private class ClassNameCollectingVisitor: ViolationsSyntaxVisitor {
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
     override func visitPost(_ node: ClassDeclSyntax) {
-        classNames.insert(node.identifier.text)
+        classNames.insert(node.name.text)
     }
 }

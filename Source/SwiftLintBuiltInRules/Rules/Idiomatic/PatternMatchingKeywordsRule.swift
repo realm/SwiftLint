@@ -40,7 +40,7 @@ struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProviderRule, 
 
 private extension PatternMatchingKeywordsRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: CaseItemSyntax) {
+        override func visitPost(_ node: SwitchCaseItemSyntax) {
             let localViolations = TupleVisitor(viewMode: .sourceAccurate)
                 .walk(tree: node.pattern, handler: \.violations)
             violations.append(contentsOf: localViolations)
@@ -48,19 +48,19 @@ private extension PatternMatchingKeywordsRule {
     }
 
     final class TupleVisitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: TupleExprElementListSyntax) {
+        override func visitPost(_ node: LabeledExprListSyntax) {
             let list = node.flatteningEnumPatterns()
                 .compactMap { elem in
                     elem.expression.asValueBindingPattern()
                 }
 
             guard list.count > 1,
-                let firstLetOrVar = list.first?.bindingKeyword.tokenKind else {
+                  let firstLetOrVar = list.first?.bindingSpecifier.tokenKind else {
                 return
             }
 
             let hasViolation = list.allSatisfy { elem in
-                elem.bindingKeyword.tokenKind == firstLetOrVar
+                elem.bindingSpecifier.tokenKind == firstLetOrVar
             }
 
             guard hasViolation else {
@@ -68,28 +68,28 @@ private extension PatternMatchingKeywordsRule {
             }
 
             violations.append(contentsOf: list.compactMap { elem in
-                return elem.bindingKeyword.positionAfterSkippingLeadingTrivia
+                return elem.bindingSpecifier.positionAfterSkippingLeadingTrivia
             })
         }
     }
 }
 
-private extension TupleExprElementListSyntax {
-    func flatteningEnumPatterns() -> [TupleExprElementSyntax] {
+private extension LabeledExprListSyntax {
+    func flatteningEnumPatterns() -> [LabeledExprSyntax] {
         flatMap { elem in
             guard let pattern = elem.expression.as(FunctionCallExprSyntax.self),
                   pattern.calledExpression.is(MemberAccessExprSyntax.self) else {
                 return [elem]
             }
 
-            return Array(pattern.argumentList)
+            return Array(pattern.arguments)
         }
     }
 }
 
 private extension ExprSyntax {
     func asValueBindingPattern() -> ValueBindingPatternSyntax? {
-        if let pattern = self.as(UnresolvedPatternExprSyntax.self) {
+        if let pattern = self.as(PatternExprSyntax.self) {
             return pattern.pattern.as(ValueBindingPatternSyntax.self)
         }
 

@@ -31,11 +31,11 @@ struct DiscouragedAssertRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderR
 private extension DiscouragedAssertRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text == "assert",
-                  let firstArg = node.argumentList.first,
+            guard node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text == "assert",
+                  let firstArg = node.arguments.first,
                   firstArg.label == nil,
                   let boolExpr = firstArg.expression.as(BooleanLiteralExprSyntax.self),
-                  boolExpr.booleanLiteral.tokenKind == .keyword(.false) else {
+                  boolExpr.literal.tokenKind == .keyword(.false) else {
                 return
             }
 

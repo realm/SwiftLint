@@ -39,7 +39,7 @@ struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProv
 
 private final class UnownedVariableCaptureRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: TokenSyntax) {
-        if case .keyword(.unowned) = node.tokenKind, node.parent?.is(ClosureCaptureItemSpecifierSyntax.self) == true {
+        if case .keyword(.unowned) = node.tokenKind, node.parent?.is(ClosureCaptureSpecifierSyntax.self) == true {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }

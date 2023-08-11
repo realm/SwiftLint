@@ -173,6 +173,10 @@ enum PreferSelfInStaticReferencesRuleExamples {
                         get { ↓C.i }
                         set { ↓C.i = newValue }
                     }
+                    var l: Int {
+                        let ii = ↓C.i
+                        return ii
+                    }
                 }
             }
         """, excludeFromDocumentation: true),

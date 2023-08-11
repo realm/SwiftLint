@@ -39,11 +39,11 @@ private extension FirstWhereRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
-                node.name.text == "first",
+                node.declName.baseName.text == "first",
                 let functionCall = node.base?.asFunctionCall,
                 let calledExpression = functionCall.calledExpression.as(MemberAccessExprSyntax.self),
-                calledExpression.name.text == "filter",
-                !functionCall.argumentList.contains(where: \.expression.shouldSkip)
+                calledExpression.declName.baseName.text == "filter",
+                !functionCall.arguments.contains(where: \.expression.shouldSkip)
             else {
                 return
             }
@@ -58,8 +58,8 @@ private extension ExprSyntax {
         if self.is(StringLiteralExprSyntax.self) {
             return true
         } else if let functionCall = self.as(FunctionCallExprSyntax.self),
-                  let calledExpression = functionCall.calledExpression.as(IdentifierExprSyntax.self),
-                  calledExpression.identifier.text == "NSPredicate" {
+                  let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self),
+                  calledExpression.baseName.text == "NSPredicate" {
             return true
         } else {
             return false

@@ -160,7 +160,7 @@ private extension ValidIBInspectableRule {
 
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.isInstanceVariable, node.isIBInspectable, node.hasViolation {
-                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
             }
         }
     }
@@ -176,12 +176,12 @@ private extension VariableDeclSyntax {
     }
 
     var isReadOnlyProperty: Bool {
-        if bindingKeyword.tokenKind == .keyword(.let) {
+        if bindingSpecifier.tokenKind == .keyword(.let) {
             return true
         }
 
         let computedProperty = bindings.contains { binding in
-            binding.accessor != nil
+            binding.accessorBlock != nil
         }
 
         if !computedProperty {
@@ -189,7 +189,7 @@ private extension VariableDeclSyntax {
         }
 
         return bindings.allSatisfy { binding in
-            guard let accessorBlock = binding.accessor?.as(AccessorBlockSyntax.self) else {
+            guard let accessorBlock = binding.accessorBlock?.as(AccessorBlockSyntax.self) else {
                 return true
             }
 

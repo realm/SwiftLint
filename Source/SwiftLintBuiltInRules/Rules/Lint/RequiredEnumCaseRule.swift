@@ -183,7 +183,7 @@ private extension EnumDeclSyntax {
                     return []
                 }
 
-                return enumCaseDecl.elements.map(\.identifier.text)
+                return enumCaseDecl.elements.map(\.name.text)
             }
     }
 }

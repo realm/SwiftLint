@@ -125,19 +125,19 @@ private extension FunctionCallExprSyntax {
     }
 
     var name: String? {
-        guard let expr = calledExpression.as(IdentifierExprSyntax.self) else {
+        guard let expr = calledExpression.as(DeclReferenceExprSyntax.self) else {
             return nil
         }
 
-        return expr.identifier.text
+        return expr.baseName.text
     }
 
     var argumentNames: [String?] {
-        argumentList.map(\.label?.text)
+        arguments.map(\.label?.text)
     }
 
     var argumentsAreAllZero: Bool {
-        argumentList.allSatisfy { arg in
+        arguments.allSatisfy { arg in
             if let intExpr = arg.expression.as(IntegerLiteralExprSyntax.self) {
                 return intExpr.isZero
             } else if let floatExpr = arg.expression.as(FloatLiteralExprSyntax.self) {

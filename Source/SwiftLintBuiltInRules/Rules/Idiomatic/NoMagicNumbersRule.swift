@@ -108,7 +108,7 @@ private extension NoMagicNumbersRule {
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            let className = node.identifier.text
+            let className = node.name.text
             if node.isXCTestCase(testParentClasses) {
                 testClasses.insert(className)
                 removeViolations(forClassName: className)
@@ -118,14 +118,14 @@ private extension NoMagicNumbersRule {
         }
 
         override func visitPost(_ node: FloatLiteralExprSyntax) {
-            guard node.floatingDigits.isMagicNumber else {
+            guard node.literal.isMagicNumber else {
                 return
             }
             collectViolation(forNode: node)
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
-            guard node.digits.isMagicNumber else {
+            guard node.literal.isMagicNumber else {
                 return
             }
             collectViolation(forNode: node)
@@ -213,7 +213,7 @@ private extension ExprSyntaxProtocol {
         }
 
         let operatorIndex = siblings.index(after: siblings.startIndex)
-        if let tokenKind = siblings[operatorIndex].as(BinaryOperatorExprSyntax.self)?.operatorToken.tokenKind {
+        if let tokenKind = siblings[operatorIndex].as(BinaryOperatorExprSyntax.self)?.operator.tokenKind {
             return tokenKind == .binaryOperator("<<") || tokenKind == .binaryOperator(">>")
         }
 

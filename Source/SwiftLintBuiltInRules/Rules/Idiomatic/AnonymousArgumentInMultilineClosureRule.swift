@@ -51,8 +51,8 @@ private extension AnonymousArgumentInMultilineClosureRule {
             return startLocation.line == endLocation.line ? .skipChildren : .visitChildren
         }
 
-        override func visitPost(_ node: IdentifierExprSyntax) {
-            if case .dollarIdentifier = node.identifier.tokenKind {
+        override func visitPost(_ node: DeclReferenceExprSyntax) {
+            if case .dollarIdentifier = node.baseName.tokenKind {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }

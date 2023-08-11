@@ -32,11 +32,11 @@ open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
             collectIdentifiers(from: ifStmt.conditions)
         } else if let whileStmt = grandParent.as(WhileStmtSyntax.self) {
             collectIdentifiers(from: whileStmt.conditions)
-        } else if let pattern = grandParent.as(ForInStmtSyntax.self)?.pattern {
+        } else if let pattern = grandParent.as(ForStmtSyntax.self)?.pattern {
             collectIdentifiers(from: pattern)
-        } else if let parameters = grandParent.as(FunctionDeclSyntax.self)?.signature.input.parameterList {
+        } else if let parameters = grandParent.as(FunctionDeclSyntax.self)?.signature.parameterClause.parameters {
             collectIdentifiers(from: parameters)
-        } else if let closureParameters = parent.as(ClosureExprSyntax.self)?.signature?.input {
+        } else if let closureParameters = parent.as(ClosureExprSyntax.self)?.signature?.parameterClause {
             collectIdentifiers(from: closureParameters)
         } else if let switchCase = parent.as(SwitchCaseSyntax.self)?.label.as(SwitchCaseLabelSyntax.self) {
             collectIdentifiers(from: switchCase)
@@ -51,7 +51,7 @@ open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
     }
 
     override open func visitPost(_ node: VariableDeclSyntax) {
-        if node.parent?.is(MemberDeclListItemSyntax.self) != true {
+        if node.parent?.is(MemberBlockItemSyntax.self) != true {
             for binding in node.bindings {
                 collectIdentifiers(from: binding.pattern)
             }
@@ -66,10 +66,10 @@ open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
         parameters.forEach { scope.addToCurrentScope(($0.secondName ?? $0.firstName).text) }
     }
 
-    private func collectIdentifiers(from closureParameters: ClosureSignatureSyntax.Input) {
+    private func collectIdentifiers(from closureParameters: ClosureSignatureSyntax.ParameterClause) {
         switch closureParameters {
-        case let .input(parameters):
-            parameters.parameterList.forEach { scope.addToCurrentScope(($0.secondName ?? $0.firstName).text) }
+        case let .parameterClause(parameters):
+            parameters.parameters.forEach { scope.addToCurrentScope(($0.secondName ?? $0.firstName).text) }
         case let .simpleInput(parameters):
             parameters.forEach { scope.addToCurrentScope($0.name.text) }
         }
@@ -77,12 +77,12 @@ open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
 
     private func collectIdentifiers(from switchCase: SwitchCaseLabelSyntax) {
         switchCase.caseItems
-            .compactMap { $0.pattern.as(ValueBindingPatternSyntax.self)?.valuePattern ?? $0.pattern }
+            .compactMap { $0.pattern.as(ValueBindingPatternSyntax.self)?.pattern ?? $0.pattern }
             .compactMap { $0.as(ExpressionPatternSyntax.self)?.expression.asFunctionCall }
-            .compactMap { $0.argumentList.as(TupleExprElementListSyntax.self) }
+            .compactMap { $0.arguments.as(LabeledExprListSyntax.self) }
             .flatMap { $0 }
-            .compactMap { $0.expression.as(UnresolvedPatternExprSyntax.self) }
-            .compactMap { $0.pattern.as(ValueBindingPatternSyntax.self)?.valuePattern ?? $0.pattern }
+            .compactMap { $0.expression.as(PatternExprSyntax.self) }
+            .compactMap { $0.pattern.as(ValueBindingPatternSyntax.self)?.pattern ?? $0.pattern }
             .compactMap { $0.as(IdentifierPatternSyntax.self) }
             .forEach { scope.addToCurrentScope($0.identifier.text) }
     }
@@ -90,7 +90,7 @@ open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
     private func collectIdentifiers(from catchClause: CatchClauseSyntax) {
         if let items = catchClause.catchItems {
             items
-                .compactMap { $0.pattern?.as(ValueBindingPatternSyntax.self)?.valuePattern }
+                .compactMap { $0.pattern?.as(ValueBindingPatternSyntax.self)?.pattern }
                 .forEach(collectIdentifiers(from:))
         } else {
             // A catch clause without explicit catch items has an implicit `error` variable in scope.

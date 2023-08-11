@@ -204,7 +204,7 @@ private extension CodeBlockItemListSyntax {
     var violation: (PatternBindingSyntax, ReturnStmtSyntax)? {
         guard count >= 2, let last = last?.item,
               let returnStmt = last.as(ReturnStmtSyntax.self),
-              let identifier = returnStmt.expression?.as(IdentifierExprSyntax.self)?.identifier.text,
+              let identifier = returnStmt.expression?.as(DeclReferenceExprSyntax.self)?.baseName.text,
               let varDecl = dropLast().last?.item.as(VariableDeclSyntax.self) else {
             return nil
         }
@@ -250,8 +250,8 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
             initExpression = ExprSyntax(
                 fromProtocol: AsExprSyntax(
                     expression: initExpression.trimmed,
-                    asTok: .keyword(.as).with(\.leadingTrivia, .space).with(\.trailingTrivia, .space),
-                    typeName: type.trimmed
+                    asKeyword: .keyword(.as).with(\.leadingTrivia, .space).with(\.trailingTrivia, .space),
+                    type: type.trimmed
                 )
             )
         }

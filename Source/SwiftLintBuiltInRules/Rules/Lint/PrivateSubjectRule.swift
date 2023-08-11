@@ -38,7 +38,7 @@ private extension PrivateSubjectRule {
                 // * `let subject: PassthroughSubject<Bool, Never> = .init()`
                 // * `let subject: CurrentValueSubject<Bool, Never>`
                 // * `let subject: CurrentValueSubject<String, Never> = .init("toto")`
-                if let type = binding.typeAnnotation?.type.as(SimpleTypeIdentifierSyntax.self),
+                if let type = binding.typeAnnotation?.type.as(IdentifierTypeSyntax.self),
                    subjectTypes.contains(type.name.text) {
                     violations.append(binding.pattern.positionAfterSkippingLeadingTrivia)
                     continue
@@ -49,9 +49,9 @@ private extension PrivateSubjectRule {
                 // * `let subject = PassthroughSubject<Bool, Never>()`
                 // * `let subject = CurrentValueSubject<String, Never>("toto")`
                 if let functionCall = binding.initializer?.value.as(FunctionCallExprSyntax.self),
-                   let specializeExpr = functionCall.calledExpression.as(SpecializeExprSyntax.self),
-                   let identifierExpr = specializeExpr.expression.as(IdentifierExprSyntax.self),
-                   subjectTypes.contains(identifierExpr.identifier.text) {
+                   let specializeExpr = functionCall.calledExpression.as(GenericSpecializationExprSyntax.self),
+                   let identifierExpr = specializeExpr.expression.as(DeclReferenceExprSyntax.self),
+                   subjectTypes.contains(identifierExpr.baseName.text) {
                     violations.append(binding.pattern.positionAfterSkippingLeadingTrivia)
                 }
             }

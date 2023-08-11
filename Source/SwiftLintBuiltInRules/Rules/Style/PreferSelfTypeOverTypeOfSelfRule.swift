@@ -145,7 +145,7 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
 
             correctionPositions.append(function.positionAfterSkippingLeadingTrivia)
 
-            let base = IdentifierExprSyntax(identifier: "Self")
+            let base = DeclReferenceExprSyntax(baseName: "Self")
             let baseWithTrivia = base
                 .with(\.leadingTrivia, function.leadingTrivia)
                 .with(\.trailingTrivia, function.trailingTrivia)
@@ -157,16 +157,16 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
 private extension FunctionCallExprSyntax {
     var hasViolation: Bool {
         return isTypeOfSelfCall &&
-            argumentList.map(\.label?.text) == ["of"] &&
-            argumentList.first?.expression.as(IdentifierExprSyntax.self)?.identifier.tokenKind == .keyword(.self)
+        arguments.map(\.label?.text) == ["of"] &&
+        arguments.first?.expression.as(DeclReferenceExprSyntax.self)?.baseName.tokenKind == .keyword(.self)
     }
 
     var isTypeOfSelfCall: Bool {
-        if let identifierExpr = calledExpression.as(IdentifierExprSyntax.self) {
-            return identifierExpr.identifier.text == "type"
+        if let identifierExpr = calledExpression.as(DeclReferenceExprSyntax.self) {
+            return identifierExpr.baseName.text == "type"
         } else if let memberAccessExpr = calledExpression.as(MemberAccessExprSyntax.self) {
-            return memberAccessExpr.name.text == "type" &&
-                memberAccessExpr.base?.as(IdentifierExprSyntax.self)?.identifier.text == "Swift"
+            return memberAccessExpr.declName.baseName.text == "type" &&
+            memberAccessExpr.base?.as(DeclReferenceExprSyntax.self)?.baseName.text == "Swift"
         }
         return false
     }

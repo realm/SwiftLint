@@ -73,7 +73,7 @@ private extension DuplicateEnumCasesRule {
                 }
 
             let elementsByName = enumElements.reduce(into: [String: [AbsolutePosition]]()) { elements, element in
-                let name = String(element.identifier.text)
+                let name = String(element.name.text)
                 elements[name, default: []].append(element.positionAfterSkippingLeadingTrivia)
             }
 

@@ -35,10 +35,10 @@ private extension ContainsOverFilterIsEmptyRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
-                node.name.text == "isEmpty",
+                node.declName.baseName.text == "isEmpty",
                 let firstBase = node.base?.asFunctionCall,
                 let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
-                firstBaseCalledExpression.name.text == "filter"
+                firstBaseCalledExpression.declName.baseName.text == "filter"
             else {
                 return
             }

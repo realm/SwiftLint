@@ -54,7 +54,7 @@ private extension FunctionParameterCountRule {
                 return
             }
 
-            let parameterList = node.signature.input.parameterList
+            let parameterList = node.signature.parameterClause.parameters
             guard let minThreshold = configuration.severityConfiguration.params.map(\.value).min(by: <) else {
                 return
             }
@@ -66,7 +66,7 @@ private extension FunctionParameterCountRule {
 
             var parameterCount = allParameterCount
             if configuration.ignoresDefaultParameters {
-                parameterCount -= parameterList.filter { $0.defaultArgument != nil }.count
+                parameterCount -= parameterList.filter { $0.defaultValue != nil }.count
             }
 
             for parameter in configuration.severityConfiguration.params where parameterCount > parameter.value {

@@ -67,8 +67,8 @@ private extension RedundantDiscardableLetRule {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
             let newNode = node
-                .with(\.bindingKeyword, .keyword(.let, presence: .missing))
-                .with(\.bindings, node.bindings.with(\.leadingTrivia, node.bindingKeyword.leadingTrivia))
+                .with(\.bindingSpecifier, .keyword(.let, presence: .missing))
+                .with(\.bindings, node.bindings.with(\.leadingTrivia, node.bindingSpecifier.leadingTrivia))
             return super.visit(newNode)
         }
     }
@@ -76,7 +76,7 @@ private extension RedundantDiscardableLetRule {
 
 private extension VariableDeclSyntax {
     var hasRedundantDiscardableLetViolation: Bool {
-        bindingKeyword.tokenKind == .keyword(.let) &&
+        bindingSpecifier.tokenKind == .keyword(.let) &&
             bindings.count == 1 &&
             bindings.first!.pattern.is(WildcardPatternSyntax.self) &&
             bindings.first!.typeAnnotation == nil &&

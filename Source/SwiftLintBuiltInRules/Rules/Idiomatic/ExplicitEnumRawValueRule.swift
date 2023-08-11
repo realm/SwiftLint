@@ -88,7 +88,7 @@ private extension ExplicitEnumRawValueRule {
 
         override func visitPost(_ node: EnumCaseElementSyntax) {
             if node.rawValue == nil, node.enclosingEnum()?.supportsRawValues == true {
-                violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
+                violations.append(node.name.positionAfterSkippingLeadingTrivia)
             }
         }
     }

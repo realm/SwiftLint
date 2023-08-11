@@ -44,10 +44,10 @@ private extension Syntax {
 
 private extension FunctionDeclSyntax {
     var returnsVoid: Bool {
-        if let type = signature.output?.returnType.as(SimpleTypeIdentifierSyntax.self) {
+        if let type = signature.returnClause?.type.as(IdentifierTypeSyntax.self) {
             return type.name.text == "Void"
         }
 
-        return signature.output?.returnType == nil
+        return signature.returnClause?.type == nil
     }
 }

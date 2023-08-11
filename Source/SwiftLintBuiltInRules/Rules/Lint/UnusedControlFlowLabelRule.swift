@@ -131,11 +131,11 @@ private extension LabeledStmtSyntax {
     var violationPosition: AbsolutePosition? {
         let visitor = BreakAndContinueLabelCollector(viewMode: .sourceAccurate)
         let labels = visitor.walk(tree: self, handler: \.labels)
-        guard !labels.contains(labelName.text) else {
+        guard !labels.contains(label.text) else {
             return nil
         }
 
-        return labelName.positionAfterSkippingLeadingTrivia
+        return label.positionAfterSkippingLeadingTrivia
     }
 }
 

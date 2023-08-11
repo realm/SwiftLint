@@ -22,8 +22,8 @@ private extension QuickDiscouragedPendingTestRule {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
-               case let name = identifierExpr.identifier.text,
+            if let identifierExpr = node.calledExpression.as(DeclReferenceExprSyntax.self),
+               case let name = identifierExpr.baseName.text,
                QuickPendingCallKind(rawValue: name) != nil {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
@@ -41,7 +41,7 @@ private extension QuickDiscouragedPendingTestRule {
 
 private extension ClassDeclSyntax {
     var containsInheritance: Bool {
-        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
+        guard let inheritanceList = inheritanceClause?.inheritedTypes else {
             return false
         }
 
@@ -51,8 +51,8 @@ private extension ClassDeclSyntax {
 
 private extension FunctionDeclSyntax {
     var isSpecFunction: Bool {
-        return identifier.tokenKind == .identifier("spec") &&
-            signature.input.parameterList.isEmpty &&
+        return name.tokenKind == .identifier("spec") &&
+        signature.parameterClause.parameters.isEmpty &&
             modifiers.containsOverride
     }
 }

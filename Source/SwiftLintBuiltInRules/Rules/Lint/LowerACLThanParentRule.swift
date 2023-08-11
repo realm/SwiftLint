@@ -206,7 +206,7 @@ private extension Syntax {
         self.is(ExtensionDeclSyntax.self)
     }
 
-    var modifiers: ModifierListSyntax? {
+    var modifiers: DeclModifierListSyntax? {
         if let node = self.as(StructDeclSyntax.self) {
             return node.modifiers
         } else if let node = self.as(ClassDeclSyntax.self) {
@@ -223,7 +223,7 @@ private extension Syntax {
     }
 }
 
-private extension ModifierListSyntax? {
+private extension DeclModifierListSyntax? {
     var isPrivate: Bool {
         self?.contains(where: { $0.name.tokenKind == .keyword(.private) }) == true
     }

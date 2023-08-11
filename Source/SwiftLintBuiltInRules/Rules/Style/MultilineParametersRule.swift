@@ -30,7 +30,7 @@ private extension MultilineParametersRule {
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             if containsViolation(for: node.signature) {
-                violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
+                violations.append(node.name.positionAfterSkippingLeadingTrivia)
             }
         }
 
@@ -41,7 +41,7 @@ private extension MultilineParametersRule {
         }
 
         private func containsViolation(for signature: FunctionSignatureSyntax) -> Bool {
-            let parameterPositions = signature.input.parameterList.map(\.positionAfterSkippingLeadingTrivia)
+            let parameterPositions = signature.parameterClause.parameters.map(\.positionAfterSkippingLeadingTrivia)
             guard parameterPositions.isNotEmpty else {
                 return false
             }

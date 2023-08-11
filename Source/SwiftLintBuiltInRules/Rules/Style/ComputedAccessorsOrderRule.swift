@@ -30,7 +30,7 @@ private final class ComputedAccessorsOrderRuleVisitor: ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: AccessorBlockSyntax) {
-        guard let firstAccessor = node.accessors.first,
+        guard let firstAccessor = node.accessorsList.first,
               let order = node.order,
               order != expectedOrder else {
             return
@@ -60,11 +60,11 @@ private final class ComputedAccessorsOrderRuleVisitor: ViolationsSyntaxVisitor {
 
 private extension AccessorBlockSyntax {
     var order: ComputedAccessorsOrderConfiguration.Order? {
-        guard accessors.count == 2, accessors.map(\.body).allSatisfy({ $0 != nil }) else {
+        guard accessorsList.count == 2, accessorsList.map(\.body).allSatisfy({ $0 != nil }) else {
             return nil
         }
 
-        let tokens = accessors.map(\.accessorKind.tokenKind)
+        let tokens = accessorsList.map(\.accessorSpecifier.tokenKind)
         if tokens == [.keyword(.get), .keyword(.set)] {
             return .getSet
         }

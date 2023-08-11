@@ -46,6 +46,6 @@ private extension FunctionDeclSyntax {
     }
 
     var isTestMethod: Bool {
-        identifier.text.hasPrefix("test") && signature.input.parameterList.isEmpty
+        name.text.hasPrefix("test") && signature.parameterClause.parameters.isEmpty
     }
 }

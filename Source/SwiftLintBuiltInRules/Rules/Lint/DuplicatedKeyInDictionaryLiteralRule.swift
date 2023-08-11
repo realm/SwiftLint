@@ -85,7 +85,7 @@ struct DuplicatedKeyInDictionaryLiteralRule: SwiftSyntaxRule, ConfigurationProvi
 private extension DuplicatedKeyInDictionaryLiteralRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ list: DictionaryElementListSyntax) {
-            let keys = list.map(\.keyExpression).compactMap { expr -> DictionaryKey? in
+            let keys = list.map(\.key).compactMap { expr -> DictionaryKey? in
                 expr.stringContent.map {
                     DictionaryKey(position: expr.positionAfterSkippingLeadingTrivia, content: $0)
                 }
@@ -127,8 +127,8 @@ private extension ExprSyntax {
             return float.description
         } else if let memberAccess = self.as(MemberAccessExprSyntax.self) {
             return memberAccess.description
-        } else if let identifier = self.as(IdentifierExprSyntax.self) {
-            return identifier.identifier.text
+        } else if let identifier = self.as(DeclReferenceExprSyntax.self) {
+            return identifier.baseName.text
         }
 
         return nil

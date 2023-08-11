@@ -38,9 +38,9 @@ private extension EmptyCollectionLiteralRule {
                 node.tokenKind.isEqualityComparison,
                 let violationPosition = node.previousToken(viewMode: .sourceAccurate)?.endPositionBeforeTrailingTrivia,
                 let expectedLeftSquareBracketToken = node.nextToken(viewMode: .sourceAccurate),
-                expectedLeftSquareBracketToken.tokenKind == .leftSquareBracket,
+                expectedLeftSquareBracketToken.tokenKind == .leftSquare,
                 let expectedColonToken = expectedLeftSquareBracketToken.nextToken(viewMode: .sourceAccurate),
-                expectedColonToken.tokenKind == .colon || expectedColonToken.tokenKind == .rightSquareBracket
+                expectedColonToken.tokenKind == .colon || expectedColonToken.tokenKind == .rightSquare
             else {
                 return
             }

@@ -27,12 +27,12 @@ private extension FlatMapOverMapReduceRule {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),
-                memberAccess.name.text == "reduce",
-                node.argumentList.count == 2,
-                let firstArgument = node.argumentList.first?.expression.as(ArrayExprSyntax.self),
+                memberAccess.declName.baseName.text == "reduce",
+                node.arguments.count == 2,
+                let firstArgument = node.arguments.first?.expression.as(ArrayExprSyntax.self),
                 firstArgument.elements.isEmpty,
-                let secondArgument = node.argumentList.last?.expression.as(IdentifierExprSyntax.self),
-                secondArgument.identifier.text == "+"
+                let secondArgument = node.arguments.last?.expression.as(DeclReferenceExprSyntax.self),
+                secondArgument.baseName.text == "+"
             else {
                 return
             }

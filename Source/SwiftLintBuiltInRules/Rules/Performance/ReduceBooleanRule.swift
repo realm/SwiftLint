@@ -36,18 +36,18 @@ private extension ReduceBooleanRule {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
-                calledExpression.name.text == "reduce",
-                let firstArgument = node.argumentList.first,
+                calledExpression.declName.baseName.text == "reduce",
+                let firstArgument = node.arguments.first,
                 firstArgument.label?.text ?? "into" == "into",
                 let bool = firstArgument.expression.as(BooleanLiteralExprSyntax.self)
             else {
                 return
             }
 
-            let suggestedFunction = bool.booleanLiteral.tokenKind == .keyword(.true) ? "allSatisfy" : "contains"
+            let suggestedFunction = bool.literal.tokenKind == .keyword(.true) ? "allSatisfy" : "contains"
             violations.append(
                 ReasonedRuleViolation(
-                    position: calledExpression.name.positionAfterSkippingLeadingTrivia,
+                    position: calledExpression.declName.baseName.positionAfterSkippingLeadingTrivia,
                     reason: "Use `\(suggestedFunction)` instead"
                 )
             )

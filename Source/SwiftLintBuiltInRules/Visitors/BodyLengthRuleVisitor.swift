@@ -86,7 +86,7 @@ final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor {
             registerViolations(
                 leftBrace: body.leftBrace,
                 rightBrace: body.rightBrace,
-                violationNode: node.identifier
+                violationNode: node.name
             )
         }
     }

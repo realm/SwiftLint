@@ -113,8 +113,8 @@ struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, SwiftSynta
 
 private class VoidFunctionInTernaryConditionVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: TernaryExprSyntax) {
-        guard node.firstChoice.is(FunctionCallExprSyntax.self),
-              node.secondChoice.is(FunctionCallExprSyntax.self),
+        guard node.thenExpression.is(FunctionCallExprSyntax.self),
+              node.elseExpression.is(FunctionCallExprSyntax.self),
               let parent = node.parent?.as(ExprListSyntax.self),
               !parent.containsAssignment,
               let grandparent = parent.parent,
@@ -128,7 +128,7 @@ private class VoidFunctionInTernaryConditionVisitor: ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: UnresolvedTernaryExprSyntax) {
-        guard node.firstChoice.is(FunctionCallExprSyntax.self),
+        guard node.thenExpression.is(FunctionCallExprSyntax.self),
               let parent = node.parent?.as(ExprListSyntax.self),
               parent.last?.is(FunctionCallExprSyntax.self) == true,
               !parent.containsAssignment,
@@ -204,21 +204,21 @@ private extension CodeBlockItemSyntax {
 
 private extension FunctionSignatureSyntax {
      var allowsImplicitReturns: Bool {
-         output?.allowsImplicitReturns ?? false
+         returnClause?.allowsImplicitReturns ?? false
      }
 }
 
 private extension SubscriptDeclSyntax {
     var allowsImplicitReturns: Bool {
-        result.allowsImplicitReturns
+        returnClause.allowsImplicitReturns
     }
 }
 
 private extension ReturnClauseSyntax {
     var allowsImplicitReturns: Bool {
-        if let simpleType = returnType.as(SimpleTypeIdentifierSyntax.self) {
+        if let simpleType = type.as(IdentifierTypeSyntax.self) {
             return simpleType.name.text != "Void" && simpleType.name.text != "Never"
-        } else if let tupleType = returnType.as(TupleTypeSyntax.self) {
+        } else if let tupleType = type.as(TupleTypeSyntax.self) {
             return !tupleType.elements.isEmpty
         } else {
             return true

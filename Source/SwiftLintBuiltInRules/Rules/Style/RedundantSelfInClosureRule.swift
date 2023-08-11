@@ -158,9 +158,9 @@ private class ExplicitSelfVisitor: DeclaredIdentifiersTrackingVisitor {
     }
 
     override func visitPost(_ node: MemberAccessExprSyntax) {
-        if !hasSeenDeclaration(for: node.name.text), node.isBaseSelf, isSelfRedundant {
+        if !hasSeenDeclaration(for: node.declName.baseName.text), node.isBaseSelf, isSelfRedundant {
             corrections.append(
-                (start: node.positionAfterSkippingLeadingTrivia, end: node.dot.endPositionBeforeTrailingTrivia)
+                (start: node.positionAfterSkippingLeadingTrivia, end: node.period.endPositionBeforeTrailingTrivia)
             )
         }
     }

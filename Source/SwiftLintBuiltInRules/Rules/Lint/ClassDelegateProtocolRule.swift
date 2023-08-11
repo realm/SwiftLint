@@ -41,7 +41,7 @@ private extension ClassDelegateProtocolRule {
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
-            if node.identifier.text.hasSuffix("Delegate") &&
+            if node.name.text.hasSuffix("Delegate") &&
                 !node.hasObjCAttribute() &&
                 !node.isClassRestricted() &&
                 !node.inheritsFromObjectOrDelegate() {
@@ -57,34 +57,34 @@ private extension ProtocolDeclSyntax {
     }
 
     func isClassRestricted() -> Bool {
-        inheritanceClause?.inheritedTypeCollection.contains { $0.typeName.is(ClassRestrictionTypeSyntax.self) } == true
+        inheritanceClause?.inheritedTypes.contains { $0.type.is(ClassRestrictionTypeSyntax.self) } == true
     }
 
     func inheritsFromObjectOrDelegate() -> Bool {
-        if inheritanceClause?.inheritedTypeCollection.contains(where: { $0.typeName.isObjectOrDelegate() }) == true {
+        if inheritanceClause?.inheritedTypes.contains(where: { $0.type.isObjectOrDelegate() }) == true {
             return true
         }
 
-        guard let requirementList = genericWhereClause?.requirementList else {
+        guard let requirementList = genericWhereClause?.requirements else {
             return false
         }
 
         return requirementList.contains { requirement in
-            guard let conformanceRequirement = requirement.body.as(ConformanceRequirementSyntax.self),
-                  let simpleLeftType = conformanceRequirement.leftTypeIdentifier.as(SimpleTypeIdentifierSyntax.self),
+            guard let conformanceRequirement = requirement.requirement.as(ConformanceRequirementSyntax.self),
+                  let simpleLeftType = conformanceRequirement.leftType.as(IdentifierTypeSyntax.self),
                   simpleLeftType.typeName == "Self"
             else {
                 return false
             }
 
-            return conformanceRequirement.rightTypeIdentifier.isObjectOrDelegate()
+            return conformanceRequirement.rightType.isObjectOrDelegate()
         }
     }
 }
 
 private extension TypeSyntax {
     func isObjectOrDelegate() -> Bool {
-        guard let typeName = self.as(SimpleTypeIdentifierSyntax.self)?.typeName else {
+        guard let typeName = self.as(IdentifierTypeSyntax.self)?.typeName else {
             return false
         }
 

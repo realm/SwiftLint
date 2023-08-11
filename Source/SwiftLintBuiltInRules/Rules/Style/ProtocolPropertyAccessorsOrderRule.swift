@@ -69,9 +69,9 @@ private extension ProtocolPropertyAccessorsOrderRule {
 
             correctionPositions.append(node.accessors.positionAfterSkippingLeadingTrivia)
 
-            let reversedAccessors = AccessorListSyntax(Array(node.accessors.reversed()))
+            let reversedAccessors = AccessorDeclListSyntax(Array(node.accessorsList.reversed()))
             return super.visit(
-                node.with(\.accessors, reversedAccessors)
+                node.with(\.accessors, .accessors(reversedAccessors))
             )
         }
     }
@@ -79,12 +79,9 @@ private extension ProtocolPropertyAccessorsOrderRule {
 
 private extension AccessorBlockSyntax {
     var hasViolation: Bool {
-        guard accessors.count == 2,
-              accessors.allSatisfy({ $0.body == nil }),
-              accessors.first?.accessorKind.tokenKind == .keyword(.set) else {
-            return false
-        }
-
-        return true
+        let accessorsList = accessorsList
+        return accessorsList.count == 2
+            && accessorsList.allSatisfy({ $0.body == nil })
+            && accessorsList.first?.accessorSpecifier.tokenKind == .keyword(.set)
     }
 }

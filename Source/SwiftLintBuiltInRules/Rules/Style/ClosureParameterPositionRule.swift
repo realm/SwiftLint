@@ -132,10 +132,10 @@ private extension ClosureSignatureSyntax {
             positions.append(contentsOf: captureItems.map(\.expression.positionAfterSkippingLeadingTrivia))
         }
 
-        if let input = input?.as(ClosureParamListSyntax.self) {
+        if let input = parameterClause?.as(ClosureShorthandParameterListSyntax.self) {
             positions.append(contentsOf: input.map(\.positionAfterSkippingLeadingTrivia))
-        } else if let input = input?.as(ClosureParameterClauseSyntax.self) {
-            positions.append(contentsOf: input.parameterList.map(\.positionAfterSkippingLeadingTrivia))
+        } else if let input = parameterClause?.as(ClosureParameterClauseSyntax.self) {
+            positions.append(contentsOf: input.parameters.map(\.positionAfterSkippingLeadingTrivia))
         }
 
         return positions

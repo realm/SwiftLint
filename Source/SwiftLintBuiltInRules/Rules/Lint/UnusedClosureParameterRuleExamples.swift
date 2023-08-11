@@ -72,6 +72,7 @@ enum UnusedClosureParameterRuleExamples {
         Example("[1, 2].map { ↓number in\n return 3 \"number\" }"),
         Example("[1, 2].something { number, ↓idx in\n return number }"),
         Example("genericsFunc { (↓number: TypeA, idx: TypeB) in return idx }"),
+        Example("let c: (Int) -> Void = { foo in _ = .foo }"),
         Example("""
         hoge(arg: num) { ↓num in
         }

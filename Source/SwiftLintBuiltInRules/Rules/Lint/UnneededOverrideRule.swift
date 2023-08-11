@@ -102,20 +102,20 @@ private func isUnneededOverride(_ node: FunctionDeclSyntax) -> Bool {
         return false
     }
 
-    let overridenFunctionName = node.identifier.text
+    let overridenFunctionName = node.name.text
     guard let call = extractFunctionCallSyntax(statement.item),
         let member = call.calledExpression.as(MemberAccessExprSyntax.self),
-        member.base?.is(SuperRefExprSyntax.self) == true,
-        member.name.text == overridenFunctionName else {
+          member.base?.is(SuperExprSyntax.self) == true,
+          member.declName.baseName.text == overridenFunctionName else {
         return false
     }
 
     // Assume any change in arguments passed means behavior was changed
-    let expectedArguments = node.signature.input.parameterList.map {
+    let expectedArguments = node.signature.parameterClause.parameters.map {
         ($0.firstName.text == "_" ? "" : $0.firstName.text, $0.secondName?.text ?? $0.firstName.text)
     }
-    let actualArguments = call.argumentList.map {
-        ($0.label?.text ?? "", $0.expression.as(IdentifierExprSyntax.self)?.identifier.text ?? "")
+    let actualArguments = call.arguments.map {
+        ($0.label?.text ?? "", $0.expression.as(DeclReferenceExprSyntax.self)?.baseName.text ?? "")
     }
 
     guard expectedArguments.count == actualArguments.count else {

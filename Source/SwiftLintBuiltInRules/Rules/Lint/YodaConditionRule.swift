@@ -48,7 +48,7 @@ private final class YodaConditionRuleVisitor: ViolationsSyntaxVisitor {
         visit(conditions: node.conditions)
     }
 
-    override func visitPost(_ node: RepeatWhileStmtSyntax) {
+    override func visitPost(_ node: RepeatStmtSyntax) {
         visit(condition: node.condition)
     }
 
@@ -68,9 +68,12 @@ private final class YodaConditionRuleVisitor: ViolationsSyntaxVisitor {
         }
         let comparisonOperators = children
             .compactMap { $0.as(BinaryOperatorExprSyntax.self) }
-            .filter { ["==", "!=", ">", "<", ">=", "<="].contains($0.operatorToken.text) }
+            .filter { ["==", "!=", ">", "<", ">=", "<="].contains($0.operator.text) }
         for comparisonOperator in comparisonOperators {
-            let rhsIdx = children.index(after: comparisonOperator.index)
+            guard let operatorIndex = children.index(of: comparisonOperator) else {
+                continue
+            }
+            let rhsIdx = children.index(operatorIndex, offsetBy: 1)
             if children[rhsIdx].isLiteral {
                 let afterRhsIndex = children.index(after: rhsIdx)
                 guard children.endIndex != rhsIdx, afterRhsIndex != nil else {
@@ -83,7 +86,7 @@ private final class YodaConditionRuleVisitor: ViolationsSyntaxVisitor {
                     continue
                 }
             }
-            let lhsIdx = children.index(before: comparisonOperator.index)
+            let lhsIdx = children.index(operatorIndex, offsetBy: -1)
             let lhs = children[lhsIdx]
             if lhs.isLiteral {
                 if children.startIndex == lhsIdx || children[children.index(before: lhsIdx)].isLogicalBinaryOperator {
@@ -109,6 +112,6 @@ private extension Syntax {
         guard let binaryOperator = `as`(BinaryOperatorExprSyntax.self) else {
             return false
         }
-        return ["&&", "||"].contains(binaryOperator.operatorToken.text)
+        return ["&&", "||"].contains(binaryOperator.operator.text)
     }
 }

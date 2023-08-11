@@ -99,7 +99,7 @@ private extension FunctionCallExprSyntax {
     var violationPosition: AbsolutePosition? {
         guard trailingClosure != nil,
               let leftParen,
-              argumentList.isEmpty else {
+              arguments.isEmpty else {
             return nil
         }
 

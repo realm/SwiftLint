@@ -35,11 +35,11 @@ private extension ClassDeclSyntax {
             return true
         }
 
-        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
+        guard let inheritanceList = inheritanceClause?.inheritedTypes else {
             return false
         }
         return inheritanceList.contains { type in
-            type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "NSObject"
+            type.type.as(IdentifierTypeSyntax.self)?.name.text == "NSObject"
         }
     }
 }
@@ -48,9 +48,9 @@ private extension FunctionDeclSyntax {
     var isSelfEqualFunction: Bool {
         guard
             modifiers.isStatic,
-            identifier.text == "==",
+            name.text == "==",
             returnsBool,
-            case let parameterList = signature.input.parameterList,
+            case let parameterList = signature.parameterClause.parameters,
             parameterList.count == 2,
             let lhs = parameterList.first,
             let rhs = parameterList.last,
@@ -65,7 +65,7 @@ private extension FunctionDeclSyntax {
     }
 
     var returnsBool: Bool {
-        signature.output?.returnType.as(SimpleTypeIdentifierSyntax.self)?.name.text == "Bool"
+        signature.returnClause?.type.as(IdentifierTypeSyntax.self)?.name.text == "Bool"
     }
 }
 

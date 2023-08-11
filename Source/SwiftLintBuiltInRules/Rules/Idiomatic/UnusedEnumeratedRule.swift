@@ -34,10 +34,10 @@ struct UnusedEnumeratedRule: SwiftSyntaxRule, ConfigurationProviderRule {
 
 private extension UnusedEnumeratedRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: ForInStmtSyntax) {
+        override func visitPost(_ node: ForStmtSyntax) {
             guard let tuplePattern = node.pattern.as(TuplePatternSyntax.self),
                   tuplePattern.elements.count == 2,
-                  let functionCall = node.sequenceExpr.asFunctionCall,
+                  let functionCall = node.sequence.asFunctionCall,
                   functionCall.isEnumerated,
                   let firstElement = tuplePattern.elements.first,
                   let secondElement = tuplePattern.elements.last,
@@ -66,7 +66,7 @@ private extension FunctionCallExprSyntax {
     var isEnumerated: Bool {
         guard let memberAccess = calledExpression.as(MemberAccessExprSyntax.self),
               memberAccess.base != nil,
-              memberAccess.name.text == "enumerated",
+              memberAccess.declName.baseName.text == "enumerated",
               hasNoArguments else {
             return false
         }
@@ -77,7 +77,7 @@ private extension FunctionCallExprSyntax {
     var hasNoArguments: Bool {
         trailingClosure == nil &&
             (additionalTrailingClosures?.isEmpty ?? true) &&
-            argumentList.isEmpty
+        arguments.isEmpty
     }
 }
 

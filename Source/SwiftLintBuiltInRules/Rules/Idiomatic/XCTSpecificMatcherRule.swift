@@ -67,13 +67,13 @@ private enum OneArgXCTAssert: String {
     }
 
     static func violations(in node: FunctionCallExprSyntax) -> String? {
-        guard let name = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text,
+        guard let name = node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text,
               let matcher = Self(rawValue: name),
-              let argument = node.argumentList.first?.expression.as(SequenceExprSyntax.self),
+              let argument = node.arguments.first?.expression.as(SequenceExprSyntax.self),
               let folded = try? OperatorTable.standardOperators.foldSingle(argument),
               let operatorExpr = folded.as(InfixOperatorExprSyntax.self),
-              let binOp = operatorExpr.operatorOperand.as(BinaryOperatorExprSyntax.self),
-              let kind = Comparison(rawValue: binOp.operatorToken.text),
+              let binOp = operatorExpr.operator.as(BinaryOperatorExprSyntax.self),
+              let kind = Comparison(rawValue: binOp.operator.text),
               accept(operand: operatorExpr.leftOperand), accept(operand: operatorExpr.rightOperand) else {
             return nil
         }
@@ -83,10 +83,10 @@ private enum OneArgXCTAssert: String {
     private static func accept(operand: ExprSyntax) -> Bool {
         // Check if the expression could be a type object like `String.self`. Note, however, that `1.self`
         // is also valid Swift. There is no way to be sure here.
-        if operand.as(MemberAccessExprSyntax.self)?.name.text == "self" {
+        if operand.as(MemberAccessExprSyntax.self)?.declName.baseName.text == "self" {
             return false
         }
-        if operand.as(TupleExprSyntax.self)?.elementList.count ?? 0 > 1 {
+        if operand.as(TupleExprSyntax.self)?.elements.count ?? 0 > 1 {
             return false
         }
         return true
@@ -114,7 +114,7 @@ private enum TwoArgsXCTAssert: String {
     }
 
     static func violations(in node: FunctionCallExprSyntax) -> String? {
-        guard let name = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text,
+        guard let name = node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text,
               let matcher = Self(rawValue: name) else {
             return nil
         }
@@ -130,7 +130,7 @@ private enum TwoArgsXCTAssert: String {
         //  - XCTAssertEqual(foo, true, "toto") -> [true, foo]
         //  - XCTAssertEqual(1, 2, accuracy: 0.1, "toto") -> [1, 2]
         //
-        let arguments = node.argumentList
+        let arguments = node.arguments
             .prefix(2)
             .map { $0.expression.trimmedDescription }
             .sorted { arg1, _ -> Bool in

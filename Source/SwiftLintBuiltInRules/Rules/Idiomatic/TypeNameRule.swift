@@ -32,56 +32,56 @@ private extension TypeNameRule {
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
-        override func visitPost(_ node: TypealiasDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers, inheritedTypes: nil) {
+        override func visitPost(_ node: TypeAliasDeclSyntax) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers, inheritedTypes: nil) {
                 violations.append(violation)
             }
         }
 
-        override func visitPost(_ node: AssociatedtypeDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+        override func visitPost(_ node: AssociatedTypeDeclSyntax) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
             if configuration.validateProtocols,
-               let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+               let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
         private func violation(identifier: TokenSyntax,
-                               modifiers: ModifierListSyntax?,
+                               modifiers: DeclModifierListSyntax?,
                                inheritedTypes: InheritedTypeListSyntax?) -> ReasonedRuleViolation? {
             let originalName = identifier.text
             let nameConfiguration = configuration.nameConfiguration
@@ -135,7 +135,7 @@ private extension String {
         return substring(from: 0, length: lastPreviewsIndex)
     }
 
-    func strippingLeadingUnderscoreIfPrivate(modifiers: ModifierListSyntax?) -> String {
+    func strippingLeadingUnderscoreIfPrivate(modifiers: DeclModifierListSyntax?) -> String {
         if first == "_", modifiers.isPrivateOrFileprivate {
             return String(self[index(after: startIndex)...])
         }
@@ -145,6 +145,6 @@ private extension String {
 
 private extension InheritedTypeListSyntax {
     var typeNames: Set<String> {
-        Set(compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }.map(\.name.text))
+        Set(compactMap { $0.type.as(IdentifierTypeSyntax.self) }.map(\.name.text))
     }
 }

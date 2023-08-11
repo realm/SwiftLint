@@ -80,13 +80,13 @@ private extension TestCaseAccessibilityRule {
                     continue
                 }
 
-                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
                 return
             }
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard hasViolation(modifiers: node.modifiers, identifierToken: node.identifier),
+            guard hasViolation(modifiers: node.modifiers, identifierToken: node.name),
                   !XCTestHelpers.isXCTestFunction(node) else {
                 return
             }
@@ -95,36 +95,36 @@ private extension TestCaseAccessibilityRule {
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers, identifierToken: node.identifier) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
                 violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers, identifierToken: node.identifier) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
                 violations.append(node.enumKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers, identifierToken: node.identifier) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
                 violations.append(node.structKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers, identifierToken: node.identifier) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
                 violations.append(node.actorKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 
-        override func visitPost(_ node: TypealiasDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers, identifierToken: node.identifier) {
+        override func visitPost(_ node: TypeAliasDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
                 violations.append(node.typealiasKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 
-        private func hasViolation(modifiers: ModifierListSyntax?, identifierToken: TokenSyntax) -> Bool {
+        private func hasViolation(modifiers: DeclModifierListSyntax?, identifierToken: TokenSyntax) -> Bool {
             guard !modifiers.isPrivateOrFileprivate else {
                 return false
             }
@@ -136,8 +136,8 @@ private extension TestCaseAccessibilityRule {
 
 private extension ClassDeclSyntax {
     var inheritedTypes: [String] {
-        inheritanceClause?.inheritedTypeCollection.compactMap { type in
-            type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
+        inheritanceClause?.inheritedTypes.compactMap { type in
+            type.type.as(IdentifierTypeSyntax.self)?.name.text
         } ?? []
     }
 }
@@ -153,8 +153,8 @@ private enum XCTestHelpers {
         }
 
         return !function.modifiers.containsStaticOrClass &&
-            function.identifier.text.hasPrefix("test") &&
-            function.signature.input.parameterList.isEmpty
+        function.name.text.hasPrefix("test") &&
+        function.signature.parameterClause.parameters.isEmpty
     }
 
     static func isXCTestVariable(_ variable: VariableDeclSyntax) -> Bool {

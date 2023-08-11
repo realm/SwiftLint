@@ -73,20 +73,20 @@ struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
 
 private extension LegacyObjcTypeRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
+        override func visitPost(_ node: IdentifierTypeSyntax) {
             if let typeName = node.typeName, legacyObjcTypes.contains(typeName) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
-        override func visitPost(_ node: IdentifierExprSyntax) {
-            if legacyObjcTypes.contains(node.identifier.text) {
-                violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: DeclReferenceExprSyntax) {
+            if legacyObjcTypes.contains(node.baseName.text) {
+                violations.append(node.baseName.positionAfterSkippingLeadingTrivia)
             }
         }
 
-        override func visitPost(_ node: MemberTypeIdentifierSyntax) {
-            guard node.baseType.as(SimpleTypeIdentifierSyntax.self)?.typeName == "Foundation",
+        override func visitPost(_ node: MemberTypeSyntax) {
+            guard node.baseType.as(IdentifierTypeSyntax.self)?.typeName == "Foundation",
                legacyObjcTypes.contains(node.name.text)
             else {
                 return

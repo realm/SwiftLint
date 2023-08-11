@@ -166,7 +166,7 @@ private extension PrivateSwiftUIStatePropertyRule {
         /// LIFO stack that stores type inheritance clauses for each visited node
         /// The last value is the inheritance clause for the most recently visited node
         /// A nil value indicates that the node does not provide any inheritance clause
-        private var visitedTypeInheritances = Stack<TypeInheritanceClauseSyntax?>()
+        private var visitedTypeInheritances = Stack<InheritanceClauseSyntax?>()
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
             visitedTypeInheritances.push(node.inheritanceClause)
@@ -195,10 +195,10 @@ private extension PrivateSwiftUIStatePropertyRule {
             visitedTypeInheritances.pop()
         }
 
-        override func visitPost(_ node: MemberDeclListItemSyntax) {
+        override func visitPost(_ node: MemberBlockItemSyntax) {
             guard
                 let decl = node.decl.as(VariableDeclSyntax.self),
-                let inheritanceClause = visitedTypeInheritances.peek() as? TypeInheritanceClauseSyntax,
+                let inheritanceClause = visitedTypeInheritances.peek() as? InheritanceClauseSyntax,
                 inheritanceClause.conformsToApplicableSwiftUIProtocol,
                 decl.attributes.hasStateAttribute,
                 !decl.modifiers.isPrivateOrFileprivate
@@ -206,23 +206,23 @@ private extension PrivateSwiftUIStatePropertyRule {
                 return
             }
 
-            violations.append(decl.bindingKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(decl.bindingSpecifier.positionAfterSkippingLeadingTrivia)
         }
     }
 }
 
-private extension TypeInheritanceClauseSyntax {
+private extension InheritanceClauseSyntax {
     static let applicableSwiftUIProtocols: Set<String> = ["View", "App", "Scene"]
 
     var conformsToApplicableSwiftUIProtocol: Bool {
-        inheritedTypeCollection.containsInheritedType(inheritedTypes: Self.applicableSwiftUIProtocols)
+        inheritedTypes.containsInheritedType(inheritedTypes: Self.applicableSwiftUIProtocols)
     }
 }
 
 private extension InheritedTypeListSyntax {
     func containsInheritedType(inheritedTypes: Set<String>) -> Bool {
         contains {
-            guard let simpleType = $0.typeName.as(SimpleTypeIdentifierSyntax.self) else { return false }
+            guard let simpleType = $0.type.as(IdentifierTypeSyntax.self) else { return false }
 
             return inheritedTypes.contains(simpleType.name.text)
         }
@@ -236,7 +236,7 @@ private extension AttributeListSyntax? {
 
         return attributes.contains { attr in
             guard let stateAttr = attr.as(AttributeSyntax.self),
-                  let identifier = stateAttr.attributeName.as(SimpleTypeIdentifierSyntax.self) else {
+                  let identifier = stateAttr.attributeName.as(IdentifierTypeSyntax.self) else {
                 return false
             }
 

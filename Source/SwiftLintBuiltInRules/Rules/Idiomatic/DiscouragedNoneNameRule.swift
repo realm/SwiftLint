@@ -185,8 +185,8 @@ struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, ConfigurationProvide
 private extension DiscouragedNoneNameRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: EnumCaseElementSyntax) {
-            let emptyParams = node.associatedValue?.parameterList.isEmpty ?? true
-            if emptyParams, node.identifier.isNone {
+            let emptyParams = node.parameterClause?.parameters.isEmpty ?? true
+            if emptyParams, node.name.isNone {
                 violations.append(ReasonedRuleViolation(
                     position: node.positionAfterSkippingLeadingTrivia,
                     reason: reason(type: "`case`")

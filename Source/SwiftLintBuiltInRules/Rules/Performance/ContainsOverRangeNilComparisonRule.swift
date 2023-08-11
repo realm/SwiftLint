@@ -34,13 +34,13 @@ private extension ContainsOverRangeNilComparisonRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard
-                let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                operatorNode.operatorToken.tokenKind.isEqualityComparison,
+                let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
+                operatorNode.operator.tokenKind.isEqualityComparison,
                 node.rightOperand.is(NilLiteralExprSyntax.self),
                 let first = node.leftOperand.asFunctionCall,
-                first.argumentList.onlyElement?.label?.text == "of",
+                first.arguments.onlyElement?.label?.text == "of",
                 let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
-                calledExpression.name.text == "range"
+                calledExpression.declName.baseName.text == "range"
             else {
                 return
             }

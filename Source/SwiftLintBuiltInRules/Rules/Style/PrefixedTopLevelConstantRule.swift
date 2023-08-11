@@ -97,7 +97,7 @@ private extension PrefixedTopLevelConstantRule {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard node.bindingKeyword.tokenKind == .keyword(.let) else {
+            guard node.bindingSpecifier.tokenKind == .keyword(.let) else {
                 return
             }
 

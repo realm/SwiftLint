@@ -51,10 +51,10 @@ struct ShorthandOperatorRule: ConfigurationProviderRule, SwiftSyntaxRule {
 private extension ShorthandOperatorRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
-            guard node.operatorOperand.is(AssignmentExprSyntax.self),
+            guard node.operator.is(AssignmentExprSyntax.self),
                   let rightExpr = node.rightOperand.as(InfixOperatorExprSyntax.self),
-                  let binaryOperatorExpr = rightExpr.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                  ShorthandOperatorRule.allOperators.contains(binaryOperatorExpr.operatorToken.text),
+                  let binaryOperatorExpr = rightExpr.operator.as(BinaryOperatorExprSyntax.self),
+                  ShorthandOperatorRule.allOperators.contains(binaryOperatorExpr.operator.text),
                   node.leftOperand.trimmedDescription == rightExpr.leftOperand.trimmedDescription
             else {
                 return
@@ -64,7 +64,7 @@ private extension ShorthandOperatorRule {
         }
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            if let binaryOperator = node.identifier.binaryOperator,
+            if let binaryOperator = node.name.binaryOperator,
                case let shorthandOperators = ShorthandOperatorRule.allOperators.map({ $0 + "=" }),
                shorthandOperators.contains(binaryOperator) {
                 return .skipChildren

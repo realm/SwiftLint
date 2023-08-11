@@ -104,15 +104,15 @@ private extension CatchItemSyntax {
         }
 
         if let pattern = pattern?.as(ValueBindingPatternSyntax.self) {
-            return pattern.valuePattern.is(IdentifierPatternSyntax.self)
+            return pattern.pattern.is(IdentifierPatternSyntax.self)
         }
 
         if let pattern = pattern?.as(ExpressionPatternSyntax.self),
            let tupleExpr = pattern.expression.as(TupleExprSyntax.self),
-           let tupleElement = tupleExpr.elementList.onlyElement,
-           let unresolvedPattern = tupleElement.expression.as(UnresolvedPatternExprSyntax.self),
+           let tupleElement = tupleExpr.elements.onlyElement,
+           let unresolvedPattern = tupleElement.expression.as(PatternExprSyntax.self),
            let valueBindingPattern = unresolvedPattern.pattern.as(ValueBindingPatternSyntax.self) {
-            return valueBindingPattern.valuePattern.is(IdentifierPatternSyntax.self)
+            return valueBindingPattern.pattern.is(IdentifierPatternSyntax.self)
         }
 
         return false

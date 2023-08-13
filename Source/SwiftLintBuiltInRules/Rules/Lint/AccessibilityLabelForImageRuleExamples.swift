@@ -10,13 +10,6 @@ internal struct AccessibilityLabelForImageRuleExamples {
         Example("""
         struct MyView: View {
             var body: some View {
-                Image(systemName: "circle.plus")
-            }
-        }
-        """),
-        Example("""
-        struct MyView: View {
-            var body: some View {
                 Image("my-image", label: Text("Alt text for my image"))
             }
         }
@@ -262,6 +255,13 @@ internal struct AccessibilityLabelForImageRuleExamples {
                         .renderingMode(.template)
                         .foregroundColor(.blue)
                 }
+            }
+        }
+        """),
+        Example("""
+        struct MyView: View {
+            var body: some View {
+                ↓Image(systemName: "circle.plus")
             }
         }
         """)

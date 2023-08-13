@@ -68,7 +68,8 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
                 let a = Int(3)
             }
             class MyTest: XCTestCase {}
-            """)
+            """),
+            Example("let foo = 1 << 2")
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -82,7 +83,9 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
                     extension NSObject {
                         let a = Int(↓3)
                     }
-            """)
+            """),
+            Example("let foo = 1 >> ↓2"),
+            Example("let foo = ↓2 >> ↓2")
         ]
     )
 
@@ -129,6 +132,9 @@ private extension NoMagicNumbersRule {
 
         private func collectViolation(forNode node: ExprSyntaxProtocol) {
             if node.isMemberOfATestClass(testParentClasses) {
+                return
+            }
+            if node.isSecondOperandOfLeftShiftOperation() {
                 return
             }
             let violation = node.positionAfterSkippingLeadingTrivia
@@ -195,5 +201,23 @@ private extension ExprSyntaxProtocol {
             parent = parent?.parent
         }
         return nil
+    }
+
+    func isSecondOperandOfLeftShiftOperation() -> Bool {
+        guard let siblings = parent?.as(ExprListSyntax.self)?.children(viewMode: .sourceAccurate) else {
+            return false
+        }
+        if siblings.count == 3 {
+            let index = siblings.index(after: siblings.startIndex)
+            let operatorSyntax = siblings[index].as(BinaryOperatorExprSyntax.self)
+            if operatorSyntax?.operatorToken.tokenKind == .binaryOperator("<<") {
+                let lastIndex = siblings.index(after: index)
+                if siblings[lastIndex] == self.as(Syntax.self) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 }

@@ -69,7 +69,10 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
             }
             class MyTest: XCTestCase {}
             """),
-            Example("let foo = 1 << 2")
+            Example("let foo = 1 << 2"),
+            Example("let foo = 1 >> 2"),
+            Example("let foo = 2 >> 2"),
+            Example("let foo = 2 << 2")
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -83,9 +86,7 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
                     extension NSObject {
                         let a = Int(↓3)
                     }
-            """),
-            Example("let foo = 1 >> ↓2"),
-            Example("let foo = ↓2 >> ↓2")
+            """)
         ]
     )
 
@@ -134,7 +135,7 @@ private extension NoMagicNumbersRule {
             if node.isMemberOfATestClass(testParentClasses) {
                 return
             }
-            if node.isSecondOperandOfLeftShiftOperation() {
+            if node.isOperandOfBitwiseShiftOperation() {
                 return
             }
             let violation = node.positionAfterSkippingLeadingTrivia
@@ -203,17 +204,19 @@ private extension ExprSyntaxProtocol {
         return nil
     }
 
-    func isSecondOperandOfLeftShiftOperation() -> Bool {
+    func isOperandOfBitwiseShiftOperation() -> Bool {
         guard let siblings = parent?.as(ExprListSyntax.self)?.children(viewMode: .sourceAccurate) else {
             return false
         }
         if siblings.count == 3 {
             let index = siblings.index(after: siblings.startIndex)
-            let operatorSyntax = siblings[index].as(BinaryOperatorExprSyntax.self)
-            if operatorSyntax?.operatorToken.tokenKind == .binaryOperator("<<") {
-                let lastIndex = siblings.index(after: index)
-                if siblings[lastIndex] == self.as(Syntax.self) {
-                    return true
+            if let tokenKind = siblings[index].as(BinaryOperatorExprSyntax.self)?.operatorToken.tokenKind {
+                if tokenKind == .binaryOperator("<<") || tokenKind == .binaryOperator(">>") {
+                    let lastIndex = siblings.index(after: index)
+                    let selfAsSyntax = self.as(Syntax.self)
+                    if siblings[siblings.startIndex] == selfAsSyntax || siblings[lastIndex] == selfAsSyntax {
+                        return true
+                    }
                 }
             }
         }

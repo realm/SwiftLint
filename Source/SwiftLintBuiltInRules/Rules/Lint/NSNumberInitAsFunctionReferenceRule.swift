@@ -12,6 +12,7 @@ struct NSNumberInitAsFunctionReferenceRule: SwiftSyntaxRule, ConfigurationProvid
         kind: .lint,
         nonTriggeringExamples: [
             Example("[0, 0.2].map(NSNumber.init(value:))"),
+            Example("let value = NSNumber.init(value: 0.0)"),
             Example("[0, 0.2].map { NSNumber(value: $0) }"),
             Example("[0, 0.2].map(NSDecimalNumber.init(value:))"),
             Example("[0, 0.2].map { NSDecimalNumber(value: $0) }")
@@ -32,6 +33,7 @@ private extension NSNumberInitAsFunctionReferenceRule {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard node.declNameArguments.isEmptyOrNil,
                   node.name.text == "init",
+                  node.parent?.as(FunctionCallExprSyntax.self) == nil,
                   let baseText = node.base?.as(IdentifierExprSyntax.self)?.identifier.text,
                   baseText == "NSNumber" || baseText == "NSDecimalNumber" else {
                 return

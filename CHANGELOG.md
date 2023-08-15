@@ -99,6 +99,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5137](https://github.com/realm/SwiftLint/issues/5137)
 
+* Fix false positive in the `ns_number_init_as_function_reference` rule
+  when calling `NSNumber.init(value:)` directly.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#5172](https://github.com/realm/SwiftLint/issues/5172)
+
 ## 0.52.4: Lid Switch
 
 #### Breaking

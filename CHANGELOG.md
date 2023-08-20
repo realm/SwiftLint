@@ -52,6 +52,10 @@
 
 #### Enhancements
 
+* Make `unneeded_break_in_switch` auto correctable.
+  [KS1019](https://github.com/KS1019/)
+  [5188](https://github.com/realm/SwiftLint/pull/5188)
+
 * Show specific violation message for the `attributes` rule when the option
   `always_on_line_above` or `attributes_with_arguments_always_on_line_above`
   is involved.  

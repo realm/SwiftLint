@@ -12,7 +12,7 @@ private func embedInSwitch(
         """, file: file, line: line)
 }
 
-struct UnneededBreakInSwitchRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -45,11 +45,28 @@ struct UnneededBreakInSwitchRule: SwiftSyntaxRule, ConfigurationProviderRule {
             embedInSwitch("something()\n    ↓break // comment"),
             embedInSwitch("something()\n    ↓break", case: "default"),
             embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition")
+        ],
+        corrections: [
+            embedInSwitch("something()\n    ↓break")
+            : embedInSwitch("something()"),
+            embedInSwitch("something()\n    ↓break // comment")
+            : embedInSwitch("something()\n     // comment"),
+            embedInSwitch("something()\n    ↓break", case: "default")
+            : embedInSwitch("something()", case: "default"),
+            embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition")
+            : embedInSwitch("something()", case: "case .foo, .foo2 where condition")
         ]
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         UnneededBreakInSwitchRuleVisitor(viewMode: .sourceAccurate)
+    }
+
+    func makeRewriter(file: SwiftLintCore.SwiftLintFile) -> SwiftLintCore.ViolationsSyntaxRewriter? {
+        UnneededBreakInSwitchRewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 
@@ -63,5 +80,50 @@ private final class UnneededBreakInSwitchRuleVisitor: ViolationsSyntaxVisitor {
         }
 
         violations.append(statement.item.positionAfterSkippingLeadingTrivia)
+    }
+}
+
+private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    private(set) var correctionPositions: [SwiftSyntax.AbsolutePosition] = []
+    let locationConverter: SourceLocationConverter
+    let disabledRegions: [SourceRange]
+
+    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+        self.locationConverter = locationConverter
+        self.disabledRegions = disabledRegions
+    }
+
+    override func visit(_ node: SwitchCaseSyntax) -> SwitchCaseSyntax {
+        guard node.statements.count > 1,
+              let statement = node.statements.last,
+              let breakStatement = statement.item.as(BreakStmtSyntax.self),
+              breakStatement.label == nil,
+              !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+            return super.visit(node)
+        }
+
+        correctionPositions.append(statement.item.positionAfterSkippingLeadingTrivia)
+
+        let trivia = statement.item.leadingTrivia + statement.item.trailingTrivia
+
+        let stmts = node.statements.removingLast()
+        guard let secondLast = stmts.last else { return super.visit(node) }
+
+        return super.visit(
+            node.with(\.statements, stmts)
+                .with(\.statements.trailingTrivia, secondLast.item.trailingTrivia + trivia)
+                .trimmed { !$0.isLineComment }.formatted().as(SwitchCaseSyntax.self)!
+        )
+    }
+}
+
+private extension TriviaPiece {
+    var isLineComment: Bool {
+        switch self {
+        case .lineComment:
+            return true
+        default:
+            return false
+        }
     }
 }

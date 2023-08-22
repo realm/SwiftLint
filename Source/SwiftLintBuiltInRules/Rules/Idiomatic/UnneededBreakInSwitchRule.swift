@@ -115,11 +115,14 @@ private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyn
         let stmts = node.statements.removingLast()
         guard let secondLast = stmts.last else { return super.visit(node) }
 
-        return super.visit(
-            node.with(\.statements, stmts)
-                .with(\.statements.trailingTrivia, secondLast.item.trailingTrivia + trivia)
-                .trimmed { !$0.isComment }.formatted().as(SwitchCaseSyntax.self)!
-        )
+        let newNode = node
+            .with(\.statements, stmts)
+            .with(\.statements.trailingTrivia, secondLast.item.trailingTrivia + trivia)
+            .trimmed { !$0.isComment }
+            .formatted()
+            .as(SwitchCaseSyntax.self)!
+
+        return super.visit(newNode)
     }
 }
 

@@ -49,8 +49,14 @@ struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
         corrections: [
             embedInSwitch("something()\n    ↓break")
             : embedInSwitch("something()"),
-            embedInSwitch("something()\n    ↓break // comment")
-            : embedInSwitch("something()\n     // comment"),
+            embedInSwitch("something()\n    ↓break " + lineComment)
+            : embedInSwitch("something()\n     " + lineComment),
+            embedInSwitch("something()\n    ↓break\n" + blockComment)
+            : embedInSwitch("something()\n" + blockComment),
+            embedInSwitch("something()\n    ↓break " + docLineComment)
+            : embedInSwitch("something()\n     " + docLineComment),
+            embedInSwitch("something()\n    ↓break\n" + docBlockComment)
+            : embedInSwitch("something()\n" + docBlockComment),
             embedInSwitch("something()\n    ↓break", case: "default")
             : embedInSwitch("something()", case: "default"),
             embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition")
@@ -112,18 +118,34 @@ private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyn
         return super.visit(
             node.with(\.statements, stmts)
                 .with(\.statements.trailingTrivia, secondLast.item.trailingTrivia + trivia)
-                .trimmed { !$0.isLineComment }.formatted().as(SwitchCaseSyntax.self)!
+                .trimmed { !$0.isComment }.formatted().as(SwitchCaseSyntax.self)!
         )
     }
 }
 
 private extension TriviaPiece {
-    var isLineComment: Bool {
+    var isComment: Bool {
         switch self {
-        case .lineComment:
+        case .lineComment, .blockComment, .docLineComment, .docBlockComment:
             return true
         default:
             return false
         }
     }
 }
+
+private let lineComment = "// line comment"
+
+private let blockComment = """
+/*
+    block comment
+*/
+"""
+
+private let docLineComment = "/// doc line comment"
+
+private let docBlockComment = """
+///
+/// doc block comment
+///
+"""

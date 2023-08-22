@@ -78,10 +78,8 @@ struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
 
 private final class UnneededBreakInSwitchRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: SwitchCaseSyntax) {
-        guard node.statements.count > 1,
-              let statement = node.statements.last,
-              let breakStatement = statement.item.as(BreakStmtSyntax.self),
-              breakStatement.label == nil else {
+        guard node.containsUnneededBreak(),
+              let statement = node.statements.last else {
             return
         }
 
@@ -100,10 +98,8 @@ private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyn
     }
 
     override func visit(_ node: SwitchCaseSyntax) -> SwitchCaseSyntax {
-        guard node.statements.count > 1,
-              let statement = node.statements.last,
-              let breakStatement = statement.item.as(BreakStmtSyntax.self),
-              breakStatement.label == nil,
+        guard let statement = node.statements.last,
+              node.containsUnneededBreak(),
               !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
             return super.visit(node)
         }
@@ -113,7 +109,7 @@ private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyn
         let trivia = statement.item.leadingTrivia + statement.item.trailingTrivia
 
         let stmts = node.statements.removingLast()
-        guard let secondLast = stmts.last else { return super.visit(node) }
+        let secondLast = stmts.last!
 
         let newNode = node
             .with(\.statements, stmts)
@@ -123,6 +119,18 @@ private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyn
             .as(SwitchCaseSyntax.self)!
 
         return super.visit(newNode)
+    }
+}
+
+private extension SwitchCaseSyntax {
+    func containsUnneededBreak() -> Bool {
+        guard statements.count > 1,
+              let breakStatement = statements.last!.item.as(BreakStmtSyntax.self),
+              breakStatement.label == nil else {
+            return false
+        }
+
+        return true
     }
 }
 

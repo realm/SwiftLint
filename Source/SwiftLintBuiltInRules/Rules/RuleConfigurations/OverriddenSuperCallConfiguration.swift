@@ -30,7 +30,9 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatab
         "viewDidDisappear(_:)",
         "viewDidLoad()",
         "viewWillAppear(_:)",
-        "viewWillDisappear(_:)"
+        "viewWillDisappear(_:)",
+        // XCTestCase
+        "invokeTest()",
     ]
 
     @ConfigurationElement(key: "severity")

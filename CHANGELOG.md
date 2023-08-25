@@ -50,6 +50,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5078](https://github.com/realm/SwiftLint/issues/5078)
 
+* Ignore `switch` expressions used in expression contexts in
+  `switch_case_alignment` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5191](https://github.com/realm/SwiftLint/issues/5191)
+
 * Fix bug in `prefer_self_in_static_references` rule that triggered on
   initializers of computed properties in classes when the property had an
   accessor block.  

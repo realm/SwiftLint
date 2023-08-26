@@ -49,14 +49,36 @@ struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
         corrections: [
             embedInSwitch("something()\n    ↓break")
             : embedInSwitch("something()"),
-            embedInSwitch("something()\n    ↓break " + lineComment)
-            : embedInSwitch("something()\n     " + lineComment),
-            embedInSwitch("something()\n    ↓break\n" + blockComment)
-            : embedInSwitch("something()\n" + blockComment),
-            embedInSwitch("something()\n    ↓break " + docLineComment)
-            : embedInSwitch("something()\n     " + docLineComment),
-            embedInSwitch("something()\n    ↓break\n" + docBlockComment)
-            : embedInSwitch("something()\n" + docBlockComment),
+            embedInSwitch("something()\n    ↓break // line comment")
+            : embedInSwitch("something()\n     // line comment"),
+            embedInSwitch("""
+                something()
+                ↓break
+                /*
+                block comment
+                */
+                """)
+            : embedInSwitch("""
+                something()
+                /*
+                block comment
+                */
+                """),
+            embedInSwitch("something()\n    ↓break /// doc line comment")
+            : embedInSwitch("something()\n     /// doc line comment"),
+            embedInSwitch("""
+                something()
+                ↓break
+                ///
+                /// doc block comment
+                ///
+                """)
+            : embedInSwitch("""
+                something()
+                ///
+                /// doc block comment
+                ///
+                """),
             embedInSwitch("something()\n    ↓break", case: "default")
             : embedInSwitch("something()", case: "default"),
             embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition")
@@ -142,19 +164,3 @@ private extension TriviaPiece {
         }
     }
 }
-
-private let lineComment = "// line comment"
-
-private let blockComment = """
-/*
-    block comment
-*/
-"""
-
-private let docLineComment = "/// doc line comment"
-
-private let docBlockComment = """
-///
-/// doc block comment
-///
-"""

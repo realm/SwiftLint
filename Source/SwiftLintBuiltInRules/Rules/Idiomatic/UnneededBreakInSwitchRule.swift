@@ -119,14 +119,14 @@ private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyn
     }
 
     override func visit(_ node: SwitchCaseSyntax) -> SwitchCaseSyntax {
-        guard let statement = node.unneededBreak,
+        guard let breakStatement = node.unneededBreak,
               !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
             return super.visit(node)
         }
 
-        correctionPositions.append(statement.item.positionAfterSkippingLeadingTrivia)
+        correctionPositions.append(breakStatement.item.positionAfterSkippingLeadingTrivia)
 
-        let trivia = statement.item.leadingTrivia + statement.item.trailingTrivia
+        let trivia = breakStatement.item.leadingTrivia + breakStatement.item.trailingTrivia
 
         let stmts = node.statements.removingLast()
         let secondLast = stmts.last!

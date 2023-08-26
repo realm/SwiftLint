@@ -125,7 +125,7 @@ private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyn
 private extension SwitchCaseSyntax {
     func containsUnneededBreak() -> Bool {
         guard statements.count > 1,
-              let breakStatement = statements.last!.item.as(BreakStmtSyntax.self),
+              let breakStatement = statements.last?.item.as(BreakStmtSyntax.self),
               breakStatement.label == nil else {
             return false
         }

@@ -78,8 +78,7 @@ struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
 
 private final class UnneededBreakInSwitchRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: SwitchCaseSyntax) {
-        guard node.containsUnneededBreak(),
-              let statement = node.statements.last else {
+        guard let statement = node.unneededBreak else {
             return
         }
 
@@ -98,8 +97,7 @@ private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyn
     }
 
     override func visit(_ node: SwitchCaseSyntax) -> SwitchCaseSyntax {
-        guard let statement = node.statements.last,
-              node.containsUnneededBreak(),
+        guard let statement = node.unneededBreak,
               !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
             return super.visit(node)
         }
@@ -123,14 +121,14 @@ private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyn
 }
 
 private extension SwitchCaseSyntax {
-    func containsUnneededBreak() -> Bool {
+    var unneededBreak: CodeBlockItemSyntax? {
         guard statements.count > 1,
               let breakStatement = statements.last?.item.as(BreakStmtSyntax.self),
               breakStatement.label == nil else {
-            return false
+            return nil
         }
 
-        return true
+        return statements.last
     }
 }
 

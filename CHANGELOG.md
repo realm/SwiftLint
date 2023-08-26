@@ -49,8 +49,8 @@
   `swiftlint rules <rule>`.  
   [SimplyDanny](https://github.com/SimplyDanny)
 * Add `invokeTest()` to `overridden_super_call` defaults.
+* Add `invokeTest()` to `overridden_super_call` defaults.  
   [DylanBettermannDD](https://github.com/DylanBettermannDD)
-  [5192](https://github.com/realm/SwiftLint/pull/5192)
 
 #### Bug Fixes
 

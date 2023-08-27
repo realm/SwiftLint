@@ -213,9 +213,8 @@ private extension ExprSyntaxProtocol {
         }
 
         let operatorIndex = siblings.index(after: siblings.startIndex)
-        if let tokenKind = siblings[operatorIndex].as(BinaryOperatorExprSyntax.self)?.operatorToken.tokenKind,
-           tokenKind == .binaryOperator("<<") || tokenKind == .binaryOperator(">>") {
-            return true
+        if let tokenKind = siblings[operatorIndex].as(BinaryOperatorExprSyntax.self)?.operatorToken.tokenKind {
+            return tokenKind == .binaryOperator("<<") || tokenKind == .binaryOperator(">>")
         }
 
         return false

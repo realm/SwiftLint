@@ -205,20 +205,17 @@ private extension ExprSyntaxProtocol {
     }
 
     func isOperandOfBitwiseShiftOperation() -> Bool {
-        guard let siblings = parent?.as(ExprListSyntax.self)?.children(viewMode: .sourceAccurate) else {
+        guard
+            let siblings = parent?.as(ExprListSyntax.self)?.children(viewMode: .sourceAccurate),
+            siblings.count == 3
+        else {
             return false
         }
-        if siblings.count == 3 {
-            let index = siblings.index(after: siblings.startIndex)
-            if let tokenKind = siblings[index].as(BinaryOperatorExprSyntax.self)?.operatorToken.tokenKind {
-                if tokenKind == .binaryOperator("<<") || tokenKind == .binaryOperator(">>") {
-                    let lastIndex = siblings.index(after: index)
-                    let selfAsSyntax = self.as(Syntax.self)
-                    if siblings[siblings.startIndex] == selfAsSyntax || siblings[lastIndex] == selfAsSyntax {
-                        return true
-                    }
-                }
-            }
+
+        let operatorIndex = siblings.index(after: siblings.startIndex)
+        if let tokenKind = siblings[operatorIndex].as(BinaryOperatorExprSyntax.self)?.operatorToken.tokenKind,
+           tokenKind == .binaryOperator("<<") || tokenKind == .binaryOperator(">>") {
+            return true
         }
 
         return false

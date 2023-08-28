@@ -5,6 +5,12 @@
 * Hide all `Reporter`s from SwiftLint's' public interface.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* The options `inlcuded`, `name` and `message` are from now on ignored in the
+  configuration for the `private_unit_test` rule. The option `regex` is still
+  supported but is deprecated. It's recommended to use the list
+  `test_parent_classes` instead which accepts names of parent test classes.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Experimental
 
 * None.

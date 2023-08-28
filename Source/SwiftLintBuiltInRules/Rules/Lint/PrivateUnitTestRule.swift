@@ -1,12 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, CacheDescriptionProvider {
+struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = PrivateUnitTestConfiguration()
-
-    var cacheDescription: String {
-        return configuration.cacheDescription
-    }
 
     static let description = RuleDescription(
         identifier: "private_unit_test",
@@ -130,12 +126,12 @@ struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRul
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(parentClassRegex: configuration.regex)
+        Visitor(configuration: configuration)
     }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
-            parentClassRegex: configuration.regex,
+            configuration: configuration,
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)
         )
@@ -143,21 +139,21 @@ struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRul
 }
 
 private class Visitor: ViolationsSyntaxVisitor {
-    private let parentClassRegex: NSRegularExpression
+    private let configuration: PrivateUnitTestConfiguration
 
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
-    init(parentClassRegex: NSRegularExpression) {
-        self.parentClassRegex = parentClassRegex
+    init(configuration: PrivateUnitTestConfiguration) {
+        self.configuration = configuration
         super.init(viewMode: .sourceAccurate)
     }
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        !node.isPrivate && node.hasParent(matching: parentClassRegex) ? .visitChildren : .skipChildren
+        !node.isPrivate && node.hasParent(configuredIn: configuration) ? .visitChildren : .skipChildren
     }
 
     override func visitPost(_ node: ClassDeclSyntax) {
-        if node.isPrivate, node.hasParent(matching: parentClassRegex) {
+        if node.isPrivate, node.hasParent(configuredIn: configuration) {
             violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
@@ -171,14 +167,14 @@ private class Visitor: ViolationsSyntaxVisitor {
 
 private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
     private(set) var correctionPositions: [AbsolutePosition] = []
-    private let parentClassRegex: NSRegularExpression
+    private let configuration: PrivateUnitTestConfiguration
     let locationConverter: SourceLocationConverter
     let disabledRegions: [SourceRange]
 
-    init(parentClassRegex: NSRegularExpression,
+    init(configuration: PrivateUnitTestConfiguration,
          locationConverter: SourceLocationConverter,
          disabledRegions: [SourceRange]) {
-        self.parentClassRegex = parentClassRegex
+        self.configuration = configuration
         self.locationConverter = locationConverter
         self.disabledRegions = disabledRegions
     }
@@ -186,7 +182,7 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
     override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
         guard
             node.isPrivate,
-            node.hasParent(matching: parentClassRegex),
+            node.hasParent(configuredIn: configuration),
             !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
         else {
             return super.visit(node)
@@ -233,10 +229,11 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 }
 
 private extension ClassDeclSyntax {
-    func hasParent(matching pattern: NSRegularExpression) -> Bool {
+    func hasParent(configuredIn config: PrivateUnitTestConfiguration) -> Bool {
         inheritanceClause?.inheritedTypeCollection.contains { type in
             if let name = type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text {
-                return pattern.numberOfMatches(in: name, range: name.fullNSRange) > 0
+                return config.regex.numberOfMatches(in: name, range: name.fullNSRange) > 0
+                    || config.testParentClasses.contains(name)
             }
             return false
         } ?? false

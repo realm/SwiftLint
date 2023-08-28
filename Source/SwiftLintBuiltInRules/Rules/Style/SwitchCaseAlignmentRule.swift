@@ -39,6 +39,12 @@ struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
                 case 1: 1
                 default: 2
             }
+            """),
+            Example("""
+            return switch i {
+                case 1: 1
+                default: 2
+            }
             """)
         ],
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
@@ -61,7 +67,8 @@ extension SwitchCaseAlignmentRule {
         }
 
         override func visitPost(_ node: SwitchExprSyntax) {
-            if node.parent?.is(InitializerClauseSyntax.self) == true {
+            guard node.parent?.is(ExpressionStmtSyntax.self) == true else {
+                // Skip `switch` expressions used as part of other expressions for the time being.
                 return
             }
             let switchPosition = node.switchKeyword.positionAfterSkippingLeadingTrivia

@@ -2,14 +2,14 @@ import Foundation
 import SourceKittenFramework
 
 /// Reports violations as a JSON array.
-public struct JSONReporter: Reporter {
+struct JSONReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "json"
-    public static let isRealtime = false
-    public static let description: String = "Reports violations as a JSON array."
+    static let identifier = "json"
+    static let isRealtime = false
+    static let description: String = "Reports violations as a JSON array."
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         return toJSON(violations.map(dictionary(for:)))
     }
 

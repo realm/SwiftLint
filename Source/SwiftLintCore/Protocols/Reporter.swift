@@ -21,7 +21,7 @@ public protocol Reporter: CustomStringConvertible {
     static func generateReport(_ violations: [StyleViolation]) -> String
 }
 
-public extension Reporter {
+extension Reporter {
     /// For CustomStringConvertible conformance.
     var description: String { Self.description }
 }

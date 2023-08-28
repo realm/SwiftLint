@@ -5,14 +5,14 @@ import Foundation
 import SourceKittenFramework
 
 /// Reports violations as a JSON array in Code Climate format.
-public struct CodeClimateReporter: Reporter {
+struct CodeClimateReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "codeclimate"
-    public static let isRealtime = false
-    public static let description = "Reports violations as a JSON array in Code Climate format."
+    static let identifier = "codeclimate"
+    static let isRealtime = false
+    static let description = "Reports violations as a JSON array in Code Climate format."
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         return toJSON(violations.map(dictionary(for:)))
             .replacingOccurrences(of: "\\/", with: "/")
     }

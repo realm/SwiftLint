@@ -7,14 +7,14 @@ private let formatter: DateFormatter = {
 }()
 
 /// Reports violations as HTML.
-public struct HTMLReporter: Reporter {
+struct HTMLReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "html"
-    public static let isRealtime = false
-    public static let description = "Reports violations as HTML."
+    static let identifier = "html"
+    static let isRealtime = false
+    static let description = "Reports violations as HTML."
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         return generateReport(violations, swiftlintVersion: Version.current.value,
                               dateString: formatter.string(from: Date()))
     }

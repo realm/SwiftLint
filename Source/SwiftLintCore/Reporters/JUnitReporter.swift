@@ -1,12 +1,12 @@
 /// Reports violations as JUnit XML.
-public struct JUnitReporter: Reporter {
+struct JUnitReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "junit"
-    public static let isRealtime = false
-    public static let description = "Reports violations as JUnit XML."
+    static let identifier = "junit"
+    static let isRealtime = false
+    static let description = "Reports violations as JUnit XML."
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         let warningCount = violations.filter({ $0.severity == .warning }).count
         let errorCount = violations.filter({ $0.severity == .error }).count
 

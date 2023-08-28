@@ -1,12 +1,12 @@
 /// Reports violations in the format Xcode uses to display in the IDE. (default)
-public struct XcodeReporter: Reporter {
+struct XcodeReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "xcode"
-    public static let isRealtime = true
-    public static let description = "Reports violations in the format Xcode uses to display in the IDE. (default)"
+    static let identifier = "xcode"
+    static let isRealtime = true
+    static let description = "Reports violations in the format Xcode uses to display in the IDE. (default)"
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         return violations.map(generateForSingleViolation).joined(separator: "\n")
     }
 

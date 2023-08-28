@@ -1,13 +1,13 @@
 /// Reports violations in the format GitHub-hosted virtual machine for Actions can recognize as messages.
-public struct GitHubActionsLoggingReporter: Reporter {
+struct GitHubActionsLoggingReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "github-actions-logging"
-    public static let isRealtime = true
-    public static let description = "Reports violations in the format GitHub-hosted virtual " +
+    static let identifier = "github-actions-logging"
+    static let isRealtime = true
+    static let description = "Reports violations in the format GitHub-hosted virtual " +
                                     "machine for Actions can recognize as messages."
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         return violations.map(generateForSingleViolation).joined(separator: "\n")
     }
 

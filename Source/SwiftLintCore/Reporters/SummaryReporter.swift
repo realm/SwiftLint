@@ -2,15 +2,15 @@ import Foundation
 import SwiftyTextTable
 
 /// Reports a summary table of all violations
-public struct SummaryReporter: Reporter {
+struct SummaryReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "summary"
-    public static let isRealtime = false
+    static let identifier = "summary"
+    static let isRealtime = false
 
-    public static let description = "Reports a summary table of all violations."
+    static let description = "Reports a summary table of all violations."
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         TextTable(violations: violations).renderWithExtraSeparator()
     }
 }

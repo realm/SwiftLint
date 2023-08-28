@@ -1,12 +1,12 @@
 /// Reports violations in a format that's both fun and easy to read.
-public struct EmojiReporter: Reporter {
+struct EmojiReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "emoji"
-    public static let isRealtime = false
-    public static let description = "Reports violations in the format that's both fun and easy to read."
+    static let identifier = "emoji"
+    static let isRealtime = false
+    static let description = "Reports violations in the format that's both fun and easy to read."
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         violations
             .group { $0.location.file ?? "Other" }
             .sorted { $0.key < $1.key }

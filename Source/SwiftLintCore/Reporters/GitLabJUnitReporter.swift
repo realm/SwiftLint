@@ -1,12 +1,12 @@
 /// Reports violations as JUnit XML supported by GitLab.
-public struct GitLabJUnitReporter: Reporter {
+struct GitLabJUnitReporter: Reporter {
     // MARK: - Reporter Conformance
 
-    public static let identifier = "gitlab"
-    public static let isRealtime = false
-    public static let description = "Reports violations as JUnit XML supported by GitLab."
+    static let identifier = "gitlab"
+    static let isRealtime = false
+    static let description = "Reports violations as JUnit XML supported by GitLab."
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
+    static func generateReport(_ violations: [StyleViolation]) -> String {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<testsuites><testsuite>" +
             violations.map({ violation -> String in
                 let fileName = (violation.location.relativeFile ?? "<nopath>").escapedForXML()

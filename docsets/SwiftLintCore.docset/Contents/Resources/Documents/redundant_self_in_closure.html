@@ -519,6 +519,28 @@ warning
         <span class="p">}</span>
     <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code>    <span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">x</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="kd">func</span> <span class="nf">f</span><span class="p">(</span><span class="n">_</span> <span class="nv">work</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="p">{</span> <span class="nf">work</span><span class="p">()</span> <span class="p">}</span>
+        <span class="kd">func</span> <span class="nf">g</span><span class="p">()</span> <span class="p">{</span>
+            <span class="n">f</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="k">in</span>
+                <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">guard</span> <span class="k">let</span> <span class="nv">self</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+                <span class="err">↓</span><span class="k">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="p">}</span>
+            <span class="n">f</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="k">in</span>
+                <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="k">let</span> <span class="nv">self</span> <span class="o">=</span> <span class="k">self</span> <span class="k">else</span> <span class="p">{</span> <span class="err">↓</span><span class="k">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">}</span>
+                <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="p">}</span>
+            <span class="n">f</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="k">in</span>
+                <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">while</span> <span class="k">let</span> <span class="nv">self</span> <span class="k">else</span> <span class="p">{</span> <span class="err">↓</span><span class="k">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">}</span>
+                <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
 
           </div>
         </section>

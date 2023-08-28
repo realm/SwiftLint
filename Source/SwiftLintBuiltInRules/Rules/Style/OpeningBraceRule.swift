@@ -523,158 +523,133 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
 
 private extension OpeningBraceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: ActorDeclSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: ClassDeclSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: EnumDeclSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: ExtensionDeclSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: ProtocolDeclSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: StructDeclSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: CatchClauseSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: CatchClauseSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: DeferStmtSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: DeferStmtSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: DoStmtSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: DoStmtSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: ForStmtSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: ForStmtSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: GuardStmtSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: GuardStmtSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: IfExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: IfExprSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: RepeatStmtSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: RepeatStmtSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: WhileStmtSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: WhileStmtSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: SwitchExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: SwitchExprSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: AccessorDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: AccessorDeclSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: PatternBindingSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: PatternBindingSyntax) {
             guard let openingBrace = node.accessorBlock?.leftBrace else {
-                return .visitChildren
+                return
             }
-
-
             if !openingBrace.hasSingleSpaceLeading {
                 let violationPosition = openingBrace.positionAfterSkippingLeadingTrivia
                 violations.append(violationPosition)
             }
-
-            return .visitChildren
         }
 
-        override func visit(_ node: PrecedenceGroupDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: PrecedenceGroupDeclSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-            return .visitChildren
         }
 
-        override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-
-            return .visitChildren
         }
 
-        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: ClosureExprSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
             }
-
-            return .visitChildren
         }
 
-        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: FunctionDeclSyntax) {
             guard let body = node.body else {
-                return .visitChildren
+                return
             }
 
             var isMultilineFunction: Bool {
@@ -693,23 +668,21 @@ private extension OpeningBraceRule {
 
             if configuration.allowMultilineFunc && isMultilineFunction {
                 if openingBrace.hasOnlyWhitespaceInLeadingTrivia {
-                    return .visitChildren
+                    return
                 }
             } else {
                 if openingBrace.hasSingleSpaceLeading {
-                    return .visitChildren
+                    return
                 }
             }
 
             let violationPosition = openingBrace.positionAfterSkippingLeadingTrivia
             violations.append(violationPosition)
-
-            return .visitChildren
         }
 
-        override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: InitializerDeclSyntax) {
             guard let body = node.body else {
-                return .visitChildren
+                return
             }
 
             var isMultilineFunction: Bool {
@@ -728,18 +701,16 @@ private extension OpeningBraceRule {
 
             if configuration.allowMultilineFunc && isMultilineFunction {
                 if openingBrace.hasOnlyWhitespaceInLeadingTrivia {
-                    return .visitChildren
+                    return
                 }
             } else {
                 if openingBrace.hasSingleSpaceLeading {
-                    return .visitChildren
+                    return
                 }
             }
 
             let violationPosition = openingBrace.positionAfterSkippingLeadingTrivia
             violations.append(violationPosition)
-
-            return .visitChildren
         }
     }
 
@@ -1185,6 +1156,7 @@ private extension ClosureExprSyntax {
         return nil
     }
 }
+
 private extension TokenSyntax {
     var hasSingleSpaceLeading: Bool {
         if let previousToken = previousToken(viewMode: .sourceAccurate),

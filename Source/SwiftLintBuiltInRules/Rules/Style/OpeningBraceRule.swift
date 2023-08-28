@@ -193,10 +193,10 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
             }
             """):
                 Example("""
-            actor MyActor {
+                actor MyActor {
 
-            }
-            """),
+                }
+                """),
             Example("""
             actor MyActor
             ↓{

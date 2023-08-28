@@ -130,6 +130,7 @@ public let builtInRules: [Rule.Type] = [
     NoGroupingExtensionRule.self,
     NoMagicNumbersRule.self,
     NoSpaceInMethodCallRule.self,
+    NonOverridableClassDeclarationRule.self,
     NotificationCenterDetachmentRule.self,
     NumberSeparatorRule.self,
     ObjectLiteralRule.self,

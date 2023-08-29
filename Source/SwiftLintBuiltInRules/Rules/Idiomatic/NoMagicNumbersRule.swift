@@ -68,7 +68,11 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
                 let a = Int(3)
             }
             class MyTest: XCTestCase {}
-            """)
+            """),
+            Example("let foo = 1 << 2"),
+            Example("let foo = 1 >> 2"),
+            Example("let foo = 2 >> 2"),
+            Example("let foo = 2 << 2")
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -129,6 +133,9 @@ private extension NoMagicNumbersRule {
 
         private func collectViolation(forNode node: ExprSyntaxProtocol) {
             if node.isMemberOfATestClass(testParentClasses) {
+                return
+            }
+            if node.isOperandOfBitwiseShiftOperation() {
                 return
             }
             let violation = node.positionAfterSkippingLeadingTrivia
@@ -195,5 +202,21 @@ private extension ExprSyntaxProtocol {
             parent = parent?.parent
         }
         return nil
+    }
+
+    func isOperandOfBitwiseShiftOperation() -> Bool {
+        guard
+            let siblings = parent?.as(ExprListSyntax.self)?.children(viewMode: .sourceAccurate),
+            siblings.count == 3
+        else {
+            return false
+        }
+
+        let operatorIndex = siblings.index(after: siblings.startIndex)
+        if let tokenKind = siblings[operatorIndex].as(BinaryOperatorExprSyntax.self)?.operatorToken.tokenKind {
+            return tokenKind == .binaryOperator("<<") || tokenKind == .binaryOperator(">>")
+        }
+
+        return false
     }
 }

@@ -436,10 +436,6 @@
   extension are in the same source file.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5137](https://github.com/realm/SwiftLint/issues/5137)
-* Fixes superfluous warnings about configurations for rules that were not
-  enabled, when the rules were enabled in a parent configuration.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4858](https://github.com/realm/SwiftLint/issues/4858)
 
 * Fix false positive in the `ns_number_init_as_function_reference` rule
   when calling `NSNumber.init(value:)` directly.  
@@ -456,6 +452,10 @@
   have good accessibility labels.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5165](https://github.com/realm/SwiftLint/issues/5165)
+* Fixes superfluous warnings about configurations for rules that were not
+  enabled, when the rules were enabled in a parent configuration.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4858](https://github.com/realm/SwiftLint/issues/4858)
 
 * Fix false positives for `superfluous_disable_command` rule.  
   [Martin Redington](https://github.com/mildm8nnered)

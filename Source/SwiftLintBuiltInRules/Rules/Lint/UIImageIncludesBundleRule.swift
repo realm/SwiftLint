@@ -6,7 +6,7 @@ struct UIImageIncludesBundleRule: SwiftSyntaxRule, OptInRule, ConfigurationProvi
     static let description = RuleDescription(
         identifier: "uiimage_requires_bundle",
         name: "UIImage Requires Bundle",
-        description: "`UIImage(named:) must specify a bundle via the `in:` parameter",
+        description: "`UIImage(named:)` must specify a bundle via the `in:` parameter",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -87,14 +87,6 @@ private extension UIImageIncludesBundleRule {
                !node.argumentList.containsArgument(named: "in") {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
-        }
-    }
-}
-
-private extension TupleExprElementListSyntax {
-    func containsArgument(named name: String) -> Bool {
-        contains { arg in
-            arg.label?.tokenKind == .identifier(name)
         }
     }
 }

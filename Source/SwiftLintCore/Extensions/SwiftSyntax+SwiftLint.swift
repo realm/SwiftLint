@@ -272,6 +272,14 @@ public extension AccessorBlockSyntax {
     }
 }
 
+public extension TupleExprElementListSyntax {
+    func containsArgument(named name: String) -> Bool {
+        contains { arg in
+            arg.label?.tokenKind == .identifier(name)
+        }
+    }
+}
+
 public extension TypeInheritanceClauseSyntax? {
     func containsInheritedType(inheritedTypes: Set<String>) -> Bool {
         self?.inheritedTypeCollection.contains { elem in

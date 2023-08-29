@@ -35,9 +35,9 @@ jobs:
 #       displayName: xcodebuild test
 - job: CocoaPods
   pool:
-    vmImage: 'macOS-13'
+    vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_14.3.1.app
+    DEVELOPER_DIR: /Applications/Xcode_13.4.1.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -48,9 +48,9 @@ jobs:
 
 - job: jazzy
   pool:
-    vmImage: 'macOS-13'
+    vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_14.3.1.app
+    DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs

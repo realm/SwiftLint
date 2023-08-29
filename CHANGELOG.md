@@ -10,6 +10,7 @@
   supported but is deprecated. It's recommended to use the list
   `test_parent_classes` instead which accepts names of parent test classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
+
 * Removed support for disable and enable commands in multiline comments.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4798](https://github.com/realm/SwiftLint/issues/4798)
@@ -110,11 +111,6 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5120](https://github.com/realm/SwiftLint/issues/5120)
 
-* Fix false positives for superfluous_disable_command, and removed
-  support for disable and enable commands in multiline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
-
 * Fix some unexpected rule enablement interactions between parent and
   child configurations.  
   [Martin Redington](https://github.com/mildm8nnered)
@@ -136,6 +132,10 @@
   operations.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5171](https://github.com/realm/SwiftLint/issues/5171)
+* Fix false positives for superfluous_disable_command, and removed
+  support for disable and enable commands in multiline comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 * The `accessibility_label_for_image` rule will no longer ignore the
   `Image(systemName:)` constructor, as many system images do not

@@ -48,6 +48,9 @@
 * Show a rule's active YAML configuration in output of 
   `swiftlint rules <rule>`.  
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Add `invokeTest()` to `overridden_super_call` defaults.  
+  [DylanBettermannDD](https://github.com/DylanBettermannDD)
 
 #### Bug Fixes
 

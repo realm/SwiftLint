@@ -139,7 +139,7 @@ extension SwiftLint {
                 useExcludingByPrefix: false,
                 useScriptInputFiles: false,
                 benchmark: false,
-                reporter: SummaryReporter.identifier,
+                reporter: "summary", // SummaryReporter.identifier,
                 quiet: false,
                 output: nil,
                 progress: true,
@@ -181,7 +181,8 @@ extension SwiftLint {
         }
 
         private func reporterIdentifier() -> String {
-            var reporterIdentifier = XcodeReporter.identifier
+            // var reporterIdentifier = XcodeReporter.identifier
+            var reporterIdentifier = "xcode"
             if askUser("Do you want to use the default (\(reporterIdentifier) reporter?") {
                 return reporterIdentifier
             }

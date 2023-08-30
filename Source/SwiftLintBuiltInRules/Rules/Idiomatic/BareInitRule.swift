@@ -7,11 +7,12 @@ struct BareInitRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     static let description = RuleDescription(
         identifier: "bare_init",
         name: "Bare Init",
-        description: "Use named constructors over .init",
+        description: "Prefer named constructors over .init and type inference",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("let foo = Foo()"),
-            Example("let foo = init()")
+            Example("let foo = init()"),
+            Example("let foo = Foo.init()")
         ],
         triggeringExamples: [
             Example("let foo: Foo = ↓.init()"),

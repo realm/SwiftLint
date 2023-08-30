@@ -85,7 +85,7 @@ private extension RedundantStringEnumValueRule {
                 .compactMap { element -> AbsolutePosition? in
                     guard let stringExpr = element.rawValue?.value.as(StringLiteralExprSyntax.self),
                           let segment = stringExpr.segments.onlyElement?.as(StringSegmentSyntax.self),
-                          segment.content.text == element.identifier.text else {
+                          segment.content.text == element.name.text else {
                         return nil
                     }
 
@@ -105,8 +105,8 @@ private extension EnumDeclSyntax {
             return false
         }
 
-        return inheritanceClause.inheritedTypeCollection.contains { elem in
-            elem.typeName.as(SimpleTypeIdentifierSyntax.self)?.typeName == "String"
+        return inheritanceClause.inheritedTypes.contains { elem in
+            elem.type.as(IdentifierTypeSyntax.self)?.typeName == "String"
         }
     }
 }

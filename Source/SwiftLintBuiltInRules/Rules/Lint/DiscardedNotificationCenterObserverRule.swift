@@ -66,8 +66,8 @@ private extension DiscardedNotificationCenterObserverRule {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
-                case .identifier("addObserver") = calledExpression.name.tokenKind,
-                case let argumentLabels = node.argumentList.map({ $0.label?.text }),
+                case .identifier("addObserver") = calledExpression.declName.baseName.tokenKind,
+                case let argumentLabels = node.arguments.map({ $0.label?.text }),
                 argumentLabels.starts(with: ["forName", "object", "queue"])
             else {
                 return
@@ -82,7 +82,7 @@ private extension DiscardedNotificationCenterObserverRule {
                 !fifthParent.attributes.hasDiscardableResultAttribute
             {
                 return // result is returned from a function
-            } else if node.parent?.is(TupleExprElementSyntax.self) == true {
+            } else if node.parent?.is(LabeledExprSyntax.self) == true {
                 return // result is passed as an argument to a function
             } else if node.parent?.is(ArrayElementSyntax.self) == true {
                 return // result is an array literal element

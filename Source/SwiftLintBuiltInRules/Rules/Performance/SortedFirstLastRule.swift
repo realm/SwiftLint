@@ -53,12 +53,12 @@ private extension SortedFirstLastRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
-                node.name.text == "first" || node.name.text == "last",
+                node.declName.baseName.text == "first" || node.declName.baseName.text == "last",
                 node.parent?.is(FunctionCallExprSyntax.self) != true,
                 let firstBase = node.base?.asFunctionCall,
                 let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
-                firstBaseCalledExpression.name.text == "sorted",
-                case let argumentLabels = firstBase.argumentList.map({ $0.label?.text }),
+                firstBaseCalledExpression.declName.baseName.text == "sorted",
+                case let argumentLabels = firstBase.arguments.map({ $0.label?.text }),
                 argumentLabels.isEmpty || argumentLabels == ["by"]
             else {
                 return

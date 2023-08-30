@@ -67,7 +67,7 @@ private extension ExplicitTopLevelACLRule {
             }
         }
 
-        override func visitPost(_ node: TypealiasDeclSyntax) {
+        override func visitPost(_ node: TypeAliasDeclSyntax) {
             if hasViolation(modifiers: node.modifiers) {
                 violations.append(node.typealiasKeyword.positionAfterSkippingLeadingTrivia)
             }
@@ -81,7 +81,7 @@ private extension ExplicitTopLevelACLRule {
 
         override func visitPost(_ node: VariableDeclSyntax) {
             if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
             }
         }
 
@@ -93,7 +93,7 @@ private extension ExplicitTopLevelACLRule {
             .skipChildren
         }
 
-        private func hasViolation(modifiers: ModifierListSyntax?) -> Bool {
+        private func hasViolation(modifiers: DeclModifierListSyntax?) -> Bool {
             guard let modifiers else {
                 return true
             }

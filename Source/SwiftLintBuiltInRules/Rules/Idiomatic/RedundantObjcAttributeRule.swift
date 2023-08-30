@@ -43,7 +43,7 @@ private extension AttributeListSyntax {
     var objCAttribute: AttributeSyntax? {
         lazy
             .compactMap { $0.as(AttributeSyntax.self) }
-            .first { $0.attributeNameText == "objc" && $0.argument == nil }
+            .first { $0.attributeNameText == "objc" && $0.arguments == nil }
     }
 
     var hasAttributeImplyingObjC: Bool {
@@ -62,14 +62,14 @@ private extension Syntax {
         if self.is(FunctionDeclSyntax.self) {
             return true
         } else if let variableDecl = self.as(VariableDeclSyntax.self),
-                  variableDecl.bindings.allSatisfy({ $0.accessor == nil }) {
+                  variableDecl.bindings.allSatisfy({ $0.accessorBlock == nil }) {
             return true
         } else {
             return false
         }
     }
 
-    var functionOrVariableModifiers: ModifierListSyntax? {
+    var functionOrVariableModifiers: DeclModifierListSyntax? {
         if let functionDecl = self.as(FunctionDeclSyntax.self) {
             return functionDecl.modifiers
         } else if let variableDecl = self.as(VariableDeclSyntax.self) {

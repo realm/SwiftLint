@@ -33,7 +33,7 @@ private extension CompilerProtocolInitRule {
                 return
             }
 
-            let arguments = node.argumentList.compactMap(\.label)
+            let arguments = node.arguments.compactMap(\.label)
             guard ExpressibleByCompiler.possibleNumberOfArguments.contains(arguments.count) else {
                 return
             }
@@ -63,11 +63,11 @@ private extension CompilerProtocolInitRule {
 private extension FunctionCallExprSyntax {
     // doing this instead of calling `.description` as it's faster
     var functionName: String? {
-        if let expr = calledExpression.as(IdentifierExprSyntax.self) {
-            return expr.identifier.text
+        if let expr = calledExpression.as(DeclReferenceExprSyntax.self) {
+            return expr.baseName.text
         } else if let expr = calledExpression.as(MemberAccessExprSyntax.self),
-                  let base = expr.base?.as(IdentifierExprSyntax.self) {
-            return base.identifier.text + "." + expr.name.text
+                  let base = expr.base?.as(DeclReferenceExprSyntax.self) {
+            return base.baseName.text + "." + expr.declName.baseName.text
         }
 
         // we don't care about other possible expressions as they wouldn't match the calls we're interested in

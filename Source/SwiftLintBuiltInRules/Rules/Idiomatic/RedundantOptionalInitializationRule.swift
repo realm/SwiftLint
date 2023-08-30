@@ -119,7 +119,7 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
 private extension RedundantOptionalInitializationRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard node.bindingKeyword.tokenKind == .keyword(.var),
+            guard node.bindingSpecifier.tokenKind == .keyword(.var),
                   !node.modifiers.containsLazy else {
                 return
             }
@@ -139,7 +139,7 @@ private extension RedundantOptionalInitializationRule {
         }
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard node.bindingKeyword.tokenKind == .keyword(.var),
+            guard node.bindingSpecifier.tokenKind == .keyword(.var),
                   !node.modifiers.containsLazy else {
                 return super.visit(node)
             }
@@ -164,7 +164,7 @@ private extension RedundantOptionalInitializationRule {
                     return binding
                 }
                 let newBinding = binding.with(\.initializer, nil)
-                if newBinding.accessor != nil {
+                if newBinding.accessorBlock != nil {
                     return newBinding
                 }
                 if binding.trailingComma != nil {
@@ -203,7 +203,7 @@ private extension TypeAnnotationSyntax {
             return true
         }
 
-        if let type = type.as(SimpleTypeIdentifierSyntax.self), let genericClause = type.genericArgumentClause {
+        if let type = type.as(IdentifierTypeSyntax.self), let genericClause = type.genericArgumentClause {
             return genericClause.arguments.count == 1 && type.name.text == "Optional"
         }
 

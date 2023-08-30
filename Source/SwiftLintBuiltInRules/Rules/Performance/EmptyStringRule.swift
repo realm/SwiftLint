@@ -32,7 +32,7 @@ private extension EmptyStringRule {
         override func visitPost(_ node: StringLiteralExprSyntax) {
             guard
                 // Empty string literal: `""`, `#""#`, etc.
-                node.segments.onlyElement?.contentLength == .zero,
+                node.segments.onlyElement?.trimmedLength == .zero,
                 let previousToken = node.previousToken(viewMode: .sourceAccurate),
                 // On the rhs of an `==` or `!=` operator
                 previousToken.tokenKind.isEqualityComparison,

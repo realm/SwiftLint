@@ -128,7 +128,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: BinaryOperatorExprSyntax) {
-        if let violation = violation(operatorToken: node.operatorToken) {
+        if let violation = violation(operatorToken: node.operator) {
             violationRanges.append(violation)
         }
     }
@@ -146,13 +146,13 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: AssignmentExprSyntax) {
-        if let violation = violation(operatorToken: node.assignToken) {
+        if let violation = violation(operatorToken: node.equal) {
             violationRanges.append(violation)
         }
     }
 
     override func visitPost(_ node: TernaryExprSyntax) {
-        if let violation = violation(operatorToken: node.colonMark) {
+        if let violation = violation(operatorToken: node.colon) {
             violationRanges.append(violation)
         }
 
@@ -162,7 +162,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: UnresolvedTernaryExprSyntax) {
-        if let violation = violation(operatorToken: node.colonMark) {
+        if let violation = violation(operatorToken: node.colon) {
             violationRanges.append(violation)
         }
 

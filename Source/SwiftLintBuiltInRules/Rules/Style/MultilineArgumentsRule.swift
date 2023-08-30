@@ -37,13 +37,13 @@ private extension MultilineArgumentsRule {
         }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard node.argumentList.count > 1 else {
+            guard node.arguments.count > 1 else {
                 return
             }
 
             let functionCallPosition = node.calledExpression.positionAfterSkippingLeadingTrivia
             let functionCallLine = locationConverter.location(for: functionCallPosition).line
-            let wrappedArguments: [Argument] = node.argumentList
+            let wrappedArguments: [Argument] = node.arguments
                 .enumerated()
                 .compactMap { idx, argument in
                     Argument(element: argument, locationConverter: locationConverter, index: idx)
@@ -115,7 +115,7 @@ private struct Argument {
     let index: Int
     let expression: ExprSyntax
 
-    init?(element: TupleExprElementSyntax, locationConverter: SourceLocationConverter, index: Int) {
+    init?(element: LabeledExprSyntax, locationConverter: SourceLocationConverter, index: Int) {
         self.offset = element.positionAfterSkippingLeadingTrivia
         self.line = locationConverter.location(for: offset).line
         self.index = index

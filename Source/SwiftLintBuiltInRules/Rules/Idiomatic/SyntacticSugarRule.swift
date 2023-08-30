@@ -130,7 +130,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: ReturnClauseSyntax) {
         // func x(a: [Int], b: Int) -> ↓Dictionary<Int, String>
-        if let violation = violation(in: node.returnType) {
+        if let violation = violation(in: node.type) {
             violations.append(violation)
         }
     }
@@ -151,15 +151,15 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: SameTypeRequirementSyntax) {
         // @_specialize(where S == ↓Array<Character>)
-        if let violation = violation(in: node.leftTypeIdentifier) {
+        if let violation = violation(in: node.leftType) {
             violations.append(violation)
         }
-        if let violation = violation(in: node.rightTypeIdentifier) {
+        if let violation = violation(in: node.rightType) {
             violations.append(violation)
         }
     }
 
-    override func visitPost(_ node: SpecializeExprSyntax) {
+    override func visitPost(_ node: GenericSpecializationExprSyntax) {
         // let x = ↓Array<String>.array(of: object)
         // Skip checks for 'self' or \T Dictionary<Key, Value>.self
         if let parent = node.parent?.as(MemberAccessExprSyntax.self),
@@ -180,7 +180,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         // If there's no type, check all inner generics like in the case of 'Box<Array<T>>'
         node.genericArgumentClause.arguments
             .lazy
-            .compactMap { self.violation(in: $0.argumentType) }
+            .compactMap { self.violation(in: $0.argument) }
             .first
             .map { violations.append($0) }
     }
@@ -196,20 +196,20 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
             return violation(in: optionalType.wrappedType)
         }
 
-        if let simpleType = typeSyntax?.as(SimpleTypeIdentifierSyntax.self) {
+        if let simpleType = typeSyntax?.as(IdentifierTypeSyntax.self) {
             if SugaredType(typeName: simpleType.name.text) != nil {
                 return violation(from: simpleType)
             }
 
             // If there's no type, check all inner generics like in the case of 'Box<Array<T>>'
             guard let genericArguments = simpleType.genericArgumentClause else { return nil }
-            let innerTypes = genericArguments.arguments.compactMap { violation(in: $0.argumentType) }
+            let innerTypes = genericArguments.arguments.compactMap { violation(in: $0.argument) }
             return innerTypes.first
         }
 
         // Base class is "Swift" for cases like "Swift.Array"
-        if let memberType = typeSyntax?.as(MemberTypeIdentifierSyntax.self),
-           let baseType = memberType.baseType.as(SimpleTypeIdentifierSyntax.self),
+        if let memberType = typeSyntax?.as(MemberTypeSyntax.self),
+           let baseType = memberType.baseType.as(IdentifierTypeSyntax.self),
            baseType.name.text == "Swift" {
             guard SugaredType(typeName: memberType.name.text) != nil else { return nil }
             return violation(from: memberType)
@@ -234,22 +234,22 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
             correctionType = .array
         case .dictionary:
             guard let comma = firstGenericType.trailingComma else { return nil }
-            let lastArgumentEnd = firstGenericType.argumentType.endPositionBeforeTrailingTrivia
+            let lastArgumentEnd = firstGenericType.argument.endPositionBeforeTrailingTrivia
             correctionType = .dictionary(commaStart: lastArgumentEnd, commaEnd: comma.endPosition)
         }
 
-        let firstInnerViolation = violation(in: firstGenericType.argumentType)
-        let secondInnerViolation = generic.arguments.count > 1 ? violation(in: lastGenericType.argumentType) : nil
+        let firstInnerViolation = violation(in: firstGenericType.argument)
+        let secondInnerViolation = generic.arguments.count > 1 ? violation(in: lastGenericType.argument) : nil
 
         return SyntacticSugarRuleViolation(
             position: node.positionAfterSkippingLeadingTrivia,
             type: type,
             correction: .init(typeStart: node.position,
                               correction: correctionType,
-                              leftStart: generic.leftAngleBracket.position,
-                              leftEnd: generic.leftAngleBracket.endPosition,
+                              leftStart: generic.leftAngle.position,
+                              leftEnd: generic.leftAngle.endPosition,
                               rightStart: lastGenericType.endPositionBeforeTrailingTrivia,
-                              rightEnd: generic.rightAngleBracket.endPositionBeforeTrailingTrivia),
+                              rightEnd: generic.rightAngle.endPositionBeforeTrailingTrivia),
             children: [firstInnerViolation, secondInnerViolation].compactMap { $0 }
         )
     }
@@ -320,20 +320,20 @@ private protocol SyntaxWithGenericClause {
     var genericArguments: GenericArgumentClauseSyntax? { get }
 }
 
-extension MemberTypeIdentifierSyntax: SyntaxWithGenericClause {
+extension MemberTypeSyntax: SyntaxWithGenericClause {
     var typeName: String? { name.text }
     var genericArguments: GenericArgumentClauseSyntax? { genericArgumentClause }
 }
 
-extension SimpleTypeIdentifierSyntax: SyntaxWithGenericClause {
+extension IdentifierTypeSyntax: SyntaxWithGenericClause {
     var typeName: String? { name.text }
     var genericArguments: GenericArgumentClauseSyntax? { genericArgumentClause }
 }
 
-extension SpecializeExprSyntax: SyntaxWithGenericClause {
+extension GenericSpecializationExprSyntax: SyntaxWithGenericClause {
     var typeName: String? {
-        expression.as(IdentifierExprSyntax.self)?.firstToken(viewMode: .sourceAccurate)?.text ??
-            expression.as(MemberAccessExprSyntax.self)?.name.text
+        expression.as(DeclReferenceExprSyntax.self)?.firstToken(viewMode: .sourceAccurate)?.text ??
+        expression.as(MemberAccessExprSyntax.self)?.declName.baseName.text
     }
     var genericArguments: GenericArgumentClauseSyntax? { genericArgumentClause }
 }

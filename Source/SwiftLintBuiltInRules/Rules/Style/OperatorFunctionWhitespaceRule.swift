@@ -42,7 +42,7 @@ private extension OperatorFunctionWhitespaceRule {
 
 private extension FunctionDeclSyntax {
     var isOperatorDeclaration: Bool {
-        switch identifier.tokenKind {
+        switch name.tokenKind {
         case .binaryOperator:
             return true
         default:
@@ -51,6 +51,6 @@ private extension FunctionDeclSyntax {
     }
 
     var hasWhitespaceViolation: Bool {
-        !identifier.trailingTrivia.isSingleSpace || !funcKeyword.trailingTrivia.isSingleSpace
+        !name.trailingTrivia.isSingleSpace || !funcKeyword.trailingTrivia.isSingleSpace
     }
 }

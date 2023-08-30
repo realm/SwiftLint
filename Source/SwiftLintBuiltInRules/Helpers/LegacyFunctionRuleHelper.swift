@@ -54,7 +54,7 @@ enum LegacyFunctionRuleHelper {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard
                 node.isLegacyFunctionExpression(legacyFunctions: legacyFunctions),
-                let funcName = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text,
+                let funcName = node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text,
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
@@ -62,7 +62,7 @@ enum LegacyFunctionRuleHelper {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
 
-            let trimmedArguments = node.argumentList.map { $0.trimmingTrailingComma() }
+            let trimmedArguments = node.arguments.map { $0.trimmingTrailingComma() }
             let rewriteStrategy = legacyFunctions[funcName]
 
             let expr: ExprSyntax
@@ -91,9 +91,9 @@ enum LegacyFunctionRuleHelper {
 private extension FunctionCallExprSyntax {
     func isLegacyFunctionExpression(legacyFunctions: [String: LegacyFunctionRuleHelper.RewriteStrategy]) -> Bool {
         guard
-            let calledExpression = calledExpression.as(IdentifierExprSyntax.self),
-            let rewriteStrategy = legacyFunctions[calledExpression.identifier.text],
-            argumentList.count == rewriteStrategy.expectedInitialArguments
+            let calledExpression = calledExpression.as(DeclReferenceExprSyntax.self),
+            let rewriteStrategy = legacyFunctions[calledExpression.baseName.text],
+            arguments.count == rewriteStrategy.expectedInitialArguments
         else {
             return false
         }
@@ -102,8 +102,8 @@ private extension FunctionCallExprSyntax {
     }
 }
 
-private extension TupleExprElementSyntax {
-    func trimmingTrailingComma() -> TupleExprElementSyntax {
+private extension LabeledExprSyntax {
+    func trimmingTrailingComma() -> LabeledExprSyntax {
         self.trimmed.with(\.trailingComma, nil).trimmed
     }
 }

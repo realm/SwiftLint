@@ -7,8 +7,8 @@ public extension SyntaxClassification {
         case .lineComment, .docLineComment, .blockComment, .docBlockComment:
             return true
         case .none, .keyword, .identifier, .typeIdentifier, .operatorIdentifier, .dollarIdentifier, .integerLiteral,
-             .floatingLiteral, .stringLiteral, .stringInterpolationAnchor, .poundDirectiveKeyword, .buildConfigId,
-             .attribute, .objectLiteral, .editorPlaceholder, .regexLiteral:
+             .floatLiteral, .stringLiteral, .stringInterpolationAnchor, .poundDirective, .buildConfigId,
+             .attribute, .editorPlaceholder, .regexLiteral:
             return false
         }
     }

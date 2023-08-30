@@ -90,7 +90,7 @@ private extension PrivateOutletRule {
             super.init(viewMode: .sourceAccurate)
         }
 
-        override func visitPost(_ node: MemberDeclListItemSyntax) {
+        override func visitPost(_ node: MemberBlockItemSyntax) {
             guard
                 let decl = node.decl.as(VariableDeclSyntax.self),
                 decl.attributes.contains(attributeNamed: "IBOutlet"),
@@ -103,12 +103,12 @@ private extension PrivateOutletRule {
                 return
             }
 
-            violations.append(decl.bindingKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(decl.bindingSpecifier.positionAfterSkippingLeadingTrivia)
         }
     }
 }
 
-private extension ModifierListSyntax {
+private extension DeclModifierListSyntax {
     var isPrivateOrFilePrivate: Bool {
         contains(where: \.isPrivateOrFilePrivate)
     }
@@ -118,7 +118,7 @@ private extension ModifierListSyntax {
     }
 }
 
-private extension ModifierListSyntax.Element {
+private extension DeclModifierListSyntax.Element {
     var isPrivateOrFilePrivate: Bool {
         (name.text == "private" || name.text == "fileprivate") && detail == nil
     }

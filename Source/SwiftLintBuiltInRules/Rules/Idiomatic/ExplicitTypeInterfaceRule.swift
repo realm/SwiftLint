@@ -93,7 +93,7 @@ private class Visitor: ViolationsSyntaxVisitor {
             if configuration.allowedKinds.contains(.static) {
                 checkViolation(node)
             }
-        } else if node.parent?.is(MemberDeclListItemSyntax.self) == true {
+        } else if node.parent?.is(MemberBlockItemSyntax.self) == true {
             if configuration.allowedKinds.contains(.instance) {
                 checkViolation(node)
             }
@@ -130,7 +130,7 @@ private extension InitializerClauseSyntax {
     }
 
     var isTypeReference: Bool {
-        value.as(MemberAccessExprSyntax.self)?.name.tokenKind == .keyword(.self)
+        value.as(MemberAccessExprSyntax.self)?.declName.baseName.tokenKind == .keyword(.self)
     }
 }
 

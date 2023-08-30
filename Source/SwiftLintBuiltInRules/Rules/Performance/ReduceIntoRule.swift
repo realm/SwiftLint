@@ -116,8 +116,8 @@ private extension ReduceIntoRule {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let name = node.nameToken,
                   name.text == "reduce",
-                  node.argumentList.count == 2 || (node.argumentList.count == 1 && node.trailingClosure != nil),
-                  let firstArgument = node.argumentList.first,
+                  node.arguments.count == 2 || (node.arguments.count == 1 && node.trailingClosure != nil),
+                  let firstArgument = node.arguments.first,
                   // would otherwise equal "into"
                   firstArgument.label == nil,
                   firstArgument.expression.isCopyOnWriteType else {
@@ -132,9 +132,9 @@ private extension ReduceIntoRule {
 private extension FunctionCallExprSyntax {
     var nameToken: TokenSyntax? {
         if let expr = calledExpression.as(MemberAccessExprSyntax.self) {
-            return expr.name
-        } else if let expr = calledExpression.as(IdentifierExprSyntax.self) {
-            return expr.identifier
+            return expr.declName.baseName
+        } else if let expr = calledExpression.as(DeclReferenceExprSyntax.self) {
+            return expr.baseName
         }
 
         return nil
@@ -153,7 +153,7 @@ private extension ExprSyntax {
             if let identifierExpr = expr.calledExpression.identifierExpr {
                 return identifierExpr.isCopyOnWriteType
             } else if let memberAccesExpr = expr.calledExpression.as(MemberAccessExprSyntax.self),
-                      memberAccesExpr.name.text == "init",
+                      memberAccesExpr.declName.baseName.text == "init",
                       let identifierExpr = memberAccesExpr.base?.identifierExpr {
                 return identifierExpr.isCopyOnWriteType
             } else if expr.calledExpression.isCopyOnWriteType {
@@ -164,10 +164,10 @@ private extension ExprSyntax {
         return false
      }
 
-    var identifierExpr: IdentifierExprSyntax? {
-        if let identifierExpr = self.as(IdentifierExprSyntax.self) {
+    var identifierExpr: DeclReferenceExprSyntax? {
+        if let identifierExpr = self.as(DeclReferenceExprSyntax.self) {
             return identifierExpr
-        } else if let specializeExpr = self.as(SpecializeExprSyntax.self) {
+        } else if let specializeExpr = self.as(GenericSpecializationExprSyntax.self) {
             return specializeExpr.expression.identifierExpr
         }
 
@@ -175,10 +175,10 @@ private extension ExprSyntax {
     }
 }
 
-private extension IdentifierExprSyntax {
+private extension DeclReferenceExprSyntax {
     private static let copyOnWriteTypes: Set = ["Array", "Dictionary", "Set"]
 
     var isCopyOnWriteType: Bool {
-        Self.copyOnWriteTypes.contains(identifier.text)
+        Self.copyOnWriteTypes.contains(baseName.text)
     }
 }

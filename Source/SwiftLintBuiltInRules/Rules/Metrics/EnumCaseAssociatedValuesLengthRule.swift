@@ -51,8 +51,8 @@ private extension EnumCaseAssociatedValuesLengthRule {
         }
 
         override func visitPost(_ node: EnumCaseElementSyntax) {
-            guard let associatedValue = node.associatedValue,
-                  case let enumCaseAssociatedValueCount = associatedValue.parameterList.count,
+            guard let associatedValue = node.parameterClause,
+                  case let enumCaseAssociatedValueCount = associatedValue.parameters.count,
                   enumCaseAssociatedValueCount >= configuration.warning else {
                 return
             }
@@ -65,7 +65,7 @@ private extension EnumCaseAssociatedValuesLengthRule {
                 violationSeverity = .warning
             }
 
-            let reason = "Enum case \(node.identifier.text) should contain "
+            let reason = "Enum case \(node.name.text) should contain "
                 + "less than \(configuration.warning) associated values: "
                 + "currently contains \(enumCaseAssociatedValueCount)"
             violations.append(

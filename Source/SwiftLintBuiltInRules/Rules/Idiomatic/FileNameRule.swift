@@ -55,27 +55,27 @@ private class TypeNameCollectingVisitor: SyntaxVisitor {
     private(set) var names: Set<String> = []
 
     override func visitPost(_ node: ClassDeclSyntax) {
-        names.insert(node.identifier.text)
+        names.insert(node.name.text)
     }
 
     override func visitPost(_ node: ActorDeclSyntax) {
-        names.insert(node.identifier.text)
+        names.insert(node.name.text)
     }
 
     override func visitPost(_ node: StructDeclSyntax) {
-        names.insert(node.identifier.text)
+        names.insert(node.name.text)
     }
 
-    override func visitPost(_ node: TypealiasDeclSyntax) {
-        names.insert(node.identifier.text)
+    override func visitPost(_ node: TypeAliasDeclSyntax) {
+        names.insert(node.name.text)
     }
 
     override func visitPost(_ node: EnumDeclSyntax) {
-        names.insert(node.identifier.text)
+        names.insert(node.name.text)
     }
 
     override func visitPost(_ node: ProtocolDeclSyntax) {
-        names.insert(node.identifier.text)
+        names.insert(node.name.text)
     }
 
     override func visitPost(_ node: ExtensionDeclSyntax) {

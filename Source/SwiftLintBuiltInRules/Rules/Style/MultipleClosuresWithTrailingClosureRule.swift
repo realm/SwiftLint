@@ -59,7 +59,7 @@ private extension FunctionCallExprSyntax {
             return false
         }
 
-        return argumentList.contains { elem in
+        return arguments.contains { elem in
             elem.expression.is(ClosureExprSyntax.self)
         }
     }

@@ -101,7 +101,7 @@ private extension RawValueForCamelCasedCodableEnumRule {
         private let codableTypes = Set(["Codable", "Decodable", "Encodable"])
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard let inheritedTypes = node.inheritanceClause?.inheritedTypeCollection.typeNames,
+            guard let inheritedTypes = node.inheritanceClause?.inheritedTypes.typeNames,
                   !inheritedTypes.isDisjoint(with: codableTypes),
                   inheritedTypes.contains("String") else {
                 return .skipChildren
@@ -112,7 +112,7 @@ private extension RawValueForCamelCasedCodableEnumRule {
 
         override func visitPost(_ node: EnumCaseElementSyntax) {
             guard node.rawValue == nil,
-                  case let name = node.identifier.text,
+                  case let name = node.name.text,
                   !name.isUppercase(),
                   !name.isLowercase() else {
                 return
@@ -125,6 +125,6 @@ private extension RawValueForCamelCasedCodableEnumRule {
 
 private extension InheritedTypeListSyntax {
     var typeNames: Set<String> {
-        Set(compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }.map(\.name.text))
+        Set(compactMap { $0.type.as(IdentifierTypeSyntax.self) }.map(\.name.text))
     }
 }

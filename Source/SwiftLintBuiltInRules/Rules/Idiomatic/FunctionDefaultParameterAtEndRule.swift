@@ -76,7 +76,7 @@ private extension FunctionDefaultParameterAtEndRule {
 
 private extension FunctionSignatureSyntax {
     var containsViolation: Bool {
-        let params = input.parameterList.filter { param in
+        let params = parameterClause.parameters.filter { param in
             !param.isClosure
         }
 
@@ -85,7 +85,7 @@ private extension FunctionSignatureSyntax {
         }
 
         let defaultParams = params.filter { param in
-            param.defaultArgument != nil
+            param.defaultValue != nil
         }
         guard defaultParams.isNotEmpty else {
             return false
@@ -93,7 +93,7 @@ private extension FunctionSignatureSyntax {
 
         let lastParameters = params.suffix(defaultParams.count)
         let lastParametersWithDefaultValue = lastParameters.filter { param in
-            param.defaultArgument != nil
+            param.defaultValue != nil
         }
 
         return lastParameters.count != lastParametersWithDefaultValue.count

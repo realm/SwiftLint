@@ -130,7 +130,7 @@ private extension ForWhereRule {
             super.init(viewMode: .sourceAccurate)
         }
 
-        override func visitPost(_ node: ForInStmtSyntax) {
+        override func visitPost(_ node: ForStmtSyntax) {
             guard node.whereClause == nil,
                   let onlyExprStmt = node.body.statements.onlyElement?.item.as(ExpressionStmtSyntax.self),
                   let ifExpr = onlyExprStmt.expression.as(IfExprSyntax.self),
@@ -183,7 +183,7 @@ private extension ConditionElementSyntax {
             }
 
             let operators: Set = ["&&", "||"]
-            return operators.contains(binaryExpr.operatorToken.text)
+            return operators.contains(binaryExpr.operator.text)
         }
     }
 }

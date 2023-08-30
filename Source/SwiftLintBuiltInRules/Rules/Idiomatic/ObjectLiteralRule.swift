@@ -62,8 +62,8 @@ private extension ObjectLiteralRule {
 
         private func isImageNamedInit(node: FunctionCallExprSyntax, name: String) -> Bool {
             guard inits(forClasses: ["UIImage", "NSImage"]).contains(name),
-                  node.argumentList.compactMap(\.label?.text) == ["named"],
-                  let argument = node.argumentList.first?.expression.as(StringLiteralExprSyntax.self),
+                  node.arguments.compactMap(\.label?.text) == ["named"],
+                  let argument = node.arguments.first?.expression.as(StringLiteralExprSyntax.self),
                   argument.isConstantString else {
                 return false
             }
@@ -73,12 +73,12 @@ private extension ObjectLiteralRule {
 
         private func isColorInit(node: FunctionCallExprSyntax, name: String) -> Bool {
             guard inits(forClasses: ["UIColor", "NSColor"]).contains(name),
-                case let argumentsNames = node.argumentList.compactMap(\.label?.text),
+                  case let argumentsNames = node.arguments.compactMap(\.label?.text),
                 argumentsNames == ["red", "green", "blue", "alpha"] || argumentsNames == ["white", "alpha"] else {
                     return false
             }
 
-            return node.argumentList.allSatisfy { elem in
+            return node.arguments.allSatisfy { elem in
                 elem.expression.canBeExpressedAsColorLiteralParams
             }
         }

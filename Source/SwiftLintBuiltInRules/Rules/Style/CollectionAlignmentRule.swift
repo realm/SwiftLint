@@ -38,7 +38,7 @@ private extension CollectionAlignmentRule {
         override func visitPost(_ node: DictionaryElementListSyntax) {
             let locations = node.map { element in
                 let position = alignColons ? element.colon.positionAfterSkippingLeadingTrivia :
-                                             element.keyExpression.positionAfterSkippingLeadingTrivia
+                element.key.positionAfterSkippingLeadingTrivia
                 return locationConverter.location(for: position)
             }
             violations.append(contentsOf: validate(keyLocations: locations))

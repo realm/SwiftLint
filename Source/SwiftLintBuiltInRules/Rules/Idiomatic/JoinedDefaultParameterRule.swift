@@ -74,7 +74,7 @@ private extension JoinedDefaultParameterRule {
             }
 
             correctionPositions.append(violationPosition)
-            let newNode = node.with(\.argumentList, [])
+            let newNode = node.with(\.arguments, [])
             return super.visit(newNode)
         }
     }
@@ -82,9 +82,9 @@ private extension JoinedDefaultParameterRule {
 
 private extension FunctionCallExprSyntax {
     var violationPosition: AbsolutePosition? {
-        guard let argument = argumentList.first,
+        guard let argument = arguments.first,
               let memberExp = calledExpression.as(MemberAccessExprSyntax.self),
-              memberExp.name.text == "joined",
+              memberExp.declName.baseName.text == "joined",
               argument.label?.text == "separator",
               let strLiteral = argument.expression.as(StringLiteralExprSyntax.self),
               strLiteral.isEmptyString else {

@@ -94,10 +94,10 @@ private extension SortedEnumCasesRule {
 
             let cases = node.memberBlock.members.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
             let sortedCases = cases
-                .sorted(by: { $0.elements.first!.identifier.text < $1.elements.first!.identifier.text })
+                .sorted(by: { $0.elements.first!.name.text < $1.elements.first!.name.text })
 
             zip(sortedCases, cases).forEach { sortedCase, currentCase in
-                if sortedCase.elements.first?.identifier.text != currentCase.elements.first?.identifier.text {
+                if sortedCase.elements.first?.name.text != currentCase.elements.first?.name.text {
                     violations.append(currentCase.positionAfterSkippingLeadingTrivia)
                 }
             }
@@ -106,10 +106,10 @@ private extension SortedEnumCasesRule {
         }
 
         override func visitPost(_ node: EnumCaseDeclSyntax) {
-            let sortedElements = node.elements.sorted(by: { $0.identifier.text < $1.identifier.text })
+            let sortedElements = node.elements.sorted(by: { $0.name.text < $1.name.text })
 
             zip(sortedElements, node.elements).forEach { sortedElement, currentElement in
-                if sortedElement.identifier.text != currentElement.identifier.text {
+                if sortedElement.name.text != currentElement.name.text {
                     violations.append(currentElement.positionAfterSkippingLeadingTrivia)
                 }
             }

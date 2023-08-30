@@ -27,11 +27,11 @@ private extension VerticalParameterAlignmentRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            violations.append(contentsOf: violations(for: node.signature.input.parameterList))
+            violations.append(contentsOf: violations(for: node.signature.parameterClause.parameters))
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            violations.append(contentsOf: violations(for: node.signature.input.parameterList))
+            violations.append(contentsOf: violations(for: node.signature.parameterClause.parameters))
         }
 
         private func violations(for params: FunctionParameterListSyntax) -> [AbsolutePosition] {

@@ -43,10 +43,10 @@ private extension ContainsOverFilterCountRule {
                 let second = node.dropFirst().first,
                 second.firstToken(viewMode: .sourceAccurate)?.tokenKind.isZeroComparison == true,
                 let first = node.first?.as(MemberAccessExprSyntax.self),
-                first.name.text == "count",
+                first.declName.baseName.text == "count",
                 let firstBase = first.base?.asFunctionCall,
                 let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
-                firstBaseCalledExpression.name.text == "filter"
+                firstBaseCalledExpression.declName.baseName.text == "filter"
             else {
                 return
             }

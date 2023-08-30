@@ -125,7 +125,7 @@ private extension TrailingCommaRule {
         }
 
         override func visit(_ node: DictionaryElementListSyntax) -> DictionaryElementListSyntax {
-            guard let lastElement = node.last,
+            guard let lastElement = node.last, let index = node.index(of: lastElement),
                     !lastElement.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
                 return super.visit(node)
             }
@@ -133,13 +133,13 @@ private extension TrailingCommaRule {
             switch (lastElement.trailingComma, mandatoryComma) {
             case (let commaToken?, false):
                 correctionPositions.append(commaToken.positionAfterSkippingLeadingTrivia)
-                let newTrailingTrivia = (lastElement.valueExpression.trailingTrivia)
+                let newTrailingTrivia = (lastElement.value.trailingTrivia)
                     .appending(trivia: commaToken.leadingTrivia)
                     .appending(trivia: commaToken.trailingTrivia)
                 let newNode = node
-                    .replacing(
-                        childAt: node.count - 1,
-                        with: lastElement
+                    .with(
+                        \.[index],
+                        lastElement
                             .with(\.trailingComma, nil)
                             .with(\.trailingTrivia, newTrailingTrivia)
                     )
@@ -147,9 +147,9 @@ private extension TrailingCommaRule {
             case (nil, true) where !locationConverter.isSingleLine(node: node):
                 correctionPositions.append(lastElement.endPositionBeforeTrailingTrivia)
                 let newNode = node
-                    .replacing(
-                        childAt: node.count - 1,
-                        with: lastElement
+                    .with(
+                        \.[index],
+                        lastElement
                             .with(\.trailingTrivia, [])
                             .with(\.trailingComma, .commaToken())
                             .with(\.trailingTrivia, lastElement.trailingTrivia)
@@ -161,7 +161,7 @@ private extension TrailingCommaRule {
         }
 
         override func visit(_ node: ArrayElementListSyntax) -> ArrayElementListSyntax {
-            guard let lastElement = node.last,
+            guard let lastElement = node.last, let index = node.index(of: lastElement),
                   !lastElement.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
                 return super.visit(node)
             }
@@ -170,9 +170,9 @@ private extension TrailingCommaRule {
             case (let commaToken?, false):
                 correctionPositions.append(commaToken.positionAfterSkippingLeadingTrivia)
                 let newNode = node
-                    .replacing(
-                        childAt: node.count - 1,
-                        with: lastElement
+                    .with(
+                        \.[index],
+                        lastElement
                             .with(\.trailingComma, nil)
                             .with(\.trailingTrivia,
                                   (lastElement.expression.trailingTrivia)
@@ -183,12 +183,13 @@ private extension TrailingCommaRule {
                 return super.visit(newNode)
             case (nil, true) where !locationConverter.isSingleLine(node: node):
                 correctionPositions.append(lastElement.endPositionBeforeTrailingTrivia)
-                let newNode = node.replacing(
-                    childAt: node.count - 1,
-                    with: lastElement
-                        .with(\.expression, lastElement.expression.with(\.trailingTrivia, []))
-                        .with(\.trailingComma, .commaToken())
-                        .with(\.trailingTrivia, lastElement.expression.trailingTrivia)
+                let newNode = node
+                    .with(
+                        \.[index],
+                        lastElement
+                            .with(\.expression, lastElement.expression.with(\.trailingTrivia, []))
+                            .with(\.trailingComma, .commaToken())
+                            .with(\.trailingTrivia, lastElement.expression.trailingTrivia)
                 )
                 return super.visit(newNode)
             case (_, true), (nil, false):

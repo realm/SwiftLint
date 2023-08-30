@@ -38,7 +38,7 @@ private extension DiscouragedObjectLiteralRule {
 
         override func visitPost(_ node: MacroExpansionExprSyntax) {
             guard
-                case let .identifier(identifierText) = node.macro.tokenKind,
+                case let .identifier(identifierText) = node.macroName.tokenKind,
                 ["colorLiteral", "imageLiteral"].contains(identifierText)
             else {
                 return

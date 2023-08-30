@@ -31,10 +31,10 @@ struct NSNumberInitAsFunctionReferenceRule: SwiftSyntaxRule, ConfigurationProvid
 private extension NSNumberInitAsFunctionReferenceRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
-            guard node.declNameArguments.isEmptyOrNil,
-                  node.name.text == "init",
+            guard node.declName.argumentNames.isEmptyOrNil,
+                  node.declName.baseName.text == "init",
                   node.parent?.as(FunctionCallExprSyntax.self) == nil,
-                  let baseText = node.base?.as(IdentifierExprSyntax.self)?.identifier.text,
+                  let baseText = node.base?.as(DeclReferenceExprSyntax.self)?.baseName.text,
                   baseText == "NSNumber" || baseText == "NSDecimalNumber" else {
                 return
             }

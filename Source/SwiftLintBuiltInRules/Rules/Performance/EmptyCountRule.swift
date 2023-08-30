@@ -54,8 +54,8 @@ private extension EmptyCountRule {
         private let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
 
         override func visitPost(_ node: InfixOperatorExprSyntax) {
-            guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                  let binaryOperator = operatorNode.operatorToken.binaryOperator,
+            guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
+                  let binaryOperator = operatorNode.operator.binaryOperator,
                   operators.contains(binaryOperator) else {
                 return
             }
@@ -78,15 +78,15 @@ private extension EmptyCountRule {
 private extension ExprSyntax {
     func countCallPosition(onlyAfterDot: Bool) -> AbsolutePosition? {
         if let expr = self.as(MemberAccessExprSyntax.self) {
-            if expr.declNameArguments == nil && expr.name.tokenKind == .identifier("count") {
-                return expr.name.positionAfterSkippingLeadingTrivia
+            if expr.declName.argumentNames == nil && expr.declName.baseName.tokenKind == .identifier("count") {
+                return expr.declName.baseName.positionAfterSkippingLeadingTrivia
             }
 
             return nil
         }
 
-        if !onlyAfterDot, let expr = self.as(IdentifierExprSyntax.self) {
-            return expr.identifier.tokenKind == .identifier("count") ? expr.positionAfterSkippingLeadingTrivia : nil
+        if !onlyAfterDot, let expr = self.as(DeclReferenceExprSyntax.self) {
+            return expr.baseName.tokenKind == .identifier("count") ? expr.positionAfterSkippingLeadingTrivia : nil
         }
 
         return nil

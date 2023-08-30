@@ -207,16 +207,16 @@ private extension FunctionCallExprSyntax {
     }
 
     var isTaskWithImplicitErrorType: Bool {
-        if let typeIdentifier = calledExpression.as(IdentifierExprSyntax.self),
-           typeIdentifier.identifier.text == "Task" {
+        if let typeIdentifier = calledExpression.as(DeclReferenceExprSyntax.self),
+           typeIdentifier.baseName.text == "Task" {
             return true
         }
 
-        if let specializedExpression = calledExpression.as(SpecializeExprSyntax.self),
-           let typeIdentifier = specializedExpression.expression.as(IdentifierExprSyntax.self),
-           typeIdentifier.identifier.text == "Task",
+        if let specializedExpression = calledExpression.as(GenericSpecializationExprSyntax.self),
+           let typeIdentifier = specializedExpression.expression.as(DeclReferenceExprSyntax.self),
+           typeIdentifier.baseName.text == "Task",
            let lastGeneric = specializedExpression.genericArgumentClause
-            .arguments.last?.argumentType.as(SimpleTypeIdentifierSyntax.self),
+            .arguments.last?.argument.as(IdentifierTypeSyntax.self),
            lastGeneric.typeName == "_" {
             return true
         }
@@ -246,7 +246,7 @@ private extension FunctionCallExprSyntax {
             return false
         }
 
-        return parent.name.text == "value" || parent.name.text == "result"
+        return parent.declName.baseName.text == "value" || parent.declName.baseName.text == "result"
     }
 
     var doesThrow: Bool {
@@ -276,7 +276,7 @@ private final class ThrowsVisitor: SyntaxVisitor {
         // If we have a value binding pattern, only an IdentifierPatternSyntax will catch
         // any error; if it's not an IdentifierPatternSyntax, we need to visit children.
         if let pattern = catchItems.last?.pattern?.as(ValueBindingPatternSyntax.self),
-           !pattern.valuePattern.is(IdentifierPatternSyntax.self) {
+           !pattern.pattern.is(IdentifierPatternSyntax.self) {
             return .visitChildren
         }
 
@@ -296,8 +296,8 @@ private final class ThrowsVisitor: SyntaxVisitor {
         }
 
         // Result initializers with trailing closures handle thrown errors.
-        if let typeIdentifier = node.calledExpression.as(IdentifierExprSyntax.self),
-           typeIdentifier.identifier.text == "Result",
+        if let typeIdentifier = node.calledExpression.as(DeclReferenceExprSyntax.self),
+           typeIdentifier.baseName.text == "Result",
            node.trailingClosure != nil {
             return .skipChildren
         }
@@ -330,7 +330,7 @@ private extension SyntaxProtocol {
         guard
             let parentFunctionDecl = parent?.parent?.parent?.parent?.as(FunctionDeclSyntax.self),
             parentFunctionDecl.body?.statements.count == 1,
-            parentFunctionDecl.signature.output != nil
+            parentFunctionDecl.signature.returnClause != nil
         else {
             return false
         }

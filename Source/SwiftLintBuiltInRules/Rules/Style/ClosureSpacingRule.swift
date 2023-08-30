@@ -151,7 +151,7 @@ private extension ClosureExprSyntax {
     }
 
     func shouldCheckForClosureSpacingRule(locationConverter: SourceLocationConverter) -> Bool {
-        guard parent?.is(PostfixUnaryExprSyntax.self) == false, // Workaround for Regex literals
+        guard parent?.is(PostfixOperatorExprSyntax.self) == false, // Workaround for Regex literals
               (rightBrace.position.utf8Offset - leftBrace.position.utf8Offset) > 1, // Allow '{}'
               case let startLine = startLocation(converter: locationConverter).line,
               case let endLine = endLocation(converter: locationConverter).line,
@@ -209,21 +209,21 @@ private extension TokenSyntax {
 
     var hasAllowedNoSpaceLeftToken: Bool {
         let previousTokenKind = parent?.previousToken(viewMode: .sourceAccurate)?.tokenKind
-        return previousTokenKind == .leftParen || previousTokenKind == .leftSquareBracket
+        return previousTokenKind == .leftParen || previousTokenKind == .leftSquare
     }
 
     var hasAllowedNoSpaceRightToken: Bool {
         let allowedKinds = [
             TokenKind.colon,
             .comma,
-            .eof,
+            .endOfFile,
             .exclamationMark,
             .leftParen,
-            .leftSquareBracket,
+            .leftSquare,
             .period,
             .postfixQuestionMark,
             .rightParen,
-            .rightSquareBracket,
+            .rightSquare,
             .semicolon
         ]
         if case .newlines = trailingTrivia.first {

@@ -42,9 +42,9 @@ private extension BlockBasedKVORule {
     private final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard node.modifiers.containsOverride,
-                  case let parameterList = node.signature.input.parameterList,
+                  case let parameterList = node.signature.parameterClause.parameters,
                   parameterList.count == 4,
-                  node.identifier.text == "observeValue",
+                  node.name.text == "observeValue",
                   parameterList.map(\.firstName.text) == ["forKeyPath", "of", "change", "context"]
             else {
                 return

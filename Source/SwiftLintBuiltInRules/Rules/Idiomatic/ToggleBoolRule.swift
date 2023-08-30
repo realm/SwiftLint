@@ -61,25 +61,21 @@ private extension ToggleBoolRule {
         }
 
         override func visit(_ node: ExprListSyntax) -> ExprListSyntax {
-            guard
-                node.hasToggleBoolViolation,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.hasToggleBoolViolation,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+                  let firstExpr = node.first, let index = node.index(of: firstExpr) else {
                 return super.visit(node)
             }
-
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-
-            let newNode = node
-                .replacing(
-                    childAt: 0,
-                    with: "\(node.first!.trimmed).toggle()"
+            let elements = node
+                .with(
+                    \.[index],
+                    "\(firstExpr.trimmed).toggle()"
                 )
-                .removingLast()
-                .removingLast()
+                .dropLast(2)
+            let newNode = ExprListSyntax(elements)
                 .with(\.leadingTrivia, node.leadingTrivia)
                 .with(\.trailingTrivia, node.trailingTrivia)
-
             return super.visit(newNode)
         }
     }

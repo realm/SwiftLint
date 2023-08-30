@@ -88,7 +88,7 @@ private extension WeakDelegateRule {
                 return
             }
 
-            violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
         }
     }
 }
@@ -118,17 +118,10 @@ private extension VariableDeclSyntax {
 
     var hasComputedBody: Bool {
         bindings.allSatisfy { binding in
-            guard let accessor = binding.accessor else {
-                return false
-            }
-
-            if accessor.is(CodeBlockSyntax.self) {
-                return true
-            } else if accessor.as(AccessorBlockSyntax.self)?.getAccessor != nil {
+            if case .getter = binding.accessorBlock?.accessors {
                 return true
             }
-
-            return false
+            return binding.accessorBlock?.specifiesGetAccessor == true
         }
     }
 
@@ -141,7 +134,7 @@ private extension VariableDeclSyntax {
 
         return attributes?.contains { attr in
             guard case let .attribute(customAttr) = attr,
-                  let typeIdentifier = customAttr.attributeName.as(SimpleTypeIdentifierSyntax.self) else {
+                  let typeIdentifier = customAttr.attributeName.as(IdentifierTypeSyntax.self) else {
                 return false
             }
 

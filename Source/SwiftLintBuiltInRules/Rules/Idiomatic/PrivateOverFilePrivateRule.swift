@@ -125,7 +125,7 @@ private extension PrivateOverFilePrivateRule {
             return .skipChildren
         }
 
-        override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
             if let privateModifier = node.modifiers.fileprivateModifier {
                 violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
             }
@@ -230,7 +230,7 @@ private extension PrivateOverFilePrivateRule {
             return DeclSyntax(newNode)
         }
 
-        override func visit(_ node: TypealiasDeclSyntax) -> DeclSyntax {
+        override func visit(_ node: TypeAliasDeclSyntax) -> DeclSyntax {
             guard let modifier = node.modifiers.fileprivateModifier,
                   let modifierIndex = node.modifiers.fileprivateModifierIndex,
                   !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
@@ -244,8 +244,8 @@ private extension PrivateOverFilePrivateRule {
     }
 }
 
-private extension ModifierListSyntax? {
-    var fileprivateModifierIndex: ModifierListSyntax.Index? {
+private extension DeclModifierListSyntax? {
+    var fileprivateModifierIndex: DeclModifierListSyntax.Index? {
         self?.firstIndex(where: { $0.name.tokenKind == .keyword(.fileprivate) })
     }
 
@@ -254,12 +254,12 @@ private extension ModifierListSyntax? {
     }
 }
 
-private extension ModifierListSyntax {
-    func replacing(fileprivateModifierIndex: ModifierListSyntax.Index) -> ModifierListSyntax? {
+private extension DeclModifierListSyntax {
+    func replacing(fileprivateModifierIndex: DeclModifierListSyntax.Index) -> DeclModifierListSyntax? {
         let fileprivateModifier = self[fileprivateModifierIndex]
-        return replacing(
-            childAt: self.distance(from: self.startIndex, to: fileprivateModifierIndex),
-            with: fileprivateModifier.with(
+        return with(
+            \.[fileprivateModifierIndex],
+            fileprivateModifier.with(
                 \.name,
                 .keyword(
                     .private,

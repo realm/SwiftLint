@@ -207,8 +207,8 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         return super.visit(node.with(\.modifiers, modifiers).with(\.funcKeyword, declKeyword))
     }
 
-    private func withoutPrivate(modifiers: ModifierListSyntax?,
-                                declKeyword: TokenSyntax) -> (ModifierListSyntax?, TokenSyntax) {
+    private func withoutPrivate(modifiers: DeclModifierListSyntax?,
+                                declKeyword: TokenSyntax) -> (DeclModifierListSyntax?, TokenSyntax) {
         guard let modifiers else {
             return (nil, declKeyword)
         }
@@ -224,14 +224,14 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
             }
         }
         let declKeyword = declKeyword.with(\.leadingTrivia, leadingTrivia + (declKeyword.leadingTrivia))
-        return (ModifierListSyntax(filteredModifiers), declKeyword)
+        return (DeclModifierListSyntax(filteredModifiers), declKeyword)
     }
 }
 
 private extension ClassDeclSyntax {
     func hasParent(configuredIn config: PrivateUnitTestConfiguration) -> Bool {
-        inheritanceClause?.inheritedTypeCollection.contains { type in
-            if let name = type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text {
+        inheritanceClause?.inheritedTypes.contains { type in
+            if let name = type.type.as(IdentifierTypeSyntax.self)?.name.text {
                 return config.regex.numberOfMatches(in: name, range: name.fullNSRange) > 0
                     || config.testParentClasses.contains(name)
             }
@@ -250,14 +250,14 @@ private extension FunctionDeclSyntax {
     }
 
     var isTestMethod: Bool {
-        identifier.text.hasPrefix("test")
-            && signature.input.parameterList.isEmpty
-            && signature.output == nil
-            && !(modifiers?.hasStatic ?? false)
+           name.text.hasPrefix("test")
+        && signature.parameterClause.parameters.isEmpty
+        && signature.returnClause == nil
+        && !(modifiers?.hasStatic ?? false)
     }
 }
 
-private extension ModifierListSyntax {
+private extension DeclModifierListSyntax {
     var hasPrivate: Bool {
         contains { $0.name.tokenKind == .keyword(.private) }
     }
@@ -267,7 +267,7 @@ private extension ModifierListSyntax {
     }
 }
 
-private func resultInPrivateProperty(modifiers: ModifierListSyntax?, attributes: AttributeListSyntax?) -> Bool {
+private func resultInPrivateProperty(modifiers: DeclModifierListSyntax?, attributes: AttributeListSyntax?) -> Bool {
     guard let modifiers, modifiers.hasPrivate else {
         return false
     }

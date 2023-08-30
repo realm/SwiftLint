@@ -91,7 +91,7 @@ private extension ReturnArrowWhitespaceRule {
         private(set) var corrections: [ArrowViolation] = []
 
         override func visitPost(_ node: FunctionTypeSyntax) {
-            guard let violation = node.output.arrow.arrowViolation else {
+            guard let violation = node.returnClause.arrow.arrowViolation else {
                 return
             }
 
@@ -100,7 +100,7 @@ private extension ReturnArrowWhitespaceRule {
         }
 
         override func visitPost(_ node: FunctionSignatureSyntax) {
-            guard let output = node.output, let violation = output.arrow.arrowViolation else {
+            guard let output = node.returnClause, let violation = output.arrow.arrowViolation else {
                 return
             }
 
@@ -109,7 +109,7 @@ private extension ReturnArrowWhitespaceRule {
         }
 
         override func visitPost(_ node: ClosureSignatureSyntax) {
-            guard let output = node.output, let violation = output.arrow.arrowViolation else {
+            guard let output = node.returnClause, let violation = output.arrow.arrowViolation else {
                 return
             }
 

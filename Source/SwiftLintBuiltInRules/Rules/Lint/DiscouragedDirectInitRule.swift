@@ -50,7 +50,7 @@ private extension DiscouragedDirectInitRule {
         }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard node.argumentList.isEmpty, node.trailingClosure == nil,
+            guard node.arguments.isEmpty, node.trailingClosure == nil,
                 discouragedInits.contains(node.calledExpression.trimmedDescription) else {
                 return
             }

@@ -186,7 +186,7 @@ private extension AttributeListSyntax {
                     return (attribute, .sameLineAsDeclaration)
                 } else if configuration.alwaysOnNewLine.contains(atPrefixedName) {
                     return (attribute, .dedicatedLine)
-                } else if attribute.argument != nil, configuration.attributesWithArgumentsAlwaysOnNewLine {
+                } else if attribute.arguments != nil, configuration.attributesWithArgumentsAlwaysOnNewLine {
                     return (attribute, .dedicatedLine)
                 }
 
@@ -223,10 +223,10 @@ private extension AttributeListSyntax {
         } else if let protocolKeyword = parent.as(ProtocolDeclSyntax.self)?.protocolKeyword {
             keyword = protocolKeyword
             shouldBeOnSameLine = false
-        } else if let importTok = parent.as(ImportDeclSyntax.self)?.importTok {
+        } else if let importTok = parent.as(ImportDeclSyntax.self)?.importKeyword {
             keyword = importTok
             shouldBeOnSameLine = true
-        } else if let letOrVarKeyword = parent.as(VariableDeclSyntax.self)?.bindingKeyword {
+        } else if let letOrVarKeyword = parent.as(VariableDeclSyntax.self)?.bindingSpecifier {
             keyword = letOrVarKeyword
             shouldBeOnSameLine = true
         } else {

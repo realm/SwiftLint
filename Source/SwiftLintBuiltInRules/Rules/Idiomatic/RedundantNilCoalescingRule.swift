@@ -16,7 +16,7 @@ struct RedundantNilCoalescingRule: OptInRule, SwiftSyntaxCorrectableRule, Config
             Example("var myVar: Int? = nil; myVar ↓?? nil")
         ],
         corrections: [
-            Example("var myVar: Int? = nil; let foo = myVar↓ ?? nil"):
+            Example("var myVar: Int? = nil; let foo = myVar ↓?? nil"):
                 Example("var myVar: Int? = nil; let foo = myVar")
         ]
     )
@@ -59,14 +59,14 @@ private extension RedundantNilCoalescingRule {
                 let lastExpression = node.last,
                 lastExpression.is(NilLiteralExprSyntax.self),
                 let secondToLastExpression = node.dropLast().last?.as(BinaryOperatorExprSyntax.self),
-                secondToLastExpression.operatorToken.tokenKind.isNilCoalescingOperator,
+                secondToLastExpression.operator.tokenKind.isNilCoalescingOperator,
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
             }
 
-            let newNode = node.removingLast().removingLast().with(\.trailingTrivia, [])
-            correctionPositions.append(newNode.endPosition)
+            let newNode = ExprListSyntax(node.dropLast(2)).with(\.trailingTrivia, [])
+            correctionPositions.append(secondToLastExpression.operator.positionAfterSkippingLeadingTrivia)
             return super.visit(newNode)
         }
     }

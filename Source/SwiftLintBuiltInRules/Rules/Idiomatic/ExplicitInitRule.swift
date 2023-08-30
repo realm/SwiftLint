@@ -224,7 +224,7 @@ private extension ExplicitInitRule {
 
 private extension MemberAccessExprSyntax {
     var explicitInitPosition: AbsolutePosition? {
-        if let base, base.isTypeReferenceLike, name.text == "init" {
+        if let base, base.isTypeReferenceLike, declName.baseName.text == "init" {
             return base.endPositionBeforeTrailingTrivia
         } else {
             return nil
@@ -235,13 +235,13 @@ private extension MemberAccessExprSyntax {
 private extension ExprSyntax {
     /// `String` or `Nested.Type`.
     var isTypeReferenceLike: Bool {
-        if let expr = self.as(IdentifierExprSyntax.self), expr.identifier.text.startsWithUppercase {
+        if let expr = self.as(DeclReferenceExprSyntax.self), expr.baseName.text.startsWithUppercase {
             return true
         } else if let expr = self.as(MemberAccessExprSyntax.self),
                   expr.description.split(separator: ".").allSatisfy(\.startsWithUppercase) {
             return true
-        } else if let expr = self.as(SpecializeExprSyntax.self)?.expression.as(IdentifierExprSyntax.self),
-                  expr.identifier.text.startsWithUppercase {
+        } else if let expr = self.as(GenericSpecializationExprSyntax.self)?.expression.as(DeclReferenceExprSyntax.self),
+                  expr.baseName.text.startsWithUppercase {
             return true
         } else {
             return false

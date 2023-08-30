@@ -167,7 +167,7 @@ struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, ConfigurationPr
 
 private extension OptionalEnumCaseMatchingRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: CaseItemSyntax) {
+        override func visitPost(_ node: SwitchCaseItemSyntax) {
             guard let pattern = node.pattern.as(ExpressionPatternSyntax.self) else {
                 return
             }
@@ -194,7 +194,7 @@ private extension OptionalEnumCaseMatchingRule {
             self.disabledRegions = disabledRegions
         }
 
-        override func visit(_ node: CaseItemSyntax) -> CaseItemSyntax {
+        override func visit(_ node: SwitchCaseItemSyntax) -> SwitchCaseItemSyntax {
             guard
                 let pattern = node.pattern.as(ExpressionPatternSyntax.self),
                 pattern.expression.is(OptionalChainingExprSyntax.self) || pattern.expression.is(TupleExprSyntax.self),
@@ -215,7 +215,7 @@ private extension OptionalEnumCaseMatchingRule {
                 return super.visit(newNode)
             } else if let expression = pattern.expression.as(TupleExprSyntax.self) {
                 var newExpression = expression
-                for (index, element) in expression.elementList.enumerated() {
+                for element in expression.elements {
                     guard
                         let optionalChainingExpression = element.expression.as(OptionalChainingExprSyntax.self),
                         !optionalChainingExpression.expression.is(DiscardAssignmentExprSyntax.self)
@@ -227,8 +227,9 @@ private extension OptionalEnumCaseMatchingRule {
                     correctionPositions.append(violationPosition)
 
                     let newElement = element.with(\.expression, optionalChainingExpression.expression)
-                    newExpression.elementList = newExpression.elementList
-                        .replacing(childAt: index, with: newElement)
+                    if let index = expression.elements.index(of: element) {
+                        newExpression.elements = newExpression.elements.with(\.[index], newElement)
+                    }
                 }
 
                 let newPattern = PatternSyntax(pattern.with(\.expression, ExprSyntax(newExpression)))
@@ -243,7 +244,7 @@ private extension OptionalEnumCaseMatchingRule {
 
 private extension TupleExprSyntax {
     func optionalChainingExpressions() -> [OptionalChainingExprSyntax] {
-        elementList
+        elements
             .compactMap { $0.expression.as(OptionalChainingExprSyntax.self) }
             .filter { !$0.expression.isDiscardAssignmentOrBoolLiteral }
     }

@@ -43,8 +43,8 @@ struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, Source
                 }
 
                 // [:]
-                if previous.tokenKind == .leftSquareBracket,
-                   next.tokenKind == .rightSquareBracket,
+                if previous.tokenKind == .leftSquare,
+                   next.tokenKind == .rightSquare,
                    previous.trailingTrivia.isEmpty,
                    current.leadingTrivia.isEmpty,
                    current.trailingTrivia.isEmpty,
@@ -95,7 +95,7 @@ private final class ColonRuleVisitor: SyntaxVisitor {
     var caseStatementPositions: [AbsolutePosition] = []
 
     override func visitPost(_ node: TernaryExprSyntax) {
-        positionsToSkip.append(node.colonMark.position)
+        positionsToSkip.append(node.colon.position)
     }
 
     override func visitPost(_ node: DeclNameArgumentsSyntax) {
@@ -117,7 +117,7 @@ private final class ColonRuleVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: UnresolvedTernaryExprSyntax) {
-        positionsToSkip.append(node.colonMark.position)
+        positionsToSkip.append(node.colon.position)
     }
 
     override func visitPost(_ node: DictionaryElementSyntax) {

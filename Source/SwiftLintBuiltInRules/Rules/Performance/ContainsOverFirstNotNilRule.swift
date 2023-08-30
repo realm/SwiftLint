@@ -40,20 +40,18 @@ struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
 private extension ContainsOverFirstNotNilRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
-            guard
-                let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                operatorNode.operatorToken.tokenKind.isEqualityComparison,
-                node.rightOperand.is(NilLiteralExprSyntax.self),
-                let first = node.leftOperand.asFunctionCall,
-                let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
-                calledExpression.name.text == "first" || calledExpression.name.text == "firstIndex"
-            else {
+            guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
+                  operatorNode.operator.tokenKind.isEqualityComparison,
+                  node.rightOperand.is(NilLiteralExprSyntax.self),
+                  let first = node.leftOperand.asFunctionCall,
+                  let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
+                  ["first", "firstIndex"].contains(calledExpression.declName.baseName.text) else {
                 return
             }
 
             let violation = ReasonedRuleViolation(
                 position: first.positionAfterSkippingLeadingTrivia,
-                reason: "Prefer `contains` over `\(calledExpression.name.text)(where:) != nil`"
+                reason: "Prefer `contains` over `\(calledExpression.declName.baseName.text)(where:) != nil`"
             )
             violations.append(violation)
         }

@@ -42,9 +42,9 @@ struct FatalErrorMessageRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInR
 private extension FatalErrorMessageRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard let expression = node.calledExpression.as(IdentifierExprSyntax.self),
-                  expression.identifier.text == "fatalError",
-                node.argumentList.isEmptyOrEmptyString else {
+            guard let expression = node.calledExpression.as(DeclReferenceExprSyntax.self),
+                  expression.baseName.text == "fatalError",
+                  node.arguments.isEmptyOrEmptyString else {
                 return
             }
 
@@ -53,7 +53,7 @@ private extension FatalErrorMessageRule {
     }
 }
 
-private extension TupleExprElementListSyntax {
+private extension LabeledExprListSyntax {
     var isEmptyOrEmptyString: Bool {
         if isEmpty {
             return true

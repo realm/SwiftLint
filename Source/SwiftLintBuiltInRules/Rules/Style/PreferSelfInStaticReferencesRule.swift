@@ -64,7 +64,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     private(set) var corrections = [(start: AbsolutePosition, end: AbsolutePosition)]()
 
     override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.push(.likeClass(name: node.identifier.text))
+        parentDeclScopes.push(.likeClass(name: node.name.text))
         return .skipChildren
     }
 
@@ -80,7 +80,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.push(.likeClass(name: node.identifier.text))
+        parentDeclScopes.push(.likeClass(name: node.name.text))
         return .visitChildren
     }
 
@@ -88,17 +88,17 @@ private class Visitor: ViolationsSyntaxVisitor {
         parentDeclScopes.pop()
     }
 
-    override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_ node: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
         variableDeclScopes.push(.handleReferences)
         return .visitChildren
     }
 
-    override func visitPost(_ node: CodeBlockSyntax) {
+    override func visitPost(_ node: CodeBlockItemListSyntax) {
         variableDeclScopes.pop()
     }
 
     override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.push(.likeStruct(node.identifier.text))
+        parentDeclScopes.push(.likeStruct(node.name.text))
         return .visitChildren
     }
 
@@ -117,21 +117,22 @@ private class Visitor: ViolationsSyntaxVisitor {
 
     override func visit(_ node: MemberAccessExprSyntax) -> SyntaxVisitorContinueKind {
         if case .likeClass = parentDeclScopes.peek() {
-            if node.name.tokenKind == .keyword(.self) {
+            if node.declName.baseName.tokenKind == .keyword(.self) {
                 return .skipChildren
             }
         }
         return .visitChildren
     }
 
-    override func visitPost(_ node: IdentifierExprSyntax) {
-        guard let parent = node.parent, !parent.is(SpecializeExprSyntax.self) else {
+    override func visitPost(_ node: DeclReferenceExprSyntax) {
+        guard let parent = node.parent, !parent.is(GenericSpecializationExprSyntax.self),
+              node.keyPathInParent != \MemberAccessExprSyntax.declName else {
             return
         }
         if parent.is(FunctionCallExprSyntax.self), case .likeClass = parentDeclScopes.peek() {
             return
         }
-        addViolation(on: node.identifier)
+        addViolation(on: node.baseName)
     }
 
     override func visit(_ node: InitializerClauseSyntax) -> SyntaxVisitorContinueKind {
@@ -141,7 +142,7 @@ private class Visitor: ViolationsSyntaxVisitor {
         return .visitChildren
     }
 
-    override func visit(_ node: MemberDeclBlockSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_ node: MemberBlockSyntax) -> SyntaxVisitorContinueKind {
         if case .likeClass = parentDeclScopes.peek() {
             variableDeclScopes.push(.skipReferences)
         } else {
@@ -150,18 +151,18 @@ private class Visitor: ViolationsSyntaxVisitor {
         return .visitChildren
     }
 
-    override func visitPost(_ node: MemberDeclBlockSyntax) {
+    override func visitPost(_ node: MemberBlockSyntax) {
         variableDeclScopes.pop()
     }
 
     override func visit(_ node: MacroExpansionExprSyntax) -> SyntaxVisitorContinueKind {
-        if case .likeClass = parentDeclScopes.peek(), case .identifier("selector") = node.macro.tokenKind {
+        if case .likeClass = parentDeclScopes.peek(), case .identifier("selector") = node.macroName.tokenKind {
             return .visitChildren
         }
         return .skipChildren
     }
 
-    override func visit(_ node: ParameterClauseSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_ node: FunctionParameterClauseSyntax) -> SyntaxVisitorContinueKind {
         if case .likeStruct = parentDeclScopes.peek() {
             return .visitChildren
         }
@@ -185,7 +186,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.push(.likeStruct(node.identifier.text))
+        parentDeclScopes.push(.likeStruct(node.name.text))
         return .visitChildren
     }
 
@@ -200,7 +201,7 @@ private class Visitor: ViolationsSyntaxVisitor {
         return .visitChildren
     }
 
-    override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
+    override func visitPost(_ node: IdentifierTypeSyntax) {
         guard let parent = node.parent else {
             return
         }
@@ -214,7 +215,7 @@ private class Visitor: ViolationsSyntaxVisitor {
         }
     }
 
-    override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
         if case .likeClass = parentDeclScopes.peek() {
             return .skipChildren
         }
@@ -226,9 +227,9 @@ private class Visitor: ViolationsSyntaxVisitor {
             return .skipChildren
         }
         if let varDecl = node.parent?.parent?.parent?.as(VariableDeclSyntax.self) {
-            if varDecl.parent?.is(CodeBlockItemSyntax.self) == true // Local variable declaration
-                || varDecl.bindings.onlyElement?.accessor != nil    // Computed property
-                || !node.type.is(SimpleTypeIdentifierSyntax.self)   // Complex or collection type
+            if varDecl.parent?.is(CodeBlockItemSyntax.self) == true     // Local variable declaration
+                || varDecl.bindings.onlyElement?.accessorBlock != nil   // Computed property
+                || !node.type.is(IdentifierTypeSyntax.self)             // Complex or collection type
             {
                 return .visitChildren
             }

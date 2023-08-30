@@ -30,8 +30,8 @@ struct PreferNimbleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
 private extension PreferNimbleRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if let expr = node.calledExpression.as(IdentifierExprSyntax.self),
-               expr.identifier.text.starts(with: "XCTAssert") {
+            if let expr = node.calledExpression.as(DeclReferenceExprSyntax.self),
+               expr.baseName.text.starts(with: "XCTAssert") {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }

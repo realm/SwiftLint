@@ -65,7 +65,7 @@ private extension ExprSyntax {
         if self.is(DiscardAssignmentExprSyntax.self) {
             return true
         } else if let tuple = self.as(TupleExprSyntax.self) {
-            return tuple.elementList.allSatisfy { elem in
+            return tuple.elements.allSatisfy { elem in
                 elem.expression.isDiscardExpression
             }
         }

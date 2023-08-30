@@ -164,14 +164,14 @@ struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, Configuration
 private extension MultilineArgumentsBracketsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard let firstArgument = node.argumentList.first,
+            guard let firstArgument = node.arguments.first,
                   let leftParen = node.leftParen,
                   let rightParen = node.rightParen else {
                 return
             }
 
             let hasMultilineFirstArgument = hasLeadingNewline(firstArgument)
-            let hasMultilineArgument = node.argumentList
+            let hasMultilineArgument = node.arguments
                 .contains { argument in
                     hasLeadingNewline(argument)
                 }

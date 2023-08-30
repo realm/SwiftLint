@@ -144,9 +144,9 @@ private extension ConvenienceTypeRule {
             }
         }
 
-        private func hasViolation(inheritance: TypeInheritanceClauseSyntax?,
+        private func hasViolation(inheritance: InheritanceClauseSyntax?,
                                   attributes: AttributeListSyntax?,
-                                  members: MemberDeclBlockSyntax) -> Bool {
+                                  members: MemberBlockSyntax) -> Bool {
             guard inheritance.isNilOrEmpty,
                   !attributes.containsObjcMembers,
                   !attributes.containsObjc,
@@ -196,9 +196,9 @@ private class ConvenienceTypeCheckVisitor: ViolationsSyntaxVisitor {
     }
 }
 
-private extension TypeInheritanceClauseSyntax? {
+private extension InheritanceClauseSyntax? {
     var isNilOrEmpty: Bool {
-        self?.inheritedTypeCollection.isEmpty ?? true
+        self?.inheritedTypes.isEmpty ?? true
     }
 }
 
@@ -220,12 +220,12 @@ private extension AttributeListSyntax? {
 
         return attrs.contains { elem in
             guard let attr = elem.as(AttributeSyntax.self),
-                  let arguments = attr.argument?.as(AvailabilitySpecListSyntax.self) else {
+                  let arguments = attr.arguments?.as(AvailabilityArgumentListSyntax.self) else {
                 return false
             }
 
             return attr.attributeNameText == "available" && arguments.contains { arg in
-                arg.entry.as(TokenSyntax.self)?.tokenKind.isUnavailableKeyword == true
+                arg.argument.as(TokenSyntax.self)?.tokenKind.isUnavailableKeyword == true
             }
         }
     }

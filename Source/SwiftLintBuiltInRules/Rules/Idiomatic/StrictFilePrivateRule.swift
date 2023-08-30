@@ -142,25 +142,25 @@ private extension StrictFilePrivateRule {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ProtocolDeclSyntax.self) }
 
         override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            currentProtocolName = node.identifier.text
+            currentProtocolName = node.name.text
             return .visitChildren
         }
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            protocols[currentProtocolName, default: []].append(.method(node.identifier.text))
+            protocols[currentProtocolName, default: []].append(.method(node.name.text))
             return .skipChildren
         }
 
         override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
             for binding in node.bindings {
                 guard let name = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text,
-                      case .accessors(let accessors) = binding.accessor else {
+                      let accessorBlock = binding.accessorBlock else {
                     continue
                 }
-                if accessors.specifiesGetAccessor {
+                if accessorBlock.specifiesGetAccessor {
                     protocols[currentProtocolName, default: []].append(.getter(name))
                 }
-                if accessors.specifiesSetAccessor {
+                if accessorBlock.specifiesSetAccessor {
                     protocols[currentProtocolName, default: []].append(.setter(name))
                 }
             }
@@ -190,7 +190,7 @@ private extension StrictFilePrivateRule {
             }
             let protocolMethodNames = implementedTypesInDecl(of: node).flatMap { protocols[$0, default: []] }
             if let funcDecl = grandparent.as(FunctionDeclSyntax.self),
-               protocolMethodNames.contains(.method(funcDecl.identifier.text)) {
+               protocolMethodNames.contains(.method(funcDecl.name.text)) {
                 return
             }
             if let varDecl = grandparent.as(VariableDeclSyntax.self) {
@@ -245,8 +245,8 @@ private extension StrictFilePrivateRule {
     }
 }
 
-private extension TypeInheritanceClauseSyntax? {
+private extension InheritanceClauseSyntax? {
     var inheritedTypeNames: [String] {
-        self?.inheritedTypeCollection.compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text } ?? []
+        self?.inheritedTypes.compactMap { $0.type.as(IdentifierTypeSyntax.self)?.name.text } ?? []
     }
 }

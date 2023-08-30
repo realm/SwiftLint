@@ -61,7 +61,7 @@ private extension LocalDocCommentRule {
                 return
             }
 
-            let violatingRange = docCommentRanges.first { $0.intersects(body.byteRange) }
+            let violatingRange = docCommentRanges.first { $0.intersects(body.totalByteRange) }
             if let violatingRange {
                 violations.append(AbsolutePosition(utf8Offset: violatingRange.offset))
             }

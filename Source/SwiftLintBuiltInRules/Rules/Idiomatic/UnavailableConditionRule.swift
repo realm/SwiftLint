@@ -116,9 +116,9 @@ private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
 
     private func reason(for condition: AvailabilityConditionSyntax) -> String {
         switch condition.availabilityKeyword.tokenKind {
-        case .poundAvailableKeyword:
+        case .poundAvailable:
             return "Use #unavailable instead of #available with an empty body"
-        case .poundUnavailableKeyword:
+        case .poundUnavailable:
             return "Use #available instead of #unavailable with an empty body"
         default:
             queuedFatalError("Unknown availability check type.")

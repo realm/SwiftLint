@@ -67,7 +67,7 @@ private extension StrongIBOutletRule {
                 return super.visit(node)
             }
 
-            let newModifiers = ModifierListSyntax(modifiers.filter { $0 != weakOrUnownedModifier })
+            let newModifiers = modifiers.filter { $0 != weakOrUnownedModifier }
             let newNode = node.with(\.modifiers, newModifiers)
             correctionPositions.append(violationPosition)
             return super.visit(newNode)

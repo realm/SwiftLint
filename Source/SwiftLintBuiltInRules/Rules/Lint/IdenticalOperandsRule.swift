@@ -81,8 +81,8 @@ struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInR
 private extension IdenticalOperandsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
-            guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                  IdenticalOperandsRule.operators.contains(operatorNode.operatorToken.text) else {
+            guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
+                  IdenticalOperandsRule.operators.contains(operatorNode.operator.text) else {
                 return
             }
 

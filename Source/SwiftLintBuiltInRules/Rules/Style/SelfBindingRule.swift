@@ -73,8 +73,8 @@ private final class SelfBindingRuleVisitor: ViolationsSyntaxVisitor {
         if let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
            identifierPattern.identifier.text != bindIdentifier {
             var hasViolation = false
-            if let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self) {
-                hasViolation = initializerIdentifier.identifier.text == "self"
+            if let initializerIdentifier = node.initializer?.value.as(DeclReferenceExprSyntax.self) {
+                hasViolation = initializerIdentifier.baseName.text == "self"
             } else if node.initializer == nil {
                 hasViolation = identifierPattern.identifier.text == "self" && bindIdentifier != "self"
             }
@@ -114,8 +114,8 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
             return super.visit(node)
         }
 
-        if let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self),
-           initializerIdentifier.identifier.text == "self" {
+        if let initializerIdentifier = node.initializer?.value.as(DeclReferenceExprSyntax.self),
+           initializerIdentifier.baseName.text == "self" {
             correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
 
             let newPattern = PatternSyntax(
@@ -136,8 +136,8 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
             )
 
             let newInitializer = InitializerClauseSyntax(
-                value: IdentifierExprSyntax(
-                    identifier: .keyword(
+                value: DeclReferenceExprSyntax(
+                    baseName: .keyword(
                         .`self`,
                         leadingTrivia: .space,
                         trailingTrivia: identifierPattern.trailingTrivia

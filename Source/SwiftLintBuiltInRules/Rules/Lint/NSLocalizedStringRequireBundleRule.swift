@@ -48,16 +48,16 @@ struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, Configura
 private extension NSLocalizedStringRequireBundleRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
-               identifierExpr.identifier.tokenKind == .identifier("NSLocalizedString"),
-               !node.argumentList.containsArgument(named: "bundle") {
+            if let identifierExpr = node.calledExpression.as(DeclReferenceExprSyntax.self),
+               identifierExpr.baseName.tokenKind == .identifier("NSLocalizedString"),
+               !node.arguments.containsArgument(named: "bundle") {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }
 }
 
-private extension TupleExprElementListSyntax {
+private extension LabeledExprListSyntax {
     func containsArgument(named name: String) -> Bool {
         contains { arg in
             arg.label?.tokenKind == .identifier(name)

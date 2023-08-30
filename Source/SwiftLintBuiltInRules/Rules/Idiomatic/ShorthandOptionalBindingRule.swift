@@ -94,7 +94,7 @@ struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, Conf
 private class Visitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: OptionalBindingConditionSyntax) {
         if node.isShadowingOptionalBinding {
-            violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
         }
     }
 }
@@ -128,8 +128,8 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 private extension OptionalBindingConditionSyntax {
     var isShadowingOptionalBinding: Bool {
         if let id = pattern.as(IdentifierPatternSyntax.self),
-           let value = initializer?.value.as(IdentifierExprSyntax.self),
-           id.identifier.text == value.identifier.text {
+           let value = initializer?.value.as(DeclReferenceExprSyntax.self),
+           id.identifier.text == value.baseName.text {
             return true
         }
         return false

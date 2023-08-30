@@ -48,13 +48,13 @@ private extension NumberSeparatorRule {
         }
 
         override func visitPost(_ node: FloatLiteralExprSyntax) {
-            if let violation = violation(token: node.floatingDigits) {
+            if let violation = violation(token: node.literal) {
                 violations.append(ReasonedRuleViolation(position: violation.position, reason: violation.reason))
             }
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
-            if let violation = violation(token: node.digits) {
+            if let violation = violation(token: node.literal) {
                 violations.append(ReasonedRuleViolation(position: violation.position, reason: violation.reason))
             }
         }
@@ -76,27 +76,32 @@ private extension NumberSeparatorRule {
 
         override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {
             guard
-                let violation = violation(token: node.floatingDigits),
+                let violation = violation(token: node.literal),
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
             }
 
-            let newNode = node.with(\.floatingDigits,
-                                    node.floatingDigits.with(\.tokenKind, .floatingLiteral(violation.correction)))
+            let newNode = node.with(
+                \.literal,
+                node.literal.with(
+                    \.tokenKind,
+                    .floatLiteral(violation.correction)
+                )
+            )
             correctionPositions.append(violation.position)
             return super.visit(newNode)
         }
 
         override func visit(_ node: IntegerLiteralExprSyntax) -> ExprSyntax {
             guard
-                let violation = violation(token: node.digits),
+                let violation = violation(token: node.literal),
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
             }
 
-            let newNode = node.with(\.digits, node.digits.with(\.tokenKind, .integerLiteral(violation.correction)))
+            let newNode = node.with(\.literal, node.literal.with(\.tokenKind, .integerLiteral(violation.correction)))
             correctionPositions.append(violation.position)
             return super.visit(newNode)
         }

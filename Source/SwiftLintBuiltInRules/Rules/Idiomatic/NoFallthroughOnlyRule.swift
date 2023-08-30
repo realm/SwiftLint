@@ -24,11 +24,11 @@ private extension NoFallthroughOnlyRule {
 
             let localViolations = cases.enumerated()
                 .compactMap { index, element -> AbsolutePosition? in
-                    if let fallthroughStmt = element.statements.onlyElement?.item.as(FallthroughStmtSyntax.self) {
+                    if let fallthroughStmt = element.statements.onlyElement?.item.as(FallThroughStmtSyntax.self) {
                         if case let nextCaseIndex = cases.index(after: index),
                            nextCaseIndex < cases.endIndex,
                            case let nextCase = cases[nextCaseIndex],
-                           nextCase.unknownAttr != nil {
+                           nextCase.attribute != nil {
                             return nil
                         }
                         return fallthroughStmt.positionAfterSkippingLeadingTrivia

@@ -29,15 +29,15 @@ private extension IsDisjointRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
-                node.name.text == "isEmpty",
+                node.declName.baseName.text == "isEmpty",
                 let firstBase = node.base?.asFunctionCall,
                 let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
-                firstBaseCalledExpression.name.text == "intersection"
+                firstBaseCalledExpression.declName.baseName.text == "intersection"
             else {
                 return
             }
 
-            violations.append(firstBaseCalledExpression.name.positionAfterSkippingLeadingTrivia)
+            violations.append(firstBaseCalledExpression.declName.baseName.positionAfterSkippingLeadingTrivia)
         }
     }
 }

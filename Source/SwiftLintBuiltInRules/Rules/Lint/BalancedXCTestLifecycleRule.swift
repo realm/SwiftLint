@@ -132,7 +132,7 @@ private extension BalancedXCTestLifecycleRule {
                 return
             }
 
-            violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
+            violations.append(node.name.positionAfterSkippingLeadingTrivia)
         }
     }
 
@@ -141,8 +141,8 @@ private extension BalancedXCTestLifecycleRule {
         private(set) var methods: Set<XCTMethod> = []
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if let method = XCTMethod(node.identifier.description),
-               node.signature.input.parameterList.isEmpty {
+            if let method = XCTMethod(node.name.description),
+               node.signature.parameterClause.parameters.isEmpty {
                 methods.insert(method)
             }
         }

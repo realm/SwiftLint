@@ -121,26 +121,26 @@ private extension SyntaxProtocol {
 }
 
 private extension DeclSyntax {
-    var modifiers: ModifierListSyntax? {
+    var modifiers: DeclModifierListSyntax? {
         if let decl = self.as(ClassDeclSyntax.self) {
-            return decl.modifiers ?? ModifierListSyntax([])
+            return decl.modifiers ?? DeclModifierListSyntax([])
         } else if let decl = self.as(ActorDeclSyntax.self) {
-            return decl.modifiers ?? ModifierListSyntax([])
+            return decl.modifiers ?? DeclModifierListSyntax([])
         } else if let decl = self.as(StructDeclSyntax.self) {
-            return decl.modifiers ?? ModifierListSyntax([])
+            return decl.modifiers ?? DeclModifierListSyntax([])
         } else if let decl = self.as(ProtocolDeclSyntax.self) {
-            return decl.modifiers ?? ModifierListSyntax([])
+            return decl.modifiers ?? DeclModifierListSyntax([])
         } else if let decl = self.as(ExtensionDeclSyntax.self) {
-            return decl.modifiers ?? ModifierListSyntax([])
+            return decl.modifiers ?? DeclModifierListSyntax([])
         } else if let decl = self.as(EnumDeclSyntax.self) {
-            return decl.modifiers ?? ModifierListSyntax([])
+            return decl.modifiers ?? DeclModifierListSyntax([])
         }
 
         return nil
     }
 }
 
-private extension ModifierListSyntax {
+private extension DeclModifierListSyntax {
     var setAccessor: DeclModifierSyntax? {
         first { $0.detail?.detail.tokenKind == .identifier("set") }
     }

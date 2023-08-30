@@ -49,10 +49,10 @@ struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule
 private extension LegacyMultipleRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
-            guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                  operatorNode.operatorToken.tokenKind == .binaryOperator("%"),
+            guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
+                  operatorNode.operator.tokenKind == .binaryOperator("%"),
                   let parent = node.parent?.as(InfixOperatorExprSyntax.self),
-                  let parentOperatorNode = parent.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                  let parentOperatorNode = parent.operator.as(BinaryOperatorExprSyntax.self),
                   parentOperatorNode.isEqualityOrInequalityOperator else {
                 return
             }
@@ -71,14 +71,14 @@ private extension LegacyMultipleRule {
                 return
             }
 
-            violations.append(node.operatorOperand.positionAfterSkippingLeadingTrivia)
+            violations.append(node.operator.positionAfterSkippingLeadingTrivia)
         }
     }
 }
 
 private extension BinaryOperatorExprSyntax {
     var isEqualityOrInequalityOperator: Bool {
-        operatorToken.tokenKind == .binaryOperator("==") ||
-            operatorToken.tokenKind == .binaryOperator("!=")
+        `operator`.tokenKind == .binaryOperator("==") ||
+        `operator`.tokenKind == .binaryOperator("!=")
     }
 }

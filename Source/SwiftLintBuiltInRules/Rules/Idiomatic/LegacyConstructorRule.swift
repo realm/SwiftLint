@@ -137,8 +137,8 @@ struct LegacyConstructorRule: SwiftSyntaxCorrectableRule, ConfigurationProviderR
 private extension LegacyConstructorRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
-               constructorsToCorrectedNames[identifierExpr.identifier.text] != nil {
+            if let identifierExpr = node.calledExpression.as(DeclReferenceExprSyntax.self),
+               constructorsToCorrectedNames[identifierExpr.baseName.text] != nil {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -155,8 +155,8 @@ private extension LegacyConstructorRule {
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
-                  case let identifier = identifierExpr.identifier.text,
+            guard let identifierExpr = node.calledExpression.as(DeclReferenceExprSyntax.self),
+                  case let identifier = identifierExpr.baseName.text,
                   let correctedName = constructorsToCorrectedNames[identifier],
                   let args = constructorsToArguments[identifier],
                   !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
@@ -165,22 +165,22 @@ private extension LegacyConstructorRule {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
 
-            let arguments = TupleExprElementListSyntax(node.argumentList.enumerated().map { index, elem in
+            let arguments = LabeledExprListSyntax(node.arguments.enumerated().map { index, elem in
                 elem
                     .with(\.label, .identifier(args[index]))
                     .with(\.colon, .colonToken(trailingTrivia: .space))
             })
             let newExpression = identifierExpr.with(
-                \.identifier,
+                \.baseName,
                 .identifier(
                     correctedName,
-                    leadingTrivia: identifierExpr.identifier.leadingTrivia,
-                    trailingTrivia: identifierExpr.identifier.trailingTrivia
+                    leadingTrivia: identifierExpr.baseName.leadingTrivia,
+                    trailingTrivia: identifierExpr.baseName.trailingTrivia
                 )
             )
             let newNode = node
                 .with(\.calledExpression, ExprSyntax(newExpression))
-                .with(\.argumentList, arguments)
+                .with(\.arguments, arguments)
             return super.visit(newNode)
         }
     }

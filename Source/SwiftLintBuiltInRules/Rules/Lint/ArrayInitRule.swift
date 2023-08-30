@@ -58,14 +58,14 @@ extension ArrayInitRule {
     private final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),
-                  memberAccess.name.text == "map",
+                  memberAccess.declName.baseName.text == "map",
                   let (closureParam, closureStatement) = node.singleClosure(),
                   closureStatement.returnsInput(closureParam)
             else {
                 return
             }
 
-            violations.append(memberAccess.name.positionAfterSkippingLeadingTrivia)
+            violations.append(memberAccess.declName.baseName.positionAfterSkippingLeadingTrivia)
         }
     }
 }
@@ -73,9 +73,9 @@ extension ArrayInitRule {
 private extension FunctionCallExprSyntax {
     func singleClosure() -> (String?, CodeBlockItemSyntax)? {
         let closure: ClosureExprSyntax
-        if let expression = argumentList.onlyElement?.expression.as(ClosureExprSyntax.self) {
+        if let expression = arguments.onlyElement?.expression.as(ClosureExprSyntax.self) {
             closure = expression
-        } else if argumentList.isEmpty, let expression = trailingClosure {
+        } else if arguments.isEmpty, let expression = trailingClosure {
             closure = expression
         } else {
             return nil
@@ -92,19 +92,19 @@ private extension FunctionCallExprSyntax {
 private extension CodeBlockItemSyntax {
     func returnsInput(_ closureParam: String?) -> Bool {
         let expectedReturnIdentifier = closureParam ?? "$0"
-        let identifier = item.as(IdentifierExprSyntax.self) ??
-            item.as(ReturnStmtSyntax.self)?.expression?.as(IdentifierExprSyntax.self)
-        return identifier?.identifier.text == expectedReturnIdentifier
+        let identifier = item.as(DeclReferenceExprSyntax.self) ??
+        item.as(ReturnStmtSyntax.self)?.expression?.as(DeclReferenceExprSyntax.self)
+        return identifier?.baseName.text == expectedReturnIdentifier
     }
 }
 
 private extension ClosureSignatureSyntax {
     func singleInputParamText() -> String? {
-        if let list = input?.as(ClosureParamListSyntax.self), list.count == 1 {
+        if let list = parameterClause?.as(ClosureShorthandParameterListSyntax.self), list.count == 1 {
             return list.onlyElement?.name.text
-        } else if let clause = input?.as(ClosureParameterClauseSyntax.self), clause.parameterList.count == 1,
-                  clause.parameterList.first?.secondName == nil {
-            return clause.parameterList.first?.firstName.text
+        } else if let clause = parameterClause?.as(ClosureParameterClauseSyntax.self), clause.parameters.count == 1,
+                  clause.parameters.first?.secondName == nil {
+            return clause.parameters.first?.firstName.text
         } else {
             return nil
         }

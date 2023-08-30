@@ -148,8 +148,8 @@ private extension ConvenienceTypeRule {
                                   attributes: AttributeListSyntax?,
                                   members: MemberBlockSyntax) -> Bool {
             guard inheritance.isNilOrEmpty,
-                  !attributes.containsObjcMembers,
-                  !attributes.containsObjc,
+                  attributes?.containsObjcMembers == false,
+                  attributes?.containsObjc == false,
                   !members.members.isEmpty else {
                 return false
             }
@@ -202,7 +202,7 @@ private extension InheritanceClauseSyntax? {
     }
 }
 
-private extension AttributeListSyntax? {
+private extension AttributeListSyntax {
     var containsObjcMembers: Bool {
         contains(attributeNamed: "objcMembers")
     }
@@ -210,15 +210,9 @@ private extension AttributeListSyntax? {
     var containsObjc: Bool {
         contains(attributeNamed: "objc")
     }
-}
 
-private extension AttributeListSyntax? {
     var hasUnavailableAttribute: Bool {
-        guard let attrs = self else {
-            return false
-        }
-
-        return attrs.contains { elem in
+        contains { elem in
             guard let attr = elem.as(AttributeSyntax.self),
                   let arguments = attr.arguments?.as(AvailabilityArgumentListSyntax.self) else {
                 return false

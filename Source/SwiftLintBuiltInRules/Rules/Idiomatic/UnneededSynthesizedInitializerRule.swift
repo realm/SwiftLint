@@ -108,8 +108,7 @@ private extension StructDeclSyntax {
             let member = memberItem.decl
             // Collect all stored variables into a list.
             if let varDecl = member.as(VariableDeclSyntax.self) {
-                let modifiers = varDecl.modifiers
-                if modifiers == nil || !modifiers.isStatic {
+                if !varDecl.modifiers.isStatic {
                     storedProperties.append(varDecl)
                 }
             } else if let initDecl = member.as(InitializerDeclSyntax.self),
@@ -301,9 +300,7 @@ private enum AccessLevel {
 private func synthesizedInitializerAccessLevel(using storedProperties: [VariableDeclSyntax]) -> AccessLevel {
     var hasFileprivate = false
     for property in storedProperties {
-        guard let modifiers = property.modifiers else {
-            continue
-        }
+        let modifiers = property.modifiers
 
         // Private takes precedence, so finding 1 private property defines the access level.
         if modifiers.contains(where: { $0.name.tokenKind == .keyword(.private) && $0.detail == nil }) {

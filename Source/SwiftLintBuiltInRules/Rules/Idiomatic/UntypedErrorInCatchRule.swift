@@ -121,11 +121,9 @@ private extension CatchItemSyntax {
 
 private final class UntypedErrorInCatchRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: CatchClauseSyntax) {
-        guard let item = node.catchItems?.onlyElement,
-              item.isIdentifierPattern else {
+        guard let item = node.catchItems.onlyElement, item.isIdentifierPattern else {
             return
         }
-
         violations.append(node.catchKeyword.positionAfterSkippingLeadingTrivia)
     }
 }
@@ -142,7 +140,7 @@ private final class UntypedErrorInCatchRuleRewriter: SyntaxRewriter, ViolationsS
 
     override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
         guard
-            let item = node.catchItems?.onlyElement,
+            let item = node.catchItems.onlyElement,
             item.isIdentifierPattern,
             !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
         else {

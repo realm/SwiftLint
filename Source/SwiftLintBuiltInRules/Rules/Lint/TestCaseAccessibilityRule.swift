@@ -124,12 +124,8 @@ private extension TestCaseAccessibilityRule {
             }
         }
 
-        private func hasViolation(modifiers: DeclModifierListSyntax?, identifierToken: TokenSyntax) -> Bool {
-            guard !modifiers.isPrivateOrFileprivate else {
-                return false
-            }
-
-            return !allowedPrefixes.contains(where: identifierToken.text.hasPrefix)
+        private func hasViolation(modifiers: DeclModifierListSyntax, identifierToken: TokenSyntax) -> Bool {
+            !modifiers.isPrivateOrFileprivate && !allowedPrefixes.contains(where: identifierToken.text.hasPrefix)
         }
     }
 }

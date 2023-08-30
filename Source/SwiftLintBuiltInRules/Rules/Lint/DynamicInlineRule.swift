@@ -30,15 +30,10 @@ struct DynamicInlineRule: SwiftSyntaxRule, ConfigurationProviderRule {
 private extension DynamicInlineRule {
     private final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard let modifiers = node.modifiers,
-                  let attributes = node.attributes,
-                  modifiers.contains(where: { $0.name.text == "dynamic" }),
-                  attributes.contains(where: { $0.as(AttributeSyntax.self)?.isInlineAlways == true })
-            else {
-                return
+            if node.modifiers.contains(where: { $0.name.text == "dynamic" }),
+               node.attributes.contains(where: { $0.as(AttributeSyntax.self)?.isInlineAlways == true }) {
+                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
             }
-
-            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

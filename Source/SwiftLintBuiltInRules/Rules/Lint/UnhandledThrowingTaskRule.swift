@@ -267,11 +267,11 @@ private final class ThrowsVisitor: SyntaxVisitor {
         }
 
         // If there are no catch clauses, visit children to see if there are any try expressions.
-        guard let lastCatchClause = node.catchClauses?.last else {
+        guard let lastCatchClause = node.catchClauses.last else {
             return .visitChildren
         }
 
-        let catchItems = lastCatchClause.catchItems ?? []
+        let catchItems = lastCatchClause.catchItems
 
         // If we have a value binding pattern, only an IdentifierPatternSyntax will catch
         // any error; if it's not an IdentifierPatternSyntax, we need to visit children.

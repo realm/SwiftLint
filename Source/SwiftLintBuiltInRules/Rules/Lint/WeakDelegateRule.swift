@@ -132,13 +132,13 @@ private extension VariableDeclSyntax {
             "WKExtensionDelegateAdaptor"
         ]
 
-        return attributes?.contains { attr in
+        return attributes.contains { attr in
             guard case let .attribute(customAttr) = attr,
                   let typeIdentifier = customAttr.attributeName.as(IdentifierTypeSyntax.self) else {
                 return false
             }
 
             return ignoredAttributes.contains(typeIdentifier.name.text)
-        } ?? false
+        }
     }
 }

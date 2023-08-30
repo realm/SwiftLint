@@ -1,3 +1,4 @@
+@_spi(SyntaxTransformVisitor)
 import SwiftSyntax
 
 struct ControlStatementRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
@@ -86,7 +87,7 @@ private final class Visitor: ViolationsSyntaxVisitor {
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
     override func visitPost(_ node: CatchClauseSyntax) {
-        if node.catchItems?.containSuperfluousParens == true {
+        if node.catchItems.containSuperfluousParens == true {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
@@ -128,7 +129,7 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 
     override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
         guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              let items = node.catchItems, items.containSuperfluousParens == true else {
+              case let items = node.catchItems, items.containSuperfluousParens == true else {
             return super.visit(node)
         }
         correctionPositions.append(node.positionAfterSkippingLeadingTrivia)

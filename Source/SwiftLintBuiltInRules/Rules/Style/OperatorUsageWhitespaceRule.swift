@@ -224,12 +224,12 @@ private extension Trivia {
     }
 
     var containsComments: Bool {
-        return contains { element in
+        contains { (element: TriviaPiece) in
             switch element {
             case .blockComment, .docLineComment, .docBlockComment, .lineComment:
                 return true
             case .backslashes, .carriageReturnLineFeeds, .carriageReturns, .formfeeds, .newlines, .pounds,
-                 .shebang, .spaces, .tabs, .unexpectedText, .verticalTabs:
+                 .spaces, .tabs, .unexpectedText, .verticalTabs:
                 return false
             }
         }

@@ -107,16 +107,16 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#5172](https://github.com/realm/SwiftLint/issues/5172)
 
+* The `no_magic_numbers` rule will not trigger for bitwise shift
+  operations.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5171](https://github.com/realm/SwiftLint/issues/5171)
+
 * The `accessibility_label_for_image` rule will no longer ignore the
   `Image(systemName:)` constructor, as many system images do not
   have good accessibility labels.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5165](https://github.com/realm/SwiftLint/issues/5165)
-
-* The `no_magic_numbers` rule will not trigger for bitwise shift
-  operations.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#5171](https://github.com/realm/SwiftLint/issues/5171)
 
 ## 0.52.4: Lid Switch
 

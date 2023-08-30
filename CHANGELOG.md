@@ -452,6 +452,7 @@
   have good accessibility labels.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5165](https://github.com/realm/SwiftLint/issues/5165)
+
 * Fixes superfluous warnings about configurations for rules that were not
   enabled, when the rules were enabled in a parent configuration.  
   [Martin Redington](https://github.com/mildm8nnered)

@@ -132,6 +132,7 @@
   operations.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5171](https://github.com/realm/SwiftLint/issues/5171)
+
 * Fix false positives for superfluous_disable_command, and removed
   support for disable and enable commands in multiline comments.  
   [Martin Redington](https://github.com/mildm8nnered)

@@ -81,7 +81,7 @@ private extension TypeNameRule {
         }
 
         private func violation(identifier: TokenSyntax,
-                               modifiers: DeclModifierListSyntax?,
+                               modifiers: DeclModifierListSyntax,
                                inheritedTypes: InheritedTypeListSyntax?) -> ReasonedRuleViolation? {
             let originalName = identifier.text
             let nameConfiguration = configuration.nameConfiguration
@@ -135,7 +135,7 @@ private extension String {
         return substring(from: 0, length: lastPreviewsIndex)
     }
 
-    func strippingLeadingUnderscoreIfPrivate(modifiers: DeclModifierListSyntax?) -> String {
+    func strippingLeadingUnderscoreIfPrivate(modifiers: DeclModifierListSyntax) -> String {
         if first == "_", modifiers.isPrivateOrFileprivate {
             return String(self[index(after: startIndex)...])
         }

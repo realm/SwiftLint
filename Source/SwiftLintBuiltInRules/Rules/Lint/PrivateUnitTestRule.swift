@@ -207,11 +207,8 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         return super.visit(node.with(\.modifiers, modifiers).with(\.funcKeyword, declKeyword))
     }
 
-    private func withoutPrivate(modifiers: DeclModifierListSyntax?,
-                                declKeyword: TokenSyntax) -> (DeclModifierListSyntax?, TokenSyntax) {
-        guard let modifiers else {
-            return (nil, declKeyword)
-        }
+    private func withoutPrivate(modifiers: DeclModifierListSyntax,
+                                declKeyword: TokenSyntax) -> (DeclModifierListSyntax, TokenSyntax) {
         var filteredModifiers = [DeclModifierSyntax]()
         var leadingTrivia = Trivia()
         for modifier in modifiers {
@@ -253,7 +250,7 @@ private extension FunctionDeclSyntax {
            name.text.hasPrefix("test")
         && signature.parameterClause.parameters.isEmpty
         && signature.returnClause == nil
-        && !(modifiers?.hasStatic ?? false)
+        && (modifiers.isEmpty || !modifiers.hasStatic)
     }
 }
 
@@ -267,10 +264,6 @@ private extension DeclModifierListSyntax {
     }
 }
 
-private func resultInPrivateProperty(modifiers: DeclModifierListSyntax?, attributes: AttributeListSyntax?) -> Bool {
-    guard let modifiers, modifiers.hasPrivate else {
-        return false
-    }
-
-    return !attributes.contains(attributeNamed: "objc")
+private func resultInPrivateProperty(modifiers: DeclModifierListSyntax, attributes: AttributeListSyntax) -> Bool {
+    modifiers.isNotEmpty && modifiers.hasPrivate && !attributes.contains(attributeNamed: "objc")
 }

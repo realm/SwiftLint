@@ -60,7 +60,7 @@ private class ContextVisitor: DeclaredIdentifiersTrackingVisitor {
     }
 
     override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-        if let selfItem = node.signature?.capture?.items?.first(where: \.capturesSelf) {
+        if let selfItem = node.signature?.capture?.items.first(where: \.capturesSelf) {
             selfCaptures.push(selfItem.capturesWeakly ? .weak : .strong)
         } else {
             selfCaptures.push(.uncaptured)

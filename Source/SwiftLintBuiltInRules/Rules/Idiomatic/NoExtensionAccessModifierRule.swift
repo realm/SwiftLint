@@ -31,7 +31,8 @@ private extension NoExtensionAccessModifierRule {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
-            if let modifiers = node.modifiers, modifiers.isNotEmpty {
+            let modifiers = node.modifiers
+            if modifiers.isNotEmpty {
                 violations.append(modifiers.positionAfterSkippingLeadingTrivia)
             }
         }

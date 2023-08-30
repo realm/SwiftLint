@@ -129,8 +129,8 @@ private class Visitor: ViolationsSyntaxVisitor {
         checkViolations(for: node.modifiers, types: "properties")
     }
 
-    private func checkViolations(for modifiers: DeclModifierListSyntax?, types: String) {
-        guard !modifiers.isFinal, let classKeyword = modifiers?.first(where: { $0.name.text == "class" }),
+    private func checkViolations(for modifiers: DeclModifierListSyntax, types: String) {
+        guard !modifiers.isFinal, let classKeyword = modifiers.first(where: { $0.name.text == "class" }),
               case let inFinalClass = finalClassScope.peek() == true, inFinalClass || modifiers.isPrivate else {
             return
         }

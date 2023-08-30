@@ -92,9 +92,9 @@ private extension AttributeListSyntax {
         } else if parent?.isFunctionOrStoredProperty == true,
                   let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
                   parentClassDecl.attributes.contains(attributeNamed: "objcMembers") {
-            return parent?.functionOrVariableModifiers.isPrivateOrFileprivate == true ? nil : objcAttribute
+            return parent?.functionOrVariableModifiers?.isPrivateOrFileprivate == true ? nil : objcAttribute
         } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
-                  parentExtensionDecl.attributes?.objCAttribute != nil {
+                  parentExtensionDecl.attributes.objCAttribute != nil {
             return objcAttribute
         } else {
             return nil

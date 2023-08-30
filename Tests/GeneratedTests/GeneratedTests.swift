@@ -1238,6 +1238,12 @@ class UnhandledThrowingTaskRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class UIImageIncludesBundleRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UIImageIncludesBundleRule.description)
+    }
+}
+
 class UnneededBreakInSwitchRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededBreakInSwitchRule.description)

@@ -57,10 +57,3 @@ private extension NSLocalizedStringRequireBundleRule {
     }
 }
 
-private extension TupleExprElementListSyntax {
-    func containsArgument(named name: String) -> Bool {
-        contains { arg in
-            arg.label?.tokenKind == .identifier(name)
-        }
-    }
-}

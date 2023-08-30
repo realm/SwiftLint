@@ -12,6 +12,7 @@ opt_in_rules:
 disabled_rules:
   - anonymous_argument_in_multiline_closure
   - anyobject_protocol
+  - bare_init
   - closure_body_length
   - conditional_returns_on_newline
   - convenience_type

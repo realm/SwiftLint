@@ -34,7 +34,7 @@ private extension BareInitRule {
             else {
                 return
             }
-            
+
             violations.append(violationPosition)
         }
     }

@@ -6,29 +6,58 @@ public protocol SwiftSyntaxCorrectableRule: SwiftSyntaxRule, CorrectableRule {
     ///
     /// - parameter file: The file for which to produce the rewriter.
     ///
-    /// - returns: A `ViolationsSyntaxRewriter` for the given file.
+    /// - returns: A `ViolationsSyntaxRewriter` for the given file. May be `nil` in which case the rule visitor's
+    ///            collected `violationCorrections` will be used.
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter?
 }
 
 public extension SwiftSyntaxCorrectableRule {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        nil
+    }
+
     func correct(file: SwiftLintFile) -> [Correction] {
-        guard let rewriter = makeRewriter(file: file),
-              case let syntaxTree = file.syntaxTree,
-              case let newTree = rewriter.visit(syntaxTree),
-              rewriter.correctionPositions.isNotEmpty else {
-            return []
+        if let rewriter = makeRewriter(file: file) {
+            let syntaxTree = file.syntaxTree
+            let newTree = rewriter.visit(syntaxTree)
+            let positions = rewriter.correctionPositions
+            if positions.isEmpty {
+                return []
+            }
+            let corrections = positions
+                .sorted()
+                .map { position in
+                    Correction(
+                        ruleDescription: Self.description,
+                        location: Location(file: file, position: position)
+                    )
+                }
+            file.write(newTree.description)
+            return corrections
         }
 
-        let corrections = rewriter
-            .correctionPositions
-            .sorted()
-            .map { position in
-                Correction(
-                    ruleDescription: Self.description,
-                    location: Location(file: file, position: position)
-                )
+        // There is no rewriter. Falling back to the correction ranges collected by the visitor (if any).
+        let violationCorrections = makeVisitor(file: file).walk(file: file, handler: \.violationCorrections)
+        if violationCorrections.isEmpty {
+            return []
+        }
+        let correctionRanges = violationCorrections
+            .compactMap { correction in
+                file.stringView.NSRange(start: correction.start, end: correction.end).map { range in
+                    (range: range, correction: correction.replacement)
+                }
             }
-        file.write(newTree.description)
+            .filter { file.ruleEnabled(violatingRange: $0.range, for: self) != nil }
+            .reversed()
+        var corrections = [Correction]()
+        var contents = file.contents
+        for range in correctionRanges {
+            let contentsNSString = contents.bridge()
+            contents = contentsNSString.replacingCharacters(in: range.range, with: range.correction)
+            let location = Location(file: file, characterOffset: range.range.location)
+            corrections.append(Correction(ruleDescription: Self.description, location: location))
+        }
+        file.write(contents)
         return corrections
     }
 }

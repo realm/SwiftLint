@@ -332,6 +332,9 @@
                 <a class="nav-group-task-link" href="../Structs/Version.html">Version</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ViolationCorrection.html">ViolationCorrection</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/YamlParser.html">YamlParser</a>
               </li>
             </ul>
@@ -353,7 +356,7 @@
             <p>A SwiftLint CorrectableRule that performs its corrections using a SwiftSyntax <code>SyntaxRewriter</code>.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L4-L11">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L4-L12">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -369,6 +372,9 @@
                     <a name="//apple_ref/swift/Method/makeRewriter(file:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SwiftLintCore0A21SyntaxCorrectableRuleP12makeRewriter4fileAA010ViolationsdH0_pSgAA0aB4FileC_tF">makeRewriter(file:<wbr>)</a>
                     </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
                   </div>
                   <div class="height-container">
                     <div class="pointer-container"></div>
@@ -377,6 +383,10 @@
                       <div class="abstract">
                         <p>Produce a <code><a href="../Protocols/ViolationsSyntaxRewriter.html">ViolationsSyntaxRewriter</a></code> for the given file.</p>
 
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -407,10 +417,11 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>A <code><a href="../Protocols/ViolationsSyntaxRewriter.html">ViolationsSyntaxRewriter</a></code> for the given file.</p>
+                        <p>A <code><a href="../Protocols/ViolationsSyntaxRewriter.html">ViolationsSyntaxRewriter</a></code> for the given file. May be <code>nil</code> in which case the rule visitor&rsquo;s
+       collected <code>violationCorrections</code> will be used.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L10">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L11">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -442,7 +453,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L14-L33">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L19-L62">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

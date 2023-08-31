@@ -332,6 +332,9 @@
                 <a class="nav-group-task-link" href="../Structs/Version.html">Version</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ViolationCorrection.html">ViolationCorrection</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/YamlParser.html">YamlParser</a>
               </li>
             </ul>
@@ -353,7 +356,7 @@
             <p>A SwiftSyntax <code>SyntaxVisitor</code> that produces absolute positions where violations should be reported.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L4-L49">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L4-L53">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -395,6 +398,37 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:13SwiftLintCore23ViolationsSyntaxVisitorC20violationCorrectionsSayAA19ViolationCorrectionVGvp"></a>
+                    <a name="//apple_ref/swift/Property/violationCorrections" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore23ViolationsSyntaxVisitorC20violationCorrectionsSayAA19ViolationCorrectionVGvp">violationCorrections</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Ranges of violations to be used in rewriting (see <code><a href="../Protocols/SwiftSyntaxCorrectableRule.html">SwiftSyntaxCorrectableRule</a></code>). It is not mandatory to fill
+this list while traversing the AST, especially not if the rule is not correctable or provides a custom rewriter.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">violationCorrections</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/ViolationCorrection.html">ViolationCorrection</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L9">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:13SwiftLintCore23ViolationsSyntaxVisitorC21skippableDeclarationsSay0aE004DeclE8Protocol_pXpGvp"></a>
                     <a name="//apple_ref/swift/Property/skippableDeclarations" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SwiftLintCore23ViolationsSyntaxVisitorC21skippableDeclarationsSay0aE004DeclE8Protocol_pXpGvp">skippableDeclarations</a>
@@ -417,7 +451,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L8">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L12">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -446,7 +480,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L10-L12">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L14-L16">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -475,7 +509,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L14-L16">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L18-L20">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -504,7 +538,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L18-L20">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L22-L24">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -533,7 +567,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L22-L24">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L26-L28">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -562,7 +596,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L26-L28">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L30-L32">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -591,7 +625,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L30-L32">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L34-L36">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -620,7 +654,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L34-L36">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L38-L40">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -649,7 +683,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L38-L40">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L42-L44">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -678,7 +712,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L42-L44">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L46-L48">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -707,7 +741,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L46-L48">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L50-L52">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

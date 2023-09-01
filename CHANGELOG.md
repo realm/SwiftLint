@@ -36,7 +36,7 @@
   [SimplyDanny](https://github.com/SimplyDanny)
 
 * Add new `private_swiftui_state_property` opt-in rule to encourage setting 
-  SwiftUI `@State` properties to private.  
+  SwiftUI `@State` and `@StateObject` properties to private.  
   [mt00chikin](https://github.com/mt00chikin)
   [#3173](https://github.com/realm/SwiftLint/issues/3173)
 

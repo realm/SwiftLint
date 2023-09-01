@@ -2,13 +2,20 @@ import SwiftSyntax
 
 /// Require that any state properties in SwiftUI be declared as private
 ///
-/// State properties should only be accessible from inside a SwiftUI App, View, or Scene, or from methods called by it
+/// State and StateObject properties should only be accessible
+/// from inside a SwiftUI App, View, or Scene, or from methods called by it.
+///
+/// Per Apple's documentation on [State](https://developer.apple.com/documentation/swiftui/state)
+/// and [StateObject](https://developer.apple.com/documentation/swiftui/stateobject)
+///
+/// Declare state and state objects as private to prevent setting them from a memberwise initializer,
+/// which can conflict with the storage management that SwiftUI provides:
 struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "private_swiftui_state",
-        name: "Private SwiftUI @State Properties",
+        name: "Private SwiftUI State Properties",
         description: "SwiftUI state properties should be private",
         kind: .lint,
         nonTriggeringExamples: [
@@ -64,8 +71,27 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
             }
             """),
             Example("""
+            struct MyApp: App {
+                @StateObject private var model = DataModel()
+            }
+            """),
+            Example("""
+            struct MyScene: Scene {
+                @StateObject private var model = DataModel()
+            }
+            """),
+            Example("""
             struct ContentView: View {
-                @StateObject var foo = Foo()
+                @StateObject private var model = DataModel()
+            }
+            """),
+            Example("""
+            struct MyStruct {
+                struct ContentView: View {
+                    @StateObject private var dataModel = DataModel()
+                }
+
+                @StateObject var nonTriggeringObject = MyModel()
             }
             """),
             Example("""
@@ -147,6 +173,21 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
             Example("""
             actor ContentView: View {
                 @State ↓var isPlaying: Bool = false
+            }
+            """),
+            Example("""
+            struct MyApp: App {
+                @StateObject ↓var model = DataModel()
+            }
+            """),
+            Example("""
+            struct MyScene: Scene {
+                @StateObject ↓var model = DataModel()
+            }
+            """),
+            Example("""
+            struct ContentView: View {
+                @StateObject ↓var model = DataModel()
             }
             """)
         ]
@@ -230,7 +271,7 @@ private extension InheritedTypeListSyntax {
 }
 
 private extension AttributeListSyntax? {
-    /// Returns `true` if the attribute's identifier is equal to "State"
+    /// Returns `true` if the attribute's identifier is equal to `State` or `StateObject`
     var hasStateAttribute: Bool {
         guard let attributes = self else { return false }
 
@@ -240,7 +281,7 @@ private extension AttributeListSyntax? {
                 return false
             }
 
-            return identifier.name.text == "State"
+            return identifier.name.text == "State" || identifier.name.text == "StateObject"
         }
     }
 }

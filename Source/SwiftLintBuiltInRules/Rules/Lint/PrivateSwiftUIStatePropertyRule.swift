@@ -16,7 +16,7 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
     static let description = RuleDescription(
         identifier: "private_swiftui_state",
         name: "Private SwiftUI State Properties",
-        description: "SwiftUI State and StateObject properties should be private",
+        description: "SwiftUI state properties should be private",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -82,7 +82,7 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
             """),
             Example("""
             struct ContentView: View {
-                private @StateObject var model = DataModel()
+                @StateObject private var model = DataModel()
             }
             """),
             Example("""
@@ -241,7 +241,7 @@ private extension PrivateSwiftUIStatePropertyRule {
                 let decl = node.decl.as(VariableDeclSyntax.self),
                 let inheritanceClause = visitedTypeInheritances.peek() as? InheritanceClauseSyntax,
                 inheritanceClause.conformsToApplicableSwiftUIProtocol,
-                decl.attributes.hasStateAttribute || decl.attributes.hasStateObjectAttribute,
+                decl.attributes.hasStateAttribute,
                 !decl.modifiers.isPrivateOrFileprivate
             else {
                 return
@@ -271,7 +271,7 @@ private extension InheritedTypeListSyntax {
 }
 
 private extension AttributeListSyntax? {
-    /// Returns `true` if the attribute's identifier is equal to "State"
+    /// Returns `true` if the attribute's identifier is equal to `State` or `StateObject`
     var hasStateAttribute: Bool {
         guard let attributes = self else { return false }
 
@@ -281,21 +281,7 @@ private extension AttributeListSyntax? {
                 return false
             }
 
-            return identifier.name.text == "State"
-        }
-    }
-
-    /// Returns `true` if the attribute's identifier is equal to "StateObject"
-    var hasStateObjectAttribute: Bool {
-        guard let attributes = self else { return false }
-
-        return attributes.contains { attr in
-            guard let stateAttr = attr.as(AttributeSyntax.self),
-                  let identifier = stateAttr.attributeName.as(IdentifierTypeSyntax.self) else {
-                return false
-            }
-
-            return identifier.name.text == "StateObject"
+            return identifier.name.text == "State" || identifier.name.text == "StateObject"
         }
     }
 }

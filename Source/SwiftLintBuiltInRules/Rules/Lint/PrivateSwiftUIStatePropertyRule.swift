@@ -2,11 +2,14 @@ import SwiftSyntax
 
 /// Require that any state properties in SwiftUI be declared as private
 ///
-/// State and StateObject properties should only be accessible from inside a SwiftUI App, View, or Scene, or from methods called by it.
+/// State and StateObject properties should only be accessible
+/// from inside a SwiftUI App, View, or Scene, or from methods called by it.
 ///
-/// Per Apple's documentation on [State](https://developer.apple.com/documentation/swiftui/state) and [StateObject](https://developer.apple.com/documentation/swiftui/stateobject):
+/// Per Apple's documentation on [State](https://developer.apple.com/documentation/swiftui/state) a
+/// nd [StateObject](https://developer.apple.com/documentation/swiftui/stateobject):
 ///
-/// Declare state and state objects as private to prevent setting them from a memberwise initializer, which can conflict with the storage management that SwiftUI provides:
+/// Declare state and state objects as private to prevent setting them from a memberwise initializer,
+/// which can conflict with the storage management that SwiftUI provides:
 struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 

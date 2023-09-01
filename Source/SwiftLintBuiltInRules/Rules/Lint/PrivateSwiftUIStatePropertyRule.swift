@@ -15,7 +15,7 @@ struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxRule, OptInRule, Configuratio
 
     static let description = RuleDescription(
         identifier: "private_swiftui_state",
-        name: "Private SwiftUI @State Properties",
+        name: "Private SwiftUI State Properties",
         description: "SwiftUI state properties should be private",
         kind: .lint,
         nonTriggeringExamples: [

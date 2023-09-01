@@ -345,7 +345,7 @@
         <section class="section">
           <div class="section-content top-matter">
             
-            <h1 id='private-swiftui-state-properties' class='heading'>Private SwiftUI @State Properties</h1>
+            <h1 id='private-swiftui-state-properties' class='heading'>Private SwiftUI State Properties</h1>
 
 <p>SwiftUI state properties should be private</p>
 
@@ -416,8 +416,24 @@ warning
     <span class="k">var</span> <span class="nv">isPlaying</span> <span class="o">=</span> <span class="kc">false</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyApp</span><span class="p">:</span> <span class="kt">App</span> <span class="p">{</span>
+    <span class="kd">@StateObject</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">model</span> <span class="o">=</span> <span class="kt">DataModel</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyScene</span><span class="p">:</span> <span class="kt">Scene</span> <span class="p">{</span>
+    <span class="kd">@StateObject</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">model</span> <span class="o">=</span> <span class="kt">DataModel</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
-    <span class="kd">@StateObject</span> <span class="k">var</span> <span class="nv">foo</span> <span class="o">=</span> <span class="kt">Foo</span><span class="p">()</span>
+    <span class="kd">@StateObject</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">model</span> <span class="o">=</span> <span class="kt">DataModel</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyStruct</span> <span class="p">{</span>
+    <span class="kd">struct</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kd">@StateObject</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">dataModel</span> <span class="o">=</span> <span class="kt">DataModel</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">@StateObject</span> <span class="k">var</span> <span class="nv">nonTriggeringObject</span> <span class="o">=</span> <span class="kt">MyModel</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span>
@@ -485,6 +501,18 @@ warning
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">actor</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
     <span class="kd">@State</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">isPlaying</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyApp</span><span class="p">:</span> <span class="kt">App</span> <span class="p">{</span>
+    <span class="kd">@StateObject</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">model</span> <span class="o">=</span> <span class="kt">DataModel</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyScene</span><span class="p">:</span> <span class="kt">Scene</span> <span class="p">{</span>
+    <span class="kd">@StateObject</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">model</span> <span class="o">=</span> <span class="kt">DataModel</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@StateObject</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">model</span> <span class="o">=</span> <span class="kt">DataModel</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
 

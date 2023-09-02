@@ -178,10 +178,11 @@ struct ExplicitInitRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, 
     }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
+        guard configuration.includeExplicitInit else {
+            return nil
+        }
+
+        return Rewriter(locationConverter: file.locationConverter, disabledRegions: disabledRegions(file: file))
     }
 }
 

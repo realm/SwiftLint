@@ -202,17 +202,13 @@ private extension ExplicitInitRule {
                 return
             }
 
-            if includeExplicitInit {
-                if let violationPosition = calledExpression.explicitInitPosition {
-                    violations.append(violationPosition)
-                }
+            if includeExplicitInit, let violationPosition = calledExpression.explicitInitPosition {
+                violations.append(violationPosition)
             }
 
-            if includeBareInit {
-                if let violationPosition = calledExpression.bareInitPosition {
-                    let reason = "Prefer named constructors over .init and type inference"
-                    violations.append(ReasonedRuleViolation(position: violationPosition, reason: reason))
-                }
+            if includeBareInit, let violationPosition = calledExpression.bareInitPosition {
+                let reason = "Prefer named constructors over .init and type inference"
+                violations.append(ReasonedRuleViolation(position: violationPosition, reason: reason))
             }
         }
     }

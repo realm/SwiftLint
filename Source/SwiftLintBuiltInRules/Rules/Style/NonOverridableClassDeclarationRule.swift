@@ -9,7 +9,7 @@ struct NonOverridableClassDeclarationRule: SwiftSyntaxCorrectableRule, Configura
         description: """
             Class methods and properties in final classes should themselves be final, just as if the declarations
             are private. In both cases, they cannot be overriden. Using `final class` or `static` makes this explicit.
-        """,
+            """,
         kind: .style,
         nonTriggeringExamples: [
             Example("""
@@ -122,14 +122,14 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: FunctionDeclSyntax) {
-        checkViolations(for: node.modifiers, type: "methods")
+        checkViolations(for: node.modifiers, types: "methods")
     }
 
     override func visitPost(_ node: VariableDeclSyntax) {
-        checkViolations(for: node.modifiers, type: "properties")
+        checkViolations(for: node.modifiers, types: "properties")
     }
 
-    private func checkViolations(for modifiers: DeclModifierListSyntax?, type: String) {
+    private func checkViolations(for modifiers: DeclModifierListSyntax?, types: String) {
         guard !modifiers.isFinal, let classKeyword = modifiers?.first(where: { $0.name.text == "class" }),
               case let inFinalClass = finalClassScope.peek() == true, inFinalClass || modifiers.isPrivate else {
             return
@@ -137,7 +137,7 @@ private class Visitor: ViolationsSyntaxVisitor {
         violations.append(ReasonedRuleViolation(
             position: classKeyword.positionAfterSkippingLeadingTrivia,
             reason: inFinalClass
-                ? "Class \(type) in final classes should themselves be final"
+                ? "Class \(types) in final classes should themselves be final"
                 : "Private class methods and properties should be declared final",
             severity: configuration.severity
         ))

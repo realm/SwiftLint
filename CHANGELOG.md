@@ -67,6 +67,7 @@
 * Add `--default-config` option to `rules` command allowing to use default
   values for configurations being printed for a single rule or all rules.  
   [SimplyDanny](https://github.com/SimplyDanny)
+
 * Add `include_bare_init` and `include_explicit_init` options to the
   `explicit_init` rule. `include_bare_init` encourages using named
   constructors over `.init()` and type inference.  

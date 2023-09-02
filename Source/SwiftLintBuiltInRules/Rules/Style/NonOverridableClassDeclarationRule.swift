@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct NonOverridableClassDeclarationRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule, OptInRule {
+struct NonOverridableClassDeclarationRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = NonOverridableClassDeclarationConfiguration()
 
     static var description = RuleDescription(
@@ -96,41 +96,19 @@ struct NonOverridableClassDeclarationRule: SwiftSyntaxRule, CorrectableRule, Con
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(severity: configuration.severity)
-    }
-
-    func correct(file: SwiftLintFile) -> [Correction] {
-        let ranges = Visitor(severity: configuration.severity)
-            .walk(file: file, handler: \.corrections)
-            .compactMap { file.stringView.NSRange(start: $0.start, end: $0.end) }
-            .filter { file.ruleEnabled(violatingRange: $0, for: self) != nil }
-            .reversed()
-
-        var corrections = [Correction]()
-        var contents = file.contents
-        for range in ranges {
-            let contentsNSString = contents.bridge()
-            contents = contentsNSString.replacingCharacters(in: range, with: configuration.finalClassModifier.rawValue)
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: Self.description, location: location))
-        }
-
-        file.write(contents)
-
-        return corrections
+        Visitor(configuration: configuration)
     }
 }
 
 private class Visitor: ViolationsSyntaxVisitor {
-    private let severity: ViolationSeverity
+    private let configuration: NonOverridableClassDeclarationConfiguration
 
     private var finalClassScope = Stack<Bool>()
-    private(set) var corrections = [(start: AbsolutePosition, end: AbsolutePosition)]()
 
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
-    init(severity: ViolationSeverity) {
-        self.severity = severity
+    init(configuration: NonOverridableClassDeclarationConfiguration) {
+        self.configuration = configuration
         super.init(viewMode: .sourceAccurate)
     }
 
@@ -161,10 +139,14 @@ private class Visitor: ViolationsSyntaxVisitor {
             reason: inFinalClass
                 ? "Class \(type) in final classes should themselves be final"
                 : "Private class methods and properties should be declared final",
-            severity: severity
+            severity: configuration.severity
         ))
-        corrections.append(
-            (classKeyword.positionAfterSkippingLeadingTrivia, classKeyword.endPositionBeforeTrailingTrivia)
+        violationCorrections.append(
+            ViolationCorrection(
+                start: classKeyword.positionAfterSkippingLeadingTrivia,
+                end: classKeyword.endPositionBeforeTrailingTrivia,
+                replacement: configuration.finalClassModifier.rawValue
+            )
         )
     }
 }

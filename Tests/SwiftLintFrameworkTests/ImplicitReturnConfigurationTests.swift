@@ -9,7 +9,9 @@ class ImplicitReturnConfigurationTests: SwiftLintTestCase {
             "included": [
                 "closure",
                 "function",
-                "getter"
+                "getter",
+                "initializer",
+                "subscript"
             ]
         ]
 
@@ -17,7 +19,9 @@ class ImplicitReturnConfigurationTests: SwiftLintTestCase {
         let expectedKinds: Set<ImplicitReturnConfiguration.ReturnKind> = Set([
             .closure,
             .function,
-            .getter
+            .getter,
+            .initializer,
+            .subscript
         ])
         XCTAssertEqual(configuration.severityConfiguration.severity, .error)
         XCTAssertEqual(configuration.includedKinds, expectedKinds)

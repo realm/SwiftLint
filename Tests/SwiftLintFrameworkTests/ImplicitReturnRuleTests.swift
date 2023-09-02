@@ -2,60 +2,91 @@
 
 class ImplicitReturnRuleTests: SwiftLintTestCase {
     func testOnlyClosureKindIncluded() {
-        let nonTriggeringExamples = ImplicitReturnRuleExamples.GenericExamples.nonTriggeringExamples +
-            ImplicitReturnRuleExamples.ClosureExamples.nonTriggeringExamples +
-            ImplicitReturnRuleExamples.FunctionExamples.nonTriggeringExamples +
-            ImplicitReturnRuleExamples.FunctionExamples.triggeringExamples +
-            ImplicitReturnRuleExamples.GetterExamples.nonTriggeringExamples +
-            ImplicitReturnRuleExamples.GetterExamples.triggeringExamples
-        let triggeringExamples = ImplicitReturnRuleExamples.ClosureExamples.triggeringExamples
-        let corrections = ImplicitReturnRuleExamples.ClosureExamples.corrections
+        var nonTriggeringExamples = ImplicitReturnRuleExamples.nonTriggeringExamples +
+                                    ImplicitReturnRuleExamples.triggeringExamples
+        nonTriggeringExamples.removeAll(
+            where: ImplicitReturnRuleExamples.ClosureExamples.triggeringExamples.contains
+        )
 
-        let description = ImplicitReturnRule.description
-            .with(nonTriggeringExamples: nonTriggeringExamples)
-            .with(triggeringExamples: triggeringExamples)
-            .with(corrections: corrections)
-
-        self.verifyRule(description, returnKind: .closure)
+        verifySubset(
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: ImplicitReturnRuleExamples.ClosureExamples.triggeringExamples,
+            corrections: ImplicitReturnRuleExamples.ClosureExamples.corrections,
+            kind: .closure
+        )
     }
 
     func testOnlyFunctionKindIncluded() {
-        let nonTriggeringExamples = ImplicitReturnRuleExamples.GenericExamples.nonTriggeringExamples +
-            ImplicitReturnRuleExamples.ClosureExamples.nonTriggeringExamples +
-            ImplicitReturnRuleExamples.ClosureExamples.triggeringExamples +
-            ImplicitReturnRuleExamples.FunctionExamples.nonTriggeringExamples +
-            ImplicitReturnRuleExamples.GetterExamples.nonTriggeringExamples +
-            ImplicitReturnRuleExamples.GetterExamples.triggeringExamples
-        let triggeringExamples = ImplicitReturnRuleExamples.FunctionExamples.triggeringExamples
-        let corrections = ImplicitReturnRuleExamples.FunctionExamples.corrections
+        var nonTriggeringExamples = ImplicitReturnRuleExamples.nonTriggeringExamples +
+                                    ImplicitReturnRuleExamples.triggeringExamples
+        nonTriggeringExamples.removeAll(
+            where: ImplicitReturnRuleExamples.FunctionExamples.triggeringExamples.contains
+        )
 
-        let description = ImplicitReturnRule.description
-            .with(nonTriggeringExamples: nonTriggeringExamples)
-            .with(triggeringExamples: triggeringExamples)
-            .with(corrections: corrections)
-
-        self.verifyRule(description, returnKind: .function)
+        verifySubset(
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: ImplicitReturnRuleExamples.FunctionExamples.triggeringExamples,
+            corrections: ImplicitReturnRuleExamples.FunctionExamples.corrections,
+            kind: .function
+        )
     }
 
     func testOnlyGetterKindIncluded() {
-        let nonTriggeringExamples = ImplicitReturnRuleExamples.GenericExamples.nonTriggeringExamples +
-            ImplicitReturnRuleExamples.ClosureExamples.nonTriggeringExamples +
-            ImplicitReturnRuleExamples.ClosureExamples.triggeringExamples +
-            ImplicitReturnRuleExamples.FunctionExamples.nonTriggeringExamples +
-            ImplicitReturnRuleExamples.FunctionExamples.triggeringExamples +
-            ImplicitReturnRuleExamples.GetterExamples.nonTriggeringExamples
-        let triggeringExamples = ImplicitReturnRuleExamples.GetterExamples.triggeringExamples
-        let corrections = ImplicitReturnRuleExamples.GetterExamples.corrections
+        var nonTriggeringExamples = ImplicitReturnRuleExamples.nonTriggeringExamples +
+                                    ImplicitReturnRuleExamples.triggeringExamples
+        nonTriggeringExamples.removeAll(
+            where: ImplicitReturnRuleExamples.GetterExamples.triggeringExamples.contains
+        )
 
+        verifySubset(
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: ImplicitReturnRuleExamples.GetterExamples.triggeringExamples,
+            corrections: ImplicitReturnRuleExamples.GetterExamples.corrections,
+            kind: .getter
+        )
+    }
+
+    func testOnlyInitializerKindIncluded() {
+        var nonTriggeringExamples = ImplicitReturnRuleExamples.nonTriggeringExamples +
+                                    ImplicitReturnRuleExamples.triggeringExamples
+        nonTriggeringExamples.removeAll(
+            where: ImplicitReturnRuleExamples.InitializerExamples.triggeringExamples.contains
+        )
+
+        verifySubset(
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: ImplicitReturnRuleExamples.InitializerExamples.triggeringExamples,
+            corrections: ImplicitReturnRuleExamples.InitializerExamples.corrections,
+            kind: .initializer
+        )
+    }
+
+    func testOnlySubscriptKindIncluded() {
+        var nonTriggeringExamples = ImplicitReturnRuleExamples.nonTriggeringExamples +
+                                    ImplicitReturnRuleExamples.triggeringExamples
+        nonTriggeringExamples.removeAll(
+            where: ImplicitReturnRuleExamples.SubscriptExamples.triggeringExamples.contains
+        )
+
+        verifySubset(
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: ImplicitReturnRuleExamples.SubscriptExamples.triggeringExamples,
+            corrections: ImplicitReturnRuleExamples.SubscriptExamples.corrections,
+            kind: .subscript
+        )
+    }
+
+    private func verifySubset(
+        nonTriggeringExamples: [Example],
+        triggeringExamples: [Example],
+        corrections: [Example: Example],
+        kind: ImplicitReturnConfiguration.ReturnKind
+    ) {
         let description = ImplicitReturnRule.description
-            .with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples.removingViolationMarker())
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: corrections)
 
-        self.verifyRule(description, returnKind: .getter)
-    }
-
-    private func verifyRule(_ ruleDescription: RuleDescription, returnKind: ImplicitReturnConfiguration.ReturnKind) {
-        self.verifyRule(ruleDescription, ruleConfiguration: ["included": [returnKind.rawValue]])
+        self.verifyRule(description, ruleConfiguration: ["included": [kind.rawValue]])
     }
 }

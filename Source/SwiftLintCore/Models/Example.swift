@@ -167,4 +167,9 @@ public extension Array where Element == Example {
     func skipDisableCommandTests() -> Self {
         map { $0.skipDisableCommandTest() }
     }
+
+    /// Remove all violation markers from the examples.
+    func removingViolationMarker() -> Self {
+        map { $0.removingViolationMarkers() }
+    }
 }

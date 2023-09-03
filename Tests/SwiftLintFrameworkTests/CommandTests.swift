@@ -14,6 +14,7 @@ private extension Command {
     }
 }
 
+// swiftlint:disable:next type_body_length
 class CommandTests: SwiftLintTestCase {
     // MARK: Command Creation
 
@@ -363,8 +364,6 @@ class CommandTests: SwiftLintTestCase {
             violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n"))[0].reason,
             "'nesting_foo' is not a valid SwiftLint rule; remove it from the disable command"
         )
-
-        XCTAssertEqual(violations(Example("/* swiftlint:disable nesting */\n")).count, 2)
     }
 
     func testSuperfluousDisableCommandsDisabled() {
@@ -436,6 +435,20 @@ class CommandTests: SwiftLintTestCase {
                                // swiftlint:disable non_existent_rule_name
                                // swiftlint:enable non_existent_rule_name
                                // swiftlint:enable superfluous_disable_command
+
+                               """
+            )),
+            []
+        )
+    }
+
+    func testSuperfluousDisableCommandsInMultilineComments() {
+        XCTAssertEqual(
+            violations(Example("""
+                               /*
+                               // swiftlint:disable identifier_name
+                               let a = 0
+                               */
 
                                """
             )),

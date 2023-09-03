@@ -17,7 +17,12 @@ struct ExplicitInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        includeExplicitInit = configuration[$includeExplicitInit] as? Bool ?? true
-        includeBareInit = configuration[$includeBareInit] as? Bool ?? false
+        if let includeExplicitInit = configuration[$includeExplicitInit] as? Bool {
+            self.includeExplicitInit = includeExplicitInit
+        }
+
+        if let includeBareInit = configuration[$includeBareInit] as? Bool {
+            self.includeBareInit = includeBareInit
+        }
     }
 }

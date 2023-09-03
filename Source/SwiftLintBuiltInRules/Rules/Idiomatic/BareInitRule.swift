@@ -43,8 +43,8 @@ private extension BareInitRule {
 
 private extension MemberAccessExprSyntax {
     var bareInitPosition: AbsolutePosition? {
-        if base == nil, name.text == "init" {
-            return dot.positionAfterSkippingLeadingTrivia
+        if base == nil, declName.baseName.text == "init" {
+            return period.positionAfterSkippingLeadingTrivia
         } else {
             return nil
         }

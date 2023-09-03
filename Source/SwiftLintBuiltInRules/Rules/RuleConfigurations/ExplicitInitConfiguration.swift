@@ -3,8 +3,6 @@ struct ExplicitInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(key: "include_explicit_init")
-    private(set) var includeExplicitInit = true
     @ConfigurationElement(key: "include_bare_init")
     private(set) var includeBareInit = false
 
@@ -15,10 +13,6 @@ struct ExplicitInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
         if let severityString = configuration[$severityConfiguration] as? String {
             try severityConfiguration.apply(configuration: severityString)
-        }
-
-        if let includeExplicitInit = configuration[$includeExplicitInit] as? Bool {
-            self.includeExplicitInit = includeExplicitInit
         }
 
         if let includeBareInit = configuration[$includeBareInit] as? Bool {

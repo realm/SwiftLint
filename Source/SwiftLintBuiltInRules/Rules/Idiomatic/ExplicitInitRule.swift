@@ -170,29 +170,19 @@ struct ExplicitInitRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, 
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(
-            viewMode: .sourceAccurate,
-            includeExplicitInit: configuration.includeExplicitInit,
-            includeBareInit: configuration.includeBareInit
-        )
+        Visitor(viewMode: .sourceAccurate, includeBareInit: configuration.includeBareInit)
     }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        guard configuration.includeExplicitInit else {
-            return nil
-        }
-
-        return Rewriter(locationConverter: file.locationConverter, disabledRegions: disabledRegions(file: file))
+        Rewriter(locationConverter: file.locationConverter, disabledRegions: disabledRegions(file: file))
     }
 }
 
 private extension ExplicitInitRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let includeExplicitInit: Bool
         private let includeBareInit: Bool
 
-        init(viewMode: SyntaxTreeViewMode, includeExplicitInit: Bool, includeBareInit: Bool) {
-            self.includeExplicitInit = includeExplicitInit
+        init(viewMode: SyntaxTreeViewMode, includeBareInit: Bool) {
             self.includeBareInit = includeBareInit
             super.init(viewMode: .sourceAccurate)
         }
@@ -202,7 +192,7 @@ private extension ExplicitInitRule {
                 return
             }
 
-            if includeExplicitInit, let violationPosition = calledExpression.explicitInitPosition {
+            if let violationPosition = calledExpression.explicitInitPosition {
                 violations.append(violationPosition)
             }
 

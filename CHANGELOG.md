@@ -11,7 +11,7 @@
   `test_parent_classes` instead which accepts names of parent test classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* Removed support for disable and enable commands in multiline comments.  
+* Remove support for disable and enable commands in multiline comments.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
@@ -139,8 +139,7 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5165](https://github.com/realm/SwiftLint/issues/5165)
 
-* Fix false positives for superfluous_disable_command, and removed
-  support for disable and enable commands in multiline comments.  
+* Fix false positives for `superfluous_disable_command` rule.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4798](https://github.com/realm/SwiftLint/issues/4798)
 

@@ -34,14 +34,14 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        validateBadPrefixes(in: file) + validateInvalidCommands(in: file)
+        badPrefixViolations(in: file) + invalidCommandViolations(in: file)
     }
 
-    private func validateBadPrefixes(in file: SwiftLintFile) -> [StyleViolation] {
+    private func badPrefixViolations(in file: SwiftLintFile) -> [StyleViolation] {
         (file.commands + file.invalidCommands).compactMap { command in
             if let precedingCharacter = command.precedingCharacter(in: file)?.trimmingCharacters(in: .whitespaces) {
                 if !precedingCharacter.isEmpty, precedingCharacter != "/" {
-                    return violation(
+                    return styleViolation(
                         for: command,
                         in: file,
                         reason: "swiftlint command should be preceded by whitespace or a comment character"
@@ -52,13 +52,13 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
         }
     }
 
-    private func validateInvalidCommands(in file: SwiftLintFile) -> [StyleViolation] {
+    private func invalidCommandViolations(in file: SwiftLintFile) -> [StyleViolation] {
         file.invalidCommands.map { command in
-            violation(for: command, in: file, reason: command.invalidReason() ?? Self.description.description)
+            styleViolation(for: command, in: file, reason: command.invalidReason() ?? Self.description.description)
         }
     }
 
-    private func violation(for command: Command, in file: SwiftLintFile, reason: String) -> StyleViolation {
+    private func styleViolation(for command: Command, in file: SwiftLintFile, reason: String) -> StyleViolation {
         let character = command.startingCharacterPosition(in: file)
         return StyleViolation(
             ruleDescription: Self.description,

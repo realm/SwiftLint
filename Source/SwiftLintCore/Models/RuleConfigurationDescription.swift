@@ -501,7 +501,7 @@ public extension SeverityConfiguration {
         guard let option = description.options.onlyElement?.value, case .symbol = option else {
             queuedFatalError(
                 """
-                Severity configurations must have exaclty one option that is a violation severity.
+                Severity configurations must have exactly one option that is a violation severity.
                 """
             )
         }

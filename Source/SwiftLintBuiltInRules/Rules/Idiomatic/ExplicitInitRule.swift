@@ -2,7 +2,7 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 
 struct ExplicitInitRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = ExplicitInitConfiguration()
 
     static let description = RuleDescription(
         identifier: "explicit_init",
@@ -170,28 +170,36 @@ struct ExplicitInitRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, 
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate, includeBareInit: configuration.includeBareInit)
     }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
+        Rewriter(locationConverter: file.locationConverter, disabledRegions: disabledRegions(file: file))
     }
 }
 
 private extension ExplicitInitRule {
     final class Visitor: ViolationsSyntaxVisitor {
+        private let includeBareInit: Bool
+
+        init(viewMode: SyntaxTreeViewMode, includeBareInit: Bool) {
+            self.includeBareInit = includeBareInit
+            super.init(viewMode: .sourceAccurate)
+        }
+
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard
-                let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
-                let violationPosition = calledExpression.explicitInitPosition
-            else {
+            guard let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self) else {
                 return
             }
 
-            violations.append(violationPosition)
+            if let violationPosition = calledExpression.explicitInitPosition {
+                violations.append(violationPosition)
+            }
+
+            if includeBareInit, let violationPosition = calledExpression.bareInitPosition {
+                let reason = "Prefer named constructors over .init and type inference"
+                violations.append(ReasonedRuleViolation(position: violationPosition, reason: reason))
+            }
         }
     }
 
@@ -226,6 +234,14 @@ private extension MemberAccessExprSyntax {
     var explicitInitPosition: AbsolutePosition? {
         if let base, base.isTypeReferenceLike, declName.baseName.text == "init" {
             return base.endPositionBeforeTrailingTrivia
+        } else {
+            return nil
+        }
+    }
+
+    var bareInitPosition: AbsolutePosition? {
+        if base == nil, declName.baseName.text == "init" {
+            return period.positionAfterSkippingLeadingTrivia
         } else {
             return nil
         }

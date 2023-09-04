@@ -39,7 +39,7 @@
   Bash, Zsh and fish.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* Add new `private_swiftui_state_property` opt-in rule to encourage setting 
+* Add new `private_swiftui_state_property` opt-in rule to encourage setting
   SwiftUI `@State` and `@StateObject` properties to private.  
   [mt00chikin](https://github.com/mt00chikin)
   [#3173](https://github.com/realm/SwiftLint/issues/3173)
@@ -53,10 +53,10 @@
   [keith](https://github.com/keith)
   [5139](https://github.com/realm/SwiftLint/pull/5139)
 
-* Show a rule's active YAML configuration in output of 
+* Show a rule's active YAML configuration in output of
   `swiftlint rules <rule>`.  
   [SimplyDanny](https://github.com/SimplyDanny)
-  
+
 * Add `invokeTest()` to `overridden_super_call` defaults.  
   [DylanBettermannDD](https://github.com/DylanBettermannDD)
 
@@ -67,6 +67,11 @@
 * Add `--default-config` option to `rules` command allowing to use default
   values for configurations being printed for a single rule or all rules.  
   [SimplyDanny](https://github.com/SimplyDanny)
+
+* Add `include_bare_init` option to the `explicit_init` rule. `include_bare_init`
+  encourages using named constructors over `.init()` and type inference.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5203](https://github.com/realm/SwiftLint/issues/5203)
 
 #### Bug Fixes
 

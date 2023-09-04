@@ -41,15 +41,9 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
         (file.commands + file.invalidCommands).compactMap { command in
             if let precedingCharacter = command.precedingCharacter(in: file)?.trimmingCharacters(in: .whitespaces) {
                 if !precedingCharacter.isEmpty, precedingCharacter != "/" {
-                    let location = Location(
-                        file: file.path,
-                        line: command.line,
-                        character: command.startingCharacterPosition(in: file)
-                    )
-                    return StyleViolation(
-                        ruleDescription: Self.description,
-                        severity: configuration.severity,
-                        location: location,
+                    return violation(
+                        for: command,
+                        in: file,
                         reason: "swiftlint command should be preceded by whitespace or a comment character"
                     )
                 }
@@ -60,15 +54,18 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
 
     private func validateInvalidCommands(in file: SwiftLintFile) -> [StyleViolation] {
         file.invalidCommands.map { command in
-            let character = command.startingCharacterPosition(in: file)
-            let location = Location(file: file.path, line: command.line, character: character)
-            return StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severity,
-                location: location,
-                reason: command.invalidReason() ?? Self.description.description
-            )
+            violation(for: command, in: file, reason: command.invalidReason() ?? Self.description.description)
         }
+    }
+
+    private func violation(for command: Command, in file: SwiftLintFile, reason: String) -> StyleViolation {
+        let character = command.startingCharacterPosition(in: file)
+        return StyleViolation(
+            ruleDescription: Self.description,
+            severity: configuration.severity,
+            location: Location(file: file.path, line: command.line, character: character),
+            reason: reason
+        )
     }
 }
 

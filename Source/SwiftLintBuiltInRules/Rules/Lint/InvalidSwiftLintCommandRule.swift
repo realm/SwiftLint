@@ -40,7 +40,7 @@ struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
     private func validateBadPrefixes(in file: SwiftLintFile) -> [StyleViolation] {
         (file.commands + file.invalidCommands).compactMap { command in
             if let precedingCharacter = command.precedingCharacter(in: file)?.trimmingCharacters(in: .whitespaces) {
-                if !precedingCharacter.isEmpty, precedingCharacter != "/", precedingCharacter != "*" {
+                if !precedingCharacter.isEmpty, precedingCharacter != "/" {
                     let location = Location(
                         file: file.path,
                         line: command.line,

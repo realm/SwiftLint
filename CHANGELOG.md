@@ -73,6 +73,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5203](https://github.com/realm/SwiftLint/issues/5203)
 
+* Improved the reported location and reasons provided for issues
+  detected by the `invalid_seiftlint_command` rule.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5204](https://github.com/realm/SwiftLint/issues/5204)
+
 #### Bug Fixes
 
 * Fix false positive in `control_statement` rule that triggered on conditions

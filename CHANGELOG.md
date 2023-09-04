@@ -68,9 +68,8 @@
   values for configurations being printed for a single rule or all rules.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* Add `include_bare_init` and `include_explicit_init` options to the
-  `explicit_init` rule. `include_bare_init` encourages using named
-  constructors over `.init()` and type inference.  
+* Add `include_bare_init` option to the `explicit_init` rule. `include_bare_init`
+  encourages using named constructors over `.init()` and type inference.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5203](https://github.com/realm/SwiftLint/issues/5203)
 

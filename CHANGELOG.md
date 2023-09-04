@@ -92,15 +92,15 @@
   `test_parent_classes` instead which accepts names of parent test classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Remove support for disable and enable commands in multiline comments.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4798](https://github.com/realm/SwiftLint/issues/4798)
+
 * When files and directories are specified on the command line, any paths
   specified in the configuration will be ignored. Previously this was not
   true in every case.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4849](https://github.com/realm/SwiftLint/issues/4849)
-
-* Remove support for disable and enable commands in multiline comments.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
 #### Experimental
 

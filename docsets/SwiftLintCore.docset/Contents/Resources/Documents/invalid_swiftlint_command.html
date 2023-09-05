@@ -347,7 +347,7 @@
             
             <h1 id='invalid-swiftlint-command' class='heading'>Invalid SwiftLint Command</h1>
 
-<p>swiftlint command does not have a valid action or modifier</p>
+<p>swiftlint command is invalid</p>
 
 <ul>
 <li><strong>Identifier:</strong> invalid_swiftlint_command</li>
@@ -384,34 +384,38 @@ warning
 </code></pre>
 <pre class="highlight swift"><code><span class="c1">// swiftlint:disable:this unused_import</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="c1">//swiftlint:disable:this unused_import</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:</span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint: </span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint: </span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint::</span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint::</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:: </span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:: </span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:disable</span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:disable</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:dissable unused_import</span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:dissable unused_import</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:enaaaable unused_import</span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:enaaaable unused_import</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:disable:nxt unused_import</span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:disable:nxt unused_import</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:enable:prevus unused_import</span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:enable:prevus unused_import</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:enable:ths unused_import</span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:enable:ths unused_import</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:enable</span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:enable</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:enable:</span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:enable:</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:enable: </span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:enable: </span>
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// swiftlint:disable: unused_import</span>
+<pre class="highlight swift"><code><span class="c1">// ↓swiftlint:disable: unused_import</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// s↓swiftlint:disable unused_import</span>
 </code></pre>
 
           </div>

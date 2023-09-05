@@ -236,7 +236,7 @@ extension Configuration {
         if !visitor.quiet {
             let filesInfo: String
             if visitor.paths.isEmpty || visitor.paths == [""] {
-                if self != Self.default, includedPaths.isNotEmpty {
+                if includedPaths.isNotEmpty {
                     filesInfo = "specified in the configuration"
                 } else {
                     filesInfo = "in current working directory"

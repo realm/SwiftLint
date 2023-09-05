@@ -62,6 +62,6 @@ extension FileManager: LintableFileManager {
     }
 
     public func isDirectory(atPath path: String) -> Bool {
-          path.isDirectory
+        path.isDirectory
     }
 }

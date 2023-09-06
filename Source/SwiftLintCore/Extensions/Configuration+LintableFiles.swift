@@ -48,11 +48,10 @@ extension Configuration {
         }
 
         if path.isEmpty {
-            var pathsForPath = includedPaths
-            if pathsForPath.isEmpty {
-                pathsForPath = fileManager.filesToLint(inPath: path, rootDirectory: nil)
+            if includedPaths.isEmpty {
+                return excludePaths(from: fileManager.filesToLint(inPath: "", rootDirectory: rootDirectory))
             }
-            let includedPaths = pathsForPath
+            let includedPaths = includedPaths
                 .flatMap(Glob.resolveGlob)
                 .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
             return excludePaths(from: includedPaths)

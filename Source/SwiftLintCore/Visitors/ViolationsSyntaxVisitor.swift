@@ -82,6 +82,7 @@ public extension Array where Element == DeclSyntaxProtocol.Type {
         EnumDeclSyntax.self,
         FunctionDeclSyntax.self,
         ExtensionDeclSyntax.self,
+        InitializerDeclSyntax.self,
         ProtocolDeclSyntax.self,
         StructDeclSyntax.self,
         VariableDeclSyntax.self

@@ -20,6 +20,9 @@
 * None.
 
 #### Enhancements
+* Update README configuration for new projects. The `included` used to have the old `Source` path, 
+  the new default is `Sources`.  
+  [chibombo](https://github.com/chibombo)
 
 * Show specific violation message for the `attributes` rule when the option
   `always_on_line_above` or `attributes_with_arguments_always_on_line_above`

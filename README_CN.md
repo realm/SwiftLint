@@ -431,12 +431,12 @@ opt_in_rules: # 一些规则仅仅是可选的
   # 可以通过执行如下指令来查找所有可用的规则:
   # swiftlint rules
 included: # 执行 linting 时包含的路径。如果出现这个 `--path` 会被忽略。
-  - Source
+  - Sources
 excluded: # 执行 linting 时忽略的路径。 优先级比 `included` 更高。
   - Carthage
   - Pods
-  - Source/ExcludedFolder
-  - Source/ExcludedFile.swift
+  - Sources/ExcludedFolder
+  - Sources/ExcludedFile.swift
 
 # 可配置的规则可以通过这个配置文件来自定义
 # 二进制规则可以设置他们的严格程度

@@ -1,4 +1,4 @@
-## Main
+## MainOAA
 
 #### Breaking
 
@@ -457,18 +457,14 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4798](https://github.com/realm/SwiftLint/issues/4798)
 
+* Fix false positive in the `test_case_accessibility` rule.  
+  [gibachan](https://github.com/gibachan)
+  [#5211](https://github.com/realm/SwiftLint/issues/5211)
+
 * Fixes superfluous warnings about configurations for rules that were not
   enabled, when the rules were enabled in a parent configuration.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4858](https://github.com/realm/SwiftLint/issues/4858)
-
-* Fix false positives for `superfluous_disable_command` rule.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4798](https://github.com/realm/SwiftLint/issues/4798)
-
-* Fix false positive in the `test_case_accessibility` rule.  
-  [gibachan](https://github.com/gibachan)
-  [#5211](https://github.com/realm/SwiftLint/issues/5211)
 
 ## 0.52.4: Lid Switch
 

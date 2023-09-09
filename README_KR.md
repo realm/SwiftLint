@@ -249,12 +249,12 @@ opt_in_rules: # 일부 룰은 옵트 인 형태로 제공
   - missing_docs
   # 사용 가능한 모든 룰은 swiftlint rules 명령으로 확인 가능
 included: # 린트 과정에 포함할 파일 경로. 이 항목이 존재하면 `--path`는 무시됨
-  - Source
+  - Sources
 excluded: # 린트 과정에서 무시할 파일 경로. `included`보다 우선순위 높음
   - Carthage
   - Pods
-  - Source/ExcludedFolder
-  - Source/ExcludedFile.swift
+  - Sources/ExcludedFolder
+  - Sources/ExcludedFile.swift
 
 # 설정 가능한 룰은 이 설정 파일에서 커스터마이징 가능
 # 경고나 에러 중 하나를 발생시키는 룰은 위반 수준을 설정 가능

@@ -507,13 +507,13 @@ analyzer_rules: # rules run by `swiftlint analyze`
   - explicit_self
 
 included: # case-sensitive paths to include during linting. `--path` is ignored if present
-  - Source
+  - Sources
 excluded: # case-sensitive paths to ignore during linting. Takes precedence over `included`
   - Carthage
   - Pods
-  - Source/ExcludedFolder
-  - Source/ExcludedFile.swift
-  - Source/*/ExcludedFile.swift # exclude files with a wildcard
+  - Sources/ExcludedFolder
+  - Sources/ExcludedFile.swift
+  - Sources/*/ExcludedFile.swift # exclude files with a wildcard
 
 # If true, SwiftLint will not fail if no lintable files are found.
 allow_zero_lintable_files: false

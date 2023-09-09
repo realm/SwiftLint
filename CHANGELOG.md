@@ -21,6 +21,10 @@
 
 #### Enhancements
 
+* Add examples for `superfluous_disable_command`.  
+  [laralove143](https://github.com/laralove143)
+  [#issue_number](https://github.com/realm/SwiftLint/issues/issue_number)
+
 * Show specific violation message for the `attributes` rule when the option
   `always_on_line_above` or `attributes_with_arguments_always_on_line_above`
   is involved.  

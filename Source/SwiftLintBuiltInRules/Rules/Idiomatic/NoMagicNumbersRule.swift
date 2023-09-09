@@ -73,7 +73,7 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
             Example("let foo = 1 >> 2"),
             Example("let foo = 2 >> 2"),
             Example("let foo = 2 << 2"),
-            Example("let a = b / 100.0"),
+            Example("let a = b / 100.0")
         ],
         triggeringExamples: [
             Example("foo(↓321)"),

@@ -1211,7 +1211,7 @@ private extension ClosureExprSyntax {
 
             return openingBrace.positionAfterSkippingLeadingTrivia
         }
-        if let parent = parent, parent.is(MultipleTrailingClosureElementSyntax.self) {
+        if let parent, parent.is(MultipleTrailingClosureElementSyntax.self) {
             if openingBrace.hasSingleSpaceLeading {
                 return nil
             }

@@ -479,6 +479,21 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
             """),
             Example("if\n\tlet a = b,\n\tlet c = d↓{ }\n"): Example("if\n\tlet a = b,\n\tlet c = d { }\n"),
             Example("""
+            if varDecl.parent?.is(CodeBlockItemSyntax.self) == true // Local variable declaration
+                || varDecl.bindings.onlyElement?.accessor != nil    // Computed property
+                || !node.type.is(SimpleTypeIdentifierSyntax.self)
+            ↓{ // Complex or collection type
+                return .visitChildren
+            }
+            """):
+                Example("""
+            if varDecl.parent?.is(CodeBlockItemSyntax.self) == true // Local variable declaration
+                || varDecl.bindings.onlyElement?.accessor != nil    // Computed property
+                || !node.type.is(SimpleTypeIdentifierSyntax.self) { // Complex or collection type
+                return .visitChildren
+            }
+            """),
+            Example("""
             repeat  ↓{
 
             } while a

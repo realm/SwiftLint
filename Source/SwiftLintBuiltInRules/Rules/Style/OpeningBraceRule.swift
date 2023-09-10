@@ -65,6 +65,46 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
             Example("func abc(a: A,\n\tb: B)\n↓{"),
             Example("[].map()↓{ $0 }"),
             Example("[].map( ↓{ } )"),
+            Example("""
+            struct OldContentView: View {
+              @State private var showOptions = false
+
+              var body: some View {
+                Button(action: {
+                  self.showOptions.toggle()
+                })↓{
+                  Image(systemName: "gear")
+                }
+              }
+            }
+            """),
+            Example("""
+            struct OldContentView: View {
+              @State private var showOptions = false
+
+              var body: some View {
+                Button(action: {
+                  self.showOptions.toggle()
+                })
+               ↓{
+                  Image(systemName: "gear")
+                }
+              }
+            }
+            """),
+            Example("""
+            struct OldContentView: View {
+              @State private var showOptions = false
+
+              var body: some View {
+                Button {
+                  self.showOptions.toggle()
+                } label:↓{
+                  Image(systemName: "gear")
+                }
+              }
+            }
+            """),
             Example("if let a = b↓{ }"),
             Example("while a == b↓{ }"),
             Example("guard let a = b else↓{ }"),
@@ -1146,6 +1186,13 @@ private extension ClosureExprSyntax {
             if functionCall.calledExpression.as(ClosureExprSyntax.self) == self {
                 return nil
             }
+            if openingBrace.hasSingleSpaceLeading {
+                return nil
+            }
+
+            return openingBrace.positionAfterSkippingLeadingTrivia
+        }
+        if let _ = parent?.as(MultipleTrailingClosureElementSyntax.self) {
             if openingBrace.hasSingleSpaceLeading {
                 return nil
             }

@@ -1,5 +1,6 @@
 import SwiftLintCore
 import SwiftSyntax
+import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule
 struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
@@ -578,6 +579,21 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
 
 private extension OpeningBraceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private func isMultilineFunction(_ node: FunctionDeclSyntax) -> Bool {
+            guard let body = node.body else {
+                return false
+            }
+            guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
+                return false
+            }
+
+            let startLocation = node.funcKeyword.endLocation(converter: locationConverter)
+            let endLocation = endToken.endLocation(converter: locationConverter)
+            let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
+
+            return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
+        }
+
         override func visitPost(_ node: ActorDeclSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
@@ -707,21 +723,9 @@ private extension OpeningBraceRule {
                 return
             }
 
-            var isMultilineFunction: Bool {
-                guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
-                    return false
-                }
-
-                let startLocation = node.funcKeyword.endLocation(converter: locationConverter)
-                let endLocation = endToken.endLocation(converter: locationConverter)
-                let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
-
-                return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
-            }
-
             let openingBrace = body.leftBrace
 
-            if configuration.allowMultilineFunc && isMultilineFunction {
+            if configuration.allowMultilineFunc && isMultilineFunction(node) {
                 if openingBrace.hasOnlyWhitespaceInLeadingTrivia {
                     return
                 }
@@ -1207,7 +1211,7 @@ private extension ClosureExprSyntax {
 
             return openingBrace.positionAfterSkippingLeadingTrivia
         }
-        if let _ = parent?.as(MultipleTrailingClosureElementSyntax.self) {
+        if let parent = parent, parent.is(MultipleTrailingClosureElementSyntax.self) {
             if openingBrace.hasSingleSpaceLeading {
                 return nil
             }

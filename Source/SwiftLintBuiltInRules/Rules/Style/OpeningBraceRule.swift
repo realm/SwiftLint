@@ -576,6 +576,7 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
         )
     }
 }
+// swiftlint:enable type_body_length
 
 private extension OpeningBraceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
@@ -1237,4 +1238,3 @@ private extension TokenSyntax {
         leadingTrivia.pieces.allSatisfy { $0.isWhitespace }
     }
 }
-// swiftlint:enable type_body_length

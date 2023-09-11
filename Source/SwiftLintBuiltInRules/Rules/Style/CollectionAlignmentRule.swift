@@ -39,7 +39,24 @@ private extension CollectionAlignmentRule {
             let locations = node.map { element in
                 let position = alignColons ? element.colon.positionAfterSkippingLeadingTrivia :
                 element.key.positionAfterSkippingLeadingTrivia
-                return locationConverter.location(for: position)
+                let location = locationConverter.location(for: position)
+
+                let graphemeColumn: Int
+                let graphemeClusters = String(
+                    locationConverter.sourceLines[location.line - 1].utf8.prefix(location.column - 1)
+                )
+                if let graphemeClusters {
+                    graphemeColumn = graphemeClusters.count + 1
+                } else {
+                    graphemeColumn = location.column
+                }
+
+                return SourceLocation(
+                    line: location.line,
+                    column: graphemeColumn,
+                    offset: location.offset,
+                    file: location.file
+                )
             }
             violations.append(contentsOf: validate(keyLocations: locations))
         }
@@ -141,6 +158,10 @@ extension CollectionAlignmentRule {
                       "b"  :2,
                        "c" :      3
                 ]
+                """),
+                Example("""
+                NSAttributedString(string: "…", attributes: [.font: UIFont.systemFont(ofSize: 12, weight: .regular),
+                                                  .foregroundColor: UIColor(white: 0, alpha: 0.2)])
                 """)
             ]
         }
@@ -199,6 +220,10 @@ extension CollectionAlignmentRule {
                                 "lunch": "sandwich",
                                 "dinner": "burger"
                 ]
+                """),
+                Example("""
+                NSAttributedString(string: "…", attributes: [.font: UIFont.systemFont(ofSize: 12, weight: .regular),
+                                                             .foregroundColor: UIColor(white: 0, alpha: 0.2)])
                 """)
             ]
         }

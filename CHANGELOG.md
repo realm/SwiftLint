@@ -80,6 +80,10 @@
 
 #### Bug Fixes
 
+* Respect grapheme clusters in counting the number of characters in the `collection_alignment` rule.  
+  [kishikawakatsumi](https://github.com/kishikawakatsumi)
+  [#4837](https://github.com/realm/SwiftLint/issues/4837)
+
 * Fix false positive in `control_statement` rule that triggered on conditions
   with trailing closures where parentheses are recommended by the compiler.  
   [SimplyDanny](https://github.com/SimplyDanny)

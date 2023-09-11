@@ -72,7 +72,8 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
             Example("let foo = 1 << 2"),
             Example("let foo = 1 >> 2"),
             Example("let foo = 2 >> 2"),
-            Example("let foo = 2 << 2")
+            Example("let foo = 2 << 2"),
+            Example("let a = b / 100.0")
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -167,7 +168,7 @@ private extension TokenSyntax {
         guard let number = Double(text.replacingOccurrences(of: "_", with: "")) else {
             return false
         }
-        if [0, 1].contains(number) {
+        if [0, 1, 100].contains(number) {
             return false
         }
         guard let grandparent = parent?.parent else {

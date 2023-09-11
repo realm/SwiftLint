@@ -78,6 +78,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5204](https://github.com/realm/SwiftLint/issues/5204)
 
+* 100 is no longer considered to be a magic number by the `no_magic_numbers`
+  rule.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5215](https://github.com/realm/SwiftLint/issues/5215)
+
 #### Bug Fixes
 
 * Respect grapheme clusters in counting the number of characters in the `collection_alignment` rule.  

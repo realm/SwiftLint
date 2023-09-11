@@ -113,7 +113,7 @@ public enum Issue: LocalizedError, Equatable {
         case let .fileNotWritable(path):
             return "Cannot write to file at path '\(path)'."
         case let .noSuchFileOrDirectory(path):
-            return "No file or directory found at '\(path)'."
+            return "No file or directory found at path '\(path)'."
         case let .indexingError(path, id):
             return "Cannot index file at path '\(path ?? "...")' within '\(id)' rule."
         case let .missingCompilerArguments(path, id):

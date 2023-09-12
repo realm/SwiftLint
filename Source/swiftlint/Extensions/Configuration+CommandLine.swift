@@ -247,7 +247,7 @@ extension Configuration {
 
             queuedPrintError("\(visitor.action) Swift files \(filesInfo)")
         }
-        return visitor.paths.flatMap {
+        let files = visitor.paths.flatMap {
             self.lintableFiles(
                 inPath: $0,
                 forceExclude: visitor.forceExclude,
@@ -255,6 +255,17 @@ extension Configuration {
                     ? .prefix
                     : .paths(excludedPaths: excludedPaths()))
         }
+
+        if files.isEmpty, visitor.paths.isNotEmpty, visitor.paths != [""] {
+            if visitor.paths.allSatisfy({ !$0.exists || !FileManager.default.isReadableFile(atPath: $0) }) {
+                let paths = visitor.paths.joined(separator: ", ")
+                throw SwiftLintError.usageError(
+                    description: "No readable files or directories found at paths: \(paths)"
+                )
+            }
+        }
+
+        return files
     }
 
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,

@@ -81,6 +81,10 @@ public extension String {
         exists(isDirectory: true)
     }
 
+    var exists: Bool {
+        FileManager.default.fileExists(atPath: self)
+    }
+
     private func exists(isDirectory: Bool) -> Bool {
         if self.isEmpty {
             return false

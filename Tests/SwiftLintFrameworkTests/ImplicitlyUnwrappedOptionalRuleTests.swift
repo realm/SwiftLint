@@ -27,9 +27,9 @@ class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
     func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInWeakMode() {
         let baseDescription = ImplicitlyUnwrappedOptionalRule.description
         let triggeringExamples = [
-            Example("private weak var label: UILabel!"),
-            Example("weak var label: UILabel!"),
-            Example("@objc weak var label: UILabel!")
+            Example("private weak var label: UILabel↓!"),
+            Example("weak var label: UILabel↓!"),
+            Example("@objc weak var label: UILabel↓!")
         ]
 
         let nonTriggeringExamples = [

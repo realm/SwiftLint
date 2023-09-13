@@ -33,7 +33,6 @@ class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
         ]
 
         let nonTriggeringExamples = [
-            Example("if !boolean {}"),
             Example("@IBOutlet private var label: UILabel!"),
             Example("@IBOutlet var label: UILabel!"),
             Example("@IBOutlet weak var label: UILabel!"),

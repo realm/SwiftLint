@@ -43,7 +43,6 @@ class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["mode": "weak_except_iboutlets"],
-                   commentDoesntViolate: true, stringDoesntViolate: true)
+        verifyRule(description, ruleConfiguration: ["mode": "weak_except_iboutlets"])
     }
 }

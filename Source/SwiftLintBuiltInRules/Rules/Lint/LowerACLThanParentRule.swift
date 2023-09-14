@@ -148,7 +148,7 @@ private extension DeclModifierSyntax {
         switch name.tokenKind {
         case .keyword(.internal)
             where nearestNominalParent.modifiers.isPrivate ||
-                nearestNominalParent.modifiers.isFileprivate:
+                  nearestNominalParent.modifiers?.isFileprivate == true:
             return true
         case .keyword(.internal)
             where !nearestNominalParent.modifiers.containsACLModifier:
@@ -156,11 +156,11 @@ private extension DeclModifierSyntax {
                 return false
             }
             return nominalExtension.modifiers.isPrivate ||
-                nominalExtension.modifiers.isFileprivate
+                   nominalExtension.modifiers?.isFileprivate == true
         case .keyword(.public)
             where nearestNominalParent.modifiers.isPrivate ||
-                nearestNominalParent.modifiers.isFileprivate ||
-                nearestNominalParent.modifiers.isInternal:
+                  nearestNominalParent.modifiers?.isFileprivate == true ||
+                  nearestNominalParent.modifiers.isInternal:
             return true
         case .keyword(.public)
             where !nearestNominalParent.modifiers.containsACLModifier:

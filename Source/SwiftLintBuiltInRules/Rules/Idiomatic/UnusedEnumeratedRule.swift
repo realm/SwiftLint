@@ -75,9 +75,9 @@ private extension FunctionCallExprSyntax {
     }
 
     var hasNoArguments: Bool {
-        trailingClosure == nil &&
-            (additionalTrailingClosures?.isEmpty ?? true) &&
-        arguments.isEmpty
+           trailingClosure == nil
+        && additionalTrailingClosures.isEmpty
+        && arguments.isEmpty
     }
 }
 

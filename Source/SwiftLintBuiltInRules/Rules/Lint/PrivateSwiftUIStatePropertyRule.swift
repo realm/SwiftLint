@@ -270,12 +270,10 @@ private extension InheritedTypeListSyntax {
     }
 }
 
-private extension AttributeListSyntax? {
+private extension AttributeListSyntax {
     /// Returns `true` if the attribute's identifier is equal to `State` or `StateObject`
     var hasStateAttribute: Bool {
-        guard let attributes = self else { return false }
-
-        return attributes.contains { attr in
+        contains { attr in
             guard let stateAttr = attr.as(AttributeSyntax.self),
                   let identifier = stateAttr.attributeName.as(IdentifierTypeSyntax.self) else {
                 return false

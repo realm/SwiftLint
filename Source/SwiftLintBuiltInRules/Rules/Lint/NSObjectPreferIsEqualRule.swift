@@ -81,7 +81,7 @@ private extension SyntaxProtocol {
     }
 }
 
-private extension AttributeListSyntax? {
+private extension AttributeListSyntax {
     var isObjc: Bool {
         contains(attributeNamed: "objc") || contains(attributeNamed: "objcMembers")
     }

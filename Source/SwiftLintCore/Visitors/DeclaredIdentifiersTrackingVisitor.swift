@@ -88,7 +88,8 @@ open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
     }
 
     private func collectIdentifiers(from catchClause: CatchClauseSyntax) {
-        if let items = catchClause.catchItems {
+        let items = catchClause.catchItems
+        if items.isNotEmpty {
             items
                 .compactMap { $0.pattern?.as(ValueBindingPatternSyntax.self)?.pattern }
                 .forEach(collectIdentifiers(from:))

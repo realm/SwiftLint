@@ -94,12 +94,12 @@ private extension PrivateOutletRule {
             guard
                 let decl = node.decl.as(VariableDeclSyntax.self),
                 decl.attributes.contains(attributeNamed: "IBOutlet"),
-                decl.modifiers?.isPrivateOrFilePrivate != true
+                !decl.modifiers.isPrivateOrFilePrivate
             else {
                 return
             }
 
-            if allowPrivateSet && decl.modifiers?.isPrivateOrFilePrivateSet == true {
+            if allowPrivateSet && decl.modifiers.isPrivateOrFilePrivateSet {
                 return
             }
 

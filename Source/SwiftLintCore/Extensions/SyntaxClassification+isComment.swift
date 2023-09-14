@@ -6,9 +6,8 @@ public extension SyntaxClassification {
         switch self {
         case .lineComment, .docLineComment, .blockComment, .docBlockComment:
             return true
-        case .none, .keyword, .identifier, .typeIdentifier, .operatorIdentifier, .dollarIdentifier, .integerLiteral,
-             .floatLiteral, .stringLiteral, .stringInterpolationAnchor, .poundDirective, .buildConfigId,
-             .attribute, .editorPlaceholder, .regexLiteral:
+        case .none, .keyword, .identifier, .type, .operator, .dollarIdentifier, .integerLiteral,
+             .floatLiteral, .stringLiteral, .ifConfigDirective, .attribute, .editorPlaceholder, .regexLiteral:
             return false
         }
     }

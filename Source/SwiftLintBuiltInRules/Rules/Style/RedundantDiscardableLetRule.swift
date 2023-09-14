@@ -76,10 +76,10 @@ private extension RedundantDiscardableLetRule {
 
 private extension VariableDeclSyntax {
     var hasRedundantDiscardableLetViolation: Bool {
-        bindingSpecifier.tokenKind == .keyword(.let) &&
-            bindings.count == 1 &&
-            bindings.first!.pattern.is(WildcardPatternSyntax.self) &&
-            bindings.first!.typeAnnotation == nil &&
-            modifiers?.contains(where: { $0.name.text == "async" }) != true
+           bindingSpecifier.tokenKind == .keyword(.let)
+        && bindings.count == 1
+        && bindings.first!.pattern.is(WildcardPatternSyntax.self)
+        && bindings.first!.typeAnnotation == nil
+        && modifiers.contains(where: { $0.name.text == "async" }) != true
     }
 }

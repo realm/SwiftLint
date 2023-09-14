@@ -99,7 +99,7 @@ private extension DiscardedNotificationCenterObserverRule {
     }
 }
 
-private extension AttributeListSyntax? {
+private extension AttributeListSyntax {
     var hasDiscardableResultAttribute: Bool {
         contains(attributeNamed: "discardableResult")
     }

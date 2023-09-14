@@ -70,7 +70,8 @@ private extension RedundantSetAccessControlRule {
         }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard let modifiers = node.modifiers, let setAccessor = modifiers.setAccessor else {
+            let modifiers = node.modifiers
+            guard let setAccessor = modifiers.setAccessor else {
                 return
             }
 
@@ -122,21 +123,7 @@ private extension SyntaxProtocol {
 
 private extension DeclSyntax {
     var modifiers: DeclModifierListSyntax? {
-        if let decl = self.as(ClassDeclSyntax.self) {
-            return decl.modifiers ?? DeclModifierListSyntax([])
-        } else if let decl = self.as(ActorDeclSyntax.self) {
-            return decl.modifiers ?? DeclModifierListSyntax([])
-        } else if let decl = self.as(StructDeclSyntax.self) {
-            return decl.modifiers ?? DeclModifierListSyntax([])
-        } else if let decl = self.as(ProtocolDeclSyntax.self) {
-            return decl.modifiers ?? DeclModifierListSyntax([])
-        } else if let decl = self.as(ExtensionDeclSyntax.self) {
-            return decl.modifiers ?? DeclModifierListSyntax([])
-        } else if let decl = self.as(EnumDeclSyntax.self) {
-            return decl.modifiers ?? DeclModifierListSyntax([])
-        }
-
-        return nil
+        self.asProtocol(WithModifiersSyntax.self)?.modifiers
     }
 }
 

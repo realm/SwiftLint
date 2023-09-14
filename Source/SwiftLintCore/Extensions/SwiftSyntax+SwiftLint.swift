@@ -113,7 +113,7 @@ public extension TokenKind {
     }
 }
 
-public extension DeclModifierListSyntax? {
+public extension DeclModifierListSyntax {
     var containsLazy: Bool {
         contains(tokenKind: .keyword(.lazy))
     }
@@ -147,17 +147,14 @@ public extension DeclModifierListSyntax? {
     }
 
     var isPrivateOrFileprivate: Bool {
-        guard let modifiers = self else {
-            return false
-        }
-        return modifiers.contains { elem in
+        contains { elem in
             (elem.name.tokenKind == .keyword(.private) || elem.name.tokenKind == .keyword(.fileprivate)) &&
                 elem.detail == nil
         }
     }
 
     private func contains(tokenKind: TokenKind) -> Bool {
-        self?.contains { $0.name.tokenKind == tokenKind } ?? false
+        contains { $0.name.tokenKind == tokenKind }
     }
 }
 
@@ -168,9 +165,9 @@ public extension AttributeSyntax {
     }
 }
 
-public extension AttributeListSyntax? {
+public extension AttributeListSyntax {
     func contains(attributeNamed attributeName: String) -> Bool {
-        self?.contains { $0.as(AttributeSyntax.self)?.attributeNameText == attributeName } == true
+        contains { $0.as(AttributeSyntax.self)?.attributeNameText == attributeName } == true
     }
 }
 
@@ -186,7 +183,7 @@ public extension VariableDeclSyntax {
     }
 
     var weakOrUnownedModifier: DeclModifierSyntax? {
-        modifiers?.first { decl in
+        modifiers.first { decl in
             decl.name.tokenKind == .keyword(.weak) ||
                 decl.name.tokenKind == .keyword(.unowned)
         }

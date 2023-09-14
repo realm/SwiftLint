@@ -154,7 +154,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifierIndex: modifierIndex))
+            let newNode = node.with(\.modifiers, node.modifiers.replacing(fileprivateModifierIndex: modifierIndex))
             return DeclSyntax(newNode)
         }
 
@@ -166,7 +166,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifierIndex: modifierIndex))
+            let newNode = node.with(\.modifiers, node.modifiers.replacing(fileprivateModifierIndex: modifierIndex))
             return DeclSyntax(newNode)
         }
 
@@ -178,7 +178,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifierIndex: modifierIndex))
+            let newNode = node.with(\.modifiers, node.modifiers.replacing(fileprivateModifierIndex: modifierIndex))
             return DeclSyntax(newNode)
         }
 
@@ -190,7 +190,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifierIndex: modifierIndex))
+            let newNode = node.with(\.modifiers, node.modifiers.replacing(fileprivateModifierIndex: modifierIndex))
             return DeclSyntax(newNode)
         }
 
@@ -202,7 +202,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifierIndex: modifierIndex))
+            let newNode = node.with(\.modifiers, node.modifiers.replacing(fileprivateModifierIndex: modifierIndex))
             return DeclSyntax(newNode)
         }
 
@@ -214,7 +214,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifierIndex: modifierIndex))
+            let newNode = node.with(\.modifiers, node.modifiers.replacing(fileprivateModifierIndex: modifierIndex))
             return DeclSyntax(newNode)
         }
 
@@ -226,7 +226,7 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifierIndex: modifierIndex))
+            let newNode = node.with(\.modifiers, node.modifiers.replacing(fileprivateModifierIndex: modifierIndex))
             return DeclSyntax(newNode)
         }
 
@@ -238,24 +238,22 @@ private extension PrivateOverFilePrivateRule {
             }
 
             correctionPositions.append(modifier.positionAfterSkippingLeadingTrivia)
-            let newNode = node.with(\.modifiers, node.modifiers?.replacing(fileprivateModifierIndex: modifierIndex))
+            let newNode = node.with(\.modifiers, node.modifiers.replacing(fileprivateModifierIndex: modifierIndex))
             return DeclSyntax(newNode)
         }
     }
 }
 
-private extension DeclModifierListSyntax? {
+private extension DeclModifierListSyntax {
     var fileprivateModifierIndex: DeclModifierListSyntax.Index? {
-        self?.firstIndex(where: { $0.name.tokenKind == .keyword(.fileprivate) })
+        firstIndex(where: { $0.name.tokenKind == .keyword(.fileprivate) })
     }
 
     var fileprivateModifier: DeclModifierSyntax? {
-        fileprivateModifierIndex.flatMap { self?[$0] }
+        fileprivateModifierIndex.flatMap { self[$0] }
     }
-}
 
-private extension DeclModifierListSyntax {
-    func replacing(fileprivateModifierIndex: DeclModifierListSyntax.Index) -> DeclModifierListSyntax? {
+    func replacing(fileprivateModifierIndex: DeclModifierListSyntax.Index) -> DeclModifierListSyntax {
         let fileprivateModifier = self[fileprivateModifierIndex]
         return with(
             \.[fileprivateModifierIndex],

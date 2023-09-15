@@ -149,14 +149,11 @@ Insert the following as the script:
 
 ![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/runscript.png)
 
-> Xcode 15 made a significant change by setting the default value of the ENABLE_USER_SCRIPT_SANDBOXING Build Setting from NO to YES.
-> As a result, SwiftLint encounters an error related to missing file permissions,
-> which typically manifests as follows: `error: Sandbox: swiftlint(19427) deny(1) file-read-data.`
->
-> To resolve this issue, it is necessary to manually adjust the ENABLE_USER_SCRIPT_SANDBOXING setting to NO for the specific target that SwiftLint is being configured for.
-> This adjustment will ensure that SwiftLint functions properly.
->
-> Special thanks to [Michal Tynior](https://thisdevbrain.com/swiftlint-permission-issue/) for providing this solution.
+Xcode 15 made a significant change by setting the default value of the `ENABLE_USER_SCRIPT_SANDBOXING` Build Setting from `NO` to `YES`.
+As a result, SwiftLint encounters an error related to missing file permissions,
+which typically manifests as follows: `error: Sandbox: swiftlint(19427) deny(1) file-read-data.`
+
+To resolve this issue, it is necessary to manually set the `ENABLE_USER_SCRIPT_SANDBOXING` setting to `NO` for the specific target that SwiftLint is being configured for.
 
 If you installed SwiftLint via Homebrew on Apple Silicon, you might experience this warning:
 

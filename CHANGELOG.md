@@ -229,6 +229,10 @@
   (default) as usual.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Extend `implicitly_unwrapped_optional` rule with the new mode
+  `weak_except_iboutlets` that only checks `weak` variables.  
+  [Ricky Tan](https://github.com/rickytan)
+
 * Mention a rule's identifier in the console message that is printed when the
   rule's associated configuration entry contains invalid values.  
   [SimplyDanny](https://github.com/SimplyDanny)

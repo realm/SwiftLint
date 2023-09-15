@@ -10,19 +10,19 @@ def swiftlint_repos(bzlmod = False):
             url = "https://github.com/jpsim/SourceKitten/releases/download/0.34.1/SourceKitten-0.34.1.tar.gz",
         )
 
+        http_archive(
+            name = "SwiftSyntax",
+            sha256 = "1cddda9f7d249612e3d75d4caa8fd9534c0621b8a890a7d7524a4689bce644f1",
+            strip_prefix = "swift-syntax-509.0.0",
+            url = "https://github.com/apple/swift-syntax/archive/refs/tags/509.0.0.tar.gz",
+        )
+
     http_archive(
         name = "swiftlint_com_github_scottrhoyt_swifty_text_table",
         sha256 = "b77d403db9f33686caeb2a12986997fb02a0819e029e669c6b9554617c4fd6ae",
         build_file = "@SwiftLint//bazel:SwiftyTextTable.BUILD",
         strip_prefix = "SwiftyTextTable-0.9.0",
         url = "https://github.com/scottrhoyt/SwiftyTextTable/archive/refs/tags/0.9.0.tar.gz",
-    )
-
-    http_archive(
-        name = "SwiftSyntax",
-        sha256 = "1cddda9f7d249612e3d75d4caa8fd9534c0621b8a890a7d7524a4689bce644f1",
-        strip_prefix = "swift-syntax-509.0.0",
-        url = "https://github.com/apple/swift-syntax/archive/refs/tags/509.0.0.tar.gz",
     )
 
     http_archive(

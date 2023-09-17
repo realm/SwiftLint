@@ -1118,12 +1118,6 @@ class StrongIBOutletRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-class SuperfluousDisableCommandRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SuperfluousDisableCommandRule.description)
-    }
-}
-
 class SuperfluousElseRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SuperfluousElseRule.description)

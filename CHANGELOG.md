@@ -86,7 +86,7 @@
 * Adds a `strict` configuration file setting, equivalent to the `--strict`
   command line option.
   [Martin Redington](https://github.com/mildm8nnered)
-  [#XXXX](https://github.com/realm/SwiftLint/issues/XXXX)
+  [#5226](https://github.com/realm/SwiftLint/issues/5226)
 
 #### Bug Fixes
 

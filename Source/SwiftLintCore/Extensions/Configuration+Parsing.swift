@@ -14,6 +14,7 @@ extension Configuration {
         case indentation = "indentation"
         case analyzerRules = "analyzer_rules"
         case allowZeroLintableFiles = "allow_zero_lintable_files"
+        case strict = "strict"
         case childConfig = "child_config"
         case parentConfig = "parent_config"
         case remoteConfigTimeout = "remote_timeout"
@@ -88,7 +89,8 @@ extension Configuration {
             reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
             cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
             pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },
-            allowZeroLintableFiles: dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false
+            allowZeroLintableFiles: dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false,
+            strict: dict[Key.strict.rawValue] as? Bool ?? false
         )
     }
 

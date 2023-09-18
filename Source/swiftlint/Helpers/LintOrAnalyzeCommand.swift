@@ -60,15 +60,22 @@ struct LintOrAnalyzeCommand {
                 let start = Date()
                 let (violationsBeforeLeniency, currentRuleTimes) = linter
                     .styleViolationsAndRuleTimes(using: builder.storage)
-                currentViolations = applyLeniency(options: options, violations: violationsBeforeLeniency)
+                currentViolations = applyLeniency(
+                    options: options,
+                    strict: builder.configuration.strict,
+                    violations: violationsBeforeLeniency
+                )
                 visitorMutationQueue.sync {
                     builder.fileBenchmark.record(file: linter.file, from: start)
                     currentRuleTimes.forEach { builder.ruleBenchmark.record(id: $0, time: $1) }
                     builder.violations += currentViolations
                 }
             } else {
-                currentViolations = applyLeniency(options: options,
-                                                  violations: linter.styleViolations(using: builder.storage))
+                currentViolations = applyLeniency(
+                    options: options,
+                    strict: builder.configuration.strict,
+                    violations: linter.styleViolations(using: builder.storage)
+                )
                 visitorMutationQueue.sync {
                     builder.violations += currentViolations
                 }
@@ -139,8 +146,14 @@ struct LintOrAnalyzeCommand {
             reason: "Number of warnings exceeded threshold of \(threshold).")
     }
 
-    private static func applyLeniency(options: LintOrAnalyzeOptions, violations: [StyleViolation]) -> [StyleViolation] {
-        switch (options.lenient, options.strict) {
+    private static func applyLeniency(
+        options: LintOrAnalyzeOptions,
+        strict: Bool,
+        violations: [StyleViolation]
+    ) -> [StyleViolation] {
+        let strict = (strict && !options.lenient) || options.strict
+
+        switch (options.lenient, strict) {
         case (false, false):
             return violations
 

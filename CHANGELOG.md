@@ -83,6 +83,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5215](https://github.com/realm/SwiftLint/issues/5215)
 
+* Adds a `strict` configuration file setting, equivalent to the `--strict`
+  command line option.
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#XXXX](https://github.com/realm/SwiftLint/issues/XXXX)
+
 #### Bug Fixes
 
 * Respect grapheme clusters in counting the number of characters in the `collection_alignment` rule.  

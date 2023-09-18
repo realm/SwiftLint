@@ -35,6 +35,9 @@ public struct Configuration {
     /// Allow or disallow SwiftLint to exit successfully when passed only ignored or unlintable files.
     public let allowZeroLintableFiles: Bool
 
+    /// Treat warnings as errors
+    public let strict: Bool
+
     /// This value is `true` iff the `--config` parameter was used to specify (a) configuration file(s)
     /// In particular, this means that the value is also `true` if the `--config` parameter
     /// was used to explicitly specify the default `.swiftlint.yml` as the configuration file
@@ -69,7 +72,8 @@ public struct Configuration {
         warningThreshold: Int?,
         reporter: String,
         cachePath: String?,
-        allowZeroLintableFiles: Bool
+        allowZeroLintableFiles: Bool,
+        strict: Bool
     ) {
         self.rulesWrapper = rulesWrapper
         self.fileGraph = fileGraph
@@ -80,6 +84,7 @@ public struct Configuration {
         self.reporter = reporter
         self.cachePath = cachePath
         self.allowZeroLintableFiles = allowZeroLintableFiles
+        self.strict = strict
     }
 
     /// Creates a Configuration by copying an existing configuration.
@@ -96,6 +101,7 @@ public struct Configuration {
         basedOnCustomConfigurationFiles = configuration.basedOnCustomConfigurationFiles
         cachePath = configuration.cachePath
         allowZeroLintableFiles = configuration.allowZeroLintableFiles
+        strict = configuration.strict
     }
 
     /// Creates a `Configuration` by specifying its properties directly,
@@ -117,6 +123,7 @@ public struct Configuration {
     /// - parameter cachePath:              The location of the persisted cache to use whith this configuration.
     /// - parameter pinnedVersion:          The SwiftLint version defined in this configuration.
     /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable files
+    /// - parameter strict:                 Treat warnings as errors
     @_spi(TestHelper)
     public init(
         rulesMode: RulesMode = .default(disabled: [], optIn: []),
@@ -130,7 +137,8 @@ public struct Configuration {
         reporter: String? = nil,
         cachePath: String? = nil,
         pinnedVersion: String? = nil,
-        allowZeroLintableFiles: Bool = false
+        allowZeroLintableFiles: Bool = false,
+        strict: Bool = false
     ) {
         if let pinnedVersion, pinnedVersion != Version.current.value {
             queuedPrintError(
@@ -155,7 +163,8 @@ public struct Configuration {
             warningThreshold: warningThreshold,
             reporter: reporter ?? XcodeReporter.identifier,
             cachePath: cachePath,
-            allowZeroLintableFiles: allowZeroLintableFiles
+            allowZeroLintableFiles: allowZeroLintableFiles,
+            strict: strict
         )
     }
 
@@ -259,6 +268,7 @@ extension Configuration: Hashable {
         hasher.combine(warningThreshold)
         hasher.combine(reporter)
         hasher.combine(allowZeroLintableFiles)
+        hasher.combine(strict)
         hasher.combine(basedOnCustomConfigurationFiles)
         hasher.combine(cachePath)
         hasher.combine(rules.map { type(of: $0).description.identifier })
@@ -275,7 +285,8 @@ extension Configuration: Hashable {
             lhs.cachePath == rhs.cachePath &&
             lhs.rules == rhs.rules &&
             lhs.fileGraph == rhs.fileGraph &&
-            lhs.allowZeroLintableFiles == rhs.allowZeroLintableFiles
+            lhs.allowZeroLintableFiles == rhs.allowZeroLintableFiles &&
+            lhs.strict == rhs.strict
     }
 }
 

@@ -56,6 +56,7 @@ class ConfigurationTests: SwiftLintTestCase {
         XCTAssertEqual(config.reporter, "xcode")
         XCTAssertEqual(reporterFrom(identifier: config.reporter).identifier, "xcode")
         XCTAssertFalse(config.allowZeroLintableFiles)
+        XCTAssertFalse(config.strict)
     }
 
     func testInitWithRelativePathAndRootPath() {
@@ -69,6 +70,7 @@ class ConfigurationTests: SwiftLintTestCase {
         XCTAssertEqual(config.indentation, expectedConfig.indentation)
         XCTAssertEqual(config.reporter, expectedConfig.reporter)
         XCTAssertTrue(config.allowZeroLintableFiles)
+        XCTAssertTrue(config.strict)
     }
 
     func testEnableAllRulesConfiguration() throws {
@@ -100,7 +102,7 @@ class ConfigurationTests: SwiftLintTestCase {
 
         let config = try Configuration(dict: ["only_rules": only, "custom_rules": customRules])
         guard let resultingCustomRules = config.rules.first(where: { $0 is CustomRules }) as? CustomRules
-            else {
+        else {
             XCTFail("Custom rules are expected to be present")
             return
         }
@@ -420,6 +422,11 @@ class ConfigurationTests: SwiftLintTestCase {
     func testAllowZeroLintableFiles() throws {
         let configuration = try Configuration(dict: ["allow_zero_lintable_files": true])
         XCTAssertTrue(configuration.allowZeroLintableFiles)
+    }
+
+    func testStrict() throws {
+        let configuration = try Configuration(dict: ["strict": true])
+        XCTAssertTrue(configuration.strict)
     }
 }
 

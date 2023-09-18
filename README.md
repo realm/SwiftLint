@@ -524,6 +524,9 @@ excluded: # case-sensitive paths to ignore during linting. Takes precedence over
 # If true, SwiftLint will not fail if no lintable files are found.
 allow_zero_lintable_files: false
 
+# If true, SwiftLint will treat all warnings as errors.
+strict: false
+
 # configurable rules can be customized from this configuration file
 # binary rules can set their severity level
 force_cast: warning # implicitly

@@ -7,7 +7,7 @@ struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
         identifier: "switch_case_alignment",
         name: "Switch and Case Statement Alignment",
         description: """
-            Case statements should vertically align with their enclosing switch statement, or indented if configured \
+            Case statements should vertically align with their closing brace, or indented if configured \
             otherwise.
             """,
         kind: .style,
@@ -33,19 +33,7 @@ struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
                 }
               }
             }
-            """, excludeFromDocumentation: true),
-            Example("""
-            let a = switch i {
-                case 1: 1
-                default: 2
-            }
-            """),
-            Example("""
-            return switch i {
-                case 1: 1
-                default: 2
-            }
-            """)
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
@@ -67,12 +55,8 @@ extension SwitchCaseAlignmentRule {
         }
 
         override func visitPost(_ node: SwitchExprSyntax) {
-            guard node.parent?.is(ExpressionStmtSyntax.self) == true else {
-                // Skip `switch` expressions used as part of other expressions for the time being.
-                return
-            }
-            let switchPosition = node.switchKeyword.positionAfterSkippingLeadingTrivia
-            let switchColumn = locationConverter.location(for: switchPosition).column
+            let closingBracePosition = node.rightBrace.positionAfterSkippingLeadingTrivia
+            let closingBraceColumn = locationConverter.location(for: closingBracePosition).column
             guard node.cases.isNotEmpty,
                 let firstCasePosition = node.cases.first?.positionAfterSkippingLeadingTrivia
             else {
@@ -85,8 +69,8 @@ extension SwitchCaseAlignmentRule {
                 let casePosition = `case`.positionAfterSkippingLeadingTrivia
                 let caseColumn = locationConverter.location(for: casePosition).column
 
-                let hasViolation = (indentedCases && caseColumn <= switchColumn) ||
-                    (!indentedCases && caseColumn != switchColumn) ||
+                let hasViolation = (indentedCases && caseColumn <= closingBraceColumn) ||
+                    (!indentedCases && caseColumn != closingBraceColumn) ||
                     (indentedCases && caseColumn != firstCaseColumn)
 
                 guard hasViolation else {
@@ -96,7 +80,7 @@ extension SwitchCaseAlignmentRule {
                 let reason = """
                     Case statements should \
                     \(indentedCases ? "be indented within" : "vertically aligned with") \
-                    their enclosing switch statement
+                    their closing brace
                     """
 
                 violations.append(ReasonedRuleViolation(position: casePosition, reason: reason))
@@ -151,6 +135,12 @@ extension SwitchCaseAlignmentRule {
                     \(violationMarker)default:
                         print('Some other number')
                 }
+                """),
+                Example("""
+                let a = switch i {
+                    \(violationMarker)case 1: 1
+                    \(violationMarker)default: 2
+                }
                 """)
             ]
         }
@@ -196,6 +186,14 @@ extension SwitchCaseAlignmentRule {
                 \(violationMarker)default:
                     print('Some other number')
                 }
+                """),
+                Example("""
+                func f() -> Int {
+                    return switch i {
+                    \(violationMarker)case 1: 1
+                    \(violationMarker)default: 2
+                    }
+                }
                 """)
             ]
         }
@@ -220,6 +218,12 @@ extension SwitchCaseAlignmentRule {
                     \(indentation)\(indentedCasesOption ? violationMarker : "")case false:
                     \(indentation)print('blue')
                     }
+                }
+                """),
+                Example("""
+                let a = switch i {
+                \(indentation)case 1: 1
+                    \(indentation)\(indentedCasesOption ? "" : violationMarker)default: 2
                 }
                 """)
             ]

@@ -13,14 +13,20 @@ public struct SuperfluousDisableCommandRule: ConfigurationProviderRule, SourceKi
             """,
         kind: .lint,
         nonTriggeringExamples: [
-            Example("↓let abc:Void // swiftlint:disable:this colon"),
-            Example("↓// swiftlint:disable colon (If it is enabled in the configuration file)"),
-            Example("↓// swiftlint:enable colon (If it is disabled in the configuration file)")
+            Example("let abc:Void // swiftlint:disable:this colon"),
+            Example("""
+                // swiftlint:disable colon
+                let abc:Void
+                // swiftlint:enable colon
+                """)
         ],
         triggeringExamples: [
-            Example("↓let abc: Void // swiftlint:disable:this colon"),
-            Example("↓// swiftlint:disable colon (If it is disabled in the configuration file)"),
-            Example("↓// swiftlint:enable colon (If it is enabled in the configuration file)")
+            Example("let abc: Void // swiftlint:disable:this colon"),
+            Example("""
+                // swiftlint:disable colon
+                let abc: Void
+                // swiftlint:enable colon
+                """)
         ]
     )
 

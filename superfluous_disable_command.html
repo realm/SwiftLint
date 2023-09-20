@@ -373,6 +373,20 @@ warning
 </tbody>
 </table></li>
 </ul>
+<h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span><span class="kt">Void</span> <span class="c1">// swiftlint:disable:this colon</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// swiftlint:disable colon</span>
+<span class="k">let</span> <span class="nv">abc</span><span class="p">:</span><span class="kt">Void</span>
+<span class="c1">// swiftlint:enable colon</span>
+</code></pre>
+<h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="kt">Void</span> <span class="c1">// swiftlint:disable:this colon</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// swiftlint:disable colon</span>
+<span class="k">let</span> <span class="nv">abc</span><span class="p">:</span> <span class="kt">Void</span>
+<span class="c1">// swiftlint:enable colon</span>
+</code></pre>
 
           </div>
         </section>

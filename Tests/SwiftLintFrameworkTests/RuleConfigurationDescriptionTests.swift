@@ -5,6 +5,7 @@ import XCTest
 
 // swiftlint:disable:next type_body_length
 class RuleConfigurationDescriptionTests: XCTestCase {
+    @AutoApply
     private struct TestConfiguration: RuleConfiguration {
         typealias Parent = RuleMock // swiftlint:disable:this nesting
 
@@ -16,14 +17,16 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         var symbol = Symbol(value: "value")
         @ConfigurationElement(key: "integer")
         var integer = 2
-        @ConfigurationElement(key: "nil")
-        var `nil`: Int?
+        @ConfigurationElement(key: "null")
+        var null: Int?
         @ConfigurationElement(key: "double")
         var double = 2.1
         @ConfigurationElement(key: "severity")
         var severity = ViolationSeverity.warning
         @ConfigurationElement(key: "list")
-        var list: [OptionType?] = [.flag(true), .string("value")]
+        var list = ["string1", "string2"]
+        @ConfigurationElement(key: "set")
+        var set: Set<Int> = [1, 2, 3]
         @ConfigurationElement
         var severityConfig = SeverityConfiguration<Parent>(.error)
         @ConfigurationElement(key: "SEVERITY")
@@ -32,8 +35,6 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         var inlinedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 1, error: 2)
         @ConfigurationElement(key: "levels")
         var nestedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 3, error: nil)
-
-        mutating func apply(configuration: Any) throws {}
 
         func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool { false }
     }
@@ -49,7 +50,8 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             integer: 2; \
             double: 2.1; \
             severity: warning; \
-            list: [true, "value"]; \
+            list: ["string1", "string2"]; \
+            set: [1, 2, 3]; \
             severity: error; \
             SEVERITY: warning; \
             warning: 1; \
@@ -116,7 +118,15 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             list
             </td>
             <td>
-            [true, &quot;value&quot;]
+            [&quot;string1&quot;, &quot;string2&quot;]
+            </td>
+            </tr>
+            <tr>
+            <td>
+            set
+            </td>
+            <td>
+            [1, 2, 3]
             </td>
             </tr>
             <tr>
@@ -184,7 +194,8 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             integer: 2
             double: 2.1
             severity: warning
-            list: [true, "value"]
+            list: ["string1", "string2"]
+            set: [1, 2, 3]
             severity: error
             SEVERITY: warning
             warning: 1
@@ -439,6 +450,36 @@ class RuleConfigurationDescriptionTests: XCTestCase {
               symbol: value
             string: "value"
             """)
+    }
+
+    func testUpdate() throws {
+        var configuration = TestConfiguration()
+
+        try configuration.apply(configuration: [
+            "flag": false,
+            "string": "new value",
+            "symbol": "new symbol",
+            "integer": 5,
+            "null": 0,
+            "double": 5.1,
+            "severity": "error",
+            "list": ["string3", "string4"],
+            "set": [4, 5, 6],
+            "SEVERITY": "error",
+            "levels": ["warning": 6, "error": 7]
+        ])
+
+        XCTAssertFalse(configuration.flag)
+        XCTAssertEqual(configuration.string, "new value")
+        XCTAssertEqual(configuration.symbol, Symbol(value: "new symbol"))
+        XCTAssertEqual(configuration.integer, 5)
+        XCTAssertEqual(configuration.null, 0)
+        XCTAssertEqual(configuration.double, 5.1)
+        XCTAssertEqual(configuration.severity, .error)
+        XCTAssertEqual(configuration.list, ["string3", "string4"])
+        XCTAssertEqual(configuration.set, [4, 5, 6])
+        XCTAssertEqual(configuration.renamedSeverityConfig, .error)
+        XCTAssertEqual(configuration.nestedSeverityLevels, SeverityLevelsConfiguration(warning: 6, error: 7))
     }
 
     private func description(@RuleConfigurationDescriptionBuilder _ content: () -> RuleConfigurationDescription)

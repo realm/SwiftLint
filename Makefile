@@ -133,6 +133,9 @@ package: build
 		--version "$(VERSION_STRING)" \
 		"$(OUTPUT_PACKAGE)"
 
+bazel_test:
+	bazel test --test_output=errors //Tests/...
+
 bazel_release:
 	bazel build :release
 	mv bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 .

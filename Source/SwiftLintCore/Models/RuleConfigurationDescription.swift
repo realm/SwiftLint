@@ -308,12 +308,21 @@ public protocol AcceptableByConfigurationElement {
     ///
     /// - Returns: Configuration description of this object.
     func asDescription(with key: String) -> RuleConfigurationDescription
+
+    /// Update the object.
+    /// 
+    /// - Parameter value: New underlying data for the object.
+    mutating func apply(_ value: Any?, ruleID: String) throws
 }
 
+/// Default implementations which are shortcuts applicable for most of the types conforming to the protocol.
 public extension AcceptableByConfigurationElement {
     func asDescription(with key: String) -> RuleConfigurationDescription {
-        // By default, this method is just a shortcut applicable for most of the types conforming to the protocol.
         RuleConfigurationDescription(options: [key => asOption()])
+    }
+
+    func apply(_ value: Any?, ruleID: String) throws {
+        throw Issue.genericError("Not yet implemented")
     }
 }
 
@@ -411,6 +420,10 @@ extension Optional: AcceptableByConfigurationElement where Wrapped: AcceptableBy
         }
         return .empty
     }
+
+    public mutating func apply(_ value: Any?, ruleID: String) throws {
+        self = value as? Self ?? self
+    }
 }
 
 struct Symbol: Equatable, AcceptableByConfigurationElement {
@@ -419,11 +432,11 @@ struct Symbol: Equatable, AcceptableByConfigurationElement {
     func asOption() -> OptionType {
         .symbol(value)
     }
-}
 
-extension OptionType: AcceptableByConfigurationElement {
-    public func asOption() -> OptionType {
-        self
+    mutating func apply(_ value: Any?, ruleID: String) throws {
+        if let value = value as? String {
+            self = Symbol(value: value)
+        }
     }
 }
 
@@ -431,11 +444,19 @@ extension Bool: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         .flag(self)
     }
+
+    public mutating func apply(_ value: Any?, ruleID: String) throws {
+        self = value as? Self ?? self
+    }
 }
 
 extension String: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         .string(self)
+    }
+
+    public mutating func apply(_ value: Any?, ruleID: String) throws {
+        self = value as? Self ?? self
     }
 }
 
@@ -443,11 +464,21 @@ extension Array: AcceptableByConfigurationElement where Element: AcceptableByCon
     public func asOption() -> OptionType {
         .list(map { $0.asOption() })
     }
+
+    public mutating func apply(_ value: Any?, ruleID: String) throws {
+        self = [Element].array(of: value) ?? self
+    }
 }
 
 extension Set: AcceptableByConfigurationElement where Element: AcceptableByConfigurationElement & Comparable {
     public func asOption() -> OptionType {
         sorted().asOption()
+    }
+
+    public mutating func apply(_ value: Any?, ruleID: String) throws {
+        if let array = [Element].array(of: value) {
+            self = Set(array)
+        }
     }
 }
 
@@ -455,11 +486,19 @@ extension Int: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         .integer(self)
     }
+
+    public mutating func apply(_ value: Any?, ruleID: String) throws {
+        self = value as? Self ?? self
+    }
 }
 
 extension Double: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         .float(self)
+    }
+
+    public mutating func apply(_ value: Any?, ruleID: String) throws {
+        self = value as? Self ?? self
     }
 }
 
@@ -472,6 +511,10 @@ extension NSRegularExpression: AcceptableByConfigurationElement {
 extension Range: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         .symbol("\(lowerBound) ..< \(upperBound)")
+    }
+
+    public mutating func apply(_ value: Any?, ruleID: String) throws {
+        self = value as? Self ?? self
     }
 }
 
@@ -487,6 +530,12 @@ public extension RuleConfiguration {
             return .from(configuration: self)
         }
         return RuleConfigurationDescription(options: [key => asOption()])
+    }
+
+    mutating func apply(_ value: Any?, ruleID: String) throws {
+        if let value {
+            try apply(configuration: value)
+        }
     }
 }
 

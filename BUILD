@@ -3,9 +3,19 @@ load(
     "@build_bazel_rules_swift//swift:swift.bzl",
     "swift_binary",
     "swift_library",
+    "swift_compiler_plugin"
 )
 
 # Targets
+
+swift_compiler_plugin(
+    name = "RuleConfigurationMacros",
+    srcs = glob(["Source/RuleConfigurationMacros/*.swift"]),
+    deps = [
+        "@SwiftSyntax//:SwiftCompilerPlugin_opt",
+        "@SwiftSyntax//:SwiftSyntaxMacros_opt",
+    ],
+)
 
 swift_library(
     name = "SwiftLintCore",
@@ -25,6 +35,9 @@ swift_library(
         "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
         "//conditions:default": [":DyldWarningWorkaround"],
     }),
+    plugins = [
+        ":RuleConfigurationMacros",
+    ],
 )
 
 swift_library(

@@ -1,5 +1,6 @@
 import SwiftLintCore
 
+@AutoApply
 struct NestingConfiguration: RuleConfiguration, Equatable {
     typealias Parent = NestingRule
     typealias Severity = SeverityLevelsConfiguration<Parent>
@@ -12,23 +13,6 @@ struct NestingConfiguration: RuleConfiguration, Equatable {
     private(set) var checkNestingInClosuresAndStatements = true
     @ConfigurationElement(key: "always_allow_one_type_in_functions")
     private(set) var alwaysAllowOneTypeInFunctions = false
-
-    mutating func apply(configuration: Any) throws {
-        guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-
-        if let typeLevelConfiguration = configurationDict[$typeLevel] {
-            try typeLevel.apply(configuration: typeLevelConfiguration)
-        }
-        if let functionLevelConfiguration = configurationDict[$functionLevel] {
-            try functionLevel.apply(configuration: functionLevelConfiguration)
-        }
-        checkNestingInClosuresAndStatements =
-            configurationDict[$checkNestingInClosuresAndStatements] as? Bool ?? true
-        alwaysAllowOneTypeInFunctions =
-            configurationDict[$alwaysAllowOneTypeInFunctions] as? Bool ?? false
-    }
 
     func severity(with config: Severity, for level: Int) -> ViolationSeverity? {
         if let error = config.error, level > error {

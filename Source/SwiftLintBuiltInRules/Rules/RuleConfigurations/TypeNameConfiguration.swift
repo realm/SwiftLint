@@ -1,5 +1,6 @@
 import SwiftLintCore
 
+@AutoApply
 struct TypeNameConfiguration: RuleConfiguration, Equatable {
     typealias Parent = TypeNameRule
 
@@ -10,15 +11,4 @@ struct TypeNameConfiguration: RuleConfiguration, Equatable {
                                                                    maxLengthError: 1000)
     @ConfigurationElement(key: "validate_protocols")
     private(set) var validateProtocols = true
-
-    mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-        try nameConfiguration.apply(configuration: configuration)
-
-        if let validateProtocols = configuration["validate_protocols"] as? Bool {
-            self.validateProtocols = validateProtocols
-        }
-    }
 }

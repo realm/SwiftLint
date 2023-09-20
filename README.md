@@ -60,7 +60,7 @@ running it.
 ### Installing from source:
 
 You can also build and install from source by cloning this project and running
-`make install` (Xcode 13.3 or later).
+`make install` (Xcode 15.0 or later).
 
 ### Using Bazel
 

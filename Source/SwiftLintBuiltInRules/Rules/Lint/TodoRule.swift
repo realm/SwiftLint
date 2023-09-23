@@ -2,7 +2,7 @@ import Foundation
 import SwiftSyntax
 
 struct TodoRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = TodoConfiguration()
 
     static let description = RuleDescription(
         identifier: "todo",
@@ -26,26 +26,34 @@ struct TodoRule: SwiftSyntaxRule, ConfigurationProviderRule {
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
+        Visitor(onlyKeywords: configuration.onlyKeywords)
     }
 }
 
 private extension TodoRule {
     final class Visitor: ViolationsSyntaxVisitor {
+        private let onlyKeywords: Set<String>
+
+        init(onlyKeywords: Set<String>) {
+            self.onlyKeywords = onlyKeywords
+            super.init(viewMode: .sourceAccurate)
+        }
+
         override func visitPost(_ node: TokenSyntax) {
-            let leadingViolations = node.leadingTrivia.violations(offset: node.position)
-            let trailingViolations = node.trailingTrivia.violations(offset: node.endPositionBeforeTrailingTrivia)
+            let leadingViolations = node.leadingTrivia.violations(offset: node.position, onlyKeywords: onlyKeywords)
+            let trailingViolations = node.trailingTrivia.violations(offset: node.endPositionBeforeTrailingTrivia,
+                                                                    onlyKeywords: onlyKeywords)
             violations.append(contentsOf: leadingViolations + trailingViolations)
         }
     }
 }
 
 private extension Trivia {
-    func violations(offset: AbsolutePosition) -> [ReasonedRuleViolation] {
+    func violations(offset: AbsolutePosition, onlyKeywords: Set<String>) -> [ReasonedRuleViolation] {
         var position = offset
         var violations = [ReasonedRuleViolation]()
         for piece in self {
-            violations.append(contentsOf: piece.violations(offset: position))
+            violations.append(contentsOf: piece.violations(offset: position, onlyKeywords: onlyKeywords))
             position += piece.sourceLength
         }
         return violations
@@ -53,14 +61,20 @@ private extension Trivia {
 }
 
 private extension TriviaPiece {
-    func violations(offset: AbsolutePosition) -> [ReasonedRuleViolation] {
+    func violations(offset: AbsolutePosition, onlyKeywords: Set<String>) -> [ReasonedRuleViolation] {
         switch self {
         case
                 .blockComment(let comment),
                 .lineComment(let comment),
                 .docBlockComment(let comment),
                 .docLineComment(let comment):
-            let matches = regex(#"\b((?:TODO|FIXME)(?::|\b))"#)
+
+            // Construct a regex string considering only keywords.
+            let availableKeywords = ["TODO", "FIXME"]
+            let searchKeywords = availableKeywords
+                .filter { onlyKeywords.contains($0) }
+                .joined(separator: "|")
+            let matches = regex(#"\b((?:\#(searchKeywords))(?::|\b))"#)
                 .matches(in: comment, range: comment.bridge().fullNSRange)
             return matches.reduce(into: []) { violations, match in
                 guard let annotationRange = Range(match.range(at: 1), in: comment) else {

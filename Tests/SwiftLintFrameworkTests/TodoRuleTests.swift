@@ -20,8 +20,28 @@ class TodoRuleTests: SwiftLintTestCase {
         XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement)")
     }
 
-    private func violations(_ example: Example) -> [StyleViolation] {
-        let config = makeConfig(nil, TodoRule.description.identifier)!
+    func testOnlyFixMe() {
+        let example = Example("""
+            fatalError() // TODO: Implement todo
+            fatalError() // FIXME: Implement fixme
+        """)
+        let violations = self.violations(example, config: ["only": ["FIXME"]])
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement fixme)")
+    }
+
+    func testOnlyTodo() {
+        let example = Example("""
+            fatalError() // TODO: Implement todo
+            fatalError() // FIXME: Implement fixme
+        """)
+        let violations = self.violations(example, config: ["only": ["TODO"]])
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first!.reason, "TODOs should be resolved (Implement todo)")
+    }
+
+    private func violations(_ example: Example, config: Any? = nil) -> [StyleViolation] {
+        let config = makeConfig(config, TodoRule.description.identifier)!
         return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

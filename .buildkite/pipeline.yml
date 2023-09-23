@@ -1,6 +1,8 @@
 steps:
   - label: "Bazel"
     commands:
+      - echo "+++ List Installed Apps"
+      - ls /Applications
       - echo "+++ Build"
       - bazel build :swiftlint
       - echo "+++ Test"

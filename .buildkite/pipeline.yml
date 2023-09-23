@@ -1,14 +1,12 @@
 steps:
   - label: "Bazel"
     commands:
-      - echo "+++ List Installed Apps"
-      - ls /Applications
       - echo "Clean Bazel"
-      - bazel clean --expunge_async
+      - bazel shutdown && bazel clean --expunge
       - echo "+++ Build"
-      - bazel build :swiftlint
+      - bazel build --xcode_version=15 :swiftlint
       - echo "+++ Test"
-      - bazel test --test_output=errors //Tests/...
+      - bazel test --xcode_version=15 --test_output=errors //Tests/...
   - label: "SwiftPM"
     env:
       DEVELOPER_DIR: /Applications/Xcode-15.0.0.app/Contents/Developer
@@ -25,8 +23,10 @@ steps:
       - bundle exec danger --verbose
   - label: "TSan Tests"
     commands:
+      - echo "Clean Bazel"
+      - bazel shutdown && bazel clean --expunge
       - echo "+++ Test"
-      - bazel test --test_output=errors --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
+      - bazel test --xcode_version=15 --test_output=errors --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
   - label: "Sourcery"
     commands:
       - echo "+++ Run Sourcery"

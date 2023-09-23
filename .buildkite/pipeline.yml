@@ -3,6 +3,8 @@ steps:
     commands:
       - echo "+++ List Installed Apps"
       - ls /Applications
+      - echo "Clean Bazel"
+      - bazel clean --expunge_async
       - echo "+++ Build"
       - bazel build :swiftlint
       - echo "+++ Test"

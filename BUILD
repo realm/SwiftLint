@@ -171,3 +171,27 @@ sh_test(
         ":swiftlint",
     ],
 )
+
+# Xcode versions
+
+xcode_version(
+    name = 'version15_0_0_15A240d',
+    version = '15.0.0.15A240d',
+    aliases = ['15A240d', '15.0.0.15A240d', '15.0', '15.0.0', '15'],
+    default_ios_sdk_version = '17.0',
+    default_tvos_sdk_version = '17.0',
+    default_macos_sdk_version = '14.0',
+    default_watchos_sdk_version = '10.0',
+)
+
+available_xcodes(
+    name = 'fixed_xcode',
+    versions = [':version15_0_0_15A240d'],
+    default = ':version15_0_0_15A240d',
+)
+
+xcode_config(
+    name = "xcode_config",
+    local_versions = ":fixed_xcode",
+    remote_versions = ":fixed_xcode",
+)

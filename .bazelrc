@@ -9,6 +9,7 @@ build --experimental_remote_cache_compression
 build --experimental_remote_build_event_upload=minimal
 build --nolegacy_important_outputs
 build --swiftcopt=-warnings-as-errors
+build --xcode_version_config=//:xcode_config
 
 build:release \
   --compilation_mode=opt \

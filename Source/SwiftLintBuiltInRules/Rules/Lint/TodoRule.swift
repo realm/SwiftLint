@@ -70,8 +70,8 @@ private extension TriviaPiece {
                 .docLineComment(let comment):
 
             // Construct a regex string considering only keywords.
-            let availableKeywords = ["TODO", "FIXME"]
-            let searchKeywords = availableKeywords
+            let searchKeywords = TodoKeyword.allCases
+                .map { $0.rawValue }
                 .filter { onlyKeywords.contains($0) }
                 .joined(separator: "|")
             let matches = regex(#"\b((?:\#(searchKeywords))(?::|\b))"#)

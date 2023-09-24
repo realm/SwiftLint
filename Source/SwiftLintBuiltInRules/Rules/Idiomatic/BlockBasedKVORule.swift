@@ -41,7 +41,7 @@ struct BlockBasedKVORule: SwiftSyntaxRule, ConfigurationProviderRule {
 private extension BlockBasedKVORule {
     private final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard node.modifiers.containsOverride,
+            guard node.modifiers.contains(keyword: .override),
                   case let parameterList = node.signature.parameterClause.parameters,
                   parameterList.count == 4,
                   node.name.text == "observeValue",

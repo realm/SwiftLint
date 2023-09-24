@@ -250,20 +250,10 @@ private extension FunctionDeclSyntax {
            name.text.hasPrefix("test")
         && signature.parameterClause.parameters.isEmpty
         && signature.returnClause == nil
-        && (modifiers.isEmpty || !modifiers.hasStatic)
-    }
-}
-
-private extension DeclModifierListSyntax {
-    var hasPrivate: Bool {
-        contains { $0.name.tokenKind == .keyword(.private) }
-    }
-
-    var hasStatic: Bool {
-        contains { $0.name.tokenKind == .keyword(.static) }
+        && (modifiers.isEmpty || !modifiers.contains(keyword: .static))
     }
 }
 
 private func resultInPrivateProperty(modifiers: DeclModifierListSyntax, attributes: AttributeListSyntax) -> Bool {
-    modifiers.isNotEmpty && modifiers.hasPrivate && !attributes.contains(attributeNamed: "objc")
+    modifiers.contains(keyword: .private) && !attributes.contains(attributeNamed: "objc")
 }

@@ -50,7 +50,7 @@ private extension FunctionParameterCountRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard !node.modifiers.containsOverride else {
+            guard !node.modifiers.contains(keyword: .override) else {
                 return
             }
 

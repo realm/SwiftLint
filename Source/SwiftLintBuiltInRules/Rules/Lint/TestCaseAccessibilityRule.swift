@@ -68,7 +68,7 @@ private extension TestCaseAccessibilityRule {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard !node.modifiers.isPrivateOrFileprivate,
+            guard !node.modifiers.containsPrivateOrFileprivate(),
                   !XCTestHelpers.isXCTestVariable(node) else {
                 return
             }
@@ -125,7 +125,8 @@ private extension TestCaseAccessibilityRule {
         }
 
         private func hasViolation(modifiers: DeclModifierListSyntax, identifierToken: TokenSyntax) -> Bool {
-            !modifiers.isPrivateOrFileprivate && !allowedPrefixes.contains(where: identifierToken.text.hasPrefix)
+               !modifiers.containsPrivateOrFileprivate()
+            && !allowedPrefixes.contains(where: identifierToken.text.hasPrefix)
         }
     }
 }
@@ -144,7 +145,7 @@ private enum XCTestHelpers {
     ]
 
     static func isXCTestFunction(_ function: FunctionDeclSyntax) -> Bool {
-        guard !function.modifiers.containsOverride else {
+        guard !function.modifiers.contains(keyword: .override) else {
             return true
         }
 
@@ -154,7 +155,7 @@ private enum XCTestHelpers {
     }
 
     static func isXCTestVariable(_ variable: VariableDeclSyntax) -> Bool {
-        guard !variable.modifiers.containsOverride else {
+        guard !variable.modifiers.contains(keyword: .override) else {
             return true
         }
 

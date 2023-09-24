@@ -2,8 +2,6 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-// swiftlint:disable file_length
-
 // workaround for https://bugs.swift.org/browse/SR-10121 so we can use `Self` in a closure
 public protocol SwiftLintSyntaxVisitor: SyntaxVisitor {}
 extension SyntaxVisitor: SwiftLintSyntaxVisitor {}
@@ -114,54 +112,42 @@ public extension TokenKind {
 }
 
 public extension DeclModifierListSyntax {
-    var containsLazy: Bool {
-        contains(tokenKind: .keyword(.lazy))
-    }
-
-    var containsOverride: Bool {
-        contains(tokenKind: .keyword(.override))
-    }
-
     var containsStaticOrClass: Bool {
-        isStatic || isClass
+        contains(keyword: .static) || contains(keyword: .class)
     }
 
-    var isStatic: Bool {
-        contains(tokenKind: .keyword(.static))
-    }
-
-    var isClass: Bool {
-        contains(tokenKind: .keyword(.class))
-    }
-
-    var isFileprivate: Bool {
-        contains(tokenKind: .keyword(.fileprivate))
-    }
-
-    var isPrivate: Bool {
-        contains(tokenKind: .keyword(.private))
-    }
-
-    var isFinal: Bool {
-        contains(tokenKind: .keyword(.final))
-    }
-
-    var isPrivateOrFileprivate: Bool {
-        contains { elem in
-            (elem.name.tokenKind == .keyword(.private) || elem.name.tokenKind == .keyword(.fileprivate)) &&
-                elem.detail == nil
+    func containsPrivateOrFileprivate(setOnly: Bool = false) -> Bool {
+        if !contains(keyword: .private), !contains(keyword: .fileprivate) {
+            return false
         }
+        let hasSet = contains { $0.detail?.detail.text == "set" }
+        return setOnly ? hasSet : !hasSet
     }
 
-    private func contains(tokenKind: TokenKind) -> Bool {
-        contains { $0.name.tokenKind == tokenKind }
+    var accessLevelModifier: DeclModifierSyntax? {
+        first { $0.asAccessLevelModifier != nil }
+    }
+
+    func contains(keyword: Keyword) -> Bool {
+        contains { $0.name.tokenKind == .keyword(keyword) }
+    }
+}
+
+public extension DeclModifierSyntax {
+    var asAccessLevelModifier: TokenKind? {
+        switch name.tokenKind {
+        case .keyword(.open), .keyword(.public), .keyword(.package), .keyword(.internal),
+             .keyword(.fileprivate), .keyword(.private):
+            return name.tokenKind
+        default:
+            return nil
+        }
     }
 }
 
 public extension AttributeSyntax {
     var attributeNameText: String {
-        attributeName.as(IdentifierTypeSyntax.self)?.name.text ??
-            attributeName.description
+        attributeName.as(IdentifierTypeSyntax.self)?.name.text ?? attributeName.description
     }
 }
 

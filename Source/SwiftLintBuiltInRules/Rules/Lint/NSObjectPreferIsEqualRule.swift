@@ -47,7 +47,7 @@ private extension ClassDeclSyntax {
 private extension FunctionDeclSyntax {
     var isSelfEqualFunction: Bool {
         guard
-            modifiers.isStatic,
+            modifiers.contains(keyword: .static),
             name.text == "==",
             returnsBool,
             case let parameterList = signature.parameterClause.parameters,

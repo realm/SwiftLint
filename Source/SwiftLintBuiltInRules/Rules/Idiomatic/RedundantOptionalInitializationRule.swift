@@ -120,7 +120,7 @@ private extension RedundantOptionalInitializationRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard node.bindingSpecifier.tokenKind == .keyword(.var),
-                  !node.modifiers.containsLazy else {
+                  !node.modifiers.contains(keyword: .lazy) else {
                 return
             }
 
@@ -140,7 +140,7 @@ private extension RedundantOptionalInitializationRule {
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
             guard node.bindingSpecifier.tokenKind == .keyword(.var),
-                  !node.modifiers.containsLazy else {
+                  !node.modifiers.contains(keyword: .lazy) else {
                 return super.visit(node)
             }
 

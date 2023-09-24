@@ -144,7 +144,7 @@ private extension UnusedSetterValueRule {
             let variableName = node.parameters?.name.text ?? "newValue"
             let visitor = NewValueUsageVisitor(variableName: variableName)
             if !visitor.walk(tree: node, handler: \.isVariableUsed) {
-                if Syntax(node).closestVariableOrSubscript()?.modifiers?.containsOverride == true,
+                if Syntax(node).closestVariableOrSubscript()?.modifiers?.contains(keyword: .override) == true,
                     let body = node.body, body.statements.isEmpty {
                     return
                 }

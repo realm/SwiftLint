@@ -85,11 +85,11 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: VariableDeclSyntax) {
-        if node.modifiers.isClass {
+        if node.modifiers.contains(keyword: .class) {
             if configuration.allowedKinds.contains(.class) {
                 checkViolation(node)
             }
-        } else if node.modifiers.isStatic {
+        } else if node.modifiers.contains(keyword: .static) {
             if configuration.allowedKinds.contains(.static) {
                 checkViolation(node)
             }

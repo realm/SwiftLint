@@ -108,7 +108,7 @@ private extension StructDeclSyntax {
             let member = memberItem.decl
             // Collect all stored variables into a list.
             if let varDecl = member.as(VariableDeclSyntax.self) {
-                if !varDecl.modifiers.isStatic {
+                if !varDecl.modifiers.contains(keyword: .static) {
                     storedProperties.append(varDecl)
                 }
             } else if let initDecl = member.as(InitializerDeclSyntax.self),
@@ -240,18 +240,6 @@ private extension StructDeclSyntax {
         case .private:
             return accessLevel?.name.tokenKind == .keyword(.private)
         }
-    }
-}
-
-private extension DeclModifierListSyntax {
-    var accessLevelModifier: DeclModifierSyntax? {
-        first(where: \.isAccessLevelModifier)
-    }
-}
-
-private extension DeclModifierSyntax {
-    var isAccessLevelModifier: Bool {
-        [.public, .private, .fileprivate, .internal].map(TokenKind.keyword).contains(name.tokenKind)
     }
 }
 

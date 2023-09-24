@@ -52,13 +52,13 @@ private extension OverrideInExtensionRule {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ExtensionDeclSyntax.self) }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if node.modifiers.containsOverride {
+            if node.modifiers.contains(keyword: .override) {
                 violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            if node.modifiers.containsOverride {
+            if node.modifiers.contains(keyword: .override) {
                 violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
             }
         }

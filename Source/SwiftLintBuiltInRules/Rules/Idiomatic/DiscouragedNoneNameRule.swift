@@ -196,9 +196,9 @@ private extension DiscouragedNoneNameRule {
 
         override func visitPost(_ node: VariableDeclSyntax) {
             let type: String? = {
-                if node.modifiers.isClass {
+                if node.modifiers.contains(keyword: .class) {
                     return "`class` member"
-                } else if node.modifiers.isStatic {
+                } else if node.modifiers.contains(keyword: .static) {
                     return "`static` member"
                 } else {
                     return nil

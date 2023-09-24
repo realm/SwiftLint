@@ -97,22 +97,7 @@ private extension ExplicitTopLevelACLRule {
             guard let modifiers else {
                 return true
             }
-
-            return !modifiers.contains(where: \.isACLModifier)
+            return !modifiers.contains { $0.asAccessLevelModifier != nil && $0.detail == nil }
         }
-    }
-}
-
-private extension DeclModifierSyntax {
-    var isACLModifier: Bool {
-        let aclModifiers: Set<TokenKind> = [
-            .keyword(.private),
-            .keyword(.fileprivate),
-            .keyword(.internal),
-            .keyword(.public),
-            .keyword(.open)
-        ]
-
-        return detail == nil && aclModifiers.contains(name.tokenKind)
     }
 }

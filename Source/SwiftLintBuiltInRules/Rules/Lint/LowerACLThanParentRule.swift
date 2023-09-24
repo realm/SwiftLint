@@ -146,29 +146,22 @@ private extension DeclModifierSyntax {
         }
 
         switch name.tokenKind {
-        case .keyword(.internal)
-            where nearestNominalParent.modifiers.isPrivate ||
-                  nearestNominalParent.modifiers?.isFileprivate == true:
+        case .keyword(.internal) where nearestNominalParent.modifiers?.containsPrivateOrFileprivate() == true:
             return true
-        case .keyword(.internal)
-            where !nearestNominalParent.modifiers.containsACLModifier:
+        case .keyword(.internal) where nearestNominalParent.modifiers?.accessLevelModifier == nil:
             guard let nominalExtension = nearestNominalParent.nearestNominalExtensionDeclParent() else {
                 return false
             }
-            return nominalExtension.modifiers.isPrivate ||
-                   nominalExtension.modifiers?.isFileprivate == true
-        case .keyword(.public)
-            where nearestNominalParent.modifiers.isPrivate ||
-                  nearestNominalParent.modifiers?.isFileprivate == true ||
-                  nearestNominalParent.modifiers.isInternal:
+            return nominalExtension.modifiers?.containsPrivateOrFileprivate() == true
+        case .keyword(.public) where nearestNominalParent.modifiers?.containsPrivateOrFileprivate() == true ||
+                                     nearestNominalParent.modifiers?.contains(keyword: .internal) == true:
             return true
-        case .keyword(.public)
-            where !nearestNominalParent.modifiers.containsACLModifier:
+        case .keyword(.public) where nearestNominalParent.modifiers?.accessLevelModifier == nil:
             guard let nominalExtension = nearestNominalParent.nearestNominalExtensionDeclParent() else {
                 return true
             }
-            return !nominalExtension.modifiers.isPublic
-        case .keyword(.open) where !nearestNominalParent.modifiers.isOpen:
+            return nominalExtension.modifiers?.contains(keyword: .public) == false
+        case .keyword(.open) where nearestNominalParent.modifiers?.contains(keyword: .open) == false:
             return true
         default:
             return false
@@ -220,40 +213,5 @@ private extension Syntax {
         } else {
             return nil
         }
-    }
-}
-
-private extension DeclModifierListSyntax? {
-    var isPrivate: Bool {
-        self?.contains(where: { $0.name.tokenKind == .keyword(.private) }) == true
-    }
-
-    var isInternal: Bool {
-        self?.contains(where: { $0.name.tokenKind == .keyword(.internal) }) == true
-    }
-
-    var isPublic: Bool {
-        self?.contains(where: { $0.name.tokenKind == .keyword(.public) }) == true
-    }
-
-    var isOpen: Bool {
-        self?.contains(where: { $0.name.tokenKind == .keyword(.open) }) == true
-    }
-
-    var containsACLModifier: Bool {
-        guard self?.isEmpty == false else {
-            return false
-        }
-        let aclTokens: Set<TokenKind> = [
-            .keyword(.private),
-            .keyword(.fileprivate),
-            .keyword(.internal),
-            .keyword(.public),
-            .keyword(.open)
-        ]
-
-        return self?.contains(where: {
-            aclTokens.contains($0.name.tokenKind)
-        }) == true
     }
 }

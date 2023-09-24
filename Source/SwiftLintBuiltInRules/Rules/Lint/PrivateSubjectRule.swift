@@ -26,7 +26,7 @@ private extension PrivateSubjectRule {
         }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard !node.modifiers.isPrivateOrFileprivate,
+            guard !node.modifiers.containsPrivateOrFileprivate(),
                   !node.modifiers.containsStaticOrClass else {
                 return
             }

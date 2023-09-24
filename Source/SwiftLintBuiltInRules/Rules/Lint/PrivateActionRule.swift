@@ -39,11 +39,11 @@ struct PrivateActionRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule 
 private extension PrivateActionRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            node.modifiers.isPrivateOrFileprivate ? .skipChildren : .visitChildren
+            node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard node.isIBAction, !node.modifiers.isPrivateOrFileprivate else {
+            guard node.isIBAction, !node.modifiers.containsPrivateOrFileprivate() else {
                 return
             }
 

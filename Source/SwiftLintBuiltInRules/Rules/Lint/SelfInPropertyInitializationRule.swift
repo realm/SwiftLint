@@ -98,7 +98,7 @@ struct SelfInPropertyInitializationRule: ConfigurationProviderRule, SwiftSyntaxR
 private extension SelfInPropertyInitializationRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard !node.modifiers.containsLazy,
+            guard !node.modifiers.contains(keyword: .lazy),
                   !node.modifiers.containsStaticOrClass,
                   let closestDecl = node.closestDecl(),
                   closestDecl.is(ClassDeclSyntax.self) else {

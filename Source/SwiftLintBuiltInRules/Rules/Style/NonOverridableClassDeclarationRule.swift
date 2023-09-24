@@ -113,7 +113,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        finalClassScope.push(node.modifiers.isFinal)
+        finalClassScope.push(node.modifiers.contains(keyword: .final))
         return .visitChildren
     }
 
@@ -130,8 +130,10 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     private func checkViolations(for modifiers: DeclModifierListSyntax, types: String) {
-        guard !modifiers.isFinal, let classKeyword = modifiers.first(where: { $0.name.text == "class" }),
-              case let inFinalClass = finalClassScope.peek() == true, inFinalClass || modifiers.isPrivate else {
+        guard !modifiers.contains(keyword: .final),
+              let classKeyword = modifiers.first(where: { $0.name.text == "class" }),
+              case let inFinalClass = finalClassScope.peek() == true,
+              inFinalClass || modifiers.contains(keyword: .private) else {
             return
         }
         violations.append(ReasonedRuleViolation(

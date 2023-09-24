@@ -242,7 +242,7 @@ private extension PrivateSwiftUIStatePropertyRule {
                 let inheritanceClause = visitedTypeInheritances.peek() as? InheritanceClauseSyntax,
                 inheritanceClause.conformsToApplicableSwiftUIProtocol,
                 decl.attributes.hasStateAttribute,
-                !decl.modifiers.isPrivateOrFileprivate
+                !decl.modifiers.containsPrivateOrFileprivate()
             else {
                 return
             }

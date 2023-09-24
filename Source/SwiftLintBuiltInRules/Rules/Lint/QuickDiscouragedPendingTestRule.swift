@@ -53,7 +53,7 @@ private extension FunctionDeclSyntax {
     var isSpecFunction: Bool {
         return name.tokenKind == .identifier("spec") &&
         signature.parameterClause.parameters.isEmpty &&
-            modifiers.containsOverride
+            modifiers.contains(keyword: .override)
     }
 }
 

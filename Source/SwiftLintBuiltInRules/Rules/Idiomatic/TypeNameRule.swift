@@ -136,7 +136,7 @@ private extension String {
     }
 
     func strippingLeadingUnderscoreIfPrivate(modifiers: DeclModifierListSyntax) -> String {
-        if first == "_", modifiers.isPrivateOrFileprivate {
+        if first == "_", modifiers.containsPrivateOrFileprivate() {
             return String(self[index(after: startIndex)...])
         }
         return self

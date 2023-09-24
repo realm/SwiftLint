@@ -57,7 +57,7 @@ struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationProvider
 private extension FunctionDefaultParameterAtEndRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard !node.modifiers.containsOverride, node.signature.containsViolation else {
+            guard !node.modifiers.contains(keyword: .override), node.signature.containsViolation else {
                 return
             }
 
@@ -65,7 +65,7 @@ private extension FunctionDefaultParameterAtEndRule {
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            guard !node.modifiers.containsOverride, node.signature.containsViolation else {
+            guard !node.modifiers.contains(keyword: .override), node.signature.containsViolation else {
                 return
             }
 

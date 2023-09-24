@@ -90,7 +90,7 @@ private extension ProhibitedSuperRule {
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard let body = node.body,
-                  node.modifiers.containsOverride,
+                  node.modifiers.contains(keyword: .override),
                   !node.modifiers.containsStaticOrClass,
                   case let name = node.resolvedName(),
                   resolvedMethodNames.contains(name),

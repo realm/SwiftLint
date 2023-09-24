@@ -93,7 +93,7 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 }
 
 private func isUnneededOverride(_ node: FunctionDeclSyntax) -> Bool {
-    guard node.modifiers.containsOverride, let statement = node.body?.statements.onlyElement else {
+    guard node.modifiers.contains(keyword: .override), let statement = node.body?.statements.onlyElement else {
         return false
     }
 

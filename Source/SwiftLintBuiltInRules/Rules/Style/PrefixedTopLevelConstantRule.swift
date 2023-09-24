@@ -101,7 +101,7 @@ private extension PrefixedTopLevelConstantRule {
                 return
             }
 
-            if onlyPrivateMembers, !node.modifiers.isPrivateOrFileprivate {
+            if onlyPrivateMembers, !node.modifiers.containsPrivateOrFileprivate() {
                 return
             }
 

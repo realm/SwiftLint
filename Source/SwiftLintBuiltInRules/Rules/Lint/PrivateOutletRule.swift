@@ -94,36 +94,16 @@ private extension PrivateOutletRule {
             guard
                 let decl = node.decl.as(VariableDeclSyntax.self),
                 decl.attributes.contains(attributeNamed: "IBOutlet"),
-                !decl.modifiers.isPrivateOrFilePrivate
+                !decl.modifiers.containsPrivateOrFileprivate()
             else {
                 return
             }
 
-            if allowPrivateSet && decl.modifiers.isPrivateOrFilePrivateSet {
+            if allowPrivateSet && decl.modifiers.containsPrivateOrFileprivate(setOnly: true) {
                 return
             }
 
             violations.append(decl.bindingSpecifier.positionAfterSkippingLeadingTrivia)
         }
-    }
-}
-
-private extension DeclModifierListSyntax {
-    var isPrivateOrFilePrivate: Bool {
-        contains(where: \.isPrivateOrFilePrivate)
-    }
-
-    var isPrivateOrFilePrivateSet: Bool {
-        contains(where: \.isPrivateOrFilePrivateSet)
-    }
-}
-
-private extension DeclModifierListSyntax.Element {
-    var isPrivateOrFilePrivate: Bool {
-        (name.text == "private" || name.text == "fileprivate") && detail == nil
-    }
-
-    var isPrivateOrFilePrivateSet: Bool {
-        (name.text == "private" || name.text == "fileprivate") && detail?.detail.text == "set"
     }
 }

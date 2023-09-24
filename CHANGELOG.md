@@ -26,6 +26,11 @@
   is involved.  
   [chrisngabp](https://github.com/chrisngabp)
   [5103](https://github.com/realm/SwiftLint/issues/5103)
+* Add `max_empty_lines_between_functions` configuration option to
+  `vertical_whitespace` rule. With the option set, the rule will use this value
+  instead of `max_empty_lines` for empty lines adjacent to functions.  
+  [bunnyhero](https://github.com/bunnyhero)
+  [#2526](https://github.com/realm/SwiftLint/issues/2526)
 
 * Rewrite `control_statement` rule using SwiftSyntax.  
   [SimplyDanny](https://github.com/SimplyDanny)

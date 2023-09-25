@@ -1,8 +1,10 @@
 import SwiftLintCore
 
-enum TodoKeyword: String, CaseIterable {
+enum TodoKeyword: String, CaseIterable, AcceptableByConfigurationElement {
     case todo = "TODO"
     case fixme = "FIXME"
+
+    func asOption() -> OptionType { .symbol(rawValue) }
 }
 
 struct TodoConfiguration: SeverityBasedRuleConfiguration, Equatable {
@@ -11,7 +13,7 @@ struct TodoConfiguration: SeverityBasedRuleConfiguration, Equatable {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "only")
-    private(set) var onlyKeywords: Set<String> = Set(TodoKeyword.allCases.map { $0.rawValue })
+    private(set) var onlyKeywords: [TodoKeyword] = TodoKeyword.allCases
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
@@ -23,7 +25,7 @@ struct TodoConfiguration: SeverityBasedRuleConfiguration, Equatable {
         }
 
         if let onlyKeywords = configuration[$onlyKeywords] as? [String] {
-            self.onlyKeywords = Set(onlyKeywords)
+            self.onlyKeywords = onlyKeywords.compactMap { TodoKeyword(rawValue: $0) }
         }
     }
 }

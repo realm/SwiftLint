@@ -32,9 +32,9 @@ struct TodoRule: SwiftSyntaxRule, ConfigurationProviderRule {
 
 private extension TodoRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let onlyKeywords: Set<String>
+        private let onlyKeywords: [TodoKeyword]
 
-        init(onlyKeywords: Set<String>) {
+        init(onlyKeywords: [TodoKeyword]) {
             self.onlyKeywords = onlyKeywords
             super.init(viewMode: .sourceAccurate)
         }
@@ -49,7 +49,7 @@ private extension TodoRule {
 }
 
 private extension Trivia {
-    func violations(offset: AbsolutePosition, onlyKeywords: Set<String>) -> [ReasonedRuleViolation] {
+    func violations(offset: AbsolutePosition, onlyKeywords: [TodoKeyword]) -> [ReasonedRuleViolation] {
         var position = offset
         var violations = [ReasonedRuleViolation]()
         for piece in self {
@@ -61,7 +61,7 @@ private extension Trivia {
 }
 
 private extension TriviaPiece {
-    func violations(offset: AbsolutePosition, onlyKeywords: Set<String>) -> [ReasonedRuleViolation] {
+    func violations(offset: AbsolutePosition, onlyKeywords: [TodoKeyword]) -> [ReasonedRuleViolation] {
         switch self {
         case
                 .blockComment(let comment),
@@ -71,8 +71,8 @@ private extension TriviaPiece {
 
             // Construct a regex string considering only keywords.
             let searchKeywords = TodoKeyword.allCases
-                .map { $0.rawValue }
                 .filter { onlyKeywords.contains($0) }
+                .map { $0.rawValue }
                 .joined(separator: "|")
             let matches = regex(#"\b((?:\#(searchKeywords))(?::|\b))"#)
                 .matches(in: comment, range: comment.bridge().fullNSRange)

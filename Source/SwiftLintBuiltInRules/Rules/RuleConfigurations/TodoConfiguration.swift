@@ -13,7 +13,7 @@ struct TodoConfiguration: SeverityBasedRuleConfiguration, Equatable {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "only")
-    private(set) var only: [TodoKeyword] = TodoKeyword.allCases
+    private(set) var only = TodoKeyword.allCases
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

@@ -1,14 +1,14 @@
 import SwiftLintCore
 
-enum TodoKeyword: String, CaseIterable, AcceptableByConfigurationElement {
-    case todo = "TODO"
-    case fixme = "FIXME"
-
-    func asOption() -> OptionType { .symbol(rawValue) }
-}
-
 struct TodoConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TodoRule
+
+    enum TodoKeyword: String, CaseIterable, AcceptableByConfigurationElement {
+        case todo = "TODO"
+        case fixme = "FIXME"
+
+        func asOption() -> OptionType { .symbol(rawValue) }
+    }
 
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)

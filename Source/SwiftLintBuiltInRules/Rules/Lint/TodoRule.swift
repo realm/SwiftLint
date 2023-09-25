@@ -32,9 +32,9 @@ struct TodoRule: SwiftSyntaxRule, ConfigurationProviderRule {
 
 private extension TodoRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let only: [TodoKeyword]
+        private let only: [TodoConfiguration.TodoKeyword]
 
-        init(only: [TodoKeyword]) {
+        init(only: [TodoConfiguration.TodoKeyword]) {
             self.only = only
             super.init(viewMode: .sourceAccurate)
         }
@@ -49,7 +49,7 @@ private extension TodoRule {
 }
 
 private extension Trivia {
-    func violations(offset: AbsolutePosition, only: [TodoKeyword]) -> [ReasonedRuleViolation] {
+    func violations(offset: AbsolutePosition, only: [TodoConfiguration.TodoKeyword]) -> [ReasonedRuleViolation] {
         var position = offset
         var violations = [ReasonedRuleViolation]()
         for piece in self {
@@ -61,7 +61,7 @@ private extension Trivia {
 }
 
 private extension TriviaPiece {
-    func violations(offset: AbsolutePosition, only: [TodoKeyword]) -> [ReasonedRuleViolation] {
+    func violations(offset: AbsolutePosition, only: [TodoConfiguration.TodoKeyword]) -> [ReasonedRuleViolation] {
         switch self {
         case
                 .blockComment(let comment),

@@ -397,11 +397,11 @@ running it.</p>
 <h3 id='installing-from-source' class='heading'>Installing from source:</h3>
 
 <p>You can also build and install from source by cloning this project and running
-<code>make install</code> (Xcode 13.3 or later).</p>
+<code>make install</code> (Xcode 15.0 or later).</p>
 <h3 id='using-bazel' class='heading'>Using Bazel</h3>
 
 <p>Put this in your <code>MODULE.bazel</code>:</p>
-<pre class="highlight plaintext"><code>bazel_dep(name = "swiftlint", version = "0.50.4", repo_name = "SwiftLint")
+<pre class="highlight plaintext"><code>bazel_dep(name = "swiftlint", version = "0.52.4", repo_name = "SwiftLint")
 </code></pre>
 
 <p>Or put this in your <code>WORKSPACE</code>:</p>
@@ -415,8 +415,8 @@ load(&rdquo;@bazel_tools//tools/build_defs/repo:http.bzl&quot;, &ldquo;http_arch
 
 http_archive(
     name = &ldquo;build_bazel_rules_apple&rdquo;,
-    sha256 = &ldquo;f94e6dddf74739ef5cb30f000e13a2a613f6ebfa5e63588305a71fce8a8a9911&rdquo;,
-    url = &ldquo;https://github.com/bazelbuild/rules_apple/releases/download/1.1.3/rules_apple.1.1.3.tar.gz&rdquo;,
+    sha256 = &ldquo;390841dd5f8a85fc25776684f4793d56e21b098dfd7243cd145b9831e6ef8be6&rdquo;,
+    url = &ldquo;https://github.com/bazelbuild/rules_apple/releases/download/2.4.1/rules_apple.2.4.1.tar.gz&rdquo;,
 )
 
 load(
@@ -442,8 +442,8 @@ swift_rules_extra_dependencies()
 
 http_archive(
     name = &ldquo;SwiftLint&rdquo;,
-    sha256 = &ldquo;7c454ff4abeeecdd9513f6293238a6d9f803b587eb93de147f9aa1be0d8337c4&rdquo;,
-    url = &ldquo;https://github.com/realm/SwiftLint/releases/download/0.49.1/bazel.tar.gz&rdquo;,
+    sha256 = &ldquo;c6ea58b9c72082cdc1ada4a2d48273ecc355896ed72204cedcc586b6ccb8aca6&rdquo;,
+    url = &ldquo;https://github.com/realm/SwiftLint/releases/download/0.52.4/bazel.tar.gz&rdquo;,
 )
 
 load(&ldquo;@SwiftLint//bazel:repos.bzl&rdquo;, &ldquo;swiftlint_repos&rdquo;)

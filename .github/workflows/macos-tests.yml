@@ -1,0 +1,64 @@
+name: macOS Tests
+
+on: 
+  pull_request:
+
+env:
+  XCODE_VERSION: '15.0'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./SwiftLint
+
+jobs:
+  bazel:
+    name: Bazel Test
+    runs-on: macos-13
+    steps:
+    - name: Select Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ env.XCODE_VERSION }}
+    - name: Checkout SwiftLint
+      uses: actions/checkout@v4
+      with:
+        path: SwiftLint
+    - name: Build
+      run: bazel build :swiftlint
+    - name: Test
+      run: bazel test --test_output=errors //Tests/...
+
+  bazel-tsan:
+    name: Bazel TSan Test
+    runs-on: macos-13
+    steps:
+    - name: Select Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ env.XCODE_VERSION }}
+    - name: Checkout SwiftLint
+      uses: actions/checkout@v4
+      with:
+        path: SwiftLint
+    - name: Test
+      run: bazel test --test_output=errors --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
+
+  danger:
+    name: Danger
+    runs-on: macos-13
+    steps:
+    - name: Select Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ env.XCODE_VERSION }}
+    - name: Checkout SwiftLint
+      uses: actions/checkout@v4
+      with:
+        path: SwiftLint
+    - name: Install Bundler
+      run: gem install bundler
+    - name: Bundle Install
+      run: bundle install
+    - name: Run Danger
+      run: bundle exec danger --verbose

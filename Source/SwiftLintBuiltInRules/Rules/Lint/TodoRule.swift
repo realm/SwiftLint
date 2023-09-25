@@ -40,20 +40,22 @@ private extension TodoRule {
         }
 
         override func visitPost(_ node: TokenSyntax) {
-            let leadingViolations = node.leadingTrivia.violations(offset: node.position, only: only)
+            let leadingViolations = node.leadingTrivia.violations(offset: node.position,
+                                                                  for: only)
             let trailingViolations = node.trailingTrivia.violations(offset: node.endPositionBeforeTrailingTrivia,
-                                                                    only: only)
+                                                                    for: only)
             violations.append(contentsOf: leadingViolations + trailingViolations)
         }
     }
 }
 
 private extension Trivia {
-    func violations(offset: AbsolutePosition, only: [TodoConfiguration.TodoKeyword]) -> [ReasonedRuleViolation] {
+    func violations(offset: AbsolutePosition,
+                    for todoKeywords: [TodoConfiguration.TodoKeyword]) -> [ReasonedRuleViolation] {
         var position = offset
         var violations = [ReasonedRuleViolation]()
         for piece in self {
-            violations.append(contentsOf: piece.violations(offset: position, only: only))
+            violations.append(contentsOf: piece.violations(offset: position, for: todoKeywords))
             position += piece.sourceLength
         }
         return violations
@@ -61,7 +63,8 @@ private extension Trivia {
 }
 
 private extension TriviaPiece {
-    func violations(offset: AbsolutePosition, only: [TodoConfiguration.TodoKeyword]) -> [ReasonedRuleViolation] {
+    func violations(offset: AbsolutePosition,
+                    for todoKeywords: [TodoConfiguration.TodoKeyword]) -> [ReasonedRuleViolation] {
         switch self {
         case
                 .blockComment(let comment),
@@ -70,7 +73,7 @@ private extension TriviaPiece {
                 .docLineComment(let comment):
 
             // Construct a regex string considering only keywords.
-            let searchKeywords = only.map(\.rawValue).joined(separator: "|")
+            let searchKeywords = todoKeywords.map(\.rawValue).joined(separator: "|")
             let matches = regex(#"\b((?:\#(searchKeywords))(?::|\b))"#)
                 .matches(in: comment, range: comment.bridge().fullNSRange)
             return matches.reduce(into: []) { violations, match in

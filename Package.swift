@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.9
 import PackageDescription
 
 let package = Package(
@@ -70,7 +70,10 @@ let package = Package(
             dependencies: [
                 "SwiftLintBuiltInRules",
                 "SwiftLintCore",
-                "SwiftLintExtraRules"
+                "SwiftLintExtraRules",
+                // Workaround for https://github.com/apple/swift-package-manager/issues/6940:
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                "CollectionConcurrencyKit"
             ]
         ),
         .target(name: "DyldWarningWorkaround"),

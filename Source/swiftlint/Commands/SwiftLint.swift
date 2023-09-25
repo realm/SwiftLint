@@ -2,6 +2,10 @@ import ArgumentParser
 import Foundation
 import SwiftLintFramework
 
+#if swift(<5.9)
+#error("SwiftLint requires Swift 5.9 or later to build")
+#endif
+
 @main
 struct SwiftLint: AsyncParsableCommand {
     static let configuration: CommandConfiguration = {

@@ -2,6 +2,10 @@
 
 #### Breaking
 
+* SwiftLint now requires Swift 5.9 or higher to build.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [JP Simard](https://github.com/jpsim)
+
 * Hide all `Reporter`s from SwiftLint's' public interface.  
   [SimplyDanny](https://github.com/SimplyDanny)
 

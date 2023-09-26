@@ -45,7 +45,8 @@ $ mint install realm/SwiftLint
 
 ### 编译源代码：
 
-你也可以通过 Clone SwiftLint 的 Git 仓库到本地然后执行 `make install` (Xcode 12.5+) 编译源代码的方式来安装。
+你也可以通过 clone SwiftLint 的 Git 仓库到本地然后执行
+`make install` (Xcode 15.0+) 以从源代码构建及安装。
 
 ### 使用 Bazel
 
@@ -66,8 +67,8 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "build_bazel_rules_apple",
-    sha256 = "f94e6dddf74739ef5cb30f000e13a2a613f6ebfa5e63588305a71fce8a8a9911",
-    url = "https://github.com/bazelbuild/rules_apple/releases/download/1.1.3/rules_apple.1.1.3.tar.gz",
+    sha256 = "390841dd5f8a85fc25776684f4793d56e21b098dfd7243cd145b9831e6ef8be6",
+    url = "https://github.com/bazelbuild/rules_apple/releases/download/2.4.1/rules_apple.2.4.1.tar.gz",
 )
 
 load(
@@ -93,8 +94,8 @@ swift_rules_extra_dependencies()
 
 http_archive(
     name = "SwiftLint",
-    sha256 = "7c454ff4abeeecdd9513f6293238a6d9f803b587eb93de147f9aa1be0d8337c4",
-    url = "https://github.com/realm/SwiftLint/releases/download/0.49.1/bazel.tar.gz",
+    sha256 = "c6ea58b9c72082cdc1ada4a2d48273ecc355896ed72204cedcc586b6ccb8aca6",
+    url = "https://github.com/realm/SwiftLint/releases/download/0.52.4/bazel.tar.gz",
 )
 
 load("@SwiftLint//bazel:repos.bzl", "swiftlint_repos")
@@ -128,6 +129,11 @@ bazel run -c opt @SwiftLint//:swiftlint
 整合 SwiftLint 到 Xcode 体系中去从而可以使警告和错误显示到 IDE 上，只需要在 Xcode 中添加一个新的“Run Script Phase”并且包含如下代码即可：
 
 ![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/runscript.png)
+
+Xcode 15 对 Build Settings 进行了重大更改，它将 `ENABLE_USER_SCRIPT_SANDBOXING` 的默认值从 `NO` 更改为 `YES`。
+因此，SwiftLint 会遇到与缺少文件权限相关的错误，通常报错信息为：`error: Sandbox: swiftlint(19427) deny(1) file-read-data.`
+
+要解决此问题，需要手动将 `ENABLE_USER_SCRIPT_SANDBOXING` 设置为 `NO`，以针对 SwiftLint 配置的特定目标。
 
 如果你是在搭载 Apple 芯片的 Mac 上通过 Homebrew 安装的 SwiftLint，你可能会遇到这个警告：
 
@@ -437,6 +443,9 @@ excluded: # 执行 linting 时忽略的路径。 优先级比 `included` 更高�
   - Pods
   - Sources/ExcludedFolder
   - Sources/ExcludedFile.swift
+
+# 如果值为 true，SwiftLint 将把所有警告都视为错误
+strict: false
 
 # 可配置的规则可以通过这个配置文件来自定义
 # 二进制规则可以设置他们的严格程度

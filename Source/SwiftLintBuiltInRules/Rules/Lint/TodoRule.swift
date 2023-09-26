@@ -26,24 +26,24 @@ struct TodoRule: SwiftSyntaxRule, ConfigurationProviderRule {
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(only: configuration.only)
+        Visitor(todoKeywords: configuration.only)
     }
 }
 
 private extension TodoRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let only: [TodoConfiguration.TodoKeyword]
+        private let todoKeywords: [TodoConfiguration.TodoKeyword]
 
-        init(only: [TodoConfiguration.TodoKeyword]) {
-            self.only = only
+        init(todoKeywords: [TodoConfiguration.TodoKeyword]) {
+            self.todoKeywords = todoKeywords
             super.init(viewMode: .sourceAccurate)
         }
 
         override func visitPost(_ node: TokenSyntax) {
             let leadingViolations = node.leadingTrivia.violations(offset: node.position,
-                                                                  for: only)
+                                                                  for: todoKeywords)
             let trailingViolations = node.trailingTrivia.violations(offset: node.endPositionBeforeTrailingTrivia,
-                                                                    for: only)
+                                                                    for: todoKeywords)
             violations.append(contentsOf: leadingViolations + trailingViolations)
         }
     }

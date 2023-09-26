@@ -12,7 +12,10 @@
 
 #### Enhancements
 
-* None.
+* Add `only` configuration option to `todo` rule which allows to specify
+  whether the rule shall trigger on `TODO`s, `FIXME`s or both.  
+  [gibachan](https://github.com/gibachan)
+  [#5233](https://github.com/realm/SwiftLint/pull/5233)
 
 #### Bug Fixes
 

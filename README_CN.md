@@ -129,6 +129,11 @@ bazel run -c opt @SwiftLint//:swiftlint
 
 ![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/runscript.png)
 
+Xcode 15 对 Build Settings 进行了重大更改，它将 `ENABLE_USER_SCRIPT_SANDBOXING` 的默认值从 `NO` 更改为 `YES`。
+因此，SwiftLint 会遇到与缺少文件权限相关的错误，通常报错信息为：`error: Sandbox: swiftlint(19427) deny(1) file-read-data.`
+
+要解决此问题，需要手动将 `ENABLE_USER_SCRIPT_SANDBOXING` 设置为 `NO`，以针对 SwiftLint 配置的特定目标。
+
 如果你是在搭载 Apple 芯片的 Mac 上通过 Homebrew 安装的 SwiftLint，你可能会遇到这个警告：
 
 > warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint

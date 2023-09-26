@@ -443,6 +443,9 @@ excluded: # 执行 linting 时忽略的路径。 优先级比 `included` 更高�
   - Sources/ExcludedFolder
   - Sources/ExcludedFile.swift
 
+# 如果值为 true，SwiftLint 将把所有警告都视为错误
+strict: false
+
 # 可配置的规则可以通过这个配置文件来自定义
 # 二进制规则可以设置他们的严格程度
 force_cast: warning # 隐式

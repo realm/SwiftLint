@@ -11,7 +11,7 @@ bazel_dep(name = "rules_swift", version = "1.12.0", repo_name = "build_bazel_rul
 bazel_dep(name = "sourcekitten", version = "0.34.1", repo_name = "com_github_jpsim_sourcekitten")
 bazel_dep(name = "swift_argument_parser", version = "1.2.1", repo_name = "sourcekitten_com_github_apple_swift_argument_parser")
 bazel_dep(name = "yams", version = "5.0.6", repo_name = "sourcekitten_com_github_jpsim_yams")
-bazel_dep(name = "swift-syntax", version = "509.0.0", repo_name = "SwiftSyntax")
+bazel_dep(name = "swift-syntax", version = "509.0.0.1", repo_name = "SwiftSyntax")
 
 swiftlint_repos = use_extension("//bazel:repos.bzl", "swiftlint_repos_bzlmod")
 use_repo(
@@ -26,5 +26,5 @@ use_repo(extra_rules, "swiftlint_extra_rules")
 
 # Dev Dependencies
 
-bazel_dep(name = "bazel_skylib", version = "1.4.1", dev_dependency = True)
-bazel_dep(name = "rules_xcodeproj", version = "1.7.1", dev_dependency = True)
+bazel_dep(name = "bazel_skylib", version = "1.4.2", dev_dependency = True)
+bazel_dep(name = "rules_xcodeproj", version = "1.11.0", dev_dependency = True)

@@ -88,6 +88,10 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5226](https://github.com/realm/SwiftLint/issues/5226)
 
+* Extend `implicitly_unwrapped_optional` rule with the new mode
+  `weak_except_iboutlets` that only checks `weak` variables.  
+  [Ricky Tan](https://github.com/rickytan)
+
 #### Bug Fixes
 
 * Respect grapheme clusters in counting the number of characters in the `collection_alignment` rule.  
@@ -235,10 +239,6 @@
   `unallowed_symbols_severity`. It accepts the two values `warning` and `error`
   (default) as usual.  
   [SimplyDanny](https://github.com/SimplyDanny)
-
-* Extend `implicitly_unwrapped_optional` rule with the new mode
-  `weak_except_iboutlets` that only checks `weak` variables.  
-  [Ricky Tan](https://github.com/rickytan)
 
 * Mention a rule's identifier in the console message that is printed when the
   rule's associated configuration entry contains invalid values.  

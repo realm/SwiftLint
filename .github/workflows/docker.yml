@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - jp/docker-swift-5.9
     tags:
       - '*'
 

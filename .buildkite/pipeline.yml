@@ -8,7 +8,7 @@ steps:
   - label: "SwiftPM"
     commands:
       - echo "+++ Test"
-      - DEVELOPER_DIR=/Applications/Xcode-15.0.0.app/Contents/Developer swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
+      - swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
   - label: "Danger"
     commands:
       - echo "--- Install Bundler"

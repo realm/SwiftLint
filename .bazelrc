@@ -4,7 +4,6 @@ try-import %workspace%/ci.bazelrc
 try-import %workspace%/user.bazelrc
 
 build --macos_minimum_os=13.5 --host_macos_minimum_os=13.5
-build --xcode_version=15
 build --disk_cache=~/.bazel_cache
 build --experimental_remote_cache_compression
 build --experimental_remote_build_event_upload=minimal
@@ -14,5 +13,3 @@ build --swiftcopt=-warnings-as-errors
 build:release \
   --compilation_mode=opt \
   --features=swift.opt_uses_wmo
-
-test --xcode_version=15

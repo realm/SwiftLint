@@ -1,5 +1,5 @@
 # Explicitly specify `jammy` to keep the Swift & Ubuntu images in sync.
-ARG BUILDER_IMAGE=swift:jammy
+ARG BUILDER_IMAGE=swift:5.8-jammy
 ARG RUNTIME_IMAGE=ubuntu:jammy
 
 # builder image

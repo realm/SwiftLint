@@ -11,7 +11,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     @ConfigurationElement(key: "max_length")
     private(set) var maxLength = SeverityLevels(warning: 0, error: 0)
     @ConfigurationElement(key: "excluded")
-    private(set) var excludedRegularExpressions = Set<NSRegularExpression>()
+    private(set) var excludedRegularExpressions = Set<RegularExpression>()
     @ConfigurationElement(key: "allowed_symbols")
     private(set) var allowedSymbols = Set<String>()
     @ConfigurationElement(key: "unallowed_symbols_severity")
@@ -42,7 +42,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
         minLength = SeverityLevels(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevels(warning: maxLengthWarning, error: maxLengthError)
         self.excludedRegularExpressions = Set(excluded.compactMap {
-            try? NSRegularExpression.cached(pattern: "^\($0)$")
+            try? RegularExpression(pattern: "^\($0)$")
         })
         self.allowedSymbols = Set(allowedSymbols)
         self.unallowedSymbolsSeverity = unallowedSymbolsSeverity
@@ -62,7 +62,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
         }
         if let excluded = [String].array(of: configurationDict[$excludedRegularExpressions]) {
             self.excludedRegularExpressions = Set(excluded.compactMap {
-                try? NSRegularExpression.cached(pattern: "^\($0)$")
+                try? RegularExpression(pattern: "^\($0)$")
             })
         }
         if let allowedSymbols = [String].array(of: configurationDict[$allowedSymbols]) {
@@ -106,7 +106,7 @@ extension NameConfiguration {
 extension NameConfiguration {
     func shouldExclude(name: String) -> Bool {
         excludedRegularExpressions.contains {
-            !$0.matches(in: name, options: [], range: NSRange(name.startIndex..., in: name)).isEmpty
+            !$0.regex.matches(in: name, options: [], range: NSRange(name.startIndex..., in: name)).isEmpty
         }
     }
 }

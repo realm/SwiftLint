@@ -64,7 +64,11 @@ struct AutoApply: MemberMacro {
                 }
             }
             .compactMap { $0.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier.text }
-            .map { "try \($0).apply(configuration[$\($0)], ruleID: Parent.identifier)" }
+            .map {
+                """
+                try \($0).apply($\($0) == "" ? configuration : configuration[$\($0)], ruleID: Parent.identifier)
+                """
+            }
         return [
             """
             mutating func apply(configuration: Any) throws {
@@ -99,10 +103,7 @@ struct MakeAcceptableByConfigurationElement: ExtensionMacro {
             try ExtensionDeclSyntax("""
                 extension \(type): \(raw: acceptableByConfigurationElementName) {
                     \(raw: accessLevel)func asOption() -> OptionType { .symbol(rawValue) }
-                    \(raw: accessLevel)mutating func apply(_ value: Any?, ruleID: String) throws {
-                        if value == nil {
-                            return
-                        }
+                    \(raw: accessLevel)init(fromAny value: Any, context ruleID: String) throws {
                         if let value = value as? String, let newSelf = Self(rawValue: value) {
                             self = newSelf
                         } else {

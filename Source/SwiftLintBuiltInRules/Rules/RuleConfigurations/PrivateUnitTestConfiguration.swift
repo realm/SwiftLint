@@ -10,7 +10,7 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 
     @ConfigurationElement(key: "regex")
-    private(set) var regex = SwiftLintCore.regex("XCTestCase")
+    private(set) var regex: RegularExpression = "XCTestCase"
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
@@ -29,7 +29,7 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable {
                 in a future release.
                 """
             )
-            regex = try .cached(pattern: regexString)
+            regex = try RegularExpression(pattern: regexString)
         }
         if configurationDict["included"] is String {
             // TODO: [01/09/2025] Remove deprecation warning after ~2 years and replace this configuration by

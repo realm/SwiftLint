@@ -1,6 +1,7 @@
 import SourceKittenFramework
 import SwiftLintCore
 
+@AutoApply
 struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ModifierOrderRule
 
@@ -20,29 +21,16 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
         .typeMethods,
         .owned
     ]
-
-    mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-
-        if let preferredModifierOrder = configuration[$preferredModifierOrder] as? [String] {
-            self.preferredModifierOrder = try preferredModifierOrder.map {
-                guard let modifierGroup = SwiftDeclarationAttributeKind.ModifierGroup(rawValue: $0),
-                      modifierGroup != .atPrefixed else {
-                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-                }
-
-                return modifierGroup
-            }
-        }
-
-        if let severityString = configuration[$severityConfiguration] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
-    }
 }
 
 extension SwiftDeclarationAttributeKind.ModifierGroup: AcceptableByConfigurationElement {
+    public init(fromAny value: Any, context ruleID: String) throws {
+        if let value = value as? String, let newSelf = Self(rawValue: value), newSelf != .atPrefixed {
+            self = newSelf
+        } else {
+            throw Issue.unknownConfiguration(ruleID: ruleID)
+        }
+    }
+
     public func asOption() -> OptionType { .symbol(rawValue) }
 }

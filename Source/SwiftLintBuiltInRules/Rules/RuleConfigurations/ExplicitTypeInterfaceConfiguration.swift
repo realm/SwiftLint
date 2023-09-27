@@ -3,15 +3,14 @@ import SwiftLintCore
 struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ExplicitTypeInterfaceRule
 
-    enum VariableKind: String, CaseIterable, AcceptableByConfigurationElement {
+    @MakeAcceptableByConfigurationElement
+    enum VariableKind: String, CaseIterable {
         case instance
         case local
         case `static`
         case `class`
 
         static let all = Set(allCases)
-
-        func asOption() -> SwiftLintCore.OptionType { .symbol(rawValue) }
     }
 
     @ConfigurationElement(key: "severity")

@@ -229,7 +229,7 @@ private extension ClassDeclSyntax {
     func hasParent(configuredIn config: PrivateUnitTestConfiguration) -> Bool {
         inheritanceClause?.inheritedTypes.contains { type in
             if let name = type.type.as(IdentifierTypeSyntax.self)?.name.text {
-                return config.regex.numberOfMatches(in: name, range: name.fullNSRange) > 0
+                return config.regex.regex.numberOfMatches(in: name, range: name.fullNSRange) > 0
                     || config.testParentClasses.contains(name)
             }
             return false

@@ -14,7 +14,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         @ConfigurationElement(key: "string")
         var string = "value"
         @ConfigurationElement(key: "symbol")
-        var symbol = Symbol(value: "value")
+        var symbol = try! Symbol(fromAny: "value", context: "rule") // swiftlint:disable:this force_try
         @ConfigurationElement(key: "integer")
         var integer = 2
         @ConfigurationElement(key: "null")
@@ -471,7 +471,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
 
         XCTAssertFalse(configuration.flag)
         XCTAssertEqual(configuration.string, "new value")
-        XCTAssertEqual(configuration.symbol, Symbol(value: "new symbol"))
+        XCTAssertEqual(configuration.symbol, try Symbol(fromAny: "new symbol", context: "rule"))
         XCTAssertEqual(configuration.integer, 5)
         XCTAssertEqual(configuration.null, 0)
         XCTAssertEqual(configuration.double, 5.1)

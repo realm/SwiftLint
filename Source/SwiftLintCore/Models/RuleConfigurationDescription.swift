@@ -297,6 +297,12 @@ private protocol AnyConfigurationElement {
 
 /// Type of an object that can be used as a configuration element.
 public protocol AcceptableByConfigurationElement {
+    /// Initializer taking a value from a configuration to create an element of `Self`.
+    ///
+    ///   - Parameter value: Value from a configuration.
+    ///   - Parameter ruleID: The rule's identifier in which context the configuration parsing runs.
+    init(fromAny value: Any, context ruleID: String) throws
+
     /// Make the object an option.
     ///
     /// - Returns: Option representing the object.
@@ -321,8 +327,10 @@ public extension AcceptableByConfigurationElement {
         RuleConfigurationDescription(options: [key => asOption()])
     }
 
-    func apply(_ value: Any?, ruleID: String) throws {
-        throw Issue.genericError("Not yet implemented")
+    mutating func apply(_ value: Any?, ruleID: String) throws {
+        if let value {
+            self = try Self(fromAny: value, context: ruleID)
+        }
     }
 }
 
@@ -421,8 +429,11 @@ extension Optional: AcceptableByConfigurationElement where Wrapped: AcceptableBy
         return .empty
     }
 
-    public mutating func apply(_ value: Any?, ruleID: String) throws {
-        self = value as? Self ?? self
+    public init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? Self else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self = value
     }
 }
 
@@ -433,10 +444,11 @@ struct Symbol: Equatable, AcceptableByConfigurationElement {
         .symbol(value)
     }
 
-    mutating func apply(_ value: Any?, ruleID: String) throws {
-        if let value = value as? String {
-            self = Symbol(value: value)
+    init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? String else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
         }
+        self.value = value
     }
 }
 
@@ -445,8 +457,11 @@ extension Bool: AcceptableByConfigurationElement {
         .flag(self)
     }
 
-    public mutating func apply(_ value: Any?, ruleID: String) throws {
-        self = value as? Self ?? self
+    public init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? Self else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self = value
     }
 }
 
@@ -455,8 +470,11 @@ extension String: AcceptableByConfigurationElement {
         .string(self)
     }
 
-    public mutating func apply(_ value: Any?, ruleID: String) throws {
-        self = value as? Self ?? self
+    public init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? Self else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self = value
     }
 }
 
@@ -465,8 +483,9 @@ extension Array: AcceptableByConfigurationElement where Element: AcceptableByCon
         .list(map { $0.asOption() })
     }
 
-    public mutating func apply(_ value: Any?, ruleID: String) throws {
-        self = [Element].array(of: value) ?? self
+    public init(fromAny value: Any, context ruleID: String) throws {
+        let values = value as? [Any] ?? [value]
+        self = try values.map { try Element(fromAny: $0, context: ruleID) }
     }
 }
 
@@ -475,10 +494,8 @@ extension Set: AcceptableByConfigurationElement where Element: AcceptableByConfi
         sorted().asOption()
     }
 
-    public mutating func apply(_ value: Any?, ruleID: String) throws {
-        if let array = [Element].array(of: value) {
-            self = Set(array)
-        }
+    public init(fromAny value: Any, context ruleID: String) throws {
+        self = Set(try [Element].init(fromAny: value, context: ruleID))
     }
 }
 
@@ -487,8 +504,11 @@ extension Int: AcceptableByConfigurationElement {
         .integer(self)
     }
 
-    public mutating func apply(_ value: Any?, ruleID: String) throws {
-        self = value as? Self ?? self
+    public init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? Self else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self = value
     }
 }
 
@@ -497,14 +517,24 @@ extension Double: AcceptableByConfigurationElement {
         .float(self)
     }
 
-    public mutating func apply(_ value: Any?, ruleID: String) throws {
-        self = value as? Self ?? self
+    public init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? Self else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self = value
     }
 }
 
-extension NSRegularExpression: AcceptableByConfigurationElement {
+extension RegularExpression: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         .string(pattern)
+    }
+
+    public init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? String else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self = try Self(pattern: value)
     }
 }
 
@@ -513,8 +543,8 @@ extension Range: AcceptableByConfigurationElement {
         .symbol("\(lowerBound) ..< \(upperBound)")
     }
 
-    public mutating func apply(_ value: Any?, ruleID: String) throws {
-        self = value as? Self ?? self
+    public init(fromAny value: Any, context ruleID: String) throws {
+        throw Issue.genericError("Configuration for \(ruleID) not yet fully implemented")
     }
 }
 
@@ -536,6 +566,10 @@ public extension RuleConfiguration {
         if let value {
             try apply(configuration: value)
         }
+    }
+
+    init(fromAny value: Any, context ruleID: String) throws {
+        throw Issue.genericError("Do not call this initializer")
     }
 }
 

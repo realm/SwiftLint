@@ -11,7 +11,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     public var message = "Regex matched"
     /// The regular expression to apply to trigger violations for this custom rule.
     @ConfigurationElement(key: "regex")
-    var regex: NSRegularExpression!
+    var regex: RegularExpression!
     /// Regular expressions to include when matching the file path.
     public var included: [NSRegularExpression] = []
     /// Regular expressions to exclude when matching the file path.
@@ -62,7 +62,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
         }
 
-        regex = try .cached(pattern: regexString)
+        regex = try RegularExpression(pattern: regexString)
 
         if let includedString = configurationDict["included"] as? String {
             included = [try .cached(pattern: includedString)]

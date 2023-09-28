@@ -416,6 +416,97 @@ extension ConfigurationTests {
         }
     }
 
+    // MARK: Warnings about configurations for disabled rules
+    func testSomething() {
+        struct TestCase: Equatable {
+            let parentConfiguration: Configuration?
+            let disabledRules: Set<String>
+            let optInRules: Set<String>
+            let expectedIssueMessage: String?
+        }
+        let ruleType = ImplicitReturnRule.self
+        let ruleIdentifier = ruleType.description.identifier
+
+        let noneNoneConfiguration = Configuration(rulesMode: .default(disabled: [], optIn: []))
+        let optInConfiguration = Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier]))
+        let optInDisabledConfiguration = Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier]))
+        let disabledConfiguration = Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: []))
+
+        let testCases: [TestCase] = [
+            TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: ""),
+            TestCase(parentConfiguration: optInConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: nil),
+            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: nil), // wrong - should be an error
+            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: ""),
+
+            TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssueMessage: nil),
+            TestCase(parentConfiguration: optInConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssueMessage: nil),
+            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssueMessage: nil),
+            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssueMessage: nil),
+
+            TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: nil), // wrong - should be an error
+            TestCase(parentConfiguration: optInConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: nil), // wrong - should be an error
+            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: nil), // wrong - should be an error
+            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: nil), // wrong - should be an error
+
+            TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: ""),
+            TestCase(parentConfiguration: optInConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: nil), // wrong - should be an error
+            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: nil), // wrong - should be an error
+            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: ""),
+        ]
+
+        for testCase in testCases {
+            testConfiguredRuleValidation(
+                ruleType: ruleType,
+                parentConfiguration: testCase.parentConfiguration,
+                disabledRules: testCase.disabledRules,
+                optInRules: testCase.optInRules,
+                expectedIssueMessage: testCase.expectedIssueMessage
+            )
+        }
+    }
+    
+    func testSomethingElse() {
+        let ruleType = ImplicitReturnRule.self
+        let ruleIdentifier = ruleType.description.identifier
+        testConfiguredRuleValidation(
+            ruleType: ruleType,
+            parentConfiguration: nil,
+            disabledRules: [],
+            optInRules: [ruleIdentifier]
+        )
+        testConfiguredRuleValidation(
+            ruleType: ruleType,
+            parentConfiguration: Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier])),
+            disabledRules: [ruleIdentifier],
+            optInRules: [ruleIdentifier],
+            expectedIssueMessage: ""
+        )
+    }
+    
+    private func testConfiguredRuleValidation(
+        ruleType: Rule.Type,
+        parentConfiguration: Configuration?,
+        disabledRules: Set<String>,
+        optInRules: Set<String>,
+        expectedIssueMessage: String? = nil
+    ) {
+        let ruleIdentifier = ruleType.description.identifier
+        let message = "Found a configuration for '\(ruleIdentifier)' rule"
+        let issue = Configuration.validateConfiguredRuleIsEnabled(
+            message: message,
+            parentConfiguration: parentConfiguration,
+            disabledRules: disabledRules,
+            optInRules: optInRules,
+            ruleType: ruleType
+        )
+        if let expectedIssueMessage {
+            XCTAssertNotNil(issue)
+        } else {
+            XCTAssertNil(issue)
+        }
+
+    }
+    
     // MARK: - Remote Configs
     func testValidRemoteChildConfig() {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild)

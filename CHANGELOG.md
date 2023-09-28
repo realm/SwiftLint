@@ -24,6 +24,11 @@
   [jszumski](https://github.com/jszumski)
   [#5242](https://github.com/realm/SwiftLint/pull/5242)
 
+* Fix false positive in `unused_import` rule when using a constructor 
+  defined in a transitive module.  
+  [jszumski](https://github.com/jszumski)
+  [#5246](https://github.com/realm/SwiftLint/pull/5246)
+
 ## 0.53.0: Laundry List
 
 #### Breaking

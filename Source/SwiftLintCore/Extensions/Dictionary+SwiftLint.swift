@@ -180,6 +180,12 @@ public struct SourceKittenDictionary {
         let array = value["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
         return array.compactMap { ($0 as? [String: String]).flatMap { $0["key.name"] } }
     }
+
+    public var secondarySymbols: [SourceKittenDictionary] {
+        let array = value["key.secondary_symbols"] as? [SourceKitRepresentable] ?? []
+        return array.compactMap { $0 as? [String: SourceKitRepresentable] }
+            .map(Self.init)
+    }
 }
 
 extension SourceKittenDictionary {

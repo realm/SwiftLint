@@ -197,13 +197,14 @@ extension Configuration {
                 } else if Set(disabledRules).isSuperset(of: rule.description.allIdentifiers) {
                     Issue.genericWarning("\(message), but it is disabled on '\(Key.disabledRules.rawValue)'.").print()
 
-                    validateConfiguredRulesAreEnabled(
+                let issue = validateConfiguredRuleIsEnabled(
                     message: message,
                     parentConfiguration: parentConfiguration,
                     disabledRules: disabledRules,
                     optInRules: optInRules,
                     ruleType: ruleType
                 )
+                issue?.print()
             }
         }
     }
@@ -214,14 +215,14 @@ extension Configuration {
         disabledRules: Set<String>,
         optInRules: Set<String>,
         ruleType: Rule.Type
-    ) {
+    ) -> Issue? {
         var allOptInRules = optInRules
         var allDisabledRules = disabledRules
 
         if let parentConfiguration {
             switch parentConfiguration.rulesMode {
             case .allEnabled:
-                return
+                return nil
             case .only(let parentOnlyRules):
                 allOptInRules.formUnion(parentOnlyRules)
             case let .default(disabled: parentDisabledRules, optIn: parentOptInRules):
@@ -233,15 +234,17 @@ extension Configuration {
         let allIdentifiers = ruleType.description.allIdentifiers
         if ruleType is OptInRule.Type {
             if Set(allOptInRules).isDisjoint(with: allIdentifiers) {
-                Issue.genericWarning("\(message), but it is not enabled on " +
-                                     "'\(Key.optInRules.rawValue)'.").print()
+                return Issue.genericWarning("\(message), but it is not enabled on " +
+                                     "'\(Key.optInRules.rawValue)'.")
             }
         } else if Set(disabledRules).isSuperset(of: allIdentifiers) {
-            Issue.genericWarning("\(message), but it is disabled on " +
-                                 "'\(Key.disabledRules.rawValue)'.").print()
+            return Issue.genericWarning("\(message), but it is disabled on " +
+                                 "'\(Key.disabledRules.rawValue)'.")
         } else if Set(allDisabledRules.subtracting(disabledRules)).isSuperset(of: allIdentifiers) {
-            Issue.genericWarning("\(message), but it is disabled in a parent configuration.").print()
+            return Issue.genericWarning("\(message), but it is disabled in a parent configuration.")
         }
+        
+        return nil
     }
 
     private static func warnAboutMisplacedAnalyzerRules(optInRules: [String], ruleList: RuleList) {

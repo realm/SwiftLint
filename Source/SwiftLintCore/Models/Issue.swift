@@ -90,7 +90,7 @@ public enum Issue: LocalizedError, Equatable {
         queuedPrintError(errorDescription)
     }
 
-    private var message: String {
+    var message: String {
         switch self {
         case let .invalidConfiguration(id):
             return "Invalid configuration for '\(id)' rule. Falling back to default."

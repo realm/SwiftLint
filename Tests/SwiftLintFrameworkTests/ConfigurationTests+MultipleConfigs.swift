@@ -422,36 +422,40 @@ extension ConfigurationTests {
             let parentConfiguration: Configuration?
             let disabledRules: Set<String>
             let optInRules: Set<String>
-            let expectedIssueMessage: String?
+            let expectedMessage: String?
         }
         let ruleType = ImplicitReturnRule.self
         let ruleIdentifier = ruleType.description.identifier
 
-        let noneNoneConfiguration = Configuration(rulesMode: .default(disabled: [], optIn: []))
+        let emptyConfiguration = Configuration(rulesMode: .default(disabled: [], optIn: []))
         let optInConfiguration = Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier]))
         let optInDisabledConfiguration = Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier]))
         let disabledConfiguration = Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: []))
-
+        
+        let notEnabledMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is not enabled on 'opt_in_rules'."
+        let disabledInParentMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is disabled in a parent configuration."
+        let disabledMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is disabled on 'disabled_rules'."
+        
         let testCases: [TestCase] = [
-            TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: ""),
-            TestCase(parentConfiguration: optInConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: nil),
-            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: ""),
-            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: ""),
+            TestCase(parentConfiguration: emptyConfiguration, disabledRules: [], optInRules: [], expectedMessage: notEnabledMessage),
+            TestCase(parentConfiguration: optInConfiguration, disabledRules: [], optInRules: [], expectedMessage: nil),
+            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [], optInRules: [], expectedMessage: disabledInParentMessage),
+            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [], optInRules: [], expectedMessage: disabledInParentMessage),
 
-            TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssueMessage: nil),
-            TestCase(parentConfiguration: optInConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssueMessage: nil),
-            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssueMessage: nil),
-            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssueMessage: nil),
+            TestCase(parentConfiguration: emptyConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
+            TestCase(parentConfiguration: optInConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
+            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
+            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
 
-            TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: ""),
-            TestCase(parentConfiguration: optInConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: ""),
-            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: ""),
-            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: ""),
+            TestCase(parentConfiguration: emptyConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: optInConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
 
-            TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: ""),
-            TestCase(parentConfiguration: optInConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: ""),
-            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: ""),
-            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: ""),
+            TestCase(parentConfiguration: emptyConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: optInConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
         ]
 
         for testCase in testCases {
@@ -460,7 +464,7 @@ extension ConfigurationTests {
                 parentConfiguration: testCase.parentConfiguration,
                 disabledRules: testCase.disabledRules,
                 optInRules: testCase.optInRules,
-                expectedIssueMessage: testCase.expectedIssueMessage
+                expectedMessage: testCase.expectedMessage
             )
         }
     }
@@ -479,7 +483,7 @@ extension ConfigurationTests {
             parentConfiguration: Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier])),
             disabledRules: [ruleIdentifier],
             optInRules: [ruleIdentifier],
-            expectedIssueMessage: ""
+            expectedMessage: ""
         )
     }
     
@@ -488,7 +492,7 @@ extension ConfigurationTests {
         parentConfiguration: Configuration?,
         disabledRules: Set<String>,
         optInRules: Set<String>,
-        expectedIssueMessage: String? = nil
+        expectedMessage: String? = nil
     ) {
         let ruleIdentifier = ruleType.description.identifier
         let message = "Found a configuration for '\(ruleIdentifier)' rule"
@@ -499,8 +503,12 @@ extension ConfigurationTests {
             optInRules: optInRules,
             ruleType: ruleType
         )
-        if let expectedIssueMessage {
-            XCTAssertNotNil(issue)
+        if let expectedMessage {
+            if let issue {
+                XCTAssertEqual(issue.message, expectedMessage)
+            } else {
+                XCTFail("issue was nil")
+            }
         } else {
             XCTAssertNil(issue)
         }

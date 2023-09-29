@@ -435,7 +435,7 @@ extension ConfigurationTests {
         let testCases: [TestCase] = [
             TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: ""),
             TestCase(parentConfiguration: optInConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: nil),
-            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: nil), // wrong - should be an error
+            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: ""),
             TestCase(parentConfiguration: disabledConfiguration, disabledRules: [], optInRules: [], expectedIssueMessage: ""),
 
             TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssueMessage: nil),
@@ -443,14 +443,14 @@ extension ConfigurationTests {
             TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssueMessage: nil),
             TestCase(parentConfiguration: disabledConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssueMessage: nil),
 
-            TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: nil), // wrong - should be an error
-            TestCase(parentConfiguration: optInConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: nil), // wrong - should be an error
-            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: nil), // wrong - should be an error
-            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: nil), // wrong - should be an error
+            TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: ""),
+            TestCase(parentConfiguration: optInConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: ""),
+            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: ""),
+            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssueMessage: ""),
 
             TestCase(parentConfiguration: noneNoneConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: ""),
-            TestCase(parentConfiguration: optInConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: nil), // wrong - should be an error
-            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: nil), // wrong - should be an error
+            TestCase(parentConfiguration: optInConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: ""),
+            TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: ""),
             TestCase(parentConfiguration: disabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssueMessage: ""),
         ]
 
@@ -504,7 +504,6 @@ extension ConfigurationTests {
         } else {
             XCTAssertNil(issue)
         }
-
     }
     
     // MARK: - Remote Configs

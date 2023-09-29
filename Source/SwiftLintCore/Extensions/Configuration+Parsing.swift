@@ -216,39 +216,38 @@ extension Configuration {
         optInRules: Set<String>,
         ruleType: Rule.Type
     ) -> Issue? {
-        var allOptInRules = optInRules
-        var allDisabledRules = disabledRules
-        var allEnabledRules: Set<String> = []
+        var enabledInParentRules: Set<String> = []
+        var disabledInParentRules: Set<String> = []
         
         if let parentConfiguration {
             switch parentConfiguration.rulesMode {
             case .allEnabled:
                 return nil
             case .only(let parentOnlyRules):
-                allOptInRules.formUnion(parentOnlyRules)
+                enabledInParentRules = parentOnlyRules
             case let .default(disabled: parentDisabledRules, optIn: parentOptInRules):
-                allOptInRules.formUnion(parentOptInRules)
-                allDisabledRules.formUnion(parentDisabledRules)
-                allEnabledRules.formUnion(parentOptInRules)
-                allEnabledRules.subtract(parentDisabledRules)
+                enabledInParentRules = parentOptInRules
+                disabledInParentRules = parentDisabledRules
             }
         }
         
+        var allEnabledRules: Set<String> = enabledInParentRules
+        allEnabledRules.subtract(disabledInParentRules)
         allEnabledRules.formUnion(optInRules)
         allEnabledRules.subtract(disabledRules)
-
+        
         let allIdentifiers = ruleType.description.allIdentifiers
         
         if allEnabledRules.contains(ruleType.identifier) == false {
             if Set(disabledRules).isSuperset(of: allIdentifiers) {
                 return Issue.genericWarning("\(message), but it is disabled on " +
                                             "'\(Key.disabledRules.rawValue)'.")
-            } else if Set(allDisabledRules.subtracting(disabledRules)).isSuperset(of: allIdentifiers) {
+            } else if Set(disabledInParentRules).isSuperset(of: allIdentifiers) {
                 return Issue.genericWarning("\(message), but it is disabled in a parent configuration.")
             }
             
             if ruleType is OptInRule.Type {
-                if Set(allOptInRules).isDisjoint(with: allIdentifiers) {
+                if Set(enabledInParentRules.union(optInRules)).isDisjoint(with: allIdentifiers) {
                     return Issue.genericWarning("\(message), but it is not enabled on " +
                                                 "'\(Key.optInRules.rawValue)'.")
                 }

@@ -490,7 +490,6 @@ extension ConfigurationTests {
         for testCase in testCases {
             testConfiguredRuleValidation(
                 ruleType: ruleType,
-                ruleIdentifier: ruleIdentifier,
                 parentConfiguration: testCase.parentConfiguration,
                 disabledRules: testCase.disabledRules,
                 optInRules: testCase.optInRules,
@@ -501,12 +500,12 @@ extension ConfigurationTests {
 
     private func testConfiguredRuleValidation(
         ruleType: Rule.Type,
-        ruleIdentifier: String,
         parentConfiguration: Configuration?,
         disabledRules: Set<String>,
         optInRules: Set<String>,
         expectedMessage: String? = nil
     ) {
+        let ruleIdentifier = ruleType.identifier
         let message = "Found a configuration for '\(ruleIdentifier)' rule"
         let issue = Configuration.validateConfiguredRuleIsEnabled(
             message: message,
@@ -546,7 +545,6 @@ extension ConfigurationTests {
         for testCase in testCases {
             testConfiguredRuleValidation(
                 ruleType: ruleType,
-                ruleIdentifier: ruleIdentifier,
                 onlyRules: testCase.onlyRules,
                 expectedMessage: testCase.expectedMessage
             )
@@ -555,10 +553,10 @@ extension ConfigurationTests {
 
     private func testConfiguredRuleValidation(
         ruleType: Rule.Type,
-        ruleIdentifier: String,
         onlyRules: Set<String>,
         expectedMessage: String? = nil
     ) {
+        let ruleIdentifier = ruleType.identifier
         let message = "Found a configuration for '\(ruleIdentifier)' rule"
         let issue = Configuration.validateConfiguredRuleIsEnabled(
             message: message,

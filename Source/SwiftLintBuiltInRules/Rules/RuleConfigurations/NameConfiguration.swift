@@ -54,26 +54,26 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let minLengthConfiguration = configurationDict[$minLength] {
+        if let minLengthConfiguration = configurationDict[$minLength.key] {
             try minLength.apply(configuration: minLengthConfiguration)
         }
-        if let maxLengthConfiguration = configurationDict[$maxLength] {
+        if let maxLengthConfiguration = configurationDict[$maxLength.key] {
             try maxLength.apply(configuration: maxLengthConfiguration)
         }
-        if let excluded = [String].array(of: configurationDict[$excludedRegularExpressions]) {
+        if let excluded = [String].array(of: configurationDict[$excludedRegularExpressions.key]) {
             self.excludedRegularExpressions = Set(excluded.compactMap {
                 try? RegularExpression(pattern: "^\($0)$")
             })
         }
-        if let allowedSymbols = [String].array(of: configurationDict[$allowedSymbols]) {
+        if let allowedSymbols = [String].array(of: configurationDict[$allowedSymbols.key]) {
             self.allowedSymbols = Set(allowedSymbols)
         }
-        if let unallowedSymbolsSeverity = configurationDict[$unallowedSymbolsSeverity] {
+        if let unallowedSymbolsSeverity = configurationDict[$unallowedSymbolsSeverity.key] {
             try self.unallowedSymbolsSeverity.apply(configuration: unallowedSymbolsSeverity)
         }
-        if let validatesStartWithLowercase = configurationDict[$validatesStartWithLowercase] as? String {
+        if let validatesStartWithLowercase = configurationDict[$validatesStartWithLowercase.key] as? String {
             try self.validatesStartWithLowercase.apply(configuration: validatesStartWithLowercase)
-        } else if let validatesStartWithLowercase = configurationDict[$validatesStartWithLowercase] as? Bool {
+        } else if let validatesStartWithLowercase = configurationDict[$validatesStartWithLowercase.key] as? Bool {
             // TODO: [05/10/2025] Remove deprecation warning after ~2 years.
             self.validatesStartWithLowercase = validatesStartWithLowercase ? .error : .off
             Issue.genericWarning(

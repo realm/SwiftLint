@@ -58,7 +58,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
 
     public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any],
-            let regexString = configurationDict[$regex] as? String else {
+              let regexString = configurationDict[$regex.key] as? String else {
             throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
         }
 
@@ -86,7 +86,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         if let message = configurationDict["message"] as? String {
             self.message = message
         }
-        if let severityString = configurationDict[$severityConfiguration] as? String {
+        if let severityString = configurationDict[$severityConfiguration.key] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
         if let captureGroup = configurationDict["capture_group"] as? Int {

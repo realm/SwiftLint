@@ -1,5 +1,6 @@
 import SwiftLintCore
 
+@AutoApply
 struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ProhibitedSuperRule
 
@@ -10,7 +11,7 @@ struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
     @ConfigurationElement(key: "included")
     private(set) var included = ["*"]
 
-    private(set) var resolvedMethodNames = [
+    private static let methodNames = [
         // NSFileProviderExtension
         "providePlaceholder(at:completionHandler:)",
         // NSTextInput
@@ -21,30 +22,10 @@ struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
         "loadView()"
     ]
 
-    mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-
-        if let severityString = configuration[$severityConfiguration] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
-
-        if let excluded = [String].array(of: configuration[$excluded]) {
-            self.excluded = excluded
-        }
-
-        if let included = [String].array(of: configuration[$included]) {
-            self.included = included
-        }
-
-        resolvedMethodNames = calculateResolvedMethodNames()
-    }
-
-    private func calculateResolvedMethodNames() -> [String] {
+    var resolvedMethodNames: [String] {
         var names = [String]()
         if included.contains("*") && !excluded.contains("*") {
-            names += resolvedMethodNames
+            names += Self.methodNames
         }
         names += included.filter { $0 != "*" }
         names = names.filter { !excluded.contains($0) }

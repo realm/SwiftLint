@@ -53,29 +53,47 @@ struct AutoApply: MemberMacro {
             context.diagnose(RuleConfigurationMacroError.notStruct.diagnose(at: declaration))
             return []
         }
-        let elementsUpdate = configuration.memberBlock.members
-            .compactMap { $0.decl.as(VariableDeclSyntax.self) }
-            .filter { varDecl in
-                varDecl.attributes.contains { attr in
-                    if let attrId = attr.as(AttributeSyntax.self)?.attributeName.as(IdentifierTypeSyntax.self) {
-                        return attrId.name.text == configurationElementName
-                    }
-                    return false
+        var annotatedVarDecls = configuration.memberBlock.members
+            .compactMap {
+                if let varDecl = $0.decl.as(VariableDeclSyntax.self),
+                   let annotation = varDecl.configurationElementAnnotation {
+                    return (varDecl, annotation)
                 }
+                return nil
             }
-            .compactMap { $0.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier.text }
+        let firstIndexWithoutKey = annotatedVarDecls
+            .partition { _, annotation in
+                if case let .argumentList(arguments) = annotation.arguments {
+                    return arguments.contains { $0.label?.text == "key" } == true
+                }
+                return false
+            }
+        let elementNames = annotatedVarDecls.compactMap {
+            $0.0.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
+        }
+        let elementsWithoutKeyUpdate = elementNames[..<firstIndexWithoutKey]
             .map {
                 """
-                try \($0).apply($\($0) == "" ? configuration : configuration[$\($0)], ruleID: Parent.identifier)
+                try \($0).apply(configuration, ruleID: Parent.identifier)
                 """
             }
+        let elementsWithKeyUpdate = elementNames[firstIndexWithoutKey...]
+            .map {
+                """
+                try \($0).apply(configuration[$\($0)], ruleID: Parent.identifier)
+                """
+            }
+        let configBinding = elementsWithKeyUpdate.isEmpty ? "_" : "configuration"
         return [
             """
             mutating func apply(configuration: Any) throws {
-                guard let configuration = configuration as? [String: Any] else {
-                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+                \(raw: elementsWithoutKeyUpdate.joined(separator: "\n"))
+                guard let \(raw: configBinding) = configuration as? [String: Any] else {
+                    \(raw: elementsWithoutKeyUpdate.isEmpty
+                        ? "throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)"
+                        : "return")
                 }
-                \(raw: elementsUpdate.joined(separator: "\n"))
+                \(raw: elementsWithKeyUpdate.joined(separator: "\n"))
             }
             """
         ]
@@ -113,6 +131,18 @@ struct MakeAcceptableByConfigurationElement: ExtensionMacro {
                 }
                 """)
         ]
+    }
+}
+
+private extension VariableDeclSyntax {
+    var configurationElementAnnotation: AttributeSyntax? {
+        let attribute = attributes.first {
+            if let attr = $0.as(AttributeSyntax.self), let attrId = attr.attributeName.as(IdentifierTypeSyntax.self) {
+                return attrId.name.text == configurationElementName
+            }
+            return false
+        }
+        return if case let .attribute(unwrapped) = attribute { unwrapped } else { nil }
     }
 }
 

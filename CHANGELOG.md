@@ -19,7 +19,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positive in `unused_import` rule that triggered on 
+  `@_exported` imports which could break downstream modules if removed.  
+  [jszumski](https://github.com/jszumski)
+  [#5242](https://github.com/realm/SwiftLint/pull/5242)
 
 ## 0.53.0: Laundry List
 

@@ -16,6 +16,9 @@ struct UnusedImportRuleExamples {
         Example("""
         import UnknownModule
         func foo(error: Swift.Error) {}
+        """),
+        Example("""
+        @_exported import UnknownModule
         """)
     ] + nonTriggeringExamplesVersionAdditions
 
@@ -122,7 +125,7 @@ struct UnusedImportRuleExamples {
             dispatchMain()
             """),
         Example("""
-        ↓@_exported import Foundation
+        ↓@_implementationOnly import Foundation
         import Dispatch
         dispatchMain()
         """):

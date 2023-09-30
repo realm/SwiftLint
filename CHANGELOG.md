@@ -62,7 +62,7 @@
   Bash, Zsh and fish.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* Add new `private_swiftui_state_property` opt-in rule to encourage setting
+* Add new `private_swiftui_state` opt-in rule to encourage setting
   SwiftUI `@State` and `@StateObject` properties to private.  
   [mt00chikin](https://github.com/mt00chikin)
   [#3173](https://github.com/realm/SwiftLint/issues/3173)
@@ -97,7 +97,7 @@
   [#5203](https://github.com/realm/SwiftLint/issues/5203)
 
 * Improved the reported location and reasons provided for issues
-  detected by the `invalid_seiftlint_command` rule.  
+  detected by the `invalid_swiftlint_command` rule.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5204](https://github.com/realm/SwiftLint/issues/5204)
 
@@ -107,7 +107,7 @@
   [#5215](https://github.com/realm/SwiftLint/issues/5215)
 
 * Adds a `strict` configuration file setting, equivalent to the `--strict`
-  command line option.
+  command line option.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5226](https://github.com/realm/SwiftLint/issues/5226)
 
@@ -465,7 +465,7 @@
   subclasses.  
   [AndrewDMontgomery](https://github.com/andrewdmontgomery)
   [#4875](https://github.com/realm/SwiftLint/pull/4875)
-  
+
 * Prepend `warning: ` to error messages so that they show in Xcode.  
   [whiteio](https://github.com/whiteio)
   [#4923](https://github.com/realm/SwiftLint/issues/4923)
@@ -524,8 +524,8 @@
   At the same time, make it an opt-in rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4615](https://github.com/realm/SwiftLint/issues/4615)
-  
-* Interpret strings in `excluded` option of `identifier_name`, 
+
+* Interpret strings in `excluded` option of `identifier_name`,
   `type_name` and `generic_type_name` rules as regular expression. Existing
   configurations should remain working without notice as long as they don't
   contain characters that must be escaped in regular expression.  

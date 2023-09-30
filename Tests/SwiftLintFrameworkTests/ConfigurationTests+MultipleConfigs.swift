@@ -426,6 +426,7 @@ extension ConfigurationTests {
             let expectedIssue: Issue?
         }
         let ruleType = ImplicitReturnRule.self
+        XCTAssertTrue((ruleType as Any) is OptInRule.Type)
         let ruleIdentifier = ruleType.identifier
 
         // swiftlint:disable line_length
@@ -505,6 +506,7 @@ extension ConfigurationTests {
             let expectedIssue: Issue?
         }
         let ruleType = ImplicitReturnRule.self
+        XCTAssertTrue((ruleType as Any) is OptInRule.Type)
         let notEnabledIssue = Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)
 
         let testCases: [TestCase] = [

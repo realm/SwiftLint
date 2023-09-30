@@ -526,6 +526,56 @@ extension ConfigurationTests {
         }
     }
 
+    func testOnlyConfigurationDisabledConfiguredRulesWarnings() {
+        // swiftlint:disable:previous function_body_length
+        struct TestCase: Equatable {
+            let onlyRules: Set<String>
+            let expectedMessage: String?
+        }
+        let ruleType = ImplicitReturnRule.self
+        let ruleIdentifier = ruleType.identifier
+
+        // swiftlint:disable:next line_length
+        let notEnabledMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is not present on 'only_rules'."
+
+        let testCases: [TestCase] = [
+            TestCase(onlyRules: [], expectedMessage: notEnabledMessage),
+            TestCase(onlyRules: [ruleIdentifier], expectedMessage: nil),
+        ]
+
+        for testCase in testCases {
+            testConfiguredRuleValidation(
+                ruleType: ruleType,
+                ruleIdentifier: ruleIdentifier,
+                onlyRules: testCase.onlyRules,
+                expectedMessage: testCase.expectedMessage
+            )
+        }
+    }
+
+    private func testConfiguredRuleValidation(
+        ruleType: Rule.Type,
+        ruleIdentifier: String,
+        onlyRules: Set<String>,
+        expectedMessage: String? = nil
+    ) {
+        let message = "Found a configuration for '\(ruleIdentifier)' rule"
+        let issue = Configuration.validateConfiguredRuleIsEnabled(
+            message: message,
+            onlyRules: onlyRules,
+            ruleType: ruleType
+        )
+        if let expectedMessage {
+            if let issue {
+                XCTAssertEqual(issue.message, expectedMessage)
+            } else {
+                XCTFail("issue was nil")
+            }
+        } else {
+            XCTAssertNil(issue)
+        }
+    }
+
     // MARK: - Remote Configs
     func testValidRemoteChildConfig() {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild)

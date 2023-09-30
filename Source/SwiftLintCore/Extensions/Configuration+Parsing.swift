@@ -168,12 +168,13 @@ extension Configuration {
             switch rulesMode {
             case .allEnabled:
                 return
-
             case .only(let onlyRules):
-                if Set(onlyRules).isDisjoint(with: ruleType.description.allIdentifiers) {
-                    Issue.genericWarning("\(message), but it is not present on '\(Key.onlyRules.rawValue)'.").print()
-                }
-
+                let issue = validateConfiguredRuleIsEnabled(
+                    message: message,
+                    onlyRules: onlyRules,
+                    ruleType: ruleType
+                )
+                issue?.print()
             case let .default(disabled: disabledRules, optIn: optInRules):
                 if rule is any OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {
                     Issue.genericWarning("\(message), but it is not enabled on '\(Key.optInRules.rawValue)'.").print()
@@ -207,6 +208,17 @@ extension Configuration {
                 issue?.print()
             }
         }
+    }
+
+    static func validateConfiguredRuleIsEnabled(
+        message: String,
+        onlyRules: Set<String>,
+        ruleType: Rule.Type
+    ) -> Issue? {
+        if onlyRules.isDisjoint(with: ruleType.description.allIdentifiers) {
+            return Issue.genericWarning("\(message), but it is not present on '\(Key.onlyRules.rawValue)'.")
+        }
+        return nil
     }
 
     static func validateConfiguredRuleIsEnabled(

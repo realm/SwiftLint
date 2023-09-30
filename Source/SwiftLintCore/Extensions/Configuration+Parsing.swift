@@ -222,7 +222,12 @@ extension Configuration {
         if let parentConfiguration {
             switch parentConfiguration.rulesMode {
             case .allEnabled:
-                return nil
+                if disabledRules.contains(ruleType.identifier) {
+                    return Issue.genericWarning("\(message), but it is disabled on " +
+                                                "'\(Key.disabledRules.rawValue)'.")
+                } else {
+                    return nil
+                }
             case .only(let parentOnlyRules):
                 enabledInParentRules = parentOnlyRules
             case let .default(disabled: parentDisabledRules, optIn: parentOptInRules):
@@ -238,11 +243,11 @@ extension Configuration {
         
         let allIdentifiers = ruleType.description.allIdentifiers
         
-        if allEnabledRules.contains(ruleType.identifier) == false {
-            if Set(disabledRules).isSuperset(of: allIdentifiers) {
+        if allEnabledRules.isDisjoint(with: allIdentifiers) {
+            if Set(disabledRules).isDisjoint(with: allIdentifiers) == false {
                 return Issue.genericWarning("\(message), but it is disabled on " +
                                             "'\(Key.disabledRules.rawValue)'.")
-            } else if Set(disabledInParentRules).isSuperset(of: allIdentifiers) {
+            } else if Set(disabledInParentRules).isDisjoint(with: allIdentifiers) == false {
                 return Issue.genericWarning("\(message), but it is disabled in a parent configuration.")
             }
             

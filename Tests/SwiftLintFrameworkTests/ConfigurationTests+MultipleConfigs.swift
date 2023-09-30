@@ -500,7 +500,6 @@ extension ConfigurationTests {
     }
 
     func testOnlyConfigurationDisabledRulesWarnings() {
-        // swiftlint:disable:previous function_body_length
         struct TestCase: Equatable {
             let onlyRules: Set<String>
             let expectedIssue: Issue?
@@ -511,7 +510,7 @@ extension ConfigurationTests {
 
         let testCases: [TestCase] = [
             TestCase(onlyRules: [], expectedIssue: notEnabledIssue),
-            TestCase(onlyRules: [ruleType.identifier], expectedIssue: nil),
+            TestCase(onlyRules: [ruleType.identifier], expectedIssue: nil)
         ]
 
         for testCase in testCases {

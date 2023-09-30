@@ -102,7 +102,7 @@ public enum Issue: LocalizedError, Equatable {
         queuedPrintError(errorDescription)
     }
 
-    var message: String {
+    private var message: String {
         switch self {
         case let .invalidConfiguration(id):
             return "Invalid configuration for '\(id)' rule. Falling back to default."
@@ -117,13 +117,16 @@ public enum Issue: LocalizedError, Equatable {
         case let .invalidRuleIDs(ruleIDs):
             return "The key(s) \(ruleIDs.formatted) used as rule identifier(s) is/are invalid."
         case let .ruleNotPresentInOnlyRules(id):
-            return "Found a configuration for '\(id)' rule, but it is not present on '\(Configuration.Key.onlyRules.rawValue)'."
+            return "Found a configuration for '\(id)' rule, but it is not present on " +
+                   "'\(Configuration.Key.onlyRules.rawValue)'."
         case let .ruleDisabledInDisabledRules(id):
-            return "Found a configuration for '\(id)' rule, but it is disabled on '\(Configuration.Key.disabledRules.rawValue)'."
+            return "Found a configuration for '\(id)' rule, but it is disabled on " +
+                   "'\(Configuration.Key.disabledRules.rawValue)'."
         case let .ruleDisabledInParentConfiguration(id):
             return "Found a configuration for '\(id)' rule, but it is disabled in a parent configuration."
         case let .ruleIsNotEnabledInOptInRules(id):
-            return "Found a configuration for '\(id)' rule, but it is not enabled on '\(Configuration.Key.optInRules.rawValue)'."
+            return "Found a configuration for '\(id)' rule, but it is not enabled on " +
+                   "'\(Configuration.Key.optInRules.rawValue)'."
         case let .genericWarning(message), let .genericError(message):
             return message
         case let .ruleDeprecated(id):

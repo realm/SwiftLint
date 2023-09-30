@@ -167,10 +167,7 @@ extension Configuration {
             case .allEnabled:
                 return
             case .only(let onlyRules):
-                let issue = validateConfiguredRuleIsEnabled(
-                    onlyRules: onlyRules,
-                    ruleType: ruleType
-                )
+                let issue = validateConfiguredRuleIsEnabled(onlyRules: onlyRules, ruleType: ruleType)
                 issue?.print()
             case let .default(disabled: disabledRules, optIn: optInRules):
                 if rule is any OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {

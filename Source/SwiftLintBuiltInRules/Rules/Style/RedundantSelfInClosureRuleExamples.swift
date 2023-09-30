@@ -166,8 +166,31 @@ struct RedundantSelfInClosureRuleExamples {
                     f { let g = ↓self.g() }
                 }
             }
-        """, excludeFromDocumentation: true)
-    ] + triggeringCompilerSpecificExamples
+        """, excludeFromDocumentation: true),
+        Example("""
+            class C {
+                var x = 0
+                func f(_ work: @escaping () -> Void) { work() }
+                func g() {
+                    f { [weak self] in
+                        self?.x = 1
+                        guard let self else { return }
+                        ↓self.x = 1
+                    }
+                    f { [weak self] in
+                        self?.x = 1
+                        if let self = self else { ↓self.x = 1 }
+                        self?.x = 1
+                    }
+                    f { [weak self] in
+                        self?.x = 1
+                        while let self else { ↓self.x = 1 }
+                        self?.x = 1
+                    }
+                }
+            }
+        """)
+    ]
 
     static let corrections = [
         Example("""
@@ -194,34 +217,4 @@ struct RedundantSelfInClosureRuleExamples {
             }
         """)
     ]
-
-#if compiler(>=5.8)
-    private static let triggeringCompilerSpecificExamples = [
-        Example("""
-            class C {
-                var x = 0
-                func f(_ work: @escaping () -> Void) { work() }
-                func g() {
-                    f { [weak self] in
-                        self?.x = 1
-                        guard let self else { return }
-                        ↓self.x = 1
-                    }
-                    f { [weak self] in
-                        self?.x = 1
-                        if let self = self else { ↓self.x = 1 }
-                        self?.x = 1
-                    }
-                    f { [weak self] in
-                        self?.x = 1
-                        while let self else { ↓self.x = 1 }
-                        self?.x = 1
-                    }
-                }
-            }
-        """)
-    ]
-#else
-    private static let triggeringCompilerSpecificExamples = [Example]()
-#endif
 }

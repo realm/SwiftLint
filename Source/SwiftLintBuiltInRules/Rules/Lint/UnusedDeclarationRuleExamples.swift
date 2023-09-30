@@ -71,6 +71,15 @@ struct UnusedDeclarationRuleExamples {
         }
         """),
         Example("""
+            struct S {
+                var i: Int? = nil
+                func f() {
+                    if let i { print(i) }
+                }
+            }
+            S().f()
+        """),
+        Example("""
         enum Component {
           case string(StaticString)
           indirect case array([Component])
@@ -128,7 +137,7 @@ struct UnusedDeclarationRuleExamples {
           "hello"
         }
         """)
-    ] + platformSpecificNonTriggeringExamples + versionSpecificNonTriggeringExamples
+    ] + platformSpecificNonTriggeringExamples
 
     static let triggeringExamples = [
         Example("""
@@ -300,21 +309,5 @@ struct UnusedDeclarationRuleExamples {
 #else
     private static let platformSpecificNonTriggeringExamples = [Example]()
     private static let platformSpecificTriggeringExamples = [Example]()
-#endif
-
-#if compiler(>=5.8)
-    private static let versionSpecificNonTriggeringExamples = [
-        Example("""
-            struct S {
-                var i: Int? = nil
-                func f() {
-                    if let i { print(i) }
-                }
-            }
-            S().f()
-        """)
-    ]
-#else
-    private static let versionSpecificNonTriggeringExamples = [Example]()
 #endif
 }

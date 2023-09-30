@@ -439,9 +439,9 @@ extension ConfigurationTests {
 
         let allEnabledConfiguration = Configuration(rulesMode: .allEnabled)
 
-        let notEnabledMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is not enabled on 'opt_in_rules'."
-        let disabledInParentMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is disabled in a parent configuration."
-        let disabledMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is disabled on 'disabled_rules'."
+        let notEnabledMessage = Issue.ruleIsNotEnabledInOptInRules(ruleID: ruleIdentifier).message
+        let disabledInParentMessage = Issue.ruleDisabledInParentConfiguration(ruleID: ruleIdentifier).message
+        let disabledMessage = Issue.ruleDisabledInDisabledRules(ruleID: ruleIdentifier).message
 
         let testCases: [TestCase] = [
             TestCase(parentConfiguration: nil, disabledRules: [], optInRules: [], expectedMessage: notEnabledMessage),
@@ -488,9 +488,7 @@ extension ConfigurationTests {
         // swiftlint:enable line_length
 
         for testCase in testCases {
-            let message = "Found a configuration for '\(ruleIdentifier)' rule"
             let issue = Configuration.validateConfiguredRuleIsEnabled(
-                message: message,
                 parentConfiguration: testCase.parentConfiguration,
                 disabledRules: testCase.disabledRules,
                 optInRules: testCase.optInRules,
@@ -518,9 +516,7 @@ extension ConfigurationTests {
         ]
 
         for testCase in testCases {
-            let message = "Found a configuration for '\(ruleIdentifier)' rule"
             let issue = Configuration.validateConfiguredRuleIsEnabled(
-                message: message,
                 onlyRules: testCase.onlyRules,
                 ruleType: ruleType
             )

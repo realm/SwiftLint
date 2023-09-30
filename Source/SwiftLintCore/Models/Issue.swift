@@ -20,6 +20,18 @@ public enum Issue: LocalizedError, Equatable {
     /// Used rule IDs are invalid.
     case invalidRuleIDs(Set<String>)
 
+    /// Found a rule configuration for a rule that is not present in only_rules.
+    case ruleNotPresentInOnlyRules(ruleID: String)
+
+    /// Found a rule configuration for a rule that is disabled.
+    case ruleDisabledInDisabledRules(ruleID: String)
+
+    /// Found a rule configuration for a rule that is disabled in the parent configuration
+    case ruleDisabledInParentConfiguration(ruleID: String)
+
+    /// Found a rule configuration for a rule that is not enabled in opt_in_rules
+    case ruleIsNotEnabledInOptInRules(ruleID: String)
+
     /// A generic warning specified by a string.
     case genericWarning(String)
 
@@ -104,6 +116,14 @@ public enum Issue: LocalizedError, Equatable {
             return "Configuration for '\(id)' rule contains the invalid key(s) \(keys.formatted)."
         case let .invalidRuleIDs(ruleIDs):
             return "The key(s) \(ruleIDs.formatted) used as rule identifier(s) is/are invalid."
+        case let .ruleNotPresentInOnlyRules(id):
+            return "Found a configuration for '\(id)' rule, but it is not present on '\(Configuration.Key.onlyRules.rawValue)'."
+        case let .ruleDisabledInDisabledRules(id):
+            return "Found a configuration for '\(id)' rule, but it is disabled on '\(Configuration.Key.disabledRules.rawValue)'."
+        case let .ruleDisabledInParentConfiguration(id):
+            return "Found a configuration for '\(id)' rule, but it is disabled in a parent configuration."
+        case let .ruleIsNotEnabledInOptInRules(id):
+            return "Found a configuration for '\(id)' rule, but it is not enabled on '\(Configuration.Key.optInRules.rawValue)'."
         case let .genericWarning(message), let .genericError(message):
             return message
         case let .ruleDeprecated(id):

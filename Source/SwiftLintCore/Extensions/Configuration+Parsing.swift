@@ -163,14 +163,11 @@ extension Configuration {
                     continue
             }
 
-            let message = "Found a configuration for '\(identifier)' rule"
-
             switch rulesMode {
             case .allEnabled:
                 return
             case .only(let onlyRules):
                 let issue = validateConfiguredRuleIsEnabled(
-                    message: message,
                     onlyRules: onlyRules,
                     ruleType: ruleType
                 )
@@ -199,7 +196,6 @@ extension Configuration {
                     Issue.genericWarning("\(message), but it is disabled on '\(Key.disabledRules.rawValue)'.").print()
 
                 let issue = validateConfiguredRuleIsEnabled(
-                    message: message,
                     parentConfiguration: parentConfiguration,
                     disabledRules: disabledRules,
                     optInRules: optInRules,
@@ -211,18 +207,16 @@ extension Configuration {
     }
 
     static func validateConfiguredRuleIsEnabled(
-        message: String,
         onlyRules: Set<String>,
         ruleType: Rule.Type
     ) -> Issue? {
         if onlyRules.isDisjoint(with: ruleType.description.allIdentifiers) {
-            return Issue.genericWarning("\(message), but it is not present on '\(Key.onlyRules.rawValue)'.")
+            return Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)
         }
         return nil
     }
 
     static func validateConfiguredRuleIsEnabled(
-        message: String,
         parentConfiguration: Configuration?,
         disabledRules: Set<String>,
         optInRules: Set<String>,
@@ -235,8 +229,7 @@ extension Configuration {
             switch parentConfiguration.rulesMode {
             case .allEnabled:
                 if disabledRules.contains(ruleType.identifier) {
-                    return Issue.genericWarning("\(message), but it is disabled on " +
-                                                "'\(Key.disabledRules.rawValue)'.")
+                    return Issue.ruleDisabledInDisabledRules(ruleID: ruleType.identifier)
                 } else {
                     return nil
                 }
@@ -257,16 +250,14 @@ extension Configuration {
 
         if allEnabledRules.isDisjoint(with: allIdentifiers) {
             if Set(disabledRules).isDisjoint(with: allIdentifiers) == false {
-                return Issue.genericWarning("\(message), but it is disabled on " +
-                                            "'\(Key.disabledRules.rawValue)'.")
+                return Issue.ruleDisabledInDisabledRules(ruleID: ruleType.identifier)
             } else if Set(disabledInParentRules).isDisjoint(with: allIdentifiers) == false {
-                return Issue.genericWarning("\(message), but it is disabled in a parent configuration.")
+                return Issue.ruleDisabledInParentConfiguration(ruleID: ruleType.identifier)
             }
 
             if ruleType is OptInRule.Type {
                 if Set(enabledInParentRules.union(optInRules)).isDisjoint(with: allIdentifiers) {
-                    return Issue.genericWarning("\(message), but it is not enabled on " +
-                                                "'\(Key.optInRules.rawValue)'.")
+                    return Issue.ruleIsNotEnabledInOptInRules(ruleID: ruleType.identifier)
                 }
             }
         }

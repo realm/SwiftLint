@@ -218,7 +218,7 @@ extension Configuration {
     ) -> Issue? {
         var enabledInParentRules: Set<String> = []
         var disabledInParentRules: Set<String> = []
-        
+
         if let parentConfiguration {
             switch parentConfiguration.rulesMode {
             case .allEnabled:
@@ -235,14 +235,14 @@ extension Configuration {
                 disabledInParentRules = parentDisabledRules
             }
         }
-        
+
         var allEnabledRules: Set<String> = enabledInParentRules
         allEnabledRules.subtract(disabledInParentRules)
         allEnabledRules.formUnion(optInRules)
         allEnabledRules.subtract(disabledRules)
-        
+
         let allIdentifiers = ruleType.description.allIdentifiers
-        
+
         if allEnabledRules.isDisjoint(with: allIdentifiers) {
             if Set(disabledRules).isDisjoint(with: allIdentifiers) == false {
                 return Issue.genericWarning("\(message), but it is disabled on " +
@@ -250,7 +250,7 @@ extension Configuration {
             } else if Set(disabledInParentRules).isDisjoint(with: allIdentifiers) == false {
                 return Issue.genericWarning("\(message), but it is disabled in a parent configuration.")
             }
-            
+
             if ruleType is OptInRule.Type {
                 if Set(enabledInParentRules.union(optInRules)).isDisjoint(with: allIdentifiers) {
                     return Issue.genericWarning("\(message), but it is not enabled on " +
@@ -258,7 +258,7 @@ extension Configuration {
                 }
             }
         }
-                    
+
         return nil
     }
 

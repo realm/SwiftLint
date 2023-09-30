@@ -427,16 +427,17 @@ extension ConfigurationTests {
     func testOptInRulesWithDefaultConfigurationWarnings() {
         let ruleType = ImplicitReturnRule.self
         let ruleIdentifier = ruleType.identifier
-        
+
+        // swiftlint:disable line_length
         let emptyConfiguration = Configuration(rulesMode: .default(disabled: [], optIn: []))
         let optInConfiguration = Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier]))
         let optInDisabledConfiguration = Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier]))
         let disabledConfiguration = Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: []))
-        
+
         let notEnabledMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is not enabled on 'opt_in_rules'."
         let disabledInParentMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is disabled in a parent configuration."
         let disabledMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is disabled on 'disabled_rules'."
-        
+
         let testCases: [TestCase] = [
             TestCase(parentConfiguration: nil, disabledRules: [], optInRules: [], expectedMessage: notEnabledMessage),
             TestCase(parentConfiguration: emptyConfiguration, disabledRules: [], optInRules: [], expectedMessage: notEnabledMessage),
@@ -460,26 +461,28 @@ extension ConfigurationTests {
             TestCase(parentConfiguration: emptyConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
             TestCase(parentConfiguration: optInConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
             TestCase(parentConfiguration: optInDisabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: disabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage)
         ]
+        // swiftlint:enable line_length
 
         test(cases: testCases, ruleType: ruleType, ruleIdentifier: ruleIdentifier)
     }
-    
+
     func testOptInRulesWithOnlyConfigurationWarnings() {
         let ruleType = ImplicitReturnRule.self
         let ruleIdentifier = ruleType.identifier
 
         let emptyConfiguration = Configuration(rulesMode: .only([]))
         let enabledConfiguration = Configuration(rulesMode: .only([ruleIdentifier]))
-        
+
+        // swiftlint:disable line_length
         let notEnabledMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is not enabled on 'opt_in_rules'."
         let disabledMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is disabled on 'disabled_rules'."
 
         let testCases: [TestCase] = [
             TestCase(parentConfiguration: emptyConfiguration, disabledRules: [], optInRules: [], expectedMessage: notEnabledMessage),
             TestCase(parentConfiguration: enabledConfiguration, disabledRules: [], optInRules: [], expectedMessage: nil),
-            
+
             TestCase(parentConfiguration: emptyConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
             TestCase(parentConfiguration: enabledConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
 
@@ -487,26 +490,29 @@ extension ConfigurationTests {
             TestCase(parentConfiguration: enabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
 
             TestCase(parentConfiguration: emptyConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: enabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: enabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage)
         ]
-        
+        // swiftlint:enable line_length
+
         test(cases: testCases, ruleType: ruleType, ruleIdentifier: ruleIdentifier)
     }
-    
+
     func testOptInRulesWithAllConfigurationWarnings() {
         let ruleType = ImplicitReturnRule.self
         let ruleIdentifier = ruleType.identifier
 
         let configuration = Configuration(rulesMode: .allEnabled)
-        
+
+        // swiftlint:disable line_length
         let disabledMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is disabled on 'disabled_rules'."
 
         let testCases: [TestCase] = [
             TestCase(parentConfiguration: configuration, disabledRules: [], optInRules: [], expectedMessage: nil),
             TestCase(parentConfiguration: configuration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
             TestCase(parentConfiguration: configuration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: configuration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: configuration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage)
         ]
+        // swiftlint:enable line_length
 
         test(cases: testCases, ruleType: ruleType, ruleIdentifier: ruleIdentifier)
     }
@@ -550,7 +556,7 @@ extension ConfigurationTests {
             XCTAssertNil(issue)
         }
     }
-    
+
     // MARK: - Remote Configs
     func testValidRemoteChildConfig() {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild)

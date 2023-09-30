@@ -248,10 +248,10 @@ extension Configuration {
             }
         }
 
-        var allEnabledRules: Set<String> = enabledInParentRules
-        allEnabledRules.subtract(disabledInParentRules)
-        allEnabledRules.formUnion(optInRules)
-        allEnabledRules.subtract(disabledRules)
+        var allEnabledRules = enabledInParentRules
+            .subtracting(disabledInParentRules)
+            .union(optInRules)
+            .subtracting(disabledRules)
 
         let allIdentifiers = ruleType.description.allIdentifiers
 

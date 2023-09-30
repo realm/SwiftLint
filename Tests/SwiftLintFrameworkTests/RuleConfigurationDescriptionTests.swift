@@ -466,6 +466,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             "list": ["string3", "string4"],
             "set": [4, 5, 6],
             "SEVERITY": "error",
+            "warning": 12,
             "levels": ["warning": 6, "error": 7]
         ])
 
@@ -478,7 +479,9 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         XCTAssertEqual(configuration.severity, .error)
         XCTAssertEqual(configuration.list, ["string3", "string4"])
         XCTAssertEqual(configuration.set, [4, 5, 6])
+        XCTAssertEqual(configuration.severityConfig, .error)
         XCTAssertEqual(configuration.renamedSeverityConfig, .error)
+        XCTAssertEqual(configuration.inlinedSeverityLevels, SeverityLevelsConfiguration(warning: 12))
         XCTAssertEqual(configuration.nestedSeverityLevels, SeverityLevelsConfiguration(warning: 6, error: 7))
     }
 

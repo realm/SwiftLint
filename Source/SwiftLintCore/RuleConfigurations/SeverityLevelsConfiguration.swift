@@ -29,8 +29,7 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Equa
         if let configurationArray = [Int].array(of: configuration), configurationArray.isNotEmpty {
             warning = configurationArray[0]
             error = (configurationArray.count > 1) ? configurationArray[1] : nil
-        } else if let configDict = configuration as? [String: Int?],
-            configDict.isNotEmpty, Set(configDict.keys).isSubset(of: [$warning, $error]) {
+        } else if let configDict = configuration as? [String: Any?] {
             warning = (configDict[$warning] as? Int) ?? warning
             error = configDict[$error] as? Int
         } else {

@@ -417,13 +417,13 @@ extension ConfigurationTests {
     }
 
     // MARK: Warnings about configurations for disabled rules
-    func testDefaultConfigurationDisabledConfiguredRulesWarnings() {
+    func testDefaultConfigurationDisabledRulesWarnings() {
         // swiftlint:disable:previous function_body_length
         struct TestCase: Equatable {
             let parentConfiguration: Configuration?
             let disabledRules: Set<String>
             let optInRules: Set<String>
-            let expectedMessage: String?
+            let expectedIssue: Issue?
         }
         let ruleType = ImplicitReturnRule.self
         let ruleIdentifier = ruleType.identifier
@@ -439,51 +439,51 @@ extension ConfigurationTests {
 
         let allEnabledConfiguration = Configuration(rulesMode: .allEnabled)
 
-        let notEnabledMessage = Issue.ruleIsNotEnabledInOptInRules(ruleID: ruleIdentifier).message
-        let disabledInParentMessage = Issue.ruleDisabledInParentConfiguration(ruleID: ruleIdentifier).message
-        let disabledMessage = Issue.ruleDisabledInDisabledRules(ruleID: ruleIdentifier).message
+        let notEnabledIssue = Issue.ruleIsNotEnabledInOptInRules(ruleID: ruleIdentifier)
+        let disabledInParentIssue = Issue.ruleDisabledInParentConfiguration(ruleID: ruleIdentifier)
+        let disabledIssue = Issue.ruleDisabledInDisabledRules(ruleID: ruleIdentifier)
 
         let testCases: [TestCase] = [
-            TestCase(parentConfiguration: nil, disabledRules: [], optInRules: [], expectedMessage: notEnabledMessage),
-            TestCase(parentConfiguration: emptyDefaultConfiguration, disabledRules: [], optInRules: [], expectedMessage: notEnabledMessage),
-            TestCase(parentConfiguration: optInDefaultConfiguration, disabledRules: [], optInRules: [], expectedMessage: nil),
-            TestCase(parentConfiguration: optInDisabledDefaultConfiguration, disabledRules: [], optInRules: [], expectedMessage: disabledInParentMessage),
-            TestCase(parentConfiguration: disabledDefaultConfiguration, disabledRules: [], optInRules: [], expectedMessage: disabledInParentMessage),
+            TestCase(parentConfiguration: nil, disabledRules: [], optInRules: [], expectedIssue: notEnabledIssue),
+            TestCase(parentConfiguration: emptyDefaultConfiguration, disabledRules: [], optInRules: [], expectedIssue: notEnabledIssue),
+            TestCase(parentConfiguration: optInDefaultConfiguration, disabledRules: [], optInRules: [], expectedIssue: nil),
+            TestCase(parentConfiguration: optInDisabledDefaultConfiguration, disabledRules: [], optInRules: [], expectedIssue: disabledInParentIssue),
+            TestCase(parentConfiguration: disabledDefaultConfiguration, disabledRules: [], optInRules: [], expectedIssue: disabledInParentIssue),
 
-            TestCase(parentConfiguration: nil, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
-            TestCase(parentConfiguration: emptyDefaultConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
-            TestCase(parentConfiguration: optInDefaultConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
-            TestCase(parentConfiguration: optInDisabledDefaultConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
-            TestCase(parentConfiguration: disabledDefaultConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
+            TestCase(parentConfiguration: nil, disabledRules: [], optInRules: [ruleIdentifier], expectedIssue: nil),
+            TestCase(parentConfiguration: emptyDefaultConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssue: nil),
+            TestCase(parentConfiguration: optInDefaultConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssue: nil),
+            TestCase(parentConfiguration: optInDisabledDefaultConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssue: nil),
+            TestCase(parentConfiguration: disabledDefaultConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssue: nil),
 
-            TestCase(parentConfiguration: nil, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: emptyDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: optInDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: optInDisabledDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: disabledDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: nil, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssue: disabledIssue),
+            TestCase(parentConfiguration: emptyDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssue: disabledIssue),
+            TestCase(parentConfiguration: optInDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssue: disabledIssue),
+            TestCase(parentConfiguration: optInDisabledDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssue: disabledIssue),
+            TestCase(parentConfiguration: disabledDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssue: disabledIssue),
 
-            TestCase(parentConfiguration: nil, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: emptyDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: optInDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: optInDisabledDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: disabledDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: nil, disabledRules: [ruleIdentifier], optInRules: [], expectedIssue: disabledIssue),
+            TestCase(parentConfiguration: emptyDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssue: disabledIssue),
+            TestCase(parentConfiguration: optInDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssue: disabledIssue),
+            TestCase(parentConfiguration: optInDisabledDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssue: disabledIssue),
+            TestCase(parentConfiguration: disabledDefaultConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssue: disabledIssue),
 
-            TestCase(parentConfiguration: emptyOnlyConfiguration, disabledRules: [], optInRules: [], expectedMessage: notEnabledMessage),
-            TestCase(parentConfiguration: enabledOnlyConfiguration, disabledRules: [], optInRules: [], expectedMessage: nil),
+            TestCase(parentConfiguration: emptyOnlyConfiguration, disabledRules: [], optInRules: [], expectedIssue: notEnabledIssue),
+            TestCase(parentConfiguration: enabledOnlyConfiguration, disabledRules: [], optInRules: [], expectedIssue: nil),
 
-            TestCase(parentConfiguration: emptyOnlyConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
-            TestCase(parentConfiguration: enabledOnlyConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
+            TestCase(parentConfiguration: emptyOnlyConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssue: nil),
+            TestCase(parentConfiguration: enabledOnlyConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssue: nil),
 
-            TestCase(parentConfiguration: emptyOnlyConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: enabledOnlyConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: emptyOnlyConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssue: disabledIssue),
+            TestCase(parentConfiguration: enabledOnlyConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssue: disabledIssue),
 
-            TestCase(parentConfiguration: emptyOnlyConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: enabledOnlyConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage),
+            TestCase(parentConfiguration: emptyOnlyConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssue: disabledIssue),
+            TestCase(parentConfiguration: enabledOnlyConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssue: disabledIssue),
 
-            TestCase(parentConfiguration: allEnabledConfiguration, disabledRules: [], optInRules: [], expectedMessage: nil),
-            TestCase(parentConfiguration: allEnabledConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedMessage: nil),
-            TestCase(parentConfiguration: allEnabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedMessage: disabledMessage),
-            TestCase(parentConfiguration: allEnabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedMessage: disabledMessage)
+            TestCase(parentConfiguration: allEnabledConfiguration, disabledRules: [], optInRules: [], expectedIssue: nil),
+            TestCase(parentConfiguration: allEnabledConfiguration, disabledRules: [], optInRules: [ruleIdentifier], expectedIssue: nil),
+            TestCase(parentConfiguration: allEnabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [ruleIdentifier], expectedIssue: disabledIssue),
+            TestCase(parentConfiguration: allEnabledConfiguration, disabledRules: [ruleIdentifier], optInRules: [], expectedIssue: disabledIssue)
         ]
         // swiftlint:enable line_length
 
@@ -494,25 +494,22 @@ extension ConfigurationTests {
                 optInRules: testCase.optInRules,
                 ruleType: ruleType
             )
-            XCTAssertEqual(issue?.message, testCase.expectedMessage)
+            XCTAssertEqual(issue, testCase.expectedIssue)
         }
     }
 
-    func testOnlyConfigurationDisabledConfiguredRulesWarnings() {
+    func testOnlyConfigurationDisabledRulesWarnings() {
         // swiftlint:disable:previous function_body_length
         struct TestCase: Equatable {
             let onlyRules: Set<String>
-            let expectedMessage: String?
+            let expectedIssue: Issue?
         }
         let ruleType = ImplicitReturnRule.self
-        let ruleIdentifier = ruleType.identifier
-
-        // swiftlint:disable:next line_length
-        let notEnabledMessage = "Found a configuration for '\(ruleIdentifier)' rule, but it is not present on 'only_rules'."
+        let notEnabledIssue = Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)
 
         let testCases: [TestCase] = [
-            TestCase(onlyRules: [], expectedMessage: notEnabledMessage),
-            TestCase(onlyRules: [ruleIdentifier], expectedMessage: nil),
+            TestCase(onlyRules: [], expectedIssue: notEnabledIssue),
+            TestCase(onlyRules: [ruleType.identifier], expectedIssue: nil),
         ]
 
         for testCase in testCases {
@@ -520,7 +517,7 @@ extension ConfigurationTests {
                 onlyRules: testCase.onlyRules,
                 ruleType: ruleType
             )
-            XCTAssertEqual(issue?.message, testCase.expectedMessage)
+            XCTAssertEqual(issue, testCase.expectedIssue)
         }
     }
 

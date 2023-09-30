@@ -19,26 +19,13 @@ struct UnusedImportRuleExamples {
         """),
         Example("""
         @_exported import UnknownModule
-        """)
-    ] + nonTriggeringExamplesVersionAdditions
-
-#if compiler(>=5.8)
-    private static let nonTriggeringExamplesVersionAdditions = [
+        """),
         Example("""
         import Foundation
         let 👨‍👩‍👧‍👦 = #selector(NSArray.contains(_:))
         👨‍👩‍👧‍👦 == 👨‍👩‍👧‍👦
         """)
     ]
-#else
-    private static let nonTriggeringExamplesVersionAdditions = [
-        Example("""
-        import Foundation
-        let 👨‍👩‍👧‍👦 = #selector(NSArray.contains(_:))
-        👨‍👩‍👧‍👦 == 👨‍👩‍👧‍👦
-        """)
-    ]
-#endif
 
     static let triggeringExamples = [
         Example("""

@@ -488,40 +488,15 @@ extension ConfigurationTests {
         // swiftlint:enable line_length
 
         for testCase in testCases {
-            testConfiguredRuleValidation(
-                ruleType: ruleType,
+            let message = "Found a configuration for '\(ruleIdentifier)' rule"
+            let issue = Configuration.validateConfiguredRuleIsEnabled(
+                message: message,
                 parentConfiguration: testCase.parentConfiguration,
                 disabledRules: testCase.disabledRules,
                 optInRules: testCase.optInRules,
-                expectedMessage: testCase.expectedMessage
+                ruleType: ruleType
             )
-        }
-    }
-
-    private func testConfiguredRuleValidation(
-        ruleType: Rule.Type,
-        parentConfiguration: Configuration?,
-        disabledRules: Set<String>,
-        optInRules: Set<String>,
-        expectedMessage: String? = nil
-    ) {
-        let ruleIdentifier = ruleType.identifier
-        let message = "Found a configuration for '\(ruleIdentifier)' rule"
-        let issue = Configuration.validateConfiguredRuleIsEnabled(
-            message: message,
-            parentConfiguration: parentConfiguration,
-            disabledRules: disabledRules,
-            optInRules: optInRules,
-            ruleType: ruleType
-        )
-        if let expectedMessage {
-            if let issue {
-                XCTAssertEqual(issue.message, expectedMessage)
-            } else {
-                XCTFail("issue was nil")
-            }
-        } else {
-            XCTAssertNil(issue)
+            XCTAssertEqual(issue?.message, testCase.expectedMessage)
         }
     }
 
@@ -543,34 +518,13 @@ extension ConfigurationTests {
         ]
 
         for testCase in testCases {
-            testConfiguredRuleValidation(
-                ruleType: ruleType,
+            let message = "Found a configuration for '\(ruleIdentifier)' rule"
+            let issue = Configuration.validateConfiguredRuleIsEnabled(
+                message: message,
                 onlyRules: testCase.onlyRules,
-                expectedMessage: testCase.expectedMessage
+                ruleType: ruleType
             )
-        }
-    }
-
-    private func testConfiguredRuleValidation(
-        ruleType: Rule.Type,
-        onlyRules: Set<String>,
-        expectedMessage: String? = nil
-    ) {
-        let ruleIdentifier = ruleType.identifier
-        let message = "Found a configuration for '\(ruleIdentifier)' rule"
-        let issue = Configuration.validateConfiguredRuleIsEnabled(
-            message: message,
-            onlyRules: onlyRules,
-            ruleType: ruleType
-        )
-        if let expectedMessage {
-            if let issue {
-                XCTAssertEqual(issue.message, expectedMessage)
-            } else {
-                XCTFail("issue was nil")
-            }
-        } else {
-            XCTAssertNil(issue)
+            XCTAssertEqual(issue?.message, testCase.expectedMessage)
         }
     }
 

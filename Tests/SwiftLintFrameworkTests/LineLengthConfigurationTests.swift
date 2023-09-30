@@ -62,7 +62,7 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
     func testLineLengthConfigurationThrowsOnBadConfig() {
         let config = "unknown"
         var configuration = LineLengthConfiguration(length: severityLevels)
-        checkError(Issue.unknownConfiguration(ruleID: LineLengthRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: LineLengthRule.description.identifier)) {
             try configuration.apply(configuration: config)
         }
     }
@@ -70,13 +70,12 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
     func testLineLengthConfigurationThrowsOnBadConfigValues() {
         let badConfigs: [[String: Any]] = [
             ["warning": true],
-            ["ignores_function_declarations": 300],
-            ["unsupported_key": "unsupported key is unsupported"]
+            ["ignores_function_declarations": 300]
         ]
 
         for badConfig in badConfigs {
             var configuration = LineLengthConfiguration(length: severityLevels)
-            checkError(Issue.unknownConfiguration(ruleID: LineLengthRule.description.identifier)) {
+            checkError(Issue.invalidConfiguration(ruleID: LineLengthRule.description.identifier)) {
                 try configuration.apply(configuration: badConfig)
             }
         }

@@ -71,6 +71,21 @@ public struct RuleConfigurationDescription: Equatable {
         }
         return Self(options: options)
     }
+
+    func allowedKeys() -> Set<String> {
+        let keys = options.flatMap { option -> Set<String> in
+            if option == .noOptions {
+                return []
+            }
+            switch option.value {
+            case let .nested(nestedConfiguration) where option.key.isEmpty:
+                return nestedConfiguration.allowedKeys()
+            default:
+                return [option.key]
+            }
+        }
+        return Set(keys)
+    }
 }
 
 extension RuleConfigurationDescription: Documentable {
@@ -420,6 +435,7 @@ public class ConfigurationElement<T: AcceptableByConfigurationElement & Equatabl
         self.init(wrappedValue: value, key: "")
     }
 
+    /// Run operations to validate and modify the parsed value.
     public func performAfterParseOperations() throws {
         try postprocessor(&wrappedValue)
     }

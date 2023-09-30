@@ -37,7 +37,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
     func testNestingConfigurationThrowsOnBadConfig() {
         let config = 17
         var nestingConfig = defaultNestingConfiguration
-        checkError(Issue.unknownConfiguration(ruleID: NestingRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: NestingRule.description.identifier)) {
             try nestingConfig.apply(configuration: config)
         }
     }
@@ -120,7 +120,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
         let config = "unknown"
         var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
                                                             ignoresComments: true)
-        checkError(Issue.unknownConfiguration(ruleID: TrailingWhitespaceRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: TrailingWhitespaceRule.description.identifier)) {
             try configuration.apply(configuration: config)
         }
     }

@@ -17,15 +17,15 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let minimumLength = configuration[$minimumLength] as? Int {
+        if let minimumLength = configuration[$minimumLength.key] as? Int {
             self.minimumLength = minimumLength
         }
 
-        if let minimumFractionLength = configuration[$minimumFractionLength] as? Int {
+        if let minimumFractionLength = configuration[$minimumFractionLength.key] as? Int {
             self.minimumFractionLength = minimumFractionLength
         }
 
-        if let excludeRanges = configuration[$excludeRanges] as? [[String: Any]] {
+        if let excludeRanges = configuration[$excludeRanges.key] as? [[String: Any]] {
             self.excludeRanges = excludeRanges.compactMap { dict in
                 guard let min = dict["min"] as? Double, let max = dict["max"] as? Double else {
                     return nil
@@ -34,7 +34,7 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
             }
         }
 
-        if let severityString = configuration[$severityConfiguration] as? String {
+        if let severityString = configuration[$severityConfiguration.key] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
     }

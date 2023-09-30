@@ -374,23 +374,31 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 ///            error: 2
 ///    ```
 @propertyWrapper
-public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: Equatable {
+public class ConfigurationElement<T: AcceptableByConfigurationElement & Equatable> {
     /// Wrapped option value.
     public var wrappedValue: T
 
     /// The option's name. This field can only be accessed by the element's name prefixed with a `$`.
-    public var projectedValue: String { key }
+    public var projectedValue: ConfigurationElement { self }
 
-    private let key: String
+    /// Name of this configuration entry.
+    public let key: String
+
+    private let postprocessor: (inout T) throws -> Void
 
     /// Default constructor.
     ///
     /// - Parameters:
     ///   - value: Value to be wrapped.
     ///   - key: Name of the option.
-    public init(wrappedValue value: T, key: String) {
+    ///   - postprocessor: Function to be applied to the wrapped value to validate and modify it.
+    public init(wrappedValue value: T, key: String, postprocessor: @escaping (inout T) throws -> Void = { _ in }) {
         self.wrappedValue = value
         self.key = key
+        self.postprocessor = postprocessor
+
+        // Validate and modify the set value immediately. An exception means invalid defaults.
+        try! performAfterParseOperations() // swiftlint:disable:this force_try
     }
 
     /// Constructor for optional values.
@@ -398,7 +406,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// It allows to skip explicit initialization with `nil` of the property.
     ///
     /// - Parameter value: Value to be wrapped.
-    public init<Wrapped>(key: String) where T == Wrapped? {
+    public convenience init<Wrapped>(key: String) where T == Wrapped? {
         self.init(wrappedValue: nil, key: key)
     }
 
@@ -408,14 +416,24 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// parent configuration in this specific case.
     ///
     /// - Parameter value: Value to be wrapped.
-    public init(wrappedValue value: T) where T: InlinableOptionType {
+    public convenience init(wrappedValue value: T) where T: InlinableOptionType {
         self.init(wrappedValue: value, key: "")
+    }
+
+    public func performAfterParseOperations() throws {
+        try postprocessor(&wrappedValue)
     }
 }
 
 extension ConfigurationElement: AnyConfigurationElement {
     fileprivate var description: RuleConfigurationDescription {
         wrappedValue.asDescription(with: key)
+    }
+}
+
+extension ConfigurationElement: Equatable {
+    public static func == (lhs: ConfigurationElement, rhs: ConfigurationElement) -> Bool {
+        lhs.wrappedValue == rhs.wrappedValue && lhs.key == rhs.key
     }
 }
 

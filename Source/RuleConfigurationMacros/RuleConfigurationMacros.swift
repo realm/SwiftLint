@@ -80,7 +80,8 @@ struct AutoApply: MemberMacro {
         let elementsWithKeyUpdate = elementNames[firstIndexWithoutKey...]
             .map {
                 """
-                try \($0).apply(configuration[$\($0)], ruleID: Parent.identifier)
+                try \($0).apply(configuration[$\($0).key], ruleID: Parent.identifier)
+                try $\($0).performAfterParseOperations()
                 """
             }
         let configBinding = elementsWithKeyUpdate.isEmpty ? "_" : "configuration"

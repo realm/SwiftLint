@@ -5,10 +5,16 @@ typealias EmptyXCTestMethodConfiguration = UnitTestConfiguration<EmptyXCTestMeth
 typealias SingleTestClassConfiguration = UnitTestConfiguration<SingleTestClassRule>
 typealias NoMagicNumbersConfiguration = UnitTestConfiguration<NoMagicNumbersRule>
 
+// swiftlint:disable:next blanket_disable_command
+// swiftlint:disable let_var_whitespace
+
 @AutoApply
 struct UnitTestConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(key: "test_parent_classes")
-    private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
+    @ConfigurationElement(
+        key: "test_parent_classes",
+        postprocessor: { $0.formUnion(["QuickSpec", "XCTestCase"]) }
+    )
+    private(set) var testParentClasses = Set<String>()
 }

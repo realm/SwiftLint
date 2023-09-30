@@ -122,7 +122,7 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
         let length2 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2, error: error2)
         let config2: [String: Int] = ["warning": warning2, "error": error2]
 
-        let length3 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2, error: error2)
+        let length3 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2)
         let config3: [String: Bool] = ["ignores_urls": false,
                                        "ignores_function_declarations": false,
                                        "ignores_comments": false]

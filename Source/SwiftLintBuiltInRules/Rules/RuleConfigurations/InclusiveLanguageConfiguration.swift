@@ -35,13 +35,13 @@ struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let severityString = configuration[$severityConfiguration] {
+        if let severityString = configuration[$severityConfiguration.key] {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        additionalTerms = lowercasedSet(for: $additionalTerms, from: configuration)
-        overrideTerms = lowercasedSet(for: $overrideTerms, from: configuration)
-        overrideAllowedTerms = lowercasedSet(for: $overrideAllowedTerms, from: configuration)
+        additionalTerms = lowercasedSet(for: $additionalTerms.key, from: configuration)
+        overrideTerms = lowercasedSet(for: $overrideTerms.key, from: configuration)
+        overrideAllowedTerms = lowercasedSet(for: $overrideAllowedTerms.key, from: configuration)
 
         var allTerms = overrideTerms ?? defaultTerms
         allTerms.formUnion(additionalTerms ?? [])

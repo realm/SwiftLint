@@ -3,21 +3,17 @@ import XCTest
 
 class UnusedDeclarationConfigurationTests: XCTestCase {
     func testParseConfiguration() throws {
-        var testee = UnusedDeclarationConfiguration(
-            severityConfiguration: .warning,
-            includePublicAndOpen: false,
-            relatedUSRsToSkip: []
-        )
+        var testee = UnusedDeclarationConfiguration()
         let config = [
-            "severity": "error",
+            "severity": "warning",
             "include_public_and_open": true,
             "related_usrs_to_skip": ["a", "b"]
         ] as [String: Any]
 
         try testee.apply(configuration: config)
 
-        XCTAssertEqual(testee.severityConfiguration.severity, .error)
+        XCTAssertEqual(testee.severityConfiguration.severity, .warning)
         XCTAssertTrue(testee.includePublicAndOpen)
-        XCTAssertEqual(testee.relatedUSRsToSkip, ["a", "b"])
+        XCTAssertEqual(testee.relatedUSRsToSkip, ["a", "b", "s:7SwiftUI15PreviewProviderP"])
     }
 }

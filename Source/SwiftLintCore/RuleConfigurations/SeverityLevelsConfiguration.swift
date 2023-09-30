@@ -30,10 +30,26 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Equa
             warning = configurationArray[0]
             error = (configurationArray.count > 1) ? configurationArray[1] : nil
         } else if let configDict = configuration as? [String: Any?] {
-            warning = (configDict[$warning] as? Int) ?? warning
-            error = configDict[$error] as? Int
+            if let warningValue = configDict[$warning.key] {
+                if let warning = warningValue as? Int {
+                    self.warning = warning
+                } else {
+                    throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
+                }
+            }
+            if let errorValue = configDict[$error.key] {
+                if errorValue == nil {
+                    self.error = nil
+                } else if let error = errorValue as? Int {
+                    self.error = error
+                } else {
+                    throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
+                }
+            } else {
+                self.error = nil
+            }
         } else {
-            throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
         }
     }
 }

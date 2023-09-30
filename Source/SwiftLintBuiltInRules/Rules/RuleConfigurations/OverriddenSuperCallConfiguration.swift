@@ -1,9 +1,10 @@
 import SwiftLintCore
 
+@AutoApply
 struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = OverriddenSuperCallRule
 
-    private let defaultIncluded = [
+    private static let defaultIncluded = [
         // NSObject
         "awakeFromNib()",
         "prepareForInterfaceBuilder()",
@@ -42,38 +43,12 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatab
     @ConfigurationElement(key: "included")
     private(set) var included = ["*"]
 
-    private(set) var resolvedMethodNames: [String]
-
-    init() {
-        resolvedMethodNames = defaultIncluded
-    }
-
-    mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-
-        if let severityString = configuration[$severityConfiguration] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
-
-        if let excluded = [String].array(of: configuration[$excluded]) {
-            self.excluded = excluded
-        }
-
-        if let included = [String].array(of: configuration[$included]) {
-            self.included = included
-        }
-
-        resolvedMethodNames = calculateResolvedMethodNames()
-    }
-
-    private func calculateResolvedMethodNames() -> [String] {
+    var resolvedMethodNames: [String] {
         var names: [String] = []
         if included.contains("*") && !excluded.contains("*") {
-            names += defaultIncluded
+            names += Self.defaultIncluded
         }
-        names += included.filter({ $0 != "*" })
+        names += included.filter { $0 != "*" }
         names = names.filter { !excluded.contains($0) }
         return names
     }

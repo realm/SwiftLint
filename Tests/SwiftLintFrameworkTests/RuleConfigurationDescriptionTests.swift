@@ -1,4 +1,5 @@
 @testable import SwiftLintCore
+import SwiftLintTestHelpers
 import XCTest
 
 // swiftlint:disable file_length
@@ -483,6 +484,19 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         XCTAssertEqual(configuration.renamedSeverityConfig, .error)
         XCTAssertEqual(configuration.inlinedSeverityLevels, SeverityLevelsConfiguration(warning: 12))
         XCTAssertEqual(configuration.nestedSeverityLevels, SeverityLevelsConfiguration(warning: 6, error: 7))
+    }
+
+    func testInvalidKeys() throws {
+        var configuration = TestConfiguration()
+
+        checkError(Issue.invalidConfigurationKeys(["unknown", "unsupported"])) {
+            try configuration.apply(configuration: [
+                "severity": "error",
+                "warning": 3,
+                "unknown": 1,
+                "unsupported": true
+            ])
+        }
     }
 
     private func description(@RuleConfigurationDescriptionBuilder _ content: () -> RuleConfigurationDescription)

@@ -91,10 +91,14 @@ struct AutoApply: MemberMacro {
                 \(raw: elementsWithoutKeyUpdate.joined(separator: "\n"))
                 guard let \(raw: configBinding) = configuration as? [String: Any] else {
                     \(raw: elementsWithoutKeyUpdate.isEmpty
-                        ? "throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)"
+                        ? "throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)"
                         : "return")
                 }
                 \(raw: elementsWithKeyUpdate.joined(separator: "\n"))
+                if !supportedKeys.isSuperset(of: configuration.keys) {
+                    let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
+                    throw Issue.invalidConfigurationKeys(unknownKeys.sorted())
+                }
             }
             """
         ]

@@ -44,3 +44,10 @@ public extension RuleConfiguration where Self: Equatable {
 public extension RuleConfiguration {
     var parameterDescription: RuleConfigurationDescription? { nil }
 }
+
+public extension RuleConfiguration {
+    /// All keys supported by this configuration.
+    var supportedKeys: Set<String> {
+        RuleConfigurationDescription.from(configuration: self).allowedKeys()
+    }
+}

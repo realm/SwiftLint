@@ -90,7 +90,8 @@ let package = Package(
             name: "SwiftLintFrameworkTests",
             dependencies: [
                 "SwiftLintFramework",
-                "SwiftLintTestHelpers"
+                "SwiftLintTestHelpers",
+                "RuleConfigurationMacros"
             ],
             exclude: [
                 "Resources",

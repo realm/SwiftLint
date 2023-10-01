@@ -246,14 +246,14 @@ extension Configuration {
         let allIdentifiers = ruleType.description.allIdentifiers
 
         if allEnabledRules.isDisjoint(with: allIdentifiers) {
-            if Set(disabledRules).isDisjoint(with: allIdentifiers) == false {
+            if disabledRules.isDisjoint(with: allIdentifiers) == false {
                 return Issue.ruleDisabledInDisabledRules(ruleID: ruleType.identifier)
-            } else if Set(disabledInParentRules).isDisjoint(with: allIdentifiers) == false {
+            } else if disabledInParentRules.isDisjoint(with: allIdentifiers) == false {
                 return Issue.ruleDisabledInParentConfiguration(ruleID: ruleType.identifier)
             }
 
             if ruleType is OptInRule.Type {
-                if Set(enabledInParentRules.union(optInRules)).isDisjoint(with: allIdentifiers) {
+                if enabledInParentRules.union(optInRules).isDisjoint(with: allIdentifiers) {
                     return Issue.ruleNotEnabledInOptInRules(ruleID: ruleType.identifier)
                 }
             }

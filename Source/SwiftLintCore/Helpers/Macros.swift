@@ -1,5 +1,5 @@
-/// Macro to be added to rule configuration that generates the configuration parsing automatically
-/// based on the defined `@ConfigurationElement`s.
+/// Macro to be attached to rule configurations. It generates the configuration parsing logic
+/// automatically based on the defined `@ConfigurationElement`s.
 @attached(member, names: named(apply))
 public macro AutoApply() = #externalMacro(
     module: "RuleConfigurationMacros",

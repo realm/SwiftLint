@@ -465,7 +465,7 @@ extension ConfigurationTests {
                             if parentConfiguration == nil ||
                                parentConfiguration == emptyDefaultConfiguration ||
                                parentConfiguration == emptyOnlyConfiguration {
-                                XCTAssertEqual(issue, Issue.ruleIsNotEnabledInOptInRules(ruleID: ruleIdentifier))
+                                XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
                                 continue
                             }
                             if parentConfiguration == optInDisabledDefaultConfiguration ||

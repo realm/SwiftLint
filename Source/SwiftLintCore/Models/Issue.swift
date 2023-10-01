@@ -30,7 +30,7 @@ public enum Issue: LocalizedError, Equatable {
     case ruleDisabledInParentConfiguration(ruleID: String)
 
     /// Found a rule configuration for a rule that is not enabled in opt_in_rules
-    case ruleIsNotEnabledInOptInRules(ruleID: String)
+    case ruleNotEnabledInOptInRules(ruleID: String)
 
     /// A generic warning specified by a string.
     case genericWarning(String)
@@ -124,7 +124,7 @@ public enum Issue: LocalizedError, Equatable {
                    "'\(Configuration.Key.disabledRules.rawValue)'."
         case let .ruleDisabledInParentConfiguration(id):
             return "Found a configuration for '\(id)' rule, but it is disabled in a parent configuration."
-        case let .ruleIsNotEnabledInOptInRules(id):
+        case let .ruleNotEnabledInOptInRules(id):
             return "Found a configuration for '\(id)' rule, but it is not enabled on " +
                    "'\(Configuration.Key.optInRules.rawValue)'."
         case let .genericWarning(message), let .genericError(message):

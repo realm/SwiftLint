@@ -254,7 +254,7 @@ extension Configuration {
 
             if ruleType is OptInRule.Type {
                 if Set(enabledInParentRules.union(optInRules)).isDisjoint(with: allIdentifiers) {
-                    return Issue.ruleIsNotEnabledInOptInRules(ruleID: ruleType.identifier)
+                    return Issue.ruleNotEnabledInOptInRules(ruleID: ruleType.identifier)
                 }
             }
         }

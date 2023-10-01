@@ -418,7 +418,6 @@ extension ConfigurationTests {
 
     // MARK: Warnings about configurations for disabled rules
     func testDefaultConfigurationDisabledRulesWarnings() {
-        // swiftlint:disable:previous function_body_length
         let ruleType = ImplicitReturnRule.self
         XCTAssertTrue((ruleType as Any) is OptInRule.Type)
         let ruleIdentifier = ruleType.identifier
@@ -451,9 +450,8 @@ extension ConfigurationTests {
                 Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: []))
             ]
             for configuration in configurations {
-                let mergedConfiguration = parentConfiguration?.merged(withChild: configuration) ?? configuration
-
                 if case .default(let disabledRules, let optInRules) = configuration.rulesMode {
+                    let mergedConfiguration = parentConfiguration?.merged(withChild: configuration) ?? configuration
                     let isEnabled = mergedConfiguration.contains(rule: ruleType)
                     let issue = Configuration.validateConfiguredRuleIsEnabled(
                         parentConfiguration: parentConfiguration,
@@ -482,9 +480,7 @@ extension ConfigurationTests {
             }
         }
 
-        for parentConfiguration in parentConfigurations {
-            testParentConfiguration(parentConfiguration)
-        }
+        parentConfigurations.forEach { testParentConfiguration($0) }
     }
 
     func testOnlyConfigurationDisabledRulesWarnings() {
@@ -494,10 +490,9 @@ extension ConfigurationTests {
         }
         let ruleType = ImplicitReturnRule.self
         XCTAssertTrue((ruleType as Any) is OptInRule.Type)
-        let notEnabledIssue = Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)
 
         let testCases: [TestCase] = [
-            TestCase(onlyRules: [], expectedIssue: notEnabledIssue),
+            TestCase(onlyRules: [], expectedIssue: Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)),
             TestCase(onlyRules: [ruleType.identifier], expectedIssue: nil)
         ]
 

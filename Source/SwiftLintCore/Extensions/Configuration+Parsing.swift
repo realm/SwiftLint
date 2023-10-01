@@ -213,6 +213,7 @@ extension Configuration {
         return nil
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     static func validateConfiguredRuleIsEnabled(
         parentConfiguration: Configuration?,
         disabledRules: Set<String>,
@@ -256,6 +257,9 @@ extension Configuration {
                 if enabledInParentRules.union(optInRules).isDisjoint(with: allIdentifiers) {
                     return Issue.ruleNotEnabledInOptInRules(ruleID: ruleType.identifier)
                 }
+            } else if case .only(let enabledInParentRules) = parentConfiguration?.rulesMode,
+                      enabledInParentRules.isDisjoint(with: allIdentifiers) {
+                return Issue.ruleNotEnabledInParentOnlyRules(ruleID: ruleType.identifier)
             }
         }
 

@@ -404,7 +404,7 @@ public class ConfigurationElement<T: AcceptableByConfigurationElement & Equatabl
     /// - Parameters:
     ///   - value: Value to be wrapped.
     ///   - key: Name of the option.
-    ///   - postprocessor: Function to be applied to the wrapped value to validate and modify it.
+    ///   - postprocessor: Function to be applied to the wrapped value after parsing to validate and modify it.
     public init(wrappedValue value: T, key: String, postprocessor: @escaping (inout T) throws -> Void = { _ in }) {
         self.wrappedValue = value
         self.key = key
@@ -567,16 +567,6 @@ extension RegularExpression: AcceptableByConfigurationElement {
             throw Issue.invalidConfiguration(ruleID: ruleID)
         }
         self = try Self(pattern: value)
-    }
-}
-
-extension Range: AcceptableByConfigurationElement {
-    public func asOption() -> OptionType {
-        .symbol("\(lowerBound) ..< \(upperBound)")
-    }
-
-    public init(fromAny value: Any, context ruleID: String) throws {
-        throw Issue.genericError("Configuration for \(ruleID) not yet fully implemented")
     }
 }
 

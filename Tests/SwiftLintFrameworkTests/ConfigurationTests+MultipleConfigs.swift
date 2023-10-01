@@ -13,7 +13,7 @@ private extension Configuration {
 extension ConfigurationTests {
     // MARK: - Rules Merging
     func testMerge() {
-        let config0Merge2 = Mock.Config._0.merged(withChild: Mock.Config._2, rootDirectory: "")
+        let config0Merge2 = Mock.Config._0.merged(withChild: Mock.Config._2)
 
         XCTAssertFalse(Mock.Config._0.contains(rule: ForceCastRule.self))
         XCTAssertTrue(Mock.Config._2.contains(rule: ForceCastRule.self))
@@ -25,7 +25,7 @@ extension ConfigurationTests {
 
         XCTAssertFalse(Mock.Config._3.contains(rule: TodoRule.self))
         XCTAssertFalse(
-            config0Merge2.merged(withChild: Mock.Config._3, rootDirectory: "").contains(rule: TodoRule.self)
+            config0Merge2.merged(withChild: Mock.Config._3).contains(rule: TodoRule.self)
         )
     }
 
@@ -38,16 +38,16 @@ extension ConfigurationTests {
             )
         }
         XCTAssertEqual(configuration(forWarningThreshold: 3)
-            .merged(withChild: configuration(forWarningThreshold: 2), rootDirectory: "").warningThreshold,
+            .merged(withChild: configuration(forWarningThreshold: 2)).warningThreshold,
                        2)
         XCTAssertEqual(configuration(forWarningThreshold: nil)
-            .merged(withChild: configuration(forWarningThreshold: 2), rootDirectory: "").warningThreshold,
+            .merged(withChild: configuration(forWarningThreshold: 2)).warningThreshold,
                        2)
         XCTAssertEqual(configuration(forWarningThreshold: 3)
-            .merged(withChild: configuration(forWarningThreshold: nil), rootDirectory: "").warningThreshold,
+            .merged(withChild: configuration(forWarningThreshold: nil)).warningThreshold,
                        3)
         XCTAssertNil(configuration(forWarningThreshold: nil)
-            .merged(withChild: configuration(forWarningThreshold: nil), rootDirectory: "").warningThreshold)
+            .merged(withChild: configuration(forWarningThreshold: nil)).warningThreshold)
     }
 
     func testOnlyRulesMerging() {
@@ -59,12 +59,12 @@ extension ConfigurationTests {
         XCTAssertEqual(onlyConfiguration.rules.count, 1)
         XCTAssertTrue(onlyConfiguration.rules[0] is TodoRule)
 
-        let mergedConfiguration1 = baseConfiguration.merged(withChild: onlyConfiguration, rootDirectory: "")
+        let mergedConfiguration1 = baseConfiguration.merged(withChild: onlyConfiguration)
         XCTAssertEqual(mergedConfiguration1.rules.count, 1)
         XCTAssertTrue(mergedConfiguration1.rules[0] is TodoRule)
 
         // Also test the other way around
-        let mergedConfiguration2 = onlyConfiguration.merged(withChild: baseConfiguration, rootDirectory: "")
+        let mergedConfiguration2 = onlyConfiguration.merged(withChild: baseConfiguration)
         XCTAssertEqual(mergedConfiguration2.rules.count, 3) // 2 opt-ins + 1 from the only rules
         XCTAssertTrue(mergedConfiguration2.contains(rule: TodoRule.self))
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceCastRule.self))
@@ -347,7 +347,7 @@ extension ConfigurationTests {
                 disabled: testCase.disabledInChild ? [ruleIdentifier] : [],
                 optIn: testCase.optedInInChild ? [ruleIdentifier] : []
             ))
-            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration)
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
             XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
         }
@@ -379,7 +379,7 @@ extension ConfigurationTests {
             let childConfiguration = Configuration(
                 rulesMode: .default(disabled: testCase.disabledInChild ? [ruleIdentifier] : [], optIn: [])
             )
-            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration)
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
             XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
         }
@@ -410,7 +410,7 @@ extension ConfigurationTests {
                 disabled: testCase.disabledInChild ? [ruleIdentifier] : [],
                 optIn: testCase.optedInInChild ? [ruleIdentifier] : []
             ))
-            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration, rootDirectory: "")
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration)
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
             XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
         }
@@ -451,12 +451,7 @@ extension ConfigurationTests {
                 Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: []))
             ]
             for configuration in configurations {
-                let mergedConfiguration: Configuration
-                if let parentConfiguration {
-                    mergedConfiguration = parentConfiguration.merged(withChild: configuration, rootDirectory: "")
-                } else {
-                    mergedConfiguration = configuration
-                }
+                let mergedConfiguration = parentConfiguration?.merged(withChild: configuration) ?? configuration
 
                 if case .default(let disabledRules, let optInRules) = configuration.rulesMode {
                     let isEnabled = mergedConfiguration.contains(rule: ruleType)

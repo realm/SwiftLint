@@ -8,7 +8,7 @@ extension Configuration {
     // MARK: - Methods: Merging
     package func merged(
         withChild childConfiguration: Configuration,
-        rootDirectory: String
+        rootDirectory: String = ""
     ) -> Configuration {
         let mergedIncludedAndExcluded = self.mergedIncludedAndExcluded(
             with: childConfiguration,

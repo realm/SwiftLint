@@ -72,19 +72,17 @@ public struct RuleConfigurationDescription: Equatable {
         return Self(options: options)
     }
 
-    func allowedKeys() -> Set<String> {
-        let keys = options.flatMap { option -> Set<String> in
-            if option == .noOptions {
-                return []
-            }
+    func allowedKeys() -> [String] {
+        options.flatMap { option -> [String] in
             switch option.value {
             case let .nested(nestedConfiguration) where option.key.isEmpty:
-                return nestedConfiguration.allowedKeys()
+                nestedConfiguration.allowedKeys()
+            case .empty:
+                []
             default:
-                return [option.key]
+                [option.key]
             }
         }
-        return Set(keys)
     }
 }
 

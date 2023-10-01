@@ -48,6 +48,6 @@ public extension RuleConfiguration {
 public extension RuleConfiguration {
     /// All keys supported by this configuration.
     var supportedKeys: Set<String> {
-        RuleConfigurationDescription.from(configuration: self).allowedKeys()
+        Set(RuleConfigurationDescription.from(configuration: self).allowedKeys())
     }
 }

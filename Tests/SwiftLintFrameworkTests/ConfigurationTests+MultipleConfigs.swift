@@ -422,7 +422,7 @@ extension ConfigurationTests {
         XCTAssertTrue((ruleType as Any) is OptInRule.Type)
         let ruleIdentifier = ruleType.identifier
 
-        let parentConfigurations: [Configuration?] = [
+        let parentConfigurations = [
             nil,
             Configuration.emptyDefaultConfiguration(),
             Configuration.optInDefaultConfiguration(ruleIdentifier),
@@ -450,7 +450,7 @@ extension ConfigurationTests {
         XCTAssertFalse((ruleType as Any) is OptInRule.Type)
         let ruleIdentifier = ruleType.identifier
 
-        let parentConfigurations: [Configuration?] = [
+        let parentConfigurations = [
             nil,
             Configuration.emptyDefaultConfiguration(),
             Configuration.disabledDefaultConfiguration(ruleIdentifier),
@@ -490,7 +490,7 @@ extension ConfigurationTests {
             .union(optInRules)
             .subtracting(disabledRules)
 
-        let issue = Configuration.validateConfiguredRuleIsEnabled(
+        return Configuration.validateConfiguredRuleIsEnabled(
             parentConfiguration: parentConfiguration,
             enabledInParentRules: enabledInParentRules,
             disabledInParentRules: disabledInParentRules,
@@ -499,7 +499,6 @@ extension ConfigurationTests {
             allEnabledRules: allEnabledRules,
             ruleType: ruleType
         )
-        return issue
     }
 
     private func testParentConfiguration(
@@ -563,7 +562,7 @@ extension ConfigurationTests {
             let expectedIssue: Issue?
         }
 
-        let testCases: [TestCase] = [
+        let testCases = [
             TestCase(onlyRules: [], expectedIssue: Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)),
             TestCase(onlyRules: [ruleType.identifier], expectedIssue: nil)
         ]

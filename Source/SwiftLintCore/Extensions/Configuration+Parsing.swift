@@ -165,7 +165,7 @@ extension Configuration {
         if case .default(let disabledRules, let optInRules) = rulesMode {
             if case .only(let onlyRules) = parentConfiguration?.rulesMode {
                 enabledInParentRules = onlyRules
-            } else if case .default(let parentDisabledRules, let parentOptInRules) = parentConfiguration?.rulesMode{
+            } else if case .default(let parentDisabledRules, let parentOptInRules) = parentConfiguration?.rulesMode {
                 enabledInParentRules = parentOptInRules
                 disabledInParentRules = parentDisabledRules
             }
@@ -234,6 +234,7 @@ extension Configuration {
         return nil
     }
 
+    // swiftlint:disable:next function_parameter_count
     static func validateConfiguredRuleIsEnabled(
         parentConfiguration: Configuration?,
         enabledInParentRules: Set<String>,

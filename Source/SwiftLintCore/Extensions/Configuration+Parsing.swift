@@ -238,7 +238,7 @@ extension Configuration {
             }
         }
 
-        var allEnabledRules = enabledInParentRules
+        let allEnabledRules = enabledInParentRules
             .subtracting(disabledInParentRules)
             .union(optInRules)
             .subtracting(disabledRules)

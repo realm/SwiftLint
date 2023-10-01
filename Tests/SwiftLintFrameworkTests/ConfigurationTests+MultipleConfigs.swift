@@ -418,19 +418,29 @@ extension ConfigurationTests {
 
     // MARK: Warnings about configurations for disabled rules
     func testDefaultConfigurationDisabledRulesWarnings2() {
+        // swiftlint:disable:previous function_body_length
         let ruleType = ImplicitReturnRule.self
         XCTAssertTrue((ruleType as Any) is OptInRule.Type)
         let ruleIdentifier = ruleType.identifier
 
-        let parentConfigurations: [Configuration?] =  [
+        let emptyDefaultConfiguration = Configuration(rulesMode: .default(disabled: [], optIn: []))
+        let optInDefaultConfiguration = Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier]))
+        // swiftlint:disable:next line_length
+        let optInDisabledDefaultConfiguration = Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier]))
+        let disabledDefaultConfiguration = Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: []))
+        let emptyOnlyConfiguration = Configuration(rulesMode: .only([]))
+        let enabledOnlyConfiguration = Configuration(rulesMode: .only([ruleIdentifier]))
+        // let allEnabledConfiguration = Configuration(rulesMode: .allEnabled)
+
+        let parentConfigurations: [Configuration?] = [
             nil,
-            Configuration(rulesMode: .default(disabled: [], optIn: [])),
-            Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier])),
-            Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier])),
-            Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [])),
-            Configuration(rulesMode: .only([])),
-            Configuration(rulesMode: .only([ruleIdentifier])),
-//            Configuration(rulesMode: .allEnabled)
+            emptyDefaultConfiguration,
+            optInDefaultConfiguration,
+            optInDisabledDefaultConfiguration,
+            disabledDefaultConfiguration,
+            emptyOnlyConfiguration,
+            enabledOnlyConfiguration
+            // allEnabledConfiguration
         ]
 
         func testParentConfiguration(_ parentConfiguration: Configuration?) {
@@ -439,8 +449,8 @@ extension ConfigurationTests {
                 Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier])),
                 // These two currently fail in allMode
                 Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier])),
-                Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [])),
-        ]
+                Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: []))
+            ]
             for configuration in configurations {
                 let mergedConfiguration: Configuration
                 if let parentConfiguration {
@@ -458,6 +468,22 @@ extension ConfigurationTests {
                         ruleType: ruleType
                     )
                     XCTAssertEqual(isEnabled, issue == nil)
+                    if let issue {
+                        if disabledRules.isEmpty, optInRules.isEmpty {
+                            if parentConfiguration == nil ||
+                               parentConfiguration == emptyDefaultConfiguration ||
+                               parentConfiguration == emptyOnlyConfiguration {
+                                XCTAssertEqual(issue, Issue.ruleIsNotEnabledInOptInRules(ruleID: ruleIdentifier))
+                                continue
+                            }
+                            if parentConfiguration == optInDisabledDefaultConfiguration ||
+                                parentConfiguration == disabledDefaultConfiguration {
+                                XCTAssertEqual(issue, Issue.ruleDisabledInParentConfiguration(ruleID: ruleIdentifier))
+                                continue
+                            }
+                            XCTAssertEqual(issue, Issue.ruleDisabledInDisabledRules(ruleID: ruleIdentifier))
+                        }
+                    }
                 }
             }
         }

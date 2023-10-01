@@ -417,6 +417,56 @@ extension ConfigurationTests {
     }
 
     // MARK: Warnings about configurations for disabled rules
+    func testDefaultConfigurationDisabledRulesWarnings2() {
+        let ruleType = ImplicitReturnRule.self
+        XCTAssertTrue((ruleType as Any) is OptInRule.Type)
+        let ruleIdentifier = ruleType.identifier
+
+        let parentConfigurations: [Configuration?] =  [
+            nil,
+            Configuration(rulesMode: .default(disabled: [], optIn: [])),
+            Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier])),
+            Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier])),
+            Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [])),
+            Configuration(rulesMode: .only([])),
+            Configuration(rulesMode: .only([ruleIdentifier])),
+//            Configuration(rulesMode: .allEnabled)
+        ]
+
+        func testParentConfiguration(_ parentConfiguration: Configuration?) {
+            let configurations = [
+                Configuration(rulesMode: .default(disabled: [], optIn: [])),
+                Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier])),
+                // These two currently fail in allMode
+                Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier])),
+                Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [])),
+        ]
+            for configuration in configurations {
+                let mergedConfiguration: Configuration
+                if let parentConfiguration {
+                    mergedConfiguration = parentConfiguration.merged(withChild: configuration, rootDirectory: "")
+                } else {
+                    mergedConfiguration = configuration
+                }
+
+                if case .default(let disabledRules, let optInRules) = mergedConfiguration.rulesMode {
+                    let isEnabled = mergedConfiguration.contains(rule: ruleType)
+                    let issue = Configuration.validateConfiguredRuleIsEnabled(
+                        parentConfiguration: parentConfiguration,
+                        disabledRules: disabledRules,
+                        optInRules: optInRules,
+                        ruleType: ruleType
+                    )
+                    XCTAssertEqual(isEnabled, issue == nil)
+                }
+            }
+        }
+
+        for parentConfiguration in parentConfigurations {
+            testParentConfiguration(parentConfiguration)
+        }
+    }
+
     func testDefaultConfigurationDisabledRulesWarnings() {
         // swiftlint:disable:previous function_body_length
         struct TestCase: Equatable {

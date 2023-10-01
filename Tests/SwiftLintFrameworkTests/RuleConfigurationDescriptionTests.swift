@@ -2,6 +2,8 @@
 import SwiftLintTestHelpers
 import XCTest
 
+// swiftlint:disable:next blanket_disable_command
+// swiftlint:disable let_var_whitespace
 // swiftlint:disable file_length
 
 // swiftlint:disable:next type_body_length
@@ -24,7 +26,10 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         var double = 2.1
         @ConfigurationElement(key: "severity")
         var severity = ViolationSeverity.warning
-        @ConfigurationElement(key: "list")
+        @ConfigurationElement(
+            key: "list",
+            postprocessor: { list in list = list.map { $0.uppercased() } }
+        )
         var list = ["string1", "string2"]
         @ConfigurationElement(key: "set")
         var set: Set<Int> = [1, 2, 3]
@@ -51,7 +56,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             integer: 2; \
             double: 2.1; \
             severity: warning; \
-            list: ["string1", "string2"]; \
+            list: ["STRING1", "STRING2"]; \
             set: [1, 2, 3]; \
             severity: error; \
             SEVERITY: warning; \
@@ -119,7 +124,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             list
             </td>
             <td>
-            [&quot;string1&quot;, &quot;string2&quot;]
+            [&quot;STRING1&quot;, &quot;STRING2&quot;]
             </td>
             </tr>
             <tr>
@@ -195,7 +200,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             integer: 2
             double: 2.1
             severity: warning
-            list: ["string1", "string2"]
+            list: ["STRING1", "STRING2"]
             set: [1, 2, 3]
             severity: error
             SEVERITY: warning
@@ -478,7 +483,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         XCTAssertEqual(configuration.null, 0)
         XCTAssertEqual(configuration.double, 5.1)
         XCTAssertEqual(configuration.severity, .error)
-        XCTAssertEqual(configuration.list, ["string3", "string4"])
+        XCTAssertEqual(configuration.list, ["STRING3", "STRING4"])
         XCTAssertEqual(configuration.set, [4, 5, 6])
         XCTAssertEqual(configuration.severityConfig, .error)
         XCTAssertEqual(configuration.renamedSeverityConfig, .error)

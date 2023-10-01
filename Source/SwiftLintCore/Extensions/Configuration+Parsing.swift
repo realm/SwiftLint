@@ -157,6 +157,24 @@ extension Configuration {
         ruleList: RuleList,
         rulesMode: RulesMode
     ) {
+        var enabledInParentRules: Set<String> = []
+        var disabledInParentRules: Set<String> = []
+        var allEnabledRules: Set<String> = []
+
+        // If our configuration is the default, precalculate some values
+        if case .default(let disabledRules, let optInRules) = rulesMode {
+            if case .only(let onlyRules) = parentConfiguration?.rulesMode {
+                enabledInParentRules = onlyRules
+            } else if case .default(let parentDisabledRules, let parentOptInRules) = parentConfiguration?.rulesMode{
+                enabledInParentRules = parentOptInRules
+                disabledInParentRules = parentDisabledRules
+            }
+            allEnabledRules = enabledInParentRules
+                .subtracting(disabledInParentRules)
+                .union(optInRules)
+                .subtracting(disabledRules)
+        }
+
         for key in dict.keys where !validGlobalKeys.contains(key) {
             guard let identifier = ruleList.identifier(for: key),
                 let ruleType = ruleList.list[identifier] else {
@@ -194,8 +212,11 @@ extension Configuration {
 
                 let issue = validateConfiguredRuleIsEnabled(
                     parentConfiguration: parentConfiguration,
+                    enabledInParentRules: enabledInParentRules,
+                    disabledInParentRules: disabledInParentRules,
                     disabledRules: disabledRules,
                     optInRules: optInRules,
+                    allEnabledRules: allEnabledRules,
                     ruleType: ruleType
                 )
                 issue?.print()
@@ -213,36 +234,22 @@ extension Configuration {
         return nil
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     static func validateConfiguredRuleIsEnabled(
         parentConfiguration: Configuration?,
+        enabledInParentRules: Set<String>,
+        disabledInParentRules: Set<String>,
         disabledRules: Set<String>,
         optInRules: Set<String>,
+        allEnabledRules: Set<String>,
         ruleType: Rule.Type
     ) -> Issue? {
-        var enabledInParentRules: Set<String> = []
-        var disabledInParentRules: Set<String> = []
-
-        if let parentConfiguration {
-            switch parentConfiguration.rulesMode {
-            case .allEnabled:
-                if disabledRules.contains(ruleType.identifier) {
-                    return Issue.ruleDisabledInDisabledRules(ruleID: ruleType.identifier)
-                } else {
-                    return nil
-                }
-            case .only(let parentOnlyRules):
-                enabledInParentRules = parentOnlyRules
-            case let .default(disabled: parentDisabledRules, optIn: parentOptInRules):
-                enabledInParentRules = parentOptInRules
-                disabledInParentRules = parentDisabledRules
+        if case .allEnabled = parentConfiguration?.rulesMode {
+            if disabledRules.contains(ruleType.identifier) {
+                return Issue.ruleDisabledInDisabledRules(ruleID: ruleType.identifier)
+            } else {
+                return nil
             }
         }
-
-        let allEnabledRules = enabledInParentRules
-            .subtracting(disabledInParentRules)
-            .union(optInRules)
-            .subtracting(disabledRules)
 
         let allIdentifiers = ruleType.description.allIdentifiers
 

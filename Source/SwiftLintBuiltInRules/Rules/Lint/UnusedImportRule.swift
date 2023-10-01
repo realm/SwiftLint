@@ -177,6 +177,11 @@ private extension SwiftLintFile {
             }
 
             appendUsedImports(cursorInfo: cursorInfo, usrFragments: &usrFragments)
+
+            // also collect modules from secondary symbol usage if available
+            for secondaryInfo in cursorInfo.secondarySymbols {
+                appendUsedImports(cursorInfo: secondaryInfo, usrFragments: &usrFragments)
+            }
         }
 
         return (imports: imports, usrFragments: usrFragments)

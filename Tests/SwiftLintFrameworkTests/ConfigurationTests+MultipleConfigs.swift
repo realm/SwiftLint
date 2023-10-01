@@ -484,12 +484,20 @@ extension ConfigurationTests {
     }
 
     func testOnlyConfigurationDisabledRulesWarnings() {
+        let optInRuleType = ImplicitReturnRule.self
+        XCTAssertTrue((optInRuleType as Any) is OptInRule.Type)
+        testOnlyConfigurationDisabledRulesWarnings(ruleType: optInRuleType)
+
+        let defaultRuleType = BlockBasedKVORule.self
+        XCTAssertFalse((defaultRuleType as Any) is OptInRule.Type)
+        testOnlyConfigurationDisabledRulesWarnings(ruleType: defaultRuleType)
+    }
+
+    private func testOnlyConfigurationDisabledRulesWarnings(ruleType: Rule.Type) {
         struct TestCase: Equatable {
             let onlyRules: Set<String>
             let expectedIssue: Issue?
         }
-        let ruleType = ImplicitReturnRule.self
-        XCTAssertTrue((ruleType as Any) is OptInRule.Type)
 
         let testCases: [TestCase] = [
             TestCase(onlyRules: [], expectedIssue: Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)),

@@ -272,6 +272,7 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5277](https://github.com/realm/SwiftLint/issues/5277)
 
+* Fix false positive in `unused_import` rule that triggered on 
 * Fix false positive in `unused_import` rule that triggered on
   `@_exported` imports which could break downstream modules if removed.  
   [jszumski](https://github.com/jszumski)
@@ -281,6 +282,7 @@
   defined in a transitive module.  
   [jszumski](https://github.com/jszumski)
   [#5246](https://github.com/realm/SwiftLint/pull/5246)
+
 * Fixes superfluous warnings about configurations for rules that were not
   enabled, when the rules were enabled in a parent configuration.  
   [Martin Redington](https://github.com/mildm8nnered)

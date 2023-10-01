@@ -462,10 +462,7 @@ extension Optional: AcceptableByConfigurationElement where Wrapped: AcceptableBy
     }
 
     public init(fromAny value: Any, context ruleID: String) throws {
-        guard let value = value as? Self else {
-            throw Issue.invalidConfiguration(ruleID: ruleID)
-        }
-        self = value
+        self = try Wrapped(fromAny: value, context: ruleID)
     }
 }
 

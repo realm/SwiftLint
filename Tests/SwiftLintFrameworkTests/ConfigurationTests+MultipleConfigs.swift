@@ -491,10 +491,11 @@ extension ConfigurationTests {
                         if parentConfiguration == nil ||
                             parentConfiguration == Configuration.emptyDefaultConfiguration() {
                             XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
+                            continue
                         }
 
                         if parentConfiguration == Configuration.emptyOnlyConfiguration() {
-                            if ruleType is OptInRule {
+                            if ruleType is OptInRule.Type {
                                 XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
                             } else {
                                 XCTAssertEqual(issue, Issue.ruleNotEnabledInParentOnlyRules(ruleID: ruleIdentifier))

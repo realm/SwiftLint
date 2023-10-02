@@ -9,8 +9,8 @@ load(
 # Targets
 
 swift_compiler_plugin(
-    name = "RuleConfigurationMacros",
-    srcs = glob(["Source/RuleConfigurationMacros/*.swift"]),
+    name = "SwiftLintCoreMacros",
+    srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
     deps = [
         "@SwiftSyntax//:SwiftCompilerPlugin_opt",
         "@SwiftSyntax//:SwiftSyntaxMacros_opt",
@@ -36,7 +36,7 @@ swift_library(
         "//conditions:default": [":DyldWarningWorkaround"],
     }),
     plugins = [
-        ":RuleConfigurationMacros",
+        ":SwiftLintCoreMacros",
     ],
 )
 

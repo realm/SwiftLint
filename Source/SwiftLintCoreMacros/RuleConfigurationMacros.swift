@@ -1,15 +1,6 @@
-import SwiftCompilerPlugin
 import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxMacros
-
-@main
-struct RuleConfigurationMacros: CompilerPlugin {
-    let providingMacros: [Macro.Type] = [
-        AutoApply.self,
-        MakeAcceptableByConfigurationElement.self
-    ]
-}
 
 private let configurationElementName = "ConfigurationElement"
 private let acceptableByConfigurationElementName = "AcceptableByConfigurationElement"
@@ -24,7 +15,7 @@ private enum RuleConfigurationMacroError: String, DiagnosticMessage {
     }
 
     var diagnosticID: MessageID {
-        MessageID(domain: "SwiftLint", id: "AutoApply.\(self)")
+        MessageID(domain: "SwiftLint", id: "RuleConfiguration")
     }
 
     var severity: DiagnosticSeverity {

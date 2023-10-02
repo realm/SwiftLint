@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct SelfInPropertyInitializationRule: ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct SelfInPropertyInitializationRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -89,10 +90,6 @@ struct SelfInPropertyInitializationRule: ConfigurationProviderRule, SwiftSyntaxR
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension SelfInPropertyInitializationRule {

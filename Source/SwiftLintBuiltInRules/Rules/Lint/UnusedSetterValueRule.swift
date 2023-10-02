@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct UnusedSetterValueRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -126,10 +127,6 @@ struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension UnusedSetterValueRule {

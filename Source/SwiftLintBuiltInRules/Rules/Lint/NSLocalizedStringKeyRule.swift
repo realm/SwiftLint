@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct NSLocalizedStringKeyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct NSLocalizedStringKeyRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -30,10 +31,6 @@ struct NSLocalizedStringKeyRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
             Example("NSLocalizedString(↓\"key_\\(param)\", comment: ↓method())")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension NSLocalizedStringKeyRule {

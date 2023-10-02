@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule
+struct EmptyCollectionLiteralRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -25,10 +26,6 @@ struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, O
             Example("myDict↓ == [ : ]")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension EmptyCollectionLiteralRule {

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct EmptyStringRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -21,10 +22,6 @@ struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
             Example(###"myString↓ == ##""##"###)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension EmptyStringRule {

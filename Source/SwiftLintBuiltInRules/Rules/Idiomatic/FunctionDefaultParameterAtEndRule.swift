@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule
+struct FunctionDefaultParameterAtEndRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -48,10 +49,6 @@ struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationProvider
             Example("public ↓init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension FunctionDefaultParameterAtEndRule {

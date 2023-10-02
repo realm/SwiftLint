@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct MultilineArgumentsBracketsRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -155,10 +156,6 @@ struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, Configuration
             """, excludeFromDocumentation: true)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension MultilineArgumentsBracketsRule {

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct LegacyHashingRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct LegacyHashingRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -72,14 +73,10 @@ struct LegacyHashingRule: SwiftSyntaxRule, ConfigurationProviderRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
-extension LegacyHashingRule {
-    private final class Visitor: ViolationsSyntaxVisitor {
+private extension LegacyHashingRule {
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard
                 node.parent?.is(MemberBlockItemSyntax.self) == true,

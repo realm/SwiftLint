@@ -1,7 +1,8 @@
 import SwiftSyntax
 
 // this rule exists due to a compiler bug: https://github.com/apple/swift/issues/51036
-struct NSNumberInitAsFunctionReferenceRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct NSNumberInitAsFunctionReferenceRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -22,10 +23,6 @@ struct NSNumberInitAsFunctionReferenceRule: SwiftSyntaxRule, ConfigurationProvid
             Example("[0, 0.2].map(↓NSDecimalNumber.init)")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension NSNumberInitAsFunctionReferenceRule {

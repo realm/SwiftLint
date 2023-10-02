@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct PrivateActionRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct PrivateActionRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -30,10 +31,6 @@ struct PrivateActionRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule 
             Example("internal extension Foo {\n\t@IBAction ↓func barButtonTapped(_ sender: UIButton) {}\n}")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension PrivateActionRule {

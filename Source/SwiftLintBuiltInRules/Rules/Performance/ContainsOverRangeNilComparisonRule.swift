@@ -1,6 +1,8 @@
 import SwiftSyntax
 
-struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@Fold
+@SwiftSyntaxRule
+struct ContainsOverRangeNilComparisonRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -20,14 +22,6 @@ struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, Configura
             ]
         }
     )
-
-    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-        file.foldedSyntaxTree
-    }
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ContainsOverRangeNilComparisonRule {

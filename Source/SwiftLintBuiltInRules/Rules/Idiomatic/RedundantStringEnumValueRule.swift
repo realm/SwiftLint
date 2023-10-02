@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct RedundantStringEnumValueRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct RedundantStringEnumValueRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -58,10 +59,6 @@ struct RedundantStringEnumValueRule: SwiftSyntaxRule, ConfigurationProviderRule 
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension RedundantStringEnumValueRule {

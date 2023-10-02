@@ -1,5 +1,6 @@
 import SwiftSyntax
 
+@Fold
 struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     var configuration = EmptyCountConfiguration()
 
@@ -32,10 +33,6 @@ struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
             Example("↓count == 0")
         ]
     )
-
-    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-        file.foldedSyntaxTree
-    }
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(onlyAfterDot: configuration.onlyAfterDot)

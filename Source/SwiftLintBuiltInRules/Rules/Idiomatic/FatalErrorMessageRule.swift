@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct FatalErrorMessageRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule
+struct FatalErrorMessageRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -33,10 +34,6 @@ struct FatalErrorMessageRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInR
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension FatalErrorMessageRule {

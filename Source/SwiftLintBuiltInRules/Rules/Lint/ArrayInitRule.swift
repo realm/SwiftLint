@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule
+struct ArrayInitRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -48,14 +49,10 @@ struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
             Example("foo.↓map { /* a comment */ $0 }")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
-extension ArrayInitRule {
-    private final class Visitor: ViolationsSyntaxVisitor {
+private extension ArrayInitRule {
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),
                   memberAccess.declName.baseName.text == "map",

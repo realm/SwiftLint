@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct NSObjectPreferIsEqualRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct NSObjectPreferIsEqualRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,10 +12,6 @@ struct NSObjectPreferIsEqualRule: SwiftSyntaxRule, ConfigurationProviderRule {
         nonTriggeringExamples: NSObjectPreferIsEqualRuleExamples.nonTriggeringExamples,
         triggeringExamples: NSObjectPreferIsEqualRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension NSObjectPreferIsEqualRule {

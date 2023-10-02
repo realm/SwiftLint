@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct PrivateSubjectRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct PrivateSubjectRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,10 +12,6 @@ struct PrivateSubjectRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
         nonTriggeringExamples: PrivateSubjectRuleExamples.nonTriggeringExamples,
         triggeringExamples: PrivateSubjectRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension PrivateSubjectRule {

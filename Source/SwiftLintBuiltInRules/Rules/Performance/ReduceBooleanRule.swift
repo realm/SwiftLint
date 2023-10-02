@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ReduceBooleanRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct ReduceBooleanRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -25,10 +26,6 @@ struct ReduceBooleanRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("nums.reduce(into: true) { (r: inout Bool, s) in r = r && (s == 3) }")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ReduceBooleanRule {

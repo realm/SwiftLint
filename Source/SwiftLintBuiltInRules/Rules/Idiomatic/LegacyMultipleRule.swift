@@ -1,6 +1,8 @@
 import SwiftSyntax
 
-struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+@Fold
+@SwiftSyntaxRule
+struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -36,14 +38,6 @@ struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule
             """)
         ]
     )
-
-    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-        file.foldedSyntaxTree
-    }
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension LegacyMultipleRule {

@@ -1,6 +1,7 @@
 @_spi(SyntaxTransformVisitor)
 import SwiftSyntax
 
+@SwiftSyntaxRule
 struct ControlStatementRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -70,10 +71,6 @@ struct ControlStatementRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRu
                 """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintCore.SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 
     func makeRewriter(file: SwiftLintCore.SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(

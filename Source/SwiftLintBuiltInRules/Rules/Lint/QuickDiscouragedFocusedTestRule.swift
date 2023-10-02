@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,10 +12,6 @@ struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule, Sw
         nonTriggeringExamples: QuickDiscouragedFocusedTestRuleExamples.nonTriggeringExamples,
         triggeringExamples: QuickDiscouragedFocusedTestRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension QuickDiscouragedFocusedTestRule {

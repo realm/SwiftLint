@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ContainsOverFilterIsEmptyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct ContainsOverFilterIsEmptyRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -25,10 +26,6 @@ struct ContainsOverFilterIsEmptyRule: SwiftSyntaxRule, OptInRule, ConfigurationP
             Example("let result = ↓myList.filter(where: someFunction).isEmpty")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ContainsOverFilterIsEmptyRule {

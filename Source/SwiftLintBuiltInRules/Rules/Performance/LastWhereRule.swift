@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct LastWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct LastWhereRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -25,10 +26,6 @@ struct LastWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
             Example("(↓myList.filter { $0 == 1 }).last")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension LastWhereRule {

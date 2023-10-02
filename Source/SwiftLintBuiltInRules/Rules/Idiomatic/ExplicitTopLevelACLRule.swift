@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ExplicitTopLevelACLRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -27,10 +28,6 @@ struct ExplicitTopLevelACLRule: SwiftSyntaxRule, OptInRule, ConfigurationProvide
             Example("internal let a = 0\n↓func b() {}")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ExplicitTopLevelACLRule {

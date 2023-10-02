@@ -1,5 +1,6 @@
 import SwiftSyntax
 
+@SwiftSyntaxRule
 struct LegacyConstructorRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -121,10 +122,6 @@ struct LegacyConstructorRule: SwiftSyntaxCorrectableRule, ConfigurationProviderR
                                                        "UIEdgeInsetsMake": "UIEdgeInsets",
                                                        "NSEdgeInsetsMake": "NSEdgeInsets",
                                                        "UIOffsetMake": "UIOffset"]
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(

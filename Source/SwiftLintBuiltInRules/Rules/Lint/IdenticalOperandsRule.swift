@@ -1,6 +1,8 @@
 import SwiftSyntax
 
-struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+@Fold
+@SwiftSyntaxRule
+struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     private static let operators = ["==", "!=", "===", "!==", ">", ">=", "<", "<="]
@@ -68,14 +70,6 @@ struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInR
             """)
         ]
     )
-
-    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-        file.foldedSyntaxTree
-    }
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension IdenticalOperandsRule {

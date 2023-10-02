@@ -131,5 +131,12 @@ let package = Package(
             ],
             path: "Source/SwiftLintCoreMacros"
         ),
+        .testTarget(
+            name: "MacroTests",
+            dependencies: [
+                "SwiftLintCoreMacros",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+            ]
+        ),
     ]
 )

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule
+struct StaticOperatorRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -75,10 +76,6 @@ struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension StaticOperatorRule {

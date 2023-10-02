@@ -1,9 +1,9 @@
 import Foundation
 import SourceKittenFramework
 
-struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
-    private typealias FileTypeOffset = (fileType: FileType, offset: ByteCount)
+private typealias FileTypeOffset = (fileType: FileTypesOrderConfiguration.FileType, offset: ByteCount)
 
+struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     var configuration = FileTypesOrderConfiguration()
 
     static let description = RuleDescription(
@@ -173,7 +173,7 @@ private extension SourceKittenDictionary {
 }
 
 private extension Array where Element == SourceKittenDictionary {
-    func offsets(for fileType: FileType) -> [(fileType: FileType, offset: ByteCount)] {
+    func offsets(for fileType: FileTypesOrderConfiguration.FileType) -> [FileTypeOffset] {
         self.compactMap { substructure in
             guard let offset = substructure.offset else { return nil }
             return (fileType, offset)

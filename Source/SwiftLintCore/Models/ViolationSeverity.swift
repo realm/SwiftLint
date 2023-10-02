@@ -1,4 +1,5 @@
 /// The magnitude of a `StyleViolation`.
+@MakeAcceptableByConfigurationElement
 public enum ViolationSeverity: String, Comparable, Codable, InlinableOptionType {
     /// Non-fatal. If using SwiftLint as an Xcode build phase, Xcode will mark the build as having succeeded.
     case warning
@@ -10,6 +11,4 @@ public enum ViolationSeverity: String, Comparable, Codable, InlinableOptionType 
     public static func < (lhs: ViolationSeverity, rhs: ViolationSeverity) -> Bool {
         return lhs == .warning && rhs == .error
     }
-
-    public func asOption() -> OptionType { .symbol(rawValue) }
 }

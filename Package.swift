@@ -1,4 +1,5 @@
 // swift-tools-version:5.9
+import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
@@ -55,6 +56,7 @@ let package = Package(
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
                 .product(name: "SwiftyTextTable", package: "SwiftyTextTable"),
                 .product(name: "Yams", package: "Yams"),
+                "SwiftLintCoreMacros"
             ]
         ),
         .target(
@@ -88,7 +90,8 @@ let package = Package(
             name: "SwiftLintFrameworkTests",
             dependencies: [
                 "SwiftLintFramework",
-                "SwiftLintTestHelpers"
+                "SwiftLintTestHelpers",
+                "SwiftLintCoreMacros"
             ],
             exclude: [
                 "Resources",
@@ -119,6 +122,14 @@ let package = Package(
             name: "SwiftLintBinary",
             url: "https://github.com/realm/SwiftLint/releases/download/0.53.0/SwiftLintBinary-macos.artifactbundle.zip",
             checksum: "03416a4f75f023e10f9a76945806ddfe70ca06129b895455cc773c5c7d86b73e"
-        )
+        ),
+        .macro(
+            name: "SwiftLintCoreMacros",
+            dependencies: [
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+            ],
+            path: "Source/SwiftLintCoreMacros"
+        ),
     ]
 )

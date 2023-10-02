@@ -11,7 +11,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     @ConfigurationElement(key: "max_length")
     private(set) var maxLength = SeverityLevels(warning: 0, error: 0)
     @ConfigurationElement(key: "excluded")
-    private(set) var excludedRegularExpressions = Set<NSRegularExpression>()
+    private(set) var excludedRegularExpressions = Set<RegularExpression>()
     @ConfigurationElement(key: "allowed_symbols")
     private(set) var allowedSymbols = Set<String>()
     @ConfigurationElement(key: "unallowed_symbols_severity")
@@ -42,7 +42,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
         minLength = SeverityLevels(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevels(warning: maxLengthWarning, error: maxLengthError)
         self.excludedRegularExpressions = Set(excluded.compactMap {
-            try? NSRegularExpression.cached(pattern: "^\($0)$")
+            try? RegularExpression(pattern: "^\($0)$")
         })
         self.allowedSymbols = Set(allowedSymbols)
         self.unallowedSymbolsSeverity = unallowedSymbolsSeverity
@@ -54,26 +54,26 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
             throw Issue.unknownConfiguration(ruleID: Parent.identifier)
         }
 
-        if let minLengthConfiguration = configurationDict[$minLength] {
+        if let minLengthConfiguration = configurationDict[$minLength.key] {
             try minLength.apply(configuration: minLengthConfiguration)
         }
-        if let maxLengthConfiguration = configurationDict[$maxLength] {
+        if let maxLengthConfiguration = configurationDict[$maxLength.key] {
             try maxLength.apply(configuration: maxLengthConfiguration)
         }
-        if let excluded = [String].array(of: configurationDict[$excludedRegularExpressions]) {
+        if let excluded = [String].array(of: configurationDict[$excludedRegularExpressions.key]) {
             self.excludedRegularExpressions = Set(excluded.compactMap {
-                try? NSRegularExpression.cached(pattern: "^\($0)$")
+                try? RegularExpression(pattern: "^\($0)$")
             })
         }
-        if let allowedSymbols = [String].array(of: configurationDict[$allowedSymbols]) {
+        if let allowedSymbols = [String].array(of: configurationDict[$allowedSymbols.key]) {
             self.allowedSymbols = Set(allowedSymbols)
         }
-        if let unallowedSymbolsSeverity = configurationDict[$unallowedSymbolsSeverity] {
+        if let unallowedSymbolsSeverity = configurationDict[$unallowedSymbolsSeverity.key] {
             try self.unallowedSymbolsSeverity.apply(configuration: unallowedSymbolsSeverity)
         }
-        if let validatesStartWithLowercase = configurationDict[$validatesStartWithLowercase] as? String {
+        if let validatesStartWithLowercase = configurationDict[$validatesStartWithLowercase.key] as? String {
             try self.validatesStartWithLowercase.apply(configuration: validatesStartWithLowercase)
-        } else if let validatesStartWithLowercase = configurationDict[$validatesStartWithLowercase] as? Bool {
+        } else if let validatesStartWithLowercase = configurationDict[$validatesStartWithLowercase.key] as? Bool {
             // TODO: [05/10/2025] Remove deprecation warning after ~2 years.
             self.validatesStartWithLowercase = validatesStartWithLowercase ? .error : .off
             Issue.genericWarning(
@@ -106,7 +106,7 @@ extension NameConfiguration {
 extension NameConfiguration {
     func shouldExclude(name: String) -> Bool {
         excludedRegularExpressions.contains {
-            !$0.matches(in: name, options: [], range: NSRange(name.startIndex..., in: name)).isEmpty
+            !$0.regex.matches(in: name, options: [], range: NSRange(name.startIndex..., in: name)).isEmpty
         }
     }
 }

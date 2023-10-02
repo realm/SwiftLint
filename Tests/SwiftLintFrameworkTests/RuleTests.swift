@@ -78,7 +78,7 @@ class RuleTests: SwiftLintTestCase {
     func testSeverityLevelRuleInitsWithConfigDictionary() {
         let config = ["warning": 17, "error": 7]
         let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
+        let comp = RuleWithLevelsMock()
         comp.configuration.warning = 17
         comp.configuration.error = 7
         XCTAssertEqual(rule?.isEqualTo(comp), true)
@@ -87,7 +87,7 @@ class RuleTests: SwiftLintTestCase {
     func testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary() {
         let config = ["warning": 17]
         let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
+        let comp = RuleWithLevelsMock()
         comp.configuration.warning = 17
         comp.configuration.error = nil
         XCTAssertEqual(rule?.isEqualTo(comp), true)
@@ -96,7 +96,7 @@ class RuleTests: SwiftLintTestCase {
     func testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary() {
         let config = ["error": 17]
         let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
+        let comp = RuleWithLevelsMock()
         comp.configuration.error = 17
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
@@ -104,7 +104,7 @@ class RuleTests: SwiftLintTestCase {
     func testSeverityLevelRuleInitsWithConfigArray() {
         let config = [17, 7] as Any
         let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
+        let comp = RuleWithLevelsMock()
         comp.configuration.warning = 17
         comp.configuration.error = 7
         XCTAssertEqual(rule?.isEqualTo(comp), true)
@@ -113,7 +113,7 @@ class RuleTests: SwiftLintTestCase {
     func testSeverityLevelRuleInitsWithSingleValueConfigArray() {
         let config = [17] as Any
         let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
+        let comp = RuleWithLevelsMock()
         comp.configuration.warning = 17
         comp.configuration.error = nil
         XCTAssertEqual(rule?.isEqualTo(comp), true)
@@ -122,7 +122,7 @@ class RuleTests: SwiftLintTestCase {
     func testSeverityLevelRuleInitsWithLiteral() {
         let config = 17 as Any
         let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
+        let comp = RuleWithLevelsMock()
         comp.configuration.warning = 17
         comp.configuration.error = nil
         XCTAssertEqual(rule?.isEqualTo(comp), true)

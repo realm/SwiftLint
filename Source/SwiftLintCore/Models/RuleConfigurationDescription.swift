@@ -71,6 +71,19 @@ public struct RuleConfigurationDescription: Equatable {
         }
         return Self(options: options)
     }
+
+    func allowedKeys() -> [String] {
+        options.flatMap { option -> [String] in
+            switch option.value {
+            case let .nested(nestedConfiguration) where option.key.isEmpty:
+                nestedConfiguration.allowedKeys()
+            case .empty:
+                []
+            default:
+                [option.key]
+            }
+        }
+    }
 }
 
 extension RuleConfigurationDescription: Documentable {
@@ -280,7 +293,8 @@ public extension OptionType {
 
     /// Create an option defined by nested configuration description.
     ///
-    /// - Parameter description: A configuration description buildable by applying the result builder syntax.
+    /// - Parameters:
+    ///   - description: A configuration description buildable by applying the result builder syntax.
     ///
     /// - Returns: A configuration option with a value being another configuration description.
     static func nest(@RuleConfigurationDescriptionBuilder _ description: () -> RuleConfigurationDescription) -> Self {
@@ -297,6 +311,13 @@ private protocol AnyConfigurationElement {
 
 /// Type of an object that can be used as a configuration element.
 public protocol AcceptableByConfigurationElement {
+    /// Initializer taking a value from a configuration to create an element of `Self`.
+    ///
+    /// - Parameters:
+    ///   - value: Value from a configuration.
+    ///   - ruleID: The rule's identifier in which context the configuration parsing runs.
+    init(fromAny value: Any, context ruleID: String) throws
+
     /// Make the object an option.
     ///
     /// - Returns: Option representing the object.
@@ -304,16 +325,28 @@ public protocol AcceptableByConfigurationElement {
 
     /// Make the object a description.
     ///
-    /// - Parameter key: Name of the option to be put into the description.
+    /// - Parameters:
+    ///   - key: Name of the option to be put into the description.
     ///
     /// - Returns: Configuration description of this object.
     func asDescription(with key: String) -> RuleConfigurationDescription
+
+    /// Update the object.
+    /// 
+    /// - Parameter value: New underlying data for the object.
+    mutating func apply(_ value: Any?, ruleID: String) throws
 }
 
+/// Default implementations which are shortcuts applicable for most of the types conforming to the protocol.
 public extension AcceptableByConfigurationElement {
     func asDescription(with key: String) -> RuleConfigurationDescription {
-        // By default, this method is just a shortcut applicable for most of the types conforming to the protocol.
         RuleConfigurationDescription(options: [key => asOption()])
+    }
+
+    mutating func apply(_ value: Any?, ruleID: String) throws {
+        if let value {
+            self = try Self(fromAny: value, context: ruleID)
+        }
     }
 }
 
@@ -357,23 +390,31 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 ///            error: 2
 ///    ```
 @propertyWrapper
-public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: Equatable {
+public class ConfigurationElement<T: AcceptableByConfigurationElement & Equatable> {
     /// Wrapped option value.
     public var wrappedValue: T
 
     /// The option's name. This field can only be accessed by the element's name prefixed with a `$`.
-    public var projectedValue: String { key }
+    public var projectedValue: ConfigurationElement { self }
 
-    private let key: String
+    /// Name of this configuration entry.
+    public let key: String
+
+    private let postprocessor: (inout T) throws -> Void
 
     /// Default constructor.
     ///
     /// - Parameters:
     ///   - value: Value to be wrapped.
     ///   - key: Name of the option.
-    public init(wrappedValue value: T, key: String) {
+    ///   - postprocessor: Function to be applied to the wrapped value after parsing to validate and modify it.
+    public init(wrappedValue value: T, key: String, postprocessor: @escaping (inout T) throws -> Void = { _ in }) {
         self.wrappedValue = value
         self.key = key
+        self.postprocessor = postprocessor
+
+        // Validate and modify the set value immediately. An exception means invalid defaults.
+        try! performAfterParseOperations() // swiftlint:disable:this force_try
     }
 
     /// Constructor for optional values.
@@ -381,7 +422,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// It allows to skip explicit initialization with `nil` of the property.
     ///
     /// - Parameter value: Value to be wrapped.
-    public init<Wrapped>(key: String) where T == Wrapped? {
+    public convenience init<Wrapped>(key: String) where T == Wrapped? {
         self.init(wrappedValue: nil, key: key)
     }
 
@@ -390,15 +431,27 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// ``InlinableOptionType``s are allowed to have an empty key. The configuration will be inlined into its
     /// parent configuration in this specific case.
     ///
-    /// - Parameter value: Value to be wrapped.
-    public init(wrappedValue value: T) where T: InlinableOptionType {
+    /// - Parameters:
+    ///   - value: Value to be wrapped.
+    public convenience init(wrappedValue value: T) where T: InlinableOptionType {
         self.init(wrappedValue: value, key: "")
+    }
+
+    /// Run operations to validate and modify the parsed value.
+    public func performAfterParseOperations() throws {
+        try postprocessor(&wrappedValue)
     }
 }
 
 extension ConfigurationElement: AnyConfigurationElement {
     fileprivate var description: RuleConfigurationDescription {
         wrappedValue.asDescription(with: key)
+    }
+}
+
+extension ConfigurationElement: Equatable {
+    public static func == (lhs: ConfigurationElement, rhs: ConfigurationElement) -> Bool {
+        lhs.wrappedValue == rhs.wrappedValue && lhs.key == rhs.key
     }
 }
 
@@ -411,6 +464,10 @@ extension Optional: AcceptableByConfigurationElement where Wrapped: AcceptableBy
         }
         return .empty
     }
+
+    public init(fromAny value: Any, context ruleID: String) throws {
+        self = try Wrapped(fromAny: value, context: ruleID)
+    }
 }
 
 struct Symbol: Equatable, AcceptableByConfigurationElement {
@@ -419,11 +476,12 @@ struct Symbol: Equatable, AcceptableByConfigurationElement {
     func asOption() -> OptionType {
         .symbol(value)
     }
-}
 
-extension OptionType: AcceptableByConfigurationElement {
-    public func asOption() -> OptionType {
-        self
+    init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? String else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self.value = value
     }
 }
 
@@ -431,11 +489,25 @@ extension Bool: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         .flag(self)
     }
+
+    public init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? Self else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self = value
+    }
 }
 
 extension String: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         .string(self)
+    }
+
+    public init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? Self else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self = value
     }
 }
 
@@ -443,11 +515,20 @@ extension Array: AcceptableByConfigurationElement where Element: AcceptableByCon
     public func asOption() -> OptionType {
         .list(map { $0.asOption() })
     }
+
+    public init(fromAny value: Any, context ruleID: String) throws {
+        let values = value as? [Any] ?? [value]
+        self = try values.map { try Element(fromAny: $0, context: ruleID) }
+    }
 }
 
 extension Set: AcceptableByConfigurationElement where Element: AcceptableByConfigurationElement & Comparable {
     public func asOption() -> OptionType {
         sorted().asOption()
+    }
+
+    public init(fromAny value: Any, context ruleID: String) throws {
+        self = Set(try [Element].init(fromAny: value, context: ruleID))
     }
 }
 
@@ -455,23 +536,38 @@ extension Int: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         .integer(self)
     }
+
+    public init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? Self else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self = value
+    }
 }
 
 extension Double: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         .float(self)
     }
-}
 
-extension NSRegularExpression: AcceptableByConfigurationElement {
-    public func asOption() -> OptionType {
-        .string(pattern)
+    public init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? Self else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self = value
     }
 }
 
-extension Range: AcceptableByConfigurationElement {
+extension RegularExpression: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
-        .symbol("\(lowerBound) ..< \(upperBound)")
+        .string(pattern)
+    }
+
+    public init(fromAny value: Any, context ruleID: String) throws {
+        guard let value = value as? String else {
+            throw Issue.invalidConfiguration(ruleID: ruleID)
+        }
+        self = try Self(pattern: value)
     }
 }
 
@@ -487,6 +583,16 @@ public extension RuleConfiguration {
             return .from(configuration: self)
         }
         return RuleConfigurationDescription(options: [key => asOption()])
+    }
+
+    mutating func apply(_ value: Any?, ruleID: String) throws {
+        if let value {
+            try apply(configuration: value)
+        }
+    }
+
+    init(fromAny value: Any, context ruleID: String) throws {
+        throw Issue.genericError("Do not call this initializer")
     }
 }
 

@@ -17,7 +17,7 @@ class CustomRulesTests: SwiftLintTestCase {
         var comp = Configuration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
-        comp.regex = regex("regex")
+        comp.regex = "regex"
         comp.severityConfiguration = SeverityConfiguration(.error)
         comp.excludedMatchKinds = SyntaxKind.allKinds.subtracting([.comment])
         var compRules = CustomRulesConfiguration()
@@ -44,7 +44,7 @@ class CustomRulesTests: SwiftLintTestCase {
         var comp = Configuration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
-        comp.regex = regex("regex")
+        comp.regex = "regex"
         comp.severityConfiguration = SeverityConfiguration(.error)
         comp.excludedMatchKinds = Set<SyntaxKind>([.comment])
         var compRules = CustomRulesConfiguration()

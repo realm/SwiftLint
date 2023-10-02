@@ -62,7 +62,7 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
     func testLineLengthConfigurationThrowsOnBadConfig() {
         let config = "unknown"
         var configuration = LineLengthConfiguration(length: severityLevels)
-        checkError(Issue.unknownConfiguration(ruleID: LineLengthRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: LineLengthRule.description.identifier)) {
             try configuration.apply(configuration: config)
         }
     }
@@ -70,13 +70,12 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
     func testLineLengthConfigurationThrowsOnBadConfigValues() {
         let badConfigs: [[String: Any]] = [
             ["warning": true],
-            ["ignores_function_declarations": 300],
-            ["unsupported_key": "unsupported key is unsupported"]
+            ["ignores_function_declarations": 300]
         ]
 
         for badConfig in badConfigs {
             var configuration = LineLengthConfiguration(length: severityLevels)
-            checkError(Issue.unknownConfiguration(ruleID: LineLengthRule.description.identifier)) {
+            checkError(Issue.invalidConfiguration(ruleID: LineLengthRule.description.identifier)) {
                 try configuration.apply(configuration: badConfig)
             }
         }
@@ -122,7 +121,7 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
         let length2 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2, error: error2)
         let config2: [String: Int] = ["warning": warning2, "error": error2]
 
-        let length3 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2, error: error2)
+        let length3 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2)
         let config3: [String: Bool] = ["ignores_urls": false,
                                        "ignores_function_declarations": false,
                                        "ignores_comments": false]

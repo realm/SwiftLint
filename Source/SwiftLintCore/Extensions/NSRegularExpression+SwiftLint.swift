@@ -4,6 +4,26 @@ import SourceKittenFramework
 private var regexCache = [RegexCacheKey: NSRegularExpression]()
 private let regexCacheLock = NSLock()
 
+public struct RegularExpression: Hashable, Comparable, ExpressibleByStringLiteral {
+    public let regex: NSRegularExpression
+
+    public init(pattern: String, options: NSRegularExpression.Options? = nil) throws {
+        regex = try .cached(pattern: pattern)
+    }
+    public init(stringLiteral value: String) {
+        // swiftlint:disable:next force_try
+        try! self.init(pattern: value)
+    }
+
+    var pattern: String { regex.pattern }
+
+    var numberOfCaptureGroups: Int { regex.numberOfCaptureGroups }
+
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.pattern < rhs.pattern
+    }
+}
+
 private struct RegexCacheKey: Hashable {
     let pattern: String
     let options: NSRegularExpression.Options

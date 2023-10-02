@@ -43,6 +43,7 @@ class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
         let error2 = 40
         let length2 = SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: warning2, error: error2)
         let config2: [String: Int] = ["warning": warning2, "error": error2]
+        let length3 = SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: warning2)
         let config3: [String: Bool] = ["ignores_case_statements": false]
 
         try configuration.apply(configuration: config1)
@@ -54,22 +55,21 @@ class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
         XCTAssertTrue(configuration.ignoresCaseStatements)
 
         try configuration.apply(configuration: config3)
-        XCTAssertEqual(configuration.length, length2)
+        XCTAssertEqual(configuration.length, length3)
         XCTAssertFalse(configuration.ignoresCaseStatements)
     }
 
     func testCyclomaticComplexityConfigurationThrowsOnBadConfigValues() {
         let badConfigs: [[String: Any]] = [
             ["warning": true],
-            ["ignores_case_statements": 300],
-            ["unsupported_key": "unsupported key is unsupported"]
+            ["ignores_case_statements": 300]
         ]
 
         for badConfig in badConfigs {
             var configuration = CyclomaticComplexityConfiguration(
                 length: SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: 100, error: 150)
             )
-            checkError(Issue.unknownConfiguration(ruleID: CyclomaticComplexityRule.description.identifier)) {
+            checkError(Issue.invalidConfiguration(ruleID: CyclomaticComplexityRule.description.identifier)) {
                 try configuration.apply(configuration: badConfig)
             }
         }

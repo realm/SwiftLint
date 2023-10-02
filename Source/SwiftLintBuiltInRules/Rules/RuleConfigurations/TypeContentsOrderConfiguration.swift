@@ -1,6 +1,7 @@
 import SwiftLintCore
 
-enum TypeContent: String, AcceptableByConfigurationElement {
+@MakeAcceptableByConfigurationElement
+enum TypeContent: String {
     case `case` = "case"
     case typeAlias = "type_alias"
     case associatedType = "associated_type"
@@ -16,10 +17,9 @@ enum TypeContent: String, AcceptableByConfigurationElement {
     case otherMethod = "other_method"
     case `subscript` = "subscript"
     case deinitializer = "deinitializer"
-
-    func asOption() -> OptionType { .symbol(rawValue) }
 }
 
+@AutoApply
 struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TypeContentsOrderRule
 
@@ -42,28 +42,4 @@ struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable
         [.subscript],
         [.deinitializer]
     ]
-
-    mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-
-        if let severityValue = configuration[$severityConfiguration] as? String {
-            try severityConfiguration.apply(configuration: severityValue)
-        }
-
-        if let custom = configuration[$order] as? [Any] {
-            order.removeAll()
-            for entry in custom {
-                if let singleEntry = entry as? String {
-                    if let typeContent = TypeContent(rawValue: singleEntry) {
-                        order.append([typeContent])
-                    }
-                } else if let arrayEntry = entry as? [String] {
-                    let typeContents = arrayEntry.compactMap { TypeContent(rawValue: $0) }
-                    order.append(typeContents)
-                }
-            }
-        }
-    }
 }

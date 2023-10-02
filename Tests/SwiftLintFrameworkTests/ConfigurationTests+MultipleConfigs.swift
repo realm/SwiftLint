@@ -417,7 +417,17 @@ extension ConfigurationTests {
     }
 
     // MARK: Warnings about configurations for disabled rules
-    func testDefaultConfigurationDisabledOptInRuleWarnings() {
+    func testDefaultConfigurationDisabledRuleWarnings() {
+        let optInRuleType = ImplicitReturnRule.self
+        XCTAssertTrue((optInRuleType as Any) is OptInRule.Type)
+        testDefaultConfigurationDisabledRuleWarnings(for: optInRuleType)
+
+        let defaultRuleType = BlockBasedKVORule.self
+        XCTAssertFalse((defaultRuleType as Any) is OptInRule.Type)
+        testDefaultConfigurationDisabledRuleWarnings(for: defaultRuleType)
+    }
+
+    private func testDefaultConfigurationDisabledRuleWarnings(for ruleType: Rule.Type) {
         let ruleType = ImplicitReturnRule.self
         XCTAssertTrue((ruleType as Any) is OptInRule.Type)
         let ruleIdentifier = ruleType.identifier
@@ -437,30 +447,6 @@ extension ConfigurationTests {
             Configuration(rulesMode: .default(disabled: [], optIn: [])),
             Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier])),
             Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier])),
-            Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: []))
-        ]
-
-        for parentConfiguration in parentConfigurations {
-            testParentConfiguration(parentConfiguration, configurations: configurations, ruleType: ruleType)
-        }
-    }
-
-    func testDefaultConfigurationDisabledDefaultRuleWarnings() {
-        let ruleType = BlockBasedKVORule.self
-        XCTAssertFalse((ruleType as Any) is OptInRule.Type)
-        let ruleIdentifier = ruleType.identifier
-
-        let parentConfigurations = [
-            nil,
-            Configuration.emptyDefaultConfiguration(),
-            Configuration.disabledDefaultConfiguration(ruleIdentifier),
-            Configuration.emptyOnlyConfiguration(),
-            Configuration.enabledOnlyConfiguration(ruleIdentifier),
-            Configuration.allEnabledConfiguration()
-        ]
-
-        let configurations = [
-            Configuration(rulesMode: .default(disabled: [], optIn: [])),
             Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: []))
         ]
 

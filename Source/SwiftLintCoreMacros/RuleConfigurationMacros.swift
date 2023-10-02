@@ -15,7 +15,7 @@ private enum RuleConfigurationMacroError: String, DiagnosticMessage {
     }
 
     var diagnosticID: MessageID {
-        MessageID(domain: "SwiftLint", id: "RuleConfiguration")
+        MessageID(domain: "SwiftLint", id: "RuleConfigurationMacro.\(self)")
     }
 
     var severity: DiagnosticSeverity {

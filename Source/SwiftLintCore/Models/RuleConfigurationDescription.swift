@@ -293,7 +293,8 @@ public extension OptionType {
 
     /// Create an option defined by nested configuration description.
     ///
-    /// - Parameter description: A configuration description buildable by applying the result builder syntax.
+    /// - Parameters:
+    ///   - description: A configuration description buildable by applying the result builder syntax.
     ///
     /// - Returns: A configuration option with a value being another configuration description.
     static func nest(@RuleConfigurationDescriptionBuilder _ description: () -> RuleConfigurationDescription) -> Self {
@@ -312,8 +313,9 @@ private protocol AnyConfigurationElement {
 public protocol AcceptableByConfigurationElement {
     /// Initializer taking a value from a configuration to create an element of `Self`.
     ///
-    ///   - Parameter value: Value from a configuration.
-    ///   - Parameter ruleID: The rule's identifier in which context the configuration parsing runs.
+    /// - Parameters:
+    ///   - value: Value from a configuration.
+    ///   - ruleID: The rule's identifier in which context the configuration parsing runs.
     init(fromAny value: Any, context ruleID: String) throws
 
     /// Make the object an option.
@@ -323,7 +325,8 @@ public protocol AcceptableByConfigurationElement {
 
     /// Make the object a description.
     ///
-    /// - Parameter key: Name of the option to be put into the description.
+    /// - Parameters:
+    ///   - key: Name of the option to be put into the description.
     ///
     /// - Returns: Configuration description of this object.
     func asDescription(with key: String) -> RuleConfigurationDescription
@@ -428,7 +431,8 @@ public class ConfigurationElement<T: AcceptableByConfigurationElement & Equatabl
     /// ``InlinableOptionType``s are allowed to have an empty key. The configuration will be inlined into its
     /// parent configuration in this specific case.
     ///
-    /// - Parameter value: Value to be wrapped.
+    /// - Parameters:
+    ///   - value: Value to be wrapped.
     public convenience init(wrappedValue value: T) where T: InlinableOptionType {
         self.init(wrappedValue: value, key: "")
     }

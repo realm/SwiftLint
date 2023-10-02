@@ -14,20 +14,13 @@ struct RuleConfigurationMacros: CompilerPlugin {
 private let configurationElementName = "ConfigurationElement"
 private let acceptableByConfigurationElementName = "AcceptableByConfigurationElement"
 
-private enum RuleConfigurationMacroError: DiagnosticMessage {
-    case notStruct
-    case notEnum
-    case noStringRawType
+private enum RuleConfigurationMacroError: String, DiagnosticMessage {
+    case notStruct = "Attribute can only be applied to structs"
+    case notEnum = "Attribute can only be applied to enums"
+    case noStringRawType = "Attribute can only be applied to enums with a 'String' raw type"
 
     var message: String {
-        switch self {
-        case .notStruct:
-            "Attribute can only be applied to structs"
-        case .notEnum:
-            "Attribute can only be applied to enums"
-        case .noStringRawType:
-            "Attribute can only be applied to enums with a 'String' raw type"
-        }
+        rawValue
     }
 
     var diagnosticID: MessageID {

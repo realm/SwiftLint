@@ -7,6 +7,7 @@ import SwiftSyntaxMacros
 struct RuleConfigurationMacros: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         AutoApply.self,
+        AutoSwiftSyntaxRule.self,
         MakeAcceptableByConfigurationElement.self
     ]
 }
@@ -101,6 +102,26 @@ struct AutoApply: MemberMacro {
                 }
             }
             """
+        ]
+    }
+}
+
+struct AutoSwiftSyntaxRule: ExtensionMacro {
+    static func expansion(
+        of node: AttributeSyntax,
+        attachedTo declaration: some DeclGroupSyntax,
+        providingExtensionsOf type: some TypeSyntaxProtocol,
+        conformingTo protocols: [TypeSyntax],
+        in context: some MacroExpansionContext
+    ) throws -> [ExtensionDeclSyntax] {
+        return [
+            try ExtensionDeclSyntax("""
+                extension \(type): SwiftSyntaxRule {
+                    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+                        Visitor(viewMode: .sourceAccurate)
+                    }
+                }
+                """)
         ]
     }
 }

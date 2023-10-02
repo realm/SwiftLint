@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -22,10 +23,6 @@ struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, SwiftSyntaxRul
             Example("↓func  <|< <A>(lhs: A, rhs: A) -> A {}")    // 2 spaces before
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension OperatorFunctionWhitespaceRule {

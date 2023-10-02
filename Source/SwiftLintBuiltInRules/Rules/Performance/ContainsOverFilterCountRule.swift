@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct ContainsOverFilterCountRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -27,10 +28,6 @@ struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
             ]
         }
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ContainsOverFilterCountRule {

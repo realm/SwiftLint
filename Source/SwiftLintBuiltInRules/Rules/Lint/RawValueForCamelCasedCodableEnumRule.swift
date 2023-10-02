@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct RawValueForCamelCasedCodableEnumRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct RawValueForCamelCasedCodableEnumRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -90,10 +91,6 @@ struct RawValueForCamelCasedCodableEnumRule: SwiftSyntaxRule, OptInRule, Configu
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension RawValueForCamelCasedCodableEnumRule {

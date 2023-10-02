@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule
+struct FallthroughRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -27,10 +28,6 @@ struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension FallthroughRule {

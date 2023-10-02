@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct DiscardedNotificationCenterObserverRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule
+struct DiscardedNotificationCenterObserverRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -55,10 +56,6 @@ struct DiscardedNotificationCenterObserverRule: SwiftSyntaxRule, ConfigurationPr
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension DiscardedNotificationCenterObserverRule {

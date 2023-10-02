@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,10 +12,6 @@ struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule, Swi
         nonTriggeringExamples: DiscouragedOptionalBooleanRuleExamples.nonTriggeringExamples,
         triggeringExamples: DiscouragedOptionalBooleanRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension DiscouragedOptionalBooleanRule {

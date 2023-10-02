@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct DynamicInlineRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct DynamicInlineRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
@@ -21,14 +22,10 @@ struct DynamicInlineRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("class C {\n@inline(__always)\ndynamic\n↓func f() {}\n}")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension DynamicInlineRule {
-    private final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.modifiers.contains(where: { $0.name.text == "dynamic" }),
                node.attributes.contains(where: { $0.as(AttributeSyntax.self)?.isInlineAlways == true }) {

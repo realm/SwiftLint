@@ -1,6 +1,8 @@
 import SwiftSyntax
 
-struct ShorthandOperatorRule: ConfigurationProviderRule, SwiftSyntaxRule {
+@Fold
+@SwiftSyntaxRule
+struct ShorthandOperatorRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
@@ -38,14 +40,6 @@ struct ShorthandOperatorRule: ConfigurationProviderRule, SwiftSyntaxRule {
     )
 
     fileprivate static let allOperators = ["-", "/", "+", "*"]
-
-    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-        file.foldedSyntaxTree
-    }
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ShorthandOperatorRule {

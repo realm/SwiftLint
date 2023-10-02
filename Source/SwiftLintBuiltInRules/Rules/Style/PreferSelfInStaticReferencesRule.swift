@@ -1,5 +1,6 @@
 import SwiftSyntax
 
+@SwiftSyntaxRule
 struct PreferSelfInStaticReferencesRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -12,10 +13,6 @@ struct PreferSelfInStaticReferencesRule: SwiftSyntaxCorrectableRule, Configurati
         triggeringExamples: PreferSelfInStaticReferencesRuleExamples.triggeringExamples,
         corrections: PreferSelfInStaticReferencesRuleExamples.corrections
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private class Visitor: ViolationsSyntaxVisitor {

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct FirstWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -29,10 +30,6 @@ struct FirstWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
             Example(#"↓myListOfDict.filter { $0["someString"] }.first"#)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension FirstWhereRule {

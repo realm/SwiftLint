@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct NoExtensionAccessModifierRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct NoExtensionAccessModifierRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
@@ -20,10 +21,6 @@ struct NoExtensionAccessModifierRule: SwiftSyntaxRule, OptInRule, ConfigurationP
             Example("↓fileprivate extension String {}")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension NoExtensionAccessModifierRule {

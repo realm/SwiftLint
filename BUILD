@@ -8,6 +8,17 @@ load(
 
 # Targets
 
+swift_library(
+    name = "SwiftLintCoreMacrosLib",
+    module_name = "SwiftLintCoreMacros",
+    srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@SwiftSyntax//:SwiftCompilerPlugin_opt",
+        "@SwiftSyntax//:SwiftSyntaxMacros_opt",
+    ],
+)
+
 swift_compiler_plugin(
     name = "SwiftLintCoreMacros",
     srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),

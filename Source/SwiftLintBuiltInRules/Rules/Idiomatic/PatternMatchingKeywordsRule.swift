@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule
+struct PatternMatchingKeywordsRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -32,10 +33,6 @@ struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProviderRule, 
             Example("case (.yamlParsing(↓var x), .yamlParsing(↓var y))")
         ].map(wrapInSwitch)
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension PatternMatchingKeywordsRule {

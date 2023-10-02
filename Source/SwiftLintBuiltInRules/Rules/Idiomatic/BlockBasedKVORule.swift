@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct BlockBasedKVORule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct BlockBasedKVORule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -32,14 +33,10 @@ struct BlockBasedKVORule: SwiftSyntaxRule, ConfigurationProviderRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension BlockBasedKVORule {
-    private final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard node.modifiers.contains(keyword: .override),
                   case let parameterList = node.signature.parameterClause.parameters,

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct IsDisjointRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct IsDisjointRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -19,10 +20,6 @@ struct IsDisjointRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("let isObjc = !objcAttributes.↓intersection(dictionary.enclosedSwiftAttributes).isEmpty")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension IsDisjointRule {

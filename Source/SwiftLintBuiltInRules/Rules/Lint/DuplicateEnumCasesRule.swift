@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct DuplicateEnumCasesRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
@@ -54,10 +55,6 @@ struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension DuplicateEnumCasesRule {

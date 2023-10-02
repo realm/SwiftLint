@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct NotificationCenterDetachmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct NotificationCenterDetachmentRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,10 +12,6 @@ struct NotificationCenterDetachmentRule: SwiftSyntaxRule, ConfigurationProviderR
         nonTriggeringExamples: NotificationCenterDetachmentRuleExamples.nonTriggeringExamples,
         triggeringExamples: NotificationCenterDetachmentRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension NotificationCenterDetachmentRule {

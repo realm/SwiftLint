@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct CompilerProtocolInitRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -20,10 +21,6 @@ struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("let set = ↓Set.init(arrayLiteral : 1, 2)")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension CompilerProtocolInitRule {

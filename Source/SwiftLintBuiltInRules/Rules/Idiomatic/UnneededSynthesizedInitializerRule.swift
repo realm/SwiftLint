@@ -13,6 +13,7 @@
 
 import SwiftSyntax
 
+@SwiftSyntaxRule
 struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -26,10 +27,6 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, Configura
         triggeringExamples: UnneededSynthesizedInitializerRuleExamples.triggering,
         corrections: UnneededSynthesizedInitializerRuleExamples.corrections
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(

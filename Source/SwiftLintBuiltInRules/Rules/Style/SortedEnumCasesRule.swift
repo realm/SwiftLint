@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct SortedEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct SortedEnumCasesRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -75,10 +76,6 @@ struct SortedEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRul
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension SortedEnumCasesRule {

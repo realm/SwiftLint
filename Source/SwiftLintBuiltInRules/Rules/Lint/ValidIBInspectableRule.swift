@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct ValidIBInspectableRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -107,10 +108,6 @@ struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 
     fileprivate static var supportedTypes: Set<String> = {
         // "You can add the IBInspectable attribute to any property in a class declaration,

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule
+struct IBInspectableInExtensionRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -23,10 +24,6 @@ struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProviderRule,
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension IBInspectableInExtensionRule {

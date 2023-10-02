@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ReduceIntoRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule
+struct ReduceIntoRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
@@ -105,10 +106,6 @@ struct ReduceIntoRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ReduceIntoRule {

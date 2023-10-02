@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule,
-                                                        SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule
+struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -72,10 +72,6 @@ struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule,
             Example("foo.bar { [weak self] ↓(x, y) in }"): Example("foo.bar { [weak self] x, y in }")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(

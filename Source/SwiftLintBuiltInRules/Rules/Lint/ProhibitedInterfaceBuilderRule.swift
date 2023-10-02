@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -17,10 +18,6 @@ struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, SwiftSyntaxRul
             wrapExample("@IBAction ↓func buttonTapped(_ sender: UIButton) {}")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ProhibitedInterfaceBuilderRule {

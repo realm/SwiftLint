@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct SortedFirstLastRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct SortedFirstLastRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -43,10 +44,6 @@ struct SortedFirstLastRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRul
             Example("↓myList.map { $0 + 1 }.sorted { $0.first < $1.first }.last")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension SortedFirstLastRule {

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnavailableFunctionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule
+struct UnavailableFunctionRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -69,10 +70,6 @@ struct UnavailableFunctionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension UnavailableFunctionRule {

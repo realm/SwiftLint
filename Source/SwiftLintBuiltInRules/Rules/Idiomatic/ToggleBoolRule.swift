@@ -1,6 +1,7 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
+@SwiftSyntaxRule
 struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -28,10 +29,6 @@ struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, Op
             Example("func foo() { ↓abc = !abc }"): Example("func foo() { abc.toggle() }")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(

@@ -28,7 +28,8 @@ private let legacyObjcTypes = [
     "NSUUID"
 ]
 
-struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct LegacyObjcTypeRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -65,10 +66,6 @@ struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension LegacyObjcTypeRule {

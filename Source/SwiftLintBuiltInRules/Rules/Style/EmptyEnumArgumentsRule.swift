@@ -23,6 +23,7 @@ private func wrapInFunc(_ str: String, file: StaticString = #file, line: UInt = 
     """, file: file, line: line)
 }
 
+@SwiftSyntaxRule
 struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -110,10 +111,6 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
                 """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(

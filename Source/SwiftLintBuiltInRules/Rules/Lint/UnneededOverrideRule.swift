@@ -1,6 +1,7 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
+@SwiftSyntaxRule
 struct UnneededOverrideRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -13,10 +14,6 @@ struct UnneededOverrideRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRu
         triggeringExamples: UnneededOverrideRuleExamples.triggeringExamples,
         corrections: UnneededOverrideRuleExamples.corrections
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(

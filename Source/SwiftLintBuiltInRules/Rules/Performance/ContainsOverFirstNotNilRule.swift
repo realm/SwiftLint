@@ -1,6 +1,8 @@
 import SwiftSyntax
 
-struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@Fold
+@SwiftSyntaxRule
+struct ContainsOverFirstNotNilRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -27,14 +29,6 @@ struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
             }
         }
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-        file.foldedSyntaxTree
-    }
 }
 
 private extension ContainsOverFirstNotNilRule {

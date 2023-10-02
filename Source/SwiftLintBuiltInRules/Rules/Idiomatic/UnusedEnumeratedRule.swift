@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnusedEnumeratedRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct UnusedEnumeratedRule: ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -26,10 +27,6 @@ struct UnusedEnumeratedRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("for (idx, ↓_) in bar.enumerated() { }")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension UnusedEnumeratedRule {

@@ -119,7 +119,7 @@ private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyn
     }
 
     override func visit(_ node: SwitchCaseSyntax) -> SwitchCaseSyntax {
-        let stmts = node.statements.removingLast()
+        let stmts = CodeBlockItemListSyntax(node.statements.dropLast())
 
         guard let breakStatement = node.unneededBreak, let secondLast = stmts.last,
               !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {

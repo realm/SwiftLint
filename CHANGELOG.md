@@ -17,6 +17,9 @@
   [gibachan](https://github.com/gibachan)
   [#5233](https://github.com/realm/SwiftLint/pull/5233)
 
+* Make `unneeded_break_in_switch` auto correctable.  
+  [KS1019](https://github.com/KS1019/)
+
 #### Bug Fixes
 
 * Fix false positive in `unused_import` rule that triggered on 

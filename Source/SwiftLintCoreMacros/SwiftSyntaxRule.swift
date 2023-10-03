@@ -15,33 +15,31 @@ struct SwiftSyntaxRule: ExtensionMacro {
                     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
                         Visitor(viewMode: .sourceAccurate)
                     }
-                    \(createFoldingPreprocessor(from: node.foldArgument))
                 }
-                """)
-        ]
+                """),
+            try createFoldingPreprocessor(type: type, foldArgument: node.foldArgument)
+        ].compactMap { $0 }
     }
 
-    private static func createFoldingPreprocessor(from foldArgument: ExprSyntax?) -> DeclSyntax {
-        guard let foldArgument else {
-            return ""
+    private static func createFoldingPreprocessor(
+        type: some TypeSyntaxProtocol,
+        foldArgument: ExprSyntax?
+    ) throws -> ExtensionDeclSyntax? {
+        guard
+            let foldArgument,
+            let booleanLiteral = foldArgument.as(BooleanLiteralExprSyntax.self)?.literal,
+            booleanLiteral.text == "true"
+        else {
+            return nil
         }
-        if let booleanLiteral = foldArgument.as(BooleanLiteralExprSyntax.self)?.literal {
-            if booleanLiteral.text == "true" {
-                return """
-                    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-                        file.foldedSyntaxTree
-                    }
-                    """
+
+        return try ExtensionDeclSyntax("""
+            extension \(type) {
+                func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
+                    file.foldedSyntaxTree
+                }
             }
-            if booleanLiteral.text == "false" {
-                return ""
-            }
-        }
-        return """
-            func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-                if \(foldArgument) { file.foldedSyntaxTree } else { nil }
-            }
-            """
+            """)
     }
 }
 

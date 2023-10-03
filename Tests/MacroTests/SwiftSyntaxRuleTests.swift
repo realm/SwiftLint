@@ -20,7 +20,6 @@ final class SwiftSyntaxRuleTests: XCTestCase {
                 func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
                     Visitor(viewMode: .sourceAccurate)
                 }
-
             }
             """,
             macros: macros
@@ -40,7 +39,6 @@ final class SwiftSyntaxRuleTests: XCTestCase {
                 func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
                     Visitor(viewMode: .sourceAccurate)
                 }
-
             }
             """,
             macros: macros
@@ -60,6 +58,9 @@ final class SwiftSyntaxRuleTests: XCTestCase {
                 func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
                     Visitor(viewMode: .sourceAccurate)
                 }
+            }
+
+            extension Hello {
                 func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
                     file.foldedSyntaxTree
                 }
@@ -70,6 +71,7 @@ final class SwiftSyntaxRuleTests: XCTestCase {
     }
 
     func testArbitraryFoldArgument() {
+        // Silently fail because the macro definition explicitly requires a bool
         assertMacroExpansion(
             """
             @SwiftSyntaxRule(foldExpressions: variable)
@@ -81,13 +83,6 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             extension Hello: SwiftSyntaxRule {
                 func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
                     Visitor(viewMode: .sourceAccurate)
-                }
-                func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-                    if variable {
-                        file.foldedSyntaxTree
-                    } else {
-                        nil
-                    }
                 }
             }
             """,

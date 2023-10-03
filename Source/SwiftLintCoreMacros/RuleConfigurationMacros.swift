@@ -5,7 +5,7 @@ import SwiftSyntaxMacros
 private let configurationElementName = "ConfigurationElement"
 private let acceptableByConfigurationElementName = "AcceptableByConfigurationElement"
 
-private enum RuleConfigurationMacroError: String, DiagnosticMessage {
+enum RuleConfigurationMacroError: String, DiagnosticMessage {
     case notStruct = "Attribute can only be applied to structs"
     case notEnum = "Attribute can only be applied to enums"
     case noStringRawType = "Attribute can only be applied to enums with a 'String' raw type"

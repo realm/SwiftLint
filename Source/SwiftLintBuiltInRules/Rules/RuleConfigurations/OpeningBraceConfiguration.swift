@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = OpeningBraceRule
 
     @ConfigurationElement(key: "severity")

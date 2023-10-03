@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = SwitchCaseAlignmentRule
 
     @ConfigurationElement(key: "severity")

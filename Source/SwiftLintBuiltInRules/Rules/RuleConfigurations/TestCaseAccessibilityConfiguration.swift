@@ -4,7 +4,7 @@ import SwiftLintCore
 // swiftlint:disable let_var_whitespace
 
 @AutoApply
-struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = TestCaseAccessibilityRule
 
     @ConfigurationElement(key: "severity")

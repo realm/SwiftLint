@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct XCTSpecificMatcherConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct XCTSpecificMatcherConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = XCTSpecificMatcherRule
 
     @MakeAcceptableByConfigurationElement

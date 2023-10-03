@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct FileLengthConfiguration: RuleConfiguration, Equatable {
+struct FileLengthConfiguration: RuleConfiguration {
     typealias Parent = FileLengthRule
 
     @ConfigurationElement

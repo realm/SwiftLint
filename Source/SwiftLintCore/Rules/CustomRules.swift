@@ -2,7 +2,7 @@ import Foundation
 
 // MARK: - CustomRulesConfiguration
 
-struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
+struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
     typealias Parent = CustomRules
 
     var parameterDescription: RuleConfigurationDescription? { RuleConfigurationOption.noOptions }

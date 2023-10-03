@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct TrailingCommaConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct TrailingCommaConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = TrailingCommaRule
 
     @ConfigurationElement(key: "severity")

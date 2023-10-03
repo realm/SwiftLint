@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ImplicitlyUnwrappedOptionalRule
 
     @MakeAcceptableByConfigurationElement

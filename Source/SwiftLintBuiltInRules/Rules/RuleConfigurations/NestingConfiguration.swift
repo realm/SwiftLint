@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct NestingConfiguration: RuleConfiguration, Equatable {
+struct NestingConfiguration: RuleConfiguration {
     typealias Parent = NestingRule
     typealias Severity = SeverityLevelsConfiguration<Parent>
 

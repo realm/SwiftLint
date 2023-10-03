@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct PrivateOutletConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct PrivateOutletConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = PrivateOutletRule
 
     @ConfigurationElement(key: "severity")

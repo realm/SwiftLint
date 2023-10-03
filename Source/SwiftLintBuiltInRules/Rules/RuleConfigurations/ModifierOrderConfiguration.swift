@@ -2,7 +2,7 @@ import SourceKittenFramework
 import SwiftLintCore
 
 @AutoApply
-struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ModifierOrderRule
 
     @ConfigurationElement(key: "severity")

@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable {
+struct FunctionParameterCountConfiguration: RuleConfiguration {
     typealias Parent = FunctionParameterCountRule
 
     @ConfigurationElement

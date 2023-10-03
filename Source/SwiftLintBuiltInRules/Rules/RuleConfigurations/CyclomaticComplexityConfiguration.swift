@@ -2,7 +2,7 @@ import SourceKittenFramework
 import SwiftLintCore
 
 @AutoApply
-struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
+struct CyclomaticComplexityConfiguration: RuleConfiguration {
     typealias Parent = CyclomaticComplexityRule
 
     private static let defaultComplexityStatements: Set<StatementKind> = [

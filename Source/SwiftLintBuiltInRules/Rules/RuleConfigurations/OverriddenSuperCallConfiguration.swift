@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = OverriddenSuperCallRule
 
     private static let defaultIncluded = [

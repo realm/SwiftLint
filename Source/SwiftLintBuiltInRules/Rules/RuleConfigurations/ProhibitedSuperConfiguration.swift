@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ProhibitedSuperRule
 
     @ConfigurationElement(key: "severity")

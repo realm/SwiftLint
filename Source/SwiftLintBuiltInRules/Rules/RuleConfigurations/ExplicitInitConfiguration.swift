@@ -1,5 +1,5 @@
 @AutoApply
-struct ExplicitInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct ExplicitInitConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ExplicitInitRule
 
     @ConfigurationElement(key: "severity")

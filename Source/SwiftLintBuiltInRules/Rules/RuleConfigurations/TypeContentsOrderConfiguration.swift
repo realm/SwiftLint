@@ -20,7 +20,7 @@ enum TypeContent: String {
 }
 
 @AutoApply
-struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = TypeContentsOrderRule
 
     @ConfigurationElement(key: "severity")

@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ConditionalReturnsOnNewlineRule
 
     @ConfigurationElement(key: "severity")

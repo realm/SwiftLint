@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct TrailingClosureConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct TrailingClosureConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = TrailingClosureRule
 
     @ConfigurationElement(key: "severity")

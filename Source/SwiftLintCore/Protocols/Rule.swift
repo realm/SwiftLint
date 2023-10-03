@@ -114,7 +114,7 @@ public extension ConfigurationProviderRule {
 
     func isEqualTo(_ rule: Rule) -> Bool {
         if let rule = rule as? Self {
-            return configuration.isEqualTo(rule.configuration)
+            return configuration == rule.configuration
         }
         return false
     }

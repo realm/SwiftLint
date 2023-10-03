@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct TodoConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct TodoConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = TodoRule
 
     @MakeAcceptableByConfigurationElement

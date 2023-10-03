@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = MultilineParametersRule
 
     @ConfigurationElement(key: "severity")

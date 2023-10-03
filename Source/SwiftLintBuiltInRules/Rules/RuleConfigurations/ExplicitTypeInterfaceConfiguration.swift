@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ExplicitTypeInterfaceRule
 
     @MakeAcceptableByConfigurationElement

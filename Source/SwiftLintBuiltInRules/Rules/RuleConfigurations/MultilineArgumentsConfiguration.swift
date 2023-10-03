@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = MultilineArgumentsRule
 
     @MakeAcceptableByConfigurationElement

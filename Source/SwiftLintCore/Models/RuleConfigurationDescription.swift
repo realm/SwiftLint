@@ -267,7 +267,7 @@ public struct RuleConfigurationDescriptionBuilder {
     }
 
     /// :nodoc:
-    public static func buildExpression(_ expression: any RuleConfiguration) -> Description {
+    public static func buildExpression(_ expression: some RuleConfiguration) -> Description {
         Description.from(configuration: expression)
     }
 

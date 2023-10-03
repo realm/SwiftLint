@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct PrefixedTopLevelConstantConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct PrefixedTopLevelConstantConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = PrefixedTopLevelConstantRule
 
     @ConfigurationElement(key: "severity")

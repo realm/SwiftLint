@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct VerticalWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct VerticalWhitespaceConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = VerticalWhitespaceRule
 
     @ConfigurationElement(key: "severity")

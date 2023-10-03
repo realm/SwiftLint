@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct FileNameConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = FileNameRule
 
     @ConfigurationElement(key: "severity")

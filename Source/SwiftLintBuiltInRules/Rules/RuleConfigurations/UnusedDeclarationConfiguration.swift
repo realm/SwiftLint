@@ -4,7 +4,7 @@ import SwiftLintCore
 // swiftlint:disable let_var_whitespace
 
 @AutoApply
-struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = UnusedDeclarationRule
 
     @ConfigurationElement(key: "severity")

@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = InclusiveLanguageRule
 
     private static let defaultTerms: Set<String> = [

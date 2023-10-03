@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct ForWhereConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct ForWhereConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ForWhereRule
 
     @ConfigurationElement(key: "severity")

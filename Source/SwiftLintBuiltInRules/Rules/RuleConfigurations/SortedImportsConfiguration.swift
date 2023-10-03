@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct SortedImportsConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct SortedImportsConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = SortedImportsRule
 
     @MakeAcceptableByConfigurationElement

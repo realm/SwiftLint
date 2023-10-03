@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = NumberSeparatorRule
 
     struct ExcludeRange: AcceptableByConfigurationElement, Equatable {

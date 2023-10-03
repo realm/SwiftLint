@@ -1,4 +1,4 @@
-struct RequiredEnumCaseConfiguration: RuleConfiguration, Equatable {
+struct RequiredEnumCaseConfiguration: RuleConfiguration {
     typealias Parent = RequiredEnumCaseRule
 
     struct RequiredCase: Hashable {

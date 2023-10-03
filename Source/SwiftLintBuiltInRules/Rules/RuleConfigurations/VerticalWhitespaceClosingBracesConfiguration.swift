@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply // swiftlint:disable:next type_name
-struct VerticalWhitespaceClosingBracesConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct VerticalWhitespaceClosingBracesConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = VerticalWhitespaceClosingBracesRule
 
     @ConfigurationElement(key: "severity")

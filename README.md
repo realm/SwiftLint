@@ -26,6 +26,36 @@ unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 brew install swiftlint
 ```
 
+Afterwords ensure that xcode has the active developer directory set to
+point where the Swift toolchain is located.
+
+This is the default active directory but it does not have the Swift toolchain:
+
+```
+$ xcode-select -p
+/Library/Developer/CommandLineTools
+```
+
+Use this command to specify the default active directory that includes
+the Swift toolchain:
+
+```
+❯ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+Password:
+❯ xcode-select -p
+/Applications/Xcode.app/Contents/Developer
+```
+
+Afterwards, `swiftlint` with default analyze command will work:
+
+```
+> swiftlint
+.... <lines trucated>
+empty line; currently 4 (vertical_whitespace)
+Done linting! Found 897 violations, 10 serious in 39 files.
+```
+
+
 ### Using [CocoaPods](https://cocoapods.org):
 
 Simply add the following line to your Podfile:

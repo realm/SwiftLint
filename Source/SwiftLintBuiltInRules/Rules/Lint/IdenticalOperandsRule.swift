@@ -1,7 +1,6 @@
 import SwiftSyntax
 
-@Fold
-@SwiftSyntaxRule
+@SwiftSyntaxRule(foldExpressions: true)
 struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 

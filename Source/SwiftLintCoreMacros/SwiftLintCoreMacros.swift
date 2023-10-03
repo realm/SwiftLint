@@ -5,7 +5,6 @@ import SwiftSyntaxMacros
 struct SwiftLintCoreMacros: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         AutoApply.self,
-        Fold.self,
         MakeAcceptableByConfigurationElement.self,
         SwiftSyntaxRule.self
     ]

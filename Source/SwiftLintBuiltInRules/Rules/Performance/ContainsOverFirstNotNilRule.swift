@@ -1,7 +1,6 @@
 import SwiftSyntax
 
-@Fold
-@SwiftSyntaxRule
+@SwiftSyntaxRule(foldExpressions: true)
 struct ContainsOverFirstNotNilRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 

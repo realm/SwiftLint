@@ -1,7 +1,6 @@
 import SwiftSyntax
 
-@Fold
-@SwiftSyntaxRule
+@SwiftSyntaxRule(foldExpressions: true)
 struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 

@@ -14,16 +14,10 @@ public macro MakeAcceptableByConfigurationElement() = #externalMacro(
 )
 
 /// Macro that adds a conformance to the `SwiftSyntaxRule` protocol and a default `makeVisitor(file:)` implementation
-/// that creates a visitor defined in the same file.
-@attached(extension, conformances: SwiftSyntaxRule, names: named(makeVisitor(file:)))
-public macro SwiftSyntaxRule() = #externalMacro(
+/// that creates a visitor defined in the same file. It also adds an implementation of `preprocess(file:)` which folds
+/// expressions if the `foldExpressions` argument is set.
+@attached(extension, conformances: SwiftSyntaxRule, names: named(makeVisitor(file:)), named(preprocess(file:)))
+public macro SwiftSyntaxRule(foldExpressions: Bool = false) = #externalMacro(
     module: "SwiftLintCoreMacros",
     type: "SwiftSyntaxRule"
-)
-
-/// Macro that preprocesses the file by folding its operators before processing it for rule violations.
-@attached(extension, names: named(preprocess(file:)))
-public macro Fold() = #externalMacro(
-    module: "SwiftLintCoreMacros",
-    type: "Fold"
 )

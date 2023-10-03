@@ -28,7 +28,7 @@ struct TransitiveModuleConfiguration<Parent: Rule>: Equatable, AcceptableByConfi
 }
 
 @AutoApply
-struct UnusedImportConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct UnusedImportConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = UnusedImportRule
 
     @ConfigurationElement(key: "severity")

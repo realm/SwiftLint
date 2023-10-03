@@ -1,7 +1,7 @@
 import Foundation
 import SwiftLintCore
 
-struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = PrivateUnitTestRule
 
     @ConfigurationElement(key: "severity")

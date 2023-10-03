@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct SelfBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct SelfBindingConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = SelfBindingRule
 
     @ConfigurationElement(key: "severity")

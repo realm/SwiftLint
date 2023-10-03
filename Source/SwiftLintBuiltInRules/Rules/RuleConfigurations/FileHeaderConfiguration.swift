@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 import SwiftLintCore
 
-struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct FileHeaderConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = FileHeaderRule
 
     private static let fileNamePlaceholder = "SWIFTLINT_CURRENT_FILENAME"

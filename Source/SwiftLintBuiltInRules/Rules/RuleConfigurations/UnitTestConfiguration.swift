@@ -9,7 +9,7 @@ typealias NoMagicNumbersConfiguration = UnitTestConfiguration<NoMagicNumbersRule
 // swiftlint:disable let_var_whitespace
 
 @AutoApply
-struct UnitTestConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable {
+struct UnitTestConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(

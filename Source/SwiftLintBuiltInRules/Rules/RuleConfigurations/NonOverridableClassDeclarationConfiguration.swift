@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply // swiftlint:disable:next type_name
-struct NonOverridableClassDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct NonOverridableClassDeclarationConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = NonOverridableClassDeclarationRule
 
     @MakeAcceptableByConfigurationElement

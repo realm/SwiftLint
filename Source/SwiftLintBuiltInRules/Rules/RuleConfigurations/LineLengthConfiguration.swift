@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct LineLengthConfiguration: RuleConfiguration, Equatable {
+struct LineLengthConfiguration: RuleConfiguration {
     typealias Parent = LineLengthRule
 
     @ConfigurationElement

@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = BlanketDisableCommandRule
 
     @ConfigurationElement(key: "severity")

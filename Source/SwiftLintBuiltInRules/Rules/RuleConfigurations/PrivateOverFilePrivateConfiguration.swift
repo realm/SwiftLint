@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct PrivateOverFilePrivateConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct PrivateOverFilePrivateConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = PrivateOverFilePrivateRule
 
     @ConfigurationElement(key: "severity")

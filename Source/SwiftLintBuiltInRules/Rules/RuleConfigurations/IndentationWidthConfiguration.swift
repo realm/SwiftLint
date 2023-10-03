@@ -4,7 +4,7 @@ import SwiftLintCore
 // swiftlint:disable let_var_whitespace
 
 @AutoApply
-struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = IndentationWidthRule
 
     @ConfigurationElement(key: "severity")

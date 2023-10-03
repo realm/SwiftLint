@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = FileTypesOrderRule
 
     @MakeAcceptableByConfigurationElement

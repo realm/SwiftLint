@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct TypeNameConfiguration: RuleConfiguration, Equatable {
+struct TypeNameConfiguration: RuleConfiguration {
     typealias Parent = TypeNameRule
 
     @ConfigurationElement

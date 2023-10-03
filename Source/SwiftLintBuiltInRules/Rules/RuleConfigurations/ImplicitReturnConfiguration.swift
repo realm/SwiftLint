@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ImplicitReturnRule
 
     @MakeAcceptableByConfigurationElement

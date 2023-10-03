@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct StatementPositionConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct StatementPositionConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = StatementPositionRule
 
     @MakeAcceptableByConfigurationElement

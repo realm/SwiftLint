@@ -1,4 +1,4 @@
-struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = DeploymentTargetRule
 
     enum Platform: String {

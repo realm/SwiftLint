@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct EmptyCountConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct EmptyCountConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = EmptyCountRule
 
     @ConfigurationElement(key: "severity")

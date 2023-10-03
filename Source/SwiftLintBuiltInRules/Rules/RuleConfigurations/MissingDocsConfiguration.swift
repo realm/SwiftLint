@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-struct MissingDocsConfiguration: RuleConfiguration, Equatable {
+struct MissingDocsConfiguration: RuleConfiguration {
     typealias Parent = MissingDocsRule
 
     private(set) var parameters = [

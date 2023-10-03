@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct TrailingWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct TrailingWhitespaceConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = TrailingWhitespaceRule
 
     @ConfigurationElement(key: "severity")

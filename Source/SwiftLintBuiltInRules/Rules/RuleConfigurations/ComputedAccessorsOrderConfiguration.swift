@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoApply
-struct ComputedAccessorsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct ComputedAccessorsOrderConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ComputedAccessorsOrderRule
 
     @MakeAcceptableByConfigurationElement

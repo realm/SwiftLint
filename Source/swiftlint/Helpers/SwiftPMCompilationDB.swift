@@ -37,7 +37,7 @@ struct SwiftPMCompilationDB: Codable {
             let pathToReplace = Array(nodes.nodes.keys.filter({ node in
                 node.hasSuffix(suffix)
             }))[0].dropLast(suffix.count - 1)
-            let stringFileContents = String(data: yaml, encoding: .utf8)!
+            let stringFileContents = String(decoding: yaml, as: UTF8.self)
                 .replacingOccurrences(of: pathToReplace, with: "")
             compilationDB = try decoder.decode(Self.self, from: stringFileContents)
         } else {

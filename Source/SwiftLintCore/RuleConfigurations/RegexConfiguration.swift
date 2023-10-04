@@ -36,9 +36,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
                 .map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
             severity.rawValue
         ]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
-          let jsonString = String(data: jsonData, encoding: .utf8) {
-              return jsonString
+        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) {
+            return String(decoding: jsonData, as: UTF8.self)
         }
         queuedFatalError("Could not serialize regex configuration for cache")
     }

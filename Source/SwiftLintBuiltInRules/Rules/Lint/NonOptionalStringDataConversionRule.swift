@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct NonOptionalStringDataConversionRule: ConfigurationProviderRule {
+struct NonOptionalStringDataConversionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
     static let description = RuleDescription(
         identifier: "non_optional_string_data_conversion",
@@ -20,8 +20,7 @@ struct NonOptionalStringDataConversionRule: ConfigurationProviderRule {
 }
 
 private extension NonOptionalStringDataConversionRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             if node.base?.is(StringLiteralExprSyntax.self) == true,
                node.declName.baseName.text == "data",

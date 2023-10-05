@@ -45,7 +45,7 @@ class SwiftLintFileTests: SwiftLintTestCase {
         file.append("2")
 
         XCTAssertEqual(file.contents, "let j = 22")
-        XCTAssertEqual(FileManager.default.contents(atPath: tempFile.path), Data("let i = 2".utf8))
+        XCTAssertEqual(FileManager.default.contents(atPath: tempFile.path), Data("let j = 22".utf8))
     }
 
     func testFileNotTouchedIfNothingAppended() throws {

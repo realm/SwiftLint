@@ -31,11 +31,14 @@ extension SwiftLint {
 
         private func configure() async throws -> Bool {
             doYouWantToContinue("Welcome to SwiftLint! Do you want to continue?")
-            checkForExistingConfiguration()
+            let existingConfiguration = checkForExistingConfiguration()
             checkForExistingChildConfigurations()
             let topLevelDirectories = checkForSwiftFiles()
             let allowZeroLintableFiles = topLevelDirectories.isEmpty ? allowZeroLintableFiles() : false
-            let rulesIdentifiersToDisable = try await rulesToDisable(topLevelDirectories)
+            let rulesIdentifiersToDisable = try await rulesToDisable(
+                topLevelDirectories,
+                configuration: existingConfiguration
+            )
             let analyzerRuleIdentifiers = analyzerRulesToEnable()
             let reporterIdentifier = reporterIdentifier()
             return try writeConfiguration(
@@ -47,14 +50,20 @@ extension SwiftLint {
             )
         }
 
-        private func checkForExistingConfiguration() {
-            print("Checking for existing \(Configuration.defaultFileName) configuration file.")
+        private func checkForExistingConfiguration() -> Configuration? {
+            let fileName = Configuration.defaultFileName
+            print("Checking for existing \(fileName) configuration file.")
             if hasExistingConfiguration() {
                 doYouWantToContinue(
-                    "Found an existing \(Configuration.defaultFileName) configuration file"
+                    "Found an existing \(fileName) configuration file"
                     + " - Do you want to continue?"
                 )
+                if askUser("Do you want to you want to keep any custom configurations from \(fileName)") {
+                    let configuration = Configuration(configurationFiles: [fileName])
+                    return configuration
+                }
             }
+            return nil
         }
 
         private func hasExistingConfiguration() -> Bool {
@@ -104,10 +113,14 @@ extension SwiftLint {
             askUser("Do you want SwiftLint to succeed even if there are no files to lint?")
         }
 
-        private func rulesToDisable(_ topLevelDirectories: [String]) async throws -> [String] {
+        private func rulesToDisable(_ topLevelDirectories: [String], configuration: Configuration?) async throws -> [String] {
             var ruleIdentifiersToDisable: [String] = []
             if topLevelDirectories.isNotEmpty {
-                ruleIdentifiersToDisable.append(contentsOf: try await checkExistingViolations(topLevelDirectories))
+                let rulesWithExistingViolations = try await checkExistingViolations(
+                    topLevelDirectories, 
+                    configuration: configuration
+                )
+                ruleIdentifiersToDisable.append(contentsOf: rulesWithExistingViolations)
             }
             let deprecatedRuleIdentifiers = Set(RuleRegistry.shared.deprecatedRuleIdentifiers)
             let undisabledDeprecatedRuleIdentifiers = deprecatedRuleIdentifiers.subtracting(ruleIdentifiersToDisable)
@@ -120,19 +133,25 @@ extension SwiftLint {
             return ruleIdentifiersToDisable
         }
 
-        private func checkExistingViolations(_ topLevelDirectories: [String]) async throws -> [String] {
+        private func checkExistingViolations(
+            _ topLevelDirectories: [String],
+            configuration: Configuration?
+        ) async throws -> [String] {
             var ruleIdentifiersToDisable: [String] = []
             print("Checking for violations. This may take some time.")
-            let configuration = try writeTemporaryConfigurationFile(topLevelDirectories)
+            let configurationPath = try writeTemporaryConfigurationFile(
+                topLevelDirectories,
+                configuration: configuration
+            )
             defer {
-                try? FileManager.default.removeItem(atPath: configuration)
+                // try? FileManager.default.removeItem(atPath: configurationPath)
             }
 
             let options = LintOrAnalyzeOptions(
                 mode: .lint,
                 paths: [""],
                 useSTDIN: false,
-                configurationFiles: [configuration],
+                configurationFiles: [configurationPath],
                 strict: false,
                 lenient: true,
                 forceExclude: false,
@@ -209,7 +228,7 @@ extension SwiftLint {
             _ analyzerRuleIdentifiers: [String],
             _ reporterIdentifier: String
         ) throws -> Bool {
-            var configuration = configuration(forTopLevelDirectories: topLevelDirectories)
+            var configuration = configurationYML(forTopLevelDirectories: topLevelDirectories)
             if allowZeroLintableFiles {
                 configuration += "allow_zero_lintable_files: true\n"
             }
@@ -254,11 +273,12 @@ extension SwiftLint {
             try configuration.write(toFile: Configuration.defaultFileName, atomically: true, encoding: .utf8)
         }
 
-        private func configuration(
+        private func configurationYML(
             forTopLevelDirectories topLevelDirectories: [String],
-            path: String? = nil
+            path: String? = nil,
+            configuration: Configuration? = nil
         ) -> String {
-            var configuration = "included:\n"
+            var configurationYML = "included:\n"
             topLevelDirectories.forEach {
                 let absolutePath: String
                 if let path {
@@ -266,20 +286,28 @@ extension SwiftLint {
                 } else {
                     absolutePath = $0
                 }
-                configuration += "  - \(absolutePath)\n"
+                configurationYML += "  - \(absolutePath)\n"
             }
-            configuration += "opt_in_rules:\n  - all\n"
-            return configuration
+            configurationYML += "opt_in_rules:\n  - all\n"
+            if let configuration {
+                configurationYML += configuration.customYML
+            }
+            return configurationYML
         }
 
-        private func writeTemporaryConfigurationFile(_ topLevelDirectories: [String]) throws -> String {
-            let configuration = configuration(
+        private func writeTemporaryConfigurationFile(
+            _ topLevelDirectories: [String],
+            configuration: Configuration?
+        ) throws -> String {
+            let temporaryConfiguration = configurationYML(
                 forTopLevelDirectories: topLevelDirectories,
-                path: FileManager.default.currentDirectoryPath
+                path: FileManager.default.currentDirectoryPath,
+                configuration: configuration
             )
             let filename = ".\(UUID().uuidString)\(Configuration.defaultFileName)"
             let filePath = FileManager.default.temporaryDirectory.path.bridge().appendingPathComponent(filename)
-            try configuration.write(toFile: filePath, atomically: true, encoding: .utf8)
+            print(">>>> filePath = \(filePath)")
+            try temporaryConfiguration.write(toFile: filePath, atomically: true, encoding: .utf8)
             return filePath
         }
 
@@ -375,5 +403,31 @@ private extension RuleRegistry {
         RuleRegistry.shared.list.list.compactMap { ruleID, ruleType in
             ruleType is AnalyzerRule.Type ? ruleID : nil
         }
+    }
+}
+
+private extension Configuration {
+    var customYML: String {
+        var customYML = ""
+        for rule in rules {
+            let ruleIdentifier = type(of: rule).description.identifier
+            guard ruleIdentifier != "file_name", ruleIdentifier != "required_enum_case" else {
+                continue
+            }
+            if rule.configurationDescription.hasContent {
+                let defaultRule = type(of: rule).init()
+                let defaultYML = defaultRule.configurationDescription.yaml()
+                let ruleYML = rule.configurationDescription.yaml()
+                if ruleYML != defaultYML {
+                    customYML += """
+
+                             \(type(of: rule).description.identifier):
+                             \(ruleYML.indent(by: 4))
+
+                             """
+                }
+            }
+        }
+        return customYML
     }
 }

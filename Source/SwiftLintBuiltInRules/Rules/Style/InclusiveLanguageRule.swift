@@ -20,7 +20,7 @@ struct InclusiveLanguageRule: SwiftSyntaxRule, ConfigurationProviderRule {
     }
 }
 
-private extension InclusiveLanguageRule {
+extension InclusiveLanguageRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let allTerms: [String]
         private let allAllowedTerms: Set<String>

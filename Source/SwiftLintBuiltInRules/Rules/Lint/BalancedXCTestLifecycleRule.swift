@@ -111,7 +111,7 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
 
 // MARK: - Private
 
-private extension BalancedXCTestLifecycleRule {
+extension BalancedXCTestLifecycleRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let testParentClasses: Set<String>
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
@@ -135,16 +135,16 @@ private extension BalancedXCTestLifecycleRule {
             violations.append(node.name.positionAfterSkippingLeadingTrivia)
         }
     }
+}
 
-    final class SetupTearDownVisitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
-        private(set) var methods: Set<XCTMethod> = []
+private final class SetupTearDownVisitor: ViolationsSyntaxVisitor {
+    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    private(set) var methods: Set<XCTMethod> = []
 
-        override func visitPost(_ node: FunctionDeclSyntax) {
-            if let method = XCTMethod(node.name.description),
-               node.signature.parameterClause.parameters.isEmpty {
-                methods.insert(method)
-            }
+    override func visitPost(_ node: FunctionDeclSyntax) {
+        if let method = XCTMethod(node.name.description),
+           node.signature.parameterClause.parameters.isEmpty {
+            methods.insert(method)
         }
     }
 }

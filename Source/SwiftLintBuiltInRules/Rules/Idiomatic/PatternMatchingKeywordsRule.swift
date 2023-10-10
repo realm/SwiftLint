@@ -35,7 +35,7 @@ struct PatternMatchingKeywordsRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-private extension PatternMatchingKeywordsRule {
+extension PatternMatchingKeywordsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: SwitchCaseItemSyntax) {
             let localViolations = TupleVisitor(viewMode: .sourceAccurate)
@@ -43,31 +43,31 @@ private extension PatternMatchingKeywordsRule {
             violations.append(contentsOf: localViolations)
         }
     }
+}
 
-    final class TupleVisitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: LabeledExprListSyntax) {
-            let list = node.flatteningEnumPatterns()
-                .compactMap { elem in
-                    elem.expression.asValueBindingPattern()
-                }
-
-            guard list.count > 1,
-                  let firstLetOrVar = list.first?.bindingSpecifier.tokenKind else {
-                return
+private final class TupleVisitor: ViolationsSyntaxVisitor {
+    override func visitPost(_ node: LabeledExprListSyntax) {
+        let list = node.flatteningEnumPatterns()
+            .compactMap { elem in
+                elem.expression.asValueBindingPattern()
             }
 
-            let hasViolation = list.allSatisfy { elem in
-                elem.bindingSpecifier.tokenKind == firstLetOrVar
-            }
-
-            guard hasViolation else {
-                return
-            }
-
-            violations.append(contentsOf: list.compactMap { elem in
-                return elem.bindingSpecifier.positionAfterSkippingLeadingTrivia
-            })
+        guard list.count > 1,
+              let firstLetOrVar = list.first?.bindingSpecifier.tokenKind else {
+            return
         }
+
+        let hasViolation = list.allSatisfy { elem in
+            elem.bindingSpecifier.tokenKind == firstLetOrVar
+        }
+
+        guard hasViolation else {
+            return
+        }
+
+        violations.append(contentsOf: list.compactMap { elem in
+            return elem.bindingSpecifier.positionAfterSkippingLeadingTrivia
+        })
     }
 }
 

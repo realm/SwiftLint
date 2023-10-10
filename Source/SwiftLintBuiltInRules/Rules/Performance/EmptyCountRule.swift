@@ -42,7 +42,7 @@ struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     }
 }
 
-private extension EmptyCountRule {
+extension EmptyCountRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let onlyAfterDot: Bool
 

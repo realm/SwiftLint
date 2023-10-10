@@ -114,7 +114,7 @@ struct PreferSelfTypeOverTypeOfSelfRule: SwiftSyntaxCorrectableRule, OptInRule, 
     }
 }
 
-private extension PreferSelfTypeOverTypeOfSelfRule {
+extension PreferSelfTypeOverTypeOfSelfRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             if let function = node.base?.as(FunctionCallExprSyntax.self), function.hasViolation {
@@ -123,7 +123,7 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         private(set) var correctionPositions: [AbsolutePosition] = []
         let locationConverter: SourceLocationConverter
         let disabledRegions: [SourceRange]

@@ -51,7 +51,7 @@ struct ArrayInitRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-private extension ArrayInitRule {
+extension ArrayInitRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),

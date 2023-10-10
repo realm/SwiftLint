@@ -51,7 +51,7 @@ struct FunctionDefaultParameterAtEndRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-private extension FunctionDefaultParameterAtEndRule {
+extension FunctionDefaultParameterAtEndRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard !node.modifiers.contains(keyword: .override), node.signature.containsViolation else {

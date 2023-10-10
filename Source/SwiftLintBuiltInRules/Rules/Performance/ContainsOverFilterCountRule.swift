@@ -30,7 +30,7 @@ struct ContainsOverFilterCountRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-private extension ContainsOverFilterCountRule {
+extension ContainsOverFilterCountRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ExprListSyntax) {
             guard

@@ -30,7 +30,7 @@ struct ClosingBraceRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     }
 }
 
-private extension ClosingBraceRule {
+extension ClosingBraceRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TokenSyntax) {
             if node.hasClosingBraceViolation {
@@ -39,7 +39,7 @@ private extension ClosingBraceRule {
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         private(set) var correctionPositions: [AbsolutePosition] = []
         let locationConverter: SourceLocationConverter
         let disabledRegions: [SourceRange]

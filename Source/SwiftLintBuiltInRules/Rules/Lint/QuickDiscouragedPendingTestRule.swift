@@ -14,7 +14,7 @@ struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-private extension QuickDiscouragedPendingTestRule {
+extension QuickDiscouragedPendingTestRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 

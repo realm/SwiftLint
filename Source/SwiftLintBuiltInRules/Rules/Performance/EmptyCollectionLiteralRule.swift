@@ -28,7 +28,7 @@ struct EmptyCollectionLiteralRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-private extension EmptyCollectionLiteralRule {
+extension EmptyCollectionLiteralRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TokenSyntax) {
             guard

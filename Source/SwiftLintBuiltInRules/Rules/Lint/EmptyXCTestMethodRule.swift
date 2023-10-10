@@ -13,26 +13,28 @@ struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        EmptyXCTestMethodRuleVisitor(testParentClasses: configuration.testParentClasses)
+        Visitor(testParentClasses: configuration.testParentClasses)
     }
 }
 
-private final class EmptyXCTestMethodRuleVisitor: ViolationsSyntaxVisitor {
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
-    private let testParentClasses: Set<String>
+extension EmptyXCTestMethodRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
+        private let testParentClasses: Set<String>
 
-    init(testParentClasses: Set<String>) {
-        self.testParentClasses = testParentClasses
-        super.init(viewMode: .sourceAccurate)
-    }
+        init(testParentClasses: Set<String>) {
+            self.testParentClasses = testParentClasses
+            super.init(viewMode: .sourceAccurate)
+        }
 
-    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        node.isXCTestCase(testParentClasses) ? .visitChildren : .skipChildren
-    }
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.isXCTestCase(testParentClasses) ? .visitChildren : .skipChildren
+        }
 
-    override func visitPost(_ node: FunctionDeclSyntax) {
-        if (node.modifiers.contains(keyword: .override) || node.isTestMethod) && node.hasEmptyBody {
-            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if (node.modifiers.contains(keyword: .override) || node.isTestMethod) && node.hasEmptyBody {
+                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

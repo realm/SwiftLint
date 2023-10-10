@@ -13,12 +13,12 @@ struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ImplicitGetterRuleVisitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
-private final class ImplicitGetterRuleVisitor: ViolationsSyntaxVisitor {
-    enum ViolationKind {
+extension ImplicitGetterRule {
+    private enum ViolationKind {
         case `subscript`, property
 
         var violationDescription: String {
@@ -31,22 +31,24 @@ private final class ImplicitGetterRuleVisitor: ViolationsSyntaxVisitor {
         }
     }
 
-    override func visitPost(_ node: AccessorBlockSyntax) {
-        guard let getAccessor = node.getAccessor,
-              node.setAccessor == nil,
-              getAccessor.effectSpecifiers == nil,
-              getAccessor.modifier == nil,
-              getAccessor.attributes.isEmpty == true,
-              getAccessor.body != nil else {
-            return
-        }
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: AccessorBlockSyntax) {
+            guard let getAccessor = node.getAccessor,
+                  node.setAccessor == nil,
+                  getAccessor.effectSpecifiers == nil,
+                  getAccessor.modifier == nil,
+                  getAccessor.attributes.isEmpty == true,
+                  getAccessor.body != nil else {
+                return
+            }
 
-        let kind: ViolationKind = node.parent?.as(SubscriptDeclSyntax.self) == nil ? .property : .subscript
-        violations.append(
-            ReasonedRuleViolation(
-                position: getAccessor.positionAfterSkippingLeadingTrivia,
-                reason: kind.violationDescription
+            let kind: ViolationKind = node.parent?.as(SubscriptDeclSyntax.self) == nil ? .property : .subscript
+            violations.append(
+                ReasonedRuleViolation(
+                    position: getAccessor.positionAfterSkippingLeadingTrivia,
+                    reason: kind.violationDescription
+                )
             )
-        )
+        }
     }
 }

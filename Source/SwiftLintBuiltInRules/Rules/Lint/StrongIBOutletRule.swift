@@ -36,7 +36,7 @@ struct StrongIBOutletRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule
     }
 }
 
-private extension StrongIBOutletRule {
+extension StrongIBOutletRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             if let violationPosition = node.violationPosition {
@@ -45,7 +45,7 @@ private extension StrongIBOutletRule {
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         private(set) var correctionPositions: [AbsolutePosition] = []
         let locationConverter: SourceLocationConverter
         let disabledRegions: [SourceRange]

@@ -38,7 +38,7 @@ struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, Configuration
     }
 }
 
-private extension NumberSeparatorRule {
+extension NumberSeparatorRule {
     final class Visitor: ViolationsSyntaxVisitor, NumberSeparatorValidator {
         let configuration: NumberSeparatorConfiguration
 
@@ -60,7 +60,7 @@ private extension NumberSeparatorRule {
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter, NumberSeparatorValidator {
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter, NumberSeparatorValidator {
         private(set) var correctionPositions: [AbsolutePosition] = []
         let configuration: NumberSeparatorConfiguration
         let locationConverter: SourceLocationConverter

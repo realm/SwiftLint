@@ -13,48 +13,50 @@ struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxRule {
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ComputedAccessorsOrderRuleVisitor(expectedOrder: configuration.order)
+        Visitor(expectedOrder: configuration.order)
     }
 }
 
-private final class ComputedAccessorsOrderRuleVisitor: ViolationsSyntaxVisitor {
-    enum ViolationKind {
+extension ComputedAccessorsOrderRule {
+    private enum ViolationKind {
         case `subscript`, property
     }
 
-    private let expectedOrder: ComputedAccessorsOrderConfiguration.Order
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let expectedOrder: ComputedAccessorsOrderConfiguration.Order
 
-    init(expectedOrder: ComputedAccessorsOrderConfiguration.Order) {
-        self.expectedOrder = expectedOrder
-        super.init(viewMode: .sourceAccurate)
-    }
-
-    override func visitPost(_ node: AccessorBlockSyntax) {
-        guard let firstAccessor = node.accessorsList.first,
-              let order = node.order,
-              order != expectedOrder else {
-            return
+        init(expectedOrder: ComputedAccessorsOrderConfiguration.Order) {
+            self.expectedOrder = expectedOrder
+            super.init(viewMode: .sourceAccurate)
         }
 
-        let kind: ViolationKind = node.parent?.as(SubscriptDeclSyntax.self) == nil ? .property : .subscript
-        violations.append(
-            ReasonedRuleViolation(
-                position: firstAccessor.positionAfterSkippingLeadingTrivia,
-                reason: reason(for: kind)
+        override func visitPost(_ node: AccessorBlockSyntax) {
+            guard let firstAccessor = node.accessorsList.first,
+                  let order = node.order,
+                  order != expectedOrder else {
+                return
+            }
+
+            let kind: ViolationKind = node.parent?.as(SubscriptDeclSyntax.self) == nil ? .property : .subscript
+            violations.append(
+                ReasonedRuleViolation(
+                    position: firstAccessor.positionAfterSkippingLeadingTrivia,
+                    reason: reason(for: kind)
+                )
             )
-        )
-    }
-
-    private func reason(for kind: ComputedAccessorsOrderRuleVisitor.ViolationKind) -> String {
-        let kindString = kind == .subscript ? "subscripts" : "properties"
-        let orderString: String
-        switch expectedOrder {
-        case .getSet:
-            orderString = "getter and then the setter"
-        case .setGet:
-            orderString = "setter and then the getter"
         }
-        return "Computed \(kindString) should first declare the \(orderString)"
+
+        private func reason(for kind: ViolationKind) -> String {
+            let kindString = kind == .subscript ? "subscripts" : "properties"
+            let orderString: String
+            switch expectedOrder {
+            case .getSet:
+                orderString = "getter and then the setter"
+            case .setGet:
+                orderString = "setter and then the getter"
+            }
+            return "Computed \(kindString) should first declare the \(orderString)"
+        }
     }
 }
 

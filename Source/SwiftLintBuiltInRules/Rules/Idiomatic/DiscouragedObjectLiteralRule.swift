@@ -27,7 +27,7 @@ struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, ConfigurationPr
     }
 }
 
-private extension DiscouragedObjectLiteralRule {
+extension DiscouragedObjectLiteralRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let configuration: ConfigurationType
 

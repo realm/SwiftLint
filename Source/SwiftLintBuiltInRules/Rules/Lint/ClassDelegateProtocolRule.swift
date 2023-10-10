@@ -31,7 +31,7 @@ struct ClassDelegateProtocolRule: ConfigurationProviderRule {
     )
 }
 
-private extension ClassDelegateProtocolRule {
+extension ClassDelegateProtocolRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
             .allExcept(ProtocolDeclSyntax.self)

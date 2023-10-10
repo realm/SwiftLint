@@ -40,7 +40,7 @@ struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, SwiftSynta
     }
 }
 
-private extension OverrideInExtensionRule {
+extension OverrideInExtensionRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let allowedExtensions: Set<String>
 

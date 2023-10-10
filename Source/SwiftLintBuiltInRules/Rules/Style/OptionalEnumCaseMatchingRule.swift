@@ -162,7 +162,7 @@ struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, ConfigurationPr
     }
 }
 
-private extension OptionalEnumCaseMatchingRule {
+extension OptionalEnumCaseMatchingRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: SwitchCaseItemSyntax) {
             guard let pattern = node.pattern.as(ExpressionPatternSyntax.self) else {

@@ -187,12 +187,82 @@ struct DirectReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, 
     }
 }
 
-private class Visitor: ViolationsSyntaxVisitor {
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+extension DirectReturnRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
-    override func visitPost(_ statements: CodeBlockItemListSyntax) {
-        if let (binding, _) = statements.violation {
-            violations.append(binding.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ statements: CodeBlockItemListSyntax) {
+            if let (binding, _) = statements.violation {
+                violations.append(binding.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ statements: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
+            guard let (binding, returnStmt) = statements.violation,
+                  !binding.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+                  let bindingList = binding.parent?.as(PatternBindingListSyntax.self),
+                  let varDecl = bindingList.parent?.as(VariableDeclSyntax.self),
+                  var initExpression = binding.initializer?.value else {
+                return super.visit(statements)
+            }
+            correctionPositions.append(binding.positionAfterSkippingLeadingTrivia)
+            var newStmtList = Array(statements.dropLast(2))
+            let newBindingList = bindingList
+                .filter { $0 != binding }
+                .enumerated()
+                .map { index, item in
+                    if index == bindingList.count - 2 {
+                        return item.with(\.trailingComma, nil)
+                    }
+                    return item
+                }
+            if let type = binding.typeAnnotation?.type {
+                initExpression = ExprSyntax(
+                    fromProtocol: AsExprSyntax(
+                        expression: initExpression.trimmed,
+                        asKeyword: .keyword(.as).with(\.leadingTrivia, .space).with(\.trailingTrivia, .space),
+                        type: type.trimmed
+                    )
+                )
+            }
+            if newBindingList.isNotEmpty {
+                newStmtList.append(CodeBlockItemSyntax(
+                    item: .decl(DeclSyntax(varDecl.with(\.bindings, PatternBindingListSyntax(newBindingList))))
+                ))
+                newStmtList.append(CodeBlockItemSyntax(
+                    item: .stmt(StmtSyntax(returnStmt.with(\.expression, initExpression)))
+                ))
+            } else {
+                let leadingTrivia = varDecl.leadingTrivia.withoutTrailingIndentation +
+                    returnStmt.leadingTrivia.withFirstEmptyLineRemoved
+                let trailingTrivia = varDecl.trailingTrivia.withoutTrailingIndentation +
+                    returnStmt.trailingTrivia
+
+                newStmtList.append(
+                    CodeBlockItemSyntax(
+                        item: .stmt(
+                            StmtSyntax(
+                                returnStmt
+                                    .with(\.expression, initExpression)
+                                    .with(\.leadingTrivia, leadingTrivia)
+                                    .with(\.trailingTrivia, trailingTrivia)
+                            )
+                        )
+                    )
+                )
+            }
+            return super.visit(CodeBlockItemListSyntax(newStmtList))
         }
     }
 }
@@ -212,72 +282,5 @@ private extension CodeBlockItemListSyntax {
             return (binding, returnStmt)
         }
         return nil
-    }
-}
-private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    private(set) var correctionPositions: [AbsolutePosition] = []
-    let locationConverter: SourceLocationConverter
-    let disabledRegions: [SourceRange]
-
-    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
-    }
-
-    override func visit(_ statements: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
-        guard let (binding, returnStmt) = statements.violation,
-              !binding.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              let bindingList = binding.parent?.as(PatternBindingListSyntax.self),
-              let varDecl = bindingList.parent?.as(VariableDeclSyntax.self),
-              var initExpression = binding.initializer?.value else {
-            return super.visit(statements)
-        }
-        correctionPositions.append(binding.positionAfterSkippingLeadingTrivia)
-        var newStmtList = Array(statements.dropLast(2))
-        let newBindingList = bindingList
-            .filter { $0 != binding }
-            .enumerated()
-            .map { index, item in
-                if index == bindingList.count - 2 {
-                    return item.with(\.trailingComma, nil)
-                }
-                return item
-            }
-        if let type = binding.typeAnnotation?.type {
-            initExpression = ExprSyntax(
-                fromProtocol: AsExprSyntax(
-                    expression: initExpression.trimmed,
-                    asKeyword: .keyword(.as).with(\.leadingTrivia, .space).with(\.trailingTrivia, .space),
-                    type: type.trimmed
-                )
-            )
-        }
-        if newBindingList.isNotEmpty {
-            newStmtList.append(CodeBlockItemSyntax(
-                item: .decl(DeclSyntax(varDecl.with(\.bindings, PatternBindingListSyntax(newBindingList))))
-            ))
-            newStmtList.append(CodeBlockItemSyntax(
-                item: .stmt(StmtSyntax(returnStmt.with(\.expression, initExpression)))
-            ))
-        } else {
-            let leadingTrivia = varDecl.leadingTrivia.withoutTrailingIndentation +
-                returnStmt.leadingTrivia.withFirstEmptyLineRemoved
-            let trailingTrivia = varDecl.trailingTrivia.withoutTrailingIndentation +
-                returnStmt.trailingTrivia
-
-            newStmtList.append(
-                CodeBlockItemSyntax(
-                    item: .stmt(
-                        StmtSyntax(
-                            returnStmt
-                                .with(\.expression, initExpression)
-                                .with(\.leadingTrivia, leadingTrivia)
-                                .with(\.trailingTrivia, trailingTrivia)
-                        )
-                    )
-                )
-            )
-        }
-        return super.visit(CodeBlockItemListSyntax(newStmtList))
     }
 }

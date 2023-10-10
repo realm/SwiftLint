@@ -72,7 +72,7 @@ struct UnavailableFunctionRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-private extension UnavailableFunctionRule {
+extension UnavailableFunctionRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard !node.returnsNever,

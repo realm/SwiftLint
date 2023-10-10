@@ -14,7 +14,7 @@ struct NotificationCenterDetachmentRule: ConfigurationProviderRule {
     )
 }
 
-private extension NotificationCenterDetachmentRule {
+extension NotificationCenterDetachmentRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.isNotificationCenterDettachmentCall,

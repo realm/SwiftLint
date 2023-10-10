@@ -71,7 +71,7 @@ struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-private extension IdenticalOperandsRule {
+extension IdenticalOperandsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),

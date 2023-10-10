@@ -36,7 +36,7 @@ struct XCTFailMessageRule: ConfigurationProviderRule {
     )
 }
 
-private extension XCTFailMessageRule {
+extension XCTFailMessageRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard

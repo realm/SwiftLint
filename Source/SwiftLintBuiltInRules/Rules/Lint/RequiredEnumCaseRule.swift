@@ -136,7 +136,7 @@ struct RequiredEnumCaseRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRu
     }
 }
 
-private extension RequiredEnumCaseRule {
+extension RequiredEnumCaseRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let configuration: RequiredEnumCaseConfiguration
 

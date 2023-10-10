@@ -40,7 +40,7 @@ struct EmptyParametersRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRul
     }
 }
 
-private extension EmptyParametersRule {
+extension EmptyParametersRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionTypeSyntax) {
             guard let violationPosition = node.emptyParametersViolationPosition else {

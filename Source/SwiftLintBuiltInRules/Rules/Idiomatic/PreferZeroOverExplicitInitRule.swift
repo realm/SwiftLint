@@ -43,7 +43,7 @@ struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule, Co
     }
 }
 
-private extension PreferZeroOverExplicitInitRule {
+extension PreferZeroOverExplicitInitRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if node.hasViolation {
@@ -52,7 +52,7 @@ private extension PreferZeroOverExplicitInitRule {
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         private(set) var correctionPositions: [AbsolutePosition] = []
         let locationConverter: SourceLocationConverter
         let disabledRegions: [SourceRange]

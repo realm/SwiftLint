@@ -22,7 +22,7 @@ struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
     }
 }
 
-private extension TypeNameRule {
+extension TypeNameRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let configuration: TypeNameConfiguration
 

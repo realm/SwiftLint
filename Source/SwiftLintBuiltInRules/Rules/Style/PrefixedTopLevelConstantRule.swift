@@ -84,7 +84,7 @@ struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule, ConfigurationPr
     }
 }
 
-private extension PrefixedTopLevelConstantRule {
+extension PrefixedTopLevelConstantRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let onlyPrivateMembers: Bool
         private let topLevelPrefix = "k"

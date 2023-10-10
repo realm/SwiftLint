@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    private typealias Version = DeploymentTargetConfiguration.Version
+    fileprivate typealias Version = DeploymentTargetConfiguration.Version
     var configuration = DeploymentTargetConfiguration()
 
     static let description = RuleDescription(
@@ -50,11 +50,11 @@ struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
     }
 }
 
-private extension DeploymentTargetRule {
-    private final class Visitor: ViolationsSyntaxVisitor {
+extension DeploymentTargetRule {
+    final class Visitor: ViolationsSyntaxVisitor {
         private let platformToConfiguredMinVersion: [String: Version]
 
-        init(platformToConfiguredMinVersion: [String: Version]) {
+        fileprivate init(platformToConfiguredMinVersion: [String: Version]) {
             self.platformToConfiguredMinVersion = platformToConfiguredMinVersion
             super.init(viewMode: .sourceAccurate)
         }

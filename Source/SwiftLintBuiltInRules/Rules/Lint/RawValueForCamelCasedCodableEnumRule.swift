@@ -93,7 +93,7 @@ struct RawValueForCamelCasedCodableEnumRule: OptInRule, ConfigurationProviderRul
     )
 }
 
-private extension RawValueForCamelCasedCodableEnumRule {
+extension RawValueForCamelCasedCodableEnumRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let codableTypes = Set(["Codable", "Decodable", "Encodable"])
 

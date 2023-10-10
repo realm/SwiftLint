@@ -38,7 +38,7 @@ struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, Op
     }
 }
 
-private extension ToggleBoolRule {
+extension ToggleBoolRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ExprListSyntax) {
             if node.hasToggleBoolViolation {

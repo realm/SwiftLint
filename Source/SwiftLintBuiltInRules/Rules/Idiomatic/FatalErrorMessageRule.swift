@@ -36,7 +36,7 @@ struct FatalErrorMessageRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-private extension FatalErrorMessageRule {
+extension FatalErrorMessageRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let expression = node.calledExpression.as(DeclReferenceExprSyntax.self),

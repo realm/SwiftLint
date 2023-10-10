@@ -29,7 +29,7 @@ struct UnusedEnumeratedRule: ConfigurationProviderRule {
     )
 }
 
-private extension UnusedEnumeratedRule {
+extension UnusedEnumeratedRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ForStmtSyntax) {
             guard let tuplePattern = node.pattern.as(TuplePatternSyntax.self),

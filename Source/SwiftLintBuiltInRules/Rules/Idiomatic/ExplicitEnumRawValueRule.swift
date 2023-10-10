@@ -79,7 +79,7 @@ struct ExplicitEnumRawValueRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-private extension ExplicitEnumRawValueRule {
+extension ExplicitEnumRawValueRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 

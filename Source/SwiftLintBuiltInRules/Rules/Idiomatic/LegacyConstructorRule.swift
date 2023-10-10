@@ -131,7 +131,7 @@ struct LegacyConstructorRule: SwiftSyntaxCorrectableRule, ConfigurationProviderR
     }
 }
 
-private extension LegacyConstructorRule {
+extension LegacyConstructorRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let identifierExpr = node.calledExpression.as(DeclReferenceExprSyntax.self),

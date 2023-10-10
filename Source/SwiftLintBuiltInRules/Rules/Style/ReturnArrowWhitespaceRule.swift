@@ -54,7 +54,7 @@ struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
     )
 }
 
-private extension ReturnArrowWhitespaceRule {
+extension ReturnArrowWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionTypeSyntax) {
             guard let violation = node.returnClause.arrow.arrowViolation else {

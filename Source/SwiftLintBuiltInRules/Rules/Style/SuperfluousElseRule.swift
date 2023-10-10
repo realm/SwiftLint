@@ -96,12 +96,14 @@ struct SuperfluousElseRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-private class Visitor: ViolationsSyntaxVisitor {
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+extension SuperfluousElseRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
-    override func visitPost(_ node: IfExprSyntax) {
-        if node.violatesRule {
-            violations.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: IfExprSyntax) {
+            if node.violatesRule {
+                violations.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

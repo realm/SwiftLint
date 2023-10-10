@@ -26,7 +26,7 @@ struct ForceTryRule: ConfigurationProviderRule {
     )
 }
 
-private extension ForceTryRule {
+extension ForceTryRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TryExprSyntax) {
             if node.questionOrExclamationMark?.tokenKind == .exclamationMark {

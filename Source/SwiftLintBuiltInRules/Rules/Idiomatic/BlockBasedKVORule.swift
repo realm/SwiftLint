@@ -35,7 +35,7 @@ struct BlockBasedKVORule: ConfigurationProviderRule {
     )
 }
 
-private extension BlockBasedKVORule {
+extension BlockBasedKVORule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard node.modifiers.contains(keyword: .override),

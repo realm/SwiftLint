@@ -53,7 +53,7 @@ struct EmptyParenthesesWithTrailingClosureRule: SwiftSyntaxCorrectableRule, Conf
     }
 }
 
-private extension EmptyParenthesesWithTrailingClosureRule {
+extension EmptyParenthesesWithTrailingClosureRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let position = node.violationPosition else {
@@ -64,7 +64,7 @@ private extension EmptyParenthesesWithTrailingClosureRule {
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         private(set) var correctionPositions: [AbsolutePosition] = []
         let locationConverter: SourceLocationConverter
         let disabledRegions: [SourceRange]

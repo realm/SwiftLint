@@ -25,7 +25,7 @@ struct NSNumberInitAsFunctionReferenceRule: ConfigurationProviderRule {
     )
 }
 
-private extension NSNumberInitAsFunctionReferenceRule {
+extension NSNumberInitAsFunctionReferenceRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard node.declName.argumentNames.isEmptyOrNil,

@@ -46,7 +46,7 @@ struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRu
     }
 }
 
-private extension ImplicitlyUnwrappedOptionalRule {
+extension ImplicitlyUnwrappedOptionalRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let mode: ConfigurationType.ImplicitlyUnwrappedOptionalModeConfiguration
 

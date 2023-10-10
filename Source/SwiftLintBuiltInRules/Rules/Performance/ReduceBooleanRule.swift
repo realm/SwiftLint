@@ -28,7 +28,7 @@ struct ReduceBooleanRule: ConfigurationProviderRule {
     )
 }
 
-private extension ReduceBooleanRule {
+extension ReduceBooleanRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard

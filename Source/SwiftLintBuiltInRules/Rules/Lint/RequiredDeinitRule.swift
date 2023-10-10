@@ -68,7 +68,7 @@ struct RequiredDeinitRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-private extension RequiredDeinitRule {
+extension RequiredDeinitRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ClassDeclSyntax) {
             let visitor = DeinitVisitor(viewMode: .sourceAccurate)

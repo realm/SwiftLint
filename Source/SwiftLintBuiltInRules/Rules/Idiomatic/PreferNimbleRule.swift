@@ -24,7 +24,7 @@ struct PreferNimbleRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-private extension PreferNimbleRule {
+extension PreferNimbleRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let expr = node.calledExpression.as(DeclReferenceExprSyntax.self),

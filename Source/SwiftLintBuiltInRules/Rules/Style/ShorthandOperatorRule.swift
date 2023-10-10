@@ -41,7 +41,7 @@ struct ShorthandOperatorRule: ConfigurationProviderRule {
     fileprivate static let allOperators = ["-", "/", "+", "*"]
 }
 
-private extension ShorthandOperatorRule {
+extension ShorthandOperatorRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard node.operator.is(AssignmentExprSyntax.self),

@@ -33,7 +33,7 @@ struct NSLocalizedStringKeyRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-private extension NSLocalizedStringKeyRule {
+extension NSLocalizedStringKeyRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text == "NSLocalizedString" else {

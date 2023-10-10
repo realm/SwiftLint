@@ -23,7 +23,7 @@ struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     }
 }
 
-private extension AttributesRule {
+extension AttributesRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let locationConverter: SourceLocationConverter
         private let configuration: AttributesConfiguration

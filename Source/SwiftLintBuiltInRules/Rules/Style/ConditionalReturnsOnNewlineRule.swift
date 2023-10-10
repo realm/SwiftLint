@@ -40,7 +40,7 @@ struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInRule, Sw
     }
 }
 
-private extension ConditionalReturnsOnNewlineRule {
+extension ConditionalReturnsOnNewlineRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let ifOnly: Bool
         private let locationConverter: SourceLocationConverter

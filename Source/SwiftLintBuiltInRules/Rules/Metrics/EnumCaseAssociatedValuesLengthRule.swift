@@ -41,7 +41,7 @@ struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, Configura
     }
 }
 
-private extension EnumCaseAssociatedValuesLengthRule {
+extension EnumCaseAssociatedValuesLengthRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let configuration: ConfigurationType
 

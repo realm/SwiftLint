@@ -89,7 +89,7 @@ struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntax
     }
 }
 
-private extension LowerACLThanParentRule {
+extension LowerACLThanParentRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: DeclModifierSyntax) {
             if node.isHigherACLThanParent {

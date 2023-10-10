@@ -25,7 +25,7 @@ struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
     )
 }
 
-private extension OperatorFunctionWhitespaceRule {
+extension OperatorFunctionWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard node.isOperatorDeclaration, node.hasWhitespaceViolation else {

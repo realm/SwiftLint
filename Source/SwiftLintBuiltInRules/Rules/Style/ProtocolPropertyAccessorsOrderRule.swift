@@ -31,7 +31,7 @@ struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SwiftSynta
     }
 }
 
-private extension ProtocolPropertyAccessorsOrderRule {
+extension ProtocolPropertyAccessorsOrderRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
             .allExcept(ProtocolDeclSyntax.self, VariableDeclSyntax.self)
@@ -46,7 +46,7 @@ private extension ProtocolPropertyAccessorsOrderRule {
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         private(set) var correctionPositions: [AbsolutePosition] = []
         let locationConverter: SourceLocationConverter
         let disabledRegions: [SourceRange]

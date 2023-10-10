@@ -40,7 +40,7 @@ struct DiscouragedDirectInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
     }
 }
 
-private extension DiscouragedDirectInitRule {
+extension DiscouragedDirectInitRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let discouragedInits: Set<String>
 

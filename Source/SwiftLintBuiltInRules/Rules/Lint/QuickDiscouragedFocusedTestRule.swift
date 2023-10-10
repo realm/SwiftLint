@@ -14,7 +14,7 @@ struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-private extension QuickDiscouragedFocusedTestRule {
+extension QuickDiscouragedFocusedTestRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 

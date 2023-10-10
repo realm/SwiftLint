@@ -17,7 +17,7 @@ struct VerticalParameterAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRul
     }
 }
 
-private extension VerticalParameterAlignmentRule {
+extension VerticalParameterAlignmentRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let locationConverter: SourceLocationConverter
 

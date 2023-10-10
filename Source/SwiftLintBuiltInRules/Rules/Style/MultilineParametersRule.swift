@@ -17,7 +17,7 @@ struct MultilineParametersRule: SwiftSyntaxRule, OptInRule, ConfigurationProvide
     }
 }
 
-private extension MultilineParametersRule {
+extension MultilineParametersRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let allowsSingleLine: Bool
         private let locationConverter: SourceLocationConverter

@@ -86,11 +86,11 @@ struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, SwiftSynta
         ])
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        UntypedErrorInCatchRuleVisitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate)
     }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        UntypedErrorInCatchRuleRewriter(
+        Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)
         )
@@ -119,39 +119,41 @@ private extension CatchItemSyntax {
     }
 }
 
-private final class UntypedErrorInCatchRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: CatchClauseSyntax) {
-        guard let item = node.catchItems.onlyElement, item.isIdentifierPattern else {
-            return
+extension UntypedErrorInCatchRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: CatchClauseSyntax) {
+            guard let item = node.catchItems.onlyElement, item.isIdentifierPattern else {
+                return
+            }
+            violations.append(node.catchKeyword.positionAfterSkippingLeadingTrivia)
         }
-        violations.append(node.catchKeyword.positionAfterSkippingLeadingTrivia)
-    }
-}
-
-private final class UntypedErrorInCatchRuleRewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    private(set) var correctionPositions: [AbsolutePosition] = []
-    let locationConverter: SourceLocationConverter
-    let disabledRegions: [SourceRange]
-
-    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
     }
 
-    override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
-        guard
-            let item = node.catchItems.onlyElement,
-            item.isIdentifierPattern,
-            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-        else {
-            return super.visit(node)
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
 
-        correctionPositions.append(node.catchKeyword.positionAfterSkippingLeadingTrivia)
-        return super.visit(
-            node
-                .with(\.catchKeyword, node.catchKeyword.with(\.trailingTrivia, .spaces(1)))
-                .with(\.catchItems, CatchItemListSyntax([]))
-        )
+        override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
+            guard
+                let item = node.catchItems.onlyElement,
+                item.isIdentifierPattern,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(node.catchKeyword.positionAfterSkippingLeadingTrivia)
+            return super.visit(
+                node
+                    .with(\.catchKeyword, node.catchKeyword.with(\.trailingTrivia, .spaces(1)))
+                    .with(\.catchItems, CatchItemListSyntax([]))
+            )
+        }
     }
 }

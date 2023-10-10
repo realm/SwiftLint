@@ -33,14 +33,16 @@ struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProv
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        UnownedVariableCaptureRuleVisitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
-private final class UnownedVariableCaptureRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: TokenSyntax) {
-        if case .keyword(.unowned) = node.tokenKind, node.parent?.is(ClosureCaptureSpecifierSyntax.self) == true {
-            violations.append(node.positionAfterSkippingLeadingTrivia)
+extension UnownedVariableCaptureRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: TokenSyntax) {
+            if case .keyword(.unowned) = node.tokenKind, node.parent?.is(ClosureCaptureSpecifierSyntax.self) == true {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

@@ -33,7 +33,7 @@ struct PrivateActionRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-private extension PrivateActionRule {
+extension PrivateActionRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
             node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren

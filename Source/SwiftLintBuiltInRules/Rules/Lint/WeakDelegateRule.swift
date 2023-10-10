@@ -67,7 +67,7 @@ struct WeakDelegateRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-private extension WeakDelegateRule {
+extension WeakDelegateRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
             [

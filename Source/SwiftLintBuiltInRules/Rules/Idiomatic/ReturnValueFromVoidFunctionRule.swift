@@ -14,16 +14,18 @@ struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, Sw
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ReturnValueFromVoidFunctionVisitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
-private final class ReturnValueFromVoidFunctionVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: ReturnStmtSyntax) {
-        if node.expression != nil,
-           let functionNode = Syntax(node).enclosingFunction(),
-           functionNode.returnsVoid {
-            violations.append(node.positionAfterSkippingLeadingTrivia)
+extension ReturnValueFromVoidFunctionRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: ReturnStmtSyntax) {
+            if node.expression != nil,
+               let functionNode = Syntax(node).enclosingFunction(),
+               functionNode.returnsVoid {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

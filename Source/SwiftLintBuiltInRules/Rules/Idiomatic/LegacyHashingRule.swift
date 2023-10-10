@@ -75,7 +75,7 @@ struct LegacyHashingRule: ConfigurationProviderRule {
     )
 }
 
-private extension LegacyHashingRule {
+extension LegacyHashingRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard

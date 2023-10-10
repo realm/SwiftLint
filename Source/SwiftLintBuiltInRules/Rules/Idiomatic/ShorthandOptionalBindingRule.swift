@@ -88,37 +88,39 @@ struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, Conf
     }
 }
 
-private class Visitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: OptionalBindingConditionSyntax) {
-        if node.isShadowingOptionalBinding {
-            violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+extension ShorthandOptionalBindingRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: OptionalBindingConditionSyntax) {
+            if node.isShadowingOptionalBinding {
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
-}
 
-private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    private(set) var correctionPositions: [AbsolutePosition] = []
-    private let locationConverter: SourceLocationConverter
-    private let disabledRegions: [SourceRange]
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        private let locationConverter: SourceLocationConverter
+        private let disabledRegions: [SourceRange]
 
-    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
-    }
-
-    override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
-        guard
-            node.isShadowingOptionalBinding,
-            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-        else {
-            return super.visit(node)
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
 
-        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-        let newNode = node
-            .with(\.initializer, nil)
-            .with(\.pattern, node.pattern.with(\.trailingTrivia, node.trailingTrivia))
-        return super.visit(newNode)
+        override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
+            guard
+                node.isShadowingOptionalBinding,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            let newNode = node
+                .with(\.initializer, nil)
+                .with(\.pattern, node.pattern.with(\.trailingTrivia, node.trailingTrivia))
+            return super.visit(newNode)
+        }
     }
 }
 

@@ -22,7 +22,7 @@ struct IsDisjointRule: ConfigurationProviderRule {
     )
 }
 
-private extension IsDisjointRule {
+extension IsDisjointRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard

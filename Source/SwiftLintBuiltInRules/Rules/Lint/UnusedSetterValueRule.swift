@@ -129,7 +129,7 @@ struct UnusedSetterValueRule: ConfigurationProviderRule {
     )
 }
 
-private extension UnusedSetterValueRule {
+extension UnusedSetterValueRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
@@ -150,20 +150,20 @@ private extension UnusedSetterValueRule {
             }
         }
     }
+}
 
-    final class NewValueUsageVisitor: SyntaxVisitor {
-        let variableName: String
-        private(set) var isVariableUsed = false
+private final class NewValueUsageVisitor: SyntaxVisitor {
+    let variableName: String
+    private(set) var isVariableUsed = false
 
-        init(variableName: String) {
-            self.variableName = variableName
-            super.init(viewMode: .sourceAccurate)
-        }
+    init(variableName: String) {
+        self.variableName = variableName
+        super.init(viewMode: .sourceAccurate)
+    }
 
-        override func visitPost(_ node: DeclReferenceExprSyntax) {
-            if node.baseName.text == variableName {
-                isVariableUsed = true
-            }
+    override func visitPost(_ node: DeclReferenceExprSyntax) {
+        if node.baseName.text == variableName {
+            isVariableUsed = true
         }
     }
 }

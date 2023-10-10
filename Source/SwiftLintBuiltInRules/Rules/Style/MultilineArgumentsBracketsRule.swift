@@ -158,7 +158,7 @@ struct MultilineArgumentsBracketsRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-private extension MultilineArgumentsBracketsRule {
+extension MultilineArgumentsBracketsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let firstArgument = node.arguments.first,

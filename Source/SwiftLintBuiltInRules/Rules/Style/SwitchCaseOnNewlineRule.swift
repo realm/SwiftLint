@@ -65,7 +65,7 @@ struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
     }
 }
 
-private extension SwitchCaseOnNewlineRule {
+extension SwitchCaseOnNewlineRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let locationConverter: SourceLocationConverter
 

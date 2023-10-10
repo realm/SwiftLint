@@ -18,7 +18,7 @@ struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationProvider
     }
 }
 
-extension XCTSpecificMatcherRule {
+private extension XCTSpecificMatcherRule {
     final class Visitor: ViolationsSyntaxVisitor {
         let configuration: XCTSpecificMatcherConfiguration
 

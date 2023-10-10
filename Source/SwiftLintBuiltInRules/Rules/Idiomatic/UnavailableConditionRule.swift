@@ -74,7 +74,7 @@ struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
     }
 }
 
-extension UnavailableConditionRule {
+private extension UnavailableConditionRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: IfExprSyntax) {
             guard node.body.statements.isEmpty else {

@@ -187,7 +187,7 @@ struct DirectReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, 
     }
 }
 
-extension DirectReturnRule {
+private extension DirectReturnRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 

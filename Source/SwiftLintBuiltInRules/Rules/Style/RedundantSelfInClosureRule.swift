@@ -34,7 +34,7 @@ private enum SelfCaptureKind {
     case uncaptured
 }
 
-extension RedundantSelfInClosureRule {
+private extension RedundantSelfInClosureRule {
     final class ContextVisitor: DeclaredIdentifiersTrackingVisitor {
         private var typeDeclarations = Stack<TypeDeclarationKind>()
         private var functionCalls = Stack<FunctionCallType>()

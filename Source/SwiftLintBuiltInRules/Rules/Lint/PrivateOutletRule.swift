@@ -81,7 +81,7 @@ struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule 
     }
 }
 
-extension PrivateOutletRule {
+private extension PrivateOutletRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let allowPrivateSet: Bool
 

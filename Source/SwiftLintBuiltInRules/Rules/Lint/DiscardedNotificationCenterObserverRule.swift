@@ -58,7 +58,7 @@ struct DiscardedNotificationCenterObserverRule: ConfigurationProviderRule, OptIn
     )
 }
 
-extension DiscardedNotificationCenterObserverRule {
+private extension DiscardedNotificationCenterObserverRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard

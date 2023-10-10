@@ -22,7 +22,7 @@ struct LegacyRandomRule: ConfigurationProviderRule {
     )
 }
 
-extension LegacyRandomRule {
+private extension LegacyRandomRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private static let legacyRandomFunctions: Set<String> = [
             "arc4random",

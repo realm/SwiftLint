@@ -28,7 +28,7 @@ struct LastWhereRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension LastWhereRule {
+private extension LastWhereRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard

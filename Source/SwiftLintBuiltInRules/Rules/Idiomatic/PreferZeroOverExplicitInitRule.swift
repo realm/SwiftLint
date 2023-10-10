@@ -43,7 +43,7 @@ struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule, Co
     }
 }
 
-extension PreferZeroOverExplicitInitRule {
+private extension PreferZeroOverExplicitInitRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if node.hasViolation {

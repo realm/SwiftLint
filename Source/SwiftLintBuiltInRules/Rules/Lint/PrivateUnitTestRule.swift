@@ -138,7 +138,7 @@ struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRul
     }
 }
 
-extension PrivateUnitTestRule {
+private extension PrivateUnitTestRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let configuration: PrivateUnitTestConfiguration
 

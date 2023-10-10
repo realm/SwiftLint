@@ -88,7 +88,7 @@ struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, Conf
     }
 }
 
-extension ShorthandOptionalBindingRule {
+private extension ShorthandOptionalBindingRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: OptionalBindingConditionSyntax) {
             if node.isShadowingOptionalBinding {

@@ -150,7 +150,7 @@ struct UnusedCaptureListRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInR
     }
 }
 
-extension UnusedCaptureListRule {
+private extension UnusedCaptureListRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ClosureExprSyntax) {
             guard let captureItems = node.signature?.capture?.items,

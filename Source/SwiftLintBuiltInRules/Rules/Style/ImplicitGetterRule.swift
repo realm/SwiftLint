@@ -17,7 +17,7 @@ struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
     }
 }
 
-extension ImplicitGetterRule {
+private extension ImplicitGetterRule {
     private enum ViolationKind {
         case `subscript`, property
 

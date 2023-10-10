@@ -63,7 +63,7 @@ struct TrailingCommaRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule 
     }
 }
 
-extension TrailingCommaRule {
+private extension TrailingCommaRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let mandatoryComma: Bool
         private let locationConverter: SourceLocationConverter

@@ -129,7 +129,7 @@ struct UnusedSetterValueRule: ConfigurationProviderRule {
     )
 }
 
-extension UnusedSetterValueRule {
+private extension UnusedSetterValueRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 

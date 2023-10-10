@@ -79,7 +79,7 @@ struct OverriddenSuperCallRule: ConfigurationProviderRule, SwiftSyntaxRule, OptI
     }
 }
 
-extension OverriddenSuperCallRule {
+private extension OverriddenSuperCallRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let resolvedMethodNames: [String]
 

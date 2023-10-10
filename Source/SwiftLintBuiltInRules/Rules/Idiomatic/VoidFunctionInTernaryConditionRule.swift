@@ -111,7 +111,7 @@ struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, SwiftSynta
     }
 }
 
-extension VoidFunctionInTernaryConditionRule {
+private extension VoidFunctionInTernaryConditionRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TernaryExprSyntax) {
             guard node.thenExpression.is(FunctionCallExprSyntax.self),

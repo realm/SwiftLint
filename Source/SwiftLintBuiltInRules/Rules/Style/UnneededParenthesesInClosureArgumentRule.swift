@@ -81,7 +81,7 @@ struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, Swif
     }
 }
 
-extension UnneededParenthesesInClosureArgumentRule {
+private extension UnneededParenthesesInClosureArgumentRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ClosureSignatureSyntax) {
             guard let clause = node.parameterClause?.as(ClosureParameterClauseSyntax.self),

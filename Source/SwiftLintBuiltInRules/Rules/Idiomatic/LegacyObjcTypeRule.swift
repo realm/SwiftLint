@@ -68,7 +68,7 @@ struct LegacyObjcTypeRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension LegacyObjcTypeRule {
+private extension LegacyObjcTypeRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: IdentifierTypeSyntax) {
             if let typeName = node.typeName, legacyObjcTypes.contains(typeName) {

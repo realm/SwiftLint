@@ -15,7 +15,7 @@ struct PreferSelfInStaticReferencesRule: SwiftSyntaxCorrectableRule, Configurati
     )
 }
 
-extension PreferSelfInStaticReferencesRule {
+private extension PreferSelfInStaticReferencesRule {
     private enum ParentDeclBehavior {
         case likeClass(name: String)
         case likeStruct(String)

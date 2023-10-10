@@ -59,7 +59,7 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, O
     }
 }
 
-extension SelfBindingRule {
+private extension SelfBindingRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let bindIdentifier: String
 

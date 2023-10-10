@@ -89,7 +89,7 @@ struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     }
 }
 
-extension InertDeferRule {
+private extension InertDeferRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: DeferStmtSyntax) {
             guard node.isLastStatement else {

@@ -32,7 +32,7 @@ struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension FirstWhereRule {
+private extension FirstWhereRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard

@@ -50,11 +50,11 @@ struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
     }
 }
 
-extension DeploymentTargetRule {
+private extension DeploymentTargetRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let platformToConfiguredMinVersion: [String: Version]
 
-        fileprivate init(platformToConfiguredMinVersion: [String: Version]) {
+        init(platformToConfiguredMinVersion: [String: Version]) {
             self.platformToConfiguredMinVersion = platformToConfiguredMinVersion
             super.init(viewMode: .sourceAccurate)
         }

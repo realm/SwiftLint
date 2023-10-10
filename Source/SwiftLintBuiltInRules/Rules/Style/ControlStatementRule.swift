@@ -80,7 +80,7 @@ struct ControlStatementRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRu
     }
 }
 
-extension ControlStatementRule {
+private extension ControlStatementRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 

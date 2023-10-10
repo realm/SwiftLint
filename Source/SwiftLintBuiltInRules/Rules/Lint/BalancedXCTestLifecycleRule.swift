@@ -111,7 +111,7 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
 
 // MARK: - Private
 
-extension BalancedXCTestLifecycleRule {
+private extension BalancedXCTestLifecycleRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let testParentClasses: Set<String>
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }

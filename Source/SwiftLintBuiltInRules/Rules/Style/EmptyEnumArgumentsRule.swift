@@ -120,7 +120,7 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
     }
 }
 
-extension EmptyEnumArgumentsRule {
+private extension EmptyEnumArgumentsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: SwitchCaseItemSyntax) {
             if let violationPosition = node.pattern.emptyEnumArgumentsViolation(rewrite: false)?.position {

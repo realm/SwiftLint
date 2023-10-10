@@ -79,7 +79,7 @@ struct DuplicatedKeyInDictionaryLiteralRule: ConfigurationProviderRule {
     )
 }
 
-extension DuplicatedKeyInDictionaryLiteralRule {
+private extension DuplicatedKeyInDictionaryLiteralRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ list: DictionaryElementListSyntax) {
             let keys = list.map(\.key).compactMap { expr -> DictionaryKey? in

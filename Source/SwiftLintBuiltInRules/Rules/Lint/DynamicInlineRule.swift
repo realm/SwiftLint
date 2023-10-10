@@ -24,7 +24,7 @@ struct DynamicInlineRule: ConfigurationProviderRule {
     )
 }
 
-extension DynamicInlineRule {
+private extension DynamicInlineRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.modifiers.contains(where: { $0.name.text == "dynamic" }),

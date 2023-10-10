@@ -178,7 +178,7 @@ struct ExplicitInitRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, 
     }
 }
 
-extension ExplicitInitRule {
+private extension ExplicitInitRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let includeBareInit: Bool
 

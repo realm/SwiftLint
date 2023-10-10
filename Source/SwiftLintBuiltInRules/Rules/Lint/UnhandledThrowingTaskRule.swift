@@ -186,7 +186,7 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-extension UnhandledThrowingTaskRule {
+private extension UnhandledThrowingTaskRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if node.hasViolation {

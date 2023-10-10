@@ -30,7 +30,7 @@ struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension ExplicitTopLevelACLRule {
+private extension ExplicitTopLevelACLRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 

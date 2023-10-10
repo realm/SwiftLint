@@ -19,7 +19,7 @@ struct FlatMapOverMapReduceRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension FlatMapOverMapReduceRule {
+private extension FlatMapOverMapReduceRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard

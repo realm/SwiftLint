@@ -45,7 +45,7 @@ struct LocalDocCommentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRul
     }
 }
 
-extension LocalDocCommentRule {
+private extension LocalDocCommentRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let docCommentRanges: [ByteSourceRange]
 

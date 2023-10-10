@@ -31,7 +31,7 @@ struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SwiftSynta
     }
 }
 
-extension ProtocolPropertyAccessorsOrderRule {
+private extension ProtocolPropertyAccessorsOrderRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
             .allExcept(ProtocolDeclSyntax.self, VariableDeclSyntax.self)

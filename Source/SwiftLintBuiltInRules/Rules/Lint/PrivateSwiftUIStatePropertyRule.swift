@@ -195,7 +195,7 @@ struct PrivateSwiftUIStatePropertyRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension PrivateSwiftUIStatePropertyRule {
+private extension PrivateSwiftUIStatePropertyRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
             [ProtocolDeclSyntax.self]

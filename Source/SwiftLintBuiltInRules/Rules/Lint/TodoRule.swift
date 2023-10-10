@@ -30,7 +30,7 @@ struct TodoRule: SwiftSyntaxRule, ConfigurationProviderRule {
     }
 }
 
-extension TodoRule {
+private extension TodoRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let todoKeywords: [TodoConfiguration.TodoKeyword]
 

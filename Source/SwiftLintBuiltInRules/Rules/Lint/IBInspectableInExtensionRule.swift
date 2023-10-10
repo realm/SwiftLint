@@ -26,7 +26,7 @@ struct IBInspectableInExtensionRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-extension IBInspectableInExtensionRule {
+private extension IBInspectableInExtensionRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
             .allExcept(ExtensionDeclSyntax.self, VariableDeclSyntax.self)

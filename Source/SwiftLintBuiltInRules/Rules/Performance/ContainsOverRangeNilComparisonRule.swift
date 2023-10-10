@@ -23,7 +23,7 @@ struct ContainsOverRangeNilComparisonRule: OptInRule, ConfigurationProviderRule 
     )
 }
 
-extension ContainsOverRangeNilComparisonRule {
+private extension ContainsOverRangeNilComparisonRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard

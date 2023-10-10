@@ -100,7 +100,7 @@ struct NonOverridableClassDeclarationRule: SwiftSyntaxCorrectableRule, Configura
     }
 }
 
-extension NonOverridableClassDeclarationRule {
+private extension NonOverridableClassDeclarationRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let configuration: NonOverridableClassDeclarationConfiguration
 

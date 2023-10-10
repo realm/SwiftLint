@@ -42,7 +42,7 @@ struct NSLocalizedStringRequireBundleRule: OptInRule, ConfigurationProviderRule 
     )
 }
 
-extension NSLocalizedStringRequireBundleRule {
+private extension NSLocalizedStringRequireBundleRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let identifierExpr = node.calledExpression.as(DeclReferenceExprSyntax.self),

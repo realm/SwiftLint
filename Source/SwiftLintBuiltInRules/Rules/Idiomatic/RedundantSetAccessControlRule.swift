@@ -60,7 +60,7 @@ struct RedundantSetAccessControlRule: ConfigurationProviderRule {
     )
 }
 
-extension RedundantSetAccessControlRule {
+private extension RedundantSetAccessControlRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
             [FunctionDeclSyntax.self]

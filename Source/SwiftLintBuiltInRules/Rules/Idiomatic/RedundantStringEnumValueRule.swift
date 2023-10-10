@@ -61,7 +61,7 @@ struct RedundantStringEnumValueRule: ConfigurationProviderRule {
     )
 }
 
-extension RedundantStringEnumValueRule {
+private extension RedundantStringEnumValueRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: EnumDeclSyntax) {
             guard node.isStringEnum else {

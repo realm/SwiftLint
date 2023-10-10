@@ -23,7 +23,7 @@ struct NoExtensionAccessModifierRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension NoExtensionAccessModifierRule {
+private extension NoExtensionAccessModifierRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 

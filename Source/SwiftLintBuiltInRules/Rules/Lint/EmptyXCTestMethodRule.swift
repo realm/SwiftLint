@@ -17,7 +17,7 @@ struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
     }
 }
 
-extension EmptyXCTestMethodRule {
+private extension EmptyXCTestMethodRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
         private let testParentClasses: Set<String>

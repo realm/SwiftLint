@@ -35,7 +35,7 @@ struct RedundantDiscardableLetRule: SwiftSyntaxCorrectableRule, ConfigurationPro
     }
 }
 
-extension RedundantDiscardableLetRule {
+private extension RedundantDiscardableLetRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.hasRedundantDiscardableLetViolation {

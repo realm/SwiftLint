@@ -53,7 +53,7 @@ struct GenericTypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
     }
 }
 
-extension GenericTypeNameRule {
+private extension GenericTypeNameRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let configuration: ConfigurationType
 

@@ -117,7 +117,7 @@ struct ConvenienceTypeRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension ConvenienceTypeRule {
+private extension ConvenienceTypeRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 

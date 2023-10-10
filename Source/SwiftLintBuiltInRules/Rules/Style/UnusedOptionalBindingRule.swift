@@ -34,7 +34,7 @@ struct UnusedOptionalBindingRule: SwiftSyntaxRule, ConfigurationProviderRule {
     }
 }
 
-extension UnusedOptionalBindingRule {
+private extension UnusedOptionalBindingRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let ignoreOptionalTry: Bool
 

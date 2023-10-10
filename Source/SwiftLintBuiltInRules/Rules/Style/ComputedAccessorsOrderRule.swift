@@ -17,7 +17,7 @@ struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxRule {
     }
 }
 
-extension ComputedAccessorsOrderRule {
+private extension ComputedAccessorsOrderRule {
     private enum ViolationKind {
         case `subscript`, property
     }

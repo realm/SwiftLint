@@ -58,7 +58,7 @@ struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
     }
 }
 
-extension ClosureSpacingRule {
+private extension ClosureSpacingRule {
     final class Visitor: ViolationsSyntaxVisitor {
         let locationConverter: SourceLocationConverter
 

@@ -98,7 +98,7 @@ struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
     }
 }
 
-extension UnneededBreakInSwitchRule {
+private extension UnneededBreakInSwitchRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: SwitchCaseSyntax) {
             guard let statement = node.unneededBreak else {

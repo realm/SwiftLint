@@ -21,7 +21,7 @@ struct MultilineArgumentsRule: SwiftSyntaxRule, OptInRule, ConfigurationProvider
     }
 }
 
-extension MultilineArgumentsRule {
+private extension MultilineArgumentsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         let onlyEnforceAfterFirstClosureOnFirstLine: Bool
         let firstArgumentLocation: MultilineArgumentsConfiguration.FirstArgumentLocation

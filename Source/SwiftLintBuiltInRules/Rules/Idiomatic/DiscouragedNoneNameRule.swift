@@ -179,7 +179,7 @@ struct DiscouragedNoneNameRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension DiscouragedNoneNameRule {
+private extension DiscouragedNoneNameRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: EnumCaseElementSyntax) {
             let emptyParams = node.parameterClause?.parameters.isEmpty ?? true

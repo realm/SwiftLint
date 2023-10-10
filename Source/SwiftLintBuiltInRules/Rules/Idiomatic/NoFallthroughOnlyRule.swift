@@ -14,7 +14,7 @@ struct NoFallthroughOnlyRule: ConfigurationProviderRule {
     )
 }
 
-extension NoFallthroughOnlyRule {
+private extension NoFallthroughOnlyRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: SwitchCaseListSyntax) {
             let cases = node.compactMap { $0.as(SwitchCaseSyntax.self) }

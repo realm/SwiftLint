@@ -14,7 +14,7 @@ struct PrivateSubjectRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension PrivateSubjectRule {
+private extension PrivateSubjectRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let subjectTypes: Set<String> = ["PassthroughSubject", "CurrentValueSubject"]
 

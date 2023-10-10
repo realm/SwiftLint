@@ -67,7 +67,7 @@ struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntaxCorrect
     }
 }
 
-extension PrivateOverFilePrivateRule {
+private extension PrivateOverFilePrivateRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let validateExtensions: Bool
 

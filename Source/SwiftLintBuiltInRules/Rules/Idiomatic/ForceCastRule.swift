@@ -19,7 +19,7 @@ struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
     }
 }
 
-extension ForceCastRule {
+private extension ForceCastRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: AsExprSyntax) {
             if node.questionOrExclamationMark?.tokenKind == .exclamationMark {

@@ -57,7 +57,7 @@ struct DuplicateEnumCasesRule: ConfigurationProviderRule {
     )
 }
 
-extension DuplicateEnumCasesRule {
+private extension DuplicateEnumCasesRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: EnumDeclSyntax) {
             let enumElements = node.memberBlock.members

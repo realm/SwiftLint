@@ -151,7 +151,7 @@ struct ValidIBInspectableRule: ConfigurationProviderRule {
     }()
 }
 
-extension ValidIBInspectableRule {
+private extension ValidIBInspectableRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [FunctionDeclSyntax.self] }
 

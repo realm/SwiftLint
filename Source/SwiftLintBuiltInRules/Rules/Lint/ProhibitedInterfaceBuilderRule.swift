@@ -20,7 +20,7 @@ struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-extension ProhibitedInterfaceBuilderRule {
+private extension ProhibitedInterfaceBuilderRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.isIBOutlet {

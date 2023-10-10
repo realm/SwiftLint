@@ -46,7 +46,7 @@ struct SortedFirstLastRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension SortedFirstLastRule {
+private extension SortedFirstLastRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard

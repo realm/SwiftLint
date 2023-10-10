@@ -51,7 +51,7 @@ struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, Configurati
     }
 }
 
-extension AnyObjectProtocolRule {
+private extension AnyObjectProtocolRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ClassRestrictionTypeSyntax) {
             violations.append(node.positionAfterSkippingLeadingTrivia)

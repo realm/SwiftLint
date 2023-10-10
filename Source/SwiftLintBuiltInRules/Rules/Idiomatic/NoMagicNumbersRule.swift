@@ -96,7 +96,7 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
     }
 }
 
-extension NoMagicNumbersRule {
+private extension NoMagicNumbersRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let testParentClasses: Set<String>
         private var testClasses: Set<String> = []

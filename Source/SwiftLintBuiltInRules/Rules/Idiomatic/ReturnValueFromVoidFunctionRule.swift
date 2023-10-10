@@ -18,7 +18,7 @@ struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, Sw
     }
 }
 
-extension ReturnValueFromVoidFunctionRule {
+private extension ReturnValueFromVoidFunctionRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ReturnStmtSyntax) {
             if node.expression != nil,

@@ -17,7 +17,7 @@ struct CollectionAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
     }
 }
 
-extension CollectionAlignmentRule {
+private extension CollectionAlignmentRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let alignColons: Bool
         private let locationConverter: SourceLocationConverter

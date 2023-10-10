@@ -119,7 +119,7 @@ private extension CatchItemSyntax {
     }
 }
 
-extension UntypedErrorInCatchRule {
+private extension UntypedErrorInCatchRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: CatchClauseSyntax) {
             guard let item = node.catchItems.onlyElement, item.isIdentifierPattern else {

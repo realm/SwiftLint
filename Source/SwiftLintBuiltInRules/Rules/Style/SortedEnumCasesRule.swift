@@ -78,7 +78,7 @@ struct SortedEnumCasesRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-extension SortedEnumCasesRule {
+private extension SortedEnumCasesRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
             return .allExcept(EnumDeclSyntax.self)

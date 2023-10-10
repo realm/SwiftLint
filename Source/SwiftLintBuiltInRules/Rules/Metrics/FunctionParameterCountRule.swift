@@ -40,7 +40,7 @@ struct FunctionParameterCountRule: SwiftSyntaxRule, ConfigurationProviderRule {
     }
 }
 
-extension FunctionParameterCountRule {
+private extension FunctionParameterCountRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let configuration: FunctionParameterCountConfiguration
 

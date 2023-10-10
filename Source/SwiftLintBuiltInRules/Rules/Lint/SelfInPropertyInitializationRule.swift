@@ -92,7 +92,7 @@ struct SelfInPropertyInitializationRule: ConfigurationProviderRule {
     )
 }
 
-extension SelfInPropertyInitializationRule {
+private extension SelfInPropertyInitializationRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard !node.modifiers.contains(keyword: .lazy),

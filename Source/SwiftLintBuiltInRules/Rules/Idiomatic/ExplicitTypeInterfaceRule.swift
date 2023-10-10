@@ -74,7 +74,7 @@ struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule, SwiftSyn
     }
 }
 
-extension ExplicitTypeInterfaceRule {
+private extension ExplicitTypeInterfaceRule {
     final class Visitor: ViolationsSyntaxVisitor {
         let configuration: ExplicitTypeInterfaceConfiguration
 

@@ -32,7 +32,7 @@ struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
     }
 }
 
-extension TestCaseAccessibilityRule {
+private extension TestCaseAccessibilityRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let allowedPrefixes: Set<String>
         private let testParentClasses: Set<String>

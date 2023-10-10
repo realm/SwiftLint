@@ -18,7 +18,7 @@ struct ImplicitReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
     }
 }
 
-extension ImplicitReturnRule {
+private extension ImplicitReturnRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let config: ConfigurationType
 

@@ -35,7 +35,7 @@ struct PatternMatchingKeywordsRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-extension PatternMatchingKeywordsRule {
+private extension PatternMatchingKeywordsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: SwitchCaseItemSyntax) {
             let localViolations = TupleVisitor(viewMode: .sourceAccurate)

@@ -121,7 +121,7 @@ struct ForWhereRule: SwiftSyntaxRule, ConfigurationProviderRule {
     }
 }
 
-extension ForWhereRule {
+private extension ForWhereRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let allowForAsFilter: Bool
 

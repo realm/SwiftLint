@@ -25,7 +25,7 @@ struct DiscouragedAssertRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension DiscouragedAssertRule {
+private extension DiscouragedAssertRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text == "assert",

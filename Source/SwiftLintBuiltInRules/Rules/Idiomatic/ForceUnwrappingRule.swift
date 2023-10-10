@@ -70,7 +70,7 @@ struct ForceUnwrappingRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRul
     }
 }
 
-extension ForceUnwrappingRule {
+private extension ForceUnwrappingRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ForceUnwrapExprSyntax) {
             violations.append(node.exclamationMark.positionAfterSkippingLeadingTrivia)

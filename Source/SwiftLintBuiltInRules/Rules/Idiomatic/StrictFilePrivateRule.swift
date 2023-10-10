@@ -134,7 +134,7 @@ private enum ProtocolRequirementType: Equatable {
     case setter(String)
 }
 
-extension StrictFilePrivateRule {
+private extension StrictFilePrivateRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let file: SourceFileSyntax
 

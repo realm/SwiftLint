@@ -36,7 +36,7 @@ struct StrongIBOutletRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule
     }
 }
 
-extension StrongIBOutletRule {
+private extension StrongIBOutletRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             if let violationPosition = node.violationPosition {

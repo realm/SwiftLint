@@ -33,7 +33,7 @@ struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule, ConfigurationProviderR
     }
 }
 
-extension TrailingSemicolonRule {
+private extension TrailingSemicolonRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TokenSyntax) {
             if node.isTrailingSemicolon {

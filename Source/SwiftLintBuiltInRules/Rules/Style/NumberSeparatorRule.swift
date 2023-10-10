@@ -38,7 +38,7 @@ struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, Configuration
     }
 }
 
-extension NumberSeparatorRule {
+private extension NumberSeparatorRule {
     final class Visitor: ViolationsSyntaxVisitor, NumberSeparatorValidator {
         let configuration: NumberSeparatorConfiguration
 

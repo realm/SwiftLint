@@ -108,7 +108,7 @@ struct ReduceIntoRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-extension ReduceIntoRule {
+private extension ReduceIntoRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let name = node.nameToken,

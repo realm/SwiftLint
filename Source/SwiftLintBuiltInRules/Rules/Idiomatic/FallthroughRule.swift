@@ -30,7 +30,7 @@ struct FallthroughRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-extension FallthroughRule {
+private extension FallthroughRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FallThroughStmtSyntax) {
             violations.append(node.positionAfterSkippingLeadingTrivia)

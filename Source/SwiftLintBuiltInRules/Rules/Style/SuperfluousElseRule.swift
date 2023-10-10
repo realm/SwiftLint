@@ -96,7 +96,7 @@ struct SuperfluousElseRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-extension SuperfluousElseRule {
+private extension SuperfluousElseRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 

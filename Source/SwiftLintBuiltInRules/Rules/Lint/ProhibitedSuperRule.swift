@@ -75,7 +75,7 @@ struct ProhibitedSuperRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRul
     }
 }
 
-extension ProhibitedSuperRule {
+private extension ProhibitedSuperRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let resolvedMethodNames: [String]
 

@@ -157,7 +157,7 @@ struct DuplicateConditionsRule: ConfigurationProviderRule {
     )
 }
 
-extension DuplicateConditionsRule {
+private extension DuplicateConditionsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: IfExprSyntax) {
             if  node.parent?.is(IfExprSyntax.self) == true {

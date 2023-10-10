@@ -36,7 +36,7 @@ struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule 
     }
 }
 
-extension ObjectLiteralRule {
+private extension ObjectLiteralRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let validateImageLiteral: Bool
         private let validateColorLiteral: Bool

@@ -78,7 +78,7 @@ struct StaticOperatorRule: ConfigurationProviderRule, OptInRule {
     )
 }
 
-extension StaticOperatorRule {
+private extension StaticOperatorRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 

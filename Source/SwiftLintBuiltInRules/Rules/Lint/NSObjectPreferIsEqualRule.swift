@@ -14,7 +14,7 @@ struct NSObjectPreferIsEqualRule: ConfigurationProviderRule {
     )
 }
 
-extension NSObjectPreferIsEqualRule {
+private extension NSObjectPreferIsEqualRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .extensionsAndProtocols }
 

@@ -23,7 +23,7 @@ struct LegacyConstantRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
     }
 }
 
-extension LegacyConstantRule {
+private extension LegacyConstantRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: DeclReferenceExprSyntax) {
             if LegacyConstantRuleExamples.patterns.keys.contains(node.baseName.text) {

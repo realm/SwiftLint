@@ -99,7 +99,7 @@ struct ClosureParameterPositionRule: SwiftSyntaxRule, ConfigurationProviderRule 
     }
 }
 
-extension ClosureParameterPositionRule {
+private extension ClosureParameterPositionRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let locationConverter: SourceLocationConverter
 

@@ -28,7 +28,7 @@ struct ContainsOverFilterIsEmptyRule: OptInRule, ConfigurationProviderRule {
     )
 }
 
-extension ContainsOverFilterIsEmptyRule {
+private extension ContainsOverFilterIsEmptyRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard

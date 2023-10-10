@@ -15,7 +15,7 @@ struct LegacyConstantRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
         corrections: LegacyConstantRuleExamples.corrections
     )
 
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

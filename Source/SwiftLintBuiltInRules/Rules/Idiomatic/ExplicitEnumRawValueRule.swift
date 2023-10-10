@@ -81,7 +81,7 @@ struct ExplicitEnumRawValueRule: OptInRule, ConfigurationProviderRule {
 
 private extension ExplicitEnumRawValueRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: EnumCaseElementSyntax) {
             if node.rawValue == nil, node.enclosingEnum()?.supportsRawValues == true {

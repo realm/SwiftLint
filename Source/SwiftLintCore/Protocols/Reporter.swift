@@ -32,7 +32,7 @@ extension Reporter {
 /// - parameter identifier: The identifier corresponding to the reporter.
 ///
 /// - returns: The reporter type.
-public func reporterFrom(identifier: String) -> Reporter.Type {
+public func reporterFrom(identifier: String) -> any Reporter.Type {
     guard let reporter = reportersList.first(where: { $0.identifier == identifier }) else {
         queuedFatalError("No reporter with identifier '\(identifier)' available.")
     }

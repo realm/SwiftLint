@@ -50,7 +50,7 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, O
         Visitor(bindIdentifier: configuration.bindIdentifier)
     }
 
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             bindIdentifier: configuration.bindIdentifier,
             locationConverter: file.locationConverter,

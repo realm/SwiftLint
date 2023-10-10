@@ -185,7 +185,7 @@ private extension StrictFilePrivateRule {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
 
-        private func implementedTypesInDecl(of node: SyntaxProtocol?) -> [String] {
+        private func implementedTypesInDecl(of node: (any SyntaxProtocol)?) -> [String] {
             guard let node else {
                 queuedFatalError("Given node is nil. That should not happen.")
             }
@@ -216,7 +216,7 @@ private final class ProtocolCollector: ViolationsSyntaxVisitor {
     private(set) var protocols = [String: [ProtocolRequirementType]]()
     private var currentProtocolName: String = ""
 
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ProtocolDeclSyntax.self) }
+    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .allExcept(ProtocolDeclSyntax.self) }
 
     override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
         currentProtocolName = node.name.text

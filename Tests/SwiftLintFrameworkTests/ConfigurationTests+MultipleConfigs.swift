@@ -337,7 +337,7 @@ extension ConfigurationTests {
         ]
         XCTAssertEqual(testCases.unique.count, 4 * 4)
         let ruleType = ImplicitReturnRule.self
-        XCTAssertTrue((ruleType as Any) is OptInRule.Type)
+        XCTAssertTrue((ruleType as Any) is any OptInRule.Type)
         let ruleIdentifier = ruleType.description.identifier
         for testCase in testCases {
             let parentConfiguration = Configuration(rulesMode: .default(
@@ -371,7 +371,7 @@ extension ConfigurationTests {
         ]
         XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = BlanketDisableCommandRule.self
-        XCTAssertFalse(ruleType is OptInRule.Type)
+        XCTAssertFalse(ruleType is any OptInRule.Type)
         let ruleIdentifier = ruleType.description.identifier
         for testCase in testCases {
             let parentConfiguration = Configuration(
@@ -403,7 +403,7 @@ extension ConfigurationTests {
         ]
         XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = ImplicitReturnRule.self
-        XCTAssertTrue((ruleType as Any) is OptInRule.Type)
+        XCTAssertTrue((ruleType as Any) is any OptInRule.Type)
         let ruleIdentifier = ruleType.description.identifier
         let parentConfiguration = Configuration(rulesMode: .only([ruleIdentifier]))
         for testCase in testCases {

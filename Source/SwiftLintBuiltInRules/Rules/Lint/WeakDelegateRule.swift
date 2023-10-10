@@ -69,11 +69,7 @@ struct WeakDelegateRule: OptInRule, ConfigurationProviderRule {
 
 private extension WeakDelegateRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
-            [
-                ProtocolDeclSyntax.self
-            ]
-        }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: VariableDeclSyntax) {
             guard node.hasDelegateSuffix,

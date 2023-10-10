@@ -1,21 +1,21 @@
 /// User-facing documentation for a SwiftLint rule.
 struct RuleDocumentation {
-    private let ruleType: Rule.Type
+    private let ruleType: any Rule.Type
 
     /// If this rule is an opt-in rule.
-    var isOptInRule: Bool { ruleType is OptInRule.Type }
+    var isOptInRule: Bool { ruleType is any OptInRule.Type }
 
     /// If this rule is an analyzer rule.
-    var isAnalyzerRule: Bool { ruleType is AnalyzerRule.Type }
+    var isAnalyzerRule: Bool { ruleType is any AnalyzerRule.Type }
 
     /// If this rule is a linter rule.
     var isLinterRule: Bool { !isAnalyzerRule }
 
     /// If this rule uses SourceKit.
-    var usesSourceKit: Bool { !(ruleType is SourceKitFreeRule.Type) }
+    var usesSourceKit: Bool { !(ruleType is any SourceKitFreeRule.Type) }
 
     /// If this rule is disabled by default.
-    var isDisabledByDefault: Bool { ruleType is OptInRule.Type }
+    var isDisabledByDefault: Bool { ruleType is any OptInRule.Type }
 
     /// If this rule is enabled by default.
     var isEnabledByDefault: Bool { !isDisabledByDefault }
@@ -23,7 +23,7 @@ struct RuleDocumentation {
     /// Creates a RuleDocumentation instance from a Rule type.
     ///
     /// - parameter ruleType: A subtype of the `Rule` protocol to document.
-    init(_ ruleType: Rule.Type) {
+    init(_ ruleType: any Rule.Type) {
         self.ruleType = ruleType
     }
 
@@ -58,13 +58,13 @@ private func h1(_ text: String) -> String { "# \(text)" }
 
 private func h2(_ text: String) -> String { "## \(text)" }
 
-private func detailsSummary(_ rule: Rule) -> String {
+private func detailsSummary(_ rule: some Rule) -> String {
     let ruleDescription = """
         * **Identifier:** \(type(of: rule).description.identifier)
-        * **Enabled by default:** \(rule is OptInRule ? "No" : "Yes")
-        * **Supports autocorrection:** \(rule is CorrectableRule ? "Yes" : "No")
+        * **Enabled by default:** \(rule is any OptInRule ? "No" : "Yes")
+        * **Supports autocorrection:** \(rule is any CorrectableRule ? "Yes" : "No")
         * **Kind:** \(type(of: rule).description.kind)
-        * **Analyzer rule:** \(rule is AnalyzerRule ? "Yes" : "No")
+        * **Analyzer rule:** \(rule is any AnalyzerRule ? "Yes" : "No")
         * **Minimum Swift compiler version:** \(type(of: rule).description.minSwiftVersion.rawValue)
         """
     if rule.configurationDescription.hasContent {

@@ -72,7 +72,7 @@ struct ControlStatementRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRu
         ]
     )
 
-    func makeRewriter(file: SwiftLintCore.SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)
@@ -82,7 +82,7 @@ struct ControlStatementRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRu
 
 private extension ControlStatementRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: CatchClauseSyntax) {
             if node.catchItems.containSuperfluousParens == true {

@@ -23,7 +23,7 @@ struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SwiftSynta
         ]
     )
 
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)
@@ -33,7 +33,7 @@ struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SwiftSynta
 
 private extension ProtocolPropertyAccessorsOrderRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
             .allExcept(ProtocolDeclSyntax.self, VariableDeclSyntax.self)
         }
 

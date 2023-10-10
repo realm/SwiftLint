@@ -25,7 +25,7 @@ struct NoExtensionAccessModifierRule: OptInRule, ConfigurationProviderRule {
 
 private extension NoExtensionAccessModifierRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
             let modifiers = node.modifiers

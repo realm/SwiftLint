@@ -3,12 +3,15 @@ import SourceKittenFramework
 
 /// An executable value that can identify issues (violations) in Swift source code.
 public protocol Rule {
+    /// The rule's description type.
+    associatedtype Description: Documentable
+
     /// A verbose description of many of this rule's properties.
     static var description: RuleDescription { get }
 
     /// A description of how this rule has been configured to run. It can be built using the annotated result builder.
     @RuleConfigurationDescriptionBuilder
-    var configurationDescription: Documentable { get }
+    var configurationDescription: Description { get }
 
     /// A default initializer for rules. All rules need to be trivially initializable.
     init()
@@ -40,7 +43,7 @@ public protocol Rule {
     /// - parameter rule: The `rule` value to compare against.
     ///
     /// - returns: Whether or not the specified rule is equivalent to the current rule.
-    func isEqualTo(_ rule: Rule) -> Bool
+    func isEqualTo(_ rule: any Rule) -> Bool
 
     /// Collects information for the specified file in a storage object, to be analyzed by a `CollectedLinter`.
     ///
@@ -74,7 +77,7 @@ public extension Rule {
         return validate(file: file)
     }
 
-    func isEqualTo(_ rule: Rule) -> Bool {
+    func isEqualTo(_ rule: any Rule) -> Bool {
         return Self.description == type(of: rule).description
     }
 
@@ -85,7 +88,7 @@ public extension Rule {
     /// The cache description which will be used to determine if a previous
     /// cached value is still valid given the new cache value.
     var cacheDescription: String {
-        (self as? CacheDescriptionProvider)?.cacheDescription ?? configurationDescription.oneLiner()
+        (self as? any CacheDescriptionProvider)?.cacheDescription ?? configurationDescription.oneLiner()
     }
 }
 
@@ -112,14 +115,14 @@ public extension ConfigurationProviderRule {
         try self.configuration.apply(configuration: configuration)
     }
 
-    func isEqualTo(_ rule: Rule) -> Bool {
+    func isEqualTo(_ rule: any Rule) -> Bool {
         if let rule = rule as? Self {
             return configuration == rule.configuration
         }
         return false
     }
 
-    var configurationDescription: Documentable {
+    var configurationDescription: some Documentable {
         RuleConfigurationDescription.from(configuration: configuration)
     }
 }

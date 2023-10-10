@@ -6,7 +6,7 @@ import XCTest
 
 // swiftlint:disable file_length
 
-private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
+private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is any OptInRule }).map({ $0.0 })
 
 class ConfigurationTests: SwiftLintTestCase {
     // MARK: Setup & Teardown

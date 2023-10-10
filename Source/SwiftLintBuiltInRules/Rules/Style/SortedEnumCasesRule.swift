@@ -80,8 +80,8 @@ struct SortedEnumCasesRule: ConfigurationProviderRule, OptInRule {
 
 private extension SortedEnumCasesRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
-            return .allExcept(EnumDeclSyntax.self)
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
+            .allExcept(EnumDeclSyntax.self)
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {

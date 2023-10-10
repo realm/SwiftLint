@@ -54,7 +54,7 @@ struct TrailingCommaRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule 
         )
     }
 
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             mandatoryComma: configuration.mandatoryComma,
             locationConverter: file.locationConverter,
@@ -200,7 +200,7 @@ private extension TrailingCommaRule {
 }
 
 private extension SourceLocationConverter {
-    func isSingleLine(node: SyntaxProtocol) -> Bool {
+    func isSingleLine(node: any SyntaxProtocol) -> Bool {
         location(for: node.positionAfterSkippingLeadingTrivia).line ==
             location(for: node.endPositionBeforeTrailingTrivia).line
     }

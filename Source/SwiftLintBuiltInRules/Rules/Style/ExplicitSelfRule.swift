@@ -46,7 +46,7 @@ struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
             return []
         }
 
-        let allCursorInfo: [[String: SourceKitRepresentable]]
+        let allCursorInfo: [[String: any SourceKitRepresentable]]
         do {
             let byteOffsets = try binaryOffsets(file: file, compilerArguments: compilerArguments)
             allCursorInfo = try file.allCursorInfo(compilerArguments: compilerArguments,
@@ -85,7 +85,7 @@ private let kindsToFind: Set = [
 
 private extension SwiftLintFile {
     func allCursorInfo(compilerArguments: [String], atByteOffsets byteOffsets: [ByteCount]) throws
-        -> [[String: SourceKitRepresentable]] {
+        -> [[String: any SourceKitRepresentable]] {
         return try byteOffsets.compactMap { offset in
             if isExplicitAccess(at: offset) { return nil }
             let cursorInfoRequest = Request.cursorInfoWithoutSymbolGraph(

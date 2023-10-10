@@ -55,7 +55,7 @@ public struct RuleConfigurationDescription: Equatable {
                 guard let codingKey = child.label, codingKey.starts(with: "_") else {
                     return nil
                 }
-                guard let element = child.value as? AnyConfigurationElement else {
+                guard let element = child.value as? any AnyConfigurationElement else {
                     return nil
                 }
                 return element.description

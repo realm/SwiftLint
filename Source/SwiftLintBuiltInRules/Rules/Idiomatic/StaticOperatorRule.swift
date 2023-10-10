@@ -80,7 +80,7 @@ struct StaticOperatorRule: ConfigurationProviderRule, OptInRule {
 
 private extension StaticOperatorRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.isFreeFunction, node.isOperator {

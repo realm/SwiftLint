@@ -102,7 +102,7 @@ final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor {
     }
 
     private func registerViolations(
-        leftBrace: TokenSyntax, rightBrace: TokenSyntax, violationNode: SyntaxProtocol
+        leftBrace: TokenSyntax, rightBrace: TokenSyntax, violationNode: some SyntaxProtocol
     ) {
         let leftBracePosition = leftBrace.positionAfterSkippingLeadingTrivia
         let leftBraceLine = locationConverter.location(for: leftBracePosition).line

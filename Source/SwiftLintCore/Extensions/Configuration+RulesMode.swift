@@ -4,7 +4,7 @@ public extension Configuration {
     /// - parameter ruleID: The identifier for the rule to look up.
     ///
     /// - returns: The rule for the specified ID, if configured in this configuration.
-    func configuredRule(forID ruleID: String) -> Rule? {
+    func configuredRule(forID ruleID: String) -> (any Rule)? {
         rules.first { rule in
             if type(of: rule).description.identifier == ruleID {
                 if let customRules = rule as? CustomRules {
@@ -65,7 +65,7 @@ public extension Configuration {
                 let effectiveOptInRules: [String]
                 if optInRules.contains(RuleIdentifier.all.stringRepresentation) {
                     let allOptInRules = RuleRegistry.shared.list.list.compactMap { ruleID, ruleType in
-                        ruleType is OptInRule.Type && !(ruleType is AnalyzerRule.Type) ? ruleID : nil
+                        ruleType is any OptInRule.Type && !(ruleType is any AnalyzerRule.Type) ? ruleID : nil
                     }
                     effectiveOptInRules = Array(Set(allOptInRules + optInRules))
                 } else {

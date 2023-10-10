@@ -114,7 +114,7 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
 private extension BalancedXCTestLifecycleRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let testParentClasses: Set<String>
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
             self.testParentClasses = testParentClasses
@@ -138,7 +138,7 @@ private extension BalancedXCTestLifecycleRule {
 }
 
 private final class SetupTearDownVisitor: ViolationsSyntaxVisitor {
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
     private(set) var methods: Set<XCTMethod> = []
 
     override func visitPost(_ node: FunctionDeclSyntax) {

@@ -104,7 +104,7 @@ struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationP
         LegacyFunctionRuleHelper.Visitor(legacyFunctions: Self.legacyFunctions)
     }
 
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         LegacyFunctionRuleHelper.Rewriter(
             legacyFunctions: Self.legacyFunctions,
             locationConverter: file.locationConverter,

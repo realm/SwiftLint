@@ -2,6 +2,8 @@ load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library", "swift_test")
 
 exports_files(["BUILD"])
 
+swiftFeatures = ["-enable-upcoming-feature", "ExistentialAny"]
+
 # CLITests
 
 swift_library(
@@ -12,6 +14,7 @@ swift_library(
     deps = [
         "//:swiftlint.library",
     ],
+    copts = swiftFeatures,
 )
 
 swift_test(
@@ -31,6 +34,7 @@ swift_library(
         "//:SwiftLintCoreMacrosLib",
         "@SwiftSyntax//:SwiftSyntaxMacrosTestSupport_opt",
     ],
+    copts = swiftFeatures,
 )
 
 swift_test(
@@ -49,6 +53,7 @@ swift_library(
     deps = [
         "//:SwiftLintFramework",
     ],
+    copts = swiftFeatures,
 )
 
 # SwiftLintFrameworkTests
@@ -83,6 +88,7 @@ swift_library(
     deps = [
         ":SwiftLintTestHelpers",
     ],
+    copts = swiftFeatures,
 )
 
 swift_test(
@@ -106,6 +112,7 @@ swift_library(
     deps = [
         ":SwiftLintTestHelpers",
     ],
+    copts = swiftFeatures,
 )
 
 swift_test(
@@ -124,6 +131,7 @@ swift_library(
     deps = [
         ":SwiftLintTestHelpers",
     ],
+    copts = swiftFeatures,
 )
 
 swift_test(

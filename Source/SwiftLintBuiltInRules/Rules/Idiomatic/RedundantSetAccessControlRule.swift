@@ -62,7 +62,7 @@ struct RedundantSetAccessControlRule: ConfigurationProviderRule {
 
 private extension RedundantSetAccessControlRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
             [FunctionDeclSyntax.self]
         }
 
@@ -120,7 +120,7 @@ private extension SyntaxProtocol {
 
 private extension DeclSyntax {
     var modifiers: DeclModifierListSyntax? {
-        self.asProtocol(WithModifiersSyntax.self)?.modifiers
+        self.asProtocol((any WithModifiersSyntax).self)?.modifiers
     }
 }
 

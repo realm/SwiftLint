@@ -79,7 +79,7 @@ private extension ProhibitedSuperRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let resolvedMethodNames: [String]
 
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
             [ProtocolDeclSyntax.self]
         }
 

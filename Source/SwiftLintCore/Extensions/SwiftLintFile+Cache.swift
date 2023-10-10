@@ -10,7 +10,7 @@ import SwiftParserDiagnostics
 import SwiftSyntax
 
 private typealias FileCacheKey = UUID
-private let responseCache = Cache { file -> [String: SourceKitRepresentable]? in
+private let responseCache = Cache { file -> [String: any SourceKitRepresentable]? in
     do {
         return try Request.editorOpen(file: file.file).sendIfNotDisabled()
     } catch let error as Request.Error {

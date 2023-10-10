@@ -49,7 +49,7 @@ private extension OverrideInExtensionRule {
             super.init(viewMode: .sourceAccurate)
         }
 
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ExtensionDeclSyntax.self) }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .allExcept(ExtensionDeclSyntax.self) }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.modifiers.contains(keyword: .override) {
@@ -77,7 +77,7 @@ private extension OverrideInExtensionRule {
 private class ClassNameCollectingVisitor: ViolationsSyntaxVisitor {
     private(set) var classNames: Set<String> = []
 
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
     override func visitPost(_ node: ClassDeclSyntax) {
         classNames.insert(node.name.text)

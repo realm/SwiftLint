@@ -89,7 +89,7 @@ struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule {
 }
 
 private extension ShorthandOptionalBindingRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: OptionalBindingConditionSyntax) {
             if node.isShadowingOptionalBinding {
                 violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)

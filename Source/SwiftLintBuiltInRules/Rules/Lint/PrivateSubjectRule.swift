@@ -15,7 +15,7 @@ struct PrivateSubjectRule: OptInRule {
 }
 
 private extension PrivateSubjectRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let subjectTypes: Set<String> = ["PassthroughSubject", "CurrentValueSubject"]
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {

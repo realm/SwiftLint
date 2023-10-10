@@ -130,7 +130,7 @@ struct UnusedSetterValueRule: Rule {
 }
 
 private extension UnusedSetterValueRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: AccessorDeclSyntax) {

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct EmptyCountRule: OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(foldExpressions: true)
+struct EmptyCountRule: OptInRule {
     var configuration = EmptyCountConfiguration()
 
     static let description = RuleDescription(
@@ -32,25 +33,10 @@ struct EmptyCountRule: OptInRule, SwiftSyntaxRule {
             Example("↓count == 0")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(onlyAfterDot: configuration.onlyAfterDot)
-    }
-
-    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-        file.foldedSyntaxTree
-    }
 }
 
 private extension EmptyCountRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let onlyAfterDot: Bool
-
-        init(onlyAfterDot: Bool) {
-            self.onlyAfterDot = onlyAfterDot
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
 
         override func visitPost(_ node: InfixOperatorExprSyntax) {
@@ -61,13 +47,13 @@ private extension EmptyCountRule {
             }
 
             if let intExpr = node.rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
-               let position = node.leftOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
+               let position = node.leftOperand.countCallPosition(onlyAfterDot: configuration.onlyAfterDot) {
                 violations.append(position)
                 return
             }
 
             if let intExpr = node.leftOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
-               let position = node.rightOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
+               let position = node.rightOperand.countCallPosition(onlyAfterDot: configuration.onlyAfterDot) {
                 violations.append(position)
                 return
             }

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct AnonymousArgumentInMultilineClosureRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct AnonymousArgumentInMultilineClosureRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -30,21 +31,10 @@ struct AnonymousArgumentInMultilineClosureRule: SwiftSyntaxRule, OptInRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(locationConverter: file.locationConverter)
-    }
 }
 
 private extension AnonymousArgumentInMultilineClosureRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let locationConverter: SourceLocationConverter
-
-        init(locationConverter: SourceLocationConverter) {
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             let startLocation = locationConverter.location(for: node.leftBrace.positionAfterSkippingLeadingTrivia)
             let endLocation = locationConverter.location(for: node.rightBrace.endPositionBeforeTrailingTrivia)

@@ -29,7 +29,7 @@ struct EmptyCollectionLiteralRule: OptInRule {
 }
 
 private extension EmptyCollectionLiteralRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: TokenSyntax) {
             guard
                 node.tokenKind.isEqualityComparison,

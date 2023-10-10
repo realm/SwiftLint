@@ -62,7 +62,7 @@ struct RedundantStringEnumValueRule: Rule {
 }
 
 private extension RedundantStringEnumValueRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: EnumDeclSyntax) {
             guard node.isStringEnum else {
                 return

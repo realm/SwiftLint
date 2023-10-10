@@ -38,9 +38,9 @@ struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         warnDeprecatedOnce()
-        return Visitor(viewMode: .sourceAccurate)
+        return Visitor(configuration: configuration, locationConverter: file.locationConverter)
     }
 
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
@@ -52,7 +52,7 @@ struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule {
 }
 
 private extension AnyObjectProtocolRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ClassRestrictionTypeSyntax) {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }

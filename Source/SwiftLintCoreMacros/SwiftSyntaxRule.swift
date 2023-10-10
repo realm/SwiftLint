@@ -12,8 +12,8 @@ struct SwiftSyntaxRule: ExtensionMacro {
         return [
             try ExtensionDeclSyntax("""
                 extension \(type): SwiftSyntaxRule {
-                    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-                        Visitor(viewMode: .sourceAccurate)
+                    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+                        Visitor(configuration: configuration, locationConverter: file.locationConverter)
                     }
                 }
                 """),

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct ImplicitlyUnwrappedOptionalRule: OptInRule {
     var configuration = ImplicitlyUnwrappedOptionalConfiguration()
 
     static let description = RuleDescription(
@@ -40,27 +41,16 @@ struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, OptInRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(mode: configuration.mode)
-    }
 }
 
 private extension ImplicitlyUnwrappedOptionalRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let mode: ConfigurationType.ImplicitlyUnwrappedOptionalModeConfiguration
-
-        init(mode: ConfigurationType.ImplicitlyUnwrappedOptionalModeConfiguration) {
-            self.mode = mode
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ImplicitlyUnwrappedOptionalTypeSyntax) {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
 
         override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-            switch mode {
+            switch configuration.mode {
             case .all:
                 return .visitChildren
             case .allExceptIBOutlets:

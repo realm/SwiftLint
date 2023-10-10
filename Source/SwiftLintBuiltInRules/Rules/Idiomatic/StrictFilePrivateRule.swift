@@ -123,8 +123,12 @@ struct StrictFilePrivateRule: OptInRule, SwiftSyntaxRule {
         }
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate, file: file.syntaxTree)
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+        Visitor(
+            configuration: configuration,
+            locationConverter: file.locationConverter,
+            file: file.syntaxTree
+        )
     }
 }
 
@@ -135,16 +139,17 @@ private enum ProtocolRequirementType: Equatable {
 }
 
 private extension StrictFilePrivateRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let file: SourceFileSyntax
 
-        init(viewMode: SyntaxTreeViewMode, file: SourceFileSyntax) {
+        init(configuration: ConfigurationType, locationConverter: SourceLocationConverter, file: SourceFileSyntax) {
             self.file = file
-            super.init(viewMode: viewMode)
+            super.init(configuration: configuration, locationConverter: locationConverter)
         }
 
         private lazy var protocols = {
-            ProtocolCollector(viewMode: .sourceAccurate).walk(tree: file, handler: \.protocols)
+            ProtocolCollector(configuration: configuration, locationConverter: locationConverter)
+                .walk(tree: file, handler: \.protocols)
         }()
 
         override func visitPost(_ node: DeclModifierSyntax) {
@@ -212,7 +217,7 @@ private extension StrictFilePrivateRule {
     }
 }
 
-private final class ProtocolCollector: ViolationsSyntaxVisitor {
+private final class ProtocolCollector<Configuration: RuleConfiguration>: ViolationsSyntaxVisitor<Configuration> {
     private(set) var protocols = [String: [ProtocolRequirementType]]()
     private var currentProtocolName: String = ""
 

@@ -1,5 +1,6 @@
 import SwiftSyntax
 
+@SwiftSyntaxRule
 struct ImplicitReturnRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = ImplicitReturnConfiguration()
 
@@ -12,25 +13,14 @@ struct ImplicitReturnRule: SwiftSyntaxCorrectableRule, OptInRule {
         triggeringExamples: ImplicitReturnRuleExamples.triggeringExamples,
         corrections: ImplicitReturnRuleExamples.corrections
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(config: configuration)
-    }
 }
 
 private extension ImplicitReturnRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let config: ConfigurationType
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
-        init(config: ConfigurationType) {
-            self.config = config
-            super.init(viewMode: .sourceAccurate)
-        }
-
         override func visitPost(_ node: AccessorDeclSyntax) {
-            if config.isKindIncluded(.getter),
+            if configuration.isKindIncluded(.getter),
                node.accessorSpecifier.tokenKind == .keyword(.get),
                let body = node.body {
                 collectViolation(in: body.statements)
@@ -38,34 +28,34 @@ private extension ImplicitReturnRule {
         }
 
         override func visitPost(_ node: ClosureExprSyntax) {
-            if config.isKindIncluded(.closure) {
+            if configuration.isKindIncluded(.closure) {
                 collectViolation(in: node.statements)
             }
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if config.isKindIncluded(.function),
+            if configuration.isKindIncluded(.function),
                let body = node.body {
                 collectViolation(in: body.statements)
             }
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            if config.isKindIncluded(.initializer),
+            if configuration.isKindIncluded(.initializer),
                let body = node.body {
                 collectViolation(in: body.statements)
             }
         }
 
         override func visitPost(_ node: PatternBindingSyntax) {
-            if config.isKindIncluded(.getter),
+            if configuration.isKindIncluded(.getter),
                case let .getter(itemList) = node.accessorBlock?.accessors {
                 collectViolation(in: itemList)
             }
         }
 
         override func visitPost(_ node: SubscriptDeclSyntax) {
-            if config.isKindIncluded(.subscript),
+            if configuration.isKindIncluded(.subscript),
                case let .getter(itemList) = node.accessorBlock?.accessors {
                 collectViolation(in: itemList)
             }

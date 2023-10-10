@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct SwitchCaseAlignmentRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct SwitchCaseAlignmentRule: Rule {
     var configuration = SwitchCaseAlignmentConfiguration()
 
     static let description = RuleDescription(
@@ -37,23 +38,10 @@ struct SwitchCaseAlignmentRule: SwiftSyntaxRule {
         ],
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(locationConverter: file.locationConverter, indentedCases: configuration.indentedCases)
-    }
 }
 
 extension SwitchCaseAlignmentRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let locationConverter: SourceLocationConverter
-        private let indentedCases: Bool
-
-        init(locationConverter: SourceLocationConverter, indentedCases: Bool) {
-            self.locationConverter = locationConverter
-            self.indentedCases = indentedCases
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchExprSyntax) {
             let closingBracePosition = node.rightBrace.positionAfterSkippingLeadingTrivia
             let closingBraceColumn = locationConverter.location(for: closingBracePosition).column
@@ -69,9 +57,9 @@ extension SwitchCaseAlignmentRule {
                 let casePosition = `case`.positionAfterSkippingLeadingTrivia
                 let caseColumn = locationConverter.location(for: casePosition).column
 
-                let hasViolation = (indentedCases && caseColumn <= closingBraceColumn) ||
-                    (!indentedCases && caseColumn != closingBraceColumn) ||
-                    (indentedCases && caseColumn != firstCaseColumn)
+                let hasViolation = (configuration.indentedCases && caseColumn <= closingBraceColumn) ||
+                    (!configuration.indentedCases && caseColumn != closingBraceColumn) ||
+                    (configuration.indentedCases && caseColumn != firstCaseColumn)
 
                 guard hasViolation else {
                     continue
@@ -79,7 +67,7 @@ extension SwitchCaseAlignmentRule {
 
                 let reason = """
                     Case statements should \
-                    \(indentedCases ? "be indented within" : "vertically aligned with") \
+                    \(configuration.indentedCases ? "be indented within" : "vertically aligned with") \
                     their closing brace
                     """
 

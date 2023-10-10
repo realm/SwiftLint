@@ -1,7 +1,8 @@
 import SwiftSyntax
 
 /// A specialized `ViolationsSyntaxVisitor` that tracks declared identifiers per scope while traversing the AST.
-open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
+open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
+        ViolationsSyntaxVisitor<Configuration> {
     /// A type that remembers the declared identifers (in order) up to the current position in the code.
     public typealias Scope = Stack<Set<String>>
 
@@ -11,9 +12,9 @@ open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
     /// Initializer.
     ///
     /// - parameter scope: A (potentially already pre-filled) scope to collect identifers into.
-    public init(scope: Scope = Scope()) {
+    public init(configuration: Configuration, locationConverter: SourceLocationConverter, scope: Scope = Scope()) {
         self.scope = scope
-        super.init(viewMode: .sourceAccurate)
+        super.init(configuration: configuration, locationConverter: locationConverter)
     }
 
     /// Indicate whether a given identifier is in scope.

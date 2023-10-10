@@ -32,7 +32,7 @@ struct ProtocolPropertyAccessorsOrderRule: SwiftSyntaxCorrectableRule {
 }
 
 private extension ProtocolPropertyAccessorsOrderRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
             .allExcept(ProtocolDeclSyntax.self, VariableDeclSyntax.self)
         }

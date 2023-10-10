@@ -7,7 +7,7 @@ public protocol SwiftSyntaxRule: SourceKitFreeRule {
     /// - parameter file: The file for which to produce the visitor.
     ///
     /// - returns: A `ViolationsSyntaxVisitor` for the given file.
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType>
 
     /// Produce a violation for the given file and absolute position.
     ///

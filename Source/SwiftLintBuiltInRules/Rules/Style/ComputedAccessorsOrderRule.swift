@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ComputedAccessorsOrderRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct ComputedAccessorsOrderRule: Rule {
     var configuration = ComputedAccessorsOrderConfiguration()
 
     static let description = RuleDescription(
@@ -11,10 +12,6 @@ struct ComputedAccessorsOrderRule: SwiftSyntaxRule {
         nonTriggeringExamples: ComputedAccessorsOrderRuleExamples.nonTriggeringExamples,
         triggeringExamples: ComputedAccessorsOrderRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(expectedOrder: configuration.order)
-    }
 }
 
 private extension ComputedAccessorsOrderRule {
@@ -22,18 +19,11 @@ private extension ComputedAccessorsOrderRule {
         case `subscript`, property
     }
 
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let expectedOrder: ComputedAccessorsOrderConfiguration.Order
-
-        init(expectedOrder: ComputedAccessorsOrderConfiguration.Order) {
-            self.expectedOrder = expectedOrder
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: AccessorBlockSyntax) {
             guard let firstAccessor = node.accessorsList.first,
                   let order = node.order,
-                  order != expectedOrder else {
+                  order != configuration.order else {
                 return
             }
 
@@ -49,7 +39,7 @@ private extension ComputedAccessorsOrderRule {
         private func reason(for kind: ViolationKind) -> String {
             let kindString = kind == .subscript ? "subscripts" : "properties"
             let orderString: String
-            switch expectedOrder {
+            switch configuration.order {
             case .getSet:
                 orderString = "getter and then the setter"
             case .setGet:

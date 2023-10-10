@@ -18,15 +18,15 @@ struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule 
         corrections: RedundantObjcAttributeRuleExamples.corrections
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        final class Visitor: ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+        final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
             override func visitPost(_ node: AttributeListSyntax) {
                 if let objcAttribute = node.violatingObjCAttribute {
                     violations.append(objcAttribute.positionAfterSkippingLeadingTrivia)
                 }
             }
         }
-        return Visitor(viewMode: .sourceAccurate)
+        return Visitor(configuration: configuration, locationConverter: file.locationConverter)
     }
 
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {

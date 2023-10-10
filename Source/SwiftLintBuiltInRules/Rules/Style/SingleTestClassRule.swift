@@ -50,7 +50,7 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let classes = TestClassVisitor(viewMode: .sourceAccurate, testParentClasses: configuration.testParentClasses)
+        let classes = Visitor(configuration: configuration, locationConverter: file.locationConverter)
             .walk(tree: file.syntaxTree, handler: \.violations)
 
         guard classes.count > 1 else { return [] }
@@ -64,20 +64,15 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule {
     }
 }
 
-private class TestClassVisitor: ViolationsSyntaxVisitor {
-    private let testParentClasses: Set<String>
-    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
+private extension SingleTestClassRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-    init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
-        self.testParentClasses = testParentClasses
-        super.init(viewMode: viewMode)
-    }
-
-    override func visitPost(_ node: ClassDeclSyntax) {
-        guard node.inheritanceClause.containsInheritedType(inheritedTypes: testParentClasses) else {
-            return
+        override func visitPost(_ node: ClassDeclSyntax) {
+            guard node.inheritanceClause.containsInheritedType(inheritedTypes: configuration.testParentClasses) else {
+                return
+            }
+            violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
         }
-
-        violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
     }
 }

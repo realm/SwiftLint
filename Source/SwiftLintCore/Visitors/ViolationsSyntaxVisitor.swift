@@ -1,7 +1,23 @@
 import SwiftSyntax
 
 /// A SwiftSyntax `SyntaxVisitor` that produces absolute positions where violations should be reported.
-open class ViolationsSyntaxVisitor: SyntaxVisitor {
+open class ViolationsSyntaxVisitor<Configuration: RuleConfiguration>: SyntaxVisitor {
+    /// A rule's configuration.
+    public let configuration: Configuration
+    /// A source location converter associated with the syntax tree being traversed.
+    public let locationConverter: SourceLocationConverter
+
+    /// Initializer for a ``ViolationsSyntaxVisitor``.
+    /// 
+    /// - Parameters:
+    ///   - configuration: Configuration of a rule.
+    ///   - locationConverter: Location converter associated with the to be traversed syntax tree.
+    public init(configuration: Configuration, locationConverter: SourceLocationConverter) {
+        self.configuration = configuration
+        self.locationConverter = locationConverter
+        super.init(viewMode: .sourceAccurate)
+    }
+
     /// Positions in a source file where violations should be reported.
     public var violations: [ReasonedRuleViolation] = []
     /// Ranges of violations to be used in rewriting (see ``SwiftSyntaxCorrectableRule``). It is not mandatory to fill

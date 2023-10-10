@@ -36,16 +36,16 @@ struct PatternMatchingKeywordsRule: OptInRule {
 }
 
 private extension PatternMatchingKeywordsRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseItemSyntax) {
-            let localViolations = TupleVisitor(viewMode: .sourceAccurate)
+            let localViolations = TupleVisitor(configuration: configuration, locationConverter: locationConverter)
                 .walk(tree: node.pattern, handler: \.violations)
             violations.append(contentsOf: localViolations)
         }
     }
 }
 
-private final class TupleVisitor: ViolationsSyntaxVisitor {
+private final class TupleVisitor<Configuration: RuleConfiguration>: ViolationsSyntaxVisitor<Configuration> {
     override func visitPost(_ node: LabeledExprListSyntax) {
         let list = node.flatteningEnumPatterns()
             .compactMap { elem in

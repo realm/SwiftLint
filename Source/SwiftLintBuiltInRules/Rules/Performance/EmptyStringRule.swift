@@ -25,7 +25,7 @@ struct EmptyStringRule: OptInRule {
 }
 
 private extension EmptyStringRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: StringLiteralExprSyntax) {
             guard
                 // Empty string literal: `""`, `#""#`, etc.

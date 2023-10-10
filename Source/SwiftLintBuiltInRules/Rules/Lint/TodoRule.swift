@@ -1,7 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-struct TodoRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct TodoRule: Rule {
     var configuration = TodoConfiguration()
 
     static let description = RuleDescription(
@@ -24,26 +25,15 @@ struct TodoRule: SwiftSyntaxRule {
             Example("/** ↓TODO: */")
         ].skipWrappingInCommentTests()
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(todoKeywords: configuration.only)
-    }
 }
 
 private extension TodoRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let todoKeywords: [TodoConfiguration.TodoKeyword]
-
-        init(todoKeywords: [TodoConfiguration.TodoKeyword]) {
-            self.todoKeywords = todoKeywords
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: TokenSyntax) {
             let leadingViolations = node.leadingTrivia.violations(offset: node.position,
-                                                                  for: todoKeywords)
+                                                                  for: configuration.only)
             let trailingViolations = node.trailingTrivia.violations(offset: node.endPositionBeforeTrailingTrivia,
-                                                                    for: todoKeywords)
+                                                                    for: configuration.only)
             violations.append(contentsOf: leadingViolations + trailingViolations)
         }
     }

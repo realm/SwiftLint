@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ForceCastRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct ForceCastRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
@@ -13,14 +14,10 @@ struct ForceCastRule: SwiftSyntaxRule {
         ],
         triggeringExamples: [ Example("NSNumber() ↓as! Int") ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ForceCastRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: AsExprSyntax) {
             if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
                 violations.append(node.asKeyword.positionAfterSkippingLeadingTrivia)

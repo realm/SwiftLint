@@ -37,7 +37,7 @@ struct XCTFailMessageRule: Rule {
 }
 
 private extension XCTFailMessageRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let expression = node.calledExpression.as(DeclReferenceExprSyntax.self),

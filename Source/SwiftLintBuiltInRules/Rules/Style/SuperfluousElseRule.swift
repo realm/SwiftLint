@@ -97,7 +97,7 @@ struct SuperfluousElseRule: OptInRule {
 }
 
 private extension SuperfluousElseRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: IfExprSyntax) {

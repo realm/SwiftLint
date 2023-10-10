@@ -1,10 +1,8 @@
 import SwiftSyntax
 
-final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor {
+final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<SeverityLevelsConfiguration<Parent>> {
     private let kind: Kind
     private let file: SwiftLintFile
-    private let configuration: SeverityLevelsConfiguration<Parent>
-    private let locationConverter: SourceLocationConverter
 
     enum Kind {
         case closure
@@ -26,9 +24,7 @@ final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor {
     init(kind: Kind, file: SwiftLintFile, configuration: SeverityLevelsConfiguration<Parent>) {
         self.kind = kind
         self.file = file
-        self.configuration = configuration
-        locationConverter = file.locationConverter
-        super.init(viewMode: .sourceAccurate)
+        super.init(configuration: configuration, locationConverter: file.locationConverter)
     }
 
     override func visitPost(_ node: EnumDeclSyntax) {

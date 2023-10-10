@@ -36,7 +36,7 @@ struct BlockBasedKVORule: Rule {
 }
 
 private extension BlockBasedKVORule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard node.modifiers.contains(keyword: .override),
                   case let parameterList = node.signature.parameterClause.parameters,

@@ -109,7 +109,7 @@ struct ReduceIntoRule: OptInRule {
 }
 
 private extension ReduceIntoRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let name = node.nameToken,
                   name.text == "reduce",

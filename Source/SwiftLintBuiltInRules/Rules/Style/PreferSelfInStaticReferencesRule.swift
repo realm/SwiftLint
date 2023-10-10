@@ -35,7 +35,7 @@ private extension PreferSelfInStaticReferencesRule {
         case skipReferences
     }
 
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var parentDeclScopes = Stack<ParentDeclBehavior>()
         private var variableDeclScopes = Stack<VariableDeclBehavior>()
 

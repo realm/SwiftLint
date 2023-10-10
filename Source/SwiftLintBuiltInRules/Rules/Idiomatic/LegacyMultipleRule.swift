@@ -40,7 +40,7 @@ struct LegacyMultipleRule: OptInRule {
 }
 
 private extension LegacyMultipleRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
                   operatorNode.operator.tokenKind == .binaryOperator("%"),

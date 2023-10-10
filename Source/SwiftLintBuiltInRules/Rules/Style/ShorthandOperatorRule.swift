@@ -42,7 +42,7 @@ struct ShorthandOperatorRule: Rule {
 }
 
 private extension ShorthandOperatorRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard node.operator.is(AssignmentExprSyntax.self),
                   let rightExpr = node.rightOperand.as(InfixOperatorExprSyntax.self),

@@ -82,7 +82,7 @@ struct UnneededParenthesesInClosureArgumentRule: SwiftSyntaxCorrectableRule, Opt
 }
 
 private extension UnneededParenthesesInClosureArgumentRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ClosureSignatureSyntax) {
             guard let clause = node.parameterClause?.as(ClosureParameterClauseSyntax.self),
                   clause.parameters.isNotEmpty,

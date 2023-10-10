@@ -20,7 +20,7 @@ struct FlatMapOverMapReduceRule: OptInRule {
 }
 
 private extension FlatMapOverMapReduceRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),

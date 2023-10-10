@@ -43,7 +43,7 @@ struct NSLocalizedStringRequireBundleRule: OptInRule {
 }
 
 private extension NSLocalizedStringRequireBundleRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let identifierExpr = node.calledExpression.as(DeclReferenceExprSyntax.self),
                identifierExpr.baseName.tokenKind == .identifier("NSLocalizedString"),

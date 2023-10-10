@@ -152,7 +152,7 @@ struct ValidIBInspectableRule: Rule {
 }
 
 private extension ValidIBInspectableRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [FunctionDeclSyntax.self] }
 
         override func visitPost(_ node: VariableDeclSyntax) {

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct VoidFunctionInTernaryConditionRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct VoidFunctionInTernaryConditionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -105,14 +106,10 @@ struct VoidFunctionInTernaryConditionRule: SwiftSyntaxRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension VoidFunctionInTernaryConditionRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: TernaryExprSyntax) {
             guard node.thenExpression.is(FunctionCallExprSyntax.self),
                   node.elseExpression.is(FunctionCallExprSyntax.self),

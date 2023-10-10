@@ -58,7 +58,7 @@ private func extractFunctionCallSyntax(_ node: some SyntaxProtocol) -> FunctionC
 }
 
 private extension UnneededOverrideRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             if isUnneededOverride(node) {
                 self.violations.append(node.positionAfterSkippingLeadingTrivia)

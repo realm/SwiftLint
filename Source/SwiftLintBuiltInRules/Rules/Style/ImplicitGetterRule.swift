@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ImplicitGetterRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct ImplicitGetterRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,27 +12,23 @@ struct ImplicitGetterRule: SwiftSyntaxRule {
         nonTriggeringExamples: ImplicitGetterRuleExamples.nonTriggeringExamples,
         triggeringExamples: ImplicitGetterRuleExamples.triggeringExamples
     )
+}
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
+private enum ViolationKind {
+    case `subscript`, property
+
+    var violationDescription: String {
+        switch self {
+        case .subscript:
+            return "Computed read-only subscripts should avoid using the get keyword"
+        case .property:
+            return "Computed read-only properties should avoid using the get keyword"
+        }
     }
 }
 
 private extension ImplicitGetterRule {
-    private enum ViolationKind {
-        case `subscript`, property
-
-        var violationDescription: String {
-            switch self {
-            case .subscript:
-                return "Computed read-only subscripts should avoid using the get keyword"
-            case .property:
-                return "Computed read-only properties should avoid using the get keyword"
-            }
-        }
-    }
-
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: AccessorBlockSyntax) {
             guard let getAccessor = node.getAccessor,
                   node.setAccessor == nil,

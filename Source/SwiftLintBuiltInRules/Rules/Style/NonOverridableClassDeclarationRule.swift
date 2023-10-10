@@ -1,5 +1,6 @@
 import SwiftSyntax
 
+@SwiftSyntaxRule
 struct NonOverridableClassDeclarationRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = NonOverridableClassDeclarationConfiguration()
 
@@ -94,24 +95,13 @@ struct NonOverridableClassDeclarationRule: SwiftSyntaxCorrectableRule, OptInRule
                 """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
 }
 
 private extension NonOverridableClassDeclarationRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: NonOverridableClassDeclarationConfiguration
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var finalClassScope = Stack<Bool>()
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
-
-        init(configuration: NonOverridableClassDeclarationConfiguration) {
-            self.configuration = configuration
-            super.init(viewMode: .sourceAccurate)
-        }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
             finalClassScope.push(node.modifiers.contains(keyword: .final))

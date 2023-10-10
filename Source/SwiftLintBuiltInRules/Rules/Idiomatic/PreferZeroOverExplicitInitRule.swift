@@ -44,7 +44,7 @@ struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule {
 }
 
 private extension PreferZeroOverExplicitInitRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if node.hasViolation {
                 violations.append(node.positionAfterSkippingLeadingTrivia)

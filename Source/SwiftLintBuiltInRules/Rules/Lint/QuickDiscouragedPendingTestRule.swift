@@ -15,7 +15,7 @@ struct QuickDiscouragedPendingTestRule: OptInRule {
 }
 
 private extension QuickDiscouragedPendingTestRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {

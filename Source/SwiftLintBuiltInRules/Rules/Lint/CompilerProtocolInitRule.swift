@@ -24,7 +24,7 @@ struct CompilerProtocolInitRule: Rule {
 }
 
 private extension CompilerProtocolInitRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.trailingClosure == nil else {
                 return

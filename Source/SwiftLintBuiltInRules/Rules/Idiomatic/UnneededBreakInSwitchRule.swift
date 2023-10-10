@@ -12,6 +12,7 @@ private func embedInSwitch(
         """, file: file, line: line)
 }
 
+@SwiftSyntaxRule
 struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -86,10 +87,6 @@ struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             locationConverter: file.locationConverter,
@@ -99,7 +96,7 @@ struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule {
 }
 
 private extension UnneededBreakInSwitchRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseSyntax) {
             guard let statement = node.unneededBreak else {
                 return

@@ -34,7 +34,7 @@ struct NSLocalizedStringKeyRule: OptInRule {
 }
 
 private extension NSLocalizedStringKeyRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text == "NSLocalizedString" else {
                 return

@@ -94,7 +94,7 @@ struct RawValueForCamelCasedCodableEnumRule: OptInRule {
 }
 
 private extension RawValueForCamelCasedCodableEnumRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let codableTypes = Set(["Codable", "Decodable", "Encodable"])
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {

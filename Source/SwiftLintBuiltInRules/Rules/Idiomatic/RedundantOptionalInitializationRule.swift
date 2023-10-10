@@ -114,7 +114,7 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule {
 }
 
 private extension RedundantOptionalInitializationRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard node.bindingSpecifier.tokenKind == .keyword(.var),
                   !node.modifiers.contains(keyword: .lazy) else {

@@ -31,7 +31,7 @@ struct ExplicitTopLevelACLRule: OptInRule {
 }
 
 private extension ExplicitTopLevelACLRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ClassDeclSyntax) {

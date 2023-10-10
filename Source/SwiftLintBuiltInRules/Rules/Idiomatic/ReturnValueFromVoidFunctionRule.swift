@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ReturnValueFromVoidFunctionRule: OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct ReturnValueFromVoidFunctionRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -12,14 +13,10 @@ struct ReturnValueFromVoidFunctionRule: OptInRule, SwiftSyntaxRule {
         nonTriggeringExamples: ReturnValueFromVoidFunctionRuleExamples.nonTriggeringExamples,
         triggeringExamples: ReturnValueFromVoidFunctionRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ReturnValueFromVoidFunctionRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ReturnStmtSyntax) {
             if node.expression != nil,
                let functionNode = Syntax(node).enclosingFunction(),

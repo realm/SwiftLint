@@ -24,7 +24,7 @@ struct ContainsOverRangeNilComparisonRule: OptInRule {
 }
 
 private extension ContainsOverRangeNilComparisonRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard
                 let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),

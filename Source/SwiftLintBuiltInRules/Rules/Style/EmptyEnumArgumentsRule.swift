@@ -121,7 +121,7 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule {
 }
 
 private extension EmptyEnumArgumentsRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseItemSyntax) {
             if let violationPosition = node.pattern.emptyEnumArgumentsViolation(rewrite: false)?.position {
                 violations.append(violationPosition)

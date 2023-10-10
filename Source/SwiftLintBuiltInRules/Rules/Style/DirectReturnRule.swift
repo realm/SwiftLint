@@ -188,7 +188,7 @@ struct DirectReturnRule: SwiftSyntaxCorrectableRule, OptInRule {
 }
 
 private extension DirectReturnRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ statements: CodeBlockItemListSyntax) {

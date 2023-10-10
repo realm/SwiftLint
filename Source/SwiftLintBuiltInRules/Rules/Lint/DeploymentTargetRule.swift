@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct DeploymentTargetRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct DeploymentTargetRule {
     fileprivate typealias Version = DeploymentTargetConfiguration.Version
     var configuration = DeploymentTargetConfiguration()
 
@@ -13,50 +14,39 @@ struct DeploymentTargetRule: SwiftSyntaxRule {
         nonTriggeringExamples: DeploymentTargetRuleExamples.nonTriggeringExamples,
         triggeringExamples: DeploymentTargetRuleExamples.triggeringExamples
     )
+}
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(platformToConfiguredMinVersion: platformToConfiguredMinVersion)
-    }
+private enum AvailabilityType {
+    case condition
+    case attribute
+    case negativeCondition
 
-    private var platformToConfiguredMinVersion: [String: Version] {
-        return [
-            "iOS": configuration.iOSDeploymentTarget,
-            "iOSApplicationExtension": configuration.iOSAppExtensionDeploymentTarget,
-            "macOS": configuration.macOSDeploymentTarget,
-            "macOSApplicationExtension": configuration.macOSAppExtensionDeploymentTarget,
-            "OSX": configuration.macOSDeploymentTarget,
-            "tvOS": configuration.tvOSDeploymentTarget,
-            "tvOSApplicationExtension": configuration.tvOSAppExtensionDeploymentTarget,
-            "watchOS": configuration.watchOSDeploymentTarget,
-            "watchOSApplicationExtension": configuration.watchOSAppExtensionDeploymentTarget
-        ]
-    }
-
-    private enum AvailabilityType {
-        case condition
-        case attribute
-        case negativeCondition
-
-        var displayString: String {
-            switch self {
-            case .condition:
-                return "condition"
-            case .attribute:
-                return "attribute"
-            case .negativeCondition:
-                return "negative condition"
-            }
+    var displayString: String {
+        switch self {
+        case .condition:
+            return "condition"
+        case .attribute:
+            return "attribute"
+        case .negativeCondition:
+            return "negative condition"
         }
     }
 }
 
 private extension DeploymentTargetRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let platformToConfiguredMinVersion: [String: Version]
-
-        init(platformToConfiguredMinVersion: [String: Version]) {
-            self.platformToConfiguredMinVersion = platformToConfiguredMinVersion
-            super.init(viewMode: .sourceAccurate)
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private var platformToConfiguredMinVersion: [String: Version] {
+            [
+                "iOS": configuration.iOSDeploymentTarget,
+                "iOSApplicationExtension": configuration.iOSAppExtensionDeploymentTarget,
+                "macOS": configuration.macOSDeploymentTarget,
+                "macOSApplicationExtension": configuration.macOSAppExtensionDeploymentTarget,
+                "OSX": configuration.macOSDeploymentTarget,
+                "tvOS": configuration.tvOSDeploymentTarget,
+                "tvOSApplicationExtension": configuration.tvOSAppExtensionDeploymentTarget,
+                "watchOS": configuration.watchOSDeploymentTarget,
+                "watchOSApplicationExtension": configuration.watchOSAppExtensionDeploymentTarget
+            ]
         }
 
         override func visitPost(_ node: AttributeSyntax) {

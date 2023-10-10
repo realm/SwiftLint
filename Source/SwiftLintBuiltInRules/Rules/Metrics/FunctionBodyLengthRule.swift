@@ -8,7 +8,7 @@ struct FunctionBodyLengthRule: SwiftSyntaxRule {
         kind: .metrics
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         BodyLengthRuleVisitor(kind: .function, file: file, configuration: configuration)
     }
 }

@@ -32,7 +32,7 @@ struct ClassDelegateProtocolRule: Rule {
 }
 
 private extension ClassDelegateProtocolRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
             .allExcept(ProtocolDeclSyntax.self)
         }

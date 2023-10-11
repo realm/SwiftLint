@@ -113,20 +113,20 @@ private extension SelfInPropertyInitializationRule {
             }
         }
     }
+}
 
-    final class IdentifierUsageVisitor: SyntaxVisitor {
-        let identifier: TokenKind
-        private(set) var isTokenUsed = false
+private final class IdentifierUsageVisitor: SyntaxVisitor {
+    let identifier: TokenKind
+    private(set) var isTokenUsed = false
 
-        init(identifier: TokenKind) {
-            self.identifier = identifier
-            super.init(viewMode: .sourceAccurate)
-        }
+    init(identifier: TokenKind) {
+        self.identifier = identifier
+        super.init(viewMode: .sourceAccurate)
+    }
 
-        override func visitPost(_ node: DeclReferenceExprSyntax) {
-            if node.baseName.tokenKind == identifier, node.keyPathInParent != \MemberAccessExprSyntax.declName {
-                isTokenUsed = true
-            }
+    override func visitPost(_ node: DeclReferenceExprSyntax) {
+        if node.baseName.tokenKind == identifier, node.keyPathInParent != \MemberAccessExprSyntax.declName {
+            isTokenUsed = true
         }
     }
 }

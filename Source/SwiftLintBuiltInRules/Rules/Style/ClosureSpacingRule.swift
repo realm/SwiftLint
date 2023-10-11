@@ -47,76 +47,74 @@ struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ClosureSpacingRuleVisitor(locationConverter: file.locationConverter)
+        Visitor(locationConverter: file.locationConverter)
     }
 
     func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        ClosureSpacingRuleRewriter(
+        Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)
         )
     }
 }
 
-// MARK: - ClosureSpacingRuleVisitor
+private extension ClosureSpacingRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        let locationConverter: SourceLocationConverter
 
-private final class ClosureSpacingRuleVisitor: ViolationsSyntaxVisitor {
-    let locationConverter: SourceLocationConverter
+        init(locationConverter: SourceLocationConverter) {
+            self.locationConverter = locationConverter
+            super.init(viewMode: .sourceAccurate)
+        }
 
-    init(locationConverter: SourceLocationConverter) {
-        self.locationConverter = locationConverter
-        super.init(viewMode: .sourceAccurate)
-    }
-
-    override func visitPost(_ node: ClosureExprSyntax) {
-        if node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter),
-           node.violations.hasViolations {
-            violations.append(node.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: ClosureExprSyntax) {
+            if node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter),
+               node.violations.hasViolations {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
-}
 
-// MARK: - ClosureSpacingRuleRewriter
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-private final class ClosureSpacingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    private(set) var correctionPositions: [AbsolutePosition] = []
-    let locationConverter: SourceLocationConverter
-    let disabledRegions: [SourceRange]
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
 
-    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
-    }
+        override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
+            var node = node
+            node.statements = visit(node.statements)
 
-    override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
-        var node = node
-        node.statements = visit(node.statements)
+            guard
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+                node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
 
-        guard
-            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-            node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter)
-        else {
+            let violations = node.violations
+            if violations.leftBraceLeftSpace {
+                node.leftBrace = node.leftBrace.with(\.leadingTrivia, .spaces(1))
+            }
+            if violations.leftBraceRightSpace {
+                node.leftBrace = node.leftBrace.with(\.trailingTrivia, .spaces(1))
+            }
+            if violations.rightBraceLeftSpace {
+                node.rightBrace = node.rightBrace.with(\.leadingTrivia, .spaces(1))
+            }
+            if violations.rightBraceRightSpace {
+                node.rightBrace = node.rightBrace.with(\.trailingTrivia, .spaces(1))
+            }
+            if violations.hasViolations {
+                correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            }
+
             return super.visit(node)
         }
-
-        let violations = node.violations
-        if violations.leftBraceLeftSpace {
-            node.leftBrace = node.leftBrace.with(\.leadingTrivia, .spaces(1))
-        }
-        if violations.leftBraceRightSpace {
-            node.leftBrace = node.leftBrace.with(\.trailingTrivia, .spaces(1))
-        }
-        if violations.rightBraceLeftSpace {
-            node.rightBrace = node.rightBrace.with(\.leadingTrivia, .spaces(1))
-        }
-        if violations.rightBraceRightSpace {
-            node.rightBrace = node.rightBrace.with(\.trailingTrivia, .spaces(1))
-        }
-        if violations.hasViolations {
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-        }
-
-        return super.visit(node)
     }
 }
 

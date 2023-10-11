@@ -57,35 +57,37 @@ private func extractFunctionCallSyntax(_ node: SyntaxProtocol) -> FunctionCallEx
     return syntax?.as(FunctionCallExprSyntax.self)
 }
 
-private final class Visitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: FunctionDeclSyntax) {
-        if isUnneededOverride(node) {
-            self.violations.append(node.positionAfterSkippingLeadingTrivia)
+private extension UnneededOverrideRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if isUnneededOverride(node) {
+                self.violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
-}
 
-private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    var correctionPositions: [AbsolutePosition] = []
-    let locationConverter: SourceLocationConverter
-    let disabledRegions: [SourceRange]
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
-    }
-
-    override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
-        if isUnneededOverride(node) &&
-            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) {
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-            let expr: DeclSyntax = ""
-            return expr
-                .with(\.leadingTrivia, node.leadingTrivia)
-                .with(\.trailingTrivia, node.trailingTrivia)
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
 
-        return super.visit(node)
+        override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
+            if isUnneededOverride(node) &&
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) {
+                correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+                let expr: DeclSyntax = ""
+                return expr
+                    .with(\.leadingTrivia, node.leadingTrivia)
+                    .with(\.trailingTrivia, node.trailingTrivia)
+            }
+
+            return super.visit(node)
+        }
     }
 }
 

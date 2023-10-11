@@ -80,108 +80,110 @@ struct ControlStatementRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRu
     }
 }
 
-private final class Visitor: ViolationsSyntaxVisitor {
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+private extension ControlStatementRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
-    override func visitPost(_ node: CatchClauseSyntax) {
-        if node.catchItems.containSuperfluousParens == true {
-            violations.append(node.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: CatchClauseSyntax) {
+            if node.catchItems.containSuperfluousParens == true {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: GuardStmtSyntax) {
+            if node.conditions.containSuperfluousParens {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: IfExprSyntax) {
+            if node.conditions.containSuperfluousParens {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: SwitchExprSyntax) {
+            if node.subject.unwrapped != nil {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: WhileStmtSyntax) {
+            if node.conditions.containSuperfluousParens {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 
-    override func visitPost(_ node: GuardStmtSyntax) {
-        if node.conditions.containSuperfluousParens {
-            violations.append(node.positionAfterSkippingLeadingTrivia)
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
-    }
 
-    override func visitPost(_ node: IfExprSyntax) {
-        if node.conditions.containSuperfluousParens {
-            violations.append(node.positionAfterSkippingLeadingTrivia)
-        }
-    }
-
-    override func visitPost(_ node: SwitchExprSyntax) {
-        if node.subject.unwrapped != nil {
-            violations.append(node.positionAfterSkippingLeadingTrivia)
-        }
-    }
-
-    override func visitPost(_ node: WhileStmtSyntax) {
-        if node.conditions.containSuperfluousParens {
-            violations.append(node.positionAfterSkippingLeadingTrivia)
-        }
-    }
-}
-
-private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    private(set) var correctionPositions: [AbsolutePosition] = []
-    let locationConverter: SourceLocationConverter
-    let disabledRegions: [SourceRange]
-
-    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
-    }
-
-    override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
-        guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              case let items = node.catchItems, items.containSuperfluousParens == true else {
+        override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
+            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+                  case let items = node.catchItems, items.containSuperfluousParens == true else {
+                return super.visit(node)
+            }
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            let node = node
+                .with(\.catchKeyword, node.catchKeyword.with(\.trailingTrivia, .space))
+                .with(\.catchItems, items.withoutParens)
             return super.visit(node)
         }
-        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-        let node = node
-            .with(\.catchKeyword, node.catchKeyword.with(\.trailingTrivia, .space))
-            .with(\.catchItems, items.withoutParens)
-        return super.visit(node)
-    }
 
-    override func visit(_ node: GuardStmtSyntax) -> StmtSyntax {
-        guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              node.conditions.containSuperfluousParens else {
+        override func visit(_ node: GuardStmtSyntax) -> StmtSyntax {
+            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+                  node.conditions.containSuperfluousParens else {
+                return super.visit(node)
+            }
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            let node = node
+                .with(\.guardKeyword, node.guardKeyword.with(\.trailingTrivia, .space))
+                .with(\.conditions, node.conditions.withoutParens)
             return super.visit(node)
         }
-        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-        let node = node
-            .with(\.guardKeyword, node.guardKeyword.with(\.trailingTrivia, .space))
-            .with(\.conditions, node.conditions.withoutParens)
-        return super.visit(node)
-    }
 
-    override func visit(_ node: IfExprSyntax) -> ExprSyntax {
-        guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              node.conditions.containSuperfluousParens else {
+        override func visit(_ node: IfExprSyntax) -> ExprSyntax {
+            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+                  node.conditions.containSuperfluousParens else {
+                return super.visit(node)
+            }
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            let node = node
+                .with(\.ifKeyword, node.ifKeyword.with(\.trailingTrivia, .space))
+                .with(\.conditions, node.conditions.withoutParens)
             return super.visit(node)
         }
-        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-        let node = node
-            .with(\.ifKeyword, node.ifKeyword.with(\.trailingTrivia, .space))
-            .with(\.conditions, node.conditions.withoutParens)
-        return super.visit(node)
-    }
 
-    override func visit(_ node: SwitchExprSyntax) -> ExprSyntax {
-        guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              let tupleElement = node.subject.unwrapped else {
+        override func visit(_ node: SwitchExprSyntax) -> ExprSyntax {
+            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+                  let tupleElement = node.subject.unwrapped else {
+                return super.visit(node)
+            }
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            let node = node
+                .with(\.switchKeyword, node.switchKeyword.with(\.trailingTrivia, .space))
+                .with(\.subject, tupleElement.with(\.trailingTrivia, .space))
             return super.visit(node)
         }
-        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-        let node = node
-            .with(\.switchKeyword, node.switchKeyword.with(\.trailingTrivia, .space))
-            .with(\.subject, tupleElement.with(\.trailingTrivia, .space))
-        return super.visit(node)
-    }
 
-    override func visit(_ node: WhileStmtSyntax) -> StmtSyntax {
-        guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-              node.conditions.containSuperfluousParens else {
+        override func visit(_ node: WhileStmtSyntax) -> StmtSyntax {
+            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+                  node.conditions.containSuperfluousParens else {
+                return super.visit(node)
+            }
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            let node = node
+                .with(\.whileKeyword, node.whileKeyword.with(\.trailingTrivia, .space))
+                .with(\.conditions, node.conditions.withoutParens)
             return super.visit(node)
         }
-        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-        let node = node
-            .with(\.whileKeyword, node.whileKeyword.with(\.trailingTrivia, .space))
-            .with(\.conditions, node.conditions.withoutParens)
-        return super.visit(node)
     }
 }
 

@@ -19,7 +19,7 @@ struct ImplicitReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
 }
 
 private extension ImplicitReturnRule {
-    private class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor {
         private let config: ConfigurationType
 
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }

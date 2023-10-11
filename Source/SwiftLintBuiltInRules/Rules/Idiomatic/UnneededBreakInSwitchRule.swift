@@ -87,57 +87,59 @@ struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        UnneededBreakInSwitchRuleVisitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate)
     }
 
-    func makeRewriter(file: SwiftLintCore.SwiftLintFile) -> SwiftLintCore.ViolationsSyntaxRewriter? {
-        UnneededBreakInSwitchRewriter(
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)
         )
     }
 }
 
-private final class UnneededBreakInSwitchRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: SwitchCaseSyntax) {
-        guard let statement = node.unneededBreak else {
-            return
+private extension UnneededBreakInSwitchRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: SwitchCaseSyntax) {
+            guard let statement = node.unneededBreak else {
+                return
+            }
+
+            violations.append(statement.item.positionAfterSkippingLeadingTrivia)
         }
-
-        violations.append(statement.item.positionAfterSkippingLeadingTrivia)
-    }
-}
-
-private final class UnneededBreakInSwitchRewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    private(set) var correctionPositions: [SwiftSyntax.AbsolutePosition] = []
-    let locationConverter: SourceLocationConverter
-    let disabledRegions: [SourceRange]
-
-    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
     }
 
-    override func visit(_ node: SwitchCaseSyntax) -> SwitchCaseSyntax {
-        let stmts = CodeBlockItemListSyntax(node.statements.dropLast())
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [SwiftSyntax.AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-        guard let breakStatement = node.unneededBreak, let secondLast = stmts.last,
-              !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-            return super.visit(node)
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
 
-        correctionPositions.append(breakStatement.item.positionAfterSkippingLeadingTrivia)
+        override func visit(_ node: SwitchCaseSyntax) -> SwitchCaseSyntax {
+            let stmts = CodeBlockItemListSyntax(node.statements.dropLast())
 
-        let trivia = breakStatement.item.leadingTrivia + breakStatement.item.trailingTrivia
+            guard let breakStatement = node.unneededBreak, let secondLast = stmts.last,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return super.visit(node)
+            }
 
-        let newNode = node
-            .with(\.statements, stmts)
-            .with(\.statements.trailingTrivia, secondLast.item.trailingTrivia + trivia)
-            .trimmed { !$0.isComment }
-            .formatted()
-            .as(SwitchCaseSyntax.self)!
+            correctionPositions.append(breakStatement.item.positionAfterSkippingLeadingTrivia)
 
-        return super.visit(newNode)
+            let trivia = breakStatement.item.leadingTrivia + breakStatement.item.trailingTrivia
+
+            let newNode = node
+                .with(\.statements, stmts)
+                .with(\.statements.trailingTrivia, secondLast.item.trailingTrivia + trivia)
+                .trimmed { !$0.isComment }
+                .formatted()
+                .as(SwitchCaseSyntax.self)!
+
+            return super.visit(newNode)
+        }
     }
 }
 

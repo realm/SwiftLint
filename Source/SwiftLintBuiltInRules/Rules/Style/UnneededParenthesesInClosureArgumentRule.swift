@@ -81,50 +81,52 @@ struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, Swif
     }
 }
 
-private final class Visitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: ClosureSignatureSyntax) {
-        guard let clause = node.parameterClause?.as(ClosureParameterClauseSyntax.self),
-              clause.parameters.isNotEmpty,
-              clause.parameters.allSatisfy({ $0.type == nil }) else {
-            return
+private extension UnneededParenthesesInClosureArgumentRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: ClosureSignatureSyntax) {
+            guard let clause = node.parameterClause?.as(ClosureParameterClauseSyntax.self),
+                  clause.parameters.isNotEmpty,
+                  clause.parameters.allSatisfy({ $0.type == nil }) else {
+                return
+            }
+
+            violations.append(clause.positionAfterSkippingLeadingTrivia)
         }
-
-        violations.append(clause.positionAfterSkippingLeadingTrivia)
-    }
-}
-
-private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    private(set) var correctionPositions: [AbsolutePosition] = []
-    let locationConverter: SourceLocationConverter
-    let disabledRegions: [SourceRange]
-
-    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
     }
 
-    override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
-        guard
-            let clause = node.parameterClause?.as(ClosureParameterClauseSyntax.self),
-            clause.parameters.isNotEmpty,
-            clause.parameters.allSatisfy({ $0.type == nil }),
-            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-        else {
-            return super.visit(node)
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
 
-        let items = clause.parameters.enumerated().compactMap { idx, param -> ClosureShorthandParameterSyntax? in
-            let name = param.firstName
-            let isLast = idx == clause.parameters.count - 1
-            return ClosureShorthandParameterSyntax(
-                name: name,
-                trailingComma: isLast ? nil : .commaToken(trailingTrivia: Trivia(pieces: [.spaces(1)]))
-            )
+        override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
+            guard
+                let clause = node.parameterClause?.as(ClosureParameterClauseSyntax.self),
+                clause.parameters.isNotEmpty,
+                clause.parameters.allSatisfy({ $0.type == nil }),
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
+
+            let items = clause.parameters.enumerated().compactMap { idx, param -> ClosureShorthandParameterSyntax? in
+                let name = param.firstName
+                let isLast = idx == clause.parameters.count - 1
+                return ClosureShorthandParameterSyntax(
+                    name: name,
+                    trailingComma: isLast ? nil : .commaToken(trailingTrivia: Trivia(pieces: [.spaces(1)]))
+                )
+            }
+
+            correctionPositions.append(clause.positionAfterSkippingLeadingTrivia)
+
+            let paramList = ClosureShorthandParameterListSyntax(items).with(\.trailingTrivia, .spaces(1))
+            return super.visit(node.with(\.parameterClause, .init(paramList)))
         }
-
-        correctionPositions.append(clause.positionAfterSkippingLeadingTrivia)
-
-        let paramList = ClosureShorthandParameterListSyntax(items).with(\.trailingTrivia, .spaces(1))
-        return super.visit(node.with(\.parameterClause, .init(paramList)))
     }
 }

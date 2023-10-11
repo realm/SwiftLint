@@ -135,39 +135,6 @@ private enum ProtocolRequirementType: Equatable {
 }
 
 private extension StrictFilePrivateRule {
-    final class ProtocolCollector: ViolationsSyntaxVisitor {
-        private(set) var protocols = [String: [ProtocolRequirementType]]()
-        private var currentProtocolName: String = ""
-
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ProtocolDeclSyntax.self) }
-
-        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            currentProtocolName = node.name.text
-            return .visitChildren
-        }
-
-        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            protocols[currentProtocolName, default: []].append(.method(node.name.text))
-            return .skipChildren
-        }
-
-        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-            for binding in node.bindings {
-                guard let name = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text,
-                      let accessorBlock = binding.accessorBlock else {
-                    continue
-                }
-                if accessorBlock.specifiesGetAccessor {
-                    protocols[currentProtocolName, default: []].append(.getter(name))
-                }
-                if accessorBlock.specifiesSetAccessor {
-                    protocols[currentProtocolName, default: []].append(.setter(name))
-                }
-            }
-            return .skipChildren
-        }
-    }
-
     final class Visitor: ViolationsSyntaxVisitor {
         private let file: SourceFileSyntax
 
@@ -242,6 +209,39 @@ private extension StrictFilePrivateRule {
             }
             return implementedTypesInDecl(of: node.parent)
         }
+    }
+}
+
+private final class ProtocolCollector: ViolationsSyntaxVisitor {
+    private(set) var protocols = [String: [ProtocolRequirementType]]()
+    private var currentProtocolName: String = ""
+
+    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ProtocolDeclSyntax.self) }
+
+    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        currentProtocolName = node.name.text
+        return .visitChildren
+    }
+
+    override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+        protocols[currentProtocolName, default: []].append(.method(node.name.text))
+        return .skipChildren
+    }
+
+    override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+        for binding in node.bindings {
+            guard let name = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text,
+                  let accessorBlock = binding.accessorBlock else {
+                continue
+            }
+            if accessorBlock.specifiesGetAccessor {
+                protocols[currentProtocolName, default: []].append(.getter(name))
+            }
+            if accessorBlock.specifiesSetAccessor {
+                protocols[currentProtocolName, default: []].append(.setter(name))
+            }
+        }
+        return .skipChildren
     }
 }
 

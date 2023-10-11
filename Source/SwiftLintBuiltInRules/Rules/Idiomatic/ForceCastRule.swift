@@ -15,20 +15,22 @@ struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ForceCastRuleVisitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
-private final class ForceCastRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: AsExprSyntax) {
-        if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
-            violations.append(node.asKeyword.positionAfterSkippingLeadingTrivia)
+private extension ForceCastRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: AsExprSyntax) {
+            if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
+                violations.append(node.asKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
-    }
 
-    override func visitPost(_ node: UnresolvedAsExprSyntax) {
-        if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
-            violations.append(node.asKeyword.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: UnresolvedAsExprSyntax) {
+            if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
+                violations.append(node.asKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

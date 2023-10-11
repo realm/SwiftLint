@@ -133,7 +133,7 @@ private extension PrivateOverFilePrivateRule {
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         private(set) var correctionPositions: [AbsolutePosition] = []
         private let validateExtensions: Bool
         private let locationConverter: SourceLocationConverter

@@ -70,58 +70,60 @@ struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        UnavailableConditionRuleVisitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
-private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: IfExprSyntax) {
-        guard node.body.statements.isEmpty else {
-            return
-        }
-
-        guard let condition = node.conditions.onlyElement,
-              let availability = asAvailabilityCondition(condition.condition) else {
-            return
-        }
-
-        if otherAvailabilityCheckInvolved(ifStmt: node) {
-            // If there are other conditional branches with availability checks it might not be possible
-            // to just invert the first one.
-            return
-        }
-
-        violations.append(
-            ReasonedRuleViolation(
-                position: availability.positionAfterSkippingLeadingTrivia,
-                reason: reason(for: availability)
-            )
-        )
-    }
-
-    private func asAvailabilityCondition(_ condition: ConditionElementSyntax.Condition)
-        -> AvailabilityConditionSyntax? {
-        condition.as(AvailabilityConditionSyntax.self)
-    }
-
-    private func otherAvailabilityCheckInvolved(ifStmt: IfExprSyntax) -> Bool {
-        if let elseBody = ifStmt.elseBody, let nestedIfStatement = elseBody.as(IfExprSyntax.self) {
-            if nestedIfStatement.conditions.map(\.condition).compactMap(asAvailabilityCondition).isNotEmpty {
-                return true
+private extension UnavailableConditionRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: IfExprSyntax) {
+            guard node.body.statements.isEmpty else {
+                return
             }
-            return otherAvailabilityCheckInvolved(ifStmt: nestedIfStatement)
-        }
-        return false
-    }
 
-    private func reason(for condition: AvailabilityConditionSyntax) -> String {
-        switch condition.availabilityKeyword.tokenKind {
-        case .poundAvailable:
-            return "Use #unavailable instead of #available with an empty body"
-        case .poundUnavailable:
-            return "Use #available instead of #unavailable with an empty body"
-        default:
-            queuedFatalError("Unknown availability check type.")
+            guard let condition = node.conditions.onlyElement,
+                  let availability = asAvailabilityCondition(condition.condition) else {
+                return
+            }
+
+            if otherAvailabilityCheckInvolved(ifStmt: node) {
+                // If there are other conditional branches with availability checks it might not be possible
+                // to just invert the first one.
+                return
+            }
+
+            violations.append(
+                ReasonedRuleViolation(
+                    position: availability.positionAfterSkippingLeadingTrivia,
+                    reason: reason(for: availability)
+                )
+            )
+        }
+
+        private func asAvailabilityCondition(_ condition: ConditionElementSyntax.Condition)
+        -> AvailabilityConditionSyntax? {
+            condition.as(AvailabilityConditionSyntax.self)
+        }
+
+        private func otherAvailabilityCheckInvolved(ifStmt: IfExprSyntax) -> Bool {
+            if let elseBody = ifStmt.elseBody, let nestedIfStatement = elseBody.as(IfExprSyntax.self) {
+                if nestedIfStatement.conditions.map(\.condition).compactMap(asAvailabilityCondition).isNotEmpty {
+                    return true
+                }
+                return otherAvailabilityCheckInvolved(ifStmt: nestedIfStatement)
+            }
+            return false
+        }
+
+        private func reason(for condition: AvailabilityConditionSyntax) -> String {
+            switch condition.availabilityKeyword.tokenKind {
+            case .poundAvailable:
+                return "Use #unavailable instead of #available with an empty body"
+            case .poundUnavailable:
+                return "Use #available instead of #unavailable with an empty body"
+            default:
+                queuedFatalError("Unknown availability check type.")
+            }
         }
     }
 }

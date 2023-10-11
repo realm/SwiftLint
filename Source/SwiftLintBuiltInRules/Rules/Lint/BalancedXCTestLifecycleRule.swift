@@ -135,16 +135,16 @@ private extension BalancedXCTestLifecycleRule {
             violations.append(node.name.positionAfterSkippingLeadingTrivia)
         }
     }
+}
 
-    final class SetupTearDownVisitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
-        private(set) var methods: Set<XCTMethod> = []
+private final class SetupTearDownVisitor: ViolationsSyntaxVisitor {
+    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    private(set) var methods: Set<XCTMethod> = []
 
-        override func visitPost(_ node: FunctionDeclSyntax) {
-            if let method = XCTMethod(node.name.description),
-               node.signature.parameterClause.parameters.isEmpty {
-                methods.insert(method)
-            }
+    override func visitPost(_ node: FunctionDeclSyntax) {
+        if let method = XCTMethod(node.name.description),
+           node.signature.parameterClause.parameters.isEmpty {
+            methods.insert(method)
         }
     }
 }

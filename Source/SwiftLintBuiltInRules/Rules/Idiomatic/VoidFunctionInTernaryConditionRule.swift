@@ -107,39 +107,41 @@ struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, SwiftSynta
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        VoidFunctionInTernaryConditionVisitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
-private class VoidFunctionInTernaryConditionVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: TernaryExprSyntax) {
-        guard node.thenExpression.is(FunctionCallExprSyntax.self),
-              node.elseExpression.is(FunctionCallExprSyntax.self),
-              let parent = node.parent?.as(ExprListSyntax.self),
-              !parent.containsAssignment,
-              let grandparent = parent.parent,
-              grandparent.is(SequenceExprSyntax.self),
-              let blockItem = grandparent.parent?.as(CodeBlockItemSyntax.self),
-              !blockItem.isImplicitReturn else {
-            return
+private extension VoidFunctionInTernaryConditionRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: TernaryExprSyntax) {
+            guard node.thenExpression.is(FunctionCallExprSyntax.self),
+                  node.elseExpression.is(FunctionCallExprSyntax.self),
+                  let parent = node.parent?.as(ExprListSyntax.self),
+                  !parent.containsAssignment,
+                  let grandparent = parent.parent,
+                  grandparent.is(SequenceExprSyntax.self),
+                  let blockItem = grandparent.parent?.as(CodeBlockItemSyntax.self),
+                  !blockItem.isImplicitReturn else {
+                return
+            }
+
+            violations.append(node.questionMark.positionAfterSkippingLeadingTrivia)
         }
 
-        violations.append(node.questionMark.positionAfterSkippingLeadingTrivia)
-    }
+        override func visitPost(_ node: UnresolvedTernaryExprSyntax) {
+            guard node.thenExpression.is(FunctionCallExprSyntax.self),
+                  let parent = node.parent?.as(ExprListSyntax.self),
+                  parent.last?.is(FunctionCallExprSyntax.self) == true,
+                  !parent.containsAssignment,
+                  let grandparent = parent.parent,
+                  grandparent.is(SequenceExprSyntax.self),
+                  let blockItem = grandparent.parent?.as(CodeBlockItemSyntax.self),
+                  !blockItem.isImplicitReturn else {
+                return
+            }
 
-    override func visitPost(_ node: UnresolvedTernaryExprSyntax) {
-        guard node.thenExpression.is(FunctionCallExprSyntax.self),
-              let parent = node.parent?.as(ExprListSyntax.self),
-              parent.last?.is(FunctionCallExprSyntax.self) == true,
-              !parent.containsAssignment,
-              let grandparent = parent.parent,
-              grandparent.is(SequenceExprSyntax.self),
-              let blockItem = grandparent.parent?.as(CodeBlockItemSyntax.self),
-              !blockItem.isImplicitReturn else {
-            return
+            violations.append(node.questionMark.positionAfterSkippingLeadingTrivia)
         }
-
-        violations.append(node.questionMark.positionAfterSkippingLeadingTrivia)
     }
 }
 

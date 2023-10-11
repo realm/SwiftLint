@@ -138,90 +138,92 @@ struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRul
     }
 }
 
-private class Visitor: ViolationsSyntaxVisitor {
-    private let configuration: PrivateUnitTestConfiguration
+private extension PrivateUnitTestRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let configuration: PrivateUnitTestConfiguration
 
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
-    init(configuration: PrivateUnitTestConfiguration) {
-        self.configuration = configuration
-        super.init(viewMode: .sourceAccurate)
-    }
-
-    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        !node.isPrivate && node.hasParent(configuredIn: configuration) ? .visitChildren : .skipChildren
-    }
-
-    override func visitPost(_ node: ClassDeclSyntax) {
-        if node.isPrivate, node.hasParent(configuredIn: configuration) {
-            violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
-        }
-    }
-
-    override func visitPost(_ node: FunctionDeclSyntax) {
-        if node.isTestMethod, node.isPrivate {
-            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
-        }
-    }
-}
-
-private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    private(set) var correctionPositions: [AbsolutePosition] = []
-    private let configuration: PrivateUnitTestConfiguration
-    let locationConverter: SourceLocationConverter
-    let disabledRegions: [SourceRange]
-
-    init(configuration: PrivateUnitTestConfiguration,
-         locationConverter: SourceLocationConverter,
-         disabledRegions: [SourceRange]) {
-        self.configuration = configuration
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
-    }
-
-    override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
-        guard
-            node.isPrivate,
-            node.hasParent(configuredIn: configuration),
-            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-        else {
-            return super.visit(node)
+        init(configuration: PrivateUnitTestConfiguration) {
+            self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
         }
 
-        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-        let (modifiers, declKeyword) = withoutPrivate(modifiers: node.modifiers, declKeyword: node.classKeyword)
-        return super.visit(node.with(\.modifiers, modifiers).with(\.classKeyword, declKeyword))
-    }
-
-    override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
-        guard
-            node.isTestMethod,
-            node.isPrivate,
-            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-        else {
-            return super.visit(node)
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            !node.isPrivate && node.hasParent(configuredIn: configuration) ? .visitChildren : .skipChildren
         }
 
-        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-        let (modifiers, declKeyword) = withoutPrivate(modifiers: node.modifiers, declKeyword: node.funcKeyword)
-        return super.visit(node.with(\.modifiers, modifiers).with(\.funcKeyword, declKeyword))
-    }
-
-    private func withoutPrivate(modifiers: DeclModifierListSyntax,
-                                declKeyword: TokenSyntax) -> (DeclModifierListSyntax, TokenSyntax) {
-        var filteredModifiers = [DeclModifierSyntax]()
-        var leadingTrivia = Trivia()
-        for modifier in modifiers {
-            let accumulatedLeadingTrivia = leadingTrivia + (modifier.leadingTrivia)
-            if modifier.name.tokenKind == .keyword(.private) {
-                leadingTrivia = accumulatedLeadingTrivia
-            } else {
-                filteredModifiers.append(modifier.with(\.leadingTrivia, accumulatedLeadingTrivia))
-                leadingTrivia = Trivia()
+        override func visitPost(_ node: ClassDeclSyntax) {
+            if node.isPrivate, node.hasParent(configuredIn: configuration) {
+                violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
-        let declKeyword = declKeyword.with(\.leadingTrivia, leadingTrivia + (declKeyword.leadingTrivia))
-        return (DeclModifierListSyntax(filteredModifiers), declKeyword)
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if node.isTestMethod, node.isPrivate {
+                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        private let configuration: PrivateUnitTestConfiguration
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(configuration: PrivateUnitTestConfiguration,
+             locationConverter: SourceLocationConverter,
+             disabledRegions: [SourceRange]) {
+            self.configuration = configuration
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
+            guard
+                node.isPrivate,
+                node.hasParent(configuredIn: configuration),
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            let (modifiers, declKeyword) = withoutPrivate(modifiers: node.modifiers, declKeyword: node.classKeyword)
+            return super.visit(node.with(\.modifiers, modifiers).with(\.classKeyword, declKeyword))
+        }
+
+        override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
+            guard
+                node.isTestMethod,
+                node.isPrivate,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            let (modifiers, declKeyword) = withoutPrivate(modifiers: node.modifiers, declKeyword: node.funcKeyword)
+            return super.visit(node.with(\.modifiers, modifiers).with(\.funcKeyword, declKeyword))
+        }
+
+        private func withoutPrivate(modifiers: DeclModifierListSyntax,
+                                    declKeyword: TokenSyntax) -> (DeclModifierListSyntax, TokenSyntax) {
+            var filteredModifiers = [DeclModifierSyntax]()
+            var leadingTrivia = Trivia()
+            for modifier in modifiers {
+                let accumulatedLeadingTrivia = leadingTrivia + (modifier.leadingTrivia)
+                if modifier.name.tokenKind == .keyword(.private) {
+                    leadingTrivia = accumulatedLeadingTrivia
+                } else {
+                    filteredModifiers.append(modifier.with(\.leadingTrivia, accumulatedLeadingTrivia))
+                    leadingTrivia = Trivia()
+                }
+            }
+            let declKeyword = declKeyword.with(\.leadingTrivia, leadingTrivia + (declKeyword.leadingTrivia))
+            return (DeclModifierListSyntax(filteredModifiers), declKeyword)
+        }
     }
 }
 

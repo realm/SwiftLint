@@ -52,13 +52,13 @@ struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, Configurati
 }
 
 private extension AnyObjectProtocolRule {
-    private final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ClassRestrictionTypeSyntax) {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         private(set) var correctionPositions: [AbsolutePosition] = []
         let locationConverter: SourceLocationConverter
         let disabledRegions: [SourceRange]

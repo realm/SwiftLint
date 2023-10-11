@@ -66,12 +66,14 @@ struct ForceUnwrappingRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRul
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ForceUnwrappingVisitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
-private final class ForceUnwrappingVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: ForceUnwrapExprSyntax) {
-        violations.append(node.exclamationMark.positionAfterSkippingLeadingTrivia)
+private extension ForceUnwrappingRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: ForceUnwrapExprSyntax) {
+            violations.append(node.exclamationMark.positionAfterSkippingLeadingTrivia)
+        }
     }
 }

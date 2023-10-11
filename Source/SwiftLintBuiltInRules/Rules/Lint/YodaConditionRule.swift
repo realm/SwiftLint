@@ -35,64 +35,66 @@ struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule 
         ])
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        YodaConditionRuleVisitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
-private final class YodaConditionRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: IfExprSyntax) {
-        visit(conditions: node.conditions)
-    }
-
-    override func visitPost(_ node: GuardStmtSyntax) {
-        visit(conditions: node.conditions)
-    }
-
-    override func visitPost(_ node: RepeatStmtSyntax) {
-        visit(condition: node.condition)
-    }
-
-    override func visitPost(_ node: WhileStmtSyntax) {
-        visit(conditions: node.conditions)
-    }
-
-    private func visit(conditions: ConditionElementListSyntax) {
-        for condition in conditions.compactMap({ $0.condition.as(ExprSyntax.self) }) {
-            visit(condition: condition)
+private extension YodaConditionRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: IfExprSyntax) {
+            visit(conditions: node.conditions)
         }
-    }
 
-    private func visit(condition: ExprSyntax) {
-        guard let children = condition.as(SequenceExprSyntax.self)?.elements.children(viewMode: .sourceAccurate) else {
-            return
+        override func visitPost(_ node: GuardStmtSyntax) {
+            visit(conditions: node.conditions)
         }
-        let comparisonOperators = children
-            .compactMap { $0.as(BinaryOperatorExprSyntax.self) }
-            .filter { ["==", "!=", ">", "<", ">=", "<="].contains($0.operator.text) }
-        for comparisonOperator in comparisonOperators {
-            guard let operatorIndex = children.index(of: comparisonOperator) else {
-                continue
+
+        override func visitPost(_ node: RepeatStmtSyntax) {
+            visit(condition: node.condition)
+        }
+
+        override func visitPost(_ node: WhileStmtSyntax) {
+            visit(conditions: node.conditions)
+        }
+
+        private func visit(conditions: ConditionElementListSyntax) {
+            for condition in conditions.compactMap({ $0.condition.as(ExprSyntax.self) }) {
+                visit(condition: condition)
             }
-            let rhsIdx = children.index(operatorIndex, offsetBy: 1)
-            if children[rhsIdx].isLiteral {
-                let afterRhsIndex = children.index(after: rhsIdx)
-                guard children.endIndex != rhsIdx, afterRhsIndex != nil else {
-                    // This is already the end of the expression.
+        }
+
+        private func visit(condition: ExprSyntax) {
+            guard let elements = condition.as(SequenceExprSyntax.self)?.elements else {
+                return
+            }
+            let children = elements.children(viewMode: .sourceAccurate)
+            let comparisonOperators = children
+                .compactMap { $0.as(BinaryOperatorExprSyntax.self) }
+                .filter { ["==", "!=", ">", "<", ">=", "<="].contains($0.operator.text) }
+            for comparisonOperator in comparisonOperators {
+                guard let operatorIndex = children.index(of: comparisonOperator) else {
                     continue
                 }
-                if children[afterRhsIndex].isLogicalBinaryOperator {
-                    // Next token is an operator with weaker binding. Thus, the literal is unique on the
-                    // right-hand side of the comparison operator.
-                    continue
+                let rhsIdx = children.index(operatorIndex, offsetBy: 1)
+                if children[rhsIdx].isLiteral {
+                    let afterRhsIndex = children.index(after: rhsIdx)
+                    guard children.endIndex != rhsIdx, afterRhsIndex != nil else {
+                        // This is already the end of the expression.
+                        continue
+                    }
+                    if children[afterRhsIndex].isLogicalBinaryOperator {
+                        // Next token is an operator with weaker binding. Thus, the literal is unique on the
+                        // right-hand side of the comparison operator.
+                        continue
+                    }
                 }
-            }
-            let lhsIdx = children.index(operatorIndex, offsetBy: -1)
-            let lhs = children[lhsIdx]
-            if lhs.isLiteral {
-                if children.startIndex == lhsIdx || children[children.index(before: lhsIdx)].isLogicalBinaryOperator {
-                    // Literal is at the very beginning of the expression or the previous token is an operator with
-                    // weaker binding. Thus, the literal is unique on the left-hand side of the comparison operator.
-                    violations.append(lhs.positionAfterSkippingLeadingTrivia)
+                let lhsIdx = children.index(operatorIndex, offsetBy: -1)
+                let lhs = children[lhsIdx]
+                if lhs.isLiteral,
+                   children.startIndex == lhsIdx || children[children.index(before: lhsIdx)].isLogicalBinaryOperator {
+                        // Literal is at the very beginning of the expression or the previous token is an operator with
+                        // weaker binding. Thus, the literal is unique on the left-hand side of the comparison operator.
+                        violations.append(lhs.positionAfterSkippingLeadingTrivia)
                 }
             }
         }

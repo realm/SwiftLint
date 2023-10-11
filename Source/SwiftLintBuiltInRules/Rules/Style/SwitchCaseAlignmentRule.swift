@@ -44,7 +44,7 @@ struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
 }
 
 extension SwitchCaseAlignmentRule {
-    private final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor {
         private let locationConverter: SourceLocationConverter
         private let indentedCases: Bool
 

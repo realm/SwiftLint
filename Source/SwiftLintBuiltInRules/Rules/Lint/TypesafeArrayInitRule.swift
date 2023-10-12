@@ -79,7 +79,7 @@ struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
             }
     }
 
-    private func pointsToSystemMapType(pointee: [String: SourceKitRepresentable]) -> Bool {
+    private func pointsToSystemMapType(pointee: [String: any SourceKitRepresentable]) -> Bool {
         if let isSystem = pointee["key.is_system"], isSystem.isEqualTo(true),
            let name = pointee["key.name"], name.isEqualTo("map(_:)"),
            let typeName = pointee["key.typename"] as? String {

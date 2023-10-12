@@ -1,13 +1,13 @@
 /// All possible rule list configuration errors.
 public enum RuleListError: Error {
     /// The rule list contains more than one configuration for the specified rule.
-    case duplicatedConfigurations(rule: Rule.Type)
+    case duplicatedConfigurations(rule: any Rule.Type)
 }
 
 /// A list of available SwiftLint rules.
 public struct RuleList {
     /// The rules contained in this list.
-    public let list: [String: Rule.Type]
+    public let list: [String: any Rule.Type]
     private let aliases: [String: String]
 
     // MARK: - Initializers
@@ -15,15 +15,15 @@ public struct RuleList {
     /// Creates a `RuleList` by specifying all its rules.
     ///
     /// - parameter rules: The rules to be contained in this list.
-    public init(rules: Rule.Type...) {
+    public init(rules: any Rule.Type...) {
         self.init(rules: rules)
     }
 
     /// Creates a `RuleList` by specifying all its rules.
     ///
     /// - parameter rules: The rules to be contained in this list.
-    public init(rules: [Rule.Type]) {
-        var tmpList = [String: Rule.Type]()
+    public init(rules: [any Rule.Type]) {
+        var tmpList = [String: any Rule.Type]()
         var tmpAliases = [String: String]()
 
         for rule in rules {

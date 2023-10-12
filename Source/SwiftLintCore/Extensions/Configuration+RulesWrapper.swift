@@ -18,12 +18,12 @@ internal extension Configuration {
             return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)
         }
 
-        private var cachedResultingRules: [Rule]?
+        private var cachedResultingRules: [any Rule]?
         private let resultingRulesLock = NSLock()
 
         /// All rules enabled in this configuration,
         /// derived from rule mode (only / optIn - disabled) & existing rules
-        var resultingRules: [Rule] {
+        var resultingRules: [any Rule] {
             // Lock for thread-safety (that's also why this is not a lazy var)
             resultingRulesLock.lock()
             defer { resultingRulesLock.unlock() }
@@ -33,7 +33,7 @@ internal extension Configuration {
 
             // Calculate value
             let customRulesFilter: (RegexConfiguration<CustomRules>) -> (Bool)
-            var resultingRules = [Rule]()
+            var resultingRules = [any Rule]()
             switch mode {
             case .allEnabled:
                 customRulesFilter = { _ in true }
@@ -53,7 +53,7 @@ internal extension Configuration {
                 resultingRules = allRulesWrapped.filter { tuple in
                     let id = type(of: tuple.rule).description.identifier
                     return !disabledRuleIdentifiers.contains(id)
-                        && (!(tuple.rule is OptInRule) || optInRuleIdentifiers.contains(id))
+                        && (!(tuple.rule is any OptInRule) || optInRuleIdentifiers.contains(id))
                 }.map { $0.rule }
             }
 
@@ -288,7 +288,7 @@ internal extension Configuration {
             }
 
             let isOptInRule = allRulesWrapped
-                .first { type(of: $0.rule).description.identifier == identifier }?.rule is OptInRule
+                .first { type(of: $0.rule).description.identifier == identifier }?.rule is any OptInRule
             Self.isOptInRuleCache[identifier] = isOptInRule
             return isOptInRule
         }

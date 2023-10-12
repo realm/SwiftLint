@@ -10,7 +10,7 @@ import Foundation
 import SwiftLintFramework
 import SwiftyTextTable
 
-private typealias SortedRules = [(String, Rule.Type)]
+private typealias SortedRules = [(String, any Rule.Type)]
 
 extension SwiftLint {
     struct Rules: ParsableCommand {
@@ -60,7 +60,7 @@ extension SwiftLint {
             ExitHelper.successfullyExit()
         }
 
-        private func printDescription(for ruleType: Rule.Type, with configuration: Configuration) {
+        private func printDescription(for ruleType: any Rule.Type, with configuration: Configuration) {
             let description = ruleType.description
 
             let rule = createInstance(of: ruleType, using: configuration, configure: !defaultConfig)
@@ -84,14 +84,15 @@ extension SwiftLint {
             }
         }
 
-        private func printConfig(for rule: Rule) {
+        private func printConfig(for rule: any Rule) {
             if rule.configurationDescription.hasContent {
                 print("\(type(of: rule).identifier):")
                 print(rule.configurationDescription.yaml().indent(by: 2))
             }
         }
 
-        private func createInstance(of ruleType: Rule.Type, using config: Configuration, configure: Bool) -> Rule {
+        private func createInstance(of ruleType: any Rule.Type, using config: Configuration,
+                                    configure: Bool) -> any Rule {
             configure
                 ? config.configuredRule(forID: ruleType.identifier) ?? ruleType.init()
                 : ruleType.init()
@@ -134,12 +135,12 @@ private extension TextTable {
             let configuredRule = configuration.configuredRule(forID: ruleID)
             addRow(values: [
                 ruleID,
-                (rule is OptInRule) ? "yes" : "no",
-                (rule is CorrectableRule) ? "yes" : "no",
+                (rule is any OptInRule) ? "yes" : "no",
+                (rule is any CorrectableRule) ? "yes" : "no",
                 configuredRule != nil ? "yes" : "no",
                 ruleType.description.kind.rawValue,
-                (rule is AnalyzerRule) ? "yes" : "no",
-                (rule is SourceKitFreeRule) ? "no" : "yes",
+                (rule is any AnalyzerRule) ? "yes" : "no",
+                (rule is any SourceKitFreeRule) ? "no" : "yes",
                 truncate((defaultConfig ? rule : configuredRule ?? rule).configurationDescription.oneLiner())
             ])
         }

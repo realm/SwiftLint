@@ -152,7 +152,7 @@ public extension CollectingCorrectableRule where Self: AnalyzerRule {
 // MARK: - == Implementations
 
 /// :nodoc:
-public extension Array where Element == Rule {
+public extension Array where Element == any Rule {
     static func == (lhs: Array, rhs: Array) -> Bool {
         if lhs.count != rhs.count { return false }
         return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }

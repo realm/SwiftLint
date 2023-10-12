@@ -9,7 +9,7 @@ open class ViolationsSyntaxVisitor: SyntaxVisitor {
     public var violationCorrections = [ViolationCorrection]()
 
     /// List of declaration types that shall be skipped while traversing the AST.
-    open var skippableDeclarations: [DeclSyntaxProtocol.Type] { [] }
+    open var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [] }
 
     override open func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
         skippableDeclarations.contains { $0 == ActorDeclSyntax.self } ? .skipChildren : .visitChildren
@@ -74,7 +74,7 @@ public struct ViolationCorrection {
     }
 }
 
-public extension Array where Element == DeclSyntaxProtocol.Type {
+public extension Array where Element == any DeclSyntaxProtocol.Type {
     /// All visitable declaration syntax types.
     static let all: Self = [
         ActorDeclSyntax.self,

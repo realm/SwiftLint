@@ -245,7 +245,7 @@ private extension SourceKittenDictionary {
     }
 
     func shouldSkipRelated(relatedUSRsToSkip: Set<String>) -> Bool {
-        return (value["key.related"] as? [[String: SourceKitRepresentable]])?
+        return (value["key.related"] as? [[String: any SourceKitRepresentable]])?
             .compactMap { SourceKittenDictionary($0).usr }
             .contains(where: relatedUSRsToSkip.contains) == true
     }

@@ -16,7 +16,7 @@ extension SwiftLint {
 // MARK: - SwiftyTextTable
 
 private extension TextTable {
-    init(reporters: [Reporter.Type]) {
+    init(reporters: [any Reporter.Type]) {
         let columns = [
             TextTableColumn(header: "identifier"),
             TextTableColumn(header: "description")

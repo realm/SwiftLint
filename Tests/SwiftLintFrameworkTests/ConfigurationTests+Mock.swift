@@ -84,7 +84,7 @@ internal extension ConfigurationTests {
 }
 
 struct RuleMock: Rule {
-    var configurationDescription: Documentable { RuleConfigurationOption.noOptions }
+    var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
 
     static let description = RuleDescription(identifier: "RuleMock", name: "",
                                              description: "", kind: .style)

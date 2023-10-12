@@ -40,7 +40,7 @@ private extension RedundantSelfInClosureRule {
         private var functionCalls = Stack<FunctionCallType>()
         private var selfCaptures = Stack<SelfCaptureKind>()
 
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .extensionsAndProtocols }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .extensionsAndProtocols }
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
             typeDeclarations.push(.likeClass)

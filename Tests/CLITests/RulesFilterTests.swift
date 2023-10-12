@@ -12,7 +12,7 @@ final class RulesFilterTests: XCTestCase {
                 CorrectableRuleMock.self
             ]
         )
-        let enabledRules: [Rule] = [
+        let enabledRules: [any Rule] = [
             RuleMock1(),
             CorrectableRuleMock()
         ]
@@ -37,7 +37,7 @@ final class RulesFilterTests: XCTestCase {
                 CorrectableRuleMock.self
             ]
         )
-        let enabledRules: [Rule] = [
+        let enabledRules: [any Rule] = [
             RuleMock1(),
             CorrectableRuleMock()
         ]
@@ -62,7 +62,7 @@ final class RulesFilterTests: XCTestCase {
                 CorrectableRuleMock.self
             ]
         )
-        let enabledRules: [Rule] = [
+        let enabledRules: [any Rule] = [
             RuleMock1(),
             CorrectableRuleMock()
         ]
@@ -87,7 +87,7 @@ final class RulesFilterTests: XCTestCase {
                 CorrectableRuleMock.self
             ]
         )
-        let enabledRules: [Rule] = [
+        let enabledRules: [any Rule] = [
             RuleMock1(),
             CorrectableRuleMock()
         ]
@@ -112,7 +112,7 @@ final class RulesFilterTests: XCTestCase {
                 CorrectableRuleMock.self
             ]
         )
-        let enabledRules: [Rule] = [
+        let enabledRules: [any Rule] = [
             RuleMock1()
         ]
         let rulesFilter = RulesFilter(
@@ -132,7 +132,7 @@ final class RulesFilterTests: XCTestCase {
 // MARK: - Mocks
 
 private struct RuleMock1: Rule {
-    var configurationDescription: Documentable { RuleConfigurationOption.noOptions }
+    var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
 
     static let description = RuleDescription(identifier: "RuleMock1", name: "",
                                              description: "", kind: .style)
@@ -146,7 +146,7 @@ private struct RuleMock1: Rule {
 }
 
 private struct RuleMock2: Rule {
-    var configurationDescription: Documentable { RuleConfigurationOption.noOptions }
+    var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
 
     static let description = RuleDescription(identifier: "RuleMock2", name: "",
                                              description: "", kind: .style)
@@ -160,7 +160,7 @@ private struct RuleMock2: Rule {
 }
 
 private struct CorrectableRuleMock: CorrectableRule {
-    var configurationDescription: Documentable { RuleConfigurationOption.noOptions }
+    var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
 
     static let description = RuleDescription(identifier: "CorrectableRuleMock", name: "",
                                              description: "", kind: .style)

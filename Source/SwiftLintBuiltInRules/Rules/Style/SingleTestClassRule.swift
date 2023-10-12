@@ -66,7 +66,7 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderR
 
 private class TestClassVisitor: ViolationsSyntaxVisitor {
     private let testParentClasses: Set<String>
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
     init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
         self.testParentClasses = testParentClasses

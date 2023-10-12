@@ -210,7 +210,7 @@ private extension Configuration {
         let file = SwiftLintFile.testFile(withContents: cleanedBefore, persistToDisk: true)
         // expectedLocations are needed to create before call `correct()`
         let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
-        let includeCompilerArguments = self.rules.contains(where: { $0 is AnalyzerRule })
+        let includeCompilerArguments = self.rules.contains(where: { $0 is any AnalyzerRule })
         let compilerArguments = includeCompilerArguments ? file.makeCompilerArguments() : []
         let storage = RuleStorage()
         let collecter = Linter(file: file, configuration: self, compilerArguments: compilerArguments)

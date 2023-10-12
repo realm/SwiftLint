@@ -10,9 +10,9 @@ final class RulesFilter {
     }
 
     private let allRules: RuleList
-    private let enabledRules: [Rule]
+    private let enabledRules: [any Rule]
 
-    init(allRules: RuleList = RuleRegistry.shared.list, enabledRules: [Rule]) {
+    init(allRules: RuleList = RuleRegistry.shared.list, enabledRules: [any Rule]) {
         self.allRules = allRules
         self.enabledRules = enabledRules
     }
@@ -22,7 +22,7 @@ final class RulesFilter {
             return allRules
         }
 
-        let filtered: [Rule.Type] = allRules.list.compactMap { ruleID, ruleType in
+        let filtered: [any Rule.Type] = allRules.list.compactMap { ruleID, ruleType in
             let enabledRule = enabledRules.first { rule in
                 type(of: rule).description.identifier == ruleID
             }
@@ -34,7 +34,7 @@ final class RulesFilter {
             if excludingOptions.contains(.disabled) && !isRuleEnabled {
                 return nil
             }
-            if excludingOptions.contains(.uncorrectable) && !(ruleType is CorrectableRule.Type) {
+            if excludingOptions.contains(.uncorrectable) && !(ruleType is any CorrectableRule.Type) {
                 return nil
             }
 

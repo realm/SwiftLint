@@ -129,7 +129,7 @@ struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRul
         Visitor(configuration: configuration)
     }
 
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             configuration: configuration,
             locationConverter: file.locationConverter,
@@ -142,7 +142,7 @@ private extension PrivateUnitTestRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let configuration: PrivateUnitTestConfiguration
 
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         init(configuration: PrivateUnitTestConfiguration) {
             self.configuration = configuration

@@ -119,7 +119,7 @@ struct ConvenienceTypeRule: OptInRule, ConfigurationProviderRule {
 
 private extension ConvenienceTypeRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: StructDeclSyntax) {
             if hasViolation(
@@ -158,7 +158,7 @@ private extension ConvenienceTypeRule {
 }
 
 private class ConvenienceTypeCheckVisitor: ViolationsSyntaxVisitor {
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
     private(set) var canBeConvenienceType = true
 

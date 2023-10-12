@@ -67,7 +67,7 @@ private extension Rule {
             return nil
         }
 
-        if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
+        if !(self is any SourceKitFreeRule) && file.sourcekitdFailed {
             warnSourceKitFailedOnce()
             return nil
         }
@@ -128,7 +128,7 @@ public struct Linter {
     public let file: SwiftLintFile
     /// Whether or not this linter will be used to collect information from several files.
     public var isCollecting: Bool
-    fileprivate let rules: [Rule]
+    fileprivate let rules: [any Rule]
     fileprivate let cache: LinterCache?
     fileprivate let configuration: Configuration
     fileprivate let compilerArguments: [String]
@@ -147,13 +147,13 @@ public struct Linter {
         self.compilerArguments = compilerArguments
         let rules = configuration.rules.filter { rule in
             if compilerArguments.isEmpty {
-                return !(rule is AnalyzerRule)
+                return !(rule is any AnalyzerRule)
             } else {
-                return rule is AnalyzerRule
+                return rule is any AnalyzerRule
             }
         }
         self.rules = rules
-        self.isCollecting = rules.contains(where: { $0 is AnyCollectingRule })
+        self.isCollecting = rules.contains(where: { $0 is any AnyCollectingRule })
     }
 
     /// Returns a linter capable of checking for violations after running each rule's collection step.
@@ -175,7 +175,7 @@ public struct Linter {
 public struct CollectedLinter {
     /// The file to lint with this linter.
     public let file: SwiftLintFile
-    private let rules: [Rule]
+    private let rules: [any Rule]
     private let cache: LinterCache?
     private let configuration: Configuration
     private let compilerArguments: [String]
@@ -294,7 +294,7 @@ public struct CollectedLinter {
         }
 
         var corrections = [Correction]()
-        for rule in rules.compactMap({ $0 as? CorrectableRule }) {
+        for rule in rules.compactMap({ $0 as? any CorrectableRule }) {
             let newCorrections = rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
             corrections += newCorrections
             if newCorrections.isNotEmpty, !file.isVirtual {

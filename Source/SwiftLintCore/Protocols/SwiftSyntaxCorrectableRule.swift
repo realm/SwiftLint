@@ -2,18 +2,21 @@ import SwiftSyntax
 
 /// A SwiftLint CorrectableRule that performs its corrections using a SwiftSyntax `SyntaxRewriter`.
 public protocol SwiftSyntaxCorrectableRule: SwiftSyntaxRule, CorrectableRule {
+    /// Type of the rewriter.
+    associatedtype RewriterType: ViolationsSyntaxRewriter
+
     /// Produce a `ViolationsSyntaxRewriter` for the given file.
     ///
     /// - parameter file: The file for which to produce the rewriter.
     ///
     /// - returns: A `ViolationsSyntaxRewriter` for the given file. May be `nil` in which case the rule visitor's
     ///            collected `violationCorrections` will be used.
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter?
+    func makeRewriter(file: SwiftLintFile) -> RewriterType?
 }
 
 public extension SwiftSyntaxCorrectableRule {
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        nil
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
+        nil as NoOpRewriter?
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {
@@ -66,4 +69,8 @@ public extension SwiftSyntaxCorrectableRule {
 public protocol ViolationsSyntaxRewriter: SyntaxRewriter {
     /// Positions in a source file where corrections were applied.
     var correctionPositions: [AbsolutePosition] { get }
+}
+
+private class NoOpRewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    var correctionPositions = [AbsolutePosition]()
 }

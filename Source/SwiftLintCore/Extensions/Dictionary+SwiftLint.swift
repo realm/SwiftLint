@@ -4,7 +4,7 @@ import SourceKittenFramework
 /// values.
 public struct SourceKittenDictionary {
     /// The underlying SourceKitten dictionary.
-    public let value: [String: SourceKitRepresentable]
+    public let value: [String: any SourceKitRepresentable]
     /// The cached substructure for this dictionary. Empty if there is no substructure.
     public let substructure: [SourceKittenDictionary]
 
@@ -21,11 +21,11 @@ public struct SourceKittenDictionary {
     /// Creates a SourceKitten dictionary given a `Dictionary<String, SourceKitRepresentable>` input.
     ///
     /// - parameter value: The input dictionary/
-    public init(_ value: [String: SourceKitRepresentable]) {
+    public init(_ value: [String: any SourceKitRepresentable]) {
         self.value = value
 
-        let substructure = value["key.substructure"] as? [SourceKitRepresentable] ?? []
-        self.substructure = substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
+        let substructure = value["key.substructure"] as? [any SourceKitRepresentable] ?? []
+        self.substructure = substructure.compactMap { $0 as? [String: any SourceKitRepresentable] }
             .map(Self.init)
 
         let stringKind = value["key.kind"] as? String
@@ -136,20 +136,20 @@ public struct SourceKittenDictionary {
 
     /// The fully preserved SourceKitten dictionaries for all the attributes associated with this dictionary.
     public var swiftAttributes: [SourceKittenDictionary] {
-        let array = value["key.attributes"] as? [SourceKitRepresentable] ?? []
-        return array.compactMap { $0 as? [String: SourceKitRepresentable] }
+        let array = value["key.attributes"] as? [any SourceKitRepresentable] ?? []
+        return array.compactMap { $0 as? [String: any SourceKitRepresentable] }
             .map(Self.init)
     }
 
     public var elements: [SourceKittenDictionary] {
-        let elements = value["key.elements"] as? [SourceKitRepresentable] ?? []
-        return elements.compactMap { $0 as? [String: SourceKitRepresentable] }
+        let elements = value["key.elements"] as? [any SourceKitRepresentable] ?? []
+        return elements.compactMap { $0 as? [String: any SourceKitRepresentable] }
         .map(Self.init)
     }
 
     public var entities: [SourceKittenDictionary] {
-        let entities = value["key.entities"] as? [SourceKitRepresentable] ?? []
-        return entities.compactMap { $0 as? [String: SourceKitRepresentable] }
+        let entities = value["key.entities"] as? [any SourceKitRepresentable] ?? []
+        return entities.compactMap { $0 as? [String: any SourceKitRepresentable] }
             .map(Self.init)
     }
 
@@ -177,13 +177,13 @@ public struct SourceKittenDictionary {
     }
 
     public var inheritedTypes: [String] {
-        let array = value["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
+        let array = value["key.inheritedtypes"] as? [any SourceKitRepresentable] ?? []
         return array.compactMap { ($0 as? [String: String]).flatMap { $0["key.name"] } }
     }
 
     public var secondarySymbols: [SourceKittenDictionary] {
-        let array = value["key.secondary_symbols"] as? [SourceKitRepresentable] ?? []
-        return array.compactMap { $0 as? [String: SourceKitRepresentable] }
+        let array = value["key.secondary_symbols"] as? [any SourceKitRepresentable] ?? []
+        return array.compactMap { $0 as? [String: any SourceKitRepresentable] }
             .map(Self.init)
     }
 }

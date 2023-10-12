@@ -36,7 +36,7 @@ extension Configuration {
         inPath path: String,
         forceExclude: Bool,
         excludeBy: ExcludeBy,
-        fileManager: LintableFileManager = FileManager.default
+        fileManager: some LintableFileManager = FileManager.default
     ) -> [String] {
         if fileManager.isFile(atPath: path) {
             if forceExclude {
@@ -108,7 +108,7 @@ extension Configuration {
     /// - parameter fileManager: The file manager to get child paths in a given parent location.
     ///
     /// - returns: The expanded excluded file paths.
-    public func excludedPaths(fileManager: LintableFileManager = FileManager.default) -> [String] {
+    public func excludedPaths(fileManager: some LintableFileManager = FileManager.default) -> [String] {
         return excludedPaths
             .flatMap(Glob.resolveGlob)
             .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }

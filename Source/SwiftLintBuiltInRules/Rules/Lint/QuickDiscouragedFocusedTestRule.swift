@@ -16,7 +16,7 @@ struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule {
 
 private extension QuickDiscouragedFocusedTestRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let identifierExpr = node.calledExpression.as(DeclReferenceExprSyntax.self),

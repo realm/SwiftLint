@@ -106,7 +106,7 @@ private extension NonOverridableClassDeclarationRule {
 
         private var finalClassScope = Stack<Bool>()
 
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         init(configuration: NonOverridableClassDeclarationConfiguration) {
             self.configuration = configuration

@@ -131,7 +131,7 @@ struct UnusedSetterValueRule: ConfigurationProviderRule {
 
 private extension UnusedSetterValueRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: AccessorDeclSyntax) {
             guard node.accessorSpecifier.tokenKind == .keyword(.set) else {

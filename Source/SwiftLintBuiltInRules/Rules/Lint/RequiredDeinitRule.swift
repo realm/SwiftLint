@@ -82,7 +82,7 @@ private extension RequiredDeinitRule {
 private class DeinitVisitor: ViolationsSyntaxVisitor {
     private(set) var hasDeinit = false
 
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
     override func visitPost(_ node: DeinitializerDeclSyntax) {
         hasDeinit = true

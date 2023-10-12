@@ -36,7 +36,7 @@ public struct Region: Equatable {
     /// - parameter rule: The rule whose status should be determined.
     ///
     /// - returns: True if the specified rule is enabled in this region.
-    public func isRuleEnabled(_ rule: Rule) -> Bool {
+    public func isRuleEnabled(_ rule: some Rule) -> Bool {
         return !isRuleDisabled(rule)
     }
 
@@ -45,7 +45,7 @@ public struct Region: Equatable {
     /// - parameter rule: The rule whose status should be determined.
     ///
     /// - returns: True if the specified rule is disabled in this region.
-    public func isRuleDisabled(_ rule: Rule) -> Bool {
+    public func isRuleDisabled(_ rule: some Rule) -> Bool {
         guard !disabledRuleIdentifiers.contains(.all) else {
             return true
         }
@@ -61,7 +61,7 @@ public struct Region: Equatable {
     /// - parameter rule: The rule to check.
     ///
     /// - returns: Deprecated rule aliases.
-    public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {
+    public func deprecatedAliasesDisabling(rule: some Rule) -> Set<String> {
         let identifiers = type(of: rule).description.deprecatedAliases
         return Set(disabledRuleIdentifiers.map { $0.stringRepresentation }).intersection(identifiers)
     }

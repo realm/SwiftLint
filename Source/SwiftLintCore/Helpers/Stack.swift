@@ -49,7 +49,7 @@ public struct Stack<Element> {
     }
 }
 
-extension Stack: CustomDebugStringConvertible where Element == CustomDebugStringConvertible {
+extension Stack: CustomDebugStringConvertible where Element: CustomDebugStringConvertible {
     public var debugDescription: String {
         let intermediateElements = count > 1 ? elements[1 ..< count - 1] : []
         return """

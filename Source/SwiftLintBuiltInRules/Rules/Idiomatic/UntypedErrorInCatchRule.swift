@@ -89,7 +89,7 @@ struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, SwiftSynta
         Visitor(viewMode: .sourceAccurate)
     }
 
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

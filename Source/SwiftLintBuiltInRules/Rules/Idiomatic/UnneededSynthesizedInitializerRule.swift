@@ -28,7 +28,7 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, Configura
         corrections: UnneededSynthesizedInitializerRuleExamples.corrections
     )
 
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)
@@ -38,7 +38,7 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, Configura
 
 private extension UnneededSynthesizedInitializerRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
             .allExcept(StructDeclSyntax.self, ClassDeclSyntax.self)
         }
 

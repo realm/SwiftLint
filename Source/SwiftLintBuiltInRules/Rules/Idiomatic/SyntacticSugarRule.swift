@@ -217,7 +217,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         return nil
     }
 
-    private func violation(from node: SyntaxProtocol & SyntaxWithGenericClause) -> SyntacticSugarRuleViolation? {
+    private func violation(from node: some SyntaxProtocol & SyntaxWithGenericClause) -> SyntacticSugarRuleViolation? {
         guard
             let generic = node.genericArguments,
             let firstGenericType = generic.arguments.first,
@@ -255,8 +255,8 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
     }
 }
 
-private struct CorrectingContext {
-    let rule: Rule
+private struct CorrectingContext<R: Rule> {
+    let rule: R
     let file: SwiftLintFile
     var contents: String
     var corrections: [Correction] = []

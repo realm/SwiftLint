@@ -6,6 +6,8 @@ load(
     "swift_compiler_plugin"
 )
 
+copts = ["-enable-upcoming-feature", "ExistentialAny"]
+
 # Targets
 
 swift_library(
@@ -17,6 +19,7 @@ swift_library(
         "@SwiftSyntax//:SwiftCompilerPlugin_opt",
         "@SwiftSyntax//:SwiftSyntaxMacros_opt",
     ],
+    copts = copts,
 )
 
 swift_compiler_plugin(
@@ -26,6 +29,7 @@ swift_compiler_plugin(
         "@SwiftSyntax//:SwiftCompilerPlugin_opt",
         "@SwiftSyntax//:SwiftSyntaxMacros_opt",
     ],
+    copts = copts,
 )
 
 swift_library(
@@ -49,6 +53,7 @@ swift_library(
     plugins = [
         ":SwiftLintCoreMacros",
     ],
+    copts = copts,
 )
 
 swift_library(
@@ -59,6 +64,7 @@ swift_library(
     deps = [
         ":SwiftLintCore",
     ],
+    copts = copts,
 )
 
 swift_library(
@@ -86,6 +92,7 @@ swift_library(
         ":SwiftLintCore",
         ":SwiftLintExtraRules",
     ],
+    copts = copts,
 )
 
 swift_library(
@@ -99,6 +106,7 @@ swift_library(
         "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ],
+    copts = copts,
 )
 
 swift_binary(
@@ -107,6 +115,7 @@ swift_binary(
     deps = [
         ":swiftlint.library",
     ],
+    copts = copts,
 )
 
 apple_universal_binary(

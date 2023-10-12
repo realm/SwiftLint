@@ -29,7 +29,7 @@ struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, Configuration
         Visitor(configuration: configuration)
     }
 
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             configuration: configuration,
             locationConverter: file.locationConverter,

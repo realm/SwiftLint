@@ -43,7 +43,7 @@ private extension TestCaseAccessibilityRule {
             super.init(viewMode: .sourceAccurate)
         }
 
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ClassDeclSyntax) {
             guard !testParentClasses.isDisjoint(with: node.inheritedTypes) else {
@@ -66,7 +66,7 @@ private final class XCTestClassVisitor: ViolationsSyntaxVisitor {
         super.init(viewMode: .sourceAccurate)
     }
 
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
     override func visitPost(_ node: VariableDeclSyntax) {
         guard !node.modifiers.containsPrivateOrFileprivate(),

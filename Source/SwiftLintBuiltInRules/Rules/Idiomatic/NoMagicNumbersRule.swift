@@ -132,7 +132,7 @@ private extension NoMagicNumbersRule {
             collectViolation(forNode: node)
         }
 
-        private func collectViolation(forNode node: ExprSyntaxProtocol) {
+        private func collectViolation(forNode node: some ExprSyntaxProtocol) {
             if node.isMemberOfATestClass(testParentClasses) {
                 return
             }

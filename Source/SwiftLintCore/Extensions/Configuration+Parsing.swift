@@ -169,7 +169,7 @@ extension Configuration {
                 }
 
             case let .default(disabled: disabledRules, optIn: optInRules):
-                if rule is OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {
+                if rule is any OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {
                     Issue.genericWarning("\(message), but it is not enabled on '\(Key.optInRules.rawValue)'.").print()
                 } else if Set(disabledRules).isSuperset(of: rule.description.allIdentifiers) {
                     Issue.genericWarning("\(message), but it is disabled on '\(Key.disabledRules.rawValue)'.").print()
@@ -180,7 +180,7 @@ extension Configuration {
 
     private static func warnAboutMisplacedAnalyzerRules(optInRules: [String], ruleList: RuleList) {
         let analyzerRules = ruleList.list
-            .filter { $0.value.self is AnalyzerRule.Type }
+            .filter { $0.value.self is any AnalyzerRule.Type }
             .map(\.key)
         Set(analyzerRules).intersection(optInRules)
             .sorted()

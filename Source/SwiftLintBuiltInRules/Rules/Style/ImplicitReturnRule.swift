@@ -22,7 +22,7 @@ private extension ImplicitReturnRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let config: ConfigurationType
 
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         init(config: ConfigurationType) {
             self.config = config

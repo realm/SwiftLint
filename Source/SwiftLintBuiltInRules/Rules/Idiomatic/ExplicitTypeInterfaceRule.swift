@@ -78,7 +78,7 @@ private extension ExplicitTypeInterfaceRule {
     final class Visitor: ViolationsSyntaxVisitor {
         let configuration: ExplicitTypeInterfaceConfiguration
 
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         init(configuration: ExplicitTypeInterfaceConfiguration) {
             self.configuration = configuration

@@ -28,11 +28,11 @@ public final class LinterCache {
     private let readCacheLock = NSLock()
     private var writeCache = Cache()
     private let writeCacheLock = NSLock()
-    internal let fileManager: LintableFileManager
+    internal let fileManager: any LintableFileManager
     private let location: URL?
     private let swiftVersion: SwiftVersion
 
-    internal init(fileManager: LintableFileManager = FileManager.default, swiftVersion: SwiftVersion = .current) {
+    internal init(fileManager: some LintableFileManager = FileManager.default, swiftVersion: SwiftVersion = .current) {
         location = nil
         self.fileManager = fileManager
         self.lazyReadCache = Cache()
@@ -43,14 +43,14 @@ public final class LinterCache {
     ///
     /// - parameter configuration: The SwiftLint configuration for which this cache will be used.
     /// - parameter fileManager:   The file manager to use to read lintable file information.
-    public init(configuration: Configuration, fileManager: LintableFileManager = FileManager.default) {
+    public init(configuration: Configuration, fileManager: some LintableFileManager = FileManager.default) {
         location = configuration.cacheURL
         lazyReadCache = Cache()
         self.fileManager = fileManager
         self.swiftVersion = .current
     }
 
-    private init(cache: Cache, location: URL?, fileManager: LintableFileManager, swiftVersion: SwiftVersion) {
+    private init(cache: Cache, location: URL?, fileManager: some LintableFileManager, swiftVersion: SwiftVersion) {
         self.lazyReadCache = cache
         self.location = location
         self.fileManager = fileManager

@@ -267,7 +267,7 @@ extension SwiftLintFile {
         invalidateCache()
     }
 
-    public func ruleEnabled(violatingRanges: [NSRange], for rule: Rule) -> [NSRange] {
+    public func ruleEnabled(violatingRanges: [NSRange], for rule: some Rule) -> [NSRange] {
         let fileRegions = regions()
         if fileRegions.isEmpty { return violatingRanges }
         return violatingRanges.filter { range in
@@ -278,7 +278,7 @@ extension SwiftLintFile {
         }
     }
 
-    public func ruleEnabled(violatingRange: NSRange, for rule: Rule) -> NSRange? {
+    public func ruleEnabled(violatingRange: NSRange, for rule: some Rule) -> NSRange? {
         return ruleEnabled(violatingRanges: [violatingRange], for: rule).first
     }
 

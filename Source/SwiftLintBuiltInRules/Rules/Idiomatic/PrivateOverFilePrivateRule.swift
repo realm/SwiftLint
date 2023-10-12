@@ -58,7 +58,7 @@ struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntaxCorrect
         Visitor(validateExtensions: configuration.validateExtensions)
     }
 
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             validateExtensions: configuration.validateExtensions,
             locationConverter: file.locationConverter,

@@ -266,7 +266,7 @@ private class LintOrAnalyzeResultBuilder {
     var violations = [StyleViolation]()
     let storage = RuleStorage()
     let configuration: Configuration
-    let reporter: Reporter.Type
+    let reporter: any Reporter.Type
     let cache: LinterCache?
     let options: LintOrAnalyzeOptions
 

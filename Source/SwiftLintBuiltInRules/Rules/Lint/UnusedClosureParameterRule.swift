@@ -2,7 +2,7 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule
-struct UnusedClosureParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+struct UnusedClosureParameterRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

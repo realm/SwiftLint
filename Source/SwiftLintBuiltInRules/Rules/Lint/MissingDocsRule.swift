@@ -43,7 +43,7 @@ private extension SwiftLintFile {
     }
 }
 
-struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
+struct MissingDocsRule: OptInRule {
     init() {
         configuration = MissingDocsConfiguration()
     }

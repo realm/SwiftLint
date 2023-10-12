@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxRule {
+struct ComputedAccessorsOrderRule: SwiftSyntaxRule {
     var configuration = ComputedAccessorsOrderConfiguration()
 
     static let description = RuleDescription(

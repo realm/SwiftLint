@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProviderRule {
+struct MultilineFunctionChainsRule: ASTRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

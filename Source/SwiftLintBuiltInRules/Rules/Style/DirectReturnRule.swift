@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct DirectReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+struct DirectReturnRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(

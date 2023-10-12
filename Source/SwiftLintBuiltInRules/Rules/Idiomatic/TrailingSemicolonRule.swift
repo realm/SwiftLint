@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

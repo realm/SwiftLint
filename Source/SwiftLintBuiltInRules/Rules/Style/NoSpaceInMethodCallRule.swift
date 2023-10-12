@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct NoSpaceInMethodCallRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+struct NoSpaceInMethodCallRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

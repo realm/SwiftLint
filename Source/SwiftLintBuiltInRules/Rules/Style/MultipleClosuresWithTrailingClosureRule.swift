@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct MultipleClosuresWithTrailingClosureRule: ConfigurationProviderRule {
+struct MultipleClosuresWithTrailingClosureRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

@@ -1,7 +1,7 @@
 import SwiftOperators
 import SwiftSyntax
 
-struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule {
     var configuration = XCTSpecificMatcherConfiguration()
 
     static let description = RuleDescription(

@@ -14,7 +14,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

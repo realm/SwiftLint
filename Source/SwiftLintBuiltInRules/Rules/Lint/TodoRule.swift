@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-struct TodoRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct TodoRule: SwiftSyntaxRule {
     var configuration = TodoConfiguration()
 
     static let description = RuleDescription(

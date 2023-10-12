@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct AnonymousArgumentInMultilineClosureRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+struct AnonymousArgumentInMultilineClosureRule: SwiftSyntaxRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

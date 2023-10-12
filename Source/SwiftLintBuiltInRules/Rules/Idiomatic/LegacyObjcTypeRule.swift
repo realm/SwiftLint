@@ -29,7 +29,7 @@ private let legacyObjcTypes = [
 ]
 
 @SwiftSyntaxRule
-struct LegacyObjcTypeRule: OptInRule, ConfigurationProviderRule {
+struct LegacyObjcTypeRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

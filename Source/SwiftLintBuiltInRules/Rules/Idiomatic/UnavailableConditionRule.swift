@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
+struct UnavailableConditionRule: SwiftSyntaxRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

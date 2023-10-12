@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct NoFallthroughOnlyRule: ConfigurationProviderRule {
+struct NoFallthroughOnlyRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

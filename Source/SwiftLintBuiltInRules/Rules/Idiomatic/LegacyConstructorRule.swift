@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct LegacyConstructorRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+struct LegacyConstructorRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

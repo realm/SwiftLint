@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+struct CommaRule: CorrectableRule, SourceKitFreeRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

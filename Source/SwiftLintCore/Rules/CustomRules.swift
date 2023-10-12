@@ -36,7 +36,7 @@ struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
 
 // MARK: - CustomRules
 
-struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
+struct CustomRules: Rule, CacheDescriptionProvider {
     var cacheDescription: String {
         return configuration.cacheDescription
     }

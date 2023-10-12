@@ -6,12 +6,18 @@ public protocol Rule {
     /// The rule's description type.
     associatedtype Description: Documentable
 
+    /// The type of the configuration used to configure this rule.
+    associatedtype ConfigurationType: RuleConfiguration
+
     /// A verbose description of many of this rule's properties.
     static var description: RuleDescription { get }
 
     /// A description of how this rule has been configured to run. It can be built using the annotated result builder.
     @RuleConfigurationDescriptionBuilder
     var configurationDescription: Description { get }
+
+    /// This rule's configuration.
+    var configuration: ConfigurationType { get set }
 
     /// A default initializer for rules. All rules need to be trivially initializable.
     init()
@@ -68,6 +74,11 @@ public protocol Rule {
 }
 
 public extension Rule {
+    init(configuration: Any) throws {
+        self.init()
+        try self.configuration.apply(configuration: configuration)
+    }
+
     func validate(file: SwiftLintFile, using storage: RuleStorage,
                   compilerArguments: [String]) -> [StyleViolation] {
         return validate(file: file, compilerArguments: compilerArguments)
@@ -78,7 +89,10 @@ public extension Rule {
     }
 
     func isEqualTo(_ rule: any Rule) -> Bool {
-        return Self.description == type(of: rule).description
+        if let rule = rule as? Self {
+            return configuration == rule.configuration
+        }
+        return false
     }
 
     func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
@@ -90,6 +104,10 @@ public extension Rule {
     var cacheDescription: String {
         (self as? any CacheDescriptionProvider)?.cacheDescription ?? configurationDescription.oneLiner()
     }
+
+    var configurationDescription: some Documentable {
+        RuleConfigurationDescription.from(configuration: configuration)
+    }
 }
 
 public extension Rule {
@@ -99,33 +117,6 @@ public extension Rule {
 
 /// A rule that is not enabled by default. Rules conforming to this need to be explicitly enabled by users.
 public protocol OptInRule: Rule {}
-
-/// A rule that is user-configurable.
-public protocol ConfigurationProviderRule: Rule {
-    /// The type of configuration used to configure this rule.
-    associatedtype ConfigurationType: RuleConfiguration
-
-    /// This rule's configuration.
-    var configuration: ConfigurationType { get set }
-}
-
-public extension ConfigurationProviderRule {
-    init(configuration: Any) throws {
-        self.init()
-        try self.configuration.apply(configuration: configuration)
-    }
-
-    func isEqualTo(_ rule: any Rule) -> Bool {
-        if let rule = rule as? Self {
-            return configuration == rule.configuration
-        }
-        return false
-    }
-
-    var configurationDescription: some Documentable {
-        RuleConfigurationDescription.from(configuration: configuration)
-    }
-}
 
 /// A rule that can correct violations.
 public protocol CorrectableRule: Rule {

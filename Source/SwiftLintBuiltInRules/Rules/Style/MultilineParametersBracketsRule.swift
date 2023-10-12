@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderRule {
+struct MultilineParametersBracketsRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

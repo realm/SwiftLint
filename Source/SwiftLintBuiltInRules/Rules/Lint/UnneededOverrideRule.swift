@@ -2,7 +2,7 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule
-struct UnneededOverrideRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
+struct UnneededOverrideRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

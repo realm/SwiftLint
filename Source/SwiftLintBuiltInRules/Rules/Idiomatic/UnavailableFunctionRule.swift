@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct UnavailableFunctionRule: ConfigurationProviderRule, OptInRule {
+struct UnavailableFunctionRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct NSObjectPreferIsEqualRule: ConfigurationProviderRule {
+struct NSObjectPreferIsEqualRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

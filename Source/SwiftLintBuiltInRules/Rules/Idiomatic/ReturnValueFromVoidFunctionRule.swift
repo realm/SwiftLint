@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+struct ReturnValueFromVoidFunctionRule: OptInRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

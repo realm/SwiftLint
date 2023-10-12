@@ -1,7 +1,7 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-struct ExplicitInitRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+struct ExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = ExplicitInitConfiguration()
 
     static let description = RuleDescription(

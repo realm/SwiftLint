@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+struct PrivateOutletRule: SwiftSyntaxRule, OptInRule {
     var configuration = PrivateOutletConfiguration()
 
     static let description = RuleDescription(

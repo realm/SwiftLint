@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
+struct ForceCastRule: SwiftSyntaxRule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(

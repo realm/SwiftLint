@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule {
     var configuration = DiscouragedObjectLiteralConfiguration()
 
     static let description = RuleDescription(

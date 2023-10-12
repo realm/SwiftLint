@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, OptInRule {
+struct ExtensionAccessModifierRule: ASTRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

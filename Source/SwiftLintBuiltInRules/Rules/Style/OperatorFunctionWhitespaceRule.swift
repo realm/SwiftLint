@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
+struct OperatorFunctionWhitespaceRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

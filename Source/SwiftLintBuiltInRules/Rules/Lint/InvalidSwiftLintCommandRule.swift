@@ -1,4 +1,4 @@
-struct InvalidSwiftLintCommandRule: ConfigurationProviderRule {
+struct InvalidSwiftLintCommandRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

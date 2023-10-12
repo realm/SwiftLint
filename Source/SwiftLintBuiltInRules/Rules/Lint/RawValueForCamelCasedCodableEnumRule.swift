@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct RawValueForCamelCasedCodableEnumRule: OptInRule, ConfigurationProviderRule {
+struct RawValueForCamelCasedCodableEnumRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

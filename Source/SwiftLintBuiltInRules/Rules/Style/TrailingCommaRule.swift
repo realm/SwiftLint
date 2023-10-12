@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct TrailingCommaRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+struct TrailingCommaRule: SwiftSyntaxCorrectableRule {
     var configuration = TrailingCommaConfiguration()
 
     private static let triggeringExamples: [Example] = [

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+struct EmptyCountRule: OptInRule, SwiftSyntaxRule {
     var configuration = EmptyCountConfiguration()
 
     static let description = RuleDescription(

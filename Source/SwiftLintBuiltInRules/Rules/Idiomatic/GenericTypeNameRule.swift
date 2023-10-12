@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-struct GenericTypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct GenericTypeNameRule: SwiftSyntaxRule {
     var configuration = NameConfiguration<Self>(minLengthWarning: 1,
                                                 minLengthError: 0,
                                                 maxLengthWarning: 20,

@@ -7,6 +7,8 @@ import XCTest
 class CollectingRuleTests: SwiftLintTestCase {
     func testCollectsIntoStorage() {
         struct Spec: MockCollectingRule {
+            var configuration = SeverityConfiguration<Self>(.warning)
+
             func collectInfo(for file: SwiftLintFile) -> Int {
                 return 42
             }
@@ -22,6 +24,8 @@ class CollectingRuleTests: SwiftLintTestCase {
 
     func testCollectsAllFiles() {
         struct Spec: MockCollectingRule {
+            var configuration = SeverityConfiguration<Self>(.warning)
+
             func collectInfo(for file: SwiftLintFile) -> String {
                 return file.contents
             }
@@ -41,6 +45,8 @@ class CollectingRuleTests: SwiftLintTestCase {
 
     func testCollectsAnalyzerFiles() {
         struct Spec: MockCollectingRule, AnalyzerRule {
+            var configuration = SeverityConfiguration<Self>(.warning)
+
             func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> [String] {
                 return compilerArguments
             }
@@ -57,6 +63,8 @@ class CollectingRuleTests: SwiftLintTestCase {
 
     func testCorrects() {
         struct Spec: MockCollectingRule, CollectingCorrectableRule {
+            var configuration = SeverityConfiguration<Self>(.warning)
+
             func collectInfo(for file: SwiftLintFile) -> String {
                 return file.contents
             }
@@ -81,6 +89,8 @@ class CollectingRuleTests: SwiftLintTestCase {
         }
 
         struct AnalyzerSpec: MockCollectingRule, AnalyzerRule, CollectingCorrectableRule {
+            var configuration = SeverityConfiguration<Self>(.warning)
+
             func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> String {
                 return file.contents
             }

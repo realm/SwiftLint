@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
+struct DuplicateImportsRule: CorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     // List of all possible import kinds

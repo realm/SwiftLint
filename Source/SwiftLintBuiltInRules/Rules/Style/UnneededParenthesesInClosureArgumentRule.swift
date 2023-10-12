@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule, OptInRule {
+struct UnneededParenthesesInClosureArgumentRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-struct NestingRule: ConfigurationProviderRule {
+struct NestingRule: Rule {
     var configuration = NestingConfiguration()
 
     static let description = RuleDescription(

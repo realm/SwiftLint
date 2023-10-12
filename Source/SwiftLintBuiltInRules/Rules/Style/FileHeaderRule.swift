@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
+struct FileHeaderRule: OptInRule {
     var configuration = FileHeaderConfiguration()
 
     static let description = RuleDescription(

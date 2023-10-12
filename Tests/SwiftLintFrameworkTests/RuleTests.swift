@@ -1,7 +1,7 @@
 import SwiftLintCore
 import XCTest
 
-struct RuleWithLevelsMock: ConfigurationProviderRule {
+struct RuleWithLevelsMock: Rule {
     var configuration = SeverityLevelsConfiguration<Self>(warning: 2, error: 3)
 
     static let description = RuleDescription(identifier: "severity_level_mock",
@@ -21,6 +21,7 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
 
 class RuleTests: SwiftLintTestCase {
     fileprivate struct RuleMock1: Rule {
+        var configuration = SeverityConfiguration<Self>(.warning)
         var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
         static let description = RuleDescription(identifier: "RuleMock1", name: "",
                                                  description: "", kind: .style)
@@ -34,6 +35,7 @@ class RuleTests: SwiftLintTestCase {
     }
 
     fileprivate struct RuleMock2: Rule {
+        var configuration = SeverityConfiguration<Self>(.warning)
         var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
         static let description = RuleDescription(identifier: "RuleMock2", name: "",
                                                  description: "", kind: .style)
@@ -46,7 +48,7 @@ class RuleTests: SwiftLintTestCase {
         }
     }
 
-    fileprivate struct RuleWithLevelsMock2: ConfigurationProviderRule {
+    fileprivate struct RuleWithLevelsMock2: Rule {
         var configuration = SeverityLevelsConfiguration<Self>(warning: 2, error: 3)
 
         static let description = RuleDescription(identifier: "violation_level_mock2",

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct RedundantStringEnumValueRule: ConfigurationProviderRule {
+struct RedundantStringEnumValueRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

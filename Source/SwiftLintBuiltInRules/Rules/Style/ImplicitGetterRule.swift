@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
+struct ImplicitGetterRule: SwiftSyntaxRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

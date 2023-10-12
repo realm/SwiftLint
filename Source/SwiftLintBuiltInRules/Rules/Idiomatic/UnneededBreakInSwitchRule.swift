@@ -12,7 +12,7 @@ private func embedInSwitch(
         """, file: file, line: line)
 }
 
-struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

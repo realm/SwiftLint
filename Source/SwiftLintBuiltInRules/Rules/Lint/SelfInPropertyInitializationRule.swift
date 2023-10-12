@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct SelfInPropertyInitializationRule: ConfigurationProviderRule {
+struct SelfInPropertyInitializationRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct TypeNameRule: SwiftSyntaxRule {
     var configuration = TypeNameConfiguration()
 
     static let description = RuleDescription(

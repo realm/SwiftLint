@@ -11,7 +11,7 @@ import SwiftSyntax
 /// Declare state and state objects as private to prevent setting them from a memberwise initializer,
 /// which can conflict with the storage management that SwiftUI provides:
 @SwiftSyntaxRule
-struct PrivateSwiftUIStatePropertyRule: OptInRule, ConfigurationProviderRule {
+struct PrivateSwiftUIStatePropertyRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

@@ -2,7 +2,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct ControlStatementRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
+struct ControlStatementRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

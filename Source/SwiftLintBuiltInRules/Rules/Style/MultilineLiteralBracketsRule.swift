@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule {
+struct MultilineLiteralBracketsRule: ASTRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

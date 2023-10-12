@@ -1,4 +1,4 @@
-struct FunctionBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct FunctionBodyLengthRule: SwiftSyntaxRule {
     var configuration = SeverityLevelsConfiguration<Self>(warning: 50, error: 100)
 
     static let description = RuleDescription(

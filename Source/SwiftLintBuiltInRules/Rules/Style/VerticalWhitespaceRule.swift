@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line"
 
-struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
+struct VerticalWhitespaceRule: CorrectableRule {
     var configuration = VerticalWhitespaceConfiguration()
 
     static let description = RuleDescription(

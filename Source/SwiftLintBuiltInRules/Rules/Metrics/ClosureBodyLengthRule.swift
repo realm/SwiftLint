@@ -1,4 +1,4 @@
-struct ClosureBodyLengthRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
+struct ClosureBodyLengthRule: OptInRule, SwiftSyntaxRule {
     var configuration = SeverityLevelsConfiguration<Self>(warning: 30, error: 100)
 
     static let description = RuleDescription(

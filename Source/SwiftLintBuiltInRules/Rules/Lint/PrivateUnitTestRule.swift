@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule {
     var configuration = PrivateUnitTestConfiguration()
 
     static let description = RuleDescription(

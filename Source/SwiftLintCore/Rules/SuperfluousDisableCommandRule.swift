@@ -1,5 +1,5 @@
 @_spi(TestHelper)
-public struct SuperfluousDisableCommandRule: ConfigurationProviderRule, SourceKitFreeRule {
+public struct SuperfluousDisableCommandRule: SourceKitFreeRule {
     public var configuration = SeverityConfiguration<Self>(.warning)
 
     public init() {}

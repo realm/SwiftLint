@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct RedundantSelfInClosureRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+struct RedundantSelfInClosureRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(

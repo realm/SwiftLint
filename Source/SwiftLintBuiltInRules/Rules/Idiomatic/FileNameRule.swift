@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
+struct FileNameRule: OptInRule, SourceKitFreeRule {
     var configuration = FileNameConfiguration()
 
     static let description = RuleDescription(

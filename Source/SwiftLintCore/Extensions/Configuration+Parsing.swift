@@ -188,28 +188,6 @@ extension Configuration {
                 let issue = validateConfiguredRuleIsEnabled(onlyRules: onlyRules, ruleType: ruleType)
                 issue?.print()
             case let .default(disabled: disabledRules, optIn: optInRules):
-                if rule is any OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {
-                    Issue.genericWarning("\(message), but it is not enabled on '\(Key.optInRules.rawValue)'.").print()
-
-                    if rule is OptInRule.Type {
-                    var allOptInRules = optInRules
-                    if let parentConfiguration {
-                        switch parentConfiguration.rulesMode {
-                        case .allEnabled:
-                            return
-                        case .only(let parentOnlyRules):
-                            allOptInRules.formUnion(parentOnlyRules)
-                        case let .default(disabled: _, optIn: parentOptInRules):
-                            allOptInRules.formUnion(parentOptInRules)
-                        }
-                    }
-                    if Set(allOptInRules).isDisjoint(with: rule.description.allIdentifiers) {
-                        queuedPrintError("\(message), but it is not enabled on " +
-                                         "'\(Key.optInRules.rawValue)'.")
-                    }
-                } else if Set(disabledRules).isSuperset(of: rule.description.allIdentifiers) {
-                    Issue.genericWarning("\(message), but it is disabled on '\(Key.disabledRules.rawValue)'.").print()
-
                 let issue = validateConfiguredRuleIsEnabled(
                     parentConfiguration: parentConfiguration,
                     enabledInParentRules: enabledInParentRules,
@@ -226,7 +204,7 @@ extension Configuration {
 
     static func validateConfiguredRuleIsEnabled(
         onlyRules: Set<String>,
-        ruleType: Rule.Type
+        ruleType: any Rule.Type
     ) -> Issue? {
         if onlyRules.isDisjoint(with: ruleType.description.allIdentifiers) {
             return Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)
@@ -242,7 +220,7 @@ extension Configuration {
         disabledRules: Set<String>,
         optInRules: Set<String>,
         allEnabledRules: Set<String>,
-        ruleType: Rule.Type
+        ruleType: any Rule.Type
     ) -> Issue? {
         if case .allEnabled = parentConfiguration?.rulesMode {
             if disabledRules.contains(ruleType.identifier) {
@@ -261,7 +239,7 @@ extension Configuration {
                 return Issue.ruleDisabledInParentConfiguration(ruleID: ruleType.identifier)
             }
 
-            if ruleType is OptInRule.Type {
+            if ruleType is any OptInRule.Type {
                 if enabledInParentRules.union(optInRules).isDisjoint(with: allIdentifiers) {
                     return Issue.ruleNotEnabledInOptInRules(ruleID: ruleType.identifier)
                 }

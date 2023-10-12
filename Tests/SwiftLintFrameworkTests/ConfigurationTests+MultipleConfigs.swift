@@ -419,17 +419,17 @@ extension ConfigurationTests {
     // MARK: Warnings about configurations for disabled rules
     func testDefaultConfigurationDisabledRuleWarnings() {
         let optInRuleType = ImplicitReturnRule.self
-        XCTAssertTrue((optInRuleType as Any) is OptInRule.Type)
+        XCTAssertTrue((optInRuleType as Any) is any OptInRule.Type)
         testDefaultConfigurationDisabledRuleWarnings(for: optInRuleType)
 
         let defaultRuleType = BlockBasedKVORule.self
-        XCTAssertFalse((defaultRuleType as Any) is OptInRule.Type)
+        XCTAssertFalse((defaultRuleType as Any) is any OptInRule.Type)
         testDefaultConfigurationDisabledRuleWarnings(for: defaultRuleType)
     }
 
-    private func testDefaultConfigurationDisabledRuleWarnings(for ruleType: Rule.Type) {
+    private func testDefaultConfigurationDisabledRuleWarnings(for ruleType: any Rule.Type) {
         let ruleType = ImplicitReturnRule.self
-        XCTAssertTrue((ruleType as Any) is OptInRule.Type)
+        XCTAssertTrue((ruleType as Any) is any OptInRule.Type)
         let ruleIdentifier = ruleType.identifier
 
         let parentConfigurations = [
@@ -459,7 +459,7 @@ extension ConfigurationTests {
         parentConfiguration: Configuration?,
         disabledRules: Set<String>,
         optInRules: Set<String>,
-        ruleType: Rule.Type
+        ruleType: any Rule.Type
     ) -> Issue? {
         var enabledInParentRules: Set<String> = []
         var disabledInParentRules: Set<String> = []
@@ -490,7 +490,7 @@ extension ConfigurationTests {
     private func testParentConfiguration(
         _ parentConfiguration: Configuration?,
         configurations: [Configuration],
-        ruleType: Rule.Type
+        ruleType: any Rule.Type
     ) {
         for configuration in configurations {
             if case .default(let disabledRules, let optInRules) = configuration.rulesMode {
@@ -513,7 +513,7 @@ extension ConfigurationTests {
                         }
 
                         if parentConfiguration == Configuration.emptyOnlyConfiguration() {
-                            if ruleType is OptInRule.Type {
+                            if ruleType is any OptInRule.Type {
                                 XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
                             } else {
                                 XCTAssertEqual(issue, Issue.ruleNotEnabledInParentOnlyRules(ruleID: ruleIdentifier))
@@ -534,15 +534,15 @@ extension ConfigurationTests {
 
     func testOnlyConfigurationDisabledRulesWarnings() {
         let optInRuleType = ImplicitReturnRule.self
-        XCTAssertTrue((optInRuleType as Any) is OptInRule.Type)
+        XCTAssertTrue((optInRuleType as Any) is any OptInRule.Type)
         testOnlyConfigurationDisabledRulesWarnings(ruleType: optInRuleType)
 
         let defaultRuleType = BlockBasedKVORule.self
-        XCTAssertFalse((defaultRuleType as Any) is OptInRule.Type)
+        XCTAssertFalse((defaultRuleType as Any) is any OptInRule.Type)
         testOnlyConfigurationDisabledRulesWarnings(ruleType: defaultRuleType)
     }
 
-    private func testOnlyConfigurationDisabledRulesWarnings(ruleType: Rule.Type) {
+    private func testOnlyConfigurationDisabledRulesWarnings(ruleType: any Rule.Type) {
         struct TestCase: Equatable {
             let onlyRules: Set<String>
             let expectedIssue: Issue?

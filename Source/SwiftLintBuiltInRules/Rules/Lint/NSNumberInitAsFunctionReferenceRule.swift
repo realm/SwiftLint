@@ -2,7 +2,7 @@ import SwiftSyntax
 
 // this rule exists due to a compiler bug: https://github.com/apple/swift/issues/51036
 @SwiftSyntaxRule
-struct NSNumberInitAsFunctionReferenceRule: ConfigurationProviderRule {
+struct NSNumberInitAsFunctionReferenceRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

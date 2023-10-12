@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct LineLengthRule: ConfigurationProviderRule {
+struct LineLengthRule: Rule {
     var configuration = LineLengthConfiguration()
 
     private let commentKinds = SyntaxKind.commentKinds

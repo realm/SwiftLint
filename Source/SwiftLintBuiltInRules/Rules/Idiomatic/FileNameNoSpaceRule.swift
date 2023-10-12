@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
+struct FileNameNoSpaceRule: OptInRule, SourceKitFreeRule {
     var configuration = FileNameNoSpaceConfiguration()
 
     static let description = RuleDescription(

@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private typealias SourceKittenElement = SourceKittenDictionary
 
-struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
+struct ExplicitACLRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

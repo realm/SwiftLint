@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct MarkRule: CorrectableRule, ConfigurationProviderRule {
+struct MarkRule: CorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

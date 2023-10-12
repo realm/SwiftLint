@@ -2,7 +2,7 @@ import Foundation
 import SwiftSyntax
 
 struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
-                                         ConfigurationProviderRule, SubstitutionCorrectableRule {
+                                         SubstitutionCorrectableRule {
     var configuration = TestCaseAccessibilityConfiguration()
 
     static let description = RuleDescription(

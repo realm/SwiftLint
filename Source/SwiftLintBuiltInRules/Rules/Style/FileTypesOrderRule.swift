@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private typealias FileTypeOffset = (fileType: FileTypesOrderConfiguration.FileType, offset: ByteCount)
 
-struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
+struct FileTypesOrderRule: OptInRule {
     var configuration = FileTypesOrderConfiguration()
 
     static let description = RuleDescription(

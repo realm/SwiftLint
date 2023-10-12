@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+struct ConditionalReturnsOnNewlineRule: OptInRule, SwiftSyntaxRule {
     var configuration = ConditionalReturnsOnNewlineConfiguration()
 
     static let description = RuleDescription(

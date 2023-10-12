@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
+struct VoidFunctionInTernaryConditionRule: SwiftSyntaxRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

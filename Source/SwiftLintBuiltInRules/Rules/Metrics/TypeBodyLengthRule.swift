@@ -10,7 +10,7 @@ private func wrapExample(
                    repeatElement(template, count: count).joined() + "\(add)}\n", file: file, line: line)
 }
 
-struct TypeBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct TypeBodyLengthRule: SwiftSyntaxRule {
     var configuration = SeverityLevelsConfiguration<Self>(warning: 250, error: 350)
 
     static let description = RuleDescription(

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
+struct CyclomaticComplexityRule: ASTRule {
     var configuration = CyclomaticComplexityConfiguration()
 
     static let description = RuleDescription(

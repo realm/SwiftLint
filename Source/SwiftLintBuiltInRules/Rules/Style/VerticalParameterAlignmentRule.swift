@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct VerticalParameterAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct VerticalParameterAlignmentRule: SwiftSyntaxRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

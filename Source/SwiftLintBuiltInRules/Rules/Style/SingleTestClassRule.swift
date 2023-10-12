@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
+struct SingleTestClassRule: SourceKitFreeRule, OptInRule {
     var configuration = SingleTestClassConfiguration()
 
     static let description = RuleDescription(

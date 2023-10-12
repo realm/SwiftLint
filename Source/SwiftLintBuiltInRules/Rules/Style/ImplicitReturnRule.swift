@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ImplicitReturnRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+struct ImplicitReturnRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = ImplicitReturnConfiguration()
 
     static let description = RuleDescription(

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+struct StrictFilePrivateRule: OptInRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

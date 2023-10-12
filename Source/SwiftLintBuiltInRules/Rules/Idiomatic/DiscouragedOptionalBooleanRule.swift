@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule {
+struct DiscouragedOptionalBooleanRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

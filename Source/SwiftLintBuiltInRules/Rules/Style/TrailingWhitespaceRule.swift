@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
+struct TrailingWhitespaceRule: CorrectableRule {
     var configuration = TrailingWhitespaceConfiguration()
 
     static let description = RuleDescription(

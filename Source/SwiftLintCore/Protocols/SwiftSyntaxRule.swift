@@ -28,8 +28,7 @@ public protocol SwiftSyntaxRule: SourceKitFreeRule {
     func preprocess(file: SwiftLintFile) -> SourceFileSyntax?
 }
 
-public extension SwiftSyntaxRule where Self: ConfigurationProviderRule,
-                                       ConfigurationType: SeverityBasedRuleConfiguration {
+public extension SwiftSyntaxRule where ConfigurationType: SeverityBasedRuleConfiguration {
     func makeViolation(file: SwiftLintFile, violation: ReasonedRuleViolation) -> StyleViolation {
         StyleViolation(
             ruleDescription: Self.description,

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+struct ExplicitTypeInterfaceRule: OptInRule, SwiftSyntaxRule {
     var configuration = ExplicitTypeInterfaceConfiguration()
 
     static let description = RuleDescription(

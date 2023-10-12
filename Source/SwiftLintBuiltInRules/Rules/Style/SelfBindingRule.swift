@@ -2,7 +2,7 @@ import SwiftSyntax
 
 // MARK: - SelfBindingRule
 
-struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+struct SelfBindingRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SelfBindingConfiguration()
 
     static let description = RuleDescription(

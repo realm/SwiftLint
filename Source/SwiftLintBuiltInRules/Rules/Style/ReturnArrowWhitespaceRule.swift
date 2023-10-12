@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

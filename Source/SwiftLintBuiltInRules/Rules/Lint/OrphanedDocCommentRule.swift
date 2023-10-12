@@ -1,6 +1,6 @@
 import SwiftIDEUtils
 
-struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
+struct OrphanedDocCommentRule: SourceKitFreeRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

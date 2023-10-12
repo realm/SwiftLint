@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct CollectionAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+struct CollectionAlignmentRule: SwiftSyntaxRule, OptInRule {
     var configuration = CollectionAlignmentConfiguration()
 
     static var description = RuleDescription(

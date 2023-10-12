@@ -7,7 +7,7 @@ private extension SwiftLintFile {
     }
 }
 
-struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
+struct VerticalWhitespaceOpeningBracesRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     private static let nonTriggeringExamples = [

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
+struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
     var configuration = PrivateOverFilePrivateConfiguration()
 
     static let description = RuleDescription(

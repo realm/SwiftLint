@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+struct YodaConditionRule: OptInRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule, ConfigurationProviderRule {
+struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule {
     var configuration = VerticalWhitespaceClosingBracesConfiguration()
 
     static let description = RuleDescription(

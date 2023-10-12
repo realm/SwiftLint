@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ProhibitedSuperRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+struct ProhibitedSuperRule: SwiftSyntaxRule, OptInRule {
     var configuration = ProhibitedSuperConfiguration()
 
     static let description = RuleDescription(

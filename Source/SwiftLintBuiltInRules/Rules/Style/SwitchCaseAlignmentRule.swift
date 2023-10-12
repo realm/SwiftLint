@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct SwitchCaseAlignmentRule: SwiftSyntaxRule {
     var configuration = SwitchCaseAlignmentConfiguration()
 
     static let description = RuleDescription(

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+struct EmptyXCTestMethodRule: OptInRule, SwiftSyntaxRule {
     var configuration = EmptyXCTestMethodConfiguration()
 
     static let description = RuleDescription(

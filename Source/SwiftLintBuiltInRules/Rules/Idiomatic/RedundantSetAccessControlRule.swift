@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct RedundantSetAccessControlRule: ConfigurationProviderRule {
+struct RedundantSetAccessControlRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

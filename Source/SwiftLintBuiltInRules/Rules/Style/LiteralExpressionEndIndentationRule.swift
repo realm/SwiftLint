@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct LiteralExpressionEndIndentationRule: Rule, ConfigurationProviderRule, OptInRule {
+struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct DiscouragedDirectInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct DiscouragedDirectInitRule: SwiftSyntaxRule {
     var configuration = DiscouragedDirectInitConfiguration()
 
     static let description = RuleDescription(

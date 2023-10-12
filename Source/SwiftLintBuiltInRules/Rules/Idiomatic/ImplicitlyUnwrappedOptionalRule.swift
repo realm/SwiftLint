@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, OptInRule {
     var configuration = ImplicitlyUnwrappedOptionalConfiguration()
 
     static let description = RuleDescription(

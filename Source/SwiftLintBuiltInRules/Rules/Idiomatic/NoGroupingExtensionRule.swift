@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
+struct NoGroupingExtensionRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

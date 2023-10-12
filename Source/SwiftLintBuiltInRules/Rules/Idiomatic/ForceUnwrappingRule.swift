@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ForceUnwrappingRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
+struct ForceUnwrappingRule: OptInRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

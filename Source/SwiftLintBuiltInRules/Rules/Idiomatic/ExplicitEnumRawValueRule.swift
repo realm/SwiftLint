@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct ExplicitEnumRawValueRule: OptInRule, ConfigurationProviderRule {
+struct ExplicitEnumRawValueRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

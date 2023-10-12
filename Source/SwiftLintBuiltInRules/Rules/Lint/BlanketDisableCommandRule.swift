@@ -1,4 +1,4 @@
-struct BlanketDisableCommandRule: ConfigurationProviderRule {
+struct BlanketDisableCommandRule: Rule {
     var configuration = BlanketDisableCommandConfiguration()
 
     static let description = RuleDescription(

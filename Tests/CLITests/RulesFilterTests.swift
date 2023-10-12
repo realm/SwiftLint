@@ -132,6 +132,7 @@ final class RulesFilterTests: XCTestCase {
 // MARK: - Mocks
 
 private struct RuleMock1: Rule {
+    var configuration = SeverityConfiguration<Self>(.warning)
     var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
 
     static let description = RuleDescription(identifier: "RuleMock1", name: "",
@@ -146,6 +147,7 @@ private struct RuleMock1: Rule {
 }
 
 private struct RuleMock2: Rule {
+    var configuration = SeverityConfiguration<Self>(.warning)
     var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
 
     static let description = RuleDescription(identifier: "RuleMock2", name: "",
@@ -160,6 +162,7 @@ private struct RuleMock2: Rule {
 }
 
 private struct CorrectableRuleMock: CorrectableRule {
+    var configuration = SeverityConfiguration<Self>(.warning)
     var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
 
     static let description = RuleDescription(identifier: "CorrectableRuleMock", name: "",

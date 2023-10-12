@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct NonOverridableClassDeclarationRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+struct NonOverridableClassDeclarationRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = NonOverridableClassDeclarationConfiguration()
 
     static var description = RuleDescription(

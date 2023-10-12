@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct PreferSelfInStaticReferencesRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+struct PreferSelfInStaticReferencesRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(

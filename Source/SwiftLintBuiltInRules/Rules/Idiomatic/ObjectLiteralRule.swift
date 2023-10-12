@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+struct ObjectLiteralRule: SwiftSyntaxRule, OptInRule {
     var configuration = ObjectLiteralConfiguration<Self>()
 
     static let description = RuleDescription(

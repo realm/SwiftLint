@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProviderRule, OptInRule {
+struct VerticalParameterAlignmentOnCallRule: ASTRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

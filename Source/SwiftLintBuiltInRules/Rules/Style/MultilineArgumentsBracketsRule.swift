@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct MultilineArgumentsBracketsRule: OptInRule, ConfigurationProviderRule {
+struct MultilineArgumentsBracketsRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

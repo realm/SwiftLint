@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct FlatMapOverMapReduceRule: OptInRule, ConfigurationProviderRule {
+struct FlatMapOverMapReduceRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

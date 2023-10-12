@@ -52,7 +52,7 @@ private extension Sequence where Element == Line {
     }
 }
 
-struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
+struct SortedImportsRule: CorrectableRule, OptInRule {
     var configuration = SortedImportsConfiguration()
 
     static let description = RuleDescription(

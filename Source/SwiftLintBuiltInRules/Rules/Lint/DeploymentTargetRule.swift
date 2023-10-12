@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
+struct DeploymentTargetRule: SwiftSyntaxRule {
     fileprivate typealias Version = DeploymentTargetConfiguration.Version
     var configuration = DeploymentTargetConfiguration()
 

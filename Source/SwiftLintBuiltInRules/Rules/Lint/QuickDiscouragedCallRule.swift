@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
+struct QuickDiscouragedCallRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

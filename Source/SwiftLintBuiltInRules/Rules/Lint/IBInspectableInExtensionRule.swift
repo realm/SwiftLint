@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct IBInspectableInExtensionRule: ConfigurationProviderRule, OptInRule {
+struct IBInspectableInExtensionRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ClosureParameterPositionRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct ClosureParameterPositionRule: SwiftSyntaxRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

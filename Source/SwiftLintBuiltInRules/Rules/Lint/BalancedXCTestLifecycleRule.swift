@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule {
     var configuration = BalancedXCTestLifecycleConfiguration()
 
     static let description = RuleDescription(

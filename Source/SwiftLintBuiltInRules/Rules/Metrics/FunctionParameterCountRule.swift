@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct FunctionParameterCountRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct FunctionParameterCountRule: SwiftSyntaxRule {
     var configuration = FunctionParameterCountConfiguration()
 
     static let description = RuleDescription(

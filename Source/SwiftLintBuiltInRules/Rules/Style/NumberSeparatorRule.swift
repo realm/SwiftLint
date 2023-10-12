@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule {
     var configuration = NumberSeparatorConfiguration()
 
     static let description = RuleDescription(

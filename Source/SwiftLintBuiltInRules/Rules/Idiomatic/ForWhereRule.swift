@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ForWhereRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct ForWhereRule: SwiftSyntaxRule {
     var configuration = ForWhereConfiguration()
 
     static let description = RuleDescription(

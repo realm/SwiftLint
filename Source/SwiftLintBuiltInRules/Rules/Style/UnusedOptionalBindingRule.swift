@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct UnusedOptionalBindingRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct UnusedOptionalBindingRule: SwiftSyntaxRule {
     var configuration = UnusedOptionalBindingConfiguration()
 
     static let description = RuleDescription(

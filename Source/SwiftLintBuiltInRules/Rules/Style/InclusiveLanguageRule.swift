@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct InclusiveLanguageRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct InclusiveLanguageRule: SwiftSyntaxRule {
     var configuration = InclusiveLanguageConfiguration()
 
     static let description = RuleDescription(

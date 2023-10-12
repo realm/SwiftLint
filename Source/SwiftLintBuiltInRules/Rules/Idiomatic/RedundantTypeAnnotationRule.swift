@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule {
+struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

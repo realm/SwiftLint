@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
+struct StatementPositionRule: CorrectableRule {
     var configuration = StatementPositionConfiguration()
 
     static let description = RuleDescription(

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct MultilineArgumentsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+struct MultilineArgumentsRule: SwiftSyntaxRule, OptInRule {
     var configuration = MultilineArgumentsConfiguration()
 
     static let description = RuleDescription(

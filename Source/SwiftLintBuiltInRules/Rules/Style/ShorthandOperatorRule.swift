@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule(foldExpressions: true)
-struct ShorthandOperatorRule: ConfigurationProviderRule {
+struct ShorthandOperatorRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(

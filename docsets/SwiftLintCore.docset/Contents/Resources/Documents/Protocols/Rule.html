@@ -192,9 +192,6 @@
                 <a class="nav-group-task-link" href="../Protocols/CollectingRule.html">CollectingRule</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/ConfigurationProviderRule.html">ConfigurationProviderRule</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/CorrectableRule.html">CorrectableRule</a>
               </li>
               <li class="nav-group-task">
@@ -350,7 +347,7 @@
             <p>An executable value that can identify issues (violations) in Swift source code.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L5-L68">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L5-L74">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -392,6 +389,36 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:13SwiftLintCore4RuleP17ConfigurationTypeQa"></a>
+                    <a name="//apple_ref/swift/Alias/ConfigurationType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore4RuleP17ConfigurationTypeQa">ConfigurationType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The type of the configuration used to configure this rule.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">ConfigurationType</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RuleConfiguration.html">RuleConfiguration</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L10">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:13SwiftLintCore4RuleP11descriptionAA0D11DescriptionVvpZ"></a>
                     <a name="//apple_ref/swift/Variable/description" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SwiftLintCore4RuleP11descriptionAA0D11DescriptionVvpZ">description</a>
@@ -414,7 +441,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L10">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L13">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -426,6 +453,9 @@
                     <a name="//apple_ref/swift/Property/configurationDescription" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SwiftLintCore4RuleP24configurationDescription0F0Qzvp">configurationDescription</a>
                     </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
                   </div>
                   <div class="height-container">
                     <div class="pointer-container"></div>
@@ -434,6 +464,10 @@
                       <div class="abstract">
                         <p>A description of how this rule has been configured to run. It can be built using the annotated result builder.</p>
 
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -445,7 +479,37 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L14">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L17">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore4RuleP13configuration17ConfigurationTypeQzvp"></a>
+                    <a name="//apple_ref/swift/Property/configuration" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore4RuleP13configuration17ConfigurationTypeQzvp">configuration</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>This rule&rsquo;s configuration.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">configuration</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Rule.html#/s:13SwiftLintCore4RuleP17ConfigurationTypeQa">ConfigurationType</a></span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L20">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -475,7 +539,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L17">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L23">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -487,6 +551,9 @@
                     <a name="//apple_ref/swift/Method/init(configuration:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SwiftLintCore4RuleP13configurationxyp_tKcfc">init(configuration:<wbr>)</a>
                     </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
                   </div>
                   <div class="height-container">
                     <div class="pointer-container"></div>
@@ -500,6 +567,10 @@
 
 </div>
 
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -529,7 +600,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L24">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L30">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -601,7 +672,7 @@
                         <p>All style violations to the rule&rsquo;s expectations.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L32">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L38">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -654,7 +725,7 @@
                         <p>All style violations to the rule&rsquo;s expectations.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L39">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L45">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -714,7 +785,7 @@
                         <p>Whether or not the specified rule is equivalent to the current rule.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L46">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L52">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -799,7 +870,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L55">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L61">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -889,7 +960,7 @@ expectations.</p>
                         <p>All style violations to the rule&rsquo;s expectations.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L67">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L73">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -923,7 +994,7 @@ cached value is still valid given the new cache value.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L90-L92">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L104-L106">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -956,7 +1027,7 @@ cached value is still valid given the new cache value.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L97">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L115">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

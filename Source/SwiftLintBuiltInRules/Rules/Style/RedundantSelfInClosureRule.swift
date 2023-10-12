@@ -74,7 +74,7 @@ private extension RedundantSelfInClosureRule {
             }
             let localViolationCorrections = ExplicitSelfVisitor(
                 configuration: configuration,
-                locationConverter: locationConverter,
+                file: file,
                 typeDeclarationKind: activeTypeDeclarationKind,
                 functionCallType: activeFunctionCallType,
                 selfCaptureKind: activeSelfCaptureKind,
@@ -124,7 +124,7 @@ private class ExplicitSelfVisitor<Configuration: RuleConfiguration>: DeclaredIde
     private let selfCaptureKind: SelfCaptureKind
 
     init(configuration: Configuration,
-         locationConverter: SourceLocationConverter,
+         file: SwiftLintFile,
          typeDeclarationKind: TypeDeclarationKind,
          functionCallType: FunctionCallType,
          selfCaptureKind: SelfCaptureKind,
@@ -132,7 +132,7 @@ private class ExplicitSelfVisitor<Configuration: RuleConfiguration>: DeclaredIde
         self.typeDeclKind = typeDeclarationKind
         self.functionCallType = functionCallType
         self.selfCaptureKind = selfCaptureKind
-        super.init(configuration: configuration, locationConverter: locationConverter, scope: scope)
+        super.init(configuration: configuration, file: file, scope: scope)
     }
 
     override func visitPost(_ node: MemberAccessExprSyntax) {

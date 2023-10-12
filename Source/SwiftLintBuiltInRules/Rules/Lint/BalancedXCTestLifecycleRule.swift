@@ -117,7 +117,7 @@ private extension BalancedXCTestLifecycleRule {
                 return
             }
 
-            let methods = SetupTearDownVisitor(configuration: configuration, locationConverter: locationConverter)
+            let methods = SetupTearDownVisitor(configuration: configuration, file: file)
                 .walk(tree: node.memberBlock, handler: \.methods)
             guard methods.contains(.setUp) != methods.contains(.tearDown) else {
                 return

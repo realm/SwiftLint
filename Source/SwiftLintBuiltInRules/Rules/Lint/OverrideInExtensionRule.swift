@@ -36,11 +36,11 @@ struct OverrideInExtensionRule: OptInRule, SwiftSyntaxRule {
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         let allowedExtensions = ClassNameCollectingVisitor(
             configuration: configuration,
-            locationConverter: file.locationConverter
+            file: file
         ).walk(tree: file.syntaxTree, handler: \.classNames)
         return Visitor(
             configuration: configuration,
-            locationConverter: file.locationConverter,
+            file: file,
             allowedExtensions: allowedExtensions
         )
     }
@@ -50,10 +50,10 @@ private extension OverrideInExtensionRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let allowedExtensions: Set<String>
 
-        init(configuration: ConfigurationType, locationConverter: SourceLocationConverter,
+        init(configuration: ConfigurationType, file: SwiftLintFile,
              allowedExtensions: Set<String>) {
             self.allowedExtensions = allowedExtensions
-            super.init(configuration: configuration, locationConverter: locationConverter)
+            super.init(configuration: configuration, file: file)
         }
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .allExcept(ExtensionDeclSyntax.self) }

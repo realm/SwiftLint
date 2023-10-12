@@ -103,7 +103,7 @@ struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         LegacyFunctionRuleHelper.Visitor(
             configuration: configuration,
-            locationConverter: file.locationConverter,
+            file: file,
             legacyFunctions: Self.legacyFunctions
         )
     }

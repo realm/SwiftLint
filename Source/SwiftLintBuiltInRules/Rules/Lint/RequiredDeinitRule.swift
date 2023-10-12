@@ -71,7 +71,7 @@ struct RequiredDeinitRule: OptInRule {
 private extension RequiredDeinitRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ClassDeclSyntax) {
-            let visitor = DeinitVisitor(configuration: configuration, locationConverter: locationConverter)
+            let visitor = DeinitVisitor(configuration: configuration, file: file)
             if !visitor.walk(tree: node.memberBlock, handler: \.hasDeinit) {
                 violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
             }

@@ -151,7 +151,7 @@ private extension ConvenienceTypeRule {
                 return false
             }
 
-            return ConvenienceTypeCheckVisitor(configuration: configuration, locationConverter: locationConverter)
+            return ConvenienceTypeCheckVisitor(configuration: configuration, file: file)
                 .walk(tree: members, handler: \.canBeConvenienceType)
         }
     }

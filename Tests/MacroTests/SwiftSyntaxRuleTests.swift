@@ -18,7 +18,7 @@ final class SwiftSyntaxRuleTests: XCTestCase {
 
             extension Hello: SwiftSyntaxRule {
                 func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
-                    Visitor(configuration: configuration, locationConverter: file.locationConverter)
+                    Visitor(configuration: configuration, file: file)
                 }
             }
             """,
@@ -37,7 +37,7 @@ final class SwiftSyntaxRuleTests: XCTestCase {
 
             extension Hello: SwiftSyntaxRule {
                 func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
-                    Visitor(configuration: configuration, locationConverter: file.locationConverter)
+                    Visitor(configuration: configuration, file: file)
                 }
             }
             """,
@@ -56,7 +56,7 @@ final class SwiftSyntaxRuleTests: XCTestCase {
 
             extension Hello: SwiftSyntaxRule {
                 func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
-                    Visitor(configuration: configuration, locationConverter: file.locationConverter)
+                    Visitor(configuration: configuration, file: file)
                 }
             }
 
@@ -82,7 +82,7 @@ final class SwiftSyntaxRuleTests: XCTestCase {
 
             extension Hello: SwiftSyntaxRule {
                 func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
-                    Visitor(configuration: configuration, locationConverter: file.locationConverter)
+                    Visitor(configuration: configuration, file: file)
                 }
             }
             """,

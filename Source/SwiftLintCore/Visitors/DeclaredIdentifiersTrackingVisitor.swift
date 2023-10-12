@@ -11,10 +11,13 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
 
     /// Initializer.
     ///
-    /// - parameter scope: A (potentially already pre-filled) scope to collect identifers into.
-    public init(configuration: Configuration, locationConverter: SourceLocationConverter, scope: Scope = Scope()) {
+    /// - Parameters:
+    ///   - configuration: Configuration of a rule.
+    ///   - file: File from which the syntax tree stems from.
+    ///   - scope: A (potentially already pre-filled) scope to collect identifers into.
+    public init(configuration: Configuration, file: SwiftLintFile, scope: Scope = Scope()) {
         self.scope = scope
-        super.init(configuration: configuration, locationConverter: locationConverter)
+        super.init(configuration: configuration, file: file)
     }
 
     /// Indicate whether a given identifier is in scope.

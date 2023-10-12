@@ -50,7 +50,7 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let classes = Visitor(configuration: configuration, locationConverter: file.locationConverter)
+        let classes = Visitor(configuration: configuration, file: file)
             .walk(tree: file.syntaxTree, handler: \.violations)
 
         guard classes.count > 1 else { return [] }

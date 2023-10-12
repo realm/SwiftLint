@@ -43,7 +43,7 @@ struct LocalDocCommentRule: SwiftSyntaxRule, OptInRule {
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         Visitor(
             configuration: configuration,
-            locationConverter: file.locationConverter,
+            file: file,
             classifications: file.syntaxClassifications.filter { $0.kind != .none }
         )
     }
@@ -53,12 +53,12 @@ private extension LocalDocCommentRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let docCommentRanges: [ByteSourceRange]
 
-        init(configuration: ConfigurationType, locationConverter: SourceLocationConverter,
+        init(configuration: ConfigurationType, file: SwiftLintFile,
              classifications: [SyntaxClassifiedRange]) {
             self.docCommentRanges = classifications
                 .filter { $0.kind == .docLineComment || $0.kind == .docBlockComment }
                 .map(\.range)
-            super.init(configuration: configuration, locationConverter: locationConverter)
+            super.init(configuration: configuration, file: file)
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {

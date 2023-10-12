@@ -6,10 +6,9 @@ enum LegacyFunctionRuleHelper {
     final class Visitor<Configuration: RuleConfiguration>: ViolationsSyntaxVisitor<Configuration> {
         private let legacyFunctions: [String: RewriteStrategy]
 
-        init(configuration: Configuration, locationConverter: SourceLocationConverter,
-             legacyFunctions: [String: RewriteStrategy]) {
+        init(configuration: Configuration, file: SwiftLintFile, legacyFunctions: [String: RewriteStrategy]) {
             self.legacyFunctions = legacyFunctions
-            super.init(configuration: configuration, locationConverter: locationConverter)
+            super.init(configuration: configuration, file: file)
         }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {

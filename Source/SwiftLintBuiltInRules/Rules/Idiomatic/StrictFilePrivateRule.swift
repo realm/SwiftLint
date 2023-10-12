@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct StrictFilePrivateRule: OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct StrictFilePrivateRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -122,14 +123,6 @@ struct StrictFilePrivateRule: OptInRule, SwiftSyntaxRule {
             """, excludeFromDocumentation: true)
         }
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
-        Visitor(
-            configuration: configuration,
-            locationConverter: file.locationConverter,
-            file: file.syntaxTree
-        )
-    }
 }
 
 private enum ProtocolRequirementType: Equatable {
@@ -140,16 +133,9 @@ private enum ProtocolRequirementType: Equatable {
 
 private extension StrictFilePrivateRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private let file: SourceFileSyntax
-
-        init(configuration: ConfigurationType, locationConverter: SourceLocationConverter, file: SourceFileSyntax) {
-            self.file = file
-            super.init(configuration: configuration, locationConverter: locationConverter)
-        }
-
         private lazy var protocols = {
-            ProtocolCollector(configuration: configuration, locationConverter: locationConverter)
-                .walk(tree: file, handler: \.protocols)
+            ProtocolCollector(configuration: configuration, file: file)
+                .walk(tree: file.syntaxTree, handler: \.protocols)
         }()
 
         override func visitPost(_ node: DeclModifierSyntax) {

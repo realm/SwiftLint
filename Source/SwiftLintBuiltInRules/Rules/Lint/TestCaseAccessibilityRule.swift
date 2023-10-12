@@ -37,7 +37,7 @@ private extension TestCaseAccessibilityRule {
                 return
             }
             violations.append(
-                contentsOf: XCTestClassVisitor(configuration: configuration, locationConverter: locationConverter)
+                contentsOf: XCTestClassVisitor(configuration: configuration, file: file)
                     .walk(tree: node.memberBlock, handler: \.violations)
             )
         }

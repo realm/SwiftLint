@@ -40,7 +40,7 @@ struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule {
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         warnDeprecatedOnce()
-        return Visitor(configuration: configuration, locationConverter: file.locationConverter)
+        return Visitor(configuration: configuration, file: file)
     }
 
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {

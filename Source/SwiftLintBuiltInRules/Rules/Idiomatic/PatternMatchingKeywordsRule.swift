@@ -38,7 +38,7 @@ struct PatternMatchingKeywordsRule: OptInRule {
 private extension PatternMatchingKeywordsRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseItemSyntax) {
-            let localViolations = TupleVisitor(configuration: configuration, locationConverter: locationConverter)
+            let localViolations = TupleVisitor(configuration: configuration, file: file)
                 .walk(tree: node.pattern, handler: \.violations)
             violations.append(contentsOf: localViolations)
         }

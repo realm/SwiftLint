@@ -26,7 +26,7 @@ struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule 
                 }
             }
         }
-        return Visitor(configuration: configuration, locationConverter: file.locationConverter)
+        return Visitor(configuration: configuration, file: file)
     }
 
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {

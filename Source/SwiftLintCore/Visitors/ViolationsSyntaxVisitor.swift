@@ -4,17 +4,20 @@ import SwiftSyntax
 open class ViolationsSyntaxVisitor<Configuration: RuleConfiguration>: SyntaxVisitor {
     /// A rule's configuration.
     public let configuration: Configuration
+    /// The file from which the traversed syntax tree stems from.
+    public let file: SwiftLintFile
+
     /// A source location converter associated with the syntax tree being traversed.
-    public let locationConverter: SourceLocationConverter
+    public lazy var locationConverter = file.locationConverter
 
     /// Initializer for a ``ViolationsSyntaxVisitor``.
     /// 
     /// - Parameters:
     ///   - configuration: Configuration of a rule.
-    ///   - locationConverter: Location converter associated with the to be traversed syntax tree.
-    public init(configuration: Configuration, locationConverter: SourceLocationConverter) {
+    ///   - file: File from which the syntax tree stems from.
+    public init(configuration: Configuration, file: SwiftLintFile) {
         self.configuration = configuration
-        self.locationConverter = locationConverter
+        self.file = file
         super.init(viewMode: .sourceAccurate)
     }
 

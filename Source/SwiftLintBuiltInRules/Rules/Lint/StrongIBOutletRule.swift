@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct StrongIBOutletRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct StrongIBOutletRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -27,13 +27,6 @@ struct StrongIBOutletRule: SwiftSyntaxCorrectableRule, OptInRule {
                 wrapExample("@IBOutlet var textField: UITextField?")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension StrongIBOutletRule {

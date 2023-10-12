@@ -7,7 +7,7 @@ private let macros = [
 ]
 
 final class SwiftSyntaxRuleTests: XCTestCase {
-    func testNoFoldArgument() {
+    func testNoArguments() {
         assertMacroExpansion(
             """
             @SwiftSyntaxRule
@@ -26,10 +26,10 @@ final class SwiftSyntaxRuleTests: XCTestCase {
         )
     }
 
-    func testFalseFoldArgument() {
+    func testFalseArguments() {
         assertMacroExpansion(
             """
-            @SwiftSyntaxRule(foldExpressions: false)
+            @SwiftSyntaxRule(foldExpressions: false, explicitRewriter: false)
             struct Hello {}
             """,
             expandedSource: """
@@ -45,10 +45,10 @@ final class SwiftSyntaxRuleTests: XCTestCase {
         )
     }
 
-    func testTrueFoldArgument() {
+    func testTrueArguments() {
         assertMacroExpansion(
             """
-            @SwiftSyntaxRule(foldExpressions: true)
+            @SwiftSyntaxRule(foldExpressions: true, explicitRewriter: true)
             struct Hello {}
             """,
             expandedSource: """
@@ -65,16 +65,22 @@ final class SwiftSyntaxRuleTests: XCTestCase {
                     file.foldedSyntaxTree
                 }
             }
+
+            extension Hello: SwiftSyntaxCorrectableRule {
+                func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
+                    Rewriter(locationConverter: file.locationConverter, disabledRegions: disabledRegions(file: file))
+                }
+            }
             """,
             macros: macros
         )
     }
 
-    func testArbitraryFoldArgument() {
-        // Silently fail because the macro definition explicitly requires a bool
+    func testArbitraryArguments() {
+        // Silently fail because the macro definition explicitly requires a bool arguments.
         assertMacroExpansion(
             """
-            @SwiftSyntaxRule(foldExpressions: variable)
+            @SwiftSyntaxRule(foldExpressions: variable, explicitRewriter: variable)
             struct Hello {}
             """,
             expandedSource: """

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct TrailingSemicolonRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -24,13 +24,6 @@ struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule {
             Example("let foo = 12↓;  // comment\n"): Example("let foo = 12  // comment\n")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension TrailingSemicolonRule {

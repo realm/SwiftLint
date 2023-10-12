@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct ShorthandOptionalBindingRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
@@ -79,13 +79,6 @@ struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule {
         ],
         deprecatedAliases: ["if_let_shadowing"]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension ShorthandOptionalBindingRule {

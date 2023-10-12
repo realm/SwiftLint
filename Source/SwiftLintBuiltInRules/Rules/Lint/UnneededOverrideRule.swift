@@ -1,8 +1,8 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-@SwiftSyntaxRule
-struct UnneededOverrideRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct UnneededOverrideRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -14,13 +14,6 @@ struct UnneededOverrideRule: SwiftSyntaxCorrectableRule {
         triggeringExamples: UnneededOverrideRuleExamples.triggeringExamples,
         corrections: UnneededOverrideRuleExamples.corrections
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private func simplify(_ node: some SyntaxProtocol) -> (any ExprSyntaxProtocol)? {

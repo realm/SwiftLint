@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct PreferSelfTypeOverTypeOfSelfRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct PreferSelfTypeOverTypeOfSelfRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -105,13 +105,6 @@ struct PreferSelfTypeOverTypeOfSelfRule: SwiftSyntaxCorrectableRule, OptInRule {
             """)
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension PreferSelfTypeOverTypeOfSelfRule {

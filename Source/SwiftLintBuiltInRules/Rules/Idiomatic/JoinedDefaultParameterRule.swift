@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct JoinedDefaultParameterRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -36,13 +36,6 @@ struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, OptInRule {
                 Example("class C {\n#if true\nlet foo = bar.joined()\n#endif\n}")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension JoinedDefaultParameterRule {

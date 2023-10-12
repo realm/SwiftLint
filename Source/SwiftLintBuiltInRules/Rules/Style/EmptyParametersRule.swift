@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct EmptyParametersRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct EmptyParametersRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -31,13 +31,6 @@ struct EmptyParametersRule: SwiftSyntaxCorrectableRule {
             Example("let foo: ↓(Void) -> () throws -> Void)"): Example("let foo: () -> () throws -> Void)")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension EmptyParametersRule {

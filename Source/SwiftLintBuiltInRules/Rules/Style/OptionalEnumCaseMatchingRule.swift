@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct OptionalEnumCaseMatchingRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -153,13 +153,6 @@ struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, OptInRule {
             """)
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension OptionalEnumCaseMatchingRule {

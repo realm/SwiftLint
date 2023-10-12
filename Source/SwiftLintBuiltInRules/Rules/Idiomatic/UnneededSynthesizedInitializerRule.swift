@@ -13,8 +13,8 @@
 
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct UnneededSynthesizedInitializerRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -27,13 +27,6 @@ struct UnneededSynthesizedInitializerRule: SwiftSyntaxCorrectableRule {
         triggeringExamples: UnneededSynthesizedInitializerRuleExamples.triggering,
         corrections: UnneededSynthesizedInitializerRuleExamples.corrections
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension UnneededSynthesizedInitializerRule {

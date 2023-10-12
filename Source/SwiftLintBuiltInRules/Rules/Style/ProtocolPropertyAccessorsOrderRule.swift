@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ProtocolPropertyAccessorsOrderRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct ProtocolPropertyAccessorsOrderRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -22,13 +22,6 @@ struct ProtocolPropertyAccessorsOrderRule: SwiftSyntaxCorrectableRule {
                 Example("protocol Foo {\n var bar: String { get set }\n }")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension ProtocolPropertyAccessorsOrderRule {

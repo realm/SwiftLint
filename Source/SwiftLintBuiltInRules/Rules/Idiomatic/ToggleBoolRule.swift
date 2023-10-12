@@ -1,8 +1,8 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-@SwiftSyntaxRule
-struct ToggleBoolRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct ToggleBoolRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
@@ -29,13 +29,6 @@ struct ToggleBoolRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("func foo() { ↓abc = !abc }"): Example("func foo() { abc.toggle() }")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension ToggleBoolRule {

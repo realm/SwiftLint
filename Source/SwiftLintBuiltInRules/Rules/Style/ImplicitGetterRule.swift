@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ImplicitGetterRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct ImplicitGetterRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,10 +12,6 @@ struct ImplicitGetterRule: SwiftSyntaxRule {
         nonTriggeringExamples: ImplicitGetterRuleExamples.nonTriggeringExamples,
         triggeringExamples: ImplicitGetterRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ImplicitGetterRule {

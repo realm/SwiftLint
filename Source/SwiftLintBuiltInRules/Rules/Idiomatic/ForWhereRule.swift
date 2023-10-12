@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ForWhereRule: SwiftSyntaxRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct ForWhereRule: Rule {
     var configuration = ForWhereConfiguration()
 
     static let description = RuleDescription(
@@ -115,18 +116,14 @@ struct ForWhereRule: SwiftSyntaxRule {
             """, configuration: ["allow_for_as_filter": true])
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(allowForAsFilter: configuration.allowForAsFilter)
-    }
 }
 
 private extension ForWhereRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let allowForAsFilter: Bool
+        let configuration: ConfigurationType
 
-        init(allowForAsFilter: Bool) {
-            self.allowForAsFilter = allowForAsFilter
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -142,7 +139,7 @@ private extension ForWhereRule {
                 return
             }
 
-            if allowForAsFilter, ifExpr.containsReturnStatement {
+            if configuration.allowForAsFilter, ifExpr.containsReturnStatement {
                 return
             }
 

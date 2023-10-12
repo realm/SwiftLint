@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct EmptyCountRule: OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct EmptyCountRule: OptInRule {
     var configuration = EmptyCountConfiguration()
 
     static let description = RuleDescription(
@@ -33,10 +34,6 @@ struct EmptyCountRule: OptInRule, SwiftSyntaxRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(onlyAfterDot: configuration.onlyAfterDot)
-    }
-
     func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
         file.foldedSyntaxTree
     }
@@ -44,10 +41,10 @@ struct EmptyCountRule: OptInRule, SwiftSyntaxRule {
 
 private extension EmptyCountRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let onlyAfterDot: Bool
+        private let configuration: ConfigurationType
 
-        init(onlyAfterDot: Bool) {
-            self.onlyAfterDot = onlyAfterDot
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -61,13 +58,13 @@ private extension EmptyCountRule {
             }
 
             if let intExpr = node.rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
-               let position = node.leftOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
+               let position = node.leftOperand.countCallPosition(onlyAfterDot: configuration.onlyAfterDot) {
                 violations.append(position)
                 return
             }
 
             if let intExpr = node.leftOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
-               let position = node.rightOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
+               let position = node.rightOperand.countCallPosition(onlyAfterDot: configuration.onlyAfterDot) {
                 violations.append(position)
                 return
             }

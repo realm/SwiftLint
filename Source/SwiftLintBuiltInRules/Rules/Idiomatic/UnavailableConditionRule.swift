@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnavailableConditionRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct UnavailableConditionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -68,10 +69,6 @@ struct UnavailableConditionRule: SwiftSyntaxRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension UnavailableConditionRule {

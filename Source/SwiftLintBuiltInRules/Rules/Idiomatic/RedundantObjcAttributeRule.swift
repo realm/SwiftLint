@@ -5,7 +5,8 @@ private let attributeNamesImplyingObjc: Set<String> = [
     "IBAction", "IBOutlet", "IBInspectable", "GKInspectable", "IBDesignable", "NSManaged"
 ]
 
-struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule {
+@SwiftSyntaxRule
+struct RedundantObjcAttributeRule: SubstitutionCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -17,17 +18,6 @@ struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule 
         triggeringExamples: RedundantObjcAttributeRuleExamples.triggeringExamples,
         corrections: RedundantObjcAttributeRuleExamples.corrections
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        final class Visitor: ViolationsSyntaxVisitor {
-            override func visitPost(_ node: AttributeListSyntax) {
-                if let objcAttribute = node.violatingObjCAttribute {
-                    violations.append(objcAttribute.positionAfterSkippingLeadingTrivia)
-                }
-            }
-        }
-        return Visitor(viewMode: .sourceAccurate)
-    }
 
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         makeVisitor(file: file)
@@ -115,5 +105,15 @@ extension RedundantObjcAttributeRule {
         let withTrailingWhitespaceAndNewlineRange = NSRange(location: violationRange.location,
                                                             length: violationRange.length + whitespaceAndNewlineOffset)
         return (withTrailingWhitespaceAndNewlineRange, "")
+    }
+}
+
+private extension RedundantObjcAttributeRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: AttributeListSyntax) {
+            if let objcAttribute = node.violatingObjCAttribute {
+                violations.append(objcAttribute.positionAfterSkippingLeadingTrivia)
+            }
+        }
     }
 }

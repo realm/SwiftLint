@@ -1,7 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-struct TypeNameRule: SwiftSyntaxRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct TypeNameRule: Rule {
     var configuration = TypeNameConfiguration()
 
     static let description = RuleDescription(
@@ -16,17 +17,13 @@ struct TypeNameRule: SwiftSyntaxRule {
         nonTriggeringExamples: TypeNameRuleExamples.nonTriggeringExamples,
         triggeringExamples: TypeNameRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
 }
 
 private extension TypeNameRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: TypeNameConfiguration
+        private let configuration: ConfigurationType
 
-        init(configuration: TypeNameConfiguration) {
+        init(configuration: ConfigurationType) {
             self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }

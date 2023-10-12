@@ -1,5 +1,6 @@
 import SwiftSyntax
 
+@SwiftSyntaxRule(needsConfiguration: true)
 struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
     var configuration = PrivateOverFilePrivateConfiguration()
 
@@ -54,10 +55,6 @@ struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(validateExtensions: configuration.validateExtensions)
-    }
-
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             validateExtensions: configuration.validateExtensions,
@@ -69,10 +66,10 @@ struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
 
 private extension PrivateOverFilePrivateRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let validateExtensions: Bool
+        private let configuration: ConfigurationType
 
-        init(validateExtensions: Bool) {
-            self.validateExtensions = validateExtensions
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -84,7 +81,7 @@ private extension PrivateOverFilePrivateRule {
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            if validateExtensions, let privateModifier = node.modifiers.fileprivateModifier {
+            if configuration.validateExtensions, let privateModifier = node.modifiers.fileprivateModifier {
                 violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
             }
             return .skipChildren

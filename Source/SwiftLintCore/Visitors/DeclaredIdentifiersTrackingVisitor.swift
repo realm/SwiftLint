@@ -10,10 +10,11 @@ open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
 
     /// Initializer.
     ///
-    /// - parameter scope: A (potentially already pre-filled) scope to collect identifers into.
-    public init(scope: Scope = Scope()) {
+    /// - parameter viewMode: How missing and unexpected nodes should be handled when traversing a syntax tree.
+    /// - parameter scope:    A (potentially already pre-filled) scope to collect identifers into.
+    public init(viewMode: SyntaxTreeViewMode = .sourceAccurate, scope: Scope = Scope()) {
         self.scope = scope
-        super.init(viewMode: .sourceAccurate)
+        super.init(viewMode: viewMode)
     }
 
     /// Indicate whether a given identifier is in scope.

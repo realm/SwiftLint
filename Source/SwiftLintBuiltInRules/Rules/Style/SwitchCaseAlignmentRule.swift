@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct SwitchCaseAlignmentRule: SwiftSyntaxRule {
+@SwiftSyntaxRule(needsLocationConverter: true, needsConfiguration: true)
+struct SwitchCaseAlignmentRule: Rule {
     var configuration = SwitchCaseAlignmentConfiguration()
 
     static let description = RuleDescription(
@@ -37,20 +38,16 @@ struct SwitchCaseAlignmentRule: SwiftSyntaxRule {
         ],
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(locationConverter: file.locationConverter, indentedCases: configuration.indentedCases)
-    }
 }
 
 extension SwitchCaseAlignmentRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let locationConverter: SourceLocationConverter
-        private let indentedCases: Bool
+        private let configuration: ConfigurationType
 
-        init(locationConverter: SourceLocationConverter, indentedCases: Bool) {
+        init(locationConverter: SourceLocationConverter, configuration: ConfigurationType) {
             self.locationConverter = locationConverter
-            self.indentedCases = indentedCases
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -64,6 +61,7 @@ extension SwitchCaseAlignmentRule {
             }
 
             let firstCaseColumn = locationConverter.location(for: firstCasePosition).column
+            let indentedCases = configuration.indentedCases
 
             for `case` in node.cases where `case`.is(SwitchCaseSyntax.self) {
                 let casePosition = `case`.positionAfterSkippingLeadingTrivia

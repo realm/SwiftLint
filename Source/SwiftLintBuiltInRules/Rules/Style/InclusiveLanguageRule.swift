@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct InclusiveLanguageRule: SwiftSyntaxRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct InclusiveLanguageRule: Rule {
     var configuration = InclusiveLanguageConfiguration()
 
     static let description = RuleDescription(
@@ -14,20 +15,14 @@ struct InclusiveLanguageRule: SwiftSyntaxRule {
         nonTriggeringExamples: InclusiveLanguageRuleExamples.nonTriggeringExamples,
         triggeringExamples: InclusiveLanguageRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(allTerms: configuration.allTerms, allAllowedTerms: configuration.allAllowedTerms)
-    }
 }
 
 private extension InclusiveLanguageRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let allTerms: [String]
-        private let allAllowedTerms: Set<String>
+        private let configuration: ConfigurationType
 
-        init(allTerms: [String], allAllowedTerms: Set<String>) {
-            self.allTerms = allTerms
-            self.allAllowedTerms = allAllowedTerms
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -131,9 +126,9 @@ private extension InclusiveLanguageRule {
         private func violationTerm(for node: TokenSyntax) -> (violationTerm: String, name: String)? {
             let name = node.text
             let lowercased = name.lowercased()
-            let violationTerm = allTerms.first { term in
+            let violationTerm = configuration.allTerms.first { term in
                 guard let range = lowercased.range(of: term) else { return false }
-                let overlapsAllowedTerm = allAllowedTerms.contains { allowedTerm in
+                let overlapsAllowedTerm = configuration.allAllowedTerms.contains { allowedTerm in
                     guard let allowedRange = lowercased.range(of: allowedTerm) else { return false }
                     return range.overlaps(allowedRange)
                 }

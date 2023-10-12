@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct AnonymousArgumentInMultilineClosureRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(needsLocationConverter: true)
+struct AnonymousArgumentInMultilineClosureRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -30,10 +31,6 @@ struct AnonymousArgumentInMultilineClosureRule: SwiftSyntaxRule, OptInRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(locationConverter: file.locationConverter)
-    }
 }
 
 private extension AnonymousArgumentInMultilineClosureRule {

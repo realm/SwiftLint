@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct AttributesRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(needsLocationConverter: true, needsConfiguration: true)
+struct AttributesRule: OptInRule {
     var configuration = AttributesConfiguration()
 
     static let description = RuleDescription(
@@ -14,21 +15,14 @@ struct AttributesRule: SwiftSyntaxRule, OptInRule {
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
         triggeringExamples: AttributesRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(
-            locationConverter: file.locationConverter,
-            configuration: configuration
-        )
-    }
 }
 
 private extension AttributesRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let locationConverter: SourceLocationConverter
-        private let configuration: AttributesConfiguration
+        private let configuration: ConfigurationType
 
-        init(locationConverter: SourceLocationConverter, configuration: AttributesConfiguration) {
+        init(locationConverter: SourceLocationConverter, configuration: ConfigurationType) {
             self.locationConverter = locationConverter
             self.configuration = configuration
             super.init(viewMode: .sourceAccurate)

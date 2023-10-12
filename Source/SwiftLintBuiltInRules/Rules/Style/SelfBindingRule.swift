@@ -2,6 +2,7 @@ import SwiftSyntax
 
 // MARK: - SelfBindingRule
 
+@SwiftSyntaxRule(needsConfiguration: true)
 struct SelfBindingRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SelfBindingConfiguration()
 
@@ -46,10 +47,6 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, OptInRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(bindIdentifier: configuration.bindIdentifier)
-    }
-
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             bindIdentifier: configuration.bindIdentifier,
@@ -61,14 +58,15 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, OptInRule {
 
 private extension SelfBindingRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let bindIdentifier: String
+        private let configuration: ConfigurationType
 
-        init(bindIdentifier: String) {
-            self.bindIdentifier = bindIdentifier
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
         override func visitPost(_ node: OptionalBindingConditionSyntax) {
+            let bindIdentifier = configuration.bindIdentifier
             if let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
                identifierPattern.identifier.text != bindIdentifier {
                 var hasViolation = false

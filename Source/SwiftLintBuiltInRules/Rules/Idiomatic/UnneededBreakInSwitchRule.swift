@@ -12,6 +12,7 @@ private func embedInSwitch(
         """, file: file, line: line)
 }
 
+@SwiftSyntaxRule
 struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -85,10 +86,6 @@ struct UnneededBreakInSwitchRule: SwiftSyntaxCorrectableRule {
             : embedInSwitch("something()", case: "case .foo, .foo2 where condition")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(

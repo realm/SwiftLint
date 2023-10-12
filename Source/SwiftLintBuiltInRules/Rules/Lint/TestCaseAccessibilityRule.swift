@@ -1,8 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
-                                         SubstitutionCorrectableRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct TestCaseAccessibilityRule: OptInRule, SubstitutionCorrectableRule {
     var configuration = TestCaseAccessibilityConfiguration()
 
     static let description = RuleDescription(
@@ -14,10 +14,6 @@ struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
         triggeringExamples: TestCaseAccessibilityRuleExamples.triggeringExamples,
         corrections: TestCaseAccessibilityRuleExamples.corrections
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(allowedPrefixes: configuration.allowedPrefixes, testParentClasses: configuration.testParentClasses)
-    }
 
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         makeVisitor(file: file)
@@ -34,24 +30,22 @@ struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
 
 private extension TestCaseAccessibilityRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let allowedPrefixes: Set<String>
-        private let testParentClasses: Set<String>
+        private let configuration: ConfigurationType
 
-        init(allowedPrefixes: Set<String>, testParentClasses: Set<String>) {
-            self.allowedPrefixes = allowedPrefixes
-            self.testParentClasses = testParentClasses
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            guard !testParentClasses.isDisjoint(with: node.inheritedTypes) else {
+            guard !configuration.testParentClasses.isDisjoint(with: node.inheritedTypes) else {
                 return
             }
 
             violations.append(
-                contentsOf: XCTestClassVisitor(allowedPrefixes: allowedPrefixes)
+                contentsOf: XCTestClassVisitor(allowedPrefixes: configuration.allowedPrefixes)
                     .walk(tree: node.memberBlock, handler: \.violations)
             )
         }

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnusedOptionalBindingRule: SwiftSyntaxRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct UnusedOptionalBindingRule: Rule {
     var configuration = UnusedOptionalBindingConfiguration()
 
     static let description = RuleDescription(
@@ -28,18 +29,14 @@ struct UnusedOptionalBindingRule: SwiftSyntaxRule {
             Example("func foo() { if let ↓_ = bar {} }")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(ignoreOptionalTry: configuration.ignoreOptionalTry)
-    }
 }
 
 private extension UnusedOptionalBindingRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let ignoreOptionalTry: Bool
+        private let configuration: ConfigurationType
 
-        init(ignoreOptionalTry: Bool) {
-            self.ignoreOptionalTry = ignoreOptionalTry
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -49,7 +46,7 @@ private extension UnusedOptionalBindingRule {
                 return
             }
 
-            if ignoreOptionalTry,
+            if configuration.ignoreOptionalTry,
                let tryExpr = node.initializer?.value.as(TryExprSyntax.self),
                tryExpr.questionOrExclamationMark?.tokenKind == .postfixQuestionMark {
                 return

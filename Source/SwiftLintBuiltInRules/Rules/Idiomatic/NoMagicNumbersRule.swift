@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct NoMagicNumbersRule: OptInRule {
     var configuration = NoMagicNumbersConfiguration()
 
     static let description = RuleDescription(
@@ -90,27 +91,23 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate, testParentClasses: configuration.testParentClasses)
-    }
 }
 
 private extension NoMagicNumbersRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let testParentClasses: Set<String>
+        private let configuration: ConfigurationType
         private var testClasses: Set<String> = []
         private var nonTestClasses: Set<String> = []
         private var possibleViolations: [String: Set<AbsolutePosition>] = [:]
 
-        init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
-            self.testParentClasses = testParentClasses
-            super.init(viewMode: viewMode)
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
             let className = node.name.text
-            if node.isXCTestCase(testParentClasses) {
+            if node.isXCTestCase(configuration.testParentClasses) {
                 testClasses.insert(className)
                 removeViolations(forClassName: className)
             } else {
@@ -133,7 +130,7 @@ private extension NoMagicNumbersRule {
         }
 
         private func collectViolation(forNode node: some ExprSyntaxProtocol) {
-            if node.isMemberOfATestClass(testParentClasses) {
+            if node.isMemberOfATestClass(configuration.testParentClasses) {
                 return
             }
             if node.isOperandOfBitwiseShiftOperation() {

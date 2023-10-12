@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct EnumCaseAssociatedValuesLengthRule: OptInRule {
     var configuration = SeverityLevelsConfiguration<Self>(warning: 5, error: 6)
 
     static let description = RuleDescription(
@@ -35,10 +36,6 @@ struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
 }
 
 private extension EnumCaseAssociatedValuesLengthRule {

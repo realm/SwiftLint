@@ -1,5 +1,6 @@
 import SwiftSyntax
 
+@SwiftSyntaxRule(needsLocationConverter: true, needsConfiguration: true)
 struct TrailingCommaRule: SwiftSyntaxCorrectableRule {
     var configuration = TrailingCommaConfiguration()
 
@@ -47,13 +48,6 @@ struct TrailingCommaRule: SwiftSyntaxCorrectableRule {
         corrections: Self.corrections
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(
-            mandatoryComma: configuration.mandatoryComma,
-            locationConverter: file.locationConverter
-        )
-    }
-
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             mandatoryComma: configuration.mandatoryComma,
@@ -65,12 +59,12 @@ struct TrailingCommaRule: SwiftSyntaxCorrectableRule {
 
 private extension TrailingCommaRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let mandatoryComma: Bool
         private let locationConverter: SourceLocationConverter
+        private let configuration: ConfigurationType
 
-        init(mandatoryComma: Bool, locationConverter: SourceLocationConverter) {
-            self.mandatoryComma = mandatoryComma
+        init(locationConverter: SourceLocationConverter, configuration: ConfigurationType) {
             self.locationConverter = locationConverter
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -79,7 +73,7 @@ private extension TrailingCommaRule {
                 return
             }
 
-            switch (lastElement.trailingComma, mandatoryComma) {
+            switch (lastElement.trailingComma, configuration.mandatoryComma) {
             case (let commaToken?, false):
                 violations.append(violation(for: commaToken.positionAfterSkippingLeadingTrivia))
             case (nil, true) where !locationConverter.isSingleLine(node: node):
@@ -94,7 +88,7 @@ private extension TrailingCommaRule {
                 return
             }
 
-            switch (lastElement.trailingComma, mandatoryComma) {
+            switch (lastElement.trailingComma, configuration.mandatoryComma) {
             case (let commaToken?, false):
                 violations.append(violation(for: commaToken.positionAfterSkippingLeadingTrivia))
             case (nil, true) where !locationConverter.isSingleLine(node: node):
@@ -105,7 +99,7 @@ private extension TrailingCommaRule {
         }
 
         private func violation(for position: AbsolutePosition) -> ReasonedRuleViolation {
-            let reason = mandatoryComma
+            let reason = configuration.mandatoryComma
                 ? "Multi-line collection literals should have trailing commas"
                 : "Collection literals should not have trailing commas"
             return ReasonedRuleViolation(position: position, reason: reason)

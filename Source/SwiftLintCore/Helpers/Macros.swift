@@ -17,7 +17,11 @@ public macro MakeAcceptableByConfigurationElement() = #externalMacro(
 /// that creates a visitor defined in the same file. It also adds an implementation of `preprocess(file:)` which folds
 /// expressions if the `foldExpressions` argument is set.
 @attached(extension, conformances: SwiftSyntaxRule, names: named(makeVisitor(file:)), named(preprocess(file:)))
-public macro SwiftSyntaxRule(foldExpressions: Bool = false) = #externalMacro(
+public macro SwiftSyntaxRule(
+    foldExpressions: Bool = false,
+    needsLocationConverter: Bool = false,
+    needsConfiguration: Bool = false
+) = #externalMacro(
     module: "SwiftLintCoreMacros",
     type: "SwiftSyntaxRule"
 )

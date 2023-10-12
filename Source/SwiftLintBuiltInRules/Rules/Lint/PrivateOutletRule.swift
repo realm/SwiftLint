@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct PrivateOutletRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct PrivateOutletRule: OptInRule {
     var configuration = PrivateOutletConfiguration()
 
     static let description = RuleDescription(
@@ -75,18 +76,14 @@ struct PrivateOutletRule: SwiftSyntaxRule, OptInRule {
             """, configuration: ["allow_private_set": false], excludeFromDocumentation: true)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(allowPrivateSet: configuration.allowPrivateSet)
-    }
 }
 
 private extension PrivateOutletRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let allowPrivateSet: Bool
+        private let configuration: ConfigurationType
 
-        init(allowPrivateSet: Bool) {
-            self.allowPrivateSet = allowPrivateSet
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -99,7 +96,7 @@ private extension PrivateOutletRule {
                 return
             }
 
-            if allowPrivateSet && decl.modifiers.containsPrivateOrFileprivate(setOnly: true) {
+            if configuration.allowPrivateSet && decl.modifiers.containsPrivateOrFileprivate(setOnly: true) {
                 return
             }
 

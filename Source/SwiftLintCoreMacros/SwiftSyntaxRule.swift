@@ -9,27 +9,37 @@ struct SwiftSyntaxRule: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
+        var args = [String]()
+        if node.needsLocationConverter {
+            args.append("locationConverter: file.locationConverter")
+        }
+
+        if node.needsConfiguration {
+            args.append("configuration: configuration")
+        }
+
+        if args.isEmpty {
+            args.append("viewMode: .sourceAccurate")
+        }
+
+        let visitorExpr = "Visitor(\(args.joined(separator: ", ")))"
         return [
             try ExtensionDeclSyntax("""
                 extension \(type): SwiftSyntaxRule {
                     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-                        Visitor(viewMode: .sourceAccurate)
+                        \(raw: visitorExpr)
                     }
                 }
                 """),
-            try createFoldingPreprocessor(type: type, foldArgument: node.foldArgument)
+            try createFoldingPreprocessor(type: type, foldArgument: node.foldExpressions)
         ].compactMap { $0 }
     }
 
     private static func createFoldingPreprocessor(
         type: some TypeSyntaxProtocol,
-        foldArgument: ExprSyntax?
+        foldArgument: Bool
     ) throws -> ExtensionDeclSyntax? {
-        guard
-            let foldArgument,
-            let booleanLiteral = foldArgument.as(BooleanLiteralExprSyntax.self)?.literal,
-            booleanLiteral.text == "true"
-        else {
+        guard foldArgument else {
             return nil
         }
 
@@ -44,11 +54,34 @@ struct SwiftSyntaxRule: ExtensionMacro {
 }
 
 private extension AttributeSyntax {
-    var foldArgument: ExprSyntax? {
-        if case let .argumentList(args) = arguments, let first = args.first, first.label?.text == "foldExpressions" {
-            first.expression
+    var foldExpressions: Bool { hasTrueArgument(labeled: "foldExpressions") }
+    var needsLocationConverter: Bool { hasTrueArgument(labeled: "needsLocationConverter") }
+    var needsConfiguration: Bool { hasTrueArgument(labeled: "needsConfiguration") }
+
+    func hasTrueArgument(labeled label: String) -> Bool {
+        if
+            case let .argumentList(args) = arguments,
+            args.hasTrueArgument(labeled: label)
+        {
+            true
         } else {
-            nil
+            false
+        }
+    }
+}
+
+private extension LabeledExprListSyntax {
+    func hasTrueArgument(labeled label: String) -> Bool {
+        contains { arg in
+            if
+                arg.label?.text == label,
+                let booleanLiteral = arg.expression.as(BooleanLiteralExprSyntax.self)?.literal,
+                booleanLiteral.text == "true"
+            {
+                true
+            } else {
+                false
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct DeploymentTargetRule: SwiftSyntaxRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct DeploymentTargetRule: Rule {
     fileprivate typealias Version = DeploymentTargetConfiguration.Version
     var configuration = DeploymentTargetConfiguration()
 
@@ -13,26 +14,10 @@ struct DeploymentTargetRule: SwiftSyntaxRule {
         nonTriggeringExamples: DeploymentTargetRuleExamples.nonTriggeringExamples,
         triggeringExamples: DeploymentTargetRuleExamples.triggeringExamples
     )
+}
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(platformToConfiguredMinVersion: platformToConfiguredMinVersion)
-    }
-
-    private var platformToConfiguredMinVersion: [String: Version] {
-        return [
-            "iOS": configuration.iOSDeploymentTarget,
-            "iOSApplicationExtension": configuration.iOSAppExtensionDeploymentTarget,
-            "macOS": configuration.macOSDeploymentTarget,
-            "macOSApplicationExtension": configuration.macOSAppExtensionDeploymentTarget,
-            "OSX": configuration.macOSDeploymentTarget,
-            "tvOS": configuration.tvOSDeploymentTarget,
-            "tvOSApplicationExtension": configuration.tvOSAppExtensionDeploymentTarget,
-            "watchOS": configuration.watchOSDeploymentTarget,
-            "watchOSApplicationExtension": configuration.watchOSAppExtensionDeploymentTarget
-        ]
-    }
-
-    private enum AvailabilityType {
+private extension DeploymentTargetRule {
+    enum AvailabilityType {
         case condition
         case attribute
         case negativeCondition
@@ -48,14 +33,26 @@ struct DeploymentTargetRule: SwiftSyntaxRule {
             }
         }
     }
-}
 
-private extension DeploymentTargetRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let platformToConfiguredMinVersion: [String: Version]
+        private let configuration: ConfigurationType
 
-        init(platformToConfiguredMinVersion: [String: Version]) {
-            self.platformToConfiguredMinVersion = platformToConfiguredMinVersion
+        private var platformToConfiguredMinVersion: [String: Version] {
+            [
+                "iOS": configuration.iOSDeploymentTarget,
+                "iOSApplicationExtension": configuration.iOSAppExtensionDeploymentTarget,
+                "macOS": configuration.macOSDeploymentTarget,
+                "macOSApplicationExtension": configuration.macOSAppExtensionDeploymentTarget,
+                "OSX": configuration.macOSDeploymentTarget,
+                "tvOS": configuration.tvOSDeploymentTarget,
+                "tvOSApplicationExtension": configuration.tvOSAppExtensionDeploymentTarget,
+                "watchOS": configuration.watchOSDeploymentTarget,
+                "watchOSApplicationExtension": configuration.watchOSAppExtensionDeploymentTarget
+            ]
+        }
+
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 

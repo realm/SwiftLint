@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct BalancedXCTestLifecycleRule: OptInRule {
     var configuration = BalancedXCTestLifecycleConfiguration()
 
     static let description = RuleDescription(
@@ -103,26 +104,22 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule {
             """#)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate, testParentClasses: configuration.testParentClasses)
-    }
 }
 
 // MARK: - Private
 
 private extension BalancedXCTestLifecycleRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let testParentClasses: Set<String>
+        private let configuration: ConfigurationType
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-        init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
-            self.testParentClasses = testParentClasses
-            super.init(viewMode: viewMode)
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            guard node.isXCTestCase(testParentClasses) else {
+            guard node.isXCTestCase(configuration.testParentClasses) else {
                 return
             }
 

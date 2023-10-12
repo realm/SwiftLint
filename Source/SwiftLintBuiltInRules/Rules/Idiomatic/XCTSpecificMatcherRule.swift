@@ -1,7 +1,8 @@
 import SwiftOperators
 import SwiftSyntax
 
-struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct XCTSpecificMatcherRule: OptInRule {
     var configuration = XCTSpecificMatcherConfiguration()
 
     static let description = RuleDescription(
@@ -12,17 +13,13 @@ struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule {
         nonTriggeringExamples: XCTSpecificMatcherRuleExamples.nonTriggeringExamples,
         triggeringExamples: XCTSpecificMatcherRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
 }
 
 private extension XCTSpecificMatcherRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        let configuration: XCTSpecificMatcherConfiguration
+        let configuration: ConfigurationType
 
-        init(configuration: XCTSpecificMatcherConfiguration) {
+        init(configuration: ConfigurationType) {
             self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }

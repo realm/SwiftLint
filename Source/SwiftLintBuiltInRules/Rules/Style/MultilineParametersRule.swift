@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct MultilineParametersRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(needsLocationConverter: true, needsConfiguration: true)
+struct MultilineParametersRule: OptInRule {
     var configuration = MultilineParametersConfiguration()
 
     static let description = RuleDescription(
@@ -11,20 +12,16 @@ struct MultilineParametersRule: SwiftSyntaxRule, OptInRule {
         nonTriggeringExamples: MultilineParametersRuleExamples.nonTriggeringExamples,
         triggeringExamples: MultilineParametersRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(allowsSingleLine: configuration.allowsSingleLine, locationConverter: file.locationConverter)
-    }
 }
 
 private extension MultilineParametersRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let allowsSingleLine: Bool
         private let locationConverter: SourceLocationConverter
+        private let configuration: ConfigurationType
 
-        init(allowsSingleLine: Bool, locationConverter: SourceLocationConverter) {
-            self.allowsSingleLine = allowsSingleLine
+        init(locationConverter: SourceLocationConverter, configuration: ConfigurationType) {
             self.locationConverter = locationConverter
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -55,7 +52,7 @@ private extension MultilineParametersRule {
                 numberOfParameters += 1
             }
 
-            guard linesWithParameters.count > (allowsSingleLine ? 1 : 0),
+            guard linesWithParameters.count > (configuration.allowsSingleLine ? 1 : 0),
                   numberOfParameters != linesWithParameters.count else {
                 return false
             }

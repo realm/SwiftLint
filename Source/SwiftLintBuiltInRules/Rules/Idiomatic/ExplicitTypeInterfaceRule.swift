@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ExplicitTypeInterfaceRule: OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct ExplicitTypeInterfaceRule: OptInRule {
     var configuration = ExplicitTypeInterfaceConfiguration()
 
     static let description = RuleDescription(
@@ -68,19 +69,15 @@ struct ExplicitTypeInterfaceRule: OptInRule, SwiftSyntaxRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
 }
 
 private extension ExplicitTypeInterfaceRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        let configuration: ExplicitTypeInterfaceConfiguration
+        let configuration: ConfigurationType
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
-        init(configuration: ExplicitTypeInterfaceConfiguration) {
+        init(configuration: ConfigurationType) {
             self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }

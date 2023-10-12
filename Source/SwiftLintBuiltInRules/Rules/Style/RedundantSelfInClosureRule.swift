@@ -1,5 +1,6 @@
 import SwiftSyntax
 
+@SwiftSyntaxRule
 struct RedundantSelfInClosureRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -12,10 +13,6 @@ struct RedundantSelfInClosureRule: SwiftSyntaxCorrectableRule, OptInRule {
         triggeringExamples: RedundantSelfInClosureRuleExamples.triggeringExamples,
         corrections: RedundantSelfInClosureRuleExamples.corrections
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ContextVisitor()
-    }
 }
 
 private enum TypeDeclarationKind {
@@ -35,6 +32,7 @@ private enum SelfCaptureKind {
 }
 
 private extension RedundantSelfInClosureRule {
+    typealias Visitor = ContextVisitor
     final class ContextVisitor: DeclaredIdentifiersTrackingVisitor {
         private var typeDeclarations = Stack<TypeDeclarationKind>()
         private var functionCalls = Stack<FunctionCallType>()

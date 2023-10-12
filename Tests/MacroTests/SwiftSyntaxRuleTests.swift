@@ -89,4 +89,23 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             macros: macros
         )
     }
+
+    func testNeedsLocationConverter() {
+        assertMacroExpansion(
+            """
+            @SwiftSyntaxRule(needsLocationConverter: true)
+            struct Hello {}
+            """,
+            expandedSource: """
+            struct Hello {}
+
+            extension Hello: SwiftSyntaxRule {
+                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+                    Visitor(locationConverter: file.locationConverter)
+                }
+            }
+            """,
+            macros: macros
+        )
+    }
 }

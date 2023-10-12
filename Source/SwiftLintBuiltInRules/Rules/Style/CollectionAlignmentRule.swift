@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct CollectionAlignmentRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(needsLocationConverter: true, needsConfiguration: true)
+struct CollectionAlignmentRule: OptInRule {
     var configuration = CollectionAlignmentConfiguration()
 
     static var description = RuleDescription(
@@ -11,20 +12,16 @@ struct CollectionAlignmentRule: SwiftSyntaxRule, OptInRule {
         nonTriggeringExamples: Examples(alignColons: false).nonTriggeringExamples,
         triggeringExamples: Examples(alignColons: false).triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(alignColons: configuration.alignColons, locationConverter: file.locationConverter)
-    }
 }
 
 private extension CollectionAlignmentRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let alignColons: Bool
         private let locationConverter: SourceLocationConverter
+        private let configuration: ConfigurationType
 
-        init(alignColons: Bool, locationConverter: SourceLocationConverter) {
-            self.alignColons = alignColons
+        init(locationConverter: SourceLocationConverter, configuration: ConfigurationType) {
             self.locationConverter = locationConverter
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -37,8 +34,9 @@ private extension CollectionAlignmentRule {
 
         override func visitPost(_ node: DictionaryElementListSyntax) {
             let locations = node.map { element in
-                let position = alignColons ? element.colon.positionAfterSkippingLeadingTrivia :
-                element.key.positionAfterSkippingLeadingTrivia
+                let position = configuration.alignColons ?
+                    element.colon.positionAfterSkippingLeadingTrivia :
+                    element.key.positionAfterSkippingLeadingTrivia
                 let location = locationConverter.location(for: position)
 
                 let graphemeColumn: Int

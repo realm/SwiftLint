@@ -2,6 +2,7 @@ import SwiftSyntax
 
 // MARK: - ClosureSpacingRule
 
+@SwiftSyntaxRule(needsLocationConverter: true)
 struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -45,10 +46,6 @@ struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, OptInRule {
                 Example("({ each in return result.contains(where: { e in return 0 }) }).count")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(locationConverter: file.locationConverter)
-    }
 
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(

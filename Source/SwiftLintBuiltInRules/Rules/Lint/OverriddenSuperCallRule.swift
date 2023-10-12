@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct OverriddenSuperCallRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(needsConfiguration: true)
+struct OverriddenSuperCallRule: OptInRule {
     var configuration = OverriddenSuperCallConfiguration()
 
     static let description = RuleDescription(
@@ -73,22 +74,18 @@ struct OverriddenSuperCallRule: SwiftSyntaxRule, OptInRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(resolvedMethodNames: configuration.resolvedMethodNames)
-    }
 }
 
 private extension OverriddenSuperCallRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let resolvedMethodNames: [String]
+        private let configuration: ConfigurationType
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
             [ProtocolDeclSyntax.self]
         }
 
-        init(resolvedMethodNames: [String]) {
-            self.resolvedMethodNames = resolvedMethodNames
+        init(configuration: ConfigurationType) {
+            self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -97,7 +94,7 @@ private extension OverriddenSuperCallRule {
                   node.modifiers.contains(keyword: .override),
                   !node.modifiers.containsStaticOrClass,
                   case let name = node.resolvedName(),
-                  resolvedMethodNames.contains(name) else {
+                  configuration.resolvedMethodNames.contains(name) else {
                 return
             }
 

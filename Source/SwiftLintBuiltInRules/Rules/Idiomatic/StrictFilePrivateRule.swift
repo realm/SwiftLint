@@ -185,7 +185,7 @@ private extension StrictFilePrivateRule {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
 
-        private func implementedTypesInDecl(of node: (any SyntaxProtocol)?) -> [String] {
+        private func implementedTypesInDecl(of node: (some SyntaxProtocol)?) -> [String] {
             guard let node else {
                 queuedFatalError("Given node is nil. That should not happen.")
             }

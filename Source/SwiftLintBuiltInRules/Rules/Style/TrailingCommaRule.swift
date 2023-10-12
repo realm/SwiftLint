@@ -200,7 +200,7 @@ private extension TrailingCommaRule {
 }
 
 private extension SourceLocationConverter {
-    func isSingleLine(node: any SyntaxProtocol) -> Bool {
+    func isSingleLine(node: some SyntaxProtocol) -> Bool {
         location(for: node.positionAfterSkippingLeadingTrivia).line ==
             location(for: node.endPositionBeforeTrailingTrivia).line
     }

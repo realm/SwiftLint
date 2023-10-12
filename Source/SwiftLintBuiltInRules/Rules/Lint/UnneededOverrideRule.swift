@@ -23,7 +23,7 @@ struct UnneededOverrideRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRu
     }
 }
 
-private func simplify(_ node: any SyntaxProtocol) -> (any ExprSyntaxProtocol)? {
+private func simplify(_ node: some SyntaxProtocol) -> (any ExprSyntaxProtocol)? {
     if let expr = node.as(AwaitExprSyntax.self) {
         return expr.expression
     } else if let expr = node.as(TryExprSyntax.self) {
@@ -42,7 +42,7 @@ private func simplify(_ node: any SyntaxProtocol) -> (any ExprSyntaxProtocol)? {
     return nil
 }
 
-private func extractFunctionCallSyntax(_ node: any SyntaxProtocol) -> FunctionCallExprSyntax? {
+private func extractFunctionCallSyntax(_ node: some SyntaxProtocol) -> FunctionCallExprSyntax? {
     // Extract the function call from other expressions like try / await / return.
     // If this returns a non-super calling function that will get filtered out later
     var syntax = simplify(node)

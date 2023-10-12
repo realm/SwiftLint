@@ -255,8 +255,8 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
     }
 }
 
-private struct CorrectingContext {
-    let rule: any Rule
+private struct CorrectingContext<R: Rule> {
+    let rule: R
     let file: SwiftLintFile
     var contents: String
     var corrections: [Correction] = []

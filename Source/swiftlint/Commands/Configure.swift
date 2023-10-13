@@ -122,14 +122,14 @@ extension SwiftLint {
                 )
                 ruleIdentifiersToDisable.append(contentsOf: rulesWithExistingViolations)
             }
-//            let deprecatedRuleIdentifiers = Set(RuleRegistry.shared.deprecatedRuleIdentifiers)
-//            let undisabledDeprecatedRuleIdentifiers = deprecatedRuleIdentifiers.subtracting(ruleIdentifiersToDisable)
-//            if undisabledDeprecatedRuleIdentifiers.isNotEmpty {
-//                let count = undisabledDeprecatedRuleIdentifiers.count
-//                if askUser("\nDo you want to disable all (\(count)) of the deprecated rules?") {
-//                    ruleIdentifiersToDisable.append(contentsOf: undisabledDeprecatedRuleIdentifiers.sorted())
-//                }
-//            }
+            let deprecatedRuleIdentifiers = Set(RuleRegistry.shared.deprecatedRuleIdentifiers)
+            let undisabledDeprecatedRuleIdentifiers = deprecatedRuleIdentifiers.subtracting(ruleIdentifiersToDisable)
+            if undisabledDeprecatedRuleIdentifiers.isNotEmpty {
+                let count = undisabledDeprecatedRuleIdentifiers.count
+                if askUser("\nDo you want to disable all (\(count)) of the deprecated rules?") {
+                    ruleIdentifiersToDisable.append(contentsOf: undisabledDeprecatedRuleIdentifiers.sorted())
+                }
+            }
             return ruleIdentifiersToDisable
         }
 
@@ -394,11 +394,11 @@ private extension FileManager {
 }
 
 private extension RuleRegistry {
-//    var deprecatedRuleIdentifiers: [String] {
-//        RuleRegistry.shared.list.list.compactMap { ruleID, ruleType in
-//            ruleType is DeprecatedRule.Type ? ruleID : nil
-//        }
-//    }
+    var deprecatedRuleIdentifiers: [String] {
+        RuleRegistry.shared.list.list.compactMap { ruleID, ruleType in
+            ruleType is any DeprecatedRule.Type ? ruleID : nil
+        }
+    }
     var analyzerRuleIdentifiers: [String] {
         RuleRegistry.shared.list.list.compactMap { ruleID, ruleType in
             ruleType is any AnalyzerRule.Type ? ruleID : nil

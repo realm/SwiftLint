@@ -20,7 +20,8 @@ public macro MakeAcceptableByConfigurationElement() = #externalMacro(
 public macro SwiftSyntaxRule(
     foldExpressions: Bool = false,
     needsLocationConverter: Bool = false,
-    needsConfiguration: Bool = false
+    needsConfiguration: Bool = false,
+    deprecated: Bool = false
 ) = #externalMacro(
     module: "SwiftLintCoreMacros",
     type: "SwiftSyntaxRule"

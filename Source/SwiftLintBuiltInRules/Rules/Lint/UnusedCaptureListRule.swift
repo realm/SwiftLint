@@ -9,7 +9,8 @@ private func warnDeprecatedOnce() {
     _ = warnDeprecatedOnceImpl
 }
 
-struct UnusedCaptureListRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(deprecated: true)
+struct UnusedCaptureListRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
@@ -143,11 +144,6 @@ struct UnusedCaptureListRule: SwiftSyntaxRule, OptInRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        warnDeprecatedOnce()
-        return Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension UnusedCaptureListRule {

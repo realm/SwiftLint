@@ -9,6 +9,7 @@ private func warnDeprecatedOnce() {
     _ = warnDeprecatedOnceImpl
 }
 
+@SwiftSyntaxRule(deprecated: true)
 struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -37,11 +38,6 @@ struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule {
                 Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        warnDeprecatedOnce()
-        return Visitor(viewMode: .sourceAccurate)
-    }
 
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(

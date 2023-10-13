@@ -23,11 +23,19 @@ struct SwiftSyntaxRule: ExtensionMacro {
         }
 
         let visitorExpr = "Visitor(\(args.joined(separator: ", ")))"
+        let makeVisitorBody = if node.deprecated {
+            """
+            warnDeprecatedOnce()
+            return \(visitorExpr)
+            """
+        } else {
+            visitorExpr
+        }
         return [
             try ExtensionDeclSyntax("""
                 extension \(type): SwiftSyntaxRule {
                     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-                        \(raw: visitorExpr)
+                        \(raw: makeVisitorBody)
                     }
                 }
                 """),
@@ -57,6 +65,7 @@ private extension AttributeSyntax {
     var foldExpressions: Bool { hasTrueArgument(labeled: "foldExpressions") }
     var needsLocationConverter: Bool { hasTrueArgument(labeled: "needsLocationConverter") }
     var needsConfiguration: Bool { hasTrueArgument(labeled: "needsConfiguration") }
+    var deprecated: Bool { hasTrueArgument(labeled: "deprecated") }
 
     func hasTrueArgument(labeled label: String) -> Bool {
         if

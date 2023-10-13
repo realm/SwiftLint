@@ -9,7 +9,8 @@ private func warnDeprecatedOnce() {
     _ = warnDeprecatedOnceImpl
 }
 
-struct InertDeferRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(deprecated: true)
+struct InertDeferRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -82,11 +83,6 @@ struct InertDeferRule: SwiftSyntaxRule, OptInRule {
             """, excludeFromDocumentation: true)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        warnDeprecatedOnce()
-        return Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension InertDeferRule {

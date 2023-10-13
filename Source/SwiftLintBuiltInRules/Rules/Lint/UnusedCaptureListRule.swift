@@ -9,7 +9,7 @@ private func warnDeprecatedOnce() {
     _ = warnDeprecatedOnceImpl
 }
 
-struct UnusedCaptureListRule: SwiftSyntaxRule, OptInRule {
+struct UnusedCaptureListRule: SwiftSyntaxRule, OptInRule, DeprecatedRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

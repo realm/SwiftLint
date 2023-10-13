@@ -108,4 +108,62 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             macros: macros
         )
     }
+
+    func testNeedsConfiguration() {
+        assertMacroExpansion(
+            """
+            @SwiftSyntaxRule(needsConfiguration: true)
+            struct Hello {}
+            """,
+            expandedSource: """
+            struct Hello {}
+
+            extension Hello: SwiftSyntaxRule {
+                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+                    Visitor(configuration: configuration)
+                }
+            }
+            """,
+            macros: macros
+        )
+    }
+
+    func testNeedsLocationConverterAndConfiguration() {
+        assertMacroExpansion(
+            """
+            @SwiftSyntaxRule(needsLocationConverter: true, needsConfiguration: true)
+            struct Hello {}
+            """,
+            expandedSource: """
+            struct Hello {}
+
+            extension Hello: SwiftSyntaxRule {
+                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+                    Visitor(locationConverter: file.locationConverter, configuration: configuration)
+                }
+            }
+            """,
+            macros: macros
+        )
+    }
+
+    func testDeprecated() {
+        assertMacroExpansion(
+            """
+            @SwiftSyntaxRule(deprecated: true)
+            struct Hello {}
+            """,
+            expandedSource: """
+            struct Hello {}
+
+            extension Hello: SwiftSyntaxRule {
+                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+                    warnDeprecatedOnce()
+                    return Visitor(viewMode: .sourceAccurate)
+                }
+            }
+            """,
+            macros: macros
+        )
+    }
 }

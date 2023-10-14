@@ -153,7 +153,7 @@ extension SwiftLint {
                 useSTDIN: false,
                 configurationFiles: [configurationPath],
                 strict: false,
-                lenient: true,
+                lenient: false,
                 forceExclude: false,
                 useExcludingByPrefix: false,
                 useScriptInputFiles: false,

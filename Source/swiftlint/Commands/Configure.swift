@@ -43,11 +43,12 @@ extension SwiftLint {
             let analyzerRuleIdentifiers = analyzerRulesToEnable()
             let reporterIdentifier = reporterIdentifier()
             return try writeConfiguration(
-                topLevelDirectories,
-                allowZeroLintableFiles,
-                rulesIdentifiersToDisable,
-                analyzerRuleIdentifiers,
-                reporterIdentifier
+                topLevelDirectories: topLevelDirectories,
+                allowZeroLintableFiles: allowZeroLintableFiles,
+                ruleIdentifiersToDisable: rulesIdentifiersToDisable,
+                analyzerRuleIdentifiers: analyzerRuleIdentifiers,
+                existingConfiguration: existingConfiguration,
+                reporterIdentifier: reporterIdentifier
             )
         }
 
@@ -198,6 +199,15 @@ extension SwiftLint {
             if askUser("\nDo you want to enable all (\(analyzerRuleIdentifiers.count)) of the analyzer rules?") {
                 return analyzerRuleIdentifiers
             } else {
+                if askUser("\nDo you want to enable any of the analyzer rules?") {
+                    var analyzerRulesToEnable: [String] = []
+                    RuleRegistry.shared.analyzerRuleIdentifiers.forEach {
+                        if askUser("Do you want to enable the \($0) analyzer rule?") {
+                            analyzerRulesToEnable.append($0)
+                        }
+                    }
+                    return analyzerRulesToEnable
+                }
                 return []
             }
         }
@@ -205,7 +215,7 @@ extension SwiftLint {
         private func reporterIdentifier() -> String {
             // var reporterIdentifier = XcodeReporter.identifier
             var reporterIdentifier = "xcode"
-            if askUser("Do you want to use the default (\(reporterIdentifier) reporter?") {
+            if askUser("Do you want to use the default (\(reporterIdentifier)) reporter?") {
                 return reporterIdentifier
             }
             reporterIdentifier = ""
@@ -225,45 +235,50 @@ extension SwiftLint {
         }
 
         private func writeConfiguration(
-            _ topLevelDirectories: [String],
-            _ allowZeroLintableFiles: Bool,
-            _ ruleIdentifiersToDisable: [String],
-            _ analyzerRuleIdentifiers: [String],
-            _ reporterIdentifier: String
+            topLevelDirectories: [String],
+            allowZeroLintableFiles: Bool,
+            ruleIdentifiersToDisable: [String],
+            analyzerRuleIdentifiers: [String],
+            existingConfiguration: Configuration?,
+            reporterIdentifier: String
         ) throws -> Bool {
-            var configuration = configurationYML(forTopLevelDirectories: topLevelDirectories)
+            var configurationYML = configurationYML(forTopLevelDirectories: topLevelDirectories)
             if allowZeroLintableFiles {
-                configuration += "allow_zero_lintable_files: true\n"
+                configurationYML += "allow_zero_lintable_files: true\n"
             }
-            configuration += "disabled_rules:\n"
-            ruleIdentifiersToDisable.forEach { configuration += "  - \($0)\n" }
+            configurationYML += "disabled_rules:\n"
+            ruleIdentifiersToDisable.sorted().forEach { configurationYML += "  - \($0)\n" }
             if analyzerRuleIdentifiers.isNotEmpty {
-                configuration += "analyzer_rules:\n"
-                analyzerRuleIdentifiers.forEach { configuration += "  - \($0)\n" }
+                configurationYML += "analyzer_rules:\n"
+                analyzerRuleIdentifiers.forEach { configurationYML += "  - \($0)\n" }
             }
-            configuration += "reporter: \(reporterIdentifier)"
+            configurationYML += "reporter: \(reporterIdentifier)\n"
+            if let existingConfiguration {
+                configurationYML += "\n"
+                configurationYML += existingConfiguration.customYML
+            }
             print("Proposed configuration\n")
-            print(configuration)
+            print(configurationYML)
             if askUser("Does that look good?") == false {
                 return false
             }
             if hasExistingConfiguration() {
                 if auto && overwrite {
                     print("Overwriting existing configuration.")
-                    try writeConfiguration(configuration)
+                    try writeConfigurationYML(configurationYML)
                     return true
                 } else {
                     print("Found an existing configuration.")
                     if !askUser("Do you want to exit without overwriting the existing configuration?") {
                         if askUser("Do you want to overwrite the existing configuration?") {
-                            try writeConfiguration(configuration)
+                            try writeConfigurationYML(configurationYML)
                             return true
                         }
                     }
                 }
             } else {
                 if askUser("Do you want to save the configuration?") {
-                    try writeConfiguration(configuration)
+                    try writeConfigurationYML(configurationYML)
                     return true
                 }
             }
@@ -271,9 +286,9 @@ extension SwiftLint {
             return false
         }
 
-        private func writeConfiguration(_ configuration: String) throws {
+        private func writeConfigurationYML(_ configurationYML: String) throws {
             print("Saving configuration to \(Configuration.defaultFileName)")
-            try configuration.write(toFile: Configuration.defaultFileName, atomically: true, encoding: .utf8)
+            try configurationYML.write(toFile: Configuration.defaultFileName, atomically: true, encoding: .utf8)
         }
 
         private func configurationYML(
@@ -291,7 +306,11 @@ extension SwiftLint {
                 }
                 configurationYML += "  - \(absolutePath)\n"
             }
-            configurationYML += "opt_in_rules:\n  - all\n"
+            configurationYML += "opt_in_rules:\n  - \(RuleIdentifier.all.stringRepresentation)\n"
+            configurationYML += "analyzer_rules:\n"
+            RuleRegistry.shared.analyzerRuleIdentifiers.forEach {
+                configurationYML += "  - \($0)\n"
+            }
             if let configuration {
                 configurationYML += configuration.customYML
             }

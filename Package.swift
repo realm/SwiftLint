@@ -3,7 +3,8 @@ import CompilerPluginSupport
 import PackageDescription
 
 let swiftFeatures: [SwiftSetting] = [
-    .enableUpcomingFeature("ExistentialAny")
+    .enableUpcomingFeature("ExistentialAny"),
+    .unsafeFlags(["-cross-module-optimization"])
 ]
 
 let package = Package(

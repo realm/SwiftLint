@@ -6,7 +6,7 @@ load(
     "swift_compiler_plugin"
 )
 
-copts = ["-enable-upcoming-feature", "ExistentialAny"]
+copts = ["-enable-upcoming-feature", "ExistentialAny", "-cross-module-optimization"]
 
 # Targets
 

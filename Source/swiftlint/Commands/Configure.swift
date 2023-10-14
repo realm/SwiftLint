@@ -115,8 +115,8 @@ extension SwiftLint {
 
         private func rulesToDisable(
             _ topLevelDirectories: [String],
-            configuration: Configuration?) async throws -> [String] 
-        {
+            configuration: Configuration?
+        ) async throws -> [String] {
             var ruleIdentifiersToDisable: [String] = []
             if topLevelDirectories.isNotEmpty {
                 let rulesWithExistingViolations = try await checkExistingViolations(

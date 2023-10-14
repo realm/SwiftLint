@@ -7,6 +7,7 @@ import SwiftLintFramework
     import Darwin.C
 #endif
 
+// swiftlint:disable file_length
 extension SwiftLint {
     struct Configure: AsyncParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Configure SwiftLint")
@@ -59,8 +60,7 @@ extension SwiftLint {
                     + " - Do you want to continue?"
                 )
                 if askUser("Do you want to you want to keep any custom configurations from \(fileName)") {
-                    let configuration = Configuration(configurationFiles: [fileName])
-                    return configuration
+                    return Configuration(configurationFiles: [fileName])
                 }
             }
             return nil
@@ -113,11 +113,14 @@ extension SwiftLint {
             askUser("Do you want SwiftLint to succeed even if there are no files to lint?")
         }
 
-        private func rulesToDisable(_ topLevelDirectories: [String], configuration: Configuration?) async throws -> [String] {
+        private func rulesToDisable(
+            _ topLevelDirectories: [String],
+            configuration: Configuration?) async throws -> [String] 
+        {
             var ruleIdentifiersToDisable: [String] = []
             if topLevelDirectories.isNotEmpty {
                 let rulesWithExistingViolations = try await checkExistingViolations(
-                    topLevelDirectories, 
+                    topLevelDirectories,
                     configuration: configuration
                 )
                 ruleIdentifiersToDisable.append(contentsOf: rulesWithExistingViolations)

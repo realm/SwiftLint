@@ -22,6 +22,11 @@
 
 #### Bug Fixes
 
+* Fix invalid corrections for opaque and existential optionals in 
+  `syntactic_sugar` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5277](https://github.com/realm/SwiftLint/issues/5277)
+
 * Fix false positive in `unused_import` rule that triggered on 
   `@_exported` imports which could break downstream modules if removed.  
   [jszumski](https://github.com/jszumski)

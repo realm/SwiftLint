@@ -71,6 +71,8 @@ internal enum SyntacticSugarRuleExamples {
         Example("let x: Dictionary<Int, String>"): Example("let x: [Int: String]"),
         Example("let x: Optional<Int>"): Example("let x: Int?"),
         Example("let x: Optional< Int >"): Example("let x: Int?"),
+        Example("func f() -> Optional<any Foo> {}"): Example("func f() -> (any Foo)? {}"),
+        Example("func f() -> Optional<some Foo> {}"): Example("func f() -> (some Foo)? {}"),
 
         Example("let x: Dictionary<Int , String>"): Example("let x: [Int: String]"),
         Example("let x: Swift.Optional<String>"): Example("let x: String?"),

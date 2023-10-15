@@ -300,6 +300,10 @@ private struct CorrectingContext<R: Rule> {
             correctViolations(violationsBeforeComma)
             replaceCharacters(in: leftRange, with: "[")
 
+        case .optional where typeIsOpaqueOrExistential(correction: correction):
+            replaceCharacters(in: rightRange, with: ")?")
+            correctViolations(violation.children)
+            replaceCharacters(in: leftRange, with: "(")
         case .optional:
             replaceCharacters(in: rightRange, with: "?")
             correctViolations(violation.children)
@@ -308,6 +312,14 @@ private struct CorrectingContext<R: Rule> {
 
         let location = Location(file: file, byteOffset: ByteCount(correction.typeStart))
         corrections.append(Correction(ruleDescription: type(of: rule).description, location: location))
+    }
+
+    private func typeIsOpaqueOrExistential(correction: SyntacticSugarRuleViolation.Correction) -> Bool {
+        if let innerTypeRange = file.stringView.NSRange(start: correction.leftEnd, end: correction.rightStart) {
+            let innerTypeString = file.stringView.substring(with: innerTypeRange)
+            return innerTypeString.contains("any ") || innerTypeString.contains("some ")
+        }
+        return false
     }
 
     private mutating func replaceCharacters(in range: NSRange, with replacement: String) {

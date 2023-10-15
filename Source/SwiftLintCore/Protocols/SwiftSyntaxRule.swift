@@ -52,6 +52,7 @@ public extension SwiftSyntaxRule {
             .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
     }
 
+    @inlinable
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let syntaxTree = preprocess(file: file) else {
             return []

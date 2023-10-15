@@ -7,7 +7,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
     public typealias Scope = Stack<Set<String>>
 
     /// The hierarchical stack of identifiers declared up to the current position in the code.
-    public private(set) var scope: Scope
+    public var scope: Scope
 
     /// Initializer.
     ///
@@ -15,6 +15,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
     ///   - configuration: Configuration of a rule.
     ///   - file: File from which the syntax tree stems from.
     ///   - scope: A (potentially already pre-filled) scope to collect identifers into.
+    @inlinable
     public init(configuration: Configuration, file: SwiftLintFile, scope: Scope = Scope()) {
         self.scope = scope
         super.init(configuration: configuration, file: file)

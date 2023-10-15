@@ -15,6 +15,7 @@ open class ViolationsSyntaxVisitor<Configuration: RuleConfiguration>: SyntaxVisi
     /// - Parameters:
     ///   - configuration: Configuration of a rule.
     ///   - file: File from which the syntax tree stems from.
+    @inlinable
     public init(configuration: Configuration, file: SwiftLintFile) {
         self.configuration = configuration
         self.file = file

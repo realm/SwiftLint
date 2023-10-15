@@ -27,6 +27,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5277](https://github.com/realm/SwiftLint/issues/5277)
 
+* Remove arguments in `empty_enum_arguments` rule only if placeholders are
+  used. The Swift compiler complains now anyway about empty arguments on enums
+  cases without associated values.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5269](https://github.com/realm/SwiftLint/issues/5269)
+
 * Fix false positive in `unused_import` rule that triggered on 
   `@_exported` imports which could break downstream modules if removed.  
   [jszumski](https://github.com/jszumski)

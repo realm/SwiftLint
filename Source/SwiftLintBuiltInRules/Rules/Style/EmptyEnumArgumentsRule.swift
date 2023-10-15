@@ -34,6 +34,7 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule {
         kind: .style,
         nonTriggeringExamples: [
             wrapInSwitch("case .bar"),
+            wrapInSwitch("case .bar()"),
             wrapInSwitch("case .bar(let x)"),
             wrapInSwitch("case let .bar(x)"),
             wrapInSwitch(variable: "(foo, bar)", "case (_, _)"),
@@ -43,6 +44,7 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule {
             wrapInSwitch("case .bar(Baz())"),
             wrapInSwitch("case .bar(.init())"),
             wrapInSwitch("default"),
+            wrapInSwitch("case .bar(_, let i)"),
             Example("if case .bar = foo {\n}"),
             Example("guard case .bar = foo else {\n}"),
             Example("if foo == .bar() {}"),
@@ -63,16 +65,11 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule {
         ],
         triggeringExamples: [
             wrapInSwitch("case .bar↓(_)"),
-            wrapInSwitch("case .bar↓()"),
             wrapInSwitch("case .bar↓(_), .bar2↓(_)"),
-            wrapInSwitch("case .bar↓() where method() > 2"),
-            wrapInSwitch("case .bar(.baz↓())"),
             wrapInSwitch("case .bar(.baz↓(_))"),
             wrapInFunc("case .bar↓(_)"),
             Example("if case .bar↓(_) = foo {\n}"),
             Example("guard case .bar↓(_) = foo else {\n}"),
-            Example("if case .bar↓() = foo {\n}"),
-            Example("guard case .bar↓() = foo else {\n}"),
             Example("""
             if case .appStore↓(_) = self.appInstaller, !UIDevice.isSimulator() {
               viewController.present(self, animated: false)
@@ -89,10 +86,8 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule {
         ],
         corrections: [
             wrapInSwitch("case .bar↓(_)"): wrapInSwitch("case .bar"),
-            wrapInSwitch("case .bar↓()"): wrapInSwitch("case .bar"),
+            wrapInSwitch("case .bar↓(_, _)"): wrapInSwitch("case .bar"),
             wrapInSwitch("case .bar↓(_), .bar2↓(_)"): wrapInSwitch("case .bar, .bar2"),
-            wrapInSwitch("case .bar↓() where method() > 2"): wrapInSwitch("case .bar where method() > 2"),
-            wrapInSwitch("case .bar(.baz↓())"): wrapInSwitch("case .bar(.baz)"),
             wrapInSwitch("case .bar(.baz↓(_))"): wrapInSwitch("case .bar(.baz)"),
             wrapInFunc("case .bar↓(_)"): wrapInFunc("case .bar"),
             Example("if case .bar↓(_) = foo {"): Example("if case .bar = foo {"),
@@ -194,9 +189,10 @@ private extension PatternSyntax {
 
 private extension FunctionCallExprSyntax {
     var argumentsHasViolation: Bool {
-        !calledExpression.is(DeclReferenceExprSyntax.self) &&
-            calledExpression.as(MemberAccessExprSyntax.self)?.isInit == false &&
-        arguments.allSatisfy(\.expression.isDiscardAssignmentOrFunction)
+           !calledExpression.is(DeclReferenceExprSyntax.self)
+        && calledExpression.as(MemberAccessExprSyntax.self)?.isInit == false
+        && arguments.isNotEmpty
+        && arguments.allSatisfy(\.expression.isDiscardAssignmentOrFunction)
     }
 
     var innermostFunctionCall: FunctionCallExprSyntax {

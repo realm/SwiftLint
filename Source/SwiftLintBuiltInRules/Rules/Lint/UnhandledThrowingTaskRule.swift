@@ -187,7 +187,7 @@ struct UnhandledThrowingTaskRule: OptInRule {
 }
 
 private extension UnhandledThrowingTaskRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if node.hasViolation {
                 violations.append(node.calledExpression.positionAfterSkippingLeadingTrivia)

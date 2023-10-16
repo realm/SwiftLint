@@ -69,22 +69,22 @@ struct RequiredDeinitRule: OptInRule {
 }
 
 private extension RequiredDeinitRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ClassDeclSyntax) {
-            let visitor = DeinitVisitor(viewMode: .sourceAccurate)
+            let visitor = DeinitVisitor(configuration: configuration, file: file)
             if !visitor.walk(tree: node.memberBlock, handler: \.hasDeinit) {
                 violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
     }
-}
 
-private class DeinitVisitor: ViolationsSyntaxVisitor {
-    private(set) var hasDeinit = false
+    final class DeinitVisitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private(set) var hasDeinit = false
 
-    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-    override func visitPost(_ node: DeinitializerDeclSyntax) {
-        hasDeinit = true
+        override func visitPost(_ node: DeinitializerDeclSyntax) {
+            hasDeinit = true
+        }
     }
 }

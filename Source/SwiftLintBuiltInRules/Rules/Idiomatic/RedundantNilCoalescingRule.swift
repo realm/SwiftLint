@@ -31,7 +31,7 @@ struct RedundantNilCoalescingRule: OptInRule, SwiftSyntaxCorrectableRule {
 }
 
 private extension RedundantNilCoalescingRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: TokenSyntax) {
             if node.tokenKind.isNilCoalescingOperator,
                node.nextToken(viewMode: .sourceAccurate)?.tokenKind == .keyword(.nil) {

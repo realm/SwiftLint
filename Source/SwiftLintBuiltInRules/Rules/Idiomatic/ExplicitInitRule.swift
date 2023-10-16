@@ -1,6 +1,7 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
+@SwiftSyntaxRule
 struct ExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = ExplicitInitConfiguration()
 
@@ -169,24 +170,13 @@ struct ExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate, includeBareInit: configuration.includeBareInit)
-    }
-
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(locationConverter: file.locationConverter, disabledRegions: disabledRegions(file: file))
     }
 }
 
 private extension ExplicitInitRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let includeBareInit: Bool
-
-        init(viewMode: SyntaxTreeViewMode, includeBareInit: Bool) {
-            self.includeBareInit = includeBareInit
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self) else {
                 return
@@ -196,7 +186,7 @@ private extension ExplicitInitRule {
                 violations.append(violationPosition)
             }
 
-            if includeBareInit, let violationPosition = calledExpression.bareInitPosition {
+            if configuration.includeBareInit, let violationPosition = calledExpression.bareInitPosition {
                 let reason = "Prefer named constructors over .init and type inference"
                 violations.append(ReasonedRuleViolation(position: violationPosition, reason: reason))
             }

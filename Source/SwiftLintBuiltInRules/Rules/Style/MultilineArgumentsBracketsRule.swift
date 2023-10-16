@@ -159,7 +159,7 @@ struct MultilineArgumentsBracketsRule: OptInRule {
 }
 
 private extension MultilineArgumentsBracketsRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let firstArgument = node.arguments.first,
                   let leftParen = node.leftParen,

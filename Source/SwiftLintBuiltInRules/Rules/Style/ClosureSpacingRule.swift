@@ -1,7 +1,6 @@
 import SwiftSyntax
 
-// MARK: - ClosureSpacingRule
-
+@SwiftSyntaxRule
 struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -46,10 +45,6 @@ struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, OptInRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(locationConverter: file.locationConverter)
-    }
-
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             locationConverter: file.locationConverter,
@@ -59,14 +54,7 @@ struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, OptInRule {
 }
 
 private extension ClosureSpacingRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        let locationConverter: SourceLocationConverter
-
-        init(locationConverter: SourceLocationConverter) {
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ClosureExprSyntax) {
             if node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter),
                node.violations.hasViolations {

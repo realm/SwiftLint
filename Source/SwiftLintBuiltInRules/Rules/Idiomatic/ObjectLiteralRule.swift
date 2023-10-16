@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ObjectLiteralRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct ObjectLiteralRule: OptInRule {
     var configuration = ObjectLiteralConfiguration<Self>()
 
     static let description = RuleDescription(
@@ -30,32 +31,19 @@ struct ObjectLiteralRule: SwiftSyntaxRule, OptInRule {
             }
         }
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(validateImageLiteral: configuration.imageLiteral, validateColorLiteral: configuration.colorLiteral)
-    }
 }
 
 private extension ObjectLiteralRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let validateImageLiteral: Bool
-        private let validateColorLiteral: Bool
-
-        init(validateImageLiteral: Bool, validateColorLiteral: Bool) {
-            self.validateImageLiteral = validateImageLiteral
-            self.validateColorLiteral = validateColorLiteral
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard validateColorLiteral || validateImageLiteral else {
+            guard configuration.colorLiteral || configuration.imageLiteral else {
                 return
             }
 
             let name = node.calledExpression.trimmedDescription
-            if validateImageLiteral, isImageNamedInit(node: node, name: name) {
+            if configuration.imageLiteral, isImageNamedInit(node: node, name: name) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
-            } else if validateColorLiteral, isColorInit(node: node, name: name) {
+            } else if configuration.colorLiteral, isColorInit(node: node, name: name) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }

@@ -31,7 +31,7 @@ struct ContainsOverFilterCountRule: OptInRule {
 }
 
 private extension ContainsOverFilterCountRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ExprListSyntax) {
             guard
                 node.count == 3,

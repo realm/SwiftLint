@@ -76,7 +76,7 @@ struct LegacyHashingRule: Rule {
 }
 
 private extension LegacyHashingRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard
                 node.parent?.is(MemberBlockItemSyntax.self) == true,

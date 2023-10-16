@@ -3,12 +3,12 @@ import SwiftSyntaxBuilder
 
 /// A helper to hold a visitor and rewriter that can lint and correct legacy NS/CG functions to a more modern syntax.
 enum LegacyFunctionRuleHelper {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor<Configuration: RuleConfiguration>: ViolationsSyntaxVisitor<Configuration> {
         private let legacyFunctions: [String: RewriteStrategy]
 
-        init(legacyFunctions: [String: RewriteStrategy]) {
+        init(configuration: Configuration, file: SwiftLintFile, legacyFunctions: [String: RewriteStrategy]) {
             self.legacyFunctions = legacyFunctions
-            super.init(viewMode: .sourceAccurate)
+            super.init(configuration: configuration, file: file)
         }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {

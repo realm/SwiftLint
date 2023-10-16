@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ForWhereRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct ForWhereRule: Rule {
     var configuration = ForWhereConfiguration()
 
     static let description = RuleDescription(
@@ -115,21 +116,10 @@ struct ForWhereRule: SwiftSyntaxRule {
             """, configuration: ["allow_for_as_filter": true])
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(allowForAsFilter: configuration.allowForAsFilter)
-    }
 }
 
 private extension ForWhereRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let allowForAsFilter: Bool
-
-        init(allowForAsFilter: Bool) {
-            self.allowForAsFilter = allowForAsFilter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ForStmtSyntax) {
             guard node.whereClause == nil,
                   let onlyExprStmt = node.body.statements.onlyElement?.item.as(ExpressionStmtSyntax.self),
@@ -142,7 +132,7 @@ private extension ForWhereRule {
                 return
             }
 
-            if allowForAsFilter, ifExpr.containsReturnStatement {
+            if configuration.allowForAsFilter, ifExpr.containsReturnStatement {
                 return
             }
 

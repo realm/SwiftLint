@@ -54,7 +54,7 @@ struct EmptyParenthesesWithTrailingClosureRule: SwiftSyntaxCorrectableRule {
 }
 
 private extension EmptyParenthesesWithTrailingClosureRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let position = node.violationPosition else {
                 return

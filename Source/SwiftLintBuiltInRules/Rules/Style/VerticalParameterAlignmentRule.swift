@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct VerticalParameterAlignmentRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct VerticalParameterAlignmentRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,21 +12,10 @@ struct VerticalParameterAlignmentRule: SwiftSyntaxRule {
         nonTriggeringExamples: VerticalParameterAlignmentRuleExamples.nonTriggeringExamples,
         triggeringExamples: VerticalParameterAlignmentRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(locationConverter: file.locationConverter)
-    }
 }
 
 private extension VerticalParameterAlignmentRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let locationConverter: SourceLocationConverter
-
-        init(locationConverter: SourceLocationConverter) {
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             violations.append(contentsOf: violations(for: node.signature.parameterClause.parameters))
         }

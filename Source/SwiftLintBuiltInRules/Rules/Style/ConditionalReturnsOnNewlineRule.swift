@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ConditionalReturnsOnNewlineRule: OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct ConditionalReturnsOnNewlineRule: OptInRule {
     var configuration = ConditionalReturnsOnNewlineConfiguration()
 
     static let description = RuleDescription(
@@ -31,26 +32,10 @@ struct ConditionalReturnsOnNewlineRule: OptInRule, SwiftSyntaxRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(
-            ifOnly: configuration.ifOnly,
-            locationConverter: file.locationConverter
-        )
-    }
 }
 
 private extension ConditionalReturnsOnNewlineRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let ifOnly: Bool
-        private let locationConverter: SourceLocationConverter
-
-        init(ifOnly: Bool, locationConverter: SourceLocationConverter) {
-            self.ifOnly = ifOnly
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: IfExprSyntax) {
             if isReturn(node.body.statements.lastReturn, onTheSameLineAs: node.ifKeyword) {
                 violations.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
@@ -64,7 +49,7 @@ private extension ConditionalReturnsOnNewlineRule {
         }
 
         override func visitPost(_ node: GuardStmtSyntax) {
-            if ifOnly {
+            if configuration.ifOnly {
                 return
             }
 

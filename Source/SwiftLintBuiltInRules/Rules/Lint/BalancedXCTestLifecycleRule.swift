@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct BalancedXCTestLifecycleRule: OptInRule {
     var configuration = BalancedXCTestLifecycleConfiguration()
 
     static let description = RuleDescription(
@@ -103,30 +104,20 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule {
             """#)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate, testParentClasses: configuration.testParentClasses)
-    }
 }
 
 // MARK: - Private
 
 private extension BalancedXCTestLifecycleRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let testParentClasses: Set<String>
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-        init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
-            self.testParentClasses = testParentClasses
-            super.init(viewMode: viewMode)
-        }
-
         override func visitPost(_ node: ClassDeclSyntax) {
-            guard node.isXCTestCase(testParentClasses) else {
+            guard node.isXCTestCase(configuration.testParentClasses) else {
                 return
             }
 
-            let methods = SetupTearDownVisitor(viewMode: .sourceAccurate)
+            let methods = SetupTearDownVisitor(configuration: configuration, file: file)
                 .walk(tree: node.memberBlock, handler: \.methods)
             guard methods.contains(.setUp) != methods.contains(.tearDown) else {
                 return
@@ -137,7 +128,7 @@ private extension BalancedXCTestLifecycleRule {
     }
 }
 
-private final class SetupTearDownVisitor: ViolationsSyntaxVisitor {
+private final class SetupTearDownVisitor<Configuration: RuleConfiguration>: ViolationsSyntaxVisitor<Configuration> {
     override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
     private(set) var methods: Set<XCTMethod> = []
 

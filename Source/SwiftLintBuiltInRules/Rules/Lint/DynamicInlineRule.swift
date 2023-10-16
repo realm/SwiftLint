@@ -25,7 +25,7 @@ struct DynamicInlineRule: Rule {
 }
 
 private extension DynamicInlineRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.modifiers.contains(where: { $0.name.text == "dynamic" }),
                node.attributes.contains(where: { $0.as(AttributeSyntax.self)?.isInlineAlways == true }) {

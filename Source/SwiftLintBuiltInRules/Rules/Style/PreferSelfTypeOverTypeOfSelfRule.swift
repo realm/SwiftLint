@@ -115,7 +115,7 @@ struct PreferSelfTypeOverTypeOfSelfRule: SwiftSyntaxCorrectableRule, OptInRule {
 }
 
 private extension PreferSelfTypeOverTypeOfSelfRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             if let function = node.base?.as(FunctionCallExprSyntax.self), function.hasViolation {
                 violations.append(function.positionAfterSkippingLeadingTrivia)

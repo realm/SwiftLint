@@ -52,7 +52,7 @@ struct ArrayInitRule: OptInRule {
 }
 
 private extension ArrayInitRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),
                   memberAccess.declName.baseName.text == "map",

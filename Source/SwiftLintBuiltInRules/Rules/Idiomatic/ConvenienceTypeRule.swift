@@ -118,7 +118,7 @@ struct ConvenienceTypeRule: OptInRule {
 }
 
 private extension ConvenienceTypeRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: StructDeclSyntax) {
@@ -151,44 +151,44 @@ private extension ConvenienceTypeRule {
                 return false
             }
 
-            return ConvenienceTypeCheckVisitor(viewMode: .sourceAccurate)
+            return ConvenienceTypeCheckVisitor(configuration: configuration, file: file)
                 .walk(tree: members, handler: \.canBeConvenienceType)
         }
     }
-}
 
-private class ConvenienceTypeCheckVisitor: ViolationsSyntaxVisitor {
-    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
+    final class ConvenienceTypeCheckVisitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-    private(set) var canBeConvenienceType = true
+        private(set) var canBeConvenienceType = true
 
-    override func visitPost(_ node: VariableDeclSyntax) {
-        if node.isInstanceVariable {
-            canBeConvenienceType = false
-        } else if node.attributes.containsObjc {
-            canBeConvenienceType = false
-        }
-    }
-
-    override func visitPost(_ node: FunctionDeclSyntax) {
-        if node.modifiers.containsStaticOrClass {
-            if node.attributes.containsObjc {
+        override func visitPost(_ node: VariableDeclSyntax) {
+            if node.isInstanceVariable {
+                canBeConvenienceType = false
+            } else if node.attributes.containsObjc {
                 canBeConvenienceType = false
             }
-        } else {
-            canBeConvenienceType = false
         }
-    }
 
-    override func visitPost(_ node: InitializerDeclSyntax) {
-        if !node.attributes.hasUnavailableAttribute {
-            canBeConvenienceType = false
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if node.modifiers.containsStaticOrClass {
+                if node.attributes.containsObjc {
+                    canBeConvenienceType = false
+                }
+            } else {
+                canBeConvenienceType = false
+            }
         }
-    }
 
-    override func visitPost(_ node: SubscriptDeclSyntax) {
-        if !node.modifiers.containsStaticOrClass {
-            canBeConvenienceType = false
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            if !node.attributes.hasUnavailableAttribute {
+                canBeConvenienceType = false
+            }
+        }
+
+        override func visitPost(_ node: SubscriptDeclSyntax) {
+            if !node.modifiers.containsStaticOrClass {
+                canBeConvenienceType = false
+            }
         }
     }
 }

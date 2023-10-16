@@ -29,7 +29,7 @@ struct ReduceBooleanRule: Rule {
 }
 
 private extension ReduceBooleanRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),

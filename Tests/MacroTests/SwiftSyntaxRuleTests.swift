@@ -17,8 +17,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             struct Hello {}
 
             extension Hello: SwiftSyntaxRule {
-                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-                    Visitor(viewMode: .sourceAccurate)
+                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+                    Visitor(configuration: configuration, file: file)
                 }
             }
             """,
@@ -36,8 +36,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             struct Hello {}
 
             extension Hello: SwiftSyntaxRule {
-                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-                    Visitor(viewMode: .sourceAccurate)
+                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+                    Visitor(configuration: configuration, file: file)
                 }
             }
             """,
@@ -55,8 +55,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             struct Hello {}
 
             extension Hello: SwiftSyntaxRule {
-                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-                    Visitor(viewMode: .sourceAccurate)
+                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+                    Visitor(configuration: configuration, file: file)
                 }
             }
 
@@ -81,8 +81,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             struct Hello {}
 
             extension Hello: SwiftSyntaxRule {
-                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-                    Visitor(viewMode: .sourceAccurate)
+                func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+                    Visitor(configuration: configuration, file: file)
                 }
             }
             """,

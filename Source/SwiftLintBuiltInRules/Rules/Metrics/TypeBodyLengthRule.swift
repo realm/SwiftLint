@@ -31,7 +31,7 @@ struct TypeBodyLengthRule: SwiftSyntaxRule {
         })
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         BodyLengthRuleVisitor(kind: .type, file: file, configuration: configuration)
     }
 }

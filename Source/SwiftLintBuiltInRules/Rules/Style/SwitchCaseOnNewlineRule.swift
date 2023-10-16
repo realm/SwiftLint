@@ -8,7 +8,8 @@ private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt 
     """, file: file, line: line)
 }
 
-struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct SwitchCaseOnNewlineRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -59,21 +60,10 @@ struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, OptInRule {
             wrapInSwitch("↓case .first,\n .second: return false")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(locationConverter: file.locationConverter)
-    }
 }
 
 private extension SwitchCaseOnNewlineRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let locationConverter: SourceLocationConverter
-
-        init(locationConverter: SourceLocationConverter) {
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseSyntax) {
             let caseEndLine = locationConverter.location(for: node.label.endPositionBeforeTrailingTrivia).line
             let statementsPosition = node.statements.positionAfterSkippingLeadingTrivia

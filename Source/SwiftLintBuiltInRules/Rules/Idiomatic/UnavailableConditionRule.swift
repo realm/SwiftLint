@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnavailableConditionRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct UnavailableConditionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -68,14 +69,10 @@ struct UnavailableConditionRule: SwiftSyntaxRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension UnavailableConditionRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: IfExprSyntax) {
             guard node.body.statements.isEmpty else {
                 return

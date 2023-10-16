@@ -21,7 +21,7 @@ struct ProhibitedInterfaceBuilderRule: OptInRule {
 }
 
 private extension ProhibitedInterfaceBuilderRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.isIBOutlet {
                 violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)

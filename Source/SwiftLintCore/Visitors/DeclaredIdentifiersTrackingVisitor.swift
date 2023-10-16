@@ -1,19 +1,24 @@
 import SwiftSyntax
 
 /// A specialized `ViolationsSyntaxVisitor` that tracks declared identifiers per scope while traversing the AST.
-open class DeclaredIdentifiersTrackingVisitor: ViolationsSyntaxVisitor {
+open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
+        ViolationsSyntaxVisitor<Configuration> {
     /// A type that remembers the declared identifers (in order) up to the current position in the code.
     public typealias Scope = Stack<Set<String>>
 
     /// The hierarchical stack of identifiers declared up to the current position in the code.
-    public private(set) var scope: Scope
+    public var scope: Scope
 
     /// Initializer.
     ///
-    /// - parameter scope: A (potentially already pre-filled) scope to collect identifers into.
-    public init(scope: Scope = Scope()) {
+    /// - Parameters:
+    ///   - configuration: Configuration of a rule.
+    ///   - file: File from which the syntax tree stems from.
+    ///   - scope: A (potentially already pre-filled) scope to collect identifers into.
+    @inlinable
+    public init(configuration: Configuration, file: SwiftLintFile, scope: Scope = Scope()) {
         self.scope = scope
-        super.init(viewMode: .sourceAccurate)
+        super.init(configuration: configuration, file: file)
     }
 
     /// Indicate whether a given identifier is in scope.

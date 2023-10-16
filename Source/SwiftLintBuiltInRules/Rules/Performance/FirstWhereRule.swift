@@ -33,7 +33,7 @@ struct FirstWhereRule: OptInRule {
 }
 
 private extension FirstWhereRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
                 node.declName.baseName.text == "first",

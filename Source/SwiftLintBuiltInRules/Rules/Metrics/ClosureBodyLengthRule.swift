@@ -10,7 +10,7 @@ struct ClosureBodyLengthRule: OptInRule, SwiftSyntaxRule {
         triggeringExamples: ClosureBodyLengthRuleExamples.triggeringExamples
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         BodyLengthRuleVisitor(kind: .closure, file: file, configuration: configuration)
     }
 }

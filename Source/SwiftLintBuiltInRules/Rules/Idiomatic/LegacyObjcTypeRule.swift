@@ -69,7 +69,7 @@ struct LegacyObjcTypeRule: OptInRule {
 }
 
 private extension LegacyObjcTypeRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: IdentifierTypeSyntax) {
             if let typeName = node.typeName, legacyObjcTypes.contains(typeName) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)

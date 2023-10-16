@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct DiscouragedObjectLiteralRule: OptInRule {
     var configuration = DiscouragedObjectLiteralConfiguration()
 
     static let description = RuleDescription(
@@ -21,21 +22,10 @@ struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule {
             Example("let color = ↓#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
 }
 
 private extension DiscouragedObjectLiteralRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: ConfigurationType
-
-        init(configuration: ConfigurationType) {
-            self.configuration = configuration
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MacroExpansionExprSyntax) {
             guard
                 case let .identifier(identifierText) = node.macroName.tokenKind,

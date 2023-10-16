@@ -1,6 +1,7 @@
 import Foundation
 import SwiftSyntax
 
+@SwiftSyntaxRule
 struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule {
     var configuration = PrivateUnitTestConfiguration()
 
@@ -125,10 +126,6 @@ struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
-
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             configuration: configuration,
@@ -139,15 +136,8 @@ struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule {
 }
 
 private extension PrivateUnitTestRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: PrivateUnitTestConfiguration
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
-
-        init(configuration: PrivateUnitTestConfiguration) {
-            self.configuration = configuration
-            super.init(viewMode: .sourceAccurate)
-        }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
             !node.isPrivate && node.hasParent(configuredIn: configuration) ? .visitChildren : .skipChildren

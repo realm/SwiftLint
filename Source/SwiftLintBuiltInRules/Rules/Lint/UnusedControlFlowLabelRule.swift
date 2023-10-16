@@ -93,7 +93,7 @@ struct UnusedControlFlowLabelRule: SwiftSyntaxCorrectableRule {
 }
 
 private extension UnusedControlFlowLabelRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: LabeledStmtSyntax) {
             if let position = node.violationPosition {
                 violations.append(position)

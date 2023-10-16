@@ -38,7 +38,7 @@ struct MultipleClosuresWithTrailingClosureRule: Rule {
 }
 
 private extension MultipleClosuresWithTrailingClosureRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let trailingClosure = node.trailingClosure,
                   node.hasTrailingClosureViolation else {

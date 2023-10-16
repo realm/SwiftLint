@@ -26,7 +26,7 @@ struct NSNumberInitAsFunctionReferenceRule: Rule {
 }
 
 private extension NSNumberInitAsFunctionReferenceRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard node.declName.argumentNames.isEmptyOrNil,
                   node.declName.baseName.text == "init",

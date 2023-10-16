@@ -46,7 +46,7 @@ struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, OptInRule {
 }
 
 private extension JoinedDefaultParameterRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)

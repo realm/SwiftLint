@@ -24,7 +24,7 @@ struct UnusedClosureParameterRule: SwiftSyntaxCorrectableRule {
 }
 
 private extension UnusedClosureParameterRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ClosureExprSyntax) {
             let namedParameters = node.namedParameters
             guard namedParameters.isNotEmpty else {

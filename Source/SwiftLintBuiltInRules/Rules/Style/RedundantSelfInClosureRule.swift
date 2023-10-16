@@ -1,5 +1,6 @@
 import SwiftSyntax
 
+@SwiftSyntaxRule
 struct RedundantSelfInClosureRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -12,10 +13,6 @@ struct RedundantSelfInClosureRule: SwiftSyntaxCorrectableRule, OptInRule {
         triggeringExamples: RedundantSelfInClosureRuleExamples.triggeringExamples,
         corrections: RedundantSelfInClosureRuleExamples.corrections
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ContextVisitor()
-    }
 }
 
 private enum TypeDeclarationKind {
@@ -35,7 +32,7 @@ private enum SelfCaptureKind {
 }
 
 private extension RedundantSelfInClosureRule {
-    final class ContextVisitor: DeclaredIdentifiersTrackingVisitor {
+    final class Visitor: DeclaredIdentifiersTrackingVisitor<ConfigurationType> {
         private var typeDeclarations = Stack<TypeDeclarationKind>()
         private var functionCalls = Stack<FunctionCallType>()
         private var selfCaptures = Stack<SelfCaptureKind>()
@@ -76,6 +73,8 @@ private extension RedundantSelfInClosureRule {
                 return
             }
             let localViolationCorrections = ExplicitSelfVisitor(
+                configuration: configuration,
+                file: file,
                 typeDeclarationKind: activeTypeDeclarationKind,
                 functionCallType: activeFunctionCallType,
                 selfCaptureKind: activeSelfCaptureKind,
@@ -119,19 +118,21 @@ private extension RedundantSelfInClosureRule {
     }
 }
 
-private class ExplicitSelfVisitor: DeclaredIdentifiersTrackingVisitor {
+private class ExplicitSelfVisitor<Configuration: RuleConfiguration>: DeclaredIdentifiersTrackingVisitor<Configuration> {
     private let typeDeclKind: TypeDeclarationKind
     private let functionCallType: FunctionCallType
     private let selfCaptureKind: SelfCaptureKind
 
-    init(typeDeclarationKind: TypeDeclarationKind,
+    init(configuration: Configuration,
+         file: SwiftLintFile,
+         typeDeclarationKind: TypeDeclarationKind,
          functionCallType: FunctionCallType,
          selfCaptureKind: SelfCaptureKind,
          scope: Scope) {
         self.typeDeclKind = typeDeclarationKind
         self.functionCallType = functionCallType
         self.selfCaptureKind = selfCaptureKind
-        super.init(scope: scope)
+        super.init(configuration: configuration, file: file, scope: scope)
     }
 
     override func visitPost(_ node: MemberAccessExprSyntax) {

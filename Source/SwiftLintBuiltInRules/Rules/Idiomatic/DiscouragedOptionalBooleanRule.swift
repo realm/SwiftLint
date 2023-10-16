@@ -15,7 +15,7 @@ struct DiscouragedOptionalBooleanRule: OptInRule {
 }
 
 private extension DiscouragedOptionalBooleanRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: OptionalTypeSyntax) {
             if node.wrappedType.as(IdentifierTypeSyntax.self)?.typeName == "Bool" {
                 violations.append(node.positionAfterSkippingLeadingTrivia)

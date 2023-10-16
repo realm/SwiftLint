@@ -7,7 +7,7 @@ public protocol SwiftSyntaxRule: SourceKitFreeRule {
     /// - parameter file: The file for which to produce the visitor.
     ///
     /// - returns: A `ViolationsSyntaxVisitor` for the given file.
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType>
 
     /// Produce a violation for the given file and absolute position.
     ///
@@ -52,6 +52,7 @@ public extension SwiftSyntaxRule {
             .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
     }
 
+    @inlinable
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let syntaxTree = preprocess(file: file) else {
             return []

@@ -100,8 +100,12 @@ struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
         "NSPointInRect": .function(name: "contains", argumentLabels: [""], reversed: true)
     ]
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        LegacyFunctionRuleHelper.Visitor(legacyFunctions: Self.legacyFunctions)
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+        LegacyFunctionRuleHelper.Visitor(
+            configuration: configuration,
+            file: file,
+            legacyFunctions: Self.legacyFunctions
+        )
     }
 
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {

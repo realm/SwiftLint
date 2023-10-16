@@ -29,7 +29,7 @@ struct ContainsOverFilterIsEmptyRule: OptInRule {
 }
 
 private extension ContainsOverFilterIsEmptyRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
                 node.declName.baseName.text == "isEmpty",

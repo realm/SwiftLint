@@ -27,7 +27,7 @@ struct ForceTryRule: Rule {
 }
 
 private extension ForceTryRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: TryExprSyntax) {
             if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
                 violations.append(node.positionAfterSkippingLeadingTrivia)

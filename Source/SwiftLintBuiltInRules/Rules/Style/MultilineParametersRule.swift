@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct MultilineParametersRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct MultilineParametersRule: OptInRule {
     var configuration = MultilineParametersConfiguration()
 
     static let description = RuleDescription(
@@ -11,23 +12,10 @@ struct MultilineParametersRule: SwiftSyntaxRule, OptInRule {
         nonTriggeringExamples: MultilineParametersRuleExamples.nonTriggeringExamples,
         triggeringExamples: MultilineParametersRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(allowsSingleLine: configuration.allowsSingleLine, locationConverter: file.locationConverter)
-    }
 }
 
 private extension MultilineParametersRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let allowsSingleLine: Bool
-        private let locationConverter: SourceLocationConverter
-
-        init(allowsSingleLine: Bool, locationConverter: SourceLocationConverter) {
-            self.allowsSingleLine = allowsSingleLine
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             if containsViolation(for: node.signature) {
                 violations.append(node.name.positionAfterSkippingLeadingTrivia)
@@ -55,7 +43,7 @@ private extension MultilineParametersRule {
                 numberOfParameters += 1
             }
 
-            guard linesWithParameters.count > (allowsSingleLine ? 1 : 0),
+            guard linesWithParameters.count > (configuration.allowsSingleLine ? 1 : 0),
                   numberOfParameters != linesWithParameters.count else {
                 return false
             }

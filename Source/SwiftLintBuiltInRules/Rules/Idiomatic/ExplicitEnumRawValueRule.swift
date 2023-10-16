@@ -80,7 +80,7 @@ struct ExplicitEnumRawValueRule: OptInRule {
 }
 
 private extension ExplicitEnumRawValueRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: EnumCaseElementSyntax) {

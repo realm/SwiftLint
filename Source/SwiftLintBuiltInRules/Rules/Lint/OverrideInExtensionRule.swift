@@ -33,20 +33,27 @@ struct OverrideInExtensionRule: OptInRule, SwiftSyntaxRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        let allowedExtensions = ClassNameCollectingVisitor(viewMode: .sourceAccurate)
-            .walk(tree: file.syntaxTree, handler: \.classNames)
-        return Visitor(allowedExtensions: allowedExtensions)
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+        let allowedExtensions = ClassNameCollectingVisitor(
+            configuration: configuration,
+            file: file
+        ).walk(tree: file.syntaxTree, handler: \.classNames)
+        return Visitor(
+            configuration: configuration,
+            file: file,
+            allowedExtensions: allowedExtensions
+        )
     }
 }
 
 private extension OverrideInExtensionRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let allowedExtensions: Set<String>
 
-        init(allowedExtensions: Set<String>) {
+        init(configuration: ConfigurationType, file: SwiftLintFile,
+             allowedExtensions: Set<String>) {
             self.allowedExtensions = allowedExtensions
-            super.init(viewMode: .sourceAccurate)
+            super.init(configuration: configuration, file: file)
         }
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .allExcept(ExtensionDeclSyntax.self) }
@@ -72,14 +79,14 @@ private extension OverrideInExtensionRule {
             return .visitChildren
         }
     }
-}
 
-private class ClassNameCollectingVisitor: ViolationsSyntaxVisitor {
-    private(set) var classNames: Set<String> = []
+    final class ClassNameCollectingVisitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private(set) var classNames: Set<String> = []
 
-    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-    override func visitPost(_ node: ClassDeclSyntax) {
-        classNames.insert(node.name.text)
+        override func visitPost(_ node: ClassDeclSyntax) {
+            classNames.insert(node.name.text)
+        }
     }
 }

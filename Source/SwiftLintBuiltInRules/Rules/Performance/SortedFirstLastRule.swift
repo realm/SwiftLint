@@ -47,7 +47,7 @@ struct SortedFirstLastRule: OptInRule {
 }
 
 private extension SortedFirstLastRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
                 node.declName.baseName.text == "first" || node.declName.baseName.text == "last",

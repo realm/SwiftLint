@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct YodaConditionRule: OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct YodaConditionRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -33,14 +34,10 @@ struct YodaConditionRule: OptInRule, SwiftSyntaxRule {
             Example("while ↓1 > i + 5 {}"),
             Example("if ↓200 <= i && i <= 299 || ↓600 <= i {}")
         ])
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension YodaConditionRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: IfExprSyntax) {
             visit(conditions: node.conditions)
         }

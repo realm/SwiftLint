@@ -24,7 +24,7 @@ struct LegacyConstantRule: SwiftSyntaxCorrectableRule {
 }
 
 private extension LegacyConstantRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: DeclReferenceExprSyntax) {
             if LegacyConstantRuleExamples.patterns.keys.contains(node.baseName.text) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)

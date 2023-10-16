@@ -2,6 +2,7 @@ import SwiftSyntax
 
 // MARK: - SelfBindingRule
 
+@SwiftSyntaxRule
 struct SelfBindingRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SelfBindingConfiguration()
 
@@ -46,10 +47,6 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, OptInRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(bindIdentifier: configuration.bindIdentifier)
-    }
-
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             bindIdentifier: configuration.bindIdentifier,
@@ -60,29 +57,22 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, OptInRule {
 }
 
 private extension SelfBindingRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let bindIdentifier: String
-
-        init(bindIdentifier: String) {
-            self.bindIdentifier = bindIdentifier
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: OptionalBindingConditionSyntax) {
             if let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
-               identifierPattern.identifier.text != bindIdentifier {
+               identifierPattern.identifier.text != configuration.bindIdentifier {
                 var hasViolation = false
                 if let initializerIdentifier = node.initializer?.value.as(DeclReferenceExprSyntax.self) {
                     hasViolation = initializerIdentifier.baseName.text == "self"
                 } else if node.initializer == nil {
-                    hasViolation = identifierPattern.identifier.text == "self" && bindIdentifier != "self"
+                    hasViolation = identifierPattern.identifier.text == "self" && configuration.bindIdentifier != "self"
                 }
 
                 if hasViolation {
                     violations.append(
                         ReasonedRuleViolation(
                             position: identifierPattern.positionAfterSkippingLeadingTrivia,
-                            reason: "`self` should always be re-bound to `\(bindIdentifier)`"
+                            reason: "`self` should always be re-bound to `\(configuration.bindIdentifier)`"
                         )
                     )
                 }

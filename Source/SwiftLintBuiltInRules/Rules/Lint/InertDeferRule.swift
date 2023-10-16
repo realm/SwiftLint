@@ -83,14 +83,14 @@ struct InertDeferRule: SwiftSyntaxRule, OptInRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         warnDeprecatedOnce()
-        return Visitor(viewMode: .sourceAccurate)
+        return Visitor(configuration: configuration, file: file)
     }
 }
 
 private extension InertDeferRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: DeferStmtSyntax) {
             guard node.isLastStatement else {
                 return

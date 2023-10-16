@@ -144,14 +144,14 @@ struct UnusedCaptureListRule: SwiftSyntaxRule, OptInRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         warnDeprecatedOnce()
-        return Visitor(viewMode: .sourceAccurate)
+        return Visitor(configuration: configuration, file: file)
     }
 }
 
 private extension UnusedCaptureListRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ClosureExprSyntax) {
             guard let captureItems = node.signature?.capture?.items,
                   captureItems.isNotEmpty else {

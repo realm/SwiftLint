@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct UnownedVariableCaptureRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -31,14 +32,10 @@ struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule {
             Example("foo { [bar, ↓unowned self] in _ }")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension UnownedVariableCaptureRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: TokenSyntax) {
             if case .keyword(.unowned) = node.tokenKind, node.parent?.is(ClosureCaptureSpecifierSyntax.self) == true {
                 violations.append(node.positionAfterSkippingLeadingTrivia)

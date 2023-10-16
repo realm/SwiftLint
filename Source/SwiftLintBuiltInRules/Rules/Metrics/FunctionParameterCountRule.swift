@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct FunctionParameterCountRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct FunctionParameterCountRule: Rule {
     var configuration = FunctionParameterCountConfiguration()
 
     static let description = RuleDescription(
@@ -34,21 +35,10 @@ struct FunctionParameterCountRule: SwiftSyntaxRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
 }
 
 private extension FunctionParameterCountRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: FunctionParameterCountConfiguration
-
-        init(configuration: FunctionParameterCountConfiguration) {
-            self.configuration = configuration
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard !node.modifiers.contains(keyword: .override) else {
                 return

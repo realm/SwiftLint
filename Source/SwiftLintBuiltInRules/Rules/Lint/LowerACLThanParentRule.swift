@@ -90,7 +90,7 @@ struct LowerACLThanParentRule: OptInRule, SwiftSyntaxCorrectableRule {
 }
 
 private extension LowerACLThanParentRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: DeclModifierSyntax) {
             if node.isHigherACLThanParent {
                 violations.append(node.positionAfterSkippingLeadingTrivia)

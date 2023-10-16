@@ -39,7 +39,7 @@ struct ToggleBoolRule: SwiftSyntaxCorrectableRule, OptInRule {
 }
 
 private extension ToggleBoolRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ExprListSyntax) {
             if node.hasToggleBoolViolation {
                 violations.append(node.positionAfterSkippingLeadingTrivia)

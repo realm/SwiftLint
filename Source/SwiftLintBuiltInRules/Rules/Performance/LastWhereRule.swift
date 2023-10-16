@@ -29,7 +29,7 @@ struct LastWhereRule: OptInRule {
 }
 
 private extension LastWhereRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
                 node.declName.baseName.text == "last",

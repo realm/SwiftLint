@@ -1,8 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
-                                         SubstitutionCorrectableRule {
+@SwiftSyntaxRule
+struct TestCaseAccessibilityRule: OptInRule, SubstitutionCorrectableRule {
     var configuration = TestCaseAccessibilityConfiguration()
 
     static let description = RuleDescription(
@@ -14,10 +14,6 @@ struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
         triggeringExamples: TestCaseAccessibilityRuleExamples.triggeringExamples,
         corrections: TestCaseAccessibilityRuleExamples.corrections
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(allowedPrefixes: configuration.allowedPrefixes, testParentClasses: configuration.testParentClasses)
-    }
 
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         makeVisitor(file: file)
@@ -33,101 +29,84 @@ struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
 }
 
 private extension TestCaseAccessibilityRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let allowedPrefixes: Set<String>
-        private let testParentClasses: Set<String>
-
-        init(allowedPrefixes: Set<String>, testParentClasses: Set<String>) {
-            self.allowedPrefixes = allowedPrefixes
-            self.testParentClasses = testParentClasses
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            guard !testParentClasses.isDisjoint(with: node.inheritedTypes) else {
+            guard !configuration.testParentClasses.isDisjoint(with: node.inheritedTypes) else {
                 return
             }
-
             violations.append(
-                contentsOf: XCTestClassVisitor(allowedPrefixes: allowedPrefixes)
+                contentsOf: XCTestClassVisitor(configuration: configuration, file: file)
                     .walk(tree: node.memberBlock, handler: \.violations)
             )
         }
     }
-}
 
-private final class XCTestClassVisitor: ViolationsSyntaxVisitor {
-    private let allowedPrefixes: Set<String>
+    final class XCTestClassVisitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-    init(allowedPrefixes: Set<String>) {
-        self.allowedPrefixes = allowedPrefixes
-        super.init(viewMode: .sourceAccurate)
-    }
-
-    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
-
-    override func visitPost(_ node: VariableDeclSyntax) {
-        guard !node.modifiers.containsPrivateOrFileprivate(),
-              !XCTestHelpers.isXCTestVariable(node) else {
-            return
-        }
-
-        for binding in node.bindings {
-            guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self),
-                  case let name = pattern.identifier.text,
-                  !allowedPrefixes.contains(where: name.hasPrefix) else {
-                continue
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard !node.modifiers.containsPrivateOrFileprivate(),
+                  !XCTestHelpers.isXCTestVariable(node) else {
+                return
             }
 
-            violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
-            return
+            for binding in node.bindings {
+                guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self),
+                      case let name = pattern.identifier.text,
+                      !configuration.allowedPrefixes.contains(where: name.hasPrefix) else {
+                    continue
+                }
+
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+                return
+            }
         }
-    }
 
-    override func visitPost(_ node: FunctionDeclSyntax) {
-        guard hasViolation(modifiers: node.modifiers, identifierToken: node.name),
-              !XCTestHelpers.isXCTestFunction(node) else {
-            return
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard hasViolation(modifiers: node.modifiers, identifierToken: node.name),
+                  !XCTestHelpers.isXCTestFunction(node) else {
+                return
+            }
+
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
 
-        violations.append(node.positionAfterSkippingLeadingTrivia)
-    }
-
-    override func visitPost(_ node: ClassDeclSyntax) {
-        if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
-            violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: ClassDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
+                violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
-    }
 
-    override func visitPost(_ node: EnumDeclSyntax) {
-        if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
-            violations.append(node.enumKeyword.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: EnumDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
+                violations.append(node.enumKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
-    }
 
-    override func visitPost(_ node: StructDeclSyntax) {
-        if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
-            violations.append(node.structKeyword.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: StructDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
+                violations.append(node.structKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
-    }
 
-    override func visitPost(_ node: ActorDeclSyntax) {
-        if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
-            violations.append(node.actorKeyword.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: ActorDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
+                violations.append(node.actorKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
-    }
 
-    override func visitPost(_ node: TypeAliasDeclSyntax) {
-        if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
-            violations.append(node.typealiasKeyword.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: TypeAliasDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.name) {
+                violations.append(node.typealiasKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
-    }
 
-    private func hasViolation(modifiers: DeclModifierListSyntax, identifierToken: TokenSyntax) -> Bool {
-           !modifiers.containsPrivateOrFileprivate()
-        && !allowedPrefixes.contains(where: identifierToken.text.hasPrefix)
+        private func hasViolation(modifiers: DeclModifierListSyntax, identifierToken: TokenSyntax) -> Bool {
+               !modifiers.containsPrivateOrFileprivate()
+            && !configuration.allowedPrefixes.contains(where: identifierToken.text.hasPrefix)
+        }
     }
 }
 

@@ -15,7 +15,7 @@ struct NotificationCenterDetachmentRule: Rule {
 }
 
 private extension NotificationCenterDetachmentRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.isNotificationCenterDettachmentCall,
                   let arg = node.arguments.first,

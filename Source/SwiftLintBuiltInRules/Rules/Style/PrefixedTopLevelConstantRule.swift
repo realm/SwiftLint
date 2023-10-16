@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct PrefixedTopLevelConstantRule: OptInRule {
     var configuration = PrefixedTopLevelConstantConfiguration()
 
     static let description = RuleDescription(
@@ -78,21 +79,11 @@ struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule {
             """)
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(onlyPrivateMembers: configuration.onlyPrivateMembers)
-    }
 }
 
 private extension PrefixedTopLevelConstantRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let onlyPrivateMembers: Bool
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let topLevelPrefix = "k"
-
-        init(onlyPrivateMembers: Bool) {
-            self.onlyPrivateMembers = onlyPrivateMembers
-            super.init(viewMode: .sourceAccurate)
-        }
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
@@ -101,7 +92,7 @@ private extension PrefixedTopLevelConstantRule {
                 return
             }
 
-            if onlyPrivateMembers, !node.modifiers.containsPrivateOrFileprivate() {
+            if configuration.onlyPrivateMembers, !node.modifiers.containsPrivateOrFileprivate() {
                 return
             }
 

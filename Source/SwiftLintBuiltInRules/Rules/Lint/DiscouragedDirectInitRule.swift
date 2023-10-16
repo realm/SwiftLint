@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct DiscouragedDirectInitRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct DiscouragedDirectInitRule: Rule {
     var configuration = DiscouragedDirectInitConfiguration()
 
     static let description = RuleDescription(
@@ -34,24 +35,13 @@ struct DiscouragedDirectInitRule: SwiftSyntaxRule {
             Example("let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init(), error: ↓NSError.init())")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(discouragedInits: configuration.discouragedInits)
-    }
 }
 
 private extension DiscouragedDirectInitRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let discouragedInits: Set<String>
-
-        init(discouragedInits: Set<String>) {
-            self.discouragedInits = discouragedInits
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.arguments.isEmpty, node.trailingClosure == nil,
-                discouragedInits.contains(node.calledExpression.trimmedDescription) else {
+                  configuration.discouragedInits.contains(node.calledExpression.trimmedDescription) else {
                 return
             }
 

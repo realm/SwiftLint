@@ -35,10 +35,7 @@ enum LegacyFunctionRuleHelper {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        private let locationConverter: SourceLocationConverter
-        private let disabledRegions: [SourceRange]
+    final class Rewriter: ViolationsSyntaxRewriter {
         private let legacyFunctions: [String: RewriteStrategy]
 
         init(
@@ -47,8 +44,7 @@ enum LegacyFunctionRuleHelper {
             disabledRegions: [SourceRange]
         ) {
             self.legacyFunctions = legacyFunctions
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {

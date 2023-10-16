@@ -16,7 +16,7 @@ public protocol SwiftSyntaxCorrectableRule: SwiftSyntaxRule, CorrectableRule {
 
 public extension SwiftSyntaxCorrectableRule {
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        nil as NoOpRewriter?
+        nil as ViolationsSyntaxRewriter?
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {
@@ -66,11 +66,22 @@ public extension SwiftSyntaxCorrectableRule {
 }
 
 /// A SwiftSyntax `SyntaxRewriter` that produces absolute positions where corrections were applied.
-public protocol ViolationsSyntaxRewriter: SyntaxRewriter {
-    /// Positions in a source file where corrections were applied.
-    var correctionPositions: [AbsolutePosition] { get }
-}
+open class ViolationsSyntaxRewriter: SyntaxRewriter {
+    /// A converter of positions in the traversed source file.
+    public let locationConverter: SourceLocationConverter
+    /// The regions in the traversed file that are disabled by a command.
+    public let disabledRegions: [SourceRange]
 
-private class NoOpRewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    var correctionPositions = [AbsolutePosition]()
+    /// Positions in a source file where corrections were applied.
+    public var correctionPositions = [AbsolutePosition]()
+
+    /// Initilizer for a ``ViolationsSyntaxRewriter``.
+    ///
+    /// - Parameters:
+    ///   - locationConverter: Converter for positions in the source file being rewritten.
+    ///   - disabledRegions: Regions in the to be rewritten file that are disabled by a command.
+    public init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+        self.locationConverter = locationConverter
+        self.disabledRegions = disabledRegions
+    }
 }

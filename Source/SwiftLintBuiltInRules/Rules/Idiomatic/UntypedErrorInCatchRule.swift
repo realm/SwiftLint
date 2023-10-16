@@ -126,16 +126,7 @@ private extension UntypedErrorInCatchRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
             guard
                 let item = node.catchItems.onlyElement,

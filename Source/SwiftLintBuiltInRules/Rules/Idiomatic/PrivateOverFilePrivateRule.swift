@@ -123,16 +123,12 @@ private extension PrivateOverFilePrivateRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
+    final class Rewriter: ViolationsSyntaxRewriter {
         private let validateExtensions: Bool
-        private let locationConverter: SourceLocationConverter
-        private let disabledRegions: [SourceRange]
 
         init(validateExtensions: Bool, locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
             self.validateExtensions = validateExtensions
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
         }
 
         // don't call super in any of the `visit` methods to avoid digging into the children

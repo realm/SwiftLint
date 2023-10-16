@@ -125,16 +125,7 @@ private extension RedundantOptionalInitializationRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        private let locationConverter: SourceLocationConverter
-        private let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
             guard node.bindingSpecifier.tokenKind == .keyword(.var),
                   !node.modifiers.contains(keyword: .lazy) else {

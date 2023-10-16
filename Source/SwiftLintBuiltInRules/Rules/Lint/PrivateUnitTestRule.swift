@@ -156,18 +156,14 @@ private extension PrivateUnitTestRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
+    final class Rewriter: ViolationsSyntaxRewriter {
         private let configuration: PrivateUnitTestConfiguration
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
 
         init(configuration: PrivateUnitTestConfiguration,
              locationConverter: SourceLocationConverter,
              disabledRegions: [SourceRange]) {
             self.configuration = configuration
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
         }
 
         override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {

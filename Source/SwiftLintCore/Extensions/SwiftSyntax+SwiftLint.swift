@@ -7,40 +7,13 @@ public protocol SwiftLintSyntaxVisitor: SyntaxVisitor {}
 extension SyntaxVisitor: SwiftLintSyntaxVisitor {}
 
 public extension SwiftLintSyntaxVisitor {
-    func walk<T, SyntaxType: SyntaxProtocol>(tree: SyntaxType, handler: (Self) -> T) -> T {
-#if DEBUG
-        // workaround for stack overflow when running in debug
-        // https://bugs.swift.org/browse/SR-11170
-        let lock = NSLock()
-        let work = DispatchWorkItem {
-            lock.lock()
-            self.walk(tree)
-            lock.unlock()
-        }
-        let thread = Thread {
-            work.perform()
-        }
-
-        thread.stackSize = 8 << 20 // 8 MB.
-        thread.start()
-        work.wait()
-
-        lock.lock()
-        defer {
-            lock.unlock()
-        }
-
-        return handler(self)
-#else
+    func walk<T>(tree: some SyntaxProtocol, handler: (Self) -> T) -> T {
         walk(tree)
         return handler(self)
-#endif
     }
 
     func walk<T>(file: SwiftLintFile, handler: (Self) -> [T]) -> [T] {
-        let syntaxTree = file.syntaxTree
-
-        return walk(tree: syntaxTree, handler: handler)
+        return walk(tree: file.syntaxTree, handler: handler)
     }
 }
 

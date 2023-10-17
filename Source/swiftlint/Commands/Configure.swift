@@ -234,6 +234,7 @@ extension SwiftLint {
             reportersList.contains { $0.identifier == reporterIdentifier }
         }
 
+        // swiftlint:disable:next function_parameter_count
         private func writeConfiguration(
             topLevelDirectories: [String],
             allowZeroLintableFiles: Bool,

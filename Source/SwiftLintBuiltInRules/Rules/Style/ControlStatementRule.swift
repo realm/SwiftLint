@@ -1,8 +1,8 @@
 @_spi(SyntaxTransformVisitor)
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ControlStatementRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct ControlStatementRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -71,13 +71,6 @@ struct ControlStatementRule: SwiftSyntaxCorrectableRule {
                 """)
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension ControlStatementRule {

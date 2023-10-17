@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct RedundantDiscardableLetRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct RedundantDiscardableLetRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -26,13 +26,6 @@ struct RedundantDiscardableLetRule: SwiftSyntaxCorrectableRule {
             Example("if _ = foo() { ↓let _ = bar() }"): Example("if _ = foo() { _ = bar() }")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension RedundantDiscardableLetRule {

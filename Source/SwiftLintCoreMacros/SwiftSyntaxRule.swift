@@ -17,7 +17,8 @@ struct SwiftSyntaxRule: ExtensionMacro {
                     }
                 }
                 """),
-            try createFoldingPreprocessor(type: type, foldArgument: node.foldArgument)
+            try createFoldingPreprocessor(type: type, foldArgument: node.foldArgument),
+            try createRewriter(type: type, rewriterArgument: node.explicitRewriterArgument)
         ].compactMap { $0 }
     }
 
@@ -25,14 +26,9 @@ struct SwiftSyntaxRule: ExtensionMacro {
         type: some TypeSyntaxProtocol,
         foldArgument: ExprSyntax?
     ) throws -> ExtensionDeclSyntax? {
-        guard
-            let foldArgument,
-            let booleanLiteral = foldArgument.as(BooleanLiteralExprSyntax.self)?.literal,
-            booleanLiteral.text == "true"
-        else {
+        guard foldArgument.isTrueLiteral else {
             return nil
         }
-
         return try ExtensionDeclSyntax("""
             extension \(type) {
                 func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
@@ -41,14 +37,44 @@ struct SwiftSyntaxRule: ExtensionMacro {
             }
             """)
     }
+
+    private static func createRewriter(
+        type: some TypeSyntaxProtocol,
+        rewriterArgument: ExprSyntax?
+    ) throws -> ExtensionDeclSyntax? {
+        guard rewriterArgument.isTrueLiteral else {
+            return nil
+        }
+        return try ExtensionDeclSyntax("""
+            extension \(type): SwiftSyntaxCorrectableRule {
+                func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
+                    Rewriter(locationConverter: file.locationConverter, disabledRegions: disabledRegions(file: file))
+                }
+            }
+            """)
+    }
 }
 
 private extension AttributeSyntax {
     var foldArgument: ExprSyntax? {
-        if case let .argumentList(args) = arguments, let first = args.first, first.label?.text == "foldExpressions" {
+        findArgument(withName: "foldExpressions")
+    }
+
+    var explicitRewriterArgument: ExprSyntax? {
+        findArgument(withName: "explicitRewriter")
+    }
+
+    private func findArgument(withName name: String) -> ExprSyntax? {
+        if case let .argumentList(args) = arguments, let first = args.first(where: { $0.label?.text == name }) {
             first.expression
         } else {
             nil
         }
+    }
+}
+
+private extension ExprSyntax? {
+    var isTrueLiteral: Bool {
+        self?.as(BooleanLiteralExprSyntax.self)?.literal.text == "true"
     }
 }

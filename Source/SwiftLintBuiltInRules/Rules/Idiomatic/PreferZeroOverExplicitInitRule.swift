@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct PreferZeroOverExplicitInitRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -34,13 +34,6 @@ struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)"): Example("UIEdgeInsets.zero")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension PreferZeroOverExplicitInitRule {

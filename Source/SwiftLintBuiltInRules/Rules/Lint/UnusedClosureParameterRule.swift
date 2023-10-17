@@ -1,8 +1,8 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-@SwiftSyntaxRule
-struct UnusedClosureParameterRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct UnusedClosureParameterRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -14,13 +14,6 @@ struct UnusedClosureParameterRule: SwiftSyntaxCorrectableRule {
         triggeringExamples: UnusedClosureParameterRuleExamples.triggering,
         corrections: UnusedClosureParameterRuleExamples.corrections
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension UnusedClosureParameterRule {

@@ -1,8 +1,8 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-@SwiftSyntaxRule
-struct LegacyConstantRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct LegacyConstantRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -14,13 +14,6 @@ struct LegacyConstantRule: SwiftSyntaxCorrectableRule {
         triggeringExamples: LegacyConstantRuleExamples.triggeringExamples,
         corrections: LegacyConstantRuleExamples.corrections
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension LegacyConstantRule {

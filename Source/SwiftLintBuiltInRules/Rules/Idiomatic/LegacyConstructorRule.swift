@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct LegacyConstructorRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct LegacyConstructorRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -122,13 +122,6 @@ struct LegacyConstructorRule: SwiftSyntaxCorrectableRule {
                                                        "UIEdgeInsetsMake": "UIEdgeInsets",
                                                        "NSEdgeInsetsMake": "NSEdgeInsets",
                                                        "UIOffsetMake": "UIOffset"]
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension LegacyConstructorRule {

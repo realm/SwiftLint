@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct DirectReturnRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct DirectReturnRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description = RuleDescription(
@@ -178,13 +178,6 @@ struct DirectReturnRule: SwiftSyntaxCorrectableRule, OptInRule {
             """)
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension DirectReturnRule {

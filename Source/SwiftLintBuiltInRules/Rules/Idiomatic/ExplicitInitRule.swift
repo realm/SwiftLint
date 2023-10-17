@@ -1,8 +1,8 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-@SwiftSyntaxRule
-struct ExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct ExplicitInitRule: OptInRule {
     var configuration = ExplicitInitConfiguration()
 
     static let description = RuleDescription(
@@ -169,10 +169,6 @@ struct ExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule {
                 Example("_ = Set<KsApi.Category>()")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(locationConverter: file.locationConverter, disabledRegions: disabledRegions(file: file))
-    }
 }
 
 private extension ExplicitInitRule {

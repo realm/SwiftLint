@@ -351,9 +351,9 @@ SwiftLint 可以使用 `entry` 进行配置以应用修复和报错：
 
 SwiftLint 已经包含了超过 200 条规则，并且我们希望 Swift 社区（就是你！）会在以后有更多的贡献，我们鼓励提交 [Pull Requests](CONTRIBUTING.md)。
 
-你可以在 [Rule Directory](https://realm.github.io/SwiftLint/rule-directory.html) 找到规则的更新列表和更多信息。
+你可以在 [这里](https://realm.github.io/SwiftLint/rule-directory.html) 找到规则的更新列表和更多信息。
 
-你也可以检视 [Source/SwiftLintBuiltInRules/Rules](Source/SwiftLintBuiltInRules/Rules) 目录来查看它们的实现。
+你也可以查看 [Source/SwiftLintBuiltInRules/Rules](Source/SwiftLintBuiltInRules/Rules) 目录来查看它们的实现。
 
 ### Opt-In 规则
 
@@ -431,11 +431,16 @@ disabled_rules: # 执行时排除掉的规则
   - colon
   - comma
   - control_statement
-opt_in_rules: # 一些规则仅仅是可选的
-  - empty_count
-  - missing_docs
-  # 可以通过执行如下指令来查找所有可用的规则:
-  # swiftlint rules
+opt_in_rules: # 一些规则是默认关闭的，所以你需要手动启用
+  - empty_count # 你可以通过执行如下指令来查找所有可用的规则：`swiftlint rules`
+# 或者，通过取消对该选项的注释来明确指定所有规则：
+# only_rules：# 如果使用，请删除 `disabled_rules` 或 `opt_in_rules`
+#   - empty_parameters
+#   - vertical_whitespace
+
+analyzer_rules: # `swiftlint analyze` 运行的规则
+  - explicit_self
+
 included: # 执行 linting 时包含的路径。如果出现这个 `--path` 会被忽略。
   - Sources
 excluded: # 执行 linting 时忽略的路径。 优先级比 `included` 更高。

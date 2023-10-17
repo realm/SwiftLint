@@ -2,40 +2,47 @@ load("@build_bazel_rules_apple//apple:apple.bzl", "apple_universal_binary")
 load(
     "@build_bazel_rules_swift//swift:swift.bzl",
     "swift_binary",
+    "swift_compiler_plugin",
     "swift_library",
-    "swift_compiler_plugin"
 )
 
-copts = ["-enable-upcoming-feature", "ExistentialAny"]
+copts = [
+    "-enable-upcoming-feature",
+    "ExistentialAny",
+]
 
 # Targets
 
 swift_library(
     name = "SwiftLintCoreMacrosLib",
-    module_name = "SwiftLintCoreMacros",
     srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
+    copts = copts,
+    module_name = "SwiftLintCoreMacros",
     visibility = ["//visibility:public"],
     deps = [
         "@SwiftSyntax//:SwiftCompilerPlugin_opt",
         "@SwiftSyntax//:SwiftSyntaxMacros_opt",
     ],
-    copts = copts,
 )
 
 swift_compiler_plugin(
     name = "SwiftLintCoreMacros",
     srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
+    copts = copts,
     deps = [
         "@SwiftSyntax//:SwiftCompilerPlugin_opt",
         "@SwiftSyntax//:SwiftSyntaxMacros_opt",
     ],
-    copts = copts,
 )
 
 swift_library(
     name = "SwiftLintCore",
     srcs = glob(["Source/SwiftLintCore/**/*.swift"]),
+    copts = copts,
     module_name = "SwiftLintCore",
+    plugins = [
+        ":SwiftLintCoreMacros",
+    ],
     visibility = ["//visibility:public"],
     deps = [
         "@SwiftSyntax//:SwiftIDEUtils_opt",
@@ -50,21 +57,17 @@ swift_library(
         "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
         "//conditions:default": [":DyldWarningWorkaround"],
     }),
-    plugins = [
-        ":SwiftLintCoreMacros",
-    ],
-    copts = copts,
 )
 
 swift_library(
     name = "SwiftLintBuiltInRules",
     srcs = glob(["Source/SwiftLintBuiltInRules/**/*.swift"]),
+    copts = copts,
     module_name = "SwiftLintBuiltInRules",
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintCore",
     ],
-    copts = copts,
 )
 
 swift_library(
@@ -85,6 +88,7 @@ swift_library(
     srcs = glob(
         ["Source/SwiftLintFramework/**/*.swift"],
     ),
+    copts = copts,
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [
@@ -92,12 +96,12 @@ swift_library(
         ":SwiftLintCore",
         ":SwiftLintExtraRules",
     ],
-    copts = copts,
 )
 
 swift_library(
     name = "swiftlint.library",
     srcs = glob(["Source/swiftlint/**/*.swift"]),
+    copts = copts,
     module_name = "swiftlint",
     visibility = ["//visibility:public"],
     deps = [
@@ -106,16 +110,15 @@ swift_library(
         "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ],
-    copts = copts,
 )
 
 swift_binary(
     name = "swiftlint",
+    copts = copts,
     visibility = ["//visibility:public"],
     deps = [
         ":swiftlint.library",
     ],
-    copts = copts,
 )
 
 apple_universal_binary(

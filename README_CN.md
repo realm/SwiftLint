@@ -431,8 +431,8 @@ disabled_rules: # 执行时排除掉的规则
   - colon
   - comma
   - control_statement
-opt_in_rules: # 一些规则仅仅是可选的
-  - empty_count
+opt_in_rules: # 一些规则是默认关闭的，所以你需要手动启用
+  - empty_count # 你可以通过执行如下指令来查找所有可用的规则：`swiftlint rules`
 # 或者，通过取消对该选项的注释来明确指定所有规则：
 # only_rules：# 如果使用，请删除 `disabled_rules` 或 `opt_in_rules`
 #   - empty_parameters

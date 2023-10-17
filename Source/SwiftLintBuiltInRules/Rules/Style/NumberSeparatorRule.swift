@@ -50,18 +50,14 @@ private extension NumberSeparatorRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter, NumberSeparatorValidator {
-        private(set) var correctionPositions: [AbsolutePosition] = []
+    final class Rewriter: ViolationsSyntaxRewriter, NumberSeparatorValidator {
         let configuration: NumberSeparatorConfiguration
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
 
         init(configuration: NumberSeparatorConfiguration,
              locationConverter: SourceLocationConverter,
              disabledRegions: [SourceRange]) {
             self.configuration = configuration
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
         }
 
         override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {

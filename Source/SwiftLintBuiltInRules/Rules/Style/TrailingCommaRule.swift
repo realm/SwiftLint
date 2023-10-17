@@ -97,16 +97,12 @@ private extension TrailingCommaRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
+    final class Rewriter: ViolationsSyntaxRewriter {
         private let mandatoryComma: Bool
-        private let locationConverter: SourceLocationConverter
-        private let disabledRegions: [SourceRange]
 
         init(mandatoryComma: Bool, locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
             self.mandatoryComma = mandatoryComma
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
         }
 
         override func visit(_ node: DictionaryElementListSyntax) -> DictionaryElementListSyntax {

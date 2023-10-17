@@ -115,16 +115,7 @@ private extension ControlStatementRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
             guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
                   case let items = node.catchItems, items.containSuperfluousParens == true else {

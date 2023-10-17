@@ -80,16 +80,12 @@ private extension SelfBindingRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
+    final class Rewriter: ViolationsSyntaxRewriter {
         private let bindIdentifier: String
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
 
         init(bindIdentifier: String, locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
             self.bindIdentifier = bindIdentifier
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
         }
 
         override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {

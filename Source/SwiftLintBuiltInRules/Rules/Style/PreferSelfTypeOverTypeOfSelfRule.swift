@@ -123,16 +123,7 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
             guard let function = node.base?.as(FunctionCallExprSyntax.self),
                   function.hasViolation,

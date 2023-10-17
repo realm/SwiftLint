@@ -63,16 +63,7 @@ private extension ClosureSpacingRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
             var node = node
             node.statements = visit(node.statements)

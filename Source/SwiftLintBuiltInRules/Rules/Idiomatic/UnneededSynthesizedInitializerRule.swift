@@ -53,17 +53,8 @@ private extension UnneededSynthesizedInitializerRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        var correctionPositions: [AbsolutePosition] = []
+    final class Rewriter: ViolationsSyntaxRewriter {
         private var unneededInitializers: [InitializerDeclSyntax] = []
-
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
 
         override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
             unneededInitializers = node.unneededInitializers.filter {

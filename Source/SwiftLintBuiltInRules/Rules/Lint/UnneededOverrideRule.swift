@@ -66,16 +66,7 @@ private extension UnneededOverrideRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
             if isUnneededOverride(node) &&
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) {

@@ -20,7 +20,7 @@ final class AutoApplyTests: XCTestCase {
             }
             """,
             diagnostics: [
-                DiagnosticSpec(message: RuleConfigurationMacroError.notStruct.message, line: 1, column: 1)
+                DiagnosticSpec(message: SwiftLintCoreMacroError.notStruct.message, line: 1, column: 1)
             ],
             macros: macros)
     }

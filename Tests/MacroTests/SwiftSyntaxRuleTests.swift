@@ -68,7 +68,10 @@ final class SwiftSyntaxRuleTests: XCTestCase {
 
             extension Hello: SwiftSyntaxCorrectableRule {
                 func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-                    Rewriter(locationConverter: file.locationConverter, disabledRegions: disabledRegions(file: file))
+                    Rewriter(
+                        locationConverter: file.locationConverter,
+                        disabledRegions: disabledRegions(file: file)
+                    )
                 }
             }
             """,
@@ -77,7 +80,7 @@ final class SwiftSyntaxRuleTests: XCTestCase {
     }
 
     func testArbitraryArguments() {
-        // Silently fail because the macro definition explicitly requires a bool arguments.
+        // Fail with a diagnostic because the macro definition explicitly requires bool arguments.
         assertMacroExpansion(
             """
             @SwiftSyntaxRule(foldExpressions: variable, explicitRewriter: variable)
@@ -92,6 +95,10 @@ final class SwiftSyntaxRuleTests: XCTestCase {
                 }
             }
             """,
+            diagnostics: [
+                DiagnosticSpec(message: SwiftLintCoreMacroError.noBooleanLiteral.message, line: 1, column: 35),
+                DiagnosticSpec(message: SwiftLintCoreMacroError.noBooleanLiteral.message, line: 1, column: 63)
+            ],
             macros: macros
         )
     }

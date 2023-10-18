@@ -1,28 +1,5 @@
-import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxMacros
-
-enum RuleConfigurationMacroError: String, DiagnosticMessage {
-    case notStruct = "Attribute can only be applied to structs"
-    case notEnum = "Attribute can only be applied to enums"
-    case noStringRawType = "Attribute can only be applied to enums with a 'String' raw type"
-
-    var message: String {
-        rawValue
-    }
-
-    var diagnosticID: MessageID {
-        MessageID(domain: "SwiftLint", id: "RuleConfigurationMacro.\(self)")
-    }
-
-    var severity: DiagnosticSeverity {
-        .error
-    }
-
-    func diagnose(at node: some SyntaxProtocol) -> Diagnostic {
-        Diagnostic(node: Syntax(node), message: self)
-    }
-}
 
 enum AutoApply: MemberMacro {
     static func expansion(
@@ -31,7 +8,7 @@ enum AutoApply: MemberMacro {
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
         guard let configuration = declaration.as(StructDeclSyntax.self) else {
-            context.diagnose(RuleConfigurationMacroError.notStruct.diagnose(at: declaration))
+            context.diagnose(SwiftLintCoreMacroError.notStruct.diagnose(at: declaration))
             return []
         }
         var annotatedVarDecls = configuration.memberBlock.members
@@ -95,11 +72,11 @@ enum MakeAcceptableByConfigurationElement: ExtensionMacro {
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
         guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-            context.diagnose(RuleConfigurationMacroError.notEnum.diagnose(at: declaration))
+            context.diagnose(SwiftLintCoreMacroError.notEnum.diagnose(at: declaration))
             return []
         }
         guard enumDecl.hasStringRawType else {
-            context.diagnose(RuleConfigurationMacroError.noStringRawType.diagnose(at: declaration))
+            context.diagnose(SwiftLintCoreMacroError.noStringRawType.diagnose(at: declaration))
             return []
         }
         let accessLevel = enumDecl.accessLevel

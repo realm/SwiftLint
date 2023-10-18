@@ -21,7 +21,7 @@ final class MakeAcceptableByConfigurationElementTests: XCTestCase {
             }
             """,
             diagnostics: [
-                DiagnosticSpec(message: RuleConfigurationMacroError.notEnum.message, line: 1, column: 1)
+                DiagnosticSpec(message: SwiftLintCoreMacroError.notEnum.message, line: 1, column: 1)
             ],
             macros: macros)
     }
@@ -39,7 +39,7 @@ final class MakeAcceptableByConfigurationElementTests: XCTestCase {
             }
             """,
             diagnostics: [
-                DiagnosticSpec(message: RuleConfigurationMacroError.noStringRawType.message, line: 1, column: 1)
+                DiagnosticSpec(message: SwiftLintCoreMacroError.noStringRawType.message, line: 1, column: 1)
             ],
             macros: macros)
     }

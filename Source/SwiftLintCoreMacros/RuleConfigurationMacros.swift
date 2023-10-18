@@ -2,9 +2,6 @@ import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-private let configurationElementName = "ConfigurationElement"
-private let acceptableByConfigurationElementName = "AcceptableByConfigurationElement"
-
 enum RuleConfigurationMacroError: String, DiagnosticMessage {
     case notStruct = "Attribute can only be applied to structs"
     case notEnum = "Attribute can only be applied to enums"
@@ -108,7 +105,7 @@ enum MakeAcceptableByConfigurationElement: ExtensionMacro {
         let accessLevel = enumDecl.accessLevel
         return [
             try ExtensionDeclSyntax("""
-                extension \(type): \(raw: acceptableByConfigurationElementName) {
+                extension \(type): AcceptableByConfigurationElement {
                     \(raw: accessLevel)func asOption() -> OptionType { .symbol(rawValue) }
                     \(raw: accessLevel)init(fromAny value: Any, context ruleID: String) throws {
                         if let value = value as? String, let newSelf = Self(rawValue: value) {
@@ -127,7 +124,7 @@ private extension VariableDeclSyntax {
     var configurationElementAnnotation: AttributeSyntax? {
         let attribute = attributes.first {
             if let attr = $0.as(AttributeSyntax.self), let attrId = attr.attributeName.as(IdentifierTypeSyntax.self) {
-                return attrId.name.text == configurationElementName
+                return attrId.name.text == "ConfigurationElement"
             }
             return false
         }

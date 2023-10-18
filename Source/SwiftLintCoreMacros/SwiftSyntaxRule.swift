@@ -1,7 +1,7 @@
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-struct SwiftSyntaxRule: ExtensionMacro {
+enum SwiftSyntaxRule: ExtensionMacro {
     static func expansion(
         of node: AttributeSyntax,
         attachedTo declaration: some DeclGroupSyntax,

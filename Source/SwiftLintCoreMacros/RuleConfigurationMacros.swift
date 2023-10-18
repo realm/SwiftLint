@@ -27,7 +27,7 @@ enum RuleConfigurationMacroError: String, DiagnosticMessage {
     }
 }
 
-struct AutoApply: MemberMacro {
+enum AutoApply: MemberMacro {
     static func expansion(
         of node: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
@@ -89,7 +89,7 @@ struct AutoApply: MemberMacro {
     }
 }
 
-struct MakeAcceptableByConfigurationElement: ExtensionMacro {
+enum MakeAcceptableByConfigurationElement: ExtensionMacro {
     static func expansion(
         of node: AttributeSyntax,
         attachedTo declaration: some DeclGroupSyntax,

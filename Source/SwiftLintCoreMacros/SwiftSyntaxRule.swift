@@ -1,4 +1,5 @@
 import SwiftSyntax
+import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
 enum SwiftSyntaxRule: ExtensionMacro {
@@ -9,49 +10,52 @@ enum SwiftSyntaxRule: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
-        return [
+        [
             try ExtensionDeclSyntax("""
                 extension \(type): SwiftSyntaxRule {
                     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
                         Visitor(configuration: configuration, file: file)
                     }
                 }
-                """),
-            try createFoldingPreprocessor(type: type, foldArgument: node.foldArgument),
-            try createRewriter(type: type, rewriterArgument: node.explicitRewriterArgument)
+                """
+            ),
+            try makeExtension(dependingOn: node.foldArgument, in: context, with: """
+                extension \(type) {
+                    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
+                        file.foldedSyntaxTree
+                    }
+                }
+                """
+            ),
+            try makeExtension(dependingOn: node.explicitRewriterArgument, in: context, with: """
+                extension \(type): SwiftSyntaxCorrectableRule {
+                    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
+                        Rewriter(
+                            locationConverter: file.locationConverter,
+                            disabledRegions: disabledRegions(file: file)
+                        )
+                    }
+                }
+                """
+            )
         ].compactMap { $0 }
     }
 
-    private static func createFoldingPreprocessor(
-        type: some TypeSyntaxProtocol,
-        foldArgument: ExprSyntax?
+    private static func makeExtension(
+        dependingOn argument: ExprSyntax?,
+        in context: some MacroExpansionContext,
+        with content: SyntaxNodeString
     ) throws -> ExtensionDeclSyntax? {
-        guard foldArgument.isTrueLiteral else {
-            return nil
-        }
-        return try ExtensionDeclSyntax("""
-            extension \(type) {
-                func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-                    file.foldedSyntaxTree
+        if let argument {
+            if argument.isBooleanLiteral {
+                if argument.isTrueLiteral {
+                    return try ExtensionDeclSyntax(content)
                 }
+            } else {
+                context.diagnose(SwiftLintCoreMacroError.noBooleanLiteral.diagnose(at: argument))
             }
-            """)
-    }
-
-    private static func createRewriter(
-        type: some TypeSyntaxProtocol,
-        rewriterArgument: ExprSyntax?
-    ) throws -> ExtensionDeclSyntax? {
-        guard rewriterArgument.isTrueLiteral else {
-            return nil
         }
-        return try ExtensionDeclSyntax("""
-            extension \(type): SwiftSyntaxCorrectableRule {
-                func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-                    Rewriter(locationConverter: file.locationConverter, disabledRegions: disabledRegions(file: file))
-                }
-            }
-            """)
+        return nil
     }
 }
 
@@ -73,8 +77,12 @@ private extension AttributeSyntax {
     }
 }
 
-private extension ExprSyntax? {
+private extension ExprSyntax {
+    var isBooleanLiteral: Bool {
+        `is`(BooleanLiteralExprSyntax.self)
+    }
+
     var isTrueLiteral: Bool {
-        self?.as(BooleanLiteralExprSyntax.self)?.literal.text == "true"
+        `as`(BooleanLiteralExprSyntax.self)?.literal.text == "true"
     }
 }

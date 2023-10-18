@@ -16,6 +16,7 @@ enum SwiftLintCoreMacroError: String, DiagnosticMessage {
     case notStruct = "Attribute can only be applied to structs"
     case notEnum = "Attribute can only be applied to enums"
     case noStringRawType = "Attribute can only be applied to enums with a 'String' raw type"
+    case noBooleanLiteral = "Macro argument must be a boolean literal"
 
     var message: String {
         rawValue

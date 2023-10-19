@@ -61,8 +61,7 @@ private extension UnneededOverrideRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
-            if isUnneededOverride(node) &&
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) {
+            if isUnneededOverride(node) {
                 correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
                 let expr: DeclSyntax = ""
                 return expr

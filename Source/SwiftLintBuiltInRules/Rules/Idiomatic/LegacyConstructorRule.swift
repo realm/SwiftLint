@@ -139,8 +139,7 @@ private extension LegacyConstructorRule {
             guard let identifierExpr = node.calledExpression.as(DeclReferenceExprSyntax.self),
                   case let identifier = identifierExpr.baseName.text,
                   let correctedName = constructorsToCorrectedNames[identifier],
-                  let args = constructorsToArguments[identifier],
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                  let args = constructorsToArguments[identifier] else {
                 return super.visit(node)
             }
 

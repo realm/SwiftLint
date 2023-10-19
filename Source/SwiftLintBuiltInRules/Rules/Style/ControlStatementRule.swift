@@ -110,8 +110,7 @@ private extension ControlStatementRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-                  case let items = node.catchItems, items.containSuperfluousParens == true else {
+            guard case let items = node.catchItems, items.containSuperfluousParens == true else {
                 return super.visit(node)
             }
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
@@ -122,8 +121,7 @@ private extension ControlStatementRule {
         }
 
         override func visit(_ node: GuardStmtSyntax) -> StmtSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-                  node.conditions.containSuperfluousParens else {
+            guard node.conditions.containSuperfluousParens else {
                 return super.visit(node)
             }
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
@@ -134,8 +132,7 @@ private extension ControlStatementRule {
         }
 
         override func visit(_ node: IfExprSyntax) -> ExprSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-                  node.conditions.containSuperfluousParens else {
+            guard node.conditions.containSuperfluousParens else {
                 return super.visit(node)
             }
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
@@ -146,8 +143,7 @@ private extension ControlStatementRule {
         }
 
         override func visit(_ node: SwitchExprSyntax) -> ExprSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-                  let tupleElement = node.subject.unwrapped else {
+            guard let tupleElement = node.subject.unwrapped else {
                 return super.visit(node)
             }
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
@@ -158,8 +154,7 @@ private extension ControlStatementRule {
         }
 
         override func visit(_ node: WhileStmtSyntax) -> StmtSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-                  node.conditions.containSuperfluousParens else {
+            guard node.conditions.containSuperfluousParens else {
                 return super.visit(node)
             }
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)

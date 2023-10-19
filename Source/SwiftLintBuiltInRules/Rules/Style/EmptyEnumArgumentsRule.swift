@@ -130,25 +130,17 @@ private extension EmptyEnumArgumentsRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: SwitchCaseItemSyntax) -> SwitchCaseItemSyntax {
-            guard
-                let (violationPosition, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard let (violationPosition, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true) else {
                 return super.visit(node)
             }
-
             correctionPositions.append(violationPosition)
             return super.visit(node.with(\.pattern, newPattern))
         }
 
         override func visit(_ node: MatchingPatternConditionSyntax) -> MatchingPatternConditionSyntax {
-            guard
-                let (violationPosition, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard let (violationPosition, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true) else {
                 return super.visit(node)
             }
-
             correctionPositions.append(violationPosition)
             return super.visit(node.with(\.pattern, newPattern))
         }

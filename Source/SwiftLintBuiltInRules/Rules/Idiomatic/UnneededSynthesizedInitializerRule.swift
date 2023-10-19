@@ -49,6 +49,8 @@ private extension UnneededSynthesizedInitializerRule {
     final class Rewriter: ViolationsSyntaxRewriter {
         private var unneededInitializers: [InitializerDeclSyntax] = []
 
+        override func visitAny(_ node: Syntax) -> Syntax? { nil }
+
         override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
             unneededInitializers = node.unneededInitializers.filter {
                 !$0.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)

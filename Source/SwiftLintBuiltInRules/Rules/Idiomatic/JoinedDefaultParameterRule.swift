@@ -49,11 +49,9 @@ private extension JoinedDefaultParameterRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard let violationPosition = node.violationPosition,
-                    !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+            guard let violationPosition = node.violationPosition else {
                 return super.visit(node)
             }
-
             correctionPositions.append(violationPosition)
             let newNode = node.with(\.arguments, [])
             return super.visit(newNode)

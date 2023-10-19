@@ -93,10 +93,7 @@ private extension LowerACLThanParentRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: DeclModifierSyntax) -> DeclModifierSyntax {
-            guard
-                node.isHigherACLThanParent,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.isHigherACLThanParent else {
                 return super.visit(node)
             }
 

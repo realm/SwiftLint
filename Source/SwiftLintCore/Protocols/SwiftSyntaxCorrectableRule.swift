@@ -84,4 +84,8 @@ open class ViolationsSyntaxRewriter: SyntaxRewriter {
         self.locationConverter = locationConverter
         self.disabledRegions = disabledRegions
     }
+
+    override open func visitAny(_ node: Syntax) -> Syntax? {
+        node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) ? node : nil
+    }
 }

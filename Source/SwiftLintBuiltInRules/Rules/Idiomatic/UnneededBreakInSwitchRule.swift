@@ -103,8 +103,7 @@ private extension UnneededBreakInSwitchRule {
         override func visit(_ node: SwitchCaseSyntax) -> SwitchCaseSyntax {
             let stmts = CodeBlockItemListSyntax(node.statements.dropLast())
 
-            guard let breakStatement = node.unneededBreak, let secondLast = stmts.last,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+            guard let breakStatement = node.unneededBreak, let secondLast = stmts.last else {
                 return super.visit(node)
             }
 

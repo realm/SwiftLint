@@ -134,8 +134,7 @@ private extension PrivateOverFilePrivateRule {
         // don't call super in any of the `visit` methods to avoid digging into the children
         override func visit(_ node: ExtensionDeclSyntax) -> DeclSyntax {
             guard validateExtensions, let modifier = node.modifiers.fileprivateModifier,
-                  let modifierIndex = node.modifiers.fileprivateModifierIndex,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                  let modifierIndex = node.modifiers.fileprivateModifierIndex else {
                 return DeclSyntax(node)
             }
 
@@ -146,8 +145,7 @@ private extension PrivateOverFilePrivateRule {
 
         override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
             guard let modifier = node.modifiers.fileprivateModifier,
-                  let modifierIndex = node.modifiers.fileprivateModifierIndex,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                  let modifierIndex = node.modifiers.fileprivateModifierIndex else {
                 return DeclSyntax(node)
             }
 
@@ -158,8 +156,7 @@ private extension PrivateOverFilePrivateRule {
 
         override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
             guard let modifier = node.modifiers.fileprivateModifier,
-                  let modifierIndex = node.modifiers.fileprivateModifierIndex,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                  let modifierIndex = node.modifiers.fileprivateModifierIndex else {
                 return DeclSyntax(node)
             }
 
@@ -170,8 +167,7 @@ private extension PrivateOverFilePrivateRule {
 
         override func visit(_ node: EnumDeclSyntax) -> DeclSyntax {
             guard let modifier = node.modifiers.fileprivateModifier,
-                  let modifierIndex = node.modifiers.fileprivateModifierIndex,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                  let modifierIndex = node.modifiers.fileprivateModifierIndex else {
                 return DeclSyntax(node)
             }
 
@@ -182,8 +178,7 @@ private extension PrivateOverFilePrivateRule {
 
         override func visit(_ node: ProtocolDeclSyntax) -> DeclSyntax {
             guard let modifier = node.modifiers.fileprivateModifier,
-                  let modifierIndex = node.modifiers.fileprivateModifierIndex,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                  let modifierIndex = node.modifiers.fileprivateModifierIndex else {
                 return DeclSyntax(node)
             }
 
@@ -194,8 +189,7 @@ private extension PrivateOverFilePrivateRule {
 
         override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
             guard let modifier = node.modifiers.fileprivateModifier,
-                  let modifierIndex = node.modifiers.fileprivateModifierIndex,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                  let modifierIndex = node.modifiers.fileprivateModifierIndex else {
                 return DeclSyntax(node)
             }
 
@@ -206,8 +200,7 @@ private extension PrivateOverFilePrivateRule {
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
             guard let modifier = node.modifiers.fileprivateModifier,
-                  let modifierIndex = node.modifiers.fileprivateModifierIndex,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                  let modifierIndex = node.modifiers.fileprivateModifierIndex else {
                 return DeclSyntax(node)
             }
 
@@ -218,8 +211,7 @@ private extension PrivateOverFilePrivateRule {
 
         override func visit(_ node: TypeAliasDeclSyntax) -> DeclSyntax {
             guard let modifier = node.modifiers.fileprivateModifier,
-                  let modifierIndex = node.modifiers.fileprivateModifierIndex,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                  let modifierIndex = node.modifiers.fileprivateModifierIndex else {
                 return DeclSyntax(node)
             }
 

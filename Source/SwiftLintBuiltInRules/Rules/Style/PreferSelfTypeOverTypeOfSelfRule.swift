@@ -118,9 +118,7 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
-            guard let function = node.base?.as(FunctionCallExprSyntax.self),
-                  function.hasViolation,
-                  !function.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+            guard let function = node.base?.as(FunctionCallExprSyntax.self), function.hasViolation else {
                 return super.visit(node)
             }
 

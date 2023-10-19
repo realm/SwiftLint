@@ -96,8 +96,7 @@ private extension UnusedControlFlowLabelRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: LabeledStmtSyntax) -> StmtSyntax {
-            guard let violationPosition = node.violationPosition,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+            guard let violationPosition = node.violationPosition else {
                 return super.visit(node)
             }
 

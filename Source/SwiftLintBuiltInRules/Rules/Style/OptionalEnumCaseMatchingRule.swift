@@ -178,8 +178,7 @@ private extension OptionalEnumCaseMatchingRule {
         override func visit(_ node: SwitchCaseItemSyntax) -> SwitchCaseItemSyntax {
             guard
                 let pattern = node.pattern.as(ExpressionPatternSyntax.self),
-                pattern.expression.is(OptionalChainingExprSyntax.self) || pattern.expression.is(TupleExprSyntax.self),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+                pattern.expression.is(OptionalChainingExprSyntax.self) || pattern.expression.is(TupleExprSyntax.self)
             else {
                 return super.visit(node)
             }

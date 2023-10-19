@@ -92,10 +92,7 @@ private extension ShorthandOptionalBindingRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
-            guard
-                node.isShadowingOptionalBinding,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.isShadowingOptionalBinding else {
                 return super.visit(node)
             }
 

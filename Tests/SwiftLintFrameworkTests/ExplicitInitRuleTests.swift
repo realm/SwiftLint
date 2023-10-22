@@ -13,7 +13,19 @@ class ExplicitInitRuleTests: SwiftLintTestCase {
             Example("foo(↓.init())")
         ]
 
-        let correction = ExplicitInitRule.description.corrections
+        var correction = [
+            Example("""
+            f { e in
+                A↓.init(e: e)
+            }
+            """):
+                Example("""
+                f { e in
+                    A(e: e)
+                }
+                """)
+        ]
+        correction.merge(ExplicitInitRule.description.corrections) { current, _ in current }
 
         let description = ExplicitInitRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)

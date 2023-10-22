@@ -13,10 +13,12 @@ class ExplicitInitRuleTests: SwiftLintTestCase {
             Example("foo(↓.init())")
         ]
 
+        let correction = ExplicitInitRule.description.corrections
+
         let description = ExplicitInitRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
-            .with(corrections: [:])
+            .with(corrections: correction)
 
         verifyRule(description, ruleConfiguration: ["include_bare_init": true])
     }

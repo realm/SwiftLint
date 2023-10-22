@@ -201,7 +201,7 @@ private extension ExplicitInitRule {
             }
 
             correctionPositions.append(violationPosition)
-            let newNode = node.with(\.calledExpression, calledBase.trimmed)
+            let newNode = node.with(\.calledExpression, calledBase.with(\.trailingTrivia, []))
             return super.visit(newNode)
         }
     }

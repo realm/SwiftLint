@@ -22,6 +22,10 @@
 
 #### Bug Fixes
 
+* Fix ExplicitInitRule correction.  
+  [BB9z](https://github.com/BB9z)
+  [#5289](https://github.com/realm/SwiftLint/issues/5289)
+
 * Fix invalid corrections for opaque and existential optionals in 
   `syntactic_sugar` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

@@ -165,11 +165,13 @@ struct ExplicitInitRule: OptInRule {
                 """),
             Example("""
             f { e in
+                // comment
                 A↓.init(e: e)
             }
             """):
                 Example("""
                 f { e in
+                    // comment
                     A(e: e)
                 }
                 """),

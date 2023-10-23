@@ -31,7 +31,7 @@ private extension NonOptionalStringDataConversionRule {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
-        
+
         override func visitPost(_ node: DeclReferenceExprSyntax) {
             if node.baseName.text == "String",
                let parent = node.parent?.as(FunctionCallExprSyntax.self),

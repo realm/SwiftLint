@@ -81,6 +81,7 @@
 * None.
 
 #### Enhancements
+
 * Add new `non_optional_string_data_conversion` rule to enforce 
   non-failable conversions of .utf8 `String` <-> `Data`.    
   [Ben P](https://github.com/ben-p-commits)

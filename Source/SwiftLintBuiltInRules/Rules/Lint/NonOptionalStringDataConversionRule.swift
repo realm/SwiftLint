@@ -21,20 +21,23 @@ struct NonOptionalStringDataConversionRule: ConfigurationProviderRule {
 
 private extension NonOptionalStringDataConversionRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: FunctionCallExprSyntax) {
-            print(node)
-            if let expression = node.calledExpression.as(MemberAccessExprSyntax.self),
-                  expression.base?.is(StringLiteralExprSyntax.self) == true,
-                  expression.declName.baseName.text == "data",
-                  let argument = node.arguments.onlyElement,
-                  argument.label?.text == "using",
-                  argument.expression.as(MemberAccessExprSyntax.self)?.isUTF8 == true {
+        
+        override func visitPost(_ node: MemberAccessExprSyntax) {
+            if node.base?.is(StringLiteralExprSyntax.self) == true,
+               node.declName.baseName.text == "data",
+               let parent = node.parent?.as(FunctionCallExprSyntax.self),
+               let argument = parent.arguments.onlyElement,
+               argument.label?.text == "using",
+               argument.expression.as(MemberAccessExprSyntax.self)?.isUTF8 == true {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
-            if let expression = node.calledExpression.as(DeclReferenceExprSyntax.self),
-                  expression.baseName.text == "String",
-                  node.arguments.map({ $0.label?.text }) == ["data", "encoding"],
-                  node.arguments.last?.expression.as(MemberAccessExprSyntax.self)?.isUTF8 == true {
+        }
+        
+        override func visitPost(_ node: DeclReferenceExprSyntax) {
+            if node.baseName.text == "String",
+               let parent = node.parent?.as(FunctionCallExprSyntax.self),
+               parent.arguments.map({ $0.label?.text }) == ["data", "encoding"],
+               parent.arguments.last?.expression.as(MemberAccessExprSyntax.self)?.isUTF8 == true {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }

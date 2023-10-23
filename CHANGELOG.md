@@ -22,7 +22,7 @@
 
 #### Bug Fixes
 
-* Fix correction of `explicit_init` rule by keeping significant trivia.
+* Fix correction of `explicit_init` rule by keeping significant trivia.  
   [BB9z](https://github.com/BB9z)
   [#5289](https://github.com/realm/SwiftLint/issues/5289)
 

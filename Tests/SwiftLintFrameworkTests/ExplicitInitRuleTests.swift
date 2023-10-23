@@ -16,7 +16,6 @@ class ExplicitInitRuleTests: SwiftLintTestCase {
         let description = ExplicitInitRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
-            .with(corrections: [:])
 
         verifyRule(description, ruleConfiguration: ["include_bare_init": true])
     }

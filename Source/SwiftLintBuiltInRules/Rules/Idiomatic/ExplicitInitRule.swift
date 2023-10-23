@@ -163,6 +163,18 @@ struct ExplicitInitRule: OptInRule {
 
 
                 """),
+            Example("""
+            f { e in
+                // comment
+                A↓.init(e: e)
+            }
+            """):
+                Example("""
+                f { e in
+                    // comment
+                    A(e: e)
+                }
+                """),
             Example("_ = GleanMetrics.Tabs.GroupedTabExtra↓.init()"):
                 Example("_ = GleanMetrics.Tabs.GroupedTabExtra()"),
             Example("_ = Set<KsApi.Category>↓.init()"):
@@ -197,7 +209,7 @@ private extension ExplicitInitRule {
                 return super.visit(node)
             }
             correctionPositions.append(violationPosition)
-            let newNode = node.with(\.calledExpression, calledBase.trimmed)
+            let newNode = node.with(\.calledExpression, calledBase)
             return super.visit(newNode)
         }
     }

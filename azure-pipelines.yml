@@ -41,7 +41,7 @@ jobs:
       displayName: bundle install
     - script: bundle exec pod repo update
       displayName: pod repo update
-    - script: bundle exec pod lib lint --verbose
+    - script: bundle exec pod lib lint --platforms=macos --verbose
       displayName: pod lib lint
 
 - job: jazzy

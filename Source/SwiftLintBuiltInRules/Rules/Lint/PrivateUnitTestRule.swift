@@ -167,11 +167,7 @@ private extension PrivateUnitTestRule {
         }
 
         override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
-            guard
-                node.isPrivate,
-                node.hasParent(configuredIn: configuration),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.isPrivate, node.hasParent(configuredIn: configuration) else {
                 return super.visit(node)
             }
 
@@ -181,11 +177,7 @@ private extension PrivateUnitTestRule {
         }
 
         override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
-            guard
-                node.isTestMethod,
-                node.isPrivate,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.isTestMethod, node.isPrivate else {
                 return super.visit(node)
             }
 

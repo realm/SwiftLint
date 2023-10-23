@@ -33,13 +33,9 @@ private extension LegacyConstantRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: DeclReferenceExprSyntax) -> ExprSyntax {
-            guard
-                let correction = LegacyConstantRuleExamples.patterns[node.baseName.text],
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard let correction = LegacyConstantRuleExamples.patterns[node.baseName.text] else {
                 return super.visit(node)
             }
-
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
             return ("\(raw: correction)" as ExprSyntax)
                 .with(\.leadingTrivia, node.leadingTrivia)
@@ -47,14 +43,10 @@ private extension LegacyConstantRule {
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard
-                node.isLegacyPiExpression,
-                let calledExpression = node.calledExpression.as(DeclReferenceExprSyntax.self),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.isLegacyPiExpression,
+                  let calledExpression = node.calledExpression.as(DeclReferenceExprSyntax.self) else {
                 return super.visit(node)
             }
-
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
             return ("\(raw: calledExpression.baseName.text).pi" as ExprSyntax)
                 .with(\.leadingTrivia, node.leadingTrivia)

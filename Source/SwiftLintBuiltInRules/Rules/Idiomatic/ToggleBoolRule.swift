@@ -42,9 +42,7 @@ private extension ToggleBoolRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: ExprListSyntax) -> ExprListSyntax {
-            guard node.hasToggleBoolViolation,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-                  let firstExpr = node.first, let index = node.index(of: firstExpr) else {
+            guard node.hasToggleBoolViolation, let firstExpr = node.first, let index = node.index(of: firstExpr) else {
                 return super.visit(node)
             }
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)

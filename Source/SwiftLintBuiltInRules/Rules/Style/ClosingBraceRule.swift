@@ -34,13 +34,9 @@ private extension ClosingBraceRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: TokenSyntax) -> TokenSyntax {
-            guard
-                node.hasClosingBraceViolation,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.hasClosingBraceViolation else {
                 return super.visit(node)
             }
-
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
             return super.visit(node.with(\.trailingTrivia, Trivia()))
         }

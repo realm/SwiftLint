@@ -35,12 +35,9 @@ private extension UnusedClosureParameterRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
-            guard
-                node.namedParameters.isNotEmpty,
-                let signature = node.signature,
-                let input = signature.parameterClause,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.namedParameters.isNotEmpty,
+                  let signature = node.signature,
+                  let input = signature.parameterClause else {
                 return super.visit(node)
             }
 

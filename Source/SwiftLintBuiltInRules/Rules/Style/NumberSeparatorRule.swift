@@ -61,10 +61,7 @@ private extension NumberSeparatorRule {
         }
 
         override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {
-            guard
-                let violation = violation(token: node.literal),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard let violation = violation(token: node.literal) else {
                 return super.visit(node)
             }
 
@@ -80,13 +77,9 @@ private extension NumberSeparatorRule {
         }
 
         override func visit(_ node: IntegerLiteralExprSyntax) -> ExprSyntax {
-            guard
-                let violation = violation(token: node.literal),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard let violation = violation(token: node.literal) else {
                 return super.visit(node)
             }
-
             let newNode = node.with(\.literal, node.literal.with(\.tokenKind, .integerLiteral(violation.correction)))
             correctionPositions.append(violation.position)
             return super.visit(newNode)

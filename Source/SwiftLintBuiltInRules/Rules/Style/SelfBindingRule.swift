@@ -89,11 +89,8 @@ private extension SelfBindingRule {
         }
 
         override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
-            guard
-                let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
-                identifierPattern.identifier.text != bindIdentifier,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
+                  identifierPattern.identifier.text != bindIdentifier else {
                 return super.visit(node)
             }
 

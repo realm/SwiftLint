@@ -121,11 +121,7 @@ private extension UntypedErrorInCatchRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
-            guard
-                let item = node.catchItems.onlyElement,
-                item.isIdentifierPattern,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard let item = node.catchItems.onlyElement, item.isIdentifierPattern else {
                 return super.visit(node)
             }
 

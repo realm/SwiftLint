@@ -61,10 +61,7 @@ private extension ClosureSpacingRule {
             var node = node
             node.statements = visit(node.statements)
 
-            guard
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-                node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter)
-            else {
+            guard node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter) else {
                 return super.visit(node)
             }
 

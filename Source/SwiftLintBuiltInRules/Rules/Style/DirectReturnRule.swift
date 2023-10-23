@@ -194,7 +194,6 @@ private extension DirectReturnRule {
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ statements: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
             guard let (binding, returnStmt) = statements.violation,
-                  !binding.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
                   let bindingList = binding.parent?.as(PatternBindingListSyntax.self),
                   let varDecl = bindingList.parent?.as(VariableDeclSyntax.self),
                   var initExpression = binding.initializer?.value else {

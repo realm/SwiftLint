@@ -48,11 +48,8 @@ enum LegacyFunctionRuleHelper {
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard
-                node.isLegacyFunctionExpression(legacyFunctions: legacyFunctions),
-                let funcName = node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.isLegacyFunctionExpression(legacyFunctions: legacyFunctions),
+                  let funcName = node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text else {
                 return super.visit(node)
             }
 

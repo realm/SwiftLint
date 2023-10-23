@@ -41,10 +41,7 @@ private extension ProtocolPropertyAccessorsOrderRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: AccessorBlockSyntax) -> AccessorBlockSyntax {
-            guard
-                node.hasViolation,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.hasViolation else {
                 return super.visit(node)
             }
 

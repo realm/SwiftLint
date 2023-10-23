@@ -39,10 +39,7 @@ private extension RedundantDiscardableLetRule {
 
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard
-                node.hasRedundantDiscardableLetViolation,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.hasRedundantDiscardableLetViolation else {
                 return super.visit(node)
             }
 

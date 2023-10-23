@@ -61,13 +61,9 @@ private extension AnyObjectProtocolRule {
     final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: InheritedTypeSyntax) -> InheritedTypeSyntax {
             let typeName = node.type
-            guard
-                typeName.is(ClassRestrictionTypeSyntax.self),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard typeName.is(ClassRestrictionTypeSyntax.self) else {
                 return super.visit(node)
             }
-
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
             return super.visit(
                 node.with(

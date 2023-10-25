@@ -390,12 +390,16 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 ///            error: 2
 ///    ```
 @propertyWrapper
-public class ConfigurationElement<T: AcceptableByConfigurationElement & Equatable> {
+public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable> {
     /// Wrapped option value.
     public var wrappedValue: T
 
-    /// The option's name. This field can only be accessed by the element's name prefixed with a `$`.
-    public var projectedValue: ConfigurationElement { self }
+    /// The wrapper itself providing access to all its data. This field can only be accessed by the
+    /// element's name prefixed with a `$`.
+    public var projectedValue: ConfigurationElement {
+        get { self } // swiftlint:disable:this implicit_getter
+        _modify { yield &self }
+    }
 
     /// Name of this configuration entry.
     public let key: String
@@ -422,7 +426,7 @@ public class ConfigurationElement<T: AcceptableByConfigurationElement & Equatabl
     /// It allows to skip explicit initialization with `nil` of the property.
     ///
     /// - Parameter value: Value to be wrapped.
-    public convenience init<Wrapped>(key: String) where T == Wrapped? {
+    public init<Wrapped>(key: String) where T == Wrapped? {
         self.init(wrappedValue: nil, key: key)
     }
 
@@ -433,12 +437,12 @@ public class ConfigurationElement<T: AcceptableByConfigurationElement & Equatabl
     ///
     /// - Parameters:
     ///   - value: Value to be wrapped.
-    public convenience init(wrappedValue value: T) where T: InlinableOptionType {
+    public init(wrappedValue value: T) where T: InlinableOptionType {
         self.init(wrappedValue: value, key: "")
     }
 
     /// Run operations to validate and modify the parsed value.
-    public func performAfterParseOperations() throws {
+    public mutating func performAfterParseOperations() throws {
         try postprocessor(&wrappedValue)
     }
 }

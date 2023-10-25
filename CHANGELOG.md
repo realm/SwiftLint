@@ -49,6 +49,10 @@
 
 #### Bug Fixes
 
+* Fix false positive in `implicit_getter` rule when using unknown accessors.
+  [kabiroberai](https://github.com/kabiroberai)
+  [#5300](https://github.com/realm/SwiftLint/issues/5300)
+
 * Fix correction of `explicit_init` rule by keeping significant trivia.  
   [BB9z](https://github.com/BB9z)
   [#5289](https://github.com/realm/SwiftLint/issues/5289)

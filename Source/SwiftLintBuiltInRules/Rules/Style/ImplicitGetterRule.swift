@@ -30,8 +30,8 @@ private enum ViolationKind {
 private extension ImplicitGetterRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: AccessorBlockSyntax) {
-            guard let getAccessor = node.getAccessor,
-                  node.accessorsList.count == 1,
+            guard node.accessorsList.count == 1,
+                  let getAccessor = node.getAccessor,
                   getAccessor.effectSpecifiers == nil,
                   getAccessor.modifier == nil,
                   getAccessor.attributes.isEmpty == true,

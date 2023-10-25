@@ -49,7 +49,7 @@
 
 #### Bug Fixes
 
-* Fix false positive in `implicit_getter` rule when using unknown accessors.
+* Fix false positive in `implicit_getter` rule when using unknown accessors.  
   [kabiroberai](https://github.com/kabiroberai)
   [#5300](https://github.com/realm/SwiftLint/issues/5300)
 

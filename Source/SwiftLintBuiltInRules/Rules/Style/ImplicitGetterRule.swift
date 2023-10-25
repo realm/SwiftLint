@@ -31,7 +31,7 @@ private extension ImplicitGetterRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: AccessorBlockSyntax) {
             guard let getAccessor = node.getAccessor,
-                  node.setAccessor == nil,
+                  node.accessorsList.count == 1,
                   getAccessor.effectSpecifiers == nil,
                   getAccessor.modifier == nil,
                   getAccessor.attributes.isEmpty == true,

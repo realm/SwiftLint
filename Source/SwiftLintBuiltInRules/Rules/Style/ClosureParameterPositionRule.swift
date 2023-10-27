@@ -106,11 +106,25 @@ private extension ClosureParameterPositionRule {
             let leftBracePosition = node.leftBrace.positionAfterSkippingLeadingTrivia
             let startLine = locationConverter.location(for: leftBracePosition).line
 
-            let localViolations = signature.positionsToCheck.filter { position in
-                return locationConverter.location(for: position).line != startLine
+            let positionsToCheck = signature.positionsToCheck
+            guard let lastPosition = positionsToCheck.last else {
+                return
             }
 
-            violations.append(contentsOf: localViolations)
+            // fast path: we can check the last position only, and if that
+            // doesn't have a violation, we don't need to check any other positions,
+            // since calling `locationConverter.location(for:)` is expensive
+            let lastPositionLine = locationConverter.location(for: lastPosition).line
+            if lastPositionLine == startLine {
+                return
+            } else {
+                let localViolations = positionsToCheck.dropLast().filter { position in
+                    return locationConverter.location(for: position).line != startLine
+                }
+
+                violations.append(contentsOf: localViolations)
+                violations.append(lastPosition)
+            }
         }
     }
 }

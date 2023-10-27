@@ -20,6 +20,9 @@
 * Make `unneeded_break_in_switch` auto correctable.  
   [KS1019](https://github.com/KS1019/)
 
+* Speed up `closure_parameter_position` rule when there are no violations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * Fix correction of `explicit_init` rule by keeping significant trivia.  

@@ -37,6 +37,13 @@ struct VerticalWhitespaceRule: CorrectableRule, SourceKitFreeRule {
 
 
             """
+            """#),
+            Example(#"""
+            example(value: """
+            Something
+
+
+            """)
             """#)
         ],
         triggeringExamples: [
@@ -97,25 +104,16 @@ struct VerticalWhitespaceRule: CorrectableRule, SourceKitFreeRule {
 
         // filtering out violations in comments and strings
         let result = blankLinesSections.compactMap { eachSection -> (lastLine: Line, linesToRemove: Int)? in
-            guard let firstLine = eachSection.first, let lastLine = eachSection.last else {
+            guard let lastLine = eachSection.last else {
                 return nil
             }
 
-            let length = lastLine.byteRange.upperBound - firstLine.byteRange.lowerBound
-            let range = ByteSourceRange(offset: firstLine.byteRange.location.value,
-                                        length: length.value)
-            let classificationsInRange = file.syntaxTree.classifications(in: range)
-                .filter { element in
-                    // "The provided classified ranges may extend beyond the provided `range`"
-                    // means that we need to exclude elements that are only "touching" one
-                    // of the limits of the range
-                    return element.range.intersects(range)
-                }
-            if classificationsInRange.contains(where: \.kind.isStringOrComment) {
-                return nil
+            guard let classificationsInRange = file.syntaxTree.classification(at: lastLine.byteRange.location.value),
+                  classificationsInRange.kind.isStringOrComment else {
+                return (lastLine, eachSection.count)
             }
 
-            return (lastLine, eachSection.count)
+            return nil
         }
 
         return result.filter { $0.linesToRemove >= configuration.maxEmptyLines }

@@ -87,8 +87,10 @@ private extension CyclomaticComplexityRule {
                 let reason = "Function should have complexity \(configuration.length.warning) or less; " +
                              "currently complexity is \(complexity)"
 
+                // for legacy reasons, we try to put the violation in the static or class keyword
+                let violationToken = node.modifiers.staticOrClassModifier ?? node.funcKeyword
                 let violation = ReasonedRuleViolation(
-                    position: node.funcKeyword.positionAfterSkippingLeadingTrivia,
+                    position: violationToken.positionAfterSkippingLeadingTrivia,
                     reason: reason,
                     severity: parameter.severity
                 )
@@ -127,6 +129,10 @@ private extension CyclomaticComplexityRule {
             complexity += 1
         }
 
+        override func visitPost(_ node: CatchClauseSyntax) {
+            complexity += 1
+        }
+
         override func visitPost(_ node: SwitchCaseSyntax) {
             if !ignoresCaseStatements {
                 complexity += 1
@@ -143,5 +149,14 @@ private extension CyclomaticComplexityRule {
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
+    }
+}
+
+private extension DeclModifierListSyntax {
+    var staticOrClassModifier: TokenSyntax? {
+        first { element in
+            let kind = element.name.tokenKind
+            return kind == .keyword(.static) || kind == .keyword(.class)
+        }?.name
     }
 }

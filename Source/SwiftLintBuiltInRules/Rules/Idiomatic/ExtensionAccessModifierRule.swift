@@ -82,6 +82,22 @@ struct ExtensionAccessModifierRule: Rule, OptInRule {
               private var bar: Int { return 1 }
               var baz: Int { return 1 }
             }
+            """),
+            Example("""
+            extension Foo {
+              internal private(set) var bar: Int {
+                get { Foo.shared.bar }
+                set { Foo.shared.bar = newValue }
+              }
+            }
+            """),
+            Example("""
+            extension Foo {
+              private(set) internal var bar: Int {
+                get { Foo.shared.bar }
+                set { Foo.shared.bar = newValue }
+              }
+            }
             """)
         ],
         triggeringExamples: [
@@ -135,7 +151,13 @@ struct ExtensionAccessModifierRule: Rule, OptInRule {
 
                public var baz: Int { return 1 }
             }
-            """).focused(),
+            """),
+            Example("""
+            public extension Foo {
+              ↓private func bar() {}
+              ↓private func baz() {}
+            }
+            """),
         ]
     )
 }
@@ -144,56 +166,60 @@ private extension ExtensionAccessModifierRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
+        private enum ACL: Hashable {
+            case implicit
+            case explicit(TokenKind)
+
+            static func from(tokenKind: TokenKind?) -> ACL {
+                switch tokenKind {
+                case nil:
+                    return .implicit
+                case let value?:
+                    return .explicit(value)
+                }
+            }
+        }
+
         override func visitPost(_ node: ExtensionDeclSyntax) {
             guard node.inheritanceClause == nil else {
                 return
             }
 
-            if let modifier = node.modifiers.accessLevelModifier {
-                validateNestedDeclsShouldNotHaveACL(node: node, extensionACL: modifier)
-            } else {
-                validateExtensionShouldHaveACL(node: node)
-            }
-        }
-
-        private func validateExtensionShouldHaveACL(node: ExtensionDeclSyntax) {
-            var previousACL: TokenKind?
             var areAllACLsEqual = true
+            var aclTokens: [(position: AbsolutePosition, acl: ACL)] = []
 
             for decl in node.memberBlock.expandingIfConfigs() {
                 let modifiers = decl.asProtocol((any WithModifiersSyntax).self)?.modifiers
-                let acl = modifiers?.accessLevelModifier?.name.tokenKind ?? .keyword(.internal)
-                if acl != previousACL, previousACL != nil {
+                let aclToken = modifiers?.accessLevelModifier?.name
+                let acl = ACL.from(tokenKind: aclToken?.tokenKind)
+                if acl != aclTokens.last?.acl, aclTokens.isNotEmpty {
                     areAllACLsEqual = false
-                    break
                 }
 
-                previousACL = acl
+                aclTokens.append((decl.positionAfterSkippingLeadingTrivia, acl))
             }
 
-            let allowedACLs: Set<TokenKind> = [.keyword(.internal), .keyword(.private), .keyword(.open)]
-            if areAllACLsEqual, let previousACL, !allowedACLs.contains(previousACL) {
-                violations.append(node.extensionKeyword.positionAfterSkippingLeadingTrivia)
-            }
-        }
-
-        private func validateNestedDeclsShouldNotHaveACL(node: ExtensionDeclSyntax,
-                                                         extensionACL: DeclModifierSyntax) {
-            guard extensionACL.name.tokenKind != .keyword(.private) else {
+            guard areAllACLsEqual, let lastACL = aclTokens.last else {
                 return
             }
 
-            let positions = node.memberBlock.expandingIfConfigs().compactMap { decl -> AbsolutePosition? in
-                let modifiers = decl.asProtocol((any WithModifiersSyntax).self)?.modifiers
-                let aclToken = modifiers?.accessLevelModifier?.name
-                let acl = aclToken?.tokenKind ?? .keyword(.internal)
-                guard acl == extensionACL.name.tokenKind, let aclToken else {
-                    return nil
-                }
+            let allowedACLs: Set<ACL> = [
+                .explicit(.keyword(.internal)),
+                .explicit(.keyword(.private)),
+                .explicit(.keyword(.open)),
+                .implicit
+            ]
+            let iAllowedACL = allowedACLs.contains(lastACL.acl)
+            let extensionACL = ACL.from(tokenKind: node.modifiers.accessLevelModifier?.name.tokenKind)
 
-                return aclToken.positionAfterSkippingLeadingTrivia
+            if extensionACL != .implicit {
+                if !iAllowedACL || lastACL.acl != extensionACL {
+                    let positions = aclTokens.filter { $0.acl != .implicit }.map(\.position)
+                    violations.append(contentsOf: positions)
+                }
+            } else if !iAllowedACL {
+                violations.append(node.extensionKeyword.positionAfterSkippingLeadingTrivia)
             }
-            violations.append(contentsOf: positions)
         }
     }
 }

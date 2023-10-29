@@ -34,9 +34,27 @@ struct ExtensionAccessModifierRule: ASTRule, OptInRule {
             }
             """),
             Example("""
+            extension Foo {
+              var bar: Int { return 1 }
+              internal var baz: Int { return 1 }
+            }
+            """),
+            Example("""
+            internal extension Foo {
+              var bar: Int { return 1 }
+              var baz: Int { return 1 }
+            }
+            """),
+            Example("""
             public extension Foo {
               var bar: Int { return 1 }
               var baz: Int { return 1 }
+            }
+            """),
+            Example("""
+            public extension Foo {
+              var bar: Int { return 1 }
+              internal var baz: Int { return 1 }
             }
             """),
             Example("""

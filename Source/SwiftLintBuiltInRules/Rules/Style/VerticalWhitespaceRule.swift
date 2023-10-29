@@ -42,7 +42,14 @@ struct VerticalWhitespaceRule: CorrectableRule, SourceKitFreeRule {
         triggeringExamples: [
             Example("let aaaa = 0\n\n\n"),
             Example("struct AAAA {}\n\n\n\n"),
-            Example("class BBBB {}\n\n\n")
+            Example("class BBBB {}\n\n\n"),
+            Example("""
+            func foo() {}
+
+
+            // MARK: - Something
+
+            """)
         ],
         corrections: [
             Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\nclass AAA {}\n"),
@@ -90,18 +97,25 @@ struct VerticalWhitespaceRule: CorrectableRule, SourceKitFreeRule {
 
         // filtering out violations in comments and strings
         let result = blankLinesSections.compactMap { eachSection -> (lastLine: Line, linesToRemove: Int)? in
-            guard let lastLine = eachSection.last else {
+            guard let firstLine = eachSection.first, let lastLine = eachSection.last else {
                 return nil
             }
 
-            let range = ByteSourceRange(offset: lastLine.byteRange.location.value,
-                                        length: lastLine.byteRange.length.value)
+            let length = lastLine.byteRange.upperBound - firstLine.byteRange.lowerBound
+            let range = ByteSourceRange(offset: firstLine.byteRange.location.value,
+                                        length: length.value)
             let classificationsInRange = file.syntaxTree.classifications(in: range)
-            if !classificationsInRange.contains(where: \.kind.isStringOrComment) {
-                return (lastLine, eachSection.count)
+                .filter { element in
+                    // "The provided classified ranges may extend beyond the provided `range`"
+                    // means that we need to exclude elements that are only "touching" one
+                    // of the limits of the range
+                    return element.range.intersects(range)
+                }
+            if classificationsInRange.contains(where: \.kind.isStringOrComment) {
+                return nil
             }
 
-            return nil
+            return (lastLine, eachSection.count)
         }
 
         return result.filter { $0.linesToRemove >= configuration.maxEmptyLines }

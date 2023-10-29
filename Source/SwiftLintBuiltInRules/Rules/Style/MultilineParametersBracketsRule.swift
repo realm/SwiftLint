@@ -91,7 +91,7 @@ struct MultilineParametersBracketsRule: OptInRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violations(in: file.structureDictionary, file: file)
+        return violations(in: file.sourceKitStructureDictionary, file: file)
     }
 
     private func violations(in substructure: SourceKittenDictionary, file: SwiftLintFile) -> [StyleViolation] {

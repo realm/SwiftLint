@@ -103,7 +103,7 @@ extension SwiftLintFile {
                                  range: NSRange? = nil) -> [(NSTextCheckingResult, [SwiftLintSyntaxToken])] {
         let contents = stringView
         let range = range ?? contents.range
-        let syntax = syntaxMap
+        let syntax = sourceKitSyntaxMap
         return regex(pattern).matches(in: contents, options: [], range: range).compactMap { match in
             let matchByteRange = contents.NSRangeToByteRange(start: match.range.location, length: match.range.length)
             return matchByteRange.map { (match, syntax.tokens(inByteRange: $0)) }
@@ -134,7 +134,7 @@ extension SwiftLintFile {
         }
         var results = [[SwiftDeclarationKind]](repeating: [], count: lines.count + 1)
         var lineIterator = lines.makeIterator()
-        var structureIterator = structureDictionary.kinds().makeIterator()
+        var structureIterator = sourceKitStructureDictionary.kinds().makeIterator()
         var maybeLine = lineIterator.next()
         var maybeStructure = structureIterator.next()
         while let line = maybeLine, let structure = maybeStructure {
@@ -156,7 +156,7 @@ extension SwiftLintFile {
             return nil
         }
         var results = [[SwiftLintSyntaxToken]](repeating: [], count: lines.count + 1)
-        var tokenGenerator = syntaxMap.tokens.makeIterator()
+        var tokenGenerator = sourceKitSyntaxMap.tokens.makeIterator()
         var lineGenerator = lines.makeIterator()
         var maybeLine = lineGenerator.next()
         var maybeToken = tokenGenerator.next()

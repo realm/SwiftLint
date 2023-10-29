@@ -13,7 +13,7 @@ struct QuickDiscouragedCallRule: OptInRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
+        let dict = file.sourceKitStructureDictionary
         let testClasses = dict.substructure.filter {
             return $0.inheritedTypes.isNotEmpty &&
                 $0.declarationKind == .class

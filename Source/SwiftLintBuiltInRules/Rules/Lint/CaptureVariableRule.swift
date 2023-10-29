@@ -176,7 +176,7 @@ private extension SwiftLintFile {
     }
 
     func captureListVariableOffsets() -> Set<ByteCount> {
-        Self.captureListVariableOffsets(parentEntity: structureDictionary)
+        Self.captureListVariableOffsets(parentEntity: sourceKitStructureDictionary)
     }
 
     static func captureListVariableOffsets(parentEntity: SourceKittenDictionary) -> Set<ByteCount> {
@@ -220,7 +220,7 @@ private extension SwiftLintFile {
     }
 
     func declaredVariableOffsets() -> Set<ByteCount> {
-        Self.declaredVariableOffsets(parentStructure: structureDictionary)
+        Self.declaredVariableOffsets(parentStructure: sourceKitStructureDictionary)
     }
 
     static func declaredVariableOffsets(parentStructure: SourceKittenDictionary) -> Set<ByteCount> {

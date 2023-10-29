@@ -24,7 +24,7 @@ struct DuplicateImportsRule: CorrectableRule {
     private func rangesInConditionalCompilation(file: SwiftLintFile) -> [ByteRange] {
         let contents = file.stringView
 
-        let ranges = file.syntaxMap.tokens
+        let ranges = file.sourceKitSyntaxMap.tokens
             .filter { $0.kind == .buildconfigKeyword }
             .map { $0.range }
             .filter { range in

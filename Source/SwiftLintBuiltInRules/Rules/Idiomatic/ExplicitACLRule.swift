@@ -114,14 +114,14 @@ struct ExplicitACLRule: OptInRule {
             // attributeBuiltin (`final` for example) tokens between them
             let length = typeOffset - previousInternalByteRange.location
             let range = ByteRange(location: previousInternalByteRange.location, length: length)
-            let internalDoesntBelongToType = Set(file.syntaxMap.kinds(inByteRange: range)) != [.attributeBuiltin]
+            let internalDoesntBelongToType = Set(file.sourceKitSyntaxMap.kinds(inByteRange: range)) != [.attributeBuiltin]
 
             return internalDoesntBelongToType ? typeOffset : nil
         }
     }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let implicitAndExplicitInternalElements = internalTypeElements(in: file.structureDictionary)
+        let implicitAndExplicitInternalElements = internalTypeElements(in: file.sourceKitStructureDictionary)
 
         guard implicitAndExplicitInternalElements.isNotEmpty else {
             return []

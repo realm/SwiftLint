@@ -31,7 +31,7 @@ struct NestingRule: Rule {
     }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return validate(file: file, substructure: file.structureDictionary.substructure, args: ValidationArgs())
+        return validate(file: file, substructure: file.sourceKitStructureDictionary.substructure, args: ValidationArgs())
     }
 
     private func validate(file: SwiftLintFile, substructure: [SourceKittenDictionary],

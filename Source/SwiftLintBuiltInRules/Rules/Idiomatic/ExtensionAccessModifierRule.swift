@@ -115,7 +115,7 @@ struct ExtensionAccessModifierRule: ASTRule, OptInRule {
             return []
         }
 
-        let syntaxTokens = file.syntaxMap.tokens
+        let syntaxTokens = file.sourceKitSyntaxMap.tokens
         let parts = syntaxTokens.partitioned { offset <= $0.offset }
         if let aclToken = parts.first.last, file.isACL(token: aclToken) {
             return declarationsViolations(file: file, acl: declarationsACLs[0],
@@ -155,7 +155,7 @@ struct ExtensionAccessModifierRule: ASTRule, OptInRule {
             // attributeBuiltin (`final` for example) tokens between them
             let length = typeOffset - previousInternalByteRange.location
             let range = ByteRange(location: previousInternalByteRange.location, length: length)
-            return Set(file.syntaxMap.kinds(inByteRange: range)) == [.attributeBuiltin]
+            return Set(file.sourceKitSyntaxMap.kinds(inByteRange: range)) == [.attributeBuiltin]
         }
 
         return violationOffsets.map {

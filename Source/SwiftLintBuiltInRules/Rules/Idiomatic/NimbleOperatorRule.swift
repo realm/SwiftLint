@@ -112,7 +112,7 @@ struct NimbleOperatorRule: OptInRule, CorrectableRule {
                 return false
             }
 
-            return file.structureDictionary.structures(forByteOffset: byteRange.upperBound - 1)
+            return file.sourceKitStructureDictionary.structures(forByteOffset: byteRange.upperBound - 1)
                 .contains(where: { dict -> Bool in
                     return dict.expressionKind == .call && (dict.name ?? "").starts(with: "expect")
                 })

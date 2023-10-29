@@ -36,7 +36,7 @@ struct FileHeaderRule: OptInRule {
         var lastToken: SwiftLintSyntaxToken?
         var firstNonCommentToken: SwiftLintSyntaxToken?
 
-        for token in file.syntaxTokensByLines.lazy.joined() {
+        for token in file.sourceKitSyntaxTokensByLines.lazy.joined() {
             guard let kind = token.kind, kind.isFileHeaderKind else {
                 // found a token that is not a comment, which means it's not the top of the file
                 // so we can just skip the remaining tokens

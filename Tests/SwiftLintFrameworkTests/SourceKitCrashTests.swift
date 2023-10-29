@@ -10,17 +10,17 @@ class SourceKitCrashTests: SwiftLintTestCase {
         var assertHandlerCalled = false
         file.assertHandler = { assertHandlerCalled = true }
 
-        _ = file.syntaxMap
+        _ = file.sourceKitSyntaxMap
         XCTAssertFalse(assertHandlerCalled,
                        "Expects assert handler was not called on accessing SwiftLintFile.syntaxMap")
 
         assertHandlerCalled = false
-        _ = file.syntaxKindsByLines
+        _ = file.sourceKitSyntaxKindsByLines
         XCTAssertFalse(assertHandlerCalled,
                        "Expects assert handler was not called on accessing SwiftLintFile.syntaxKindsByLines")
 
         assertHandlerCalled = false
-        _ = file.syntaxTokensByLines
+        _ = file.sourceKitSyntaxTokensByLines
         XCTAssertFalse(assertHandlerCalled,
                        "Expects assert handler was not called on accessing SwiftLintFile.syntaxTokensByLines")
     }
@@ -32,17 +32,17 @@ class SourceKitCrashTests: SwiftLintTestCase {
         var assertHandlerCalled = false
         file.assertHandler = { assertHandlerCalled = true }
 
-        _ = file.syntaxMap
+        _ = file.sourceKitSyntaxMap
         XCTAssertTrue(assertHandlerCalled,
                       "Expects assert handler was called on accessing SwiftLintFile.syntaxMap")
 
         assertHandlerCalled = false
-        _ = file.syntaxKindsByLines
+        _ = file.sourceKitSyntaxKindsByLines
         XCTAssertTrue(assertHandlerCalled,
                       "Expects assert handler was called on accessing SwiftLintFile.syntaxKindsByLines")
 
         assertHandlerCalled = false
-        _ = file.syntaxTokensByLines
+        _ = file.sourceKitSyntaxTokensByLines
         XCTAssertTrue(assertHandlerCalled,
                       "Expects assert handler was not called on accessing SwiftLintFile.syntaxTokensByLines")
     }

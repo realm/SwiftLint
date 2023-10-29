@@ -15,7 +15,7 @@ struct TypeContentsOrderRule: OptInRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
+        let dict = file.sourceKitStructureDictionary
         let substructures = dict.substructure
         return substructures.reduce(into: [StyleViolation]()) { violations, substructure in
             violations.append(contentsOf: validateTypeSubstructure(substructure, in: file))

@@ -22,7 +22,7 @@ struct NoGroupingExtensionRule: OptInRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let collector = NamespaceCollector(dictionary: file.structureDictionary)
+        let collector = NamespaceCollector(dictionary: file.sourceKitStructureDictionary)
         let elements = collector.findAllElements(of: [.class, .enum, .struct, .extension])
 
         let susceptibleNames = Set(elements.compactMap { $0.kind != .extension ? $0.name : nil })

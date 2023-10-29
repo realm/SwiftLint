@@ -113,7 +113,7 @@ private extension SwiftLintFile {
             unusedImports.subtract(
                 operatorImports(
                     arguments: compilerArguments,
-                    processedTokenOffsets: Set(syntaxMap.tokens.map { $0.offset })
+                    processedTokenOffsets: Set(sourceKitSyntaxMap.tokens.map { $0.offset })
                 )
             )
         }
@@ -147,7 +147,7 @@ private extension SwiftLintFile {
         var imports = Set<String>()
         var usrFragments = Set<String>()
         var nextIsModuleImport = false
-        for token in syntaxMap.tokens {
+        for token in sourceKitSyntaxMap.tokens {
             guard let tokenKind = token.kind else {
                 continue
             }
@@ -292,6 +292,6 @@ private extension SwiftLintFile {
             }
         }
 
-        return containsAttributesRequiringFoundation(dict: structureDictionary)
+        return containsAttributesRequiringFoundation(dict: sourceKitStructureDictionary)
     }
 }

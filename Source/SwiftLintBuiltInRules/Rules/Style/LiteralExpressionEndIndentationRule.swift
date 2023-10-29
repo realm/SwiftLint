@@ -214,7 +214,7 @@ extension LiteralExpressionEndIndentationRule {
     }
 
     fileprivate func violations(in file: SwiftLintFile) -> [Violation] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
+        return file.sourceKitStructureDictionary.traverseDepthFirst { subDict in
             guard let kind = subDict.expressionKind else { return nil }
             guard let violation = violation(in: file, of: kind, dictionary: subDict) else { return nil }
             return [violation]

@@ -71,7 +71,7 @@ struct LetVarWhitespaceRule: OptInRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
+        let dict = file.sourceKitStructureDictionary
 
         var attributeLines = attributeLineNumbers(file: file)
         var varLines = Set<Int>()
@@ -216,7 +216,7 @@ struct LetVarWhitespaceRule: OptInRule {
     // Collects all the line numbers containing comments or #if/#endif
     private func skippedLineNumbers(file: SwiftLintFile) -> Set<Int> {
         var result = Set<Int>()
-        let syntaxMap = file.syntaxMap
+        let syntaxMap = file.sourceKitSyntaxMap
 
         for token in syntaxMap.tokens where token.kind == .comment ||
                                             token.kind == .docComment {
@@ -244,7 +244,7 @@ struct LetVarWhitespaceRule: OptInRule {
     // Collects all the line numbers containing attributes but not declarations
     // other than let/var
     private func attributeLineNumbers(file: SwiftLintFile) -> Set<Int> {
-        let lineNumbers = file.syntaxMap.tokens
+        let lineNumbers = file.sourceKitSyntaxMap.tokens
             .filter { isAttribute(token: $0, in: file) }
             .map(\.offset)
             .compactMap(file.line)

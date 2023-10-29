@@ -144,7 +144,7 @@ struct IndentationWidthRule: OptInRule {
         if configuration.includeCompilerDirectives {
             return false
         }
-        if file.syntaxMap.tokens(inByteRange: line.byteRange).kinds.first == .buildconfigKeyword {
+        if file.sourceKitSyntaxMap.tokens(inByteRange: line.byteRange).kinds.first == .buildconfigKeyword {
             return true
         }
         return false
@@ -154,7 +154,7 @@ struct IndentationWidthRule: OptInRule {
         if configuration.includeComments {
             return false
         }
-        let syntaxKindsInLine = Set(file.syntaxMap.tokens(inByteRange: line.byteRange).kinds)
+        let syntaxKindsInLine = Set(file.sourceKitSyntaxMap.tokens(inByteRange: line.byteRange).kinds)
         if syntaxKindsInLine.isNotEmpty, SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) {
             return true
         }
@@ -168,7 +168,7 @@ struct IndentationWidthRule: OptInRule {
 
         // A multiline string content line is characterized by beginning with a token of kind string whose range's lower
         // bound is smaller than that of the line itself.
-        let tokensInLine = file.syntaxMap.tokens(inByteRange: line.byteRange)
+        let tokensInLine = file.sourceKitSyntaxMap.tokens(inByteRange: line.byteRange)
         guard
             let firstToken = tokensInLine.first,
             firstToken.kind == .string,

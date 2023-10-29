@@ -94,7 +94,7 @@ struct FileTypesOrderRule: OptInRule {
         in file: SwiftLintFile,
         mainTypeSubstructure: SourceKittenDictionary
     ) -> [SourceKittenDictionary] {
-        let dict = file.structureDictionary
+        let dict = file.sourceKitStructureDictionary
         return dict.substructure.filter { substructure in
             guard let kind = substructure.kind else { return false }
             return substructure.offset != mainTypeSubstructure.offset
@@ -109,7 +109,7 @@ struct FileTypesOrderRule: OptInRule {
         var supportingTypeKinds = SwiftDeclarationKind.typeKinds
         supportingTypeKinds.insert(SwiftDeclarationKind.protocol)
 
-        let dict = file.structureDictionary
+        let dict = file.sourceKitStructureDictionary
         return dict.substructure.filter { substructure in
             guard let declarationKind = substructure.declarationKind else { return false }
             guard !substructure.hasExcludedInheritedType else { return false }
@@ -123,13 +123,13 @@ struct FileTypesOrderRule: OptInRule {
         in file: SwiftLintFile,
         withInheritedType inheritedType: String
     ) -> [SourceKittenDictionary] {
-        file.structureDictionary.substructure.filter { substructure in
+        file.sourceKitStructureDictionary.substructure.filter { substructure in
             substructure.inheritedTypes.contains(inheritedType)
         }
     }
 
     private func mainTypeSubstructure(in file: SwiftLintFile) -> SourceKittenDictionary? {
-        let dict = file.structureDictionary
+        let dict = file.sourceKitStructureDictionary
 
         guard let filePath = file.path else {
             return self.mainTypeSubstructure(in: dict)
@@ -138,7 +138,7 @@ struct FileTypesOrderRule: OptInRule {
         let fileName = URL(fileURLWithPath: filePath, isDirectory: false)
             .lastPathComponent.replacingOccurrences(of: ".swift", with: "")
         guard let mainTypeSubstructure = dict.substructure.first(where: { $0.name == fileName }) else {
-            return self.mainTypeSubstructure(in: file.structureDictionary)
+            return self.mainTypeSubstructure(in: file.sourceKitStructureDictionary)
         }
 
         // specify type with name matching the files name as main type

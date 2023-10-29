@@ -68,7 +68,7 @@ struct VerticalWhitespaceRule: CorrectableRule {
 
         // filtering out violations in comments and strings
         let stringAndComments = SyntaxKind.commentAndStringKinds
-        let syntaxMap = file.syntaxMap
+        let syntaxMap = file.sourceKitSyntaxMap
         let result = blankLinesSections.compactMap { eachSection -> (lastLine: Line, linesToRemove: Int)? in
             guard let lastLine = eachSection.last else {
                 return nil

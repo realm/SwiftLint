@@ -10,7 +10,7 @@ import SwiftParserDiagnostics
 import SwiftSyntax
 
 private typealias FileCacheKey = UUID
-private let responseCache = Cache { file -> [String: any SourceKitRepresentable]? in
+private let sourceKitResponseCache = Cache { file -> [String: any SourceKitRepresentable]? in
     do {
         return try Request.editorOpen(file: file.file).sendIfNotDisabled()
     } catch let error as Request.Error {
@@ -20,8 +20,8 @@ private let responseCache = Cache { file -> [String: any SourceKitRepresentable]
         return nil
     }
 }
-private let structureDictionaryCache = Cache { file in
-    return responseCache.get(file).map(Structure.init).map { SourceKittenDictionary($0.dictionary) }
+private let sourceKitStructureDictionaryCache = Cache { file in
+    return sourceKitResponseCache.get(file).map(Structure.init).map { SourceKittenDictionary($0.dictionary) }
 }
 private let syntaxTreeCache = Cache { file -> SourceFileSyntax in
     return Parser.parse(source: file.contents)
@@ -41,12 +41,12 @@ private let commandsCache = Cache { file -> [Command] in
     return CommandVisitor(locationConverter: file.locationConverter)
         .walk(file: file, handler: \.commands)
 }
-private let syntaxMapCache = Cache { file in
-    responseCache.get(file).map { SwiftLintSyntaxMap(value: SyntaxMap(sourceKitResponse: $0)) }
+private let sourceKitSyntaxMapCache = Cache { file in
+    sourceKitResponseCache.get(file).map { SwiftLintSyntaxMap(value: SyntaxMap(sourceKitResponse: $0)) }
 }
 private let syntaxClassificationsCache = Cache { $0.syntaxTree.classifications }
-private let syntaxKindsByLinesCache = Cache { $0.syntaxKindsByLine() }
-private let syntaxTokensByLinesCache = Cache { $0.syntaxTokensByLine() }
+private let sourceKitSyntaxKindsByLinesCache = Cache { $0.syntaxKindsByLine() }
+private let sourceKitSyntaxTokensByLinesCache = Cache { $0.syntaxTokensByLine() }
 private let linesWithTokensCache = Cache { $0.computeLinesWithTokens() }
 
 internal typealias AssertHandler = () -> Void
@@ -103,13 +103,13 @@ extension SwiftLintFile {
 
     public var sourcekitdFailed: Bool {
         get {
-            return responseCache.get(self) == nil
+            return sourceKitResponseCache.get(self) == nil
         }
         set {
             if newValue {
-                responseCache.set(key: cacheKey, value: nil)
+                sourceKitResponseCache.set(key: cacheKey, value: nil)
             } else {
-                responseCache.unset(key: cacheKey)
+                sourceKitResponseCache.unset(key: cacheKey)
             }
         }
     }
@@ -135,8 +135,8 @@ extension SwiftLintFile {
 
     public var linesWithTokens: Set<Int> { linesWithTokensCache.get(self) }
 
-    public var structureDictionary: SourceKittenDictionary {
-        guard let structureDictionary = structureDictionaryCache.get(self) else {
+    public var sourceKitStructureDictionary: SourceKittenDictionary {
+        guard let structureDictionary = sourceKitStructureDictionaryCache.get(self) else {
             if let handler = assertHandler {
                 handler()
                 return SourceKittenDictionary([:])
@@ -148,8 +148,8 @@ extension SwiftLintFile {
 
     public var syntaxClassifications: SyntaxClassifications { syntaxClassificationsCache.get(self) }
 
-    public var syntaxMap: SwiftLintSyntaxMap {
-        guard let syntaxMap = syntaxMapCache.get(self) else {
+    public var sourceKitSyntaxMap: SwiftLintSyntaxMap {
+        guard let syntaxMap = sourceKitSyntaxMapCache.get(self) else {
             if let handler = assertHandler {
                 handler()
                 return SwiftLintSyntaxMap(value: SyntaxMap(data: []))
@@ -169,8 +169,8 @@ extension SwiftLintFile {
 
     public var invalidCommands: [Command] { commandsCache.get(self).filter { !$0.isValid } }
 
-    public var syntaxTokensByLines: [[SwiftLintSyntaxToken]] {
-        guard let syntaxTokensByLines = syntaxTokensByLinesCache.get(self) else {
+    public var sourceKitSyntaxTokensByLines: [[SwiftLintSyntaxToken]] {
+        guard let syntaxTokensByLines = sourceKitSyntaxTokensByLinesCache.get(self) else {
             if let handler = assertHandler {
                 handler()
                 return []
@@ -180,8 +180,8 @@ extension SwiftLintFile {
         return syntaxTokensByLines
     }
 
-    public var syntaxKindsByLines: [[SourceKittenFramework.SyntaxKind]] {
-        guard let syntaxKindsByLines = syntaxKindsByLinesCache.get(self) else {
+    public var sourceKitSyntaxKindsByLines: [[SourceKittenFramework.SyntaxKind]] {
+        guard let syntaxKindsByLines = sourceKitSyntaxKindsByLinesCache.get(self) else {
             if let handler = assertHandler {
                 handler()
                 return []
@@ -194,13 +194,13 @@ extension SwiftLintFile {
     /// Invalidates all cached data for this file.
     public func invalidateCache() {
         file.clearCaches()
-        responseCache.invalidate(self)
+        sourceKitResponseCache.invalidate(self)
         assertHandlerCache.invalidate(self)
-        structureDictionaryCache.invalidate(self)
+        sourceKitStructureDictionaryCache.invalidate(self)
         syntaxClassificationsCache.invalidate(self)
-        syntaxMapCache.invalidate(self)
-        syntaxTokensByLinesCache.invalidate(self)
-        syntaxKindsByLinesCache.invalidate(self)
+        sourceKitSyntaxMapCache.invalidate(self)
+        sourceKitSyntaxTokensByLinesCache.invalidate(self)
+        sourceKitSyntaxKindsByLinesCache.invalidate(self)
         syntaxTreeCache.invalidate(self)
         foldedSyntaxTreeCache.invalidate(self)
         locationConverterCache.invalidate(self)
@@ -210,13 +210,13 @@ extension SwiftLintFile {
 
     @_spi(TestHelper)
     public static func clearCaches() {
-        responseCache.clear()
+        sourceKitResponseCache.clear()
         assertHandlerCache.clear()
-        structureDictionaryCache.clear()
+        sourceKitStructureDictionaryCache.clear()
         syntaxClassificationsCache.clear()
-        syntaxMapCache.clear()
-        syntaxTokensByLinesCache.clear()
-        syntaxKindsByLinesCache.clear()
+        sourceKitSyntaxMapCache.clear()
+        sourceKitSyntaxTokensByLinesCache.clear()
+        sourceKitSyntaxKindsByLinesCache.clear()
         syntaxTreeCache.clear()
         foldedSyntaxTreeCache.clear()
         locationConverterCache.clear()

@@ -28,7 +28,7 @@ struct TrailingWhitespaceRule: CorrectableRule {
 
             let commentKinds = SyntaxKind.commentKinds
             if configuration.ignoresComments,
-                let lastSyntaxKind = file.syntaxKindsByLines[$0.index].last,
+                let lastSyntaxKind = file.sourceKitSyntaxKindsByLines[$0.index].last,
                 commentKinds.contains(lastSyntaxKind) {
                 return false
             }
@@ -57,7 +57,7 @@ struct TrailingWhitespaceRule: CorrectableRule {
 
             let commentKinds = SyntaxKind.commentKinds
             if configuration.ignoresComments,
-                let lastSyntaxKind = file.syntaxKindsByLines[line.index].last,
+                let lastSyntaxKind = file.sourceKitSyntaxKindsByLines[line.index].last,
                 commentKinds.contains(lastSyntaxKind) {
                 correctedLines.append(line.content)
                 continue

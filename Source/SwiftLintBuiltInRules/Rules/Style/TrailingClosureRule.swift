@@ -29,7 +29,7 @@ struct TrailingClosureRule: OptInRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
+        let dict = file.sourceKitStructureDictionary
         return violationOffsets(for: dict, file: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,

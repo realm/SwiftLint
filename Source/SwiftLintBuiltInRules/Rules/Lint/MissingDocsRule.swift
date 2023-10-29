@@ -122,7 +122,7 @@ struct MissingDocsRule: OptInRule {
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         let acls = configuration.parameters.map { $0.value }
-        let dict = file.structureDictionary
+        let dict = file.sourceKitStructureDictionary
         return file.missingDocOffsets(
             in: dict,
             acls: acls,

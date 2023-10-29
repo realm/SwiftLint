@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
 fileprivate extension Line {
     var contentRange: NSRange {
@@ -52,7 +53,7 @@ private extension Sequence where Element == Line {
     }
 }
 
-struct SortedImportsRule: CorrectableRule, OptInRule {
+struct SortedImportsRule: CorrectableRule, OptInRule, SourceKitFreeRule {
     var configuration = SortedImportsConfiguration()
 
     static let description = RuleDescription(
@@ -76,7 +77,15 @@ struct SortedImportsRule: CorrectableRule, OptInRule {
     }
 
     private func importGroups(in file: SwiftLintFile, filterEnabled: Bool) -> [[Line]] {
-        var importRanges = file.match(pattern: "import\\s+\\w+", with: [.keyword, .identifier])
+        var importRanges = ImportCollectorVisitor(configuration: configuration, file: file)
+            .walk(file: file, handler: \.importRanges)
+            .compactMap { swiftSyntaxRange in
+                let byteRange = ByteRange(
+                    location: ByteCount(swiftSyntaxRange.offset),
+                    length: ByteCount(swiftSyntaxRange.length)
+                )
+                return file.stringView.byteRangeToNSRange(byteRange)
+            }
         if filterEnabled {
             importRanges = file.ruleEnabled(violatingRanges: importRanges, for: self)
         }
@@ -151,5 +160,17 @@ struct SortedImportsRule: CorrectableRule, OptInRule {
         file.write(correctedContents.bridge())
 
         return corrections
+    }
+}
+
+private extension SortedImportsRule {
+    final class ImportCollectorVisitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private(set) var importRanges: [ByteSourceRange] = []
+
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
+
+        override func visitPost(_ node: ImportDeclSyntax) {
+            importRanges.append(node.trimmedByteRange)
+        }
     }
 }

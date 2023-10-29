@@ -17,7 +17,27 @@ struct VerticalWhitespaceRule: CorrectableRule, SourceKitFreeRule {
             Example("let abc = 0\n"),
             Example("let abc = 0\n\n"),
             Example("/* bcs \n\n\n\n*/"),
-            Example("// bca \n\n")
+            Example("// bca \n\n"),
+            Example(#"""
+            """
+            This is a
+
+
+
+
+                  very long
+
+
+
+                      string with newlines
+
+
+
+
+
+
+            """
+            """#)
         ],
         triggeringExamples: [
             Example("let aaaa = 0\n\n\n"),
@@ -74,8 +94,10 @@ struct VerticalWhitespaceRule: CorrectableRule, SourceKitFreeRule {
                 return nil
             }
 
-            let classificationsInRange = file.syntaxClassifications.classifications(inByteRange: lastLine.byteRange)
-            if !classificationsInRange.contains(where: \.isStringOrComment) {
+            let range = ByteSourceRange(offset: lastLine.byteRange.location.value,
+                                        length: lastLine.byteRange.length.value)
+            let classificationsInRange = file.syntaxTree.classifications(in: range)
+            if !classificationsInRange.contains(where: \.kind.isStringOrComment) {
                 return (lastLine, eachSection.count)
             }
 
@@ -159,34 +181,5 @@ private extension SyntaxClassification {
             .ifConfigDirective, .integerLiteral, .keyword, .none, .operator, .regexLiteral, .type:
             return false
         }
-    }
-}
-
-private extension SyntaxClassifications {
-    func classifications(inByteRange byteRange: ByteRange) -> [SyntaxClassification] {
-        classificationsRanges(inByteRange: byteRange).map(\.kind)
-    }
-
-    func classificationsRanges(inByteRange byteRange: ByteRange) -> [SyntaxClassifiedRange] {
-        func intersect(_ element: SyntaxClassifiedRange) -> Bool {
-            let otherRange = ByteSourceRange(offset: byteRange.location.value, length: byteRange.location.value)
-            return element.range.intersects(otherRange)
-        }
-
-        func intersectsOrAfter(_ element: SyntaxClassifiedRange) -> Bool {
-            return element.offset + element.length > byteRange.location.value
-        }
-
-        let array = Array(self)
-        guard let startIndex = array.firstIndexAssumingSorted(where: intersectsOrAfter) else {
-            return []
-        }
-
-        let tokensAfterFirstIntersection = array
-            .suffix(from: startIndex)
-            .prefix(while: { $0.offset < byteRange.upperBound.value })
-            .filter(intersect)
-
-        return Array(tokensAfterFirstIntersection)
     }
 }

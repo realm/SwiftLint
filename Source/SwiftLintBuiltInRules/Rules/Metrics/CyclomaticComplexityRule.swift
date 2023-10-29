@@ -1,7 +1,8 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-struct CyclomaticComplexityRule: ASTRule {
+@SwiftSyntaxRule
+struct CyclomaticComplexityRule: Rule {
     var configuration = CyclomaticComplexityConfiguration()
 
     static let description = RuleDescription(
@@ -69,70 +70,78 @@ struct CyclomaticComplexityRule: ASTRule {
             """)
         ]
     )
+}
 
-    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard SwiftDeclarationKind.functionKinds.contains(kind) else {
-            return []
+private extension CyclomaticComplexityRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard let body = node.body else {
+                return
+            }
+
+            let complexity = ComplexityVisitor(
+                ignoresCaseStatements: configuration.ignoresCaseStatements
+            ).walk(tree: body, handler: \.complexity)
+
+            for parameter in configuration.params where complexity > parameter.value {
+                let reason = "Function should have complexity \(configuration.length.warning) or less; " +
+                             "currently complexity is \(complexity)"
+
+                let violation = ReasonedRuleViolation(
+                    position: node.positionAfterSkippingLeadingTrivia,
+                    reason: reason,
+                    severity: parameter.severity
+                )
+                violations.append(violation)
+                return
+            }
         }
-
-        let complexity = measureComplexity(in: file, dictionary: dictionary)
-
-        for parameter in configuration.params where complexity > parameter.value {
-            let offset = dictionary.offset ?? 0
-            let reason = "Function should have complexity \(configuration.length.warning) or less; " +
-                         "currently complexity is \(complexity)"
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: parameter.severity,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: reason)]
-        }
-
-        return []
     }
 
-    private func measureComplexity(in file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Int {
-        var hasSwitchStatements = false
+    private class ComplexityVisitor: SyntaxVisitor {
+        private(set) var complexity = 0
+        let ignoresCaseStatements: Bool
 
-        let complexity = dictionary.substructure.reduce(0) { complexity, subDict in
-            guard subDict.kind != nil else {
-                return complexity
-            }
-
-            if let declarationKind = subDict.declarationKind,
-                SwiftDeclarationKind.functionKinds.contains(declarationKind) {
-                return complexity
-            }
-
-            guard let statementKind = subDict.statementKind else {
-                return complexity + measureComplexity(in: file, dictionary: subDict)
-            }
-
-            if statementKind == .switch {
-                hasSwitchStatements = true
-            }
-            let score = configuration.complexityStatements.contains(statementKind) ? 1 : 0
-            return complexity +
-                score +
-                measureComplexity(in: file, dictionary: subDict)
+        init(ignoresCaseStatements: Bool) {
+            self.ignoresCaseStatements = ignoresCaseStatements
+            super.init(viewMode: .sourceAccurate)
         }
 
-        if hasSwitchStatements && !configuration.ignoresCaseStatements {
-            return reduceSwitchComplexity(initialComplexity: complexity, file: file, dictionary: dictionary)
+        override func visitPost(_ node: ForStmtSyntax) {
+            complexity += 1
         }
 
-        return complexity
-    }
+        override func visitPost(_ node: IfExprSyntax) {
+            complexity += 1
+        }
 
-    // Switch complexity is reduced by `fallthrough` cases
+        override func visitPost(_ node: GuardStmtSyntax) {
+            complexity += 1
+        }
 
-    private func reduceSwitchComplexity(initialComplexity complexity: Int, file: SwiftLintFile,
-                                        dictionary: SourceKittenDictionary) -> Int {
-        let bodyRange = dictionary.bodyByteRange ?? ByteRange(location: 0, length: 0)
+        override func visitPost(_ node: RepeatStmtSyntax) {
+            complexity += 1
+        }
 
-        let contents = file.stringView.substringWithByteRange(bodyRange) ?? ""
+        override func visitPost(_ node: WhileStmtSyntax) {
+            complexity += 1
+        }
 
-        let fallthroughCount = contents.components(separatedBy: "fallthrough").count - 1
-        return complexity - fallthroughCount
+        override func visitPost(_ node: SwitchCaseSyntax) {
+            if !ignoresCaseStatements {
+                complexity += 1
+            }
+        }
+
+        override func visitPost(_ node: FallThroughStmtSyntax) {
+            // Switch complexity is reduced by `fallthrough` cases
+            if !ignoresCaseStatements {
+                complexity -= 1
+            }
+        }
+
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
     }
 }

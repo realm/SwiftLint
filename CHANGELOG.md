@@ -23,6 +23,9 @@
 * Speed up `closure_parameter_position` rule when there are no violations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Rewrite `cyclomatic_complexity` rule using SwiftSyntax.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * Fix correction of `explicit_init` rule by keeping significant trivia.  

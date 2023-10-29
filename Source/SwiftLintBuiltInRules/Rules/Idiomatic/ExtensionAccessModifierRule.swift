@@ -112,6 +112,17 @@ struct ExtensionAccessModifierRule: Rule, OptInRule {
 
                public var baz: Int { return 1 }
             }
+            """),
+            Example("""
+            ↓extension Array where Element: Equatable {
+                public var unique: [Element] {
+                    var uniqueValues = [Element]()
+                    for item in self where !uniqueValues.contains(item) {
+                        uniqueValues.append(item)
+                    }
+                    return uniqueValues
+                }
+            }
             """)
         ]
     )
@@ -122,8 +133,7 @@ private extension ExtensionAccessModifierRule {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
-            guard node.genericWhereClause == nil,
-                  node.inheritanceClause == nil else {
+            guard node.inheritanceClause == nil else {
                 return
             }
 

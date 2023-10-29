@@ -157,28 +157,28 @@ struct ExtensionAccessModifierRule: Rule, OptInRule {
               ↓private func bar() {}
               ↓private func baz() {}
             }
-            """),
+            """)
         ]
     )
 }
 
 private extension ExtensionAccessModifierRule {
-    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
+    private enum ACL: Hashable {
+        case implicit
+        case explicit(TokenKind)
 
-        private enum ACL: Hashable {
-            case implicit
-            case explicit(TokenKind)
-
-            static func from(tokenKind: TokenKind?) -> ACL {
-                switch tokenKind {
-                case nil:
-                    return .implicit
-                case let value?:
-                    return .explicit(value)
-                }
+        static func from(tokenKind: TokenKind?) -> ACL {
+            switch tokenKind {
+            case nil:
+                return .implicit
+            case let value?:
+                return .explicit(value)
             }
         }
+    }
+
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
             guard node.inheritanceClause == nil else {

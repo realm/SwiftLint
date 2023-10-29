@@ -12,6 +12,17 @@ class CyclomaticComplexityRuleTests: SwiftLintTestCase {
         return Example(example)
     }()
 
+    private lazy var complexSwitchInitExample: Example = {
+        var example = "init() {\n"
+        example += "    switch foo {\n"
+        for index in (0...30) {
+            example += "  case \(index):   print(\"\(index)\")\n"
+        }
+        example += "    }\n"
+        example += "}\n"
+        return Example(example)
+    }()
+
     private lazy var complexIfExample: Example = {
         let nest = 22
         var example = "func nestThoseIfs() {\n"
@@ -47,7 +58,7 @@ class CyclomaticComplexityRuleTests: SwiftLintTestCase {
 
     func testIgnoresCaseStatementsConfigurationDisabled() {
         let baseDescription = CyclomaticComplexityRule.description
-        let triggeringExamples = baseDescription.triggeringExamples + [complexSwitchExample]
+        let triggeringExamples = baseDescription.triggeringExamples + [complexSwitchExample, complexSwitchInitExample]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)

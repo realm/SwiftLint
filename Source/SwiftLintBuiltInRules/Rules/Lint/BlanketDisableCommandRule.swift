@@ -1,4 +1,4 @@
-struct BlanketDisableCommandRule: Rule {
+struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
     var configuration = BlanketDisableCommandConfiguration()
 
     static let description = RuleDescription(

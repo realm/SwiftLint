@@ -128,7 +128,7 @@ private extension ExtensionAccessModifierRule {
             }
 
             if let modifier = node.modifiers.accessLevelModifier {
-                validateInternalDeclsShouldNotHaveACL(node: node, extensionACL: modifier)
+                validateNestedDeclsShouldNotHaveACL(node: node, extensionACL: modifier)
             } else {
                 validateExtensionShouldHaveACL(node: node)
             }
@@ -155,8 +155,8 @@ private extension ExtensionAccessModifierRule {
             }
         }
 
-        private func validateInternalDeclsShouldNotHaveACL(node: ExtensionDeclSyntax,
-                                                           extensionACL: DeclModifierSyntax) {
+        private func validateNestedDeclsShouldNotHaveACL(node: ExtensionDeclSyntax,
+                                                         extensionACL: DeclModifierSyntax) {
             guard extensionACL.name.tokenKind != .keyword(.private) else {
                 return
             }

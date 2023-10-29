@@ -1,7 +1,7 @@
 import Foundation
+import SourceKittenFramework
 import SwiftIDEUtils
 import SwiftSyntax
-import SourceKittenFramework
 
 private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line"
 

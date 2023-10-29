@@ -123,7 +123,19 @@ struct ExtensionAccessModifierRule: Rule, OptInRule {
                     return uniqueValues
                 }
             }
-            """)
+            """),
+            Example("""
+            ↓extension Foo {
+               #if DEBUG
+               public var bar: Int {
+                  let value = 1
+                  return value
+               }
+               #endif
+
+               public var baz: Int { return 1 }
+            }
+            """).focused(),
         ]
     )
 }
@@ -148,8 +160,8 @@ private extension ExtensionAccessModifierRule {
             var previousACL: TokenKind?
             var areAllACLsEqual = true
 
-            for member in node.memberBlock.members {
-                let modifiers = member.decl.asProtocol((any WithModifiersSyntax).self)?.modifiers
+            for decl in node.memberBlock.expandingIfConfigs() {
+                let modifiers = decl.asProtocol((any WithModifiersSyntax).self)?.modifiers
                 let acl = modifiers?.accessLevelModifier?.name.tokenKind ?? .keyword(.internal)
                 if acl != previousACL, previousACL != nil {
                     areAllACLsEqual = false
@@ -171,8 +183,8 @@ private extension ExtensionAccessModifierRule {
                 return
             }
 
-            let positions = node.memberBlock.members.compactMap { member -> AbsolutePosition? in
-                let modifiers = member.decl.asProtocol((any WithModifiersSyntax).self)?.modifiers
+            let positions = node.memberBlock.expandingIfConfigs().compactMap { decl -> AbsolutePosition? in
+                let modifiers = decl.asProtocol((any WithModifiersSyntax).self)?.modifiers
                 let aclToken = modifiers?.accessLevelModifier?.name
                 let acl = aclToken?.tokenKind ?? .keyword(.internal)
                 guard acl == extensionACL.name.tokenKind, let aclToken else {
@@ -182,6 +194,25 @@ private extension ExtensionAccessModifierRule {
                 return aclToken.positionAfterSkippingLeadingTrivia
             }
             violations.append(contentsOf: positions)
+        }
+    }
+}
+
+private extension MemberBlockSyntax {
+    func expandingIfConfigs() -> [DeclSyntax] {
+        members.flatMap { member in
+            if let ifConfig = member.decl.as(IfConfigDeclSyntax.self) {
+                return ifConfig.clauses.flatMap { clause in
+                    switch clause.elements {
+                    case .decls(let decls):
+                        return decls.map(\.decl)
+                    default:
+                        return []
+                    }
+                }
+            } else {
+                return [member.decl]
+            }
         }
     }
 }

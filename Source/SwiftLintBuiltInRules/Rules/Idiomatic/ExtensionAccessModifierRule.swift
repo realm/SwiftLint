@@ -61,20 +61,26 @@ struct ExtensionAccessModifierRule: Rule, OptInRule {
             """),
             Example("""
             extension Foo {
-              private bar: Int { return 1 }
-              private baz: Int { return 1 }
+              private var bar: Int { return 1 }
+              private var baz: Int { return 1 }
             }
             """),
             Example("""
             extension Foo {
-              open bar: Int { return 1 }
-              open baz: Int { return 1 }
+              open var bar: Int { return 1 }
+              open var baz: Int { return 1 }
             }
             """),
             Example("""
             extension Foo {
                 func setup() {}
                 public func update() {}
+            }
+            """),
+            Example("""
+            private extension Foo {
+              private var bar: Int { return 1 }
+              var baz: Int { return 1 }
             }
             """)
         ],
@@ -123,7 +129,6 @@ private extension ExtensionAccessModifierRule {
 
             if let modifier = node.modifiers.accessLevelModifier {
                 validateInternalDeclsShouldNotHaveACL(node: node, extensionACL: modifier)
-
             } else {
                 validateExtensionShouldHaveACL(node: node)
             }
@@ -152,6 +157,9 @@ private extension ExtensionAccessModifierRule {
 
         private func validateInternalDeclsShouldNotHaveACL(node: ExtensionDeclSyntax,
                                                            extensionACL: DeclModifierSyntax) {
+            guard extensionACL.name.tokenKind != .keyword(.private) else {
+                return
+            }
 
             let positions = node.memberBlock.members.compactMap { member -> AbsolutePosition? in
                 let modifiers = member.decl.asProtocol((any WithModifiersSyntax).self)?.modifiers

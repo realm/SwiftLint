@@ -88,7 +88,7 @@ private extension CyclomaticComplexityRule {
                              "currently complexity is \(complexity)"
 
                 let violation = ReasonedRuleViolation(
-                    position: node.positionAfterSkippingLeadingTrivia,
+                    position: node.funcKeyword.positionAfterSkippingLeadingTrivia,
                     reason: reason,
                     severity: parameter.severity
                 )

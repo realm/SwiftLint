@@ -33,7 +33,8 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [JP Simard](https://github.com/jpsim)
 
-* Rewrite `discouraged_optional_collection` rule using SwiftSyntax.  
+* Rewrite `discouraged_optional_collection` rule using SwiftSyntax, catching
+  more violations.  
   [JP Simard](https://github.com/jpsim)
 
 #### Bug Fixes

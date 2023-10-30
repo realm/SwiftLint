@@ -276,6 +276,10 @@ def set_globals
   end.compact.sort
   # True iff the only Swift files that were changed are SwiftLint rules, and that number is one or greater
   @only_rules_changed = !@rules_changed.empty? && @changed_swift_files.count == @rules_changed.count
+
+  # Force OSSCheck to only measure the impact of the `redundant_void_return` rule
+  @rules_changed = ['redundant_void_return']
+  @only_rules_changed = true
 end
 
 def print_rules_changed

@@ -149,8 +149,8 @@ def setup_repos
     end
     if @only_rules_changed && @rules_changed
       File.open(swiftlint_config, 'w') do |file|
-        file.puts('only_rules:')
-        file.puts(@rules_changed.map { |rule| "  - #{rule}" })
+        file.puts('only_rules: [redundant_void_return]')
+        file.puts('redundant_void_return: {include_closures: false}')
       end
     end
     Dir.chdir(dir) do

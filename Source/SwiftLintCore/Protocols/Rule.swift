@@ -198,28 +198,6 @@ public extension SubstitutionCorrectableRule {
     }
 }
 
-/// A `SubstitutionCorrectableRule` that is also an `ASTRule`.
-public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, ASTRule {
-    /// Returns the NSString-based `NSRange`s to be replaced in the specified file.
-    ///
-    /// - parameter file:       The file in which to find ranges of violations for this rule.
-    /// - parameter kind:       The kind of token being recursed over.
-    /// - parameter dictionary: The dictionary for an AST subset to validate.
-    ///
-    /// - returns: The NSString-based `NSRange`s to be replaced in the specified file.
-    func violationRanges(in file: SwiftLintFile, kind: KindType,
-                         dictionary: SourceKittenDictionary) -> [NSRange]
-}
-
-public extension SubstitutionCorrectableASTRule {
-    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
-            guard let kind = self.kind(from: subDict) else { return nil }
-            return violationRanges(in: file, kind: kind, dictionary: subDict)
-        }
-    }
-}
-
 /// A rule that does not need SourceKit to operate and can still operate even after SourceKit has crashed.
 public protocol SourceKitFreeRule: Rule {}
 

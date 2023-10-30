@@ -1,8 +1,8 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-struct RedundantVoidReturnRule: SubstitutionCorrectableASTRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+@SwiftSyntaxRule
+struct RedundantVoidReturnRule: SwiftSyntaxCorrectableRule {
+    var configuration = RedundantVoidReturnConfiguration()
 
     static let description = RuleDescription(
         identifier: "redundant_void_return",
@@ -27,7 +27,12 @@ struct RedundantVoidReturnRule: SubstitutionCorrectableASTRule {
                     print(key)
                 }
             }
-            """)
+            """),
+            Example("""
+            doSomething { arg -> Void in
+                print(arg)
+            }
+            """, configuration: ["include_closures": false])
         ],
         triggeringExamples: [
             Example("func foo()↓ -> Void {}"),
@@ -42,6 +47,16 @@ struct RedundantVoidReturnRule: SubstitutionCorrectableASTRule {
             protocol Foo {
               func foo()↓ -> ()
             }
+            """),
+            Example("""
+            doSomething { arg↓ -> () in
+                print(arg)
+            }
+            """),
+            Example("""
+            doSomething { arg↓ -> Void in
+                print(arg)
+            }
             """)
         ],
         corrections: [
@@ -54,49 +69,95 @@ struct RedundantVoidReturnRule: SubstitutionCorrectableASTRule {
         ]
     )
 
-    private let pattern = "\\s*->\\s*(?:Void\\b|\\(\\s*\\))(?![?!])"
-    private let excludingKinds = SyntaxKind.allKinds.subtracting([.typeidentifier])
-    private let functionKinds = SwiftDeclarationKind.functionKinds.subtracting([.functionSubscript])
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
+        Rewriter(
+            configuration: configuration,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
 
-    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+private extension RedundantVoidReturnRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: ReturnClauseSyntax) {
+            if !configuration.includeClosures && node.parent?.is(ClosureSignatureSyntax.self) == true {
+                return
+            }
+
+            if node.containsRedundantVoidViolation,
+               let tokenBeforeOutput = node.previousToken(viewMode: .sourceAccurate) {
+                violations.append(tokenBeforeOutput.endPositionBeforeTrailingTrivia)
+            }
         }
     }
 
-    func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard functionKinds.contains(kind),
-              containsVoidReturnTypeBasedOnTypeName(dictionary: dictionary),
-            let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let length = dictionary.length,
-            let offset = dictionary.offset,
-            case let start = nameOffset + nameLength,
-            case let end = dictionary.bodyOffset ?? offset + length,
-            case let contents = file.stringView,
-            case let byteRange = ByteRange(location: start, length: end - start),
-            let range = contents.byteRangeToNSRange(byteRange),
-            file.match(pattern: "->", excludingSyntaxKinds: excludingKinds, range: range).count == 1,
-            let match = file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, range: range).first else {
-                return []
+    final class Rewriter: ViolationsSyntaxRewriter {
+        let configuration: ConfigurationType
+
+        init(
+            configuration: ConfigurationType,
+            locationConverter: SourceLocationConverter,
+            disabledRegions: [SourceRange]
+        ) {
+            self.configuration = configuration
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
         }
 
-        return [match]
-    }
+        override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
+            guard configuration.includeClosures,
+                  let output = node.returnClause,
+                  let tokenBeforeOutput = output.previousToken(viewMode: .sourceAccurate),
+                  output.containsRedundantVoidViolation
+            else {
+                return super.visit(node)
+            }
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
-    }
+            correctionPositions.append(tokenBeforeOutput.endPositionBeforeTrailingTrivia)
+            return super.visit(node.with(\.returnClause, nil).removingTrailingSpaceIfNeeded())
+        }
 
-    private func containsVoidReturnTypeBasedOnTypeName(dictionary: SourceKittenDictionary) -> Bool {
-        guard let typeName = dictionary.typeName else {
+        override func visit(_ node: FunctionSignatureSyntax) -> FunctionSignatureSyntax {
+            guard let output = node.returnClause,
+                  let tokenBeforeOutput = output.previousToken(viewMode: .sourceAccurate),
+                  output.containsRedundantVoidViolation
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(tokenBeforeOutput.endPositionBeforeTrailingTrivia)
+            return super.visit(node.with(\.returnClause, nil).removingTrailingSpaceIfNeeded())
+        }
+    }
+}
+
+private extension ReturnClauseSyntax {
+    var containsRedundantVoidViolation: Bool {
+        if parent?.is(FunctionTypeSyntax.self) == true {
+            return false
+        } else if let simpleReturnType = type.as(IdentifierTypeSyntax.self) {
+           return simpleReturnType.typeName == "Void"
+        } else if let tupleReturnType = type.as(TupleTypeSyntax.self) {
+            return tupleReturnType.elements.isEmpty
+        } else {
             return false
         }
+    }
+}
 
-        return typeName == "Void" || typeName.components(separatedBy: .whitespaces).joined() == "()"
+private extension SyntaxProtocol {
+    /// `withOutput(nil)` adds a `.spaces(1)` trailing trivia, but we don't always want it.
+    func removingTrailingSpaceIfNeeded() -> Self {
+        guard
+            let nextToken = nextToken(viewMode: .sourceAccurate),
+            nextToken.leadingTrivia.containsNewlines()
+        else {
+            return self
+        }
+
+        return with(
+            \.trailingTrivia,
+            Trivia(pieces: trailingTrivia.dropFirst())
+        )
     }
 }

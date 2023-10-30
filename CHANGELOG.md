@@ -26,6 +26,13 @@
 * Rewrite `cyclomatic_complexity` rule using SwiftSyntax.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Rewrite `redundant_void_return` rule using SwiftSyntax.
+  Also include redundant void return clauses for closures in addition to
+  functions. This can be disabled by configuring the rule with
+  `include_closures: false`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix correction of `explicit_init` rule by keeping significant trivia.  

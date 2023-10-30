@@ -21,8 +21,11 @@ private extension DiscouragedOptionalCollectionRule {
                 return
             }
 
+            // TODO: This can be done more efficiently
+            // By only traversing the tree upwards once and using the first hit
             let violationPosition = [
                 node.nearestParent(ofType: VariableDeclSyntax.self)?.bindingSpecifier,
+                node.nearestParent(ofType: EnumCaseParameterSyntax.self)?.firstName,
                 node.nearestParent(ofType: ClosureParameterSyntax.self)?.firstName,
                 node.nearestParent(ofType: FunctionParameterSyntax.self)?.firstName,
                 node.nearestParent(ofType: FunctionDeclSyntax.self)?.name

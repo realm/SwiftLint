@@ -21,12 +21,17 @@ private extension DiscouragedOptionalCollectionRule {
                 return
             }
 
-            if let variableDeclParent = node.nearestParent(ofType: VariableDeclSyntax.self) {
-                violations.append(variableDeclParent.bindingSpecifier.positionAfterSkippingLeadingTrivia)
-            } else if let functionParameterParent = node.nearestParent(ofType: FunctionParameterSyntax.self) {
-                violations.append(functionParameterParent.firstName.positionAfterSkippingLeadingTrivia)
-            } else if let functionDeclParent = node.nearestParent(ofType: FunctionDeclSyntax.self) {
-                violations.append(functionDeclParent.name.positionAfterSkippingLeadingTrivia)
+            let violationPosition = [
+                node.nearestParent(ofType: VariableDeclSyntax.self)?.bindingSpecifier,
+                node.nearestParent(ofType: ClosureParameterSyntax.self)?.firstName,
+                node.nearestParent(ofType: FunctionParameterSyntax.self)?.firstName,
+                node.nearestParent(ofType: FunctionDeclSyntax.self)?.name
+            ].compactMap(\.?.positionAfterSkippingLeadingTrivia)
+            .filter { node.positionAfterSkippingLeadingTrivia >= $0 }
+            .max()
+
+            if let violationPosition {
+                violations.append(violationPosition)
             }
         }
     }

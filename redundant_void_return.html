@@ -361,6 +361,14 @@ severity
 warning
 </td>
 </tr>
+<tr>
+<td>
+include_closures
+</td>
+<td>
+true
+</td>
+</tr>
 </tbody>
 </table></li>
 </ul>
@@ -393,6 +401,10 @@ warning
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="n">doSomething</span> <span class="p">{</span> <span class="n">arg</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span><span class="err">↓</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{}</span>
 </code></pre>
@@ -406,6 +418,14 @@ warning
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span><span class="err">↓</span> <span class="o">-&gt;</span> <span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">doSomething</span> <span class="p">{</span> <span class="n">arg</span><span class="err">↓</span> <span class="o">-&gt;</span> <span class="p">()</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">doSomething</span> <span class="p">{</span> <span class="n">arg</span><span class="err">↓</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
 

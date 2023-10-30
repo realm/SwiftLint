@@ -1,8 +1,8 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct RedundantVoidReturnRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+@SwiftSyntaxRule
+struct RedundantVoidReturnRule: SwiftSyntaxCorrectableRule {
+    var configuration = RedundantVoidReturnConfiguration()
 
     static let description = RuleDescription(
         identifier: "redundant_void_return",
@@ -27,7 +27,12 @@ struct RedundantVoidReturnRule: Rule {
                     print(key)
                 }
             }
-            """)
+            """),
+            Example("""
+            doSomething { arg -> Void in
+                print(arg)
+            }
+            """, configuration: ["include_closures": false])
         ],
         triggeringExamples: [
             Example("func foo()↓ -> Void {}"),
@@ -63,11 +68,23 @@ struct RedundantVoidReturnRule: Rule {
                 Example("protocol Foo {\n    #if true\n    func foo()\n    #endif\n}")
         ]
     )
+
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
+        Rewriter(
+            configuration: configuration,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
 }
 
 private extension RedundantVoidReturnRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ReturnClauseSyntax) {
+            if !configuration.includeClosures && node.parent?.is(ClosureSignatureSyntax.self) == true {
+                return
+            }
+
             if node.containsRedundantVoidViolation,
                let tokenBeforeOutput = node.previousToken(viewMode: .sourceAccurate) {
                 violations.append(tokenBeforeOutput.endPositionBeforeTrailingTrivia)
@@ -76,6 +93,30 @@ private extension RedundantVoidReturnRule {
     }
 
     final class Rewriter: ViolationsSyntaxRewriter {
+        let configuration: ConfigurationType
+
+        init(
+            configuration: ConfigurationType,
+            locationConverter: SourceLocationConverter,
+            disabledRegions: [SourceRange]
+        ) {
+            self.configuration = configuration
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
+        }
+
+        override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
+            guard configuration.includeClosures,
+                  let output = node.returnClause,
+                  let tokenBeforeOutput = output.previousToken(viewMode: .sourceAccurate),
+                  output.containsRedundantVoidViolation
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(tokenBeforeOutput.endPositionBeforeTrailingTrivia)
+            return super.visit(node.with(\.returnClause, nil).removingTrailingSpaceIfNeeded())
+        }
+
         override func visit(_ node: FunctionSignatureSyntax) -> FunctionSignatureSyntax {
             guard let output = node.returnClause,
                   let tokenBeforeOutput = output.previousToken(viewMode: .sourceAccurate),
@@ -104,7 +145,7 @@ private extension ReturnClauseSyntax {
     }
 }
 
-private extension FunctionSignatureSyntax {
+private extension SyntaxProtocol {
     /// `withOutput(nil)` adds a `.spaces(1)` trailing trivia, but we don't always want it.
     func removingTrailingSpaceIfNeeded() -> Self {
         guard

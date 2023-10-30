@@ -33,6 +33,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [JP Simard](https://github.com/jpsim)
 
+* Rewrite `discouraged_optional_collection` rule using SwiftSyntax.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix correction of `explicit_init` rule by keeping significant trivia.  

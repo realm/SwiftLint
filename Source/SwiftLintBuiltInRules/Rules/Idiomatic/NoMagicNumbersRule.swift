@@ -76,6 +76,7 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let foo = 2 << 2"),
             Example("let a = b / 100.0"),
             Example("let (httpStatusCodeErrorLowerBound, httpStatusCodeErrorUpperBound) = (400, 599)")
+//            Example("let b = UnsafeMutableRawPointer.allocate(byteCount: 4, alignment: 4)").focused()
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -124,9 +125,9 @@ private extension NoMagicNumbersRule {
             collectViolation(forNode: node)
         }
 
-        override func visit(_ node: TupleExprSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
+//        override func visit(_ node: TupleExprSyntax) -> SyntaxVisitorContinueKind {
+//            .skipChildren
+//        }
 
         private func collectViolation(forNode node: some ExprSyntaxProtocol) {
             if node.isMemberOfATestClass(configuration.testParentClasses) {

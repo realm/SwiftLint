@@ -149,8 +149,8 @@ def setup_repos
     end
     if @only_rules_changed && @rules_changed
       File.open(swiftlint_config, 'w') do |file|
-        file.puts('only_rules: [redundant_void_return]')
-        file.puts('redundant_void_return: {include_closures: false}')
+        file.puts('only_rules:')
+        file.puts(@rules_changed.map { |rule| "  - #{rule}" })
       end
     end
     Dir.chdir(dir) do
@@ -276,10 +276,6 @@ def set_globals
   end.compact.sort
   # True iff the only Swift files that were changed are SwiftLint rules, and that number is one or greater
   @only_rules_changed = !@rules_changed.empty? && @changed_swift_files.count == @rules_changed.count
-
-  # Force OSSCheck to only measure the impact of the `redundant_void_return` rule
-  @rules_changed = ['redundant_void_return']
-  @only_rules_changed = true
 end
 
 def print_rules_changed

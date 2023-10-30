@@ -50,20 +50,25 @@
   [BB9z](https://github.com/BB9z)
   [#5289](https://github.com/realm/SwiftLint/issues/5289)
 
-* Fix invalid corrections for opaque and existential optionals in 
+* Fix invalid corrections for opaque and existential optionals in
   `syntactic_sugar` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5277](https://github.com/realm/SwiftLint/issues/5277)
 
-* Fix false positive in `unused_import` rule that triggered on 
+* Fix false positive in `unused_import` rule that triggered on
   `@_exported` imports which could break downstream modules if removed.  
   [jszumski](https://github.com/jszumski)
   [#5242](https://github.com/realm/SwiftLint/pull/5242)
 
-* Fix false positive in `unused_import` rule when using a constructor 
+* Fix false positive in `unused_import` rule when using a constructor
   defined in a transitive module.  
   [jszumski](https://github.com/jszumski)
   [#5246](https://github.com/realm/SwiftLint/pull/5246)
+
+* Fixed false positives for the `no_magic_numbers` rule, when they
+  are defined in a tuple like `let (a, b) = (5, 10)`.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5305](https://github.com/realm/SwiftLint/pull/5305)
 
 ## 0.53.0: Laundry List
 

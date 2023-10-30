@@ -74,7 +74,8 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let foo = 1 >> 2"),
             Example("let foo = 2 >> 2"),
             Example("let foo = 2 << 2"),
-            Example("let a = b / 100.0")
+            Example("let a = b / 100.0"),
+            Example("let (httpStatusCodeErrorLowerBound, httpStatusCodeErrorUpperBound) = (400, 599)")
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -121,6 +122,10 @@ private extension NoMagicNumbersRule {
                 return
             }
             collectViolation(forNode: node)
+        }
+
+        override func visit(_ node: TupleExprSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
         }
 
         private func collectViolation(forNode node: some ExprSyntaxProtocol) {

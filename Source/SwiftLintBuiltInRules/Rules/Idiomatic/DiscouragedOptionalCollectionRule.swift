@@ -17,34 +17,14 @@ struct DiscouragedOptionalCollectionRule: OptInRule {
 private extension DiscouragedOptionalCollectionRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: OptionalTypeSyntax) {
-            guard node.wrappedType.isCollectionType else {
-                return
-            }
-
-            // TODO: This can be done more efficiently
-            // By only traversing the tree upwards once and using the first hit
-            let violationPosition = [
-                node.nearestParent(ofType: VariableDeclSyntax.self)?.bindingSpecifier,
-                node.nearestParent(ofType: EnumCaseParameterSyntax.self)?.firstName,
-                node.nearestParent(ofType: ClosureParameterSyntax.self)?.firstName,
-                node.nearestParent(ofType: FunctionParameterSyntax.self)?.firstName,
-                node.nearestParent(ofType: FunctionDeclSyntax.self)?.name
-            ].compactMap(\.?.positionAfterSkippingLeadingTrivia)
-            .filter { node.positionAfterSkippingLeadingTrivia >= $0 }
-            .max()
-
-            if let violationPosition {
-                violations.append(violationPosition)
+            if node.wrappedType.isCollectionType {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }
 }
 
 private extension SyntaxProtocol {
-    func nearestParent<T: SyntaxProtocol>(ofType type: T.Type) -> T? {
-        parent.flatMap { $0.as(type) ?? $0.nearestParent(ofType: type) }
-    }
-
     var isCollectionType: Bool {
         self.is(ArrayTypeSyntax.self) ||
             self.is(DictionaryTypeSyntax.self) ||

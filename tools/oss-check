@@ -276,9 +276,6 @@ def set_globals
   end.compact.sort
   # True iff the only Swift files that were changed are SwiftLint rules, and that number is one or greater
   @only_rules_changed = !@rules_changed.empty? && @changed_swift_files.count == @rules_changed.count
-  # REVERT ME: Hardcode that only the `discouraged_optional_collection` rule changed
-  @rules_changed = ['discouraged_optional_collection']
-  @only_rules_changed = true
 end
 
 def print_rules_changed

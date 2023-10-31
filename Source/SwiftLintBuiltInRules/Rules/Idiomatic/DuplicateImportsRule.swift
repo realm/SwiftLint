@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
@@ -52,7 +51,7 @@ private final class ImportPathVisitor: SyntaxVisitor {
     var importPaths = [AbsolutePosition: [String]]()
     var sortedImportPaths: [(position: AbsolutePosition, path: [String])] {
         importPaths
-            .sorted(using: KeyPathComparator(\.key))
+            .sorted { $0.key < $1.key }
             .map { (position: $0, path: $1) }
     }
 

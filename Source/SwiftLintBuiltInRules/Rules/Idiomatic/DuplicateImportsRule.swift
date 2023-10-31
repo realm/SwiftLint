@@ -33,9 +33,8 @@ struct DuplicateImportsRule: SwiftSyntaxCorrectableRule {
         }
     }
 
-    // swiftlint:disable:next unavailable_function
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
-        fatalError("Unreachable: `validate(file:)` will be used instead")
+        queuedFatalError("Unreachable: `validate(file:)` will be used instead")
     }
 
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {

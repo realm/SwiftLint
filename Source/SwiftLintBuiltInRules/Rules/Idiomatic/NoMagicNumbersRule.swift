@@ -74,7 +74,7 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let foo = 1 >> 2"),
             Example("let foo = 2 >> 2"),
             Example("let foo = 2 << 2"),
-            Example("let a = b / 100.0")
+            Example("let a = b / 100.0"),
             Example("let (httpStatusCodeErrorLowerBound, httpStatusCodeErrorUpperBound) = (400, 599)")
 //            Example("let b = UnsafeMutableRawPointer.allocate(byteCount: 4, alignment: 4)").focused()
         ],

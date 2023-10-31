@@ -15,6 +15,6 @@ visibility = ["//visibility:public"],
 )
     """,
     strip_prefix = "bin",
-    sha256 = "7489afb5c867efa06333a779a2430ccb52647a50f0e2280066cc78aea4532d8d",
-    url = "https://github.com/krzysztofzablocki/Sourcery/releases/download/2.0.2/Sourcery-2.0.2.zip",
+    sha256 = "abd72022d996b09196f27c8ca67310ebded3ef2fd93d823db48dfcac923699e5",
+    url = "https://github.com/krzysztofzablocki/Sourcery/releases/download/2.1.2/Sourcery-2.1.2.zip",
 )

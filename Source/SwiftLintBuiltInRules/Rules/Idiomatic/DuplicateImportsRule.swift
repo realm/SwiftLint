@@ -1,4 +1,3 @@
-import SourceKittenFramework
 import SwiftSyntax
 
 // MARK: - Rule
@@ -27,7 +26,7 @@ struct DuplicateImportsRule: SwiftSyntaxCorrectableRule {
         file.duplicateImportsViolationPositions().map { position in
             StyleViolation(
                 ruleDescription: Self.description,
-                location: Location(file: file, byteOffset: ByteCount(position))
+                location: Location(file: file, position: position)
             )
         }
     }

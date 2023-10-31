@@ -37,6 +37,9 @@
   more violations.  
   [JP Simard](https://github.com/jpsim)
 
+* Rewrite `duplicate_imports` rule using SwiftSyntax.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix correction of `explicit_init` rule by keeping significant trivia.  

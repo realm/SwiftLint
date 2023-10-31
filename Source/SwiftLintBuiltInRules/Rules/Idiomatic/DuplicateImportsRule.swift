@@ -1,7 +1,10 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
-struct DuplicateImportsRule: CorrectableRule {
+// MARK: - Rule
+
+struct DuplicateImportsRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     // List of all possible import kinds
@@ -21,192 +24,172 @@ struct DuplicateImportsRule: CorrectableRule {
         corrections: DuplicateImportsRuleExamples.corrections
     )
 
-    private func rangesInConditionalCompilation(file: SwiftLintFile) -> [ByteRange] {
-        let contents = file.stringView
-
-        let ranges = file.syntaxMap.tokens
-            .filter { $0.kind == .buildconfigKeyword }
-            .map { $0.range }
-            .filter { range in
-                return ["#if", "#endif"].contains(contents.substringWithByteRange(range))
-            }
-
-        // Make sure that each #if has corresponding #endif
-        guard ranges.count.isMultiple(of: 2) else { return [] }
-
-        return stride(from: 0, to: ranges.count, by: 2).reduce(into: []) { result, rangeIndex in
-            result.append(ranges[rangeIndex].union(with: ranges[rangeIndex + 1]))
-        }
-    }
-
-    private func buildImportLineSlicesByImportSubpath(
-        importLines: [Line]
-    ) -> [ImportSubpath: [ImportLineSlice]] {
-        var importLineSlices = [ImportSubpath: [ImportLineSlice]]()
-
-        importLines.forEach { importLine in
-            importLine.importSlices.forEach { slice in
-                importLineSlices[slice.subpath, default: []].append(
-                    ImportLineSlice(
-                        slice: slice,
-                        line: importLine
-                    )
-                )
-            }
-        }
-
-        return importLineSlices
-    }
-
-    private func findDuplicateImports(
-        file: SwiftLintFile,
-        importLineSlicesGroupedBySubpath: [[ImportLineSlice]]
-    ) -> [DuplicateImport] {
-        typealias ImportLocation = Int
-
-        var duplicateImportsByLocation = [ImportLocation: DuplicateImport]()
-
-        importLineSlicesGroupedBySubpath.forEach { linesImportingSubpath in
-            guard linesImportingSubpath.count > 1 else { return }
-            guard let primaryImportIndex = linesImportingSubpath.firstIndex(where: {
-                $0.slice.type == .complete
-            }) else { return }
-
-            linesImportingSubpath.enumerated().forEach { index, importedLine in
-                guard index != primaryImportIndex else { return }
-                let location = Location(
-                    file: file,
-                    characterOffset: importedLine.line.range.location
-                )
-                duplicateImportsByLocation[importedLine.line.range.location] = DuplicateImport(
-                    location: location,
-                    range: importedLine.line.range
-                )
-            }
-        }
-
-        return Array(duplicateImportsByLocation.values)
-    }
-
-    private struct DuplicateImport {
-        let location: Location
-        var range: NSRange
-    }
-
-    private func duplicateImports(file: SwiftLintFile) -> [DuplicateImport] {
-        let contents = file.stringView
-
-        let ignoredRanges = self.rangesInConditionalCompilation(file: file)
-
-        let importKinds = Self.importKinds.joined(separator: "|")
-
-        // Grammar of import declaration
-        // attributes(optional) import import-kind(optional) import-path
-        let regex = "^([a-zA-Z@_]+\\s)?import(\\s(\(importKinds)))?\\s+[a-zA-Z0-9._]+$"
-        let importRanges = file.match(pattern: regex)
-            .filter { $0.1.allSatisfy { [.keyword, .identifier, .attributeBuiltin].contains($0) } }
-            .compactMap { contents.NSRangeToByteRange(start: $0.0.location, length: $0.0.length) }
-            .filter { importRange -> Bool in
-                return !importRange.intersects(ignoredRanges)
-            }
-
-        let lines = file.lines
-
-        let importLines: [Line] = importRanges.compactMap { range in
-            guard let line = contents.lineAndCharacter(forByteOffset: range.location)?.line
-                else { return nil }
-            return lines[line - 1]
-        }
-
-        let importLineSlices = buildImportLineSlicesByImportSubpath(importLines: importLines)
-
-        let duplicateImports = findDuplicateImports(
-            file: file,
-            importLineSlicesGroupedBySubpath: Array(importLineSlices.values)
-        )
-
-        return duplicateImports.sorted(by: {
-            $0.range.lowerBound < $1.range.lowerBound
-        })
-    }
-
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return duplicateImports(file: file).map { duplicateImport in
+        file.duplicateImportsViolationPositions().map { position in
             StyleViolation(
                 ruleDescription: Self.description,
-                severity: configuration.severity,
-                location: duplicateImport.location
+                location: Location(file: file, byteOffset: ByteCount(position))
             )
         }
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
-        let duplicateImports = duplicateImports(file: file).reversed().filter {
-            file.ruleEnabled(violatingRange: $0.range, for: self) != nil
-        }
+    // swiftlint:disable:next unavailable_function
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+        fatalError("Unreachable: `validate(file:)` will be used instead")
+    }
 
-        let violatingRanges = duplicateImports.map(\.range)
-        let correctedFileContents = violatingRanges.reduce(file.stringView.nsString) { contents, range in
-            contents.replacingCharacters(
-                in: range,
-                with: ""
-            ).bridge()
-        }
-
-        file.write(correctedFileContents.bridge())
-
-        return duplicateImports.map { duplicateImport in
-            Correction(
-                ruleDescription: Self.description,
-                location: duplicateImport.location
-            )
-        }
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
+        Rewriter(
+            importPositionsToRemove: file.duplicateImportsViolationPositions(),
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 
-private typealias ImportSubpath = ArraySlice<String>
+// MARK: - Private
 
-private struct ImportSlice {
-    enum ImportSliceType {
-        /// For "import A.B.C" parent subpaths are ["A", "B"] and ["A"]
-        case parent
-
-        /// For "import A.B.C" complete subpath is ["A", "B", "C"]
-        case complete
+private final class ImportPathVisitor: SyntaxVisitor {
+    var importPaths = [AbsolutePosition: [String]]()
+    var sortedImportPaths: [(position: AbsolutePosition, path: [String])] {
+        importPaths
+            .sorted(using: KeyPathComparator(\.key))
+            .map { (position: $0, path: $1) }
     }
 
-    let subpath: ImportSubpath
-    let type: ImportSliceType
+    override func visitPost(_ node: ImportDeclSyntax) {
+        importPaths[node.positionAfterSkippingLeadingTrivia] = node.path.map(\.name.text)
+    }
 }
 
-private struct ImportLineSlice {
-    let slice: ImportSlice
-    let line: Line
+private final class IfConfigClauseVisitor: SyntaxVisitor {
+    var ifConfigRanges = [ByteSourceRange]()
+
+    override func visitPost(_ node: IfConfigClauseSyntax) {
+        ifConfigRanges.append(node.totalByteRange)
+    }
 }
 
-private extension Line {
-    /// Returns name of the module being imported.
-    var importIdentifier: Substring? {
-        return self.content.split(separator: " ").last
+private struct ImportPathUsage: Hashable {
+    struct HashableByteSourceRange: Hashable {
+        let value: ByteSourceRange
+
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(value.offset)
+            hasher.combine(value.length)
+        }
     }
 
-    /// For "import A.B.C" returns slices [["A", "B", "C"], ["A", "B"], ["A"]]
-    var importSlices: [ImportSlice] {
-        guard let importIdentifier else { return [] }
+    init(ifConfigRanges: [ByteSourceRange], path: [String]) {
+        self.hashableIfConfigRanges = ifConfigRanges.map(HashableByteSourceRange.init)
+        self.path = path
+    }
 
-        let importedSubpathParts = importIdentifier.split(separator: ".").map { String($0) }
-        guard !importedSubpathParts.isEmpty else { return [] }
+    var ifConfigRanges: [ByteSourceRange] { hashableIfConfigRanges.map(\.value) }
+    let hashableIfConfigRanges: [HashableByteSourceRange]
+    let path: [String]
+}
 
-        return [
-            ImportSlice(
-                subpath: importedSubpathParts[0..<importedSubpathParts.count],
-                type: .complete
+private extension SwiftLintFile {
+    func duplicateImportsViolationPositions() -> [AbsolutePosition] {
+        let importPaths = ImportPathVisitor(viewMode: .sourceAccurate)
+            .walk(file: self, handler: \.sortedImportPaths)
+
+        let ifConfigRanges = IfConfigClauseVisitor(viewMode: .sourceAccurate)
+            .walk(file: self, handler: \.ifConfigRanges)
+
+        func ranges(for position: AbsolutePosition) -> [ByteSourceRange] {
+            let positionRange = ByteSourceRange(offset: position.utf8Offset, length: 0)
+            return ifConfigRanges.filter { $0.intersectsOrTouches(positionRange) }
+        }
+
+        var violationPositions = Set<AbsolutePosition>()
+        var seen = Set<ImportPathUsage>()
+
+        // Exact matches
+        for (position, path) in importPaths {
+            let rangesForPosition = ranges(for: position)
+
+            defer {
+                seen.insert(
+                    ImportPathUsage(ifConfigRanges: rangesForPosition, path: path)
+                )
+            }
+
+            guard seen.map(\.path).contains(path) else {
+                continue
+            }
+
+            let intersects = {
+                let otherRangesForPosition = seen
+                    .filter { $0.path == path }
+                    .flatMap(\.ifConfigRanges)
+
+                return rangesForPosition.contains(where: otherRangesForPosition.contains)
+            }
+
+            if rangesForPosition.isEmpty || intersects() {
+                violationPositions.insert(position)
+            }
+        }
+
+        // Partial matches
+        for (position, path) in importPaths {
+            let violation = importPaths.contains { other in
+                let otherPath = other.path
+                guard path.starts(with: otherPath), otherPath != path else { return false }
+                let rangesForPosition = ranges(for: position)
+                let otherRangesForPosition = ranges(for: other.position)
+                let intersects = rangesForPosition.contains { range in
+                    otherRangesForPosition.contains(range)
+                }
+                return intersects || rangesForPosition.isEmpty
+            }
+            if violation {
+                violationPositions.insert(position)
+            }
+        }
+
+        return violationPositions.sorted()
+    }
+}
+
+private extension DuplicateImportsRule {
+    final class Rewriter: ViolationsSyntaxRewriter {
+        let importPositionsToRemove: [AbsolutePosition]
+
+        init(
+            importPositionsToRemove: [AbsolutePosition],
+            locationConverter: SourceLocationConverter,
+            disabledRegions: [SourceRange]
+        ) {
+            self.importPositionsToRemove = importPositionsToRemove
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
+        }
+
+        override func visit(_ node: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
+            let itemsToRemove = node
+                .enumerated()
+                .map { ($0, $1.item.positionAfterSkippingLeadingTrivia) }
+                .filter { _, position in importPositionsToRemove.contains(position) }
+                .map { (indexInParent: $0, absolutePosition: $1) }
+
+            correctionPositions.append(
+                contentsOf: itemsToRemove.map(\.absolutePosition)
             )
-        ] + (1..<importedSubpathParts.count).map {
-            ImportSlice(
-                subpath: importedSubpathParts[0..<importedSubpathParts.count - $0],
-                type: .parent
-            )
+
+            var copy = node
+            for indexInParent in itemsToRemove.map(\.indexInParent).reversed() {
+                let currentIndex = copy.index(copy.startIndex, offsetBy: indexInParent)
+                let nextIndex = copy.index(after: currentIndex)
+                // Preserve leading trivia by moving it to the next item
+                if nextIndex < copy.endIndex {
+                    copy[nextIndex].leadingTrivia = copy[currentIndex].leadingTrivia
+                }
+                copy.remove(at: currentIndex)
+            }
+
+            return super.visit(copy)
         }
     }
 }

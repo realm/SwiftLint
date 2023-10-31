@@ -110,6 +110,7 @@ struct TypeContentsOrderRule: OptInRule {
             let viewLifecycleMethodNames = [
                 "loadView(",
                 "loadViewIfNeeded(",
+                "viewIsAppearing(",
                 "viewDidLoad(",
                 "viewWillAppear(",
                 "viewWillLayoutSubviews(",

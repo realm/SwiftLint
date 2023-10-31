@@ -78,6 +78,10 @@ internal struct TypeContentsOrderRuleExamples {
                 view2.layoutIfNeeded()
                 hasLayoutedView2 = true
             }
+        
+            override func viewIsAppearing(_ animated: Bool) {
+                super.viewIsAppearing(animated)
+            }
         """,
         """
             // IBActions

@@ -442,6 +442,10 @@ order
         <span class="n">hasLayoutedView2</span> <span class="o">=</span> <span class="kc">true</span>
     <span class="p">}</span>
 
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewIsAppearing</span><span class="p">(</span><span class="n">_</span> <span class="nv">animated</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">viewIsAppearing</span><span class="p">(</span><span class="n">animated</span><span class="p">)</span>
+    <span class="p">}</span>
+
     <span class="c1">// IBActions</span>
     <span class="kd">@IBAction</span> <span class="kd">func</span> <span class="nf">goNextButtonPressed</span><span class="p">()</span> <span class="p">{</span>
         <span class="nf">goToNextVc</span><span class="p">()</span>

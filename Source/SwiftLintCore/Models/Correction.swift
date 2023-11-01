@@ -1,5 +1,5 @@
 /// A value describing a SwiftLint violation that was corrected.
-public struct Correction: Equatable {
+public struct Correction: Equatable, Sendable {
     /// The description of the rule for which this correction was applied.
     public let ruleDescription: RuleDescription
     /// The location of the original violation that was corrected.

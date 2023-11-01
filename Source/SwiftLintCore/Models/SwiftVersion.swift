@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 /// A value describing the version of the Swift compiler.
-public struct SwiftVersion: RawRepresentable, Codable, Comparable {
+public struct SwiftVersion: RawRepresentable, Codable, Comparable, Sendable {
     public typealias RawValue = String
 
     public let rawValue: String

@@ -19,7 +19,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
             ],
             "check_nesting_in_closures_and_statements": false,
             "always_allow_one_type_in_functions": true
-        ] as [String: Any]
+        ] as [String: any Sendable]
         var nestingConfig = defaultNestingConfiguration
         do {
             try nestingConfig.apply(configuration: config)
@@ -233,7 +233,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
             "severity": "error",
             "excluded": "viewWillAppear(_:)",
             "included": ["*", "testMethod1()", "testMethod2(_:)"]
-        ] as [String: Any]
+        ] as [String: any Sendable]
         do {
             try configuration.apply(configuration: conf2)
             XCTAssertEqual(configuration.severityConfiguration.severity, .error)
@@ -250,7 +250,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
             "severity": "warning",
             "excluded": "*",
             "included": ["testMethod1()", "testMethod2(_:)"]
-        ] as [String: Any]
+        ] as [String: any Sendable]
         do {
             try configuration.apply(configuration: conf3)
             XCTAssertEqual(configuration.severityConfiguration.severity, .warning)
@@ -302,7 +302,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
 
     func testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup() {
         var configuration = ModifierOrderConfiguration()
-        let config = ["severity": "warning", "preferred_modifier_order": ["specialize"]]  as [String: Any]
+        let config = ["severity": "warning", "preferred_modifier_order": ["specialize"]]  as [String: any Sendable]
 
         checkError(Issue.unknownConfiguration(ruleID: ModifierOrderRule.description.identifier)) {
             try configuration.apply(configuration: config)
@@ -311,7 +311,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
 
     func testModifierOrderConfigurationThrowsOnNonModifiableGroup() {
         var configuration = ModifierOrderConfiguration()
-        let config = ["severity": "warning", "preferred_modifier_order": ["atPrefixed"]]  as [String: Any]
+        let config = ["severity": "warning", "preferred_modifier_order": ["atPrefixed"]]  as [String: any Sendable]
         checkError(Issue.unknownConfiguration(ruleID: ModifierOrderRule.description.identifier)) {
             try configuration.apply(configuration: config)
         }

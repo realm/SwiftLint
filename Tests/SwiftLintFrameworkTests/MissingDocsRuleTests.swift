@@ -177,7 +177,7 @@ class MissingDocsRuleTests: SwiftLintTestCase {
                 "excludes_extensions": true,
                 "excludes_inherited_types": false,
                 "error": ["public"]
-            ] as [String: Any]
+            ] as [String: any Sendable]
         )
 
         XCTAssertTrue(configuration.excludesExtensions)

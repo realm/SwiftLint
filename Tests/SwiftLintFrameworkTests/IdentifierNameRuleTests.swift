@@ -99,7 +99,7 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
             ruleConfiguration: [
                 "validates_start_with_lowercase": true,
                 "allowed_symbols": ["M"]
-            ] as [String: Any]
+            ] as [String: any Sendable]
         )
     }
 

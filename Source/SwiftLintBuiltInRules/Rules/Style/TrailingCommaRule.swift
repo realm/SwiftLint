@@ -1,4 +1,4 @@
-@preconcurrency import SwiftSyntax
+import SwiftSyntax
 
 @SwiftSyntaxRule
 struct TrailingCommaRule: SwiftSyntaxCorrectableRule {

@@ -5,6 +5,14 @@ steps:
       - bazel build :swiftlint
       - echo "+++ Test"
       - bazel test --test_output=errors //Tests/...
+  - label: "Build With Strict Concurrency"
+    commands:
+      - echo "+++ Add @preconcurrency imports"
+      - ./tools/add-preconcurrency-imports.sh
+      - echo "+++ Build"
+      - bazel build --define strict_concurrency_builtin_rules=true :swiftlint
+      - echo "--- Clean up"
+      - git reset --hard
   - label: "SwiftPM"
     commands:
       - echo "+++ Test"

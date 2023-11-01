@@ -6,6 +6,11 @@ load(
     "swift_library",
 )
 
+config_setting(
+    name = "strict_concurrency_builtin_rules",
+    values = {"define": "strict_concurrency_builtin_rules=true"},
+)
+
 copts = [
     "-enable-upcoming-feature",
     "ExistentialAny",
@@ -67,7 +72,10 @@ swift_library(
 swift_library(
     name = "SwiftLintBuiltInRules",
     srcs = glob(["Source/SwiftLintBuiltInRules/**/*.swift"]),
-    copts = copts + strict_concurrency_copts,
+    copts = copts + select({
+        ":strict_concurrency_builtin_rules": strict_concurrency_copts,
+        "//conditions:default": [],
+    }),
     module_name = "SwiftLintBuiltInRules",
     visibility = ["//visibility:public"],
     deps = [

@@ -1,11 +1,11 @@
-@preconcurrency import SwiftSyntax
+import SwiftSyntax
 import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct ToggleBoolRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static let description = RuleDescription(
+    static var description = RuleDescription(
         identifier: "toggle_bool",
         name: "Toggle Bool",
         description: "Prefer `someBool.toggle()` over `someBool = !someBool`",

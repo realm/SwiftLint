@@ -4,7 +4,7 @@ import SwiftSyntax
 struct SuperfluousElseRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "superfluous_else",
         name: "Superfluous Else",
         description: "Else branches should be avoided when the previous if-block exits the current scope",

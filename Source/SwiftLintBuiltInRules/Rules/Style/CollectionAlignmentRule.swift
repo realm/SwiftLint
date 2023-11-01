@@ -4,7 +4,7 @@ import SwiftSyntax
 struct CollectionAlignmentRule: OptInRule {
     var configuration = CollectionAlignmentConfiguration()
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "collection_alignment",
         name: "Collection Element Alignment",
         description: "All elements in a collection literal should be vertically aligned",

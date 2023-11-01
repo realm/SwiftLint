@@ -4,7 +4,7 @@ import SwiftSyntax
 struct DuplicatedKeyInDictionaryLiteralRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "duplicated_key_in_dictionary_literal",
         name: "Duplicated Key in Dictionary Literal",
         description: "Dictionary literals with duplicated keys will crash at runtime",

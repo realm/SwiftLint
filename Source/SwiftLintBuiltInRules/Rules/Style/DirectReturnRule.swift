@@ -4,7 +4,7 @@ import SwiftSyntax
 struct DirectReturnRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "direct_return",
         name: "Direct Return",
         description: "Directly return the expression instead of assigning it to a variable first",

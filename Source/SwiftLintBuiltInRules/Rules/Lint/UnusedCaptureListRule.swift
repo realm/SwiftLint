@@ -12,7 +12,7 @@ private func warnDeprecatedOnce() {
 struct UnusedCaptureListRule: SwiftSyntaxRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unused_capture_list",
         name: "Unused Capture List",
         description: "Unused reference in a capture list should be removed",

@@ -4,7 +4,7 @@ import SwiftSyntax
 struct NonOverridableClassDeclarationRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = NonOverridableClassDeclarationConfiguration()
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "non_overridable_class_declaration",
         name: "Class Declaration in Final Class",
         description: """

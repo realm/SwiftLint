@@ -260,8 +260,7 @@ def set_globals
   @effective_main_commitish = `git merge-base origin/main #{@options[:branch]}`.chomp
   @changed_swift_files = `git diff --diff-filter=AMRCU #{@effective_main_commitish} --name-only | grep "\.swift$" || true`.split("\n")
   @changed_rule_files = @changed_swift_files.select do |file|
-    file.start_with? 'Source/SwiftLintFramework/Rules/'
-#    file.start_with? 'Source/SwiftLintBuiltInRules/Rules/'
+    file.start_with? 'Source/SwiftLintBuiltInRules/Rules/'
   end
   @rules_changed = @changed_rule_files.map do |path|
     if File.read(path) =~ /^\s+identifier: "(\w+)",$/

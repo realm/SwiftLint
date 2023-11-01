@@ -31,4 +31,4 @@ use_repo(apple_cc_configure, "local_config_apple_cc")
 # Dev Dependencies
 
 bazel_dep(name = "bazel_skylib", version = "1.4.2", dev_dependency = True)
-bazel_dep(name = "rules_xcodeproj", version = "1.11.0", dev_dependency = True)
+bazel_dep(name = "rules_xcodeproj", version = "1.13.0", dev_dependency = True)

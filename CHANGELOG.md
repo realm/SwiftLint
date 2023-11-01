@@ -39,7 +39,8 @@
 
 * Rewrite `duplicate_imports` rule using SwiftSyntax.  
   [JP Simard](https://github.com/jpsim)
-* Add `viewIsAppearing` in `viewLifecycleMethodNames`.  
+
+* Handle `viewIsAppearing` in the `type_contents_order` rule.  
   [u-abyss](https://github.com/u-abyss)
   [#5259](https://github.com/realm/SwiftLint/issues/5259)
 

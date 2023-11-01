@@ -11,7 +11,7 @@ class TrailingClosureConfigurationTests: SwiftLintTestCase {
     func testApplyingCustomConfiguration() throws {
         var config = TrailingClosureConfiguration()
         try config.apply(configuration: ["severity": "error",
-                                         "only_single_muted_parameter": true] as [String: Any])
+                                         "only_single_muted_parameter": true] as [String: any Sendable])
         XCTAssertEqual(config.severityConfiguration.severity, .error)
         XCTAssertTrue(config.onlySingleMutedParameter)
     }

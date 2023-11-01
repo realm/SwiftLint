@@ -9,7 +9,7 @@ class NameConfigurationTests: SwiftLintTestCase {
                        "max_length": ["warning": 170, "error": 700],
                        "excluded": "id",
                        "allowed_symbols": ["$"],
-                       "validates_start_with_lowercase": "warning"] as [String: Any]
+                       "validates_start_with_lowercase": "warning"] as [String: any Sendable]
         var nameConfig = TesteeType(minLengthWarning: 0,
                                     minLengthError: 0,
                                     maxLengthWarning: 0,

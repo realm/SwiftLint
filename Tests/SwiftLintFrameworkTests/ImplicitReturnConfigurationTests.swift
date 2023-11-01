@@ -29,7 +29,7 @@ class ImplicitReturnConfigurationTests: SwiftLintTestCase {
 
     func testImplicitReturnConfigurationThrowsOnUnrecognizedModifierGroup() {
         var configuration = ImplicitReturnConfiguration()
-        let config = ["included": ["foreach"]] as [String: Any]
+        let config = ["included": ["foreach"]] as [String: any Sendable]
 
         checkError(Issue.unknownConfiguration(ruleID: ImplicitReturnRule.description.identifier)) {
             try configuration.apply(configuration: config)

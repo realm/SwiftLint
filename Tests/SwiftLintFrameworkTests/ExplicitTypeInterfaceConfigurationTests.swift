@@ -13,7 +13,7 @@ class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
         var config = ExplicitTypeInterfaceConfiguration()
         try config.apply(configuration: ["severity": "error",
                                          "excluded": ["local"],
-                                         "allow_redundancy": true] as [String: Any])
+                                         "allow_redundancy": true] as [String: any Sendable])
         XCTAssertEqual(config.severityConfiguration.severity, .error)
         XCTAssertEqual(config.allowedKinds, Set([.instance, .class, .static]))
         XCTAssertTrue(config.allowRedundancy)

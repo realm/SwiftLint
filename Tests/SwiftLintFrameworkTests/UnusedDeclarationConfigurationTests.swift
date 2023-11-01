@@ -8,7 +8,7 @@ class UnusedDeclarationConfigurationTests: XCTestCase {
             "severity": "warning",
             "include_public_and_open": true,
             "related_usrs_to_skip": ["a", "b"]
-        ] as [String: Any]
+        ] as [String: any Sendable]
 
         try testee.apply(configuration: config)
 

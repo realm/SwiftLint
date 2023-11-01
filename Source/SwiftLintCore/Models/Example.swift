@@ -1,6 +1,6 @@
 /// Captures code and context information for an example of a triggering or
 /// non-triggering style
-public struct Example {
+public struct Example: Sendable {
     /// The contents of the example
     public private(set) var code: String
     /// The untyped configuration to apply to the rule, if deviating from the default configuration.
@@ -13,7 +13,7 @@ public struct Example {
     /// ```
     ///
     /// Then the equivalent configuration value would be `["severity": "warning"]`.
-    public private(set) var configuration: Any?
+    public private(set) var configuration: [String: any Sendable]?
     /// Whether the example should be tested by prepending multibyte grapheme clusters
     ///
     /// - SeeAlso: addEmoji(_:)
@@ -63,7 +63,7 @@ public extension Example {
     ///                           Defaults to the file where this initializer is called.
     ///   - line:                 The line in the file where the example is located.
     ///                           Defaults to the line where this initializer is called.
-    init(_ code: String, configuration: Any? = nil, testMultiByteOffsets: Bool = true,
+    init(_ code: String, configuration: [String: any Sendable]? = nil, testMultiByteOffsets: Bool = true,
          testWrappingInComment: Bool = true, testWrappingInString: Bool = true, testDisableCommand: Bool = true,
          testOnLinux: Bool = true, file: StaticString = #file, line: UInt = #line,
          excludeFromDocumentation: Bool = false) {

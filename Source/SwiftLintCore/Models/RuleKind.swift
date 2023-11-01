@@ -1,5 +1,5 @@
 /// All the possible rule kinds (categories).
-public enum RuleKind: String, Codable {
+public enum RuleKind: String, Codable, Sendable {
     /// Describes rules that validate Swift source conventions.
     case lint
     /// Describes rules that validate common practices in the Swift community.

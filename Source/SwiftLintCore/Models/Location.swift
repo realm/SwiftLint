@@ -3,7 +3,7 @@ import SourceKittenFramework
 import SwiftSyntax
 
 /// The placement of a segment of Swift in a collection of source files.
-public struct Location: CustomStringConvertible, Comparable, Codable {
+public struct Location: CustomStringConvertible, Comparable, Codable, Sendable {
     /// The file path on disk for this location.
     public let file: String?
     /// The line offset in the file for this location. 1-indexed.

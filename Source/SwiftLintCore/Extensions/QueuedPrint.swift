@@ -26,7 +26,7 @@ private func setupAtExitHandler() {
 
  - parameter object: Object to print.
  */
-public func queuedPrint<T>(_ object: T) {
+public func queuedPrint<T: Sendable>(_ object: T) {
     outputQueue.async {
         print(object)
     }

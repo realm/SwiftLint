@@ -114,7 +114,7 @@ private extension String {
 }
 
 private extension Int {
-    private static var numberFormatter: NumberFormatter = {
+    private static let numberFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         return numberFormatter

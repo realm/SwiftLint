@@ -8,7 +8,7 @@ public extension Configuration {
 
         /// The default indentation style if none is explicitly provided.
         @_spi(TestHelper)
-        public static var `default` = spaces(count: 4)
+        public static let `default` = spaces(count: 4)
 
         /// Creates an indentation style based on an untyped configuration value.
         ///

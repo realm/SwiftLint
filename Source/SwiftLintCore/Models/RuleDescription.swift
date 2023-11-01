@@ -1,5 +1,5 @@
 /// A detailed description for a SwiftLint rule. Used for both documentation and testing purposes.
-public struct RuleDescription: Equatable {
+public struct RuleDescription: Equatable, Sendable {
     /// The rule's unique identifier, to be used in configuration files and SwiftLint commands.
     /// Should be short and only comprised of lowercase latin alphabet letters and underscores formatted in snake case.
     public let identifier: String

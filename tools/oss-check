@@ -142,16 +142,6 @@ def setup_repos
     perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
     swiftlint_config = "#{dir}/.swiftlint.yml"
     FileUtils.rm_rf(swiftlint_config)
-    if repo.name == 'Swift'
-      File.open(swiftlint_config, 'w') do |file|
-        file.puts(<<-HEREDOC
-excluded:
-- benchmark/multi-source/PrimsSplit/Prims_main.swift
-- validation-test/IDE/crashers_fixed/issue-57321.swift
-HEREDOC
-        )
-      end
-    end
     if @only_rules_changed && @rules_changed
       File.open(swiftlint_config, 'w') do |file|
         file.puts('only_rules:')
@@ -309,7 +299,6 @@ end
   Repo.new('Quick', 'Quick/Quick'),
   Repo.new('Realm', 'realm/realm-swift'),
   Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
-  Repo.new('Swift', 'apple/swift'),
   Repo.new('VLC', 'videolan/vlc-ios'),
   Repo.new('Wire', 'wireapp/wire-ios'),
   Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')

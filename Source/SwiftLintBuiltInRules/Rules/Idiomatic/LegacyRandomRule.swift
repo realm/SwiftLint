@@ -4,7 +4,7 @@ import SwiftSyntax
 struct LegacyRandomRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "legacy_random",
         name: "Legacy Random",
         description: "Prefer using `type.random(in:)` over legacy functions",

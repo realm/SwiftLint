@@ -4,7 +4,7 @@ import SwiftSyntax
 struct ShorthandOptionalBindingRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "shorthand_optional_binding",
         name: "Shorthand Optional Binding",
         description: "Use shorthand syntax for optional binding",

@@ -11,12 +11,17 @@ copts = [
     "ExistentialAny",
 ]
 
+strict_concurrency_copts = [
+    "-Xfrontend",
+    "-strict-concurrency=complete",
+]
+
 # Targets
 
 swift_library(
     name = "SwiftLintCoreMacrosLib",
     srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
     module_name = "SwiftLintCoreMacros",
     visibility = ["//visibility:public"],
     deps = [
@@ -28,7 +33,7 @@ swift_library(
 swift_compiler_plugin(
     name = "SwiftLintCoreMacros",
     srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
     deps = [
         "@SwiftSyntax//:SwiftCompilerPlugin_opt",
         "@SwiftSyntax//:SwiftSyntaxMacros_opt",
@@ -38,7 +43,7 @@ swift_compiler_plugin(
 swift_library(
     name = "SwiftLintCore",
     srcs = glob(["Source/SwiftLintCore/**/*.swift"]),
-    copts = copts,
+    copts = copts,  # TODO: strict_concurrency_copts
     module_name = "SwiftLintCore",
     plugins = [
         ":SwiftLintCoreMacros",
@@ -62,7 +67,7 @@ swift_library(
 swift_library(
     name = "SwiftLintBuiltInRules",
     srcs = glob(["Source/SwiftLintBuiltInRules/**/*.swift"]),
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
     module_name = "SwiftLintBuiltInRules",
     visibility = ["//visibility:public"],
     deps = [
@@ -76,6 +81,7 @@ swift_library(
         "Source/SwiftLintExtraRules/Exports.swift",
         "@swiftlint_extra_rules//:extra_rules",
     ],
+    copts = copts + strict_concurrency_copts,
     module_name = "SwiftLintExtraRules",
     visibility = ["//visibility:public"],
     deps = [
@@ -88,7 +94,7 @@ swift_library(
     srcs = glob(
         ["Source/SwiftLintFramework/**/*.swift"],
     ),
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [
@@ -101,7 +107,7 @@ swift_library(
 swift_library(
     name = "swiftlint.library",
     srcs = glob(["Source/swiftlint/**/*.swift"]),
-    copts = copts,
+    copts = copts,  # TODO: strict_concurrency_copts
     module_name = "swiftlint",
     visibility = ["//visibility:public"],
     deps = [
@@ -114,7 +120,7 @@ swift_library(
 
 swift_binary(
     name = "swiftlint",
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
     visibility = ["//visibility:public"],
     deps = [
         ":swiftlint.library",

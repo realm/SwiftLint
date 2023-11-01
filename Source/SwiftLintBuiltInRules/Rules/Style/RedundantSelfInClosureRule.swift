@@ -4,7 +4,7 @@ import SwiftSyntax
 struct RedundantSelfInClosureRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "redundant_self_in_closure",
         name: "Redundant Self in Closure",
         description: "Explicit use of 'self' is not required",

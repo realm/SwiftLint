@@ -4,7 +4,7 @@ import SwiftSyntax
 struct ReduceIntoRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "reduce_into",
         name: "Reduce into",
         description: "Prefer `reduce(into:_:)` over `reduce(_:_:)` for copy-on-write types",

@@ -109,7 +109,7 @@ struct ValidIBInspectableRule: Rule {
         ]
     )
 
-    fileprivate static var supportedTypes: Set<String> = {
+    fileprivate static let supportedTypes: Set<String> = {
         // "You can add the IBInspectable attribute to any property in a class declaration,
         // class extension, or category of type: boolean, integer or floating point number, string,
         // localized string, rectangle, point, size, color, range, and nil."

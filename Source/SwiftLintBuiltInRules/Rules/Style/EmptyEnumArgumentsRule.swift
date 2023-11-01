@@ -1,4 +1,4 @@
-import SwiftSyntax
+@preconcurrency import SwiftSyntax
 
 private func wrapInSwitch(
     variable: String = "foo",

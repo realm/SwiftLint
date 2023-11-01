@@ -4,7 +4,7 @@ import SwiftSyntax
 struct DiscouragedNoneNameRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "discouraged_none_name",
         name: "Discouraged None Name",
         description: "Enum cases and static members named `none` are discouraged as they can conflict with " +

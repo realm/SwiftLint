@@ -4,7 +4,7 @@ import SwiftSyntax
 struct PreferSelfInStaticReferencesRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "prefer_self_in_static_references",
         name: "Prefer Self in Static References",
         description: "Use `Self` to refer to the surrounding type name",

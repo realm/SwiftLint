@@ -1,4 +1,4 @@
-import SwiftSyntax
+@preconcurrency import SwiftSyntax
 
 @SwiftSyntaxRule
 struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {

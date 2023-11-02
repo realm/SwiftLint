@@ -1,5 +1,17 @@
 /// A value describing an instance of Swift source code that is considered invalid by a SwiftLint rule.
 public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
+    public init(
+        ruleIdentifier: String, ruleDescription: String, ruleName: String,
+        severity: ViolationSeverity, location: Location, reason: String
+    ) {
+        self.ruleIdentifier = ruleIdentifier
+        self.ruleDescription = ruleDescription
+        self.ruleName = ruleName
+        self.severity = severity
+        self.location = location
+        self.reason = reason
+    }
+
     /// The identifier of the rule that generated this violation.
     public let ruleIdentifier: String
 

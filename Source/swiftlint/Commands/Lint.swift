@@ -23,6 +23,8 @@ extension SwiftLint {
         var enableAllRules = false
         @Argument(help: pathsArgumentDescription(for: .lint))
         var paths = [String]()
+        @Flag(help: "Skips the step for building plugins, assuming they're already up to date.")
+        var skipBuildPlugins = false
 
         func run() async throws {
             Issue.printDeprecationWarnings = !silenceDeprecationWarnings
@@ -63,6 +65,9 @@ extension SwiftLint {
                 compileCommands: nil,
                 inProcessSourcekit: common.inProcessSourcekit
             )
+            if !skipBuildPlugins {
+                buildThePlugin()
+            }
             try await LintOrAnalyzeCommand.run(options)
         }
     }

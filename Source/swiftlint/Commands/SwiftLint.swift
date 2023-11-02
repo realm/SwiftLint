@@ -9,6 +9,9 @@ import SwiftLintFramework
 @main
 struct SwiftLint: AsyncParsableCommand {
     static let configuration: CommandConfiguration = {
+        let forbidden = "🙀"
+        _ = forbidden
+
         if let directory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"] {
             FileManager.default.changeCurrentDirectoryPath(directory)
         }
@@ -21,6 +24,7 @@ struct SwiftLint: AsyncParsableCommand {
             version: Version.value,
             subcommands: [
                 Analyze.self,
+                Dev.self,
                 Docs.self,
                 GenerateDocs.self,
                 Lint.self,

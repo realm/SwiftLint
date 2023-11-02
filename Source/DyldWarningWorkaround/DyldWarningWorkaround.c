@@ -2,6 +2,9 @@
 
 #include "objc_dupclass.h"
 
+OBJC_DUPCLASS(_TtC11SwiftParser21LookaheadTrackerOwner);
+OBJC_DUPCLASS(_TtC11SwiftParser26IncrementalParseTransition);
+OBJC_DUPCLASS(_TtC11SwiftParserP33_78149DB072C20084E7D780D86E26C3AF41StringLiteralExpressionIndentationChecker);
 OBJC_DUPCLASS(_TtC11SwiftSyntax11SyntaxArena);
 OBJC_DUPCLASS(_TtC11SwiftSyntax13SyntaxVisitor);
 OBJC_DUPCLASS(_TtC11SwiftSyntax14SyntaxRewriter);
@@ -11,6 +14,6 @@ OBJC_DUPCLASS(_TtC11SwiftSyntax18ParsingSyntaxArena);
 OBJC_DUPCLASS(_TtC11SwiftSyntax23SourceLocationConverter);
 OBJC_DUPCLASS(_TtC11SwiftSyntax26IncrementalParseTransition);
 OBJC_DUPCLASS(_TtC11SwiftSyntax35IncrementalParseReusedNodeCollector);
-OBJC_DUPCLASS(_TtC11SwiftParserP33_78149DB072C20084E7D780D86E26C3AF41StringLiteralExpressionIndentationChecker);
+OBJC_DUPCLASS(_TtC11SwiftSyntaxP33_C10E6C1BC57BE70EF6A4BFC72F8F3AF723SourceLocationCollector);
 
 #endif // __APPLE__

@@ -55,6 +55,8 @@ struct LintOrAnalyzeCommand {
         return try await builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
                                                                   storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
+            // swiftlint:disable:next force_try
+            let pluginViolations = try! getPluginViolations(forFile: linter.file.path!)
             if options.benchmark {
                 CustomRuleTimer.shared.activate()
                 let start = Date()
@@ -63,7 +65,7 @@ struct LintOrAnalyzeCommand {
                 currentViolations = applyLeniency(
                     options: options,
                     strict: builder.configuration.strict,
-                    violations: violationsBeforeLeniency
+                    violations: violationsBeforeLeniency + pluginViolations
                 )
                 visitorMutationQueue.sync {
                     builder.fileBenchmark.record(file: linter.file, from: start)
@@ -74,7 +76,7 @@ struct LintOrAnalyzeCommand {
                 currentViolations = applyLeniency(
                     options: options,
                     strict: builder.configuration.strict,
-                    violations: linter.styleViolations(using: builder.storage)
+                    violations: linter.styleViolations(using: builder.storage) + pluginViolations
                 )
                 visitorMutationQueue.sync {
                     builder.violations += currentViolations

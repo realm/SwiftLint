@@ -69,6 +69,7 @@ file_name:
   excluded:
     - Exports.swift
     - GeneratedTests.swift
+    - PluginHelper.swift
     - RuleConfigurationMacros.swift
     - SwiftSyntax+SwiftLint.swift
     - TestHelpers.swift

@@ -78,6 +78,7 @@ public let builtInRules: [any Rule.Type] = [
     ForceCastRule.self,
     ForceTryRule.self,
     ForceUnwrappingRule.self,
+    FunctionArgumentsSpacingRule.self,
     FunctionBodyLengthRule.self,
     FunctionDefaultParameterAtEndRule.self,
     FunctionParameterCountRule.self,

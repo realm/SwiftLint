@@ -74,7 +74,8 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let foo = 1 >> 2"),
             Example("let foo = 2 >> 2"),
             Example("let foo = 2 << 2"),
-            Example("let a = b / 100.0")
+            Example("let a = b / 100.0"),
+            Example("let (httpStatusCodeErrorLowerBound, httpStatusCodeErrorUpperBound) = (400, 599)")
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -98,6 +99,10 @@ private extension NoMagicNumbersRule {
         private var testClasses: Set<String> = []
         private var nonTestClasses: Set<String> = []
         private var possibleViolations: [String: Set<AbsolutePosition>] = [:]
+
+        override func visit(_ node: TupleExprSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
 
         override func visitPost(_ node: ClassDeclSyntax) {
             let className = node.name.text

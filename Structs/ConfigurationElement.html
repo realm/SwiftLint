@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ConfigurationElement Class Reference</title>
+    <title>ConfigurationElement Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Class/ConfigurationElement" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Struct/ConfigurationElement" class="dashAnchor"></a>
 
-    <a title="ConfigurationElement Class Reference"></a>
+    <a title="ConfigurationElement Structure Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -50,7 +50,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">SwiftLintCore Reference</a>
       <img class="carat" src="../img/carat.png" alt=""/>
-      ConfigurationElement Class Reference
+      ConfigurationElement Structure Reference
     </p>
 
     <div class="content-wrapper">
@@ -67,9 +67,6 @@
           <li class="nav-group-name">
             <a class="nav-group-name-link" href="../Classes.html">Classes</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/ConfigurationElement.html">ConfigurationElement</a>
-              </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/CustomRuleTimer.html">CustomRuleTimer</a>
               </li>
@@ -254,6 +251,9 @@
                 <a class="nav-group-task-link" href="../Structs/Configuration.html">Configuration</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ConfigurationElement.html">ConfigurationElement</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/Correction.html">Correction</a>
               </li>
               <li class="nav-group-task">
@@ -338,8 +338,7 @@
                 <div class="language">
                   
                   <pre class="highlight swift"><code><span class="kd">@propertyWrapper</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="kt">ConfigurationElement</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/AcceptableByConfigurationElement.html">AcceptableByConfigurationElement</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">ConfigurationElement</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
+<span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ConfigurationElement</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">Equatable</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/AcceptableByConfigurationElement.html">AcceptableByConfigurationElement</a></span></code></pre>
 
                 </div>
               </div>
@@ -383,7 +382,7 @@ levels: warning: 1
 </ol>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L393-L444">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L393-L452">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -395,9 +394,9 @@ levels: warning: 1
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore20ConfigurationElementC12wrappedValuexvp"></a>
+                    <a name="/s:13SwiftLintCore20ConfigurationElementV12wrappedValuexvp"></a>
                     <a name="//apple_ref/swift/Property/wrappedValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementC12wrappedValuexvp">wrappedValue</a>
+                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementV12wrappedValuexvp">wrappedValue</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -425,9 +424,9 @@ levels: warning: 1
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore20ConfigurationElementC14projectedValueACyxGvp"></a>
+                    <a name="/s:13SwiftLintCore20ConfigurationElementV14projectedValueACyxGvp"></a>
                     <a name="//apple_ref/swift/Property/projectedValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementC14projectedValueACyxGvp">projectedValue</a>
+                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementV14projectedValueACyxGvp">projectedValue</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -435,19 +434,20 @@ levels: warning: 1
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The option&rsquo;s name. This field can only be accessed by the element&rsquo;s name prefixed with a <code>$</code>.</p>
+                        <p>The wrapper itself providing access to all its data. This field can only be accessed by the
+element&rsquo;s name prefixed with a <code>$</code>.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">projectedValue</span><span class="p">:</span> <span class="kt">ConfigurationElement</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">projectedValue</span><span class="p">:</span> <span class="kt">ConfigurationElement</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L398">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L399-L402">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -455,9 +455,9 @@ levels: warning: 1
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore20ConfigurationElementC3keySSvp"></a>
+                    <a name="/s:13SwiftLintCore20ConfigurationElementV3keySSvp"></a>
                     <a name="//apple_ref/swift/Property/key" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementC3keySSvp">key</a>
+                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementV3keySSvp">key</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -477,7 +477,7 @@ levels: warning: 1
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L401">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L405">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -485,9 +485,9 @@ levels: warning: 1
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore20ConfigurationElementC12wrappedValue3key13postprocessorACyxGx_SSyxzKctcfc"></a>
+                    <a name="/s:13SwiftLintCore20ConfigurationElementV12wrappedValue3key13postprocessorACyxGx_SSyxzKctcfc"></a>
                     <a name="//apple_ref/swift/Method/init(wrappedValue:key:postprocessor:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementC12wrappedValue3key13postprocessorACyxGx_SSyxzKctcfc">init(wrappedValue:<wbr>key:<wbr>postprocessor:<wbr>)</a>
+                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementV12wrappedValue3key13postprocessorACyxGx_SSyxzKctcfc">init(wrappedValue:<wbr>key:<wbr>postprocessor:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -502,7 +502,7 @@ levels: warning: 1
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n"><a href="../Classes/ConfigurationElement.html#/s:13SwiftLintCore20ConfigurationElementC12wrappedValuexvp">wrappedValue</a></span> <span class="nv">value</span><span class="p">:</span> <span class="kt">T</span><span class="p">,</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">postprocessor</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="k">inout</span> <span class="kt">T</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="o">=</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span> <span class="p">})</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n"><a href="../Structs/ConfigurationElement.html#/s:13SwiftLintCore20ConfigurationElementV12wrappedValuexvp">wrappedValue</a></span> <span class="nv">value</span><span class="p">:</span> <span class="kt">T</span><span class="p">,</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">postprocessor</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="k">inout</span> <span class="kt">T</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="o">=</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span> <span class="p">})</span></code></pre>
 
                         </div>
                       </div>
@@ -550,7 +550,7 @@ levels: warning: 1
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L411-L418">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L415-L422">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -558,9 +558,9 @@ levels: warning: 1
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore20ConfigurationElementC3keyACyqd__SgGSS_tcAERszSQRd__AA012AcceptableBydE0Rd__lufc"></a>
+                    <a name="/s:13SwiftLintCore20ConfigurationElementV3keyACyqd__SgGSS_tcAERszSQRd__AA012AcceptableBydE0Rd__lufc"></a>
                     <a name="//apple_ref/swift/Method/init(key:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementC3keyACyqd__SgGSS_tcAERszSQRd__AA012AcceptableBydE0Rd__lufc">init(key:<wbr>)</a>
+                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementV3keyACyqd__SgGSS_tcAERszSQRd__AA012AcceptableBydE0Rd__lufc">init(key:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -577,7 +577,7 @@ levels: warning: 1
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">convenience</span> <span class="kd">init</span><span class="o">&lt;</span><span class="kt">Wrapped</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="o">==</span> <span class="kt">Wrapped</span><span class="p">?,</span> <span class="kt">Wrapped</span> <span class="p">:</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">Wrapped</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/AcceptableByConfigurationElement.html">AcceptableByConfigurationElement</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">init</span><span class="o">&lt;</span><span class="kt">Wrapped</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="o">==</span> <span class="kt">Wrapped</span><span class="p">?,</span> <span class="kt">Wrapped</span> <span class="p">:</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">Wrapped</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/AcceptableByConfigurationElement.html">AcceptableByConfigurationElement</a></span></code></pre>
 
                         </div>
                       </div>
@@ -601,7 +601,7 @@ levels: warning: 1
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L425-L427">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L429-L431">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -609,9 +609,9 @@ levels: warning: 1
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore20ConfigurationElementC12wrappedValueACyxGx_tcAA19InlinableOptionTypeRzrlufc"></a>
+                    <a name="/s:13SwiftLintCore20ConfigurationElementV12wrappedValueACyxGx_tcAA19InlinableOptionTypeRzrlufc"></a>
                     <a name="//apple_ref/swift/Method/init(wrappedValue:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementC12wrappedValueACyxGx_tcAA19InlinableOptionTypeRzrlufc">init(wrappedValue:<wbr>)</a>
+                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementV12wrappedValueACyxGx_tcAA19InlinableOptionTypeRzrlufc">init(wrappedValue:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -629,7 +629,7 @@ parent configuration in this specific case.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">convenience</span> <span class="nf">init</span><span class="p">(</span><span class="n"><a href="../Classes/ConfigurationElement.html#/s:13SwiftLintCore20ConfigurationElementC12wrappedValuexvp">wrappedValue</a></span> <span class="nv">value</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n"><a href="../Structs/ConfigurationElement.html#/s:13SwiftLintCore20ConfigurationElementV12wrappedValuexvp">wrappedValue</a></span> <span class="nv">value</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a></span></code></pre>
 
                         </div>
                       </div>
@@ -653,7 +653,7 @@ parent configuration in this specific case.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L436-L438">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L440-L442">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -661,9 +661,9 @@ parent configuration in this specific case.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore20ConfigurationElementC27performAfterParseOperationsyyKF"></a>
+                    <a name="/s:13SwiftLintCore20ConfigurationElementV27performAfterParseOperationsyyKF"></a>
                     <a name="//apple_ref/swift/Method/performAfterParseOperations()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementC27performAfterParseOperationsyyKF">performAfterParseOperations()</a>
+                    <a class="token" href="#/s:13SwiftLintCore20ConfigurationElementV27performAfterParseOperationsyyKF">performAfterParseOperations()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -678,29 +678,16 @@ parent configuration in this specific case.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">performAfterParseOperations</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">performAfterParseOperations</span><span class="p">()</span> <span class="k">throws</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L441-L443">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L445-L447">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Property%20wrapper"></a>
-                <a name="//apple_ref/swift/Section/Property wrapper" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Property%20wrapper"></a>
-                  <h3 class="section-name"><span>Property wrapper</span>
-</h3>
-                </div>
-              </div>
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -725,7 +712,7 @@ parent configuration in this specific case.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L453-L455">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L449-L451">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

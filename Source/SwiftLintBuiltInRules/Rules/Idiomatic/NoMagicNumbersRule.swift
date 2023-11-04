@@ -106,24 +106,8 @@ private extension NoMagicNumbersRule {
         private var nonTestClasses: Set<String> = []
         private var possibleViolations: [String: Set<AbsolutePosition>] = [:]
 
-        override func visit(_ node: TupleExprSyntax) -> SyntaxVisitorContinueKind {
-            guard let parent = node.parent else {
-                return .visitChildren
-            }
-            if parent.is(InitializerClauseSyntax.self) {
-                guard let grandParent = parent.parent else {
-                    return .visitChildren
-                }
-                if grandParent.is(PatternBindingSyntax.self) {
-                    if let firstSibling = grandParent.children(viewMode: .sourceAccurate).first {
-                        if firstSibling.is(TuplePatternSyntax.self) {
-                            return .skipChildren
-                        }
-                    }
-                }
-                return .visitChildren
-            }
-            return .visitChildren
+        override func visit(_ node: PatternBindingSyntax) -> SyntaxVisitorContinueKind {
+            node.isTupleAssignment ? .skipChildren : .visitChildren
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
@@ -237,5 +221,24 @@ private extension ExprSyntaxProtocol {
         }
 
         return false
+    }
+}
+
+private extension PatternBindingSyntax {
+    var isTupleAssignment: Bool {
+        let children = children(viewMode: .sourceAccurate)
+        guard children.count > 1 else {
+            return false
+        }
+        let secondChildIndex = children.index(after: children.startIndex)
+
+        guard
+            let firstChild = children.first, firstChild.is(TuplePatternSyntax.self),
+            let secondChild = children[secondChildIndex].as(InitializerClauseSyntax.self),
+            secondChild.value.is(TupleExprSyntax.self)
+        else {
+            return false
+        }
+        return true
     }
 }

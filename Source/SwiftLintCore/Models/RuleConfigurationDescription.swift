@@ -390,7 +390,7 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 ///            error: 2
 ///    ```
 @propertyWrapper
-public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable> {
+public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: Equatable {
     /// Wrapped option value.
     public var wrappedValue: T
 
@@ -445,17 +445,15 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     public mutating func performAfterParseOperations() throws {
         try postprocessor(&wrappedValue)
     }
+
+    public static func == (lhs: ConfigurationElement, rhs: ConfigurationElement) -> Bool {
+        lhs.wrappedValue == rhs.wrappedValue && lhs.key == rhs.key
+    }
 }
 
 extension ConfigurationElement: AnyConfigurationElement {
     fileprivate var description: RuleConfigurationDescription {
         wrappedValue.asDescription(with: key)
-    }
-}
-
-extension ConfigurationElement: Equatable {
-    public static func == (lhs: ConfigurationElement, rhs: ConfigurationElement) -> Bool {
-        lhs.wrappedValue == rhs.wrappedValue && lhs.key == rhs.key
     }
 }
 

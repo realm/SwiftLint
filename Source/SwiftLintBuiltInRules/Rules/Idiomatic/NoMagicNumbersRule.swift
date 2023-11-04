@@ -89,6 +89,11 @@ struct NoMagicNumbersRule: OptInRule {
                     extension NSObject {
                         let a = Int(↓3)
                     }
+            """),
+            Example("""
+            if (fileSize > ↓1000000) {
+                try FileManager.default.removeItem(at: cacheFileUrl)
+            }
             """)
         ]
     )
@@ -101,7 +106,13 @@ private extension NoMagicNumbersRule {
         private var possibleViolations: [String: Set<AbsolutePosition>] = [:]
 
         override func visit(_ node: TupleExprSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
+            guard let parent = node.parent else {
+                return .visitChildren
+            }
+            if parent.is(InitializerClauseSyntax.self) {
+                return .skipChildren
+            }
+            return .visitChildren
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {

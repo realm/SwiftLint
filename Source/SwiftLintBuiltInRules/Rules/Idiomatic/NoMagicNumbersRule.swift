@@ -94,7 +94,8 @@ struct NoMagicNumbersRule: OptInRule {
             if (fileSize > ↓1000000) {
                 try FileManager.default.removeItem(at: cacheFileUrl)
             }
-            """)
+            """),
+            Example("let imageHeight = (width - ↓24)")
         ]
     )
 }
@@ -110,7 +111,17 @@ private extension NoMagicNumbersRule {
                 return .visitChildren
             }
             if parent.is(InitializerClauseSyntax.self) {
-                return .skipChildren
+                guard let grandParent = parent.parent else {
+                    return .visitChildren
+                }
+                if grandParent.is(PatternBindingSyntax.self) {
+                    if let firstSibling = grandParent.children(viewMode: .sourceAccurate).first {
+                        if firstSibling.is(TuplePatternSyntax.self) {
+                            return .skipChildren
+                        }
+                    }
+                }
+                return .visitChildren
             }
             return .visitChildren
         }

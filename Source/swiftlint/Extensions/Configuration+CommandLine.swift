@@ -243,13 +243,14 @@ extension Configuration {
 
             queuedPrintError("\(visitor.action) Swift files \(filesInfo)")
         }
+        let excludeLintableFilesBy = visitor.useExcludingByPrefix
+                    ? Configuration.ExcludeBy.prefix
+                    : .paths(excludedPaths: excludedPaths())
         return visitor.paths.flatMap {
             self.lintableFiles(
                 inPath: $0,
                 forceExclude: visitor.forceExclude,
-                excludeBy: visitor.useExcludingByPrefix
-                    ? .prefix
-                    : .paths(excludedPaths: excludedPaths()))
+                excludeBy: excludeLintableFilesBy)
         }
     }
 

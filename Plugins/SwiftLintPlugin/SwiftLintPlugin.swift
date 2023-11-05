@@ -32,9 +32,16 @@ struct SwiftLintPlugin: BuildToolPlugin {
             // We always pass all of the Swift source files in the target to the tool,
             // so we need to ensure that any exclusion rules in the configuration are
             // respected.
-            "--force-exclude",
-            "--cache-path", "\(workingDirectory)"
+            "--force-exclude"
         ]
+
+        // Determine whether we need to enable cache or not (for Xcode Cloud we don't)
+        if ProcessInfo.processInfo.environment["CI_XCODE_CLOUD"] == "TRUE" {
+            arguments.append("--no-cache")
+        } else {
+            arguments.append("--cache-path")
+            arguments.append("\(workingDirectory)")
+        }
 
         // Manually look for configuration files, to avoid issues when the plugin does not execute our tool from the
         // package source directory.

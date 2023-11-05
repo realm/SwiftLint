@@ -75,7 +75,7 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let foo = 2 >> 2"),
             Example("let foo = 2 << 2"),
             Example("let a = b / 100.0"),
-            Example("let (httpStatusCodeErrorLowerBound, httpStatusCodeErrorUpperBound) = (400, 599)")
+            Example("let (lowerBound, upperBound) = (400, 599)")
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -92,7 +92,7 @@ struct NoMagicNumbersRule: OptInRule {
             """),
             Example("""
             if (fileSize > ↓1000000) {
-                try FileManager.default.removeItem(at: cacheFileUrl)
+                return
             }
             """),
             Example("let imageHeight = (width - ↓24)")

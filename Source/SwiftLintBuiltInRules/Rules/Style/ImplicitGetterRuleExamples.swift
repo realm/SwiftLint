@@ -40,6 +40,7 @@ struct ImplicitGetterRuleExamples {
             """),
         Example("""
             class Foo {
+                var _foo: Int
                 var foo: Int {
                     @storageRestrictions(initializes: _foo)
                     init { _foo = newValue }

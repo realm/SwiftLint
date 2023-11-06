@@ -44,6 +44,9 @@
   [u-abyss](https://github.com/u-abyss)
   [#5259](https://github.com/realm/SwiftLint/issues/5259)
 
+* Rewrite `no_grouping_extension` rule using SwiftSyntax.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * Fix correction of `explicit_init` rule by keeping significant trivia.  

@@ -75,7 +75,8 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let foo = 2 >> 2"),
             Example("let foo = 2 << 2"),
             Example("let a = b / 100.0"),
-            Example("let (lowerBound, upperBound) = (400, 599)")
+            Example("let (lowerBound, upperBound) = (400, 599)"),
+            Example("let a = (5, 10)")
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -232,11 +233,9 @@ private extension PatternBindingSyntax {
         }
         let secondChildIndex = children.index(after: children.startIndex)
 
-        guard
-            let firstChild = children.first, firstChild.is(TuplePatternSyntax.self),
-            let secondChild = children[secondChildIndex].as(InitializerClauseSyntax.self),
-            secondChild.value.is(TupleExprSyntax.self)
-        else {
+        guard let secondChild = children[secondChildIndex].as(InitializerClauseSyntax.self),
+              let tupleExpression = secondChild.value.as(TupleExprSyntax.self),
+              tupleExpression.elements.count > 1  else {
             return false
         }
         return true

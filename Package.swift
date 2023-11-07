@@ -37,7 +37,6 @@ let package = Package(
             name: "swiftlint",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                .product(name: "Opaqueifier", package: "opaqueify"),
                 "CollectionConcurrencyKit",
                 "SwiftLintFramework",
                 "SwiftyTextTable",
@@ -85,6 +84,7 @@ let package = Package(
                 "SwiftLintExtraRules",
                 // Workaround for https://github.com/apple/swift-package-manager/issues/6940:
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "Opaqueifier", package: "opaqueify"),
                 "CollectionConcurrencyKit"
             ],
             swiftSettings: swiftFeatures

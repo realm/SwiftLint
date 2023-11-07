@@ -68,6 +68,12 @@
   [jszumski](https://github.com/jszumski)
   [#5246](https://github.com/realm/SwiftLint/pull/5246)
 
+* `superfluous_disable_command` violations are now triggered for
+  custom rules.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4754](https://github.com/realm/SwiftLint/issues/4754)
+
 ## 0.53.0: Laundry List
 
 #### Breaking
@@ -730,12 +736,6 @@
 * Updated JUnit reporter to output error count and warning count.  
   [patricks](https://github.com/patricks)
   [#4725](https://github.com/realm/SwiftLint/pull/4725)
-
-* `superfluous_disable_command` violations are now triggered for
-  custom rules.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4754](https://github.com/realm/SwiftLint/issues/4754)
 
 * Fix correction on `lower_acl_than_parent` rule for `open` declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)

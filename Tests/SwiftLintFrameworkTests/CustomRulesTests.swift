@@ -191,7 +191,7 @@ class CustomRulesTests: SwiftLintTestCase {
             "// swiftlint:disable custom1\n",
             configuration: customRulesConfiguration
         ).skipWrappingInCommentTest()
-        let configuration = try Configuration(dict: ["custom_rules": customRulesConfiguration])
+        let configuration = try XCTUnwrap(makeConfig(["custom_rules": customRulesConfiguration], "custom_rules"))
         let violations = violations(example, config: configuration)
 
         XCTAssertEqual(violations.count, 1)
@@ -225,7 +225,7 @@ class CustomRulesTests: SwiftLintTestCase {
             """,
             configuration: customRulesConfiguration
         ).skipWrappingInCommentTest()
-        let configuration = try Configuration(dict: ["custom_rules": customRulesConfiguration])
+        let configuration = try XCTUnwrap(makeConfig(["custom_rules": customRulesConfiguration], "custom_rules"))
         let violations = violations(example, config: configuration)
 
         XCTAssertEqual(violations.count, 3)

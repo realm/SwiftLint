@@ -128,7 +128,6 @@ private extension MultilineLiteralBracketsRule {
                     lastElement: elements.last?.key
                 )
             }
-
         }
 
         private func validate(_ node: any ExprSyntaxProtocol,
@@ -136,7 +135,7 @@ private extension MultilineLiteralBracketsRule {
                               closingToken: TokenSyntax,
                               firstElement: (some ExprSyntaxProtocol)?,
                               lastElement: (some ExprSyntaxProtocol)?) {
-            guard let firstElement, let lastElement, 
+            guard let firstElement, let lastElement,
                     isMultiline(node) else {
                 return
             }
@@ -157,11 +156,11 @@ private extension MultilineLiteralBracketsRule {
             return endLocation.line > startLocation.line
         }
 
-        private func areOnTheSameLine(_ t1: some SyntaxProtocol, _ t2: some SyntaxProtocol) -> Bool {
-            let t1Location = locationConverter.location(for: t1.endPositionBeforeTrailingTrivia)
-            let t2Location = locationConverter.location(for: t2.positionAfterSkippingLeadingTrivia)
+        private func areOnTheSameLine(_ first: some SyntaxProtocol, _ second: some SyntaxProtocol) -> Bool {
+            let firstLocation = locationConverter.location(for: first.endPositionBeforeTrailingTrivia)
+            let secondLocation = locationConverter.location(for: second.positionAfterSkippingLeadingTrivia)
 
-            return t1Location.line == t2Location.line
+            return firstLocation.line == secondLocation.line
         }
     }
 }

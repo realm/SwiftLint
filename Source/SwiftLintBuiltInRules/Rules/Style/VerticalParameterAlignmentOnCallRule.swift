@@ -104,6 +104,10 @@ struct VerticalParameterAlignmentOnCallRule: OptInRule {
             Example("""
             myFunc(foo: 0,
                     ↓bar: baz == 0)
+            """),
+            Example("""
+            myFunc(foo: 0, bar:
+                    baz == 0, ↓baz: true)
             """)
         ]
     )
@@ -153,8 +157,9 @@ private extension VerticalParameterAlignmentOnCallRule {
         }
 
         private func isMultiline(argument: LabeledExprListSyntax.Element) -> Bool {
-            let startPosition = locationConverter.location(for: argument.positionAfterSkippingLeadingTrivia)
-            let endPosition = locationConverter.location(for: argument.endPositionBeforeTrailingTrivia)
+            let expression = argument.expression
+            let startPosition = locationConverter.location(for: expression.positionAfterSkippingLeadingTrivia)
+            let endPosition = locationConverter.location(for: expression.endPositionBeforeTrailingTrivia)
 
             return endPosition.line > startPosition.line
         }

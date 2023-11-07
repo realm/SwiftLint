@@ -1,7 +1,8 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-struct MultilineLiteralBracketsRule: ASTRule, OptInRule {
+@SwiftSyntaxRule
+struct MultilineLiteralBracketsRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -100,40 +101,67 @@ struct MultilineLiteralBracketsRule: ASTRule, OptInRule {
             """)
         ]
     )
+}
 
-    func validate(file: SwiftLintFile,
-                  kind: SwiftExpressionKind,
-                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            [.array, .dictionary].contains(kind),
-            let bodyByteRange = dictionary.bodyByteRange,
-            let body = file.stringView.substringWithByteRange(bodyByteRange)
-        else {
-            return []
-        }
-
-        let isMultiline = body.contains("\n")
-        guard isMultiline else {
-            return []
-        }
-
-        let expectedBodyBeginRegex = regex("\\A[ \\t]*\\n")
-        let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
-
-        var violatingByteOffsets = [ByteCount]()
-        if expectedBodyBeginRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
-            violatingByteOffsets.append(bodyByteRange.location)
-        }
-
-        if expectedBodyEndRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
-            violatingByteOffsets.append(bodyByteRange.upperBound)
-        }
-
-        return violatingByteOffsets.map { byteOffset in
-            StyleViolation(
-                ruleDescription: Self.description, severity: configuration.severity,
-                location: Location(file: file, byteOffset: byteOffset)
+private extension MultilineLiteralBracketsRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: ArrayExprSyntax) {
+            validate(
+                node,
+                openingToken: node.leftSquare,
+                closingToken: node.rightSquare,
+                firstElement: node.elements.first?.expression,
+                lastElement: node.elements.last?.expression
             )
+        }
+
+        override func visitPost(_ node: DictionaryExprSyntax) {
+            switch node.content {
+            case .colon:
+                break
+            case .elements(let elements):
+                validate(
+                    node,
+                    openingToken: node.leftSquare,
+                    closingToken: node.rightSquare,
+                    firstElement: elements.first?.key,
+                    lastElement: elements.last?.key
+                )
+            }
+
+        }
+
+        private func validate(_ node: any ExprSyntaxProtocol,
+                              openingToken: TokenSyntax,
+                              closingToken: TokenSyntax,
+                              firstElement: (some ExprSyntaxProtocol)?,
+                              lastElement: (some ExprSyntaxProtocol)?) {
+            guard let firstElement, let lastElement, 
+                    isMultiline(node) else {
+                return
+            }
+
+            if areOnTheSameLine(openingToken, firstElement) {
+                violations.append(firstElement.positionAfterSkippingLeadingTrivia)
+            }
+
+            if areOnTheSameLine(lastElement, closingToken) {
+                violations.append(closingToken.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        private func isMultiline(_ node: any ExprSyntaxProtocol) -> Bool {
+            let startLocation = locationConverter.location(for: node.positionAfterSkippingLeadingTrivia)
+            let endLocation = locationConverter.location(for: node.endPositionBeforeTrailingTrivia)
+
+            return endLocation.line > startLocation.line
+        }
+
+        private func areOnTheSameLine(_ t1: some SyntaxProtocol, _ t2: some SyntaxProtocol) -> Bool {
+            let t1Location = locationConverter.location(for: t1.endPositionBeforeTrailingTrivia)
+            let t2Location = locationConverter.location(for: t2.positionAfterSkippingLeadingTrivia)
+
+            return t1Location.line == t2Location.line
         }
     }
 }

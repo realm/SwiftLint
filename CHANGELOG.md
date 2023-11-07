@@ -47,6 +47,7 @@
 * Rewrite `vertical_parameter_alignment_on_call` rule using SwiftSyntax, fixing
   some false positives.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3581](https://github.com/realm/SwiftLint/issues/3581)
 
 * Rewrite `no_grouping_extension` rule using SwiftSyntax.  
   [Marcelo Fabri](https://github.com/marcelofabri)

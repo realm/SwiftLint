@@ -71,6 +71,17 @@ struct VerticalParameterAlignmentOnCallRule: OptInRule {
             Example("""
             myFunc(foo: 0,
                    bar: baz == 0)
+            """),
+            Example("""
+            UIViewPropertyAnimator.runningPropertyAnimator(
+                withDuration: 2.0,
+                delay: 0.0,
+                options: [.curveEaseIn]
+            ) {
+                // animations
+            } completion: { _ in
+                // completion
+            }
             """)
         ],
         triggeringExamples: [

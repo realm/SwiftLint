@@ -107,7 +107,7 @@ struct MultilineLiteralBracketsRule: OptInRule {
                         $0.isValid
                     }.sum()↓]
             }
-            """),
+            """)
         ]
     )
 }

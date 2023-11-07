@@ -21,6 +21,8 @@ extension SwiftLint {
         var noCache = false
         @Flag(help: "Run all rules, even opt-in and disabled ones, ignoring `only_rules`.")
         var enableAllRules = false
+        @Option(help: "Prepare project for Swift6.")
+        var experimentalSwift6: String?
         @Argument(help: pathsArgumentDescription(for: .lint))
         var paths = [String]()
 
@@ -61,6 +63,7 @@ extension SwiftLint {
                 format: common.format,
                 compilerLogPath: nil,
                 compileCommands: nil,
+                experimentalSwift6: experimentalSwift6,
                 inProcessSourcekit: common.inProcessSourcekit
             )
             try await LintOrAnalyzeCommand.run(options)

@@ -17,6 +17,8 @@ extension SwiftLint {
         var compileCommands: String?
         @Argument(help: pathsArgumentDescription(for: .analyze))
         var paths = [String]()
+        @Option(help: "Prepare project for Swift6.")
+        var experimentalSwift6: String?
 
         func run() async throws {
             let allPaths: [String]
@@ -53,6 +55,7 @@ extension SwiftLint {
                 format: common.format,
                 compilerLogPath: compilerLogPath,
                 compileCommands: compileCommands,
+                experimentalSwift6: experimentalSwift6,
                 inProcessSourcekit: common.inProcessSourcekit
             )
 

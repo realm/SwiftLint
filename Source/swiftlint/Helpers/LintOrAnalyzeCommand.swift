@@ -1,6 +1,7 @@
 import Dispatch
 import Foundation
 import SwiftLintFramework
+import Opaqueifier
 
 enum LintOrAnalyzeMode {
     case lint, analyze
@@ -24,8 +25,25 @@ enum LintOrAnalyzeMode {
     }
 }
 
+class LintOpaqueifier: Opaqueifier {
+    override func log(_ items: Any..., separator: String = " ", terminator: String = "\n") {
+        let line = items.map { "\($0)" }.joined( separator: separator)
+        print(line+String(repeating: " ", count:
+            max(0,79-line.count)), terminator: "\r")
+    }
+}
+
 struct LintOrAnalyzeCommand {
     static func run(_ options: LintOrAnalyzeOptions) async throws {
+        if let package = options.experimentalSwift6 {
+            let status = LintOpaqueifier().main(
+                projectPath: package,
+                xcode15Path: "/Applications/Xcode.app",
+                knownPotocols: [objcCocoaProtocols,
+                                objcUIKitProtocols])
+            print("")
+            exit(status)
+        }
         if options.inProcessSourcekit {
             // TODO: [08/11/2024] Remove deprecation warning after ~2 years.
             queuedPrintError(
@@ -249,6 +267,7 @@ struct LintOrAnalyzeOptions {
     let format: Bool
     let compilerLogPath: String?
     let compileCommands: String?
+    var experimentalSwift6: String?
     let inProcessSourcekit: Bool
 
     var verb: String {

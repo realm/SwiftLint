@@ -21,6 +21,7 @@ let package = Package(
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.6"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
         .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit.git", from: "0.2.0"),
+        .package(url: "https://github.com/johnno1962/opaqueify.git", .upToNextMinor(from: "1.0.15")),
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.7.2"))
     ],
     targets: [
@@ -62,6 +63,7 @@ let package = Package(
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
                 .product(name: "SwiftyTextTable", package: "SwiftyTextTable"),
                 .product(name: "Yams", package: "Yams"),
+                .product(name: "Opaqueifier", package: "opaqueify"),
                 "SwiftLintCoreMacros"
             ],
             swiftSettings: swiftFeatures

@@ -8,7 +8,7 @@
 
 #### Experimental
 
-* None.
+* Add --experimental-swift6 option as an aid to preparation of a project for Swift6.
 
 #### Enhancements
 

@@ -37,6 +37,7 @@ let package = Package(
             name: "swiftlint",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "Opaqueifier", package: "opaqueify"),
                 "CollectionConcurrencyKit",
                 "SwiftLintFramework",
                 "SwiftyTextTable",
@@ -63,7 +64,6 @@ let package = Package(
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
                 .product(name: "SwiftyTextTable", package: "SwiftyTextTable"),
                 .product(name: "Yams", package: "Yams"),
-                .product(name: "Opaqueifier", package: "opaqueify"),
                 "SwiftLintCoreMacros"
             ],
             swiftSettings: swiftFeatures

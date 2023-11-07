@@ -26,6 +26,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#1762](https://github.com/realm/SwiftLint/pull/1762)
 
+* Rewrite `multiline_literal_brackets` rule using SwiftSyntax, fixing some
+  false positives that would happen when comments are present.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * Ignore overridden functions with default parameters in the `unneeded_override`

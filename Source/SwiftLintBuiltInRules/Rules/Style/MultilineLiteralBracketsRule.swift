@@ -98,7 +98,16 @@ struct MultilineLiteralBracketsRule: OptInRule {
                      4, 5, 6,
                      7, 8, 9
                 ]
-            """)
+            """),
+            Example("""
+            class Hogwarts {
+                let houseCup = [
+                    "gryffindor": 460, "hufflepuff": 370,
+                    "ravenclaw": 410, "slytherin": slytherinPoints.filter {
+                        $0.isValid
+                    }.sum()↓]
+            }
+            """),
         ]
     )
 }
@@ -125,7 +134,7 @@ private extension MultilineLiteralBracketsRule {
                     openingToken: node.leftSquare,
                     closingToken: node.rightSquare,
                     firstElement: elements.first?.key,
-                    lastElement: elements.last?.key
+                    lastElement: elements.last?.value
                 )
             }
         }
@@ -141,7 +150,8 @@ private extension MultilineLiteralBracketsRule {
             }
 
             if areOnTheSameLine(openingToken, firstElement) {
-                violations.append(firstElement.positionAfterSkippingLeadingTrivia)
+                // don't skip trivia to keep violations in the same position as the legacy implementation
+                violations.append(firstElement.position)
             }
 
             if areOnTheSameLine(lastElement, closingToken) {

@@ -179,6 +179,66 @@ class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations[0].location.character, 6)
     }
 
+    func testSuperfluousDisableCommandWithCustomRules() throws {
+        let customRulesConfiguration: [String: Any] = [
+            "custom1": [
+                "regex": "pattern",
+                "match_kinds": "comment"
+            ]
+        ]
+
+        let example = Example(
+            "// swiftlint:disable custom1\n",
+            configuration: customRulesConfiguration
+        ).skipWrappingInCommentTest()
+        let configuration = try XCTUnwrap(makeConfig(["custom_rules": customRulesConfiguration], "custom_rules"))
+        let violations = violations(example, config: configuration)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertTrue(violations.allSatisfy { $0.ruleIdentifier == "superfluous_disable_command" })
+        XCTAssertTrue(violations.contains { violation in
+            violation.description.contains("SwiftLint rule 'custom1' did not trigger a violation")
+        })
+    }
+
+    func testSuperfluousDisableCommandWithMultipleCustomRules() throws {
+        let customRulesConfiguration: [String: Any] = [
+            "custom1": [
+                "regex": "pattern",
+                "match_kinds": "comment"
+            ],
+            "custom2": [
+                "regex": "10",
+                "match_kinds": "number"
+            ],
+            "custom3": [
+                "regex": "100",
+                "match_kinds": "number"
+            ]
+        ]
+
+        let example = Example(
+            """
+            // swiftlint:disable custom1 custom3
+            return 10
+
+            """,
+            configuration: customRulesConfiguration
+        ).skipWrappingInCommentTest()
+        let configuration = try XCTUnwrap(makeConfig(["custom_rules": customRulesConfiguration], "custom_rules"))
+        let violations = violations(example, config: configuration)
+
+        XCTAssertEqual(violations.count, 3)
+        XCTAssertEqual(violations.filter { $0.ruleIdentifier == "superfluous_disable_command" }.count, 2)
+        XCTAssertEqual(violations.filter { $0.ruleIdentifier == "custom2" }.count, 1)
+        XCTAssertTrue(violations.contains { violation in
+            violation.description.contains("SwiftLint rule 'custom1' did not trigger a violation")
+        })
+        XCTAssertTrue(violations.contains { violation in
+            violation.description.contains("SwiftLint rule 'custom3' did not trigger a violation")
+        })
+    }
+
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {
         var config: [String: Any] = ["regex": "pattern",
                                      "match_kinds": "comment"]

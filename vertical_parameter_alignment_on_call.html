@@ -413,6 +413,16 @@ warning
 <pre class="highlight swift"><code><span class="nf">myFunc</span><span class="p">(</span><span class="nv">foo</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
        <span class="nv">bar</span><span class="p">:</span> <span class="n">baz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kt">UIViewPropertyAnimator</span><span class="o">.</span><span class="nf">runningPropertyAnimator</span><span class="p">(</span>
+    <span class="nv">withDuration</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>
+    <span class="nv">delay</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="nv">options</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="n">curveEaseIn</span><span class="p">]</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// animations</span>
+<span class="p">}</span> <span class="nv">completion</span><span class="p">:</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span>
+    <span class="c1">// completion</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="n">bar</span><span class="p">,</span>
                 <span class="err">↓</span><span class="nv">param3</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">param4</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>

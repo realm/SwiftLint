@@ -388,6 +388,12 @@ warning
     <span class="k">self</span><span class="o">.</span><span class="nf">hideLoading</span><span class="p">()</span>
 <span class="p">})</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kt">UIView</span><span class="o">.</span><span class="nf">animate</span><span class="p">(</span><span class="nv">withDuration</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span> <span class="nv">animations</span><span class="p">:</span> <span class="p">{</span>
+    <span class="n">blurredImageView</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="p">}</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span>
+    <span class="k">self</span><span class="o">.</span><span class="nf">hideLoading</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span> <span class="p">},</span>
     <span class="nv">param3</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">param4</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
 </code></pre>
@@ -408,13 +414,13 @@ warning
        <span class="nv">bar</span><span class="p">:</span> <span class="n">baz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="n">bar</span>
+<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="n">bar</span><span class="p">,</span>
                 <span class="err">↓</span><span class="nv">param3</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">param4</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="n">bar</span>
+<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="n">bar</span><span class="p">,</span>
  <span class="err">↓</span><span class="nv">param3</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">param4</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="n">bar</span>
+<pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="n">bar</span><span class="p">,</span>
        <span class="err">↓</span><span class="nv">param3</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
        <span class="err">↓</span><span class="nv">param4</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
 </code></pre>
@@ -431,6 +437,9 @@ warning
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">myFunc</span><span class="p">(</span><span class="nv">foo</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
         <span class="err">↓</span><span class="nv">bar</span><span class="p">:</span> <span class="n">baz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="nf">myFunc</span><span class="p">(</span><span class="nv">foo</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">bar</span><span class="p">:</span>
+        <span class="n">baz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="err">↓</span><span class="nv">baz</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
 </code></pre>
 
           </div>

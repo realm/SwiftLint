@@ -1,6 +1,7 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-struct VerticalParameterAlignmentOnCallRule: ASTRule, OptInRule {
+@SwiftSyntaxRule
+struct VerticalParameterAlignmentOnCallRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -42,6 +43,13 @@ struct VerticalParameterAlignmentOnCallRule: ASTRule, OptInRule {
             })
             """),
             Example("""
+            UIView.animate(withDuration: 0.4, animations: {
+                blurredImageView.alpha = 1
+            } { _ in
+                self.hideLoading()
+            }
+            """),
+            Example("""
             foo(param1: 1, param2: { _ in },
                 param3: false, param4: true)
             """),
@@ -67,15 +75,15 @@ struct VerticalParameterAlignmentOnCallRule: ASTRule, OptInRule {
         ],
         triggeringExamples: [
             Example("""
-            foo(param1: 1, param2: bar
+            foo(param1: 1, param2: bar,
                             ↓param3: false, param4: true)
             """),
             Example("""
-            foo(param1: 1, param2: bar
+            foo(param1: 1, param2: bar,
              ↓param3: false, param4: true)
             """),
             Example("""
-            foo(param1: 1, param2: bar
+            foo(param1: 1, param2: bar,
                    ↓param3: false,
                    ↓param4: true)
             """),
@@ -96,86 +104,64 @@ struct VerticalParameterAlignmentOnCallRule: ASTRule, OptInRule {
             Example("""
             myFunc(foo: 0,
                     ↓bar: baz == 0)
+            """),
+            Example("""
+            myFunc(foo: 0, bar:
+                    baz == 0, ↓baz: true)
             """)
         ]
     )
+}
 
-    func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .call,
-            case let arguments = dictionary.enclosedArguments,
-            arguments.count > 1,
-            let firstArgumentOffset = arguments.first?.offset,
-            case let contents = file.stringView,
-            var firstArgumentPosition = contents.lineAndCharacter(forByteOffset: firstArgumentOffset) else {
-                return []
-        }
-
-        var visitedLines = Set<Int>()
-        var previousArgumentWasMultiline = false
-
-        let lastIndex = arguments.count - 1
-        let violatingOffsets: [ByteCount] = arguments.enumerated().compactMap { idx, argument in
-            defer {
-                previousArgumentWasMultiline = isMultiline(argument: argument, file: file)
+private extension VerticalParameterAlignmentOnCallRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            let arguments = node.arguments
+            guard arguments.count > 1, let firstArg = arguments.first else {
+                return
             }
 
-            guard let offset = argument.offset,
-                let (line, character) = contents.lineAndCharacter(forByteOffset: offset),
-                line > firstArgumentPosition.line else {
-                    return nil
-            }
+            var firstArgumentLocation = locationConverter.location(for: firstArg.positionAfterSkippingLeadingTrivia)
 
-            let (firstVisit, _) = visitedLines.insert(line)
-            guard character != firstArgumentPosition.character && firstVisit else {
-                return nil
-            }
+            var visitedLines = Set<Int>()
+            var previousArgumentWasMultiline = false
 
-            // if this is the first element on a new line after a closure with multiple lines,
-            // we reset the reference position
-            if previousArgumentWasMultiline && firstVisit {
-                firstArgumentPosition = (line, character)
-                return nil
-            }
+            let violatingPositions: [AbsolutePosition] = arguments
+                .compactMap { argument -> AbsolutePosition? in
+                    defer {
+                        previousArgumentWasMultiline = isMultiline(argument: argument)
+                    }
 
-            // never trigger on a trailing closure
-            if idx == lastIndex, isTrailingClosure(dictionary: dictionary, file: file) {
-                return nil
-            }
+                    let position = argument.positionAfterSkippingLeadingTrivia
+                    let location = locationConverter.location(for: position)
+                    guard location.line > firstArgumentLocation.line else {
+                        return nil
+                    }
 
-            return offset
+                    let (firstVisit, _) = visitedLines.insert(location.line)
+                    guard location.column != firstArgumentLocation.column && firstVisit else {
+                        return nil
+                    }
+
+                    // if this is the first element on a new line after a closure with multiple lines,
+                    // we reset the reference position
+                    if previousArgumentWasMultiline && firstVisit {
+                        firstArgumentLocation = location
+                        return nil
+                    }
+
+                    return position
+                }
+
+            violations.append(contentsOf: violatingPositions)
         }
 
-        return violatingOffsets.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0))
+        private func isMultiline(argument: LabeledExprListSyntax.Element) -> Bool {
+            let expression = argument.expression
+            let startPosition = locationConverter.location(for: expression.positionAfterSkippingLeadingTrivia)
+            let endPosition = locationConverter.location(for: expression.endPositionBeforeTrailingTrivia)
+
+            return endPosition.line > startPosition.line
         }
-    }
-
-    private func isMultiline(argument: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let offset = argument.bodyOffset,
-            let length = argument.bodyLength,
-            case let contents = file.stringView,
-            let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset),
-            let (endLine, _) = contents.lineAndCharacter(forByteOffset: offset + length)
-        else {
-            return false
-        }
-
-        return endLine > startLine
-    }
-
-    private func isTrailingClosure(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let offset = dictionary.offset,
-            let length = dictionary.length,
-            case let start = min(offset, offset + length - 1),
-            case let byteRange = ByteRange(location: start, length: length),
-            let text = file.stringView.substringWithByteRange(byteRange)
-        else {
-            return false
-        }
-
-        return !text.hasSuffix(")")
     }
 }

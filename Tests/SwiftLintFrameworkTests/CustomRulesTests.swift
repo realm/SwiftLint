@@ -114,12 +114,6 @@ class CustomRulesTests: SwiftLintTestCase {
                                        reason: regexConfig.message)])
     }
 
-    func testLocalDisableCustomRule() {
-        let (_, customRules) = getCustomRules()
-        let file = SwiftLintFile(contents: "//swiftlint:disable custom \n// file with a pattern")
-        XCTAssertEqual(customRules.validate(file: file), [])
-    }
-
     func testLocalDisableCustomRuleWithMultipleRules() {
         let (configs, customRules) = getCustomRulesWithTwoRules()
         let file = SwiftLintFile(contents: "//swiftlint:disable \(configs.1.identifier) \n// file with a pattern")
@@ -199,6 +193,27 @@ class CustomRulesTests: SwiftLintTestCase {
         XCTAssertTrue(violations.contains { violation in
             violation.description.contains("SwiftLint rule 'custom1' did not trigger a violation")
         })
+    }
+
+    func testSuperfluousDisableCommandDoesntTriggerWithCustomRules() throws {
+        let customRulesConfiguration: [String: Any] = [
+            "custom1": [
+                "regex": "pattern",
+                "match_kinds": "comment"
+            ]
+        ]
+
+        let example = Example(
+            """
+            // swiftlint:disable:next custom1
+            // this pattern is prohibited
+            """,
+            configuration: customRulesConfiguration
+        ).skipWrappingInCommentTest()
+        let configuration = try XCTUnwrap(makeConfig(["custom_rules": customRulesConfiguration], "custom_rules"))
+        let violations = violations(example, config: configuration)
+
+        XCTAssertEqual(violations.count, 0)
     }
 
     func testSuperfluousDisableCommandWithMultipleCustomRules() throws {

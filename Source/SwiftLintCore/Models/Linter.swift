@@ -102,8 +102,13 @@ private extension Rule {
 
         let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
             return (violation, regions.first { $0.contains(violation.location) })
-        }.partitioned { _, region in
-            return region?.isRuleEnabled(self) ?? true
+        }.partitioned { violation, region in
+            if self is CustomRules {
+                let disabled = region?.isRuleDisabled(customRuleIdentifier: violation.ruleIdentifier) ?? false
+                return !disabled
+            } else {
+                return region?.isRuleEnabled(self) ?? true
+            }
         }
 
         let customRulesIDs: [String] = {

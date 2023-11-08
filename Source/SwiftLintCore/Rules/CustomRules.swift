@@ -79,13 +79,7 @@ struct CustomRules: Rule, CacheDescriptionProvider {
                                severity: configuration.severity,
                                location: Location(file: file, characterOffset: $0.location),
                                reason: configuration.message)
-            }).filter { violation in
-                guard let region = file.regions().first(where: { $0.contains(violation.location) }) else {
-                    return true
-                }
-
-                return !region.isRuleDisabled(customRuleIdentifier: configuration.identifier)
-            }
+            })
         }
     }
 }

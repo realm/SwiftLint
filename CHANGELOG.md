@@ -100,10 +100,10 @@
 * `superfluous_disable_command` violations are now triggered for
   custom rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [Martin Redington](https://github.com/mildm8nnered)
   [#4754](https://github.com/realm/SwiftLint/issues/4754)
+
 * Fixed false positives for the `no_magic_numbers` rule, when they
-  are defined in a tuple like `let (a, b) = (5, 10)`.  
+  are defined in a tuple like `let (a, b) = (5, 10)` or `let a = (2, 3)`.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5305](https://github.com/realm/SwiftLint/pull/5305)
 

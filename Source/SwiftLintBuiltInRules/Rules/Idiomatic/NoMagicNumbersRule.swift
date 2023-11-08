@@ -227,17 +227,6 @@ private extension ExprSyntaxProtocol {
 
 private extension PatternBindingSyntax {
     var isTupleAssignment: Bool {
-        let children = children(viewMode: .sourceAccurate)
-        guard children.count > 1 else {
-            return false
-        }
-        let secondChildIndex = children.index(after: children.startIndex)
-
-        guard let secondChild = children[secondChildIndex].as(InitializerClauseSyntax.self),
-              let tupleExpression = secondChild.value.as(TupleExprSyntax.self),
-              tupleExpression.elements.count > 1  else {
-            return false
-        }
-        return true
+        initializer?.value.as(TupleExprSyntax.self)?.elements.count ?? 0 > 1
     }
 }

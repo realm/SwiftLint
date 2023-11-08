@@ -8,7 +8,7 @@ struct FunctionArgumentsSpacingRule: Rule {
     static let description = RuleDescription(
         identifier: "functions_arguments_spacing",
         name: "Function Arguments Spacing",
-        description: "Remove spaces before the function argument and after the function argument",
+        description: "",
         kind: .lint
     )
 }
@@ -20,17 +20,17 @@ private extension FunctionArgumentsSpacingRule {
             guard argsCount != 0 else {
                 return
             }
-            // before
-            print("=============================================")
-            print(node.arguments.first?.expression.description)
-            print(node.arguments.first?.expression.leadingTrivia.isEmpty)
-            print("aaaaaaaaaaaaaaaaaaaaaa")
-            print(node.arguments.first!.expression.positionAfterSkippingLeadingTrivia)
-            if (!node.arguments.first!.expression.leadingTrivia.isEmpty) {
-                print("----------------------------")
-                violations.append(node.arguments.first!.expression.positionAfterSkippingLeadingTrivia)
+            let left = node.leftParen?.trailingTrivia
+            
+            let arg = node.arguments.last
+            if left == Trivia.space {
+                violations.append(node.leftParen!.endPositionBeforeTrailingTrivia)
             }
             
+            if arg?.trailingTrivia == Trivia.space {
+                violations.append(node.rightParen!.positionAfterSkippingLeadingTrivia)
+            }
+            return
         }
     }
 }

@@ -1,11 +1,11 @@
 @testable import SwiftLintBuiltInRules
 
 class FunctionArgumentsSpacingRuleTests: SwiftLintTestCase {
-    func test() {
+    func testFunctionArgumentsSpacingRule() {
         let nonTriggeringExamples = [
             Example("makeGenerator()"),
             Example("makeGenerator(style)"),
-            Example("makeGenerator(true, false)"),
+            Example("makeGenerator(true, false)")
         ]
         let triggeringExamples = [
             Example("makeGenerator(↓ style)"),
@@ -17,7 +17,6 @@ class FunctionArgumentsSpacingRuleTests: SwiftLintTestCase {
         ]
         let description = FunctionArgumentsSpacingRule.description.with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
-        
         verifyRule(description)
     }
 }

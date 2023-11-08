@@ -29,7 +29,7 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         Example("""
         let something = Something<GenericParameter1,
                                   GenericParameter2>()
-        """ ),
+        """),
         Example("""
         return path.flatMap { path in
             return compileCommands[path] ??

@@ -458,6 +458,12 @@ class ForceUnwrappingRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class FunctionArgumentsSpacingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(FunctionArgumentsSpacingRule.description)
+    }
+}
+
 class FunctionBodyLengthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FunctionBodyLengthRule.description)

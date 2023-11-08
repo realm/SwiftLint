@@ -216,6 +216,27 @@ class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
+    func testSuperfluousDisableCommandDoesntTriggerWithCustomRulesDisableAll() throws {
+        let customRulesConfiguration: [String: Any] = [
+            "custom1": [
+                "regex": "pattern",
+                "match_kinds": "comment"
+            ]
+        ]
+
+        let example = Example(
+            """
+            // swiftlint:disable:next all
+            // this pattern is prohibited
+            """,
+            configuration: customRulesConfiguration
+        ).skipWrappingInCommentTest()
+        let configuration = try XCTUnwrap(makeConfig(["custom_rules": customRulesConfiguration], "custom_rules"))
+        let violations = violations(example, config: configuration)
+
+        XCTAssertEqual(violations.count, 0)
+    }
+
     func testSuperfluousDisableCommandWithMultipleCustomRules() throws {
         let customRulesConfiguration: [String: Any] = [
             "custom1": [

@@ -35,9 +35,9 @@ public struct SuperfluousDisableCommandRule: SourceKitFreeRule {
         return []
     }
 
-    func reason(forRuleIdentifier ruleIdentifier: String) -> String {
+    func reason(for rule: (some Rule).Type) -> String {
         """
-        SwiftLint rule '\(ruleIdentifier)' did not trigger a violation in the disabled region; \
+        SwiftLint rule '\(rule.description.identifier)' did not trigger a violation in the disabled region; \
         remove the disable command
         """
     }

@@ -16,57 +16,42 @@ private struct LintResult {
 }
 
 private extension Rule {
-    func superfluousDisableCommandViolations(regions: [Region],
-                                             superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
-                                             allViolations: [StyleViolation]) -> [StyleViolation] {
+    static func superfluousDisableCommandViolations(regions: [Region],
+                                                    superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
+                                                    allViolations: [StyleViolation]) -> [StyleViolation] {
         guard regions.isNotEmpty, let superfluousDisableCommandRule else {
             return []
         }
 
+        let regionsDisablingCurrentRule = regions.filter { region in
+            return region.isRuleDisabled(self.init())
+        }
         let regionsDisablingSuperfluousDisableRule = regions.filter { region in
             return region.isRuleDisabled(superfluousDisableCommandRule)
         }
 
-        let regionsWithIdentifiers: [(String, [Region])] = {
-            if let customRules = self as? CustomRules {
-                return customRules.configuration.customRuleConfigurations.map { configuration in
-                    let regionsDisablingCurrentRule = regions.filter { region in
-                        return region.isRuleDisabled(customRuleIdentifier: configuration.identifier)
-                    }
-                    return (configuration.identifier, regionsDisablingCurrentRule)
-                }
-            } else {
-                let regionsDisablingCurrentRule = regions.filter { region in
-                    return region.isRuleDisabled(self)
-                }
-                return [(Self.description.identifier, regionsDisablingCurrentRule)]
+        return regionsDisablingCurrentRule.compactMap { region -> StyleViolation? in
+            let isSuperfluousRuleDisabled = regionsDisablingSuperfluousDisableRule.contains {
+                $0.contains(region.start)
             }
-        }()
 
-        return regionsWithIdentifiers.flatMap { ruleIdentifier, regionsDisablingCurrentRule in
-            regionsDisablingCurrentRule.compactMap { region -> StyleViolation? in
-                let isSuperfluousRuleDisabled = regionsDisablingSuperfluousDisableRule.contains {
-                    $0.contains(region.start)
-                }
-
-                guard !isSuperfluousRuleDisabled else {
-                    return nil
-                }
-
-                let noViolationsInDisabledRegion = !allViolations.contains { violation in
-                    return region.contains(violation.location) && violation.ruleIdentifier == ruleIdentifier
-                }
-                guard noViolationsInDisabledRegion else {
-                    return nil
-                }
-
-                return StyleViolation(
-                    ruleDescription: type(of: superfluousDisableCommandRule).description,
-                    severity: superfluousDisableCommandRule.configuration.severity,
-                    location: region.start,
-                    reason: superfluousDisableCommandRule.reason(forRuleIdentifier: ruleIdentifier)
-                )
+            guard !isSuperfluousRuleDisabled else {
+                return nil
             }
+
+            let noViolationsInDisabledRegion = !allViolations.contains { violation in
+                return region.contains(violation.location)
+            }
+            guard noViolationsInDisabledRegion else {
+                return nil
+            }
+
+            return StyleViolation(
+                ruleDescription: type(of: superfluousDisableCommandRule).description,
+                severity: superfluousDisableCommandRule.configuration.severity,
+                location: region.start,
+                reason: superfluousDisableCommandRule.reason(for: self)
+            )
         }
     }
 
@@ -106,19 +91,12 @@ private extension Rule {
             return region?.isRuleEnabled(self) ?? true
         }
 
-        let customRulesIDs: [String] = {
-            guard let customRules = self as? CustomRules else {
-                return []
-            }
-            return customRules.configuration.customRuleConfigurations.map(\.identifier)
-        }()
         let ruleIDs = Self.description.allIdentifiers +
-            customRulesIDs +
             (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? []) +
             [RuleIdentifier.all.stringRepresentation]
         let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
 
-        let superfluousDisableCommandViolations = superfluousDisableCommandViolations(
+        let superfluousDisableCommandViolations = Self.superfluousDisableCommandViolations(
             regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions,
             superfluousDisableCommandRule: superfluousDisableCommandRule,
             allViolations: violations

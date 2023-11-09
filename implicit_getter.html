@@ -389,6 +389,22 @@ warning
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="n">_foo</span> <span class="p">}</span>
+        <span class="n">_modify</span> <span class="p">{</span> <span class="n">yield</span> <span class="o">&amp;</span><span class="n">_foo</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">_foo</span><span class="p">:</span> <span class="kt">Int</span>
+    <span class="k">var</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">@storageRestrictions</span><span class="p">(</span><span class="nv">initializes</span><span class="p">:</span> <span class="n">_foo</span><span class="p">)</span>
+        <span class="kd">init</span> <span class="p">{</span> <span class="n">_foo</span> <span class="o">=</span> <span class="n">newValue</span> <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="n">_foo</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="k">var</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Int</span>
 <span class="p">}</span>
 </code></pre>

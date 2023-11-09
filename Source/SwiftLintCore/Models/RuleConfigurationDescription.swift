@@ -397,7 +397,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// The wrapper itself providing access to all its data. This field can only be accessed by the
     /// element's name prefixed with a `$`.
     public var projectedValue: ConfigurationElement {
-        get { self } // swiftlint:disable:this implicit_getter
+        get { self }
         _modify { yield &self }
     }
 

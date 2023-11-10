@@ -5,10 +5,10 @@ module(
     repo_name = "SwiftLint",
 )
 
-bazel_dep(name = "apple_support", version = "1.10.1", repo_name = "build_bazel_apple_support")
-bazel_dep(name = "platforms", version = "0.0.7")
-bazel_dep(name = "rules_apple", version = "3.0.0", repo_name = "build_bazel_rules_apple")
-bazel_dep(name = "rules_swift", version = "1.12.0", repo_name = "build_bazel_rules_swift")
+bazel_dep(name = "apple_support", version = "1.11.1", repo_name = "build_bazel_apple_support")
+bazel_dep(name = "platforms", version = "0.0.8")
+bazel_dep(name = "rules_apple", version = "3.1.1", repo_name = "build_bazel_rules_apple")
+bazel_dep(name = "rules_swift", version = "1.13.0", repo_name = "build_bazel_rules_swift")
 bazel_dep(name = "sourcekitten", version = "0.34.1", repo_name = "com_github_jpsim_sourcekitten")
 bazel_dep(name = "swift-syntax", version = "509.0.2", repo_name = "SwiftSyntax")
 bazel_dep(name = "swift_argument_parser", version = "1.2.1", repo_name = "sourcekitten_com_github_apple_swift_argument_parser")
@@ -30,5 +30,5 @@ use_repo(apple_cc_configure, "local_config_apple_cc")
 
 # Dev Dependencies
 
-bazel_dep(name = "bazel_skylib", version = "1.4.2", dev_dependency = True)
+bazel_dep(name = "bazel_skylib", version = "1.5.0", dev_dependency = True)
 bazel_dep(name = "rules_xcodeproj", version = "1.13.0", dev_dependency = True)

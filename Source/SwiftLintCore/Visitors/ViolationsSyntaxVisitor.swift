@@ -31,44 +31,26 @@ open class ViolationsSyntaxVisitor<Configuration: RuleConfiguration>: SyntaxVisi
     /// List of declaration types that shall be skipped while traversing the AST.
     open var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [] }
 
-    override open func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-        skippableDeclarations.contains { $0 == ActorDeclSyntax.self } ? .skipChildren : .visitChildren
-    }
+    override open func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
 
-    override open func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        skippableDeclarations.contains { $0 == ClassDeclSyntax.self } ? .skipChildren : .visitChildren
-    }
+    override open func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
 
-    override open func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-        skippableDeclarations.contains { $0 == EnumDeclSyntax.self } ? .skipChildren : .visitChildren
-    }
+    override open func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
 
-    override open func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-        skippableDeclarations.contains { $0 == ExtensionDeclSyntax.self } ? .skipChildren : .visitChildren
-    }
+    override open func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
 
-    override open func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-        skippableDeclarations.contains { $0 == FunctionDeclSyntax.self } ? .skipChildren : .visitChildren
-    }
+    override open func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
 
-    override open func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
-        skippableDeclarations.contains { $0 == FunctionDeclSyntax.self } ? .skipChildren : .visitChildren
-    }
+    override open func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
 
-    override open func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-        skippableDeclarations.contains { $0 == VariableDeclSyntax.self } ? .skipChildren : .visitChildren
-    }
+    override open func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
 
-    override open func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-        skippableDeclarations.contains { $0 == ProtocolDeclSyntax.self } ? .skipChildren : .visitChildren
-    }
+    override open func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
 
-    override open func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-        skippableDeclarations.contains { $0 == StructDeclSyntax.self } ? .skipChildren : .visitChildren
-    }
+    override open func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
 
-    override open func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
-        skippableDeclarations.contains { $0 == InitializerDeclSyntax.self } ? .skipChildren : .visitChildren
+    private func shallSkip(_ node: some DeclSyntaxProtocol) -> SyntaxVisitorContinueKind {
+        skippableDeclarations.contains { $0 == node.syntaxNodeType } ? .skipChildren : .visitChildren
     }
 }
 

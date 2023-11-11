@@ -108,7 +108,7 @@ private extension NoMagicNumbersRule {
         private var possibleViolations: [String: Set<AbsolutePosition>] = [:]
 
         override func visit(_ node: PatternBindingSyntax) -> SyntaxVisitorContinueKind {
-            node.isTupleAssignment ? .skipChildren : .visitChildren
+            node.isSimpleTupleAssignment ? .skipChildren : .visitChildren
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
@@ -226,7 +226,9 @@ private extension ExprSyntaxProtocol {
 }
 
 private extension PatternBindingSyntax {
-    var isTupleAssignment: Bool {
-        initializer?.value.as(TupleExprSyntax.self)?.elements.count ?? 0 > 1
+    var isSimpleTupleAssignment: Bool {
+        initializer?.value.as(TupleExprSyntax.self)?.elements.allSatisfy {
+            $0.expression.is(IntegerLiteralExprSyntax.self) || $0.expression.is(FloatLiteralExprSyntax.self)
+        } ?? false
     }
 }

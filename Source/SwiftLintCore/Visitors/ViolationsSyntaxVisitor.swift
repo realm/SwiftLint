@@ -47,6 +47,8 @@ open class ViolationsSyntaxVisitor<Configuration: RuleConfiguration>: SyntaxVisi
 
     override open func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
 
+    override open func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
+
     override open func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind { shallSkip(node) }
 
     private func shallSkip(_ node: some DeclSyntaxProtocol) -> SyntaxVisitorContinueKind {
@@ -82,11 +84,12 @@ public extension Array where Element == any DeclSyntaxProtocol.Type {
         ActorDeclSyntax.self,
         ClassDeclSyntax.self,
         EnumDeclSyntax.self,
-        FunctionDeclSyntax.self,
         ExtensionDeclSyntax.self,
+        FunctionDeclSyntax.self,
         InitializerDeclSyntax.self,
         ProtocolDeclSyntax.self,
         StructDeclSyntax.self,
+        SubscriptDeclSyntax.self,
         VariableDeclSyntax.self
     ]
 

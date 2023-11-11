@@ -108,12 +108,6 @@ public extension Array where Element == any DeclSyntaxProtocol.Type {
         VariableDeclSyntax.self
     ]
 
-    /// Useful for class-specific checks since extensions and protocols do not allow nested classes.
-    static let extensionsAndProtocols: Self = [
-        ExtensionDeclSyntax.self,
-        ProtocolDeclSyntax.self
-    ]
-
     /// All declarations except for the specified ones.
     ///
     /// - parameter declarations: The declarations to exclude from all declarations.

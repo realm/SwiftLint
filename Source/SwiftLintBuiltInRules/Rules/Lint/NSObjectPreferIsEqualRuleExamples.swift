@@ -150,6 +150,13 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
+        extension E {
+            @objc class NestedClass {
+                ↓static func ==(lhs: NestedClass, rhs: NestedClass) -> Bool {
+                    return false
+                }
+            }
+        }
         """, excludeFromDocumentation: true)
     ]
 }

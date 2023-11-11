@@ -168,6 +168,15 @@ struct RedundantSelfInClosureRuleExamples {
             }
         """, excludeFromDocumentation: true),
         Example("""
+            extension E {
+                static func f(_ work: @escaping () -> Void) { work() }
+                func g() { Self.f { self.g() } }
+                struct S {
+                    func g() { E.f { ↓self.g() } }
+                }
+            }
+        """, excludeFromDocumentation: true),
+        Example("""
             class C {
                 var x = 0
                 func f(_ work: @escaping () -> Void) { work() }

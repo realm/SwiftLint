@@ -14,7 +14,9 @@
 
 #### Bug Fixes
 
-* None.
+* Trigger `nsobject_prefer_isequal` and `redundant_self_in_closure` even in case
+  the surrounding declaration is nested in an extension.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ## 0.54.0: Macro-Economic Forces
 

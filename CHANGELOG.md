@@ -17,6 +17,10 @@
 * Trigger `nsobject_prefer_isequal` and `redundant_self_in_closure` even in case
   the surrounding declaration is nested in an extension.  
   [SimplyDanny](https://github.com/SimplyDanny)
+* Fixed false positives for the `no_magic_numbers` rule, when they
+  are defined in a tuple like `let (a, b) = (5, 10)` or `let a = (2, 3)`.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5305](https://github.com/realm/SwiftLint/pull/5305)
 
 ## 0.54.0: Macro-Economic Forces
 
@@ -96,17 +100,6 @@
   defined in a transitive module.  
   [jszumski](https://github.com/jszumski)
   [#5246](https://github.com/realm/SwiftLint/pull/5246)
-
-* `superfluous_disable_command` violations are now triggered for
-  custom rules.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4754](https://github.com/realm/SwiftLint/issues/4754)
-
-* Fixed false positives for the `no_magic_numbers` rule, when they
-  are defined in a tuple like `let (a, b) = (5, 10)` or `let a = (2, 3)`.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#5305](https://github.com/realm/SwiftLint/pull/5305)
 
 ## 0.53.0: Laundry List
 

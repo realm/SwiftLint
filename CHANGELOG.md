@@ -557,7 +557,7 @@
 * Add new `unhandled_throwing_task` rule that triggers when a Task with an
   implicit error type has unhandled trys or errors thrown inside its body.
   This results in errors being silently discarded, which may be unexpected.
-  See this forum thread for more details: https://forums.swift.org/t/56066  
+  See [this forum thread](https://forums.swift.org/t/56066) for more details.  
   [kylebshr](https://github.com/kylebshr)
 
 #### Bug Fixes
@@ -628,7 +628,7 @@
   [#4609](https://github.com/realm/SwiftLint/issues/4609)
 
 * Adds `all` pseudo-rule for `opt_in_rules` - enables all opt in rules
-  that are not listed in `disabled_rules`  
+  that are not listed in `disabled_rules`.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4540](https://github.com/realm/SwiftLint/issues/4540)
 
@@ -1081,7 +1081,8 @@
   - `vertical_parameter_alignment`
   - `weak_delegate`
   - `xct_specific_matcher`
-  - `xctfail_message`  
+  - `xctfail_message`
+
   [Marcelo Fabri](https://github.com/marcelofabri)
   [SimplyDanny](https://github.com/SimplyDanny)
   [JP Simard](https://github.com/jpsim)
@@ -1104,7 +1105,7 @@
 * Add new `ns_number_init_as_function_reference` rule to catch `NSNumber.init`
   and `NSDecimalNumber.init` being used as function references since it
   can cause the wrong initializer to be used, causing crashes. See
-  https://github.com/apple/swift/issues/51036 for more info.  
+  [this Swift issue](https://github.com/apple/swift/issues/51036) for more info.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Add `accessibility_trait_for_button` rule to warn if a SwiftUI
@@ -1174,16 +1175,18 @@
 
 * `quick_discouraged_call`, `quick_discouraged_focused_test` and
   `quick_discouraged_pending_test` rules now trigger on subclasses of
-  `QuickSpec`.
+  `QuickSpec`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4420](https://github.com/realm/SwiftLint/issues/4420)
 
 * The `type_name` rule now validates protocol declarations by default.
   You can opt-out by using the `validate_protocols` key in your configuration:
+
   ```yml
   type_name:
     validate_protocols: false
   ```
+
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4430](https://github.com/realm/SwiftLint/issues/4430)
 
@@ -1493,7 +1496,7 @@ macOS < 12.
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3502](https://github.com/realm/SwiftLint/issues/3502)
 
-* Prevent crash for private types named `_` in `type_name` rules.
+* Prevent crash for private types named `_` in `type_name` rules.  
   [sinoru](https://github.com/sinoru)
   [#3971](https://github.com/realm/SwiftLint/issues/3971)
 
@@ -1903,10 +1906,10 @@ macOS < 12.
 #### Enhancements
 
 * Add `self_in_property_initialization` rule to catch uses of `self`
-  inside an inline closure used for initializing a variable. In this case, 
+  inside an inline closure used for initializing a variable. In this case,
   `self` refers to the `NSObject.self` method and likely won't be what you
   expect. You can make the variable `lazy` to be able to refer to the current
-  instance with `self` or use `MyClass.self` if you really want to reference 
+  instance with `self` or use `MyClass.self` if you really want to reference
   the method.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
@@ -1934,7 +1937,7 @@ macOS < 12.
   [Ben Fox](https://github.com/bdfox325)
 
 * Fix redundant_optional_initialization autocorrect broken
-  in case observer's brace exists.
+  in case observer's brace exists.  
   [Naruki Chigira](https://github.com/naru-jpn)
   [#3718](https://github.com/realm/SwiftLint/issues/3718)
 
@@ -1943,11 +1946,11 @@ macOS < 12.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3724](https://github.com/realm/SwiftLint/issues/3724)
 
-* Speed up Computed Accessors Order rule.
+* Speed up Computed Accessors Order rule.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#3727](https://github.com/realm/SwiftLint/issues/3727)
 
-* [Colon Rule] Fix case when comment is used in function call.
+* [Colon Rule] Fix case when comment is used in function call.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#3740](https://github.com/realm/SwiftLint/issues/3740)
 
@@ -1968,7 +1971,8 @@ macOS < 12.
   * `excludes_extensions` defaults to `true` to skip reporting violations
      for extensions with missing documentation comments.
   * `excludes_inherited_types` defaults to `true` to skip reporting
-     violations for inherited declarations, like subclass overrides.  
+     violations for inherited declarations, like subclass overrides.
+
   [Ben Fox](https://github.com/bdfox325)
 
 * Fix false negative on `redundant_optional_initialization` rule when variable
@@ -2248,7 +2252,7 @@ macOS < 12.
 
 #### Enhancements
 
-* Don't report `@UIApplicationDelegateAdaptor` statements in `weak-delegate` rule.
+* Don't report `@UIApplicationDelegateAdaptor` statements in `weak-delegate` rule.  
   [Richard Turton](https://github.com/jrturton)
   [#3286](https://github.com/realm/SwiftLint/issues/3456)
 
@@ -2469,7 +2473,7 @@ macOS < 12.
   [#2367](https://github.com/realm/SwiftLint/issues/3267)
 
 * Rule `multiple_closures_with_trailing_closure` no longer triggers when Swift
-  5.3's 'multiple trailing closures' feature is used.
+  5.3's 'multiple trailing closures' feature is used.  
   [Jumhyn](https://github.com/jumhyn)
   [#3295](https://github.com/realm/SwiftLint/issues/3295)
 
@@ -2644,8 +2648,8 @@ This is the last release to support building with Swift 5.0.x.
   explicit import statements for each module referenced in a source
   file (`require_explicit_imports`). When this setting is enabled,
   an `allowed_transitive_imports` setting may also be specified to allow
-  a mapping of modules to transitively imported modules. See PR for
-  details: https://github.com/realm/SwiftLint/pull/3123  
+  a mapping of modules to transitively imported modules. See
+  [the PR](https://github.com/realm/SwiftLint/pull/3123) for details.  
   [JP Simard](https://github.com/jpsim)
   [#3116](https://github.com/realm/SwiftLint/issues/3116)
 
@@ -2674,10 +2678,11 @@ This is the last release to support building with Swift 5.0.x.
 
 * The new rules introduced in 0.39.0 that depend on SwiftSyntax have been
   temporarily removed as we work out release packaging issues.
-    * `prohibited_nan_comparison`
-    * `return_value_from_void_function`
-    * `tuple_pattern`
-    * `void_function_in_ternary`  
+  * `prohibited_nan_comparison`
+  * `return_value_from_void_function`
+  * `tuple_pattern`
+  * `void_function_in_ternary`
+
   [JP Simard](https://github.com/jpsim)
   [#3105](https://github.com/realm/SwiftLint/issues/3105)
 
@@ -2718,7 +2723,7 @@ This is the last release to support building with Swift 5.0.x.
 
 * Add option to pass successfully if no files passed to SwiftLint are lintable.  
   [thedavidharris](https://github.com/thedavidharris)
-  [#2608](https://github.com/realm/SwiftLint/issues/2608)i
+  [#2608](https://github.com/realm/SwiftLint/issues/2608)
 
 * Add `deinitializer` type content to `type_contents_order` rule instead of
   grouping it with initializers.  
@@ -2784,7 +2789,7 @@ This is the last release to support building with Swift 5.0.x.
   [John Mueller](https://github.com/john-mueller)
   [#3060](https://github.com/realm/SwiftLint/issues/3060)
 
-* Implicit_return description now reports current config correctly.
+* Implicit_return description now reports current config correctly.  
   [John Buckley](https://github.com/nhojb)
 
 * Fix false positive in `implicit_getter` rule in extensions when using
@@ -3009,7 +3014,7 @@ This is the last release to support building with Swift 5.0.x.
 
 * Speed up syntax token lookups, which can improve performance when
   linting large files.  
-  [PaulTaykalo](https://github.com/PaulTaykalo)  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2916](https://github.com/realm/SwiftLint/issues/2916)  
 
 * Use faster comparison in 'file_types_order' rule.  
@@ -3263,10 +3268,12 @@ This is the last release to support building with Swift 4.2.x.
 * Make `testSimulateHomebrewTest()` test opt-in because it may fail on unknown
   condition. Set `SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST`
   environment variable to test like:
-    ```terminal.sh-session
-    $ SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST=1 \
-    swift test --filter testSimulateHomebrewTest
-    ```  
+
+  ```terminal.sh-session
+  $ SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST=1 \
+  swift test --filter testSimulateHomebrewTest
+  ```  
+  
   [Norio Nomura](https://github.com/norio-nomura)
 
 * Add option to configure how nested types should be separated in file names by
@@ -3399,7 +3406,7 @@ This is the last release to support building with Swift 4.2.x.
   [#2683](https://github.com/realm/SwiftLint/issues/2683)
 
 * Fix false positives on `sorted_first_last` when calling `firstIndex` and
-  `lastIndex` method.
+  `lastIndex` method.  
   [Taiki Komaba](https://github.com/r-plus)
   [#2700](https://github.com/realm/SwiftLint/issues/2700)
 
@@ -3914,8 +3921,8 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   full type-checked AST. Rules of the `AnalyzerRule` type will be added over
   time. The compiler log path containing the clean `swiftc` build command
   invocation (incremental builds will fail) must be passed to `analyze` via
-  the `--compiler-log-path` flag.
-  e.g. `--compiler-log-path /path/to/xcodebuild.log`  
+  the `--compiler-log-path` flag, e.g.
+  `--compiler-log-path /path/to/xcodebuild.log`.  
   [JP Simard](https://github.com/jpsim)
 
 * Add an `explicit_self` analyzer rule to enforce the use of explicit references
@@ -4033,7 +4040,7 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   [#2249](https://github.com/realm/SwiftLint/issues/2249)
 
 * Add `only_enforce_after_first_closure_on_first_line` configuration
-  to `multiline_arguments`  
+  to `multiline_arguments`.  
   [Mike Ciesielka](https://github.com/maciesielka)
   [#1896](https://github.com/realm/SwiftLint/issues/1896)
 
@@ -4227,7 +4234,7 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
 * Fix autocorrection for several rules
   (`empty_parentheses_with_trailing_closure`, `explicit_init`,
   `joined_default_parameter`, `redundant_optional_initialization` and
-  `unused_closure_parameter `) when used with preprocessor macros.  
+  `unused_closure_parameter`) when used with preprocessor macros.  
   [John Szumski](https://github.com/jszumski)
   [Marcelo Fabri](https://github.com/marcelofabri)
 
@@ -4418,7 +4425,7 @@ The next release will require Swift 4.0 or higher to build.
 
 * Fix some cases where violations would still be triggered when using the
   `ignores_function_declarations` configuration of `line_length` rule.  
-  [Manabu Nakazawa](https://github.com/mshibanami)
+  [Manabu Nakazawa](https://github.com/mshibanami)
 
 * Fix false positive in `empty_enum_arguments` rule when using closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -4452,11 +4459,11 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.24.1: Dented Tumbler
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Invalidate cache when Swift patch version changes.  
   [Norio Nomura](https://github.com/norio-nomura)
@@ -4496,7 +4503,7 @@ The next release will require Swift 4.0 or higher to build.
   [Josep Rodriguez](https://github.com/joseprl89)
   [#1822](https://github.com/realm/SwiftLint/issues/1649)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix false positives in `control_statement` rule when methods with keyword
   names are used.  
@@ -4515,7 +4522,7 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.24.0: Timed Dry
 
-##### Breaking
+#### Breaking
 
 * SwiftLint now requires Xcode 9 and Swift 3.2+ to build.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -4523,7 +4530,7 @@ The next release will require Swift 4.0 or higher to build.
 * Remove `SwiftExpressionKind.other`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-##### Enhancements
+#### Enhancements
 
 * Add `sorted_first_last` opt-in rule to encourage using `min()` or `max()`
   over `sorted().first` or `sorted().last`.  
@@ -4573,7 +4580,7 @@ The next release will require Swift 4.0 or higher to build.
   [JP Simard](https://github.com/jpsim)
   [#1822](https://github.com/realm/SwiftLint/issues/1822)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Extend `first_where` and `contains_over_first_not_nil` rules to also detect
   cases where calls to `filter` and `first` are parenthesized.  
@@ -4600,15 +4607,15 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.23.1: Rewash: Forgotten Load Edition
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * None.
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix false positive in `array_init` rule when using a `map` that
   doesn't take a closure.  
@@ -4622,11 +4629,11 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.23.0: Permanent Press Cycle
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Fix csv reporter to output records with new lines.  
   [atetlaw](https://github.com/atetlaw)
@@ -4676,7 +4683,7 @@ The next release will require Swift 4.0 or higher to build.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1435](https://github.com/realm/SwiftLint/issues/1435)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Improve how `opening_brace` rule reports violations locations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -4717,7 +4724,7 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.22.0: Wrinkle-free
 
-##### Breaking
+#### Breaking
 
 * Nested configurations will now be merged with parent configurations rather
   than replace them outright.  
@@ -4725,7 +4732,7 @@ The next release will require Swift 4.0 or higher to build.
   [JP Simard](https://github.com/jpsim)
   [#676](https://github.com/realm/SwiftLint/issues/676)
 
-##### Enhancements
+#### Enhancements
 
 * Add `is_disjoint` rule to encourage using `Set.isDisjoint(with:)` over
   `Set.intersection(_:).isEmpty`.  
@@ -4794,7 +4801,7 @@ The next release will require Swift 4.0 or higher to build.
   [Erik Strottmann](https://github.com/erikstrottmann)
   [#1801](https://github.com/realm/SwiftLint/issues/1801)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix false positive on `force_unwrapping` rule when declaring
   local variable with implicity unwrapped type.  
@@ -4824,12 +4831,12 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.21.0: Vintage Washboard
 
-##### Breaking
+#### Breaking
 
 * Xcode 8.3 or later and Swift 3.1 or later are required to build.  
   [Norio Nomura](https://github.com/norio-nomura)
 
-##### Enhancements
+#### Enhancements
 
 * Rules are now categorized as `lint`, `idiomatic`, `style`, `metrics`
   or `performance`. Currently this is just used for documentation purposes
@@ -4936,7 +4943,7 @@ The next release will require Swift 4.0 or higher to build.
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1306](https://github.com/realm/SwiftLint/issues/1306)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using
   `while` statements.  
@@ -4972,15 +4979,15 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.20.1: More Liquid Fabric Softener
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * None.
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix typo in `FatalErrorMessageRule`.  
   [Alexander Lash](https://github.com/abl)
@@ -5007,11 +5014,11 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.20.0: Liquid Fabric Softener
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Detect more violations of `force_unwrapping` when using subscripts.  
   [Otávio Lima](https://github.com/otaviolima)
@@ -5060,7 +5067,7 @@ The next release will require Swift 4.0 or higher to build.
   [Cihat Gündüz](https://github.com/Dschee)
   [#1587](https://github.com/realm/SwiftLint/issues/1587)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix false positive in `empty_enum_arguments` rule when calling methods.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -5098,7 +5105,7 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.19.0: Coin-Operated Machine
 
-##### Breaking
+#### Breaking
 
 * Remove support for Swift 2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -5124,7 +5131,7 @@ The next release will require Swift 4.0 or higher to build.
   `ConditionalReturnsOnNewlineRule` to match rule naming conventions.  
   [JP Simard](https://github.com/jpsim)
 
-##### Enhancements
+#### Enhancements
 
 * Cache linter results for files unmodified since the previous linter run.  
   [Victor Pimentel](https://github.com/victorpimentel)
@@ -5157,7 +5164,7 @@ The next release will require Swift 4.0 or higher to build.
   [Jason Moore](https://github.com/xinsight)
 
 * Improve violation reason wording in `function_body_length`,
-  `large_type`, and `type_body_length` rules.  
+  `large_type`, and `type_body_length` rules.  
   [ultimatedbz](https://github.com/ultimatedbz)
 
 * Add `explicit_top_level_acl` opt-in rule that validates that all top
@@ -5200,7 +5207,7 @@ The next release will require Swift 4.0 or higher to build.
 * Make `closure_spacing` a `CorrectableRule`.  
   [J. Cheyo Jimenez](https://github.com/masters3d)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  
   [norio-nomura](https://github.com/norio-nomura)
@@ -5257,21 +5264,22 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.18.1: Misaligned Drum
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * None.
 
-##### Bug Fixes
+#### Bug Fixes
 
-* Compile releases in the 'Release' configuration rather than 'Debug'.
+* Compile releases in the 'Release' configuration rather than 'Debug'.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.18.0: Misaligned Drum
 
-##### Breaking
+#### Breaking
 
 * Replace YamlSwift with Yams. SwiftLint no longer includes YamlSwift. If your
   project implicitly depends on YamlSwift, you need to modify it to depend on
@@ -5283,6 +5291,7 @@ The next release will require Swift 4.0 or higher to build.
   configurations previously worked with SwiftLint but didn't fully conform to
   the YAML 1.2 standard, you'll need to fix those validation errors.
   For example:
+
   ```yaml
   custom_rules:
     wrong_regex:
@@ -5293,7 +5302,9 @@ The next release will require Swift 4.0 or higher to build.
       regex: '((assert|precondition)\(false)' # Use single quotes
   ```
 
-##### Enhancements
+  [JP Simard](https://github.com/jpsim)
+
+#### Enhancements
 
 * Support compiling with Xcode 8.3 and Swift 3.1.  
   [Keith Smiley](https://github.com/keith)
@@ -5304,10 +5315,11 @@ The next release will require Swift 4.0 or higher to build.
   [#1387](https://github.com/realm/SwiftLint/issues/1387)
 
 * Print YAML configuration errors in locatable format compatible with Xcode's
-  Issue Navigator.  
+  Issue Navigator.
   ![](https://cloud.githubusercontent.com/assets/33430/24688866/f18d40f4-19fd-11e7-8f17-72f1fca20406.png)
+  [JP Simard](https://github.com/jpsim)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix --lenient enforcement not being applied to all violations.  
   [aaroncrespo](https://github.com/aaroncrespo)
@@ -5323,7 +5335,7 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.17.0: Extra Rinse Cycle
 
-##### Breaking
+#### Breaking
 
 * `variable_name` rule (`VariableNameRule`) is now `identifier_name`
   (`IdentifierNameRule`) as it validates other identifiers as well.  
@@ -5338,7 +5350,7 @@ The next release will require Swift 4.0 or higher to build.
   version after important cache-related issues have been addressed.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-##### Enhancements
+#### Enhancements
 
 * Add `implicitly_unwrapped_optional` opt-in rule that warns against using
   implicitly unwrapped optionals, except cases when this IUO is an IBOutlet.  
@@ -5417,7 +5429,7 @@ The next release will require Swift 4.0 or higher to build.
   [Kim de Vos](https://github.com/kimdv)
   [#1348](https://github.com/realm/SwiftLint/issues/1348)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix crashes when accessing cached regular expressions when linting in
   parallel.  
@@ -5485,11 +5497,11 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.16.1: Commutative Fabric Sheets
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Improve `unused_optional_binding` rule on tuples check.  
   [Rafael Machado](https://github.com/rakaramos)
@@ -5507,7 +5519,7 @@ The next release will require Swift 4.0 or higher to build.
   [Aaron McTavish](https://github.com/aamctustwo)
   [#1198](https://github.com/realm/SwiftLint/issues/1198)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix false positives on `shorthand_operator` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -5541,12 +5553,13 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.16.0: Maximum Energy Efficiency Setting
 
-##### Breaking
+#### Breaking
 
 * Several API breaking changes were made to conform to the Swift 3 API Design
-  Guidelines. We apologize for any inconvenience this may have caused.
+  Guidelines. We apologize for any inconvenience this may have caused.  
+  [JP Simard](https://github.com/jpsim)
 
-##### Enhancements
+#### Enhancements
 
 * Speed up linting by caching linter results across invocations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -5561,7 +5574,7 @@ The next release will require Swift 4.0 or higher to build.
   [JP Simard](https://github.com/jpsim)
   [#1077](https://github.com/realm/SwiftLint/issues/1077)
 
-* Permit unsigned and explicitly-sized integer types in `valid_ibinspectable`  
+* Permit unsigned and explicitly-sized integer types in `valid_ibinspectable`.  
   [Daniel Duan](https://github.com/dduan)
 
 * Make `nimble_operator` rule correctable.  
@@ -5669,7 +5682,7 @@ The next release will require Swift 4.0 or higher to build.
   [Rafael Machado](https://github.com/rakaramos)
   [#1116](https://github.com/realm/SwiftLint/issues/1116)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -5709,13 +5722,13 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 
-##### Breaking
+#### Breaking
 
 * `line_length` rule now has a default value of `120` for warnings.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1008](https://github.com/realm/SwiftLint/issues/1008)
 
-##### Enhancements
+#### Enhancements
 
 * Add `closure_end_indentation` opt-in rule that validates closure closing
   braces according to these rules:
@@ -5748,7 +5761,7 @@ The next release will require Swift 4.0 or higher to build.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1005](https://github.com/realm/SwiftLint/issues/1005)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * `FunctionParameterCountRule` also ignores generic initializers.  
   [Mauricio Hanika](https://github.com/mAu888)
@@ -5779,7 +5792,7 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.14.0: Super Awesome Retractable Drying Rack
 
-##### Breaking
+#### Breaking
 
 * SwiftLint now requires Xcode 8.x and Swift 3.x to build.
   APIs have not yet been adapted to conform to the Swift 3 API Design
@@ -5787,7 +5800,7 @@ The next release will require Swift 4.0 or higher to build.
   [JP Simard](https://github.com/jpsim)
   [Norio Nomura](https://github.com/norio-nomura)
 
-##### Enhancements
+#### Enhancements
 
 * Now builds and passes most tests on Linux using the Swift Package Manager with
   Swift 3. This requires `libsourcekitdInProc.so` to be built and located in
@@ -5890,7 +5903,7 @@ The next release will require Swift 4.0 or higher to build.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#619](https://github.com/realm/SwiftLint/issues/619)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix `weak_delegate` rule reporting a violation for variables containing
   but not ending in `delegate`.  
@@ -5923,11 +5936,11 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.13.2: Light Cycle
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * `TrailingCommaRule` now only triggers when a declaration is multi-line
   when using `mandatory_comma: true`.  
@@ -5935,7 +5948,7 @@ The next release will require Swift 4.0 or higher to build.
   [#910](https://github.com/realm/SwiftLint/issues/910)
   [#911](https://github.com/realm/SwiftLint/issues/911)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix `MarkRule` reporting a violation for `// MARK: -`, which is valid.  
   [JP Simard](https://github.com/jpsim)
@@ -5943,11 +5956,11 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.13.1: Heavy Cycle
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Add `ImplicitGetterRule` to warn against using `get` on computed read-only
   properties.  
@@ -5995,7 +6008,7 @@ The next release will require Swift 4.0 or higher to build.
 * Make `MarkRule` correctable.  
   [kohtenko](https://github.com/kohtenko)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Rule out a few invalid `@IBInspectable` cases in `valid_ibinspectable`.  
   [Daniel Duan](https://github.com/dduan)
@@ -6028,11 +6041,11 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.13.0: MakeYourClothesCleanAgain
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Add `ignores_comment` configuration for `trailing_whitespace` rule.  
   [Javier Hernández](https://github.com/jaherhi)
@@ -6057,7 +6070,7 @@ The next release will require Swift 4.0 or higher to build.
   [Rohan Dhaimade](https://github.com/HaloZero)
 
 * Swift 2.3 support.  
-  [Norio Nomura](https://github.com/norio-nomura),
+  [Norio Nomura](https://github.com/norio-nomura)
   [Syo Ikeda](https://github.com/ikesyo)
 
 * Color literals count as single characters to avoid unintentional line length
@@ -6084,7 +6097,7 @@ The next release will require Swift 4.0 or higher to build.
   [Matt Taube](https://github.com/mtaube)
   [#715](https://github.com/realm/SwiftLint/pull/715)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fixed whitespace being added to TODO messages.  
   [W. Bagdon](https://github.com/wbagdon)
@@ -6096,7 +6109,7 @@ The next release will require Swift 4.0 or higher to build.
   [#772](https://github.com/realm/SwiftLint/issues/772)
 
 * Correctable rules no longer apply corrections if the rule is locally disabled.  
-  [J. Cheyo Jimenez](https://github.com/masters3d)  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
   [#601](https://github.com/realm/SwiftLint/issues/601)
 
 * Fixed regex bug in Mark Rule where MARK could not be used with only a hyphen
@@ -6125,20 +6138,20 @@ The next release will require Swift 4.0 or higher to build.
 
 ## 0.12.0: Vertical Laundry
 
-##### Breaking
+#### Breaking
 
 * Fixed: SwiftLint assumes paths in the YAML config file are relative to the
   current directory even when `--path` is passed as an argument.  
   [Cristian Filipov](https://github.com/cfilipov)
 
-##### Enhancements
+#### Enhancements
 
 * Add `--enable-all-rules` CLI option to `lint` command to facilitate running
   all rules, even opt-in and disabled ones, ignoring `whitelist_rules`.  
   [JP Simard](https://github.com/jpsim)
   [#1170](https://github.com/realm/SwiftLint/issues/1170)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Made Vertical Whitespace Rule added in 0.11.2 opt-in due to performance
   issues.  
@@ -6149,11 +6162,11 @@ The next release will require Swift 4.0 or higher to build.
 
 This release has seen a phenomenal uptake in community contributions!
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Add `MarkRule` rule to enforce `// MARK` syntax.  
   [Krzysztof Rodak](https://github.com/krodak)
@@ -6208,7 +6221,7 @@ This release has seen a phenomenal uptake in community contributions!
   [Mohpor](https://github.com/mohpor)
   [#557](https://github.com/realm/SwiftLint/issues/557)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fixed CustomRule Regex.  
   [J. Cheyo Jimenez](https://github.com/masters3d)
@@ -6229,13 +6242,13 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.11.1: Cuddles... Or Else!
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
-* Added `statement_mode` configuration to  the `statement_position` rule. The   
+* Added `statement_mode` configuration to  the `statement_position` rule. The
   `default` mode keeps the current SwiftLint behavior of keeping `else` and
   `catch` statements on the same line as the closing brace before them. The
   `uncuddled_else`configuration requires the `else` and `catch` to be on a new
@@ -6243,7 +6256,7 @@ This release has seen a phenomenal uptake in community contributions!
   [Mike Skiba](https://github.com/ateliercw)
   [#651](https://github.com/realm/SwiftLint/issues/651)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Remove extraneous argument label added in LegacyCGGeometryFunctionsRule
   autocorrect.  
@@ -6252,7 +6265,7 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.11.0: Laundromat Format
 
-##### Breaking
+#### Breaking
 
 * Now `type_name` allows lowercase enum values to match the Swift API Design
   Guidelines.  
@@ -6266,7 +6279,7 @@ This release has seen a phenomenal uptake in community contributions!
   multiple copies of the Swift libraries.  
   [Norio Nomura](https://github.com/norio-nomura)
 
-##### Enhancements
+#### Enhancements
 
 * Add `--format` option to `autocorrect` command which re-indents Swift files
   much like pasting into Xcode would. This option isn't currently configurable,
@@ -6282,7 +6295,7 @@ This release has seen a phenomenal uptake in community contributions!
   lines. Defaults to `false`. Added unit tests.  
   [Reimar Twelker](https://github.com/raginmari)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix false positive in conditional binding cascade violation.  
   [Norio Nomura](https://github.com/norio-nomura)
@@ -6300,11 +6313,11 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.10.0: `laundry-select` edition
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Now `libclang.dylib` and `sourcekitd.framework` are dynamically loaded at
   runtime by SourceKittenFramework to use the versions included in the Xcode
@@ -6326,7 +6339,7 @@ This release has seen a phenomenal uptake in community contributions!
 * Add autocorrect for `ReturnArrowWhitespaceRule`.  
   [Craig Siemens](https://github.com/CraigSiemens)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Failed to launch swiftlint when Xcode.app was placed at non standard path.  
   [Norio Nomura](https://github.com/norio-nomura)
@@ -6342,18 +6355,19 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.9.2: Multiple Exhaust Codes
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Return different exit codes to distinguish between types of errors:
   * 0: No errors, maybe warnings in non-strict mode
   * 1: Usage or system error
   * 2: Style violations of severity "Error"
   * 3: No style violations of severity "Error", but violations of severity
-       "warning" with `--strict`  
+       "warning" with `--strict`
+
   [JP Simard](https://github.com/jpsim)
   [#166](https://github.com/realm/SwiftLint/issues/166)
 
@@ -6362,7 +6376,7 @@ This release has seen a phenomenal uptake in community contributions!
   [Erik Aigner](https://github.com/eaigner)
   [#566](https://github.com/realm/SwiftLint/issues/566)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Avoid overwriting files whose contents have not changed.  
   [Neil Gall](https://github.com/neilgall)
@@ -6379,15 +6393,15 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.9.1: Air Duct Cleaning
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * None.
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix force unwrap rule missed cases with quotes.  
   [Norio Nomura](https://github.com/norio-nomura)
@@ -6399,7 +6413,7 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.9.0: Appliance Maintenance
 
-##### Breaking
+#### Breaking
 
 * `Linter.reporter` has been removed and `Configuration.reporterFromString(_:)`
   has been renamed to a free function: `reporterFromString(_:)`.  
@@ -6437,7 +6451,7 @@ This release has seen a phenomenal uptake in community contributions!
   is now ignored. Nested configuration files are now always considered.  
   [JP Simard](https://github.com/jpsim)
 
-##### Enhancements
+#### Enhancements
 
 * `swiftlint lint` now accepts an optional `--reporter` parameter which
   overrides existing `reporter` values in the configuration file. Choose between
@@ -6465,7 +6479,7 @@ This release has seen a phenomenal uptake in community contributions!
 * Improve performance of `ColonRule`.  
   [Norio Nomura](https://github.com/norio-nomura)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix case sensitivity of keywords for `valid_docs`.  
   [Ankit Aggarwal](https://github.com/aciidb0mb3r)
@@ -6494,7 +6508,7 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.8.0: High Heat
 
-##### Breaking
+#### Breaking
 
 * Setting only warning on `SeverityLevelsConfig` rules now disables the error
   value.  
@@ -6504,7 +6518,7 @@ This release has seen a phenomenal uptake in community contributions!
 * `enabled_rules` has been renamed to `opt_in_rules`.  
   [Daniel Beard](https://github.com/daniel-beard)
 
-##### Enhancements
+#### Enhancements
 
 * Add `whitelist_rules` rule whitelists in config files.  
   [Daniel Beard](https://github.com/daniel-beard)
@@ -6540,7 +6554,7 @@ This release has seen a phenomenal uptake in community contributions!
 * Reduce maximum memory usage.  
   [Norio Nomura](https://github.com/norio-nomura)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix more false positives in `ValidDocsRule`.  
   [diogoguimaraes](https://github.com/diogoguimaraes)
@@ -6557,15 +6571,15 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.7.2: Appliance Manual
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * None.
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix several false positives in `ValidDocsRule`.  
   [diogoguimaraes](https://github.com/diogoguimaraes)
@@ -6573,17 +6587,17 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.7.1: Delicate Cycle
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Improve performance of `MissingDocsRule`.  
   [Norio Nomura](https://github.com/norio-nomura)
 
 * Added `CustomRules`.  
-  [Scott Hoyt](https://github.com/scottrhoyt)  
+  [Scott Hoyt](https://github.com/scottrhoyt)
   [#123](https://github.com/realm/SwiftLint/issues/123)
 
 * Added opt-in `ForceUnwrappingRule` to issue warnings for all forced
@@ -6591,7 +6605,7 @@ This release has seen a phenomenal uptake in community contributions!
   [Benjamin Otto](https://github.com/Argent)
   [#55](https://github.com/realm/SwiftLint/issues/55)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix several false positives in `ValidDocsRule`.  
   [diogoguimaraes](https://github.com/diogoguimaraes)
@@ -6599,7 +6613,7 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.7.0: Automatic Permanent Press
 
-##### Breaking
+#### Breaking
 
 * Replaced all uses of `XPCDictionary` with
   `[String: SourceKitRepresentable]`.  
@@ -6613,7 +6627,7 @@ This release has seen a phenomenal uptake in community contributions!
   by `ConfigProviderRule` and `SeverityLevelsConfig`.  
   [Scott Hoyt](https://github.com/scottrhoyt)
 
-##### Enhancements
+#### Enhancements
 
 * `TypeBodyLengthRule` now does not count comment or whitespace lines.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -6639,7 +6653,7 @@ This release has seen a phenomenal uptake in community contributions!
 * Add `CyclomaticComplexityRule`.  
   [Denis Lebedev](https://github.com/garnett)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix crash caused by infinite recursion when using nested config files.  
   [JP Simard](https://github.com/jpsim)
@@ -6651,7 +6665,7 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.6.0: Steam Cycle
 
-##### Breaking
+#### Breaking
 
 * `ParameterizedRule` is removed. Use `ConfigurableRule` instead.  
   [Scott Hoyt](https://github.com/scottrhoyt)
@@ -6660,7 +6674,7 @@ This release has seen a phenomenal uptake in community contributions!
 * To activate a `Rule`, it must be added to the global `masterRuleList`.  
   [Scott Hoyt](https://github.com/scottrhoyt)
 
-##### Enhancements
+#### Enhancements
 
 * `ConfigurableRule` protocol allows for improved rule configuration. See
   `CONTRIBUTING` for more details.  
@@ -6708,22 +6722,22 @@ This release has seen a phenomenal uptake in community contributions!
 * Add opt-in "Missing Docs" rule to detect undocumented public declarations.  
   [JP Simard](https://github.com/jpsim)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * None.
 
 ## 0.5.6: Bug FixLint
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Improve performance by reducing calls to SourceKit.  
   [Norio Nomura](https://github.com/norio-nomura)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix homebrew deployment issues.  
   [Norio Nomura](https://github.com/norio-nomura)
@@ -6742,15 +6756,15 @@ This release has seen a phenomenal uptake in community contributions!
 
 <http://www.amazon.com/Magic-Drying-Fluff-Balls-Softening/dp/B001EIW1SG>
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * None.
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Always fail if a YAML configuration file was found but could not be parsed.  
   [JP Simard](https://github.com/jpsim)
@@ -6763,13 +6777,13 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.5.4: Bounce™
 
-##### Breaking
+#### Breaking
 
 * Remove `Location.init(file:offset:)` in favor of the more explicit
   `Location.init(file:byteOffset:)` & `Location.init(file:characterOffset:)`.  
   [JP Simard](https://github.com/jpsim)
 
-##### Enhancements
+#### Enhancements
 
 * Add `checkstyle` reporter to generate XML reports in the Checkstyle 4.3
   format.  
@@ -6785,7 +6799,7 @@ This release has seen a phenomenal uptake in community contributions!
   [Scott Hoyt](https://github.com/scottrhoyt)
   [#299](https://github.com/realm/SwiftLint/issues/299)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix multibyte handling in many rules.  
   [JP Simard](https://github.com/jpsim)
@@ -6802,11 +6816,11 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.5.3: Mountain Scent
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Improve autocorrect for OpeningBraceRule.  
   [Yasuhiro Inami](https://github.com/inamiy)
@@ -6817,7 +6831,7 @@ This release has seen a phenomenal uptake in community contributions!
 * Add ClosingBraceRule.  
   [Yasuhiro Inami](https://github.com/inamiy)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix false positives in ValidDocsRule.  
   [JP Simard](https://github.com/jpsim)
@@ -6825,16 +6839,16 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.5.2: Snuggle™
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Performance improvements & unicode fixes (via SourceKitten).  
   [Norio Nomura](https://github.com/norio-nomura)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Fix `ValidDocsRule` false positive when documenting functions with closure
   parameters.  
@@ -6844,17 +6858,17 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.5.1: Lint Tray Malfunction
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * None.
 
-##### Bug Fixes
+#### Bug Fixes
 
-* Make linting faster than 0.5.0, but slower than 0.4.0  
+* Make linting faster than 0.5.0, but slower than 0.4.0.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#119](https://github.com/jpsim/SourceKitten/issues/119)
 
@@ -6867,11 +6881,12 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.5.0: Downy™
 
-##### Breaking
+#### Breaking
 
-* `init()` is no longer a member of the `Rule` protocol.
+* `init()` is no longer a member of the `Rule` protocol.  
+  [JP Simard](https://github.com/jpsim)
 
-##### Enhancements
+#### Enhancements
 
 * Add legacy constructor rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -6892,7 +6907,7 @@ This release has seen a phenomenal uptake in community contributions!
 * Allow to exclude files from `included` directory with `excluded`.  
   [Michal Laskowski](https://github.com/michallaskowski)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Statement position rule no longer triggers for non-keyword uses of `catch` and
   `else`.  
@@ -6906,14 +6921,14 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.4.0: Wrinkle Release
 
-##### Breaking
+#### Breaking
 
 * API: Rename RuleExample to RuleDescription, remove StyleViolationType and
   combine Rule().identifier and Rule().example into Rule.description.  
   [JP Simard](https://github.com/jpsim)
   [#183](https://github.com/realm/SwiftLint/issues/183)
 
-##### Enhancements
+#### Enhancements
 
 * The `VariableNameRule` now allows capitalized variable names when they are
   declared static. This allows stylistic usage common in cases like
@@ -6935,7 +6950,7 @@ This release has seen a phenomenal uptake in community contributions!
   [Norio Nomura](https://github.com/norio-nomura)
   [#193](https://github.com/realm/SwiftLint/pull/193)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * All rules now print their identifiers in reports.  
   [JP Simard](https://github.com/jpsim)
@@ -6966,12 +6981,13 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.3.0: Wrinkly Rules
 
-##### Breaking
+#### Breaking
 
 * `swiftlint rules` now just prints a list of all available rules and their
-  identifiers.
+  identifiers.  
+  [JP Simard](https://github.com/jpsim)
 
-##### Enhancements
+#### Enhancements
 
 * Support for Swift 2.1.  
   [JP Simard](https://github.com/jpsim)
@@ -7005,7 +7021,7 @@ This release has seen a phenomenal uptake in community contributions!
 * Lint parameter variables.  
   [JP Simard](https://github.com/jpsim)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Custom reporters are now supported even when not running with `--use-stdin`.  
   [JP Simard](https://github.com/jpsim)
@@ -7018,7 +7034,7 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.2.0: Tumble Dry
 
-##### Breaking
+#### Breaking
 
 * SwiftLint now exclusively supports Swift 2.0.  
   [JP Simard](https://github.com/jpsim)
@@ -7029,7 +7045,7 @@ This release has seen a phenomenal uptake in community contributions!
   [JP Simard](https://github.com/jpsim)
   [#113](https://github.com/realm/SwiftLint/issues/113)
 
-##### Enhancements
+#### Enhancements
 
 * Configure SwiftLint via a YAML file:
   Supports `disabled_rules`, `included`, `excluded` and passing parameters to
@@ -7063,7 +7079,7 @@ This release has seen a phenomenal uptake in community contributions!
   [JP Simard](https://github.com/jpsim)
   [#42](https://github.com/realm/SwiftLint/issues/42)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Improve performance of `TrailingWhitespaceRule`.  
   [Keith Smiley](https://github.com/keith)
@@ -7074,11 +7090,11 @@ This release has seen a phenomenal uptake in community contributions!
 
 ## 0.1.2: FabricSoftenerRule
 
-##### Breaking
+#### Breaking
 
 * None.
 
-##### Enhancements
+#### Enhancements
 
 * Added `OperatorFunctionWhitespaceRule` to make sure that
   you use whitespace around operators when defining them.  
@@ -7099,14 +7115,14 @@ This release has seen a phenomenal uptake in community contributions!
 * Lint parentheses around switch statements.  
   [Keith Smiley](https://github.com/keith)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * None.
 
 
 ## 0.1.1: Top Loading
 
-##### Breaking
+#### Breaking
 
 * The `Rule` and `ASTRule` protocol members are now non-static.  
   [aarondaub](https://github.com/aarondaub)
@@ -7115,7 +7131,7 @@ This release has seen a phenomenal uptake in community contributions!
   [aarondaub](https://github.com/aarondaub)
   [#21](https://github.com/realm/SwiftLint/issues/21)
 
-##### Enhancements
+#### Enhancements
 
 * Added a command line option `--path` to specify a path to lint.  
   [Lars Lockefeer](https://github.com/larslockefeer)
@@ -7145,7 +7161,7 @@ This release has seen a phenomenal uptake in community contributions!
   FunctionBodyLength, Nesting, TypeBodyLength, TypeName, VariableName.  
   [JP Simard](https://github.com/jpsim)
 
-##### Bug Fixes
+#### Bug Fixes
 
 * Trailing newline and file length violations are now displayed in Xcode.  
   [JP Simard](https://github.com/jpsim)

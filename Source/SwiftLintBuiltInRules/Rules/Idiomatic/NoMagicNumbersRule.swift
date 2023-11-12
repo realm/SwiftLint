@@ -76,7 +76,11 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let foo = 2 << 2"),
             Example("let a = b / 100.0"),
             Example("let (lowerBound, upperBound) = (400, 599)"),
-            Example("let a = (5, 10)")
+            Example("let a = (5, 10)"),
+            Example("let size = (width: 4, height: 3)"),
+            Example("""
+                    let notFound = (404, "Not Found")
+                    """)
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -96,7 +100,8 @@ struct NoMagicNumbersRule: OptInRule {
                 return
             }
             """),
-            Example("let imageHeight = (width - ↓24)")
+            Example("let imageHeight = (width - ↓24)"),
+            Example("return (↓5, ↓10, ↓15)")
         ]
     )
 }
@@ -228,7 +233,9 @@ private extension ExprSyntaxProtocol {
 private extension PatternBindingSyntax {
     var isSimpleTupleAssignment: Bool {
         initializer?.value.as(TupleExprSyntax.self)?.elements.allSatisfy {
-            $0.expression.is(IntegerLiteralExprSyntax.self) || $0.expression.is(FloatLiteralExprSyntax.self)
+            $0.expression.is(IntegerLiteralExprSyntax.self) ||
+            $0.expression.is(FloatLiteralExprSyntax.self) ||
+            $0.expression.is(StringLiteralExprSyntax.self)
         } ?? false
     }
 }

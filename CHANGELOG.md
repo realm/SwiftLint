@@ -17,6 +17,7 @@
 * Trigger `nsobject_prefer_isequal` and `redundant_self_in_closure` even in case
   the surrounding declaration is nested in an extension.  
   [SimplyDanny](https://github.com/SimplyDanny)
+
 * Fixed false positives for the `no_magic_numbers` rule, when they
   are defined in a tuple like `let (a, b) = (5, 10)` or `let a = (2, 3)`.  
   [Martin Redington](https://github.com/mildm8nnered)

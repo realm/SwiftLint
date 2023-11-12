@@ -197,10 +197,10 @@ Xcode 构建工具插件。
 
 ![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/select-swiftlint-plugin.png)
 
-对于无人值守的使用场景（例如在 CI 上），可以通过以下方式禁用软件包验证对话框
+对于无人值守的使用场景（例如在 CI 上），可以通过以下方式禁用软件包和宏的验证对话框
 
-* 单独将 `-skipPackagePluginValidation` 传递到 `xcodebuild` 或者
-* 全局设置为那个用户设置 `defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES` 。
+* 单独将 `-skipPackagePluginValidation` 和 `-skipMacroValidation` 传递到 `xcodebuild` 或者
+* 为那个用户使用 `defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES` 进行全局设置，然后写入 `defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES` 
 
 _注意：这将隐含地信任所有的Xcode软件包插件，并绕过Xcode的软件包验证对话框。
        这对安全有影响。_

@@ -77,9 +77,8 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let a = b / 100.0"),
             Example("let (lowerBound, upperBound) = (400, 599)"),
             Example("let a = (5, 10)"),
-            Example("let size = (width: 4, height: 3)"),
             Example("""
-                    let notFound = (404, "Not Found")
+                    let notFound = (statusCode: 404, description: "Not Found", isError: true)
                     """)
         ],
         triggeringExamples: [
@@ -235,7 +234,8 @@ private extension PatternBindingSyntax {
         initializer?.value.as(TupleExprSyntax.self)?.elements.allSatisfy {
             $0.expression.is(IntegerLiteralExprSyntax.self) ||
             $0.expression.is(FloatLiteralExprSyntax.self) ||
-            $0.expression.is(StringLiteralExprSyntax.self)
+            $0.expression.is(StringLiteralExprSyntax.self) ||
+            $0.expression.is(BooleanLiteralExprSyntax.self)
         } ?? false
     }
 }

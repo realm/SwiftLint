@@ -15,7 +15,10 @@ public enum Issue: LocalizedError, Equatable {
     case invalidConfiguration(ruleID: String)
 
     /// Some configuration keys are invalid.
-    case invalidConfigurationKeys([String])
+    case invalidConfigurationKeys(ruleID: String, keys: Set<String>)
+
+    /// Used rule IDs are invalid.
+    case invalidRuleIDs(Set<String>)
 
     /// A generic warning specified by a string.
     case genericWarning(String)
@@ -94,8 +97,10 @@ public enum Issue: LocalizedError, Equatable {
             return "'\(old)' has been renamed to '\(new)' and will be completely removed in a future release."
         case let .invalidConfiguration(id):
             return "Invalid configuration for '\(id)'. Falling back to default."
-        case let .invalidConfigurationKeys(keys):
-            return "Configuration contains invalid keys \(keys.joined(separator: ", "))."
+        case let .invalidConfigurationKeys(id, keys):
+            return "Configuration for '\(id)' rule contains the invalid key(s) \(keys.formatted)."
+        case let .invalidRuleIDs(ruleIDs):
+            return "The key(s) \(ruleIDs.formatted) used as rule identifier(s) is/are invalid."
         case let .genericWarning(message), let .genericError(message):
             return message
         case let .ruleDeprecated(id):
@@ -121,5 +126,13 @@ public enum Issue: LocalizedError, Equatable {
         case let .yamlParsing(message):
             return "Cannot parse YAML file: \(message)"
         }
+    }
+}
+
+private extension Set where Element == String {
+    var formatted: String {
+        sorted()
+            .map { "'\($0)'" }
+            .joined(separator: ", ")
     }
 }

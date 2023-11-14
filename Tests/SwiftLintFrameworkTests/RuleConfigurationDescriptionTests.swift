@@ -494,7 +494,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
     func testInvalidKeys() throws {
         var configuration = TestConfiguration()
 
-        checkError(Issue.invalidConfigurationKeys(["unknown", "unsupported"])) {
+        checkError(Issue.invalidConfigurationKeys(ruleID: "RuleMock", keys: ["unknown", "unsupported"])) {
             try configuration.apply(configuration: [
                 "severity": "error",
                 "warning": 3,

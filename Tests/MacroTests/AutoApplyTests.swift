@@ -44,7 +44,7 @@ final class AutoApplyTests: XCTestCase {
 
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        throw Issue.invalidConfigurationKeys(unknownKeys.sorted())
+                        throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
                     }
                 }
             }
@@ -81,7 +81,7 @@ final class AutoApplyTests: XCTestCase {
 
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        throw Issue.invalidConfigurationKeys(unknownKeys.sorted())
+                        throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
                     }
                 }
             }
@@ -120,7 +120,7 @@ final class AutoApplyTests: XCTestCase {
                     try $e2.performAfterParseOperations()
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        throw Issue.invalidConfigurationKeys(unknownKeys.sorted())
+                        throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
                     }
                 }
             }

@@ -21,7 +21,7 @@ class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
 
     func testInvalidKeyInCustomConfiguration() {
         var config = ExplicitTypeInterfaceConfiguration()
-        checkError(Issue.invalidConfigurationKeys(["invalidKey"])) {
+        checkError(Issue.invalidConfigurationKeys(ruleID: ExplicitTypeInterfaceRule.identifier, keys: ["invalidKey"])) {
             try config.apply(configuration: ["invalidKey": "error"])
         }
     }

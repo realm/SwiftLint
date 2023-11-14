@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Print invalid keys when configuration parsing fails.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5347](https://github.com/realm/SwiftLint/pull/5347)
 
 #### Bug Fixes
 

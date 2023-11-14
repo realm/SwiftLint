@@ -55,10 +55,13 @@ public struct RuleList {
                     rule: configuredRule,
                     initializedWithNonEmptyConfiguration: isConfigured
                 )
+                continue
+            } catch let issue as Issue {
+                issue.print()
             } catch {
                 Issue.invalidConfiguration(ruleID: identifier).print()
-                rules[identifier] = (ruleType.init(), false)
             }
+            rules[identifier] = (ruleType.init(), false)
         }
 
         // Add remaining rules without configuring them

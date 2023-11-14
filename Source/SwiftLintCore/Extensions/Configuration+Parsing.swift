@@ -142,7 +142,7 @@ extension Configuration {
         // Log an error when supplying invalid keys in the configuration dictionary
         let invalidKeys = Set(dict.keys).subtracting(validKeys(ruleList: ruleList))
         if invalidKeys.isNotEmpty {
-            Issue.invalidConfigurationKeys(invalidKeys.sorted()).print()
+            Issue.invalidRuleIDs(invalidKeys).print()
         }
     }
 

@@ -1,7 +1,9 @@
 import Foundation
-import SourceKittenFramework
+import SwiftLintCore
+import SwiftSyntax
 
-struct IdentifierNameRule: ASTRule {
+@SwiftSyntaxRule
+struct IdentifierNameRule: Rule {
     var configuration = NameConfiguration<Self>(minLengthWarning: 3,
                                                 minLengthError: 2,
                                                 maxLengthWarning: 40,
@@ -21,102 +23,116 @@ struct IdentifierNameRule: ASTRule {
         triggeringExamples: IdentifierNameRuleExamples.triggeringExamples,
         deprecatedAliases: ["variable_name"]
     )
+}
 
-    func validate(
-        file: SwiftLintFile,
-        kind: SwiftDeclarationKind,
-        dictionary: SourceKittenDictionary
-    ) -> [StyleViolation] {
-        guard !dictionary.enclosedSwiftAttributes.contains(.override) else {
-            return []
+private extension IdentifierNameRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: VariableDeclSyntax) {
+            if node.modifiers.contains(keyword: .override) {
+                return
+            }
+            for binding in node.bindings {
+                if let text = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
+                    let name = text.strippingLeadingUnderscore(ifPrivate: node.modifiers.contains(keyword: .private))
+                    let isStatic = node.modifiers.contains(keyword: .static)
+                    if let violation = violates(name, type: .variable(isStatic: isStatic)) {
+                        violations.append(ReasonedRuleViolation(
+                            position: node.bindingSpecifier.positionAfterSkippingLeadingTrivia,
+                            reason: violation.reason,
+                            severity: violation.severity
+                        ))
+                    }
+                }
+            }
         }
 
-        return validateName(dictionary: dictionary, kind: kind).map { name, offset in
-            guard let firstCharacter = name.first, !configuration.shouldExclude(name: name) else {
-                return []
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            let name = node.name.text
+            if node.modifiers.contains(keyword: .override) || name.isOperator {
+                return
             }
-            let type = self.type(for: kind)
-            if !SwiftDeclarationKind.functionKinds.contains(kind) {
+            if let violation = violates(name, type: .function(isStatic: node.modifiers.contains(keyword: .static))) {
+                violations.append(ReasonedRuleViolation(
+                    position: node.funcKeyword.positionAfterSkippingLeadingTrivia,
+                    reason: violation.reason,
+                    severity: violation.severity
+                ))
+            }
+        }
+
+        override func visitPost(_ node: EnumCaseElementSyntax) {
+            let name = node.name.text
+            if let violation = violates(name, type: .enumElement) {
+                violations.append(ReasonedRuleViolation(
+                    position: node.positionAfterSkippingLeadingTrivia,
+                    reason: violation.reason,
+                    severity: violation.severity
+                ))
+            }
+        }
+
+        private func violates(_ name: String?, type: DeclType) -> (reason: String, severity: ViolationSeverity)? {
+            guard let name = name?.trimmingCharacters(in: CharacterSet(charactersIn: "`")),
+                  !configuration.shouldExclude(name: name), let firstCharacter = name.first else {
+                return nil
+            }
+            if !type.isFunction {
                 if !configuration.allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: name)) {
-                    return [
-                        StyleViolation(ruleDescription: Self.description,
-                                       severity: configuration.unallowedSymbolsSeverity.severity,
-                                       location: Location(file: file, byteOffset: offset),
-                                       reason: """
-                                            \(type) name '\(name)' should only contain alphanumeric and other \
-                                            allowed characters
-                                            """)
-                    ]
+                    let reason = """
+                        \(type) name '\(name)' should only contain alphanumeric and other \
+                        allowed characters
+                        """
+                    return (reason, configuration.unallowedSymbolsSeverity.severity)
                 }
 
                 if let severity = configuration.severity(forLength: name.count) {
-                    let reason = "\(type) name '\(name)' should be between " +
-                        "\(configuration.minLengthThreshold) and " +
-                        "\(configuration.maxLengthThreshold) characters long"
-                    return [
-                        StyleViolation(ruleDescription: Self.description,
-                                       severity: severity,
-                                       location: Location(file: file, byteOffset: offset),
-                                       reason: reason)
-                    ]
+                    let reason = """
+                        \(type) name '\(name)' should be between \
+                        \(configuration.minLengthThreshold) and \
+                        \(configuration.maxLengthThreshold) characters long
+                        """
+                    return (reason, severity)
                 }
             }
-
             if configuration.allowedSymbols.contains(String(firstCharacter)) {
-                return []
+                return nil
             }
             if let caseCheckSeverity = configuration.validatesStartWithLowercase.severity,
-                kind != .varStatic && name.isViolatingCase && !name.isOperator {
+               !type.isStatic, name.isViolatingCase, !name.isOperator {
                 let reason = "\(type) name '\(name)' should start with a lowercase character"
-                return [
-                    StyleViolation(ruleDescription: Self.description,
-                                   severity: caseCheckSeverity,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: reason)
-                ]
+                return (reason, caseCheckSeverity)
             }
+            return nil
+        }
+    }
+}
 
-            return []
-        } ?? []
+private enum DeclType: CustomStringConvertible {
+    case function(isStatic: Bool)
+    case enumElement
+    case variable(isStatic: Bool)
+
+    var description: String {
+        switch self {
+        case .function: "Function"
+        case .enumElement: "Enum element"
+        case .variable: "Variable"
+        }
     }
 
-    private func validateName(
-        dictionary: SourceKittenDictionary,
-        kind: SwiftDeclarationKind
-    ) -> (name: String, offset: ByteCount)? {
-        guard
-            var name = dictionary.name,
-            let offset = dictionary.offset,
-            kinds.contains(kind),
-            !name.hasPrefix("$")
-        else { return nil }
-
-        if
-            kind == .enumelement,
-            let parenIndex = name.firstIndex(of: "("),
-            parenIndex > name.startIndex
-        {
-            let index = name.index(before: parenIndex)
-            name = String(name[...index])
+    var isStatic: Bool {
+        switch self {
+        case let .function(isStatic): isStatic
+        case .enumElement: false
+        case let .variable(isStatic): isStatic
         }
-
-        return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
     }
 
-    private let kinds: Set<SwiftDeclarationKind> = {
-        return SwiftDeclarationKind.variableKinds
-            .union(SwiftDeclarationKind.functionKinds)
-            .union([.enumelement])
-    }()
-
-    private func type(for kind: SwiftDeclarationKind) -> String {
-        if SwiftDeclarationKind.functionKinds.contains(kind) {
-            return "Function"
-        } else if kind == .enumelement {
-            return "Enum element"
-        } else {
-            return "Variable"
+    var isFunction: Bool {
+        if case .function = self {
+            return true
         }
+        return false
     }
 }
 
@@ -138,9 +154,8 @@ private extension String {
         return operators.contains(where: hasPrefix)
     }
 
-    func nameStrippingLeadingUnderscoreIfPrivate(_ dict: SourceKittenDictionary) -> String {
-        if let acl = dict.accessibility,
-            acl.isPrivate && first == "_" {
+    func strippingLeadingUnderscore(ifPrivate isPrivate: Bool) -> String {
+        if isPrivate, first == "_" {
             return String(self[index(after: startIndex)...])
         }
         return self

@@ -10,6 +10,9 @@
 
 #### Enhancements
 
+* Rewrite `void_return` rule with SwiftSyntax.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5347](https://github.com/realm/SwiftLint/pull/5347)

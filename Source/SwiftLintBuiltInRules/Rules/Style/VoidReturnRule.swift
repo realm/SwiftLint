@@ -1,7 +1,8 @@
-import Foundation
-import SourceKittenFramework
+import SwiftLintCore
+import SwiftSyntax
 
-struct VoidReturnRule: SubstitutionCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct VoidReturnRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -46,29 +47,37 @@ struct VoidReturnRule: SubstitutionCorrectableRule {
             Example("func foo() async throws -> ↓()"): Example("func foo() async throws -> Void")
         ]
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+private extension VoidReturnRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: ReturnClauseSyntax) {
+            if node.violates {
+                violations.append(node.type.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 
-    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let kinds = SyntaxKind.commentAndStringKinds
-        let parensPattern = "\\(\\s*(?:Void)?\\s*\\)"
-        let pattern = "->\\s*\(parensPattern)\\s*(?!->)"
-        let excludingPattern = "(\(pattern))\\s*(async\\s+)?(throws\\s+)?->"
-
-        return file.match(pattern: pattern, excludingSyntaxKinds: kinds, excludingPattern: excludingPattern,
-                          exclusionMapping: { $0.range(at: 1) }).compactMap {
-            let parensRegex = regex(parensPattern)
-            return parensRegex.firstMatch(in: file.contents, options: [], range: $0)?.range
+    final class Rewriter: ViolationsSyntaxRewriter {
+        override func visit(_ node: ReturnClauseSyntax) -> ReturnClauseSyntax {
+            if node.violates {
+                correctionPositions.append(node.type.positionAfterSkippingLeadingTrivia)
+                let node = node
+                    .with(\.type, TypeSyntax(IdentifierTypeSyntax(name: "Void")))
+                    .with(\.trailingTrivia, node.type.trailingTrivia)
+                return super.visit(node)
+            }
+            return super.visit(node)
         }
     }
+}
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "Void")
+private extension ReturnClauseSyntax {
+    var violates: Bool {
+        if let type = type.as(TupleTypeSyntax.self) {
+            let elements = type.elements
+            return elements.isEmpty || elements.onlyElement?.type.as(IdentifierTypeSyntax.self)?.name.text == "Void"
+        }
+        return false
     }
 }

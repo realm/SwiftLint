@@ -74,7 +74,12 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let foo = 1 >> 2"),
             Example("let foo = 2 >> 2"),
             Example("let foo = 2 << 2"),
-            Example("let a = b / 100.0")
+            Example("let a = b / 100.0"),
+            Example("let (lowerBound, upperBound) = (400, 599)"),
+            Example("let a = (5, 10)"),
+            Example("""
+                    let notFound = (statusCode: 404, description: "Not Found", isError: true)
+                    """)
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -88,7 +93,14 @@ struct NoMagicNumbersRule: OptInRule {
                     extension NSObject {
                         let a = Int(↓3)
                     }
-            """)
+            """),
+            Example("""
+            if (fileSize > ↓1000000) {
+                return
+            }
+            """),
+            Example("let imageHeight = (width - ↓24)"),
+            Example("return (↓5, ↓10, ↓15)")
         ]
     )
 }
@@ -98,6 +110,10 @@ private extension NoMagicNumbersRule {
         private var testClasses: Set<String> = []
         private var nonTestClasses: Set<String> = []
         private var possibleViolations: [String: Set<AbsolutePosition>] = [:]
+
+        override func visit(_ node: PatternBindingSyntax) -> SyntaxVisitorContinueKind {
+            node.isSimpleTupleAssignment ? .skipChildren : .visitChildren
+        }
 
         override func visitPost(_ node: ClassDeclSyntax) {
             let className = node.name.text
@@ -210,5 +226,16 @@ private extension ExprSyntaxProtocol {
         }
 
         return false
+    }
+}
+
+private extension PatternBindingSyntax {
+    var isSimpleTupleAssignment: Bool {
+        initializer?.value.as(TupleExprSyntax.self)?.elements.allSatisfy {
+            $0.expression.is(IntegerLiteralExprSyntax.self) ||
+            $0.expression.is(FloatLiteralExprSyntax.self) ||
+            $0.expression.is(StringLiteralExprSyntax.self) ||
+            $0.expression.is(BooleanLiteralExprSyntax.self)
+        } ?? false
     }
 }

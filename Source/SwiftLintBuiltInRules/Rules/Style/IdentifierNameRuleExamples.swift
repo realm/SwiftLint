@@ -3,6 +3,7 @@ internal struct IdentifierNameRuleExamples {
         Example("let myLet = 0"),
         Example("var myVar = 0"),
         Example("private let _myLet = 0"),
+        Example("private func _myFunc() {}"),
         Example("class Abc { static let MyLet = 0 }"),
         Example("let URL: NSURL? = nil"),
         Example("let XMLString: String? = nil"),

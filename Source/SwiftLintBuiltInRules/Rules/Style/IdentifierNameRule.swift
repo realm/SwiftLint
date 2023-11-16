@@ -48,7 +48,7 @@ private extension IdentifierNameRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            let name = node.name.text
+            let name = node.name.text.strippingLeadingUnderscore(ifPrivate: node.modifiers.contains(keyword: .private))
             if node.modifiers.contains(keyword: .override) || name.isOperator {
                 return
             }

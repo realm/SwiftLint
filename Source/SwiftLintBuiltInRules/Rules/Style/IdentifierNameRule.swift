@@ -47,6 +47,18 @@ private extension IdentifierNameRule {
             }
         }
 
+        override func visitPost(_ node: OptionalBindingConditionSyntax) {
+            if let name = node.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
+                if let violation = violates(name, type: .variable(isStatic: false)) {
+                    violations.append(ReasonedRuleViolation(
+                        position: node.bindingSpecifier.positionAfterSkippingLeadingTrivia,
+                        reason: violation.reason,
+                        severity: violation.severity
+                    ))
+                }
+            }
+        }
+
         override func visitPost(_ node: FunctionDeclSyntax) {
             let name = node.name.text.strippingLeadingUnderscore(ifPrivate: node.modifiers.contains(keyword: .private))
             if node.modifiers.contains(keyword: .override) || name.isOperator {

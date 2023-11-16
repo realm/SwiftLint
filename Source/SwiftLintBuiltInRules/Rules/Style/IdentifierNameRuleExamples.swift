@@ -50,6 +50,8 @@ internal struct IdentifierNameRuleExamples {
             "enum Foo { case ↓MyEnum }",
             configuration: ["validates_start_with_lowercase": "error"],
             excludeFromDocumentation: true
-        )
+        ),
+        Example("if let ↓_x {}"),
+        Example("guard var ↓x = x else {}")
     ]
 }

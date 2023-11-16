@@ -19,6 +19,11 @@
 
 #### Bug Fixes
 
+* Ignore overridden functions with default parameters in the `unneeded_override`
+  rule as they might change behavior.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5355](https://github.com/realm/SwiftLint/pull/5355)
+
 * Trigger `nsobject_prefer_isequal` and `redundant_self_in_closure` even in case
   the surrounding declaration is nested in an extension.  
   [SimplyDanny](https://github.com/SimplyDanny)

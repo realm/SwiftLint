@@ -33,7 +33,7 @@ private extension IdentifierNameRule {
             }
             for binding in node.bindings {
                 if let text = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
-                    let name = text.strippingLeadingUnderscore(ifPrivate: node.modifiers.contains(keyword: .private))
+                    let name = text.strippingLeadingUnderscore(if: node.modifiers.contains(keyword: .private))
                     let staticKeyword = node.modifiers.first { $0.name.text == "static" }
                     if let violation = violates(name, type: .variable(isStatic: staticKeyword != nil)) {
                         let position = staticKeyword?.name ?? node.bindingSpecifier
@@ -60,7 +60,7 @@ private extension IdentifierNameRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            let name = node.name.text.strippingLeadingUnderscore(ifPrivate: node.modifiers.contains(keyword: .private))
+            let name = node.name.text.strippingLeadingUnderscore(if: node.modifiers.containsPrivateOrFileprivate())
             if node.modifiers.contains(keyword: .override) || name.isOperator {
                 return
             }
@@ -167,7 +167,7 @@ private extension String {
         return operators.contains(where: hasPrefix)
     }
 
-    func strippingLeadingUnderscore(ifPrivate isPrivate: Bool) -> String {
+    func strippingLeadingUnderscore(if isPrivate: Bool) -> String {
         if isPrivate, first == "_" {
             return String(self[index(after: startIndex)...])
         }

@@ -105,6 +105,14 @@ struct UnneededOverrideRuleExamples {
                 })
             }
         }
+        """),
+        Example("""
+        class Baz: Foo {
+            // A default argument might be a change
+            override func bar(value: String = "Hello") {
+                super.bar(value: value)
+            }
+        }
         """)
     ]
 

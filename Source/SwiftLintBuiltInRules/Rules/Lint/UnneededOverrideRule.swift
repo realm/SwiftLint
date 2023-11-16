@@ -20,7 +20,7 @@ private func simplify(_ node: some SyntaxProtocol) -> (any ExprSyntaxProtocol)? 
     if let expr = node.as(AwaitExprSyntax.self) {
         return expr.expression
     } else if let expr = node.as(TryExprSyntax.self) {
-        // Assume using try! / try? changes behavior
+        // Assume using try! / try? changes behavior.
         if expr.questionOrExclamationMark != nil {
             return nil
         }
@@ -37,7 +37,7 @@ private func simplify(_ node: some SyntaxProtocol) -> (any ExprSyntaxProtocol)? 
 
 private func extractFunctionCallSyntax(_ node: some SyntaxProtocol) -> FunctionCallExprSyntax? {
     // Extract the function call from other expressions like try / await / return.
-    // If this returns a non-super calling function that will get filtered out later
+    // If this returns a non-super calling function, it will get filtered out later.
     var syntax = simplify(node)
     while let nestedSyntax = syntax {
         if nestedSyntax.as(FunctionCallExprSyntax.self) != nil {
@@ -79,7 +79,7 @@ private func isUnneededOverride(_ node: FunctionDeclSyntax) -> Bool {
         return false
     }
 
-    // Assume having @available changes behavior
+    // Assume having @available changes behavior.
     if node.attributes.contains(attributeNamed: "available") {
         return false
     }
@@ -92,8 +92,14 @@ private func isUnneededOverride(_ node: FunctionDeclSyntax) -> Bool {
         return false
     }
 
-    // Assume any change in arguments passed means behavior was changed
-    let expectedArguments = node.signature.parameterClause.parameters.map {
+    let declParameters = node.signature.parameterClause.parameters
+    if declParameters.contains(where: { $0.defaultValue != nil }) {
+        // Any default parameter might be a change to the super function.
+        return false
+    }
+
+    // Assume any change in arguments passed means behavior was changed.
+    let expectedArguments = declParameters.map {
         ($0.firstName.text == "_" ? "" : $0.firstName.text, $0.secondName?.text ?? $0.firstName.text)
     }
     let actualArguments = call.arguments.map {

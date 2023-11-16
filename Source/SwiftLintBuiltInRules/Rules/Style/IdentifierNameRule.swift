@@ -34,10 +34,11 @@ private extension IdentifierNameRule {
             for binding in node.bindings {
                 if let text = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
                     let name = text.strippingLeadingUnderscore(ifPrivate: node.modifiers.contains(keyword: .private))
-                    let isStatic = node.modifiers.contains(keyword: .static)
-                    if let violation = violates(name, type: .variable(isStatic: isStatic)) {
+                    let staticKeyword = node.modifiers.first { $0.name.text == "static" }
+                    if let violation = violates(name, type: .variable(isStatic: staticKeyword != nil)) {
+                        let position = staticKeyword?.name ?? node.bindingSpecifier
                         violations.append(ReasonedRuleViolation(
-                            position: node.bindingSpecifier.positionAfterSkippingLeadingTrivia,
+                            position: position.positionAfterSkippingLeadingTrivia,
                             reason: violation.reason,
                             severity: violation.severity
                         ))

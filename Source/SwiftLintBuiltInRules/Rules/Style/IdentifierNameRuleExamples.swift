@@ -32,7 +32,7 @@ internal struct IdentifierNameRuleExamples {
             configuration: ["validates_start_with_lowercase": true],
             excludeFromDocumentation: true
         ),
-        Example("↓let _myLet = 0"),
+        Example("class C { ↓static let _myLet = 0 }"),
         Example("private ↓let myLet_ = 0"),
         Example("↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
         Example("↓var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0"),

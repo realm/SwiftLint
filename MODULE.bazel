@@ -6,6 +6,7 @@ module(
 )
 
 bazel_dep(name = "apple_support", version = "1.11.1", repo_name = "build_bazel_apple_support")
+bazel_dep(name = "bazel_skylib", version = "1.5.0")
 bazel_dep(name = "platforms", version = "0.0.8")
 bazel_dep(name = "rules_apple", version = "3.1.1", repo_name = "build_bazel_rules_apple")
 bazel_dep(name = "rules_swift", version = "1.13.0", repo_name = "build_bazel_rules_swift")
@@ -30,5 +31,4 @@ use_repo(apple_cc_configure, "local_config_apple_cc")
 
 # Dev Dependencies
 
-bazel_dep(name = "bazel_skylib", version = "1.5.0", dev_dependency = True)
 bazel_dep(name = "rules_xcodeproj", version = "1.13.0", dev_dependency = True)

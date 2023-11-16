@@ -1,14 +1,28 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@build_bazel_rules_apple//apple:apple.bzl", "apple_universal_binary")
 load(
     "@build_bazel_rules_swift//swift:swift.bzl",
     "swift_binary",
     "swift_compiler_plugin",
     "swift_library",
+    "universal_swift_compiler_plugin",
 )
 
 config_setting(
     name = "strict_concurrency_builtin_rules",
     values = {"define": "strict_concurrency_builtin_rules=true"},
+)
+
+bool_flag(
+    name = "universal_tools",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "universal_tools_config",
+    flag_values = {
+        "@SwiftLint//:universal_tools": "true",
+    },
 )
 
 copts = [
@@ -36,13 +50,19 @@ swift_library(
 )
 
 swift_compiler_plugin(
-    name = "SwiftLintCoreMacros",
+    name = "SwiftLintCoreMacros.underlying",
     srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
     copts = copts + strict_concurrency_copts,
+    module_name = "SwiftLintCoreMacros",
     deps = [
         "@SwiftSyntax//:SwiftCompilerPlugin_opt",
         "@SwiftSyntax//:SwiftSyntaxMacros_opt",
     ],
+)
+
+universal_swift_compiler_plugin(
+    name = "SwiftLintCoreMacros",
+    plugin = "SwiftLintCoreMacros.underlying",
 )
 
 swift_library(
@@ -50,9 +70,10 @@ swift_library(
     srcs = glob(["Source/SwiftLintCore/**/*.swift"]),
     copts = copts,  # TODO: strict_concurrency_copts
     module_name = "SwiftLintCore",
-    plugins = [
-        ":SwiftLintCoreMacros",
-    ],
+    plugins = select({
+        ":universal_tools_config": [":SwiftLintCoreMacros"],
+        "//conditions:default": [":SwiftLintCoreMacros.underlying"],
+    }),
     visibility = ["//visibility:public"],
     deps = [
         "@SwiftSyntax//:SwiftIDEUtils_opt",

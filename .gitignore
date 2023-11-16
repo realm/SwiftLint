@@ -65,3 +65,4 @@ bundle/
 
 # Bazel
 bazel-*
+/MODULE.bazel.lock

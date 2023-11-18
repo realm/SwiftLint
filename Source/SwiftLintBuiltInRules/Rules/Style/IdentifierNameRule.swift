@@ -48,6 +48,16 @@ private extension IdentifierNameRule {
             }
         }
 
+        override func visitPost(_ node: ClosureShorthandParameterSyntax) {
+            if let violation = violates(.variable(name: node.name.text, isStatic: false, isPrivate: false)) {
+                violations.append(ReasonedRuleViolation(
+                    position: node.positionAfterSkippingLeadingTrivia,
+                    reason: violation.reason,
+                    severity: violation.severity
+                ))
+            }
+        }
+
         override func visitPost(_ node: FunctionDeclSyntax) {
             let name = node.name.text
             if node.modifiers.contains(keyword: .override) || name.isOperator {

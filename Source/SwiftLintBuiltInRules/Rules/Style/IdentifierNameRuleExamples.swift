@@ -68,6 +68,9 @@ internal struct IdentifierNameRuleExamples {
                 last _: Double
             ) {}
             """),
-        Example("↓let (a, abc) = (1, 1)")
+        Example("↓let (a, abc) = (1, 1)"),
+        Example("if let ↓i {}"),
+        Example("for ↓i in [] {}"),
+        Example("f { ↓x in }")
     ]
 }

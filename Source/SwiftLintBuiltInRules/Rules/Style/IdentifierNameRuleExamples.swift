@@ -53,6 +53,18 @@ internal struct IdentifierNameRuleExamples {
             excludeFromDocumentation: true
         ),
         Example("if let ↓_x {}"),
-        Example("guard var ↓x = x else {}")
+        Example("guard var ↓x = x else {}"),
+        Example("""
+            func myFunc(
+                ↓_ s: String,
+                ↓i j: Int,
+                _ goodName: Double,
+                ↓name n: String,
+                ↓x: Int,
+                abc: Double,
+                _: Double,
+                last _: Double
+            ) {}
+            """)
     ]
 }

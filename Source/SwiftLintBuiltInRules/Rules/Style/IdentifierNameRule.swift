@@ -51,7 +51,7 @@ private extension IdentifierNameRule {
             if let name = node.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
                 if let violation = violates(name, type: .variable(isStatic: false)) {
                     violations.append(ReasonedRuleViolation(
-                        position: node.bindingSpecifier.positionAfterSkippingLeadingTrivia,
+                        position: node.pattern.positionAfterSkippingLeadingTrivia,
                         reason: violation.reason,
                         severity: violation.severity
                     ))
@@ -67,6 +67,20 @@ private extension IdentifierNameRule {
             if let violation = violates(name, type: .function(isStatic: node.modifiers.contains(keyword: .static))) {
                 violations.append(ReasonedRuleViolation(
                     position: node.funcKeyword.positionAfterSkippingLeadingTrivia,
+                    reason: violation.reason,
+                    severity: violation.severity
+                ))
+            }
+        }
+
+        override func visitPost(_ node: FunctionParameterSyntax) {
+            let name = (node.secondName ?? node.firstName).text
+            if node.modifiers.contains(keyword: .override) || name == "_" {
+                return
+            }
+            if let violation = violates(name, type: .variable(isStatic: false)) {
+                violations.append(ReasonedRuleViolation(
+                    position: node.firstName.positionAfterSkippingLeadingTrivia,
                     reason: violation.reason,
                     severity: violation.severity
                 ))

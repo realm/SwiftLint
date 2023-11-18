@@ -47,11 +47,14 @@ private extension IdentifierNameRule {
         }
 
         override func visitPost(_ node: ClosureShorthandParameterSyntax) {
-            collectViolations(from: .variable(name: node.name.text, isStatic: false, isPrivate: false), on: node.name)
+            collectViolations(
+                from: .variable(name: node.name.text.leadingDollarStripped, isStatic: false, isPrivate: false),
+                on: node.name
+            )
         }
 
         override func visitPost(_ node: ClosureParameterSyntax) {
-            let name = (node.secondName ?? node.firstName).text
+            let name = (node.secondName ?? node.firstName).text.leadingDollarStripped
             if node.modifiers.contains(keyword: .override) {
                 return
             }
@@ -238,10 +241,15 @@ private extension String {
         return operators.contains(where: hasPrefix)
     }
 
-    func strippingLeadingUnderscore(if isPrivate: Bool) -> String {
-        if isPrivate, first == "_" {
-            return String(self[index(after: startIndex)...])
-        }
-        return self
+    func strippingLeadingUnderscore(if isPrivate: Bool) -> Self {
+        isPrivate && first == "_" ? allButFirstCharacter : self
+    }
+
+    var leadingDollarStripped: Self {
+        first == "$" ? allButFirstCharacter : self
+    }
+
+    private var allButFirstCharacter: String {
+        String(self[index(after: startIndex)...])
     }
 }

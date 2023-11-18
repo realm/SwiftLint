@@ -18,6 +18,7 @@ internal struct IdentifierNameRuleExamples {
         Example("override func IsOperator(name: String) -> Bool"),
         Example("enum Foo { case `private` }"),
         Example("enum Foo { case value(String) }"),
+        Example("f { $abc in }"),
         Example("""
                 class Foo {
                    static let Bar = 0
@@ -75,6 +76,7 @@ internal struct IdentifierNameRuleExamples {
         Example("if let ↓i {}"),
         Example("for ↓i in [] {}"),
         Example("f { ↓x in }"),
+        Example("f { ↓$x in }"),
         Example("f { (↓x: Int, ↓_ x: Int) in }"),
         Example("""
             enum E {

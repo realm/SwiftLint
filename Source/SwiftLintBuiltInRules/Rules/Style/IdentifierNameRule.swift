@@ -37,7 +37,7 @@ private extension IdentifierNameRule {
                     let type = NamedDeclType.variable(
                         name: name,
                         isStatic: staticKeyword != nil,
-                        isPrivate: node.modifiers.contains(keyword: .private)
+                        isPrivate: node.modifiers.containsPrivateOrFileprivate()
                     )
                     if let violation = violates(type) {
                         let position = staticKeyword?.name ?? node.bindingSpecifier

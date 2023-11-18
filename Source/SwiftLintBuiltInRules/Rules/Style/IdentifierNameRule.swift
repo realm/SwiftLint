@@ -27,37 +27,24 @@ struct IdentifierNameRule: Rule {
 
 private extension IdentifierNameRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: VariableDeclSyntax) {
-            if node.modifiers.contains(keyword: .override) {
+        override func visitPost(_ node: IdentifierPatternSyntax) {
+            let varDecl = node.enclosingVarDecl
+            if varDecl?.modifiers.contains(keyword: .override) ?? false {
                 return
             }
-            for name in node.allDeclaredNames {
-                let type = NamedDeclType.variable(
-                    name: name,
-                    isStatic: node.modifiers.containsStaticOrClass,
-                    isPrivate: node.modifiers.containsPrivateOrFileprivate()
-                )
-                if let violation = violates(type) {
-                    let staticKeyword = node.modifiers.first { $0.name.text == "static" || $0.name.text == "class" }
-                    let position = staticKeyword?.name ?? node.bindingSpecifier
-                    violations.append(ReasonedRuleViolation(
-                        position: position.positionAfterSkippingLeadingTrivia,
-                        reason: violation.reason,
-                        severity: violation.severity
-                    ))
-                }
-            }
-        }
-
-        override func visitPost(_ node: OptionalBindingConditionSyntax) {
-            if let name = node.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
-                if let violation = violates(.variable(name: name, isStatic: false, isPrivate: false)) {
-                    violations.append(ReasonedRuleViolation(
-                        position: node.pattern.positionAfterSkippingLeadingTrivia,
-                        reason: violation.reason,
-                        severity: violation.severity
-                    ))
-                }
+            let type = NamedDeclType.variable(
+                name: node.identifier.text,
+                isStatic: varDecl?.modifiers.containsStaticOrClass ?? false,
+                isPrivate: varDecl?.modifiers.containsPrivateOrFileprivate() ?? false
+            )
+            if let violation = violates(type) {
+                let staticKeyword = varDecl?.modifiers.first { $0.name.text == "static" || $0.name.text == "class" }
+                let position = staticKeyword?.name ?? varDecl?.bindingSpecifier ?? node.identifier
+                violations.append(ReasonedRuleViolation(
+                    position: position.positionAfterSkippingLeadingTrivia,
+                    reason: violation.reason,
+                    severity: violation.severity
+                ))
             }
         }
 
@@ -139,6 +126,25 @@ private extension IdentifierNameRule {
             }
             return nil
         }
+    }
+}
+
+private extension IdentifierPatternSyntax {
+    var enclosingVarDecl: VariableDeclSyntax? {
+        let identifierDecl =
+             parent?.as(PatternBindingSyntax.self)?
+            .parent?.as(PatternBindingListSyntax.self)?
+            .parent?.as(VariableDeclSyntax.self)
+        if identifierDecl != nil {
+            return identifierDecl
+        }
+        return
+             parent?.as(TuplePatternElementSyntax.self)?
+            .parent?.as(TuplePatternElementListSyntax.self)?
+            .parent?.as(TuplePatternSyntax.self)?
+            .parent?.as(PatternBindingSyntax.self)?
+            .parent?.as(PatternBindingListSyntax.self)?
+            .parent?.as(VariableDeclSyntax.self)
     }
 }
 

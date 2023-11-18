@@ -31,22 +31,20 @@ private extension IdentifierNameRule {
             if node.modifiers.contains(keyword: .override) {
                 return
             }
-            for binding in node.bindings {
-                if let name = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
-                    let staticKeyword = node.modifiers.first { $0.name.text == "static" }
-                    let type = NamedDeclType.variable(
-                        name: name,
-                        isStatic: staticKeyword != nil,
-                        isPrivate: node.modifiers.containsPrivateOrFileprivate()
-                    )
-                    if let violation = violates(type) {
-                        let position = staticKeyword?.name ?? node.bindingSpecifier
-                        violations.append(ReasonedRuleViolation(
-                            position: position.positionAfterSkippingLeadingTrivia,
-                            reason: violation.reason,
-                            severity: violation.severity
-                        ))
-                    }
+            for name in node.allDeclaredNames {
+                let type = NamedDeclType.variable(
+                    name: name,
+                    isStatic: node.modifiers.containsStaticOrClass,
+                    isPrivate: node.modifiers.containsPrivateOrFileprivate()
+                )
+                if let violation = violates(type) {
+                    let staticKeyword = node.modifiers.first { $0.name.text == "static" || $0.name.text == "class" }
+                    let position = staticKeyword?.name ?? node.bindingSpecifier
+                    violations.append(ReasonedRuleViolation(
+                        position: position.positionAfterSkippingLeadingTrivia,
+                        reason: violation.reason,
+                        severity: violation.severity
+                    ))
                 }
             }
         }
@@ -71,7 +69,7 @@ private extension IdentifierNameRule {
             let type = NamedDeclType.function(
                 name: name,
                 resolvedName: node.resolvedName,
-                isStatic: node.modifiers.contains(keyword: .static),
+                isStatic: node.modifiers.containsStaticOrClass,
                 isPrivate: node.modifiers.containsPrivateOrFileprivate()
             )
             if let violation = violates(type) {
@@ -141,6 +139,24 @@ private extension IdentifierNameRule {
             }
             return nil
         }
+    }
+}
+
+private extension VariableDeclSyntax {
+    var allDeclaredNames: [String] {
+        bindings
+            .map(\.pattern)
+            .flatMap { pattern -> [String] in
+                if let id = pattern.as(IdentifierPatternSyntax.self) {
+                    [id.identifier.text]
+                } else if let tuple = pattern.as(TuplePatternSyntax.self) {
+                    tuple.elements.compactMap {
+                        $0.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
+                    }
+                } else {
+                    []
+                }
+            }
     }
 }
 

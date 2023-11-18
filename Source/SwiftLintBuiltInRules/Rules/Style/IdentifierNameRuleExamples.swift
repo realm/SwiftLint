@@ -67,6 +67,7 @@ internal struct IdentifierNameRuleExamples {
                 _: Double,
                 last _: Double
             ) {}
-            """)
+            """),
+        Example("↓let (a, abc) = (1, 1)")
     ]
 }

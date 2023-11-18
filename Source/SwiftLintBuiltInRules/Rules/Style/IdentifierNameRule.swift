@@ -116,6 +116,19 @@ private extension IdentifierNameRule {
             }
         }
 
+        override func visitPost(_ node: EnumCaseParameterSyntax) {
+            guard let name = (node.secondName ?? node.firstName)?.text else {
+                return
+            }
+            if let violation = violates(.variable(name: name, isStatic: false, isPrivate: false)) {
+                violations.append(ReasonedRuleViolation(
+                    position: node.positionAfterSkippingLeadingTrivia,
+                    reason: violation.reason,
+                    severity: violation.severity
+                ))
+            }
+        }
+
         private func violates(_ type: NamedDeclType) -> (reason: String, severity: ViolationSeverity)? {
             guard !configuration.shouldExclude(name: type.name), type.name != "_",
                   let firstCharacter = type.name.first else {

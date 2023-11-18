@@ -182,7 +182,7 @@ public extension FunctionDeclSyntax {
     }
 
     /// Returns the signature including arguments, e.g "setEditing(_:animated:)"
-    func resolvedName() -> String {
+    var resolvedName: String {
         var name = self.name.text
         name += "("
 

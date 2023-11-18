@@ -37,7 +37,7 @@ private extension IdentifierNameRule {
                 isStatic: varDecl?.modifiers.contains(keyword: .static) ?? false,
                 isPrivate: varDecl?.modifiers.containsPrivateOrFileprivate() ?? false
             )
-            let staticKeyword = varDecl?.modifiers.first { $0.name.text == "static" }
+            let staticKeyword = varDecl?.modifiers.staticOrClassModifier
             let position = staticKeyword?.name ?? varDecl?.bindingSpecifier ?? node.identifier
             collectViolations(from: type, on: position)
         }
@@ -64,7 +64,7 @@ private extension IdentifierNameRule {
                 resolvedName: node.resolvedName,
                 isPrivate: node.modifiers.containsPrivateOrFileprivate()
             )
-            let staticKeyword = node.modifiers.first { $0.name.text == "static" }
+            let staticKeyword = node.modifiers.staticOrClassModifier
             collectViolations(from: type, on: staticKeyword?.name ?? node.funcKeyword)
         }
 
@@ -130,6 +130,12 @@ private extension IdentifierNameRule {
             }
             return nil
         }
+    }
+}
+
+private extension DeclModifierListSyntax {
+    var staticOrClassModifier: DeclModifierSyntax? {
+        first { ["static", "class"].contains($0.name.text) }
     }
 }
 

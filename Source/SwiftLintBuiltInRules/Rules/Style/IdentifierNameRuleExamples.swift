@@ -37,7 +37,9 @@ internal struct IdentifierNameRuleExamples {
             excludeFromDocumentation: true
         ),
         Example("class C { ↓static let _myLet = 0 }"),
+        Example("class C { ↓class let MyLet = 0 }"),
         Example("class C { ↓static func MyFunc() {} }"),
+        Example("class C { ↓class func MyFunc() {} }"),
         Example("private ↓let myLet_ = 0"),
         Example("↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
         Example("↓var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0"),

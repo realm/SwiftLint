@@ -48,7 +48,9 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
             Example("↓let MyLet = 0"),
             Example("enum Foo { case ↓MyEnum }"),
             Example("↓func IsOperator(name: String) -> Bool"),
-            Example("class C { ↓static func MyFunc() {} }")
+            Example("class C { ↓class let MyLet = 0 }"),
+            Example("class C { ↓static func MyFunc() {} }"),
+            Example("class C { ↓class func MyFunc() {} }")
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()

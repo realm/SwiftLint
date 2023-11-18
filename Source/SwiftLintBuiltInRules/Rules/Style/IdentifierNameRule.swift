@@ -31,19 +31,12 @@ private extension IdentifierNameRule {
             collectViolations(from: .variable(name: node.name.text, isStatic: false, isPrivate: false), on: node.name)
         }
 
-        override func visitPost(_ node: IdentifierPatternSyntax) {
-            let varDecl = node.enclosingVarDecl
-            if varDecl?.modifiers.contains(keyword: .override) ?? false {
+        override func visitPost(_ node: ClosureParameterSyntax) {
+            let name = (node.secondName ?? node.firstName).text.leadingDollarStripped
+            if node.modifiers.contains(keyword: .override) {
                 return
             }
-            let type = NamedDeclType.variable(
-                name: node.identifier.text,
-                isStatic: varDecl?.modifiers.contains(keyword: .static) ?? false,
-                isPrivate: varDecl?.modifiers.containsPrivateOrFileprivate() ?? false
-            )
-            let staticKeyword = varDecl?.modifiers.staticOrClassModifier
-            let position = staticKeyword?.name ?? varDecl?.bindingSpecifier ?? node.identifier
-            collectViolations(from: type, on: position)
+            collectViolations(from: .variable(name: name, isStatic: false, isPrivate: false), on: node.firstName)
         }
 
         override func visitPost(_ node: ClosureShorthandParameterSyntax) {
@@ -53,12 +46,14 @@ private extension IdentifierNameRule {
             )
         }
 
-        override func visitPost(_ node: ClosureParameterSyntax) {
-            let name = (node.secondName ?? node.firstName).text.leadingDollarStripped
-            if node.modifiers.contains(keyword: .override) {
-                return
+        override func visitPost(_ node: EnumCaseElementSyntax) {
+            collectViolations(from: .enumElement(name: node.name.text), on: node.name)
+        }
+
+        override func visitPost(_ node: EnumCaseParameterSyntax) {
+            if let param = node.secondName ?? node.firstName, let position = node.firstName {
+                collectViolations(from: .variable(name: param.text, isStatic: false, isPrivate: false), on: position)
             }
-            collectViolations(from: .variable(name: name, isStatic: false, isPrivate: false), on: node.firstName)
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
@@ -75,16 +70,6 @@ private extension IdentifierNameRule {
             collectViolations(from: type, on: staticKeyword?.name ?? node.funcKeyword)
         }
 
-        private func collectViolations(from type: NamedDeclType, on token: TokenSyntax) {
-            if let violation = violates(type) {
-                violations.append(ReasonedRuleViolation(
-                    position: token.positionAfterSkippingLeadingTrivia,
-                    reason: violation.reason,
-                    severity: violation.severity
-                ))
-            }
-        }
-
         override func visitPost(_ node: FunctionParameterSyntax) {
             if !node.modifiers.contains(keyword: .override) {
                 let name = (node.secondName ?? node.firstName).text
@@ -92,13 +77,28 @@ private extension IdentifierNameRule {
             }
         }
 
-        override func visitPost(_ node: EnumCaseElementSyntax) {
-            collectViolations(from: .enumElement(name: node.name.text), on: node.name)
+        override func visitPost(_ node: IdentifierPatternSyntax) {
+            let varDecl = node.enclosingVarDecl
+            if varDecl?.modifiers.contains(keyword: .override) ?? false {
+                return
+            }
+            let type = NamedDeclType.variable(
+                name: node.identifier.text,
+                isStatic: varDecl?.modifiers.contains(keyword: .static) ?? false,
+                isPrivate: varDecl?.modifiers.containsPrivateOrFileprivate() ?? false
+            )
+            let staticKeyword = varDecl?.modifiers.staticOrClassModifier
+            let position = staticKeyword?.name ?? varDecl?.bindingSpecifier ?? node.identifier
+            collectViolations(from: type, on: position)
         }
 
-        override func visitPost(_ node: EnumCaseParameterSyntax) {
-            if let param = node.secondName ?? node.firstName, let position = node.firstName {
-                collectViolations(from: .variable(name: param.text, isStatic: false, isPrivate: false), on: position)
+        private func collectViolations(from type: NamedDeclType, on token: TokenSyntax) {
+            if let violation = violates(type) {
+                violations.append(ReasonedRuleViolation(
+                    position: token.positionAfterSkippingLeadingTrivia,
+                    reason: violation.reason,
+                    severity: violation.severity
+                ))
             }
         }
 

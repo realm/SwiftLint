@@ -47,7 +47,8 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
         let triggeringExamplesToRemove = [
             Example("↓let MyLet = 0"),
             Example("enum Foo { case ↓MyEnum }"),
-            Example("↓func IsOperator(name: String) -> Bool")
+            Example("↓func IsOperator(name: String) -> Bool"),
+            Example("class C { ↓static func MyFunc() {} }")
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()

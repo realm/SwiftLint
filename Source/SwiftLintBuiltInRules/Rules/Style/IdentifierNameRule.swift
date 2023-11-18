@@ -34,10 +34,10 @@ private extension IdentifierNameRule {
             }
             let type = NamedDeclType.variable(
                 name: node.identifier.text,
-                isStatic: varDecl?.modifiers.containsStaticOrClass ?? false,
+                isStatic: varDecl?.modifiers.contains(keyword: .static) ?? false,
                 isPrivate: varDecl?.modifiers.containsPrivateOrFileprivate() ?? false
             )
-            let staticKeyword = varDecl?.modifiers.first { $0.name.text == "static" || $0.name.text == "class" }
+            let staticKeyword = varDecl?.modifiers.first { $0.name.text == "static" }
             let position = staticKeyword?.name ?? varDecl?.bindingSpecifier ?? node.identifier
             collectViolations(from: type, on: position)
         }
@@ -62,10 +62,10 @@ private extension IdentifierNameRule {
             let type = NamedDeclType.function(
                 name: name,
                 resolvedName: node.resolvedName,
-                isStatic: node.modifiers.containsStaticOrClass,
                 isPrivate: node.modifiers.containsPrivateOrFileprivate()
             )
-            collectViolations(from: type, on: node.funcKeyword)
+            let staticKeyword = node.modifiers.first { $0.name.text == "static" }
+            collectViolations(from: type, on: staticKeyword?.name ?? node.funcKeyword)
         }
 
         private func collectViolations(from type: NamedDeclType, on token: TokenSyntax) {
@@ -171,13 +171,13 @@ private extension VariableDeclSyntax {
 }
 
 private enum NamedDeclType: CustomStringConvertible {
-    case function(name: String, resolvedName: String, isStatic: Bool, isPrivate: Bool)
+    case function(name: String, resolvedName: String, isPrivate: Bool)
     case enumElement(name: String)
     case variable(name: String, isStatic: Bool, isPrivate: Bool)
 
     var description: String {
         switch self {
-        case let .function(_, resolvedName, _, _): "Function name '\(resolvedName)'"
+        case let .function(_, resolvedName, _): "Function name '\(resolvedName)'"
         case let .enumElement(name): "Enum element name '\(name)'"
         case let .variable(name, _, _): "Variable name '\(name)'"
         }
@@ -185,15 +185,14 @@ private enum NamedDeclType: CustomStringConvertible {
 
     var isStatic: Bool {
         switch self {
-        case let .function(_, _, isStatic, _): isStatic
-        case .enumElement: false
+        case .function, .enumElement: false
         case let .variable(_, isStatic, _): isStatic
         }
     }
 
     var isPrivate: Bool {
         switch self {
-        case let .function(_, _, _, isPrivate): isPrivate
+        case let .function(_, _, isPrivate): isPrivate
         case .enumElement: false
         case let .variable(_, _, isPrivate): isPrivate
         }
@@ -201,7 +200,7 @@ private enum NamedDeclType: CustomStringConvertible {
 
     var name: String {
         let name = switch self {
-        case let .function(name, _, _, _): name
+        case let .function(name, _, _): name
         case let .enumElement(name): name
         case let .variable(name, _, _): name
         }

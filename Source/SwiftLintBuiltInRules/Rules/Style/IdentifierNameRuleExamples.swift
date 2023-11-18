@@ -71,6 +71,7 @@ internal struct IdentifierNameRuleExamples {
         Example("↓let (a, abc) = (1, 1)"),
         Example("if let ↓i {}"),
         Example("for ↓i in [] {}"),
-        Example("f { ↓x in }")
+        Example("f { ↓x in }"),
+        Example("f { (↓x: Int, ↓_ x: Int) in }")
     ]
 }

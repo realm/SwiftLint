@@ -32,10 +32,14 @@ private extension IdentifierNameRule {
                 return
             }
             for binding in node.bindings {
-                if let text = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
-                    let name = text.strippingLeadingUnderscore(if: node.modifiers.contains(keyword: .private))
+                if let name = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
                     let staticKeyword = node.modifiers.first { $0.name.text == "static" }
-                    if let violation = violates(name, type: .variable(isStatic: staticKeyword != nil)) {
+                    let type = NamedDeclType.variable(
+                        name: name,
+                        isStatic: staticKeyword != nil,
+                        isPrivate: node.modifiers.contains(keyword: .private)
+                    )
+                    if let violation = violates(type) {
                         let position = staticKeyword?.name ?? node.bindingSpecifier
                         violations.append(ReasonedRuleViolation(
                             position: position.positionAfterSkippingLeadingTrivia,
@@ -49,7 +53,7 @@ private extension IdentifierNameRule {
 
         override func visitPost(_ node: OptionalBindingConditionSyntax) {
             if let name = node.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
-                if let violation = violates(name, type: .variable(isStatic: false)) {
+                if let violation = violates(.variable(name: name, isStatic: false, isPrivate: false)) {
                     violations.append(ReasonedRuleViolation(
                         position: node.pattern.positionAfterSkippingLeadingTrivia,
                         reason: violation.reason,
@@ -60,11 +64,17 @@ private extension IdentifierNameRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            let name = node.name.text.strippingLeadingUnderscore(if: node.modifiers.containsPrivateOrFileprivate())
+            let name = node.name.text
             if node.modifiers.contains(keyword: .override) || name.isOperator {
                 return
             }
-            if let violation = violates(name, type: .function(isStatic: node.modifiers.contains(keyword: .static))) {
+            let type = NamedDeclType.function(
+                name: name,
+                resolvedName: node.resolvedName,
+                isStatic: node.modifiers.contains(keyword: .static),
+                isPrivate: node.modifiers.containsPrivateOrFileprivate()
+            )
+            if let violation = violates(type) {
                 violations.append(ReasonedRuleViolation(
                     position: node.funcKeyword.positionAfterSkippingLeadingTrivia,
                     reason: violation.reason,
@@ -78,7 +88,7 @@ private extension IdentifierNameRule {
             if node.modifiers.contains(keyword: .override) || name == "_" {
                 return
             }
-            if let violation = violates(name, type: .variable(isStatic: false)) {
+            if let violation = violates(.variable(name: name, isStatic: false, isPrivate: false)) {
                 violations.append(ReasonedRuleViolation(
                     position: node.firstName.positionAfterSkippingLeadingTrivia,
                     reason: violation.reason,
@@ -88,8 +98,7 @@ private extension IdentifierNameRule {
         }
 
         override func visitPost(_ node: EnumCaseElementSyntax) {
-            let name = node.name.text
-            if let violation = violates(name, type: .enumElement) {
+            if let violation = violates(.enumElement(name: node.name.text)) {
                 violations.append(ReasonedRuleViolation(
                     position: node.positionAfterSkippingLeadingTrivia,
                     reason: violation.reason,
@@ -98,23 +107,24 @@ private extension IdentifierNameRule {
             }
         }
 
-        private func violates(_ name: String?, type: DeclType) -> (reason: String, severity: ViolationSeverity)? {
-            guard let name = name?.trimmingCharacters(in: CharacterSet(charactersIn: "`")),
-                  !configuration.shouldExclude(name: name), let firstCharacter = name.first else {
+        private func violates(_ type: NamedDeclType) -> (reason: String, severity: ViolationSeverity)? {
+            guard !configuration.shouldExclude(name: type.name), let firstCharacter = type.name.first else {
                 return nil
             }
-            if !type.isFunction {
-                if !configuration.allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: name)) {
+            if case .function = type {
+                // Do not perform additional checks.
+            } else {
+                if !configuration.allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: type.name)) {
                     let reason = """
-                        \(type) name '\(name)' should only contain alphanumeric and other \
+                        \(type) should only contain alphanumeric and other \
                         allowed characters
                         """
                     return (reason, configuration.unallowedSymbolsSeverity.severity)
                 }
 
-                if let severity = configuration.severity(forLength: name.count) {
+                if let severity = configuration.severity(forLength: type.name.count) {
                     let reason = """
-                        \(type) name '\(name)' should be between \
+                        \(type) should be between \
                         \(configuration.minLengthThreshold) and \
                         \(configuration.maxLengthThreshold) characters long
                         """
@@ -125,8 +135,8 @@ private extension IdentifierNameRule {
                 return nil
             }
             if let caseCheckSeverity = configuration.validatesStartWithLowercase.severity,
-               !type.isStatic, name.isViolatingCase, !name.isOperator {
-                let reason = "\(type) name '\(name)' should start with a lowercase character"
+               !type.isStatic, type.name.isViolatingCase, !type.name.isOperator {
+                let reason = "\(type) should start with a lowercase character"
                 return (reason, caseCheckSeverity)
             }
             return nil
@@ -134,32 +144,44 @@ private extension IdentifierNameRule {
     }
 }
 
-private enum DeclType: CustomStringConvertible {
-    case function(isStatic: Bool)
-    case enumElement
-    case variable(isStatic: Bool)
+private enum NamedDeclType: CustomStringConvertible {
+    case function(name: String, resolvedName: String, isStatic: Bool, isPrivate: Bool)
+    case enumElement(name: String)
+    case variable(name: String, isStatic: Bool, isPrivate: Bool)
 
     var description: String {
         switch self {
-        case .function: "Function"
-        case .enumElement: "Enum element"
-        case .variable: "Variable"
+        case let .function(_, resolvedName, _, _): "Function name '\(resolvedName)'"
+        case let .enumElement(name): "Enum element name '\(name)'"
+        case let .variable(name, _, _): "Variable name '\(name)'"
         }
     }
 
     var isStatic: Bool {
         switch self {
-        case let .function(isStatic): isStatic
+        case let .function(_, _, isStatic, _): isStatic
         case .enumElement: false
-        case let .variable(isStatic): isStatic
+        case let .variable(_, isStatic, _): isStatic
         }
     }
 
-    var isFunction: Bool {
-        if case .function = self {
-            return true
+    var isPrivate: Bool {
+        switch self {
+        case let .function(_, _, _, isPrivate): isPrivate
+        case .enumElement: false
+        case let .variable(_, _, isPrivate): isPrivate
         }
-        return false
+    }
+
+    var name: String {
+        let name = switch self {
+        case let .function(name, _, _, _): name
+        case let .enumElement(name): name
+        case let .variable(name, _, _): name
+        }
+        return name
+            .trimmingCharacters(in: CharacterSet(charactersIn: "`"))
+            .strippingLeadingUnderscore(if: isPrivate)
     }
 }
 

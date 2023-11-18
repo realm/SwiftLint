@@ -82,6 +82,15 @@ internal struct IdentifierNameRuleExamples {
                 case case1(Int)
                 case case2(↓a: Int)
                 case case3(↓_ a: Int)
+            }
+            """),
+        Example("""
+            class C {
+                ↓var x: Int {
+                    get { 1 }
+                    set(↓y) { x = y }
+                }
+            }
             """)
     ]
 }

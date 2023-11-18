@@ -27,6 +27,10 @@ struct IdentifierNameRule: Rule {
 
 private extension IdentifierNameRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: AccessorParametersSyntax) {
+            collectViolations(from: .variable(name: node.name.text, isStatic: false, isPrivate: false), on: node.name)
+        }
+
         override func visitPost(_ node: IdentifierPatternSyntax) {
             let varDecl = node.enclosingVarDecl
             if varDecl?.modifiers.contains(keyword: .override) ?? false {

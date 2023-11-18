@@ -80,7 +80,7 @@ private extension IdentifierNameRule {
 
         override func visitPost(_ node: FunctionParameterSyntax) {
             let name = (node.secondName ?? node.firstName).text
-            if node.modifiers.contains(keyword: .override) || name == "_" {
+            if node.modifiers.contains(keyword: .override) {
                 return
             }
             if let violation = violates(.variable(name: name, isStatic: false, isPrivate: false)) {
@@ -103,7 +103,8 @@ private extension IdentifierNameRule {
         }
 
         private func violates(_ type: NamedDeclType) -> (reason: String, severity: ViolationSeverity)? {
-            guard !configuration.shouldExclude(name: type.name), let firstCharacter = type.name.first else {
+            guard !configuration.shouldExclude(name: type.name), type.name != "_",
+                  let firstCharacter = type.name.first else {
                 return nil
             }
             if case .function = type {

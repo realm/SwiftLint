@@ -1,4 +1,5 @@
 @testable import SwiftLintBuiltInRules
+import XCTest
 
 class IdentifierNameRuleTests: SwiftLintTestCase {
     func testIdentifierNameWithExcluded() {
@@ -46,7 +47,10 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
         let triggeringExamplesToRemove = [
             Example("↓let MyLet = 0"),
             Example("enum Foo { case ↓MyEnum }"),
-            Example("↓func IsOperator(name: String) -> Bool")
+            Example("↓func IsOperator(name: String) -> Bool"),
+            Example("class C { ↓class let MyLet = 0 }"),
+            Example("class C { ↓static func MyFunc() {} }"),
+            Example("class C { ↓class func MyFunc() {} }")
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()
@@ -111,5 +115,14 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+    }
+
+    func testFunctionNameInViolationMessage() {
+        let example = SwiftLintFile(contents: "func _abc(arg: String) {}")
+        let violations = IdentifierNameRule().validate(file: example)
+        XCTAssertEqual(
+            violations.map(\.reason),
+            ["Function name \'_abc(arg:)\' should start with a lowercase character"]
+        )
     }
 }

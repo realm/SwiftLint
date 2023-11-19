@@ -10,7 +10,10 @@
 
 #### Enhancements
 
-* Rewrite `void_return` rule with SwiftSyntax.  
+* Rewrite the following rules with SwiftSyntax:
+  * `identifier_name`
+  * `void_return`
+
   [SimplyDanny](https://github.com/SimplyDanny)
 
 * Print invalid keys when configuration parsing fails.  

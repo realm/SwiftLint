@@ -84,7 +84,7 @@ private extension OverriddenSuperCallRule {
             guard let body = node.body,
                   node.modifiers.contains(keyword: .override),
                   !node.modifiers.containsStaticOrClass,
-                  case let name = node.resolvedName(),
+                  case let name = node.resolvedName,
                   configuration.resolvedMethodNames.contains(name) else {
                 return
             }

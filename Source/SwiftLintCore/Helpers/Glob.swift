@@ -1,3 +1,4 @@
+import FilenameMatcher
 import Foundation
 
 #if os(Linux)
@@ -36,31 +37,15 @@ struct Glob {
             .map { $0.absolutePathStandardized() }
     }
 
-    static func toRegex(_ pattern: String, rootPath: String = "") -> NSRegularExpression? {
-        var regexPattern = pattern
-            .replacingOccurrences(of: "**/*", with: "\0")
-            .replacingOccurrences(of: "**/", with: "\0")
-            .replacingOccurrences(of: ".", with: "\\.")
-            .replacingOccurrences(of: "?", with: ".")
-            .replacingOccurrences(of: "**", with: "\0")
-            .replacingOccurrences(of: "*", with: "[^/]*")
-            .replacingOccurrences(of: "\0", with: ".*")
-            .replacingOccurrences(of: "(", with: "\\(")
-            .replacingOccurrences(of: ")", with: "\\)")
-        if !pattern.starts(with: rootPath) {
-            regexPattern = rootPath + "/" + regexPattern
+    static func createFilenameMatcher(root: String, pattern: String) -> FilenameMatcher {
+        var fullPattern = pattern
+        if !pattern.starts(with: root) {
+            fullPattern = root + (root.hasSuffix("/") ? "" : "/") + fullPattern
         }
-        if !regexPattern.hasSuffix("*") {
-            regexPattern.append(".*")
+        if !pattern.hasSuffix(".swift"), !pattern.hasSuffix("/**") {
+            fullPattern += pattern.hasSuffix("/") ? "**" : "/**"
         }
-        regexPattern = regexPattern.replacingOccurrences(of: "//", with: "/")
-        guard let regex = try? NSRegularExpression.cached(pattern: "^\(regexPattern)$") else {
-            Issue.genericWarning("""
-                Pattern '\(pattern)' cannot be converted to a regular expression and is therefore ignored
-            """).print()
-            return nil
-        }
-        return regex
+        return FilenameMatcher(pattern: fullPattern)
     }
 
     // MARK: Private

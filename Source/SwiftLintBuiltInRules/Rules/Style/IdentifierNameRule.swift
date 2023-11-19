@@ -32,11 +32,14 @@ private extension IdentifierNameRule {
         }
 
         override func visitPost(_ node: ClosureParameterSyntax) {
-            let name = (node.secondName ?? node.firstName).text.leadingDollarStripped
             if node.modifiers.contains(keyword: .override) {
                 return
             }
-            collectViolations(from: .variable(name: name, isStatic: false, isPrivate: false), on: node.firstName)
+            let name = node.secondName ?? node.firstName
+            collectViolations(
+                from: .variable(name: name.text.leadingDollarStripped, isStatic: false, isPrivate: false),
+                on: name
+            )
         }
 
         override func visitPost(_ node: ClosureShorthandParameterSyntax) {
@@ -51,8 +54,8 @@ private extension IdentifierNameRule {
         }
 
         override func visitPost(_ node: EnumCaseParameterSyntax) {
-            if let param = node.secondName ?? node.firstName, let position = node.firstName {
-                collectViolations(from: .variable(name: param.text, isStatic: false, isPrivate: false), on: position)
+            if let name = node.secondName ?? node.firstName {
+                collectViolations(from: .variable(name: name.text, isStatic: false, isPrivate: false), on: name)
             }
         }
 
@@ -66,15 +69,18 @@ private extension IdentifierNameRule {
                 resolvedName: node.resolvedName,
                 isPrivate: node.modifiers.containsPrivateOrFileprivate()
             )
-            let staticKeyword = node.modifiers.staticOrClassModifier
-            collectViolations(from: type, on: staticKeyword?.name ?? node.funcKeyword)
+            collectViolations(from: type, on: node.name)
         }
 
         override func visitPost(_ node: FunctionParameterSyntax) {
-            if !node.modifiers.contains(keyword: .override) {
-                let name = (node.secondName ?? node.firstName).text
-                collectViolations(from: .variable(name: name, isStatic: false, isPrivate: false), on: node.firstName)
+            if node.modifiers.contains(keyword: .override) {
+                return
             }
+            let name = (node.secondName ?? node.firstName)
+            collectViolations(
+                from: .variable(name: name.text, isStatic: false, isPrivate: false),
+                on: name
+            )
         }
 
         override func visitPost(_ node: IdentifierPatternSyntax) {
@@ -87,9 +93,7 @@ private extension IdentifierNameRule {
                 isStatic: varDecl?.modifiers.contains(keyword: .static) ?? false,
                 isPrivate: varDecl?.modifiers.containsPrivateOrFileprivate() ?? false
             )
-            let staticKeyword = varDecl?.modifiers.staticOrClassModifier
-            let position = staticKeyword?.name ?? varDecl?.bindingSpecifier ?? node.identifier
-            collectViolations(from: type, on: position)
+            collectViolations(from: type, on: node.identifier)
         }
 
         private func collectViolations(from type: NamedDeclType, on token: TokenSyntax) {

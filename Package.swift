@@ -35,6 +35,7 @@ let package = Package(
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
         .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit.git", from: "0.2.0"),
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.8.0")),
+        .package(url: "https://github.com/ileitch/swift-filename-matcher", .upToNextMinor(from: "0.1.1")),
     ],
     targets: [
         .plugin(
@@ -77,6 +78,7 @@ let package = Package(
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
                 .product(name: "SwiftyTextTable", package: "SwiftyTextTable"),
                 .product(name: "Yams", package: "Yams"),
+                .product(name: "FilenameMatcher", package: "swift-filename-matcher"),
                 "SwiftLintCoreMacros",
             ],
             swiftSettings: swiftFeatures

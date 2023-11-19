@@ -83,18 +83,18 @@ final class GlobTests: SwiftLintTestCase {
         XCTAssertEqual(files.sorted(), expectedFiles.sorted())
     }
 
-    func testToRegex() {
-        XCTAssertEqual(Glob.toRegex("*?.(**)")?.pattern, "^[^/]*.\\.\\(.*\\).*$")
-        XCTAssertEqual(Glob.toRegex("a/b/c")?.pattern, "^a/b/c.*$")
-        XCTAssertEqual(Glob.toRegex("a//b")?.pattern, "^a/b.*$")
-        XCTAssertEqual(Glob.toRegex("/a/b/*")?.pattern, "^/a/b/[^/]*$")
-        XCTAssertEqual(Glob.toRegex("a/*.swift")?.pattern, "^a/[^/]*\\.swift.*$")
-        XCTAssertEqual(Glob.toRegex("**/a/*.swift")?.pattern, "^.*a/[^/]*\\.swift.*$")
-        XCTAssertEqual(Glob.toRegex("**/*.swift")?.pattern, "^.*\\.swift.*$")
+    func testCreateFilenameMatcher() {
+        XCTAssert(Glob.createFilenameMatcher(root: "/a/b/", pattern: "c/*.swift").match(filename: "/a/b/c/d.swift"))
+        XCTAssert(Glob.createFilenameMatcher(root: "/a", pattern: "**/*.swift").match(filename: "/a/b/c/d.swift"))
+        XCTAssert(Glob.createFilenameMatcher(root: "/a/b", pattern: "/a/b/c/*.swift").match(filename: "/a/b/c/d.swift"))
+        XCTAssert(Glob.createFilenameMatcher(root: "/a/", pattern: "/a/b/c/*.swift").match(filename: "/a/b/c/d.swift"))
 
-        XCTAssertEqual(Glob.toRegex("a/b", rootPath: "/tmp/")?.pattern, "^/tmp/a/b.*$")
-        XCTAssertEqual(Glob.toRegex("/tmp/a/b", rootPath: "/tmp/")?.pattern, "^/tmp/a/b.*$")
-        XCTAssertEqual(Glob.toRegex("/a/b", rootPath: "/tmp")?.pattern, "^/tmp/a/b.*$")
-        XCTAssertEqual(Glob.toRegex("**/*.swift", rootPath: "/tmp")?.pattern, "^/tmp/.*\\.swift.*$")
+        XCTAssert(Glob.createFilenameMatcher(root: "", pattern: "/a/b/c").match(filename: "/a/b/c/d.swift"))
+        XCTAssert(Glob.createFilenameMatcher(root: "", pattern: "/a/b/c/").match(filename: "/a/b/c/d.swift"))
+        XCTAssert(Glob.createFilenameMatcher(root: "", pattern: "/a/b/c/*.swift").match(filename: "/a/b/c/d.swift"))
+        XCTAssert(Glob.createFilenameMatcher(root: "", pattern: "/d.swift/*.swift").match(filename: "/d.swift/e.swift"))
+        XCTAssert(Glob.createFilenameMatcher(root: "", pattern: "/a/**").match(filename: "/a/b/c/d.swift"))
+
+        XCTAssertFalse(Glob.createFilenameMatcher(root: "/a/", pattern: "**/*.swift").match(filename: "/a/b.swift"))
     }
 }

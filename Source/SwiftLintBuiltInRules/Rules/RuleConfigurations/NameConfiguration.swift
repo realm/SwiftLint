@@ -99,6 +99,10 @@ extension NameConfiguration {
         }
         return nil
     }
+
+    func containsOnlyAllowedCharacters(name: String) -> Bool {
+        allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: name))
+    }
 }
 
 // MARK: - `exclude` option extensions

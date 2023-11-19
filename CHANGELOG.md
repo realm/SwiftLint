@@ -19,6 +19,12 @@
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5347](https://github.com/realm/SwiftLint/pull/5347)
+  
+* Allow to configure more operators in `identifier_name` rule. The new option
+  is named `additional_operators`. Use it to add more operators to the list
+  of default operators known to the rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#1762](https://github.com/realm/SwiftLint/pull/1762)
 
 #### Bug Fixes
 

@@ -4,11 +4,7 @@ import SwiftSyntax
 
 @SwiftSyntaxRule
 struct IdentifierNameRule: Rule {
-    var configuration = NameConfiguration<Self>(minLengthWarning: 3,
-                                                minLengthError: 2,
-                                                maxLengthWarning: 40,
-                                                maxLengthError: 60,
-                                                excluded: ["id"])
+    var configuration = IdentifierNameConfiguration()
 
     static let description = RuleDescription(
         identifier: "identifier_name",
@@ -27,6 +23,8 @@ struct IdentifierNameRule: Rule {
 
 private extension IdentifierNameRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private lazy var nameConfiguration = configuration.nameConfiguration
+
         override func visitPost(_ node: AccessorParametersSyntax) {
             collectViolations(from: .variable(name: node.name.text, isStatic: false, isPrivate: false), on: node.name)
         }
@@ -61,7 +59,7 @@ private extension IdentifierNameRule {
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             let name = node.name.text
-            if node.modifiers.contains(keyword: .override) || name.isOperator {
+            if node.modifiers.contains(keyword: .override) || isOperator(name: name) {
                 return
             }
             let type = NamedDeclType.function(
@@ -107,39 +105,43 @@ private extension IdentifierNameRule {
         }
 
         private func violates(_ type: NamedDeclType) -> (reason: String, severity: ViolationSeverity)? {
-            guard !configuration.shouldExclude(name: type.name), type.name != "_",
+            guard !nameConfiguration.shouldExclude(name: type.name), type.name != "_",
                   let firstCharacter = type.name.first else {
                 return nil
             }
             if case .function = type {
                 // Do not perform additional checks.
             } else {
-                if !configuration.allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: type.name)) {
+                if !nameConfiguration.containsOnlyAllowedCharacters(name: type.name) {
                     let reason = """
                         \(type) should only contain alphanumeric and other \
                         allowed characters
                         """
-                    return (reason, configuration.unallowedSymbolsSeverity.severity)
+                    return (reason, nameConfiguration.unallowedSymbolsSeverity.severity)
                 }
 
-                if let severity = configuration.severity(forLength: type.name.count) {
+                if let severity = nameConfiguration.severity(forLength: type.name.count) {
                     let reason = """
                         \(type) should be between \
-                        \(configuration.minLengthThreshold) and \
-                        \(configuration.maxLengthThreshold) characters long
+                        \(nameConfiguration.minLengthThreshold) and \
+                        \(nameConfiguration.maxLengthThreshold) characters long
                         """
                     return (reason, severity)
                 }
             }
-            if configuration.allowedSymbols.contains(String(firstCharacter)) {
+            if nameConfiguration.allowedSymbols.contains(String(firstCharacter)) {
                 return nil
             }
-            if let caseCheckSeverity = configuration.validatesStartWithLowercase.severity,
-               !type.isStatic, type.name.isViolatingCase, !type.name.isOperator {
+            if let caseCheckSeverity = nameConfiguration.validatesStartWithLowercase.severity,
+               !type.isStatic, type.name.isViolatingCase, !isOperator(name: type.name) {
                 let reason = "\(type) should start with a lowercase character"
                 return (reason, caseCheckSeverity)
             }
             return nil
+        }
+
+        private func isOperator(name: String) -> Bool {
+            configuration.additionalOperators.contains { name.hasPrefix($0) }
         }
     }
 }
@@ -238,11 +240,6 @@ private extension String {
         }
         let secondCharacter = String(self[index(after: startIndex)])
         return secondCharacter.isLowercase()
-    }
-
-    var isOperator: Bool {
-        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
-        return operators.contains(where: hasPrefix)
     }
 
     func strippingLeadingUnderscore(if isPrivate: Bool) -> Self {

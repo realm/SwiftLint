@@ -56,7 +56,7 @@ private extension GenericTypeNameRule {
             let name = node.name.text
             guard !name.isEmpty, !configuration.shouldExclude(name: name) else { return }
 
-            if !configuration.allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: name)) {
+            if !configuration.containsOnlyAllowedCharacters(name: name) {
                 violations.append(
                     ReasonedRuleViolation(
                         position: node.positionAfterSkippingLeadingTrivia,

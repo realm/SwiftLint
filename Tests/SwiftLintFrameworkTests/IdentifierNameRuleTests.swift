@@ -50,7 +50,8 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
             Example("func ↓IsOperator(name: String) -> Bool"),
             Example("class C { class let ↓MyLet = 0 }"),
             Example("class C { static func ↓MyFunc() {} }"),
-            Example("class C { class func ↓MyFunc() {} }")
+            Example("class C { class func ↓MyFunc() {} }"),
+            Example("func ↓√ (arg: Double) -> Double { arg }")
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()

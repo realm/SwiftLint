@@ -82,7 +82,7 @@ private extension TypeNameRule {
                 .strippingBackticks()
                 .strippingLeadingUnderscoreIfPrivate(modifiers: modifiers)
                 .strippingTrailingSwiftUIPreviewProvider(inheritedTypes: inheritedTypes)
-            if !nameConfiguration.allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: name)) {
+            if !nameConfiguration.containsOnlyAllowedCharacters(name: name) {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
                     reason: "Type name '\(name)' should only contain alphanumeric and other allowed characters",

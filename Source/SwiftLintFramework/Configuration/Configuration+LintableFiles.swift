@@ -61,10 +61,10 @@ extension Configuration {
     ///
     /// - returns: The input paths after removing the excluded paths.
     public func filterExcludedPaths(in paths: [String]...) -> [String] {
-        let exclusionPatterns = self.excludedPaths.compactMap { Glob.toRegex($0, rootPath: rootDirectory) }
+        let exclusionPatterns = self.excludedPaths.map { Glob.createFilenameMatcher(root: rootDirectory, pattern: $0) }
         let pathsWithoutExclusions = paths
             .flatMap { $0 }
-            .filter { path in !exclusionPatterns.contains { $0.firstMatch(in: path, range: path.fullNSRange) != nil } }
+            .filter { !exclusionPatterns.anyMatch(filename: $0) }
         return pathsWithoutExclusions.unique
     }
 

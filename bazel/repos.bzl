@@ -64,6 +64,13 @@ def swiftlint_repos(bzlmod = False):
         url = "https://github.com/krzyzanowskim/CryptoSwift/archive/refs/tags/1.8.4.tar.gz",
     )
 
+    http_archive(
+        name = "com_github_ileitch_swift-filename-matcher",
+        sha256 = "1adbb1eb042910f996689827f7dee217bebf7c5178f34178bcfe468b5b3268a2",
+        strip_prefix = "swift-filename-matcher-2.0.0",
+        url = "https://github.com/ileitch/swift-filename-matcher/archive/refs/tags/2.0.0.tar.gz",
+    )
+
 def _swiftlint_repos_bzlmod(_):
     swiftlint_repos(bzlmod = True)
 

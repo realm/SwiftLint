@@ -437,6 +437,14 @@ warning
          <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span>
     <span class="p">]</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Hogwarts</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">houseCup</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s">"gryffindor"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span> <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span>
+        <span class="s">"ravenclaw"</span><span class="p">:</span> <span class="mi">410</span><span class="p">,</span> <span class="s">"slytherin"</span><span class="p">:</span> <span class="n">slytherinPoints</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">isValid</span>
+        <span class="p">}</span><span class="o">.</span><span class="nf">sum</span><span class="p">()</span><span class="err">↓</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre>
 
           </div>
         </section>

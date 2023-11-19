@@ -38,8 +38,8 @@ extension Configuration {
         if fileManager.isFile(atPath: path) {
             if forceExclude {
                 return excludeByPrefix
-                    ? filterExcludedPathsByPrefix(in: [path.absolutePathStandardized()])
-                    : filterExcludedPaths(in: [path.absolutePathStandardized()])
+                    ? filterExcludedPathsByPrefix(in: [path.normalized])
+                    : filterExcludedPaths(in: [path.normalized])
             }
             // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
             return [path]
@@ -77,8 +77,8 @@ extension Configuration {
     public func filterExcludedPathsByPrefix(in paths: [String]...) -> [String] {
         let allPaths = paths.flatMap { $0 }
         let excludedPaths = self.excludedPaths
-            .parallelFlatMap { @Sendable in Glob.resolveGlob($0) }
-            .map { $0.absolutePathStandardized() }
+            .parallelFlatMap { Glob.resolveGlob($0) }
+            .map(\.normalized)
         return allPaths.filter { path in
             !excludedPaths.contains { path.hasPrefix($0) }
         }

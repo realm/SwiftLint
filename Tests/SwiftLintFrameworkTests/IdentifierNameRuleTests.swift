@@ -35,7 +35,7 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
     func testIdentifierNameWithAllowedSymbolsAndViolation() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamples = [
-            Example("↓let my_Let$ = 0")
+            Example("let ↓my_Let$ = 0")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
@@ -45,12 +45,12 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
     func testIdentifierNameWithIgnoreStartWithLowercase() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamplesToRemove = [
-            Example("↓let MyLet = 0"),
+            Example("let ↓MyLet = 0"),
             Example("enum Foo { case ↓MyEnum }"),
-            Example("↓func IsOperator(name: String) -> Bool"),
-            Example("class C { ↓class let MyLet = 0 }"),
-            Example("class C { ↓static func MyFunc() {} }"),
-            Example("class C { ↓class func MyFunc() {} }")
+            Example("func ↓IsOperator(name: String) -> Bool"),
+            Example("class C { class let ↓MyLet = 0 }"),
+            Example("class C { static func ↓MyFunc() {} }"),
+            Example("class C { class func ↓MyFunc() {} }")
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()
@@ -65,9 +65,9 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
 
     func testStartsWithLowercaseCheck() {
         let triggeringExamples = [
-            Example("↓let MyLet = 0"),
+            Example("let ↓MyLet = 0"),
             Example("enum Foo { case ↓MyCase }"),
-            Example("↓func IsOperator(name: String) -> Bool { true }")
+            Example("func ↓IsOperator(name: String) -> Bool { true }")
         ]
         let nonTriggeringExamples = [
             Example("let myLet = 0"),
@@ -94,7 +94,7 @@ class IdentifierNameRuleTests: SwiftLintTestCase {
         verifyRule(
             IdentifierNameRule.description
                 .with(triggeringExamples: [
-                    Example("↓let OneLet = 0")
+                    Example("let ↓OneLet = 0")
                 ])
                 .with(nonTriggeringExamples: [
                     Example("let MyLet = 0"),

@@ -33,23 +33,23 @@ internal struct IdentifierNameRuleExamples {
 
     static let triggeringExamples = [
         Example(
-            "↓let MyLet = 0",
+            "let ↓MyLet = 0",
             configuration: ["validates_start_with_lowercase": true],
             excludeFromDocumentation: true
         ),
-        Example("class C { ↓static let _myLet = 0 }"),
-        Example("class C { ↓class let MyLet = 0 }"),
-        Example("class C { ↓static func MyFunc() {} }"),
-        Example("class C { ↓class func MyFunc() {} }"),
-        Example("private ↓let myLet_ = 0"),
-        Example("↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
-        Example("↓var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0"),
-        Example("private ↓let _myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
-        Example("↓let i = 0"),
-        Example("↓var aa = 0"),
-        Example("private ↓let _i = 0"),
+        Example("class C { static let ↓_myLet = 0 }"),
+        Example("class C { class let ↓MyLet = 0 }"),
+        Example("class C { static func ↓MyFunc() {} }"),
+        Example("class C { class func ↓MyFunc() {} }"),
+        Example("private let ↓myLet_ = 0"),
+        Example("let ↓myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
+        Example("var ↓myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0"),
+        Example("private let ↓_myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
+        Example("let ↓i = 0"),
+        Example("var ↓aa = 0"),
+        Example("private let ↓_i = 0"),
         Example(
-            "↓func IsOperator(name: String) -> Bool",
+            "func ↓IsOperator(name: String) -> Bool",
             configuration: ["validates_start_with_lowercase": "warning"],
             excludeFromDocumentation: true
         ),
@@ -62,33 +62,33 @@ internal struct IdentifierNameRuleExamples {
         Example("guard var ↓x = x else {}"),
         Example("""
             func myFunc(
-                ↓_ s: String,
-                ↓i j: Int,
+                _ ↓s: String,
+                i ↓j: Int,
                 _ goodName: Double,
-                ↓name n: String,
+                name ↓n: String,
                 ↓x: Int,
                 abc: Double,
                 _: Double,
                 last _: Double
             ) {}
             """),
-        Example("↓let (a, abc) = (1, 1)"),
+        Example("let (↓a, abc) = (1, 1)"),
         Example("if let ↓i {}"),
         Example("for ↓i in [] {}"),
         Example("f { ↓x in }"),
         Example("f { ↓$x in }"),
-        Example("f { (↓x: Int, ↓_ x: Int) in }"),
+        Example("f { (x abc: Int, _ ↓x: Int) in }"),
         Example("""
             enum E {
                 case ↓c
                 case case1(Int)
                 case case2(↓a: Int)
-                case case3(↓_ a: Int)
+                case case3(_ ↓a: Int)
             }
             """),
         Example("""
             class C {
-                ↓var x: Int {
+                var ↓x: Int {
                     get { 1 }
                     set(↓y) { x = y }
                 }

@@ -599,7 +599,7 @@ extension ConfigurationTests {
 
 private extension Sequence where Element == String {
     func absolutePathsStandardized() -> [String] {
-        map { $0.absolutePathStandardized() }
+        map(\.normalized)
     }
 }
 

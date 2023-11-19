@@ -452,6 +452,14 @@ error
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">private</span> <span class="k">let</span> <span class="nv">_myLet</span> <span class="o">=</span> <span class="mi">0</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">private</span> <span class="kd">func</span> <span class="nf">_myFunc</span><span class="p">()</span> <span class="p">{}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">fileprivate</span> <span class="k">let</span> <span class="nv">_myLet</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">fileprivate</span> <span class="kd">func</span> <span class="nf">_myFunc</span><span class="p">()</span> <span class="p">{}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">fileprivate</span> <span class="kd">func</span> <span class="nf">_myFunc</span><span class="p">()</span> <span class="p">{}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Abc</span> <span class="p">{</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">MyLet</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">URL</span><span class="p">:</span> <span class="kt">NSURL</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span>
@@ -474,6 +482,8 @@ error
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="k">case</span> <span class="nf">value</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span> <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="n">f</span> <span class="p">{</span> <span class="err">$</span><span class="n">abc</span> <span class="k">in</span> <span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
    <span class="kd">static</span> <span class="k">let</span> <span class="nv">Bar</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">}</span>
@@ -483,7 +493,13 @@ error
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="k">let</span> <span class="nv">_myLet</span> <span class="o">=</span> <span class="mi">0</span>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">static</span> <span class="k">let</span> <span class="nv">_myLet</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">class</span> <span class="k">let</span> <span class="nv">MyLet</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">static</span> <span class="kd">func</span> <span class="kt">MyFunc</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">class</span> <span class="kd">func</span> <span class="kt">MyFunc</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">private</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">myLet_</span> <span class="o">=</span> <span class="mi">0</span>
 </code></pre>
@@ -498,6 +514,47 @@ error
 <pre class="highlight swift"><code><span class="err">↓</span><span class="k">var</span> <span class="nv">aa</span> <span class="o">=</span> <span class="mi">0</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">private</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">_i</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="kd">let</span> <span class="err">↓</span><span class="n">_x</span> <span class="p">{}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">guard</span> <span class="kd">var</span> <span class="err">↓</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="k">else</span> <span class="p">{}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">myFunc</span><span class="p">(</span>
+    <span class="err">↓</span><span class="n">_</span> <span class="nv">s</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="err">↓</span><span class="n">i</span> <span class="nv">j</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+    <span class="n">_</span> <span class="nv">goodName</span><span class="p">:</span> <span class="kt">Double</span><span class="p">,</span>
+    <span class="err">↓</span><span class="n">name</span> <span class="nv">n</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="err">↓</span><span class="nv">x</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+    <span class="nv">abc</span><span class="p">:</span> <span class="kt">Double</span><span class="p">,</span>
+    <span class="nv">_</span><span class="p">:</span> <span class="kt">Double</span><span class="p">,</span>
+    <span class="n">last</span> <span class="nv">_</span><span class="p">:</span> <span class="kt">Double</span>
+<span class="p">)</span> <span class="p">{}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="k">let</span> <span class="p">(</span><span class="nv">a</span><span class="p">,</span> <span class="nv">abc</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="kd">let</span> <span class="err">↓</span><span class="n">i</span> <span class="p">{}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">for</span> <span class="err">↓</span><span class="n">i</span> <span class="k">in</span> <span class="p">[]</span> <span class="p">{}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">f</span> <span class="p">{</span> <span class="err">↓</span><span class="n">x</span> <span class="k">in</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">f</span> <span class="p">{</span> <span class="err">↓$</span><span class="n">x</span> <span class="k">in</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">f</span> <span class="p">{</span> <span class="p">(</span><span class="err">↓</span><span class="nv">x</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="err">↓</span><span class="n">_</span> <span class="nv">x</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="k">in</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">E</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="err">↓</span><span class="n">c</span>
+    <span class="k">case</span> <span class="nf">case1</span><span class="p">(</span><span class="kt">Int</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nf">case2</span><span class="p">(</span><span class="err">↓</span><span class="nv">a</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nf">case3</span><span class="p">(</span><span class="err">↓</span><span class="n">_</span> <span class="nv">a</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span>
+    <span class="err">↓</span><span class="k">var</span> <span class="nv">x</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="mi">1</span> <span class="p">}</span>
+        <span class="nf">set</span><span class="p">(</span><span class="err">↓</span><span class="n">y</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre>
 
           </div>

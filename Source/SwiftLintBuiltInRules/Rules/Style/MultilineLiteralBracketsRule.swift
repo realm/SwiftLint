@@ -139,7 +139,7 @@ private extension MultilineLiteralBracketsRule {
             }
         }
 
-        private func validate(_ node: any ExprSyntaxProtocol,
+        private func validate(_ node: some ExprSyntaxProtocol,
                               openingToken: TokenSyntax,
                               closingToken: TokenSyntax,
                               firstElement: (some ExprSyntaxProtocol)?,
@@ -159,7 +159,7 @@ private extension MultilineLiteralBracketsRule {
             }
         }
 
-        private func isMultiline(_ node: any ExprSyntaxProtocol) -> Bool {
+        private func isMultiline(_ node: some ExprSyntaxProtocol) -> Bool {
             let startLocation = locationConverter.location(for: node.positionAfterSkippingLeadingTrivia)
             let endLocation = locationConverter.location(for: node.endPositionBeforeTrailingTrivia)
 

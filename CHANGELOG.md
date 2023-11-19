@@ -10,6 +10,10 @@
 
 #### Enhancements
 
+* Given a function `f(a b: Int)`, the `identifier_name` rule now warns on both
+  parameter names `a` and `b` for being too short (in this case).  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Rewrite the following rules with SwiftSyntax:
   * `identifier_name`
   * `void_return`

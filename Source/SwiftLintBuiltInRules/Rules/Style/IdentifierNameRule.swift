@@ -35,11 +35,16 @@ private extension IdentifierNameRule {
             if node.modifiers.contains(keyword: .override) {
                 return
             }
-            let name = node.secondName ?? node.firstName
             collectViolations(
-                from: .variable(name: name.text.leadingDollarStripped, isStatic: false, isPrivate: false),
-                on: name
+                from: .variable(name: node.firstName.text.leadingDollarStripped, isStatic: false, isPrivate: false),
+                on: node.firstName
             )
+            if let name = node.secondName {
+                collectViolations(
+                    from: .variable(name: name.text.leadingDollarStripped, isStatic: false, isPrivate: false),
+                    on: name
+                )
+            }
         }
 
         override func visitPost(_ node: ClosureShorthandParameterSyntax) {
@@ -54,7 +59,10 @@ private extension IdentifierNameRule {
         }
 
         override func visitPost(_ node: EnumCaseParameterSyntax) {
-            if let name = node.secondName ?? node.firstName {
+            if let name = node.firstName {
+                collectViolations(from: .variable(name: name.text, isStatic: false, isPrivate: false), on: name)
+            }
+            if let name = node.secondName {
                 collectViolations(from: .variable(name: name.text, isStatic: false, isPrivate: false), on: name)
             }
         }
@@ -76,11 +84,13 @@ private extension IdentifierNameRule {
             if node.modifiers.contains(keyword: .override) {
                 return
             }
-            let name = (node.secondName ?? node.firstName)
             collectViolations(
-                from: .variable(name: name.text, isStatic: false, isPrivate: false),
-                on: name
+                from: .variable(name: node.firstName.text, isStatic: false, isPrivate: false),
+                on: node.firstName
             )
+            if let name = node.secondName {
+                collectViolations(from: .variable(name: name.text, isStatic: false, isPrivate: false), on: name)
+            }
         }
 
         override func visitPost(_ node: IdentifierPatternSyntax) {

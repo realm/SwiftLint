@@ -63,7 +63,7 @@ internal struct IdentifierNameRuleExamples {
         Example("""
             func myFunc(
                 _ ↓s: String,
-                i ↓j: Int,
+                ↓i ↓j: Int,
                 _ goodName: Double,
                 name ↓n: String,
                 ↓x: Int,
@@ -77,13 +77,14 @@ internal struct IdentifierNameRuleExamples {
         Example("for ↓i in [] {}"),
         Example("f { ↓x in }"),
         Example("f { ↓$x in }"),
-        Example("f { (x abc: Int, _ ↓x: Int) in }"),
+        Example("f { (↓x abc: Int, _ ↓x: Int) in }"),
         Example("""
             enum E {
                 case ↓c
                 case case1(Int)
                 case case2(↓a: Int)
                 case case3(_ ↓a: Int)
+                case case4(↓b ↓a: Int)
             }
             """),
         Example("""

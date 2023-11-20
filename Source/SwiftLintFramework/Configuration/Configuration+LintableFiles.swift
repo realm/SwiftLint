@@ -61,11 +61,17 @@ extension Configuration {
     ///
     /// - returns: The input paths after removing the excluded paths.
     public func filterExcludedPaths(in paths: [String]...) -> [String] {
+        let allPaths = paths.flatMap { $0 }
+        #if os(Linux)
+        let result = NSMutableOrderedSet(capacity: allPaths.count)
+        result.addObjects(from: allPaths)
+        #else
+        let result = NSMutableOrderedSet(array: allPaths)
+        #endif
         let exclusionPatterns = self.excludedPaths.map { Glob.createFilenameMatcher(root: rootDirectory, pattern: $0) }
-        let pathsWithoutExclusions = paths
-            .flatMap { $0 }
+        return result
+            .map { $0 as! String } // swiftlint:disable:this force_cast
             .filter { !exclusionPatterns.anyMatch(filename: $0) }
-        return pathsWithoutExclusions.unique
     }
 
     /// Returns the file paths that are excluded by this configuration using filtering by absolute path prefix.

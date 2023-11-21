@@ -58,6 +58,9 @@
   inside of types with lower visibility. These declarations effectively
   have at most the same access level.  
   [SimplyDanny](https://github.com/SimplyDanny)
+* Improve performance when exclude patterns resolve to a large set of files.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5018](https://github.com/realm/SwiftLint/issues/5018)
 
 * Add new `--check-for-updates` command line option for the `lint`, `analyze`,
   and `version` subcommands to check for new versions  of SwiftLint, and an
@@ -601,9 +604,6 @@
 
 * Add `invokeTest()` to `overridden_super_call` defaults.  
   [DylanBettermannDD](https://github.com/DylanBettermannDD)
-* Improve performance when exclude patterns resolve to a large set of files.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#5018](https://github.com/realm/SwiftLint/issues/5018)
 
 * Add `--config-only` option to `rules` command allowing to print only the YAML
   configuration of a single or all rules.  

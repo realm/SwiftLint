@@ -35,6 +35,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4801](https://github.com/realm/SwiftLint/pull/4801)
 
+* Add `affect_initializers` option to allow `unneeded_override` rule
+  to affect initializers.  
+  [leonardosrodrigues0](https://github.com/leonardosrodrigues0)
+  [#5265](https://github.com/realm/SwiftLint/issues/5265)
+
 #### Bug Fixes
 
 * Ignore overridden functions with default parameters in the `unneeded_override`

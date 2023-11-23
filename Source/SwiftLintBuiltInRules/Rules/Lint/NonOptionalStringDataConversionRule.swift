@@ -6,7 +6,7 @@ struct NonOptionalStringDataConversionRule: Rule {
     static let description = RuleDescription(
         identifier: "non_optional_string_data_conversion",
         name: "Non-Optional String <-> Data Conversion",
-        description: "Prefer using UTF8 encoded strings when converting between `String` and `Data`",
+        description: "Prefer using UTF-8 encoded strings when converting between `String` and `Data`",
         kind: .lint,
         nonTriggeringExamples: [
             Example("Data(\"foo\".utf8)"),
@@ -45,6 +45,6 @@ private extension NonOptionalStringDataConversionRule {
 
 private extension MemberAccessExprSyntax {
     var isUTF8: Bool {
-        self.declName.baseName.text == "utf8"
+        declName.baseName.text == "utf8"
     }
 }

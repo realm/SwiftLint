@@ -10,25 +10,85 @@ struct LetVarWhitespaceRule: OptInRule {
         description: "Variable declarations should be separated from other statements by a blank line",
         kind: .style,
         nonTriggeringExamples: [
-            Example("let a = 0\nvar x = 1\n\nx = 2"),
-            Example("a = 5\n\nvar x = 1"),
-            Example("struct X {\n\tvar a = 0\n}"),
-            Example("let a = 1 +\n\t2\nlet b = 5"),
-            Example("var x: Int {\n\treturn 0\n}"),
-            Example("var x: Int {\n\tlet a = 0\n\n\treturn a\n}"),
-            Example("#if os(macOS)\nlet a = 0\n#endif"),
-            Example("#warning(\"TODO: remove it\")\nlet a = 0"),
-            Example("#error(\"TODO: remove it\")\nlet a = 0"),
-            Example("@available(swift 4)\nlet a = 0"),
-            Example("class C {\n\t@objc\n\tvar s: String = \"\"\n}"),
-            Example("class C {\n\t@objc\n\tfunc a() {}\n}"),
-            Example("class C {\n\tvar x = 0\n\tlazy\n\tvar y = 0\n}"),
-            Example("@available(OSX, introduced: 10.6)\n@available(*, deprecated)\nvar x = 0"),
             Example("""
-            // swiftlint:disable superfluous_disable_command
-            // swiftlint:disable force_cast
+                let a = 0
+                var x = 1
 
-            let x = bar as! Bar
+                x = 2
+            """),
+            Example("""
+                a = 5
+
+                var x = 1
+            """),
+            Example("""
+                struct X {
+                    var a = 0
+                }
+            """),
+            Example("""
+                let a = 1 +
+                    2
+                let b = 5
+            """),
+            Example("""
+                var x: Int {
+                    return 0
+                }
+            """),
+            Example("""
+                var x: Int {
+                    let a = 0
+
+                    return a
+                }
+            """),
+            Example("""
+                #if os(macOS)
+                let a = 0
+                #endif
+            """),
+            Example("""
+                #warning("TODO: remove it")
+                let a = 0
+            """),
+            Example("""
+                #error("TODO: remove it")
+                let a = 0
+            """),
+            Example("""
+                @available(swift 4)
+                let a = 0
+            """),
+            Example("""
+                class C {
+                    @objc
+                    var s: String = ""
+                }
+            """),
+            Example("""
+                class C {
+                    @objc
+                    func a() {}
+                }
+            """),
+            Example("""
+                class C {
+                    var x = 0
+                    lazy
+                    var y = 0
+                }
+            """),
+            Example("""
+                @available(OSX, introduced: 10.6)
+                @available(*, deprecated)
+                var x = 0
+            """),
+            Example("""
+                // swiftlint:disable superfluous_disable_command
+                // swiftlint:disable force_cast
+
+                let x = bar as! Bar
             """),
             Example("""
                 @available(swift 4)
@@ -38,25 +98,54 @@ struct LetVarWhitespaceRule: OptInRule {
                 @Attribute
                 func f() {}
             """),
-            Example("var x: Int {\n\tlet a = 0\n\treturn a\n}"), // don't trigger on local vars
+            // Don't trigger on local variable declarations.
             Example("""
-            struct S {
-                static var test: String { /* Comment block */
-                    let s = "!"
-                    return "Test" + s
+                var x: Int {
+                    let a = 0
+                    return a
                 }
+            """),
+            Example("""
+                struct S {
+                    static var test: String { /* Comment block */
+                        let s = "!"
+                        return "Test" + s
+                    }
 
-                func f() {}
-            }
+                    func f() {}
+                }
             """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
-            Example("var x = 1\n↓x = 2"),
-            Example("\na = 5\n↓var x = 1"),
-            Example("struct X {\n\tlet a\n\t↓func x() {}\n}"),
-            Example("var x = 0\n↓@objc func f() {}"),
-            Example("var x = 0\n↓@objc\n\tfunc f() {}"),
-            Example("@objc func f() {\n}\n↓var x = 0"),
+            Example("""
+                var x = 1
+                ↓x = 2
+            """),
+            Example("""
+
+                a = 5
+                ↓var x = 1
+            """),
+            Example("""
+                struct X {
+                    let a
+                    ↓func x() {}
+                }
+            """),
+            Example("""
+                var x = 0
+                ↓@objc func f() {}
+            """),
+            Example("""
+                var x = 0
+                ↓@objc
+                func f() {}
+            """),
+            Example("""
+                @objc func f() {
+                }
+                ↓var x = 0
+            """),
             Example("""
                 struct S {
                     func f() {}

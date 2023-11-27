@@ -17,29 +17,48 @@ struct FunctionArgumentsSpacingRule: Rule {
         triggeringExamples: [
             Example("makeGenerator(↓ )"),
             Example("makeGenerator(↓ style)"),
+            Example("makeGenerator(↓  style)"),
+            Example("makeGenerator(style  ↓)"),
+            Example("makeGenerator(↓  style  ↓)"),
             Example("makeGenerator(style ↓)"),
             Example("makeGenerator(↓ style ↓)"),
             Example("makeGenerator(↓ offset: 0, limit: 0)"),
             Example("makeGenerator(offset: 0, limit: 0 ↓)"),
-            Example("makeGenerator(↓ 1, 2, 3 ↓)")
+            Example("makeGenerator(↓ 1, 2, 3 ↓)"),
+//            Example("makeGenerator(↓ /* comment */ a /* other comment */)"),
+//            Example("makeGenerator(/* comment */ a /* other comment */ ↓)"),
+//            Example("makeGenerator(↓ /* comment */ a /* other comment */ ↓)")
         ]
     )
 }
+
+private extension TriviaPiece {
+    var isSpaces: Bool {
+        if case .spaces = self {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
 
 private extension FunctionArgumentsSpacingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             let leftParanTrailingTrivia = node.leftParen?.trailingTrivia
-            if leftParanTrailingTrivia == Trivia.space {
-                violations.append(node.leftParen!.endPositionBeforeTrailingTrivia)
+            let hasLeftSpaces = leftParanTrailingTrivia?.filter({$0.isSpaces}).count ?? 0 > 0
+            if hasLeftSpaces, let leftParen = node.leftParen {
+                violations.append(leftParen.endPositionBeforeTrailingTrivia)
             }
 
             let lastArgument = node.arguments.last
             guard lastArgument != nil else {
                 return
             }
-            if lastArgument!.trailingTrivia == Trivia.space {
-                violations.append(node.rightParen!.positionAfterSkippingLeadingTrivia)
+            let hasRightSpaces = lastArgument?.trailingTrivia.filter({$0.isSpaces}).count ?? 0 > 0
+            if hasRightSpaces, let rightParen = node.rightParen {
+                violations.append(rightParen.positionAfterSkippingLeadingTrivia)
             }
             return
         }

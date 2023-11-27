@@ -8,7 +8,20 @@ struct FunctionArgumentsSpacingRule: Rule {
         identifier: "functions_arguments_spacing",
         name: "Function Arguments Spacing",
         description: "Remove the space before the first function argument and after the last argument",
-        kind: .lint
+        kind: .lint,
+        nonTriggeringExamples: [
+            Example("makeGenerator()"),
+            Example("makeGenerator(style)"),
+            Example("makeGenerator(true, false)")
+        ],
+        triggeringExamples: [
+            Example("makeGenerator(↓ style)"),
+            Example("makeGenerator(style ↓)"),
+            Example("makeGenerator(↓ style ↓)"),
+            Example("makeGenerator(↓ offset: 0, limit: 0)"),
+            Example("makeGenerator(offset: 0, limit: 0 ↓)"),
+            Example("makeGenerator(↓ 1, 2, 3 ↓)")
+        ]
     )
 }
 

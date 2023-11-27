@@ -15,6 +15,7 @@ struct FunctionArgumentsSpacingRule: Rule {
             Example("makeGenerator(true, false)")
         ],
         triggeringExamples: [
+            Example("makeGenerator(↓ )"),
             Example("makeGenerator(↓ style)"),
             Example("makeGenerator(style ↓)"),
             Example("makeGenerator(↓ style ↓)"),
@@ -28,11 +29,6 @@ struct FunctionArgumentsSpacingRule: Rule {
 private extension FunctionArgumentsSpacingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            let argsCount = node.arguments.count
-            guard argsCount != 0 else {
-                return
-            }
-
             let leftParanTrailingTrivia = node.leftParen?.trailingTrivia
             if leftParanTrailingTrivia == Trivia.space {
                 violations.append(node.leftParen!.endPositionBeforeTrailingTrivia)

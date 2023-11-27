@@ -63,6 +63,7 @@ class CyclomaticComplexityRuleTests: SwiftLintTestCase {
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
+
         verifyRule(description, ruleConfiguration: ["ignores_case_statements": false],
                    commentDoesntViolate: true, stringDoesntViolate: true)
     }

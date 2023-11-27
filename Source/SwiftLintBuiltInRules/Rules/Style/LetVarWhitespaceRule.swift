@@ -1,6 +1,7 @@
-import Foundation
-import SourceKittenFramework
+import SwiftLintCore
+import SwiftSyntax
 
+@SwiftSyntaxRule
 struct LetVarWhitespaceRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -14,17 +15,15 @@ struct LetVarWhitespaceRule: OptInRule {
                 let a = 0
                 var x = 1
 
-                x = 2
+                var y = 2
             """),
             Example("""
-                a = 5
+                let a = 5
 
                 var x = 1
             """),
             Example("""
-                struct X {
-                    var a = 0
-                }
+                var a = 0
             """),
             Example("""
                 let a = 1 +
@@ -46,11 +45,14 @@ struct LetVarWhitespaceRule: OptInRule {
             Example("""
                 #if os(macOS)
                 let a = 0
+                func f() {}
                 #endif
             """),
             Example("""
                 #warning("TODO: remove it")
                 let a = 0
+                #warning("TODO: remove it")
+                let b = 0
             """),
             Example("""
                 #error("TODO: remove it")
@@ -61,23 +63,17 @@ struct LetVarWhitespaceRule: OptInRule {
                 let a = 0
             """),
             Example("""
-                class C {
-                    @objc
-                    var s: String = ""
-                }
+                @objc
+                var s: String = ""
             """),
             Example("""
-                class C {
-                    @objc
-                    func a() {}
-                }
+                @objc
+                func a() {}
             """),
             Example("""
-                class C {
-                    var x = 0
-                    lazy
-                    var y = 0
-                }
+                var x = 0
+                lazy
+                var y = 0
             """),
             Example("""
                 @available(OSX, introduced: 10.6)
@@ -106,31 +102,29 @@ struct LetVarWhitespaceRule: OptInRule {
                 }
             """),
             Example("""
-                struct S {
-                    static var test: String { /* Comment block */
-                        let s = "!"
-                        return "Test" + s
-                    }
-
-                    func f() {}
+                static var test: String { /* Comment block */
+                    let s = "!"
+                    return "Test" + s
                 }
-            """, excludeFromDocumentation: true)
-        ],
+
+                func f() {}
+            """, excludeFromDocumentation: true),
+            Example(#"""
+                @Flag(name: "name", help: "help")
+                var fix = false
+                @Flag(help: """
+                        help
+                        text
+                """)
+                var format = false
+                @Flag(help: "help")
+                var useAlternativeExcluding = false
+            """#, excludeFromDocumentation: true)
+        ].map(Self.wrapIntoClass),
         triggeringExamples: [
             Example("""
-                var x = 1
-                ↓x = 2
-            """),
-            Example("""
-
-                a = 5
-                ↓var x = 1
-            """),
-            Example("""
-                struct X {
-                    let a
-                    ↓func x() {}
-                }
+                let a
+                ↓func x() {}
             """),
             Example("""
                 var x = 0
@@ -147,228 +141,52 @@ struct LetVarWhitespaceRule: OptInRule {
                 ↓var x = 0
             """),
             Example("""
-                struct S {
-                    func f() {}
-                    ↓@Wapper
-                    let isNumber = false
-                    @Wapper
-                    var isEnabled = true
-                    ↓func g() {}
-                }
+                func f() {}
+                ↓@Wapper
+                let isNumber = false
+                @Wapper
+                var isEnabled = true
+                ↓func g() {}
             """)
-        ]
+        ].map(Self.wrapIntoClass)
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
-
-        var attributeLines = attributeLineNumbers(file: file)
-        var varLines = Set<Int>()
-        varLetLineNumbers(file: file,
-                          structure: dict.substructure,
-                          attributeLines: &attributeLines,
-                          collectingInto: &varLines)
-        let skippedLines = skippedLineNumbers(file: file)
-        var violations = [StyleViolation]()
-
-        for (index, line) in file.lines.enumerated() {
-            guard !varLines.contains(index) &&
-                  !skippedLines.contains(index) else {
-                continue
-            }
-
-            let trimmed = line.content.trimmingCharacters(in: .whitespaces)
-            guard trimmed.isNotEmpty else {
-                continue
-            }
-
-            // Precedes var/let and has text not ending with {
-            if linePrecedesVar(index, varLines, skippedLines) {
-                if !trimmed.hasSuffix("{") &&
-                   !file.lines[index + 1].content.trimmingCharacters(in: .whitespaces).hasPrefix("}") {
-                    violated(&violations, file, index + 1)
-                }
-            }
-            // Follows var/let and has text not starting with }
-            if lineFollowsVar(index, varLines, skippedLines) {
-                if !trimmed.hasPrefix("}") &&
-                   !file.lines[index - 1].content.trimmingCharacters(in: .whitespaces).hasSuffix("{") {
-                    violated(&violations, file, index)
-                }
-            }
-        }
-        return violations
-    }
-
-    private func linePrecedesVar(_ lineNumber: Int, _ varLines: Set<Int>, _ skippedLines: Set<Int>) -> Bool {
-        return lineNeighborsVar(lineNumber, varLines, skippedLines, 1)
-    }
-
-    private func lineFollowsVar(_ lineNumber: Int, _ varLines: Set<Int>, _ skippedLines: Set<Int>) -> Bool {
-        return lineNeighborsVar(lineNumber, varLines, skippedLines, -1)
-    }
-
-    private func lineNeighborsVar(_ lineNumber: Int, _ varLines: Set<Int>,
-                                  _ skippedLines: Set<Int>, _ increment: Int) -> Bool {
-        if varLines.contains(lineNumber + increment) {
-            return true
-        }
-
-        var prevLine = lineNumber
-
-        while skippedLines.contains(prevLine) {
-            if varLines.contains(prevLine + increment) {
-                return true
-            }
-            prevLine += increment
-        }
-        return false
-    }
-
-    private func violated(_ violations: inout [StyleViolation], _ file: SwiftLintFile, _ line: Int) {
-        let content = file.lines[line].content
-        let startIndex = content.rangeOfCharacter(from: CharacterSet.whitespaces.inverted)?.lowerBound
-                         ?? content.startIndex
-        let offset = content.distance(from: content.startIndex, to: startIndex)
-        let location = Location(file: file, characterOffset: offset + file.lines[line].range.location)
-
-        violations.append(StyleViolation(ruleDescription: Self.description,
-                                         severity: configuration.severity,
-                                         location: location))
-    }
-
-    private func lineOffsets(file: SwiftLintFile, statement: SourceKittenDictionary) -> (Int, Int)? {
-        guard let offset = statement.offset,
-              let length = statement.length
-        else {
-            return nil
-        }
-        let startLine = file.line(byteOffset: offset)
-        let endLine = file.line(byteOffset: offset + length)
-
-        return (startLine, endLine)
-    }
-
-    // Collects all the line numbers containing var or let declarations
-    private func varLetLineNumbers(file: SwiftLintFile,
-                                   structure: [SourceKittenDictionary],
-                                   attributeLines: inout Set<Int>,
-                                   collectingInto result: inout Set<Int>) {
-        for statement in structure {
-            guard statement.kind != nil,
-                  let (startLine, endLine) = lineOffsets(file: file, statement: statement) else {
-                continue
-            }
-
-            if let declarationKind = statement.declarationKind {
-                if SwiftDeclarationKind.nonVarAttributableKinds.contains(declarationKind) {
-                    if attributeLines.contains(startLine) {
-                        attributeLines.remove(startLine)
-                    }
-                }
-                if SwiftDeclarationKind.varKinds.contains(declarationKind) {
-                    var lines = Set(startLine...((endLine < 0) ? file.lines.count : endLine))
-                    var previousLine = startLine - 1
-
-                    // Include preceding attributes
-                    while attributeLines.contains(previousLine) {
-                        lines.insert(previousLine)
-                        attributeLines.remove(previousLine)
-                        previousLine -= 1
-                    }
-
-                    // Exclude the body where the accessors are
-                    if let bodyOffset = statement.bodyOffset,
-                        let bodyLength = statement.bodyLength {
-                        let bodyStart = file.line(byteOffset: bodyOffset) + 1
-                        let bodyEnd = file.line(byteOffset: bodyOffset + bodyLength) - 1
-
-                        if bodyStart <= bodyEnd {
-                            lines.subtract(Set(bodyStart...bodyEnd))
-                        }
-                    }
-                    result.formUnion(lines)
-                }
-            }
-
-            let substructure = statement.substructure
-
-            if substructure.isNotEmpty {
-                varLetLineNumbers(file: file,
-                                  structure: substructure,
-                                  attributeLines: &attributeLines,
-                                  collectingInto: &result)
-            }
-        }
-    }
-
-    // Collects all the line numbers containing comments or #if/#endif
-    private func skippedLineNumbers(file: SwiftLintFile) -> Set<Int> {
-        var result = Set<Int>()
-        let syntaxMap = file.syntaxMap
-
-        for token in syntaxMap.tokens where token.kind == .comment ||
-                                            token.kind == .docComment {
-            let startLine = file.line(byteOffset: token.offset)
-            var endLine = file.line(byteOffset: token.offset + token.length)
-
-            if file.contents(for: token)?.starts(with: "/*") == true {
-                endLine += 1
-            }
-
-            if startLine <= endLine {
-                result.formUnion(Set(startLine...endLine))
-            }
-        }
-
-        let directiveLines = file.lines.filter {
-            return regex(#"^\s*#(if|elseif|else|endif|\!|warning|error)"#)
-                .firstMatch(in: $0.content, options: [], range: $0.content.fullNSRange) != nil
-        }
-
-        result.formUnion(directiveLines.map { $0.index - 1 })
-        return result
-    }
-
-    // Collects all the line numbers containing attributes but not declarations
-    // other than let/var
-    private func attributeLineNumbers(file: SwiftLintFile) -> Set<Int> {
-        let lineNumbers = file.syntaxMap.tokens
-            .filter { isAttribute(token: $0, in: file) }
-            .map(\.offset)
-            .compactMap(file.line)
-        return Set(lineNumbers)
-    }
-
-    private func isAttribute(token: SwiftLintSyntaxToken, in file: SwiftLintFile) -> Bool {
-        let kind = token.kind
-        if kind == .attributeBuiltin {
-            return true
-        }
-        if kind == .typeidentifier, let symbol = file.stringView.substringStartingLinesWithByteRange(token.range) {
-            return symbol.trimmingCharacters(in: .whitespaces).starts(with: "@")
-        }
-        return false
+    private static func wrapIntoClass(_ example: Example) -> Example {
+        example.with(code: "class C {\n" + example.code + "\n}")
     }
 }
 
-private extension SwiftDeclarationKind {
-    // The various kinds of let/var declarations
-    static let varKinds: [SwiftDeclarationKind] = [.varGlobal, .varClass, .varStatic, .varInstance]
-    // Declarations other than let & var that can have attributes
-    static let nonVarAttributableKinds: [SwiftDeclarationKind] = [
-        .class, .struct,
-        .functionFree, .functionSubscript, .functionDestructor, .functionConstructor,
-        .functionMethodClass, .functionMethodStatic, .functionMethodInstance,
-        .functionOperator, .functionOperatorInfix, .functionOperatorPrefix, .functionOperatorPostfix ]
+private extension LetVarWhitespaceRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: MemberBlockItemListSyntax) {
+            if node.parent?.is(IfConfigClauseSyntax.self) != false {
+                return
+            }
+            for member in node {
+                let decl = member.decl
+                guard !decl.is(MacroExpansionDeclSyntax.self),
+                      let index = node.index(of: member),
+                      case let nextIndex = node.index(after: index),
+                      nextIndex != node.endIndex,
+                      case let nextDecl = node[node.index(after: index)].decl,
+                      !nextDecl.is(MacroExpansionDeclSyntax.self) else {
+                    continue
+                }
+                if decl.kind != nextDecl.kind, decl.kind == .variableDecl || nextDecl.kind == .variableDecl,
+                   !(decl.trailingTrivia + nextDecl.leadingTrivia).containsAtLeastTwoNewlines {
+                    violations.append(nextDecl.positionAfterSkippingLeadingTrivia)
+                }
+            }
+        }
+    }
 }
 
-private extension SwiftLintFile {
-    // Zero based line number for specified byte offset
-    func line(byteOffset: ByteCount) -> Int {
-        let lineIndex = lines.firstIndexAssumingSorted { line in
-            return line.byteRange.location > byteOffset
-        }
-        return (lineIndex ?? 0 ) - 1
+private extension Trivia {
+    var containsAtLeastTwoNewlines: Bool {
+        reduce(into: 0) { result, piece in
+            if case let .newlines(number) = piece {
+                result += number
+            }
+        } > 1
     }
 }

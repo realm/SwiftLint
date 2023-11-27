@@ -1,8 +1,5 @@
 import SwiftLintCore
 
-// swiftlint:disable:next blanket_disable_command
-// swiftlint:disable let_var_whitespace
-
 @AutoApply
 struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = DiscouragedDirectInitRule

@@ -2,8 +2,6 @@
 import SwiftLintTestHelpers
 import XCTest
 
-// swiftlint:disable:next blanket_disable_command
-// swiftlint:disable let_var_whitespace
 // swiftlint:disable file_length
 
 // swiftlint:disable:next type_body_length

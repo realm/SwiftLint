@@ -20,9 +20,9 @@ private struct FileCache: Codable {
 public final class LinterCache {
     private typealias Encoder = PropertyListEncoder
     private typealias Decoder = PropertyListDecoder
-    private static let fileExtension = "plist"
-
     private typealias Cache = [String: FileCache]
+
+    private static let fileExtension = "plist"
 
     private var lazyReadCache: Cache
     private let readCacheLock = NSLock()

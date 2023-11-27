@@ -3,6 +3,7 @@ import SwiftSyntax
 @SwiftSyntaxRule
 struct DeploymentTargetRule {
     fileprivate typealias Version = DeploymentTargetConfiguration.Version
+
     var configuration = DeploymentTargetConfiguration()
 
     static let description = RuleDescription(

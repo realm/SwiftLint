@@ -45,6 +45,7 @@ struct LetVarWhitespaceRule: OptInRule {
             Example("""
                 #if os(macOS)
                 let a = 0
+
                 func f() {}
                 #endif
             """),
@@ -120,7 +121,25 @@ struct LetVarWhitespaceRule: OptInRule {
                 @Flag(help: "help")
                 var useAlternativeExcluding = false
             """#, excludeFromDocumentation: true)
-        ].map(Self.wrapIntoClass),
+        ].map(Self.wrapIntoClass) + [
+            Example("""
+                a = 2
+            """),
+            Example("""
+                a = 2
+
+                var b = 3
+            """),
+            Example("""
+                #warning("message")
+                let a = 2
+            """),
+            Example("""
+                #if os(macOS)
+                let a = 2
+                #endif
+            """)
+        ],
         triggeringExamples: [
             Example("""
                 let a
@@ -147,8 +166,19 @@ struct LetVarWhitespaceRule: OptInRule {
                 @Wapper
                 var isEnabled = true
                 ↓func g() {}
+            """),
+            Example("""
+                #if os(macOS)
+                let a = 0
+                ↓func f() {}
+                #endif
             """)
-        ].map(Self.wrapIntoClass)
+        ].map(Self.wrapIntoClass) + [
+            Example("""
+                let a = 2
+                ↓b = 1
+            """)
+        ]
     )
 
     private static func wrapIntoClass(_ example: Example) -> Example {
@@ -159,22 +189,32 @@ struct LetVarWhitespaceRule: OptInRule {
 private extension LetVarWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberBlockItemListSyntax) {
-            if node.parent?.is(IfConfigClauseSyntax.self) != false {
-                return
+            collectViolations(from: node, using: { $0.decl })
+        }
+
+        override func visitPost(_ node: CodeBlockItemListSyntax) {
+            if node.parent?.is(SourceFileSyntax.self) == true {
+                collectViolations(from: node, using: { $0.unwrap })
             }
-            for member in node {
-                let decl = member.decl
-                guard !decl.is(MacroExpansionDeclSyntax.self),
-                      let index = node.index(of: member),
-                      case let nextIndex = node.index(after: index),
-                      nextIndex != node.endIndex,
-                      case let nextDecl = node[node.index(after: index)].decl,
-                      !nextDecl.is(MacroExpansionDeclSyntax.self) else {
+        }
+
+        private func collectViolations<List: SyntaxCollection>(from members: List,
+                                                               using unwrap: (List.Element) -> any SyntaxProtocol) {
+            for member in members {
+                guard case let item = unwrap(member),
+                      !item.is(MacroExpansionDeclSyntax.self),
+                      !item.is(MacroExpansionExprSyntax.self),
+                      let index = members.index(of: member),
+                      case let nextIndex = members.index(after: index),
+                      nextIndex != members.endIndex,
+                      case let nextItem = unwrap(members[members.index(after: index)]),
+                      !nextItem.is(MacroExpansionDeclSyntax.self),
+                      !nextItem.is(MacroExpansionExprSyntax.self) else {
                     continue
                 }
-                if decl.kind != nextDecl.kind, decl.kind == .variableDecl || nextDecl.kind == .variableDecl,
-                   !(decl.trailingTrivia + nextDecl.leadingTrivia).containsAtLeastTwoNewlines {
-                    violations.append(nextDecl.positionAfterSkippingLeadingTrivia)
+                if item.kind != nextItem.kind, item.kind == .variableDecl || nextItem.kind == .variableDecl,
+                   !(item.trailingTrivia + nextItem.leadingTrivia).containsAtLeastTwoNewlines {
+                    violations.append(nextItem.positionAfterSkippingLeadingTrivia)
                 }
             }
         }
@@ -188,5 +228,15 @@ private extension Trivia {
                 result += number
             }
         } > 1
+    }
+}
+
+private extension CodeBlockItemSyntax {
+    var unwrap: any SyntaxProtocol {
+        switch item {
+        case let .decl(decl): decl
+        case let .stmt(stmt): stmt
+        case let .expr(expr): expr
+        }
     }
 }

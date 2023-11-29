@@ -29,6 +29,11 @@
 * Rewrite `multiline_literal_brackets` rule using SwiftSyntax, fixing some
   false positives that would happen when comments are present.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  
+* Rewrite `let_var_whitespace` rule using SwiftSyntax, fixing false positives
+  when attributes attached to declarations were spread over multiple lines.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4801](https://github.com/realm/SwiftLint/pull/4801)
 
 #### Bug Fixes
 

@@ -138,6 +138,23 @@ struct LetVarWhitespaceRule: OptInRule {
                 #if os(macOS)
                 let a = 2
                 #endif
+            """),
+            // Don't trigger in closure bodies.
+            Example("""
+                f {
+                    let a = 1
+                    return a
+                }
+            """),
+            Example("""
+                func f() {
+                    #if os(macOS)
+                    let a = 2
+                    return a
+                    #else
+                    return 1
+                    #endif
+                }
             """)
         ],
         triggeringExamples: [
@@ -177,7 +194,16 @@ struct LetVarWhitespaceRule: OptInRule {
             Example("""
                 let a = 2
                 ↓b = 1
-            """)
+            """),
+            Example("""
+                #if os(macOS)
+                let a = 0
+                ↓func f() {}
+                #else
+                func f() {}
+                ↓let a = 1
+                #endif
+            """, excludeFromDocumentation: true)
         ]
     )
 
@@ -193,7 +219,7 @@ private extension LetVarWhitespaceRule {
         }
 
         override func visitPost(_ node: CodeBlockItemListSyntax) {
-            if node.parent?.is(SourceFileSyntax.self) == true {
+            if node.isInValidContext {
                 collectViolations(from: node, using: { $0.unwrap })
             }
         }
@@ -218,6 +244,22 @@ private extension LetVarWhitespaceRule {
                 }
             }
         }
+    }
+}
+
+private extension CodeBlockItemListSyntax {
+    var isInValidContext: Bool {
+        var next = parent
+        while let ancestor = next {
+            if [.closureExpr, .codeBlock, .accessorBlock].contains(ancestor.kind) {
+                return false
+            }
+            if [.memberBlock, .sourceFile].contains(ancestor.kind) {
+                return true
+            }
+            next = ancestor.parent
+        }
+        return false
     }
 }
 

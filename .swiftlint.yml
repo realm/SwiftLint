@@ -72,6 +72,8 @@ file_name:
     - RuleConfigurationMacros.swift
     - SwiftSyntax+SwiftLint.swift
     - TestHelpers.swift
+unneeded_override:
+  affect_initializers: true
 
 balanced_xctest_lifecycle: &unit_test_configuration
   test_parent_classes:

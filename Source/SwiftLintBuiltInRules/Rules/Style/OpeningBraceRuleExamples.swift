@@ -210,17 +210,17 @@ struct OpeningBraceRuleExamples {
     ]
 
     static let corrections = [
-        Example("struct Rule↓{}"): Example("struct Rule {}"),
-        Example("struct Rule\n↓{\n}"): Example("struct Rule {\n}"),
-        Example("struct Rule\n\n\t↓{\n}"): Example("struct Rule {\n}"),
-        Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}"):
+        Example("struct Rule{}"): Example("struct Rule {}"),
+        Example("struct Rule\n{\n}"): Example("struct Rule {\n}"),
+        Example("struct Rule\n\n\t{\n}"): Example("struct Rule {\n}"),
+        Example("struct Parent {\n\tstruct Child\n\t{\n\t\tlet foo: Int\n\t}\n}"):
             Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}"),
-        Example("[].map()↓{ $0 }"): Example("[].map() { $0 }"),
-        Example("[].map( ↓{ })"): Example("[].map({ })"),
-        Example("if a == b↓{ }"): Example("if a == b { }"),
-        Example("if\n\tlet a = b,\n\tlet c = d↓{ }"): Example("if\n\tlet a = b,\n\tlet c = d { }"),
+        Example("[].map(){ $0 }"): Example("[].map() { $0 }"),
+        Example("[].map( { })"): Example("[].map({ })"),
+        Example("if a == b{ }"): Example("if a == b { }"),
+        Example("if\n\tlet a = b,\n\tlet c = d{ }"): Example("if\n\tlet a = b,\n\tlet c = d { }"),
         Example("""
-        actor MyActor  ↓{
+        actor MyActor  {
 
         }
         """):
@@ -231,7 +231,7 @@ struct OpeningBraceRuleExamples {
             """),
         Example("""
         actor MyActor
-        ↓{
+        {
 
         }
         """):
@@ -241,7 +241,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        actor MyActor<T>  ↓{
+        actor MyActor<T>  {
 
         }
         """):
@@ -251,7 +251,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        actor MyActor<T> where T: U  ↓{
+        actor MyActor<T> where T: U  {
 
         }
         """):
@@ -261,7 +261,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        class Rule  ↓{
+        class Rule  {
 
         }
         """):
@@ -272,7 +272,7 @@ struct OpeningBraceRuleExamples {
         """),
         Example("""
         class Rule
-        ↓{
+        {
 
         }
         """):
@@ -282,7 +282,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        class Rule<T>  ↓{
+        class Rule<T>  {
 
         }
         """):
@@ -292,7 +292,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        class Rule<T>: NSObject  ↓{
+        class Rule<T>: NSObject  {
 
         }
         """):
@@ -302,7 +302,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        class Rule<T>: NSObject where T: U  ↓{
+        class Rule<T>: NSObject where T: U  {
 
         }
         """):
@@ -313,7 +313,7 @@ struct OpeningBraceRuleExamples {
         """),
         Example("""
         enum Rule
-        ↓{
+        {
 
         }
         """):
@@ -323,7 +323,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        enum Rule: E  ↓{
+        enum Rule: E  {
 
         }
         """):
@@ -334,7 +334,7 @@ struct OpeningBraceRuleExamples {
         """),
         Example("""
         extension Rule
-        ↓{
+        {
 
         }
         """):
@@ -344,7 +344,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        protocol Rule  ↓{
+        protocol Rule  {
 
         }
         """):
@@ -355,7 +355,7 @@ struct OpeningBraceRuleExamples {
         """),
         Example("""
         struct Rule
-        ↓{
+        {
 
         }
         """):
@@ -366,7 +366,7 @@ struct OpeningBraceRuleExamples {
         """),
         Example("""
         struct Rule  : A
-        ↓{
+        {
 
         }
         """):
@@ -379,7 +379,7 @@ struct OpeningBraceRuleExamples {
         do {
 
         } catch
-        ↓{
+        {
 
         }
         """):
@@ -393,7 +393,7 @@ struct OpeningBraceRuleExamples {
         Example("""
         do {
 
-        } catch MyError.unknown  ↓{
+        } catch MyError.unknown  {
 
         }
         """):
@@ -407,7 +407,7 @@ struct OpeningBraceRuleExamples {
         Example("""
         do {
 
-        } catch let error  ↓{
+        } catch let error  {
 
         }
         """):
@@ -419,7 +419,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        defer  ↓{
+        defer  {
 
         }
         """):
@@ -429,7 +429,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        do  ↓{
+        do  {
 
         }
         """):
@@ -440,7 +440,7 @@ struct OpeningBraceRuleExamples {
         """),
         Example("""
         for a in b
-        ↓{
+        {
 
         }
         """):
@@ -450,7 +450,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        for a in b where a == c  ↓{
+        for a in b where a == c  {
 
         }
         """):
@@ -461,7 +461,7 @@ struct OpeningBraceRuleExamples {
         """),
         Example("""
         guard a == b else
-        ↓{
+        {
           return ""
         }
         """):
@@ -470,12 +470,12 @@ struct OpeningBraceRuleExamples {
           return ""
         }
         """),
-        Example("if\n\tlet a = b,\n\tlet c = d↓{ }\n"): Example("if\n\tlet a = b,\n\tlet c = d { }\n"),
+        Example("if\n\tlet a = b,\n\tlet c = d{ }\n"): Example("if\n\tlet a = b,\n\tlet c = d { }\n"),
         Example("""
         if varDecl.parent?.is(CodeBlockItemSyntax.self) == true // Local variable declaration
             || varDecl.bindings.onlyElement?.accessor != nil    // Computed property
             || !node.type.is(SimpleTypeIdentifierSyntax.self)
-        ↓{ // Complex or collection type
+        { // Complex or collection type
             return .visitChildren
         }
         """):
@@ -487,7 +487,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        repeat  ↓{
+        repeat  {
 
         } while a
         """):
@@ -497,7 +497,7 @@ struct OpeningBraceRuleExamples {
         } while a
         """),
         Example("""
-        while a  ↓{
+        while a  {
 
         }
         """):
@@ -506,15 +506,15 @@ struct OpeningBraceRuleExamples {
 
         }
         """),
-        Example("class Rule↓{}"): Example("class Rule {}"),
-        Example("actor Rule↓{}"): Example("actor Rule {}"),
-        Example("enum Rule↓{}"): Example("enum Rule {}"),
-        Example("protocol Rule↓{}"): Example("protocol Rule {}"),
-        Example("extension Rule↓{}"): Example("extension Rule {}"),
+        Example("class Rule{}"): Example("class Rule {}"),
+        Example("actor Rule{}"): Example("actor Rule {}"),
+        Example("enum Rule{}"): Example("enum Rule {}"),
+        Example("protocol Rule{}"): Example("protocol Rule {}"),
+        Example("extension Rule{}"): Example("extension Rule {}"),
         Example("""
         class Rule {
           var a: String {
-            willSet↓{
+            willSet{
 
             }
           }
@@ -532,7 +532,7 @@ struct OpeningBraceRuleExamples {
         Example("""
         class Rule {
           var a: String {
-            didSet  ↓{
+            didSet  {
 
             }
           }
@@ -548,7 +548,7 @@ struct OpeningBraceRuleExamples {
         }
         """),
         Example("""
-        precedencegroup Group↓{
+        precedencegroup Group{
           assignment: true
         }
         """):

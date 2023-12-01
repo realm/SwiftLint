@@ -897,6 +897,9 @@ private extension OpeningBraceRule {
         override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
+                if node.catchItems.isEmpty {
+                    return super.visit(node.correct(keyPath: \.catchKeyword))
+                }
                 return super.visit(node.correct(keyPath: \.catchItems))
             }
 

@@ -1,6 +1,7 @@
 import SwiftLintCore
 import SwiftSyntax
-import SwiftSyntaxBuilder
+
+// swiftlint:disable file_length
 
 @SwiftSyntaxRule
 struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
@@ -25,7 +26,6 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
         )
     }
 }
-// swiftlint:enable type_body_length
 
 private extension OpeningBraceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {

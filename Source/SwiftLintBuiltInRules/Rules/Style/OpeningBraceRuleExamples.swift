@@ -1,3 +1,6 @@
+// swiftlint:disable file_length
+
+// swiftlint:disable:next type_body_length
 struct OpeningBraceRuleExamples {
     static let nonTriggeringExamples = [
         Example("func abc() {\n}"),

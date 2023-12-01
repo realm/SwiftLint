@@ -203,10 +203,9 @@ private extension PreferSelfInStaticReferencesRule {
                 return .skipChildren
             }
             if let varDecl = node.parent?.parent?.parent?.as(VariableDeclSyntax.self) {
-                if varDecl.parent?.is(CodeBlockItemSyntax.self) == true     // Local variable declaration
-                    || varDecl.bindings.onlyElement?.accessorBlock != nil   // Computed property
-                    || !node.type.is(IdentifierTypeSyntax.self)             // Complex or collection type
-                {
+                if varDecl.parent?.is(CodeBlockItemSyntax.self) == true    // Local variable declaration
+                   || varDecl.bindings.onlyElement?.accessorBlock != nil   // Computed property
+                   || !node.type.is(IdentifierTypeSyntax.self) {           // Complex or collection type
                     return .visitChildren
                 }
             }

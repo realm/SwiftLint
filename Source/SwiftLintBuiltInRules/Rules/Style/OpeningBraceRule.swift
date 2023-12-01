@@ -180,66 +180,39 @@ private extension OpeningBraceRule {
             guard let body = node.body else {
                 return
             }
-
             let openingBrace = body.leftBrace
-
-            if configuration.allowMultilineFunc && isMultilineFunction(node) {
-                if openingBrace.hasOnlyWhitespaceInLeadingTrivia {
-                    return
-                }
-            } else {
-                if openingBrace.hasSingleSpaceLeading {
-                    return
-                }
-            }
-
-            let violationPosition = openingBrace.positionAfterSkippingLeadingTrivia
-            violations.append(violationPosition)
-        }
-
-        override func visitPost(_ node: InitializerDeclSyntax) {
-            guard let body = node.body else {
-                return
-            }
-
-            var isMultilineFunction: Bool {
-                guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
-                    return false
-                }
-
-                let startLocation = node.initKeyword.endLocation(converter: locationConverter)
-                let endLocation = endToken.endLocation(converter: locationConverter)
-                let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
-
-                return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
-            }
-
-            let openingBrace = body.leftBrace
-
-            if configuration.allowMultilineFunc && isMultilineFunction {
+            if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.funcKeyword) {
                 if openingBrace.hasOnlyWhitespaceInLeadingTrivia {
                     return
                 }
             } else if openingBrace.hasSingleSpaceLeading {
                 return
             }
-
-            let violationPosition = openingBrace.positionAfterSkippingLeadingTrivia
-            violations.append(violationPosition)
+            violations.append(body.openingPosition)
         }
 
-        private func isMultilineFunction(_ node: FunctionDeclSyntax) -> Bool {
+        override func visitPost(_ node: InitializerDeclSyntax) {
             guard let body = node.body else {
-                return false
+                return
             }
+            let openingBrace = body.leftBrace
+            if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.initKeyword) {
+                if openingBrace.hasOnlyWhitespaceInLeadingTrivia {
+                    return
+                }
+            } else if openingBrace.hasSingleSpaceLeading {
+                return
+            }
+            violations.append(body.openingPosition)
+        }
+
+        private func refersToMultilineFunction(_ body: CodeBlockSyntax, functionIndicator: TokenSyntax) -> Bool {
             guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
                 return false
             }
-
-            let startLocation = node.funcKeyword.endLocation(converter: locationConverter)
+            let startLocation = functionIndicator.endLocation(converter: locationConverter)
             let endLocation = endToken.endLocation(converter: locationConverter)
             let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
-
             return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
         }
     }

@@ -787,10 +787,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: ActorDeclSyntax) -> DeclSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
 
@@ -810,10 +806,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
 
@@ -833,10 +825,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> DeclSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
 
@@ -856,10 +844,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> DeclSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
 
@@ -876,10 +860,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: ProtocolDeclSyntax) -> DeclSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
 
@@ -899,10 +879,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
 
@@ -919,10 +895,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(node.correct(keyPath: \.catchItems))
@@ -932,10 +904,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: DeferStmtSyntax) -> StmtSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(node.correct(keyPath: \.deferKeyword))
@@ -945,10 +913,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: DoStmtSyntax) -> StmtSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(node.correct(keyPath: \.doKeyword))
@@ -958,10 +922,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: ForStmtSyntax) -> StmtSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
 
@@ -975,10 +935,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: GuardStmtSyntax) -> StmtSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(node.correct(keyPath: \.elseKeyword))
@@ -988,10 +944,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: IfExprSyntax) -> ExprSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(node.correct(keyPath: \.conditions))
@@ -1001,10 +953,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: RepeatStmtSyntax) -> StmtSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(node.correct(keyPath: \.repeatKeyword))
@@ -1014,10 +962,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: WhileStmtSyntax) -> StmtSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(node.correct(keyPath: \.conditions))
@@ -1027,10 +971,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: SwitchExprSyntax) -> ExprSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(
@@ -1044,10 +984,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: AccessorDeclSyntax) -> DeclSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(
@@ -1059,9 +995,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: PrecedenceGroupDeclSyntax) -> DeclSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(
@@ -1075,10 +1008,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(node.with(\.leftParen, node.leftParen?.with(\.trailingTrivia, [])))
@@ -1088,9 +1017,6 @@ private extension OpeningBraceRule {
         }
 
         override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
             if let violationPosition = node.violationPosition {
                 correctionPositions.append(violationPosition)
                 return super.visit(node.with(\.leftBrace, node.leftBrace.with(\.leadingTrivia, .space)))

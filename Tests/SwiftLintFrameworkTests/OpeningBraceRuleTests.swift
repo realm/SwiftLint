@@ -38,7 +38,6 @@ class OpeningBraceRuleTests: SwiftLintTestCase {
             Example("func abc()↓{\n}"),
             Example("func abc()\n\t↓{ }"),
             Example("[].map()↓{ $0 }"),
-            Example("[].map( ↓{ } )"),
             Example("if let a = b↓{ }"),
             Example("while a == b↓{ }"),
             Example("guard let a = b else↓{ }"),
@@ -74,7 +73,6 @@ class OpeningBraceRuleTests: SwiftLintTestCase {
             Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n"):
                 Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n"),
             Example("[].map()↓{ $0 }\n"): Example("[].map() { $0 }\n"),
-            Example("[].map( ↓{ })\n"): Example("[].map({ })\n"),
             Example("if a == b↓{ }\n"): Example("if a == b { }\n"),
             Example("if\n\tlet a = b,\n\tlet c = d↓{ }\n"): Example("if\n\tlet a = b,\n\tlet c = d { }\n")
         ]

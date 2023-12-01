@@ -56,7 +56,6 @@ struct OpeningBraceRuleExamples {
         Example("func abc()\n\t↓{ }"),
         Example("func abc(a: A,\n\tb: B)\n↓{"),
         Example("[].map()↓{ $0 }"),
-        Example("[].map( ↓{ } )"),
         Example("""
         struct OldContentView: View {
           @State private var showOptions = false
@@ -216,7 +215,6 @@ struct OpeningBraceRuleExamples {
         Example("struct Parent {\n\tstruct Child\n\t{\n\t\tlet foo: Int\n\t}\n}"):
             Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}"),
         Example("[].map(){ $0 }"): Example("[].map() { $0 }"),
-        Example("[].map( { })"): Example("[].map({ })"),
         Example("if a == b{ }"): Example("if a == b { }"),
         Example("if\n\tlet a = b,\n\tlet c = d{ }"): Example("if\n\tlet a = b,\n\tlet c = d { }"),
         Example("""

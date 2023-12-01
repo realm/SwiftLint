@@ -159,15 +159,20 @@ private extension OpeningBraceRule {
             }
         }
 
-        override func visitPost(_ node: FunctionCallExprSyntax) {
-            if let violationPosition = node.violationPosition {
-                violations.append(violationPosition)
-            }
-        }
-
         override func visitPost(_ node: ClosureExprSyntax) {
-            if let violationPosition = node.violationPosition {
-                violations.append(violationPosition)
+            guard let parent = node.parent else {
+                return
+            }
+            if parent.is(LabeledExprSyntax.self) {
+                // Function parameter
+                return
+            }
+            if parent.is(FunctionCallExprSyntax.self) || parent.is(MultipleTrailingClosureElementSyntax.self),
+               node.keyPathInParent != \FunctionCallExprSyntax.calledExpression,
+               let correction = node.violationCorrection(locationConverter) {
+                // Trailing closure
+                violations.append(node.openingPosition)
+                violationCorrections.append(correction)
             }
         }
 
@@ -237,41 +242,6 @@ private extension OpeningBraceRule {
 
             return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
         }
-    }
-}
-
-private extension FunctionCallExprSyntax {
-    var violationPosition: AbsolutePosition? {
-        if let leftParen,
-           let nextToken = leftParen.nextToken(viewMode: .sourceAccurate),
-           case .leftBrace = nextToken.tokenKind {
-            if !leftParen.trailingTrivia.isEmpty || !nextToken.leadingTrivia.isEmpty {
-                return nextToken.positionAfterSkippingLeadingTrivia
-            }
-        }
-        return nil
-    }
-}
-
-private extension ClosureExprSyntax {
-    var violationPosition: AbsolutePosition? {
-        let openingBrace = leftBrace
-        if let functionCall = parent?.as(FunctionCallExprSyntax.self) {
-            if functionCall.calledExpression.as(ClosureExprSyntax.self) == self {
-                return nil
-            }
-            if openingBrace.hasSingleSpaceLeading {
-                return nil
-            }
-            return openingBrace.positionAfterSkippingLeadingTrivia
-        }
-        if let parent, parent.is(MultipleTrailingClosureElementSyntax.self) {
-            if openingBrace.hasSingleSpaceLeading {
-                return nil
-            }
-            return openingBrace.positionAfterSkippingLeadingTrivia
-        }
-        return nil
     }
 }
 

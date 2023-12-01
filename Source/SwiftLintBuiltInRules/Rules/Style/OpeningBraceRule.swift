@@ -249,5 +249,3 @@ private extension BracedSyntax {
         return nil
     }
 }
-
-extension PrecedenceGroupDeclSyntax: BracedSyntax {}

@@ -19,21 +19,6 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
 
 private extension OpeningBraceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private func isMultilineFunction(_ node: FunctionDeclSyntax) -> Bool {
-            guard let body = node.body else {
-                return false
-            }
-            guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
-                return false
-            }
-
-            let startLocation = node.funcKeyword.endLocation(converter: locationConverter)
-            let endLocation = endToken.endLocation(converter: locationConverter)
-            let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
-
-            return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
-        }
-
         override func visitPost(_ node: ActorDeclSyntax) {
             let body = node.memberBlock
             if let correction = body.violationCorrection(locationConverter) {
@@ -236,6 +221,21 @@ private extension OpeningBraceRule {
 
             let violationPosition = openingBrace.positionAfterSkippingLeadingTrivia
             violations.append(violationPosition)
+        }
+
+        private func isMultilineFunction(_ node: FunctionDeclSyntax) -> Bool {
+            guard let body = node.body else {
+                return false
+            }
+            guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
+                return false
+            }
+
+            let startLocation = node.funcKeyword.endLocation(converter: locationConverter)
+            let endLocation = endToken.endLocation(converter: locationConverter)
+            let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
+
+            return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
         }
     }
 }

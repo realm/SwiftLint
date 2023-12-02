@@ -12,11 +12,14 @@
 
 * Rewrite the following rules with SwiftSyntax:
   * `identifier_name`
+  * `let_var_whitespace`
+  * `multiline_literal_brackets`
   * `opening_brace`
   * `void_return`
 
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [kishikawakatsumi](https://github.com/kishikawakatsumi)
+  [SimplyDanny](https://github.com/SimplyDanny)  
+  [kishikawakatsumi](https://github.com/kishikawakatsumi)  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -27,15 +30,6 @@
   of default operators known to the rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#1762](https://github.com/realm/SwiftLint/pull/1762)
-
-* Rewrite `multiline_literal_brackets` rule using SwiftSyntax, fixing some
-  false positives that would happen when comments are present.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  
-* Rewrite `let_var_whitespace` rule using SwiftSyntax, fixing false positives
-  when attributes attached to declarations were spread over multiple lines.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#4801](https://github.com/realm/SwiftLint/pull/4801)
 
 * Add `affect_initializers` option to allow `unneeded_override` rule
   to affect initializers.  
@@ -49,15 +43,26 @@
 
 #### Bug Fixes
 
+* Fix some false positives in `let_var_whitespace` rule that would happen
+  when attributes attached to declarations were spread over multiple lines.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4801](https://github.com/realm/SwiftLint/pull/4801)
+
+* Fix some false positives in `multiline_literal_brackets` rule that would
+  happen when comments are present.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 * Fix some false positives in the `opening_brace` rule.  
   [kishikawakatsumi](https://github.com/kishikawakatsumi)
-  [#4610]https://github.com/realm/SwiftLint/issues/4610
-  [#5114]https://github.com/realm/SwiftLint/issues/5114
-  [#3470]https://github.com/realm/SwiftLint/issues/3470
-  [#3574]https://github.com/realm/SwiftLint/issues/3574
-  [#2632]https://github.com/realm/SwiftLint/issues/2632
-  [#3476]https://github.com/realm/SwiftLint/issues/3476
-  [#3756]https://github.com/realm/SwiftLint/issues/3756
+  [SimplyDanny](https://github.com/SimplyDanny)  
+  [#4610](https://github.com/realm/SwiftLint/issues/4610)
+  [#5114](https://github.com/realm/SwiftLint/issues/5114)
+  [#3470](https://github.com/realm/SwiftLint/issues/3470)
+  [#3574](https://github.com/realm/SwiftLint/issues/3574)
+  [#2632](https://github.com/realm/SwiftLint/issues/2632)
+  [#3476](https://github.com/realm/SwiftLint/issues/3476)
+  [#3756](https://github.com/realm/SwiftLint/issues/3756)
+  [#3690](https://github.com/realm/SwiftLint/issues/3690)
 
 * Ignore overridden functions with default parameters in the `unneeded_override`
   rule as they might change behavior.  

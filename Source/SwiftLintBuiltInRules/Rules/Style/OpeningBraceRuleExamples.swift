@@ -48,7 +48,11 @@ struct OpeningBraceRuleExamples {
                 )
             )
             """),
-        Example(##"let pattern = #/(\{(?<key>\w+)\})/#"##)
+        Example(##"let pattern = #/(\{(?<key>\w+)\})/#"##),
+        Example("""
+            if c {}
+            else {}
+            """)
     ]
 
     static let triggeringExamples = [
@@ -203,6 +207,10 @@ struct OpeningBraceRuleExamples {
             ↓{
                 print(a)
             }
+            """),
+        Example("""
+            if c  ↓{}
+            else  ↓{}
             """)
     ]
 

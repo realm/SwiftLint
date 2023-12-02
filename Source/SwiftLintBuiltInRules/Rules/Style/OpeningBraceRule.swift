@@ -113,6 +113,10 @@ private extension OpeningBraceRule {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
             }
+            if case let .codeBlock(body) = node.elseBody, let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
         }
 
         override func visitPost(_ node: RepeatStmtSyntax) {

@@ -180,30 +180,26 @@ private extension OpeningBraceRule {
             guard let body = node.body else {
                 return
             }
-            let openingBrace = body.leftBrace
             if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.funcKeyword) {
-                if openingBrace.hasOnlyWhitespaceInLeadingTrivia {
-                    return
-                }
-            } else if openingBrace.hasSingleSpaceLeading {
                 return
             }
-            violations.append(body.openingPosition)
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
             guard let body = node.body else {
                 return
             }
-            let openingBrace = body.leftBrace
             if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.initKeyword) {
-                if openingBrace.hasOnlyWhitespaceInLeadingTrivia {
-                    return
-                }
-            } else if openingBrace.hasSingleSpaceLeading {
                 return
             }
-            violations.append(body.openingPosition)
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
         }
 
         private func refersToMultilineFunction(_ body: CodeBlockSyntax, functionIndicator: TokenSyntax) -> Bool {
@@ -215,16 +211,6 @@ private extension OpeningBraceRule {
             let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
             return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
         }
-    }
-}
-
-private extension TokenSyntax {
-    var hasSingleSpaceLeading: Bool {
-        previousToken(viewMode: .sourceAccurate)?.trailingTrivia == .space
-    }
-
-    var hasOnlyWhitespaceInLeadingTrivia: Bool {
-        leadingTrivia.pieces.allSatisfy { $0.isWhitespace }
     }
 }
 

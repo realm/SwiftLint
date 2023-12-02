@@ -142,7 +142,7 @@ struct OpeningBraceRuleExamples {
         Example("""
             internal static func getPointer()
               -> UnsafeMutablePointer<_ThreadLocalStorage>
-            {
+            ↓{
                 return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
                     to: _ThreadLocalStorage.self)
             }

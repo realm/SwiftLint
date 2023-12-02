@@ -1,67 +1,8 @@
-import Foundation
-import SourceKittenFramework
+import SwiftLintCore
+import SwiftSyntax
 
-private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
-
-private extension SwiftLintFile {
-    func violatingOpeningBraceRanges(allowMultilineFunc: Bool) -> [(range: NSRange, location: Int)] {
-        let excludingPattern: String
-        if allowMultilineFunc {
-            excludingPattern = #"(?:func[^\{\n]*\n[^\{\n]*\n[^\{]*|(?:\b(?:if|guard|while)\n[^\{]+?\s|\{\s*))\{"#
-        } else {
-            excludingPattern = #"(?:\b(?:if|guard|while)\n[^\{]+?\s|\{\s*)\{"#
-        }
-
-        return match(pattern: #"(?:[^( ]|[\s(][\s]+)\{"#,
-                     excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-                     excludingPattern: excludingPattern).compactMap {
-            if isAnonymousClosure(range: $0) {
-                return nil
-            }
-            let braceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
-            return ($0, braceRange.location)
-        }
-    }
-
-    func isAnonymousClosure(range: NSRange) -> Bool {
-        let contentsBridge = contents.bridge()
-        guard range.location != NSNotFound else {
-            return false
-        }
-        let closureCode = contentsBridge.substring(from: range.location)
-        guard let closingBracketPosition = closingBracket(closureCode) else {
-            return false
-        }
-        let lengthAfterClosingBracket = closureCode.count - closingBracketPosition - 1
-        if lengthAfterClosingBracket <= 0 {
-            return false
-        }
-
-        // First non-whitespace character should be "(" - otherwise it is not an anonymous closure
-        let afterBracketCode = closureCode.substring(from: closingBracketPosition + 1)
-                                            .trimmingCharacters(in: .whitespaces)
-        return afterBracketCode.first == "("
-    }
-
-    func closingBracket(_ closureCode: String) -> Int? {
-        var bracketCount = 0
-
-        for (index, letter) in closureCode.enumerated() {
-            if letter == "{" {
-                bracketCount += 1
-            } else if letter == "}" {
-                if bracketCount == 1 {
-                    // The closing bracket found
-                    return index
-                }
-                bracketCount -= 1
-            }
-        }
-        return nil
-    }
-}
-
-struct OpeningBraceRule: CorrectableRule {
+@SwiftSyntaxRule
+struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
     var configuration = OpeningBraceConfiguration()
 
     static let description = RuleDescription(
@@ -70,172 +11,231 @@ struct OpeningBraceRule: CorrectableRule {
         description: "Opening braces should be preceded by a single space and on the same line " +
                      "as the declaration",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("func abc() {\n}"),
-            Example("[].map() { $0 }"),
-            Example("[].map({ })"),
-            Example("if let a = b { }"),
-            Example("while a == b { }"),
-            Example("guard let a = b else { }"),
-            Example("if\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }"),
-            Example("while\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }"),
-            Example("guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else\n{ }"),
-            Example("struct Rule {}"),
-            Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}"),
-            Example("""
-                    func f(rect: CGRect) {
-                        {
-                            let centre = CGPoint(x: rect.midX, y: rect.midY)
-                            print(centre)
-                        }()
-                    }
-                    """),
-            Example("""
-                    func f(rect: CGRect) -> () -> Void {
-                        {
-                            let centre = CGPoint(x: rect.midX, y: rect.midY)
-                            print(centre)
-                        }
-                    }
-                    """),
-            Example("""
-                    func f() -> () -> Void {
-                        {}
-                    }
-                    """)
-        ],
-        triggeringExamples: [
-            Example("func abc()↓{\n}"),
-            Example("func abc()\n\t↓{ }"),
-            Example("func abc(a: A\n\tb: B)\n↓{"),
-            Example("[].map()↓{ $0 }"),
-            Example("[].map( ↓{ } )"),
-            Example("if let a = b↓{ }"),
-            Example("while a == b↓{ }"),
-            Example("guard let a = b else↓{ }"),
-            Example("if\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
-            Example("while\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
-            Example("guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else↓{ }"),
-            Example("struct Rule↓{}"),
-            Example("struct Rule\n↓{\n}"),
-            Example("struct Rule\n\n\t↓{\n}"),
-            Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}"),
-            Example("""
-            // Get the current thread's TLS pointer. On first call for a given thread,
-            // creates and initializes a new one.
-            internal static func getPointer()
-              -> UnsafeMutablePointer<_ThreadLocalStorage>
-            { // <- here
-              return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
-                to: _ThreadLocalStorage.self)
-            }
-            """),
-            Example("""
-            func run_Array_method1x(_ N: Int) {
-              let existentialArray = array!
-              for _ in 0 ..< N * 100 {
-                for elt in existentialArray {
-                  if !elt.doIt()  {
-                    fatalError("expected true")
-                  }
-                }
-              }
-            }
-
-            func run_Array_method2x(_ N: Int) {
-
-            }
-            """),
-            Example("""
-               class TestFile {
-                   func problemFunction() {
-                       #if DEBUG
-                       #endif
-                   }
-
-                   func openingBraceViolation()
-                  ↓{
-                       print("Brackets")
-                   }
-               }
-            """)
-        ],
-        corrections: [
-            Example("struct Rule↓{}"): Example("struct Rule {}"),
-            Example("struct Rule\n↓{\n}"): Example("struct Rule {\n}"),
-            Example("struct Rule\n\n\t↓{\n}"): Example("struct Rule {\n}"),
-            Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}"):
-                Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}"),
-            Example("[].map()↓{ $0 }"): Example("[].map() { $0 }"),
-            Example("[].map( ↓{ })"): Example("[].map({ })"),
-            Example("if a == b↓{ }"): Example("if a == b { }"),
-            Example("if\n\tlet a = b,\n\tlet c = d↓{ }"): Example("if\n\tlet a = b,\n\tlet c = d { }")
-        ]
+        nonTriggeringExamples: OpeningBraceRuleExamples.nonTriggeringExamples,
+        triggeringExamples: OpeningBraceRuleExamples.triggeringExamples,
+        corrections: OpeningBraceRuleExamples.corrections
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
-    }
-
-    func correct(file: SwiftLintFile) -> [Correction] {
-        let violatingRanges = file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc)
-            .filter {
-                file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty
+private extension OpeningBraceRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: ActorDeclSyntax) {
+            let body = node.memberBlock
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
             }
-        var correctedContents = file.contents
-        var adjustedLocations = [Location]()
-
-        for (violatingRange, location) in violatingRanges.reversed() {
-            correctedContents = correct(contents: correctedContents, violatingRange: violatingRange)
-            adjustedLocations.insert(Location(file: file, characterOffset: location), at: 0)
         }
 
-        file.write(correctedContents)
+        override func visitPost(_ node: ClassDeclSyntax) {
+            let body = node.memberBlock
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
 
-        return adjustedLocations.map {
-            Correction(ruleDescription: Self.description,
-                       location: $0)
+        override func visitPost(_ node: EnumDeclSyntax) {
+            let body = node.memberBlock
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: ExtensionDeclSyntax) {
+            let body = node.memberBlock
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: ProtocolDeclSyntax) {
+            let body = node.memberBlock
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: StructDeclSyntax) {
+            let body = node.memberBlock
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: CatchClauseSyntax) {
+            let body = node.body
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: DeferStmtSyntax) {
+            let body = node.body
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: DoStmtSyntax) {
+            let body = node.body
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: ForStmtSyntax) {
+            let body = node.body
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: GuardStmtSyntax) {
+            let body = node.body
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: IfExprSyntax) {
+            let body = node.body
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+            if case let .codeBlock(body) = node.elseBody, let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: RepeatStmtSyntax) {
+            let body = node.body
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: WhileStmtSyntax) {
+            let body = node.body
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: SwitchExprSyntax) {
+            if let correction = node.violationCorrection(locationConverter) {
+                violations.append(node.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: AccessorDeclSyntax) {
+            if let body = node.body, let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: PatternBindingSyntax) {
+            if let body = node.accessorBlock, let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: PrecedenceGroupDeclSyntax) {
+            if let correction = node.violationCorrection(locationConverter) {
+                violations.append(node.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: ClosureExprSyntax) {
+            guard let parent = node.parent else {
+                return
+            }
+            if parent.is(LabeledExprSyntax.self) {
+                // Function parameter
+                return
+            }
+            if parent.is(FunctionCallExprSyntax.self) || parent.is(MultipleTrailingClosureElementSyntax.self),
+               node.keyPathInParent != \FunctionCallExprSyntax.calledExpression,
+               let correction = node.violationCorrection(locationConverter) {
+                // Trailing closure
+                violations.append(node.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard let body = node.body else {
+                return
+            }
+            if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.funcKeyword) {
+                return
+            }
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            guard let body = node.body else {
+                return
+            }
+            if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.initKeyword) {
+                return
+            }
+            if let correction = body.violationCorrection(locationConverter) {
+                violations.append(body.openingPosition)
+                violationCorrections.append(correction)
+            }
+        }
+
+        private func refersToMultilineFunction(_ body: CodeBlockSyntax, functionIndicator: TokenSyntax) -> Bool {
+            guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
+                return false
+            }
+            let startLocation = functionIndicator.endLocation(converter: locationConverter)
+            let endLocation = endToken.endLocation(converter: locationConverter)
+            let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
+            return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
         }
     }
+}
 
-    private func correct(contents: String,
-                         violatingRange: NSRange) -> String {
-        guard let indexRange = contents.nsrangeToIndexRange(violatingRange) else {
-            return contents
+private extension BracedSyntax {
+    var openingPosition: AbsolutePosition {
+        leftBrace.positionAfterSkippingLeadingTrivia
+    }
+
+    func violationCorrection(_ locationConverter: SourceLocationConverter) -> ViolationCorrection? {
+        if let previousToken = leftBrace.previousToken(viewMode: .sourceAccurate) {
+            let previousLocation = previousToken.endLocation(converter: locationConverter)
+            let leftBraceLocation = leftBrace.startLocation(converter: locationConverter)
+            if previousLocation.line != leftBraceLocation.line
+               || previousLocation.column + 1 != leftBraceLocation.column {
+                return ViolationCorrection(
+                    start: previousToken.endPositionBeforeTrailingTrivia,
+                    end: leftBrace.positionAfterSkippingLeadingTrivia,
+                    replacement: " "
+                )
+            }
         }
-
-        let capturedString = String(contents[indexRange])
-        var adjustedRange = violatingRange
-        var correctString = " {"
-
-        // "struct Command{" has violating string = "d{", so ignore first "d"
-        if capturedString.count == 2 &&
-            capturedString.rangeOfCharacter(from: whitespaceAndNewlineCharacterSet) == nil {
-            adjustedRange = NSRange(
-                location: violatingRange.location + 1,
-                length: violatingRange.length - 1
-            )
-        }
-
-        // "[].map( { } )" has violating string = "( {",
-        // so ignore first "(" and use "{" as correction string instead
-        if capturedString.hasPrefix("(") {
-            adjustedRange = NSRange(
-                location: violatingRange.location + 1,
-                length: violatingRange.length - 1
-            )
-            correctString = "{"
-        }
-
-        if let indexRange = contents.nsrangeToIndexRange(adjustedRange) {
-            return contents
-                .replacingCharacters(in: indexRange, with: correctString)
-        } else {
-            return contents
-        }
+        return nil
     }
 }

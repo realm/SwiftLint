@@ -12,9 +12,11 @@
 
 * Rewrite the following rules with SwiftSyntax:
   * `identifier_name`
+  * `opening_brace`
   * `void_return`
 
   [SimplyDanny](https://github.com/SimplyDanny)
+  [kishikawakatsumi](https://github.com/kishikawakatsumi)
 
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -41,6 +43,16 @@
   [#5265](https://github.com/realm/SwiftLint/issues/5265)
 
 #### Bug Fixes
+
+* Fix some false positives in the `opening_brace` rule.  
+  [kishikawakatsumi](https://github.com/kishikawakatsumi)
+  [#4610]https://github.com/realm/SwiftLint/issues/4610
+  [#5114]https://github.com/realm/SwiftLint/issues/5114
+  [#3470]https://github.com/realm/SwiftLint/issues/3470
+  [#3574]https://github.com/realm/SwiftLint/issues/3574
+  [#2632]https://github.com/realm/SwiftLint/issues/2632
+  [#3476]https://github.com/realm/SwiftLint/issues/3476
+  [#3756]https://github.com/realm/SwiftLint/issues/3756
 
 * Ignore overridden functions with default parameters in the `unneeded_override`
   rule as they might change behavior.  

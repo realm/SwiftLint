@@ -87,11 +87,6 @@
 
 #### Enhancements
 
-* Add new `non_optional_string_data_conversion` rule to enforce 
-  non-failable conversions of .utf8 `String` <-> `Data`.    
-  [Ben P](https://github.com/ben-p-commits)
-  [#5263](https://github.com/realm/SwiftLint/issues/5263)
-
 * Add `only` configuration option to `todo` rule which allows to specify
   whether the rule shall trigger on `TODO`s, `FIXME`s or both.  
   [gibachan](https://github.com/gibachan)

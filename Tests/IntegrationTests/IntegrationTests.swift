@@ -172,8 +172,8 @@ private func execute(_ args: [String],
     queue.async(group: group) { stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile() }
     process.waitUntilExit()
     group.wait()
-    let stdout = stdoutData.flatMap { String(data: $0, encoding: .utf8) } ?? ""
-    let stderr = stderrData.flatMap { String(data: $0, encoding: .utf8) } ?? ""
+    let stdout = stdoutData.map { String(decoding: $0, as: UTF8.self) } ?? ""
+    let stderr = stderrData.map { String(decoding: $0, as: UTF8.self) } ?? ""
     return (process.terminationStatus, stdout, stderr)
 }
 

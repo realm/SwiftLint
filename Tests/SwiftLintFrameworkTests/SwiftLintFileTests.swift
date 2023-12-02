@@ -6,7 +6,7 @@ class SwiftLintFileTests: SwiftLintTestCase {
 
     override func setUp() async throws {
         try await super.setUp()
-        try "let i = 2".data(using: .utf8)!.write(to: tempFile)
+        try Data("let i = 2".utf8).write(to: tempFile)
     }
 
     override func tearDown() async throws {
@@ -40,12 +40,12 @@ class SwiftLintFileTests: SwiftLintTestCase {
         file.write("let j = 2")
 
         XCTAssertEqual(file.contents, "let j = 2")
-        XCTAssertEqual(FileManager.default.contents(atPath: tempFile.path), "let j = 2".data(using: .utf8))
+        XCTAssertEqual(FileManager.default.contents(atPath: tempFile.path), Data("let j = 2".utf8))
 
         file.append("2")
 
         XCTAssertEqual(file.contents, "let j = 22")
-        XCTAssertEqual(FileManager.default.contents(atPath: tempFile.path), "let j = 22".data(using: .utf8))
+        XCTAssertEqual(FileManager.default.contents(atPath: tempFile.path), Data("let j = 22".utf8))
     }
 
     func testFileNotTouchedIfNothingAppended() throws {

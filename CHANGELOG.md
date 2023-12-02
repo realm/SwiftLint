@@ -42,6 +42,11 @@
   [leonardosrodrigues0](https://github.com/leonardosrodrigues0)
   [#5265](https://github.com/realm/SwiftLint/issues/5265)
 
+* Add new `non_optional_string_data_conversion` rule to enforce 
+  non-failable conversions of UTF-8 `String` <-> `Data`.    
+  [Ben P](https://github.com/ben-p-commits)
+  [#5263](https://github.com/realm/SwiftLint/issues/5263)
+
 #### Bug Fixes
 
 * Fix some false positives in the `opening_brace` rule.  

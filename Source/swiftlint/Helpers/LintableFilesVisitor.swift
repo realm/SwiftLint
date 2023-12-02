@@ -178,8 +178,8 @@ struct LintableFilesVisitor {
     }
 
     private static func loadLogCompilerInvocations(_ path: String) -> [[String]]? {
-        if let data = FileManager.default.contents(atPath: path),
-            let logContents = String(data: data, encoding: .utf8) {
+        if let data = FileManager.default.contents(atPath: path) {
+            let logContents = String(decoding: data, as: UTF8.self)
             if logContents.isEmpty {
                 return nil
             }

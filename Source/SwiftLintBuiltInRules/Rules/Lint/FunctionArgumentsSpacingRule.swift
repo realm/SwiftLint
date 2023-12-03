@@ -25,9 +25,12 @@ struct FunctionArgumentsSpacingRule: Rule {
             Example("makeGenerator(↓ offset: 0, limit: 0)"),
             Example("makeGenerator(offset: 0, limit: 0 ↓)"),
             Example("makeGenerator(↓ 1, 2, 3 ↓)"),
-//            Example("makeGenerator(↓ /* comment */ a /* other comment */)"),
-//            Example("makeGenerator(/* comment */ a /* other comment */ ↓)"),
-//            Example("makeGenerator(↓ /* comment */ a /* other comment */ ↓)")
+            Example("makeGenerator(↓ /* comment */ a)"),
+            Example("makeGenerator(a /* other comment */ ↓)"),
+            Example("makeGenerator(↓ /* comment */ a /* other comment */)"),
+            Example("makeGenerator(/* comment */ a /* other comment */ ↓)"),
+            Example("makeGenerator(↓ /* comment */ a /* other comment */ ↓)"),
+            Example("makeGenerator(↓  /* comment */ a /* other comment */  ↓)")
         ]
     )
 }
@@ -42,23 +45,25 @@ private extension TriviaPiece {
     }
 }
 
-
 private extension FunctionArgumentsSpacingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            let leftParanTrailingTrivia = node.leftParen?.trailingTrivia
-            let hasLeftSpaces = leftParanTrailingTrivia?.filter({$0.isSpaces}).count ?? 0 > 0
-            if hasLeftSpaces, let leftParen = node.leftParen {
-                violations.append(leftParen.endPositionBeforeTrailingTrivia)
+            if let leftParan = node.leftParen {
+                if let firstArgument = leftParan.trailingTrivia.first {
+                    if firstArgument.isSpaces, let leftParen = node.leftParen {
+                        violations.append(leftParen.endPositionBeforeTrailingTrivia)
+                    }
+                }
             }
-
             let lastArgument = node.arguments.last
-            guard lastArgument != nil else {
+            guard lastArgument != nil || node.rightParen != nil else {
                 return
             }
-            let hasRightSpaces = lastArgument?.trailingTrivia.filter({$0.isSpaces}).count ?? 0 > 0
-            if hasRightSpaces, let rightParen = node.rightParen {
-                violations.append(rightParen.positionAfterSkippingLeadingTrivia)
+            let _lastArgument = lastArgument?.trailingTrivia.reversed().first
+            if let lastArg = _lastArgument {
+                if lastArg.isSpaces {
+                    violations.append(node.rightParen!.positionAfterSkippingLeadingTrivia)
+                }
             }
             return
         }

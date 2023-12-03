@@ -43,6 +43,11 @@
 
 #### Bug Fixes
 
+* Silence `discarded_notification_center_observer` rule in closures. Furthermore,
+  handle `get` and `set` accessors correctly and consider implicit returns.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4801](https://github.com/realm/SwiftLint/pull/4801)
+
 * Fix some false positives in `let_var_whitespace` rule that would happen
   when attributes attached to declarations were spread over multiple lines.  
   [SimplyDanny](https://github.com/SimplyDanny)

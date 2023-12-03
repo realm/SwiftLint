@@ -47,22 +47,43 @@ private extension TriviaPiece {
 
 private extension FunctionArgumentsSpacingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        /*
+         Because it is not sure at which node SwiftSyntax will put a space,
+         it checks the trivia at each of the variables and at the paren.
+         */
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if let leftParan = node.leftParen {
-                if let firstArgument = leftParan.trailingTrivia.first {
-                    if firstArgument.isSpaces, let leftParen = node.leftParen {
+            if let leftParen = node.leftParen {
+                let firstArgument = node.arguments.first
+                // Check that the trivia immediately following the leftParen is spaces(_:),
+                // as it may contain trivia that is not space like blockComment(_:)
+                if let firstArgumentLeadingTrivia = firstArgument?.leadingTrivia {
+                    if let firstElementTrivia = firstArgumentLeadingTrivia.reversed().first {
+                        if firstElementTrivia.isSpaces {
+                            violations.append(leftParen.positionAfterSkippingLeadingTrivia)
+                        }
+                    }
+                }
+
+                if let trailingTrivia = leftParen.trailingTrivia.first {
+                    if trailingTrivia.isSpaces {
                         violations.append(leftParen.endPositionBeforeTrailingTrivia)
                     }
                 }
             }
-            let lastArgument = node.arguments.last
-            guard lastArgument != nil || node.rightParen != nil else {
-                return
-            }
-            let _lastArgument = lastArgument?.trailingTrivia.reversed().first
-            if let lastArg = _lastArgument {
-                if lastArg.isSpaces {
-                    violations.append(node.rightParen!.positionAfterSkippingLeadingTrivia)
+
+            if let rightParen = node.rightParen {
+                let lastArgument = node.arguments.last
+                // Check that the trivia immediately preceding the rightParen is spaces(_:),
+                // as it may contain trivia that is not space like blockComment(_:)
+                if let lastElementTrivia = lastArgument?.trailingTrivia.reversed().first {
+                    if lastElementTrivia.isSpaces {
+                        violations.append(rightParen.positionAfterSkippingLeadingTrivia)
+                    }
+                }
+                if let firstArgument = rightParen.trailingTrivia.first {
+                    if firstArgument.isSpaces, let rightParan = node.rightParen {
+                        violations.append(rightParan.endPositionBeforeTrailingTrivia)
+                    }
                 }
             }
             return

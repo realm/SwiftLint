@@ -80,7 +80,7 @@ private extension FunctionArgumentsSpacingRule {
                         violations.append(rightParen.positionAfterSkippingLeadingTrivia)
                     }
                 }
-                if let firstArgument = rightParen.trailingTrivia.first {
+                if let firstArgument = rightParen.leadingTrivia.first {
                     if firstArgument.isSpaces, let rightParan = node.rightParen {
                         violations.append(rightParan.endPositionBeforeTrailingTrivia)
                     }

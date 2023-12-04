@@ -82,6 +82,11 @@
   are defined in a tuple like `let (a, b) = (5, 10)` or `let a = (2, 3)`.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5305](https://github.com/realm/SwiftLint/pull/5305)
+  
+* Silence `pattern_matching_keywords` rule when an identifier is referenced
+  in the argument list of a matching enum case.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3852](https://github.com/realm/SwiftLint/pull/3852)
 
 ## 0.54.0: Macro-Economic Forces
 

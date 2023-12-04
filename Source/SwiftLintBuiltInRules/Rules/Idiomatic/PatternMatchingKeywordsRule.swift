@@ -20,12 +20,16 @@ struct PatternMatchingKeywordsRule: OptInRule {
             Example("case .foo(let x, var y)"),
             Example("case var (x, y)"),
             Example("case .foo(var x)"),
-            Example("case var .foo(x, y)")
+            Example("case var .foo(x, y)"),
+            Example("case (y, let x, z)")
         ].map(wrapInSwitch),
         triggeringExamples: [
             Example("case (↓let x,  ↓let y)"),
             Example("case (↓let x,  ↓let y, .foo)"),
             Example("case (↓let x,  ↓let y, _)"),
+            Example("case (↓let x,  ↓let y, f())"),
+            Example("case (↓let x,  ↓let y, s.f())"),
+            Example("case (↓let x,  ↓let y, s.t)"),
             Example("case .foo(↓let x, ↓let y)"),
             Example("case (.yamlParsing(↓let x), .yamlParsing(↓let y))"),
             Example("case (↓var x,  ↓var y)"),
@@ -33,6 +37,14 @@ struct PatternMatchingKeywordsRule: OptInRule {
             Example("case (.yamlParsing(↓var x), .yamlParsing(↓var y))")
         ].map(wrapInSwitch)
     )
+
+    private static func wrapInSwitch(_ example: Example) -> Example {
+        example.with(code: """
+            switch foo {
+                \(example.code): break
+            }
+            """)
+    }
 }
 
 private extension PatternMatchingKeywordsRule {
@@ -47,27 +59,14 @@ private extension PatternMatchingKeywordsRule {
 
 private final class TupleVisitor<Configuration: RuleConfiguration>: ViolationsSyntaxVisitor<Configuration> {
     override func visitPost(_ node: LabeledExprListSyntax) {
-        let list = node.flatteningEnumPatterns()
-            .compactMap { elem in
-                elem.expression.asValueBindingPattern()
-            }
-
-        guard list.count > 1,
-              let firstLetOrVar = list.first?.bindingSpecifier.tokenKind else {
+        let list = node.flatteningEnumPatterns().map(\.expression.categorized)
+        if list.contains(where: \.isReference) {
             return
         }
-
-        let hasViolation = list.allSatisfy { elem in
-            elem.bindingSpecifier.tokenKind == firstLetOrVar
+        let specifiers = list.compactMap { if case let .binding(specifier) = $0 { specifier } else { nil } }
+        if specifiers.count > 1, specifiers.allSatisfy({ $0.tokenKind == specifiers.first?.tokenKind }) {
+            violations.append(contentsOf: specifiers.map(\.positionAfterSkippingLeadingTrivia))
         }
-
-        guard hasViolation else {
-            return
-        }
-
-        violations.append(contentsOf: list.compactMap { elem in
-            return elem.bindingSpecifier.positionAfterSkippingLeadingTrivia
-        })
     }
 }
 
@@ -84,20 +83,27 @@ private extension LabeledExprListSyntax {
     }
 }
 
-private extension ExprSyntax {
-    func asValueBindingPattern() -> ValueBindingPatternSyntax? {
-        if let pattern = self.as(PatternExprSyntax.self) {
-            return pattern.pattern.as(ValueBindingPatternSyntax.self)
-        }
+private enum ArgumentType {
+    case binding(specifier: TokenSyntax)
+    case reference
+    case constant
 
-        return nil
+    var isReference: Bool {
+        switch self {
+        case .reference: true
+        default: false
+        }
     }
 }
 
-private func wrapInSwitch(_ example: Example) -> Example {
-    return example.with(code: """
-        switch foo {
-            \(example.code): break
+private extension ExprSyntax {
+    var categorized: ArgumentType {
+        if let binding = `as`(PatternExprSyntax.self)?.pattern.as(ValueBindingPatternSyntax.self) {
+            return .binding(specifier: binding.bindingSpecifier)
         }
-        """)
+        if `is`(DeclReferenceExprSyntax.self) {
+            return .reference
+        }
+        return .constant
+    }
 }

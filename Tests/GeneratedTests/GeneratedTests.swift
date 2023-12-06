@@ -8,6 +8,12 @@ import SwiftLintTestHelpers
 // swiftlint:disable:next blanket_disable_command
 // swiftlint:disable file_length single_test_class type_name
 
+class AccessibilityFontSizeRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(AccessibilityFontSizeRule.description)
+    }
+}
+
 class AccessibilityLabelForImageRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AccessibilityLabelForImageRule.description)

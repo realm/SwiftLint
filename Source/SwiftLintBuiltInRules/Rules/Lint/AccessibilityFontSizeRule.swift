@@ -6,13 +6,28 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
     static let description = RuleDescription(
         identifier: "accessibility_font_size",
         name: "Accessibility Font Size",
-        description: """
-            Text may not have a fixed font size
-        """,
+        description: "Text may not have a fixed font size",
         kind: .lint,
         minSwiftVersion: .fiveDotOne,
-        nonTriggeringExamples: AccessibilityLabelForImageRuleExamples.nonTriggeringExamples,
-        triggeringExamples: AccessibilityLabelForImageRuleExamples.triggeringExamples
+        nonTriggeringExamples: [
+            Example("""
+            struct TestView: View {
+                var body: some View {
+                    Text("Hello World!")
+                }
+            }
+            """)
+        ],
+        triggeringExamples: [
+            Example("""
+            struct TestView: View {
+                var body: some View {
+                    Text("Hello World!")
+                        .font(.system(size: 20))
+                }
+            }
+            """)
+        ]
     )
 
     // MARK: AST Rule
@@ -20,7 +35,7 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
     func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         // Only proceed to check View structs.
-        guard (( kind == .struct && dictionary.inheritedTypes.contains("View")) || kind == .extension),
+        guard ( kind == .struct && dictionary.inheritedTypes.contains("View")) || kind == .extension,
             dictionary.substructure.isNotEmpty else {
                 return []
         }
@@ -36,7 +51,6 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
                 continue
             }
 
-            // If it's image, and does not hide from accessibility or provide a label, it's a violation.
             if dictionary.isText && dictionary.hasStrictFontModifier(in: file) {
                 violations.append(
                     StyleViolation(ruleDescription: Self.description,
@@ -47,15 +61,9 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
 
             // If dictionary did not represent an Image, recursively check substructure,
             // unless it's a container that hides its children from accessibility or is labeled.
-//            else if dictionary.substructure.isNotEmpty {
-//                if dictionary.hasAccessibilityHiddenModifier(in: file) ||
-//                    dictionary.hasAccessibilityElementChildrenIgnoreModifier(in: file) ||
-//                    dictionary.hasStrictFontModifier(in: file) {
-//                    continue
-//                }
-//
-//                violations.append(contentsOf: findTextViolations(file: file, substructure: dictionary.substructure))
-//            }
+            else if dictionary.substructure.isNotEmpty && dictionary.hasStrictFontModifier(in: file) {
+                violations.append(contentsOf: findTextViolations(file: file, substructure: dictionary.substructure))
+            }
         }
 
         return violations
@@ -89,11 +97,11 @@ private extension SourceKittenDictionary {
                     name: "font",
                     arguments: [
                         .init(
-                            name: "", 
+                            name: "",
                             values: [".system"],
                             matchType: .prefix)
                     ]
-                ),
+                )
             ],
             in: file
         )

@@ -1,5 +1,9 @@
 ## Main
 
+* Rule added that allows one Class/Struct/Enum/Protocol per file but extensions are exception.  
+  [Muhammad Zeeshan](https://github.com/mzeeshanid)
+  [#2802](https://github.com/realm/SwiftLint/issues/2802)
+
 #### Breaking
 
 * None.

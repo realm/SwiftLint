@@ -76,48 +76,43 @@ struct OneDelarationPerFileRule: Rule {
                     """)
         ]
     )
-
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let visitor = Visitor(configuration: configuration, file: file)
-        visitor.walk(file.syntaxTree)
-
-        for (index, token) in visitor.tokens.enumerated() where index > 0 {
-            visitor.violations.append(token.positionAfterSkippingLeadingTrivia)
-        }
-
-        return visitor.violations.map { violation in
-            makeViolation(file: file,
-                          violation: violation)
-        }
-    }
 }
 
 private extension OneDelarationPerFileRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        var tokens: [TokenSyntax] = []
-
+        var declarationsCount: Int = 0
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
             return .allExcept(ClassDeclSyntax.self, StructDeclSyntax.self, EnumDeclSyntax.self, ProtocolDeclSyntax.self)
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            tokens.append(node.name)
+            declarationsCount += 1
+            appendViolationIfNeeded(node: node.name)
             return .skipChildren
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            tokens.append(node.name)
+            declarationsCount += 1
+            appendViolationIfNeeded(node: node.name)
             return .skipChildren
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            tokens.append(node.name)
+            declarationsCount += 1
+            appendViolationIfNeeded(node: node.name)
             return .skipChildren
         }
 
         override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            tokens.append(node.name)
+            declarationsCount += 1
+            appendViolationIfNeeded(node: node.name)
             return .skipChildren
+        }
+
+        func appendViolationIfNeeded(node: TokenSyntax) {
+            if declarationsCount > 1 {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

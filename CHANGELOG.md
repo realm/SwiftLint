@@ -1,8 +1,25 @@
 ## Main
 
-* Rule added that allows one Class/Struct/Enum/Protocol per file but extensions are exception.  
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Add new `one_declaration_per_file` rule that allows only a
+  single class/struct/enum/protocol declaration per file.
+  Extensions are an exception; more than one is allowed. 
+  
   [Muhammad Zeeshan](https://github.com/mzeeshanid)
   [#2802](https://github.com/realm/SwiftLint/issues/2802)
+
+#### Bug Fixes
+
+* None.
 
 #### Breaking
 

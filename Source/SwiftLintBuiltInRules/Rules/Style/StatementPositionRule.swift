@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct StatementPositionRule: CorrectableRule {
+@SwiftSyntaxRule
+struct StatementPositionRule: SwiftSyntaxCorrectableRule {
     var configuration = StatementPositionConfiguration()
 
     static let description = RuleDescription(
@@ -31,11 +32,7 @@ struct StatementPositionRule: CorrectableRule {
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(config: configuration)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file),
@@ -45,16 +42,9 @@ struct StatementPositionRule: CorrectableRule {
 }
 
 private extension StatementPositionRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let config: ConfigurationType
-
-        init(config: ConfigurationType) {
-            self.config = config
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: IfExprSyntax) {
-            switch config.statementMode {
+            switch configuration.statementMode {
             case .default:
                 if let position = node.defaultModeViolationPosition()?.position {
                     violations.append(
@@ -64,7 +54,7 @@ private extension StatementPositionRule {
                                 'else' should be on the same line, one space after the closing brace of \
                                 the previous 'if' block
                             """,
-                            severity: config.severity
+                            severity: configuration.severity
                         )
                     )
                 }
@@ -76,7 +66,7 @@ private extension StatementPositionRule {
                             reason: """
                                 'else' should be on the next line, with equal indentation to the previous 'if' keyword
                             """,
-                            severity: config.severity
+                            severity: configuration.severity
                         )
                     )
                 }
@@ -84,7 +74,7 @@ private extension StatementPositionRule {
         }
 
         override func visitPost(_ node: DoStmtSyntax) {
-            switch config.statementMode {
+            switch configuration.statementMode {
             case .default:
                 node.defaultModeViolationPositions()?.positions
                     .map {
@@ -94,7 +84,7 @@ private extension StatementPositionRule {
                                 'catch' should be on the same line, one space after the closing brace of \
                                 the previous block
                             """,
-                            severity: config.severity
+                            severity: configuration.severity
                         )
                     }
                     .forEach { violations.append($0) }
@@ -106,7 +96,7 @@ private extension StatementPositionRule {
                             reason: """
                                 'catch' should be on the next line, with equal indentation to the previous 'do' keyword
                             """,
-                            severity: config.severity
+                            severity: configuration.severity
                         )
                     }
                     .forEach { violations.append($0) }
@@ -116,19 +106,14 @@ private extension StatementPositionRule {
 }
 
 private extension StatementPositionRule {
-    private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        private let locationConverter: SourceLocationConverter
-        private let disabledRegions: [SourceRange]
-
+    private class Rewriter: ViolationsSyntaxRewriter {
         private let config: ConfigurationType
 
         init(locationConverter: SourceLocationConverter,
              disabledRegions: [SourceRange],
              config: ConfigurationType) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
             self.config = config
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
         }
 
         override func visit(_ node: IfExprSyntax) -> ExprSyntax {
@@ -276,10 +261,6 @@ private extension IfExprSyntax {
 
 private extension DoStmtSyntax {
     func defaultModeViolationPositions() -> (positions: [AbsolutePosition], newNode: DoStmtSyntax)? {
-        guard let catchClauses else {
-            return nil
-        }
-
         var newNode = self
         let originalCatchClauseArray = Array(catchClauses)
         var violationPositions: [AbsolutePosition] = []
@@ -326,10 +307,6 @@ private extension DoStmtSyntax {
     }
 
     func uncuddledModeViolationPositions() -> (positions: [AbsolutePosition], newNode: DoStmtSyntax)? {
-        guard let catchClauses else {
-            return nil
-        }
-
         var newNode = self
         let originalCatchClauseArray = Array(catchClauses)
         var violationPositions: [AbsolutePosition] = []

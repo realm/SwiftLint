@@ -3,200 +3,184 @@
 class StatementPositionRuleTests: SwiftLintTestCase {
     let nonTriggeringExamples = [
         Example("""
-            if true {
-                foo()
-            }
-            else {
-                bar()
-            }
+        if true {
+            foo()
+        }
+        else {
+            bar()
+        }
         """),
         Example("""
-            if true {
-                foo()
-            }
-            else if true {
-                bar()
-            }
-            else {
-                return
-            }
+        if true {
+            foo()
+        }
+        else if true {
+            bar()
+        }
+        else {
+            return
+        }
         """),
         Example("""
-            if true { foo() }
-            else { bar() }
+        if true { foo() }
+        else { bar() }
         """),
         Example("""
-            if true { foo() }
-            else if true { bar() }
-            else { return }
+        if true { foo() }
+        else if true { bar() }
+        else { return }
         """),
         Example("""
-            do {
-                foo()
-            }
-            catch {
-                bar()
-            }
+        do {
+            foo()
+        }
+        catch {
+            bar()
+        }
         """),
         Example("""
-            do {
-                foo()
-            }
-            catch {
-                bar()
-            }
-            catch {
-                return
-            }
+        do {
+            foo()
+        }
+        catch {
+            bar()
+        }
+        catch {
+            return
+        }
         """),
         Example("""
-            do { foo() }
-            catch { bar() }
+        do { foo() }
+        catch { bar() }
         """),
         Example("""
-            do { foo() }
-            catch { bar() }
-            catch { return }
+        do { foo() }
+        catch { bar() }
+        catch { return }
         """)
     ]
 
     let triggeringExamples = [
         Example("""
-            if true {
-                foo()
-            }↓ else {
-                bar()
-            }
+        if true {
+            foo()
+        ↓} else {
+            bar()
+        }
         """),
         Example("""
-            if true {
-                foo()
-            }↓ else if true {
-                bar()
-            }↓ else {
-                return
-            }
+        if true {
+            foo()
+        ↓} else if true {
+            bar()
+        ↓} else {
+            return
+        }
         """),
         Example("""
-            if true {
-                foo()
-            }↓
-                else {
-                bar()
-            }
+        if true {
+            foo()
+        ↓}
+            else {
+            bar()
+        }
         """),
         Example("""
-            do {
-                foo()
-            }↓ catch {
-                bar()
-            }
+        do {
+            foo()
+        ↓} catch {
+            bar()
+        }
         """),
         Example("""
-            do {
-                foo()
-            }↓ catch let error {
-                bar()
-            }↓ catch {
-                return
-            }
+        do {
+            foo()
+        ↓} catch let error {
+            bar()
+        ↓} catch {
+            return
+        }
         """),
         Example("""
-            do {
-                foo()
-            }↓
-                catch {
-                bar()
-            }
+        do {
+            foo()
+        ↓}
+            catch {
+            bar()
+        }
         """)
     ]
 
     let corrections = [
         Example("""
-            if true {
-                foo()
-            }↓
-                else {
-                bar()
-            }
+        if true {
+            foo()
+        ↓}
+            else {
+            bar()
+        }
         """):
             Example("""
-                if true {
-                    foo()
-                }
-                else {
-                    bar()
-                }
-            """),
-        Example("""
             if true {
                 foo()
-            }↓ else if true {
-                bar()
-            }↓ else {
+            }
+            else {
                 bar()
             }
-        """):
-            Example("""
-                if true {
-                    foo()
-                }
-                else if true {
-                    bar()
-                }
-                else {
-                    bar()
-                }
             """),
         Example("""
+        if true {
+            foo()
+        ↓} else if true {
+            bar()
+        ↓} else {
+            bar()
+        }
+        """):
+            Example("""
             if true {
                 foo()
-              }
+            }
             else if true {
                 bar()
-              }
-        """):
-            Example("""
-                if true {
-                    foo()
-                  }
-                else if true {
-                    bar()
-                  }
-            """),
-        Example("""
-            do {
-                foo()
-            }↓ catch {
+            }
+            else {
                 bar()
             }
-        """):
-            Example("""
-                do {
-                    foo()
-                }
-                catch {
-                    bar()
-                }
             """),
         Example("""
-            do {
-                foo()
-            }↓
-          catch {
-                bar()
-            }
+        do {
+            foo()
+        ↓} catch {
+            bar()
+        }
         """):
             Example("""
-                do {
-                    foo()
-                }
-                catch {
-                    bar()
-                }
+            do {
+                foo()
+            }
+            catch {
+                bar()
+            }
+            """),
+        Example("""
+        do {
+            foo()
+        ↓}
+            catch {
+            bar()
+        }
+        """):
+            Example("""
+            do {
+                foo()
+            }
+            catch {
+                bar()
+            }
             """)
     ]
-
+    
     func testUncuddled() {
         let configuration = ["statement_mode": "uncuddled_else"]
 

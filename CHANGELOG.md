@@ -1,13 +1,5 @@
 ## Main
 
-#### Breaking
-
-* None.
-
-#### Experimental
-
-* None.
-
 #### Enhancements
 
 * Add new `one_declaration_per_file` rule that allows only a
@@ -16,10 +8,6 @@
   
   [Muhammad Zeeshan](https://github.com/mzeeshanid)
   [#2802](https://github.com/realm/SwiftLint/issues/2802)
-
-#### Bug Fixes
-
-* None.
 
 #### Breaking
 

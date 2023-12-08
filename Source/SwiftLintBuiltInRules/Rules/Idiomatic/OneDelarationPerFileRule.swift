@@ -16,6 +16,11 @@ struct OneDelarationPerFileRule: OptInRule {
             Example("""
                     class Foo {}
                     extension Foo {}
+                    """),
+            Example("""
+                    struct S {
+                        struct N {}
+                    }
                     """)
         ],
         triggeringExamples: [
@@ -37,33 +42,34 @@ struct OneDelarationPerFileRule: OptInRule {
 
 private extension OneDelarationPerFileRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        var declarationVisited = false
+        private var declarationVisited = false
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { return .all }
+
+        override func visitPost(_ node: ActorDeclSyntax) {
+            appendViolationIfNeeded(node: node.actorKeyword)
+        }
 
         override func visitPost(_ node: ClassDeclSyntax) {
             appendViolationIfNeeded(node: node.classKeyword)
-            declarationVisited = true
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
             appendViolationIfNeeded(node: node.structKeyword)
-            declarationVisited = true
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
             appendViolationIfNeeded(node: node.enumKeyword)
-            declarationVisited = true
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
             appendViolationIfNeeded(node: node.protocolKeyword)
-            declarationVisited = true
         }
 
         func appendViolationIfNeeded(node: TokenSyntax) {
             if declarationVisited {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
+            declarationVisited = true
         }
     }
 }

@@ -38,6 +38,7 @@ disabled_rules:
   - no_fallthrough_only
   - no_grouping_extension
   - no_magic_numbers
+  - one_declaration_per_file
   - prefer_nimble
   - prefer_self_in_static_references
   - prefixed_toplevel_constant

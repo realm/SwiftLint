@@ -800,6 +800,12 @@ class ObjectLiteralRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class OneDelarationPerFileRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(OneDelarationPerFileRule.description)
+    }
+}
+
 class OpeningBraceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OpeningBraceRule.description)

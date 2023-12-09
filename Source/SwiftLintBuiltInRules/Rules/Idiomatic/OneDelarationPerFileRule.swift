@@ -43,7 +43,7 @@ struct OneDelarationPerFileRule: OptInRule {
 private extension OneDelarationPerFileRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var declarationVisited = false
-        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { return .all }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ActorDeclSyntax) {
             appendViolationIfNeeded(node: node.actorKeyword)

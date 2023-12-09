@@ -6,7 +6,7 @@ struct OneDelarationPerFileRule: OptInRule {
 
     static let description = RuleDescription(
         identifier: "one_declaration_per_file",
-        name: "One Declaration Per File",
+        name: "One Declaration per File",
         description: "Only a single declaration is allowed in a file",
         kind: .idiomatic,
         nonTriggeringExamples: [

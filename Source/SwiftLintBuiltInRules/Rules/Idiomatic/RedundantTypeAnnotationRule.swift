@@ -1,9 +1,9 @@
 import Foundation
-import SwiftSyntax
 import SwiftLintCore
+import SwiftSyntax
 
 struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = RedundantTypeAnnotationConfiguration()
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         Visitor(configuration: configuration, file: file)
@@ -11,6 +11,7 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
 
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
+            configuration: configuration,
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)
         )
@@ -20,15 +21,7 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
 private extension RedundantTypeAnnotationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: VariableDeclSyntax) {
-            // Only take the last binding into account in case multiple
-            // variables are declared on a single line.
-            // If this binding has both a type annotation and an initializer
-            // it means the type annoation is considered redundant.
-            guard let binding = node.bindings.last,
-                  binding.typeAnnotation != nil,
-                  binding.initializer != nil,
-                  !node.attributes.contains(attributeNamed: "IBInspectable")
-            else {
+            guard node.isViolation(for: configuration) else {
                 return
             }
 
@@ -37,8 +30,17 @@ private extension RedundantTypeAnnotationRule {
     }
 
     final class Rewriter: ViolationsSyntaxRewriter {
+        private let configuration: RedundantTypeAnnotationConfiguration
+
+        init(configuration: RedundantTypeAnnotationConfiguration, locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.configuration = configuration
+
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
+        }
+
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard let lastBinding = node.bindings.last,
+            guard node.isViolation(for: configuration),
+                  let lastBinding = node.bindings.last,
                   let typeAnnotation = lastBinding.typeAnnotation,
                   let initializer = lastBinding.initializer
             else {
@@ -61,6 +63,30 @@ private extension RedundantTypeAnnotationRule {
                 node.bindings.dropLast() + [lastBindingWithoutTypeAnnotation]
             ))
         }
+    }
+}
+
+private extension VariableDeclSyntax {
+    func isViolation(for configuration: RedundantTypeAnnotationConfiguration) -> Bool {
+        // Checks if none of the attributes flagged as ignored in the configuration
+        // are set for this declaration
+        let doesNotContainIgnoredAttributes = configuration.ignoredAnnotations.allSatisfy {
+            !self.attributes.contains(attributeNamed: $0)
+        }
+
+        // Only take the last binding into account in case multiple
+        // variables are declared on a single line.
+        // If this binding has both a type annotation and an initializer
+        // it means the type annoation is considered redundant.
+        guard let binding = bindings.last,
+              binding.typeAnnotation != nil,
+              binding.initializer != nil,
+              doesNotContainIgnoredAttributes
+        else {
+            return false
+        }
+
+        return true
     }
 }
 

@@ -143,12 +143,13 @@ def setup_repos
     swiftlint_config = "#{dir}/.swiftlint.yml"
     FileUtils.rm_rf(swiftlint_config)
     if repo.name == 'Wire'
-      File.open(swiftlint_config, 'w') do |file|
-        file.puts('excluded: wire-ios/Templates/Viper')
+      File.open(swiftlint_config, 'a') do |file|
+        file.puts('excluded:')
+        file.puts('  - wire-ios/Templates/Viper')
       end
     end
     if @only_rules_changed && @rules_changed
-      File.open(swiftlint_config, 'w') do |file|
+      File.open(swiftlint_config, 'a') do |file|
         file.puts('only_rules:')
         file.puts(@rules_changed.map { |rule| "  - #{rule}" })
       end

@@ -22,7 +22,8 @@ struct VoidReturnRule: Rule {
             Example("let foo: () -> () async throws -> Void"),
             Example("let foo: () -> () async -> Void"),
             Example("func foo() -> () async throws -> Void {}"),
-            Example("func foo() async throws -> () async -> Void { return {} }")
+            Example("func foo() async throws -> () async -> Void { return {} }"),
+            Example("func foo() -> () async -> Int { 1 }")
         ],
         triggeringExamples: [
             Example("let abc: () -> ↓() = {}"),

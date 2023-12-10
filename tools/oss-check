@@ -45,15 +45,17 @@ end.parse!
 class Repo
   attr_accessor :name
   attr_accessor :github_location
+  attr_accessor :config
   attr_accessor :commit_hash
   attr_accessor :branch_exit_value
   attr_accessor :branch_duration
   attr_accessor :main_exit_value
   attr_accessor :main_duration
 
-  def initialize(name, github_location)
+  def initialize(name, github_location, config=nil)
     @name = name
     @github_location = github_location
+    @config = config
   end
 
   def git_url
@@ -142,10 +144,9 @@ def setup_repos
     perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
     swiftlint_config = "#{dir}/.swiftlint.yml"
     FileUtils.rm_rf(swiftlint_config)
-    if repo.name == 'Wire'
+    if repo.config
       File.open(swiftlint_config, 'a') do |file|
-        file.puts('excluded:')
-        file.puts('  - wire-ios/Templates/Viper')
+        file.puts(repo.config)
       end
     end
     if @only_rules_changed && @rules_changed
@@ -306,7 +307,7 @@ end
   Repo.new('Realm', 'realm/realm-swift'),
   Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
   Repo.new('VLC', 'videolan/vlc-ios'),
-  Repo.new('Wire', 'wireapp/wire-ios'),
+  Repo.new('Wire', 'wireapp/wire-ios', 'excluded: wire-ios/Templates/Viper'),
   Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
 ]
 

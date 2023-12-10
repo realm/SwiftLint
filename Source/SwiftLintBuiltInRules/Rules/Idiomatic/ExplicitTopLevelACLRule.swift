@@ -35,51 +35,35 @@ private extension ExplicitTopLevelACLRule {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.classKeyword)
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.structKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.structKeyword)
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.enumKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.enumKeyword)
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.protocolKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.protocolKeyword)
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.actorKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.actorKeyword)
         }
 
         override func visitPost(_ node: TypeAliasDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.typealiasKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.typealiasKeyword)
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.funcKeyword)
         }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.bindingSpecifier)
         }
 
         override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
@@ -90,11 +74,10 @@ private extension ExplicitTopLevelACLRule {
             .skipChildren
         }
 
-        private func hasViolation(modifiers: DeclModifierListSyntax?) -> Bool {
-            guard let modifiers else {
-                return true
+        private func collectViolations(decl: some WithModifiersSyntax, token: TokenSyntax) {
+            if decl.modifiers.accessLevelModifier == nil {
+                violations.append(token.positionAfterSkippingLeadingTrivia)
             }
-            return !modifiers.contains { $0.asAccessLevelModifier != nil && $0.detail == nil }
         }
     }
 }

@@ -17,6 +17,7 @@
   [#2802](https://github.com/realm/SwiftLint/issues/2802)
 
 * Rewrite the following rules with SwiftSyntax:
+  * `explicit_acl`
   * `identifier_name`
   * `let_var_whitespace`
   * `multiline_literal_brackets`

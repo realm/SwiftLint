@@ -306,6 +306,7 @@ end
   Repo.new('Quick', 'Quick/Quick'),
   Repo.new('Realm', 'realm/realm-swift'),
   Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
+  Repo.new('Swift', 'apple/swift', 'included: stdlib'),
   Repo.new('VLC', 'videolan/vlc-ios'),
   Repo.new('Wire', 'wireapp/wire-ios', 'excluded: wire-ios/Templates/Viper'),
   Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')

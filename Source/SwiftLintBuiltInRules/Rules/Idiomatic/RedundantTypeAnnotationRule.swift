@@ -21,11 +21,14 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
 private extension RedundantTypeAnnotationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard node.isViolation(for: configuration) else {
+            guard node.isViolation(for: configuration),
+                  let binding = node.bindings.last,
+                  let typeAnnotation = binding.typeAnnotation
+            else {
                 return
             }
 
-            violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+            violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
         }
     }
 
@@ -76,16 +79,37 @@ private extension VariableDeclSyntax {
 
         // Only take the last binding into account in case multiple
         // variables are declared on a single line.
-        // If this binding has both a type annotation and an initializer
-        // it means the type annoation is considered redundant.
-        guard let binding = bindings.last,
-              binding.typeAnnotation != nil,
-              binding.initializer != nil,
-              doesNotContainIgnoredAttributes
+        // This binding must have both a type declaration and an initializer
+        // sequence for it to be potentially redundant.
+        guard doesNotContainIgnoredAttributes,
+              let binding = bindings.last,
+              let typeAnnotation = binding.typeAnnotation,
+              let typeName = typeAnnotation.type.as(IdentifierTypeSyntax.self)?.typeName,
+              let initializer = binding.initializer?.value
         else {
             return false
         }
 
+        // If the initializer is a function call (generally a constructor or static builder),
+        // check if the base type is the same as the one from the type annotation.
+        if let functionCall = initializer.as(FunctionCallExprSyntax.self),
+           let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self) {
+            return calledExpression.baseName.text == typeName
+        }
+
+        // If the initializer is a member access (i.e. an enum case or a static property),
+        // check if the base type is the same as the one from the type annotation.
+        if let memberAccess = initializer.as(MemberAccessExprSyntax.self) {
+            guard let base = memberAccess.base?.as(DeclReferenceExprSyntax.self) else {
+                // If the type is implicit, `base` will be nil, meaning there is no redundancy.
+                return false
+            }
+
+            return base.baseName.text == typeName
+        }
+
+        // In other scenarios, it means the initializer is a literal so the type annoation
+        // is considered redundant.
         return true
     }
 }

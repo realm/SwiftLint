@@ -6,6 +6,6 @@ struct RedundantTypeAnnotationConfiguration: SeverityBasedRuleConfiguration {
 
     @ConfigurationElement(key: "severity")
     var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(key: "excluded")
+    @ConfigurationElement(key: "ignored_annotations")
     var ignoredAnnotations = Set<String>(["IBInspectable"])
 }

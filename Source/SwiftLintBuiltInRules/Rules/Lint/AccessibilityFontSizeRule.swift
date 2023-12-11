@@ -43,7 +43,7 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
         return findTextViolations(file: file, substructure: dictionary.substructure)
     }
 
-    /// Recursively check a file for image violations, and return all such violations.
+    /// Recursively check a file for font violations, and return all such violations.
     private func findTextViolations(file: SwiftLintFile, substructure: [SourceKittenDictionary]) -> [StyleViolation] {
         var violations = [StyleViolation]()
         for dictionary in substructure {
@@ -59,9 +59,8 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
                 )
             }
 
-            // If dictionary did not represent an Text, recursively check substructure,
-            // unless it's a container that hides its children from accessibility or is labeled.
-            else if dictionary.substructure.isNotEmpty && dictionary.hasStrictFontModifier(in: file) {
+            // If dictionary did not represent an Text, recursively check substructure.
+            else if dictionary.substructure.isNotEmpty {
                 violations.append(contentsOf: findTextViolations(file: file, substructure: dictionary.substructure))
             }
         }

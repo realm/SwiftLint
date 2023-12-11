@@ -59,7 +59,7 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
                 )
             }
 
-            // If dictionary did not represent an Image, recursively check substructure,
+            // If dictionary did not represent an Text, recursively check substructure,
             // unless it's a container that hides its children from accessibility or is labeled.
             else if dictionary.substructure.isNotEmpty && dictionary.hasStrictFontModifier(in: file) {
                 violations.append(contentsOf: findTextViolations(file: file, substructure: dictionary.substructure))
@@ -73,10 +73,10 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
 // MARK: SourceKittenDictionary extensions
 
 private extension SourceKittenDictionary {
-    /// Whether or not the dictionary represents a SwiftUI Image.
-    /// Currently only accounts for SwiftUI image literals and not instance variables.
+    /// Whether or not the dictionary represents a SwiftUI Text.
+    /// Currently only accounts for SwiftUI text literals and not instance variables.
     var isText: Bool {
-        // Image literals will be reported as calls to the initializer.
+        // Text literals will be reported as calls to the initializer.
         guard expressionKind == .call else {
             return false
         }
@@ -88,8 +88,7 @@ private extension SourceKittenDictionary {
         return substructure.contains(where: { $0.isText })
     }
 
-    /// Whether or not the dictionary represents a SwiftUI View with an `accesibilityLabel(_:)`
-    /// or `accessibility(label:)` modifier.
+    /// Whether or not the dictionary represents a SwiftUI View with an `font(.system())` modifier.
     func hasStrictFontModifier(in file: SwiftLintFile) -> Bool {
         return hasModifier(
             anyOf: [

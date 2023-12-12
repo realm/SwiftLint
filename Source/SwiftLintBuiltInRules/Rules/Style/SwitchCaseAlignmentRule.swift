@@ -43,14 +43,22 @@ struct SwitchCaseAlignmentRule: Rule {
 extension SwitchCaseAlignmentRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchExprSyntax) {
-            let closingBracePosition = node.rightBrace.positionAfterSkippingLeadingTrivia
-            let closingBraceColumn = locationConverter.location(for: closingBracePosition).column
             guard node.cases.isNotEmpty,
                 let firstCasePosition = node.cases.first?.positionAfterSkippingLeadingTrivia
             else {
                 return
             }
 
+            let closingBracePosition = node.rightBrace.positionAfterSkippingLeadingTrivia
+            let closingBraceLocation = locationConverter.location(for: closingBracePosition)
+            let openingBracePosition = node.leftBrace.positionAfterSkippingLeadingTrivia
+            let openingBraceLocation = locationConverter.location(for: openingBracePosition)
+
+            if configuration.ignoreOneLiners && openingBraceLocation.line == closingBraceLocation.line {
+                return
+            }
+
+            let closingBraceColumn = closingBraceLocation.column
             let firstCaseColumn = locationConverter.location(for: firstCasePosition).column
 
             for `case` in node.cases where `case`.is(SwitchCaseSyntax.self) {

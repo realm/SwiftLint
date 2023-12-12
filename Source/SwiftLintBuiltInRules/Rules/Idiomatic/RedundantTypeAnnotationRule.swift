@@ -86,7 +86,8 @@ private extension VariableDeclSyntax {
         guard doesNotContainIgnoredAttributes,
               let binding = bindings.last,
               let typeAnnotation = binding.typeAnnotation,
-              let typeName = typeAnnotation.type.as(IdentifierTypeSyntax.self)?.typeName,
+              let type = typeAnnotation.type.as(IdentifierTypeSyntax.self),
+              let typeName = type.typeName,
               let initializer = binding.initializer?.value
         else {
             return false
@@ -96,7 +97,13 @@ private extension VariableDeclSyntax {
         // check if the base type is the same as the one from the type annotation.
         if let functionCall = initializer.as(FunctionCallExprSyntax.self),
            let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self) {
-            return calledExpression.baseName.text == typeName
+
+            // Parse generic arguments if there are any.
+            var genericArguments = ""
+            if let genericArgumentsClauseBytes = type.genericArguments?.trimmed.syntaxTextBytes {
+                genericArguments = String(bytes: genericArgumentsClauseBytes, encoding: .utf8) ?? ""
+            }
+            return calledExpression.baseName.text == typeName + genericArguments
         }
 
         // If the initializer is a member access (i.e. an enum case or a static property),

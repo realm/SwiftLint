@@ -97,7 +97,6 @@ private extension VariableDeclSyntax {
         // check if the base type is the same as the one from the type annotation.
         if let functionCall = initializer.as(FunctionCallExprSyntax.self),
            let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self) {
-
             // Parse generic arguments if there are any.
             var genericArguments = ""
             if let genericArgumentsClauseBytes = type.genericArguments?.trimmed.syntaxTextBytes {

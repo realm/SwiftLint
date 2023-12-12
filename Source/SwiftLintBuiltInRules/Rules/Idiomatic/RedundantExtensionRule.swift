@@ -24,6 +24,11 @@ struct RedundantExtensionRule: OptInRule {
                     extension Foo {
                         final class Bar {}
                     }
+                    """),
+            Example("""
+                    extension Foo {
+                        struct Bar {}
+                    }
                     """)
         ],
         triggeringExamples: [

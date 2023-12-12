@@ -158,7 +158,8 @@ extension RedundantTypeAnnotationRule {
             }
 
             var direction = Direction.up
-            """)
+            """),
+            Example("var values: Set<Int> = Set([0, 1, 2])")
         ],
         triggeringExamples: [
             Example("var url↓:URL=URL()"),
@@ -182,7 +183,8 @@ extension RedundantTypeAnnotationRule {
             }
 
             var direction↓: Direction = Direction.up
-            """)
+            """),
+            Example("var num: Int = Int.random(0..<10")
         ],
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),
@@ -202,7 +204,8 @@ extension RedundantTypeAnnotationRule {
                 let myVar = Int(5)
               }
             }
-            """)
+            """),
+            Example("var num: Int = Int.random(0..<10)"): Example("var num = Int.random(0..<10)")
         ]
     )
 }

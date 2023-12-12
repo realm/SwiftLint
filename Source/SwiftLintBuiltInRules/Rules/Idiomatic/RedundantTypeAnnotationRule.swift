@@ -88,9 +88,13 @@ private extension VariableDeclSyntax {
               let typeAnnotation = binding.typeAnnotation,
               let type = typeAnnotation.type.as(IdentifierTypeSyntax.self),
               let typeName = type.typeName,
-              let initializer = binding.initializer?.value
+              var initializer = binding.initializer?.value
         else {
             return false
+        }
+
+        if let forceUnwrap = initializer.as(ForceUnwrapExprSyntax.self) {
+            initializer = forceUnwrap.expression
         }
 
         // If the initializer is a function call (generally a constructor or static builder),
@@ -167,6 +171,7 @@ extension RedundantTypeAnnotationRule {
             Example("var url↓: URL = URL()"),
             Example("let url↓: URL = URL()"),
             Example("lazy var url↓: URL = URL()"),
+            Example("let url↓: URL = URL()!"),
             Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"),
             Example("""
             class ViewController: UIViewController {
@@ -184,7 +189,7 @@ extension RedundantTypeAnnotationRule {
 
             var direction↓: Direction = Direction.up
             """),
-            Example("var num: Int = Int.random(0..<10")
+            Example("var num: Int = Int.random(0..<10"),
         ],
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),

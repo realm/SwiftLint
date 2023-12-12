@@ -108,9 +108,15 @@ private extension VariableDeclSyntax {
             return base.baseName.text == typeName
         }
 
+        // If the initializer is a boolean expression, we consider using the `Bool` type
+        // annotation as redundant.
+        if initializer.as(BooleanLiteralExprSyntax.self) != nil {
+            return typeName == "Bool"
+        }
+
         // In other scenarios, it means the initializer is a literal so the type annoation
-        // is considered redundant.
-        return true
+        // is not considered redundant.
+        return false
     }
 }
 

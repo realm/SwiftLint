@@ -35,7 +35,9 @@ private extension RedundantTypeAnnotationRule {
     final class Rewriter: ViolationsSyntaxRewriter {
         private let configuration: RedundantTypeAnnotationConfiguration
 
-        init(configuration: RedundantTypeAnnotationConfiguration, locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+        init(configuration: RedundantTypeAnnotationConfiguration,
+             locationConverter: SourceLocationConverter,
+             disabledRegions: [SourceRange]) {
             self.configuration = configuration
 
             super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)

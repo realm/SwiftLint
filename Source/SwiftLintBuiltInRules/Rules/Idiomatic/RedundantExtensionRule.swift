@@ -19,6 +19,11 @@ struct RedundantExtensionRule: OptInRule {
                     extension Foo {
                         var a: Int { 1 }
                     }
+                    """),
+            Example("""
+                    extension Foo {
+                        final class Bar {}
+                    }
                     """)
         ],
         triggeringExamples: [
@@ -31,31 +36,9 @@ struct RedundantExtensionRule: OptInRule {
 
 private extension RedundantExtensionRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private var isRedundantExtension = false
-        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
-            return .allExcept(VariableDeclSyntax.self, FunctionDeclSyntax.self)
-        }
-
-        override func visitPost(_ node: VariableDeclSyntax) {
-            isRedundantExtension = false
-        }
-
-        override func visitPost(_ node: FunctionDeclSyntax) {
-            isRedundantExtension = false
-        }
-
-        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            isRedundantExtension = true
-            return .visitChildren
-        }
-
         override func visitPost(_ node: ExtensionDeclSyntax) {
-            appendViolationIfNeeded(node: node.extensionKeyword)
-        }
-
-        func appendViolationIfNeeded(node: TokenSyntax) {
-            if isRedundantExtension {
-                violations.append(node.positionAfterSkippingLeadingTrivia)
+            if node.memberBlock.members.isEmpty {
+                violations.append(node.extensionKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
     }

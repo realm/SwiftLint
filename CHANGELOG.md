@@ -71,6 +71,9 @@
   Extensions are an exception; more than one is allowed.  
   [Muhammad Zeeshan](https://github.com/mzeeshanid)
   [#2802](https://github.com/realm/SwiftLint/issues/2802)
+* Rewrite `redundant_type_annotation` rule with SwiftSyntax and add a new `ignored_attributes` option that allows disabling the rule for properties that are marked with at least one of the configured attributes
+  [tonell-m](https://github.com/tonell-m)
+  [#5366](https://github.com/realm/SwiftLint/issues/5366)
 
 * Rewrite the following rules with SwiftSyntax:
   * `explicit_acl`

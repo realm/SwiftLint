@@ -10,6 +10,10 @@
 
 #### Enhancements
 
+* Add a new `ignore_one_liners` option to `switch_case_alignment` rule to ignore switch statements written in a single line.  
+  [tonell-m](https://github.com/tonell-m)
+  [#5373](https://github.com/realm/SwiftLint/issues/5373)
+
 * Add new `one_declaration_per_file` rule that allows only a
   single class/struct/enum/protocol declaration per file.
   Extensions are an exception; more than one is allowed.  

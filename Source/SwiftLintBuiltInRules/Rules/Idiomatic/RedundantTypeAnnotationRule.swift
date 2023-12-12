@@ -95,25 +95,18 @@ private extension VariableDeclSyntax {
 
         // If the initializer is a function call (generally a constructor or static builder),
         // check if the base type is the same as the one from the type annotation.
-        if let functionCall = initializer.as(FunctionCallExprSyntax.self),
-           let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self) {
-            // Parse generic arguments if there are any.
-            var genericArguments = ""
-            if let genericArgumentsClauseBytes = type.genericArguments?.trimmed.syntaxTextBytes {
-                genericArguments = String(bytes: genericArgumentsClauseBytes, encoding: .utf8) ?? ""
-            }
-            return calledExpression.baseName.text == typeName + genericArguments
-        }
-
-        // If the initializer is a member access (i.e. an enum case or a static property),
-        // check if the base type is the same as the one from the type annotation.
-        if let memberAccess = initializer.as(MemberAccessExprSyntax.self) {
-            guard let base = memberAccess.base?.as(DeclReferenceExprSyntax.self) else {
-                // If the type is implicit, `base` will be nil, meaning there is no redundancy.
-                return false
+        if let functionCall = initializer.as(FunctionCallExprSyntax.self) {
+            if let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self) {
+                // Parse generic arguments if there are any.
+                var genericArguments = ""
+                if let genericArgumentsClauseBytes = type.genericArguments?.trimmed.syntaxTextBytes {
+                    genericArguments = String(bytes: genericArgumentsClauseBytes, encoding: .utf8) ?? ""
+                }
+                return calledExpression.baseName.text == typeName + genericArguments
             }
 
-            return base.baseName.text == typeName
+            // If the function call is a member access expression, check if it is a violation
+            return isMemberAccessViolation(node: functionCall.calledExpression, typeName: typeName)
         }
 
         // If the initializer is a boolean expression, we consider using the `Bool` type
@@ -122,9 +115,21 @@ private extension VariableDeclSyntax {
             return typeName == "Bool"
         }
 
-        // In other scenarios, it means the initializer is a literal so the type annoation
-        // is not considered redundant.
-        return false
+        // If the initializer is a member access, check if the base type name is the same as
+        // the type annotation
+        return isMemberAccessViolation(node: initializer, typeName: typeName)
+    }
+
+    /// Checks if the given node is a member access (i.e. an enum case or a static property or function)
+    /// and if so checks if the base type is the same as the given type name.
+    private func isMemberAccessViolation(node: some SyntaxProtocol, typeName: String) -> Bool {
+        guard let memberAccess = node.as(MemberAccessExprSyntax.self),
+              let base = memberAccess.base?.as(DeclReferenceExprSyntax.self) else {
+            // If the type is implicit, `base` will be nil, meaning there is no redundancy.
+            return false
+        }
+
+        return base.baseName.text == typeName
     }
 }
 

@@ -189,7 +189,7 @@ extension RedundantTypeAnnotationRule {
 
             var direction↓: Direction = Direction.up
             """),
-            Example("var num: Int = Int.random(0..<10"),
+            Example("var num: Int = Int.random(0..<10")
         ],
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),

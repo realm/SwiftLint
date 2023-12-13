@@ -264,7 +264,7 @@ private extension DoStmtSyntax {
         var newNode = self
         let originalCatchClauseArray = Array(catchClauses)
         var violationPositions: [AbsolutePosition] = []
-        var newCatchClauses = catchClauses
+        var newCatchClauses = Array(catchClauses)
 
         originalCatchClauseArray.enumerated().forEach { index, clause in
             guard
@@ -291,17 +291,13 @@ private extension DoStmtSyntax {
                 if index == 0 {
                     newNode.body.rightBrace = body.rightBrace.with(\.trailingTrivia, .space)
                 } else {
-                    newCatchClauses = newCatchClauses
-                        .replacing(
-                            childAt: index - 1,
-                            with: originalCatchClauseArray[index - 1].with(\.body.rightBrace.trailingTrivia, .space)
-                        )
+                    newCatchClauses[index-1] = originalCatchClauseArray[index - 1].with(\.body.rightBrace.trailingTrivia, .space)
                 }
                 newClause.catchKeyword = clause.catchKeyword.with(\.leadingTrivia, Trivia())
-                newCatchClauses = newCatchClauses.replacing(childAt: index, with: newClause)
+                newCatchClauses[index] = newClause
             }
         }
-        newNode.catchClauses = newCatchClauses
+        newNode.catchClauses = CatchClauseListSyntax(newCatchClauses)
 
         return violationPositions.isEmpty ? nil : (violationPositions, newNode)
     }
@@ -310,7 +306,7 @@ private extension DoStmtSyntax {
         var newNode = self
         let originalCatchClauseArray = Array(catchClauses)
         var violationPositions: [AbsolutePosition] = []
-        var newCatchClauses = catchClauses
+        var newCatchClauses = Array(catchClauses)
 
         originalCatchClauseArray.enumerated().forEach { index, clause in
             guard
@@ -336,18 +332,14 @@ private extension DoStmtSyntax {
                 if index == 0 {
                     newNode.body.rightBrace = body.rightBrace.with(\.trailingTrivia, Trivia())
                 } else {
-                    newCatchClauses = newCatchClauses
-                        .replacing(
-                            childAt: index - 1,
-                            with: originalCatchClauseArray[index - 1].with(\.body.rightBrace.trailingTrivia, Trivia())
-                        )
+                    newCatchClauses[index - 1] = originalCatchClauseArray[index - 1].with(\.body.rightBrace.trailingTrivia, Trivia())
                 }
                 newClause.catchKeyword = clause.catchKeyword
                     .with(\.leadingTrivia, .newline + .spaces(doKeyword.indentation))
-                newCatchClauses = newCatchClauses.replacing(childAt: index, with: newClause)
+                newCatchClauses[index] = newClause
             }
         }
-        newNode.catchClauses = newCatchClauses
+        newNode.catchClauses = CatchClauseListSyntax(newCatchClauses)
 
         return violationPositions.isEmpty ? nil : (violationPositions, newNode)
     }

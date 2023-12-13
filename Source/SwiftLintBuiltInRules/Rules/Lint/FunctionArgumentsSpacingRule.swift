@@ -18,7 +18,7 @@ struct FunctionArgumentsSpacingRule: Rule {
                 a: true,
                 b: false
             )
-            """),
+            """)
         ],
         triggeringExamples: [
             Example("makeGenerator(↓ )"),
@@ -58,43 +58,36 @@ private extension FunctionArgumentsSpacingRule {
          it checks the trivia at each of the variables and at the paren.
          */
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if let leftParen = node.leftParen {
-                let firstArgument = node.arguments.first
-                // Check that the trivia immediately following the leftParen is spaces(_:),
-                // as it may contain trivia that is not space like blockComment(_:)
-                if let firstArgumentLeadingTrivia = firstArgument?.leadingTrivia {
-                    if !firstArgumentLeadingTrivia.containsNewlines() {
-                        if let firstElementTrivia = firstArgumentLeadingTrivia.reversed().first {
-                            if firstElementTrivia.isSpaces {
-                                violations.append(leftParen.positionAfterSkippingLeadingTrivia)
-                            }
+            guard let leftParen = node.leftParen, let rightParen = node.rightParen else { return }
+            let firstArgument = node.arguments.first
+            // Check that the trivia immediately following the leftParen is spaces(_:),
+            // as it may contain trivia that is not space like blockComment(_:)
+            if let firstArgumentLeadingTrivia = firstArgument?.leadingTrivia,
+               !firstArgumentLeadingTrivia.containsNewlines() {
+                    if let firstElementTrivia = firstArgumentLeadingTrivia.reversed().first {
+                        if firstElementTrivia.isSpaces {
+                            violations.append(leftParen.positionAfterSkippingLeadingTrivia)
                         }
                     }
-                }
-
-                if let trailingTrivia = leftParen.trailingTrivia.first {
-                    if trailingTrivia.isSpaces {
-                        violations.append(leftParen.endPositionBeforeTrailingTrivia)
-                    }
+            }
+            if let trailingTrivia = leftParen.trailingTrivia.first {
+                if trailingTrivia.isSpaces {
+                    violations.append(leftParen.endPositionBeforeTrailingTrivia)
                 }
             }
-
-            if let rightParen = node.rightParen {
-                let lastArgument = node.arguments.last
-                // Check that the trivia immediately preceding the rightParen is spaces(_:),
-                // as it may contain trivia that is not space like blockComment(_:)
-                if let lastElementTrivia = lastArgument?.trailingTrivia.reversed().first {
-                    if lastElementTrivia.isSpaces {
-                        violations.append(rightParen.positionAfterSkippingLeadingTrivia)
-                    }
-                }
-                if let firstArgument = rightParen.leadingTrivia.first {
-                    if firstArgument.isSpaces, let rightParan = node.rightParen {
-                        violations.append(rightParan.endPositionBeforeTrailingTrivia)
-                    }
+            let lastArgument = node.arguments.last
+            // Check that the trivia immediately preceding the rightParen is spaces(_:),
+            // as it may contain trivia that is not space like blockComment(_:)
+            if let lastElementTrivia = lastArgument?.trailingTrivia.reversed().first {
+                if lastElementTrivia.isSpaces {
+                    violations.append(rightParen.positionAfterSkippingLeadingTrivia)
                 }
             }
-            return
+            if let firstArgument = rightParen.leadingTrivia.first {
+                if firstArgument.isSpaces, let rightParan = node.rightParen {
+                    violations.append(rightParan.endPositionBeforeTrailingTrivia)
+                }
+            }
         }
     }
 }

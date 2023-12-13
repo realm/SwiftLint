@@ -86,8 +86,8 @@ internal struct StatementPositionRuleExamples {
         Example("""
         do {
             foo()
-        }
-        ↓catch {
+        ↓}
+        catch {
             bar()
         }
         """)
@@ -124,8 +124,8 @@ internal struct StatementPositionRuleExamples {
         Example("""
         do {
             foo()
-        }
-        ↓catch {
+        ↓}
+        catch {
             bar()
         }
         """): Example("""

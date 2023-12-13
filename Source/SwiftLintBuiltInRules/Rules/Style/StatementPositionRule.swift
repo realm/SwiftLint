@@ -11,25 +11,9 @@ struct StatementPositionRule: SwiftSyntaxCorrectableRule {
             'else' and 'catch' keywords should be at a fixed position relative to the previous block.
         """,
         kind: .style,
-        nonTriggeringExamples: [
-            Example("} else if {"),
-            Example("} else {"),
-            Example("} catch {"),
-            Example("\"}else{\""),
-            Example("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
-            Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)")
-        ],
-        triggeringExamples: [
-            Example("↓}else if {"),
-            Example("↓}  else {"),
-            Example("↓}\ncatch {"),
-            Example("↓}\n\t  catch {")
-        ],
-        corrections: [
-            Example("↓}\n else {"): Example("} else {"),
-            Example("↓}\n   else if {"): Example("} else if {"),
-            Example("↓}\n catch {"): Example("} catch {")
-        ]
+        nonTriggeringExamples: StatementPositionRuleExamples.nonTriggeringExamples,
+        triggeringExamples: StatementPositionRuleExamples.triggeringExamples,
+        corrections: StatementPositionRuleExamples.corrections
     )
 
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
@@ -181,8 +165,7 @@ private extension IfExprSyntax {
     var elseBeforeIfKeyword: TokenSyntax? {
         if
             ifKeyword.previousToken(viewMode: .sourceAccurate)?.isElseKeyword == true,
-            let elseBeforeIfKeyword = ifKeyword.previousToken(viewMode: .sourceAccurate)
-        {
+            let elseBeforeIfKeyword = ifKeyword.previousToken(viewMode: .sourceAccurate) {
             return elseBeforeIfKeyword
         }
 
@@ -204,7 +187,7 @@ private extension IfExprSyntax {
             elseKeyword.leadingTrivia.isEmpty,
             body.rightBrace.trailingTrivia.isSingleSpace == true
         else {
-            violationPosition = body.rightBrace.endPositionBeforeTrailingTrivia
+            violationPosition = body.rightBrace.positionAfterSkippingLeadingTrivia
 
             newNode.elseKeyword = elseKeyword.with(\.leadingTrivia, Trivia())
             newNode.body.rightBrace = self.body.rightBrace.with(\.trailingTrivia, .space)
@@ -218,7 +201,7 @@ private extension IfExprSyntax {
     func uncuddledModeViolationPosition() -> (position: AbsolutePosition, newNode: IfExprSyntax)? {
         func processViolation(elseKeyword: TokenSyntax, indentaion: Int) -> (AbsolutePosition, IfExprSyntax) {
             var newNode = self
-            let violationPosition = body.rightBrace.endPositionBeforeTrailingTrivia
+            let violationPosition = body.rightBrace.positionAfterSkippingLeadingTrivia
 
             newNode.elseKeyword = elseKeyword.with(\.leadingTrivia, .newline + .spaces(indentaion))
             newNode.body.rightBrace = self.body.rightBrace.with(\.trailingTrivia, Trivia())
@@ -282,7 +265,7 @@ private extension DoStmtSyntax {
             // If either of the above conditions are not met, record the violation position and update the clause
             if !hasEmptyLeadingTrivia || !trailingTriviaSingleSpace {
                 violationPositions.append(
-                    (index == 0 ? body.rightBrace : previousRightBrace).endPositionBeforeTrailingTrivia
+                    (index == 0 ? body.rightBrace : previousRightBrace).positionAfterSkippingLeadingTrivia
                 )
 
                 var newClause = clause
@@ -291,7 +274,7 @@ private extension DoStmtSyntax {
                 if index == 0 {
                     newNode.body.rightBrace = body.rightBrace.with(\.trailingTrivia, .space)
                 } else {
-                    newCatchClauses[index-1] = originalCatchClauseArray[index - 1].with(\.body.rightBrace.trailingTrivia, .space)
+                    newCatchClauses[index - 1] = originalCatchClauseArray[index - 1].with(\.body.rightBrace.trailingTrivia, .space)
                 }
                 newClause.catchKeyword = clause.catchKeyword.with(\.leadingTrivia, Trivia())
                 newCatchClauses[index] = newClause
@@ -323,7 +306,7 @@ private extension DoStmtSyntax {
             // If any of the conditions are not met, record the violation position and update the clause
             if !hasNewline || !trailingTriviaEmpty || indentationMismatch {
                 violationPositions.append(
-                    (index == 0 ? body.rightBrace : previousRightBrace).endPositionBeforeTrailingTrivia
+                    (index == 0 ? body.rightBrace : previousRightBrace).positionAfterSkippingLeadingTrivia
                 )
 
                 var newClause = clause

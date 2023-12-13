@@ -12,7 +12,13 @@ struct FunctionArgumentsSpacingRule: Rule {
         nonTriggeringExamples: [
             Example("makeGenerator()"),
             Example("makeGenerator(style)"),
-            Example("makeGenerator(true, false)")
+            Example("makeGenerator(true, false)"),
+            Example("""
+            makeGenerator(
+                a: true,
+                b: false
+            )
+            """),
         ],
         triggeringExamples: [
             Example("makeGenerator(↓ )"),
@@ -57,9 +63,11 @@ private extension FunctionArgumentsSpacingRule {
                 // Check that the trivia immediately following the leftParen is spaces(_:),
                 // as it may contain trivia that is not space like blockComment(_:)
                 if let firstArgumentLeadingTrivia = firstArgument?.leadingTrivia {
-                    if let firstElementTrivia = firstArgumentLeadingTrivia.reversed().first {
-                        if firstElementTrivia.isSpaces {
-                            violations.append(leftParen.positionAfterSkippingLeadingTrivia)
+                    if !firstArgumentLeadingTrivia.containsNewlines() {
+                        if let firstElementTrivia = firstArgumentLeadingTrivia.reversed().first {
+                            if firstElementTrivia.isSpaces {
+                                violations.append(leftParen.positionAfterSkippingLeadingTrivia)
+                            }
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-struct RedundantTypeAnnotationConfiguration: RuleConfiguration, Equatable {    
+struct RedundantTypeAnnotationConfiguration: RuleConfiguration, Equatable {
     typealias Parent = RedundantTypeAnnotationRule
 
     @ConfigurationElement(key: "severity")

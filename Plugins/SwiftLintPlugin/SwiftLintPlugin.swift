@@ -45,6 +45,7 @@ struct SwiftLintPlugin: BuildToolPlugin {
         environment: [String: String],
         pluginWorkDirectory path: Path
     ) -> [Command] {
+        // Don't lint anything if there are no Swift source files in this target
         guard !swiftFiles.isEmpty
         else { return [] }
         // Outputs the environment to the build log for reference.

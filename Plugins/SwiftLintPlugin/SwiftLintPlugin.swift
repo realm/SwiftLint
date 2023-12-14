@@ -50,7 +50,7 @@ struct SwiftLintPlugin: BuildToolPlugin {
         else { return [] }
         // Outputs the environment to the build log for reference.
         print("Environment:", environment)
-        var arguments = [
+        let arguments: [String] = [
             "lint",
             "--quiet",
             // We always pass all of the Swift source files in the target to the tool,
@@ -59,17 +59,17 @@ struct SwiftLintPlugin: BuildToolPlugin {
             "--force-exclude"
         ]
         // Determine whether we need to enable cache or not (for Xcode Cloud we don't)
+        let cacheArguments: [String]
         if ProcessInfo.processInfo.environment["CI_XCODE_CLOUD"] == "TRUE" {
-            arguments.append("--no-cache")
+            cacheArguments = ["--no-cache"]
         } else {
-            arguments.append("--cache-path")
-            arguments.append("\(path)")
+            cacheArguments = ["--cache-path", "\(path)"]
         }
-        return swiftFiles.isEmpty ? [] : [
+        return [
             .prebuildCommand(
                 displayName: "SwiftLint",
                 executable: executable.path,
-                arguments: arguments + swiftFiles.map(\.string),
+                arguments: arguments + cacheArguments + swiftFiles.map(\.string),
                 environment: environment,
                 outputFilesDirectory: path.appending("Output"))
         ]

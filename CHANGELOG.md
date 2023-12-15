@@ -12,7 +12,7 @@
 
 * Add new `redundant_extension` rule that detects redundant extensions.
   An extension is considered redundant if it does not define any
-  members, but only conformances.
+  members, but only conformances.  
   [Muhammad Zeeshan](https://github.com/mzeeshanid)
   [#5359](https://github.com/realm/SwiftLint/issues/5359)
 

@@ -20,7 +20,7 @@ steps:
   - label: "Danger"
     commands:
       - echo "--- Install Bundler"
-      - gem install bundler
+      - gem install bundler -v 2.4.22
       - echo "--- Bundle Install"
       - bundle install
       - echo "+++ Run Danger"

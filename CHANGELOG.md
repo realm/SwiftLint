@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* Add a new `ignore_one_liners` option to `switch_case_alignment` rule to ignore switch statements written in a single line.  
+* Add new `ignore_one_liners` option to `switch_case_alignment` 
+  rule to ignore switch statements written in a single line.  
   [tonell-m](https://github.com/tonell-m)
   [#5373](https://github.com/realm/SwiftLint/issues/5373)
 

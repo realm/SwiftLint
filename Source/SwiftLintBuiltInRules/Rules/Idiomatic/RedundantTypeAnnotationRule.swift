@@ -2,12 +2,9 @@ import Foundation
 import SwiftLintCore
 import SwiftSyntax
 
-struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule
+struct RedundantTypeAnnotationRule: OptInRule {
     var configuration = RedundantTypeAnnotationConfiguration()
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
-        Visitor(configuration: configuration, file: file)
-    }
 
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(

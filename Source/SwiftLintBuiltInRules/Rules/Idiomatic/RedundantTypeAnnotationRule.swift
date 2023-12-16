@@ -6,6 +6,82 @@ import SwiftSyntax
 struct RedundantTypeAnnotationRule: OptInRule {
     var configuration = RedundantTypeAnnotationConfiguration()
 
+    static let description = RuleDescription(
+        identifier: "redundant_type_annotation",
+        name: "Redundant Type Annotation",
+        description: "Variables should not have redundant type annotation",
+        kind: .idiomatic,
+        nonTriggeringExamples: [
+            Example("var url = URL()"),
+            Example("var url: CustomStringConvertible = URL()"),
+            Example("@IBInspectable var color: UIColor = UIColor.white"),
+            Example("""
+            enum Direction {
+                case up
+                case down
+            }
+
+            var direction: Direction = .up
+            """),
+            Example("""
+            enum Direction {
+                case up
+                case down
+            }
+
+            var direction = Direction.up
+            """),
+            Example("var values: Set<Int> = Set([0, 1, 2])")
+        ],
+        triggeringExamples: [
+            Example("var url↓:URL=URL()"),
+            Example("var url↓:URL = URL(string: \"\")"),
+            Example("var url↓: URL = URL()"),
+            Example("let url↓: URL = URL()"),
+            Example("lazy var url↓: URL = URL()"),
+            Example("let url↓: URL = URL()!"),
+            Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"),
+            Example("""
+            class ViewController: UIViewController {
+              func someMethod() {
+                let myVar↓: Int = Int(5)
+              }
+            }
+            """),
+            Example("var isEnabled↓: Bool = true"),
+            Example("""
+            enum Direction {
+                case up
+                case down
+            }
+
+            var direction↓: Direction = Direction.up
+            """),
+            Example("var num: Int = Int.random(0..<10")
+        ],
+        corrections: [
+            Example("var url↓: URL = URL()"): Example("var url = URL()"),
+            Example("let url↓: URL = URL()"): Example("let url = URL()"),
+            Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"):
+                Example("let alphanumerics = CharacterSet.alphanumerics"),
+            Example("""
+            class ViewController: UIViewController {
+              func someMethod() {
+                let myVar↓: Int = Int(5)
+              }
+            }
+            """):
+            Example("""
+            class ViewController: UIViewController {
+              func someMethod() {
+                let myVar = Int(5)
+              }
+            }
+            """),
+            Example("var num: Int = Int.random(0..<10)"): Example("var num = Int.random(0..<10)")
+        ]
+    )
+
     func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
         Rewriter(
             configuration: configuration,
@@ -132,82 +208,4 @@ private extension VariableDeclSyntax {
 
         return base.baseName.text == typeName
     }
-}
-
-extension RedundantTypeAnnotationRule {
-    static let description = RuleDescription(
-        identifier: "redundant_type_annotation",
-        name: "Redundant Type Annotation",
-        description: "Variables should not have redundant type annotation",
-        kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("var url = URL()"),
-            Example("var url: CustomStringConvertible = URL()"),
-            Example("@IBInspectable var color: UIColor = UIColor.white"),
-            Example("""
-            enum Direction {
-                case up
-                case down
-            }
-
-            var direction: Direction = .up
-            """),
-            Example("""
-            enum Direction {
-                case up
-                case down
-            }
-
-            var direction = Direction.up
-            """),
-            Example("var values: Set<Int> = Set([0, 1, 2])")
-        ],
-        triggeringExamples: [
-            Example("var url↓:URL=URL()"),
-            Example("var url↓:URL = URL(string: \"\")"),
-            Example("var url↓: URL = URL()"),
-            Example("let url↓: URL = URL()"),
-            Example("lazy var url↓: URL = URL()"),
-            Example("let url↓: URL = URL()!"),
-            Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"),
-            Example("""
-            class ViewController: UIViewController {
-              func someMethod() {
-                let myVar↓: Int = Int(5)
-              }
-            }
-            """),
-            Example("var isEnabled↓: Bool = true"),
-            Example("""
-            enum Direction {
-                case up
-                case down
-            }
-
-            var direction↓: Direction = Direction.up
-            """),
-            Example("var num: Int = Int.random(0..<10")
-        ],
-        corrections: [
-            Example("var url↓: URL = URL()"): Example("var url = URL()"),
-            Example("let url↓: URL = URL()"): Example("let url = URL()"),
-            Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"):
-                Example("let alphanumerics = CharacterSet.alphanumerics"),
-            Example("""
-            class ViewController: UIViewController {
-              func someMethod() {
-                let myVar↓: Int = Int(5)
-              }
-            }
-            """):
-            Example("""
-            class ViewController: UIViewController {
-              func someMethod() {
-                let myVar = Int(5)
-              }
-            }
-            """),
-            Example("var num: Int = Int.random(0..<10)"): Example("var num = Int.random(0..<10)")
-        ]
-    )
 }

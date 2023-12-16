@@ -3,7 +3,7 @@ import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct RedundantTypeAnnotationRule: OptInRule {
+struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = RedundantTypeAnnotationConfiguration()
 
     static let description = RuleDescription(
@@ -15,6 +15,9 @@ struct RedundantTypeAnnotationRule: OptInRule {
             Example("var url = URL()"),
             Example("var url: CustomStringConvertible = URL()"),
             Example("@IBInspectable var color: UIColor = UIColor.white"),
+            Example("var one: Int = 1, two: Int = 2, three: Int"),
+            Example("guard let url = URL() else { return }"),
+            Example("if let url = URL() { return }"),
             Example("""
             enum Direction {
                 case up
@@ -40,6 +43,9 @@ struct RedundantTypeAnnotationRule: OptInRule {
             Example("let url↓: URL = URL()"),
             Example("lazy var url↓: URL = URL()"),
             Example("let url↓: URL = URL()!"),
+            Example("var one: Int = 1, two↓: Int = Int(5), three: Int"),
+            Example("guard let url↓: URL = URL() else { return }"),
+            Example("if let url↓: URL = URL() { return }"),
             Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"),
             Example("""
             class ViewController: UIViewController {
@@ -57,11 +63,14 @@ struct RedundantTypeAnnotationRule: OptInRule {
 
             var direction↓: Direction = Direction.up
             """),
-            Example("var num: Int = Int.random(0..<10")
+            Example("var num↓: Int = Int.random(0..<10")
         ],
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),
             Example("let url↓: URL = URL()"): Example("let url = URL()"),
+            Example("var one: Int = 1, two↓: Int = Int(5), three: Int"): Example("var one: Int = 1, two = Int(5), three: Int"),
+            Example("guard let url↓: URL = URL() else { return }"): Example("guard let url = URL() else { return }"),
+            Example("if let url↓: URL = URL() { return }"): Example("if let url = URL() { return }"),
             Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"):
                 Example("let alphanumerics = CharacterSet.alphanumerics"),
             Example("""
@@ -93,10 +102,28 @@ struct RedundantTypeAnnotationRule: OptInRule {
 
 private extension RedundantTypeAnnotationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: VariableDeclSyntax) {
-            guard node.isViolation(for: configuration),
-                  let binding = node.bindings.last,
-                  let typeAnnotation = binding.typeAnnotation
+        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+            guard node.doesNotContainIgnoredAttributes(for: configuration) else {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
+        override func visitPost(_ node: PatternBindingSyntax) {
+            guard let typeAnnotation = node.typeAnnotation,
+                  let initializer = node.initializer?.value,
+                  typeAnnotation.isRedundant(for: configuration, initializerExpr: initializer)
+            else {
+                return
+            }
+
+            violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
+        }
+
+        override func visitPost(_ node: OptionalBindingConditionSyntax) {
+            guard let typeAnnotation = node.typeAnnotation,
+                  let initializer = node.initializer?.value,
+                  typeAnnotation.isRedundant(for: configuration, initializerExpr: initializer)
             else {
                 return
             }
@@ -117,10 +144,16 @@ private extension RedundantTypeAnnotationRule {
         }
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard node.isViolation(for: configuration),
-                  let lastBinding = node.bindings.last,
-                  let typeAnnotation = lastBinding.typeAnnotation,
-                  let initializer = lastBinding.initializer
+            guard node.doesNotContainIgnoredAttributes(for: configuration) else {
+                return DeclSyntax(node)
+            }
+            return super.visit(node)
+        }
+
+        override func visit(_ node: PatternBindingSyntax) -> PatternBindingSyntax {
+            guard let typeAnnotation = node.typeAnnotation,
+                  let initializer = node.initializer,
+                  typeAnnotation.isRedundant(for: configuration, initializerExpr: initializer.value)
             else {
                 return super.visit(node)
             }
@@ -131,43 +164,55 @@ private extension RedundantTypeAnnotationRule {
             // between the variable name and the '=' sign
             let initializerWithLeadingWhitespace = initializer
                 .with(\.leadingTrivia, Trivia.space)
-            // Set the type annotation of the last binding to nil to remove redundancy
-            let lastBindingWithoutTypeAnnotation = lastBinding
-                .with(\.typeAnnotation, nil)
-                .with(\.initializer, initializerWithLeadingWhitespace)
 
-            return super.visit(node.with(
-                \.bindings,
-                node.bindings.dropLast() + [lastBindingWithoutTypeAnnotation]
-            ))
+            return super.visit(
+                node.with(\.typeAnnotation, nil)
+                    .with(\.initializer, initializerWithLeadingWhitespace)
+            )
+        }
+
+        override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
+            guard let typeAnnotation = node.typeAnnotation,
+                  let initializer = node.initializer,
+                  typeAnnotation.isRedundant(for: configuration, initializerExpr: initializer.value)
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
+
+            // Add a leading whitespace to the initializer sequence so there is one
+            // between the variable name and the '=' sign
+            let initializerWithLeadingWhitespace = initializer
+                .with(\.leadingTrivia, Trivia.space)
+
+            return super.visit(
+                node.with(\.typeAnnotation, nil)
+                    .with(\.initializer, initializerWithLeadingWhitespace)
+            )
         }
     }
 }
 
-private extension VariableDeclSyntax {
-    func isViolation(for configuration: RedundantTypeAnnotationConfiguration) -> Bool {
-        // Checks if none of the attributes flagged as ignored in the configuration
-        // are set for this declaration
-        let doesNotContainIgnoredAttributes = configuration.ignoredAnnotations.allSatisfy {
-            !self.attributes.contains(attributeNamed: $0)
-        }
-
-        // Only take the last binding into account in case multiple
-        // variables are declared on a single line.
-        // This binding must have both a type declaration and an initializer
-        // sequence for it to be potentially redundant.
-        guard doesNotContainIgnoredAttributes,
-              let binding = bindings.last,
-              let typeAnnotation = binding.typeAnnotation,
-              let type = typeAnnotation.type.as(IdentifierTypeSyntax.self),
-              let typeName = type.typeName,
-              var initializer = binding.initializer?.value
+private extension TypeAnnotationSyntax {
+    func isRedundant(for configuration: RedundantTypeAnnotationConfiguration,
+                             initializerExpr: ExprSyntax) -> Bool {
+        // Extract type and type name from type annotation
+        guard let type = type.as(IdentifierTypeSyntax.self),
+              let typeName = type.typeName
         else {
             return false
         }
 
+        var initializer = initializerExpr
         if let forceUnwrap = initializer.as(ForceUnwrapExprSyntax.self) {
             initializer = forceUnwrap.expression
+        }
+
+        // If the initializer is a boolean expression, we consider using the `Bool` type
+        // annotation as redundant.
+        if initializer.is(BooleanLiteralExprSyntax.self) {
+            return typeName == "Bool"
         }
 
         // If the initializer is a function call (generally a constructor or static builder),
@@ -186,12 +231,6 @@ private extension VariableDeclSyntax {
             return isMemberAccessViolation(node: functionCall.calledExpression, typeName: typeName)
         }
 
-        // If the initializer is a boolean expression, we consider using the `Bool` type
-        // annotation as redundant.
-        if initializer.as(BooleanLiteralExprSyntax.self) != nil {
-            return typeName == "Bool"
-        }
-
         // If the initializer is a member access, check if the base type name is the same as
         // the type annotation
         return isMemberAccessViolation(node: initializer, typeName: typeName)
@@ -207,5 +246,15 @@ private extension VariableDeclSyntax {
         }
 
         return base.baseName.text == typeName
+    }
+}
+
+private extension VariableDeclSyntax {
+    /// Checks if none of the attributes flagged as ignored in the configuration
+    /// are set for this declaration
+    func doesNotContainIgnoredAttributes(for configuration: RedundantTypeAnnotationConfiguration) -> Bool {
+        configuration.ignoredAnnotations.allSatisfy {
+            !attributes.contains(attributeNamed: $0)
+        }
     }
 }

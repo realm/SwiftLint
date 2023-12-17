@@ -89,21 +89,21 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),
             Example("let url↓: URL = URL()"): Example("let url = URL()"),
-            Example("var one: Int = 1, two↓: Int = Int(5), three: Int"): 
+            Example("var one: Int = 1, two↓: Int = Int(5), three: Int"):
                 Example("var one: Int = 1, two = Int(5), three: Int"),
-            Example("guard let url↓: URL = URL() else { return }"): 
+            Example("guard let url↓: URL = URL() else { return }"):
                 Example("guard let url = URL() else { return }"),
-            Example("if let url↓: URL = URL() { return }"): 
+            Example("if let url↓: URL = URL() { return }"):
                 Example("if let url = URL() { return }"),
             Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"):
                 Example("let alphanumerics = CharacterSet.alphanumerics"),
-            Example("var set↓: Set<Int> = Set<Int>([])"): 
+            Example("var set↓: Set<Int> = Set<Int>([])"):
                 Example("var set = Set<Int>([])"),
-            Example("var set↓: Set<Int> = Set<Int>.init([])"): 
+            Example("var set↓: Set<Int> = Set<Int>.init([])"):
                 Example("var set = Set<Int>.init([])"),
-            Example("var set↓: Set = Set<Int>([])"): 
+            Example("var set↓: Set = Set<Int>([])"):
                 Example("var set = Set<Int>([])"),
-            Example("var set↓: Set = Set<Int>.init([])"): 
+            Example("var set↓: Set = Set<Int>.init([])"):
                 Example("var set = Set<Int>.init([])"),
             Example("guard var set↓: Set<Int> = Set<Int>([]) else { return }"):
                 Example("guard var set = Set<Int>([]) else { return }"),

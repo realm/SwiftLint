@@ -31,6 +31,9 @@
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5347](https://github.com/realm/SwiftLint/pull/5347)
+
+* Add new `final_test_case` rule that triggers on non-final test classes.  
+  [SimplyDanny](https://github.com/SimplyDanny)
   
 * Allow to configure more operators in `identifier_name` rule. The new option
   is named `additional_operators`. Use it to add more operators to the list

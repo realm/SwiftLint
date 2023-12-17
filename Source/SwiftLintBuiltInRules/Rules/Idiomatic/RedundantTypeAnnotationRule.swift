@@ -299,7 +299,7 @@ private extension VariableDeclSyntax {
     /// Checks if none of the attributes flagged as ignored in the configuration
     /// are set for this declaration
     func doesNotContainIgnoredAttributes(for configuration: RedundantTypeAnnotationConfiguration) -> Bool {
-        configuration.ignoredAnnotations.allSatisfy {
+        configuration.ignoreAttributes.allSatisfy {
             !attributes.contains(attributeNamed: $0)
         }
     }

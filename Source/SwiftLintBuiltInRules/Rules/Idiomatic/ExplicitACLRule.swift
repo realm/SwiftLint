@@ -71,8 +71,9 @@ struct ExplicitACLRule: OptInRule {
             """),
             Example("""
             private extension Foo {
-                var isValid: Bool {
-                    true
+                var isValid: Bool { true }
+                struct S {
+                    let b = 2
                 }
             }
             """)
@@ -91,13 +92,28 @@ struct ExplicitACLRule: OptInRule {
             extension Foo {
                 ↓func bar() {}
             }
+            """),
+            Example("""
+            public extension E {
+                let a = 1
+                struct S {
+                    ↓let b = 2
+                }
+            }
             """)
         ]
     )
 }
 
+private enum CheckACLState {
+    case yes
+    case no // swiftlint:disable:this identifier_name
+}
+
 private extension ExplicitACLRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private var declScope = Stack<CheckACLState>()
+
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
             [
                 FunctionDeclSyntax.self,
@@ -110,12 +126,22 @@ private extension ExplicitACLRule {
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
             collectViolations(decl: node, token: node.actorKeyword)
+            declScope.push(.yes)
             return node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren
+        }
+
+        override func visitPost(_ node: ActorDeclSyntax) {
+            declScope.pop()
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
             collectViolations(decl: node, token: node.classKeyword)
+            declScope.push(.yes)
             return node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren
+        }
+
+        override func visitPost(_ node: ClassDeclSyntax) {
+            declScope.pop()
         }
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
@@ -127,12 +153,22 @@ private extension ExplicitACLRule {
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            node.modifiers.accessLevelModifier != nil ? .skipChildren : .visitChildren
+            declScope.push(node.modifiers.accessLevelModifier != nil ? .no : .yes)
+            return node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren
+        }
+
+        override func visitPost(_ node: ExtensionDeclSyntax) {
+            declScope.pop()
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
             collectViolations(decl: node, token: node.enumKeyword)
+            declScope.push(.yes)
             return node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren
+        }
+
+        override func visitPost(_ node: EnumDeclSyntax) {
+            declScope.pop()
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
@@ -149,7 +185,12 @@ private extension ExplicitACLRule {
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
             collectViolations(decl: node, token: node.structKeyword)
+            declScope.push(.yes)
             return node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren
+        }
+
+        override func visitPost(_ node: StructDeclSyntax) {
+            declScope.pop()
         }
 
         override func visitPost(_ node: SubscriptDeclSyntax) {
@@ -166,7 +207,7 @@ private extension ExplicitACLRule {
 
         private func collectViolations(decl: some WithModifiersSyntax, token: TokenSyntax) {
             let aclModifiers = decl.modifiers.filter { $0.asAccessLevelModifier != nil }
-            if aclModifiers.isEmpty || aclModifiers.allSatisfy({ $0.detail != nil }) {
+            if declScope.peek() != .no, aclModifiers.isEmpty || aclModifiers.allSatisfy({ $0.detail != nil }) {
                 violations.append(token.positionAfterSkippingLeadingTrivia)
             }
         }

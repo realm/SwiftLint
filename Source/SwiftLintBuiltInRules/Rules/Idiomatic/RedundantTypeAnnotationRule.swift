@@ -18,6 +18,18 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("var one: Int = 1, two: Int = 2, three: Int"),
             Example("guard let url = URL() else { return }"),
             Example("if let url = URL() { return }"),
+            Example("let alphanumerics = CharacterSet.alphanumerics"),
+            Example("var set: Set<Int> = Set([])"),
+            Example("var set: Set<Int> = Set.init([])"),
+            Example("var set = Set<Int>([])"),
+            Example("var set = Set<Int>.init([])"),
+            Example("guard var set: Set<Int> = Set([]) else { return }"),
+            Example("if var set: Set<Int> = Set.init([]) { return }"),
+            Example("guard var set = Set<Int>([]) else { return }"),
+            Example("if var set = Set<Int>.init([]) { return }"),
+            Example("var one: A<T> = B()"),
+            Example("var one: A = B<T>()"),
+            Example("var one: A<T> = B<T>()"),
             Example("""
             enum Direction {
                 case up
@@ -47,6 +59,15 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("guard let url↓: URL = URL() else { return }"),
             Example("if let url↓: URL = URL() { return }"),
             Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"),
+            Example("var set↓: Set<Int> = Set<Int>([])"),
+            Example("var set↓: Set<Int> = Set<Int>.init([])"),
+            Example("var set↓: Set = Set<Int>([])"),
+            Example("var set↓: Set = Set<Int>.init([])"),
+            Example("guard var set↓: Set = Set<Int>([]) else { return }"),
+            Example("if var set↓: Set = Set<Int>.init([]) { return }"),
+            Example("guard var set↓: Set<Int> = Set<Int>([]) else { return }"),
+            Example("if var set↓: Set<Int> = Set<Int>.init([]) { return }"),
+            Example("var set↓: Set = Set<Int>([]), otherSet: Set<Int>"),
             Example("""
             class ViewController: UIViewController {
               func someMethod() {
@@ -68,11 +89,28 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),
             Example("let url↓: URL = URL()"): Example("let url = URL()"),
-            Example("var one: Int = 1, two↓: Int = Int(5), three: Int"): Example("var one: Int = 1, two = Int(5), three: Int"),
-            Example("guard let url↓: URL = URL() else { return }"): Example("guard let url = URL() else { return }"),
-            Example("if let url↓: URL = URL() { return }"): Example("if let url = URL() { return }"),
+            Example("var one: Int = 1, two↓: Int = Int(5), three: Int"): 
+                Example("var one: Int = 1, two = Int(5), three: Int"),
+            Example("guard let url↓: URL = URL() else { return }"): 
+                Example("guard let url = URL() else { return }"),
+            Example("if let url↓: URL = URL() { return }"): 
+                Example("if let url = URL() { return }"),
             Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"):
                 Example("let alphanumerics = CharacterSet.alphanumerics"),
+            Example("var set↓: Set<Int> = Set<Int>([])"): 
+                Example("var set = Set<Int>([])"),
+            Example("var set↓: Set<Int> = Set<Int>.init([])"): 
+                Example("var set = Set<Int>.init([])"),
+            Example("var set↓: Set = Set<Int>([])"): 
+                Example("var set = Set<Int>([])"),
+            Example("var set↓: Set = Set<Int>.init([])"): 
+                Example("var set = Set<Int>.init([])"),
+            Example("guard var set↓: Set<Int> = Set<Int>([]) else { return }"):
+                Example("guard var set = Set<Int>([]) else { return }"),
+            Example("if var set↓: Set<Int> = Set<Int>.init([]) { return }"):
+                Example("if var set = Set<Int>.init([]) { return }"),
+            Example("var set↓: Set = Set<Int>([]), otherSet: Set<Int>"):
+                Example("var set = Set<Int>([]), otherSet: Set<Int>"),
             Example("""
             class ViewController: UIViewController {
               func someMethod() {
@@ -196,13 +234,12 @@ private extension RedundantTypeAnnotationRule {
 
 private extension TypeAnnotationSyntax {
     func isRedundant(for configuration: RedundantTypeAnnotationConfiguration,
-                             initializerExpr: ExprSyntax) -> Bool {
+                     initializerExpr: ExprSyntax) -> Bool {
         // Extract type and type name from type annotation
-        guard let type = type.as(IdentifierTypeSyntax.self),
-              let typeName = type.typeName
-        else {
+        guard let type = type.as(IdentifierTypeSyntax.self) else {
             return false
         }
+        let typeName = type.trimmedDescription
 
         var initializer = initializerExpr
         if let forceUnwrap = initializer.as(ForceUnwrapExprSyntax.self) {
@@ -219,33 +256,42 @@ private extension TypeAnnotationSyntax {
         // check if the base type is the same as the one from the type annotation.
         if let functionCall = initializer.as(FunctionCallExprSyntax.self) {
             if let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self) {
-                // Parse generic arguments if there are any.
-                var genericArguments = ""
-                if let genericArgumentsClauseBytes = type.genericArguments?.trimmed.syntaxTextBytes {
-                    genericArguments = String(bytes: genericArgumentsClauseBytes, encoding: .utf8) ?? ""
-                }
-                return calledExpression.baseName.text == typeName + genericArguments
+                return calledExpression.baseName.text == typeName
+            }
+            // Parse generic arguments in the intializer if there are any (e.g. var s = Set<Int>(...))
+            if let genericSpecialization = functionCall.calledExpression.as(GenericSpecializationExprSyntax.self) {
+                // In this case it should be considered redundant if the type name is the same in the type annotation
+                // E.g. var s: Set = Set<Int>() should trigger a violation
+                return genericSpecialization.expression.trimmedDescription == type.typeName
             }
 
             // If the function call is a member access expression, check if it is a violation
-            return isMemberAccessViolation(node: functionCall.calledExpression, typeName: typeName)
+            return isMemberAccessViolation(node: functionCall.calledExpression, type: type)
         }
 
         // If the initializer is a member access, check if the base type name is the same as
         // the type annotation
-        return isMemberAccessViolation(node: initializer, typeName: typeName)
+        return isMemberAccessViolation(node: initializer, type: type)
     }
 
     /// Checks if the given node is a member access (i.e. an enum case or a static property or function)
     /// and if so checks if the base type is the same as the given type name.
-    private func isMemberAccessViolation(node: some SyntaxProtocol, typeName: String) -> Bool {
+    private func isMemberAccessViolation(node: some SyntaxProtocol, type: IdentifierTypeSyntax) -> Bool {
         guard let memberAccess = node.as(MemberAccessExprSyntax.self),
-              let base = memberAccess.base?.as(DeclReferenceExprSyntax.self) else {
+              let base = memberAccess.base
+        else {
             // If the type is implicit, `base` will be nil, meaning there is no redundancy.
             return false
         }
 
-        return base.baseName.text == typeName
+        // Parse generic arguments in the intializer if there are any (e.g. var s = Set<Int>(...))
+        if let genericSpecialization = base.as(GenericSpecializationExprSyntax.self) {
+            // In this case it should be considered redundant if the type name is the same in the type annotation
+            // E.g. var s: Set = Set<Int>() should trigger a violation
+            return genericSpecialization.expression.trimmedDescription == type.typeName
+        }
+
+        return base.trimmedDescription == type.trimmedDescription
     }
 }
 

@@ -1,4 +1,3 @@
-import Foundation
 import SwiftLintCore
 import SwiftSyntax
 
@@ -140,15 +139,9 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
 
 private extension RedundantTypeAnnotationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard node.doesNotContainIgnoredAttributes(for: configuration) else {
-                return .skipChildren
-            }
-            return .visitChildren
-        }
-
         override func visitPost(_ node: PatternBindingSyntax) {
-            guard let typeAnnotation = node.typeAnnotation,
+            guard node.parentDoesNotContainIgnoredAttributes(for: configuration),
+                  let typeAnnotation = node.typeAnnotation,
                   let initializer = node.initializer?.value,
                   typeAnnotation.isRedundant(for: configuration, initializerExpr: initializer)
             else {
@@ -181,15 +174,9 @@ private extension RedundantTypeAnnotationRule {
             super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
         }
 
-        override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard node.doesNotContainIgnoredAttributes(for: configuration) else {
-                return DeclSyntax(node)
-            }
-            return super.visit(node)
-        }
-
         override func visit(_ node: PatternBindingSyntax) -> PatternBindingSyntax {
-            guard let typeAnnotation = node.typeAnnotation,
+            guard node.parentDoesNotContainIgnoredAttributes(for: configuration),
+                  let typeAnnotation = node.typeAnnotation,
                   let initializer = node.initializer,
                   typeAnnotation.isRedundant(for: configuration, initializerExpr: initializer.value)
             else {
@@ -295,12 +282,15 @@ private extension TypeAnnotationSyntax {
     }
 }
 
-private extension VariableDeclSyntax {
+private extension PatternBindingSyntax {
     /// Checks if none of the attributes flagged as ignored in the configuration
-    /// are set for this declaration
-    func doesNotContainIgnoredAttributes(for configuration: RedundantTypeAnnotationConfiguration) -> Bool {
-        configuration.ignoreAttributes.allSatisfy {
-            !attributes.contains(attributeNamed: $0)
+    /// are set for this node's parent's parent, if it's a variable declaration
+    func parentDoesNotContainIgnoredAttributes(for configuration: RedundantTypeAnnotationConfiguration) -> Bool {
+        guard let variableDecl = parent?.parent?.as(VariableDeclSyntax.self) else {
+            return true
+        }
+        return configuration.ignoreAttributes.allSatisfy {
+            !variableDecl.attributes.contains(attributeNamed: $0)
         }
     }
 }

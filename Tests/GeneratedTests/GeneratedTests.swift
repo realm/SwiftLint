@@ -986,6 +986,12 @@ class RedundantDiscardableLetRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class RedundantExtensionRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantExtensionRule.description)
+    }
+}
+
 class RedundantNilCoalescingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantNilCoalescingRule.description)

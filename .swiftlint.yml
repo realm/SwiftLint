@@ -43,6 +43,7 @@ disabled_rules:
   - prefer_nimble
   - prefer_self_in_static_references
   - prefixed_toplevel_constant
+  - redundant_extension
   - redundant_self_in_closure
   - required_deinit
   - self_binding

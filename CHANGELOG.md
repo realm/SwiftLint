@@ -109,6 +109,10 @@
 
 #### Enhancements
 
+* Add `Accessibility Font Size` rule to warn if a SwiftUI Text
+  has a fixed font size.  
+  [MartijnAmbagtsheer](https://github.com/MartijnAmbagtsheer)
+
 * Add `only` configuration option to `todo` rule which allows to specify
   whether the rule shall trigger on `TODO`s, `FIXME`s or both.  
   [gibachan](https://github.com/gibachan)

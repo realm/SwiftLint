@@ -290,7 +290,7 @@ private extension TypeAnnotationSyntax {
 
     /// Checks if the given node is a member access (i.e. an enum case or a static property or function)
     /// and if so checks if the base type is the same as the given type name.
-    private func isMemberAccessViolation(node: some SyntaxProtocol, type: IdentifierTypeSyntax) -> Bool {
+    private func isMemberAccessViolation(node: ExprSyntax, type: IdentifierTypeSyntax) -> Bool {
         guard let memberAccess = node.as(MemberAccessExprSyntax.self),
               let base = memberAccess.base
         else {

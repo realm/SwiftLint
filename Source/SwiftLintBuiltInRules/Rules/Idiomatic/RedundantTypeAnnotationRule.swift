@@ -13,7 +13,6 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
         nonTriggeringExamples: [
             Example("var url = URL()"),
             Example("var url: CustomStringConvertible = URL()"),
-            Example("@IBInspectable var color: UIColor = UIColor.white"),
             Example("var one: Int = 1, two: Int = 2, three: Int"),
             Example("guard let url = URL() else { return }"),
             Example("if let url = URL() { return }"),
@@ -45,7 +44,13 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
 
             var direction = Direction.up
             """),
-            Example("var values: Set<Int> = Set([0, 1, 2])")
+            Example("@IgnoreMe var a: Int = Int(5)", configuration: ["ignore_attributes": ["IgnoreMe"]]),
+            Example("""
+            var a: Int = {
+                @IgnoreMe let i: Int = Int(1)
+                return i
+            }
+            """, configuration: ["ignore_attributes": ["IgnoreMe"]])
         ],
         triggeringExamples: [
             Example("var url↓:URL=URL()"),
@@ -67,6 +72,7 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("guard var set↓: Set<Int> = Set<Int>([]) else { return }"),
             Example("if var set↓: Set<Int> = Set<Int>.init([]) { return }"),
             Example("var set↓: Set = Set<Int>([]), otherSet: Set<Int>"),
+            Example("var num↓: Int = Int.random(0..<10)"),
             Example("""
             class ViewController: UIViewController {
               func someMethod() {
@@ -83,7 +89,14 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
 
             var direction↓: Direction = Direction.up
             """),
-            Example("var num↓: Int = Int.random(0..<10")
+            Example("@DontIgnoreMe var a↓: Int = Int(5)", configuration: ["ignore_attributes": ["IgnoreMe"]]),
+            Example("""
+            @IgnoreMe
+            var a: Int = {
+                let i↓: Int = Int(1)
+                return i
+            }
+            """, configuration: ["ignore_attributes": ["IgnoreMe"]])
         ],
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),
@@ -124,7 +137,21 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
               }
             }
             """),
-            Example("var num: Int = Int.random(0..<10)"): Example("var num = Int.random(0..<10)")
+            Example("var num: Int = Int.random(0..<10)"): Example("var num = Int.random(0..<10)"),
+            Example("""
+            @IgnoreMe
+            var a: Int = {
+                let i↓: Int = Int(1)
+                return i
+            }
+            """, configuration: ["ignore_attributes": ["IgnoreMe"]]):
+            Example("""
+            @IgnoreMe
+            var a: Int = {
+                let i = Int(1)
+                return i
+            }
+            """)
         ]
     )
 

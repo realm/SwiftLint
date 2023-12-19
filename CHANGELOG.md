@@ -91,12 +91,15 @@
   * `orphaned_doc_comment`
   * `trailing_closure`
   * `void_return`
+  * `redundant_type_annotation`
 
   [SimplyDanny](https://github.com/SimplyDanny)  
   [kishikawakatsumi](https://github.com/kishikawakatsumi)  
   [Marcelo Fabri](https://github.com/marcelofabri)  
   [swiftty](https://github.com/swiftty)  
   [KS1019](https://github.com/KS1019)  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [tonell-m](https://github.com/tonell-m)
 
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)

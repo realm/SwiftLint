@@ -29,10 +29,12 @@
   * `multiline_literal_brackets`
   * `opening_brace`
   * `void_return`
+  * `redundant_type_annotation`
 
   [SimplyDanny](https://github.com/SimplyDanny)  
   [kishikawakatsumi](https://github.com/kishikawakatsumi)  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  [tonell-m](https://github.com/tonell-m)
 
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)

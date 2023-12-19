@@ -93,11 +93,14 @@ extension SwitchCaseAlignmentRule {
         }
 
         var triggeringExamples: [Example] {
-            return (indentedCasesOption ? nonIndentedCases : indentedCases) + invalidCases
+            return (indentedCasesOption ? nonIndentedCases : indentedCases)
+                + invalidCases
+                + [getOneLinerExample(ignoreOneLiners: false)]
         }
 
         var nonTriggeringExamples: [Example] {
             return indentedCasesOption ? indentedCases : nonIndentedCases
+                + [getOneLinerExample(ignoreOneLiners: true)]
         }
 
         private var indentedCases: [Example] {
@@ -223,6 +226,15 @@ extension SwitchCaseAlignmentRule {
                 }
                 """)
             ]
+        }
+
+        private func getOneLinerExample(ignoreOneLiners: Bool) -> Example {
+            let marker = ignoreOneLiners ? "" : violationMarker
+
+            return Example(
+                "switch i { \(marker)case .x: 1 \(marker)default: 0 }",
+                configuration: ["ignore_one_liners": ignoreOneLiners]
+            )
         }
     }
 }

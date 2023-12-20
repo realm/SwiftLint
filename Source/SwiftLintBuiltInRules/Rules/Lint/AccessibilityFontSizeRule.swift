@@ -96,7 +96,7 @@ private extension SourceKittenDictionary {
                     arguments: [
                         .init(
                             name: "",
-                            values: [".system"],
+                            values: [".system("],
                             matchType: .prefix)
                     ]
                 )

@@ -265,7 +265,7 @@ extension SwitchCaseAlignmentRule {
                 Example("""
                 let a = switch i {
                 case .x: 1 default: 0 }
-                """, configuration: ["ignore_one_liners": true]),
+                """, configuration: ["ignore_one_liners": true])
             ]
         }
     }

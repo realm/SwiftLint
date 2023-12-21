@@ -157,24 +157,6 @@ extension Configuration {
         ruleList: RuleList,
         rulesMode: RulesMode
     ) {
-        var enabledInParentRules: Set<String> = []
-        var disabledInParentRules: Set<String> = []
-        var allEnabledRules: Set<String> = []
-
-        // If our configuration is the default, precalculate some values
-        if case .default(let disabledRules, let optInRules) = rulesMode {
-            if case .only(let onlyRules) = parentConfiguration?.rulesMode {
-                enabledInParentRules = onlyRules
-            } else if case .default(let parentDisabledRules, let parentOptInRules) = parentConfiguration?.rulesMode {
-                enabledInParentRules = parentOptInRules
-                disabledInParentRules = parentDisabledRules
-            }
-            allEnabledRules = enabledInParentRules
-                .subtracting(disabledInParentRules)
-                .union(optInRules)
-                .subtracting(disabledRules)
-        }
-
         for key in dict.keys where !validGlobalKeys.contains(key) {
             guard let identifier = ruleList.identifier(for: key),
                 let ruleType = ruleList.list[identifier] else {
@@ -188,6 +170,21 @@ extension Configuration {
                 let issue = validateConfiguredRuleIsEnabled(onlyRules: onlyRules, ruleType: ruleType)
                 issue?.print()
             case let .default(disabled: disabledRules, optIn: optInRules):
+                var enabledInParentRules: Set<String> = []
+                var disabledInParentRules: Set<String> = []
+                var allEnabledRules: Set<String> = []
+
+                if case .only(let onlyRules) = parentConfiguration?.rulesMode {
+                    enabledInParentRules = onlyRules
+                } else if case .default(let parentDisabledRules, let parentOptInRules) = parentConfiguration?.rulesMode {
+                    enabledInParentRules = parentOptInRules
+                    disabledInParentRules = parentDisabledRules
+                }
+                allEnabledRules = enabledInParentRules
+                    .subtracting(disabledInParentRules)
+                    .union(optInRules)
+                    .subtracting(disabledRules)
+
                 let issue = validateConfiguredRuleIsEnabled(
                     parentConfiguration: parentConfiguration,
                     enabledInParentRules: enabledInParentRules,

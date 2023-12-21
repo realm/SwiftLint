@@ -21,7 +21,7 @@ public enum Issue: LocalizedError, Equatable {
     case invalidRuleIDs(Set<String>)
 
     /// Found a rule configuration for a rule that is not present in only_rules.
-    case ruleNotPresentInOnlyRules(ruleID: String)
+    case configurationForRuleNotPresentInOnlyRules(ruleID: String)
 
     /// Found a rule configuration for a rule that is disabled.
     case ruleDisabledInDisabledRules(ruleID: String)
@@ -119,7 +119,7 @@ public enum Issue: LocalizedError, Equatable {
             return "Configuration for '\(id)' rule contains the invalid key(s) \(keys.formatted)."
         case let .invalidRuleIDs(ruleIDs):
             return "The key(s) \(ruleIDs.formatted) used as rule identifier(s) is/are invalid."
-        case let .ruleNotPresentInOnlyRules(id):
+        case let .configurationForRuleNotPresentInOnlyRules(id):
             return "Found a configuration for '\(id)' rule, but it is not present on " +
                    "'\(Configuration.Key.onlyRules.rawValue)'."
         case let .ruleDisabledInDisabledRules(id):

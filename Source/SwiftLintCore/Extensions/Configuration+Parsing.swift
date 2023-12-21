@@ -204,7 +204,7 @@ extension Configuration {
         ruleType: any Rule.Type
     ) -> Issue? {
         if onlyRules.isDisjoint(with: ruleType.description.allIdentifiers) {
-            return Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)
+            return Issue.configurationForRuleNotPresentInOnlyRules(ruleID: ruleType.identifier)
         }
         return nil
     }

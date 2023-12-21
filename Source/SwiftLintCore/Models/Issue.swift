@@ -20,19 +20,19 @@ public enum Issue: LocalizedError, Equatable {
     /// Used rule IDs are invalid.
     case invalidRuleIDs(Set<String>)
 
-    /// Found a rule configuration for a rule that is not present in only_rules.
+    /// Found a rule configuration for a rule that is not present in `only_rules`.
     case configurationForRuleNotPresentInOnlyRules(ruleID: String)
 
     /// Found a rule configuration for a rule that is disabled.
     case ruleDisabledInDisabledRules(ruleID: String)
 
-    /// Found a rule configuration for a rule that is disabled in the parent configuration
+    /// Found a rule configuration for a rule that is disabled in the parent configuration.
     case ruleDisabledInParentConfiguration(ruleID: String)
 
-    /// Found a rule configuration for a rule that is not enabled in opt_in_rules
+    /// Found a rule configuration for a rule that is not enabled in `opt_in_rules`.
     case ruleNotEnabledInOptInRules(ruleID: String)
 
-    /// Found a rule configuration for a rule that is not enabled in parent only_rules.
+    /// Found a rule configuration for a rule that is not enabled in parent `only_rules`.
     case ruleNotEnabledInParentOnlyRules(ruleID: String)
 
     /// A generic warning specified by a string.

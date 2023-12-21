@@ -34,7 +34,11 @@
 
 * Add new `final_test_case` rule that triggers on non-final test classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
-  
+
+* Add new `discouraged_void_return` rule that triggers on return statements
+  in `Void` functions if the statement returns an expression.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Allow to configure more operators in `identifier_name` rule. The new option
   is named `additional_operators`. Use it to add more operators to the list
   of default operators known to the rule.  

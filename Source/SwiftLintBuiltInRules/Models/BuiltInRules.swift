@@ -43,6 +43,7 @@ public let builtInRules: [any Rule.Type] = [
     DiscouragedObjectLiteralRule.self,
     DiscouragedOptionalBooleanRule.self,
     DiscouragedOptionalCollectionRule.self,
+    DiscouragedVoidReturnRule.self,
     DuplicateConditionsRule.self,
     DuplicateEnumCasesRule.self,
     DuplicateImportsRule.self,

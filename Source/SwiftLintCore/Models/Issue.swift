@@ -131,7 +131,7 @@ public enum Issue: LocalizedError, Equatable {
             return "Found a configuration for '\(id)' rule, but it is not enabled on " +
                    "'\(Configuration.Key.optInRules.rawValue)'."
         case let .ruleNotEnabledInParentOnlyRules(id):
-            return "Found a configuration for '\(id)' rule, but it is not present in the parent " +
+            return "Found a configuration for '\(id)' rule, but it is not present in the parent's " +
                    "'\(Configuration.Key.onlyRules.rawValue)'."
         case let .genericWarning(message), let .genericError(message):
             return message

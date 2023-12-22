@@ -428,7 +428,6 @@ extension ConfigurationTests {
     }
 
     private func testDefaultConfigurationDisabledRuleWarnings(for ruleType: any Rule.Type) {
-        let ruleType = ImplicitReturnRule.self
         XCTAssertTrue((ruleType as Any) is any OptInRule.Type)
         let ruleIdentifier = ruleType.identifier
 

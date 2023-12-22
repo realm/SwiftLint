@@ -121,6 +121,8 @@
 
 * Add new `non_optional_string_data_conversion` rule to enforce 
   non-failable conversions of UTF-8 `String` <-> `Data`.    
+* Add new `non_optional_string_data_conversion` rule to enforce
+  non-failable conversions of UTF-8 `String` <-> `Data`.  
   [Ben P](https://github.com/ben-p-commits)
   [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
@@ -194,7 +196,7 @@
   are defined in a tuple like `let (a, b) = (5, 10)` or `let a = (2, 3)`.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5305](https://github.com/realm/SwiftLint/pull/5305)
-  
+
 * Silence `pattern_matching_keywords` rule when an identifier is referenced
   in the argument list of a matching enum case.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -277,7 +279,6 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5277](https://github.com/realm/SwiftLint/issues/5277)
 
-* Fix false positive in `unused_import` rule that triggered on 
 * Fix false positive in `unused_import` rule that triggered on
   `@_exported` imports which could break downstream modules if removed.  
   [jszumski](https://github.com/jszumski)

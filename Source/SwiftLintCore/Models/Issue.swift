@@ -120,15 +120,15 @@ public enum Issue: LocalizedError, Equatable {
         case let .invalidRuleIDs(ruleIDs):
             return "The key(s) \(ruleIDs.formatted) used as rule identifier(s) is/are invalid."
         case let .configurationForRuleNotPresentInOnlyRules(id):
-            return "Found a configuration for '\(id)' rule, but it is not present on " +
+            return "Found a configuration for '\(id)' rule, but it is not present in " +
                    "'\(Configuration.Key.onlyRules.rawValue)'."
         case let .ruleDisabledInDisabledRules(id):
-            return "Found a configuration for '\(id)' rule, but it is disabled on " +
+            return "Found a configuration for '\(id)' rule, but it is disabled in " +
                    "'\(Configuration.Key.disabledRules.rawValue)'."
         case let .ruleDisabledInParentConfiguration(id):
             return "Found a configuration for '\(id)' rule, but it is disabled in a parent configuration."
         case let .ruleNotEnabledInOptInRules(id):
-            return "Found a configuration for '\(id)' rule, but it is not enabled on " +
+            return "Found a configuration for '\(id)' rule, but it is not enabled in " +
                    "'\(Configuration.Key.optInRules.rawValue)'."
         case let .ruleNotEnabledInParentOnlyRules(id):
             return "Found a configuration for '\(id)' rule, but it is not present in the parent's " +

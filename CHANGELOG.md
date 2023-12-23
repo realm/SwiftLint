@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Add modified configurations to examples in rule documentation.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Bug Fixes
 

@@ -124,4 +124,8 @@ public extension String {
             .map { String(repeating: " ", count: spaces) + $0 }
             .joined(separator: "\n")
     }
+
+    func linesPrefixed(with prefix: Self) -> Self {
+        split(separator: "\n").joined(separator: "\n\(prefix)")
+    }
 }

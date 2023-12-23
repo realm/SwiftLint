@@ -621,8 +621,12 @@ extension ConfigurationTests {
         )
 
         XCTAssertEqual(
-            Set(configuration1.rulesWrapper.allRulesWrapped.map { $0.rule.configurationDescription.oneLiner() }),
-            Set(configuration2.rulesWrapper.allRulesWrapped.map { $0.rule.configurationDescription.oneLiner() })
+            Set(configuration1.rulesWrapper.allRulesWrapped.map {
+                $0.rule.createConfigurationDescription().oneLiner()
+            }),
+            Set(configuration2.rulesWrapper.allRulesWrapped.map {
+                $0.rule.createConfigurationDescription().oneLiner()
+            })
         )
 
         XCTAssertEqual(Set(configuration1.includedPaths), Set(configuration2.includedPaths))

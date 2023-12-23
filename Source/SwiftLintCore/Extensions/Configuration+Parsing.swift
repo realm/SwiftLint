@@ -176,7 +176,10 @@ extension Configuration {
 
                 if case .only(let onlyRules) = parentConfiguration?.rulesMode {
                     enabledInParentRules = onlyRules
-                } else if case .default(let parentDisabledRules, let parentOptInRules) = parentConfiguration?.rulesMode {
+                } else if case .default(
+                    let parentDisabledRules,
+                    let parentOptInRules
+                ) = parentConfiguration?.rulesMode {
                     enabledInParentRules = parentOptInRules
                     disabledInParentRules = parentDisabledRules
                 }

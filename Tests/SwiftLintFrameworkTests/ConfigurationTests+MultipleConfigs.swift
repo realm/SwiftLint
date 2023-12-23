@@ -547,7 +547,10 @@ extension ConfigurationTests {
         }
 
         let testCases = [
-            TestCase(onlyRules: [], expectedIssue: Issue.configurationForRuleNotPresentInOnlyRules(ruleID: ruleType.identifier)),
+            TestCase(
+                onlyRules: [],
+                expectedIssue: Issue.configurationForRuleNotPresentInOnlyRules(ruleID: ruleType.identifier)
+            ),
             TestCase(onlyRules: [ruleType.identifier], expectedIssue: nil)
         ]
 

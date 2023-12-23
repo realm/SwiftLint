@@ -22,6 +22,7 @@ public enum Issue: LocalizedError, Equatable {
 
     /// Found a rule configuration for a rule that is not present in `only_rules`.
     case configurationForRuleNotPresentInOnlyRules(ruleID: String)
+    // swiftlint:disable:previous identifier_name
 
     /// Found a rule configuration for a rule that is disabled.
     case ruleDisabledInDisabledRules(ruleID: String)

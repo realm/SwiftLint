@@ -31,6 +31,9 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#70](https://github.com/realm/SwiftLint/issues/70)
 
+* Add modified configurations to examples in rule documentation.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Add new `one_declaration_per_file` rule that allows only a
   single class/struct/enum/protocol declaration per file.
   Extensions are an exception; more than one is allowed.  

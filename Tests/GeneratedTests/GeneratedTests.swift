@@ -248,12 +248,6 @@ class DiscouragedOptionalCollectionRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-class DiscouragedVoidReturnRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DiscouragedVoidReturnRule.description)
-    }
-}
-
 class DuplicateConditionsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicateConditionsRule.description)

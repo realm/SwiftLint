@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
+@SwiftSyntaxRule(explicitRewriter: true)
 struct ReturnValueFromVoidFunctionRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -25,6 +25,30 @@ private extension ReturnValueFromVoidFunctionRule {
             }
         }
     }
+
+    final class Rewriter: ViolationsSyntaxRewriter {
+        override func visit(_ statements: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
+            guard let returnStmt = statements.last?.item.as(ReturnStmtSyntax.self),
+                  let expr = returnStmt.expression,
+                  Syntax(statements).enclosingFunction()?.returnsVoid == true else {
+                return super.visit(statements)
+            }
+            correctionPositions.append(returnStmt.positionAfterSkippingLeadingTrivia)
+            let newStmtList = Array(statements.dropLast()) + [
+                CodeBlockItemSyntax(item: .expr(expr))
+                    .with(\.leadingTrivia, returnStmt.leadingTrivia),
+                CodeBlockItemSyntax(item: .stmt(StmtSyntax(
+                    returnStmt
+                        .with(\.expression, nil)
+                        .with(
+                            \.leadingTrivia,
+                            .newline + (returnStmt.leadingTrivia.indentation(isOnNewline: false) ?? []))
+                        .with(\.trailingTrivia, returnStmt.trailingTrivia)
+                )))
+            ]
+            return super.visit(CodeBlockItemListSyntax(newStmtList))
+        }
+    }
 }
 
 private extension Syntax {
@@ -43,10 +67,10 @@ private extension Syntax {
 
 private extension FunctionDeclSyntax {
     var returnsVoid: Bool {
-        if let type = signature.returnClause?.type.as(IdentifierTypeSyntax.self) {
-            return type.name.text == "Void"
+        guard let type = signature.returnClause?.type else {
+            return true
         }
-
-        return signature.returnClause?.type == nil
+        return type.as(IdentifierTypeSyntax.self)?.name.text == "Void"
+            || type.as(TupleTypeSyntax.self)?.elements.isEmpty == true
     }
 }

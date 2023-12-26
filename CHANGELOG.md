@@ -35,8 +35,8 @@
 * Add new `final_test_case` rule that triggers on non-final test classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* Add new `discouraged_void_return` rule that triggers on return statements
-  in `Void` functions if the statement returns an expression.  
+* Trigger on `-> ()` return signatures in `return_value_from_void_function`
+  rule. Moreover, support automatic fixes for obvious cases.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
 * Allow to configure more operators in `identifier_name` rule. The new option

@@ -55,6 +55,9 @@
   [Ben P](https://github.com/ben-p-commits)
   [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
+* Rewrite `mark` rule using SwiftSyntax.
+  [swiftty](https://github.com/swiftty)
+
 #### Bug Fixes
 
 * Silence `discarded_notification_center_observer` rule in closures. Furthermore,

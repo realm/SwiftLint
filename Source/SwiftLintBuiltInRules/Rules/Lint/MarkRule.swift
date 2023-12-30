@@ -73,12 +73,12 @@ private extension TokenSyntax {
 
         private static let goodPattern = [
             "^// MARK: \(oneOrMoreHyphen) \(anyText)$",
-            "^// MARK: \(oneOrMoreHyphen)$",
-            "^// MARK: \(nonSpaceOrHyphen)+\(anyText)?$",
+            "^// MARK: \(oneOrMoreHyphen) ?$",
+            "^// MARK: \(nonSpaceOrHyphen)+ ?\(anyText)?$",
             "^// MARK:$",
 
             // comment start with `Mark ...` is ignored
-            "^\(twoOrThreeSlashes) [Mm]ark[^:]"
+            "^\(twoOrThreeSlashes) +[Mm]ark[^:]"
         ].map(nonCapturingGroup).joined(separator: "|")
 
         private static let badPattern = capturingGroup([

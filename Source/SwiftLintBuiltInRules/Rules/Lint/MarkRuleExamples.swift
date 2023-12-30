@@ -3,13 +3,16 @@ internal struct MarkRuleExamples {
         Example("// MARK: good"),
         Example("// MARK: - good"),
         Example("// MARK: -"),
+        Example("// MARK: - "),
         Example("// BOOKMARK"),
         Example("//BOOKMARK"),
         Example("// BOOKMARKS"),
         Example("// MARK: This is good."),
         Example("// MARK: - This is good."),
         Example("// MARK: --- This is good. ---"),
+        Example("// MARK: – This is dash separator"),
         Example("// Mark text"),
+        Example("//  MarkdownText.swift"),
         Example("""
         // MARK: good
         func foo() {

@@ -18,7 +18,7 @@
 
 * Add new `ignore_attributes` option to `redundant_type_annotation` rule
   that allows disabling the rule for properties that are marked with at least
-  one of the configured attributes
+  one of the configured attributes.
   [tonell-m](https://github.com/tonell-m)
   [#5366](https://github.com/realm/SwiftLint/issues/5366)
 
@@ -28,8 +28,8 @@
   * `let_var_whitespace`
   * `multiline_literal_brackets`
   * `opening_brace`
-  * `void_return`
   * `redundant_type_annotation`
+  * `void_return`
 
   [SimplyDanny](https://github.com/SimplyDanny)  
   [kishikawakatsumi](https://github.com/kishikawakatsumi)  

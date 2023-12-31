@@ -46,7 +46,7 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
             """),
             Example("@IgnoreMe var a: Int = Int(5)", configuration: ["ignore_attributes": ["IgnoreMe"]]),
             Example("""
-            var a: Int = {
+            var a: Int {
                 @IgnoreMe let i: Int = Int(1)
                 return i
             }
@@ -92,7 +92,7 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("@DontIgnoreMe var a↓: Int = Int(5)", configuration: ["ignore_attributes": ["IgnoreMe"]]),
             Example("""
             @IgnoreMe
-            var a: Int = {
+            var a: Int {
                 let i↓: Int = Int(1)
                 return i
             }
@@ -140,14 +140,14 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("var num: Int = Int.random(0..<10)"): Example("var num = Int.random(0..<10)"),
             Example("""
             @IgnoreMe
-            var a: Int = {
+            var a: Int {
                 let i↓: Int = Int(1)
                 return i
             }
             """, configuration: ["ignore_attributes": ["IgnoreMe"]]):
             Example("""
             @IgnoreMe
-            var a: Int = {
+            var a: Int {
                 let i = Int(1)
                 return i
             }

@@ -170,7 +170,7 @@ private extension RedundantTypeAnnotationRule {
             guard node.parentDoesNotContainIgnoredAttributes(for: configuration),
                   let typeAnnotation = node.typeAnnotation,
                   let initializer = node.initializer?.value,
-                  typeAnnotation.isRedundant(for: configuration, initializerExpr: initializer)
+                  typeAnnotation.isRedundant(with: initializer)
             else {
                 return
             }
@@ -181,7 +181,7 @@ private extension RedundantTypeAnnotationRule {
         override func visitPost(_ node: OptionalBindingConditionSyntax) {
             guard let typeAnnotation = node.typeAnnotation,
                   let initializer = node.initializer?.value,
-                  typeAnnotation.isRedundant(for: configuration, initializerExpr: initializer)
+                  typeAnnotation.isRedundant(with: initializer)
             else {
                 return
             }
@@ -191,9 +191,9 @@ private extension RedundantTypeAnnotationRule {
     }
 
     final class Rewriter: ViolationsSyntaxRewriter {
-        private let configuration: RedundantTypeAnnotationConfiguration
+        private let configuration: ConfigurationType
 
-        init(configuration: RedundantTypeAnnotationConfiguration,
+        init(configuration: ConfigurationType,
              locationConverter: SourceLocationConverter,
              disabledRegions: [SourceRange]) {
             self.configuration = configuration
@@ -205,7 +205,7 @@ private extension RedundantTypeAnnotationRule {
             guard node.parentDoesNotContainIgnoredAttributes(for: configuration),
                   let typeAnnotation = node.typeAnnotation,
                   let initializer = node.initializer,
-                  typeAnnotation.isRedundant(for: configuration, initializerExpr: initializer.value)
+                  typeAnnotation.isRedundant(with: initializer.value)
             else {
                 return super.visit(node)
             }
@@ -226,7 +226,7 @@ private extension RedundantTypeAnnotationRule {
         override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
             guard let typeAnnotation = node.typeAnnotation,
                   let initializer = node.initializer,
-                  typeAnnotation.isRedundant(for: configuration, initializerExpr: initializer.value)
+                  typeAnnotation.isRedundant(with: initializer.value)
             else {
                 return super.visit(node)
             }
@@ -247,8 +247,7 @@ private extension RedundantTypeAnnotationRule {
 }
 
 private extension TypeAnnotationSyntax {
-    func isRedundant(for configuration: RedundantTypeAnnotationConfiguration,
-                     initializerExpr: ExprSyntax) -> Bool {
+    func isRedundant(with initializerExpr: ExprSyntax) -> Bool {
         // Extract type and type name from type annotation
         guard let type = type.as(IdentifierTypeSyntax.self) else {
             return false

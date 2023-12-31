@@ -247,24 +247,24 @@ extension SwitchCaseAlignmentRule {
                 ),
                 Example("""
                 switch i {
-                case .x: 1 default: 0 }
+                \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
                 """, configuration: ["ignore_one_liners": true]),
                 Example("""
-                switch i { case .x: 1 default: 0
+                switch i { \(violationMarker)case .x: 1 \(violationMarker)default: 0
                 }
                 """, configuration: ["ignore_one_liners": true]),
                 Example("""
                 switch i
-                { case .x: 1 default: 0 }
+                { \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
                 """, configuration: ["ignore_one_liners": true]),
                 Example("""
                 let a = switch i {
-                case .x: 1 default: 0
+                case .x: 1 \(violationMarker)default: 0
                 }
                 """, configuration: ["ignore_one_liners": true]),
                 Example("""
                 let a = switch i {
-                case .x: 1 default: 0 }
+                \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
                 """, configuration: ["ignore_one_liners": true])
             ]
         }

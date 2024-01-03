@@ -274,7 +274,8 @@ private extension DoStmtSyntax {
                 if index == 0 {
                     newNode.body.rightBrace = body.rightBrace.with(\.trailingTrivia, .space)
                 } else {
-                    newCatchClauses[index - 1] = originalCatchClauseArray[index - 1].with(\.body.rightBrace.trailingTrivia, .space)
+                    let originalCatchClause = originalCatchClauseArray[index - 1]
+                    newCatchClauses[index - 1] = originalCatchClause.with(\.body.rightBrace.trailingTrivia, .space)
                 }
                 newClause.catchKeyword = clause.catchKeyword.with(\.leadingTrivia, Trivia())
                 newCatchClauses[index] = newClause
@@ -315,7 +316,8 @@ private extension DoStmtSyntax {
                 if index == 0 {
                     newNode.body.rightBrace = body.rightBrace.with(\.trailingTrivia, Trivia())
                 } else {
-                    newCatchClauses[index - 1] = originalCatchClauseArray[index - 1].with(\.body.rightBrace.trailingTrivia, Trivia())
+                    let originalCatchClause = originalCatchClauseArray[index - 1]
+                    newCatchClauses[index - 1] = originalCatchClause.with(\.body.rightBrace.trailingTrivia, Trivia())
                 }
                 newClause.catchKeyword = clause.catchKeyword
                     .with(\.leadingTrivia, .newline + .spaces(doKeyword.indentation))

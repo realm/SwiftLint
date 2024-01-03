@@ -180,7 +180,7 @@ class StatementPositionRuleTests: SwiftLintTestCase {
             }
             """)
     ]
-    
+
     func testUncuddled() {
         let configuration = ["statement_mode": "uncuddled_else"]
 

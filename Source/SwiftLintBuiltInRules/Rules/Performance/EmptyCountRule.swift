@@ -126,8 +126,7 @@ private extension EmptyCountRule {
                 return super.visit(node)
             }
 
-            if let (intExpr, position, count) = node.tirplets(onlyAfterDot: configuration.onlyAfterDot),
-               intExpr.isZero {
+            if let (count, position) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot) {
                 let newNode: ExprSyntax? = if let count = count.as(MemberAccessExprSyntax.self) {
                     count.with(\.declName.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
                 } else if let count = count.as(DeclReferenceExprSyntax.self) {
@@ -205,13 +204,13 @@ private extension SyntaxProtocol {
 }
 
 private extension InfixOperatorExprSyntax {
-    func tirplets(onlyAfterDot: Bool) -> (IntegerLiteralExprSyntax, AbsolutePosition, ExprSyntax)? {
-        if let intExpr = rightOperand.as(IntegerLiteralExprSyntax.self),
+    func countNodeAndPosition(onlyAfterDot: Bool) -> (ExprSyntax, AbsolutePosition)? {
+        if let intExpr = rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
            let position = leftOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
-            return (intExpr, position, leftOperand)
-        } else if let intExpr = leftOperand.as(IntegerLiteralExprSyntax.self),
+            return (leftOperand, position)
+        } else if let intExpr = leftOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
                   let position = rightOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
-            return (intExpr, position, rightOperand)
+            return (rightOperand, position)
         } else {
             return nil
         }

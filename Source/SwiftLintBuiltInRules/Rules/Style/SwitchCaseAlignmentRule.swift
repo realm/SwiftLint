@@ -43,14 +43,22 @@ struct SwitchCaseAlignmentRule: Rule {
 extension SwitchCaseAlignmentRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchExprSyntax) {
-            let closingBracePosition = node.rightBrace.positionAfterSkippingLeadingTrivia
-            let closingBraceColumn = locationConverter.location(for: closingBracePosition).column
             guard node.cases.isNotEmpty,
-                let firstCasePosition = node.cases.first?.positionAfterSkippingLeadingTrivia
+                  let firstCasePosition = node.cases.first?.positionAfterSkippingLeadingTrivia
             else {
                 return
             }
 
+            let closingBracePosition = node.rightBrace.positionAfterSkippingLeadingTrivia
+            let closingBraceLocation = locationConverter.location(for: closingBracePosition)
+            let switchKeywordPosition = node.switchKeyword.positionAfterSkippingLeadingTrivia
+            let switchKeywordLocation = locationConverter.location(for: switchKeywordPosition)
+
+            if configuration.ignoreOneLiners && switchKeywordLocation.line == closingBraceLocation.line {
+                return
+            }
+
+            let closingBraceColumn = closingBraceLocation.column
             let firstCaseColumn = locationConverter.location(for: firstCasePosition).column
 
             for `case` in node.cases where `case`.is(SwitchCaseSyntax.self) {
@@ -85,11 +93,14 @@ extension SwitchCaseAlignmentRule {
         }
 
         var triggeringExamples: [Example] {
-            return (indentedCasesOption ? nonIndentedCases : indentedCases) + invalidCases
+            return (indentedCasesOption ? nonIndentedCases : indentedCases)
+                + invalidCases
+                + invalidOneLiners
         }
 
         var nonTriggeringExamples: [Example] {
             return indentedCasesOption ? indentedCases : nonIndentedCases
+                + validOneLiners
         }
 
         private var indentedCases: [Example] {
@@ -214,6 +225,47 @@ extension SwitchCaseAlignmentRule {
                     \(indentation)\(indentedCasesOption ? "" : violationMarker)default: 2
                 }
                 """)
+            ]
+        }
+
+        private var validOneLiners: [Example] = [
+            Example(
+                "switch i { case .x: 1 default: 0 }",
+                configuration: ["ignore_one_liners": true]
+            ),
+            Example(
+                "let a = switch i { case .x: 1 default: 0 }",
+                configuration: ["ignore_one_liners": true]
+            )
+        ]
+
+        private var invalidOneLiners: [Example] {
+            [
+                // Default configuration should not ignore one liners
+                Example(
+                    "switch i { \(violationMarker)case .x: 1 \(violationMarker)default: 0 }"
+                ),
+                Example("""
+                switch i {
+                \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
+                """, configuration: ["ignore_one_liners": true]),
+                Example("""
+                switch i { \(violationMarker)case .x: 1 \(violationMarker)default: 0
+                }
+                """, configuration: ["ignore_one_liners": true]),
+                Example("""
+                switch i
+                { \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
+                """, configuration: ["ignore_one_liners": true]),
+                Example("""
+                let a = switch i {
+                case .x: 1 \(violationMarker)default: 0
+                }
+                """, configuration: ["ignore_one_liners": true]),
+                Example("""
+                let a = switch i {
+                \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
+                """, configuration: ["ignore_one_liners": true])
             ]
         }
     }

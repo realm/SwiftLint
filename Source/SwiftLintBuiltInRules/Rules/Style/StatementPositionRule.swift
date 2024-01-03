@@ -163,12 +163,9 @@ private extension StatementPositionRule {
 
 private extension IfExprSyntax {
     var elseBeforeIfKeyword: TokenSyntax? {
-        if
-            ifKeyword.previousToken(viewMode: .sourceAccurate)?.isElseKeyword == true,
-            let elseBeforeIfKeyword = ifKeyword.previousToken(viewMode: .sourceAccurate) {
-            return elseBeforeIfKeyword
+        if let previous = ifKeyword.previousToken(viewMode: .sourceAccurate), previous.isElseKeyword {
+            return previous
         }
-
         return nil
     }
 
@@ -258,14 +255,12 @@ private extension DoStmtSyntax {
             }
 
             let hasEmptyLeadingTrivia = clause.catchKeyword.leadingTrivia.isEmpty
-            let trailingTriviaSingleSpace = (index == 0
-                                             ? body.rightBrace
-                                             : previousRightBrace).trailingTrivia.isSingleSpace
+            let trailingTriviaSingleSpace = previousRightBrace.trailingTrivia.isSingleSpace
 
             // If either of the above conditions are not met, record the violation position and update the clause
             if !hasEmptyLeadingTrivia || !trailingTriviaSingleSpace {
                 violationPositions.append(
-                    (index == 0 ? body.rightBrace : previousRightBrace).positionAfterSkippingLeadingTrivia
+                    previousRightBrace.positionAfterSkippingLeadingTrivia
                 )
 
                 var newClause = clause
@@ -301,13 +296,13 @@ private extension DoStmtSyntax {
             }
 
             let hasNewline = clause.catchKeyword.leadingTrivia.containsNewlines()
-            let trailingTriviaEmpty = (index == 0 ? body.rightBrace : previousRightBrace).trailingTrivia.isEmpty
+            let trailingTriviaEmpty = previousRightBrace.trailingTrivia.isEmpty
             let indentationMismatch = clause.catchKeyword.indentation != doKeyword.indentation
 
             // If any of the conditions are not met, record the violation position and update the clause
             if !hasNewline || !trailingTriviaEmpty || indentationMismatch {
                 violationPositions.append(
-                    (index == 0 ? body.rightBrace : previousRightBrace).positionAfterSkippingLeadingTrivia
+                    previousRightBrace.positionAfterSkippingLeadingTrivia
                 )
 
                 var newClause = clause

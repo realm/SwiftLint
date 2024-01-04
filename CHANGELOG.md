@@ -10,6 +10,10 @@
 
 #### Enhancements
 
+* Prevent from compiling `SwiftLint` target when only using `SwiftLintPlugin` on macOS.  
+  [Julien Baillon](https://github.com/julien-baillon)
+  [#5372](https://github.com/realm/SwiftLint/issues/5372)
+
 * Add new `ignore_one_liners` option to `switch_case_alignment` 
   rule to ignore switch statements written in a single line.  
   [tonell-m](https://github.com/tonell-m)

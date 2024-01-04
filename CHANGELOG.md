@@ -10,13 +10,14 @@
 
 #### Enhancements
 
+* Prevent from compiling `SwiftLint` target when only using `SwiftLintPlugin` on macOS.  
+  [Julien Baillon](https://github.com/julien-baillon)
+  [#5372](https://github.com/realm/SwiftLint/issues/5372)
+
 * Add new `ignore_one_liners` option to `switch_case_alignment` 
   rule to ignore switch statements written in a single line.  
   [tonell-m](https://github.com/tonell-m)
   [#5373](https://github.com/realm/SwiftLint/issues/5373)
-* Prevent from compiling `SwiftLint` target when only using `SwiftLintPlugin` on macOS.
-  [Julien Baillon](https://github.com/julien-baillon)
-  [#5372](https://github.com/realm/SwiftLint/issues/5372)
 
 * Add new `one_declaration_per_file` rule that allows only a
   single class/struct/enum/protocol declaration per file.

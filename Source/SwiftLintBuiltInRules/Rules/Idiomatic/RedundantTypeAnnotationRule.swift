@@ -28,6 +28,8 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("var one: A<T> = B()"),
             Example("var one: A = B<T>()"),
             Example("var one: A<T> = B<T>()"),
+            Example("let a = A.b.c.d"),
+            Example("let a: B = A.b.c.d"),
             Example("""
             enum Direction {
                 case up
@@ -73,6 +75,7 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("if var set↓: Set<Int> = Set<Int>.init([]) { return }"),
             Example("var set↓: Set = Set<Int>([]), otherSet: Set<Int>"),
             Example("var num↓: Int = Int.random(0..<10)"),
+            Example("let a↓: A = A.b.c.d"),
             Example("""
             class ViewController: UIViewController {
               func someMethod() {
@@ -123,6 +126,8 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
                 Example("if var set = Set<Int>.init([]) { return }"),
             Example("var set↓: Set = Set<Int>([]), otherSet: Set<Int>"):
                 Example("var set = Set<Int>([]), otherSet: Set<Int>"),
+            Example("let a↓: A = A.b.c.d"):
+                Example("let a = A.b.c.d"),
             Example("""
             class ViewController: UIViewController {
               func someMethod() {
@@ -302,6 +307,12 @@ private extension TypeAnnotationSyntax {
             // In this case it should be considered redundant if the type name is the same in the type annotation
             // E.g. var s: Set = Set<Int>() should trigger a violation
             return genericSpecialization.expression.trimmedDescription == type.typeName
+        }
+
+        if base.is(MemberAccessExprSyntax.self) {
+            // In the case of chained MemberAccessExprSyntax (e.g. let a: A = A.b.c), call this function recursively
+            // with the base sequence as root node (in this case A.b).
+            return isMemberAccessViolation(node: base, type: type)
         }
 
         return base.trimmedDescription == type.trimmedDescription

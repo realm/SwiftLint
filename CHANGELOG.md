@@ -30,6 +30,7 @@
   * `identifier_name`
   * `let_var_whitespace`
   * `multiline_literal_brackets`
+  * `nimble_operator`
   * `opening_brace`
   * `void_return`
 

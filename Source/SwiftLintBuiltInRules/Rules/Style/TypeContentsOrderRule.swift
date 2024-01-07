@@ -97,11 +97,11 @@ struct TypeContentsOrderRule: OptInRule {
         case .varInstance:
             if typeContentStructure.enclosedSwiftAttributes.contains(.iboutlet) {
                 return .ibOutlet
-            } else if typeContentStructure.enclosedSwiftAttributes.contains(.ibinspectable) {
-                return .ibInspectable
-            } else {
-                return .instanceProperty
             }
+            if typeContentStructure.enclosedSwiftAttributes.contains(.ibinspectable) {
+                return .ibInspectable
+            }
+            return .instanceProperty
 
         case .functionMethodClass, .functionMethodStatic:
             return .typeMethod
@@ -123,15 +123,17 @@ struct TypeContentsOrderRule: OptInRule {
 
             if typeContentStructure.name!.starts(with: "init(") {
                 return .initializer
-            } else if typeContentStructure.name!.starts(with: "deinit") {
-                return .deinitializer
-            } else if viewLifecycleMethodNames.contains(where: { typeContentStructure.name!.starts(with: $0) }) {
-                return .viewLifeCycleMethod
-            } else if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.ibaction) {
-                return .ibAction
-            } else {
-                return .otherMethod
             }
+            if typeContentStructure.name!.starts(with: "deinit") {
+                return .deinitializer
+            }
+            if viewLifecycleMethodNames.contains(where: { typeContentStructure.name!.starts(with: $0) }) {
+                return .viewLifeCycleMethod
+            }
+            if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.ibaction) {
+                return .ibAction
+            }
+            return .otherMethod
 
         case .functionSubscript:
             return .subscript

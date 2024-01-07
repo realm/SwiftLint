@@ -172,7 +172,8 @@ private extension Syntax {
     func closestVariableOrSubscript() -> Either<SubscriptDeclSyntax, VariableDeclSyntax>? {
         if let subscriptDecl = self.as(SubscriptDeclSyntax.self) {
             return .left(subscriptDecl)
-        } else if let variableDecl = self.as(VariableDeclSyntax.self) {
+        }
+        if let variableDecl = self.as(VariableDeclSyntax.self) {
             return .right(variableDecl)
         }
 

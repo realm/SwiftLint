@@ -63,7 +63,8 @@ private extension AttributesRule {
 
             if linesForAttributes.isEmpty {
                 return
-            } else if !linesForAttributes.contains(helper.keywordLine - 1) {
+            }
+            if !linesForAttributes.contains(helper.keywordLine - 1) {
                 violations.append(helper.violationPosition)
                 return
             }
@@ -71,9 +72,8 @@ private extension AttributesRule {
             let hasMultipleNewlines = node.children(viewMode: .sourceAccurate).enumerated().contains { index, element in
                 if index > 0 && element.leadingTrivia.hasMultipleNewlines == true {
                     return true
-                } else {
-                    return element.trailingTrivia.hasMultipleNewlines == true
                 }
+                return element.trailingTrivia.hasMultipleNewlines == true
             }
 
             if hasMultipleNewlines {
@@ -104,9 +104,8 @@ private extension TriviaPiece {
     var numberOfNewlines: Int {
         if case .newlines(let numberOfNewlines) = self {
             return numberOfNewlines
-        } else {
-            return 0
         }
+        return 0
     }
 }
 
@@ -149,9 +148,8 @@ private struct RuleHelper {
                 if hasViolation {
                     if attributesWithArgumentsAlwaysOnNewLine && shouldBeOnSameLine {
                         return .argumentsAlwaysOnNewLineViolation
-                    } else {
-                        return .violation
                     }
+                    return .violation
                 }
             }
         }
@@ -169,9 +167,11 @@ private extension AttributeListSyntax {
                 let atPrefixedName = "@\(attribute.attributeNameText)"
                 if configuration.alwaysOnSameLine.contains(atPrefixedName) {
                     return (attribute, .sameLineAsDeclaration)
-                } else if configuration.alwaysOnNewLine.contains(atPrefixedName) {
+                }
+                if configuration.alwaysOnNewLine.contains(atPrefixedName) {
                     return (attribute, .dedicatedLine)
-                } else if attribute.arguments != nil, configuration.attributesWithArgumentsAlwaysOnNewLine {
+                }
+                if attribute.arguments != nil, configuration.attributesWithArgumentsAlwaysOnNewLine {
                     return (attribute, .dedicatedLine)
                 }
 

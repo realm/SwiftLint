@@ -19,7 +19,8 @@ struct NestingConfiguration: RuleConfiguration {
     func severity(with config: Severity, for level: Int) -> ViolationSeverity? {
         if let error = config.error, level > error {
             return .error
-        } else if level > config.warning {
+        }
+        if level > config.warning {
             return .warning
         }
         return nil

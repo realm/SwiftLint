@@ -164,7 +164,8 @@ struct LintableFilesVisitor {
             }
 
             return .buildLog(compilerInvocations: compilerInvocations)
-        } else if let path = options.compileCommands {
+        }
+        if let path = options.compileCommands {
             do {
                 return .compilationDatabase(compileCommands: try self.loadCompileCommands(path))
             } catch {

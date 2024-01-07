@@ -120,7 +120,8 @@ private extension ClosureExprSyntax {
                     name: param.name.text.removingDollarsAndBackticks
                 )
             }
-        } else if let params = signature?.parameterClause?.as(ClosureParameterClauseSyntax.self)?.parameters {
+        }
+        if let params = signature?.parameterClause?.as(ClosureParameterClauseSyntax.self)?.parameters {
             return params.compactMap { param in
                 if param.firstName.tokenKind == .wildcard {
                     return nil
@@ -130,8 +131,7 @@ private extension ClosureExprSyntax {
                     name: param.firstName.text.removingDollarsAndBackticks
                 )
             }
-        } else {
-            return []
         }
+        return []
     }
 }

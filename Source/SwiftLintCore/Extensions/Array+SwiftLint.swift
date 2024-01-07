@@ -24,9 +24,11 @@ public extension Array where Element: Hashable {
     static func array(of obj: Any?) -> [Element]? {
         if let array = obj as? [Element] {
             return array
-        } else if let set = obj as? Set<Element> {
+        }
+        if let set = obj as? Set<Element> {
             return Array(set)
-        } else if let obj = obj as? Element {
+        }
+        if let obj = obj as? Element {
             return [obj]
         }
         return nil
@@ -44,7 +46,8 @@ public extension Array {
     static func array(of obj: Any?) -> [Element]? {
         if let array = obj as? [Element] {
             return array
-        } else if let obj = obj as? Element {
+        }
+        if let obj = obj as? Element {
             return [obj]
         }
         return nil

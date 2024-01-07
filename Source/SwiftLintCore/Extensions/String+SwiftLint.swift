@@ -109,9 +109,8 @@ public extension String {
                 let path = (0 ..< rootDirCompsCount - rootDirComps.count).map { _ in "/.." }.flatMap { $0 }
                     + String(normalizedSelf.dropFirst(sharedRootDir.count))
                 return String(path.dropFirst()) // Remove leading '/'
-            } else {
-                rootDirComps = rootDirComps.dropLast()
             }
+            rootDirComps = rootDirComps.dropLast()
         }
     }
 

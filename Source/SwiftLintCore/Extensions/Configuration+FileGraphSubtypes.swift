@@ -15,10 +15,9 @@ internal extension Configuration.FileGraph {
             if !originatesFromRemote, case let .existing(path) = filePath {
                 // This is a local file, so its root directory is its containing directory
                 return path.bridge().deletingLastPathComponent
-            } else {
-                // This is a remote file, so its root directory is the directory where it was referenced from
-                return originalRootDirectory
             }
+            // This is a remote file, so its root directory is the directory where it was referenced from
+            return originalRootDirectory
         }
 
         private let originalRootDirectory: String

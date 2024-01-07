@@ -166,13 +166,11 @@ private extension SwiftLintFile {
                 continue
             }
             if nextIsModuleImport {
+                nextIsModuleImport = false
                 if let importedModule = cursorInfo.moduleName,
                     cursorInfo.kind == "source.lang.swift.ref.module" {
                     imports.insert(importedModule)
-                    nextIsModuleImport = false
                     continue
-                } else {
-                    nextIsModuleImport = false
                 }
             }
 
@@ -237,9 +235,8 @@ private extension SwiftLintFile {
         let entities = entity.entities
         if entities.isEmpty {
             return [entity]
-        } else {
-            return [entity] + entities.flatMap { flatEntities(entity: $0) }
         }
+        return [entity] + entities.flatMap { flatEntities(entity: $0) }
     }
 
     func offsetPerLine() -> [Int: Int64] {
@@ -287,9 +284,8 @@ private extension SwiftLintFile {
             let attributesRequiringFoundation = SwiftDeclarationAttributeKind.attributesRequiringFoundation
             if !attributesRequiringFoundation.isDisjoint(with: dict.enclosedSwiftAttributes) {
                 return true
-            } else {
-                return dict.substructure.contains(where: containsAttributesRequiringFoundation)
             }
+            return dict.substructure.contains(where: containsAttributesRequiringFoundation)
         }
 
         return containsAttributesRequiringFoundation(dict: structureDictionary)

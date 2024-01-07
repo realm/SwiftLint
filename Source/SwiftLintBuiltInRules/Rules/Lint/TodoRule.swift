@@ -104,8 +104,7 @@ private extension String {
         if utf16.count > maxLength {
             let end = index(startIndex, offsetBy: maxLength, limitedBy: endIndex) ?? endIndex
             return self[..<end] + "..."
-        } else {
-            return self
         }
+        return self
     }
 }

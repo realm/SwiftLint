@@ -143,7 +143,8 @@ private extension FunctionCallExprSyntax {
     var isTypeOfSelfCall: Bool {
         if let identifierExpr = calledExpression.as(DeclReferenceExprSyntax.self) {
             return identifierExpr.baseName.text == "type"
-        } else if let memberAccessExpr = calledExpression.as(MemberAccessExprSyntax.self) {
+        }
+        if let memberAccessExpr = calledExpression.as(MemberAccessExprSyntax.self) {
             return memberAccessExpr.declName.baseName.text == "type" &&
             memberAccessExpr.base?.as(DeclReferenceExprSyntax.self)?.baseName.text == "Swift"
         }

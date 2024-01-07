@@ -119,11 +119,11 @@ private extension FunctionCallExprSyntax {
         arguments.allSatisfy { arg in
             if let intExpr = arg.expression.as(IntegerLiteralExprSyntax.self) {
                 return intExpr.isZero
-            } else if let floatExpr = arg.expression.as(FloatLiteralExprSyntax.self) {
-                return floatExpr.isZero
-            } else {
-                return false
             }
+            if let floatExpr = arg.expression.as(FloatLiteralExprSyntax.self) {
+                return floatExpr.isZero
+            }
+            return false
         }
     }
 }

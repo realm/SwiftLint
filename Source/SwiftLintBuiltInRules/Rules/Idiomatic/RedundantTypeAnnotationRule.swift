@@ -132,9 +132,8 @@ struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule {
 
         if lhs == rhs || (lhs == "Bool" && (rhs == "true" || rhs == "false")) {
             return false
-        } else {
-            return true
         }
+        return true
     }
 
     private func getPartsOfExpression(

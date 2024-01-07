@@ -135,32 +135,31 @@ private extension TokenSyntax {
     var hasSingleSpaceToItsLeft: Bool {
         if case .spaces(1) = Array(leadingTrivia).last {
             return true
-        } else if let previousToken = previousToken(viewMode: .sourceAccurate),
+        }
+        if let previousToken = previousToken(viewMode: .sourceAccurate),
                   case .spaces(1) = Array(previousToken.trailingTrivia).last {
             return true
-        } else {
-            return false
         }
+        return false
     }
 
     var hasSingleSpaceToItsRight: Bool {
         if case .spaces(1) = trailingTrivia.first {
             return true
-        } else if let nextToken = nextToken(viewMode: .sourceAccurate),
+        }
+        if let nextToken = nextToken(viewMode: .sourceAccurate),
                   case .spaces(1) = nextToken.leadingTrivia.first {
             return true
-        } else {
-            return false
         }
+        return false
     }
 
     var hasLeadingNewline: Bool {
         leadingTrivia.contains { piece in
             if case .newlines = piece {
                 return true
-            } else {
-                return false
             }
+            return false
         }
     }
 
@@ -168,9 +167,8 @@ private extension TokenSyntax {
         trailingTrivia.contains { piece in
             if case .lineComment = piece {
                 return true
-            } else {
-                return false
             }
+            return false
         }
     }
 
@@ -195,13 +193,14 @@ private extension TokenSyntax {
         ]
         if case .newlines = trailingTrivia.first {
             return true
-        } else if case .newlines = nextToken(viewMode: .sourceAccurate)?.leadingTrivia.first {
+        }
+        if case .newlines = nextToken(viewMode: .sourceAccurate)?.leadingTrivia.first {
             return true
-        } else if let nextToken = nextToken(viewMode: .sourceAccurate),
+        }
+        if let nextToken = nextToken(viewMode: .sourceAccurate),
                   allowedKinds.contains(nextToken.tokenKind) {
             return true
-        } else {
-            return false
         }
+        return false
     }
 }

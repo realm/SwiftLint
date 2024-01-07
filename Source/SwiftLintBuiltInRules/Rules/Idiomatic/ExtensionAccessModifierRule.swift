@@ -236,9 +236,8 @@ private extension MemberBlockSyntax {
                         return []
                     }
                 }
-            } else {
-                return [member.decl]
             }
+            return [member.decl]
         }
     }
 }

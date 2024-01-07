@@ -102,9 +102,8 @@ private extension EmptyCountRule {
                         newNode
                             .withTrivia(from: node)
                     }
-            } else {
-                return super.visit(node)
             }
+            return super.visit(node)
         }
     }
 }
@@ -157,12 +156,12 @@ private extension InfixOperatorExprSyntax {
         if let intExpr = rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
            let position = leftOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
             return (leftOperand, position)
-        } else if let intExpr = leftOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
-                  let position = rightOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
-            return (rightOperand, position)
-        } else {
-            return nil
         }
+        if let intExpr = leftOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
+           let position = rightOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
+            return (rightOperand, position)
+        }
+        return nil
     }
 
     var binaryOperator: String? {

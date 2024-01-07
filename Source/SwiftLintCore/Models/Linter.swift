@@ -148,9 +148,8 @@ public struct Linter {
         let rules = configuration.rules.filter { rule in
             if compilerArguments.isEmpty {
                 return !(rule is any AnalyzerRule)
-            } else {
-                return rule is any AnalyzerRule
             }
+            return rule is any AnalyzerRule
         }
         self.rules = rules
         self.isCollecting = rules.contains(where: { $0 is any AnyCollectingRule })

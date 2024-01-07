@@ -104,18 +104,19 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
             .compactMap { previous, current, next -> (ByteRange, shouldAddSpace: Bool)? in
                 if current.tokenKind != .comma {
                     return nil
-                } else if !previous.trailingTrivia.isEmpty && !previous.trailingTrivia.containsBlockComments() {
+                }
+                if !previous.trailingTrivia.isEmpty && !previous.trailingTrivia.containsBlockComments() {
                     let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
                     let end = ByteCount(current.endPosition)
                     let nextIsNewline = next.leadingTrivia.containsNewlines()
                     return (ByteRange(location: start, length: end - start), shouldAddSpace: !nextIsNewline)
-                } else if !current.trailingTrivia.starts(with: [.spaces(1)]), !next.leadingTrivia.containsNewlines() {
+                }
+                if !current.trailingTrivia.starts(with: [.spaces(1)]), !next.leadingTrivia.containsNewlines() {
                     let start = ByteCount(current.position)
                     let end = ByteCount(next.positionAfterSkippingLeadingTrivia)
                     return (ByteRange(location: start, length: end - start), shouldAddSpace: true)
-                } else {
-                    return nil
                 }
+                return nil
             }
     }
 
@@ -153,9 +154,8 @@ private extension Trivia {
         contains { piece in
             if case .blockComment = piece {
                 return true
-            } else {
-                return false
             }
+            return false
         }
     }
 }

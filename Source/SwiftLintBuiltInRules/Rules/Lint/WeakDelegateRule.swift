@@ -90,7 +90,8 @@ private extension Syntax {
     func enclosingClass() -> ClassDeclSyntax? {
         if let classExpr = self.as(ClassDeclSyntax.self) {
             return classExpr
-        } else if self.as(DeclSyntax.self) != nil {
+        }
+        if self.as(DeclSyntax.self) != nil {
             return nil
         }
 

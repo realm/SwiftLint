@@ -62,8 +62,9 @@ private extension FunctionCallExprSyntax {
     var functionName: String? {
         if let expr = calledExpression.as(DeclReferenceExprSyntax.self) {
             return expr.baseName.text
-        } else if let expr = calledExpression.as(MemberAccessExprSyntax.self),
-                  let base = expr.base?.as(DeclReferenceExprSyntax.self) {
+        }
+        if let expr = calledExpression.as(MemberAccessExprSyntax.self),
+           let base = expr.base?.as(DeclReferenceExprSyntax.self) {
             return base.baseName.text + "." + expr.declName.baseName.text
         }
 

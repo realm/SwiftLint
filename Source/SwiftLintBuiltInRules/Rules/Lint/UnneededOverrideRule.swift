@@ -150,16 +150,19 @@ private func extractFunctionCallSyntax(_ node: some SyntaxProtocol) -> FunctionC
 private func simplify(_ node: some SyntaxProtocol) -> (any ExprSyntaxProtocol)? {
     if let expr = node.as(AwaitExprSyntax.self) {
         return expr.expression
-    } else if let expr = node.as(TryExprSyntax.self) {
+    }
+    if let expr = node.as(TryExprSyntax.self) {
         // Assume using try! / try? changes behavior.
         if expr.questionOrExclamationMark != nil {
             return nil
         }
 
         return expr.expression
-    } else if let expr = node.as(FunctionCallExprSyntax.self) {
+    }
+    if let expr = node.as(FunctionCallExprSyntax.self) {
         return expr
-    } else if let stmt = node.as(ReturnStmtSyntax.self) {
+    }
+    if let stmt = node.as(ReturnStmtSyntax.self) {
         return stmt.expression
     }
 

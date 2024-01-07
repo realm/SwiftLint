@@ -80,9 +80,8 @@ private extension FunctionCallExprSyntax {
 
         if let closureStatement = closure.statements.onlyElement {
             return (closure.signature?.singleInputParamText(), closureStatement)
-        } else {
-            return nil
         }
+        return nil
     }
 }
 
@@ -99,11 +98,11 @@ private extension ClosureSignatureSyntax {
     func singleInputParamText() -> String? {
         if let list = parameterClause?.as(ClosureShorthandParameterListSyntax.self), list.count == 1 {
             return list.onlyElement?.name.text
-        } else if let clause = parameterClause?.as(ClosureParameterClauseSyntax.self), clause.parameters.count == 1,
+        }
+        if let clause = parameterClause?.as(ClosureParameterClauseSyntax.self), clause.parameters.count == 1,
                   clause.parameters.first?.secondName == nil {
             return clause.parameters.first?.firstName.text
-        } else {
-            return nil
         }
+        return nil
     }
 }

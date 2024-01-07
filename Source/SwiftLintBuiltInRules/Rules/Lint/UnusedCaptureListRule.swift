@@ -162,7 +162,8 @@ private extension UnusedCaptureListRule {
                 .compactMap { item -> (name: String, item: ClosureCaptureSyntax)? in
                     if let name = item.name {
                         return (name.text, item)
-                    } else if let expr = item.expression.as(DeclReferenceExprSyntax.self) {
+                    }
+                    if let expr = item.expression.as(DeclReferenceExprSyntax.self) {
                         // allow "[unowned self]"
                         if expr.baseName.tokenKind == .keyword(.self),
                            item.specifier?.specifier.tokenKind == .keyword(.unowned) {

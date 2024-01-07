@@ -125,12 +125,11 @@ internal extension Configuration.FileGraph.FilePath {
             )
             self = .existing(path: cachedFilePath)
             return cachedFilePath
-        } else {
-            throw Issue.genericWarning(
-                "No internet connectivity: Unable to load remote config from \"\(urlString)\". "
-                    + "Also didn't found cached version to fallback to."
-            )
         }
+        throw Issue.genericWarning(
+            "No internet connectivity: Unable to load remote config from \"\(urlString)\". "
+                + "Also didn't found cached version to fallback to."
+        )
     }
 
     private mutating func handleWrongData(
@@ -153,19 +152,17 @@ internal extension Configuration.FileGraph.FilePath {
 
             self = .existing(path: cachedFilePath)
             return cachedFilePath
-        } else {
-            if taskDone {
-                throw Issue.genericWarning(
-                    "Unable to load remote config from \"\(urlString)\". "
-                        + "Also didn't found cached version to fallback to."
-                )
-            } else {
-                throw Issue.genericWarning(
-                    "Timeout (\(timeout) sec): Unable to load remote config from \"\(urlString)\". "
-                        + "Also didn't found cached version to fallback to."
-                )
-            }
         }
+        if taskDone {
+            throw Issue.genericWarning(
+                "Unable to load remote config from \"\(urlString)\". "
+                    + "Also didn't found cached version to fallback to."
+            )
+        }
+        throw Issue.genericWarning(
+            "Timeout (\(timeout) sec): Unable to load remote config from \"\(urlString)\". "
+                + "Also didn't found cached version to fallback to."
+        )
     }
 
     private mutating func handleFileWriteFailure(urlString: String, cachedFilePath: String?) throws -> String {
@@ -175,11 +172,10 @@ internal extension Configuration.FileGraph.FilePath {
             )
             self = .existing(path: cachedFilePath)
             return cachedFilePath
-        } else {
-            throw Issue.genericWarning(
-                "Unable to cache remote config from \"\(urlString)\". Also didn't found cached version to fallback to."
-            )
         }
+        throw Issue.genericWarning(
+            "Unable to cache remote config from \"\(urlString)\". Also didn't found cached version to fallback to."
+        )
     }
 
     // MARK: Caching

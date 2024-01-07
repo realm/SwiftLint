@@ -27,21 +27,15 @@ private extension MarkRule {
     }
 
     final class Rewriter: ViolationsSyntaxRewriter {
-        private var correctedPositions: Set<AbsolutePosition> = []
-
         override func visit(_ token: TokenSyntax) -> TokenSyntax {
-            var newToken = token
-
-            var pieces = newToken.leadingTrivia.pieces
-            for result in newToken.violationResults(withCorrect: true) {
+            var pieces = token.leadingTrivia.pieces
+            for result in token.violationResults() {
+                // caution: `correctionPositions` records the positions before the mutations.
+                // https://github.com/realm/SwiftLint/pull/4297
                 correctionPositions.append(result.position)
                 result.correct?(&pieces)
             }
-
-            if pieces != newToken.leadingTrivia.pieces {
-                newToken.leadingTrivia = .init(pieces: pieces)
-            }
-            return super.visit(newToken)
+            return super.visit(token.with(\.leadingTrivia, Trivia(pieces: pieces)))
         }
     }
 }
@@ -119,27 +113,21 @@ private extension TokenSyntax {
         }
     }
 
-    func violationResults(withCorrect: Bool = false) -> [ViolationResult] {
+    func violationResults() -> [ViolationResult] {
         var utf8Offset = 0
         var results: [ViolationResult] = []
 
         for index in leadingTrivia.pieces.indices {
-            var piece = leadingTrivia.pieces[index]
+            let piece = leadingTrivia.pieces[index]
             defer { utf8Offset += piece.sourceLength.utf8Length }
 
             switch piece {
             case .lineComment(let comment), .docLineComment(let comment):
                 for correct in Mark.lint(in: comment) {
                     let position = position.advanced(by: utf8Offset)
-                    if withCorrect {
-                        let corrected = correct()
-                        piece = .lineComment(corrected)
-                        results.append(ViolationResult(position: position) { pieces in
-                            pieces[index] = piece
-                        })
-                    } else {
-                        results.append(ViolationResult(position: position))
-                    }
+                    results.append(ViolationResult(position: position) { pieces in
+                        pieces[index] = .lineComment(correct())
+                    })
                 }
 
             default:

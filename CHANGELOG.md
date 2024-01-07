@@ -23,10 +23,12 @@
   * `multiline_literal_brackets`
   * `opening_brace`
   * `void_return`
+  * `mark`
 
   [SimplyDanny](https://github.com/SimplyDanny)  
   [kishikawakatsumi](https://github.com/kishikawakatsumi)  
-  [Marcelo Fabri](https://github.com/marcelofabri)
+  [Marcelo Fabri](https://github.com/marcelofabri)  
+  [swiftty](https://github.com/swiftty)  
 
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -54,9 +56,6 @@
   non-failable conversions of UTF-8 `String` <-> `Data`.    
   [Ben P](https://github.com/ben-p-commits)
   [#5263](https://github.com/realm/SwiftLint/issues/5263)
-
-* Rewrite `mark` rule using SwiftSyntax.  
-  [swiftty](https://github.com/swiftty)
 
 #### Bug Fixes
 

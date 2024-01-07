@@ -163,6 +163,22 @@ struct SuperfluousElseRule: OptInRule {
                         return 2
                     }
                 }
+            """),
+            Example("""
+                {
+                    ↓if i > 0 {
+                        return 1
+                    } else {
+                        return 2
+                    }
+                }()
+            """): Example("""
+                {
+                    if i > 0 {
+                        return 1
+                    }
+                    return 2
+                }()
             """)
         ]
     )
@@ -180,25 +196,29 @@ private extension SuperfluousElseRule {
     }
 
     final class Rewriter: ViolationsSyntaxRewriter {
-        override func visit(_ node: CodeBlockSyntax) -> CodeBlockSyntax {
-            var newStatements = [CodeBlockItemSyntax]()
-            var ifStmtSeen = false
-            for item in node.statements {
+        override func visit(_ node: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
+            super.visit(restructure(list: node))
+        }
+
+        private func restructure(list: CodeBlockItemListSyntax, offset: Int = 0) -> CodeBlockItemListSyntax {
+            var newStatements = CodeBlockItemListSyntax()
+            var newOffset = 0
+            for item in list {
                 guard let ifStmt = item.item.as(ExpressionStmtSyntax.self)?.expression.as(IfExprSyntax.self),
+                      !ifStmt.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
                       ifStmt.violatesRule else {
                     newStatements.append(item)
                     continue
                 }
-                ifStmtSeen = true
-                correctionPositions.append(ifStmt.ifKeyword.positionAfterSkippingLeadingTrivia)
+                newOffset = ifStmt.body.rightBrace.endPositionBeforeTrailingTrivia.utf8Offset
+                correctionPositions.append(ifStmt.ifKeyword.positionAfterSkippingLeadingTrivia.advanced(by: offset))
                 let (newIfStm, removedItems) = modify(ifStmt: ifStmt)
                 newStatements.append(
                     CodeBlockItemSyntax(item: CodeBlockItemSyntax.Item(ExpressionStmtSyntax(expression: newIfStm)))
                 )
                 newStatements.append(contentsOf: removedItems)
             }
-            let newNode = node.with(\.statements, CodeBlockItemListSyntax(newStatements))
-            return ifStmtSeen ? visit(newNode) : super.visit(newNode)
+            return newOffset > 0 ? restructure(list: newStatements, offset: newOffset) : newStatements
         }
 
         private func modify(ifStmt: IfExprSyntax) -> (newIfStmt: IfExprSyntax, removedItems: [CodeBlockItemSyntax]) {

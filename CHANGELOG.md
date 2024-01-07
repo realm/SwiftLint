@@ -45,6 +45,9 @@
 * Add new `final_test_case` rule that triggers on non-final test classes.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Make `superfluous_else` rule auto-correctable.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Trigger on `-> ()` return signatures in `return_value_from_void_function`
   rule. Moreover, support automatic fixes for obvious cases.  
   [SimplyDanny](https://github.com/SimplyDanny)

@@ -74,6 +74,8 @@
   avoid unexpected ordering.  
   [Oleg Kokhtenko](https://github.com/kohtenko)
   [#5405](https://github.com/realm/SwiftLint/issues/issue_number)
+* Rewrite `trailing_closure` rule with SwiftSyntax
+  [KS1019](https://github.com/KS1019)
 
 #### Bug Fixes
 

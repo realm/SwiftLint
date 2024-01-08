@@ -16,6 +16,15 @@
   [Muhammad Zeeshan](https://github.com/mzeeshanid)
   [#5359](https://github.com/realm/SwiftLint/issues/5359)
 
+* Prevent from compiling `SwiftLint` target when only using `SwiftLintPlugin` on macOS.  
+  [Julien Baillon](https://github.com/julien-baillon)
+  [#5372](https://github.com/realm/SwiftLint/issues/5372)
+
+* Add new `ignore_one_liners` option to `switch_case_alignment` 
+  rule to ignore switch statements written in a single line.  
+  [tonell-m](https://github.com/tonell-m)
+  [#5373](https://github.com/realm/SwiftLint/issues/5373)
+
 * Add new `one_declaration_per_file` rule that allows only a
   single class/struct/enum/protocol declaration per file.
   Extensions are an exception; more than one is allowed.  
@@ -23,9 +32,11 @@
   [#2802](https://github.com/realm/SwiftLint/issues/2802)
 
 * Rewrite the following rules with SwiftSyntax:
+  * `explicit_acl`
   * `identifier_name`
   * `let_var_whitespace`
   * `multiline_literal_brackets`
+  * `nimble_operator`
   * `opening_brace`
   * `void_return`
 
@@ -36,7 +47,17 @@
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5347](https://github.com/realm/SwiftLint/pull/5347)
-  
+
+* Add new `final_test_case` rule that triggers on non-final test classes.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+* Make `superfluous_else` rule auto-correctable.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+* Trigger on `-> ()` return signatures in `return_value_from_void_function`
+  rule. Moreover, support automatic fixes for obvious cases.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Allow to configure more operators in `identifier_name` rule. The new option
   is named `additional_operators`. Use it to add more operators to the list
   of default operators known to the rule.  

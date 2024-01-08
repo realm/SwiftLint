@@ -2,8 +2,9 @@ import SwiftLintCore
 
 typealias BalancedXCTestLifecycleConfiguration = UnitTestConfiguration<BalancedXCTestLifecycleRule>
 typealias EmptyXCTestMethodConfiguration = UnitTestConfiguration<EmptyXCTestMethodRule>
-typealias SingleTestClassConfiguration = UnitTestConfiguration<SingleTestClassRule>
+typealias FinalTestCaseConfiguration = UnitTestConfiguration<FinalTestCaseRule>
 typealias NoMagicNumbersConfiguration = UnitTestConfiguration<NoMagicNumbersRule>
+typealias SingleTestClassConfiguration = UnitTestConfiguration<SingleTestClassRule>
 
 @AutoApply
 struct UnitTestConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration {

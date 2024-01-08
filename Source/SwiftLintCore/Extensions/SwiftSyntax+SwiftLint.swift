@@ -266,6 +266,18 @@ public extension Trivia {
         return self
     }
 
+    var withTrailingEmptyLineRemoved: Trivia {
+        if let index = pieces.lastIndex(where: \.isNewline), index < endIndex {
+            if index == endIndex - 1 {
+                return Trivia(pieces: dropLast(1))
+            }
+            if pieces.suffix(from: index + 1).allSatisfy(\.isHorizontalWhitespace) {
+                return Trivia(pieces: prefix(upTo: index))
+            }
+        }
+        return self
+    }
+
     var withoutTrailingIndentation: Trivia {
         Trivia(pieces: reversed().drop(while: \.isHorizontalWhitespace).reversed())
     }

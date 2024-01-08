@@ -6,6 +6,13 @@ let swiftFeatures: [SwiftSetting] = [
     .enableUpcomingFeature("ExistentialAny")
 ]
 
+let swiftLintPluginDependencies: [Target.Dependency]
+#if os(macOS)
+swiftLintPluginDependencies = [.target(name: "SwiftLintBinary")]
+#else 
+swiftLintPluginDependencies = [.target(name: "swiftlint")]
+#endif
+
 let package = Package(
     name: "SwiftLint",
     platforms: [.macOS(.v12)],
@@ -27,10 +34,7 @@ let package = Package(
         .plugin(
             name: "SwiftLintPlugin",
             capability: .buildTool(),
-            dependencies: [
-                .target(name: "SwiftLintBinary", condition: .when(platforms: [.macOS])),
-                .target(name: "swiftlint", condition: .when(platforms: [.linux]))
-            ]
+            dependencies: swiftLintPluginDependencies
         ),
         .executableTarget(
             name: "swiftlint",

@@ -71,6 +71,7 @@ public let builtInRules: [any Rule.Type] = [
     FileNameNoSpaceRule.self,
     FileNameRule.self,
     FileTypesOrderRule.self,
+    FinalTestCaseRule.self,
     FirstWhereRule.self,
     FlatMapOverMapReduceRule.self,
     ForWhereRule.self,

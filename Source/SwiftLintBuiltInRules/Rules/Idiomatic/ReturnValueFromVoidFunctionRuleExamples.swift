@@ -86,6 +86,22 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
                 return 0
             }
         """),
+        Example("func f() -> () { g() }"),
+        Example("func f() { g() }"),
+        Example("func f() { { return g() }() }"),
+        Example("""
+        func f() {
+            func g() -> Int {
+                return 1
+            }
+        }
+        """),
+        Example("init?() { return nil }"),
+        Example("""
+        func f() {
+            var i: Int { return 1 }
+        }
+        """),
         Example(#"""
         final class SearchMessagesDataSource: ValueCellDataSource {
           internal enum Section: Int {
@@ -129,7 +145,7 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
         }
         """),
         Example("""
-        func foo() {
+        func foo() -> () {
             ↓return self.bar()
         }
         """),
@@ -263,5 +279,36 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
           ↓return foo()
         }
         """)
+    ]
+
+    static let corrections = [
+        Example("""
+        func f() -> Void {
+            ↓return g()
+            // some comment
+        }
+        """): Example("""
+            func f() -> Void {
+                g()
+                return
+                // some comment
+            }
+            """),
+        Example("""
+        func f(b: Bool) {
+            if b {
+                // some comment
+                ↓return g()
+            }
+        }
+        """): Example("""
+            func f(b: Bool) {
+                if b {
+                    // some comment
+                    g()
+                    return
+                }
+            }
+            """)
     ]
 }

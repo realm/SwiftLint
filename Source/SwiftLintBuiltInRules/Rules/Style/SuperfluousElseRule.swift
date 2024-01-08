@@ -1,6 +1,7 @@
+import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
+@SwiftSyntaxRule(explicitRewriter: true)
 struct SuperfluousElseRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -92,6 +93,93 @@ struct SuperfluousElseRule: OptInRule {
                     return 3
                 }
             """)
+        ],
+        corrections: [
+            Example("""
+                func f() -> Int {
+                    ↓if i > 0 {
+                        return 1
+                        // comment
+                    } else {
+                        // another comment
+                        return 2
+                        // yet another comment
+                    }
+                }
+            """): Example("""
+                func f() -> Int {
+                    if i > 0 {
+                        return 1
+                        // comment
+                    }
+                    // another comment
+                    return 2
+                    // yet another comment
+                }
+            """),
+            Example("""
+                func f() -> Int {
+                    ↓if i > 0 {
+                        return 1
+                        // comment
+                    } else ↓if i < 10 {
+                        return 2
+                    } else {
+                        return 3
+                    }
+                }
+            """): Example("""
+                func f() -> Int {
+                    if i > 0 {
+                        return 1
+                        // comment
+                    }
+                    if i < 10 {
+                        return 2
+                    }
+                    return 3
+                }
+            """),
+            Example("""
+                func f() -> Int {
+
+                    ↓if i > 0 {
+                        return 1
+                        // comment
+                    } else if i < 10 {
+                        // another comment
+                        return 2
+                    }
+                }
+            """): Example("""
+                func f() -> Int {
+
+                    if i > 0 {
+                        return 1
+                        // comment
+                    }
+                    if i < 10 {
+                        // another comment
+                        return 2
+                    }
+                }
+            """),
+            Example("""
+                {
+                    ↓if i > 0 {
+                        return 1
+                    } else {
+                        return 2
+                    }
+                }()
+            """): Example("""
+                {
+                    if i > 0 {
+                        return 1
+                    }
+                    return 2
+                }()
+            """)
         ]
     )
 }
@@ -104,6 +192,64 @@ private extension SuperfluousElseRule {
             if node.violatesRule {
                 violations.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
             }
+        }
+    }
+
+    final class Rewriter: ViolationsSyntaxRewriter {
+        override func visit(_ node: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
+            super.visit(restructure(list: node))
+        }
+
+        private func restructure(list: CodeBlockItemListSyntax, offset: Int = 0) -> CodeBlockItemListSyntax {
+            var newStatements = CodeBlockItemListSyntax()
+            var newOffset = 0
+            for item in list {
+                guard let ifStmt = item.item.as(ExpressionStmtSyntax.self)?.expression.as(IfExprSyntax.self),
+                      !ifStmt.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+                      ifStmt.violatesRule else {
+                    newStatements.append(item)
+                    continue
+                }
+                newOffset = ifStmt.body.rightBrace.endPositionBeforeTrailingTrivia.utf8Offset
+                correctionPositions.append(ifStmt.ifKeyword.positionAfterSkippingLeadingTrivia.advanced(by: offset))
+                let (newIfStm, removedItems) = modify(ifStmt: ifStmt)
+                newStatements.append(
+                    CodeBlockItemSyntax(item: CodeBlockItemSyntax.Item(ExpressionStmtSyntax(expression: newIfStm)))
+                )
+                newStatements.append(contentsOf: removedItems)
+            }
+            return newOffset > 0 ? restructure(list: newStatements, offset: newOffset) : newStatements
+        }
+
+        private func modify(ifStmt: IfExprSyntax) -> (newIfStmt: IfExprSyntax, removedItems: [CodeBlockItemSyntax]) {
+            let ifStmtWithoutElse = removeElse(from: ifStmt)
+            if case let .codeBlock(block) = ifStmt.elseBody {
+                let indenter = CodeIndentingRewriter(style: .unindentSpaces(4))
+                let unindentedBlock = indenter.rewrite(block).cast(CodeBlockSyntax.self)
+                let items = unindentedBlock.statements.with(
+                    \.trailingTrivia,
+                    unindentedBlock.rightBrace.leadingTrivia.withTrailingEmptyLineRemoved
+                )
+                return (ifStmtWithoutElse, Array(items))
+            }
+            if case let .ifExpr(nestedIfStmt) = ifStmt.elseBody {
+                let unindentedIfStmt = nestedIfStmt.with(
+                    \.leadingTrivia,
+                    Trivia(pieces: [.newlines(1)] + (ifStmt.leadingTrivia.indentation(isOnNewline: true) ?? Trivia()))
+                )
+                let item = CodeBlockItemSyntax(
+                    item: CodeBlockItemSyntax.Item(ExpressionStmtSyntax(expression: unindentedIfStmt))
+                )
+                return (ifStmtWithoutElse, [item])
+            }
+            return (ifStmt, [])
+        }
+
+        private func removeElse(from ifStmt: IfExprSyntax) -> IfExprSyntax {
+            ifStmt
+                .with(\.body, ifStmt.body.with(\.rightBrace, ifStmt.body.rightBrace.with(\.trailingTrivia, Trivia())))
+                .with(\.elseKeyword, nil)
+                .with(\.elseBody, nil)
         }
     }
 }

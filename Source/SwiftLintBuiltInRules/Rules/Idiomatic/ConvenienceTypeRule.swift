@@ -211,13 +211,11 @@ private extension AttributeListSyntax {
     var hasUnavailableAttribute: Bool {
         contains { elem in
             guard let attr = elem.as(AttributeSyntax.self),
+                  attr.attributeNameText == "available",
                   let arguments = attr.arguments?.as(AvailabilityArgumentListSyntax.self) else {
                 return false
             }
-
-            return attr.attributeNameText == "available" && arguments.contains { arg in
-                arg.argument.as(TokenSyntax.self)?.tokenKind.isUnavailableKeyword == true
-            }
+            return arguments.contains { $0.argument.as(TokenSyntax.self)?.tokenKind.isUnavailableKeyword == true }
         }
     }
 }

@@ -20,10 +20,10 @@
   * `explicit_acl`
   * `identifier_name`
   * `let_var_whitespace`
+  * `mark`
   * `multiline_literal_brackets`
   * `opening_brace`
   * `void_return`
-  * `mark`
 
   [SimplyDanny](https://github.com/SimplyDanny)  
   [kishikawakatsumi](https://github.com/kishikawakatsumi)  

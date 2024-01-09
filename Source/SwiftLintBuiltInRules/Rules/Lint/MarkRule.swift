@@ -18,11 +18,10 @@ struct MarkRule: CorrectableRule {
 
 private extension MarkRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visit(_ token: TokenSyntax) -> SyntaxVisitorContinueKind {
-            for result in token.violationResults() {
+        override func visitPost(_ node: TokenSyntax) {
+            for result in node.violationResults() {
                 violations.append(result.position)
             }
-            return .skipChildren
         }
     }
 
@@ -33,7 +32,7 @@ private extension MarkRule {
                 // caution: `correctionPositions` records the positions before the mutations.
                 // https://github.com/realm/SwiftLint/pull/4297
                 correctionPositions.append(result.position)
-                result.correct?(&pieces)
+                result.correct(&pieces)
             }
             return super.visit(token.with(\.leadingTrivia, Trivia(pieces: pieces)))
         }
@@ -41,8 +40,8 @@ private extension MarkRule {
 }
 
 private struct ViolationResult {
-    var position: AbsolutePosition
-    var correct: ((inout [TriviaPiece]) -> Void)?
+    let position: AbsolutePosition
+    let correct: (inout [TriviaPiece]) -> Void
 }
 
 private extension TokenSyntax {

@@ -374,11 +374,31 @@ warning
 </code></pre>
 <pre class="highlight swift"><code><span class="c1">// MARK: -</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="c1">// MARK: - </span>
+</code></pre>
 <pre class="highlight swift"><code><span class="c1">// BOOKMARK</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="c1">//BOOKMARK</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="c1">// BOOKMARKS</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// MARK: This is good.</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// MARK: - This is good.</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// MARK: --- This is good. ---</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// MARK: – This is dash separator</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// Mark text</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">//  MarkdownText.swift</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// MARK: good</span>
+<span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">bar</span> <span class="o">=</span> <span class="mi">0</span>
+      <span class="c1">// MARK: good</span>
+<span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="cm">/*
 func test1() {
@@ -434,6 +454,12 @@ func test2() {
 <pre class="highlight swift"><code><span class="err">↓</span><span class="c1">/// MARK:</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="c1">/// MARK bad</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// MARK: good</span>
+<span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">bar</span> <span class="o">=</span> <span class="mi">0</span>
+      <span class="err">↓</span><span class="c1">//MARK: bad</span>
+<span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="c1">//MARK:- Top-Level bad mark</span>
 <span class="err">↓</span><span class="c1">//MARK:- Another bad mark</span>

@@ -1,6 +1,7 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
+@SwiftSyntaxRule(explicitRewriter: true)
 struct MarkRule: CorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -9,239 +10,130 @@ struct MarkRule: CorrectableRule {
         name: "Mark",
         description: "MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("// MARK: good"),
-            Example("// MARK: - good"),
-            Example("// MARK: -"),
-            Example("// BOOKMARK"),
-            Example("//BOOKMARK"),
-            Example("// BOOKMARKS"),
-            issue1749Example
-        ],
-        triggeringExamples: [
-            Example("↓//MARK: bad"),
-            Example("↓// MARK:bad"),
-            Example("↓//MARK:bad"),
-            Example("↓//  MARK: bad"),
-            Example("↓// MARK:  bad"),
-            Example("↓// MARK: -bad"),
-            Example("↓// MARK:- bad"),
-            Example("↓// MARK:-bad"),
-            Example("↓//MARK: - bad"),
-            Example("↓//MARK:- bad"),
-            Example("↓//MARK: -bad"),
-            Example("↓//MARK:-bad"),
-            Example("↓//Mark: bad"),
-            Example("↓// Mark: bad"),
-            Example("↓// MARK bad"),
-            Example("↓//MARK bad"),
-            Example("↓// MARK - bad"),
-            Example("↓//MARK : bad"),
-            Example("↓// MARKL:"),
-            Example("↓// MARKR "),
-            Example("↓// MARKK -"),
-            Example("↓/// MARK:"),
-            Example("↓/// MARK bad"),
-            issue1029Example
-        ],
-        corrections: [
-            Example("↓//MARK: comment"): Example("// MARK: comment"),
-            Example("↓// MARK:  comment"): Example("// MARK: comment"),
-            Example("↓// MARK:comment"): Example("// MARK: comment"),
-            Example("↓//  MARK: comment"): Example("// MARK: comment"),
-            Example("↓//MARK: - comment"): Example("// MARK: - comment"),
-            Example("↓// MARK:- comment"): Example("// MARK: - comment"),
-            Example("↓// MARK: -comment"): Example("// MARK: - comment"),
-            Example("↓// MARK: -  comment"): Example("// MARK: - comment"),
-            Example("↓// Mark: comment"): Example("// MARK: comment"),
-            Example("↓// Mark: - comment"): Example("// MARK: - comment"),
-            Example("↓// MARK - comment"): Example("// MARK: - comment"),
-            Example("↓// MARK : comment"): Example("// MARK: comment"),
-            Example("↓// MARKL:"): Example("// MARK:"),
-            Example("↓// MARKL: -"): Example("// MARK: -"),
-            Example("↓// MARKK "): Example("// MARK: "),
-            Example("↓// MARKK -"): Example("// MARK: -"),
-            Example("↓/// MARK:"): Example("// MARK:"),
-            Example("↓/// MARK comment"): Example("// MARK: comment"),
-            issue1029Example: issue1029Correction,
-            issue1749Example: issue1749Correction
-        ]
+        nonTriggeringExamples: MarkRuleExamples.nonTriggeringExamples,
+        triggeringExamples: MarkRuleExamples.triggeringExamples,
+        corrections: MarkRuleExamples.corrections
     )
+}
 
-    private let spaceStartPattern = "(?:\(nonSpaceOrTwoOrMoreSpace)\(mark))"
-
-    private let endNonSpacePattern = "(?:\(mark)\(nonSpace))"
-    private let endTwoOrMoreSpacePattern = "(?:\(mark)\(twoOrMoreSpace))"
-
-    private let invalidEndSpacesPattern = "(?:\(mark)\(nonSpaceOrTwoOrMoreSpace))"
-
-    private let twoOrMoreSpacesAfterHyphenPattern = "(?:\(mark) -\(twoOrMoreSpace))"
-    private let nonSpaceOrNewlineAfterHyphenPattern = "(?:\(mark) -[^ \n])"
-
-    private let invalidSpacesAfterHyphenPattern = "(?:\(mark) -\(nonSpaceOrTwoOrMoreSpaceOrNewline))"
-
-    private let invalidLowercasePattern = "(?:// ?[Mm]ark:)"
-
-    private let missingColonPattern = "(?:// ?MARK[^:])"
-    // The below patterns more specifically describe some of the above pattern's failure cases for correction.
-    private let oneOrMoreSpacesBeforeColonPattern = "(?:// ?MARK +:)"
-    private let nonWhitespaceBeforeColonPattern = "(?:// ?MARK\\S+:)"
-    private let nonWhitespaceNorColonBeforeSpacesPattern = "(?:// ?MARK[^\\s:]* +)"
-    private let threeSlashesInsteadOfTwo = "/// MARK:?"
-
-    private var pattern: String {
-        return [
-            spaceStartPattern,
-            invalidEndSpacesPattern,
-            invalidSpacesAfterHyphenPattern,
-            invalidLowercasePattern,
-            missingColonPattern,
-            threeSlashesInsteadOfTwo
-        ].joined(separator: "|")
-    }
-
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file, matching: pattern).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+private extension MarkRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: TokenSyntax) {
+            for result in node.violationResults() {
+                violations.append(result.position)
+            }
         }
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
-        var result = [Correction]()
-
-        result.append(contentsOf: correct(file: file,
-                                          pattern: spaceStartPattern,
-                                          replaceString: "// MARK:"))
-
-        result.append(contentsOf: correct(file: file,
-                                          pattern: endNonSpacePattern,
-                                          replaceString: "// MARK: ",
-                                          keepLastChar: true))
-
-        result.append(contentsOf: correct(file: file,
-                                          pattern: endTwoOrMoreSpacePattern,
-                                          replaceString: "// MARK: "))
-
-        result.append(contentsOf: correct(file: file,
-                                          pattern: twoOrMoreSpacesAfterHyphenPattern,
-                                          replaceString: "// MARK: - "))
-
-        result.append(contentsOf: correct(file: file,
-                                          pattern: nonSpaceOrNewlineAfterHyphenPattern,
-                                          replaceString: "// MARK: - ",
-                                          keepLastChar: true))
-
-        result.append(contentsOf: correct(file: file,
-                                          pattern: oneOrMoreSpacesBeforeColonPattern,
-                                          replaceString: "// MARK:",
-                                          keepLastChar: false))
-
-        result.append(contentsOf: correct(file: file,
-                                          pattern: nonWhitespaceBeforeColonPattern,
-                                          replaceString: "// MARK:",
-                                          keepLastChar: false))
-
-        result.append(contentsOf: correct(file: file,
-                                          pattern: nonWhitespaceNorColonBeforeSpacesPattern,
-                                          replaceString: "// MARK: ",
-                                          keepLastChar: false))
-
-        result.append(contentsOf: correct(file: file,
-                                          pattern: invalidLowercasePattern,
-                                          replaceString: "// MARK:"))
-
-        result.append(contentsOf: correct(file: file,
-                                          pattern: threeSlashesInsteadOfTwo,
-                                          replaceString: "// MARK:"))
-
-        return result.unique
-    }
-
-    private func correct(file: SwiftLintFile,
-                         pattern: String,
-                         replaceString: String,
-                         keepLastChar: Bool = false) -> [Correction] {
-        let violations = violationRanges(in: file, matching: pattern)
-        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
-        if matches.isEmpty { return [] }
-
-        var nsstring = file.contents.bridge()
-        let description = Self.description
-        var corrections = [Correction]()
-        for var range in matches.reversed() {
-            if keepLastChar {
-                range.length -= 1
+    final class Rewriter: ViolationsSyntaxRewriter {
+        override func visit(_ token: TokenSyntax) -> TokenSyntax {
+            var pieces = token.leadingTrivia.pieces
+            for result in token.violationResults() {
+                // caution: `correctionPositions` records the positions before the mutations.
+                // https://github.com/realm/SwiftLint/pull/4297
+                correctionPositions.append(result.position)
+                result.correct(&pieces)
             }
-            let location = Location(file: file, characterOffset: range.location)
-            nsstring = nsstring.replacingCharacters(in: range, with: replaceString).bridge()
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-        file.write(nsstring.bridge())
-        return corrections
-    }
-
-    private func violationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
-        return file.rangesAndTokens(matching: pattern).filter { matchRange, syntaxTokens in
-            guard
-                let syntaxToken = syntaxTokens.first,
-                let syntaxKind = syntaxToken.kind,
-                SyntaxKind.commentKinds.contains(syntaxKind),
-                case let tokenLocation = Location(file: file, byteOffset: syntaxToken.offset),
-                case let matchLocation = Location(file: file, characterOffset: matchRange.location),
-                // Skip MARKs that are part of a multiline comment
-                tokenLocation.line == matchLocation.line
-            else {
-                return false
-            }
-            return true
-        }.compactMap { range, syntaxTokens in
-            let byteRange = ByteRange(location: syntaxTokens[0].offset, length: 0)
-            let identifierRange = file.stringView.byteRangeToNSRange(byteRange)
-            return identifierRange.map { NSUnionRange($0, range) }
+            return super.visit(token.with(\.leadingTrivia, Trivia(pieces: pieces)))
         }
     }
 }
 
-private let issue1029Example = Example("""
-    ↓//MARK:- Top-Level bad mark
-    ↓//MARK:- Another bad mark
-    struct MarkTest {}
-    ↓// MARK:- Bad mark
-    extension MarkTest {}
-    """)
+private struct ViolationResult {
+    let position: AbsolutePosition
+    let correct: (inout [TriviaPiece]) -> Void
+}
 
-private let issue1029Correction = Example("""
-    // MARK: - Top-Level bad mark
-    // MARK: - Another bad mark
-    struct MarkTest {}
-    // MARK: - Bad mark
-    extension MarkTest {}
-    """)
+private extension TokenSyntax {
+    private enum Mark {
+        static func lint(in text: String) -> [() -> String] {
+            let range = NSRange(text.startIndex..<text.endIndex, in: text)
+            return regex(badPattern).matches(in: text, options: [], range: range).compactMap { match in
+                isIgnoredCases(text, range: range) ? nil : {
+                    var corrected = replace(text, range: match.range(at: 2), to: "- ")
+                    corrected = replace(corrected, range: match.range(at: 1), to: "// MARK: ")
+                    if !text.hasSuffix(" "), corrected.hasSuffix(" ") {
+                        corrected.removeLast()
+                    }
+                    return corrected
+                }
+            }
+        }
 
-// https://github.com/realm/SwiftLint/issues/1749
-// https://github.com/realm/SwiftLint/issues/3841
-private let issue1749Example = Example(
-    """
-    /*
-    func test1() {
+        private static func isIgnoredCases(_ text: String, range: NSRange) -> Bool {
+            regex(goodPattern).firstMatch(in: text, range: range) != nil
+        }
+
+        private static let goodPattern = [
+            "^// MARK: \(oneOrMoreHyphen) \(anyText)$",
+            "^// MARK: \(oneOrMoreHyphen) ?$",
+            "^// MARK: \(nonSpaceOrHyphen)+ ?\(anyText)?$",
+            "^// MARK:$",
+
+            // comment start with `Mark ...` is ignored
+            "^\(twoOrThreeSlashes) +[Mm]ark[^:]"
+        ].map(nonCapturingGroup).joined(separator: "|")
+
+        private static let badPattern = capturingGroup([
+            "MARK[^\\s:]",
+            "[Mm]ark",
+            "MARK"
+        ].map(basePattern).joined(separator: "|")) + capturingGroup(hyphenOrEmpty)
+
+        private static let anySpace = " *"
+        private static let nonSpaceOrTwoOrMoreSpace = "(?: {2,})?"
+
+        private static let anyText = "(?:\\S.*)"
+
+        private static let oneOrMoreHyphen = "-+"
+        private static let nonSpaceOrHyphen = "[^ -]"
+
+        private static let twoOrThreeSlashes = "///?"
+        private static let colonOrEmpty = ":?"
+        private static let hyphenOrEmpty = "-? *"
+
+        private static func nonCapturingGroup(_ pattern: String) -> String {
+            "(?:\(pattern))"
+        }
+
+        private static func capturingGroup(_ pattern: String) -> String {
+            "(\(pattern))"
+        }
+
+        private static func basePattern(_ pattern: String) -> String {
+            nonCapturingGroup("\(twoOrThreeSlashes)\(anySpace)\(pattern)\(anySpace)\(colonOrEmpty)\(anySpace)")
+        }
+
+        private static func replace(_ target: String, range nsrange: NSRange, to replaceString: String) -> String {
+            guard nsrange.length > 0, let range = Range(nsrange, in: target) else {
+                return target
+            }
+            return target.replacingCharacters(in: range, with: replaceString)
+        }
     }
-    //MARK: mark
-    func test2() {
+
+    func violationResults() -> [ViolationResult] {
+        var utf8Offset = 0
+        var results: [ViolationResult] = []
+
+        for index in leadingTrivia.pieces.indices {
+            let piece = leadingTrivia.pieces[index]
+            defer { utf8Offset += piece.sourceLength.utf8Length }
+
+            switch piece {
+            case .lineComment(let comment), .docLineComment(let comment):
+                for correct in Mark.lint(in: comment) {
+                    let position = position.advanced(by: utf8Offset)
+                    results.append(ViolationResult(position: position) { pieces in
+                        pieces[index] = .lineComment(correct())
+                    })
+                }
+
+            default:
+                break
+            }
+        }
+
+        return results
     }
-    */
-    """
-)
-
-// This example should not trigger changes
-private let issue1749Correction = issue1749Example
-
-// These need to be at the bottom of the file to work around https://bugs.swift.org/browse/SR-10486
-
-private let nonSpace = "[^ ]"
-private let twoOrMoreSpace = " {2,}"
-private let mark = "MARK:"
-private let nonSpaceOrTwoOrMoreSpace = "(?:\(nonSpace)|\(twoOrMoreSpace))"
-
-private let nonSpaceOrTwoOrMoreSpaceOrNewline = "(?:[^ \n]|\(twoOrMoreSpace))"
+}

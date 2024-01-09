@@ -29,6 +29,7 @@
   * `explicit_acl`
   * `identifier_name`
   * `let_var_whitespace`
+  * `mark`
   * `multiline_literal_brackets`
   * `nimble_operator`
   * `opening_brace`
@@ -36,7 +37,8 @@
 
   [SimplyDanny](https://github.com/SimplyDanny)  
   [kishikawakatsumi](https://github.com/kishikawakatsumi)  
-  [Marcelo Fabri](https://github.com/marcelofabri)
+  [Marcelo Fabri](https://github.com/marcelofabri)  
+  [swiftty](https://github.com/swiftty)  
 
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)

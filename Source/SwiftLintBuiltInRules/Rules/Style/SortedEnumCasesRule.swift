@@ -19,6 +19,19 @@ struct SortedEnumCasesRule: OptInRule {
             """),
             Example("""
             enum foo {
+                case example
+                case exBoyfriend
+            }
+            """),
+            Example("""
+            enum foo {
+                case a
+                case B
+                case c
+            }
+            """),
+            Example("""
+            enum foo {
                 case a, b, c
             }
             """),
@@ -32,6 +45,12 @@ struct SortedEnumCasesRule: OptInRule {
             enum foo {
                 case a(foo: Foo)
                 case b(String), c
+            }
+            """),
+            Example("""
+            enum foo {
+                case a
+                case b, C, d
             }
             """),
             Example("""
@@ -53,7 +72,19 @@ struct SortedEnumCasesRule: OptInRule {
             """),
             Example("""
             enum foo {
+                ↓case B
+                ↓case a
+                case c
+            }
+            """),
+            Example("""
+            enum foo {
                 case ↓b, ↓a, c
+            }
+            """),
+            Example("""
+            enum foo {
+                case ↓B, ↓a, c
             }
             """),
             Example("""
@@ -91,7 +122,11 @@ private extension SortedEnumCasesRule {
 
             let cases = node.memberBlock.members.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
             let sortedCases = cases
-                .sorted(by: { $0.elements.first!.name.text < $1.elements.first!.name.text })
+                .sorted(by: {
+                    let lhs = $0.elements.first!.name.text
+                    let rhs = $1.elements.first!.name.text
+                    return lhs.caseInsensitiveCompare(rhs) == .orderedAscending
+                })
 
             zip(sortedCases, cases).forEach { sortedCase, currentCase in
                 if sortedCase.elements.first?.name.text != currentCase.elements.first?.name.text {
@@ -103,7 +138,9 @@ private extension SortedEnumCasesRule {
         }
 
         override func visitPost(_ node: EnumCaseDeclSyntax) {
-            let sortedElements = node.elements.sorted(by: { $0.name.text < $1.name.text })
+            let sortedElements = node.elements.sorted(by: {
+                $0.name.text.caseInsensitiveCompare($1.name.text) == .orderedAscending
+            })
 
             zip(sortedElements, node.elements).forEach { sortedElement, currentElement in
                 if sortedElement.name.text != currentElement.name.text {

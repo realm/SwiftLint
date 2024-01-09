@@ -68,6 +68,11 @@
   [Ben P](https://github.com/ben-p-commits)
   [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
+* Make `sorted_enum_cases` rule's comparison case-insensitive to
+  avoid unexpected ordering.  
+  [Oleg Kokhtenko](https://github.com/kohtenko)
+  [#5405](https://github.com/realm/SwiftLint/issues/issue_number)
+
 #### Bug Fixes
 
 * Silence `discarded_notification_center_observer` rule in closures. Furthermore,

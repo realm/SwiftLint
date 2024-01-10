@@ -24,13 +24,16 @@ struct TrailingClosureRule: OptInRule {
             Example("for x in list.filter({ $0.isValid }) {}"),
             Example("if list.allSatisfy({ $0.isValid }) {}"),
             Example("foo(param1: 1, param2: { _ in true }, param3: 0)"),
-            Example("foo(param1: 1, param2: { _ in true }) { $0 + 1 }")
+            Example("foo(param1: 1, param2: { _ in true }) { $0 + 1 }"),
+            Example("foo(param1: { _ in false }, param2: { _ in true })"),
+            Example("foo(param1: { _ in false }, param2: { _ in true }, param3: { _ in false })")
         ],
         triggeringExamples: [
             Example("↓foo.map({ $0 + 1 })"),
             Example("↓foo.reduce(0, combine: { $0 + 1 })"),
             Example("↓offsets.sorted(by: { $0.offset < $1.offset })"),
-            Example("↓foo.something(0, { $0 + 1 })")
+            Example("↓foo.something(0, { $0 + 1 })"),
+            Example("↓foo.something(param1: { _ in true }, param2: 0, param3: { _ in false })")
         ]
     )
 }

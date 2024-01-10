@@ -35,7 +35,7 @@ struct TrailingClosureRule: OptInRule {
     )
 }
 
-extension TrailingClosureRule {
+private extension TrailingClosureRule {
     class Visitor: ViolationsSyntaxVisitor<TrailingClosureConfiguration> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.trailingClosure == nil else { return }

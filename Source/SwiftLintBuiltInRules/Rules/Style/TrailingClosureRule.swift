@@ -67,14 +67,18 @@ private extension FunctionCallExprSyntax {
     }
 
     var containsOnlySingleMutedParameter: Bool {
-        arguments.count == 1
-        && arguments.first?.expression.is(ClosureExprSyntax.self) == true
-        && arguments.first?.label == nil
+        arguments.onlyElement?.isMutedClosure == true
     }
 
     var shouldTrigger: Bool {
         // If at least last two arguments were ClosureExprSyntax, a violation should not be triggered.
         arguments.count <= 1
         || !arguments.dropFirst(arguments.count - 2).allSatisfy({ $0.expression.is(ClosureExprSyntax.self) })
+    }
+}
+
+private extension LabeledExprSyntax {
+    var isMutedClosure: Bool {
+        label == nil && expression.is(ClosureExprSyntax.self)
     }
 }

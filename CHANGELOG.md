@@ -40,8 +40,7 @@
   [kishikawakatsumi](https://github.com/kishikawakatsumi)  
   [Marcelo Fabri](https://github.com/marcelofabri)  
   [swiftty](https://github.com/swiftty)  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [KS1019](https://github.com/KS1019)
+  [KS1019](https://github.com/KS1019)  
 
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -77,8 +76,6 @@
   avoid unexpected ordering.  
   [Oleg Kokhtenko](https://github.com/kohtenko)
   [#5405](https://github.com/realm/SwiftLint/issues/issue_number)
-* Rewrite `trailing_closure` rule with SwiftSyntax
-  [KS1019](https://github.com/KS1019)
 
 #### Bug Fixes
 

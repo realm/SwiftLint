@@ -20,7 +20,6 @@ struct TrailingClosureRule: OptInRule {
             Example("foo.something({ return 1 }())"),
             Example("foo.something({ return $0 }(1))"),
             Example("foo.something(0, { return 1 }())"),
-            Example("foo.something(0, { return 1 }())"),
             Example("for x in list.filter({ $0.isValid }) {}"),
             Example("if list.allSatisfy({ $0.isValid }) {}"),
             Example("foo(param1: 1, param2: { _ in true }, param3: 0)"),

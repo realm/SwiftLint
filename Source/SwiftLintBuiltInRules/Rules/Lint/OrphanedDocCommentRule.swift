@@ -40,6 +40,20 @@ struct OrphanedDocCommentRule: SourceKitFreeRule {
             ↓/// Look here for more info: https://github.com.
             // Not a doc string
             var myGreatProperty: String!
+            """),
+            Example("""
+            ↓/// Look here for more info: https://github.com.
+
+
+            // Not a doc string
+            var myGreatProperty: String!
+            """),
+            Example("""
+            ↓/// Look here for more info: https://github.com.
+            // Not a doc string
+            ↓/// My great property
+            // Not a doc string
+            var myGreatProperty: String!
             """)
         ]
     )

@@ -34,11 +34,14 @@
   * `nimble_operator`
   * `opening_brace`
   * `void_return`
+  * `trailing_closure`
 
   [SimplyDanny](https://github.com/SimplyDanny)  
   [kishikawakatsumi](https://github.com/kishikawakatsumi)  
   [Marcelo Fabri](https://github.com/marcelofabri)  
   [swiftty](https://github.com/swiftty)  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [KS1019](https://github.com/KS1019)
 
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)

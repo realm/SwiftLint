@@ -58,11 +58,11 @@ private extension TrailingClosureRule {
             guard node.trailingClosure == nil else { return }
 
             if configuration.onlySingleMutedParameter {
-                guard node.containsOnlySingleMutedParameter, node.isNotNextToLeftBrace else { return }
+                guard node.containsOnlySingleMutedParameter else { return }
 
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             } else {
-                guard node.lastArgumentIsClosure, node.isNotNextToLeftBrace else { return }
+                guard node.lastArgumentIsClosure else { return }
 
                 if node.shouldTrigger {
                     violations.append(node.positionAfterSkippingLeadingTrivia)
@@ -77,12 +77,6 @@ private extension TrailingClosureRule {
         override func visit(_ node: ForStmtSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
-    }
-}
-
-private extension SyntaxProtocol {
-    var isNotNextToLeftBrace: Bool {
-        nextToken(viewMode: .sourceAccurate)?.tokenKind != .leftBrace
     }
 }
 

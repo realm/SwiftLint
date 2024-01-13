@@ -33,8 +33,8 @@
   * `multiline_literal_brackets`
   * `nimble_operator`
   * `opening_brace`
-  * `void_return`
   * `trailing_closure`
+  * `void_return`
 
   [SimplyDanny](https://github.com/SimplyDanny)  
   [kishikawakatsumi](https://github.com/kishikawakatsumi)  

@@ -62,8 +62,6 @@ private extension TrailingClosureRule {
 
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             } else {
-                guard node.lastArgumentIsClosure else { return }
-
                 if node.shouldTrigger {
                     violations.append(node.positionAfterSkippingLeadingTrivia)
                 }
@@ -81,18 +79,15 @@ private extension TrailingClosureRule {
 }
 
 private extension FunctionCallExprSyntax {
-    var lastArgumentIsClosure: Bool {
-        arguments.last?.expression.is(ClosureExprSyntax.self) == true
-    }
-
     var containsOnlySingleMutedParameter: Bool {
         arguments.onlyElement?.isMutedClosure == true
     }
 
     var shouldTrigger: Bool {
+        arguments.last?.expression.is(ClosureExprSyntax.self) == true
         // If at least last two arguments were ClosureExprSyntax, a violation should not be triggered.
-        arguments.count <= 1
-        || !arguments.dropFirst(arguments.count - 2).allSatisfy({ $0.expression.is(ClosureExprSyntax.self) })
+        && (arguments.count <= 1
+        || !arguments.dropFirst(arguments.count - 2).allSatisfy({ $0.expression.is(ClosureExprSyntax.self) }))
     }
 }
 

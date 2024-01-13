@@ -34,6 +34,7 @@
   * `nimble_operator`
   * `opening_brace`
   * `trailing_closure`
+  * `orphaned_doc_comment`
   * `void_return`
 
   [SimplyDanny](https://github.com/SimplyDanny)  

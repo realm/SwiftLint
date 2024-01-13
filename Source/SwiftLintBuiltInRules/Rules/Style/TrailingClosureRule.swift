@@ -73,7 +73,8 @@ private extension TrailingClosureRule {
         }
 
         override func visit(_ node: ForStmtSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
+            walk(node.body)
+            return .skipChildren
         }
     }
 }

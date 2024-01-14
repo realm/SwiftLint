@@ -47,7 +47,7 @@ struct TrailingClosureRule: OptInRule {
             for n in list {
                 ↓n.forEach({ print($0) })
             }
-            """)
+            """, excludeFromDocumentation: true)
         ]
     )
 }

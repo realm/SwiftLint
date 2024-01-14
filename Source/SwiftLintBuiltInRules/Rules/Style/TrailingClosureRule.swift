@@ -61,10 +61,8 @@ private extension TrailingClosureRule {
                 guard node.containsOnlySingleMutedParameter else { return }
 
                 violations.append(node.positionAfterSkippingLeadingTrivia)
-            } else {
-                if node.shouldTrigger {
-                    violations.append(node.positionAfterSkippingLeadingTrivia)
-                }
+            } else if node.shouldTrigger {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 

@@ -58,9 +58,9 @@ private extension TrailingClosureRule {
             guard node.trailingClosure == nil else { return }
 
             if configuration.onlySingleMutedParameter {
-                guard node.containsOnlySingleMutedParameter else { return }
-
-                violations.append(node.positionAfterSkippingLeadingTrivia)
+                if node.containsOnlySingleMutedParameter {
+                    violations.append(node.positionAfterSkippingLeadingTrivia)
+                }
             } else if node.shouldTrigger {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }

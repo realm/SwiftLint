@@ -10,9 +10,9 @@ struct FunctionArgumentsSpacingRule: Rule {
         description: "Remove the space before the first function argument and after the last argument",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("makeGenerator()"),
-            Example("makeGenerator(style)"),
-            Example("makeGenerator(true, false)"),
+            Example("testFunc()"),
+            Example("testFunc(style)"),
+            Example("testFunc(true, false)"),
             Example("""
             makeGenerator(
                 a: true,
@@ -21,22 +21,22 @@ struct FunctionArgumentsSpacingRule: Rule {
             """)
         ],
         triggeringExamples: [
-            Example("makeGenerator(↓ )"),
-            Example("makeGenerator(↓ style)"),
-            Example("makeGenerator(↓  style)"),
-            Example("makeGenerator(style  ↓)"),
-            Example("makeGenerator(↓  style  ↓)"),
-            Example("makeGenerator(style ↓)"),
-            Example("makeGenerator(↓ style ↓)"),
-            Example("makeGenerator(↓ offset: 0, limit: 0)"),
-            Example("makeGenerator(offset: 0, limit: 0 ↓)"),
-            Example("makeGenerator(↓ 1, 2, 3 ↓)"),
-            Example("makeGenerator(↓ /* comment */ a)"),
-            Example("makeGenerator(a /* other comment */ ↓)"),
-            Example("makeGenerator(↓ /* comment */ a /* other comment */)"),
-            Example("makeGenerator(/* comment */ a /* other comment */ ↓)"),
-            Example("makeGenerator(↓ /* comment */ a /* other comment */ ↓)"),
-            Example("makeGenerator(↓  /* comment */ a /* other comment */  ↓)")
+            Example("testFunc(↓ )"),
+            Example("testFunc(↓ style)"),
+            Example("testFunc(↓  style)"),
+            Example("testFunc(style  ↓)"),
+            Example("testFunc(↓  style  ↓)"),
+            Example("testFunc(style ↓)"),
+            Example("testFunc(↓ style ↓)"),
+            Example("testFunc(↓ offset: 0, limit: 0)"),
+            Example("testFunc(offset: 0, limit: 0 ↓)"),
+            Example("testFunc(↓ 1, 2, 3 ↓)"),
+            Example("testFunc(↓ /* comment */ a)"),
+            Example("testFunc(a /* other comment */ ↓)"),
+            Example("testFunc(↓ /* comment */ a /* other comment */)"),
+            Example("testFunc(/* comment */ a /* other comment */ ↓)"),
+            Example("testFunc(↓ /* comment */ a /* other comment */ ↓)"),
+            Example("testFunc(↓  /* comment */ a /* other comment */  ↓)")
         ]
     )
 }

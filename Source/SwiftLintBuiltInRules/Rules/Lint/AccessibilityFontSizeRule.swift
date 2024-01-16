@@ -51,21 +51,40 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
                 continue
             }
 
-            if dictionary.isText && dictionary.hasStrictFontModifier(in: file) {
-                violations.append(
-                    StyleViolation(ruleDescription: Self.description,
-                                   severity: configuration.severity,
-                                   location: Location(file: file, byteOffset: offset))
-                )
+            guard dictionary.isText else {
+                continue
             }
 
-            // If dictionary did not represent an Text, recursively check substructure.
-            else if dictionary.substructure.isNotEmpty {
-                violations.append(contentsOf: findTextViolations(file: file, substructure: dictionary.substructure))
+            if checkForViolations(dictionaries: [dictionary], in: file) {
+                violations.append(getViolation(in: file, onOffset: offset))
             }
         }
 
         return violations
+    }
+
+    private func getViolation(in file: SwiftLintFile, onOffset offset: ByteCount) -> StyleViolation {
+        return StyleViolation(
+            ruleDescription: Self.description,
+            severity: configuration.severity,
+            location: Location(file: file, byteOffset: offset)
+        )
+    }
+
+    private func checkForViolations(dictionaries: [SourceKittenDictionary], in file: SwiftLintFile) -> Bool {
+        for dictionary in dictionaries {
+            if dictionary.hasSystemFontModifier(in: file) || dictionary.hasCustomFontModifierWithFixedSize(in: file) {
+                return true
+            }
+
+            else if dictionary.substructure.isNotEmpty {
+                if checkForViolations(dictionaries: dictionary.substructure, in: file) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 }
 
@@ -87,17 +106,34 @@ private extension SourceKittenDictionary {
         return substructure.contains(where: { $0.isText })
     }
 
-    /// Whether or not the dictionary represents a SwiftUI View with an `font(.system())` modifier.
-    func hasStrictFontModifier(in file: SwiftLintFile) -> Bool {
+    func hasCustomFontModifierWithFixedSize(in file: SwiftLintFile) -> Bool {
         return hasModifier(
             anyOf: [
                 SwiftUIModifier(
-                    name: "font",
+                    name: ".custom",
+                    arguments: [
+                        .init(
+                            name: "fixedSize",
+                            values: [],
+                            matchType: .substring)
+                    ]
+                )
+            ],
+            in: file
+        )
+    }
+
+    /// Whether or not the dictionary represents a SwiftUI View with an `font(.system())` modifier.
+    func hasSystemFontModifier(in file: SwiftLintFile) -> Bool {
+        return hasModifier(
+            anyOf: [
+                SwiftUIModifier(
+                    name: "system",
                     arguments: [
                         .init(
                             name: "",
-                            values: [".system("],
-                            matchType: .prefix)
+                            values: ["size"],
+                            matchType: .substring)
                     ]
                 )
             ],

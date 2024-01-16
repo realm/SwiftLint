@@ -65,9 +65,7 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
         for dictionary in dictionaries {
             if dictionary.hasSystemFontModifier(in: file) || dictionary.hasCustomFontModifierWithFixedSize(in: file) {
                 return true
-            }
-
-            else if dictionary.substructure.isNotEmpty {
+            } else if dictionary.substructure.isNotEmpty {
                 if checkForViolations(dictionaries: dictionary.substructure, in: file) {
                     return true
                 }

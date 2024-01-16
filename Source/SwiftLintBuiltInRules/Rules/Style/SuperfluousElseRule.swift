@@ -220,51 +220,51 @@ private extension SuperfluousElseRule {
 
         override func visit(_ list: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
             var newStatements = CodeBlockItemListSyntax()
-            var ifStmtRewritten = false
+            var ifExprRewritten = false
             for item in list {
-                guard let ifStmt = item.item.as(ExpressionStmtSyntax.self)?.expression.as(IfExprSyntax.self),
-                      let elseKeyword = ifStmt.superfluousElse,
+                guard let ifExpr = item.item.as(ExpressionStmtSyntax.self)?.expression.as(IfExprSyntax.self),
+                      let elseKeyword = ifExpr.superfluousElse,
                       !elseKeyword.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
                     newStatements.append(item)
                     continue
                 }
-                ifStmtRewritten = true
-                let (newIfStm, removedItems) = modify(ifStmt: ifStmt)
+                ifExprRewritten = true
+                let (newIfStm, removedItems) = modify(ifExpr: ifExpr)
                 newStatements.append(
                     CodeBlockItemSyntax(item: CodeBlockItemSyntax.Item(ExpressionStmtSyntax(expression: newIfStm)))
                 )
                 newStatements.append(contentsOf: removedItems)
             }
-            return ifStmtRewritten ? visit(newStatements) : super.visit(newStatements)
+            return ifExprRewritten ? visit(newStatements) : super.visit(newStatements)
         }
 
-        private func modify(ifStmt: IfExprSyntax) -> (newIfStmt: IfExprSyntax, removedItems: [CodeBlockItemSyntax]) {
-            let ifStmtWithoutElse = removeElse(from: ifStmt)
-            if case let .codeBlock(block) = ifStmt.elseBody {
+        private func modify(ifExpr: IfExprSyntax) -> (newIfExpr: IfExprSyntax, removedItems: [CodeBlockItemSyntax]) {
+            let ifExprWithoutElse = removeElse(from: ifExpr)
+            if case let .codeBlock(block) = ifExpr.elseBody {
                 let indenter = CodeIndentingRewriter(style: .unindentSpaces(4))
                 let unindentedBlock = indenter.rewrite(block).cast(CodeBlockSyntax.self)
                 let items = unindentedBlock.statements.with(
                     \.trailingTrivia,
                     unindentedBlock.rightBrace.leadingTrivia.withTrailingEmptyLineRemoved
                 )
-                return (ifStmtWithoutElse, Array(items))
+                return (ifExprWithoutElse, Array(items))
             }
-            if case let .ifExpr(nestedIfStmt) = ifStmt.elseBody {
-                let unindentedIfStmt = nestedIfStmt.with(
+            if case let .ifExpr(nestedIfExpr) = ifExpr.elseBody {
+                let unindentedIfExpr = nestedIfExpr.with(
                     \.leadingTrivia,
-                    Trivia(pieces: [.newlines(1)] + (ifStmt.leadingTrivia.indentation(isOnNewline: true) ?? Trivia()))
+                    Trivia(pieces: [.newlines(1)] + (ifExpr.leadingTrivia.indentation(isOnNewline: true) ?? Trivia()))
                 )
                 let item = CodeBlockItemSyntax(
-                    item: CodeBlockItemSyntax.Item(ExpressionStmtSyntax(expression: unindentedIfStmt))
+                    item: CodeBlockItemSyntax.Item(ExpressionStmtSyntax(expression: unindentedIfExpr))
                 )
-                return (ifStmtWithoutElse, [item])
+                return (ifExprWithoutElse, [item])
             }
-            return (ifStmt, [])
+            return (ifExpr, [])
         }
 
-        private func removeElse(from ifStmt: IfExprSyntax) -> IfExprSyntax {
-            ifStmt
-                .with(\.body, ifStmt.body.with(\.rightBrace, ifStmt.body.rightBrace.with(\.trailingTrivia, Trivia())))
+        private func removeElse(from ifExpr: IfExprSyntax) -> IfExprSyntax {
+            ifExpr
+                .with(\.body, ifExpr.body.with(\.rightBrace, ifExpr.body.rightBrace.with(\.trailingTrivia, Trivia())))
                 .with(\.elseKeyword, nil)
                 .with(\.elseBody, nil)
         }
@@ -289,8 +289,8 @@ private extension IfExprSyntax {
         guard lastStatementReturns(in: body) else {
             return false
         }
-        if case let .ifExpr(nestedIfStmt) = elseBody {
-            return nestedIfStmt.returnsInAllBranches
+        if case let .ifExpr(nestedIfExpr) = elseBody {
+            return nestedIfExpr.returnsInAllBranches
         }
         if case let .codeBlock(block) = elseBody {
             return lastStatementReturns(in: block)
@@ -306,8 +306,8 @@ private extension IfExprSyntax {
             return true
         }
         if let exprStmt = lastItem.as(ExpressionStmtSyntax.self),
-           let lastIfStmt = exprStmt.expression.as(IfExprSyntax.self) {
-            return lastIfStmt.returnsInAllBranches
+           let lastIfExpr = exprStmt.expression.as(IfExprSyntax.self) {
+            return lastIfExpr.returnsInAllBranches
         }
         return false
     }

@@ -103,7 +103,7 @@
   avoid unexpected ordering.  
   [Oleg Kokhtenko](https://github.com/kohtenko)
   [#5405](https://github.com/realm/SwiftLint/issues/issue_number)
-* Make `EmptyCountRule` auto correctable
+
 * Make `EmptyCountRule` auto correctable  
   [KS1019](https://github.com/KS1019/)
 

@@ -38,14 +38,14 @@ struct TrailingClosureRule: OptInRule {
             """)
         ],
         triggeringExamples: [
-            Example("↓foo.map({ $0 + 1 })"),
-            Example("↓foo.reduce(0, combine: { $0 + 1 })"),
-            Example("↓offsets.sorted(by: { $0.offset < $1.offset })"),
-            Example("↓foo.something(0, { $0 + 1 })"),
-            Example("↓foo.something(param1: { _ in true }, param2: 0, param3: { _ in false })"),
+            Example("foo.map(↓{ $0 + 1 })"),
+            Example("foo.reduce(0, combine: ↓{ $0 + 1 })"),
+            Example("offsets.sorted(by: ↓{ $0.offset < $1.offset })"),
+            Example("foo.something(0, ↓{ $0 + 1 })"),
+            Example("foo.something(param1: { _ in true }, param2: 0, param3: ↓{ _ in false })"),
             Example("""
             for n in list {
-                ↓n.forEach({ print($0) })
+                n.forEach(↓{ print($0) })
             }
             """, excludeFromDocumentation: true)
         ]
@@ -58,11 +58,11 @@ private extension TrailingClosureRule {
             guard node.trailingClosure == nil else { return }
 
             if configuration.onlySingleMutedParameter {
-                if node.containsOnlySingleMutedParameter {
-                    violations.append(node.positionAfterSkippingLeadingTrivia)
+                if let param = node.singleMutedClosureParameter {
+                    violations.append(param.positionAfterSkippingLeadingTrivia)
                 }
-            } else if node.shouldTrigger {
-                violations.append(node.positionAfterSkippingLeadingTrivia)
+            } else if let param = node.lastDistinctClosureParameter {
+                violations.append(param.positionAfterSkippingLeadingTrivia)
             }
         }
 
@@ -78,20 +78,24 @@ private extension TrailingClosureRule {
 }
 
 private extension FunctionCallExprSyntax {
-    var containsOnlySingleMutedParameter: Bool {
-        arguments.onlyElement?.isMutedClosure == true
+    var singleMutedClosureParameter: ClosureExprSyntax? {
+        if let onlyArgument = arguments.onlyElement, onlyArgument.label == nil {
+            return onlyArgument.expression.as(ClosureExprSyntax.self)
+        }
+        return nil
     }
 
-    var shouldTrigger: Bool {
-        arguments.last?.expression.is(ClosureExprSyntax.self) == true
-        // If at least last two arguments were ClosureExprSyntax, a violation should not be triggered.
-        && (arguments.count <= 1
-        || !arguments.dropFirst(arguments.count - 2).allSatisfy({ $0.expression.is(ClosureExprSyntax.self) }))
+    var lastDistinctClosureParameter: ClosureExprSyntax? {
+        // If at least the last two (connected) arguments were ClosureExprSyntax, a violation should not be triggered.
+        guard arguments.count > 1, arguments.dropFirst(arguments.count - 2).allSatisfy(\.isClosureExpr) else {
+            return arguments.last?.expression.as(ClosureExprSyntax.self)
+        }
+        return nil
     }
 }
 
 private extension LabeledExprSyntax {
-    var isMutedClosure: Bool {
-        label == nil && expression.is(ClosureExprSyntax.self)
+    var isClosureExpr: Bool {
+        expression.is(ClosureExprSyntax.self)
     }
 }

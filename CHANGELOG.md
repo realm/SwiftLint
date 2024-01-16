@@ -56,6 +56,9 @@
   rule. Moreover, support automatic fixes for obvious cases.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Refine violation position of `trailing_closure` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Allow to configure more operators in `identifier_name` rule. The new option
   is named `additional_operators`. Use it to add more operators to the list
   of default operators known to the rule.  

@@ -63,10 +63,7 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
 
     private func checkForViolations(dictionaries: [SourceKittenDictionary], in file: SwiftLintFile) -> Bool {
         for dictionary in dictionaries {
-            if (
-                dictionary.hasSystemFontModifier(in: file) ||
-                dictionary.hasCustomFontModifierWithFixedSize(in: file)
-            ) {
+            if dictionary.hasSystemFontModifier(in: file) || dictionary.hasCustomFontModifierWithFixedSize(in: file) {
                 return true
             }
 

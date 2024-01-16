@@ -52,28 +52,38 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
             }
 
             guard dictionary.isText else {
+                if dictionary.substructure.isNotEmpty {
+                    violations.append(
+                        contentsOf: findTextViolations(
+                            file: file,
+                            substructure: dictionary.substructure
+                        )
+                    )
+                }
+
                 continue
             }
 
             if checkForViolations(dictionaries: [dictionary], in: file) {
-                violations.append(getViolation(in: file, onOffset: offset))
+                violations.append(
+                    StyleViolation(
+                        ruleDescription: Self.description,
+                        severity: configuration.severity,
+                        location: Location(file: file, byteOffset: offset)
+                    )
+                )
             }
         }
 
         return violations
     }
 
-    private func getViolation(in file: SwiftLintFile, onOffset offset: ByteCount) -> StyleViolation {
-        return StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severity,
-            location: Location(file: file, byteOffset: offset)
-        )
-    }
-
     private func checkForViolations(dictionaries: [SourceKittenDictionary], in file: SwiftLintFile) -> Bool {
         for dictionary in dictionaries {
-            if dictionary.hasSystemFontModifier(in: file) || dictionary.hasCustomFontModifierWithFixedSize(in: file) {
+            if (
+                dictionary.hasSystemFontModifier(in: file) ||
+                dictionary.hasCustomFontModifierWithFixedSize(in: file)
+            ) {
                 return true
             }
 

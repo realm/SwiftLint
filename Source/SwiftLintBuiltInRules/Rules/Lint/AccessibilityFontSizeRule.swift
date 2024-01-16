@@ -34,7 +34,7 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
                 continue
             }
 
-            guard dictionary.isFontModifier else {
+            guard dictionary.isFontModifier(in: file) else {
                 if dictionary.substructure.isNotEmpty {
                     violations.append(
                         contentsOf: findFontViolations(
@@ -81,17 +81,25 @@ struct AccessibilityFontSizeRule: ASTRule, OptInRule {
 private extension SourceKittenDictionary {
     /// Whether or not the dictionary represents a SwiftUI Text.
     /// Currently only accounts for SwiftUI text literals and not instance variables.
-    var isFontModifier: Bool {
+    func isFontModifier(in file: SwiftLintFile) -> Bool {
         // Text literals will be reported as calls to the initializer.
         guard expressionKind == .call else {
             return false
         }
 
-        if name != nil && name!.contains(".font") {
+        if hasModifier(
+            anyOf: [
+                SwiftUIModifier(
+                    name: ".font",
+                    arguments: []
+                )
+            ],
+            in: file
+        ) {
             return true
         }
 
-        return substructure.contains(where: { $0.isFontModifier })
+        return substructure.contains(where: { $0.isFontModifier(in: file) })
     }
 
     func hasCustomFontModifierWithFixedSize(in file: SwiftLintFile) -> Bool {

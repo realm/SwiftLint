@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct SuperfluousElseRule: OptInRule {
+@SwiftSyntaxRule
+struct SuperfluousElseRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -58,38 +58,38 @@ struct SuperfluousElseRule: OptInRule {
         ],
         triggeringExamples: [
             Example("""
-                ↓if i > 0 {
+                if i > 0 {
                     return 1
                     // comment
-                } else {
+                } ↓else {
                     return 2
                 }
             """),
             Example("""
-                ↓if i > 0 {
+                if i > 0 {
                     return 1
-                } else ↓if i < 12 {
+                } ↓else if i < 12 {
                     return 2
-                } else if i > 18 {
+                } ↓else if i > 18 {
                     return 3
                 }
             """),
             Example("""
-                ↓if i > 0 {
-                    ↓if i < 12 {
+                if i > 0 {
+                    if i < 12 {
                         return 5
-                    } else {
-                        ↓if i > 11 {
+                    } ↓else {
+                        if i > 11 {
                             return 6
-                        } else {
+                        } ↓else {
                             return 7
                         }
                     }
-                } else ↓if i < 12 {
+                } ↓else if i < 12 {
                     return 2
-                } else ↓if i < 24 {
+                } ↓else if i < 24 {
                     return 8
-                } else {
+                } ↓else {
                     return 3
                 }
             """)
@@ -97,10 +97,10 @@ struct SuperfluousElseRule: OptInRule {
         corrections: [
             Example("""
                 func f() -> Int {
-                    ↓if i > 0 {
+                    if i > 0 {
                         return 1
                         // comment
-                    } else {
+                    } ↓else {
                         // another comment
                         return 2
                         // yet another comment
@@ -119,12 +119,12 @@ struct SuperfluousElseRule: OptInRule {
             """),
             Example("""
                 func f() -> Int {
-                    ↓if i > 0 {
+                    if i > 0 {
                         return 1
                         // comment
-                    } else ↓if i < 10 {
+                    } ↓else if i < 10 {
                         return 2
-                    } else {
+                    } ↓else {
                         return 3
                     }
                 }
@@ -143,10 +143,10 @@ struct SuperfluousElseRule: OptInRule {
             Example("""
                 func f() -> Int {
 
-                    ↓if i > 0 {
+                    if i > 0 {
                         return 1
                         // comment
-                    } else if i < 10 {
+                    } ↓else if i < 10 {
                         // another comment
                         return 2
                     }
@@ -166,9 +166,9 @@ struct SuperfluousElseRule: OptInRule {
             """),
             Example("""
                 {
-                    ↓if i > 0 {
+                    if i > 0 {
                         return 1
-                    } else {
+                    } ↓else {
                         return 2
                     }
                 }()
@@ -182,6 +182,14 @@ struct SuperfluousElseRule: OptInRule {
             """)
         ]
     )
+
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
+        Rewriter(
+            configuration: configuration,
+            file: file,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
 }
 
 private extension SuperfluousElseRule {
@@ -189,36 +197,45 @@ private extension SuperfluousElseRule {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: IfExprSyntax) {
-            if node.violatesRule {
-                violations.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
+            if let elseKeyword = node.superfluousElse {
+                violations.append(elseKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
     }
 
     final class Rewriter: ViolationsSyntaxRewriter {
-        override func visit(_ node: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
-            super.visit(restructure(list: node))
+        init(configuration: ConfigurationType,
+             file: SwiftLintFile,
+             disabledRegions: [SourceRange]) {
+            super.init(locationConverter: file.locationConverter, disabledRegions: disabledRegions)
+            let correctionPositions = Visitor(configuration: configuration, file: file).walk(file: file) {
+                $0.violations.map(\.position)
+            }.filter { !$0.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) }
+            self.correctionPositions.append(contentsOf: correctionPositions)
         }
 
-        private func restructure(list: CodeBlockItemListSyntax, offset: Int = 0) -> CodeBlockItemListSyntax {
+        override func visitAny(_ node: Syntax) -> Syntax? {
+            correctionPositions.isEmpty ? node : nil // Avoid skipping all `if` expressions in a code block.
+        }
+
+        override func visit(_ list: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
             var newStatements = CodeBlockItemListSyntax()
-            var newOffset = 0
+            var ifStmtRewritten = false
             for item in list {
                 guard let ifStmt = item.item.as(ExpressionStmtSyntax.self)?.expression.as(IfExprSyntax.self),
-                      !ifStmt.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-                      ifStmt.violatesRule else {
+                      let elseKeyword = ifStmt.superfluousElse,
+                      !elseKeyword.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
                     newStatements.append(item)
                     continue
                 }
-                newOffset = ifStmt.body.rightBrace.endPositionBeforeTrailingTrivia.utf8Offset
-                correctionPositions.append(ifStmt.ifKeyword.positionAfterSkippingLeadingTrivia.advanced(by: offset))
+                ifStmtRewritten = true
                 let (newIfStm, removedItems) = modify(ifStmt: ifStmt)
                 newStatements.append(
                     CodeBlockItemSyntax(item: CodeBlockItemSyntax.Item(ExpressionStmtSyntax(expression: newIfStm)))
                 )
                 newStatements.append(contentsOf: removedItems)
             }
-            return newOffset > 0 ? restructure(list: newStatements, offset: newOffset) : newStatements
+            return ifStmtRewritten ? visit(newStatements) : super.visit(newStatements)
         }
 
         private func modify(ifStmt: IfExprSyntax) -> (newIfStmt: IfExprSyntax, removedItems: [CodeBlockItemSyntax]) {
@@ -255,15 +272,17 @@ private extension SuperfluousElseRule {
 }
 
 private extension IfExprSyntax {
-    var violatesRule: Bool {
+    var superfluousElse: TokenSyntax? {
         if elseKeyword == nil {
-            return false
+            return nil
         }
-        let thenBodyReturns = lastStatementReturns(in: body)
-        if thenBodyReturns, let parent = parent?.as(IfExprSyntax.self) {
-            return parent.violatesRule
+        if !lastStatementReturns(in: body) {
+            return nil
         }
-        return thenBodyReturns
+        if let parent = parent?.as(IfExprSyntax.self) {
+            return parent.superfluousElse != nil ? elseKeyword : nil
+        }
+        return elseKeyword
     }
 
     private var returnsInAllBranches: Bool {

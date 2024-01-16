@@ -64,7 +64,7 @@ private extension FunctionArgumentsSpacingRule {
             // as it may contain trivia that is not space like blockComment(_:)
             if let firstArgumentLeadingTrivia = firstArgument?.leadingTrivia,
                !firstArgumentLeadingTrivia.containsNewlines() {
-                    if let firstElementTrivia = firstArgumentLeadingTrivia.reversed().first {
+                    if let firstElementTrivia = firstArgumentLeadingTrivia.pieces.last {
                         if firstElementTrivia.isSpaces {
                             violations.append(leftParen.positionAfterSkippingLeadingTrivia)
                         }

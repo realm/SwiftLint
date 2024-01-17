@@ -55,6 +55,15 @@ struct OrphanedDocCommentRule: Rule {
             ↓/// My great property
             // Not a doc string
             var myGreatProperty: String!
+            """),
+            Example("""
+            extension Nested {
+                ///
+                ↓/// Look here for more info: https://github.com.
+
+                // Not a doc string
+                var myGreatProperty: String!
+            }
             """)
         ]
     )
@@ -70,7 +79,7 @@ private extension OrphanedDocCommentRule {
                 case .docLineComment(let comment), .docBlockComment(let comment):
                     // These patterns are often used for "file header" style comments
                     if !comment.hasPrefix("////") && !comment.hasPrefix("/***") {
-                        if isOrphanedDocComment(with: &iterator) {
+                        if let index = findOrphanedDocComment(start: index, with: &iterator) {
                             let utf8Length = pieces[..<index].reduce(0) { $0 + $1.sourceLength.utf8Length }
                             violations.append(node.position.advanced(by: utf8Length))
                         }
@@ -84,21 +93,25 @@ private extension OrphanedDocCommentRule {
     }
 }
 
-private func isOrphanedDocComment(
+private func findOrphanedDocComment(
+    start: Int,
     with iterator: inout some IteratorProtocol<(offset: Int, element: TriviaPiece)>
-) -> Bool {
-    while let (_, piece) = iterator.next() {
+) -> Int? {
+    var lastDocIndex = start
+    while let (index, piece) = iterator.next() {
         switch piece {
-        case .docLineComment, .docBlockComment,
-                .carriageReturns, .carriageReturnLineFeeds, .newlines:
+        case .docLineComment, .docBlockComment:
+            lastDocIndex = index
+
+        case .carriageReturns, .carriageReturnLineFeeds, .newlines, .spaces:
             break
 
         case .lineComment, .blockComment:
-            return true
+            return lastDocIndex
 
         default:
-            return false
+            return nil
         }
     }
-    return false
+    return nil
 }

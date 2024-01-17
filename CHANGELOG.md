@@ -52,6 +52,10 @@
 * Make `superfluous_else` rule auto-correctable.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Support other scope-exiting statements `continue`, `break` and `throw` in
+  `superfluous_else` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Trigger on `-> ()` return signatures in `return_value_from_void_function`
   rule. Moreover, support automatic fixes for obvious cases.  
   [SimplyDanny](https://github.com/SimplyDanny)

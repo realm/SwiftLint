@@ -54,7 +54,21 @@ struct SuperfluousElseRule: SwiftSyntaxCorrectableRule, OptInRule {
                 } else {
                     return 3
                 }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
+            Example("""
+                for i in list {
+                    if i > 12 {
+                        // Do nothing
+                    } else {
+                        continue
+                    }
+                    if i > 14 {
+                        // Do nothing
+                    } else if i > 13 {
+                        break
+                    }
+                }
+            """)
         ],
         triggeringExamples: [
             Example("""
@@ -91,6 +105,19 @@ struct SuperfluousElseRule: SwiftSyntaxCorrectableRule, OptInRule {
                     return 8
                 } ↓else {
                     return 3
+                }
+            """),
+            Example("""
+                for i in list {
+                    if i > 13 {
+                        return
+                    } ↓else if i > 12 {
+                        continue
+                    } ↓else if i > 11 {
+                        break
+                    } ↓else {
+                        throw error
+                    }
                 }
             """)
         ],
@@ -179,6 +206,40 @@ struct SuperfluousElseRule: SwiftSyntaxCorrectableRule, OptInRule {
                     }
                     return 2
                 }()
+            """),
+            Example("""
+                for i in list {
+                    if i > 13 {
+                        return
+                    } ↓else if i > 12 {
+                        continue // continue with next index
+                    } ↓else if i > 11 {
+                        break
+                        // end of loop
+                    } ↓else if i > 10 {
+                        // Some error
+                        throw error
+                    } ↓else {
+
+                    }
+                }
+            """): Example("""
+                for i in list {
+                    if i > 13 {
+                        return
+                    }
+                    if i > 12 {
+                        continue // continue with next index
+                    }
+                    if i > 11 {
+                        break
+                        // end of loop
+                    }
+                    if i > 10 {
+                        // Some error
+                        throw error
+                    }
+                }
             """)
         ]
     )
@@ -276,7 +337,7 @@ private extension IfExprSyntax {
         if elseKeyword == nil {
             return nil
         }
-        if !lastStatementReturns(in: body) {
+        if !lastStatementExitsScope(in: body) {
             return nil
         }
         if let parent = parent?.as(IfExprSyntax.self) {
@@ -286,23 +347,23 @@ private extension IfExprSyntax {
     }
 
     private var returnsInAllBranches: Bool {
-        guard lastStatementReturns(in: body) else {
+        guard lastStatementExitsScope(in: body) else {
             return false
         }
         if case let .ifExpr(nestedIfExpr) = elseBody {
             return nestedIfExpr.returnsInAllBranches
         }
         if case let .codeBlock(block) = elseBody {
-            return lastStatementReturns(in: block)
+            return lastStatementExitsScope(in: block)
         }
         return false
     }
 
-    private func lastStatementReturns(in block: CodeBlockSyntax) -> Bool {
+    private func lastStatementExitsScope(in block: CodeBlockSyntax) -> Bool {
         guard let lastItem = block.statements.last?.as(CodeBlockItemSyntax.self)?.item else {
             return false
         }
-        if lastItem.is(ReturnStmtSyntax.self) {
+        if [.returnStmt, .throwStmt, .continueStmt, .breakStmt].contains(lastItem.kind) {
             return true
         }
         if let exprStmt = lastItem.as(ExpressionStmtSyntax.self),

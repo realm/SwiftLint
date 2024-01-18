@@ -20,8 +20,10 @@ public extension SwiftSyntaxCorrectableRule {
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {
+        guard let syntaxTree = preprocess(file: file) else {
+            return []
+        }
         if let rewriter = makeRewriter(file: file) {
-            let syntaxTree = file.syntaxTree
             let newTree = rewriter.visit(syntaxTree)
             let positions = rewriter.correctionPositions
             if positions.isEmpty {
@@ -40,7 +42,7 @@ public extension SwiftSyntaxCorrectableRule {
         }
 
         // There is no rewriter. Falling back to the correction ranges collected by the visitor (if any).
-        let violationCorrections = makeVisitor(file: file).walk(file: file, handler: \.violationCorrections)
+        let violationCorrections = makeVisitor(file: file).walk(tree: syntaxTree, handler: \.violationCorrections)
         if violationCorrections.isEmpty {
             return []
         }

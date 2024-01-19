@@ -45,6 +45,17 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
         }
         """),
         Example("""
+        func baz() {
+            enum Foo {
+                case bar
+
+                init?(arg: String?) {
+                    return nil
+                }
+            }
+        }
+        """, excludeFromDocumentation: true),
+        Example("""
         func test() {
             guard condition else {
                 return

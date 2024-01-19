@@ -57,7 +57,7 @@ private extension Syntax {
             return node
         }
 
-        if self.is(ClosureExprSyntax.self) || self.is(VariableDeclSyntax.self) {
+        if self.is(ClosureExprSyntax.self) || self.is(VariableDeclSyntax.self) || self.is(InitializerDeclSyntax.self) {
             return nil
         }
 

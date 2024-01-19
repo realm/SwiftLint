@@ -54,7 +54,7 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
                 }
             }
         }
-        """),
+        """, excludeFromDocumentation: true),
         Example("""
         func test() {
             guard condition else {

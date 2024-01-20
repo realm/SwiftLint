@@ -69,6 +69,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#1762](https://github.com/realm/SwiftLint/pull/1762)
 
+* Stop triggering `no_magic_numbers` rule on literals used in range
+  expressions assigned to variables.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5430](https://github.com/realm/SwiftLint/pull/5430)
+
 * Add `affect_initializers` option to allow `unneeded_override` rule
   to affect initializers.  
   [leonardosrodrigues0](https://github.com/leonardosrodrigues0)

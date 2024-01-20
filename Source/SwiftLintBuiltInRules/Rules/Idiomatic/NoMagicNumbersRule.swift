@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
+@SwiftSyntaxRule(foldExpressions: true)
 struct NoMagicNumbersRule: OptInRule {
     var configuration = NoMagicNumbersConfiguration()
 
@@ -75,11 +75,12 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let foo = 2 >> 2"),
             Example("let foo = 2 << 2"),
             Example("let a = b / 100.0"),
+            Example("let range = 2 ..< 12"),
+            Example("let range = ...12"),
+            Example("let range = 12..."),
             Example("let (lowerBound, upperBound) = (400, 599)"),
             Example("let a = (5, 10)"),
-            Example("""
-                    let notFound = (statusCode: 404, description: "Not Found", isError: true)
-                    """)
+            Example("let notFound = (statusCode: 404, description: \"Not Found\", isError: true)")
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -87,6 +88,11 @@ struct NoMagicNumbersRule: OptInRule {
             Example("array[↓42]"),
             Example("let box = array[↓12 + ↓14]"),
             Example("let a = b + ↓2.0"),
+            Example("let range = 2 ... ↓12 + 1"),
+            Example("let range = ↓2*↓6..."),
+            Example("let slice = array[↓2...↓4]"),
+            Example("for i in ↓3 ..< ↓8 {}"),
+            Example("let n: Int = Int(r * ↓255) << ↓16 | Int(g * ↓255) << ↓8"),
             Example("Color.primary.opacity(isAnimate ? ↓0.1 : ↓1.5)"),
             Example("""
                     class MyTest: XCTestCase {}
@@ -143,7 +149,7 @@ private extension NoMagicNumbersRule {
             if node.isMemberOfATestClass(configuration.testParentClasses) {
                 return
             }
-            if node.isOperandOfBitwiseShiftOperation() {
+            if node.isOperandOfFreestandingShiftOperation() {
                 return
             }
             let violation = node.positionAfterSkippingLeadingTrivia
@@ -181,8 +187,24 @@ private extension TokenSyntax {
         guard let grandparent = parent?.parent else {
             return true
         }
-        return !grandparent.is(InitializerClauseSyntax.self)
-            && grandparent.as(PrefixOperatorExprSyntax.self)?.parent?.is(InitializerClauseSyntax.self) != true
+        if grandparent.is(InitializerClauseSyntax.self) {
+            return false
+        }
+        let operatorParent = grandparent.as(PrefixOperatorExprSyntax.self)?.parent
+                          ?? grandparent.as(PostfixOperatorExprSyntax.self)?.parent
+                          ?? grandparent.asAcceptedInfixOperator?.parent
+        return operatorParent?.is(InitializerClauseSyntax.self) != true
+    }
+}
+
+private extension Syntax {
+    var asAcceptedInfixOperator: InfixOperatorExprSyntax? {
+        if let infixOp = `as`(InfixOperatorExprSyntax.self),
+           let operatorSymbol = infixOp.operator.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind,
+           [.binaryOperator("..."), .binaryOperator("..<")].contains(operatorSymbol) {
+            return infixOp
+        }
+        return nil
     }
 }
 
@@ -211,19 +233,12 @@ private extension ExprSyntaxProtocol {
         return nil
     }
 
-    func isOperandOfBitwiseShiftOperation() -> Bool {
-        guard
-            let siblings = parent?.as(ExprListSyntax.self)?.children(viewMode: .sourceAccurate),
-            siblings.count == 3
-        else {
-            return false
+    func isOperandOfFreestandingShiftOperation() -> Bool {
+        if let operation = parent?.as(InfixOperatorExprSyntax.self),
+           let operatorSymbol = operation.operator.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind,
+           [.binaryOperator("<<"), .binaryOperator(">>")].contains(operatorSymbol) {
+            return operation.parent?.isProtocol((any ExprSyntaxProtocol).self) != true
         }
-
-        let operatorIndex = siblings.index(after: siblings.startIndex)
-        if let tokenKind = siblings[operatorIndex].as(BinaryOperatorExprSyntax.self)?.operator.tokenKind {
-            return tokenKind == .binaryOperator("<<") || tokenKind == .binaryOperator(">>")
-        }
-
         return false
     }
 }

@@ -445,6 +445,12 @@ test_parent_classes
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">a</span> <span class="o">=</span> <span class="n">b</span> <span class="o">/</span> <span class="mf">100.0</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">range</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">..&lt;</span> <span class="mi">12</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">range</span> <span class="o">=</span> <span class="o">...</span><span class="mi">12</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">range</span> <span class="o">=</span> <span class="mi">12</span><span class="o">...</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="p">(</span><span class="nv">lowerBound</span><span class="p">,</span> <span class="nv">upperBound</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">599</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">a</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
@@ -461,6 +467,16 @@ test_parent_classes
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">box</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="err">↓</span><span class="mi">12</span> <span class="o">+</span> <span class="err">↓</span><span class="mi">14</span><span class="p">]</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">a</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="err">↓</span><span class="mf">2.0</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">range</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">...</span> <span class="err">↓</span><span class="mi">12</span> <span class="o">+</span> <span class="mi">1</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">range</span> <span class="o">=</span> <span class="err">↓</span><span class="mf">2*</span><span class="err">↓</span><span class="mi">6</span><span class="o">...</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">slice</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="err">↓</span><span class="mi">2</span><span class="o">...</span><span class="err">↓</span><span class="mi">4</span><span class="p">]</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="err">↓</span><span class="mi">3</span> <span class="o">..&lt;</span> <span class="err">↓</span><span class="mi">8</span> <span class="p">{}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">n</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="err">↓</span><span class="mi">255</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="err">↓</span><span class="mi">16</span> <span class="o">|</span> <span class="kt">Int</span><span class="p">(</span><span class="n">g</span> <span class="o">*</span> <span class="err">↓</span><span class="mi">255</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="err">↓</span><span class="mi">8</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kt">Color</span><span class="o">.</span><span class="n">primary</span><span class="o">.</span><span class="nf">opacity</span><span class="p">(</span><span class="n">isAnimate</span> <span class="p">?</span> <span class="err">↓</span><span class="mf">0.1</span> <span class="p">:</span> <span class="err">↓</span><span class="mf">1.5</span><span class="p">)</span>
 </code></pre>

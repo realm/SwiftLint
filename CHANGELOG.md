@@ -79,6 +79,11 @@
   [leonardosrodrigues0](https://github.com/leonardosrodrigues0)
   [#5265](https://github.com/realm/SwiftLint/issues/5265)
 
+* Respect scattered disable commands in auto-correction of `duplicate_imports`
+  rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5418](https://github.com/realm/SwiftLint/pull/5418)
+
 * Add new `non_optional_string_data_conversion` rule to enforce 
   non-failable conversions of UTF-8 `String` <-> `Data`.    
   [Ben P](https://github.com/ben-p-commits)

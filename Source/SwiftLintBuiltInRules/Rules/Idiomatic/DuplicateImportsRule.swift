@@ -167,13 +167,14 @@ private extension DuplicateImportsRule {
         override func visit(_ node: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
             let itemsToRemove = node
                 .enumerated()
+                .filter { !$1.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) }
                 .map { ($0, $1.item.positionAfterSkippingLeadingTrivia) }
-                .filter { _, position in importPositionsToRemove.contains(position) }
+                .filter { importPositionsToRemove.contains($1) }
                 .map { (indexInParent: $0, absolutePosition: $1) }
-
-            correctionPositions.append(
-                contentsOf: itemsToRemove.map(\.absolutePosition)
-            )
+            if itemsToRemove.isEmpty {
+                return super.visit(node)
+            }
+            correctionPositions.append(contentsOf: itemsToRemove.map(\.absolutePosition))
 
             var copy = node
             for indexInParent in itemsToRemove.map(\.indexInParent).reversed() {

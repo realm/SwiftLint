@@ -58,8 +58,8 @@ struct OrphanedDocCommentRule: Rule {
             """),
             Example("""
             extension Nested {
-                ///
-                ↓/// Look here for more info: https://github.com.
+                ↓///
+                /// Look here for more info: https://github.com.
 
                 // Not a doc string
                 var myGreatProperty: String!
@@ -79,7 +79,7 @@ private extension OrphanedDocCommentRule {
                 case .docLineComment(let comment), .docBlockComment(let comment):
                     // These patterns are often used for "file header" style comments
                     if !comment.hasPrefix("////") && !comment.hasPrefix("/***") {
-                        if let index = findOrphanedDocComment(start: index, with: &iterator) {
+                        if isOrphanedDocComment(with: &iterator) {
                             let utf8Length = pieces[..<index].reduce(0) { $0 + $1.sourceLength.utf8Length }
                             violations.append(node.position.advanced(by: utf8Length))
                         }
@@ -93,25 +93,21 @@ private extension OrphanedDocCommentRule {
     }
 }
 
-private func findOrphanedDocComment(
-    start: Int,
+private func isOrphanedDocComment(
     with iterator: inout some IteratorProtocol<(offset: Int, element: TriviaPiece)>
-) -> Int? {
-    var lastDocIndex = start
-    while let (index, piece) = iterator.next() {
+) -> Bool {
+    while let (_, piece) = iterator.next() {
         switch piece {
-        case .docLineComment, .docBlockComment:
-            lastDocIndex = index
-
-        case .carriageReturns, .carriageReturnLineFeeds, .newlines, .spaces:
+        case .docLineComment, .docBlockComment,
+                .carriageReturns, .carriageReturnLineFeeds, .newlines, .spaces:
             break
 
         case .lineComment, .blockComment:
-            return lastDocIndex
+            return true
 
         default:
-            return nil
+            return false
         }
     }
-    return nil
+    return false
 }

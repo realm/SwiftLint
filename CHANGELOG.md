@@ -99,6 +99,9 @@
 
 #### Bug Fixes
 
+* Adding a nesting rule configuration option:`ignore_nesting_typealias_and_associatedtype` that Typealias and AssociatedType will be ignored from the analysis of the rule.
+  [#3183](https://github.com/realm/SwiftLint/issues/3183)
+
 * Silence `discarded_notification_center_observer` rule in closures. Furthermore,
   handle `get` and `set` accessors correctly and consider implicit returns.  
   [SimplyDanny](https://github.com/SimplyDanny)

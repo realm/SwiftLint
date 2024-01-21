@@ -8,7 +8,7 @@ import XCTest
 class RuleConfigurationDescriptionTests: XCTestCase {
     @AutoApply
     private struct TestConfiguration: RuleConfiguration {
-        typealias Parent = RuleMock
+        typealias Parent = RuleMock // swiftlint:disable:this nesting
 
         @ConfigurationElement(key: "flag")
         var flag = true
@@ -211,7 +211,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
 
     func testPrefersParameterDescription() {
         struct Config: RuleConfiguration {
-            typealias Parent = RuleMock
+            typealias Parent = RuleMock // swiftlint:disable:this nesting
 
             var parameterDescription: RuleConfigurationDescription? {
                 "visible" => .flag(true)

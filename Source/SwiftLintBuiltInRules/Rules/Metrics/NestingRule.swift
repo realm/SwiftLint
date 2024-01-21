@@ -37,7 +37,9 @@ struct NestingRule: Rule {
     private func validate(file: SwiftLintFile, substructure: [SourceKittenDictionary],
                           args: ValidationArgs) -> [StyleViolation] {
         return args.violations + substructure.flatMap { dictionary -> [StyleViolation] in
-            guard let kindString = dictionary.kind, let structureKind = SwiftStructureKind(kindString) else {
+            guard let kindString = dictionary.kind,
+                  let structureKind = SwiftStructureKind(kindString,
+                                                         ignoreTypealiasAndAssociatedtype: configuration.ignoreNestingTypealiasAndAssociatedtype) else {
                 return validate(file: file, substructure: dictionary.substructure, args: args.with(previousKind: nil))
             }
             guard !omittedStructureKinds.contains(structureKind) else {
@@ -130,9 +132,10 @@ private enum SwiftStructureKind: Equatable {
     case expression(SwiftExpressionKind)
     case statement(StatementKind)
 
-    init?(_ structureKind: String) {
+    init?(_ structureKind: String, ignoreTypealiasAndAssociatedtype: Bool) {
         if let declarationKind = SwiftDeclarationKind(rawValue: structureKind) {
-            if declarationKind == .associatedtype || declarationKind == .typealias {
+            if ignoreTypealiasAndAssociatedtype,
+               declarationKind == .associatedtype || declarationKind == .typealias {
                 return nil
             }
             self = .declaration(declarationKind)

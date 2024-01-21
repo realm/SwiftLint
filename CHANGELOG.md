@@ -10,6 +10,12 @@
 
 #### Enhancements
 
+* Add new option `ignore_typealiases_and_associatedtypes` to
+  `nesting` rule. It excludes `typealias` and `associatedtype`
+  declarations from the analysis.
+  [marunomi](https://github.com/marunomi)
+  [#3183](https://github.com/realm/SwiftLint/issues/3183)
+
 * Prevent from compiling `SwiftLint` target when only using `SwiftLintPlugin` on macOS.  
   [Julien Baillon](https://github.com/julien-baillon)
   [#5372](https://github.com/realm/SwiftLint/issues/5372)
@@ -98,9 +104,6 @@
   [#5405](https://github.com/realm/SwiftLint/issues/issue_number)
 
 #### Bug Fixes
-
-* Adding a nesting rule configuration option:`ignore_nesting_typealias_and_associatedtype` that Typealias and AssociatedType will be ignored from the analysis of the rule.
-  [#3183](https://github.com/realm/SwiftLint/issues/3183)
 
 * Silence `discarded_notification_center_observer` rule in closures. Furthermore,
   handle `get` and `set` accessors correctly and consider implicit returns.  

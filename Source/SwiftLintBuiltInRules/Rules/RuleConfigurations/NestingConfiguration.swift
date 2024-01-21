@@ -13,8 +13,8 @@ struct NestingConfiguration: RuleConfiguration {
     private(set) var checkNestingInClosuresAndStatements = true
     @ConfigurationElement(key: "always_allow_one_type_in_functions")
     private(set) var alwaysAllowOneTypeInFunctions = false
-    @ConfigurationElement(key: "ignore_nesting_typealias_and_associatedtype")
-    private(set) var ignoreNestingTypealiasAndAssociatedtype = false
+    @ConfigurationElement(key: "ignore_typealiases_and_associatedtypes")
+    private(set) var ignoreTypealiasesAndAssociatedtypes = false
 
     func severity(with config: Severity, for level: Int) -> ViolationSeverity? {
         if let error = config.error, level > error {

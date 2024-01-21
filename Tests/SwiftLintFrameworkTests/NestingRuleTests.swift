@@ -409,6 +409,6 @@ class NestingRuleTests: SwiftLintTestCase {
                                          nonTriggeringExamples: nonTriggeringExamples,
                                          triggeringExamples: triggeringExamples)
 
-        verifyRule(descripton, ruleConfiguration: ["ignore_nesting_typealias_and_associatedtype": true])
+        verifyRule(descripton, ruleConfiguration: ["ignore_typealiases_and_associatedtypes": true])
     }
 }

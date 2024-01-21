@@ -773,6 +773,9 @@ A simple example including just two configuration files looks like this:
 
 `swiftlint --config .swiftlint.yml --config .swiftlint_child.yml`
 
+### Get a List of Rules Violations
+Use Swiftlint Helper to make a list of violations which would help in assigning and segregating the tasks - https://swiftlinthelper.codecrops.com
+
 ### Nested Configurations
 
 In addition to a main configuration (the `.swiftlint.yml` file in the root folder),

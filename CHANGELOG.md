@@ -10,6 +10,12 @@
 
 #### Enhancements
 
+* Add new `redundant_extension` rule that detects redundant extensions.
+  An extension is considered redundant if it does not define any
+  members, but only conformances.  
+  [Muhammad Zeeshan](https://github.com/mzeeshanid)
+  [#5359](https://github.com/realm/SwiftLint/issues/5359)
+
 * Prevent from compiling `SwiftLint` target when only using `SwiftLintPlugin` on macOS.  
   [Julien Baillon](https://github.com/julien-baillon)
   [#5372](https://github.com/realm/SwiftLint/issues/5372)
@@ -18,6 +24,11 @@
   rule to ignore switch statements written in a single line.  
   [tonell-m](https://github.com/tonell-m)
   [#5373](https://github.com/realm/SwiftLint/issues/5373)
+* Add new `redundant_extension` rule that detects redundant extensions.
+  An extension is considered redundant if it does not define any
+  members, but only conformances.  
+  [Muhammad Zeeshan](https://github.com/mzeeshanid)
+  [#5359](https://github.com/realm/SwiftLint/issues/5359)
 
 * Add new `one_declaration_per_file` rule that allows only a
   single class/struct/enum/protocol declaration per file.

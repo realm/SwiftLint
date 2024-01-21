@@ -380,35 +380,39 @@ class NestingRuleTests: SwiftLintTestCase {
                         \(type) Example_1 {
                             typealias Example_2_Type = Example_2.Type
                         }
-                        \(type) Example_2 {
+                        \(type) Example_2 {}
+                    }
+                """),
+                .init("""
+                    protocol Example_Protcol {
+                        associatedtype AssociatedType
+                    }
 
+                    \(type) Example_1 {
+                        \(type) Example_2: Example_Protcol {
+                            typealias AssociatedType = Int
+                        }
+                    }
+                """),
+                .init("""
+                    protocol Example_Protcol {
+                        associatedtype AssociatedType
+                    }
+
+                    \(type) Example_1 {
+                        \(type) Example_2: SomeProtcol {
+                            typealias Example_2_Type = Example_2.Type
+                        }
+                        \(type) Example_3: Example_Protcol {
+                            typealias AssociatedType = Int
                         }
                     }
                 """)
             ]
         })
 
-        let triggeringExamples = ["class", "struct", "enum"].flatMap { type -> [Example] in
-            [
-                .init("""
-                    \(type) Example_0 {
-                        \(type) Example_1 {
-                            \(type) Example_2 {
+        let description = NestingRule.description.with(nonTriggeringExamples: nonTriggeringExamples)
 
-                            }
-                        }
-                    }
-                """)
-            ]
-        }
-
-        let descripton = RuleDescription(identifier: NestingRule.description.identifier,
-                                         name: NestingRule.description.name,
-                                         description: NestingRule.description.description,
-                                         kind: .metrics,
-                                         nonTriggeringExamples: nonTriggeringExamples,
-                                         triggeringExamples: triggeringExamples)
-
-        verifyRule(descripton, ruleConfiguration: ["ignore_typealiases_and_associatedtypes": true])
+        verifyRule(description, ruleConfiguration: ["ignore_typealiases_and_associatedtypes": true])
     }
 }

@@ -33,6 +33,7 @@
   * `multiline_literal_brackets`
   * `nimble_operator`
   * `opening_brace`
+  * `orphaned_doc_comment`
   * `trailing_closure`
   * `void_return`
 

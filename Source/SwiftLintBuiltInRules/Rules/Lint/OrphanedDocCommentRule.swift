@@ -1,6 +1,7 @@
-import SwiftIDEUtils
+import SwiftSyntax
 
-struct OrphanedDocCommentRule: SourceKitFreeRule {
+@SwiftSyntaxRule
+struct OrphanedDocCommentRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -40,36 +41,73 @@ struct OrphanedDocCommentRule: SourceKitFreeRule {
             ↓/// Look here for more info: https://github.com.
             // Not a doc string
             var myGreatProperty: String!
+            """),
+            Example("""
+            ↓/// Look here for more info: https://github.com.
+
+
+            // Not a doc string
+            var myGreatProperty: String!
+            """),
+            Example("""
+            ↓/// Look here for more info: https://github.com.
+            // Not a doc string
+            ↓/// My great property
+            // Not a doc string
+            var myGreatProperty: String!
+            """),
+            Example("""
+            extension Nested {
+                ↓///
+                /// Look here for more info: https://github.com.
+
+                // Not a doc string
+                var myGreatProperty: String!
+            }
             """)
         ]
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        file.syntaxClassifications
-            .filter { $0.kind != .none }
-            .pairs()
-            .compactMap { first, second in
-                let firstByteRange = first.range.toSourceKittenByteRange()
-                guard
-                    let second,
-                    first.kind == .docLineComment || first.kind == .docBlockComment,
-                    second.kind == .lineComment || second.kind == .blockComment,
-                    let firstString = file.stringView.substringWithByteRange(firstByteRange),
+private extension OrphanedDocCommentRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: TokenSyntax) {
+            let pieces = node.leadingTrivia.pieces
+            var iterator = pieces.enumerated().makeIterator()
+            while let (index, piece) = iterator.next() {
+                switch piece {
+                case .docLineComment(let comment), .docBlockComment(let comment):
                     // These patterns are often used for "file header" style comments
-                    !firstString.starts(with: "////") && !firstString.starts(with: "/***")
-                else {
-                    return nil
-                }
+                    if !comment.hasPrefix("////") && !comment.hasPrefix("/***") {
+                        if isOrphanedDocComment(with: &iterator) {
+                            let utf8Length = pieces[..<index].reduce(0) { $0 + $1.sourceLength.utf8Length }
+                            violations.append(node.position.advanced(by: utf8Length))
+                        }
+                    }
 
-                return StyleViolation(ruleDescription: Self.description,
-                                      severity: configuration.severity,
-                                      location: Location(file: file, byteOffset: firstByteRange.location))
+                default:
+                    break
+                }
             }
+        }
     }
 }
 
-private extension Sequence {
-    func pairs() -> Zip2Sequence<Self, [Element?]> {
-        return zip(self, Array(dropFirst()) + [nil])
+private func isOrphanedDocComment(
+    with iterator: inout some IteratorProtocol<(offset: Int, element: TriviaPiece)>
+) -> Bool {
+    while let (_, piece) = iterator.next() {
+        switch piece {
+        case .docLineComment, .docBlockComment,
+                .carriageReturns, .carriageReturnLineFeeds, .newlines, .spaces:
+            break
+
+        case .lineComment, .blockComment:
+            return true
+
+        default:
+            return false
+        }
     }
+    return false
 }

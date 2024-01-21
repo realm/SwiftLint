@@ -45,6 +45,10 @@ struct NestingRule: Rule {
             }
             switch structureKind {
             case let .declaration(declarationKind):
+                if configuration.ignoreTypealiasesAndAssociatedtypes,
+                   declarationKind == .associatedtype || declarationKind == .typealias {
+                    return args.violations
+                }
                 return validate(file: file, structureKind: structureKind,
                                 declarationKind: declarationKind, dictionary: dictionary, args: args)
             case .expression, .statement:

@@ -1,5 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
+// swiftlint:disable file_length
+
 class NestingRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
     func testNestingWithAlwaysAllowOneTypeInFunctions() {
@@ -367,5 +369,50 @@ class NestingRuleTests: SwiftLintTestCase {
         )
 
         verifyRule(description, ruleConfiguration: ["check_nesting_in_closures_and_statements": false])
+    }
+
+    func testNestingWithoutTypealiasAndAssociatedtype() {
+        var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
+        nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
+            [
+                .init("""
+                    \(type) Example_0 {
+                        \(type) Example_1 {
+                            typealias Example_2_Type = Example_2.Type
+                        }
+                        \(type) Example_2 {}
+                    }
+                """),
+                .init("""
+                    protocol Example_Protcol {
+                        associatedtype AssociatedType
+                    }
+
+                    \(type) Example_1 {
+                        \(type) Example_2: Example_Protcol {
+                            typealias AssociatedType = Int
+                        }
+                    }
+                """),
+                .init("""
+                    protocol Example_Protcol {
+                        associatedtype AssociatedType
+                    }
+
+                    \(type) Example_1 {
+                        \(type) Example_2: SomeProtcol {
+                            typealias Example_2_Type = Example_2.Type
+                        }
+                        \(type) Example_3: Example_Protcol {
+                            typealias AssociatedType = Int
+                        }
+                    }
+                """)
+            ]
+        })
+
+        let description = NestingRule.description.with(nonTriggeringExamples: nonTriggeringExamples)
+
+        verifyRule(description, ruleConfiguration: ["ignore_typealiases_and_associatedtypes": true])
     }
 }

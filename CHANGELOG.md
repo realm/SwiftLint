@@ -10,6 +10,12 @@
 
 #### Enhancements
 
+* Add new option `ignore_typealiases_and_associatedtypes` to
+  `nesting` rule. It excludes `typealias` and `associatedtype`
+  declarations from the analysis.
+  [marunomi](https://github.com/marunomi)
+  [#3183](https://github.com/realm/SwiftLint/issues/3183)
+
 * Prevent from compiling `SwiftLint` target when only using `SwiftLintPlugin` on macOS.  
   [Julien Baillon](https://github.com/julien-baillon)
   [#5372](https://github.com/realm/SwiftLint/issues/5372)

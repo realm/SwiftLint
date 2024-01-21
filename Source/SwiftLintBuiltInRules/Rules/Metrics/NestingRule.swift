@@ -132,6 +132,9 @@ private enum SwiftStructureKind: Equatable {
 
     init?(_ structureKind: String) {
         if let declarationKind = SwiftDeclarationKind(rawValue: structureKind) {
+            if declarationKind == .associatedtype || declarationKind == .typealias {
+                return nil
+            }
             self = .declaration(declarationKind)
         } else if let expressionKind = SwiftExpressionKind(rawValue: structureKind) {
             self = .expression(expressionKind)

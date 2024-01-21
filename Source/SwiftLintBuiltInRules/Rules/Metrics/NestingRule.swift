@@ -38,9 +38,7 @@ struct NestingRule: Rule {
                           args: ValidationArgs) -> [StyleViolation] {
         return args.violations + substructure.flatMap { dictionary -> [StyleViolation] in
             guard let kindString = dictionary.kind,
-                  let structureKind = SwiftStructureKind(kindString,
-                                                         // swiftlint:disable:next line_length
-                                                         ignoreTypealiasAndAssociatedtype: configuration.ignoreNestingTypealiasAndAssociatedtype)
+                  let structureKind = SwiftStructureKind(kindString)
             else {
                 return validate(file: file, substructure: dictionary.substructure, args: args.with(previousKind: nil))
             }
@@ -49,6 +47,10 @@ struct NestingRule: Rule {
             }
             switch structureKind {
             case let .declaration(declarationKind):
+                if configuration.ignoreTypealiasesAndAssociatedtypes,
+                   declarationKind == .associatedtype || declarationKind == .typealias {
+                    return args.violations
+                }
                 return validate(file: file, structureKind: structureKind,
                                 declarationKind: declarationKind, dictionary: dictionary, args: args)
             case .expression, .statement:
@@ -134,12 +136,8 @@ private enum SwiftStructureKind: Equatable {
     case expression(SwiftExpressionKind)
     case statement(StatementKind)
 
-    init?(_ structureKind: String, ignoreTypealiasAndAssociatedtype: Bool) {
+    init?(_ structureKind: String) {
         if let declarationKind = SwiftDeclarationKind(rawValue: structureKind) {
-            if ignoreTypealiasAndAssociatedtype,
-               declarationKind == .associatedtype || declarationKind == .typealias {
-                return nil
-            }
             self = .declaration(declarationKind)
         } else if let expressionKind = SwiftExpressionKind(rawValue: structureKind) {
             self = .expression(expressionKind)

@@ -368,7 +368,8 @@ class NestingRuleTests: SwiftLintTestCase {
 
         verifyRule(description, ruleConfiguration: ["check_nesting_in_closures_and_statements": false])
     }
-    
+
+    // swiftlint:disable:next function_body_length
     func testNestingWithoutTypealiasAndAssociatedtype() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
@@ -379,34 +380,34 @@ class NestingRuleTests: SwiftLintTestCase {
                             typealias Example_2_Type = Example_2.Type
                         }
                         \(type) Example_2 {
-                           
+
                         }
                     }
-                """),
+                """)
             ]
         })
-        
+
         let triggeringExamples = ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
                 .init("""
                     \(type) Example_0 {
                         \(type) Example_1 {
                             \(type) Example_2 {
-                               
+
                             }
                         }
                     }
-                """),
+                """)
             ]
         }
-        
+
         let descripton = RuleDescription(identifier: NestingRule.description.identifier,
                                          name: NestingRule.description.name,
                                          description: NestingRule.description.description,
                                          kind: .metrics,
                                          nonTriggeringExamples: nonTriggeringExamples,
                                          triggeringExamples: triggeringExamples)
-        
+
         verifyRule(descripton, ruleConfiguration: ["ignore_nesting_typealias_and_associatedtype": true])
     }
 }

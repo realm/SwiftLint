@@ -39,7 +39,9 @@ struct NestingRule: Rule {
         return args.violations + substructure.flatMap { dictionary -> [StyleViolation] in
             guard let kindString = dictionary.kind,
                   let structureKind = SwiftStructureKind(kindString,
-                                                         ignoreTypealiasAndAssociatedtype: configuration.ignoreNestingTypealiasAndAssociatedtype) else {
+                                                         // swiftlint:disable:next line_length
+                                                         ignoreTypealiasAndAssociatedtype: configuration.ignoreNestingTypealiasAndAssociatedtype)
+            else {
                 return validate(file: file, substructure: dictionary.substructure, args: args.with(previousKind: nil))
             }
             guard !omittedStructureKinds.contains(structureKind) else {

@@ -5,6 +5,7 @@ import SwiftSyntax
 @SwiftSyntaxRule(foldExpressions: true)
 struct EmptyCountRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = EmptyCountConfiguration()
+    private static let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
 
     static let description = RuleDescription(
         identifier: "empty_count",
@@ -75,7 +76,6 @@ struct EmptyCountRule: SwiftSyntaxCorrectableRule, OptInRule {
 
 private extension EmptyCountRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
 
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
@@ -99,7 +99,6 @@ private extension EmptyCountRule {
     }
 
     final class Rewriter: ViolationsSyntaxRewriter {
-        private let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
         private let configuration: EmptyCountConfiguration
 
         init(configuration: EmptyCountConfiguration,

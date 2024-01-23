@@ -137,7 +137,7 @@ private extension EmptyCountRule {
                 if let newNode {
                     correctionPositions.append(position)
                     if ["!=", "<", ">"].contains(binaryOperator) {
-                        return newNode.negatedExprSyntax
+                        return newNode.negated
                             .withTrivia(from: node)
                     } else {
                         return ExprSyntax(newNode)
@@ -189,7 +189,7 @@ private extension TokenSyntax {
 }
 
 private extension ExprSyntaxProtocol {
-    var negatedExprSyntax: ExprSyntax {
+    var negated: ExprSyntax {
         ExprSyntax(PrefixOperatorExprSyntax(operator: .prefixOperator("!"), expression: self))
     }
 }

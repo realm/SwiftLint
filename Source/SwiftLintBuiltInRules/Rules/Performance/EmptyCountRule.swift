@@ -5,7 +5,6 @@ import SwiftSyntax
 @SwiftSyntaxRule(foldExpressions: true)
 struct EmptyCountRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = EmptyCountConfiguration()
-    private static let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
 
     static let description = RuleDescription(
         identifier: "empty_count",
@@ -78,9 +77,7 @@ private extension EmptyCountRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
 
         override func visitPost(_ node: InfixOperatorExprSyntax) {
-            guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
-                  let binaryOperator = operatorNode.operator.binaryOperator,
-                  operators.contains(binaryOperator) else {
+            guard node.hasBinaryOperator else {
                 return
             }
 
@@ -119,9 +116,7 @@ private extension EmptyCountRule {
         }
 
         override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
-            guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
-                  let binaryOperator = operatorNode.operator.binaryOperator,
-                  operators.contains(binaryOperator) else {
+            guard node.hasBinaryOperator else {
                 return super.visit(node)
             }
 
@@ -134,7 +129,7 @@ private extension EmptyCountRule {
                     nil
                 }
 
-                if let newNode {
+                if let newNode, let binaryOperator = node.binaryOperator {
                     correctionPositions.append(position)
                     if ["!=", "<", ">"].contains(binaryOperator) {
                         return newNode.negated
@@ -203,6 +198,8 @@ private extension SyntaxProtocol {
 }
 
 private extension InfixOperatorExprSyntax {
+    private static let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
+
     func countNodeAndPosition(onlyAfterDot: Bool) -> (ExprSyntax, AbsolutePosition)? {
         if let intExpr = rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
            let position = leftOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
@@ -213,5 +210,17 @@ private extension InfixOperatorExprSyntax {
         } else {
             return nil
         }
+    }
+
+    var binaryOperator: String? {
+        self.operator.as(BinaryOperatorExprSyntax.self)?.operator.binaryOperator
+    }
+
+    var hasBinaryOperator: Bool {
+        guard let binaryOperator, InfixOperatorExprSyntax.operators.contains(binaryOperator) else {
+            return false
+        }
+
+        return true
     }
 }

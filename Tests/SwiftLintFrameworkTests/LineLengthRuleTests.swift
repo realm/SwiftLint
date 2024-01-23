@@ -91,4 +91,42 @@ class LineLengthRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": false],
                    commentDoesntViolate: false, stringDoesntViolate: false)
     }
+
+    func testLineLengthWithExcludedPatterns() {
+        let nonTriggeringLines = [plainString, interpolatedString]
+
+        let baseDescription = LineLengthRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + nonTriggeringLines
+        let triggeringExamples = baseDescription.triggeringExamples
+
+        let description = baseDescription
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
+
+        verifyRule(
+            description,
+            ruleConfiguration: ["excluded_patterns": ["^print"]],
+            commentDoesntViolate: false,
+            stringDoesntViolate: false
+        )
+    }
+
+    func testLineLengthWithEmptyExcludedPatterns() {
+        let triggeringLines = [plainString, interpolatedString]
+
+        let baseDescription = LineLengthRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples
+        let triggeringExamples = baseDescription.triggeringExamples + triggeringLines
+
+        let description = baseDescription
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
+
+        verifyRule(
+            description,
+            ruleConfiguration: ["excluded_patterns": []],
+            commentDoesntViolate: false,
+            stringDoesntViolate: false
+        )
+    }
 }

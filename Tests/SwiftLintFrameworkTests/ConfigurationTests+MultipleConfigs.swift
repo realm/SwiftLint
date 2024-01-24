@@ -509,26 +509,11 @@ extension ConfigurationTests {
     }
 
     private func testOnlyConfigurationDisabledRulesWarnings(ruleType: any Rule.Type) {
-        struct TestCase: Equatable {
-            let onlyRules: Set<String>
-            let expectedIssue: Issue?
-        }
-
-        let testCases = [
-            TestCase(
-                onlyRules: [],
-                expectedIssue: Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)
-            ),
-            TestCase(onlyRules: [ruleType.identifier], expectedIssue: nil)
-        ]
-
-        for testCase in testCases {
-            let issue = Configuration.validateConfiguredRuleIsEnabled(
-                onlyRules: testCase.onlyRules,
-                ruleType: ruleType
-            )
-            XCTAssertEqual(issue, testCase.expectedIssue)
-        }
+        let issue = Configuration.validateConfiguredRuleIsEnabled(onlyRules: [], ruleType: ruleType)
+        XCTAssertEqual(issue, Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier))
+        XCTAssertNil(
+            Configuration.validateConfiguredRuleIsEnabled(onlyRules: [ruleType.identifier], ruleType: ruleType)
+        )
     }
 
     // MARK: - Remote Configs

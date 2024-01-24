@@ -170,36 +170,47 @@ extension Configuration {
                 let issue = validateConfiguredRuleIsEnabled(onlyRules: onlyRules, ruleType: ruleType)
                 issue?.print()
             case let .default(disabled: disabledRules, optIn: optInRules):
-                var enabledInParentRules: Set<String> = []
-                var disabledInParentRules: Set<String> = []
-                var allEnabledRules: Set<String> = []
-
-                if case .only(let onlyRules) = parentConfiguration?.rulesMode {
-                    enabledInParentRules = onlyRules
-                } else if case .default(
-                    let parentDisabledRules,
-                    let parentOptInRules
-                ) = parentConfiguration?.rulesMode {
-                    enabledInParentRules = parentOptInRules
-                    disabledInParentRules = parentDisabledRules
-                }
-                allEnabledRules = enabledInParentRules
-                    .subtracting(disabledInParentRules)
-                    .union(optInRules)
-                    .subtracting(disabledRules)
-
                 let issue = validateConfiguredRuleIsEnabled(
                     parentConfiguration: parentConfiguration,
-                    enabledInParentRules: enabledInParentRules,
-                    disabledInParentRules: disabledInParentRules,
                     disabledRules: disabledRules,
                     optInRules: optInRules,
-                    allEnabledRules: allEnabledRules,
                     ruleType: ruleType
                 )
                 issue?.print()
             }
         }
+    }
+
+    static func validateConfiguredRuleIsEnabled(
+        parentConfiguration: Configuration?,
+        disabledRules: Set<String>,
+        optInRules: Set<String>,
+        ruleType: any Rule.Type
+    ) -> Issue? {
+        var enabledInParentRules: Set<String> = []
+        var disabledInParentRules: Set<String> = []
+        var allEnabledRules: Set<String> = []
+
+        if case .only(let onlyRules) = parentConfiguration?.rulesMode {
+            enabledInParentRules = onlyRules
+        } else if case .default(let parentDisabledRules, let parentOptInRules) = parentConfiguration?.rulesMode {
+            enabledInParentRules = parentOptInRules
+            disabledInParentRules = parentDisabledRules
+        }
+        allEnabledRules = enabledInParentRules
+            .subtracting(disabledInParentRules)
+            .union(optInRules)
+            .subtracting(disabledRules)
+
+        return validateConfiguredRuleIsEnabled(
+            parentConfiguration: parentConfiguration,
+            enabledInParentRules: enabledInParentRules,
+            disabledInParentRules: disabledInParentRules,
+            disabledRules: disabledRules,
+            optInRules: optInRules,
+            allEnabledRules: allEnabledRules,
+            ruleType: ruleType
+        )
     }
 
     static func validateConfiguredRuleIsEnabled(

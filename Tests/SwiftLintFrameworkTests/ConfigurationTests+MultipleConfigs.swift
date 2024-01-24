@@ -455,38 +455,6 @@ extension ConfigurationTests {
         }
     }
 
-    private func validateConfiguredRuleIsEnabled(
-        parentConfiguration: Configuration?,
-        disabledRules: Set<String>,
-        optInRules: Set<String>,
-        ruleType: any Rule.Type
-    ) -> Issue? {
-        var enabledInParentRules: Set<String> = []
-        var disabledInParentRules: Set<String> = []
-        var allEnabledRules: Set<String> = []
-
-        if case .only(let onlyRules) = parentConfiguration?.rulesMode {
-            enabledInParentRules = onlyRules
-        } else if case .default(let parentDisabledRules, let parentOptInRules) = parentConfiguration?.rulesMode {
-            enabledInParentRules = parentOptInRules
-            disabledInParentRules = parentDisabledRules
-        }
-        allEnabledRules = enabledInParentRules
-            .subtracting(disabledInParentRules)
-            .union(optInRules)
-            .subtracting(disabledRules)
-
-        return Configuration.validateConfiguredRuleIsEnabled(
-            parentConfiguration: parentConfiguration,
-            enabledInParentRules: enabledInParentRules,
-            disabledInParentRules: disabledInParentRules,
-            disabledRules: disabledRules,
-            optInRules: optInRules,
-            allEnabledRules: allEnabledRules,
-            ruleType: ruleType
-        )
-    }
-
     private func testParentConfiguration(
         _ parentConfiguration: Configuration?,
         configuration: Configuration,
@@ -495,7 +463,7 @@ extension ConfigurationTests {
         if case .default(let disabledRules, let optInRules) = configuration.rulesMode {
             let mergedConfiguration = parentConfiguration?.merged(withChild: configuration) ?? configuration
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
-            let issue = validateConfiguredRuleIsEnabled(
+            let issue = Configuration.validateConfiguredRuleIsEnabled(
                 parentConfiguration: parentConfiguration,
                 disabledRules: disabledRules,
                 optInRules: optInRules,

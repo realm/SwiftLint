@@ -470,31 +470,32 @@ extension ConfigurationTests {
                 ruleType: ruleType
             )
             XCTAssertEqual(isEnabled, issue == nil)
-            if let issue {
-                let ruleIdentifier = ruleType.identifier
-                if disabledRules.isEmpty, optInRules.isEmpty {
-                    if parentConfiguration == nil ||
-                        parentConfiguration == Configuration.emptyDefaultConfiguration() {
-                        XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
-                        return
-                    }
-
-                    if parentConfiguration == Configuration.emptyOnlyConfiguration() {
-                        if ruleType is any OptInRule.Type {
-                            XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
-                        } else {
-                            XCTAssertEqual(issue, Issue.ruleNotEnabledInParentOnlyRules(ruleID: ruleIdentifier))
-                        }
-                        return
-                    }
-                    if parentConfiguration == Configuration.optInDisabledDefaultConfiguration(ruleIdentifier) ||
-                        parentConfiguration == Configuration.disabledDefaultConfiguration(ruleIdentifier) {
-                        XCTAssertEqual(issue, Issue.ruleDisabledInParentConfiguration(ruleID: ruleIdentifier))
-                        return
-                    }
-                }
-                XCTAssertEqual(issue, Issue.ruleDisabledInDisabledRules(ruleID: ruleIdentifier))
+            guard let issue else {
+                return
             }
+            let ruleIdentifier = ruleType.identifier
+            if disabledRules.isEmpty, optInRules.isEmpty {
+                if parentConfiguration == nil ||
+                    parentConfiguration == Configuration.emptyDefaultConfiguration() {
+                    XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
+                    return
+                }
+
+                if parentConfiguration == Configuration.emptyOnlyConfiguration() {
+                    if ruleType is any OptInRule.Type {
+                        XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
+                    } else {
+                        XCTAssertEqual(issue, Issue.ruleNotEnabledInParentOnlyRules(ruleID: ruleIdentifier))
+                    }
+                    return
+                }
+                if parentConfiguration == Configuration.optInDisabledDefaultConfiguration(ruleIdentifier) ||
+                    parentConfiguration == Configuration.disabledDefaultConfiguration(ruleIdentifier) {
+                    XCTAssertEqual(issue, Issue.ruleDisabledInParentConfiguration(ruleID: ruleIdentifier))
+                    return
+                }
+            }
+            XCTAssertEqual(issue, Issue.ruleDisabledInDisabledRules(ruleID: ruleIdentifier))
         }
     }
 

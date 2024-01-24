@@ -124,18 +124,27 @@ private extension EmptyCountRule {
 
                 if let newNode, let binaryOperator = node.binaryOperator {
                     correctionPositions.append(position)
-                    if ["!=", "<", ">"].contains(binaryOperator) {
-                        return newNode.negated
-                            .withTrivia(from: node)
-                    } else {
-                        return ExprSyntax(newNode)
-                            .withTrivia(from: node)
-                    }
+                    return
+                        if ["!=", "<", ">"].contains(binaryOperator) {
+                            newNode.negated
+                                .withTrivia(from: node)
+                        } else {
+                            ExprSyntax(newNode)
+                                .withTrivia(from: node)
+                        }
                 } else {
-                    let left = node.leftOperand.is(InfixOperatorExprSyntax.self)
-                    ? visit(node.leftOperand.as(InfixOperatorExprSyntax.self)!) : node.leftOperand
-                    let right = node.rightOperand.is(InfixOperatorExprSyntax.self)
-                    ? visit(node.rightOperand.as(InfixOperatorExprSyntax.self)!) : node.rightOperand
+                    let left = 
+                        if let leftOperand = node.leftOperand.as(InfixOperatorExprSyntax.self) {
+                            visit(leftOperand)
+                        } else {
+                            node.leftOperand
+                        }
+                    let right = 
+                        if let rightOperand = node.rightOperand.as(InfixOperatorExprSyntax.self) {
+                            visit(rightOperand)
+                        } else {
+                            node.rightOperand
+                        }
                     return super.visit(
                         InfixOperatorExprSyntax(leftOperand: left, operator: node.operator, rightOperand: right))
                     .withTrivia(from: node)

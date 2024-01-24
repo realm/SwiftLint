@@ -60,7 +60,11 @@ struct EmptyCountRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("↓count == 0"):
                 Example("isEmpty"),
             Example("↓count == 0 && [Int]().↓count == 0o00"):
-                Example("isEmpty && [Int]().isEmpty")
+                Example("isEmpty && [Int]().isEmpty"),
+            Example("true && [Int]().↓count == 0o00"):
+                Example("true && [Int]().isEmpty"),
+            Example("[Int]().↓count == 0o00 || false"):
+                Example("[Int]().isEmpty || false")
         ]
     )
 

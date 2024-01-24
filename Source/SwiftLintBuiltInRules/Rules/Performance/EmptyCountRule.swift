@@ -79,7 +79,6 @@ struct EmptyCountRule: SwiftSyntaxCorrectableRule, OptInRule {
 
 private extension EmptyCountRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard node.hasBinaryOperator else {
                 return
@@ -117,7 +116,7 @@ private extension EmptyCountRule {
             }
 
             if let (count, position) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot) {
-                let newNode: ExprSyntax? = 
+                let newNode: ExprSyntax? =
                     if let count = count.as(MemberAccessExprSyntax.self) {
                         count.with(\.declName.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
                     } else if let count = count.as(DeclReferenceExprSyntax.self) {
@@ -137,13 +136,13 @@ private extension EmptyCountRule {
                                 .withTrivia(from: node)
                         }
                 } else {
-                    let left = 
+                    let left =
                         if let leftOperand = node.leftOperand.as(InfixOperatorExprSyntax.self) {
                             visit(leftOperand)
                         } else {
                             node.leftOperand
                         }
-                    let right = 
+                    let right =
                         if let rightOperand = node.rightOperand.as(InfixOperatorExprSyntax.self) {
                             visit(rightOperand)
                         } else {

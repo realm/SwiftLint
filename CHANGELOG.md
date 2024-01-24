@@ -202,13 +202,13 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3852](https://github.com/realm/SwiftLint/pull/3852)
 
+* Don't trigger the `return_value_from_void_function` warning from initializers.  
+  [mrbkap](https://github.com/mrbkap)
+
 * Fixes superfluous warnings about configurations for rules that were not
   enabled, when the rules were enabled in a parent configuration.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4858](https://github.com/realm/SwiftLint/issues/4858)
-
-* Don't trigger the `return_value_from_void_function` warning from initializers.  
-  [mrbkap](https://github.com/mrbkap)
 
 ## 0.54.0: Macro-Economic Forces
 

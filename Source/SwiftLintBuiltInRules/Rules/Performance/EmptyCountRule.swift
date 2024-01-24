@@ -100,16 +100,6 @@ private extension EmptyCountRule {
             super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
         }
 
-        override func visit(_ node: SequenceExprSyntax) -> ExprSyntax {
-            guard let folded = try? OperatorTable.standardOperators.foldSingle(node) else { return super.visit(node) }
-
-            if let infix = folded.as(InfixOperatorExprSyntax.self) {
-                return visit(infix)
-            } else {
-                return super.visit(folded)
-            }
-        }
-
         override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
             guard node.hasBinaryOperator else {
                 return super.visit(node)

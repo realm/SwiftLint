@@ -63,7 +63,19 @@ struct SwiftLintPlugin: BuildToolPlugin {
         if ProcessInfo.processInfo.environment["CI_XCODE_CLOUD"] == "TRUE" {
             cacheArguments = ["--no-cache"]
         } else {
-            cacheArguments = ["--cache-path", "\(path)"]
+            let cachePath: Path = path.appending("Cache")
+            do {
+                try FileManager.default.createDirectory(atPath: cachePath.string, withIntermediateDirectories: true)
+            } catch {
+                print(error.localizedDescription)
+            }
+            cacheArguments = ["--cache-path", "\(cachePath)"]
+        }
+        let outputPath: Path = path.appending("Output")
+        do {
+            try FileManager.default.createDirectory(atPath: outputPath.string, withIntermediateDirectories: true)
+        } catch {
+            print(error.localizedDescription)
         }
         return [
             .prebuildCommand(
@@ -71,7 +83,7 @@ struct SwiftLintPlugin: BuildToolPlugin {
                 executable: executable.path,
                 arguments: arguments + cacheArguments + swiftFiles.map(\.string),
                 environment: environment,
-                outputFilesDirectory: path.appending("Output"))
+                outputFilesDirectory: outputPath)
         ]
     }
 }

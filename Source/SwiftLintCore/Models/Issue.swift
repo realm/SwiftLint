@@ -21,8 +21,7 @@ public enum Issue: LocalizedError, Equatable {
     case invalidRuleIDs(Set<String>)
 
     /// Found a rule configuration for a rule that is not present in `only_rules`.
-    case configurationForRuleNotPresentInOnlyRules(ruleID: String)
-    // swiftlint:disable:previous identifier_name
+    case ruleNotPresentInOnlyRules(ruleID: String)
 
     /// Found a rule configuration for a rule that is disabled.
     case ruleDisabledInDisabledRules(ruleID: String)
@@ -120,7 +119,7 @@ public enum Issue: LocalizedError, Equatable {
             return "Configuration for '\(id)' rule contains the invalid key(s) \(keys.formatted)."
         case let .invalidRuleIDs(ruleIDs):
             return "The key(s) \(ruleIDs.formatted) used as rule identifier(s) is/are invalid."
-        case let .configurationForRuleNotPresentInOnlyRules(id):
+        case let .ruleNotPresentInOnlyRules(id):
             return "Found a configuration for '\(id)' rule, but it is not present in " +
                    "'\(Configuration.Key.onlyRules.rawValue)'."
         case let .ruleDisabledInDisabledRules(id):

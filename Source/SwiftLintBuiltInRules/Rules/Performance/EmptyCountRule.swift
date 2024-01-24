@@ -81,16 +81,8 @@ private extension EmptyCountRule {
                 return
             }
 
-            if let intExpr = node.rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
-               let position = node.leftOperand.countCallPosition(onlyAfterDot: configuration.onlyAfterDot) {
+            if let (_, position) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot) {
                 violations.append(position)
-                return
-            }
-
-            if let intExpr = node.leftOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
-               let position = node.rightOperand.countCallPosition(onlyAfterDot: configuration.onlyAfterDot) {
-                violations.append(position)
-                return
             }
         }
     }

@@ -113,13 +113,14 @@ private extension EmptyCountRule {
             }
 
             if let (count, position) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot) {
-                let newNode: ExprSyntax? = if let count = count.as(MemberAccessExprSyntax.self) {
-                    count.with(\.declName.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
-                } else if let count = count.as(DeclReferenceExprSyntax.self) {
-                    count.with(\.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
-                } else {
-                    nil
-                }
+                let newNode: ExprSyntax? = 
+                    if let count = count.as(MemberAccessExprSyntax.self) {
+                        count.with(\.declName.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
+                    } else if let count = count.as(DeclReferenceExprSyntax.self) {
+                        count.with(\.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
+                    } else {
+                        nil
+                    }
 
                 if let newNode, let binaryOperator = node.binaryOperator {
                     correctionPositions.append(position)

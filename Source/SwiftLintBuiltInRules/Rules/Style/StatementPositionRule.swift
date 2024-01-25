@@ -170,14 +170,13 @@ private extension IfExprSyntax {
     }
 
     func defaultModeViolationPosition() -> (position: AbsolutePosition, newNode: IfExprSyntax)? {
-        let violationPosition: AbsolutePosition
-        var newNode = self
-
         // Check if the node has `else` keyword
         guard let elseKeyword else {
             return nil
         }
 
+        let violationPosition: AbsolutePosition
+        var newNode = self
         // Check if `else` doesn't have newline in leading trivia of `else`'and
         // multiple spaces in trailing trivia of `body`'s `rightBrace`
         guard

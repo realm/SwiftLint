@@ -212,8 +212,8 @@ The plugin throws an error when it is unable to resolve the SwiftLint working
 directory. For example, this will occur in Xcode projects where the target's
 Swift files are not located within the project directory.
 
-To maximize compatibility with the plugin, try to avoid project structures that 
-require the use of the `--config` option.
+To maximize compatibility with the plugin, avoid project structures that require
+the use of the `--config` option.
 
 #### Unexpected Project Structures
 

@@ -187,7 +187,7 @@ private extension IfExprSyntax {
             violationPosition = body.rightBrace.positionAfterSkippingLeadingTrivia
 
             newNode.elseKeyword = elseKeyword.with(\.leadingTrivia, Trivia())
-            newNode.body.rightBrace = self.body.rightBrace.with(\.trailingTrivia, .space)
+            newNode.body.rightBrace = body.rightBrace.with(\.trailingTrivia, .space)
 
             return (violationPosition, newNode)
         }

@@ -62,7 +62,7 @@ struct LineLengthRule: Rule {
                 return nil
             }
 
-            for pattern in configuration.excludedPatterns where line.containsMatchingPattern(pattern) {
+            for pattern in configuration.excludedLinesPatterns where line.containsMatchingPattern(pattern) {
                 return nil
             }
 

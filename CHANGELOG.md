@@ -104,8 +104,8 @@
   [Oleg Kokhtenko](https://github.com/kohtenko)
   [#5405](https://github.com/realm/SwiftLint/issues/issue_number)
 
-* Add `excluded_patterns` to `line_length` to avoid linting lines
-  that match the patterns.
+* Add `excluded_lines_patterns` to `line_length` to avoid linting lines
+  that contain one of the patterns.  
   [kasrababaei](https://github.com/kasrababaei)
 
 #### Bug Fixes

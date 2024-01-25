@@ -46,13 +46,13 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
         XCTAssertFalse(configuration2.ignoresInterpolatedStrings)
     }
 
-    func testLineLengthConfigurationInitialiserSetsExcludedPatterns() {
+    func testLineLengthConfigurationInitialiserSetsExcludedLinesPatterns() {
         let patterns: Set = ["foo", "bar"]
-        let configuration1 = LineLengthConfiguration(length: severityLevels, excludedPatterns: patterns)
-        XCTAssertEqual(configuration1.excludedPatterns, patterns)
+        let configuration1 = LineLengthConfiguration(length: severityLevels, excludedLinesPatterns: patterns)
+        XCTAssertEqual(configuration1.excludedLinesPatterns, patterns)
 
         let configuration2 = LineLengthConfiguration(length: severityLevels)
-        XCTAssertTrue(configuration2.excludedPatterns.isEmpty)
+        XCTAssertTrue(configuration2.excludedLinesPatterns.isEmpty)
     }
 
     func testLineLengthConfigurationParams() {

@@ -101,10 +101,6 @@ private extension StatementPositionRule {
         }
 
         override func visit(_ node: IfExprSyntax) -> ExprSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             let newNode: IfExprSyntax
             switch config.statementMode {
             case .default:
@@ -131,10 +127,6 @@ private extension StatementPositionRule {
         }
 
         override func visit(_ node: DoStmtSyntax) -> StmtSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
             var newNode = node
 
             switch config.statementMode {

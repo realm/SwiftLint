@@ -338,11 +338,11 @@ private extension TokenSyntax {
         return leadingTrivia.reduce(0) { count, piece -> Int in
             switch piece {
             case .spaces(let numSpaces):
-                return count + numSpaces
+                count + numSpaces
             case .tabs(let numTabs):
-                return count + numTabs * 4 // Assuming a tab is equal to 4 spaces
+                count + numTabs * 4 // Assuming a tab is equal to 4 spaces
             default:
-                return count
+                count
             }
         }
     }

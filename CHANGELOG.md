@@ -62,6 +62,10 @@
 
 #### Bug Fixes
 
+* Refactor `statement_position` rule to use `SwiftSyntax` and 
+  fix failure in one-line statements.  
+  [enebin](https://github.com/enebin)
+
 * Silence `discarded_notification_center_observer` rule in closures. Furthermore,
   handle `get` and `set` accessors correctly and consider implicit returns.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -324,10 +328,7 @@
   [JP Simard](https://github.com/jpsim)
   [#4737](https://github.com/realm/SwiftLint/issues/4737)
   
-* Refactor `statement_position` rule to use `SwiftSyntax` and 
-  fix failure in one-line statements.  
-  [enebin](https://github.com/enebin)
-  [SimplyDanny](https://github.com/SimplyDanny)
+* [SimplyDanny](https://github.com/SimplyDanny)
   [#4632](https://github.com/realm/SwiftLint/issues/4632)
 
 * Fix false negatives for the `unneeded_synthesized_initializer` rule

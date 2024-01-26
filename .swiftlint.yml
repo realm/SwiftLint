@@ -16,6 +16,7 @@ disabled_rules:
   - conditional_returns_on_newline
   - convenience_type
   - discouraged_optional_collection
+  - discouraged_orphan_init
   - explicit_acl
   - explicit_enum_raw_value
   - explicit_top_level_acl

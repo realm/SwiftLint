@@ -248,6 +248,12 @@ class DiscouragedOptionalCollectionRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class DiscouragedOrphanInitRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DiscouragedOrphanInitRule.description)
+    }
+}
+
 class DuplicateConditionsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicateConditionsRule.description)

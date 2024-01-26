@@ -43,6 +43,7 @@
   * `let_var_whitespace`
   * `mark`
   * `multiline_literal_brackets`
+  * `nesting`
   * `nimble_operator`
   * `opening_brace`
   * `orphaned_doc_comment`

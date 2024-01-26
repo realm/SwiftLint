@@ -108,6 +108,10 @@
   that contain one of the patterns.  
   [kasrababaei](https://github.com/kasrababaei)
 
+* Add new opt-in rule `discouraged_orphan_init` to enforces explicit type
+  declaration to improve readability by avoiding ambiguous .init usage.  
+  [Otávio Cordeiro](https://github.com/otaviocc)
+
 #### Bug Fixes
 
 * Silence `discarded_notification_center_observer` rule in closures. Furthermore,

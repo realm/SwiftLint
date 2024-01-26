@@ -11,6 +11,23 @@ internal struct DiscouragedOrphanInitRuleExamples {
         callSomething(
             Foobar.init(parameter: 42)
         )
+        """),
+        Example("""
+        callSomething(
+            parameter: Foobar.init(
+                parameter: 42
+            )
+        )
+        """),
+        Example("""
+        someClosure {
+            Foobar.init()
+        }
+        """),
+        Example("""
+        someClosure { _ in
+            Foobar.init(parameter: 42)
+        }
         """)
     ]
 
@@ -26,6 +43,23 @@ internal struct DiscouragedOrphanInitRuleExamples {
         callSomething(
             ↓.init(parameter: 42)
         )
+        """),
+        Example("""
+        callSomething(
+            parameter: ↓.init(
+                parameter: 42
+            )
+        )
+        """),
+        Example("""
+        someClosure {
+            ↓.init()
+        }
+        """),
+        Example("""
+        someClosure { _ in
+            ↓.init(parameter: 42)
+        }
         """)
     ]
 }

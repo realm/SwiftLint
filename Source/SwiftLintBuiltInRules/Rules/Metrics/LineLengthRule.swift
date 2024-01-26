@@ -62,6 +62,10 @@ struct LineLengthRule: Rule {
                 return nil
             }
 
+            for pattern in configuration.excludedLinesPatterns where line.containsMatchingPattern(pattern) {
+                return nil
+            }
+
             var strippedString = line.content
             if configuration.ignoresURLs {
                 strippedString = strippedString.strippingURLs
@@ -118,6 +122,12 @@ struct LineLengthRule: Rule {
             return false
         }
         return !kinds.isDisjoint(with: kindsByLine[index])
+    }
+}
+
+private extension Line {
+    func containsMatchingPattern(_ pattern: String) -> Bool {
+        regex(pattern).firstMatch(in: content, range: content.fullNSRange) != nil
     }
 }
 

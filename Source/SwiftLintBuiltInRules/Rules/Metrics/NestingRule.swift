@@ -120,13 +120,19 @@ private extension NestingRule {
 
         // MARK: - configuration for checkNestingInClosuresAndStatements
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            guard configuration.checkNestingInClosuresAndStatements else { return .skipChildren }
-            return .visitChildren
+            if !configuration.checkNestingInClosuresAndStatements {
+                return .skipChildren
+            } else {
+                return super.visit(node)
+            }
         }
 
-        override func visit(_ token: ExpressionStmtSyntax) -> SyntaxVisitorContinueKind {
-            guard configuration.checkNestingInClosuresAndStatements else { return .skipChildren }
-            return .visitChildren
+        override func visit(_ node: CodeBlockItemSyntax) -> SyntaxVisitorContinueKind {
+            if !configuration.checkNestingInClosuresAndStatements && node.parent?.inStatement ?? false {
+                return .skipChildren
+            } else {
+                return super.visit(node)
+            }
         }
 
         // MARK: -
@@ -164,5 +170,14 @@ private extension NestingRule {
                 severity: severity
             ))
         }
+    }
+}
+
+private extension Syntax {
+    var inStatement: Bool {
+        func isStatement(_ node: Syntax) -> Bool {
+            node.isProtocol((any StmtSyntaxProtocol).self) || node.parent.map(isStatement) ?? false
+        }
+        return isStatement(self)
     }
 }

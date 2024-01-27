@@ -2,6 +2,7 @@
 
 // swiftlint:disable file_length
 
+// swiftlint:disable:next type_body_length
 class NestingRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
     func testNestingWithAlwaysAllowOneTypeInFunctions() {
@@ -238,6 +239,139 @@ class NestingRuleTests: SwiftLintTestCase {
                            }
                        }
                     default:
+                       func f_0() {
+                           func f_1() {
+                               func f_2() {
+                                   func f_3() {}
+                               }
+                           }
+                       }
+                    }
+                """),
+
+                .init("""
+                    for i in indicies {
+                       \(type) Example_0 {
+                           \(type) Example_1 {
+                               \(type) Example 2 {}
+                           }
+                       }
+                       func f_0() {
+                           func f_1() {
+                               func f_2() {
+                                   func f_3() {}
+                               }
+                           }
+                       }
+                    }
+                """),
+
+                .init("""
+                    while true {
+                       \(type) Example_0 {
+                           \(type) Example_1 {
+                               \(type) Example 2 {}
+                           }
+                       }
+                       func f_0() {
+                           func f_1() {
+                               func f_2() {
+                                   func f_3() {}
+                               }
+                           }
+                       }
+                    }
+                """),
+
+                .init("""
+                    repeat {
+                       \(type) Example_0 {
+                           \(type) Example_1 {
+                               \(type) Example 2 {}
+                           }
+                       }
+                       func f_0() {
+                           func f_1() {
+                               func f_2() {
+                                   func f_3() {}
+                               }
+                           }
+                       }
+                    } while true
+                """),
+
+                .init("""
+                    if flag {
+                       \(type) Example_0 {
+                           \(type) Example_1 {
+                               \(type) Example 2 {}
+                           }
+                       }
+                       func f_0() {
+                           func f_1() {
+                               func f_2() {
+                                   func f_3() {}
+                               }
+                           }
+                       }
+                    }
+                """),
+
+                .init("""
+                    guard flag else {
+                       \(type) Example_0 {
+                           \(type) Example_1 {
+                               \(type) Example 2 {}
+                           }
+                       }
+                       func f_0() {
+                           func f_1() {
+                               func f_2() {
+                                   func f_3() {}
+                               }
+                           }
+                       }
+                       return
+                    }
+                """),
+
+                .init("""
+                    defer {
+                       \(type) Example_0 {
+                           \(type) Example_1 {
+                               \(type) Example 2 {}
+                           }
+                       }
+                       func f_0() {
+                           func f_1() {
+                               func f_2() {
+                                   func f_3() {}
+                               }
+                           }
+                       }
+                    }
+                """),
+
+                .init("""
+                    do {
+                       \(type) Example_0 {
+                           \(type) Example_1 {
+                               \(type) Example 2 {}
+                           }
+                       }
+                       func f_0() {
+                           func f_1() {
+                               func f_2() {
+                                   func f_3() {}
+                               }
+                           }
+                       }
+                    } catch {
+                       \(type) Example_0 {
+                           \(type) Example_1 {
+                               \(type) Example 2 {}
+                           }
+                       }
                        func f_0() {
                            func f_1() {
                                func f_2() {

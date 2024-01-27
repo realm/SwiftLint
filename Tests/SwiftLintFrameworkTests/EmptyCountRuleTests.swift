@@ -52,10 +52,8 @@ class EmptyCountRuleTests: SwiftLintTestCase {
                 Example("count == 0"),
             Example("count == 0 && [Int]().↓count == 0o00"):
                 Example("count == 0 && [Int]().isEmpty"),
-            Example("0 == [Int]().↓count || 0 == count || false"):
-                Example("[Int]().isEmpty || 0 == count || false"),
-            Example("count == 0 && [Int]().↓count == 0o00 || false"):
-                Example("count == 0 && [Int]().isEmpty || false")
+            Example("[Int]().count != 3 && [Int]().↓count != 0 || count == 0 && [Int]().count > 2"):
+                Example("[Int]().count != 3 && ![Int]().isEmpty || count == 0 && [Int]().count > 2")
         ]
 
         let description = EmptyCountRule.description

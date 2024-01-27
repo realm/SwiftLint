@@ -1,5 +1,3 @@
-import SwiftLintCore
-import SwiftOperators
 import SwiftSyntax
 
 @SwiftSyntaxRule(foldExpressions: true)

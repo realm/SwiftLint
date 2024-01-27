@@ -104,12 +104,12 @@
   [Oleg Kokhtenko](https://github.com/kohtenko)
   [#5405](https://github.com/realm/SwiftLint/issues/issue_number)
 
-* Make `empty_count` auto-correctable.  
-  [KS1019](https://github.com/KS1019/)
-
 * Add `excluded_lines_patterns` to `line_length` to avoid linting lines
   that contain one of the patterns.  
   [kasrababaei](https://github.com/kasrababaei)
+
+* Make `empty_count` auto-correctable.  
+  [KS1019](https://github.com/KS1019/)
 
 #### Bug Fixes
 

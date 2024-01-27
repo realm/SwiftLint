@@ -97,47 +97,24 @@ private extension EmptyCountRule {
         }
 
         override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
-            guard node.hasBinaryOperator else {
+            guard node.hasBinaryOperator, let binaryOperator = node.binaryOperator else {
                 return super.visit(node)
             }
 
-            if let (count, position) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot) {
-                let newNode: ExprSyntax? =
-                    if let count = count.as(MemberAccessExprSyntax.self) {
-                        count.with(\.declName.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
-                    } else if let count = count.as(DeclReferenceExprSyntax.self) {
-                        count.with(\.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
+            if let (count, position) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot),
+            let newNode = (
+                count.as(MemberAccessExprSyntax.self)?.with(\.declName.baseName, "isEmpty").as(ExprSyntax.self)
+                ?? count.as(DeclReferenceExprSyntax.self)?.with(\.baseName, "isEmpty").as(ExprSyntax.self)
+            )?.trimmed {
+                correctionPositions.append(position)
+                return
+                    if ["!=", "<", ">"].contains(binaryOperator) {
+                        newNode.negated
+                            .withTrivia(from: node)
                     } else {
-                        nil
+                        newNode
+                            .withTrivia(from: node)
                     }
-
-                if let newNode, let binaryOperator = node.binaryOperator {
-                    correctionPositions.append(position)
-                    return
-                        if ["!=", "<", ">"].contains(binaryOperator) {
-                            newNode.negated
-                                .withTrivia(from: node)
-                        } else {
-                            newNode
-                                .withTrivia(from: node)
-                        }
-                } else {
-                    let left =
-                        if let leftOperand = node.leftOperand.as(InfixOperatorExprSyntax.self) {
-                            visit(leftOperand)
-                        } else {
-                            node.leftOperand
-                        }
-                    let right =
-                        if let rightOperand = node.rightOperand.as(InfixOperatorExprSyntax.self) {
-                            visit(rightOperand)
-                        } else {
-                            node.rightOperand
-                        }
-                    return super.visit(
-                        InfixOperatorExprSyntax(leftOperand: left, operator: node.operator, rightOperand: right))
-                    .withTrivia(from: node)
-                }
             } else {
                 return super.visit(node)
             }

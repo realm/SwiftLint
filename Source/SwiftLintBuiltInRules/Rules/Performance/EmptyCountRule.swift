@@ -122,7 +122,7 @@ private extension EmptyCountRule {
                             newNode.negated
                                 .withTrivia(from: node)
                         } else {
-                            ExprSyntax(newNode)
+                            newNode
                                 .withTrivia(from: node)
                         }
                 } else {
@@ -212,7 +212,7 @@ private extension InfixOperatorExprSyntax {
     }
 
     var hasBinaryOperator: Bool {
-        guard let binaryOperator, InfixOperatorExprSyntax.operators.contains(binaryOperator) else {
+        guard let binaryOperator, Self.operators.contains(binaryOperator) else {
             return false
         }
 

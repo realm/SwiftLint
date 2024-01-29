@@ -77,7 +77,7 @@ struct EmptyCountRule: SwiftSyntaxCorrectableRule, OptInRule {
 private extension EmptyCountRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
-            guard node.hasBinaryOperator else {
+            guard let binaryOperator = node.binaryOperator, binaryOperator.isComparison else {
                 return
             }
 
@@ -98,7 +98,7 @@ private extension EmptyCountRule {
         }
 
         override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
-            guard node.hasBinaryOperator, let binaryOperator = node.binaryOperator else {
+            guard let binaryOperator = node.binaryOperator, binaryOperator.isComparison else {
                 return super.visit(node)
             }
 
@@ -167,8 +167,6 @@ private extension SyntaxProtocol {
 }
 
 private extension InfixOperatorExprSyntax {
-    private static let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
-
     func countNodeAndPosition(onlyAfterDot: Bool) -> (ExprSyntax, AbsolutePosition)? {
         if let intExpr = rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
            let position = leftOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
@@ -184,12 +182,11 @@ private extension InfixOperatorExprSyntax {
     var binaryOperator: String? {
         self.operator.as(BinaryOperatorExprSyntax.self)?.operator.binaryOperator
     }
+}
 
-    var hasBinaryOperator: Bool {
-        guard let binaryOperator, Self.operators.contains(binaryOperator) else {
-            return false
-        }
-
-        return true
+private extension String {
+    private static let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
+    var isComparison: Bool {
+        String.operators.contains(self)
     }
 }

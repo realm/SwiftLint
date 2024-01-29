@@ -25,9 +25,41 @@ class EmptyCountRuleTests: SwiftLintTestCase {
             Example("[Int]().↓count == 0o00\n")
         ]
 
+        let corrections = [
+            Example("[].↓count == 0"):
+                Example("[].isEmpty"),
+            Example("0 == [].↓count"):
+                Example("[].isEmpty"),
+            Example("[Int]().↓count == 0"):
+                Example("[Int]().isEmpty"),
+            Example("0 == [Int]().↓count"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count==0"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count > 0"):
+                Example("![Int]().isEmpty"),
+            Example("[Int]().↓count != 0"):
+                Example("![Int]().isEmpty"),
+            Example("[Int]().↓count == 0x0"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count == 0x00_00"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count == 0b00"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count == 0o00"):
+                Example("[Int]().isEmpty"),
+            Example("count == 0"):
+                Example("count == 0"),
+            Example("count == 0 && [Int]().↓count == 0o00"):
+                Example("count == 0 && [Int]().isEmpty"),
+            Example("[Int]().count != 3 && [Int]().↓count != 0 || count == 0 && [Int]().count > 2"):
+                Example("[Int]().count != 3 && ![Int]().isEmpty || count == 0 && [Int]().count > 2")
+        ]
+
         let description = EmptyCountRule.description
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(corrections: corrections)
 
         verifyRule(description, ruleConfiguration: ["only_after_dot": true])
     }

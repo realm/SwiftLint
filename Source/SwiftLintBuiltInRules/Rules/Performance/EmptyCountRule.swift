@@ -1,7 +1,8 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(foldExpressions: true)
-struct EmptyCountRule: OptInRule {
+struct EmptyCountRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = EmptyCountConfiguration()
 
     static let description = RuleDescription(
@@ -31,31 +32,95 @@ struct EmptyCountRule: OptInRule {
             Example("[Int]().↓count == 0b00"),
             Example("[Int]().↓count == 0o00"),
             Example("↓count == 0")
+        ],
+        corrections: [
+            Example("[].↓count == 0"):
+                Example("[].isEmpty"),
+            Example("0 == [].↓count"):
+                Example("[].isEmpty"),
+            Example("[Int]().↓count == 0"):
+                Example("[Int]().isEmpty"),
+            Example("0 == [Int]().↓count"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count==0"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count > 0"):
+                Example("![Int]().isEmpty"),
+            Example("[Int]().↓count != 0"):
+                Example("![Int]().isEmpty"),
+            Example("[Int]().↓count == 0x0"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count == 0x00_00"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count == 0b00"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count == 0o00"):
+                Example("[Int]().isEmpty"),
+            Example("↓count == 0"):
+                Example("isEmpty"),
+            Example("↓count == 0 && [Int]().↓count == 0o00"):
+                Example("isEmpty && [Int]().isEmpty"),
+            Example("[Int]().count != 3 && [Int]().↓count != 0 || ↓count == 0 && [Int]().count > 2"):
+                Example("[Int]().count != 3 && ![Int]().isEmpty || isEmpty && [Int]().count > 2")
         ]
     )
+
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
+        Rewriter(
+            configuration: configuration,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
 }
 
 private extension EmptyCountRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
-
         override func visitPost(_ node: InfixOperatorExprSyntax) {
-            guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
-                  let binaryOperator = operatorNode.operator.binaryOperator,
-                  operators.contains(binaryOperator) else {
+            guard let binaryOperator = node.binaryOperator, binaryOperator.isComparison else {
                 return
             }
 
-            if let intExpr = node.rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
-               let position = node.leftOperand.countCallPosition(onlyAfterDot: configuration.onlyAfterDot) {
+            if let (_, position) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot) {
                 violations.append(position)
-                return
+            }
+        }
+    }
+
+    final class Rewriter: ViolationsSyntaxRewriter {
+        private let configuration: EmptyCountConfiguration
+
+        init(configuration: EmptyCountConfiguration,
+             locationConverter: SourceLocationConverter,
+             disabledRegions: [SourceRange]) {
+            self.configuration = configuration
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
+        }
+
+        override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
+            guard let binaryOperator = node.binaryOperator, binaryOperator.isComparison else {
+                return super.visit(node)
             }
 
-            if let intExpr = node.leftOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
-               let position = node.rightOperand.countCallPosition(onlyAfterDot: configuration.onlyAfterDot) {
-                violations.append(position)
+            if let (count, position) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot) {
+                let newNode =
+                    if let count = count.as(MemberAccessExprSyntax.self) {
+                        count.with(\.declName.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
+                    } else {
+                        count.as(DeclReferenceExprSyntax.self)?.with(\.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
+                    }
+                guard let newNode else { return super.visit(node) }
+                correctionPositions.append(position)
                 return
+                    if ["!=", "<", ">"].contains(binaryOperator) {
+                        newNode.negated
+                            .withTrivia(from: node)
+                    } else {
+                        newNode
+                            .withTrivia(from: node)
+                    }
+            } else {
+                return super.visit(node)
             }
         }
     }
@@ -87,5 +152,44 @@ private extension TokenSyntax {
         default:
             return nil
         }
+    }
+}
+
+private extension ExprSyntaxProtocol {
+    var negated: ExprSyntax {
+        ExprSyntax(PrefixOperatorExprSyntax(operator: .prefixOperator("!"), expression: self))
+    }
+}
+
+private extension SyntaxProtocol {
+    func withTrivia(from node: some SyntaxProtocol) -> Self {
+        self
+            .with(\.leadingTrivia, node.leadingTrivia)
+            .with(\.trailingTrivia, node.trailingTrivia)
+    }
+}
+
+private extension InfixOperatorExprSyntax {
+    func countNodeAndPosition(onlyAfterDot: Bool) -> (ExprSyntax, AbsolutePosition)? {
+        if let intExpr = rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
+           let position = leftOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
+            return (leftOperand, position)
+        } else if let intExpr = leftOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
+                  let position = rightOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
+            return (rightOperand, position)
+        } else {
+            return nil
+        }
+    }
+
+    var binaryOperator: String? {
+        self.operator.as(BinaryOperatorExprSyntax.self)?.operator.binaryOperator
+    }
+}
+
+private extension String {
+    private static let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
+    var isComparison: Bool {
+        String.operators.contains(self)
     }
 }

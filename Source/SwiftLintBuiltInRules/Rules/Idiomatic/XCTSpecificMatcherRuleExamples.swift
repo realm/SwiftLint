@@ -63,7 +63,12 @@ internal struct XCTSpecificMatcherRuleExamples {
         // Skip if one operand might be a type or a tuple
         Example("XCTAssert(foo.self == bar)"),
         Example("XCTAssertTrue(type(of: foo) != Int.self)"),
-        Example("XCTAssertTrue(a == (1, 3, 5)")
+        Example("XCTAssertTrue(a == (1, 3, 5)"),
+
+        // Optionals should not trigger
+        Example("XCTAssert(bar == bar.foo?.bar)"),
+        Example("XCTAssert(bar == foo?.bar)"),
+        Example("XCTAssert(bar as? Foo == foo.bar)")
     ]
 
     static let triggeringExamples = [
@@ -136,6 +141,10 @@ internal struct XCTSpecificMatcherRuleExamples {
         Example("↓XCTAssert(nil == foo"),
         Example("↓XCTAssertTrue(  foo   !=  nil)"),
         Example("↓XCTAssertFalse(nil != foo"),
-        Example("↓XCTAssert(foo == nil, \"toto\")")
+        Example("↓XCTAssert(foo == nil, \"toto\")"),
+
+        // Non-optional chaining and coercion
+        Example("↓XCTAssert(bar == bar.foo.bar)"),
+        Example("↓XCTAssert(bar as Foo == foo.bar)")
     ]
 }

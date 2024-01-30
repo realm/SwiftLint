@@ -71,12 +71,15 @@ private enum OneArgXCTAssert: String {
     }
 
     private static func accept(operand: ExprSyntax) -> Bool {
-        // Check if the expression could be a type object like `String.self`. Note, however, that `1.self`
-        // is also valid Swift. There is no way to be sure here.
-        if operand.as(MemberAccessExprSyntax.self)?.declName.baseName.text == "self" {
+        // Check if the expression could be a type object like `String.self` (note, however, that `1.self`
+        // is also valid Swift. There is no way to be sure here), and is not optional.
+        if let operand = operand.as(MemberAccessExprSyntax.self) {
+            if operand.declName.baseName.text == "self" || operand.base?.as(OptionalChainingExprSyntax.self) != nil {
+                return false
+            }
+        } else if operand.as(TupleExprSyntax.self)?.elements.count ?? 0 > 1 {
             return false
-        }
-        if operand.as(TupleExprSyntax.self)?.elements.count ?? 0 > 1 {
+        } else if operand.as(AsExprSyntax.self)?.questionOrExclamationMark?.tokenKind == .postfixQuestionMark {
             return false
         }
         return true

@@ -151,7 +151,7 @@
   are defined in a tuple like `let (a, b) = (5, 10)` or `let a = (2, 3)`.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5305](https://github.com/realm/SwiftLint/pull/5305)
-  
+
 * Silence `pattern_matching_keywords` rule when an identifier is referenced
   in the argument list of a matching enum case.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -159,6 +159,11 @@
 
 * Don't trigger the `return_value_from_void_function` warning from initializers.  
   [mrbkap](https://github.com/mrbkap)
+
+* Fixed some false positives for the `xct_specific_matcher` rule, when one
+  side of a comparison features optional chaining or conditional downcasting.
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#3575](https://github.com/realm/SwiftLint/pull/3575)
 
 ## 0.54.0: Macro-Economic Forces
 

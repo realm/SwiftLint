@@ -2,12 +2,14 @@
 
 // swiftlint:disable file_length
 
+private let detectingTypes = ["actor", "class", "struct", "enum"]
+
 // swiftlint:disable:next type_body_length
 class NestingRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
     func testNestingWithAlwaysAllowOneTypeInFunctions() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
-        nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
+        nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [
                 .init("""
                     \(type) Example_0 {
@@ -42,7 +44,7 @@ class NestingRuleTests: SwiftLintTestCase {
                 """)
             ]
         })
-        nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
+        nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [
                 .init("""
                     exampleFunc(closure: {
@@ -94,7 +96,7 @@ class NestingRuleTests: SwiftLintTestCase {
             ]
         })
 
-        var triggeringExamples = ["class", "struct", "enum"].flatMap { type -> [Example] in
+        var triggeringExamples = detectingTypes.flatMap { type -> [Example] in
             [
                 .init("""
                     \(type) Example_0 {
@@ -136,7 +138,7 @@ class NestingRuleTests: SwiftLintTestCase {
             ]
         }
 
-        triggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
+        triggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [
                 .init("""
                     exampleFunc(closure: {
@@ -211,7 +213,7 @@ class NestingRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
     func testNestingWithoutCheckNestingInClosuresAndStatements() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
-        nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
+        nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [
                 .init("""
                     exampleFunc(closure: {
@@ -384,7 +386,7 @@ class NestingRuleTests: SwiftLintTestCase {
             ]
         })
 
-        var triggeringExamples = ["class", "struct", "enum"].flatMap { type -> [Example] in
+        var triggeringExamples = detectingTypes.flatMap { type -> [Example] in
             [
                 .init("""
                     \(type) Example_0 {
@@ -507,7 +509,7 @@ class NestingRuleTests: SwiftLintTestCase {
 
     func testNestingWithoutTypealiasAndAssociatedtype() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
-        nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
+        nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [
                 .init("""
                     \(type) Example_0 {

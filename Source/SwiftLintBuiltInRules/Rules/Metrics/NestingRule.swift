@@ -77,7 +77,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(node, inFunction: validationData.isFunction)
+            validate(node, triggeringToken: node.extensionKeyword, inFunction: validationData.isFunction)
             return .visitChildren
         }
 
@@ -110,8 +110,6 @@ private extension NestingRule {
             validationData.pop()
         }
 
-        // associatedtype is only permitted within a protocol,
-        // so it maybe not necessary to check the configuration.
         override func visitPost(_ node: AssociatedTypeDeclSyntax) {
             guard !configuration.ignoreTypealiasesAndAssociatedtypes else { return }
             validate(node, triggeringToken: node.associatedtypeKeyword, inFunction: false)
@@ -120,40 +118,38 @@ private extension NestingRule {
 
         // MARK: - configuration for checkNestingInClosuresAndStatements
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            if !configuration.checkNestingInClosuresAndStatements {
+            guard configuration.checkNestingInClosuresAndStatements else {
                 return .skipChildren
-            } else {
-                return super.visit(node)
             }
+            return super.visit(node)
         }
 
         override func visit(_ node: CodeBlockItemSyntax) -> SyntaxVisitorContinueKind {
             if !configuration.checkNestingInClosuresAndStatements, node.parent?.inStatement ?? false {
                 return .skipChildren
-            } else {
-                return super.visit(node)
             }
+            return super.visit(node)
         }
 
         // MARK: -
-        private func validate(_ node: some DeclSyntaxProtocol, triggeringToken: TokenSyntax? = nil, inFunction: Bool) {
+        private func validate(_ node: some DeclSyntaxProtocol, triggeringToken: TokenSyntax, inFunction: Bool) {
             validationData.push(node)
             let isFunction = validationData.isFunction
-            let (level, targetLevel) = if isFunction {
-                (validationData.functionLevel, configuration.functionLevel)
-            } else {
-                (validationData.typeLevel, configuration.typeLevel)
-            }
+            let (level, targetLevel) =
+                if isFunction {
+                    (validationData.functionLevel, configuration.functionLevel)
+                } else {
+                    (validationData.typeLevel, configuration.typeLevel)
+                }
 
-            var violatingSeverity: ViolationSeverity?
-
-            if configuration.alwaysAllowOneTypeInFunctions, !inFunction {
-                violatingSeverity = configuration.severity(with: targetLevel, for: level)
-            } else if isFunction || !configuration.alwaysAllowOneTypeInFunctions {
-                violatingSeverity = configuration.severity(with: targetLevel, for: level)
-            } else {
-                violatingSeverity = nil
-            }
+            let violatingSeverity: ViolationSeverity? =
+                if configuration.alwaysAllowOneTypeInFunctions, !inFunction {
+                    configuration.severity(with: targetLevel, for: level)
+                } else if isFunction || !configuration.alwaysAllowOneTypeInFunctions {
+                    configuration.severity(with: targetLevel, for: level)
+                } else {
+                    nil
+                }
 
             guard let severity = violatingSeverity else {
                 return
@@ -162,10 +158,8 @@ private extension NestingRule {
             let targetName = isFunction ? "Functions" : "Types"
             let threshold = configuration.threshold(with: targetLevel, for: severity)
             let pluralSuffix = threshold > 1 ? "s" : ""
-            let position = (triggeringToken?.positionAfterSkippingLeadingTrivia
-                            ?? node.positionAfterSkippingLeadingTrivia)
             violations.append(ReasonedRuleViolation(
-                position: position,
+                position: triggeringToken.positionAfterSkippingLeadingTrivia,
                 reason: "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep",
                 severity: severity
             ))

@@ -45,6 +45,10 @@ internal struct XCTSpecificMatcherRuleExamples {
         Example("XCTAssertNotNil(foo?.bar)"),
         Example("XCTAssertEqual(foo?.bar, 2)"),
         Example("XCTAssertNotEqual(foo?.bar, \"false\")"),
+        Example("XCTAssert(bar == bar.foo?.bar)"),
+        Example("XCTAssert(bar == bar?.foo.bar)"),
+        Example("XCTAssert(bar == foo?.bar)"),
+        Example("XCTAssert(bar as? Foo == foo.bar)"),
 
         // Function calls and enums
         Example("XCTAssertEqual(foo?.bar, toto())"),
@@ -63,12 +67,7 @@ internal struct XCTSpecificMatcherRuleExamples {
         // Skip if one operand might be a type or a tuple
         Example("XCTAssert(foo.self == bar)"),
         Example("XCTAssertTrue(type(of: foo) != Int.self)"),
-        Example("XCTAssertTrue(a == (1, 3, 5)"),
-
-        // Optionals should not trigger
-        Example("XCTAssert(bar == bar.foo?.bar)"),
-        Example("XCTAssert(bar == foo?.bar)"),
-        Example("XCTAssert(bar as? Foo == foo.bar)")
+        Example("XCTAssertTrue(a == (1, 3, 5)")
     ]
 
     static let triggeringExamples = [
@@ -117,7 +116,9 @@ internal struct XCTSpecificMatcherRuleExamples {
 
         // Non-optional chaining and unconditional downcasting
         Example("↓XCTAssert(bar == bar.foo.bar)"),
+        Example("↓XCTAssert(bar == bar!.foo.bar)"),
         Example("↓XCTAssert(bar as Foo == foo.bar)"),
+        Example("↓XCTAssert(bar as! Foo == foo.bar)"),
 
         // Weird cases
         Example("↓XCTAssertEqual(nil, true)"),

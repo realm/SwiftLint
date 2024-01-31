@@ -10,7 +10,7 @@ import SwiftSyntax
 ///
 /// Declare state and state objects as private to prevent setting them from a memberwise initializer,
 /// which can conflict with the storage management that SwiftUI provides:
-@SwiftSyntaxRule
+@SwiftSyntaxRule(explicitRewriter: true)
 struct PrivateSwiftUIStatePropertyRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -191,6 +191,17 @@ struct PrivateSwiftUIStatePropertyRule: OptInRule {
                 @StateObject ↓var model = DataModel()
             }
             """)
+        ],
+        corrections: [
+            Example("""
+            struct CorrectableView: View {
+                @State ↓var isPlaying: Bool = false
+            }
+            """): Example("""
+            struct CorrectableView: View {
+                @State private var isPlaying: Bool = false
+            }
+            """)
         ]
     )
 }
@@ -245,6 +256,67 @@ private extension PrivateSwiftUIStatePropertyRule {
             }
 
             violations.append(decl.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+        }
+    }
+
+    final class Rewriter: ViolationsSyntaxRewriter {
+        /// LIFO stack that stores type inheritance clauses for each visited node
+        /// The last value is the inheritance clause for the most recently visited node
+        /// A nil value indicates that the node does not provide any inheritance clause
+        private var visitedTypeInheritances = Stack<InheritanceClauseSyntax?>()
+
+        override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
+            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return DeclSyntax(node)
+            }
+            visitedTypeInheritances.push(node.inheritanceClause)
+            return super.visit(node)
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
+            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return DeclSyntax(node)
+            }
+            visitedTypeInheritances.push(node.inheritanceClause)
+            return super.visit(node)
+        }
+
+        override func visit(_ node: ActorDeclSyntax) -> DeclSyntax {
+            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return DeclSyntax(node)
+            }
+            visitedTypeInheritances.push(node.inheritanceClause)
+            return super.visit(node)
+        }
+
+        override func visitPost(_ node: Syntax) {
+            guard node.is(ClassDeclSyntax.self) || node.is(StructDeclSyntax.self) || node.is(ActorDeclSyntax.self) else { return }
+            visitedTypeInheritances.pop()
+        }
+
+        override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
+            guard
+                let parent = node.parent,
+                parent.is(MemberBlockItemSyntax.self),
+                let inheritanceClause = visitedTypeInheritances.peek() as? InheritanceClauseSyntax,
+                inheritanceClause.conformsToApplicableSwiftUIProtocol,
+                node.attributes.hasStateAttribute,
+                !node.modifiers.containsPrivateOrFileprivate(),
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return DeclSyntax(node)
+            }
+
+            correctionPositions.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+            let privateModifier = DeclModifierSyntax(
+                leadingTrivia: [],
+                name: .keyword(.private),
+                trailingTrivia: .space
+            )
+
+            let newModifiers = node.modifiers + [privateModifier]
+            let newNode = node.with(\.modifiers, newModifiers)
+            return DeclSyntax(newNode)
         }
     }
 }

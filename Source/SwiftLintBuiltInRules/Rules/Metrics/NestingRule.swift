@@ -128,7 +128,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: CodeBlockItemSyntax) -> SyntaxVisitorContinueKind {
-            if !configuration.checkNestingInClosuresAndStatements && node.parent?.inStatement ?? false {
+            if !configuration.checkNestingInClosuresAndStatements, node.parent?.inStatement ?? false {
                 return .skipChildren
             } else {
                 return super.visit(node)
@@ -164,7 +164,7 @@ private extension NestingRule {
             let pluralSuffix = threshold > 1 ? "s" : ""
             let position = (triggeringToken?.positionAfterSkippingLeadingTrivia
                             ?? node.positionAfterSkippingLeadingTrivia)
-            violations.append(.init(
+            violations.append(ReasonedRuleViolation(
                 position: position,
                 reason: "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep",
                 severity: severity

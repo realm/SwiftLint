@@ -190,6 +190,14 @@ struct PrivateSwiftUIStatePropertyRule: OptInRule {
             struct ContentView: View {
                 @StateObject ↓var model = DataModel()
             }
+            """),
+            Example("""
+            struct ContentView: View {
+                @State private(set) ↓var isPlaying = false
+            """),
+            Example("""
+            struct ContentView: View {
+                @State fileprivate(set) ↓var isPlaying = false
             """)
         ],
         corrections: [
@@ -217,6 +225,35 @@ struct PrivateSwiftUIStatePropertyRule: OptInRule {
             }
             """): Example("""
                           struct MyScene: Scene {
+                              @State private var isPlaying: Bool = false
+                          }
+                          """),
+            Example("""
+            struct ContentView: View {
+                @State 
+                ↓var isPlaying: Bool = false
+            }
+            """): Example("""
+                          struct ContentView: View {
+                              @State 
+                              private var isPlaying: Bool = false
+                          }
+                          """),
+            Example("""
+            struct ContentView: View {
+                @State private(set) ↓var isPlaying: Bool = false
+            }
+            """): Example("""
+                          struct ContentView: View {
+                              @State private var isPlaying: Bool = false
+                          }
+                          """),
+            Example("""
+            struct ContentView: View {
+                @State fileprivate(set) ↓var isPlaying: Bool = false
+            }
+            """): Example("""
+                          struct ContentView: View {
                               @State private var isPlaying: Bool = false
                           }
                           """)
@@ -318,14 +355,19 @@ private extension PrivateSwiftUIStatePropertyRule {
             }
 
             correctionPositions.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+
+            // Extract the leading trivia from the binding specifier and apply it to the private modifier
             let privateModifier = DeclModifierSyntax(
-                leadingTrivia: [],
+                leadingTrivia: node.bindingSpecifier.leadingTrivia,
                 name: .keyword(.private),
                 trailingTrivia: .space
             )
+            let newBindingSpecifier = node.bindingSpecifier.with(\.leadingTrivia, [])
 
-            let newModifiers = node.modifiers + [privateModifier]
-            let newNode = node.with(\.modifiers, newModifiers)
+            let newModifiers: DeclModifierListSyntax = [privateModifier]
+            let newNode = node
+                .with(\.modifiers, newModifiers)
+                .with(\.bindingSpecifier, newBindingSpecifier)
             return DeclSyntax(newNode)
         }
     }

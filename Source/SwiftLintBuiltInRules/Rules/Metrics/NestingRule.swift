@@ -18,23 +18,18 @@ struct NestingRule: Rule {
 private struct ValidationData {
     private(set) var typeLevel: Int = -1
     private(set) var functionLevel: Int = -1
-    private var declStack = Stack<any DeclSyntaxProtocol>()
+    private(set) var functionOrNotStack = Stack<Bool>()
 
-    var isFunction: Bool {
-        declStack.peek()?.is(FunctionDeclSyntax.self) ?? false
-    }
-
-    mutating func push(_ node: some DeclSyntaxProtocol) {
-        declStack.push(node)
-        updateLevel(with: 1)
+    mutating func push(_ isFunction: Bool) {
+        functionOrNotStack.push(isFunction)
+        updateLevel(with: 1, isFunction: isFunction)
     }
 
     mutating func pop() {
-        updateLevel(with: -1)
-        declStack.pop()
+        updateLevel(with: -1, isFunction: functionOrNotStack.pop()!)
     }
 
-    private mutating func updateLevel(with value: Int) {
+    private mutating func updateLevel(with value: Int, isFunction: Bool) {
         if isFunction {
             functionLevel += value
         } else {
@@ -50,7 +45,7 @@ private extension NestingRule {
         private var validationData = ValidationData()
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(node, triggeringToken: node.actorKeyword, inFunction: validationData.isFunction)
+            validate(forFunction: false, triggeringToken: node.actorKeyword)
             return .visitChildren
         }
 
@@ -59,7 +54,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(node, triggeringToken: node.classKeyword, inFunction: validationData.isFunction)
+            validate(forFunction: false, triggeringToken: node.classKeyword)
             return .visitChildren
         }
 
@@ -68,7 +63,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(node, triggeringToken: node.enumKeyword, inFunction: validationData.isFunction)
+            validate(forFunction: false, triggeringToken: node.enumKeyword)
             return .visitChildren
         }
 
@@ -77,7 +72,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(node, triggeringToken: node.extensionKeyword, inFunction: validationData.isFunction)
+            validate(forFunction: false, triggeringToken: node.extensionKeyword)
             return .visitChildren
         }
 
@@ -86,7 +81,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(node, triggeringToken: node.funcKeyword, inFunction: validationData.isFunction)
+            validate(forFunction: true, triggeringToken: node.funcKeyword)
             return .visitChildren
         }
 
@@ -95,7 +90,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(node, triggeringToken: node.structKeyword, inFunction: validationData.isFunction)
+            validate(forFunction: false, triggeringToken: node.structKeyword)
             return .visitChildren
         }
 
@@ -106,13 +101,13 @@ private extension NestingRule {
         // MARK: - configuration for ignoreTypealiasesAndAssociatedtypes
         override func visitPost(_ node: TypeAliasDeclSyntax) {
             guard !configuration.ignoreTypealiasesAndAssociatedtypes else { return }
-            validate(node, triggeringToken: node.typealiasKeyword, inFunction: false)
+            validate(forFunction: false, triggeringToken: node.typealiasKeyword)
             validationData.pop()
         }
 
         override func visitPost(_ node: AssociatedTypeDeclSyntax) {
             guard !configuration.ignoreTypealiasesAndAssociatedtypes else { return }
-            validate(node, triggeringToken: node.associatedtypeKeyword, inFunction: false)
+            validate(forFunction: false, triggeringToken: node.associatedtypeKeyword)
             validationData.pop()
         }
 
@@ -132,11 +127,12 @@ private extension NestingRule {
         }
 
         // MARK: -
-        private func validate(_ node: some DeclSyntaxProtocol, triggeringToken: TokenSyntax, inFunction: Bool) {
-            validationData.push(node)
-            let isFunction = validationData.isFunction
+        private func validate(forFunction: Bool, triggeringToken: TokenSyntax) {
+            let inFunction = validationData.functionOrNotStack.peek() == true
+            validationData.push(forFunction)
+
             let (level, targetLevel) =
-                if isFunction {
+                if forFunction {
                     (validationData.functionLevel, configuration.functionLevel)
                 } else {
                     (validationData.typeLevel, configuration.typeLevel)
@@ -145,7 +141,7 @@ private extension NestingRule {
             let violatingSeverity: ViolationSeverity? =
                 if configuration.alwaysAllowOneTypeInFunctions, !inFunction {
                     configuration.severity(with: targetLevel, for: level)
-                } else if isFunction || !configuration.alwaysAllowOneTypeInFunctions {
+                } else if forFunction || !configuration.alwaysAllowOneTypeInFunctions {
                     configuration.severity(with: targetLevel, for: level)
                 } else {
                     nil
@@ -155,7 +151,7 @@ private extension NestingRule {
                 return
             }
 
-            let targetName = isFunction ? "Functions" : "Types"
+            let targetName = forFunction ? "Functions" : "Types"
             let threshold = configuration.threshold(with: targetLevel, for: severity)
             let pluralSuffix = threshold > 1 ? "s" : ""
             violations.append(ReasonedRuleViolation(

@@ -194,14 +194,32 @@ struct PrivateSwiftUIStatePropertyRule: OptInRule {
         ],
         corrections: [
             Example("""
-            struct CorrectableView: View {
+            struct ContentView: View {
                 @State ↓var isPlaying: Bool = false
             }
             """): Example("""
-            struct CorrectableView: View {
-                @State private var isPlaying: Bool = false
+                          struct ContentView: View {
+                              @State private var isPlaying: Bool = false
+                          }
+                          """),
+            Example("""
+            struct MyApp: App {
+                @State ↓var isPlaying: Bool = false
             }
-            """)
+            """): Example("""
+                          struct MyApp: App {
+                              @State private var isPlaying: Bool = false
+                          }
+                          """),
+            Example("""
+            struct MyScene: Scene {
+                @State ↓var isPlaying: Bool = false
+            }
+            """): Example("""
+                          struct MyScene: Scene {
+                              @State private var isPlaying: Bool = false
+                          }
+                          """)
         ]
     )
 }
@@ -266,25 +284,16 @@ private extension PrivateSwiftUIStatePropertyRule {
         private var visitedTypeInheritances = Stack<InheritanceClauseSyntax?>()
 
         override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return DeclSyntax(node)
-            }
             visitedTypeInheritances.push(node.inheritanceClause)
             return super.visit(node)
         }
 
         override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return DeclSyntax(node)
-            }
             visitedTypeInheritances.push(node.inheritanceClause)
             return super.visit(node)
         }
 
         override func visit(_ node: ActorDeclSyntax) -> DeclSyntax {
-            guard !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return DeclSyntax(node)
-            }
             visitedTypeInheritances.push(node.inheritanceClause)
             return super.visit(node)
         }
@@ -301,8 +310,7 @@ private extension PrivateSwiftUIStatePropertyRule {
                 let inheritanceClause = visitedTypeInheritances.peek() as? InheritanceClauseSyntax,
                 inheritanceClause.conformsToApplicableSwiftUIProtocol,
                 node.attributes.hasStateAttribute,
-                !node.modifiers.containsPrivateOrFileprivate(),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+                !node.modifiers.containsPrivateOrFileprivate()
             else {
                 return DeclSyntax(node)
             }

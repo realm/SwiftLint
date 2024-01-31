@@ -230,12 +230,12 @@ struct PrivateSwiftUIStatePropertyRule: OptInRule {
                           """),
             Example("""
             struct ContentView: View {
-                @State 
+                @State
                 ↓var isPlaying: Bool = false
             }
             """): Example("""
                           struct ContentView: View {
-                              @State 
+                              @State
                               private var isPlaying: Bool = false
                           }
                           """),
@@ -336,7 +336,7 @@ private extension PrivateSwiftUIStatePropertyRule {
         }
 
         override func visitPost(_ node: Syntax) {
-            guard node.is(ClassDeclSyntax.self) || 
+            guard node.is(ClassDeclSyntax.self) ||
                     node.is(StructDeclSyntax.self) ||
                     node.is(ActorDeclSyntax.self) else { return }
             visitedTypeInheritances.pop()

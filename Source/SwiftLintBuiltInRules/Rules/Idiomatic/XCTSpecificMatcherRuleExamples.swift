@@ -115,6 +115,10 @@ internal struct XCTSpecificMatcherRuleExamples {
         Example("↓XCTAssertEqual(foo?.bar, nil)"),
         Example("↓XCTAssertNotEqual(foo?.bar, nil)"),
 
+        // Non-optional chaining and unconditional downcasting
+        Example("↓XCTAssert(bar == bar.foo.bar)"),
+        Example("↓XCTAssert(bar as Foo == foo.bar)"),
+
         // Weird cases
         Example("↓XCTAssertEqual(nil, true)"),
         Example("↓XCTAssertEqual(nil, false)"),
@@ -141,10 +145,6 @@ internal struct XCTSpecificMatcherRuleExamples {
         Example("↓XCTAssert(nil == foo"),
         Example("↓XCTAssertTrue(  foo   !=  nil)"),
         Example("↓XCTAssertFalse(nil != foo"),
-        Example("↓XCTAssert(foo == nil, \"toto\")"),
-
-        // Non-optional chaining and coercion
-        Example("↓XCTAssert(bar == bar.foo.bar)"),
-        Example("↓XCTAssert(bar as Foo == foo.bar)")
+        Example("↓XCTAssert(foo == nil, \"toto\")")
     ]
 }

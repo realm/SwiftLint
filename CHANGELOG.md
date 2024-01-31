@@ -163,7 +163,7 @@
 * Fixed some false positives for the `xct_specific_matcher` rule, when one
   side of a comparison features optional chaining or conditional downcasting.
   [Martin Redington](https://github.com/mildm8nnered)
-  [#3575](https://github.com/realm/SwiftLint/pull/3575)
+  [#5446](https://github.com/realm/SwiftLint/pull/5446)
 
 ## 0.54.0: Macro-Economic Forces
 

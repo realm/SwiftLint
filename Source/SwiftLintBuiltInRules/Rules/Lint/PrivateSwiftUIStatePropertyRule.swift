@@ -299,7 +299,9 @@ private extension PrivateSwiftUIStatePropertyRule {
         }
 
         override func visitPost(_ node: Syntax) {
-            guard node.is(ClassDeclSyntax.self) || node.is(StructDeclSyntax.self) || node.is(ActorDeclSyntax.self) else { return }
+            guard node.is(ClassDeclSyntax.self) || 
+                    node.is(StructDeclSyntax.self) ||
+                    node.is(ActorDeclSyntax.self) else { return }
             visitedTypeInheritances.pop()
         }
 

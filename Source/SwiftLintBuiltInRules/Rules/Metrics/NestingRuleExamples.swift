@@ -228,7 +228,9 @@ internal struct NestingRuleExamples {
                 """)
             ]
         }
+}
 
+extension NestingRuleExamples {
     static let triggeringExamples = triggeringTypeExamples
         + triggeringFunctionExamples
         + triggeringClosureAndStatementExamples

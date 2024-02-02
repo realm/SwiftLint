@@ -125,13 +125,17 @@ private extension NestingRule {
 
         // MARK: - configuration for ignoreTypealiasesAndAssociatedtypes
         override func visitPost(_ node: TypeAliasDeclSyntax) {
-            guard !configuration.ignoreTypealiasesAndAssociatedtypes else { return }
+            if configuration.ignoreTypealiasesAndAssociatedtypes {
+                return
+            }
             validate(forFunction: false, triggeringToken: node.typealiasKeyword)
             levels.pop()
         }
 
         override func visitPost(_ node: AssociatedTypeDeclSyntax) {
-            guard !configuration.ignoreTypealiasesAndAssociatedtypes else { return }
+            if configuration.ignoreTypealiasesAndAssociatedtypes {
+                return
+            }
             validate(forFunction: false, triggeringToken: node.associatedtypeKeyword)
             levels.pop()
         }

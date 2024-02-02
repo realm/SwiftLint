@@ -6,6 +6,7 @@ internal struct NestingRuleExamples {
     static let nonTriggeringExamples = nonTriggeringTypeExamples
         + nonTriggeringFunctionExamples
         + nonTriggeringClosureAndStatementExamples
+        + nonTriggeringProtocolExamples
         + nonTriggeringMixedExamples
 
     private static let nonTriggeringTypeExamples =
@@ -101,6 +102,39 @@ internal struct NestingRuleExamples {
         """)
     ]
 
+    private static let nonTriggeringProtocolExamples =
+        detectingTypes.flatMap { type in
+            [
+                Example("""
+                \(type) Example_0 {
+                    protocol Example_1 {}
+                }
+                """),
+                Example("""
+                    var example: Int {
+                        \(type) Example_0 {
+                            protocol Example_1 {}
+                        }
+                        return 5
+                    }
+                """),
+                Example("""
+                    var example: Int = 5 {
+                        didSet {
+                            \(type) Example_0 {
+                                protocol Example_1 {}
+                            }
+                        }
+                    }
+                """),
+                Example("""
+                    extension Example_0 {
+                        protocol Example_1 {}
+                    }
+                """)
+            ]
+        }
+
     private static let nonTriggeringClosureAndStatementExamples =
         detectingTypes.flatMap { type -> [Example] in
             [
@@ -162,6 +196,7 @@ internal struct NestingRuleExamples {
                                     func f_2() {}
                                 }
                             }
+                            protocol P {}
                         }
                     }
                 """),
@@ -177,6 +212,7 @@ internal struct NestingRuleExamples {
                                         func f_2() {}
                                     }
                                 }
+                                protocol P {}
                             default:
                                 exampleFunc(closure: {
                                     \(type) Example_1 {
@@ -184,6 +220,7 @@ internal struct NestingRuleExamples {
                                             func f_2() {}
                                         }
                                     }
+                                    protocol P {}
                                 })
                             }
                         }
@@ -195,6 +232,7 @@ internal struct NestingRuleExamples {
     static let triggeringExamples = triggeringTypeExamples
         + triggeringFunctionExamples
         + triggeringClosureAndStatementExamples
+        + triggeringProtocolExamples
         + triggeringMixedExamples
 
     private static let triggeringTypeExamples =
@@ -365,6 +403,47 @@ internal struct NestingRuleExamples {
             ]
         }
 
+    private static let triggeringProtocolExamples =
+        detectingTypes.flatMap { type in
+            [
+                Example("""
+                \(type) Example_0 {
+                    \(type) Example_1 {
+                        ↓protocol Example_2 {}
+                    }
+                }
+                """),
+                Example("""
+                    var example: Int {
+                        \(type) Example_0 {
+                            \(type) Example_1 {
+                                ↓protocol Example_2 {}
+                            }
+                        }
+                        return 5
+                    }
+                """),
+                Example("""
+                    var example: Int = 5 {
+                        didSet {
+                            \(type) Example_0 {
+                                \(type) Example_1 {
+                                    ↓protocol Example_2 {}
+                                }
+                            }
+                        }
+                    }
+                """),
+                Example("""
+                    extension Example_0 {
+                        \(type) Example_1 {
+                            ↓protocol Example_2 {}
+                        }
+                    }
+                """)
+            ]
+        }
+
     private static let triggeringMixedExamples =
         detectingTypes.flatMap { type -> [Example] in
             [
@@ -377,6 +456,7 @@ internal struct NestingRuleExamples {
                                     func f_2() {
                                         ↓\(type) Example_2 {}
                                         ↓func f_3() {}
+                                        ↓protocol P {}
                                     }
                                 }
                             }
@@ -395,6 +475,7 @@ internal struct NestingRuleExamples {
                                         func f_2() {
                                             ↓\(type) Example_2 {}
                                             ↓func f_3() {}
+                                            ↓protocol P {}
                                         }
                                     }
                                 }
@@ -405,6 +486,7 @@ internal struct NestingRuleExamples {
                                             func f_2() {
                                                 ↓\(type) Example_2 {}
                                                 ↓func f_3() {}
+                                                ↓protocol P {}
                                             }
                                         }
                                     }

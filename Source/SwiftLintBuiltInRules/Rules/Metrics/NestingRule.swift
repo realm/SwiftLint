@@ -65,8 +65,6 @@ private struct Levels {
 
 private extension NestingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
-
         private var levels = Levels()
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -111,6 +109,15 @@ private extension NestingRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
+            levels.pop()
+        }
+
+        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+            validate(forFunction: false, triggeringToken: node.protocolKeyword)
+            return .visitChildren
+        }
+
+        override func visitPost(_ node: ProtocolDeclSyntax) {
             levels.pop()
         }
 

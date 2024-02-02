@@ -15,7 +15,7 @@ struct NestingRule: Rule {
     )
 }
 
-private struct ValidationData {
+private struct Levels {
     private(set) var typeLevel: Int = -1
     private(set) var functionLevel: Int = -1
     private(set) var functionOrNotStack = Stack<Bool>()
@@ -42,7 +42,7 @@ private extension NestingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
-        private var validationData = ValidationData()
+        private var levels = Levels()
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
             validate(forFunction: false, triggeringToken: node.actorKeyword)
@@ -50,7 +50,7 @@ private extension NestingRule {
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            validationData.pop()
+            levels.pop()
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -59,7 +59,7 @@ private extension NestingRule {
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            validationData.pop()
+            levels.pop()
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -68,7 +68,7 @@ private extension NestingRule {
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            validationData.pop()
+            levels.pop()
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -77,7 +77,7 @@ private extension NestingRule {
         }
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
-            validationData.pop()
+            levels.pop()
         }
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -86,7 +86,7 @@ private extension NestingRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            validationData.pop()
+            levels.pop()
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -95,20 +95,20 @@ private extension NestingRule {
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            validationData.pop()
+            levels.pop()
         }
 
         // MARK: - configuration for ignoreTypealiasesAndAssociatedtypes
         override func visitPost(_ node: TypeAliasDeclSyntax) {
             guard !configuration.ignoreTypealiasesAndAssociatedtypes else { return }
             validate(forFunction: false, triggeringToken: node.typealiasKeyword)
-            validationData.pop()
+            levels.pop()
         }
 
         override func visitPost(_ node: AssociatedTypeDeclSyntax) {
             guard !configuration.ignoreTypealiasesAndAssociatedtypes else { return }
             validate(forFunction: false, triggeringToken: node.associatedtypeKeyword)
-            validationData.pop()
+            levels.pop()
         }
 
         // MARK: - configuration for checkNestingInClosuresAndStatements
@@ -128,14 +128,14 @@ private extension NestingRule {
 
         // MARK: -
         private func validate(forFunction: Bool, triggeringToken: TokenSyntax) {
-            let inFunction = validationData.functionOrNotStack.peek() == true
-            validationData.push(forFunction)
+            let inFunction = levels.functionOrNotStack.peek() == true
+            levels.push(forFunction)
 
             let (level, targetLevel) =
                 if forFunction {
-                    (validationData.functionLevel, configuration.functionLevel)
+                    (levels.functionLevel, configuration.functionLevel)
                 } else {
-                    (validationData.typeLevel, configuration.typeLevel)
+                    (levels.typeLevel, configuration.typeLevel)
                 }
 
             let violatingSeverity: ViolationSeverity? =

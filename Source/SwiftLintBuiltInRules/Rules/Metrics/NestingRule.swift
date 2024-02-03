@@ -16,35 +16,13 @@ struct NestingRule: Rule {
 }
 
 private struct Levels {
-    private var typeLevel: Int = -1
-    private var functionLevel: Int = -1
+    var lastIsFunction: Bool { functionOrNotStack.peek() == true }
+
+    private(set) var typeLevel: Int = -1
+    private(set) var functionLevel: Int = -1
     private var functionOrNotStack = Stack<Bool>()
 
-    private var lastIsFunction: Bool { functionOrNotStack.peek() == true }
-
-    mutating func validate(
-        forFunction: Bool,
-        with configuration: NestingConfiguration
-    ) -> (ViolationSeverity, String)? {
-        let inFunction = lastIsFunction
-        push(forFunction)
-
-        let level = forFunction ? functionLevel : typeLevel
-        let targetLevel = forFunction ? configuration.functionLevel : configuration.typeLevel
-
-        // if parent is function and current is not function types, then skip nesting rule.
-        if configuration.alwaysAllowOneTypeInFunctions && inFunction && !forFunction {
-            return nil
-        }
-        guard let severity = configuration.severity(with: targetLevel, for: level) else { return nil }
-        let threshold = configuration.threshold(with: targetLevel, for: severity)
-
-        let targetName = forFunction ? "Functions" : "Types"
-        let pluralSuffix = threshold > 1 ? "s" : ""
-        return (severity, "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep")
-    }
-
-    private mutating func push(_ isFunction: Bool) {
+    mutating func push(_ isFunction: Bool) {
         functionOrNotStack.push(isFunction)
         updateLevel(with: 1)
     }
@@ -164,13 +142,24 @@ private extension NestingRule {
 
         // MARK: -
         private func validate(forFunction: Bool, triggeringToken: TokenSyntax) {
-            guard let (severity, reason) = levels.validate(forFunction: forFunction, with: configuration) else {
+            let inFunction = levels.lastIsFunction
+            levels.push(forFunction)
+
+            let level = forFunction ? levels.functionLevel : levels.typeLevel
+            let targetLevel = forFunction ? configuration.functionLevel : configuration.typeLevel
+
+            // if parent is function and current is not function types, then skip nesting rule.
+            if configuration.alwaysAllowOneTypeInFunctions && inFunction && !forFunction {
                 return
             }
+            guard let severity = configuration.severity(with: targetLevel, for: level) else { return }
 
+            let targetName = forFunction ? "Functions" : "Types"
+            let threshold = configuration.threshold(with: targetLevel, for: severity)
+            let pluralSuffix = threshold > 1 ? "s" : ""
             violations.append(ReasonedRuleViolation(
                 position: triggeringToken.positionAfterSkippingLeadingTrivia,
-                reason: reason,
+                reason: "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep",
                 severity: severity
             ))
         }

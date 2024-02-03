@@ -14,7 +14,7 @@ struct FunctionArgumentsSpacingRule: Rule {
             Example("testFunc(style)"),
             Example("testFunc(true, false)"),
             Example("""
-            makeGenerator(
+            testFunc(
                 a: true,
                 b: false
             )
@@ -22,28 +22,51 @@ struct FunctionArgumentsSpacingRule: Rule {
         ],
         triggeringExamples: [
             Example("testFunc(↓ )"),
+            Example("testFunc(↓  )"),
             Example("testFunc(↓ style)"),
             Example("testFunc(↓  style)"),
-            Example("testFunc(style  ↓)"),
-            Example("testFunc(↓  style  ↓)"),
             Example("testFunc(style ↓)"),
+            Example("testFunc(↓  style  ↓)"),
             Example("testFunc(↓ style ↓)"),
             Example("testFunc(↓ offset: 0, limit: 0)"),
             Example("testFunc(offset: 0, limit: 0 ↓)"),
             Example("testFunc(↓ 1, 2, 3 ↓)"),
+            Example("testFunc(↓ 1,  ↓2, 3 ↓)"),
+            Example("testFunc(↓ 1,  ↓2,   ↓3 ↓)"),
             Example("testFunc(↓ /* comment */ a)"),
             Example("testFunc(a /* other comment */ ↓)"),
             Example("testFunc(↓ /* comment */ a /* other comment */)"),
             Example("testFunc(/* comment */ a /* other comment */ ↓)"),
             Example("testFunc(↓ /* comment */ a /* other comment */ ↓)"),
-            Example("testFunc(↓  /* comment */ a /* other comment */  ↓)")
+            Example("testFunc(↓  /* comment */ a /* other comment */  ↓)"),
         ]
     )
 }
 
 private extension TriviaPiece {
+  var isSingleSpace: Bool {
+    if case .spaces(1) = self {
+      return true
+    } else {
+      return false
+    }
+  }
     var isSpaces: Bool {
         if case .spaces = self {
+            return true
+        } else {
+            return false
+        }
+    }
+    var isTabs: Bool {
+      if case .tabs = self {
+            return true
+        } else {
+            return false
+        }
+    }
+    var isBlockComment: Bool {
+      if case .blockComment = self {
             return true
         } else {
             return false
@@ -52,42 +75,72 @@ private extension TriviaPiece {
 }
 
 private extension FunctionArgumentsSpacingRule {
-    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        /*
-         Because it is not sure at which node SwiftSyntax will put a space,
-         it checks the trivia at each of the variables and at the paren.
-         */
-        override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard let leftParen = node.leftParen, let rightParen = node.rightParen else { return }
-            let firstArgument = node.arguments.first
-            // Check that the trivia immediately following the leftParen is spaces(_:),
-            // as it may contain trivia that is not space like blockComment(_:)
-            if let firstArgumentLeadingTrivia = firstArgument?.leadingTrivia,
-               !firstArgumentLeadingTrivia.containsNewlines() {
-                    if let firstElementTrivia = firstArgumentLeadingTrivia.pieces.last {
-                        if firstElementTrivia.isSpaces {
-                            violations.append(leftParen.positionAfterSkippingLeadingTrivia)
-                        }
-                    }
-            }
-            if let trailingTrivia = leftParen.trailingTrivia.first {
-                if trailingTrivia.isSpaces {
-                    violations.append(leftParen.endPositionBeforeTrailingTrivia)
-                }
-            }
-            let lastArgument = node.arguments.last
-            // Check that the trivia immediately preceding the rightParen is spaces(_:),
-            // as it may contain trivia that is not space like blockComment(_:)
-            if let lastElementTrivia = lastArgument?.trailingTrivia.reversed().first {
-                if lastElementTrivia.isSpaces {
-                    violations.append(rightParen.positionAfterSkippingLeadingTrivia)
-                }
-            }
-            if let firstArgument = rightParen.leadingTrivia.first {
-                if firstArgument.isSpaces, let rightParan = node.rightParen {
-                    violations.append(rightParan.endPositionBeforeTrailingTrivia)
-                }
-            }
+  final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+    override func visitPost(_ node: FunctionCallExprSyntax) {
+      guard let leftParen = node.leftParen, let rightParen = node.rightParen else { return }
+      let arguments = node.arguments
+      if arguments.isEmpty {
+        if let triviaAfterLeftParen = leftParen.trailingTrivia.pieces.first {
+          if triviaAfterLeftParen.isSpaces {
+            violations.append(leftParen.endPositionBeforeTrailingTrivia)
+          }
         }
+      }
+      if arguments.count == 1 {
+        if let firstArg = node.arguments.first {
+          if let triviaAfterLeftParen = leftParen.trailingTrivia.pieces.first {
+            if triviaAfterLeftParen.isSpaces && !firstArg.leadingTrivia.containsNewlines() {
+              violations.append(leftParen.endPositionBeforeTrailingTrivia)
+            }
+          }
+          if firstArg.trailingTrivia.pieces.isNotEmpty {
+            if firstArg.trailingTrivia.pieces.count == 1 && firstArg.trailingTrivia.pieces.first!.isSpaces {
+              violations.append(firstArg.endPosition)
+            }
+            if firstArg.trailingTrivia.pieces.first!.isSpaces && firstArg.trailingTrivia.pieces.count >= 2 && !firstArg.trailingTrivia.pieces.last!.isBlockComment {
+              violations.append(firstArg.endPosition)
+            }
+          }
+        }
+      }
+      if arguments.count >= 2 {
+        arguments.enumerated().forEach { index, arg in
+          if index == 0 {
+            if let triviaAfterLeftParen = leftParen.trailingTrivia.pieces.first {
+              if triviaAfterLeftParen.isSpaces && !arg.leadingTrivia.containsNewlines() {
+                violations.append(leftParen.endPositionBeforeTrailingTrivia)
+              }
+            }
+            let trailingComma = arg.trailingComma
+            guard let _trailingComma = trailingComma else { return }
+            guard let trailingTrivia = _trailingComma.trailingTrivia.pieces.first else { return }
+            if !(trailingTrivia.isSingleSpace) {
+              violations.append(_trailingComma.endPosition)
+            }
+          } else if index == arguments.count - 1 {
+            if let lastArgument = arguments.last {
+              if let triviaAfterLastArgument = lastArgument.trailingTrivia.pieces.first {
+                if triviaAfterLastArgument.isSpaces {
+                  violations.append(lastArgument.endPosition)
+                }
+              }
+            }
+            let trailingComma = arg.trailingComma
+            guard let _trailingComma = trailingComma else { return }
+            guard let trailingTrivia = _trailingComma.trailingTrivia.pieces.first else { return }
+            if !(trailingTrivia.isSingleSpace) {
+              violations.append(_trailingComma.endPosition)
+            }
+          } else {
+            let trailingComma = arg.trailingComma
+            guard let _trailingComma = trailingComma else { return }
+            guard let trailingTrivia = _trailingComma.trailingTrivia.pieces.first else { return }
+            if !(trailingTrivia.isSingleSpace) {
+              violations.append(_trailingComma.endPosition)
+            }
+          }
+        }
+      }
     }
+  }
 }

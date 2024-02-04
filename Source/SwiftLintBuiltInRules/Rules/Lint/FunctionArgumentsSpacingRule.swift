@@ -39,6 +39,7 @@ struct FunctionArgumentsSpacingRule: Rule {
             Example("testFunc(/* comment */ a /* other comment */ ↓)"),
             Example("testFunc(↓ /* comment */ a /* other comment */ ↓)"),
             Example("testFunc(↓  /* comment */ a /* other comment */  ↓)"),
+            Example("testFunc(↓  /* comment */  ↓a↓   /* other comment */  ↓)"),
         ]
     )
 }
@@ -93,12 +94,22 @@ private extension FunctionArgumentsSpacingRule {
               violations.append(leftParen.endPositionBeforeTrailingTrivia)
             }
           }
+          if let lastTriviaAfterLeftParan = leftParen.trailingTrivia.pieces.last {
+            if !lastTriviaAfterLeftParan.isSingleSpace && leftParen.trailingTrivia.pieces.count >= 2 {
+              violations.append(leftParen.endPosition)
+            }
+          }
           if firstArg.trailingTrivia.pieces.isNotEmpty {
             if firstArg.trailingTrivia.pieces.count == 1 && firstArg.trailingTrivia.pieces.first!.isSpaces {
               violations.append(firstArg.endPosition)
             }
+
             if firstArg.trailingTrivia.pieces.first!.isSpaces && firstArg.trailingTrivia.pieces.count >= 2 && !firstArg.trailingTrivia.pieces.last!.isBlockComment {
               violations.append(firstArg.endPosition)
+            }
+
+            if firstArg.trailingTrivia.pieces.count >= 2 && !firstArg.trailingTrivia.pieces.first!.isSingleSpace {
+              violations.append(firstArg.endPositionBeforeTrailingTrivia)
             }
           }
         }

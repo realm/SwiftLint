@@ -122,6 +122,9 @@
 * Make `empty_count` auto-correctable.  
   [KS1019](https://github.com/KS1019/)
 
+* Make `trailing_closure` correctable.  
+  [KS1019](https://github.com/KS1019/)
+
 #### Bug Fixes
 
 * Silence `discarded_notification_center_observer` rule in closures. Furthermore,

@@ -10,6 +10,20 @@ class TrailingClosureRuleTests: SwiftLintTestCase {
                 Example("foo.something(0, { $0 + 1 })")
             ])
             .with(triggeringExamples: [Example("foo.map(↓{ $0 + 1 })")])
+            .with(corrections: [
+                Example("foo.map(↓{ $0 + 1 })"):
+                    Example("foo.map { $0 + 1 }"),
+                Example("""
+                for n in list {
+                    n.forEach(↓{ print($0) })
+                }
+                """, excludeFromDocumentation: true):
+                    Example("""
+                for n in list {
+                    n.forEach { print($0) }
+                }
+                """, excludeFromDocumentation: true)
+            ])
 
         verifyRule(description, ruleConfiguration: ["only_single_muted_parameter": true])
     }

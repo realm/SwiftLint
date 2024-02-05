@@ -2,7 +2,7 @@ import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct TrailingClosureRule: OptInRule {
+struct TrailingClosureRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = TrailingClosureConfiguration()
 
     static let description = RuleDescription(
@@ -48,8 +48,38 @@ struct TrailingClosureRule: OptInRule {
                 n.forEach(↓{ print($0) })
             }
             """, excludeFromDocumentation: true)
+        ],
+        corrections: [
+            Example("foo.map(↓{ $0 + 1 })"):
+                Example("foo.map { $0 + 1 }"),
+            Example("foo.reduce(0, combine: ↓{ $0 + 1 })"):
+                Example("foo.reduce(0) { $0 + 1 }"),
+            Example("offsets.sorted(by: ↓{ $0.offset < $1.offset })"):
+                Example("offsets.sorted { $0.offset < $1.offset }"),
+            Example("foo.something(0, ↓{ $0 + 1 })"):
+                Example("foo.something(0) { $0 + 1 }"),
+            Example("foo.something(param1: { _ in true }, param2: 0, param3: ↓{ _ in false })"):
+                Example("foo.something(param1: { _ in true }, param2: 0) { _ in false }"),
+            Example("""
+            for n in list {
+                n.forEach(↓{ print($0) })
+            }
+            """, excludeFromDocumentation: true):
+                Example("""
+            for n in list {
+                n.forEach { print($0) }
+            }
+            """, excludeFromDocumentation: true)
         ]
     )
+
+    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
+        Rewriter(
+            configuration: configuration,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
 }
 
 private extension TrailingClosureRule {
@@ -77,6 +107,48 @@ private extension TrailingClosureRule {
     }
 }
 
+private extension TrailingClosureRule {
+    final class Rewriter: ViolationsSyntaxRewriter {
+        private let configuration: TrailingClosureConfiguration
+
+        init(configuration: TrailingClosureConfiguration,
+             locationConverter: SourceLocationConverter,
+             disabledRegions: [SourceRange]) {
+            self.configuration = configuration
+            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
+        }
+
+        override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
+            guard node.trailingClosure == nil else { return ExprSyntax(node) }
+
+            if configuration.onlySingleMutedParameter {
+                if let param = node.singleMutedClosureParameter,
+                let converted = node.convertToTrailingClosure() {
+                     correctionPositions.append(param.positionAfterSkippingLeadingTrivia)
+                    return ExprSyntax(converted)
+                }
+            } else if let param = node.lastDistinctClosureParameter,
+                      let converted = node.convertToTrailingClosure() {
+                correctionPositions.append(param.positionAfterSkippingLeadingTrivia)
+                return ExprSyntax(converted)
+            }
+            return ExprSyntax(node)
+        }
+
+        override func visit(_ node: ConditionElementListSyntax) -> ConditionElementListSyntax {
+            node
+        }
+
+        override func visit(_ node: ForStmtSyntax) -> StmtSyntax {
+            if let body = rewrite(node.body).as(CodeBlockSyntax.self) {
+                StmtSyntax(node.with(\.body, body))
+            } else {
+                StmtSyntax(node)
+            }
+        }
+    }
+}
+
 private extension FunctionCallExprSyntax {
     var singleMutedClosureParameter: ClosureExprSyntax? {
         if let onlyArgument = arguments.onlyElement, onlyArgument.label == nil {
@@ -92,10 +164,48 @@ private extension FunctionCallExprSyntax {
         }
         return nil
     }
+
+    func dropLastArgument() -> Self {
+        let arguments = LabeledExprListSyntax(arguments.dropLast())
+
+        return self
+            .with(\.arguments, arguments.dropLastTrailingComma())
+            .dropParensIfNeeded()
+    }
+
+    func dropParensIfNeeded() -> Self {
+        if arguments.isEmpty {
+            self
+                .with(\.rightParen, nil)
+                .with(\.leftParen, nil)
+        } else {
+            self
+        }
+    }
+
+    func convertToTrailingClosure() -> Self? {
+        guard trailingClosure == nil, let lastDistinctClosureParameter else { return nil }
+
+        return dropLastArgument()
+            .with(\.trailingClosure, lastDistinctClosureParameter.with(\.leadingTrivia, .space))
+            .with(\.calledExpression.trailingTrivia, [])
+    }
 }
 
 private extension LabeledExprSyntax {
     var isClosureExpr: Bool {
         expression.is(ClosureExprSyntax.self)
+    }
+}
+
+private extension LabeledExprListSyntax {
+    func dropLastTrailingComma() -> Self {
+        guard let last else { return [] }
+
+        if last.trailingComma != nil {
+            return LabeledExprListSyntax(dropLast()) + CollectionOfOne(last.with(\.trailingComma, nil))
+        } else {
+            return self
+        }
     }
 }

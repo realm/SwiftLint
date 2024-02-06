@@ -10,36 +10,29 @@ struct FunctionArgumentsSpacingRule: Rule {
         description: "Remove the space before the first function argument and after the last argument",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("testFunc()"),
-            Example("testFunc(style)"),
-            Example("testFunc(true, false)"),
+            Example("f()"),
+            Example("f(true)"),
+            Example("f(true, false)"),
+            Example("f(true, false, true)"),
+            Example("f(/* comment */true/* other comment */)"),
+            Example("f(/* comment */true/* other comment */, false)"),
+            Example("f(/* comment */true/* other comment */, /* comment */false/* other comment */, false)"),
             Example("""
-            testFunc(
+            f(
                 a: true,
-                b: false
+                b: true,
             )
             """)
         ],
         triggeringExamples: [
-            Example("testFunc(↓ )"),
-            Example("testFunc(↓  )"),
-            Example("testFunc(↓ style)"),
-            Example("testFunc(↓  style)"),
-            Example("testFunc(style ↓)"),
-            Example("testFunc(↓  style  ↓)"),
-            Example("testFunc(↓ style ↓)"),
-            Example("testFunc(↓ offset: 0, limit: 0)"),
-            Example("testFunc(offset: 0, limit: 0 ↓)"),
-            Example("testFunc(↓ 1, 2, 3 ↓)"),
-            Example("testFunc(↓ 1,  ↓2, 3 ↓)"),
-            Example("testFunc(↓ 1,  ↓2,   ↓3 ↓)"),
-            Example("testFunc(↓ /* comment */ a)"),
-            Example("testFunc(a /* other comment */ ↓)"),
-            Example("testFunc(↓ /* comment */ a /* other comment */)"),
-            Example("testFunc(/* comment */ a /* other comment */ ↓)"),
-            Example("testFunc(↓ /* comment */ a /* other comment */ ↓)"),
-            Example("testFunc(↓  /* comment */ a /* other comment */  ↓)"),
-            Example("testFunc(↓  /* comment */  ↓a↓   /* other comment */  ↓)"),
+            Example("f(↓ )"),
+            Example("f(↓  )"),
+            Example("f(↓\t)"),
+            Example("f(↓  true↓  )"),
+            Example("f(↓ /* comment */ ↓true↓ /* other comment */ ↓)"),
+            Example("f(↓ x: 0, y: 0↓ )"),
+            Example("f(↓ true,↓  false, true↓  )"),
+            Example("f(↓ true,↓  false,↓  /* other comment */  ↓true↓   )")
         ]
     )
 }
@@ -78,78 +71,62 @@ private extension TriviaPiece {
 private extension FunctionArgumentsSpacingRule {
   final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
     override func visitPost(_ node: FunctionCallExprSyntax) {
-      guard let leftParen = node.leftParen, let rightParen = node.rightParen else { return }
+      guard let leftParen = node.leftParen else { return }
       let arguments = node.arguments
-      if arguments.isEmpty {
-        if let triviaAfterLeftParen = leftParen.trailingTrivia.pieces.first {
-          if triviaAfterLeftParen.isSpaces {
+      let argumentsCounts = arguments.count
+      switch argumentsCounts {
+      case 0:
+        guard let triviaAfterLeftParen = leftParen.trailingTrivia.pieces.first else { return }
+          if triviaAfterLeftParen.isSpaces || triviaAfterLeftParen.isTabs {
             violations.append(leftParen.endPositionBeforeTrailingTrivia)
           }
-        }
-      }
-      if arguments.count == 1 {
-        if let firstArg = node.arguments.first {
-          if let triviaAfterLeftParen = leftParen.trailingTrivia.pieces.first {
-            if triviaAfterLeftParen.isSpaces && !firstArg.leadingTrivia.containsNewlines() {
-              violations.append(leftParen.endPositionBeforeTrailingTrivia)
-            }
-          }
-          if let lastTriviaAfterLeftParan = leftParen.trailingTrivia.pieces.last {
-            if !lastTriviaAfterLeftParan.isSingleSpace && leftParen.trailingTrivia.pieces.count >= 2 {
-              violations.append(leftParen.endPosition)
-            }
-          }
-          if firstArg.trailingTrivia.pieces.isNotEmpty {
-            if firstArg.trailingTrivia.pieces.count == 1 && firstArg.trailingTrivia.pieces.first!.isSpaces {
-              violations.append(firstArg.endPosition)
-            }
-
-            if firstArg.trailingTrivia.pieces.first!.isSpaces && firstArg.trailingTrivia.pieces.count >= 2 && !firstArg.trailingTrivia.pieces.last!.isBlockComment {
-              violations.append(firstArg.endPosition)
-            }
-
-            if firstArg.trailingTrivia.pieces.count >= 2 && !firstArg.trailingTrivia.pieces.first!.isSingleSpace {
-              violations.append(firstArg.endPositionBeforeTrailingTrivia)
-            }
-          }
-        }
-      }
-      if arguments.count >= 2 {
+      case 1:
+        guard let argument = node.arguments.first else { return }
+          // check whether there are whitespaces before a variable
+          checkLeftParenTrailingTrivia(leftParen: leftParen)
+          // check whether there are whitespaces after a variable
+          checkArgumentTrailingTrivia(argument: argument)
+      default:
         arguments.enumerated().forEach { index, arg in
-          if index == 0 {
-            if let triviaAfterLeftParen = leftParen.trailingTrivia.pieces.first {
-              if triviaAfterLeftParen.isSpaces && !arg.leadingTrivia.containsNewlines() {
-                violations.append(leftParen.endPositionBeforeTrailingTrivia)
-              }
-            }
-            let trailingComma = arg.trailingComma
-            guard let _trailingComma = trailingComma else { return }
-            guard let trailingTrivia = _trailingComma.trailingTrivia.pieces.first else { return }
-            if !(trailingTrivia.isSingleSpace) {
-              violations.append(_trailingComma.endPosition)
-            }
-          } else if index == arguments.count - 1 {
-            if let lastArgument = arguments.last {
-              if let triviaAfterLastArgument = lastArgument.trailingTrivia.pieces.first {
-                if triviaAfterLastArgument.isSpaces {
-                  violations.append(lastArgument.endPosition)
-                }
-              }
-            }
-            let trailingComma = arg.trailingComma
-            guard let _trailingComma = trailingComma else { return }
-            guard let trailingTrivia = _trailingComma.trailingTrivia.pieces.first else { return }
-            if !(trailingTrivia.isSingleSpace) {
-              violations.append(_trailingComma.endPosition)
-            }
-          } else {
-            let trailingComma = arg.trailingComma
-            guard let _trailingComma = trailingComma else { return }
-            guard let trailingTrivia = _trailingComma.trailingTrivia.pieces.first else { return }
-            if !(trailingTrivia.isSingleSpace) {
-              violations.append(_trailingComma.endPosition)
-            }
+          switch index {
+          case 0:
+            checkLeftParenTrailingTrivia(leftParen: leftParen)
+            guard let trailingComma = arg.trailingComma else {return }
+            checkTrailingComma(trailingComma: trailingComma)
+          case arguments.count - 1:
+            guard let lastArgument = arguments.last else { return}
+            checkArgumentTrailingTrivia(argument: lastArgument)
+          default:
+            guard let trailingComma = arg.trailingComma  else {return}
+            checkTrailingComma(trailingComma: trailingComma)
           }
+        }
+      }
+    }
+    private func checkLeftParenTrailingTrivia(leftParen: TokenSyntax) {
+      leftParen.trailingTrivia.pieces.enumerated().forEach { index, trivia in
+        if (trivia.isSpaces || trivia.isTabs) && (index == 0 || leftParen.trailingTrivia.count == 1) {
+          violations.append(leftParen.endPositionBeforeTrailingTrivia)
+        } else if trivia.isSpaces || trivia.isTabs {
+          violations.append(leftParen.endPosition)
+        }
+      }
+    }
+    private func checkArgumentTrailingTrivia(argument: LabeledExprListSyntax.Element) {
+      argument.trailingTrivia.pieces.enumerated().forEach { index, trivia in
+        if (trivia.isSpaces || trivia.isTabs) && (index == 0 || argument.trailingTrivia.count == 1) {
+          violations.append(argument.endPositionBeforeTrailingTrivia)
+        } else if trivia.isSpaces || trivia.isTabs {
+          violations.append(argument.endPosition)
+        }
+      }
+    }
+    private func checkTrailingComma(trailingComma: TokenSyntax) {
+      trailingComma.trailingTrivia.pieces.enumerated().forEach { index, trivia in
+        if !trivia.isSingleSpace && (index == 0 || trailingComma.trailingTrivia.count == 1) {
+          violations.append(trailingComma.endPositionBeforeTrailingTrivia)
+        } else if !trivia.isSingleSpace && !trivia.isBlockComment {
+          violations.append(trailingComma.endPosition)
         }
       }
     }

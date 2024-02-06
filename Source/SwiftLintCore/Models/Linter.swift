@@ -6,7 +6,7 @@ private let warnSourceKitFailedOnceImpl: Void = {
 }()
 
 private func warnSourceKitFailedOnce() {
-    print("Test 2")
+    print("Test 3")
     _ = warnSourceKitFailedOnceImpl
 }
 

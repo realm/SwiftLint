@@ -447,19 +447,20 @@ warning
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">C</span> <span class="p">{</span> <span class="kd">private(set)</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">d</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">internal</span> <span class="kd">struct</span> <span class="kt">C</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">static</span> <span class="k">let</span> <span class="nv">d</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">internal</span> <span class="kd">struct</span> <span class="kt">C</span> <span class="p">{</span> <span class="kd">static</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">d</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">C</span> <span class="p">{</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">d</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">C</span> <span class="p">{</span> <span class="err">↓</span><span class="nf">init</span><span class="p">()</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="kd">func</span> <span class="nf">a</span><span class="p">()</span> <span class="p">{}</span>
+<pre class="highlight swift"><code><span class="kd">static</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">a</span><span class="p">()</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">internal</span> <span class="k">let</span> <span class="nv">a</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="err">↓</span><span class="kd">func</span> <span class="nf">b</span><span class="p">()</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="err">↓</span><span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">static</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">baz</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">extension</span> <span class="kt">E</span> <span class="p">{</span>

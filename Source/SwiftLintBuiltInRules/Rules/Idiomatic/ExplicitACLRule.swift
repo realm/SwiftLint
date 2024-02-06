@@ -83,14 +83,15 @@ struct ExplicitACLRule: OptInRule {
             Example("final ↓class B {}"),
             Example("internal struct C { ↓let d = 5 }"),
             Example("public struct C { private(set) ↓var d = 5 }"),
-            Example("internal struct C { ↓static let d = 5 }"),
+            Example("internal struct C { static ↓let d = 5 }"),
             Example("public struct C { ↓let d = 5 }"),
             Example("public struct C { ↓init() }"),
-            Example("↓func a() {}"),
+            Example("static ↓func a() {}"),
             Example("internal let a = 0\n↓func b() {}"),
             Example("""
             extension Foo {
                 ↓func bar() {}
+                static ↓func baz() {}
             }
             """),
             Example("""
@@ -172,7 +173,7 @@ private extension ExplicitACLRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            collectViolations(decl: node, token: node.staticOrClassKeyword ?? node.funcKeyword)
+            collectViolations(decl: node, token: node.funcKeyword)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
@@ -194,7 +195,7 @@ private extension ExplicitACLRule {
         }
 
         override func visitPost(_ node: SubscriptDeclSyntax) {
-            collectViolations(decl: node, token: node.staticOrClassKeyword ?? node.subscriptKeyword)
+            collectViolations(decl: node, token: node.subscriptKeyword)
         }
 
         override func visitPost(_ node: TypeAliasDeclSyntax) {
@@ -202,7 +203,7 @@ private extension ExplicitACLRule {
         }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            collectViolations(decl: node, token: node.staticOrClassKeyword ?? node.bindingSpecifier)
+            collectViolations(decl: node, token: node.bindingSpecifier)
         }
 
         private func collectViolations(decl: some WithModifiersSyntax, token: TokenSyntax) {
@@ -211,11 +212,5 @@ private extension ExplicitACLRule {
                 violations.append(token.positionAfterSkippingLeadingTrivia)
             }
         }
-    }
-}
-
-private extension WithModifiersSyntax {
-    var staticOrClassKeyword: TokenSyntax? {
-        modifiers.first { [.keyword(.static), .keyword(.class)].contains($0.name.tokenKind) }?.name
     }
 }

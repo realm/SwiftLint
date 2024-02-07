@@ -1,12 +1,16 @@
 // swiftlint:disable file_length
+
+private let detectingTypes = ["actor", "class", "struct", "enum"]
+
 internal struct NestingRuleExamples {
     static let nonTriggeringExamples = nonTriggeringTypeExamples
         + nonTriggeringFunctionExamples
         + nonTriggeringClosureAndStatementExamples
+        + nonTriggeringProtocolExamples
         + nonTriggeringMixedExamples
 
     private static let nonTriggeringTypeExamples =
-        ["class", "struct", "enum"].flatMap { type -> [Example] in
+        detectingTypes.flatMap { type -> [Example] in
             [
                 // default maximum type nesting level
                 .init("""
@@ -98,8 +102,41 @@ internal struct NestingRuleExamples {
         """)
     ]
 
+    private static let nonTriggeringProtocolExamples =
+        detectingTypes.flatMap { type in
+            [
+                Example("""
+                \(type) Example_0 {
+                    protocol Example_1 {}
+                }
+                """),
+                Example("""
+                    var example: Int {
+                        \(type) Example_0 {
+                            protocol Example_1 {}
+                        }
+                        return 5
+                    }
+                """),
+                Example("""
+                    var example: Int = 5 {
+                        didSet {
+                            \(type) Example_0 {
+                                protocol Example_1 {}
+                            }
+                        }
+                    }
+                """),
+                Example("""
+                    extension Example_0 {
+                        protocol Example_1 {}
+                    }
+                """)
+            ]
+        }
+
     private static let nonTriggeringClosureAndStatementExamples =
-        ["class", "struct", "enum"].flatMap { type -> [Example] in
+        detectingTypes.flatMap { type -> [Example] in
             [
                 // swich statement example
                 .init("""
@@ -148,7 +185,7 @@ internal struct NestingRuleExamples {
         }
 
     private static let nonTriggeringMixedExamples =
-        ["class", "struct", "enum"].flatMap { type -> [Example] in
+        detectingTypes.flatMap { type -> [Example] in
             [
                 // default maximum nesting level for both type and function (nesting order is arbitrary)
                 .init("""
@@ -159,6 +196,7 @@ internal struct NestingRuleExamples {
                                     func f_2() {}
                                 }
                             }
+                            protocol P {}
                         }
                     }
                 """),
@@ -174,6 +212,7 @@ internal struct NestingRuleExamples {
                                         func f_2() {}
                                     }
                                 }
+                                protocol P {}
                             default:
                                 exampleFunc(closure: {
                                     \(type) Example_1 {
@@ -181,6 +220,7 @@ internal struct NestingRuleExamples {
                                             func f_2() {}
                                         }
                                     }
+                                    protocol P {}
                                 })
                             }
                         }
@@ -188,14 +228,17 @@ internal struct NestingRuleExamples {
                 """)
             ]
         }
+}
 
+extension NestingRuleExamples {
     static let triggeringExamples = triggeringTypeExamples
         + triggeringFunctionExamples
         + triggeringClosureAndStatementExamples
+        + triggeringProtocolExamples
         + triggeringMixedExamples
 
     private static let triggeringTypeExamples =
-        ["class", "struct", "enum"].flatMap { type -> [Example] in
+        detectingTypes.flatMap { type -> [Example] in
             [
                 // violation of default maximum type nesting level
                 .init("""
@@ -304,7 +347,7 @@ internal struct NestingRuleExamples {
     ]
 
     private static let triggeringClosureAndStatementExamples =
-        ["class", "struct", "enum"].flatMap { type -> [Example] in
+        detectingTypes.flatMap { type -> [Example] in
             [
                 // swich statement example
                 .init("""
@@ -362,8 +405,49 @@ internal struct NestingRuleExamples {
             ]
         }
 
+    private static let triggeringProtocolExamples =
+        detectingTypes.flatMap { type in
+            [
+                Example("""
+                \(type) Example_0 {
+                    \(type) Example_1 {
+                        ↓protocol Example_2 {}
+                    }
+                }
+                """),
+                Example("""
+                    var example: Int {
+                        \(type) Example_0 {
+                            \(type) Example_1 {
+                                ↓protocol Example_2 {}
+                            }
+                        }
+                        return 5
+                    }
+                """),
+                Example("""
+                    var example: Int = 5 {
+                        didSet {
+                            \(type) Example_0 {
+                                \(type) Example_1 {
+                                    ↓protocol Example_2 {}
+                                }
+                            }
+                        }
+                    }
+                """),
+                Example("""
+                    extension Example_0 {
+                        \(type) Example_1 {
+                            ↓protocol Example_2 {}
+                        }
+                    }
+                """)
+            ]
+        }
+
     private static let triggeringMixedExamples =
-        ["class", "struct", "enum"].flatMap { type -> [Example] in
+        detectingTypes.flatMap { type -> [Example] in
             [
                 // violation of default maximum nesting level for both type and function (nesting order is arbitrary)
                 .init("""
@@ -374,6 +458,7 @@ internal struct NestingRuleExamples {
                                     func f_2() {
                                         ↓\(type) Example_2 {}
                                         ↓func f_3() {}
+                                        ↓protocol P {}
                                     }
                                 }
                             }
@@ -392,6 +477,7 @@ internal struct NestingRuleExamples {
                                         func f_2() {
                                             ↓\(type) Example_2 {}
                                             ↓func f_3() {}
+                                            ↓protocol P {}
                                         }
                                     }
                                 }
@@ -402,6 +488,7 @@ internal struct NestingRuleExamples {
                                             func f_2() {
                                                 ↓\(type) Example_2 {}
                                                 ↓func f_3() {}
+                                                ↓protocol P {}
                                             }
                                         }
                                     }

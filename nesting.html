@@ -428,6 +428,29 @@ false
 </table></li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
+<pre class="highlight swift"><code>    <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+                <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">extension</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+    <span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code>    <span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
         <span class="kd">class</span> <span class="kt">Example_1</span> <span class="p">{}</span>
     <span class="p">}</span>
@@ -532,6 +555,41 @@ false
 </code></pre>
 <pre class="highlight swift"><code>    <span class="k">switch</span> <span class="n">example</span> <span class="p">{</span>
     <span class="k">case</span> <span class="o">.</span><span class="nv">exampleCase</span><span class="p">:</span>
+        <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+        <span class="p">}</span>
+    <span class="k">default</span><span class="p">:</span>
+        <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">exampleClosure</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+        <span class="p">}</span>
+        <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="nf">exampleFunc</span><span class="p">(</span><span class="nv">closure</span><span class="p">:</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+        <span class="p">}</span>
+        <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">})</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">switch</span> <span class="n">example</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nv">exampleCase</span><span class="p">:</span>
         <span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
             <span class="kd">class</span> <span class="kt">Example_1</span> <span class="p">{}</span>
         <span class="p">}</span>
@@ -634,6 +692,132 @@ false
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">})</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+    <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+                <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">extension</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
+    <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
+                <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">extension</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Example_0</span> <span class="p">{</span>
+    <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">struct</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="kd">struct</span> <span class="kt">Example_0</span> <span class="p">{</span>
+                <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">extension</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Example_0</span> <span class="p">{</span>
+    <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">enum</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="kd">enum</span> <span class="kt">Example_0</span> <span class="p">{</span>
+                <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">extension</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">protocol</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">switch</span> <span class="n">example</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="o">.</span><span class="nv">exampleCase</span><span class="p">:</span>
+                <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                    <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                        <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
+            <span class="k">default</span><span class="p">:</span>
+                <span class="nf">exampleFunc</span><span class="p">(</span><span class="nv">closure</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                        <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                            <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                    <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
+                <span class="p">})</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code>    <span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
         <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
@@ -642,6 +826,7 @@ false
                     <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
                 <span class="p">}</span>
             <span class="p">}</span>
+            <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
         <span class="p">}</span>
     <span class="p">}</span>
 </code></pre>
@@ -654,6 +839,7 @@ false
                         <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
+                <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
             <span class="k">default</span><span class="p">:</span>
                 <span class="nf">exampleFunc</span><span class="p">(</span><span class="nv">closure</span><span class="p">:</span> <span class="p">{</span>
                     <span class="kd">class</span> <span class="kt">Example_1</span> <span class="p">{</span>
@@ -661,6 +847,7 @@ false
                             <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
                         <span class="p">}</span>
                     <span class="p">}</span>
+                    <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                 <span class="p">})</span>
             <span class="p">}</span>
         <span class="p">}</span>
@@ -673,6 +860,7 @@ false
                     <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
                 <span class="p">}</span>
             <span class="p">}</span>
+            <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
         <span class="p">}</span>
     <span class="p">}</span>
 </code></pre>
@@ -685,6 +873,7 @@ false
                         <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
+                <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
             <span class="k">default</span><span class="p">:</span>
                 <span class="nf">exampleFunc</span><span class="p">(</span><span class="nv">closure</span><span class="p">:</span> <span class="p">{</span>
                     <span class="kd">struct</span> <span class="kt">Example_1</span> <span class="p">{</span>
@@ -692,6 +881,7 @@ false
                             <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
                         <span class="p">}</span>
                     <span class="p">}</span>
+                    <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                 <span class="p">})</span>
             <span class="p">}</span>
         <span class="p">}</span>
@@ -704,6 +894,7 @@ false
                     <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
                 <span class="p">}</span>
             <span class="p">}</span>
+            <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
         <span class="p">}</span>
     <span class="p">}</span>
 </code></pre>
@@ -716,6 +907,7 @@ false
                         <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
+                <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
             <span class="k">default</span><span class="p">:</span>
                 <span class="nf">exampleFunc</span><span class="p">(</span><span class="nv">closure</span><span class="p">:</span> <span class="p">{</span>
                     <span class="kd">enum</span> <span class="kt">Example_1</span> <span class="p">{</span>
@@ -723,12 +915,44 @@ false
                             <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{}</span>
                         <span class="p">}</span>
                     <span class="p">}</span>
+                    <span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                 <span class="p">})</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
+<pre class="highlight swift"><code>    <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+            <span class="err">↓</span><span class="kd">actor</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                <span class="err">↓</span><span class="kd">actor</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+                <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                    <span class="err">↓</span><span class="kd">actor</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">extension</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+            <span class="err">↓</span><span class="kd">actor</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code>    <span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
         <span class="kd">class</span> <span class="kt">Example_1</span> <span class="p">{</span>
             <span class="err">↓</span><span class="kd">class</span> <span class="kt">Example_2</span> <span class="p">{}</span>
@@ -865,6 +1089,51 @@ false
 </code></pre>
 <pre class="highlight swift"><code>    <span class="k">switch</span> <span class="n">example</span> <span class="p">{</span>
     <span class="k">case</span> <span class="o">.</span><span class="nv">exampleCase</span><span class="p">:</span>
+        <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                <span class="err">↓</span><span class="kd">actor</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="k">default</span><span class="p">:</span>
+        <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">exampleClosure</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                <span class="err">↓</span><span class="kd">actor</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+            <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="nf">exampleFunc</span><span class="p">(</span><span class="nv">closure</span><span class="p">:</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{}</span>
+        <span class="p">}</span>
+        <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">})</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">switch</span> <span class="n">example</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nv">exampleCase</span><span class="p">:</span>
         <span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
             <span class="kd">class</span> <span class="kt">Example_1</span> <span class="p">{</span>
                 <span class="err">↓</span><span class="kd">class</span> <span class="kt">Example_2</span> <span class="p">{}</span>
@@ -998,6 +1267,173 @@ false
         <span class="p">}</span>
     <span class="p">})</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+    <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+        <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+                <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                    <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">extension</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+            <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
+    <span class="kd">class</span> <span class="kt">Example_1</span> <span class="p">{</span>
+        <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">class</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
+                <span class="kd">class</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                    <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">extension</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">class</span> <span class="kt">Example_1</span> <span class="p">{</span>
+            <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Example_0</span> <span class="p">{</span>
+    <span class="kd">struct</span> <span class="kt">Example_1</span> <span class="p">{</span>
+        <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">struct</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">struct</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="kd">struct</span> <span class="kt">Example_0</span> <span class="p">{</span>
+                <span class="kd">struct</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                    <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">extension</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">struct</span> <span class="kt">Example_1</span> <span class="p">{</span>
+            <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Example_0</span> <span class="p">{</span>
+    <span class="kd">enum</span> <span class="kt">Example_1</span> <span class="p">{</span>
+        <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">enum</span> <span class="kt">Example_0</span> <span class="p">{</span>
+            <span class="kd">enum</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">var</span> <span class="nv">example</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="kd">enum</span> <span class="kt">Example_0</span> <span class="p">{</span>
+                <span class="kd">enum</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                    <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">extension</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">enum</span> <span class="kt">Example_1</span> <span class="p">{</span>
+            <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
+                        <span class="err">↓</span><span class="kd">actor</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+                        <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                        <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="kd">actor</span> <span class="kt">Example_0</span> <span class="p">{</span>
+        <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">switch</span> <span class="n">example</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="o">.</span><span class="nv">exampleCase</span><span class="p">:</span>
+                <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                    <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                        <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
+                            <span class="err">↓</span><span class="kd">actor</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+                            <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                            <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="k">default</span><span class="p">:</span>
+                <span class="nf">exampleFunc</span><span class="p">(</span><span class="nv">closure</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="kd">actor</span> <span class="kt">Example_1</span> <span class="p">{</span>
+                        <span class="kd">func</span> <span class="nf">f_1</span><span class="p">()</span> <span class="p">{</span>
+                            <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
+                                <span class="err">↓</span><span class="kd">actor</span> <span class="kt">Example_2</span> <span class="p">{}</span>
+                                <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                                <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
+                            <span class="p">}</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">})</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code>    <span class="kd">class</span> <span class="kt">Example_0</span> <span class="p">{</span>
         <span class="kd">func</span> <span class="nf">f_0</span><span class="p">()</span> <span class="p">{</span>
             <span class="kd">class</span> <span class="kt">Example_1</span> <span class="p">{</span>
@@ -1005,6 +1441,7 @@ false
                     <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
                         <span class="err">↓</span><span class="kd">class</span> <span class="kt">Example_2</span> <span class="p">{}</span>
                         <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                        <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">}</span>
@@ -1020,6 +1457,7 @@ false
                         <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
                             <span class="err">↓</span><span class="kd">class</span> <span class="kt">Example_2</span> <span class="p">{}</span>
                             <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                            <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                         <span class="p">}</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
@@ -1030,6 +1468,7 @@ false
                             <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
                                 <span class="err">↓</span><span class="kd">class</span> <span class="kt">Example_2</span> <span class="p">{}</span>
                                 <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                                <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                             <span class="p">}</span>
                         <span class="p">}</span>
                     <span class="p">}</span>
@@ -1045,6 +1484,7 @@ false
                     <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
                         <span class="err">↓</span><span class="kd">struct</span> <span class="kt">Example_2</span> <span class="p">{}</span>
                         <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                        <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">}</span>
@@ -1060,6 +1500,7 @@ false
                         <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
                             <span class="err">↓</span><span class="kd">struct</span> <span class="kt">Example_2</span> <span class="p">{}</span>
                             <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                            <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                         <span class="p">}</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
@@ -1070,6 +1511,7 @@ false
                             <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
                                 <span class="err">↓</span><span class="kd">struct</span> <span class="kt">Example_2</span> <span class="p">{}</span>
                                 <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                                <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                             <span class="p">}</span>
                         <span class="p">}</span>
                     <span class="p">}</span>
@@ -1085,6 +1527,7 @@ false
                     <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
                         <span class="err">↓</span><span class="kd">enum</span> <span class="kt">Example_2</span> <span class="p">{}</span>
                         <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                        <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">}</span>
@@ -1100,6 +1543,7 @@ false
                         <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
                             <span class="err">↓</span><span class="kd">enum</span> <span class="kt">Example_2</span> <span class="p">{}</span>
                             <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                            <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                         <span class="p">}</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
@@ -1110,6 +1554,7 @@ false
                             <span class="kd">func</span> <span class="nf">f_2</span><span class="p">()</span> <span class="p">{</span>
                                 <span class="err">↓</span><span class="kd">enum</span> <span class="kt">Example_2</span> <span class="p">{}</span>
                                 <span class="err">↓</span><span class="kd">func</span> <span class="nf">f_3</span><span class="p">()</span> <span class="p">{}</span>
+                                <span class="err">↓</span><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
                             <span class="p">}</span>
                         <span class="p">}</span>
                     <span class="p">}</span>

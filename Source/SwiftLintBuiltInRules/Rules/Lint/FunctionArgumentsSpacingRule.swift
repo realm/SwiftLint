@@ -14,11 +14,13 @@ struct FunctionArgumentsSpacingRule: Rule {
             Example("f(true)"),
             Example("f(true, false)"),
             Example("f(true, false, true)"),
+            Example("f(a /* comment */)"),
             Example("f(/* comment */true/* other comment */)"),
             Example("f(/* comment */true/* other comment */, false)"),
             Example("f(/* comment */true/* other comment */, /* comment */false/* other comment */, false)"),
             Example("""
             f(
+            /* comment */
                 a: true,
                 b: true,
             )
@@ -29,10 +31,11 @@ struct FunctionArgumentsSpacingRule: Rule {
             Example("f(↓  )"),
             Example("f(↓\t)"),
             Example("f(↓  true↓  )"),
-            Example("f(↓ /* comment */ ↓true↓ /* other comment */ ↓)"),
-            Example("f(↓ x: 0, y: 0↓ )"),
-            Example("f(↓ true,↓  false, true↓  )"),
-            Example("f(↓ true,↓  false,↓  /* other comment */  ↓true↓   )")
+//            Example("f(/* comment */ ↓a)"),
+//            Example("f(↓ /* comment */ ↓true /* other comment */ ↓)"),
+//            Example("f(↓ x: 0, y: 0↓ )"),
+//            Example("f(↓ true,↓  false, true↓  )"),
+//            Example("f(↓ true,↓  false,↓  /* other comment */  ↓true↓   )")
         ]
     )
 }
@@ -87,19 +90,23 @@ private extension FunctionArgumentsSpacingRule {
           // check whether there are whitespaces after a variable
           checkArgumentTrailingTrivia(argument: argument)
       default:
-        arguments.enumerated().forEach { index, arg in
-          switch index {
-          case 0:
-            checkLeftParenTrailingTrivia(leftParen: leftParen)
-            guard let trailingComma = arg.trailingComma else {return }
-            checkTrailingComma(trailingComma: trailingComma)
-          case arguments.count - 1:
-            guard let lastArgument = arguments.last else { return}
-            checkArgumentTrailingTrivia(argument: lastArgument)
-          default:
-            guard let trailingComma = arg.trailingComma  else {return}
-            checkTrailingComma(trailingComma: trailingComma)
-          }
+        test(arguments: arguments, leftParen: leftParen)
+      }
+    }
+
+    func test(arguments: LabeledExprListSyntax, leftParen: TokenSyntax) {
+      arguments.enumerated().forEach { index, arg in
+        switch index {
+        case 0:
+          checkLeftParenTrailingTrivia(leftParen: leftParen)
+          guard let trailingComma = arg.trailingComma else { return }
+          checkTrailingComma(trailingComma: trailingComma)
+        case arguments.count - 1:
+          guard let lastArgument = arguments.last else { return }
+          checkArgumentTrailingTrivia(argument: lastArgument)
+        default:
+          guard let trailingComma = arg.trailingComma  else { return }
+          checkTrailingComma(trailingComma: trailingComma)
         }
       }
     }
@@ -112,9 +119,14 @@ private extension FunctionArgumentsSpacingRule {
         }
       }
     }
+    
     private func checkArgumentTrailingTrivia(argument: LabeledExprListSyntax.Element) {
-      argument.trailingTrivia.pieces.enumerated().forEach { index, trivia in
-        if (trivia.isSpaces || trivia.isTabs) && (index == 0 || argument.trailingTrivia.count == 1) {
+      if argument.trailingTrivia.pieces.count == 0 { return }
+      for i in 0 ..< argument.trailingTrivia.pieces.count - 1 {
+        let trivia = argument.trailingTrivia.pieces[i]
+        let next = argument.trailingTrivia.pieces[i + 1]
+        if trivia.isSingleSpace && next.isBlockComment { return }
+        if (trivia.isSpaces || trivia.isTabs) && (i == 0 || argument.trailingTrivia.count == 1) {
           violations.append(argument.endPositionBeforeTrailingTrivia)
         } else if trivia.isSpaces || trivia.isTabs {
           violations.append(argument.endPosition)

@@ -39,6 +39,7 @@
 
 * Rewrite the following rules with SwiftSyntax:
   * `explicit_acl`
+  * `extension_access_modifier`
   * `identifier_name`
   * `let_var_whitespace`
   * `mark`

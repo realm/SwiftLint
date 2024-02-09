@@ -1,9 +1,8 @@
-import Foundation
-import SourceKittenFramework
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct ExtensionAccessModifierRule: Rule, OptInRule {
+struct ExtensionAccessModifierRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -175,6 +174,15 @@ private extension ExtensionAccessModifierRule {
                 return .explicit(value)
             }
         }
+
+        static func isAllowed(_ acl: Self) -> Bool {
+            [
+                .explicit(.keyword(.internal)),
+                .explicit(.keyword(.private)),
+                .explicit(.keyword(.open)),
+                .implicit
+            ].contains(acl)
+        }
     }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
@@ -186,16 +194,15 @@ private extension ExtensionAccessModifierRule {
             }
 
             var areAllACLsEqual = true
-            var aclTokens: [(position: AbsolutePosition, acl: ACL)] = []
+            var aclTokens = [(position: AbsolutePosition, acl: ACL)]()
 
             for decl in node.memberBlock.expandingIfConfigs() {
                 let modifiers = decl.asProtocol((any WithModifiersSyntax).self)?.modifiers
                 let aclToken = modifiers?.accessLevelModifier?.name
                 let acl = ACL.from(tokenKind: aclToken?.tokenKind)
-                if acl != aclTokens.last?.acl, aclTokens.isNotEmpty {
+                if areAllACLsEqual, acl != aclTokens.last?.acl, aclTokens.isNotEmpty {
                     areAllACLsEqual = false
                 }
-
                 aclTokens.append((decl.positionAfterSkippingLeadingTrivia, acl))
             }
 
@@ -203,21 +210,14 @@ private extension ExtensionAccessModifierRule {
                 return
             }
 
-            let allowedACLs: Set<ACL> = [
-                .explicit(.keyword(.internal)),
-                .explicit(.keyword(.private)),
-                .explicit(.keyword(.open)),
-                .implicit
-            ]
-            let iAllowedACL = allowedACLs.contains(lastACL.acl)
+            let isAllowedACL = ACL.isAllowed(lastACL.acl)
             let extensionACL = ACL.from(tokenKind: node.modifiers.accessLevelModifier?.name.tokenKind)
 
             if extensionACL != .implicit {
-                if !iAllowedACL || lastACL.acl != extensionACL {
-                    let positions = aclTokens.filter { $0.acl != .implicit }.map(\.position)
-                    violations.append(contentsOf: positions)
+                if !isAllowedACL || lastACL.acl != extensionACL, lastACL.acl != .implicit {
+                    violations.append(contentsOf: aclTokens.map(\.position))
                 }
-            } else if !iAllowedACL {
+            } else if !isAllowedACL {
                 violations.append(node.extensionKeyword.positionAfterSkippingLeadingTrivia)
             }
         }

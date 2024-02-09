@@ -1,7 +1,8 @@
-import Foundation
-import SourceKittenFramework
+import SwiftLintCore
+import SwiftSyntax
 
-struct ExtensionAccessModifierRule: ASTRule, OptInRule {
+@SwiftSyntaxRule
+struct ExtensionAccessModifierRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -34,27 +35,67 @@ struct ExtensionAccessModifierRule: ASTRule, OptInRule {
             }
             """),
             Example("""
+            extension Foo {
+              var bar: Int { return 1 }
+              internal var baz: Int { return 1 }
+            }
+            """),
+            Example("""
+            internal extension Foo {
+              var bar: Int { return 1 }
+              var baz: Int { return 1 }
+            }
+            """),
+            Example("""
             public extension Foo {
               var bar: Int { return 1 }
               var baz: Int { return 1 }
             }
             """),
             Example("""
-            extension Foo {
-              private bar: Int { return 1 }
-              private baz: Int { return 1 }
+            public extension Foo {
+              var bar: Int { return 1 }
+              internal var baz: Int { return 1 }
             }
             """),
             Example("""
             extension Foo {
-              open bar: Int { return 1 }
-              open baz: Int { return 1 }
+              private var bar: Int { return 1 }
+              private var baz: Int { return 1 }
+            }
+            """),
+            Example("""
+            extension Foo {
+              open var bar: Int { return 1 }
+              open var baz: Int { return 1 }
             }
             """),
             Example("""
             extension Foo {
                 func setup() {}
                 public func update() {}
+            }
+            """),
+            Example("""
+            private extension Foo {
+              private var bar: Int { return 1 }
+              var baz: Int { return 1 }
+            }
+            """),
+            Example("""
+            extension Foo {
+              internal private(set) var bar: Int {
+                get { Foo.shared.bar }
+                set { Foo.shared.bar = newValue }
+              }
+            }
+            """),
+            Example("""
+            extension Foo {
+              private(set) internal var bar: Int {
+                get { Foo.shared.bar }
+                set { Foo.shared.bar = newValue }
+              }
             }
             """)
         ],
@@ -73,8 +114,8 @@ struct ExtensionAccessModifierRule: ASTRule, OptInRule {
             """),
             Example("""
             public extension Foo {
-               public ↓func bar() {}
-               public ↓func baz() {}
+              ↓public func bar() {}
+              ↓public func baz() {}
             }
             """),
             Example("""
@@ -86,87 +127,118 @@ struct ExtensionAccessModifierRule: ASTRule, OptInRule {
 
                public var baz: Int { return 1 }
             }
+            """),
+            Example("""
+            ↓extension Array where Element: Equatable {
+                public var unique: [Element] {
+                    var uniqueValues = [Element]()
+                    for item in self where !uniqueValues.contains(item) {
+                        uniqueValues.append(item)
+                    }
+                    return uniqueValues
+                }
+            }
+            """),
+            Example("""
+            ↓extension Foo {
+               #if DEBUG
+               public var bar: Int {
+                  let value = 1
+                  return value
+               }
+               #endif
+
+               public var baz: Int { return 1 }
+            }
+            """),
+            Example("""
+            public extension Foo {
+              ↓private func bar() {}
+              ↓private func baz() {}
+            }
             """)
         ]
     )
+}
 
-    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .extension, let offset = dictionary.offset,
-            dictionary.inheritedTypes.isEmpty
-        else {
-            return []
+private extension ExtensionAccessModifierRule {
+    private enum ACL: Hashable {
+        case implicit
+        case explicit(TokenKind)
+
+        static func from(tokenKind: TokenKind?) -> ACL {
+            switch tokenKind {
+            case nil:
+                return .implicit
+            case let value?:
+                return .explicit(value)
+            }
         }
 
-        let declarations = dictionary.substructure
-            .compactMap { entry -> (acl: AccessControlLevel, offset: ByteCount)? in
-                guard let kind = entry.declarationKind,
-                      kind != .varLocal, kind != .varParameter,
-                      let offset = entry.offset else {
-                    return nil
+        static func isAllowed(_ acl: Self) -> Bool {
+            [
+                .explicit(.keyword(.internal)),
+                .explicit(.keyword(.private)),
+                .explicit(.keyword(.open)),
+                .implicit
+            ].contains(acl)
+        }
+    }
+
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
+
+        override func visitPost(_ node: ExtensionDeclSyntax) {
+            guard node.inheritanceClause == nil else {
+                return
+            }
+
+            var areAllACLsEqual = true
+            var aclTokens = [(position: AbsolutePosition, acl: ACL)]()
+
+            for decl in node.memberBlock.expandingIfConfigs() {
+                let modifiers = decl.asProtocol((any WithModifiersSyntax).self)?.modifiers
+                let aclToken = modifiers?.accessLevelModifier?.name
+                let acl = ACL.from(tokenKind: aclToken?.tokenKind)
+                if areAllACLsEqual, acl != aclTokens.last?.acl, aclTokens.isNotEmpty {
+                    areAllACLsEqual = false
                 }
-
-                return (acl: entry.accessibility ?? .internal, offset: offset)
+                aclTokens.append((decl.positionAfterSkippingLeadingTrivia, acl))
             }
 
-        let declarationsACLs = declarations.map { $0.acl }.unique
-        let allowedACLs: Set<AccessControlLevel> = [.internal, .private, .open]
-        guard declarationsACLs.count == 1, !allowedACLs.contains(declarationsACLs[0]) else {
-            return []
-        }
-
-        let syntaxTokens = file.syntaxMap.tokens
-        let parts = syntaxTokens.partitioned { offset <= $0.offset }
-        if let aclToken = parts.first.last, file.isACL(token: aclToken) {
-            return declarationsViolations(file: file, acl: declarationsACLs[0],
-                                          declarationOffsets: declarations.map { $0.offset },
-                                          dictionary: dictionary)
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
-    }
-
-    private func declarationsViolations(file: SwiftLintFile, acl: AccessControlLevel,
-                                        declarationOffsets: [ByteCount],
-                                        dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let byteRange = dictionary.byteRange,
-            case let contents = file.stringView,
-            let range = contents.byteRangeToNSRange(byteRange) else {
-                return []
-        }
-
-        // find all ACL tokens
-        let allACLRanges = file.match(pattern: acl.description, with: [.attributeBuiltin], range: range).compactMap {
-            contents.NSRangeToByteRange(start: $0.location, length: $0.length)
-        }
-
-        let violationOffsets = declarationOffsets.filter { typeOffset in
-            // find the last ACL token before the type
-            guard let previousInternalByteRange = lastACLByteRange(before: typeOffset, in: allACLRanges) else {
-                // didn't find a candidate token, so the ACL is implicit (not a violation)
-                return false
+            guard areAllACLsEqual, let lastACL = aclTokens.last else {
+                return
             }
 
-            // the ACL token correspond to the type if there're only
-            // attributeBuiltin (`final` for example) tokens between them
-            let length = typeOffset - previousInternalByteRange.location
-            let range = ByteRange(location: previousInternalByteRange.location, length: length)
-            return Set(file.syntaxMap.kinds(inByteRange: range)) == [.attributeBuiltin]
-        }
+            let isAllowedACL = ACL.isAllowed(lastACL.acl)
+            let extensionACL = ACL.from(tokenKind: node.modifiers.accessLevelModifier?.name.tokenKind)
 
-        return violationOffsets.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0))
+            if extensionACL != .implicit {
+                if !isAllowedACL || lastACL.acl != extensionACL, lastACL.acl != .implicit {
+                    violations.append(contentsOf: aclTokens.map(\.position))
+                }
+            } else if !isAllowedACL {
+                violations.append(node.extensionKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
+}
 
-    private func lastACLByteRange(before typeOffset: ByteCount, in ranges: [ByteRange]) -> ByteRange? {
-        let firstPartition = ranges.partitioned(by: { $0.location > typeOffset }).first
-        return firstPartition.last
+private extension MemberBlockSyntax {
+    func expandingIfConfigs() -> [DeclSyntax] {
+        members.flatMap { member in
+            if let ifConfig = member.decl.as(IfConfigDeclSyntax.self) {
+                return ifConfig.clauses.flatMap { clause in
+                    switch clause.elements {
+                    case .decls(let decls):
+                        return decls.map(\.decl)
+                    default:
+                        return []
+                    }
+                }
+            } else {
+                return [member.decl]
+            }
+        }
     }
 }

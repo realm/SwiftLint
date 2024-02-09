@@ -86,38 +86,33 @@ struct RedundantTypeAnnotationRule: OptInRule {
 private extension RedundantTypeAnnotationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard !node.isIBInspectable else {
+            if node.isIBInspectable {
                 return
             }
-
             for binding in node.bindings {
-                guard let typeAnnotation = binding.typeAnnotation,
-                      binding.hasViolation else {
-                    continue
+                if let typeAnnotation = binding.typeAnnotation, binding.hasViolation {
+                    violations.append(typeAnnotation.colon.positionAfterSkippingLeadingTrivia)
                 }
-
-                violations.append(typeAnnotation.colon.positionAfterSkippingLeadingTrivia)
             }
         }
     }
 
-    private final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter {
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard !node.isIBInspectable else {
+            if node.isIBInspectable {
                 return super.visit(node)
             }
 
-            var modifiedBindings: [PatternBindingSyntax] = []
+            var modifiedBindings = [PatternBindingSyntax]()
             var hasViolation = false
 
             for binding in node.bindings {
-                guard let typeAnnotation = binding.typeAnnotation,
-                      !typeAnnotation.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
-                      binding.hasViolation else {
+                guard let typeAnnotation = binding.typeAnnotation, binding.hasViolation else {
                     modifiedBindings.append(binding)
                     continue
                 }
 
+                hasViolation = true
                 correctionPositions.append(typeAnnotation.colon.positionAfterSkippingLeadingTrivia)
 
                 let updatedInitializer = binding.initializer?.with(\.leadingTrivia, typeAnnotation.trailingTrivia)
@@ -126,21 +121,15 @@ private extension RedundantTypeAnnotationRule {
                         .with(\.typeAnnotation, nil)
                         .with(\.initializer, updatedInitializer)
                 )
-                hasViolation = true
             }
-
-            guard hasViolation else {
-                return super.visit(node)
-            }
-
-            return super.visit(node.with(\.bindings, PatternBindingListSyntax(modifiedBindings)))
+            return super.visit(hasViolation ? node.with(\.bindings, PatternBindingListSyntax(modifiedBindings)) : node)
         }
     }
 }
 
 private extension PatternBindingSyntax {
     var hasViolation: Bool {
-        guard let typeAnnotation = typeAnnotation, let initializer = initializer?.value else {
+        guard let typeAnnotation, let initializer = initializer?.value else {
             return false
         }
         if let function = initializer.as(FunctionCallExprSyntax.self) {

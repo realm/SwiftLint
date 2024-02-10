@@ -1,6 +1,5 @@
-import SwiftSyntax
+import SourceKittenFramework
 
-@SwiftSyntaxRule
 struct NestingRule: Rule {
     var configuration = NestingConfiguration()
 
@@ -13,164 +12,137 @@ struct NestingRule: Rule {
         nonTriggeringExamples: NestingRuleExamples.nonTriggeringExamples,
         triggeringExamples: NestingRuleExamples.triggeringExamples
     )
-}
 
-private struct Levels {
-    var lastIsFunction: Bool { functionOrNotStack.peek() == true }
+    private let omittedStructureKinds = SwiftDeclarationKind.variableKinds
+        .union([.enumcase, .enumelement])
+        .map(SwiftStructureKind.declaration)
 
-    private(set) var typeLevel: Int = -1
-    private(set) var functionLevel: Int = -1
-    private var functionOrNotStack = Stack<Bool>()
+    private struct ValidationArgs {
+        var typeLevel: Int = -1
+        var functionLevel: Int = -1
+        var previousKind: SwiftStructureKind?
+        var violations: [StyleViolation] = []
 
-    mutating func push(_ isFunction: Bool) {
-        functionOrNotStack.push(isFunction)
-        updateLevel(with: 1)
+        func with(previousKind: SwiftStructureKind?) -> ValidationArgs {
+            var args = self
+            args.previousKind = previousKind
+            return args
+        }
     }
 
-    mutating func pop() {
-        updateLevel(with: -1)
-        functionOrNotStack.pop()
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
+        return validate(file: file, substructure: file.structureDictionary.substructure, args: ValidationArgs())
     }
 
-    private mutating func updateLevel(with value: Int) {
-        if lastIsFunction {
-            functionLevel += value
+    private func validate(file: SwiftLintFile, substructure: [SourceKittenDictionary],
+                          args: ValidationArgs) -> [StyleViolation] {
+        return args.violations + substructure.flatMap { dictionary -> [StyleViolation] in
+            guard let kindString = dictionary.kind, let structureKind = SwiftStructureKind(kindString) else {
+                return validate(file: file, substructure: dictionary.substructure, args: args.with(previousKind: nil))
+            }
+            guard !omittedStructureKinds.contains(structureKind) else {
+                return args.violations
+            }
+            switch structureKind {
+            case let .declaration(declarationKind):
+                if configuration.ignoreTypealiasesAndAssociatedtypes,
+                   declarationKind == .associatedtype || declarationKind == .typealias {
+                    return args.violations
+                }
+                return validate(file: file, structureKind: structureKind,
+                                declarationKind: declarationKind, dictionary: dictionary, args: args)
+            case .expression, .statement:
+                guard configuration.checkNestingInClosuresAndStatements else {
+                    return args.violations
+                }
+                return validate(file: file, substructure: dictionary.substructure,
+                                args: args.with(previousKind: structureKind))
+            }
+        }
+    }
+
+    private func validate(file: SwiftLintFile, structureKind: SwiftStructureKind, declarationKind: SwiftDeclarationKind,
+                          dictionary: SourceKittenDictionary, args: ValidationArgs) -> [StyleViolation] {
+        let isTypeOrExtension = SwiftDeclarationKind.typeKinds.contains(declarationKind)
+            || SwiftDeclarationKind.extensionKinds.contains(declarationKind)
+        let isFunction = SwiftDeclarationKind.functionKinds.contains(declarationKind)
+
+        guard isTypeOrExtension || isFunction else {
+            return validate(file: file, substructure: dictionary.substructure,
+                            args: args.with(previousKind: structureKind))
+        }
+
+        let currentTypeLevel = isTypeOrExtension ? args.typeLevel + 1 : args.typeLevel
+        let currentFunctionLevel = isFunction ? args.functionLevel + 1 : args.functionLevel
+
+        var violations = args.violations
+
+        if let violation = levelViolation(file: file, dictionary: dictionary,
+                                          previousKind: args.previousKind,
+                                          level: isFunction ? currentFunctionLevel : currentTypeLevel,
+                                          forFunction: isFunction) {
+            violations.append(violation)
+        }
+
+        return validate(file: file, substructure: dictionary.substructure,
+                        args: ValidationArgs(
+                            typeLevel: currentTypeLevel,
+                            functionLevel: currentFunctionLevel,
+                            previousKind: structureKind,
+                            violations: violations
+            )
+        )
+    }
+
+    private func levelViolation(file: SwiftLintFile, dictionary: SourceKittenDictionary,
+                                previousKind: SwiftStructureKind?, level: Int, forFunction: Bool) -> StyleViolation? {
+        guard let offset = dictionary.offset else {
+            return nil
+        }
+
+        let targetLevel = forFunction ? configuration.functionLevel : configuration.typeLevel
+        var violatingSeverity: ViolationSeverity?
+
+        if configuration.alwaysAllowOneTypeInFunctions,
+            case let .declaration(previousDeclarationKind)? = previousKind,
+            !SwiftDeclarationKind.functionKinds.contains(previousDeclarationKind) {
+            violatingSeverity = configuration.severity(with: targetLevel, for: level)
+        } else if forFunction || !configuration.alwaysAllowOneTypeInFunctions || previousKind == nil {
+            violatingSeverity = configuration.severity(with: targetLevel, for: level)
         } else {
-            typeLevel += value
+            violatingSeverity = nil
         }
+
+        guard let severity = violatingSeverity else {
+            return nil
+        }
+
+        let targetName = forFunction ? "Functions" : "Types"
+        let threshold = configuration.threshold(with: targetLevel, for: severity)
+        let pluralSuffix = threshold > 1 ? "s" : ""
+        return StyleViolation(
+            ruleDescription: Self.description,
+            severity: severity,
+            location: Location(file: file, byteOffset: offset),
+            reason: "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep"
+        )
     }
 }
 
-private extension NestingRule {
-    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private var levels = Levels()
+private enum SwiftStructureKind: Equatable {
+    case declaration(SwiftDeclarationKind)
+    case expression(SwiftExpressionKind)
+    case statement(StatementKind)
 
-        override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.actorKeyword)
-            return .visitChildren
+    init?(_ structureKind: String) {
+        if let declarationKind = SwiftDeclarationKind(rawValue: structureKind) {
+            self = .declaration(declarationKind)
+        } else if let expressionKind = SwiftExpressionKind(rawValue: structureKind) {
+            self = .expression(expressionKind)
+        } else if let statementKind = StatementKind(rawValue: structureKind) {
+            self = .statement(statementKind)
+        } else {
+            return nil
         }
-
-        override func visitPost(_ node: ActorDeclSyntax) {
-            levels.pop()
-        }
-
-        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.classKeyword)
-            return .visitChildren
-        }
-
-        override func visitPost(_ node: ClassDeclSyntax) {
-            levels.pop()
-        }
-
-        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.enumKeyword)
-            return .visitChildren
-        }
-
-        override func visitPost(_ node: EnumDeclSyntax) {
-            levels.pop()
-        }
-
-        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.extensionKeyword)
-            return .visitChildren
-        }
-
-        override func visitPost(_ node: ExtensionDeclSyntax) {
-            levels.pop()
-        }
-
-        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: true, triggeringToken: node.funcKeyword)
-            return .visitChildren
-        }
-
-        override func visitPost(_ node: FunctionDeclSyntax) {
-            levels.pop()
-        }
-
-        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.protocolKeyword)
-            return .visitChildren
-        }
-
-        override func visitPost(_ node: ProtocolDeclSyntax) {
-            levels.pop()
-        }
-
-        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.structKeyword)
-            return .visitChildren
-        }
-
-        override func visitPost(_ node: StructDeclSyntax) {
-            levels.pop()
-        }
-
-        // MARK: - configuration for ignoreTypealiasesAndAssociatedtypes
-        override func visitPost(_ node: TypeAliasDeclSyntax) {
-            if configuration.ignoreTypealiasesAndAssociatedtypes {
-                return
-            }
-            validate(forFunction: false, triggeringToken: node.typealiasKeyword)
-            levels.pop()
-        }
-
-        override func visitPost(_ node: AssociatedTypeDeclSyntax) {
-            if configuration.ignoreTypealiasesAndAssociatedtypes {
-                return
-            }
-            validate(forFunction: false, triggeringToken: node.associatedtypeKeyword)
-            levels.pop()
-        }
-
-        // MARK: - configuration for checkNestingInClosuresAndStatements
-        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            guard configuration.checkNestingInClosuresAndStatements else {
-                return .skipChildren
-            }
-            return super.visit(node)
-        }
-
-        override func visit(_ node: CodeBlockItemSyntax) -> SyntaxVisitorContinueKind {
-            if !configuration.checkNestingInClosuresAndStatements, node.parent?.inStatement ?? false {
-                return .skipChildren
-            }
-            return super.visit(node)
-        }
-
-        // MARK: -
-        private func validate(forFunction: Bool, triggeringToken: TokenSyntax) {
-            let inFunction = levels.lastIsFunction
-            levels.push(forFunction)
-
-            let level = forFunction ? levels.functionLevel : levels.typeLevel
-            let targetLevel = forFunction ? configuration.functionLevel : configuration.typeLevel
-
-            // if parent is function and current is not function types, then skip nesting rule.
-            if configuration.alwaysAllowOneTypeInFunctions && inFunction && !forFunction {
-                return
-            }
-            guard let severity = configuration.severity(with: targetLevel, for: level) else { return }
-
-            let targetName = forFunction ? "Functions" : "Types"
-            let threshold = configuration.threshold(with: targetLevel, for: severity)
-            let pluralSuffix = threshold > 1 ? "s" : ""
-            violations.append(ReasonedRuleViolation(
-                position: triggeringToken.positionAfterSkippingLeadingTrivia,
-                reason: "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep",
-                severity: severity
-            ))
-        }
-    }
-}
-
-private extension Syntax {
-    var inStatement: Bool {
-        func isStatement(_ node: Syntax) -> Bool {
-            node.isProtocol((any StmtSyntaxProtocol).self) || node.parent.map(isStatement) ?? false
-        }
-        return isStatement(self)
     }
 }

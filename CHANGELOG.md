@@ -24,16 +24,10 @@
   [Julien Baillon](https://github.com/julien-baillon)
   [#5372](https://github.com/realm/SwiftLint/issues/5372)
 
-* Add new `ignore_one_liners` option to `switch_case_alignment`
+* Add new `ignore_one_liners` option to `switch_case_alignment` 
   rule to ignore switch statements written in a single line.  
   [tonell-m](https://github.com/tonell-m)
   [#5373](https://github.com/realm/SwiftLint/issues/5373)
-
-* Add new `shorthand_argument` rule that triggers on shorthand arguments
-  like `$0`, `$1`, etc. in closures if they are too far away from the
-  beginning of the closure. Options allow further cases to always trigger.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#70](https://github.com/realm/SwiftLint/issues/70)
 
 * Add new `one_declaration_per_file` rule that allows only a
   single class/struct/enum/protocol declaration per file.
@@ -43,12 +37,10 @@
 
 * Rewrite the following rules with SwiftSyntax:
   * `explicit_acl`
-  * `extension_access_modifier`
   * `identifier_name`
   * `let_var_whitespace`
   * `mark`
   * `multiline_literal_brackets`
-  * `nesting`
   * `nimble_operator`
   * `opening_brace`
   * `orphaned_doc_comment`
@@ -80,10 +72,6 @@
   [SimplyDanny](https://github.com/SimplyDanny)
 
 * Refine violation position of `trailing_closure` rule.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-
-* Trigger on the declaration keyword (i.e. `let`, `var`, `func`, `subscript`) 
-  instead of the `static` or `class` keywords in the `explicit_acl` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
 * Allow to configure more operators in `identifier_name` rule. The new option

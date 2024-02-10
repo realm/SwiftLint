@@ -181,7 +181,6 @@ public let builtInRules: [any Rule.Type] = [
     ReturnValueFromVoidFunctionRule.self,
     SelfBindingRule.self,
     SelfInPropertyInitializationRule.self,
-    ShorthandArgumentRule.self,
     ShorthandOperatorRule.self,
     ShorthandOptionalBindingRule.self,
     SingleTestClassRule.self,

@@ -1076,12 +1076,6 @@ class SelfInPropertyInitializationRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-class ShorthandArgumentRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ShorthandArgumentRule.description)
-    }
-}
-
 class ShorthandOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ShorthandOperatorRule.description)

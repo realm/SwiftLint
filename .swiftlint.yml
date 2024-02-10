@@ -46,7 +46,6 @@ disabled_rules:
   - redundant_self_in_closure
   - required_deinit
   - self_binding
-  - shorthand_argument
   - sorted_enum_cases
   - strict_fileprivate
   - superfluous_else

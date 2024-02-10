@@ -11,7 +11,7 @@ build:macos --host_crosstool_top=@local_config_apple_cc//:toolchain
 build --macos_minimum_os=13.5 --host_macos_minimum_os=13.5
 build --disk_cache=~/.bazel_cache
 build --experimental_remote_cache_compression
-build --remote_build_event_upload=minimal
+build --experimental_remote_build_event_upload=minimal
 build --nolegacy_important_outputs
 build --swiftcopt=-warnings-as-errors
 

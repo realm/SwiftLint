@@ -178,6 +178,18 @@ private extension Syntax {
     }
 
     var modifiers: DeclModifierListSyntax? {
-        asProtocol((any WithModifiersSyntax).self)?.modifiers
+        if let node = self.as(StructDeclSyntax.self) {
+            return node.modifiers
+        } else if let node = self.as(ClassDeclSyntax.self) {
+            return node.modifiers
+        } else if let node = self.as(ActorDeclSyntax.self) {
+            return node.modifiers
+        } else if let node = self.as(EnumDeclSyntax.self) {
+            return node.modifiers
+        } else if let node = self.as(ExtensionDeclSyntax.self) {
+            return node.modifiers
+        } else {
+            return nil
+        }
     }
 }

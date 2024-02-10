@@ -2,14 +2,11 @@
 
 // swiftlint:disable file_length
 
-private let detectingTypes = ["actor", "class", "struct", "enum"]
-
-// swiftlint:disable:next type_body_length
 class NestingRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
     func testNestingWithAlwaysAllowOneTypeInFunctions() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
-        nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
+        nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
                 .init("""
                     \(type) Example_0 {
@@ -44,7 +41,7 @@ class NestingRuleTests: SwiftLintTestCase {
                 """)
             ]
         })
-        nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
+        nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
                 .init("""
                     exampleFunc(closure: {
@@ -96,7 +93,7 @@ class NestingRuleTests: SwiftLintTestCase {
             ]
         })
 
-        var triggeringExamples = detectingTypes.flatMap { type -> [Example] in
+        var triggeringExamples = ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
                 .init("""
                     \(type) Example_0 {
@@ -138,7 +135,7 @@ class NestingRuleTests: SwiftLintTestCase {
             ]
         }
 
-        triggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
+        triggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
                 .init("""
                     exampleFunc(closure: {
@@ -213,7 +210,7 @@ class NestingRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
     func testNestingWithoutCheckNestingInClosuresAndStatements() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
-        nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
+        nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
                 .init("""
                     exampleFunc(closure: {
@@ -249,144 +246,11 @@ class NestingRuleTests: SwiftLintTestCase {
                            }
                        }
                     }
-                """),
-
-                .init("""
-                    for i in indicies {
-                       \(type) Example_0 {
-                           \(type) Example_1 {
-                               \(type) Example 2 {}
-                           }
-                       }
-                       func f_0() {
-                           func f_1() {
-                               func f_2() {
-                                   func f_3() {}
-                               }
-                           }
-                       }
-                    }
-                """),
-
-                .init("""
-                    while true {
-                       \(type) Example_0 {
-                           \(type) Example_1 {
-                               \(type) Example 2 {}
-                           }
-                       }
-                       func f_0() {
-                           func f_1() {
-                               func f_2() {
-                                   func f_3() {}
-                               }
-                           }
-                       }
-                    }
-                """),
-
-                .init("""
-                    repeat {
-                       \(type) Example_0 {
-                           \(type) Example_1 {
-                               \(type) Example 2 {}
-                           }
-                       }
-                       func f_0() {
-                           func f_1() {
-                               func f_2() {
-                                   func f_3() {}
-                               }
-                           }
-                       }
-                    } while true
-                """),
-
-                .init("""
-                    if flag {
-                       \(type) Example_0 {
-                           \(type) Example_1 {
-                               \(type) Example 2 {}
-                           }
-                       }
-                       func f_0() {
-                           func f_1() {
-                               func f_2() {
-                                   func f_3() {}
-                               }
-                           }
-                       }
-                    }
-                """),
-
-                .init("""
-                    guard flag else {
-                       \(type) Example_0 {
-                           \(type) Example_1 {
-                               \(type) Example 2 {}
-                           }
-                       }
-                       func f_0() {
-                           func f_1() {
-                               func f_2() {
-                                   func f_3() {}
-                               }
-                           }
-                       }
-                       return
-                    }
-                """),
-
-                .init("""
-                    defer {
-                       \(type) Example_0 {
-                           \(type) Example_1 {
-                               \(type) Example 2 {}
-                           }
-                       }
-                       func f_0() {
-                           func f_1() {
-                               func f_2() {
-                                   func f_3() {}
-                               }
-                           }
-                       }
-                    }
-                """),
-
-                .init("""
-                    do {
-                       \(type) Example_0 {
-                           \(type) Example_1 {
-                               \(type) Example 2 {}
-                           }
-                       }
-                       func f_0() {
-                           func f_1() {
-                               func f_2() {
-                                   func f_3() {}
-                               }
-                           }
-                       }
-                    } catch {
-                       \(type) Example_0 {
-                           \(type) Example_1 {
-                               \(type) Example 2 {}
-                           }
-                       }
-                       func f_0() {
-                           func f_1() {
-                               func f_2() {
-                                   func f_3() {}
-                               }
-                           }
-                       }
-                    }
                 """)
             ]
         })
 
-        var triggeringExamples = detectingTypes.flatMap { type -> [Example] in
+        var triggeringExamples = ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
                 .init("""
                     \(type) Example_0 {
@@ -509,7 +373,7 @@ class NestingRuleTests: SwiftLintTestCase {
 
     func testNestingWithoutTypealiasAndAssociatedtype() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
-        nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
+        nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
                 .init("""
                     \(type) Example_0 {

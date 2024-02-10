@@ -9,7 +9,7 @@ let swiftFeatures: [SwiftSetting] = [
 let swiftLintPluginDependencies: [Target.Dependency]
 #if os(macOS)
 swiftLintPluginDependencies = [.target(name: "SwiftLintBinary")]
-#else
+#else 
 swiftLintPluginDependencies = [.target(name: "swiftlint")]
 #endif
 
@@ -23,7 +23,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.2.1")),
-        .package(url: "https://github.com/apple/swift-syntax.git", exact: "509.1.1"),
+        .package(url: "https://github.com/apple/swift-syntax.git", exact: "509.0.2"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMinor(from: "0.34.1")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.6"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),

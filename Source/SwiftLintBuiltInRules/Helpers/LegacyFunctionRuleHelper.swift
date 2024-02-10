@@ -35,16 +35,16 @@ enum LegacyFunctionRuleHelper {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter<Configuration: RuleConfiguration>: ViolationsSyntaxRewriter<Configuration> {
         private let legacyFunctions: [String: RewriteStrategy]
 
         init(
             legacyFunctions: [String: RewriteStrategy],
-            locationConverter: SourceLocationConverter,
-            disabledRegions: [SourceRange]
+            configuration: Configuration,
+            file: SwiftLintFile
         ) {
             self.legacyFunctions = legacyFunctions
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
+            super.init(configuration: configuration, file: file)
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {

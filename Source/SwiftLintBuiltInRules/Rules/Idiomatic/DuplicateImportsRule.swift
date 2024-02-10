@@ -35,12 +35,8 @@ struct DuplicateImportsRule: SwiftSyntaxCorrectableRule {
         queuedFatalError("Unreachable: `validate(file:)` will be used instead")
     }
 
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            importPositionsToRemove: file.duplicateImportsViolationPositions(),
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>? {
+        Rewriter(configuration: configuration, file: file)
     }
 }
 
@@ -152,17 +148,8 @@ private extension SwiftLintFile {
 }
 
 private extension DuplicateImportsRule {
-    final class Rewriter: ViolationsSyntaxRewriter {
-        let importPositionsToRemove: [AbsolutePosition]
-
-        init(
-            importPositionsToRemove: [AbsolutePosition],
-            locationConverter: SourceLocationConverter,
-            disabledRegions: [SourceRange]
-        ) {
-            self.importPositionsToRemove = importPositionsToRemove
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
-        }
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        private lazy var importPositionsToRemove = file.duplicateImportsViolationPositions()
 
         override func visit(_ node: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
             let itemsToRemove = node

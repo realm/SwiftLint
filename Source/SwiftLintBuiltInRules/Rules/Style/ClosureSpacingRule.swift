@@ -56,7 +56,7 @@ private extension ClosureSpacingRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
             var node = node
             node.statements = visit(node.statements)

@@ -1,8 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct PrivateUnitTestRule: Rule {
     var configuration = PrivateUnitTestConfiguration()
 
     static let description = RuleDescription(
@@ -125,14 +125,6 @@ struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule {
                     """)
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            configuration: configuration,
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension PrivateUnitTestRule {
@@ -156,16 +148,7 @@ private extension PrivateUnitTestRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
-        private let configuration: PrivateUnitTestConfiguration
-
-        init(configuration: PrivateUnitTestConfiguration,
-             locationConverter: SourceLocationConverter,
-             disabledRegions: [SourceRange]) {
-            self.configuration = configuration
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
             guard node.isPrivate, node.hasParent(configuredIn: configuration) else {
                 return super.visit(node)

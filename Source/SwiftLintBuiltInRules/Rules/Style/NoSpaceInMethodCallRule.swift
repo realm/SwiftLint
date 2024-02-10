@@ -56,7 +56,7 @@ private extension NoSpaceInMethodCallRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard node.hasNoSpaceInMethodCallViolation else {
                 return super.visit(node)

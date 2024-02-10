@@ -116,7 +116,7 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
             guard let function = node.base?.as(FunctionCallExprSyntax.self), function.hasViolation else {
                 return super.visit(node)

@@ -33,7 +33,7 @@ private extension UnusedClosureParameterRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
             guard node.namedParameters.isNotEmpty,
                   let signature = node.signature,

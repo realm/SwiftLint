@@ -25,7 +25,7 @@ private extension MarkRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ token: TokenSyntax) -> TokenSyntax {
             var pieces = token.leadingTrivia.pieces
             for result in token.violationResults() {

@@ -46,13 +46,20 @@ public struct Region: Equatable {
     ///
     /// - returns: True if the specified rule is disabled in this region.
     public func isRuleDisabled(_ rule: some Rule) -> Bool {
-        guard !disabledRuleIdentifiers.contains(.all) else {
+        return areRulesDisabled(ruleIDs: type(of: rule).description.allIdentifiers)
+    }
+
+    /// Whether the given rules are disabled in this region.
+    ///
+    /// - parameter ruleIDs: A list of rule IDs. Typically all identifiers of a single rule.
+    ///
+    /// - returns: True if the specified rules are disabled in this region.
+    public func areRulesDisabled(ruleIDs: [String]) -> Bool {
+        if disabledRuleIdentifiers.contains(.all) {
             return true
         }
-
-        let identifiersToCheck = type(of: rule).description.allIdentifiers
         let regionIdentifiers = Set(disabledRuleIdentifiers.map { $0.stringRepresentation })
-        return !regionIdentifiers.isDisjoint(with: identifiersToCheck)
+        return !regionIdentifiers.isDisjoint(with: ruleIDs)
     }
 
     /// Returns the deprecated rule aliases that are disabling the specified rule in this region.

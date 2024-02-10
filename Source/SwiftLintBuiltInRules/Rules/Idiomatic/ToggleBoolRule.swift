@@ -40,7 +40,7 @@ private extension ToggleBoolRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ExprListSyntax) -> ExprListSyntax {
             guard node.hasToggleBoolViolation, let firstExpr = node.first, let index = node.index(of: firstExpr) else {
                 return super.visit(node)

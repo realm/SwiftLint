@@ -45,7 +45,7 @@ private extension PreferZeroOverExplicitInitRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard node.hasViolation, let name = node.name else {
                 return super.visit(node)

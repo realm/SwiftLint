@@ -26,7 +26,7 @@ private extension ReturnValueFromVoidFunctionRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ statements: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
             guard let returnStmt = statements.last?.item.as(ReturnStmtSyntax.self),
                   let expr = returnStmt.expression,

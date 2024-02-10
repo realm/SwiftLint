@@ -44,7 +44,7 @@ private extension EmptyParametersRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionTypeSyntax) -> TypeSyntax {
             guard let violationPosition = node.emptyParametersViolationPosition else {
                 return super.visit(node)

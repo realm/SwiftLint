@@ -2,8 +2,8 @@ import SwiftSyntax
 
 // MARK: - SelfBindingRule
 
-@SwiftSyntaxRule
-struct SelfBindingRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct SelfBindingRule: OptInRule {
     var configuration = SelfBindingConfiguration()
 
     static let description = RuleDescription(
@@ -46,14 +46,6 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, OptInRule {
                 Example("guard let this = self else { return }", configuration: ["bind_identifier": "this"])
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            bindIdentifier: configuration.bindIdentifier,
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension SelfBindingRule {
@@ -80,17 +72,10 @@ private extension SelfBindingRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
-        private let bindIdentifier: String
-
-        init(bindIdentifier: String, locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.bindIdentifier = bindIdentifier
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
             guard let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
-                  identifierPattern.identifier.text != bindIdentifier else {
+                  identifierPattern.identifier.text != configuration.bindIdentifier else {
                 return super.visit(node)
             }
 
@@ -100,16 +85,20 @@ private extension SelfBindingRule {
 
                 let newPattern = PatternSyntax(
                     identifierPattern
-                        .with(\.identifier, identifierPattern.identifier.with(\.tokenKind, .identifier(bindIdentifier)))
+                        .with(\.identifier, identifierPattern.identifier
+                            .with(\.tokenKind, .identifier(configuration.bindIdentifier)))
                 )
 
                 return super.visit(node.with(\.pattern, newPattern))
-            } else if node.initializer == nil, identifierPattern.identifier.text == "self", bindIdentifier != "self" {
+            } else if node.initializer == nil,
+                      identifierPattern.identifier.text == "self",
+                      configuration.bindIdentifier != "self" {
                 correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
 
                 let newPattern = PatternSyntax(
                     identifierPattern
-                        .with(\.identifier, identifierPattern.identifier.with(\.tokenKind, .identifier(bindIdentifier)))
+                        .with(\.identifier, identifierPattern.identifier
+                            .with(\.tokenKind, .identifier(configuration.bindIdentifier)))
                 )
 
                 let newInitializer = InitializerClauseSyntax(

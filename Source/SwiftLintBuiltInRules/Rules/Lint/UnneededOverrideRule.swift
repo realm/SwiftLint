@@ -31,7 +31,7 @@ private extension UnneededOverrideRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
             guard node.isUnneededOverride else {
                 return super.visit(node)

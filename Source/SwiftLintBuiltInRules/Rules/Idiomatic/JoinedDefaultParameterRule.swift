@@ -47,7 +47,7 @@ private extension JoinedDefaultParameterRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard let violationPosition = node.violationPosition else {
                 return super.visit(node)

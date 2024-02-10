@@ -35,7 +35,7 @@ private extension TrailingSemicolonRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: TokenSyntax) -> TokenSyntax {
             guard node.isTrailingSemicolon else {
                 return super.visit(node)

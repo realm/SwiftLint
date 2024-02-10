@@ -32,7 +32,7 @@ private extension ClosingBraceRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: TokenSyntax) -> TokenSyntax {
             guard node.hasClosingBraceViolation else {
                 return super.visit(node)

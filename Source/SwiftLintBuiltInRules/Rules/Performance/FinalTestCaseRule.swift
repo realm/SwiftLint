@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct FinalTestCaseRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct FinalTestCaseRule: OptInRule {
     var configuration = FinalTestCaseConfiguration()
 
     static var description = RuleDescription(
@@ -29,14 +29,6 @@ struct FinalTestCaseRule: SwiftSyntaxCorrectableRule, OptInRule {
                 Example("internal final class Test: XCTestCase {}")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-       Rewriter(
-           configuration: configuration,
-           locationConverter: file.locationConverter,
-           disabledRegions: disabledRegions(file: file)
-       )
-   }
 }
 
 private extension FinalTestCaseRule {
@@ -48,16 +40,7 @@ private extension FinalTestCaseRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
-        private let configuration: FinalTestCaseConfiguration
-
-        init(configuration: FinalTestCaseConfiguration,
-             locationConverter: SourceLocationConverter,
-             disabledRegions: [SourceRange]) {
-            self.configuration = configuration
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
             var newNode = node
             if node.isNonFinalTestClass(parentClasses: configuration.testParentClasses) {

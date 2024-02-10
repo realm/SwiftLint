@@ -1,8 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct NumberSeparatorRule: OptInRule {
     var configuration = NumberSeparatorConfiguration()
 
     static let description = RuleDescription(
@@ -25,14 +25,6 @@ struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule {
     static let misplacedSeparatorsReason = """
         Underscore(s) used as thousand separator(s) should be added after every 3 digits only
         """
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            configuration: configuration,
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension NumberSeparatorRule {
@@ -50,16 +42,7 @@ private extension NumberSeparatorRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter, NumberSeparatorValidator {
-        let configuration: NumberSeparatorConfiguration
-
-        init(configuration: NumberSeparatorConfiguration,
-             locationConverter: SourceLocationConverter,
-             disabledRegions: [SourceRange]) {
-            self.configuration = configuration
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType>, NumberSeparatorValidator {
         override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {
             guard let violation = violation(token: node.literal) else {
                 return super.visit(node)

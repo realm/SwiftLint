@@ -59,7 +59,7 @@ private extension VoidReturnRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ReturnClauseSyntax) -> ReturnClauseSyntax {
             if node.violates {
                 correctionPositions.append(node.type.positionAfterSkippingLeadingTrivia)

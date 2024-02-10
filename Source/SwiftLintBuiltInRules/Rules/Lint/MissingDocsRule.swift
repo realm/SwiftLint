@@ -1,4 +1,5 @@
 import SourceKittenFramework
+import SwiftSyntax
 
 private extension SwiftLintFile {
     func missingDocOffsets(in dictionary: SourceKittenDictionary,
@@ -43,7 +44,7 @@ private extension SwiftLintFile {
     }
 }
 
-struct MissingDocsRule: OptInRule {
+struct MissingDocsRule: OptInRule, SourceKitFreeRule {
     init() {
         configuration = MissingDocsConfiguration()
     }
@@ -123,6 +124,12 @@ struct MissingDocsRule: OptInRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         let acls = configuration.parameters.map { $0.value }
         let dict = file.structureDictionary
+        let isImplictlyActorDecleation: Bool = ClassDeclaratopmVisitor(viewMode: .sourceAccurate)
+            .walk(tree: file.syntaxTree, handler: \.isActorImplicitlyHerited)
+
+        if isImplictlyActorDecleation && configuration.excludesInheritedTypes {
+            return []
+        }
         return file.missingDocOffsets(
             in: dict,
             acls: acls,
@@ -135,5 +142,12 @@ struct MissingDocsRule: OptInRule {
                            location: Location(file: file, byteOffset: offset),
                            reason: "\(acl.description) declarations should be documented")
         }
+    }
+}
+
+private class ClassDeclaratopmVisitor: SyntaxVisitor {
+    private(set) var isActorImplicitlyHerited: Bool = false
+    override func visitPost(_ node: ActorDeclSyntax) {
+        isActorImplicitlyHerited = true
     }
 }

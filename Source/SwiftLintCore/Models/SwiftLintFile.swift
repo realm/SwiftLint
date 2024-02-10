@@ -66,8 +66,7 @@ public final class SwiftLintFile {
     }
 
     /// Mark this file as used for testing purposes.
-    @_spi(TestHelper)
-    public func markAsTestFile() {
+    package func markAsTestFile() {
         isTestFile = true
     }
 }

@@ -67,6 +67,7 @@ universal_swift_compiler_plugin(
 
 swift_library(
     name = "SwiftLintCore",
+    package_name = "SwiftLint",
     srcs = glob(["Source/SwiftLintCore/**/*.swift"]),
     copts = copts,  # TODO: strict_concurrency_copts
     module_name = "SwiftLintCore",
@@ -92,6 +93,7 @@ swift_library(
 
 swift_library(
     name = "SwiftLintBuiltInRules",
+    package_name = "SwiftLint",
     srcs = glob(["Source/SwiftLintBuiltInRules/**/*.swift"]),
     copts = copts + select({
         ":strict_concurrency_builtin_rules": strict_concurrency_copts,
@@ -106,6 +108,7 @@ swift_library(
 
 swift_library(
     name = "SwiftLintExtraRules",
+    package_name = "SwiftLint",
     srcs = [
         "Source/SwiftLintExtraRules/Exports.swift",
         "@swiftlint_extra_rules//:extra_rules",
@@ -120,6 +123,7 @@ swift_library(
 
 swift_library(
     name = "SwiftLintFramework",
+    package_name = "SwiftLint",
     srcs = glob(
         ["Source/SwiftLintFramework/**/*.swift"],
     ),
@@ -135,6 +139,7 @@ swift_library(
 
 swift_library(
     name = "swiftlint.library",
+    package_name = "SwiftLint",
     srcs = glob(["Source/swiftlint/**/*.swift"]),
     copts = copts,  # TODO: strict_concurrency_copts
     module_name = "swiftlint",

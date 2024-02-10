@@ -1,6 +1,5 @@
 import Foundation
 import SourceKittenFramework
-@_spi(TestHelper)
 import SwiftLintCore
 import XCTest
 
@@ -87,7 +86,6 @@ public extension Collection where Element == String {
                 .violations(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 
-    @_spi(TestHelper)
     func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
         return map { SwiftLintFile.testFile(withContents: $0, persistToDisk: requiresFileOnDisk) }
             .corrections(config: config, requiresFileOnDisk: requiresFileOnDisk)
@@ -109,7 +107,6 @@ public extension Collection where Element: SwiftLintFile {
             return requiresFileOnDisk ? violations.withoutFiles() : violations
     }
 
-    @_spi(TestHelper)
     func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
         let storage = RuleStorage()
         let corrections = map({ file in

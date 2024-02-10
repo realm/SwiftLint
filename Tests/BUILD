@@ -11,6 +11,7 @@ swift_library(
     testonly = True,
     srcs = glob(["CLITests/**/*.swift"]),
     module_name = "CLITests",
+    package_name = "SwiftLint",
     deps = [
         "//:swiftlint.library",
     ],
@@ -50,6 +51,7 @@ swift_library(
     testonly = True,
     srcs = glob(["SwiftLintTestHelpers/**/*.swift"]),
     module_name = "SwiftLintTestHelpers",
+    package_name = "SwiftLint",
     deps = [
         "//:SwiftLintFramework",
     ],
@@ -85,6 +87,7 @@ swift_library(
     testonly = True,
     srcs = [":SwiftLintFrameworkTestsSources"],
     module_name = "SwiftLintFrameworkTests",
+    package_name = "SwiftLint",
     deps = [
         ":SwiftLintTestHelpers",
     ],
@@ -109,6 +112,7 @@ swift_library(
     testonly = True,
     srcs = ["GeneratedTests/GeneratedTests.swift"],
     module_name = "GeneratedTests",
+    package_name = "SwiftLint",
     deps = [
         ":SwiftLintTestHelpers",
     ],
@@ -128,6 +132,7 @@ swift_library(
     testonly = True,
     srcs = ["IntegrationTests/IntegrationTests.swift"],
     module_name = "IntegrationTests",
+    package_name = "SwiftLint",
     deps = [
         ":SwiftLintTestHelpers",
     ],
@@ -163,6 +168,7 @@ swift_library(
         "//conditions:default": [],
     }),
     module_name = "ExtraRulesTests",
+    package_name = "SwiftLint",
     deps = [
         ":SwiftLintTestHelpers",
     ],

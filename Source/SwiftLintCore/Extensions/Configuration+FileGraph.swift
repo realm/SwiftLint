@@ -1,7 +1,6 @@
 import Foundation
 
-@_spi(TestHelper)
-public extension Configuration {
+package extension Configuration {
     struct FileGraph: Hashable {
         // MARK: - Properties
         private static let defaultRemoteConfigTimeout: TimeInterval = 2

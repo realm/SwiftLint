@@ -146,7 +146,8 @@ struct MissingDocsRule: OptInRule, SourceKitFreeRule {
 }
 
 private class ClassDeclaratopmVisitor: SyntaxVisitor {
-    private(set) var isActorImplicitlyHerited: Bool = false
+    private(set) var isActorImplicitlyHerited = false
+
     override func visitPost(_ node: ActorDeclSyntax) {
         isActorImplicitlyHerited = true
     }

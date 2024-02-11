@@ -12,13 +12,13 @@ struct FunctionArgumentsSpacingRule: Rule {
         nonTriggeringExamples: [
             Example("f()"),
             Example("f(true)"),
-            Example("f(true, false)"),
             Example("f(true, false, true)"),
-            Example("f(a /* comment */)"),
+            Example("f(a // line comment)"),
+            Example("f(a /* block comment */)"),
             Example("f(true, /* comment */, false)"),
-            Example("f(/* comment */true/* other comment */)"),
-            Example("f(/* comment */true/* other comment */, false)"),
-            Example("f(/* comment */true/* other comment */, /* comment */false/* other comment */, false)"),
+            Example("f(/* comment */ true /* other comment */)"),
+            Example("f(/* comment */ true /* other comment */, false)"),
+            Example("f(/* comment */ true /* other comment */, /* comment */ false /* other comment */, false // line comment)"),
             Example("""
             f(
             /* comment */
@@ -38,8 +38,7 @@ struct FunctionArgumentsSpacingRule: Rule {
             Example("f(↓  )"),
             Example("f(↓\t)"),
             Example("f(↓  true↓  )"),
-            Example("f(/* comment */ ↓a)"),
-            Example("f(↓ /* comment */ ↓true /* other comment */ ↓)"),
+            Example("f(↓ /* comment */ true /* other comment */ ↓)"),
             Example("f(↓ x: 0, y: 0↓ )"),
             Example("f(↓ true,↓  false, true↓  )"),
             Example("f(↓ true,↓  false,↓  /* other comment */  ↓true↓   )")
@@ -63,11 +62,11 @@ private extension TriviaPiece {
     }
   }
   var isSpaces: Bool {
-      if case .spaces = self {
-          return true
-      } else {
-          return false
-      }
+    if case .spaces = self {
+        return true
+    } else {
+        return false
+    }
   }
   var isTabs: Bool {
     if case .tabs = self {
@@ -90,19 +89,12 @@ private extension FunctionArgumentsSpacingRule {
     override func visitPost(_ node: FunctionCallExprSyntax) {
       guard let leftParen = node.leftParen else { return }
       let arguments = node.arguments
-      let argumentsCounts = arguments.count
-      switch argumentsCounts {
-      case 0:
-        guard let triviaAfterLeftParen = leftParen.trailingTrivia.pieces.first else { return }
-          if triviaAfterLeftParen.isSpaces || triviaAfterLeftParen.isTabs {
-            violations.append(leftParen.endPositionBeforeTrailingTrivia)
-          }
-      case 1:
-        guard let argument = node.arguments.first else { return }
+      switch arguments.count {
+      case 0, 1:
           // check whether there are whitespaces before a variable
           checkLeftParenTrailingTrivia(leftParen: leftParen)
           // check whether there are whitespaces after a variable
-          checkArgumentTrailingTrivia(argument: argument)
+          checkArgumentTrailingTrivia(argument: node.arguments.first)
       default:
         test(arguments: arguments, leftParen: leftParen)
       }
@@ -128,12 +120,15 @@ private extension FunctionArgumentsSpacingRule {
       leftParen.trailingTrivia.pieces.enumerated().forEach { index, trivia in
         if (trivia.isSpaces || trivia.isTabs) && (index == 0 || leftParen.trailingTrivia.count == 1) {
           violations.append(leftParen.endPositionBeforeTrailingTrivia)
+        } else if trivia.isSingleSpace && leftParen.trailingTrivia.count - 1 == index {
+          return
         } else if trivia.isSpaces || trivia.isTabs {
           violations.append(leftParen.endPosition)
         }
       }
     }
-    private func checkArgumentTrailingTrivia(argument: LabeledExprListSyntax.Element) {
+    private func checkArgumentTrailingTrivia(argument: LabeledExprListSyntax.Element?) {
+      guard let argument = argument else { return }
         guard !argument.trailingTrivia.pieces.isEmpty else { return }
 
         for index in 0 ..< argument.trailingTrivia.pieces.count {
@@ -141,7 +136,7 @@ private extension FunctionArgumentsSpacingRule {
 
             if index < argument.trailingTrivia.pieces.count - 1 {
                 let next = argument.trailingTrivia.pieces[index + 1]
-              if trivia.isSingleSpace && next.isBlockComment { continue }
+              if trivia.isSingleSpace && (next.isBlockComment || next.isLineComment) { continue }
             }
             let isInitialOrSinglePiece = index == 0 || argument.trailingTrivia.pieces.count == 1
 

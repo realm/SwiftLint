@@ -343,14 +343,14 @@
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">ViolationsSyntaxRewriter</span> <span class="p">:</span> <span class="kt">SyntaxRewriter</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">ViolationsSyntaxRewriter</span><span class="o">&lt;</span><span class="kt"><a href="../Structs/Configuration.html">Configuration</a></span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">SyntaxRewriter</span> <span class="k">where</span> <span class="kt"><a href="../Structs/Configuration.html">Configuration</a></span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RuleConfiguration.html">RuleConfiguration</a></span></code></pre>
 
                 </div>
               </div>
             <p>A SwiftSyntax <code>SyntaxRewriter</code> that produces absolute positions where corrections were applied.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L71-L93">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L68-L100">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -359,6 +359,66 @@
           <div class="section-content">
             <div class="task-group">
               <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore24ViolationsSyntaxRewriterC13configurationxvp"></a>
+                    <a name="//apple_ref/swift/Property/configuration" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore24ViolationsSyntaxRewriterC13configurationxvp">configuration</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A rule&rsquo;s configuration.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">configuration</span><span class="p">:</span> <span class="kt"><a href="../Structs/Configuration.html">Configuration</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L70">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore24ViolationsSyntaxRewriterC4fileAA0aB4FileCvp"></a>
+                    <a name="//apple_ref/swift/Property/file" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore24ViolationsSyntaxRewriterC4fileAA0aB4FileCvp">file</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The file from which the traversed syntax tree stems from.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">file</span><span class="p">:</span> <span class="kt"><a href="../Classes/SwiftLintFile.html">SwiftLintFile</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L72">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -379,12 +439,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">locationConverter</span><span class="p">:</span> <span class="kt">SourceLocationConverter</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">locationConverter</span><span class="p">:</span> <span class="kt">SourceLocationConverter</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L73">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L75">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -409,12 +469,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">disabledRegions</span><span class="p">:</span> <span class="p">[</span><span class="kt">SourceRange</span><span class="p">]</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">disabledRegions</span><span class="p">:</span> <span class="p">[</span><span class="kt">SourceRange</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L75">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L77">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -444,7 +504,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L78">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L84">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -452,9 +512,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore24ViolationsSyntaxRewriterC17locationConverter15disabledRegionsAC0aE0014SourceLocationH0C_SayAF0K5RangeVGtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(locationConverter:disabledRegions:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore24ViolationsSyntaxRewriterC17locationConverter15disabledRegionsAC0aE0014SourceLocationH0C_SayAF0K5RangeVGtcfc">init(locationConverter:<wbr>disabledRegions:<wbr>)</a>
+                    <a name="/s:13SwiftLintCore24ViolationsSyntaxRewriterC13configuration4fileACyxGx_AA0aB4FileCtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(configuration:file:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore24ViolationsSyntaxRewriterC13configuration4fileACyxGx_AA0aB4FileCtcfc">init(configuration:<wbr>file:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -469,7 +529,8 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">locationConverter</span><span class="p">:</span> <span class="kt">SourceLocationConverter</span><span class="p">,</span> <span class="nv">disabledRegions</span><span class="p">:</span> <span class="p">[</span><span class="kt">SourceRange</span><span class="p">])</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
+<span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">configuration</span><span class="p">:</span> <span class="kt"><a href="../Structs/Configuration.html">Configuration</a></span><span class="p">,</span> <span class="nv">file</span><span class="p">:</span> <span class="kt"><a href="../Classes/SwiftLintFile.html">SwiftLintFile</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -480,24 +541,24 @@
                             <tr>
                               <td>
                                 <code>
-                                <em>locationConverter</em>
+                                <em>configuration</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>Converter for positions in the source file being rewritten.</p>
+                                  <p>Configuration of a rule.</p>
                                 </div>
                               </td>
                             </tr>
                             <tr>
                               <td>
                                 <code>
-                                <em>disabledRegions</em>
+                                <em>file</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>Regions in the to be rewritten file that are disabled by a command.</p>
+                                  <p>File from which the syntax tree stems from.</p>
                                 </div>
                               </td>
                             </tr>
@@ -505,7 +566,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L85-L88">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L92-L95">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -534,7 +595,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L90-L92">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxCorrectableRule.swift#L97-L99">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

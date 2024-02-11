@@ -52,13 +52,6 @@ struct FunctionArgumentsSpacingRule: Rule {
 }
 
 private extension TriviaPiece {
-  var isSingleSpace: Bool {
-    if case .spaces(1) = self {
-      return true
-    } else {
-      return false
-    }
-  }
   var isLineComment: Bool {
     if case .lineComment = self {
       return true
@@ -66,26 +59,19 @@ private extension TriviaPiece {
       return false
     }
   }
-  var isSpaces: Bool {
-    if case .spaces = self {
+  var isBlockComment: Bool {
+    if case .blockComment = self {
         return true
     } else {
         return false
     }
   }
-  var isTabs: Bool {
-    if case .tabs = self {
-          return true
-      } else {
-          return false
-      }
-  }
-  var isBlockComment: Bool {
-    if case .blockComment = self {
-          return true
-      } else {
-          return false
-      }
+  var isSingleSpace: Bool {
+    if case .spaces(1) = self {
+      return true
+    } else {
+      return false
+    }
   }
 }
 
@@ -99,45 +85,52 @@ private extension FunctionArgumentsSpacingRule {
       checkLeftParenTrailingTrivia(leftParen: leftParen)
       if let arguments {
         arguments.enumerated().forEach { index, arg in
-          // check argument if index is last
+          // By trailing trivia in the last argument, the space in front of the right bracket is checked.
           if index == arguments.count - 1 {
             checkArgumentTrailingTrivia(argument: arguments.last)
           }
           guard let trailingComma = arg.trailingComma else { return }
-          checkTrailingComma(trailingComma: trailingComma)
+          checkCommaTrailingTrivia(trailingComma: trailingComma)
         }
       }
     }
+
     private func checkLeftParenTrailingTrivia(leftParen: TokenSyntax) {
       leftParen.trailingTrivia.pieces.enumerated().forEach { index, trivia in
-        if (trivia.isSpaces || trivia.isTabs) && (index == 0 || leftParen.trailingTrivia.count == 1) {
+        if trivia.isSpaceOrTab && (index == 0 || leftParen.trailingTrivia.count == 1) {
           violations.append(leftParen.endPositionBeforeTrailingTrivia)
         } else if trivia.isSingleSpace && leftParen.trailingTrivia.count - 1 == index {
           return
-        } else if trivia.isSpaces || trivia.isTabs {
+        } else if trivia.isSpaceOrTab {
           violations.append(leftParen.endPosition)
         }
       }
     }
+
     private func checkArgumentTrailingTrivia(argument: LabeledExprListSyntax.Element?) {
       if let argument {
         guard !argument.trailingTrivia.pieces.isEmpty else { return }
+
         for index in 0 ..< argument.trailingTrivia.pieces.count {
           let trivia = argument.trailingTrivia.pieces[index]
+
           if index < argument.trailingTrivia.pieces.count - 1 {
             let next = argument.trailingTrivia.pieces[index + 1]
             if trivia.isSingleSpace && (next.isBlockComment || next.isLineComment) { continue }
           }
-          let isInitialOrSinglePiece = index == 0 || argument.trailingTrivia.pieces.count == 1
-          if (trivia.isSpaces || trivia.isTabs) && isInitialOrSinglePiece {
-            violations.append(argument.endPositionBeforeTrailingTrivia)
-          } else if trivia.isSpaces || trivia.isTabs {
-            violations.append(argument.endPosition)
+
+          if trivia.isSpaceOrTab {
+            if index == 0 || argument.trailingTrivia.pieces.count == 1 {
+              violations.append(argument.endPositionBeforeTrailingTrivia)
+            } else {
+              violations.append(argument.endPosition)
+            }
           }
         }
       }
     }
-    private func checkTrailingComma(trailingComma: TokenSyntax) {
+
+    private func checkCommaTrailingTrivia(trailingComma: TokenSyntax) {
       for index in 0 ..< trailingComma.trailingTrivia.pieces.count {
         let trivia = trailingComma.trailingTrivia.pieces[index]
 

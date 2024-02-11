@@ -15,9 +15,8 @@ struct FunctionArgumentsSpacingRule: Rule {
             Example("f(true, false, true)"),
             Example("f(a // line comment)"),
             Example("f(a /* block comment */)"),
-            Example("f(true, /* comment */, false)"),
+            Example("f(true, /* comment */, false // line comment)"),
             Example("f(/* comment */ true /* other comment */)"),
-            Example("f(/* comment */ true /* other comment */, false)"),
             Example("f(true /* other comment */, /* comment */ false /* other comment */, false // line comment)"),
             Example("""
             f(
@@ -41,7 +40,13 @@ struct FunctionArgumentsSpacingRule: Rule {
             Example("f(↓ /* comment */ true /* other comment */ ↓)"),
             Example("f(↓ x: 0, y: 0↓ )"),
             Example("f(↓ true,↓  false, true↓  )"),
-            Example("f(↓ true,↓  false,↓  /* other comment */  ↓true↓   )")
+            Example("f(↓ true,↓  false,↓  /* other comment */  ↓true↓   )"),
+            Example("""
+            f(
+                a: true,↓  // line comment
+                b: true,↓  // line comment
+            )
+            """)
         ]
     )
 }
@@ -134,18 +139,18 @@ private extension FunctionArgumentsSpacingRule {
     }
     private func checkTrailingComma(trailingComma: TokenSyntax) {
       for index in 0 ..< trailingComma.trailingTrivia.pieces.count {
-          let trivia = trailingComma.trailingTrivia.pieces[index]
+        let trivia = trailingComma.trailingTrivia.pieces[index]
 
-          if index < trailingComma.trailingTrivia.pieces.count - 1 {
-              let next = trailingComma.trailingTrivia.pieces[index + 1]
-            if trivia.isSingleSpace && (next.isBlockComment || next.isLineComment) { continue }
-          }
+        if index < trailingComma.trailingTrivia.pieces.count - 1 {
+            let next = trailingComma.trailingTrivia.pieces[index + 1]
+          if trivia.isSingleSpace && (next.isBlockComment || next.isLineComment) { continue }
+        }
 
-          if !trivia.isSingleSpace && (index == 0 || trailingComma.trailingTrivia.count == 1) {
-              violations.append(trailingComma.endPositionBeforeTrailingTrivia)
-          } else if !trivia.isSingleSpace && !trivia.isBlockComment && !trivia.isLineComment {
-              violations.append(trailingComma.endPosition)
-          }
+        if !trivia.isSingleSpace && (index == 0 || trailingComma.trailingTrivia.count == 1) {
+            violations.append(trailingComma.endPositionBeforeTrailingTrivia)
+        } else if !trivia.isSingleSpace && !trivia.isBlockComment && !trivia.isLineComment {
+            violations.append(trailingComma.endPosition)
+        }
       }
     }
   }

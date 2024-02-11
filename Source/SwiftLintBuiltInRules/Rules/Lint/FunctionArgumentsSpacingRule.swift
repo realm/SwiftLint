@@ -15,6 +15,7 @@ struct FunctionArgumentsSpacingRule: Rule {
             Example("f(true, false)"),
             Example("f(true, false, true)"),
             Example("f(a /* comment */)"),
+            Example("f(true, /* comment */, false)"),
             Example("f(/* comment */true/* other comment */)"),
             Example("f(/* comment */true/* other comment */, false)"),
             Example("f(/* comment */true/* other comment */, /* comment */false/* other comment */, false)"),
@@ -24,6 +25,12 @@ struct FunctionArgumentsSpacingRule: Rule {
                 a: true,
                 b: true,
             )
+            """),
+            Example("""
+            f(
+                a: true, // line comment
+                b: true, // line comment
+            )
             """)
         ],
         triggeringExamples: [
@@ -31,11 +38,11 @@ struct FunctionArgumentsSpacingRule: Rule {
             Example("f(↓  )"),
             Example("f(↓\t)"),
             Example("f(↓  true↓  )"),
-//            Example("f(/* comment */ ↓a)"),
-//            Example("f(↓ /* comment */ ↓true /* other comment */ ↓)"),
-//            Example("f(↓ x: 0, y: 0↓ )"),
-//            Example("f(↓ true,↓  false, true↓  )"),
-//            Example("f(↓ true,↓  false,↓  /* other comment */  ↓true↓   )")
+            Example("f(/* comment */ ↓a)"),
+            Example("f(↓ /* comment */ ↓true /* other comment */ ↓)"),
+            Example("f(↓ x: 0, y: 0↓ )"),
+            Example("f(↓ true,↓  false, true↓  )"),
+            Example("f(↓ true,↓  false,↓  /* other comment */  ↓true↓   )")
         ]
     )
 }
@@ -48,27 +55,34 @@ private extension TriviaPiece {
       return false
     }
   }
-    var isSpaces: Bool {
-        if case .spaces = self {
-            return true
-        } else {
-            return false
-        }
+  var isLineComment: Bool {
+    if case .lineComment = self {
+      return true
+    } else {
+      return false
     }
-    var isTabs: Bool {
-      if case .tabs = self {
-            return true
-        } else {
-            return false
-        }
-    }
-    var isBlockComment: Bool {
-      if case .blockComment = self {
-            return true
-        } else {
-            return false
-        }
-    }
+  }
+  var isSpaces: Bool {
+      if case .spaces = self {
+          return true
+      } else {
+          return false
+      }
+  }
+  var isTabs: Bool {
+    if case .tabs = self {
+          return true
+      } else {
+          return false
+      }
+  }
+  var isBlockComment: Bool {
+    if case .blockComment = self {
+          return true
+      } else {
+          return false
+      }
+  }
 }
 
 private extension FunctionArgumentsSpacingRule {
@@ -119,27 +133,39 @@ private extension FunctionArgumentsSpacingRule {
         }
       }
     }
-    
     private func checkArgumentTrailingTrivia(argument: LabeledExprListSyntax.Element) {
-      if argument.trailingTrivia.pieces.count == 0 { return }
-      for i in 0 ..< argument.trailingTrivia.pieces.count - 1 {
-        let trivia = argument.trailingTrivia.pieces[i]
-        let next = argument.trailingTrivia.pieces[i + 1]
-        if trivia.isSingleSpace && next.isBlockComment { return }
-        if (trivia.isSpaces || trivia.isTabs) && (i == 0 || argument.trailingTrivia.count == 1) {
-          violations.append(argument.endPositionBeforeTrailingTrivia)
-        } else if trivia.isSpaces || trivia.isTabs {
-          violations.append(argument.endPosition)
+        guard !argument.trailingTrivia.pieces.isEmpty else { return }
+
+        for index in 0 ..< argument.trailingTrivia.pieces.count {
+            let trivia = argument.trailingTrivia.pieces[index]
+
+            if index < argument.trailingTrivia.pieces.count - 1 {
+                let next = argument.trailingTrivia.pieces[index + 1]
+              if trivia.isSingleSpace && next.isBlockComment { continue }
+            }
+            let isInitialOrSinglePiece = index == 0 || argument.trailingTrivia.pieces.count == 1
+
+            if (trivia.isSpaces || trivia.isTabs) && isInitialOrSinglePiece {
+                violations.append(argument.endPositionBeforeTrailingTrivia)
+            } else if trivia.isSpaces || trivia.isTabs {
+                violations.append(argument.endPosition)
+            }
         }
-      }
     }
     private func checkTrailingComma(trailingComma: TokenSyntax) {
-      trailingComma.trailingTrivia.pieces.enumerated().forEach { index, trivia in
-        if !trivia.isSingleSpace && (index == 0 || trailingComma.trailingTrivia.count == 1) {
-          violations.append(trailingComma.endPositionBeforeTrailingTrivia)
-        } else if !trivia.isSingleSpace && !trivia.isBlockComment {
-          violations.append(trailingComma.endPosition)
-        }
+      for index in 0 ..< trailingComma.trailingTrivia.pieces.count {
+          let trivia = trailingComma.trailingTrivia.pieces[index]
+
+          if index < trailingComma.trailingTrivia.pieces.count - 1 {
+              let next = trailingComma.trailingTrivia.pieces[index + 1]
+            if trivia.isSingleSpace && (next.isBlockComment || next.isLineComment) { continue }
+          }
+
+          if !trivia.isSingleSpace && (index == 0 || trailingComma.trailingTrivia.count == 1) {
+              violations.append(trailingComma.endPositionBeforeTrailingTrivia)
+          } else if !trivia.isSingleSpace && !trivia.isBlockComment && !trivia.isLineComment {
+              violations.append(trailingComma.endPosition)
+          }
       }
     }
   }

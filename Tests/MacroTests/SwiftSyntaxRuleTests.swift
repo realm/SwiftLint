@@ -67,11 +67,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             }
 
             extension Hello: SwiftSyntaxCorrectableRule {
-                func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-                    Rewriter(
-                        locationConverter: file.locationConverter,
-                        disabledRegions: disabledRegions(file: file)
-                    )
+                func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>? {
+                    Rewriter(configuration: configuration, file: file)
                 }
             }
             """,

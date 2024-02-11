@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct TrailingCommaRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct TrailingCommaRule: Rule {
     var configuration = TrailingCommaConfiguration()
 
     private static let triggeringExamples: [Example] = [
@@ -47,14 +47,6 @@ struct TrailingCommaRule: SwiftSyntaxCorrectableRule {
         triggeringExamples: Self.triggeringExamples,
         corrections: Self.corrections
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            mandatoryComma: configuration.mandatoryComma,
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension TrailingCommaRule {
@@ -97,20 +89,13 @@ private extension TrailingCommaRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
-        private let mandatoryComma: Bool
-
-        init(mandatoryComma: Bool, locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.mandatoryComma = mandatoryComma
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: DictionaryElementListSyntax) -> DictionaryElementListSyntax {
             guard let lastElement = node.last, let index = node.index(of: lastElement) else {
                 return super.visit(node)
             }
 
-            switch (lastElement.trailingComma, mandatoryComma) {
+            switch (lastElement.trailingComma, configuration.mandatoryComma) {
             case (let commaToken?, false):
                 correctionPositions.append(commaToken.positionAfterSkippingLeadingTrivia)
                 let newTrailingTrivia = (lastElement.value.trailingTrivia)
@@ -145,7 +130,7 @@ private extension TrailingCommaRule {
                 return super.visit(node)
             }
 
-            switch (lastElement.trailingComma, mandatoryComma) {
+            switch (lastElement.trailingComma, configuration.mandatoryComma) {
             case (let commaToken?, false):
                 correctionPositions.append(commaToken.positionAfterSkippingLeadingTrivia)
                 let newNode = node

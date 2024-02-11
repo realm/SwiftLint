@@ -119,7 +119,7 @@ private extension UntypedErrorInCatchRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
             guard let item = node.catchItems.onlyElement, item.isIdentifierPattern else {
                 return super.visit(node)

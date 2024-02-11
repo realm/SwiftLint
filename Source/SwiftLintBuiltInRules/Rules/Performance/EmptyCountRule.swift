@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule(foldExpressions: true)
-struct EmptyCountRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(foldExpressions: true, explicitRewriter: true)
+struct EmptyCountRule: OptInRule {
     var configuration = EmptyCountConfiguration()
 
     static let description = RuleDescription(
@@ -64,14 +64,6 @@ struct EmptyCountRule: SwiftSyntaxCorrectableRule, OptInRule {
                 Example("[Int]().count != 3 && ![Int]().isEmpty || isEmpty && [Int]().count > 2")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            configuration: configuration,
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension EmptyCountRule {
@@ -87,16 +79,7 @@ private extension EmptyCountRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
-        private let configuration: EmptyCountConfiguration
-
-        init(configuration: EmptyCountConfiguration,
-             locationConverter: SourceLocationConverter,
-             disabledRegions: [SourceRange]) {
-            self.configuration = configuration
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
             guard let binaryOperator = node.binaryOperator, binaryOperator.isComparison else {
                 return super.visit(node)

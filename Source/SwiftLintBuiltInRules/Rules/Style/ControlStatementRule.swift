@@ -108,7 +108,7 @@ private extension ControlStatementRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
             guard case let items = node.catchItems, items.containSuperfluousParens == true else {
                 return super.visit(node)

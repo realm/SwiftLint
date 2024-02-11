@@ -80,7 +80,7 @@ private extension NimbleOperatorRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard let expectation = node.expectation(),
                   let predicate = predicatesMapping[expectation.operatorExpr.baseName.text],

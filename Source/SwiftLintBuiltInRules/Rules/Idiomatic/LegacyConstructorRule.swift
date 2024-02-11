@@ -134,7 +134,7 @@ private extension LegacyConstructorRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard let identifierExpr = node.calledExpression.as(DeclReferenceExprSyntax.self),
                   case let identifier = identifierExpr.baseName.text,

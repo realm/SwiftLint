@@ -2,21 +2,18 @@ import SwiftSyntax
 
 /// A SwiftLint CorrectableRule that performs its corrections using a SwiftSyntax `SyntaxRewriter`.
 public protocol SwiftSyntaxCorrectableRule: SwiftSyntaxRule, CorrectableRule {
-    /// Type of the rewriter.
-    associatedtype RewriterType: ViolationsSyntaxRewriter
-
     /// Produce a `ViolationsSyntaxRewriter` for the given file.
     ///
     /// - parameter file: The file for which to produce the rewriter.
     ///
     /// - returns: A `ViolationsSyntaxRewriter` for the given file. May be `nil` in which case the rule visitor's
     ///            collected `violationCorrections` will be used.
-    func makeRewriter(file: SwiftLintFile) -> RewriterType?
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>?
 }
 
 public extension SwiftSyntaxCorrectableRule {
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        nil as ViolationsSyntaxRewriter?
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>? {
+        nil
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {
@@ -68,11 +65,20 @@ public extension SwiftSyntaxCorrectableRule {
 }
 
 /// A SwiftSyntax `SyntaxRewriter` that produces absolute positions where corrections were applied.
-open class ViolationsSyntaxRewriter: SyntaxRewriter {
+open class ViolationsSyntaxRewriter<Configuration: RuleConfiguration>: SyntaxRewriter {
+    /// A rule's configuration.
+    public let configuration: Configuration
+    /// The file from which the traversed syntax tree stems from.
+    public let file: SwiftLintFile
+
     /// A converter of positions in the traversed source file.
-    public let locationConverter: SourceLocationConverter
+    public lazy var locationConverter = file.locationConverter
     /// The regions in the traversed file that are disabled by a command.
-    public let disabledRegions: [SourceRange]
+    public lazy var disabledRegions = {
+        file.regions()
+            .filter { $0.areRulesDisabled(ruleIDs: Configuration.Parent.description.allIdentifiers) }
+            .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
+    }()
 
     /// Positions in a source file where corrections were applied.
     public var correctionPositions = [AbsolutePosition]()
@@ -80,11 +86,12 @@ open class ViolationsSyntaxRewriter: SyntaxRewriter {
     /// Initilizer for a ``ViolationsSyntaxRewriter``.
     ///
     /// - Parameters:
-    ///   - locationConverter: Converter for positions in the source file being rewritten.
-    ///   - disabledRegions: Regions in the to be rewritten file that are disabled by a command.
-    public init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
+    ///   - configuration: Configuration of a rule.
+    ///   - file: File from which the syntax tree stems from.
+    @inlinable
+    public init(configuration: Configuration, file: SwiftLintFile) {
+        self.configuration = configuration
+        self.file = file
     }
 
     override open func visitAny(_ node: Syntax) -> Syntax? {

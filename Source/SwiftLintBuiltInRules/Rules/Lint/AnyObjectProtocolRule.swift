@@ -43,11 +43,8 @@ struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule {
         return Visitor(configuration: configuration, file: file)
     }
 
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>? {
+        Rewriter(configuration: configuration, file: file)
     }
 }
 
@@ -58,7 +55,7 @@ private extension AnyObjectProtocolRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: InheritedTypeSyntax) -> InheritedTypeSyntax {
             let typeName = node.type
             guard typeName.is(ClassRestrictionTypeSyntax.self) else {

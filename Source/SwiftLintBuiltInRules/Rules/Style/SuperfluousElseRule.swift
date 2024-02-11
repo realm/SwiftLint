@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct SuperfluousElseRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct SuperfluousElseRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -243,14 +243,6 @@ struct SuperfluousElseRule: SwiftSyntaxCorrectableRule, OptInRule {
             """)
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            configuration: configuration,
-            file: file,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension SuperfluousElseRule {
@@ -264,11 +256,9 @@ private extension SuperfluousElseRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
-        init(configuration: ConfigurationType,
-             file: SwiftLintFile,
-             disabledRegions: [SourceRange]) {
-            super.init(locationConverter: file.locationConverter, disabledRegions: disabledRegions)
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override init(configuration: ConfigurationType, file: SwiftLintFile) {
+            super.init(configuration: configuration, file: file)
             let correctionPositions = Visitor(configuration: configuration, file: file).walk(file: file) {
                 $0.violations.map(\.position)
             }.filter { !$0.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) }

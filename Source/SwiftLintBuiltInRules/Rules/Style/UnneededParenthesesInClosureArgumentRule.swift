@@ -87,7 +87,7 @@ private extension UnneededParenthesesInClosureArgumentRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
             guard let clause = node.parameterClause?.as(ClosureParameterClauseSyntax.self),
                   clause.parameters.isNotEmpty,

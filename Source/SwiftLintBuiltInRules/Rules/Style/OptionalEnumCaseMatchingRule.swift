@@ -174,7 +174,7 @@ private extension OptionalEnumCaseMatchingRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: SwitchCaseItemSyntax) -> SwitchCaseItemSyntax {
             guard
                 let pattern = node.pattern.as(ExpressionPatternSyntax.self),

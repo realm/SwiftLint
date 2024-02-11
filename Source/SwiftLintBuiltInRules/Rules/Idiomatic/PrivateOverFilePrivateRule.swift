@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct PrivateOverFilePrivateRule: Rule {
     var configuration = PrivateOverFilePrivateConfiguration()
 
     static let description = RuleDescription(
@@ -54,14 +54,6 @@ struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
                 Example("private class MyClass {\nfileprivate(set) var myInt = 4\n}")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            validateExtensions: configuration.validateExtensions,
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension PrivateOverFilePrivateRule {
@@ -123,17 +115,10 @@ private extension PrivateOverFilePrivateRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
-        private let validateExtensions: Bool
-
-        init(validateExtensions: Bool, locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.validateExtensions = validateExtensions
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         // don't call super in any of the `visit` methods to avoid digging into the children
         override func visit(_ node: ExtensionDeclSyntax) -> DeclSyntax {
-            guard validateExtensions, let modifier = node.modifiers.fileprivateModifier,
+            guard configuration.validateExtensions, let modifier = node.modifiers.fileprivateModifier,
                   let modifierIndex = node.modifiers.fileprivateModifierIndex else {
                 return DeclSyntax(node)
             }

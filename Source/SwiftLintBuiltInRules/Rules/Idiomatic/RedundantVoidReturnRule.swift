@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct RedundantVoidReturnRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct RedundantVoidReturnRule: Rule {
     var configuration = RedundantVoidReturnConfiguration()
 
     static let description = RuleDescription(
@@ -68,14 +68,6 @@ struct RedundantVoidReturnRule: SwiftSyntaxCorrectableRule {
                 Example("protocol Foo {\n    #if true\n    func foo()\n    #endif\n}")
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            configuration: configuration,
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension RedundantVoidReturnRule {
@@ -92,18 +84,7 @@ private extension RedundantVoidReturnRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
-        let configuration: ConfigurationType
-
-        init(
-            configuration: ConfigurationType,
-            locationConverter: SourceLocationConverter,
-            disabledRegions: [SourceRange]
-        ) {
-            self.configuration = configuration
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
             guard configuration.includeClosures,
                   let output = node.returnClause,

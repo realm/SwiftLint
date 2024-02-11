@@ -40,18 +40,6 @@ public extension SwiftSyntaxRule where ConfigurationType: SeverityBasedRuleConfi
 }
 
 public extension SwiftSyntaxRule {
-    /// Returns the source ranges in the specified file where this rule is disabled.
-    ///
-    /// - parameter file: The file to get regions.
-    ///
-    /// - returns: The source ranges in the specified file where this rule is disabled.
-    func disabledRegions(file: SwiftLintFile) -> [SourceRange] {
-        let locationConverter = file.locationConverter
-        return file.regions()
-            .filter { $0.isRuleDisabled(self) }
-            .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
-    }
-
     @inlinable
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let syntaxTree = preprocess(file: file) else {

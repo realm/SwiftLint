@@ -108,11 +108,11 @@ struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
         )
     }
 
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>? {
         LegacyFunctionRuleHelper.Rewriter(
             legacyFunctions: Self.legacyFunctions,
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
+            configuration: configuration,
+            file: file
         )
     }
 }

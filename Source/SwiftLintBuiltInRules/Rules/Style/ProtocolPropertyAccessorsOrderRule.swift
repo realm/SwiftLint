@@ -39,7 +39,7 @@ private extension ProtocolPropertyAccessorsOrderRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: AccessorBlockSyntax) -> AccessorBlockSyntax {
             guard node.hasViolation else {
                 return super.visit(node)

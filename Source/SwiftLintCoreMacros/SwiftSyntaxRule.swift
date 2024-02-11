@@ -29,11 +29,8 @@ enum SwiftSyntaxRule: ExtensionMacro {
             ),
             try makeExtension(dependingOn: node.explicitRewriterArgument, in: context, with: """
                 extension \(type): SwiftSyntaxCorrectableRule {
-                    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-                        Rewriter(
-                            locationConverter: file.locationConverter,
-                            disabledRegions: disabledRegions(file: file)
-                        )
+                    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>? {
+                        Rewriter(configuration: configuration, file: file)
                     }
                 }
                 """

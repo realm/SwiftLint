@@ -201,7 +201,7 @@ private extension ExplicitInitRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
                   let violationPosition = calledExpression.explicitInitPosition,

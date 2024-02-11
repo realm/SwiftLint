@@ -128,7 +128,7 @@ private extension EmptyEnumArgumentsRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: SwitchCaseItemSyntax) -> SwitchCaseItemSyntax {
             guard let (violationPosition, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true) else {
                 return super.visit(node)

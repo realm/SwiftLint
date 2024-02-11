@@ -46,7 +46,7 @@ private extension UnneededSynthesizedInitializerRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         private var unneededInitializers: [InitializerDeclSyntax] = []
 
         override func visitAny(_ node: Syntax) -> Syntax? { nil }

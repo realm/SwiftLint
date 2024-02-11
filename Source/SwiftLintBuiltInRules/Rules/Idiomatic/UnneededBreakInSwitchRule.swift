@@ -99,7 +99,7 @@ private extension UnneededBreakInSwitchRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: SwitchCaseSyntax) -> SwitchCaseSyntax {
             let stmts = CodeBlockItemListSyntax(node.statements.dropLast())
 

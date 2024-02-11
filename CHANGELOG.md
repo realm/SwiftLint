@@ -121,8 +121,7 @@
 
 * Make `empty_count` auto-correctable.  
   [KS1019](https://github.com/KS1019/)
-* Add new `functions_arguments_spacing` rule to remove the space before the first function argument 
-  and after the last argument.    
+* Add new `no_unnecessary_spaces` rule that No space before the first and after the last argument and exactly one space after every comma.    
   [u-abyss](https://github.com/u-abyss)
   [#5259](https://github.com/realm/SwiftLint/issues/5224)
 

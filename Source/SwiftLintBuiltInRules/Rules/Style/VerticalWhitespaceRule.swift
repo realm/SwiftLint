@@ -26,7 +26,7 @@ struct VerticalWhitespaceRule: CorrectableRule {
             Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\nclass AAA {}\n"),
             Example("let c = 0\n\n\nlet num = 1\n"): Example("let c = 0\n\nlet num = 1\n"),
             Example("// bca \n\n\n"): Example("// bca \n\n")
-        ]// End of line autocorrections are handled by Trailing Newline Rule.
+        ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
 
     private var configuredDescriptionReason: String {

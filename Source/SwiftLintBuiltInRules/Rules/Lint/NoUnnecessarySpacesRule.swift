@@ -1,13 +1,13 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct FunctionArgumentsSpacingRule: Rule {
+struct NoUnnecessarySpacesRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
-        identifier: "functions_arguments_spacing",
-        name: "Function Arguments Spacing",
-        description: "Remove the space before the first function argument and after the last argument",
+        identifier: "no_unnecessary_spaces",
+        name: "no Unnecessary Spaces",
+        description: "No space before the first and after the last argument and exactly one space after every comma",
         kind: .lint,
         nonTriggeringExamples: [
             Example("f()"),
@@ -75,7 +75,7 @@ private extension TriviaPiece {
   }
 }
 
-private extension FunctionArgumentsSpacingRule {
+private extension NoUnnecessarySpacesRule {
   final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
     override func visitPost(_ node: FunctionCallExprSyntax) {
       guard let leftParen = node.leftParen else { return }

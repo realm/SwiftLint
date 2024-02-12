@@ -102,7 +102,7 @@ private extension TrailingClosureRule {
 private extension TrailingClosureRule {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard node.trailingClosure == nil else { return ExprSyntax(node) }
+            guard node.trailingClosure == nil else { return super.visit(node) }
 
             if configuration.onlySingleMutedParameter {
                 if let param = node.singleMutedClosureParameter,
@@ -115,7 +115,7 @@ private extension TrailingClosureRule {
                 correctionPositions.append(param.positionAfterSkippingLeadingTrivia)
                 return ExprSyntax(converted)
             }
-            return ExprSyntax(node)
+            return super.visit(node)
         }
 
         override func visit(_ node: ConditionElementListSyntax) -> ConditionElementListSyntax {

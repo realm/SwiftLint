@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct TrailingClosureRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct TrailingClosureRule: OptInRule {
     var configuration = TrailingClosureConfiguration()
 
     static let description = RuleDescription(
@@ -72,14 +72,6 @@ struct TrailingClosureRule: SwiftSyntaxCorrectableRule, OptInRule {
             """, excludeFromDocumentation: true)
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            configuration: configuration,
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension TrailingClosureRule {
@@ -108,16 +100,7 @@ private extension TrailingClosureRule {
 }
 
 private extension TrailingClosureRule {
-    final class Rewriter: ViolationsSyntaxRewriter {
-        private let configuration: TrailingClosureConfiguration
-
-        init(configuration: TrailingClosureConfiguration,
-             locationConverter: SourceLocationConverter,
-             disabledRegions: [SourceRange]) {
-            self.configuration = configuration
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard node.trailingClosure == nil else { return ExprSyntax(node) }
 

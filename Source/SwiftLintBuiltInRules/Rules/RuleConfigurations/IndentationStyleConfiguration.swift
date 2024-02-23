@@ -18,9 +18,9 @@ struct IndentationStyleConfiguration: SeverityBasedRuleConfiguration, Equatable 
 	@ConfigurationElement(key: "tab_width")
 	private(set) var tabWidth: Int?
 
-	static let testTabWidth: [String: Any] = ["tab_width": 4]
-	static let testMultilineString: [String: Any] = ["include_multiline_strings": true]
-	static let testMultilineComment: [String: Any] = ["include_multiline_comments": false]
+	static let testTabWidth: [String: any Sendable] = ["tab_width": 4]
+	static let testMultilineString: [String: any Sendable] = ["include_multiline_strings": true]
+	static let testMultilineComment: [String: any Sendable] = ["include_multiline_comments": false]
 
 	@MakeAcceptableByConfigurationElement
 	enum PreferredStyle: String {

@@ -205,12 +205,19 @@ struct IndentationStyleRule: Rule, OptInRule {
 
             guard indentationCharacterCount > 0 else { continue }
 
-            if
-                ignoreMultilineStrings(line: line, in: file) ||
-                ignoreMultilineComments(line: line, in: file)
-            { continue }
+            if ignoreMultilineStrings(line: line, in: file) || ignoreMultilineComments(line: line, in: file) {
+                continue
+            }
 
             guard let firstLineIndentation = indentationForThisLine.first else { continue }
+
+            func createViolation(at location: Int, reason: String) -> StyleViolation {
+                StyleViolation(
+                    ruleDescription: Self.description,
+                    severity: configuration.severity,
+                    location: Location(file: file, characterOffset: location),
+                    reason: reason)
+            }
 
             let confirmedFileStyle: ConfigurationType.PreferredStyle
             if let fileStyle {
@@ -224,14 +231,9 @@ struct IndentationStyleRule: Rule, OptInRule {
                     fileStyle = .tabs
                     confirmedFileStyle = .tabs
                 default:
-                    let violation = StyleViolation(
-                        ruleDescription: Self.description,
-                        severity: configuration.severity,
-                        location: Location(file: file, characterOffset: line.range.location),
-                        reason: "Somehow a non tab or space made it into indentation: '\(firstLineIndentation)'" +
-                        " aka \(firstLineIndentation.unicodeScalars)")
-                    violations.append(violation)
-                    return violations
+                    let reason = "Somehow a non tab or space made it into indentation: '\(firstLineIndentation)'" +
+                    " aka \(firstLineIndentation.unicodeScalars)"
+                    return [createViolation(at: line.range.location, reason: reason)]
                 }
             }
 
@@ -240,12 +242,8 @@ struct IndentationStyleRule: Rule, OptInRule {
                 if let offset = line.content.firstIndex(of: "\t") {
                     let intOffset = line.content.distance(from: line.content.startIndex, to: offset)
 
-                    let violation = StyleViolation(
-                        ruleDescription: Self.description,
-                        severity: configuration.severity,
-                        location: Location(file: file, characterOffset: line.range.location + intOffset),
-                        reason: "Code should be indented with spaces\(configuration.perFile ? " (In this file)" : "")")
-                    violations.append(violation)
+                    let reason = "Code should be indented with spaces\(configuration.perFile ? " (In this file)" : "")"
+                    violations.append(createViolation(at: line.range.location + intOffset, reason: reason))
                 }
             case .tabs:
                 if let offset = indentationForThisLine.firstIndex(of: " ") {
@@ -256,12 +254,8 @@ struct IndentationStyleRule: Rule, OptInRule {
                     }
 
                     let intOffset = line.content.distance(from: line.content.startIndex, to: offset)
-                    let violation = StyleViolation(
-                        ruleDescription: Self.description,
-                        severity: configuration.severity,
-                        location: Location(file: file, characterOffset: line.range.location + intOffset),
-                        reason: "Code should be indented with tabs\(configuration.perFile ? " (In this file)" : "")")
-                    violations.append(violation)
+                    let reason = "Code should be indented with tabs\(configuration.perFile ? " (In this file)" : "")"
+                    violations.append(createViolation(at: line.range.location + intOffset, reason: reason))
                 }
             }
         }

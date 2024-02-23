@@ -15,7 +15,7 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
         identifier: "indentation_style",
         name: "Indentation Style",
         description: """
-            Indent code using either tabs or spaces, not a chaotic mix. Can be configured to per file or project wide.
+            Code should be indented using either tabs or spaces. Can be configured to per file or project wide.
             """,
         kind: .style,
         nonTriggeringExamples: [
@@ -195,7 +195,7 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
         var violations: [StyleViolation] = []
 
         var fileStyle: ConfigurationType.PreferredStyle?
-        if configuration.perFile == false {
+        if !configuration.perFile {
             fileStyle = configuration.preferredStyle
         }
 
@@ -224,9 +224,14 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
                     fileStyle = .tabs
                     confirmedFileStyle = .tabs
                 default:
-                    queuedFatalError(
-                        "Somehow a non tab or space made it into indentation: '\(firstLineIndentation)'" +
+                    let violation = StyleViolation(
+                        ruleDescription: Self.description,
+                        severity: configuration.severity,
+                        location: Location(file: file, characterOffset: line.range.location),
+                        reason: "Somehow a non tab or space made it into indentation: '\(firstLineIndentation)'" +
                         " aka \(firstLineIndentation.unicodeScalars)")
+                    violations.append(violation)
+                    return violations
                 }
             }
 
@@ -314,8 +319,10 @@ struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
     /// ```
     ///
     /// These don't necessarily line up nicely on the 2,3,4,8 space indentation or whatever tab width you have set.
-    private
-    func previousLineSetsNonstandardIndentationExpectation(_ currentLine: Line, in file: SwiftLintFile) -> Bool {
+    private func previousLineSetsNonstandardIndentationExpectation(
+        _ currentLine: Line,
+        in file: SwiftLintFile
+    ) -> Bool {
         guard
             currentLine.index > 1
         else { return false }

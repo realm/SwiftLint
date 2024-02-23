@@ -13,6 +13,8 @@ struct IndentationStyleConfiguration: SeverityBasedRuleConfiguration, Equatable 
 	private(set) var perFile = true
 	@ConfigurationElement(key: "preferred_style")
 	private(set) var preferredStyle = PreferredStyle.spaces
+	/// Checks to make sure that in tab mode indentation, any spaces are only at the end and are, at most, tabWidth-1
+	/// in quantity, if tabWidth is set.
 	@ConfigurationElement(key: "tab_width")
 	private(set) var tabWidth: Int?
 
@@ -25,7 +27,7 @@ struct IndentationStyleConfiguration: SeverityBasedRuleConfiguration, Equatable 
 		case spaces
 
 		func asOption() -> OptionType {
-			.string(rawValue)
+			.symbol(rawValue)
 		}
 	}
 

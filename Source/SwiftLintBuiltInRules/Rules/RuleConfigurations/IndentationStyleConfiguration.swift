@@ -22,13 +22,10 @@ struct IndentationStyleConfiguration: SeverityBasedRuleConfiguration, Equatable 
 	static let testMultilineString: [String: Any] = ["include_multiline_strings": true]
 	static let testMultilineComment: [String: Any] = ["include_multiline_comments": false]
 
-	enum PreferredStyle: String, AcceptableByConfigurationElement {
+	@MakeAcceptableByConfigurationElement
+	enum PreferredStyle: String {
 		case tabs
 		case spaces
-
-		func asOption() -> OptionType {
-			.symbol(rawValue)
-		}
 	}
 
 	mutating func apply(configuration: Any) throws {
@@ -36,28 +33,28 @@ struct IndentationStyleConfiguration: SeverityBasedRuleConfiguration, Equatable 
 			throw Issue.unknownConfiguration(ruleID: Parent.identifier)
 		}
 
-		if let config = configurationDict[$severityConfiguration] {
+		if let config = configurationDict[$severityConfiguration.key] {
 			try severityConfiguration.apply(configuration: config)
 		}
 
-		if let perFile = configurationDict[$perFile] as? Bool {
+		if let perFile = configurationDict[$perFile.key] as? Bool {
 			self.perFile = perFile
 		}
 
 		if perFile == false {
-			if let preferredStyle = configurationDict[$preferredStyle] as? String {
+			if let preferredStyle = configurationDict[$preferredStyle.key] as? String {
 				self.preferredStyle = PreferredStyle(rawValue: preferredStyle) ?? .spaces
 			}
 		}
 
-		if let includeMultilineStrings = configurationDict[$includeMultilineStrings] as? Bool {
+		if let includeMultilineStrings = configurationDict[$includeMultilineStrings.key] as? Bool {
 			self.includeMultilineStrings = includeMultilineStrings
 		}
 
-		if let includeMultilineComments = configurationDict[$includeMultilineComments] as? Bool {
+		if let includeMultilineComments = configurationDict[$includeMultilineComments.key] as? Bool {
 			self.includeMultilineComments = includeMultilineComments
 		}
 
-		self.tabWidth = configurationDict[$tabWidth] as? Int
+		self.tabWidth = configurationDict[$tabWidth.key] as? Int
 	}
 }

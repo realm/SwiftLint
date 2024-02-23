@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct IndentationStyleRule: ConfigurationProviderRule, OptInRule {
+struct IndentationStyleRule: Rule, OptInRule {
     // MARK: - Subtypes
     private enum Indentation: Equatable {
         case tabs

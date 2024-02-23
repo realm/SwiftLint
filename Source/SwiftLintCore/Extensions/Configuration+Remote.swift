@@ -4,6 +4,10 @@ import Foundation // swiftlint:disable:this file_name
 import FoundationNetworking
 #endif
 
+#if os(Windows)
+import func WinSDK.Sleep
+#endif
+
 internal extension Configuration.FileGraph.FilePath {
     // MARK: - Properties: Remote Cache
     /// This should never be touched.
@@ -87,7 +91,11 @@ internal extension Configuration.FileGraph.FilePath {
             while true {
                 if taskDone { break }
                 if Date().timeIntervalSince(startDate) > timeout { task.cancel(); break }
+#if os(Windows)
+                Sleep(50)
+#else
                 usleep(50_000) // Sleep for 50 ms
+#endif
             }
 
             // Handle wrong data

@@ -3,6 +3,8 @@ import PackagePlugin
 
 #if os(Linux)
 import Glibc
+#elseif os(Windows)
+import ucrt
 #else
 import Darwin
 #endif
@@ -33,9 +35,15 @@ extension Path {
 
     /// Safe way to check if the file is accessible from within the current process sandbox.
     private func isAccessible() -> Bool {
+#if os(Windows)
+        let result = string.withCString(encodedAs: UTF16.self) {
+            _waccess($0, 04)
+        }
+#else
         let result = string.withCString { pointer in
             access(pointer, R_OK)
         }
+#endif
 
         return result == 0
     }

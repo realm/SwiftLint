@@ -1,4 +1,4 @@
-#if !os(Linux)
+#if os(macOS)
 import SystemConfiguration
 #endif
 
@@ -9,9 +9,9 @@ enum Reachability {
     }
 
     /// Returns whether the device is connected to a network, if known.
-    /// On Linux, this always evaluates to `nil`.
+    /// On Linux and Windows, this always evaluates to `nil`.
     static var connectivityStatus: ConnectivityStatus {
-#if os(Linux)
+#if os(Linux) || os(Windows)
         return .unknown
 #else
         var zeroAddress = sockaddr_in()

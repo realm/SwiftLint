@@ -40,7 +40,7 @@ private func scriptInputFiles() throws -> [SwiftLintFile] {
     }
 }
 
-#if os(Linux)
+#if os(Linux) || os(Windows)
 private func autoreleasepool<T>(block: () -> T) -> T { return block() }
 #endif
 

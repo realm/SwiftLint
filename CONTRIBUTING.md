@@ -1,3 +1,5 @@
+# Contribution Guidelines
+
 ## Tutorial
 
 If you'd like to write a SwiftLint rule but aren't sure how to start,
@@ -6,28 +8,30 @@ please watch and follow along with
 
 ## Pull Requests
 
-All changes, no matter how trivial, must be done via pull request. Commits
-should never be made directly on the `main` branch. Prefer rebasing over
-merging `main` into your PR branch to update it and resolve conflicts.
+All changes, no matter how trivial, must be done via pull requests. Commits
+should never be made directly on the `main` branch. If possible, avoid mixing
+different aspects in one pull request. Prefer squashing if there are commits
+that are not reasonable alone. To update your PR branch and resolve conflicts,
+prefer rebasing over merging `main`.
 
 _If you have commit access to SwiftLint and believe your change to be trivial
-and not worth waiting for review, you may open a pull request and merge
+and not worth waiting for review, you may open a pull request and merge it
 immediately, but this should be the exception, not the norm._
 
-### Building And Running Locally
+## Building and Running Locally
 
-#### Using Xcode
+### Using Xcode
 
 1. `git clone https://github.com/realm/SwiftLint.git`
 1. `cd SwiftLint`
 1. `xed .`
-1. Select the "swiftlint" scheme
-1. `cmd-opt-r` open the scheme options
+1. Select the "swiftlint" scheme.
+1. `cmd-opt-r` to open the scheme options.
 1. Set the "Arguments Passed On Launch" you want in the "Arguments" tab. See
 available arguments [in the README](https://github.com/realm/SwiftLint#command-line).
 1. Set the "Working Directory" in the "Options" tab to the path where you would like
-to execute SwiftLint. A folder that contains swift source files.
-1. Hit "Run"
+to execute SwiftLint — a folder that contains Swift source files.
+1. Hit "Run".
 
 |Arguments|Options|
 |-|-|
@@ -35,13 +39,13 @@ to execute SwiftLint. A folder that contains swift source files.
 
 Then you can use the full power of Xcode/LLDB/Instruments to develop and debug your changes to SwiftLint.
 
-#### Using the command line
+### Using the Command Line
 
 1. `git clone https://github.com/realm/SwiftLint.git`
 1. `cd SwiftLint`
 1. `swift build [-c release]`
 1. Use the produced `swiftlint` binary from the command line, either by running `swift run [-c release] [swiftlint] [arguments]` or by invoking the binary directly at `.build/[release|debug]/swiftlint`
-1. [Optional] Attach LLDB: `lldb -- .build/[release|debug]/swiftlint [arguments]`
+1. For debugging, attach LLDB: `lldb -- .build/[release|debug]/swiftlint [arguments]`
 
 ### Code Generation
 
@@ -54,19 +58,23 @@ machine. This will update source files to reflect these changes.
 
 SwiftLint supports building via Xcode and Swift Package Manager on macOS, and
 with Swift Package Manager on Linux. When contributing code changes, please
-ensure that all three supported build methods continue to work and pass tests.
+ensure that all four supported build methods continue to work and pass tests:
 
 ```shell
-$ xcodebuild -scheme swiftlint test -destination 'platform=macOS'
-$ swift test
-$ make docker_test
+xcodebuild -scheme swiftlint test -destination 'platform=macOS'
+swift test
+make bazel_test
+make docker_test
 ```
 
 ## Rules
 
 New rules should be added in the `Source/SwiftLintBuiltInRules/Rules` directory.
 
-Rules should conform to either the `Rule` or `ASTRule` protocols.
+Prefer implementing new rules with the help of SwiftSyntax. Look for the
+`@SwiftSyntaxRule` attribute for examples and use the same on your own rule.
+New rules should conform to either `Rule` or `OptInRule` depending on whether
+they shall be enabled by default or opt-in, respectively.
 
 All new rules or changes to existing rules should be accompanied by unit tests.
 
@@ -74,16 +82,19 @@ Whenever possible, prefer adding tests via the `triggeringExamples` and
 `nonTriggeringExamples` properties of a rule's `description` rather than adding
 those test cases in the unit tests directly. This makes it easier to understand
 what rules do by reading their source, and simplifies adding more test cases
-over time. This way adding a unit test for your new Rule is just a matter of
-adding a test case in `RulesTests.swift` which simply calls
-`verifyRule(YourNewRule.description)`.
+over time. With `make sourcery`, you ensure that all test cases are automatically
+checked in unit tests. Moreover, the examples added to a rule will appear in the
+rule's rendered documentation accessible from the
+[Rule Directory](https://realm.github.io/SwiftLint/rule-directory.html).
 
-For debugging purposes examples can be marked as `focused`. If there are any
-focused examples found, then only those will be run when running tests for that rule.
-```
+For debugging purposes, examples can be marked as `focused`. If there are any
+focused examples found, then only those will be run when running all tests for that
+rule.
+
+```swift
 nonTriggeringExamples: [
     Example("let x: [Int]"),
-    Example("let x: [Int: String]").focused()   // only this one will be run in tests
+    Example("let x: [Int: String]").focused()   // Only this one will be run in tests.
 ],
 triggeringExamples: [
     Example("let x: ↓Array<String>"),
@@ -91,27 +102,29 @@ triggeringExamples: [
 ]
 ```
 
-### `ConfigurationProviderRule`
+### Configuration
 
-If your rule supports user-configurable options via `.swiftlint.yml`, you can
-accomplish this by conforming to `ConfigurationProviderRule`. You must provide a
-configuration object via the `configuration` property:
+Every rule is configurable via `.swiftlint.yml`, even if only by settings its default
+severity. This is done by setting the `configuration` property of a rule as:
 
-* The object provided must conform to `RuleConfiguration`.
-* There are several provided `RuleConfiguration`s that cover the common patterns like
-  configuring violation severity, violation severity levels, and evaluating
-  names.
-* If none of the provided `RuleConfiguration`s are applicable, you can create one
-  specifically for your rule.
+```swift
+var configuration = SeverityConfiguration<Self>(.warning)
+```
 
-See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintBuiltInRules/Rules/Idiomatic/ForceCastRule.swift)
-for a rule that allows severity configuration,
-[`FileLengthRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintBuiltInRules/Rules/Metrics/FileLengthRule.swift)
-for a rule that has multiple severity levels,
-[`IdentifierNameRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintBuiltInRules/Rules/Style/IdentifierNameRule.swift)
-for a rule that allows name evaluation configuration:
+If a rule requires more options, a specific configuration can be implemented
+and associated with the rule via its `configuration` property. Check for rules providing
+their own configurations as extensive examples or check out
 
-``` yaml
+* [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintBuiltInRules/Rules/Idiomatic/ForceCastRule.swift)
+  for a rule that allows severity configuration,
+* [`FileLengthRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintBuiltInRules/Rules/Metrics/FileLengthRule.swift)
+  for a rule that has multiple severity levels or
+* [`IdentifierNameRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintBuiltInRules/Rules/Style/IdentifierNameRule.swift)
+  for a rule that allows name evaluation configuration.
+
+Configuring them in `.swiftlint.yml` looks like:
+
+```yaml
 force_cast: warning
 
 file_length:
@@ -126,22 +139,7 @@ identifier_name:
   excluded: id
 ```
 
-If your rule is configurable, but does not fit the pattern of
-`ConfigurationProviderRule`, you can conform directly to `Rule`:
-
-* `init(configuration: AnyObject) throws` will be passed the result of parsing the
-  value from `.swiftlint.yml` associated with your rule's `identifier` as a key
-  (if present).
-* `configuration` may be of any type supported by YAML (e.g. `Int`, `String`, `Array`,
-  `Dictionary`, etc.).
-* This initializer must throw if it does not understand the configuration, or
-  it cannot be fully initialized with the configuration and default values.
-* By convention, a failing initializer throws
-  `Issue.unknownConfiguration(ruleID: Parent.identifier)`.
-* If this initializer fails, your rule will be initialized with its default
-  values by calling `init()`.
-
-## Tracking changes
+## Tracking Changes
 
 All changes should be made via pull requests on GitHub.
 
@@ -151,13 +149,14 @@ summary of your changes to the `CHANGELOG.md` file.
 We follow the same syntax as CocoaPods' CHANGELOG.md:
 
 1. One Markdown unnumbered list item describing the change.
-2. 2 trailing spaces on the last line describing the change (so that Markdown renders each change [on its own line](https://daringfireball.net/projects/markdown/syntax#p)).
-3. A list of Markdown hyperlinks to the contributors to the change. One entry
+1. 2 trailing spaces on the last line describing the change (so that Markdown renders each change
+  [on its own line](https://daringfireball.net/projects/markdown/syntax#p)).
+1. A list of Markdown hyperlinks to the contributors to the change. One entry
    per line. Usually just one.
-4. A list of Markdown hyperlinks to the issues the change addresses. One entry
+1. A list of Markdown hyperlinks to the issues the change addresses. One entry
    per line. Usually just one. If there was no issue tracking this change,
    you may instead link to the change's pull request.
-5. All CHANGELOG.md content is hard-wrapped at 80 characters.
+1. All CHANGELOG.md content is hard-wrapped at 80 characters.
 
 ## CI
 
@@ -175,10 +174,10 @@ To bring up a new Buildkite worker from MacStadium:
 
 1. Change account password
 1. Update macOS to the latest version
-1. Install Homebrew: https://brew.sh
+1. Install Homebrew: <https://brew.sh>
 1. Install Buildkite agent and other tools via Homebrew:
    `brew install aria2 bazelisk htop buildkite/buildkite/buildkite-agent robotsandpencils/made/xcodes`
 1. Install latest Xcode version: `xcodes update && xcodes install 14.0.0`
 1. Add `DANGER_GITHUB_API_TOKEN` and `HOME` to `/opt/homebrew/etc/buildkite-agent/hooks/environment`
 1. Configure and launch buildkite agent: `brew info buildkite-agent` /
-   https://buildkite.com/organizations/swiftlint/agents#setup-macos
+   <https://buildkite.com/organizations/swiftlint/agents#setup-macos>

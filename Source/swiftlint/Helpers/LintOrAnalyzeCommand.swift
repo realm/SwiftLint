@@ -44,6 +44,9 @@ struct LintOrAnalyzeCommand {
     private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws {
         let builder = LintOrAnalyzeResultBuilder(options)
         let files = try await collectViolations(builder: builder)
+        if let baselineOutputPath = options.writeBaseline {
+            try Baseline.write(violations: builder.allViolations, toPath: baselineOutputPath)
+        }
         try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
             try postProcessViolations(files: files, builder: builder)
         }
@@ -52,6 +55,12 @@ struct LintOrAnalyzeCommand {
     private static func collectViolations(builder: LintOrAnalyzeResultBuilder) async throws -> [SwiftLintFile] {
         let options = builder.options
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
+        let baseline: Baseline?
+        if let baselinePath = builder.options.baseline {
+            baseline = try Baseline(fromPath: baselinePath)
+        } else {
+            baseline = nil
+        }
         return try await builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
                                                                   storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
@@ -65,10 +74,10 @@ struct LintOrAnalyzeCommand {
                     strict: builder.configuration.strict,
                     violations: violationsBeforeLeniency
                 )
+
                 visitorMutationQueue.sync {
                     builder.fileBenchmark.record(file: linter.file, from: start)
                     currentRuleTimes.forEach { builder.ruleBenchmark.record(id: $0, time: $1) }
-                    builder.violations += currentViolations
                 }
             } else {
                 currentViolations = applyLeniency(
@@ -76,12 +85,16 @@ struct LintOrAnalyzeCommand {
                     strict: builder.configuration.strict,
                     violations: linter.styleViolations(using: builder.storage)
                 )
-                visitorMutationQueue.sync {
-                    builder.violations += currentViolations
-                }
             }
+            let filteredViolations = baseline != nil ? baseline?.filter(currentViolations) ?? [] : currentViolations
+            visitorMutationQueue.sync {
+                builder.allViolations += currentViolations
+                builder.violations += filteredViolations
+            }
+
             linter.file.invalidateCache()
-            builder.report(violations: currentViolations, realtimeCondition: true)
+            // Here maybe, is where we insert outselves
+            builder.report(violations: filteredViolations, realtimeCondition: true)
         }
     }
 
@@ -237,6 +250,8 @@ struct LintOrAnalyzeOptions {
     let useScriptInputFiles: Bool
     let benchmark: Bool
     let reporter: String?
+    let baseline: String?
+    let writeBaseline: String?
     let quiet: Bool
     let output: String?
     let progress: Bool
@@ -261,6 +276,7 @@ private class LintOrAnalyzeResultBuilder {
     var fileBenchmark = Benchmark(name: "files")
     var ruleBenchmark = Benchmark(name: "rules")
     var violations = [StyleViolation]()
+    var allViolations = [StyleViolation]()
     let storage = RuleStorage()
     let configuration: Configuration
     let reporter: any Reporter.Type
@@ -348,4 +364,27 @@ private func memoryUsage() -> String? {
     let errorMessage = String(cString: mach_error_string(kerr), encoding: .ascii)
     return "Error with task_info(): \(errorMessage ?? "unknown")"
 #endif
+}
+
+class Baseline {
+    private let violations: [StyleViolation]
+
+    init(fromPath path: String) throws {
+        let url = URL(fileURLWithPath: path)
+        let data = try Data(contentsOf: url)
+        let decoder = PropertyListDecoder()
+        let violations = try decoder.decode([StyleViolation].self, from: data)
+        self.violations = violations
+    }
+
+    class func write(violations: [StyleViolation], toPath path: String) throws {
+        let url = URL(fileURLWithPath: path)
+        let encoder = PropertyListEncoder()
+        let data = try encoder.encode(violations)
+        try data.write(to: url)
+    }
+
+    func filter(_ violations: [StyleViolation]) -> [StyleViolation] {
+        violations
+    }
 }

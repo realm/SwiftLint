@@ -74,7 +74,6 @@ struct LintOrAnalyzeCommand {
                     strict: builder.configuration.strict,
                     violations: violationsBeforeLeniency
                 )
-
                 visitorMutationQueue.sync {
                     builder.fileBenchmark.record(file: linter.file, from: start)
                     currentRuleTimes.forEach { builder.ruleBenchmark.record(id: $0, time: $1) }
@@ -93,7 +92,6 @@ struct LintOrAnalyzeCommand {
             }
 
             linter.file.invalidateCache()
-            // Here maybe, is where we insert outselves
             builder.report(violations: filteredViolations, realtimeCondition: true)
         }
     }
@@ -367,20 +365,20 @@ private func memoryUsage() -> String? {
 }
 
 class Baseline {
-    private let violations: [String:[StyleViolation]]
+    private let violations: [String: [StyleViolation]]
 
     init(fromPath path: String) throws {
         let url = URL(fileURLWithPath: path)
         let data = try Data(contentsOf: url)
         let decoder = PropertyListDecoder()
-        let violations = try decoder.decode([String:[StyleViolation]].self, from: data)
+        let violations = try decoder.decode([String: [StyleViolation]].self, from: data)
         self.violations = violations
     }
 
     class func write(violations: [StyleViolation], toPath path: String) throws {
         let url = URL(fileURLWithPath: path)
         let encoder = PropertyListEncoder()
-        let violationsMap = Dictionary(grouping: violations, by: { $0.location.relativeFile ?? ""})
+        let violationsMap = Dictionary(grouping: violations, by: { $0.location.relativeFile ?? "" })
         let data = try encoder.encode(violationsMap)
         try data.write(to: url)
     }
@@ -401,8 +399,7 @@ class Baseline {
             if let baselineViolation,
                violation.ruleIdentifier == baselineViolation.ruleIdentifier,
                violation.reason == baselineViolation.reason,
-               violation.severity == baselineViolation.severity
-            {
+               violation.severity == baselineViolation.severity {
                 continue
             }
             filteredViolations.append(violation)

@@ -460,42 +460,42 @@ extension ConfigurationTests {
         configuration: Configuration,
         ruleType: any Rule.Type
     ) {
-        if case .default(let disabledRules, let optInRules) = configuration.rulesMode {
-            let mergedConfiguration = parentConfiguration?.merged(withChild: configuration) ?? configuration
-            let isEnabled = mergedConfiguration.contains(rule: ruleType)
-            let issue = Configuration.validateConfiguredRuleIsEnabled(
-                parentConfiguration: parentConfiguration,
-                disabledRules: disabledRules,
-                optInRules: optInRules,
-                ruleType: ruleType
-            )
-            XCTAssertEqual(isEnabled, issue == nil)
-            guard let issue else {
-                return
-            }
-            let ruleIdentifier = ruleType.identifier
-            if disabledRules.isEmpty, optInRules.isEmpty {
-                if parentConfiguration == nil ||
-                    parentConfiguration == Configuration.emptyDefaultConfiguration() {
-                    XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
-                    return
-                }
+        guard let case .default(let disabledRules, let optInRules) = configuration.rulesMode else {
+            XCTFail("Configuration rulesMode was not the default")
+            return
+        }
 
-                if parentConfiguration == Configuration.emptyOnlyConfiguration() {
-                    if ruleType is any OptInRule.Type {
-                        XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
-                    } else {
-                        XCTAssertEqual(issue, Issue.ruleNotEnabledInParentOnlyRules(ruleID: ruleIdentifier))
-                    }
-                    return
-                }
-                if parentConfiguration == Configuration.optInDisabledDefaultConfiguration(ruleIdentifier) ||
-                    parentConfiguration == Configuration.disabledDefaultConfiguration(ruleIdentifier) {
-                    XCTAssertEqual(issue, Issue.ruleDisabledInParentConfiguration(ruleID: ruleIdentifier))
-                    return
-                }
-            }
+        let mergedConfiguration = parentConfiguration?.merged(withChild: configuration) ?? configuration
+        let isEnabled = mergedConfiguration.contains(rule: ruleType)
+        let issue = Configuration.validateConfiguredRuleIsEnabled(
+            parentConfiguration: parentConfiguration,
+            disabledRules: disabledRules,
+            optInRules: optInRules,
+            ruleType: ruleType
+        )
+        XCTAssertEqual(isEnabled, issue == nil)
+        guard let issue else {
+            return
+        }
+        let ruleIdentifier = ruleType.identifier
+
+        guard disabledRules.isEmpty, optInRules.isEmpty else {
             XCTAssertEqual(issue, Issue.ruleDisabledInDisabledRules(ruleID: ruleIdentifier))
+            return
+        }
+
+        if parentConfiguration == nil ||
+            parentConfiguration == Configuration.emptyDefaultConfiguration() {
+            XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
+        } else if parentConfiguration == Configuration.emptyOnlyConfiguration() {
+            if ruleType is any OptInRule.Type {
+                XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
+            } else {
+                XCTAssertEqual(issue, Issue.ruleNotEnabledInParentOnlyRules(ruleID: ruleIdentifier))
+            }
+        } else if parentConfiguration == Configuration.optInDisabledDefaultConfiguration(ruleIdentifier) ||
+            parentConfiguration == Configuration.disabledDefaultConfiguration(ruleIdentifier) {
+            XCTAssertEqual(issue, Issue.ruleDisabledInParentConfiguration(ruleID: ruleIdentifier))
         }
     }
 

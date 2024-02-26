@@ -32,7 +32,6 @@ struct Baseline: Equatable {
         try data.write(to: url)
     }
 
-    // swiftlint:disable:next function_body_length cyclomatic_complexity
     func filter(_ violations: [StyleViolation]) -> [StyleViolation] {
         guard let firstViolation = violations.first else {
             return []
@@ -76,22 +75,34 @@ struct Baseline: Equatable {
             return violations.filter { filteredViolations.contains($0) }
         }
 
-        // Experimental code. Try and identify new violations based on their order in the
-        // new scan and baseline respectively.
+        // Experimental extra filtering
+        filteredViolations = filterViolationsByOrder(
+            filteredViolations: filteredViolations,
+            violations: remainingViolations,
+            baselineViolations: remainingBaselineViolations
+        )
+
+        return violations.filter { filteredViolations.contains($0) }
+    }
+
+    private func filterViolationsByOrder(
+        filteredViolations: Set<StyleViolation>,
+        violations: [StyleViolation],
+        baselineViolations: [StyleViolation]
+    ) -> Set<StyleViolation> {
         var filteredViolationsByRuleIdentifier = Dictionary(
             grouping: filteredViolations,
             by: { $0.ruleIdentifier }
         )
-
         guard filteredViolationsByRuleIdentifier.filter({ $0.value.count > 1 }).isNotEmpty else {
-            return violations.filter { filteredViolations.contains($0) }
+            return filteredViolations
         }
 
         var orderedViolations: [StyleViolation] = []
-        for (index, violation) in remainingViolations.enumerated() {
+        for (index, violation) in violations.enumerated() {
             let baselineViolationIndex = index - orderedViolations.count
-            let baselineViolation = baselineViolationIndex < remainingBaselineViolations.count ?
-            remainingBaselineViolations[baselineViolationIndex] : nil
+            let baselineViolation = baselineViolationIndex < baselineViolations.count ?
+            baselineViolations[baselineViolationIndex] : nil
             if let baselineViolation,
                violation.ruleIdentifier == baselineViolation.ruleIdentifier,
                violation.reason == baselineViolation.reason,
@@ -110,8 +121,7 @@ struct Baseline: Equatable {
                 }
             }
         }
-        filteredViolations = Set(filteredViolationsByRuleIdentifier.flatMap { _, value in value })
-        return violations.filter { filteredViolations.contains($0) }
+        return Set(filteredViolationsByRuleIdentifier.flatMap { _, value in value })
     }
 }
 

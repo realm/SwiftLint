@@ -40,36 +40,33 @@ struct Baseline: Equatable {
               baselineViolations.isNotEmpty else {
             return violations
         }
-        if violations == baselineViolations {
+        guard violations != baselineViolations else {
             return []
         }
-        var filteredViolations: [StyleViolation] = []
-//        var skippedViolationCount = 0
-        if violations.count >= baselineViolations.count {
-            for (index, violation) in violations.enumerated() {
-                let baselineViolationIndex = index - filteredViolations.count
-                let baselineViolation = baselineViolationIndex < baselineViolations.count ?
-                baselineViolations[baselineViolationIndex] : nil
-                if let baselineViolation,
-                   violation.ruleIdentifier == baselineViolation.ruleIdentifier,
-                   violation.reason == baselineViolation.reason,
-                   violation.severity == baselineViolation.severity {
-                    continue
-                }
-                filteredViolations.append(violation)
+
+        // remove any that are identical
+        let setOfViolations = Set(violations)
+        let setOfBaselineViolations = Set(baselineViolations)
+        let remainingViolations = violations.filter { !setOfBaselineViolations.contains($0) }
+        let remainingBaselineViolations = baselineViolations.filter { !setOfViolations.contains($0) }
+        let violationsByRuleIdentifier = Dictionary(grouping: remainingViolations, by: { $0.ruleIdentifier } )
+        let baselineViolationsByRuleIdentifier = Dictionary(grouping: remainingBaselineViolations, by: { $0.ruleIdentifier } )
+
+        var filteredViolations: Set<StyleViolation> = []
+
+        for (ruleIdentifier, ruleViolations) in violationsByRuleIdentifier {
+            guard let baselineViolations = baselineViolationsByRuleIdentifier[ruleIdentifier] else {
+                filteredViolations.formUnion(ruleViolations)
+                continue
             }
-        } else {
-//            let violationIndex = index - skippedViolationCount
-//            let actualViolation = violations[violationIndex]
-//            let baselineViolation = baselineViolations[index]
-//            if actualViolation.ruleIdentifier == baselineViolation.ruleIdentifier,
-//               actualViolation.reason == baselineViolation.reason,
-//               actualViolation.severity == baselineViolation.severity {
-//                continue
-//            }
-//            skippedViolationCount += 1
+            guard ruleViolations.count > baselineViolations.count else {
+                continue
+            }
+            // TODO: We need to try to work out which ones are new here
+            filteredViolations.formUnion(ruleViolations)
         }
 
-        return filteredViolations
+        let orderedViolations = violations.filter { filteredViolations.contains($0) }
+        return orderedViolations
     }
 }

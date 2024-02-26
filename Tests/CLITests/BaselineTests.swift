@@ -8,7 +8,7 @@ final class BaselineTests: XCTestCase {
         "/Some/path.swift"
     }
     private var violations: [StyleViolation] {
-        return [
+        [
             StyleViolation(
                 ruleDescription: ArrayInitRule.description,
                 location: Location(file: path, line: 1, character: 1)
@@ -46,18 +46,13 @@ final class BaselineTests: XCTestCase {
     }
 
     func testShiftedViolations() throws {
-        let violations = violations.compactMap { violation -> StyleViolation? in
-            guard let ruleDescription = RuleRegistry.shared.list.list[violation.ruleIdentifier]?.description else {
-                return nil
-            }
-            return StyleViolation(
-                ruleDescription: ruleDescription,
-                location: Location(
-                    file: violation.location.file,
-                    line: (violation.location.line ?? 0) + 2,
-                    character: violation.location.character
-                )
+        let violations = violations.map {
+            let location = Location(
+                file: $0.location.file,
+                line: $0.location.line ?? 0 + 2,
+                character: $0.location.character
             )
+            return $0.with(location: location)
         }
         XCTAssertEqual([], baseline.filter(violations))
     }

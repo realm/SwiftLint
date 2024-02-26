@@ -57,7 +57,13 @@ struct LintOrAnalyzeCommand {
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
         let baseline: Baseline?
         if let baselinePath = builder.options.baseline {
-            baseline = try Baseline(fromPath: baselinePath)
+            baseline = do {
+                try Baseline(fromPath: baselinePath)
+            } catch {
+                Issue.genericWarning(
+                    "The baseline file could not be read from \(baselinePath)."
+                ).print()
+            }
         } else {
             baseline = nil
         }

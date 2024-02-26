@@ -71,6 +71,45 @@ struct Baseline: Equatable {
             filteredViolations.formUnion(ruleViolations)
         }
 
+        guard filteredViolations.count > 1 else {
+            return violations.filter { filteredViolations.contains($0) }
+        }
+
+        // Experimental code. Try and identify new violations based on their order in the
+        // new scan and baseline respectively.
+        var filteredViolationsByRuleIdentifier = Dictionary(
+            grouping: filteredViolations,
+            by: { $0.ruleIdentifier }
+        )
+
+        guard filteredViolationsByRuleIdentifier.filter({ $0.value.count > 1 }).isNotEmpty else {
+            return violations.filter { filteredViolations.contains($0) }
+        }
+
+        var orderedViolations: [StyleViolation] = []
+        for (index, violation) in remainingViolations.enumerated() {
+            let baselineViolationIndex = index - orderedViolations.count
+            let baselineViolation = baselineViolationIndex < remainingBaselineViolations.count ?
+            remainingBaselineViolations[baselineViolationIndex] : nil
+            if let baselineViolation,
+               violation.ruleIdentifier == baselineViolation.ruleIdentifier,
+               violation.reason == baselineViolation.reason,
+               violation.severity == baselineViolation.severity {
+                continue
+            }
+            orderedViolations.append(violation)
+        }
+
+        let groupedOrderedViolations = Dictionary(grouping: orderedViolations, by: { $0.ruleIdentifier })
+        for (ruleIdentifier, orderedViolations) in groupedOrderedViolations {
+            if let filteredViolationsForRule = filteredViolationsByRuleIdentifier[ruleIdentifier] {
+                if orderedViolations.count < filteredViolationsForRule.count {
+                    // If we found fewer violations by ordering, report the lower number
+                    filteredViolationsByRuleIdentifier[ruleIdentifier] = orderedViolations
+                }
+            }
+        }
+        filteredViolations = Set(filteredViolationsByRuleIdentifier.flatMap { _, value in value })
         return violations.filter { filteredViolations.contains($0) }
     }
 }
@@ -93,4 +132,3 @@ private extension Array where Element == StyleViolation {
         }
     }
 }
-

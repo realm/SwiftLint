@@ -7,13 +7,12 @@ struct Baseline: Equatable {
     init(fromPath path: String) throws {
         let url = URL(fileURLWithPath: path)
         let data = try Data(contentsOf: url)
-        let decoder = PropertyListDecoder()
-        let violations = try decoder.decode([String: [StyleViolation]].self, from: data)
+        let violations = try PropertyListDecoder().decode([String: [StyleViolation]].self, from: data)
         self.violations = violations
     }
 
     init(violations: [StyleViolation]) {
-        self.violations = violations.groupByFile()
+        self.violations = violations.groupedByFile()
     }
 
     func write(toPath path: String) throws {
@@ -21,14 +20,13 @@ struct Baseline: Equatable {
     }
 
     static func write(violations: [StyleViolation], toPath path: String) throws {
-        let violations = violations.groupByFile()
+        let violations = violations.groupedByFile()
         try write(violations: violations, toPath: path)
     }
 
     private static func write(violations: [String: [StyleViolation]], toPath path: String) throws {
         let url = URL(fileURLWithPath: path)
-        let encoder = PropertyListEncoder()
-        let data = try encoder.encode(violations)
+        let data = try PropertyListEncoder().encode(violations)
         try data.write(to: url)
     }
 
@@ -41,21 +39,18 @@ struct Baseline: Equatable {
             return violations
         }
 
-        let convertedViolations = violations.removeAbsolutePaths()
-        guard convertedViolations != baselineViolations else {
+        let relativePathViolations = violations.removeAbsolutePaths()
+        guard relativePathViolations != baselineViolations else {
             return []
         }
 
         // remove any that are identical
-        let setOfViolations = Set(convertedViolations)
+        let setOfViolations = Set(relativePathViolations)
         let setOfBaselineViolations = Set(baselineViolations)
-        let remainingViolations = convertedViolations.filter { !setOfBaselineViolations.contains($0) }
+        let remainingViolations = relativePathViolations.filter { !setOfBaselineViolations.contains($0) }
         let remainingBaselineViolations = baselineViolations.filter { !setOfViolations.contains($0) }
-        let violationsByRuleIdentifier = Dictionary(grouping: remainingViolations, by: { $0.ruleIdentifier })
-        let baselineViolationsByRuleIdentifier = Dictionary(
-            grouping: remainingBaselineViolations,
-            by: { $0.ruleIdentifier }
-        )
+        let violationsByRuleIdentifier = remainingViolations.groupedByRuleIdentifier()
+        let baselineViolationsByRuleIdentifier = remainingBaselineViolations.groupedByRuleIdentifier()
 
         var filteredViolations: Set<StyleViolation> = []
 
@@ -90,10 +85,7 @@ struct Baseline: Equatable {
         violations: [StyleViolation],
         baselineViolations: [StyleViolation]
     ) -> Set<StyleViolation> {
-        var filteredViolationsByRuleIdentifier = Dictionary(
-            grouping: filteredViolations,
-            by: { $0.ruleIdentifier }
-        )
+        var filteredViolationsByRuleIdentifier = filteredViolations.groupedByRuleIdentifier()
         guard filteredViolationsByRuleIdentifier.filter({ $0.value.count > 1 }).isNotEmpty else {
             return filteredViolations
         }
@@ -112,7 +104,7 @@ struct Baseline: Equatable {
             orderedViolations.append(violation)
         }
 
-        let groupedOrderedViolations = Dictionary(grouping: orderedViolations, by: { $0.ruleIdentifier })
+        let groupedOrderedViolations = orderedViolations.groupedByRuleIdentifier()
         for (ruleIdentifier, orderedViolations) in groupedOrderedViolations {
             if let filteredViolationsForRule = filteredViolationsByRuleIdentifier[ruleIdentifier] {
                 if orderedViolations.count < filteredViolationsForRule.count {
@@ -125,12 +117,16 @@ struct Baseline: Equatable {
     }
 }
 
-private extension Array where Element == StyleViolation {
-    func groupByFile() -> [String: [StyleViolation]] {
+private extension Sequence where Element == StyleViolation {
+    func groupedByFile() -> [String: [StyleViolation]] {
         Dictionary(
             grouping: self,
             by: { $0.location.relativeFile ?? "" }
         ).mapValues { $0.removeAbsolutePaths() }
+    }
+
+    func groupedByRuleIdentifier() -> [String: [StyleViolation]] {
+        Dictionary(grouping: self) { $0.ruleIdentifier }
     }
 
     func removeAbsolutePaths() -> [StyleViolation] {

@@ -36,23 +36,38 @@ struct Baseline: Equatable {
         guard let firstViolation = violations.first else {
             return []
         }
-        guard let baselineViolations = self.violations[firstViolation.location.relativeFile ?? ""], baselineViolations.isNotEmpty else {
+        guard let baselineViolations = self.violations[firstViolation.location.relativeFile ?? ""],
+              baselineViolations.isNotEmpty else {
             return violations
         }
         if violations == baselineViolations {
             return []
         }
         var filteredViolations: [StyleViolation] = []
-        for (index, violation) in violations.enumerated() {
-            let baselineViolationIndex = index - filteredViolations.count
-            let baselineViolation = baselineViolationIndex < baselineViolations.count ? baselineViolations[baselineViolationIndex] : nil
-            if let baselineViolation,
-               violation.ruleIdentifier == baselineViolation.ruleIdentifier,
-               violation.reason == baselineViolation.reason,
-               violation.severity == baselineViolation.severity {
-                continue
+//        var skippedViolationCount = 0
+        if violations.count >= baselineViolations.count {
+            for (index, violation) in violations.enumerated() {
+                let baselineViolationIndex = index - filteredViolations.count
+                let baselineViolation = baselineViolationIndex < baselineViolations.count ?
+                baselineViolations[baselineViolationIndex] : nil
+                if let baselineViolation,
+                   violation.ruleIdentifier == baselineViolation.ruleIdentifier,
+                   violation.reason == baselineViolation.reason,
+                   violation.severity == baselineViolation.severity {
+                    continue
+                }
+                filteredViolations.append(violation)
             }
-            filteredViolations.append(violation)
+        } else {
+//            let violationIndex = index - skippedViolationCount
+//            let actualViolation = violations[violationIndex]
+//            let baselineViolation = baselineViolations[index]
+//            if actualViolation.ruleIdentifier == baselineViolation.ruleIdentifier,
+//               actualViolation.reason == baselineViolation.reason,
+//               actualViolation.severity == baselineViolation.severity {
+//                continue
+//            }
+//            skippedViolationCount += 1
         }
 
         return filteredViolations

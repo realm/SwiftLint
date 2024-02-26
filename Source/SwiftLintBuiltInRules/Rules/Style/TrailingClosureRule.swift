@@ -156,7 +156,7 @@ private extension FunctionCallExprSyntax {
             .dropParensIfNeeded()
     }
 
-    func dropParensIfNeeded() -> Self {
+    func dropParensIfEmpty() -> Self {
         if arguments.isEmpty {
             self
                 .with(\.rightParen, nil)

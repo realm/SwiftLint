@@ -153,7 +153,7 @@ private extension FunctionCallExprSyntax {
 
         return self
             .with(\.arguments, arguments.dropLastTrailingComma())
-            .dropParensIfNeeded()
+            .dropParensIfEmpty()
     }
 
     func dropParensIfEmpty() -> Self {

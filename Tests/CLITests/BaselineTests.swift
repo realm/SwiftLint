@@ -33,7 +33,8 @@ final class BaselineTests: XCTestCase {
     }
 
     func testWritingAndReading() throws {
-        let baselinePath = "/tmp/Foo.baseline"
+        let temporaryDirectory = FileManager.default.temporaryDirectory
+        let baselinePath = temporaryDirectory.appendingPathComponent(UUID().uuidString).path
         let baseline = self.baseline
         try baseline.write(toPath: baselinePath)
         let newBaseline = try Baseline(fromPath: baselinePath)
@@ -46,15 +47,7 @@ final class BaselineTests: XCTestCase {
     }
 
     func testShiftedViolations() throws {
-        let violations = violations.map {
-            let location = Location(
-                file: $0.location.file,
-                line: $0.location.line ?? 0 + 2,
-                character: $0.location.character
-            )
-            return $0.with(location: location)
-        }
-        XCTAssertEqual([], baseline.filter(violations))
+        XCTAssertEqual([], baseline.filter(violations.map { $0.with(locationLineShiftedBy: 2) }))
     }
 
     func testNewViolations() {
@@ -65,5 +58,11 @@ final class BaselineTests: XCTestCase {
         )
         newViolations.insert(violation, at: 2)
         XCTAssertEqual([violation], baseline.filter(newViolations))
+    }
+}
+
+private extension StyleViolation {
+    func with(locationLineShiftedBy shift: Int) -> StyleViolation {
+        with(location: Location(file: location.file, line: location.line ?? 0 + shift, character: location.character))
     }
 }

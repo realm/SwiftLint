@@ -67,7 +67,9 @@ struct TrailingClosureRule: OptInRule {
             """, excludeFromDocumentation: true):
                 Example("""
             for n in list {
-                n.forEach { print($0) }
+                n.forEach {
+                    print($0)
+                }
             }
             """, excludeFromDocumentation: true)
         ]

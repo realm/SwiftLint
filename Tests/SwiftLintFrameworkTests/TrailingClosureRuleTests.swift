@@ -20,7 +20,9 @@ class TrailingClosureRuleTests: SwiftLintTestCase {
                 """, excludeFromDocumentation: true):
                     Example("""
                 for n in list {
-                    n.forEach { print($0) }
+                    n.forEach {
+                        print($0)
+                    }
                 }
                 """, excludeFromDocumentation: true)
             ])

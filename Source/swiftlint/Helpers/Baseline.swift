@@ -16,7 +16,7 @@ struct Baseline: Equatable {
         self.violations = Self.groupViolations(violations)
     }
 
-    private static func groupViolations(_ violations: [StyleViolation]) -> [String:[StyleViolation]] {
+    private static func groupViolations(_ violations: [StyleViolation]) -> [String: [StyleViolation]] {
         Dictionary(
             grouping: violations,
             by: { $0.location.relativeFile ?? "" }
@@ -69,7 +69,10 @@ struct Baseline: Equatable {
         let remainingViolations = convertedViolations.filter { !setOfBaselineViolations.contains($0) }
         let remainingBaselineViolations = baselineViolations.filter { !setOfViolations.contains($0) }
         let violationsByRuleIdentifier = Dictionary(grouping: remainingViolations, by: { $0.ruleIdentifier })
-        let baselineViolationsByRuleIdentifier = Dictionary(grouping: remainingBaselineViolations, by: { $0.ruleIdentifier })
+        let baselineViolationsByRuleIdentifier = Dictionary(
+            grouping: remainingBaselineViolations,
+            by: { $0.ruleIdentifier }
+        )
 
         var filteredViolations: Set<StyleViolation> = []
 
@@ -85,7 +88,6 @@ struct Baseline: Equatable {
             filteredViolations.formUnion(ruleViolations)
         }
 
-        let orderedViolations = violations.filter { filteredViolations.contains($0) }
-        return orderedViolations
+        return violations.filter { filteredViolations.contains($0) }
     }
 }

@@ -71,6 +71,23 @@ struct TrailingClosureRule: OptInRule {
                     print($0)
                 }
             }
+            """, excludeFromDocumentation: true),
+            Example("""
+            f(a: 1,
+            b: 2,
+            c: { 3 })
+            """, excludeFromDocumentation: true):
+                Example("""
+            f(a: 1,
+            b: 2) { 3 }
+            """, excludeFromDocumentation: true),
+            Example("""
+            f(a: 1, // comment
+            b: 2, /* comment */, c: { 3 })
+            """, excludeFromDocumentation: true):
+                Example("""
+            f(a: 1, // comment
+            b: 2, /* comment */) { 3 }
             """, excludeFromDocumentation: true)
         ]
     )

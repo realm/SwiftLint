@@ -60,10 +60,14 @@ struct LintOrAnalyzeCommand {
             do {
                 baseline = try Baseline(fromPath: baselinePath)
             } catch {
-                baseline = nil
                 Issue.genericWarning(
                     "The baseline file could not be read from \(baselinePath)."
                 ).print()
+                if options.writeBaseline != nil {
+                    baseline = nil
+                } else {
+                    throw error
+                }
             }
         } else {
             baseline = nil

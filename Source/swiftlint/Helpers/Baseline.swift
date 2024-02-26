@@ -32,6 +32,7 @@ struct Baseline: Equatable {
         try data.write(to: url)
     }
 
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     func filter(_ violations: [StyleViolation]) -> [StyleViolation] {
         guard let firstViolation = violations.first else {
             return []

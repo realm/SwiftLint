@@ -1,7 +1,8 @@
 import Foundation
 import SwiftLintFramework
 
-class Baseline {
+
+struct Baseline : Equatable {
     private let violations: [String: [StyleViolation]]
 
     init(fromPath path: String) throws {
@@ -12,11 +13,23 @@ class Baseline {
         self.violations = violations
     }
 
-    class func write(violations: [StyleViolation], toPath path: String) throws {
+    init(violations: [StyleViolation]) {
+        self.violations = Dictionary(grouping: violations, by: { $0.location.relativeFile ?? "" })
+    }
+
+    func write(toPath path: String) throws {
+        try Self.write(violations: violations, toPath: path)
+    }
+
+    static func write(violations: [StyleViolation], toPath path: String) throws {
+        let violations = Dictionary(grouping: violations, by: { $0.location.relativeFile ?? "" })
+        try write(violations: violations, toPath: path)
+    }
+
+    private static func write(violations: [String: [StyleViolation]], toPath path: String) throws {
         let url = URL(fileURLWithPath: path)
         let encoder = PropertyListEncoder()
-        let violationsMap = Dictionary(grouping: violations, by: { $0.location.relativeFile ?? "" })
-        let data = try encoder.encode(violationsMap)
+        let data = try encoder.encode(violations)
         try data.write(to: url)
     }
 
@@ -32,7 +45,8 @@ class Baseline {
         }
         var filteredViolations: [StyleViolation] = []
         for (index, violation) in violations.enumerated() {
-            let baselineViolation = index < baselineViolations.count ? baselineViolations[index] : nil
+            let baselineViolationIndex = index - filteredViolations.count
+            let baselineViolation = baselineViolationIndex < baselineViolations.count ? baselineViolations[baselineViolationIndex] : nil
             if let baselineViolation,
                violation.ruleIdentifier == baselineViolation.ruleIdentifier,
                violation.reason == baselineViolation.reason,

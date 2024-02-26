@@ -1,8 +1,7 @@
 import Foundation
 import SwiftLintFramework
 
-
-struct Baseline : Equatable {
+struct Baseline: Equatable {
     private let violations: [String: [StyleViolation]]
 
     init(fromPath path: String) throws {

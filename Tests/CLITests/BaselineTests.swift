@@ -24,7 +24,7 @@ final class BaselineTests: XCTestCase {
             StyleViolation(
                 ruleDescription: DirectReturnRule.description,
                 location: Location(file: path, line: 15, character: 1)
-            ),
+            )
         ]
     }
 

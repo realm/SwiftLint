@@ -185,10 +185,10 @@ private extension LabeledExprListSyntax {
     func dropLastTrailingComma() -> Self {
         guard let last else { return [] }
 
-        if last.trailingComma != nil {
-            return LabeledExprListSyntax(dropLast()) + CollectionOfOne(last.with(\.trailingComma, nil))
-        } else {
+        if last.trailingComma == nil {
             return self
+        } else {
+            return LabeledExprListSyntax(dropLast()) + CollectionOfOne(last.with(\.trailingComma, nil))
         }
     }
 }

@@ -123,7 +123,7 @@ private extension TrailingClosureRule {
         }
 
         override func visit(_ node: ForStmtSyntax) -> StmtSyntax {
-            if let body = rewrite(node.body).as(CodeBlockSyntax.self) {
+            if let body = rewrite(node.body).formatted().as(CodeBlockSyntax.self) {
                 StmtSyntax(node.with(\.body, body))
             } else {
                 StmtSyntax(node)

@@ -78,7 +78,7 @@ final class BaselineTests: XCTestCase {
 
 private extension Sequence where Element == StyleViolation {
     func lineShifted(by shift: Int) -> [StyleViolation] {
-        map { $0.with(locationLineShiftedBy: 1)
+        map {
             let shiftedLocation = Location(
                 file: $0.location.file,
                 line: ($0.location.line ?? 0) + shift,

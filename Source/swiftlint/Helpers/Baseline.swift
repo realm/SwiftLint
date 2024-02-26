@@ -13,24 +13,7 @@ struct Baseline: Equatable {
     }
 
     init(violations: [StyleViolation]) {
-        self.violations = Self.groupViolations(violations)
-    }
-
-    private static func groupViolations(_ violations: [StyleViolation]) -> [String: [StyleViolation]] {
-        Dictionary(
-            grouping: violations,
-            by: { $0.location.relativeFile ?? "" }
-        ).mapValues { convertViolations($0) }
-    }
-
-    private static func convertViolations(_ violations: [StyleViolation]) -> [StyleViolation] {
-        violations.map {
-            $0.with(location: Location(
-                file: $0.location.relativeFile,
-                line: $0.location.line,
-                character: $0.location.character)
-            )
-        }
+        self.violations = violations.groupByFile()
     }
 
     func write(toPath path: String) throws {
@@ -38,7 +21,7 @@ struct Baseline: Equatable {
     }
 
     static func write(violations: [StyleViolation], toPath path: String) throws {
-        let violations = groupViolations(violations)
+        let violations = violations.groupByFile()
         try write(violations: violations, toPath: path)
     }
 
@@ -58,7 +41,7 @@ struct Baseline: Equatable {
             return violations
         }
 
-        let convertedViolations = Self.convertViolations(violations)
+        let convertedViolations = violations.removeAbsolutePaths()
         guard convertedViolations != baselineViolations else {
             return []
         }
@@ -91,3 +74,23 @@ struct Baseline: Equatable {
         return violations.filter { filteredViolations.contains($0) }
     }
 }
+
+private extension Array where Element == StyleViolation {
+    func groupByFile() -> [String: [StyleViolation]] {
+        Dictionary(
+            grouping: self,
+            by: { $0.location.relativeFile ?? "" }
+        ).mapValues { $0.removeAbsolutePaths() }
+    }
+
+    func removeAbsolutePaths() -> [StyleViolation] {
+        self.map {
+            $0.with(location: Location(
+                file: $0.location.relativeFile,
+                line: $0.location.line,
+                character: $0.location.character)
+            )
+        }
+    }
+}
+

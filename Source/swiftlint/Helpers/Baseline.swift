@@ -13,7 +13,24 @@ struct Baseline: Equatable {
     }
 
     init(violations: [StyleViolation]) {
-        self.violations = Dictionary(grouping: violations, by: { $0.location.relativeFile ?? "" })
+        self.violations = Self.groupViolations(violations)
+    }
+
+    private static func groupViolations(_ violations: [StyleViolation]) -> [String:[StyleViolation]] {
+        Dictionary(
+            grouping: violations,
+            by: { $0.location.relativeFile ?? "" }
+        ).mapValues { convertViolations($0) }
+    }
+
+    private static func convertViolations(_ violations: [StyleViolation]) -> [StyleViolation] {
+        violations.map {
+            $0.with(location: Location(
+                file: $0.location.relativeFile,
+                line: $0.location.line,
+                character: $0.location.character)
+            )
+        }
     }
 
     func write(toPath path: String) throws {
@@ -21,7 +38,7 @@ struct Baseline: Equatable {
     }
 
     static func write(violations: [StyleViolation], toPath path: String) throws {
-        let violations = Dictionary(grouping: violations, by: { $0.location.relativeFile ?? "" })
+        let violations = groupViolations(violations)
         try write(violations: violations, toPath: path)
     }
 
@@ -40,17 +57,19 @@ struct Baseline: Equatable {
               baselineViolations.isNotEmpty else {
             return violations
         }
-        guard violations != baselineViolations else {
+
+        let convertedViolations = Self.convertViolations(violations)
+        guard convertedViolations != baselineViolations else {
             return []
         }
 
         // remove any that are identical
-        let setOfViolations = Set(violations)
+        let setOfViolations = Set(convertedViolations)
         let setOfBaselineViolations = Set(baselineViolations)
-        let remainingViolations = violations.filter { !setOfBaselineViolations.contains($0) }
+        let remainingViolations = convertedViolations.filter { !setOfBaselineViolations.contains($0) }
         let remainingBaselineViolations = baselineViolations.filter { !setOfViolations.contains($0) }
-        let violationsByRuleIdentifier = Dictionary(grouping: remainingViolations, by: { $0.ruleIdentifier } )
-        let baselineViolationsByRuleIdentifier = Dictionary(grouping: remainingBaselineViolations, by: { $0.ruleIdentifier } )
+        let violationsByRuleIdentifier = Dictionary(grouping: remainingViolations, by: { $0.ruleIdentifier })
+        let baselineViolationsByRuleIdentifier = Dictionary(grouping: remainingBaselineViolations, by: { $0.ruleIdentifier })
 
         var filteredViolations: Set<StyleViolation> = []
 

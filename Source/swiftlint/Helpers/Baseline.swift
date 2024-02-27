@@ -73,8 +73,8 @@ struct Baseline: Equatable {
         // Experimental extra filtering
         filteredViolations = filterViolationsByOrder(
             filteredViolations: filteredViolations,
-            violations: remainingViolations,
-            baselineViolations: remainingBaselineViolations
+            violations: relativePathViolations, // remainingViolations,
+            baselineViolations: baselineViolations
         )
 
         return violations.filter { filteredViolations.contains($0) }
@@ -105,11 +105,18 @@ struct Baseline: Equatable {
         }
 
         let groupedOrderedViolations = orderedViolations.groupedByRuleIdentifier()
+        let groupedBaselineViolations = baselineViolations.groupedByRuleIdentifier()
         for (ruleIdentifier, orderedViolations) in groupedOrderedViolations {
             if let filteredViolationsForRule = filteredViolationsByRuleIdentifier[ruleIdentifier] {
-                if orderedViolations.count < filteredViolationsForRule.count {
+                let newOrderedViolations: [StyleViolation]
+                if let baselineViolations = groupedBaselineViolations[ruleIdentifier] {
+                    newOrderedViolations = orderedViolations.filter { !baselineViolations.contains($0) }
+                } else {
+                    newOrderedViolations = orderedViolations
+                }
+                if newOrderedViolations.count < filteredViolationsForRule.count {
                     // If we found fewer violations by ordering, report the lower number
-                    filteredViolationsByRuleIdentifier[ruleIdentifier] = orderedViolations
+                    filteredViolationsByRuleIdentifier[ruleIdentifier] = newOrderedViolations
                 }
             }
         }

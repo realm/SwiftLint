@@ -88,4 +88,3 @@ private extension Sequence where Element == StyleViolation {
         }
     }
 }
-

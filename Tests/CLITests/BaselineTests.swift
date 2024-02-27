@@ -40,13 +40,11 @@ final class BaselineTests: XCTestCase {
     }
 
     func testNewViolations() {
-        var newViolations = violations
-        let violation = StyleViolation(
-            ruleDescription: BlanketDisableCommandRule.description,
-            location: Location(file: path, line: 12, character: 1)
+        testNewViolation(
+            violations: violations,
+            newViolationRuleDescription: BlanketDisableCommandRule.description,
+            insertionIndex: 2
         )
-        newViolations.insert(violation, at: 2)
-        XCTAssertEqual(baseline.filter(newViolations), [violation])
     }
 
     func testNewIdenticalViolationAtStart() {
@@ -61,40 +59,28 @@ final class BaselineTests: XCTestCase {
     }
 
     func testNewViolationsAtStart() {
-        var newViolations = violations.lineShifted(by: 1)
-        let violation = StyleViolation(
-            ruleDescription: BlanketDisableCommandRule.description,
-            location: Location(file: path, line: 1, character: 1)
+        testNewViolation(
+            violations: violations,
+            newViolationRuleDescription: BlanketDisableCommandRule.description,
+            insertionIndex: 0
         )
-        newViolations.insert(violation, at: 0)
-        XCTAssertEqual(baseline.filter(newViolations), [violation])
     }
 
     func testNewViolationsInTheMiddle() {
-        var newViolations = violations.lineShifted(by: 1)
-        let violation = StyleViolation(
-            ruleDescription: ArrayInitRule.description,
-            location: Location(file: path, line: 12, character: 1)
+        testNewViolation(
+            violations: violations,
+            newViolationRuleDescription: ArrayInitRule.description,
+            insertionIndex: 2
         )
-        newViolations.insert(violation, at: 2)
-        XCTAssertEqual(baseline.filter(newViolations), [violation])
     }
 
-    func testShuffledViolations() throws {
-        try XCTSkipIf(true)
-        var newViolations = violations.lineShifted(by: 1)
-        let violation = StyleViolation(
-            ruleDescription: BlanketDisableCommandRule.description,
-            location: Location(file: path, line: 1, character: 1)
-        )
-        newViolations.insert(violation, at: 0)
-        let filteredViolations = baseline.filter(newViolations.shuffled())
-//        XCTAssertEqual(filteredViolations.count, 1)
-//        XCTAssertEqual(filteredViolations.first?.ruleIdentifier, violation.ruleIdentifier)
-        XCTAssertEqual(filteredViolations, [violation])
-    }
+//    func testLongerViolations() {
+//        for i in 0..<10 {
+//            testLongerViolations(ruleDescription: ArrayInitRule.description, insertionIndex: i)
+//        }
+//    }
 
-    func testLongerViolations() {
+    func testLongerViolations(ruleDescription: RuleDescription, insertionIndex: Int) {
         let violations = [
             ArrayInitRule.description,
             BlanketDisableCommandRule.description,
@@ -108,18 +94,28 @@ final class BaselineTests: XCTestCase {
             ClosingBraceRule.description
         ].violations
 
-        let baseline = Baseline(violations: violations)
-        var newViolations = violations.lineShifted(by: 1)
-        let violation = StyleViolation(
-            ruleDescription: ArrayInitRule.description,
-            location: Location(file: path, line: 22, character: 1)
+        testNewViolation(
+            violations: violations,
+            newViolationRuleDescription: ArrayInitRule.description,
+            insertionIndex: insertionIndex
         )
-        newViolations.insert(violation, at: 4)
-        XCTAssertEqual(baseline.filter(newViolations), [violation])
     }
 
-    private func testNewViolation(violations: [StyleViolation], lineShift: Int, newViolation: StyleViolation, expectedViolations: ) {
-
+    private func testNewViolation(
+        violations: [StyleViolation],
+        lineShift: Int = 1,
+        newViolationRuleDescription: RuleDescription,
+        insertionIndex: Int
+    ) {
+        let baseline = Baseline(violations: violations)
+        var newViolations = lineShift != 0 ? violations.lineShifted(by: lineShift) : violations
+        let line = ((insertionIndex + 1) * 5) - 2
+        let violation = StyleViolation(
+            ruleDescription: newViolationRuleDescription,
+            location: Location(file: path, line: line, character: 1)
+        )
+        newViolations.insert(violation, at: insertionIndex)
+        XCTAssertEqual(baseline.filter(newViolations), [violation])
     }
 }
 

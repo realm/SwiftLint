@@ -10,8 +10,8 @@ import SwiftSyntax
 ///
 /// Declare state and state objects as private to prevent setting them from a memberwise initializer,
 /// which can conflict with the storage management that SwiftUI provides:
-@SwiftSyntaxRule(explicitRewriter: true)
-struct PrivateSwiftUIStatePropertyRule: OptInRule {
+@SwiftSyntaxRule
+struct PrivateSwiftUIStatePropertyRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -68,71 +68,33 @@ private extension PrivateSwiftUIStatePropertyRule {
                 let decl = node.decl.as(VariableDeclSyntax.self),
                 let inheritanceClause = visitedTypeInheritances.peek() as? InheritanceClauseSyntax,
                 inheritanceClause.conformsToApplicableSwiftUIProtocol,
-                decl.attributes.hasStateAttribute,
-                !decl.modifiers.containsPrivateOrFileprivate()
+                decl.attributes.hasStateAttribute
             else {
                 return
             }
 
-            violations.append(decl.bindingSpecifier.positionAfterSkippingLeadingTrivia)
-        }
-    }
-
-    final class Rewriter: ViolationsSyntaxRewriter {
-        /// LIFO stack that stores type inheritance clauses for each visited node
-        /// The last value is the inheritance clause for the most recently visited node
-        /// A nil value indicates that the node does not provide any inheritance clause
-        private var visitedTypeInheritances = Stack<InheritanceClauseSyntax?>()
-
-        override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
-            visitedTypeInheritances.push(node.inheritanceClause)
-            return super.visit(node)
-        }
-
-        override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
-            visitedTypeInheritances.push(node.inheritanceClause)
-            return super.visit(node)
-        }
-
-        override func visit(_ node: ActorDeclSyntax) -> DeclSyntax {
-            visitedTypeInheritances.push(node.inheritanceClause)
-            return super.visit(node)
-        }
-
-        override func visitPost(_ node: Syntax) {
-            guard node.is(ClassDeclSyntax.self) ||
-                    node.is(StructDeclSyntax.self) ||
-                    node.is(ActorDeclSyntax.self) else { return }
-            visitedTypeInheritances.pop()
-        }
-
-        override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard
-                let parent = node.parent,
-                parent.is(MemberBlockItemSyntax.self),
-                let inheritanceClause = visitedTypeInheritances.peek() as? InheritanceClauseSyntax,
-                inheritanceClause.conformsToApplicableSwiftUIProtocol,
-                node.attributes.hasStateAttribute,
-                !node.modifiers.containsPrivateOrFileprivate()
-            else {
-                return DeclSyntax(node)
+            guard let accessLevelModifier = decl.modifiers.accessLevelModifier else {
+                violations.append(decl.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+                violationCorrections.append(
+                    ViolationCorrection(
+                        start: decl.bindingSpecifier.positionAfterSkippingLeadingTrivia,
+                        end: decl.bindingSpecifier.positionAfterSkippingLeadingTrivia,
+                        replacement: "\(TokenSyntax.keyword(.private).text) "
+                    )
+                )
+                return
             }
 
-            correctionPositions.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+            guard !accessLevelModifier.isPrivate else { return }
 
-            // Extract the leading trivia from the binding specifier and apply it to the private modifier
-            let privateModifier = DeclModifierSyntax(
-                leadingTrivia: node.bindingSpecifier.leadingTrivia,
-                name: .keyword(.private),
-                trailingTrivia: .space
+            violations.append(accessLevelModifier.positionAfterSkippingLeadingTrivia)
+            violationCorrections.append(
+                ViolationCorrection(
+                    start: accessLevelModifier.positionAfterSkippingLeadingTrivia,
+                    end: accessLevelModifier.endPositionBeforeTrailingTrivia,
+                    replacement: TokenSyntax.keyword(.private).text
+                )
             )
-            let newBindingSpecifier = node.bindingSpecifier.with(\.leadingTrivia, [])
-
-            let newModifiers: DeclModifierListSyntax = [privateModifier]
-            let newNode = node
-                .with(\.modifiers, newModifiers)
-                .with(\.bindingSpecifier, newBindingSpecifier)
-            return DeclSyntax(newNode)
         }
     }
 }
@@ -166,5 +128,13 @@ private extension AttributeListSyntax {
 
             return identifier.name.text == "State" || identifier.name.text == "StateObject"
         }
+    }
+}
+
+private extension DeclModifierSyntax {
+    // Returns true if the access level modifier is anything other than private
+    // Private getters and setters are not considered private for the scope of this rule
+    var isPrivate: Bool {
+        name.tokenKind == .keyword(.private) && detail == nil
     }
 }

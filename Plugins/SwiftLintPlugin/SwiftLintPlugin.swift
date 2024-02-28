@@ -44,7 +44,7 @@ struct SwiftLintPlugin: BuildToolPlugin {
         swiftFiles: [Path],
         environment: [String: String],
         pluginWorkDirectory path: Path
-    ) -> [Command] {
+    ) throws -> [Command] {
         // Don't lint anything if there are no Swift source files in this target
         guard !swiftFiles.isEmpty
         else { return [] }
@@ -64,19 +64,11 @@ struct SwiftLintPlugin: BuildToolPlugin {
             cacheArguments = ["--no-cache"]
         } else {
             let cachePath: Path = path.appending("Cache")
-            do {
-                try FileManager.default.createDirectory(atPath: cachePath.string, withIntermediateDirectories: true)
-            } catch {
-                print(error.localizedDescription)
-            }
+            try FileManager.default.createDirectory(atPath: cachePath.string, withIntermediateDirectories: true)
             cacheArguments = ["--cache-path", "\(cachePath)"]
         }
         let outputPath: Path = path.appending("Output")
-        do {
-            try FileManager.default.createDirectory(atPath: outputPath.string, withIntermediateDirectories: true)
-        } catch {
-            print(error.localizedDescription)
-        }
+        try FileManager.default.createDirectory(atPath: outputPath.string, withIntermediateDirectories: true)
         return [
             .prebuildCommand(
                 displayName: "SwiftLint",

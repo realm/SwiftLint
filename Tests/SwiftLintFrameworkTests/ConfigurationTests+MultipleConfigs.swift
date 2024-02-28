@@ -460,7 +460,7 @@ extension ConfigurationTests {
         configuration: Configuration,
         ruleType: any Rule.Type
     ) {
-        guard let case .default(let disabledRules, let optInRules) = configuration.rulesMode else {
+        guard case .default(let disabledRules, let optInRules) = configuration.rulesMode else {
             XCTFail("Configuration rulesMode was not the default")
             return
         }

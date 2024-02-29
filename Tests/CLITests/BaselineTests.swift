@@ -4,7 +4,7 @@ import SwiftLintFramework
 import XCTest
 
 private var path: String {
-    "/Some/path.swift"
+    FileManager.default.currentDirectoryPath + "/Some/path.swift"
 }
 
 final class BaselineTests: XCTestCase {

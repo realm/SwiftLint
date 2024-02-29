@@ -65,74 +65,27 @@ struct Baseline: Equatable {
         var filteredViolations: Set<BaselineViolation> = []
 
         for (ruleIdentifier, ruleViolations) in violationsByRuleIdentifier {
-            guard let baselineViolations = baselineViolationsByRuleIdentifier[ruleIdentifier] else {
+            guard let baselineViolations = baselineViolationsByRuleIdentifier[ruleIdentifier], baselineViolations.isNotEmpty else {
                 filteredViolations.formUnion(ruleViolations)
                 continue
             }
-            guard ruleViolations.count > baselineViolations.count else {
-                continue
+            // Now we do our line based comparison
+            let ruleViolationsGroupedByLine = Dictionary(grouping: ruleViolations, by: { $0.line })
+            let baselineViolationsGroupedByLine = Dictionary(grouping: baselineViolations, by: { $0.line })
+
+            for (line, ruleViolations) in ruleViolationsGroupedByLine {
+                guard let baselineViolations = baselineViolationsGroupedByLine[line] else {
+                    filteredViolations.formUnion(ruleViolations)
+                    continue
+                }
+                if ruleViolations.count > baselineViolations.count {
+                    filteredViolations.formUnion(ruleViolations)
+                }
             }
-            // TODO: We need to try to work out which ones are new here
-            filteredViolations.formUnion(ruleViolations)
         }
-
-        guard filteredViolations.count > 1 else {
-            let originalViolations = Set(filteredViolations.originalViolations)
-            return violations.filter { originalViolations.contains($0) }
-        }
-
-        // Experimental extra filtering
-        filteredViolations = filterViolationsByOrder(
-            filteredViolations: filteredViolations,
-            violations: relativePathViolations, // remainingViolations,
-            baselineViolations: baselineViolations
-        )
 
         let originalViolations = Set(filteredViolations.originalViolations)
         return violations.filter { originalViolations.contains($0) }
-    }
-
-    private func filterViolationsByOrder(
-        filteredViolations: Set<BaselineViolation>,
-        violations: [BaselineViolation],
-        baselineViolations: [BaselineViolation]
-    ) -> Set<BaselineViolation> {
-        var filteredViolationsByRuleIdentifier = filteredViolations.groupedByRuleIdentifier()
-        guard filteredViolationsByRuleIdentifier.filter({ $0.value.count > 1 }).isNotEmpty else {
-            return filteredViolations
-        }
-
-        var orderedViolations: [BaselineViolation] = []
-        for (index, violation) in violations.enumerated() {
-            let baselineViolationIndex = index - orderedViolations.count
-            let baselineViolation = baselineViolationIndex < baselineViolations.count ?
-            baselineViolations[baselineViolationIndex] : nil
-            if let baselineViolation,
-               violation.violation.ruleIdentifier == baselineViolation.violation.ruleIdentifier,
-               violation.violation.reason == baselineViolation.violation.reason,
-               violation.violation.severity == baselineViolation.violation.severity {
-                continue
-            }
-            orderedViolations.append(violation)
-        }
-
-        let groupedOrderedViolations = orderedViolations.groupedByRuleIdentifier()
-        let groupedBaselineViolations = baselineViolations.groupedByRuleIdentifier()
-        for (ruleIdentifier, orderedViolations) in groupedOrderedViolations {
-            if let filteredViolationsForRule = filteredViolationsByRuleIdentifier[ruleIdentifier] {
-                let newOrderedViolations: [BaselineViolation]
-                if let baselineViolations = groupedBaselineViolations[ruleIdentifier] {
-                    newOrderedViolations = orderedViolations.filter { !baselineViolations.contains($0) }
-                } else {
-                    newOrderedViolations = orderedViolations
-                }
-                if newOrderedViolations.count < filteredViolationsForRule.count {
-                    // If we found fewer violations by ordering, report the lower number
-                    filteredViolationsByRuleIdentifier[ruleIdentifier] = newOrderedViolations
-                }
-            }
-        }
-        return Set(filteredViolationsByRuleIdentifier.flatMap { _, value in value })
     }
 }
 

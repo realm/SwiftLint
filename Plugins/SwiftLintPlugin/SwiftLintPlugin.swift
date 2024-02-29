@@ -46,8 +46,9 @@ struct SwiftLintPlugin: BuildToolPlugin {
         pluginWorkDirectory path: Path
     ) throws -> [Command] {
         // Don't lint anything if there are no Swift source files in this target
-        guard !swiftFiles.isEmpty
-        else { return [] }
+        guard !swiftFiles.isEmpty else {
+            return []
+        }
         // Outputs the environment to the build log for reference.
         print("Environment:", environment)
         let arguments: [String] = [
@@ -123,15 +124,17 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
         let swiftFiles: [Path] = swiftFiles(target: target)
         let swiftFilesNotInProjectDirectory: [Path] = swiftFiles.filter { !$0.isDescendant(of: projectDirectory) }
 
-        guard swiftFilesNotInProjectDirectory.isEmpty
-        else { throw SwiftLintPluginError.swiftFilesNotInProjectDirectory(projectDirectory) }
+        guard swiftFilesNotInProjectDirectory.isEmpty else {
+            throw SwiftLintPluginError.swiftFilesNotInProjectDirectory(projectDirectory)
+        }
 
         let directories: [Path] = try swiftFiles.map { try $0.resolveWorkingDirectory(in: projectDirectory) }
         let workingDirectory: Path = directories.min { $0.depth < $1.depth } ?? projectDirectory
         let swiftFilesNotInWorkingDirectory: [Path] = swiftFiles.filter { !$0.isDescendant(of: workingDirectory) }
 
-        guard swiftFilesNotInWorkingDirectory.isEmpty
-        else { throw SwiftLintPluginError.swiftFilesNotInWorkingDirectory(workingDirectory) }
+        guard swiftFilesNotInWorkingDirectory.isEmpty else {
+            throw SwiftLintPluginError.swiftFilesNotInWorkingDirectory(workingDirectory)
+        }
 
         return ["BUILD_WORKSPACE_DIRECTORY": "\(workingDirectory)"]
     }

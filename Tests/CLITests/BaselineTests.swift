@@ -3,10 +3,6 @@
 import SwiftLintFramework
 import XCTest
 
-private var path: String {
-    #file
-}
-
 final class BaselineTests: XCTestCase {
     private var violations: [StyleViolation] {
         [
@@ -51,7 +47,7 @@ final class BaselineTests: XCTestCase {
         var newViolations = violations.lineShifted(by: 1)
         let violation = StyleViolation(
             ruleDescription: ArrayInitRule.description,
-            location: Location(file: path, line: 1, character: 1)
+            location: Location(file: #file, line: 1, character: 1)
         )
         newViolations.insert(violation, at: 0)
         // This is the wrong answer. We really want the first violation
@@ -112,7 +108,7 @@ final class BaselineTests: XCTestCase {
         let line = ((insertionIndex + 1) * 5) - 2
         let violation = StyleViolation(
             ruleDescription: newViolationRuleDescription,
-            location: Location(file: path, line: line, character: 1)
+            location: Location(file: #file, line: line, character: 1)
         )
         newViolations.insert(violation, at: insertionIndex)
         XCTAssertEqual(baseline.filter(newViolations), [violation])
@@ -137,7 +133,7 @@ private extension Sequence where Element == RuleDescription {
         enumerated().map { index, ruleDescription in
             StyleViolation(
                 ruleDescription: ruleDescription,
-                location: Location(file: path, line: (index + 1) * 5, character: 1)
+                location: Location(file: #file, line: (index + 1) * 5, character: 1)
             )
         }
     }

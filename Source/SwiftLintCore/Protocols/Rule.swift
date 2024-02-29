@@ -19,6 +19,9 @@ public protocol Rule {
     /// This rule's configuration.
     var configuration: ConfigurationType { get set }
 
+    /// Whether this rule should be used on empty files. Defaults to `false`.
+    var shouldLintEmptyFiles: Bool { get }
+
     /// A default initializer for rules. All rules need to be trivially initializable.
     init()
 
@@ -74,6 +77,10 @@ public protocol Rule {
 }
 
 public extension Rule {
+    var shouldLintEmptyFiles: Bool {
+        false
+    }
+
     init(configuration: Any) throws {
         self.init()
         try self.configuration.apply(configuration: configuration)

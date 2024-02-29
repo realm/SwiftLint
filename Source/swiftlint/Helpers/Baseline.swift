@@ -141,24 +141,23 @@ private extension Sequence where Element == StyleViolation {
         var lines: [String:[String]] = [:]
         var result: [BaselineViolation] = []
         for violation in self {
-            if let file = violation.location.file, let lineNumber = violation.location.line {
-                if let fileLines = lines[file] {
-                    let line = (fileLines.count > 0 && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
-                    result.append(BaselineViolation(violation: violation, line: line))
-                } else {
-                    // Try to read the lines here ...
-                    let line: String
-                    if let fileLines = SwiftLintFile(path: file)?.lines.map({ $0.content }),
-                       lineNumber < fileLines.count {
-                        line = fileLines[lineNumber]
-                        lines[file] = fileLines
-                    } else {
-                        line = ""
-                    }
-                    result.append(BaselineViolation(violation: violation, line: line))
-                }
-            } else {
+            guard let file = violation.location.file, let lineNumber = violation.location.line else {
                 result.append(BaselineViolation(violation: violation, line: ""))
+                continue
+            }
+            if let fileLines = lines[file] {
+                let line = (fileLines.count > 0 && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
+                result.append(BaselineViolation(violation: violation, line: line))
+            } else {
+                let line: String
+                if let fileLines = SwiftLintFile(path: file)?.lines.map({ $0.content }),
+                   lineNumber < fileLines.count {
+                    line = fileLines[lineNumber]
+                    lines[file] = fileLines
+                } else {
+                    line = ""
+                }
+                result.append(BaselineViolation(violation: violation, line: line))
             }
         }
         return result

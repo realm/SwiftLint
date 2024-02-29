@@ -149,7 +149,7 @@ private extension Sequence where Element == StyleViolation {
                     // Try to read the lines here ...
                     let line: String
                     if let fileLines = SwiftLintFile(path: file)?.lines.map({ $0.content }),
-                       lineNumber < lines.count {
+                       lineNumber < fileLines.count {
                         line = fileLines[lineNumber]
                         lines[file] = fileLines
                     } else {

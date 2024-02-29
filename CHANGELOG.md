@@ -841,7 +841,6 @@
 * Rewrite `SwiftLintPlugin` using `BUILD_WORKSPACE_DIRECTORY` without relying
   on the `--config` option.  
   [Garric Nahapetian](https://github.com/garricn)
-  [#4758](https://github.com/realm/SwiftLint/pull/4758)
 
 * Add `blanket_disable_command` rule that checks whether
   rules are re-enabled after being disabled.  

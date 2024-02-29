@@ -14,17 +14,14 @@ class TrailingClosureRuleTests: SwiftLintTestCase {
                 Example("foo.map(↓{ $0 + 1 })"):
                     Example("foo.map { $0 + 1 }"),
                 Example("""
-                for n in list {
-                    n.forEach(↓{ print($0) })
-                }
-                """, excludeFromDocumentation: true):
-                    Example("""
-                for n in list {
-                    n.forEach {
-                        print($0)
+                    for n in list {
+                        n.forEach(↓{ print($0) })
                     }
-                }
-                """, excludeFromDocumentation: true)
+                    """): Example("""
+                        for n in list {
+                            n.forEach { print($0) }
+                        }
+                        """)
             ])
 
         verifyRule(description, ruleConfiguration: ["only_single_muted_parameter": true])

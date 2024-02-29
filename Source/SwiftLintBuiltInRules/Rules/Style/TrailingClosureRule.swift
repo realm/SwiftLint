@@ -68,24 +68,27 @@ struct TrailingClosureRule: OptInRule {
                     for n in list {
                         n.forEach { print($0) }
                     }
-                    """, excludeFromDocumentation: true),
+                    """),
             Example("""
-            f(a: 1,
-            b: 2,
-            c: { 3 })
-            """, excludeFromDocumentation: true):
-                Example("""
-            f(a: 1,
-            b: 2) { 3 }
-            """, excludeFromDocumentation: true),
+                f(a: 1,
+                b: 2,
+                c: { 3 })
+                """): Example("""
+                    f(a: 1,
+                    b: 2) { 3 }
+                    """),
             Example("""
-            f(a: 1, // comment
-            b: 2, /* comment */ c: { 3 })
-            """, excludeFromDocumentation: true):
-                Example("""
-            f(a: 1, // comment
-            b: 2, /* comment */) { 3 }
-            """, excludeFromDocumentation: true)
+                f(a: 1, // comment
+                b: 2, /* comment */ c: { 3 })
+                """): Example("""
+                    f(a: 1, // comment
+                    b: 2) /* comment */ { 3 }
+                    """),
+            Example("""
+                f(a: 2, c: /* comment */ { 3 } /* comment */)
+                """): Example("""
+                    f(a: 2) /* comment */ { 3 } /* comment */
+                    """)
         ]
     )
 }

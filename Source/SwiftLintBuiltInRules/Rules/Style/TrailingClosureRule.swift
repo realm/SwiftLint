@@ -61,17 +61,14 @@ struct TrailingClosureRule: OptInRule {
             Example("foo.something(param1: { _ in true }, param2: 0, param3: ↓{ _ in false })"):
                 Example("foo.something(param1: { _ in true }, param2: 0) { _ in false }"),
             Example("""
-            for n in list {
-                n.forEach(↓{ print($0) })
-            }
-            """, excludeFromDocumentation: true):
-                Example("""
-            for n in list {
-                n.forEach {
-                    print($0)
+                for n in list {
+                    n.forEach(↓{ print($0) })
                 }
-            }
-            """, excludeFromDocumentation: true),
+                """): Example("""
+                    for n in list {
+                        n.forEach { print($0) }
+                    }
+                    """, excludeFromDocumentation: true),
             Example("""
             f(a: 1,
             b: 2,
@@ -83,7 +80,7 @@ struct TrailingClosureRule: OptInRule {
             """, excludeFromDocumentation: true),
             Example("""
             f(a: 1, // comment
-            b: 2, /* comment */, c: { 3 })
+            b: 2, /* comment */ c: { 3 })
             """, excludeFromDocumentation: true):
                 Example("""
             f(a: 1, // comment

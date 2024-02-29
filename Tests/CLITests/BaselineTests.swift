@@ -76,7 +76,7 @@ final class BaselineTests: XCTestCase {
 //        }
 //    }
 
-    func testLongerViolations(ruleDescription: RuleDescription, insertionIndex: Int) {
+    private func testLongerViolations(ruleDescription: RuleDescription, insertionIndex: Int) {
         let violations = [
             ArrayInitRule.description,
             BlanketDisableCommandRule.description,

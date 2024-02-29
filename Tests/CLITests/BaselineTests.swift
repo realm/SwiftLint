@@ -4,7 +4,7 @@ import SwiftLintFramework
 import XCTest
 
 private var path: String {
-    FileManager.default.currentDirectoryPath + "/Some/path.swift"
+    #file
 }
 
 final class BaselineTests: XCTestCase {
@@ -24,8 +24,8 @@ final class BaselineTests: XCTestCase {
     func testWritingAndReading() throws {
         let temporaryDirectory = FileManager.default.temporaryDirectory
         let baselinePath = temporaryDirectory.appendingPathComponent(UUID().uuidString).path
-        let baseline = self.baseline
-        try baseline.write(toPath: baselinePath)
+        let baseline = baseline
+        try Baseline.write(violations, toPath: baselinePath)
         let newBaseline = try Baseline(fromPath: baselinePath)
         try FileManager.default.removeItem(atPath: baselinePath)
         XCTAssertEqual(newBaseline, baseline)

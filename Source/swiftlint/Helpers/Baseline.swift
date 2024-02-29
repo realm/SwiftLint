@@ -67,16 +67,18 @@ struct Baseline: Equatable {
         var filteredViolations: Set<BaselineViolation> = []
 
         for (ruleIdentifier, ruleViolations) in violationsByRuleIdentifier {
-            guard 
+            guard
                 let baselineViolations = baselineViolationsByRuleIdentifier[ruleIdentifier],
-                    baselineViolations.isNotEmpty else
-            {
+                    baselineViolations.isNotEmpty else {
                 filteredViolations.formUnion(ruleViolations)
                 continue
             }
             // Now we do our line based comparison
             let groupedRuleViolations = Dictionary(grouping: ruleViolations, by: { $0.line + $0.violation.reason })
-            let groupedBaselineViolations = Dictionary(grouping: baselineViolations, by: { $0.line + $0.violation.reason })
+            let groupedBaselineViolations = Dictionary(
+                grouping: baselineViolations,
+                by: { $0.line + $0.violation.reason }
+            )
 
             for (line, ruleViolations) in groupedRuleViolations {
                 guard let baselineViolations = groupedBaselineViolations[line] else {
@@ -97,7 +99,7 @@ struct Baseline: Equatable {
 
 private extension Sequence where Element == StyleViolation {
     var baselineViolations: [BaselineViolation] {
-        var lines: [String:[String]] = [:]
+        var lines: [String: [String]] = [:]
         var result: [BaselineViolation] = []
         for violation in self {
             guard let file = violation.location.file, let lineNumber = violation.location.line else {
@@ -105,7 +107,7 @@ private extension Sequence where Element == StyleViolation {
                 continue
             }
             if let fileLines = lines[file] {
-                let line = (fileLines.count > 0 && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
+                let line = (!fileLines.isEmpty && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
                 result.append(BaselineViolation(violation: violation, line: line))
             } else {
                 let line: String
@@ -127,7 +129,9 @@ private extension Sequence where Element == BaselineViolation {
     var violationsWithAbsolutePaths: [StyleViolation] {
         map {
             let location = $0.violation.location
-            let file = location.file != nil ? FileManager.default.currentDirectoryPath + "/" + (location.file ?? "") : nil
+            let file = location.file != nil ? 
+            FileManager.default.currentDirectoryPath + "/" + (location.file ?? "")
+            : nil
             return $0.violation.with(location: Location(
                 file: file,
                 line: location.line,

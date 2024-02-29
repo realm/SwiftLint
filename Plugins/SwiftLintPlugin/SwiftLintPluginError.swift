@@ -8,11 +8,11 @@ enum SwiftLintPluginError: Error, CustomStringConvertible {
     var description: String {
         switch self {
         case let .pathNotInDirectory(path, directory):
-            return "Path '\(path)' is not in directory '\(directory)'."
+            "Path '\(path)' is not in directory '\(directory)'."
         case let .swiftFilesNotInProjectDirectory(directory):
-            return "Swift files are not in project directory '\(directory)'."
+            "Swift files are not in project directory '\(directory)'."
         case let .swiftFilesNotInWorkingDirectory(directory):
-            return "Swift files are not in working directory '\(directory)'."
+            "Swift files are not in working directory '\(directory)'."
         }
     }
 }

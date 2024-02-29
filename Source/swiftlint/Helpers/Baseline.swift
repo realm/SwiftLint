@@ -8,6 +8,8 @@ struct BaselineViolation: Equatable, Codable, Hashable {
     init(violation: StyleViolation, line: String) {
         let location = violation.location
         self.violation = violation.with(location: Location(
+            // Within the baseline, we use relative paths, so that
+            // comparisons are independent of the absolute path
             file: location.relativeFile,
             line: location.line,
             character: location.character)
@@ -54,7 +56,7 @@ struct Baseline: Equatable {
             return []
         }
 
-        // remove any that are identical
+        // remove any exactly identical matchaes
         let setOfViolations = Set(relativePathViolations)
         let setOfBaselineViolations = Set(baselineViolations)
         let remainingViolations = relativePathViolations.filter { !setOfBaselineViolations.contains($0) }
@@ -65,16 +67,19 @@ struct Baseline: Equatable {
         var filteredViolations: Set<BaselineViolation> = []
 
         for (ruleIdentifier, ruleViolations) in violationsByRuleIdentifier {
-            guard let baselineViolations = baselineViolationsByRuleIdentifier[ruleIdentifier], baselineViolations.isNotEmpty else {
+            guard 
+                let baselineViolations = baselineViolationsByRuleIdentifier[ruleIdentifier],
+                    baselineViolations.isNotEmpty else
+            {
                 filteredViolations.formUnion(ruleViolations)
                 continue
             }
             // Now we do our line based comparison
-            let ruleViolationsGroupedByLine = Dictionary(grouping: ruleViolations, by: { $0.line })
-            let baselineViolationsGroupedByLine = Dictionary(grouping: baselineViolations, by: { $0.line })
+            let groupedRuleViolations = Dictionary(grouping: ruleViolations, by: { $0.line + $0.violation.reason })
+            let groupedBaselineViolations = Dictionary(grouping: baselineViolations, by: { $0.line + $0.violation.reason })
 
-            for (line, ruleViolations) in ruleViolationsGroupedByLine {
-                guard let baselineViolations = baselineViolationsGroupedByLine[line] else {
+            for (line, ruleViolations) in groupedRuleViolations {
+                guard let baselineViolations = groupedBaselineViolations[line] else {
                     filteredViolations.formUnion(ruleViolations)
                     continue
                 }
@@ -84,8 +89,9 @@ struct Baseline: Equatable {
             }
         }
 
-        let originalViolations = Set(filteredViolations.originalViolations)
-        return violations.filter { originalViolations.contains($0) }
+        // Restore the absolute paths, and the original order of the violations
+        let violationsWithAbsolutePaths = Set(filteredViolations.violationsWithAbsolutePaths)
+        return violations.filter { violationsWithAbsolutePaths.contains($0) }
     }
 }
 
@@ -118,7 +124,7 @@ private extension Sequence where Element == StyleViolation {
 }
 
 private extension Sequence where Element == BaselineViolation {
-    var originalViolations: [StyleViolation] {
+    var violationsWithAbsolutePaths: [StyleViolation] {
         map {
             let location = $0.violation.location
             let file = location.file != nil ? FileManager.default.currentDirectoryPath + "/" + (location.file ?? "") : nil

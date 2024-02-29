@@ -17,7 +17,7 @@ struct BaselineViolation: Equatable, Codable, Hashable {
 }
 
 struct Baseline: Equatable {
-    private let violations: [String: [BaselineViolation]]
+    let violations: [String: [BaselineViolation]]
 
     init(fromPath path: String) throws {
         let url = URL(fileURLWithPath: path)
@@ -27,22 +27,14 @@ struct Baseline: Equatable {
     }
 
     init(violations: [StyleViolation]) {
-        // we need to convert and read the lines here
-        let baselineViolations = violations.baselineViolations
-        self.violations = baselineViolations.groupedByFile()
+        self.violations = violations.baselineViolations.groupedByFile()
     }
 
-    func write(toPath path: String) throws {
-        try Self.write(violations: violations, toPath: path)
+    static func write(_ violations: [StyleViolation], toPath path: String) throws {
+        try write(violations.baselineViolations.groupedByFile(), toPath: path)
     }
 
-    static func write(violations: [StyleViolation], toPath path: String) throws {
-        let baselineViolations = violations.baselineViolations
-        let violations = baselineViolations.groupedByFile()
-        try write(violations: violations, toPath: path)
-    }
-
-    private static func write(violations: [String: [BaselineViolation]], toPath path: String) throws {
+    static func write(_ violations: [String: [BaselineViolation]], toPath path: String) throws {
         let url = URL(fileURLWithPath: path)
         let data = try PropertyListEncoder().encode(violations)
         try data.write(to: url)
@@ -150,12 +142,20 @@ private extension Sequence where Element == StyleViolation {
         var result: [BaselineViolation] = []
         for violation in self {
             if let file = violation.location.file, let lineNumber = violation.location.line {
-                if let lines = lines[file] {
-                    let line = (lines.count > 0 && lineNumber < lines.count ) ? lines[lineNumber] : ""
+                if let fileLines = lines[file] {
+                    let line = (fileLines.count > 0 && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
                     result.append(BaselineViolation(violation: violation, line: line))
                 } else {
                     // Try to read the lines here ...
-                    result.append(BaselineViolation(violation: violation, line: ""))
+                    let line: String
+                    if let fileLines = SwiftLintFile(path: file)?.lines.map({ $0.content }),
+                       lineNumber < lines.count {
+                        line = fileLines[lineNumber]
+                        lines[file] = fileLines
+                    } else {
+                        line = ""
+                    }
+                    result.append(BaselineViolation(violation: violation, line: line))
                 }
             } else {
                 result.append(BaselineViolation(violation: violation, line: ""))

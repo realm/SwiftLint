@@ -150,7 +150,13 @@ public struct Linter {
         self.cache = cache
         self.configuration = configuration
         self.compilerArguments = compilerArguments
+
+        let fileIsEmpty = file.isEmpty
         let rules = configuration.rules.filter { rule in
+            if fileIsEmpty, !rule.shouldLintEmptyFiles {
+                return false
+            }
+
             if compilerArguments.isEmpty {
                 return !(rule is any AnalyzerRule)
             } else {
@@ -214,11 +220,6 @@ public struct CollectedLinter {
 
     private func getStyleViolations(using storage: RuleStorage,
                                     benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
-        var rules = rules
-        if file.isEmpty {
-            rules = rules.filter(\.shouldLintEmptyFiles)
-        }
-
         guard !rules.isEmpty else {
             // Empty files shouldn't trigger violations
             return ([], [])

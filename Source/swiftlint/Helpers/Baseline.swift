@@ -56,13 +56,13 @@ struct Baseline: Equatable {
             return []
         }
 
-        // remove any exactly identical matchaes
-        let setOfViolations = Set(relativePathViolations)
-        let setOfBaselineViolations = Set(baselineViolations)
-        let remainingViolations = relativePathViolations.filter { !setOfBaselineViolations.contains($0) }
-        let remainingBaselineViolations = baselineViolations.filter { !setOfViolations.contains($0) }
-        let violationsByRuleIdentifier = remainingViolations.groupedByRuleIdentifier()
-        let baselineViolationsByRuleIdentifier = remainingBaselineViolations.groupedByRuleIdentifier()
+        // remove any exactly identical matches
+        let violationsByRuleIdentifier = relativePathViolations.groupedByRuleIdentifier(
+            filteredBy: baselineViolations
+        )
+        let baselineViolationsByRuleIdentifier = baselineViolations.groupedByRuleIdentifier(
+            filteredBy: relativePathViolations
+        )
 
         var filteredViolations: Set<BaselineViolation> = []
 
@@ -145,5 +145,11 @@ private extension Sequence where Element == BaselineViolation {
 
     func groupedByRuleIdentifier() -> [String: [BaselineViolation]] {
         Dictionary(grouping: self) { $0.violation.ruleIdentifier }
+    }
+
+    func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation]) -> [String: [BaselineViolation]] {
+        let setOfExistingViolations = Set(existingViolations)
+        let remainingViolations = filter { !setOfExistingViolations.contains($0) }
+        return remainingViolations.groupedByRuleIdentifier()
     }
 }

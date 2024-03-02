@@ -101,19 +101,19 @@ private extension Sequence where Element == StyleViolation {
         var lines: [String: [String]] = [:]
         var result: [BaselineViolation] = []
         for violation in self {
-            guard let file = violation.location.file, let lineNumber = violation.location.line else {
+            guard let absolutePath = violation.location.file, let lineNumber = violation.location.line else {
                 result.append(BaselineViolation(violation: violation, line: ""))
                 continue
             }
-            if let fileLines = lines[file] {
+            if let fileLines = lines[absolutePath] {
                 let line = (!fileLines.isEmpty && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
                 result.append(BaselineViolation(violation: violation, line: line))
             } else {
                 let line: String
-                if let fileLines = SwiftLintFile(path: file)?.lines.map({ $0.content }),
+                if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map({ $0.content }),
                    lineNumber < fileLines.count {
                     line = fileLines[lineNumber]
-                    lines[file] = fileLines
+                    lines[absolutePath] = fileLines
                 } else {
                     line = ""
                 }
@@ -128,10 +128,13 @@ private extension Sequence where Element == BaselineViolation {
     var violationsWithAbsolutePaths: [StyleViolation] {
         map {
             let location = $0.violation.location
-            let file = location.file != nil ?
-            FileManager.default.currentDirectoryPath + "/" + (location.file ?? "")
-            : nil
-            return $0.violation.with(location: Location(file: file, line: location.line, character: location.character))
+            let absolutePath: String?
+            if let relativePath = location.file {
+                absolutePath = FileManager.default.currentDirectoryPath + "/" + relativePath
+            } else {
+                absolutePath = nil
+            }
+            return $0.violation.with(location: Location(file: absolutePath, line: location.line, character: location.character))
         }
     }
 

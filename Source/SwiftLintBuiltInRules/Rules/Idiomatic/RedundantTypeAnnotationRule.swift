@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = RedundantTypeAnnotationConfiguration()
 
     static let description = RuleDescription(
         identifier: "redundant_type_annotation",
@@ -80,7 +80,7 @@ struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule {
         return violationRanges(in: file).map { range in
             StyleViolation(
                 ruleDescription: Self.description,
-                severity: configuration.severity,
+                severity: configuration.severityConfiguration.severity,
                 location: Location(file: file, characterOffset: range.location)
             )
         }
@@ -126,15 +126,11 @@ struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule {
 
     private func isFalsePositive(file: SwiftLintFile, range: NSRange) -> Bool {
         guard let typeNames = getPartsOfExpression(in: file, range: range) else { return false }
-
         let lhs = typeNames.variableTypeName
         let rhs = typeNames.assigneeName
-
-        if lhs == rhs || (lhs == "Bool" && (rhs == "true" || rhs == "false")) {
-            return false
-        } else {
-            return true
-        }
+        let isBooleanLiteral: Bool = (lhs == "Bool") && (rhs == "true" || rhs == "false")
+        let isValidViolation: Bool = (lhs == rhs) || (isBooleanLiteral && !configuration.ignoreBooleans)
+        return !isValidViolation
     }
 
     private func getPartsOfExpression(

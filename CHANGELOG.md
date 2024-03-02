@@ -838,6 +838,10 @@
 * Catch more valid `no_magic_numbers` violations.  
   [JP Simard](https://github.com/jpsim)
 
+* Add `RedundantTypeAnnotationConfiguration` for `ignore_booleans` option.  
+  [Garric Nahapetian](https://github.com/garricn)
+  [#4756](https://github.com/realm/SwiftLint/pull/4756)
+
 * Add `blanket_disable_command` rule that checks whether
   rules are re-enabled after being disabled.  
   [Martin Redington](https://github.com/mildm8nnered)

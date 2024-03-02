@@ -160,7 +160,7 @@ private extension [StyleViolation] {
             return self
         }
         var lines = SwiftLintFile(path: file)?.lines.map({ $0.content }) ?? []
-        lines = Array<String>(repeating: "", count: shift) + lines
+        lines = [String](repeating: "", count: shift) + lines
         if let data = lines.joined(separator: "\n").data(using: .utf8) {
             try data.write(to: URL(fileURLWithPath: path))
         }

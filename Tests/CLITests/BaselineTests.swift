@@ -53,23 +53,21 @@ final class BaselineTests: XCTestCase {
     }
 
     func testNewViolations() throws {
-        try FileManager.default.copyItem(atPath: #file, toPath: sourceFilePath)
-        let path = FileManager.default.currentDirectoryPath
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath((sourceFilePath as NSString).deletingLastPathComponent))
-
         try testNewViolation(
             violations: violations,
             newViolationRuleDescription: BlanketDisableCommandRule.description,
             insertionIndex: 2
         )
-
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(path))
     }
 
     func testNewIdenticalViolationAtStart() throws {
         try FileManager.default.copyItem(atPath: #file, toPath: sourceFilePath)
         let path = FileManager.default.currentDirectoryPath
         XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath((sourceFilePath as NSString).deletingLastPathComponent))
+        defer {
+            try? FileManager.default.removeItem(atPath: sourceFilePath)
+            XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(path))
+        }
 
         let baseline = baseline
         var newViolations = try violations.lineShifted(by: 1, path: sourceFilePath)
@@ -78,35 +76,23 @@ final class BaselineTests: XCTestCase {
             location: Location(file: sourceFilePath, line: 1, character: 1)
         )
         newViolations.insert(violation, at: 0)
-        // This is the wrong answer. We really want the first violation
         XCTAssertEqual(baseline.filter(newViolations), [violation])
-        try FileManager.default.removeItem(atPath: sourceFilePath)
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(path))
     }
 
     func testNewViolationsAtStart() throws {
-        try FileManager.default.copyItem(atPath: #file, toPath: sourceFilePath)
-        let path = FileManager.default.currentDirectoryPath
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath((sourceFilePath as NSString).deletingLastPathComponent))
-
         try testNewViolation(
             violations: violations,
             newViolationRuleDescription: BlanketDisableCommandRule.description,
             insertionIndex: 0
         )
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(path))
     }
 
     func testNewViolationsInTheMiddle() throws {
-        try FileManager.default.copyItem(atPath: #file, toPath: sourceFilePath)
-        let path = FileManager.default.currentDirectoryPath
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath((sourceFilePath as NSString).deletingLastPathComponent))
         try testNewViolation(
             violations: violations,
             newViolationRuleDescription: ArrayInitRule.description,
             insertionIndex: 2
         )
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(path))
     }
 
 //    func testLongerViolations() {
@@ -116,10 +102,6 @@ final class BaselineTests: XCTestCase {
 //    }
 
     private func testLongerViolations(ruleDescription: RuleDescription, insertionIndex: Int) throws {
-        try FileManager.default.copyItem(atPath: #file, toPath: sourceFilePath)
-        let path = FileManager.default.currentDirectoryPath
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath((sourceFilePath as NSString).deletingLastPathComponent))
-
         let violations = [
             ArrayInitRule.description,
             BlanketDisableCommandRule.description,
@@ -138,8 +120,6 @@ final class BaselineTests: XCTestCase {
             newViolationRuleDescription: ArrayInitRule.description,
             insertionIndex: insertionIndex
         )
-
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(path))
     }
 
     private func testNewViolation(
@@ -148,6 +128,14 @@ final class BaselineTests: XCTestCase {
         newViolationRuleDescription: RuleDescription,
         insertionIndex: Int
     ) throws {
+        try FileManager.default.copyItem(atPath: #file, toPath: sourceFilePath)
+        let path = FileManager.default.currentDirectoryPath
+        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath((sourceFilePath as NSString).deletingLastPathComponent))
+        defer {
+            try? FileManager.default.removeItem(atPath: sourceFilePath)
+            XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(path))
+        }
+
         let baseline = Baseline(violations: violations)
         var newViolations = lineShift != 0 ? try violations.lineShifted(by: lineShift, path: sourceFilePath) : violations
         let line = ((insertionIndex + 1) * 5) - 2
@@ -157,7 +145,6 @@ final class BaselineTests: XCTestCase {
         )
         newViolations.insert(violation, at: insertionIndex)
         XCTAssertEqual(baseline.filter(newViolations), [violation])
-        try FileManager.default.removeItem(atPath: sourceFilePath)
     }
 }
 

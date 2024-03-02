@@ -121,8 +121,9 @@ final class BaselineTests: XCTestCase {
     ) throws {
         try testBlock {
             let baseline = Baseline(violations: violations)
-            var newViolations = lineShift != 0 ?
-                try violations.lineShifted(by: lineShift, path: sourceFilePath) : violations
+            var newViolations = lineShift != 0
+                ? try violations.lineShifted(by: lineShift, path: sourceFilePath)
+                : violations
             let line = ((insertionIndex + 1) * 5) - 2
             let violation = StyleViolation(
                 ruleDescription: newViolationRuleDescription,

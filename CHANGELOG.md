@@ -838,6 +838,10 @@
 * Catch more valid `no_magic_numbers` violations.  
   [JP Simard](https://github.com/jpsim)
 
+* Rewrite `SwiftLintPlugin` using `BUILD_WORKSPACE_DIRECTORY` without relying
+  on the `--config` option.  
+  [Garric Nahapetian](https://github.com/garricn)
+
 * Add `blanket_disable_command` rule that checks whether
   rules are re-enabled after being disabled.  
   [Martin Redington](https://github.com/mildm8nnered)

@@ -108,17 +108,17 @@ private extension Sequence where Element == StyleViolation {
             if let fileLines = lines[absolutePath] {
                 let line = (!fileLines.isEmpty && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
                 result.append(BaselineViolation(violation: violation, line: line))
-            } else {
-                let line: String
-                if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map({ $0.content }),
-                   lineNumber < fileLines.count {
-                    line = fileLines[lineNumber]
-                    lines[absolutePath] = fileLines
-                } else {
-                    line = ""
-                }
-                result.append(BaselineViolation(violation: violation, line: line))
+                continue
             }
+            let line: String
+            if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map({ $0.content }),
+               lineNumber < fileLines.count {
+                line = fileLines[lineNumber]
+                lines[absolutePath] = fileLines
+            } else {
+                line = ""
+            }
+            result.append(BaselineViolation(violation: violation, line: line))
         }
         return result
     }

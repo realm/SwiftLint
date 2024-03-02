@@ -211,3 +211,33 @@ private extension LabeledExprListSyntax {
         }
     }
 }
+
+private extension Trivia {
+    var endsWithSpace: Bool {
+        if let last = pieces.last, case .spaces = last {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    var startsWithNewline: Bool {
+        first?.isNewline == true
+    }
+
+    func appendingSpaceIfNoTrailingSpace() -> Self {
+        if endsWithSpace {
+            self
+        } else {
+            merging(.space)
+        }
+    }
+
+    func removingLeadingNewlinesIfExists() -> Self {
+        if startsWithNewline {
+            Trivia(pieces: pieces.drop(while: { $0.isNewline }))
+        } else {
+            self
+        }
+    }
+}

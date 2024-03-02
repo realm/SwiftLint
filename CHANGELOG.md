@@ -43,6 +43,7 @@
   * `identifier_name`
   * `let_var_whitespace`
   * `mark`
+  * `missing_docs`
   * `multiline_literal_brackets`
   * `nesting`
   * `nimble_operator`
@@ -56,6 +57,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)  
   [swiftty](https://github.com/swiftty)  
   [KS1019](https://github.com/KS1019)  
+  [woxtu](https://github.com/woxtu)  
 
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -526,9 +528,6 @@
   when a defined default or memberwise initializer would have been
   automatically synthesized.  
   [Martin Redington](https://github.com/mildm8nnered)
-
-* Rewrite `missing_docs` rule with SwiftSyntax.
-  [woxtu](https://github.com/woxtu)
 
 #### Bug Fixes
 

@@ -73,7 +73,6 @@ struct Baseline: Equatable {
                 filteredViolations.formUnion(ruleViolations)
                 continue
             }
-            // Now we do our line based comparison
             let groupedRuleViolations = Dictionary(grouping: ruleViolations, by: { $0.line + $0.violation.reason })
             let groupedBaselineViolations = Dictionary(
                 grouping: baselineViolations,
@@ -129,22 +128,15 @@ private extension Sequence where Element == BaselineViolation {
     var violationsWithAbsolutePaths: [StyleViolation] {
         map {
             let location = $0.violation.location
-            let file = location.file != nil ? 
+            let file = location.file != nil ?
             FileManager.default.currentDirectoryPath + "/" + (location.file ?? "")
             : nil
-            return $0.violation.with(location: Location(
-                file: file,
-                line: location.line,
-                character: location.character
-            ))
+            return $0.violation.with(location: Location(file: file, line: location.line, character: location.character))
         }
     }
 
     func groupedByFile() -> [String: [BaselineViolation]] {
-        Dictionary(
-            grouping: self,
-            by: { $0.violation.location.relativeFile ?? "" }
-        )
+        Dictionary(grouping: self) { $0.violation.location.relativeFile ?? "" }
     }
 
     func groupedByRuleIdentifier() -> [String: [BaselineViolation]] {

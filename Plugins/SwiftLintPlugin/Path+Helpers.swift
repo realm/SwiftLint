@@ -15,13 +15,15 @@ extension Path {
     }
 
     func resolveWorkingDirectory(in directory: Path) throws -> Path {
-        guard "\(self)".hasPrefix("\(directory)")
-        else { throw SwiftLintPluginError.pathNotInDirectory(path: self, directory: directory) }
+        guard "\(self)".hasPrefix("\(directory)") else {
+            throw SwiftLintPluginError.pathNotInDirectory(path: self, directory: directory)
+        }
 
         let path: Path? = sequence(first: self) { path in
             let path: Path = path.removingLastComponent()
-            guard "\(path)".hasPrefix("\(directory)")
-            else { return nil }
+            guard "\(path)".hasPrefix("\(directory)") else {
+                return nil
+            }
             return path
         }
         .reversed()

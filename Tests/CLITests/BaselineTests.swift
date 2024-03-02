@@ -63,7 +63,7 @@ final class BaselineTests: XCTestCase {
             var newViolations = try violations.lineShifted(by: 1, path: sourceFilePath)
             let violation = StyleViolation(
                 ruleDescription: ArrayInitRule.description,
-                location: Location(file: sourceFilePath, line: 1, character: 1)
+                location: Location(file: sourceFilePath, line: 2, character: 1)
             )
             newViolations.insert(violation, at: 0)
             XCTAssertEqual(baseline.filter(newViolations), [violation])

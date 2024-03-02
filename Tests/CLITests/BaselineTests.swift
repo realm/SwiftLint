@@ -4,8 +4,8 @@ import SwiftLintFramework
 import XCTest
 
 private var temporaryFilePath: String {
-//    FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
-    URL(fileURLWithPath: "/private/tmp/").appendingPathComponent(UUID().uuidString).path
+    // FileManager currentDirectoryPath prepends "/private" to the temporary directory path
+    "/private" + FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
 }
 
 private var sourceFilePath: String = {
@@ -27,29 +27,26 @@ final class BaselineTests: XCTestCase {
     }
 
     func testWritingAndReading() throws {
-        let baselinePath = temporaryFilePath
-        try FileManager.default.copyItem(atPath: #file, toPath: sourceFilePath)
-        let baseline = baseline
-        try Baseline.write(violations, toPath: baselinePath)
-        let newBaseline = try Baseline(fromPath: baselinePath)
-        try FileManager.default.removeItem(atPath: baselinePath)
-        try FileManager.default.removeItem(atPath: sourceFilePath)
-        XCTAssertEqual(newBaseline, baseline)
+        try testBlock {
+            let baselinePath = temporaryFilePath
+            let baseline = baseline
+            try Baseline.write(violations, toPath: baselinePath)
+            defer {
+                try? FileManager.default.removeItem(atPath: baselinePath)
+            }
+            let newBaseline = try Baseline(fromPath: baselinePath)
+            XCTAssertEqual(newBaseline, baseline)
+        }
     }
 
     func testUnchangedViolations() throws {
-        XCTAssertEqual(baseline.filter(violations), [])
+        try testBlock { XCTAssertEqual(baseline.filter(violations), []) }
     }
 
     func testShiftedViolations() throws {
-        try FileManager.default.copyItem(atPath: #file, toPath: sourceFilePath)
-        let currentDirectoryPath = FileManager.default.currentDirectoryPath
-        // swiftlint:disable:next legacy_objc_type
-        let testDirectoryPath = (sourceFilePath as NSString).deletingLastPathComponent
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(testDirectoryPath))
-        XCTAssertEqual(baseline.filter(try violations.lineShifted(by: 2, path: sourceFilePath)), [])
-        try FileManager.default.removeItem(atPath: sourceFilePath)
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(currentDirectoryPath))
+        try testBlock {
+            XCTAssertEqual(baseline.filter(try violations.lineShifted(by: 2, path: sourceFilePath)), [])
+        }
     }
 
     func testNewViolations() throws {
@@ -61,26 +58,16 @@ final class BaselineTests: XCTestCase {
     }
 
     func testNewIdenticalViolationAtStart() throws {
-        try FileManager.default.copyItem(atPath: #file, toPath: sourceFilePath)
-        defer {
-            try? FileManager.default.removeItem(atPath: sourceFilePath)
+        try testBlock {
+            let baseline = baseline
+            var newViolations = try violations.lineShifted(by: 1, path: sourceFilePath)
+            let violation = StyleViolation(
+                ruleDescription: ArrayInitRule.description,
+                location: Location(file: sourceFilePath, line: 1, character: 1)
+            )
+            newViolations.insert(violation, at: 0)
+            XCTAssertEqual(baseline.filter(newViolations), [violation])
         }
-        let currentDirectoryPath = FileManager.default.currentDirectoryPath
-        // swiftlint:disable:next legacy_objc_type
-        let testDirectoryPath = (sourceFilePath as NSString).deletingLastPathComponent
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(testDirectoryPath))
-        defer {
-            XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(currentDirectoryPath))
-        }
-
-        let baseline = baseline
-        var newViolations = try violations.lineShifted(by: 1, path: sourceFilePath)
-        let violation = StyleViolation(
-            ruleDescription: ArrayInitRule.description,
-            location: Location(file: sourceFilePath, line: 1, character: 1)
-        )
-        newViolations.insert(violation, at: 0)
-        XCTAssertEqual(baseline.filter(newViolations), [violation])
     }
 
     func testNewViolationsAtStart() throws {
@@ -117,7 +104,7 @@ final class BaselineTests: XCTestCase {
             DirectReturnRule.description,
             ArrayInitRule.description,
             ClosingBraceRule.description
-        ].violations.shuffled()
+        ].violations
 
         try testNewViolation(
             violations: violations,
@@ -132,6 +119,21 @@ final class BaselineTests: XCTestCase {
         newViolationRuleDescription: RuleDescription,
         insertionIndex: Int
     ) throws {
+        try testBlock {
+            let baseline = Baseline(violations: violations)
+            var newViolations = lineShift != 0 ?
+                try violations.lineShifted(by: lineShift, path: sourceFilePath) : violations
+            let line = ((insertionIndex + 1) * 5) - 2
+            let violation = StyleViolation(
+                ruleDescription: newViolationRuleDescription,
+                location: Location(file: sourceFilePath, line: line, character: 1)
+            )
+            newViolations.insert(violation, at: insertionIndex)
+            XCTAssertEqual(baseline.filter(newViolations), [violation])
+        }
+    }
+
+    private func testBlock(_ block: () throws -> Void) throws {
         try FileManager.default.copyItem(atPath: #file, toPath: sourceFilePath)
         defer {
             try? FileManager.default.removeItem(atPath: sourceFilePath)
@@ -143,17 +145,7 @@ final class BaselineTests: XCTestCase {
         defer {
             XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(currentDirectoryPath))
         }
-
-        let baseline = Baseline(violations: violations)
-        var newViolations = lineShift != 0 ?
-            try violations.lineShifted(by: lineShift, path: sourceFilePath) : violations
-        let line = ((insertionIndex + 1) * 5) - 2
-        let violation = StyleViolation(
-            ruleDescription: newViolationRuleDescription,
-            location: Location(file: sourceFilePath, line: line, character: 1)
-        )
-        newViolations.insert(violation, at: insertionIndex)
-        XCTAssertEqual(baseline.filter(newViolations), [violation])
+        try block()
     }
 }
 
@@ -168,12 +160,7 @@ private extension [StyleViolation] {
             return self
         }
         var lines = SwiftLintFile(path: file)?.lines.map({ $0.content }) ?? []
-        var blankLines: [String] = []
-        for _ in 0..<shift {
-            blankLines.append("")
-        }
-//        let blankLines = Array(repeating: "", count: shift)
-        lines = blankLines + lines
+        lines = Array<String>(repeating: "", count: shift) + lines
         if let data = lines.joined(separator: "\n").data(using: .utf8) {
             try data.write(to: URL(fileURLWithPath: path))
         }

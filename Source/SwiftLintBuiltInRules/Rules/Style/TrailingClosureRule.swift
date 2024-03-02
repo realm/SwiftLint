@@ -88,6 +88,11 @@ struct TrailingClosureRule: OptInRule {
                 f(a: 2, c: /* comment */ { 3 } /* comment */)
                 """): Example("""
                     f(a: 2) /* comment */ { 3 } /* comment */
+                    """),
+            Example("""
+                f(a: 2, /* comment */ c /* comment */ : /* comment */ { 3 } /* comment */)
+                """): Example("""
+                    f(a: 2) /* comment */ /* comment */ /* comment */ { 3 } /* comment */
                     """)
         ]
     )

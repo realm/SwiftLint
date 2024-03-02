@@ -3,7 +3,7 @@ import SwiftSyntax
 /// A specialized `ViolationsSyntaxVisitor` that tracks declared identifiers per scope while traversing the AST.
 open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
         ViolationsSyntaxVisitor<Configuration> {
-    /// A type that remembers the declared identifers (in order) up to the current position in the code.
+    /// A type that remembers the declared identifiers (in order) up to the current position in the code.
     public typealias Scope = Stack<Set<String>>
 
     /// The hierarchical stack of identifiers declared up to the current position in the code.
@@ -14,7 +14,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
     /// - Parameters:
     ///   - configuration: Configuration of a rule.
     ///   - file: File from which the syntax tree stems from.
-    ///   - scope: A (potentially already pre-filled) scope to collect identifers into.
+    ///   - scope: A (potentially already pre-filled) scope to collect identifiers into.
     @inlinable
     public init(configuration: Configuration, file: SwiftLintFile, scope: Scope = Scope()) {
         self.scope = scope
@@ -82,13 +82,25 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
 
     private func collectIdentifiers(from switchCase: SwitchCaseLabelSyntax) {
         switchCase.caseItems
-            .compactMap { $0.pattern.as(ValueBindingPatternSyntax.self)?.pattern ?? $0.pattern }
-            .compactMap { $0.as(ExpressionPatternSyntax.self)?.expression.asFunctionCall }
-            .compactMap { $0.arguments.as(LabeledExprListSyntax.self) }
+            .map { item -> PatternSyntax in
+                item.pattern.as(ValueBindingPatternSyntax.self)?.pattern ?? item.pattern
+            }
+            .compactMap { pattern -> FunctionCallExprSyntax? in
+                pattern.as(ExpressionPatternSyntax.self)?.expression.asFunctionCall
+            }
+            .map { call -> LabeledExprListSyntax in
+                call.arguments
+            }
             .flatMap { $0 }
-            .compactMap { $0.expression.as(PatternExprSyntax.self) }
-            .compactMap { $0.pattern.as(ValueBindingPatternSyntax.self)?.pattern ?? $0.pattern }
-            .compactMap { $0.as(IdentifierPatternSyntax.self) }
+            .compactMap { labeledExpr -> PatternExprSyntax? in
+                labeledExpr.expression.as(PatternExprSyntax.self)
+            }
+            .map { patternExpr -> any PatternSyntaxProtocol in
+                patternExpr.pattern.as(ValueBindingPatternSyntax.self)?.pattern ?? patternExpr.pattern
+            }
+            .compactMap { pattern -> IdentifierPatternSyntax? in
+                pattern.as(IdentifierPatternSyntax.self)
+            }
             .forEach { scope.addToCurrentScope($0.identifier.text) }
     }
 

@@ -132,12 +132,12 @@ private extension TrailingClosureRule {
                 if let param = node.singleMutedClosureParameter,
                 let converted = node.convertToTrailingClosure() {
                      correctionPositions.append(param.positionAfterSkippingLeadingTrivia)
-                    return ExprSyntax(converted)
+                    return super.visit(converted)
                 }
             } else if let param = node.lastDistinctClosureParameter,
                       let converted = node.convertToTrailingClosure() {
                 correctionPositions.append(param.positionAfterSkippingLeadingTrivia)
-                return ExprSyntax(converted)
+                return super.visit(converted)
             }
             return super.visit(node)
         }

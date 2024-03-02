@@ -168,7 +168,7 @@ private extension [StyleViolation] {
         return map {
             let shiftedLocation = Location(
                 file: path,
-                line: ($0.location.line ?? 0) + shift,
+                line: $0.location.line != nil ? ($0.location.line ?? 0) + shift : nil
                 character: $0.location.character
             )
             return $0.with(location: shiftedLocation)

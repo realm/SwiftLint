@@ -134,7 +134,8 @@ private extension Sequence where Element == BaselineViolation {
             } else {
                 absolutePath = nil
             }
-            return $0.violation.with(location: Location(file: absolutePath, line: location.line, character: location.character))
+            let newLocation = Location(file: absolutePath, line: location.line, character: location.character)
+            return $0.violation.with(location: newLocation)
         }
     }
 

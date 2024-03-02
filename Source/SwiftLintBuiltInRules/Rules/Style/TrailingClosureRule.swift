@@ -173,10 +173,8 @@ private extension FunctionCallExprSyntax {
     }
 
     func dropLastArgument() -> Self {
-        let arguments = LabeledExprListSyntax(arguments.dropLast())
-
-        return self
-            .with(\.arguments, arguments.dropLastTrailingComma())
+        self
+            .with(\.arguments, LabeledExprListSyntax(arguments.dropLast()).dropLastTrailingComma())
             .dropParensIfEmpty()
     }
 

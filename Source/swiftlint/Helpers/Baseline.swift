@@ -102,8 +102,8 @@ private extension Sequence where Element == StyleViolation {
         var result: [BaselineViolation] = []
         for violation in self {
             guard let absolutePath = violation.location.file,
-                    let lineNumber = (violation.location.line ?? 0) - 1,
-                    lineNumber > 0 else {
+                  let lineNumber = violation.location.line != nil ? (violation.location.line ?? 0) - 1: nil,
+                  lineNumber > 0 else {
                 result.append(BaselineViolation(violation: violation, line: ""))
                 continue
             }

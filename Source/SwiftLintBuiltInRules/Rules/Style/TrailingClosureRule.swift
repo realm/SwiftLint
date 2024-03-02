@@ -196,7 +196,7 @@ private extension FunctionCallExprSyntax {
             .with(\.calledExpression.trailingTrivia, [])
     }
 
-    var lastTriviasInArguments: Trivia? {
+    var lastTriviaInArguments: Trivia? {
         guard let lastArgument = arguments.last,
               let previous = lastArgument.previousToken(viewMode: .sourceAccurate)?.trailingTrivia else { return nil }
 
@@ -227,7 +227,7 @@ private extension LabeledExprListSyntax {
 
 private extension Trivia {
     var endsWithSpace: Bool {
-        if let last = pieces.last, case .spaces = last {
+        if case .spaces = pieces.last {
             return true
         } else {
             return false
@@ -238,7 +238,7 @@ private extension Trivia {
         first?.isNewline == true
     }
 
-    func appendingSpaceIfNoTrailingSpace() -> Self {
+    func appendingMissingSpace() -> Self {
         if endsWithSpace {
             self
         } else {
@@ -246,7 +246,7 @@ private extension Trivia {
         }
     }
 
-    func removingLeadingNewlinesIfExists() -> Self {
+    func removingLeadingNewlines() -> Self {
         if startsWithNewline {
             Trivia(pieces: pieces.drop(while: { $0.isNewline }))
         } else {

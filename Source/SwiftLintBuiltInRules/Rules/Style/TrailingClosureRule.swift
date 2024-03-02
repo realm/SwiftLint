@@ -187,9 +187,9 @@ private extension FunctionCallExprSyntax {
 
     func convertToTrailingClosure() -> Self? {
         guard trailingClosure == nil, let lastDistinctClosureParameter else { return nil }
-        let leadingTrivia = lastTriviasInArguments?
-            .removingLeadingNewlinesIfExists()
-            .appendingSpaceIfNoTrailingSpace() ?? []
+        let leadingTrivia = lastTriviaInArguments?
+            .removingLeadingNewlines()
+            .appendingMissingSpace() ?? []
 
         return dropLastArgument()
             .with(\.trailingClosure, lastDistinctClosureParameter.with(\.leadingTrivia, leadingTrivia))

@@ -519,14 +519,37 @@ your project for remaining violations.</p>
 </code></pre>
 <h3 id='plug-in-support' class='heading'>Plug-in Support</h3>
 
-<p>SwiftLint can be used as a build tool plug-in for both Xcode projects as well as
-Swift packages.</p>
+<p>SwiftLint can be used as a build tool plugin for both Swift Package projects 
+and Xcode projects.</p>
 
-<blockquote>
-<p>Due to limitations with Swift Package Manager Plug-ins this is only
-recommended for projects that have a SwiftLint configuration in their root directory as
-there is currently no way to pass any additional options to the SwiftLint executable.</p>
-</blockquote>
+<p>The build tool plugin determines the SwiftLint working directory by locating 
+the topmost config file within the package/project directory. If a config file
+is not found therein, the package/project directory is used as the working 
+directory.</p>
+
+<p>The plugin throws an error when it is unable to resolve the SwiftLint working 
+directory. For example, this will occur in Xcode projects where the target&rsquo;s
+Swift files are not located within the project directory.</p>
+
+<p>To maximize compatibility with the plugin, avoid project structures that require
+the use of the <code>--config</code> option.</p>
+<h4 id='unexpected-project-structures' class='heading'>Unexpected Project Structures</h4>
+
+<p>Project structures where SwiftLint&rsquo;s configuration file is located 
+outside of the package/project directory are not directly supported 
+by the build tool plugin. This is because it isn&rsquo;t possible to pass 
+arguments to build tool plugins (e.g., passing the config file path). </p>
+
+<p>If your project structure doesn&rsquo;t work directly with the build tool 
+plugin, please consider one of the following options:</p>
+
+<ul>
+<li>To use a config file located outside the package/project directory, a config 
+file may be added to that directory specifying a parent config path to the 
+other config file, e.g., <code>parent_config: path/to/.swiftlint.yml</code>.</li>
+<li>You can also consider the use of a Run Script Build Phase in place of the
+build tool plugin.</li>
+</ul>
 <h4 id='xcode' class='heading'>Xcode</h4>
 
 <p>You can integrate SwiftLint as an Xcode Build Tool Plug-in if you&rsquo;re working

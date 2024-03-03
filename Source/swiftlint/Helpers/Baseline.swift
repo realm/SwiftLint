@@ -21,11 +21,10 @@ struct BaselineViolation: Equatable, Codable, Hashable {
 }
 
 struct Baseline: Equatable {
-    let violations: GroupedViolations
+    private let violations: GroupedViolations
 
     init(fromPath path: String) throws {
-        let url = URL(fileURLWithPath: path)
-        let data = try Data(contentsOf: url)
+        let data = try Data(contentsOf: URL(fileURLWithPath: path))
         self.violations = try PropertyListDecoder().decode([String: [BaselineViolation]].self, from: data)
     }
 

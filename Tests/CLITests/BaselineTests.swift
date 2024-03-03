@@ -4,7 +4,10 @@ import XCTest
 
 private var temporaryFilePath: String {
     // FileManager currentDirectoryPath prepends "/private" to the temporary directory path
-    "/private" + FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+    "/private" + URL(
+        fileURLWithPath: NSTemporaryDirectory(),
+        isDirectory: true
+    ).appendingPathComponent(UUID().uuidString).path
 }
 
 private var sourceFilePath: String = {

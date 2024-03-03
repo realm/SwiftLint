@@ -191,7 +191,7 @@ private extension Sequence where Element == RuleDescription {
 private enum TestResources {
     static var path: String {
         if let rootProjectDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"] {
-            return "\(rootProjectDirectory)/Tests/SwiftLintFrameworkTests/Resources"
+            return "\(rootProjectDirectory)/Tests/CLITests/Resources"
         }
 
         return URL(fileURLWithPath: #file, isDirectory: false)
@@ -200,8 +200,4 @@ private enum TestResources {
             .path
             .absolutePathStandardized()
     }
-}
-
-private extension XCTestCase {
-    var testResourcesPath: String { TestResources.path }
 }

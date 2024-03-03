@@ -1,5 +1,4 @@
 @testable import swiftlint
-@_spi(TestHelper)
 import SwiftLintFramework
 import XCTest
 

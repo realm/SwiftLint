@@ -87,8 +87,7 @@ public extension CollectingRule where Self: AnalyzerRule {
 }
 
 /// A `CollectingRule` that is also a `CorrectableRule`.
-@_spi(TestHelper)
-public protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
+package protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
     /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
     /// and returns all corrections that were applied.
     ///
@@ -114,8 +113,7 @@ public protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
     func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [Correction]
 }
 
-@_spi(TestHelper)
-public extension CollectingCorrectableRule {
+package extension CollectingCorrectableRule {
     func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
                  compilerArguments: [String]) -> [Correction] {
         return correct(file: file, collectedInfo: collectedInfo)
@@ -137,7 +135,7 @@ public extension CollectingCorrectableRule {
     }
 }
 
-public extension CollectingCorrectableRule where Self: AnalyzerRule {
+package extension CollectingCorrectableRule where Self: AnalyzerRule {
     func correct(file: SwiftLintFile) -> [Correction] {
         queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
     }

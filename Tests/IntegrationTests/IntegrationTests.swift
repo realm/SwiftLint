@@ -1,5 +1,4 @@
 import Foundation
-@_spi(TestHelper)
 import SwiftLintFramework
 import SwiftLintTestHelpers
 import XCTest

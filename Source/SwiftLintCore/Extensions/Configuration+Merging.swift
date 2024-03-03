@@ -6,8 +6,7 @@ import SourceKittenFramework
 
 extension Configuration {
     // MARK: - Methods: Merging
-    @_spi(TestHelper)
-    public func merged(
+    package func merged(
         withChild childConfiguration: Configuration,
         rootDirectory: String
     ) -> Configuration {

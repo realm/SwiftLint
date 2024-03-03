@@ -124,8 +124,7 @@ public struct Configuration {
     /// - parameter pinnedVersion:          The SwiftLint version defined in this configuration.
     /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable files
     /// - parameter strict:                 Treat warnings as errors
-    @_spi(TestHelper)
-    public init(
+    package init(
         rulesMode: RulesMode = .default(disabled: [], optIn: []),
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
         ruleList: RuleList = RuleRegistry.shared.list,

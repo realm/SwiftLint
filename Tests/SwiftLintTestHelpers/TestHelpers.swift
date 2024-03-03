@@ -15,6 +15,7 @@ private extension SwiftLintFile {
                 .appendingPathComponent(UUID().uuidString)
                 .appendingPathExtension("swift")
             _ = try? contents.data(using: .utf8)!.write(to: url)
+            XCTFail("writing file to \(url.path)")
             file = SwiftLintFile(path: url.path)!
         } else {
             file = SwiftLintFile(contents: contents)

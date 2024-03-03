@@ -94,12 +94,6 @@ final class BaselineTests: XCTestCase {
     }
 
     func testLongerViolations() throws {
-        for insertionIndex in 0..<10 {
-            try testLongerViolations(ruleDescription: ArrayInitRule.description, insertionIndex: insertionIndex)
-        }
-    }
-
-    private func testLongerViolations(ruleDescription: RuleDescription, insertionIndex: Int) throws {
         let violations = [
             ArrayInitRule.description,
             BlanketDisableCommandRule.description,
@@ -113,12 +107,35 @@ final class BaselineTests: XCTestCase {
             ClosingBraceRule.description
         ].violations
 
-        try testNewViolation(
-            violations: violations,
-            newViolationRuleDescription: ruleDescription,
-            insertionIndex: insertionIndex
-        )
+        for insertionIndex in 0..<violations.count {
+            try testNewViolation(
+                violations: violations,
+                newViolationRuleDescription: ArrayInitRule.description,
+                insertionIndex: insertionIndex
+            )
+        }
     }
+
+//    private func testLongerViolations(ruleDescription: RuleDescription, insertionIndex: Int) throws {
+//        let violations = [
+//            ArrayInitRule.description,
+//            BlanketDisableCommandRule.description,
+//            ArrayInitRule.description,
+//            ClosingBraceRule.description,
+//            ClosingBraceRule.description,
+//            ClosingBraceRule.description,
+//            BlanketDisableCommandRule.description,
+//            DirectReturnRule.description,
+//            ArrayInitRule.description,
+//            ClosingBraceRule.description
+//        ].violations
+//
+//        try testNewViolation(
+//            violations: violations,
+//            newViolationRuleDescription: ruleDescription,
+//            insertionIndex: insertionIndex
+//        )
+//    }
 
     private func testNewViolation(
         violations: [StyleViolation],
@@ -144,10 +161,13 @@ final class BaselineTests: XCTestCase {
     private func testBlock(_ block: () throws -> Void) throws {
         let fixturesDirectory = "\(TestResources.path)/BaselineFixtures"
         let filePath = fixturesDirectory.bridge().appendingPathComponent("Example.swift")
+        #if os(macOS)
+        try FileManager.default.copyItem(atPath: filePath, toPath: sourceFilePath)
+        #else
         let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
         try data.write(to: URL(fileURLWithPath: sourceFilePath))
+        #endif
 
-        // try FileManager.default.copyItem(atPath: filePath, toPath: sourceFilePath)
         defer {
             try? FileManager.default.removeItem(atPath: sourceFilePath)
         }

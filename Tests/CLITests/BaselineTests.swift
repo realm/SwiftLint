@@ -141,6 +141,9 @@ final class BaselineTests: XCTestCase {
         NSLog(">>>> file = \(#file)")
         NSLog(">>>> sourceFilePath = \(sourceFilePath)")
         NSLog(">>>> currentDirectory = \(FileManager.default.currentDirectoryPath)")
+        let sourceRoot = ProcessInfo.processInfo.environment["SRCROOT"]
+        NSLog(">>>> sourceRoot = \(sourceRoot)")
+
         try FileManager.default.copyItem(atPath: filePath, toPath: sourceFilePath)
         defer {
             try? FileManager.default.removeItem(atPath: sourceFilePath)

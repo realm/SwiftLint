@@ -368,40 +368,40 @@ warning
 </table></li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="err">#</span><span class="nf">unavailable</span><span class="p">(</span><span class="n">iOS</span> <span class="mi">13</span><span class="p">)</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="k">#unavailable</span><span class="p">(</span><span class="n">iOS</span> <span class="mi">13</span><span class="p">)</span> <span class="p">{</span>
   <span class="nf">loadMainWindow</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="kd">#available(iOS 9.0, *)</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="k">#available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span> <span class="p">{</span>
   <span class="nf">doSomething</span><span class="p">()</span>
 <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
   <span class="nf">legacyDoSomething</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="kd">#available(macOS 11.0, *)</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="k">#available</span><span class="p">(</span><span class="n">macOS</span> <span class="mf">11.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span> <span class="p">{</span>
    <span class="c1">// Do nothing</span>
-<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="kd">#available(macOS 10.15, *)</span> <span class="p">{</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="k">#available</span><span class="p">(</span><span class="n">macOS</span> <span class="mf">10.15</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span> <span class="p">{</span>
    <span class="nf">print</span><span class="p">(</span><span class="s">"do some stuff"</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="kd">#available(iOS 14.0)</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="k">#available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">14.0</span><span class="p">)</span> <span class="p">{</span>
 
 <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
   <span class="nf">oldIos13TrackingLogic</span><span class="p">(</span><span class="nv">isEnabled</span><span class="p">:</span> <span class="kt">ASIdentifierManager</span><span class="o">.</span><span class="nf">shared</span><span class="p">()</span><span class="o">.</span><span class="n">isAdvertisingTrackingEnabled</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="kd">#available(iOS 14.0)</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="k">#available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">14.0</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// we don't need to do anything here</span>
 <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
   <span class="nf">oldIos13TrackingLogic</span><span class="p">(</span><span class="nv">isEnabled</span><span class="p">:</span> <span class="kt">ASIdentifierManager</span><span class="o">.</span><span class="nf">shared</span><span class="p">()</span><span class="o">.</span><span class="n">isAdvertisingTrackingEnabled</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="kd">#available(iOS 13, *)</span> <span class="p">{}</span> <span class="k">else</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="k">#available</span><span class="p">(</span><span class="n">iOS</span> <span class="mi">13</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span> <span class="p">{}</span> <span class="k">else</span> <span class="p">{</span>
   <span class="nf">loadMainWindow</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓#</span><span class="nf">unavailable</span><span class="p">(</span><span class="n">iOS</span> <span class="mi">13</span><span class="p">)</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="k">#unavailable</span><span class="p">(</span><span class="n">iOS</span> <span class="mi">13</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// Do nothing</span>
 <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="p">{</span>
   <span class="nf">loadMainWindow</span><span class="p">()</span>
@@ -416,7 +416,7 @@ warning
     </div>
     <section class="footer">
       <p>© 2023 <a class="link" href="https://jpsim.com" target="_blank" rel="external noopener">JP Simard</a> under MIT.</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
     </section>
   </body>
 </html>

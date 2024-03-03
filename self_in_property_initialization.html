@@ -377,7 +377,7 @@ warning
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">View</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{</span>
     <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">button</span><span class="p">:</span> <span class="kt">UIButton</span> <span class="o">=</span> <span class="p">{</span>
         <span class="k">let</span> <span class="nv">button</span> <span class="o">=</span> <span class="kt">UIButton</span><span class="p">()</span>
-        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="kd">#selector(</span><span class="nf">didTapButton</span><span class="kd">)</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="k">#selector</span><span class="p">(</span><span class="n">didTapButton</span><span class="p">),</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">button</span>
     <span class="p">}()</span>
 <span class="p">}</span>
@@ -385,7 +385,7 @@ warning
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">View</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{</span>
     <span class="k">var</span> <span class="nv">button</span><span class="p">:</span> <span class="kt">UIButton</span> <span class="o">=</span> <span class="p">{</span>
         <span class="k">let</span> <span class="nv">button</span> <span class="o">=</span> <span class="kt">UIButton</span><span class="p">()</span>
-        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="n">otherObject</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="kd">#selector(</span><span class="nf">didTapButton</span><span class="kd">)</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="n">otherObject</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="k">#selector</span><span class="p">(</span><span class="n">didTapButton</span><span class="p">),</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">button</span>
     <span class="p">}()</span>
 <span class="p">}</span>
@@ -404,7 +404,7 @@ warning
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">View</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{</span>
     <span class="err">↓</span><span class="k">var</span> <span class="nv">button</span><span class="p">:</span> <span class="kt">UIButton</span> <span class="o">=</span> <span class="p">{</span>
         <span class="k">let</span> <span class="nv">button</span> <span class="o">=</span> <span class="kt">UIButton</span><span class="p">()</span>
-        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="kd">#selector(</span><span class="nf">didTapButton</span><span class="kd">)</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="k">#selector</span><span class="p">(</span><span class="n">didTapButton</span><span class="p">),</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">button</span>
     <span class="p">}()</span>
 <span class="p">}</span>
@@ -412,7 +412,7 @@ warning
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">View</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{</span>
     <span class="err">↓</span><span class="k">let</span> <span class="nv">button</span><span class="p">:</span> <span class="kt">UIButton</span> <span class="o">=</span> <span class="p">{</span>
         <span class="k">let</span> <span class="nv">button</span> <span class="o">=</span> <span class="kt">UIButton</span><span class="p">()</span>
-        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="kd">#selector(</span><span class="nf">didTapButton</span><span class="kd">)</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="k">#selector</span><span class="p">(</span><span class="n">didTapButton</span><span class="p">),</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">button</span>
     <span class="p">}()</span>
 <span class="p">}</span>
@@ -426,7 +426,7 @@ warning
     </div>
     <section class="footer">
       <p>© 2023 <a class="link" href="https://jpsim.com" target="_blank" rel="external noopener">JP Simard</a> under MIT.</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
     </section>
   </body>
 </html>

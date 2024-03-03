@@ -56,44 +56,24 @@ final class BaselineTests: XCTestCase {
         }
     }
 
-    func testNewViolations() throws {
-        try testNewViolation(
+    func testNewViolation() throws {
+        try testViolationDetection(
             violations: violations,
-            newViolationRuleDescription: BlanketDisableCommandRule.description,
+            newViolationRuleDescription: EmptyCollectionLiteralRule.description,
             insertionIndex: 2
         )
     }
 
-    func testNewIdenticalViolationAtStart() throws {
-        try testBlock {
-            let baseline = baseline
-            var newViolations = try violations.lineShifted(by: 1, path: sourceFilePath)
-            let violation = StyleViolation(
-                ruleDescription: ArrayInitRule.description,
-                location: Location(file: sourceFilePath, line: 2, character: 1)
-            )
-            newViolations.insert(violation, at: 0)
-            XCTAssertEqual(baseline.filter(newViolations), [violation])
-        }
-    }
-
-    func testNewViolationsAtStart() throws {
-        try testNewViolation(
-            violations: violations,
-            newViolationRuleDescription: BlanketDisableCommandRule.description,
-            insertionIndex: 0
-        )
-    }
-
-    func testNewViolationsInTheMiddle() throws {
-        try testNewViolation(
-            violations: violations,
+    func testViolationsWithNoFile() throws {
+        try testViolationDetection(
+            violations: violations.map { $0.with(location: Location(file: nil)) },
+            lineShift: 0,
             newViolationRuleDescription: ArrayInitRule.description,
             insertionIndex: 2
         )
     }
 
-    func testLongerViolations() throws {
+    func testViolationDetection() throws {
         let violations = [
             ArrayInitRule.description,
             BlanketDisableCommandRule.description,
@@ -116,7 +96,7 @@ final class BaselineTests: XCTestCase {
 
         for ruleDescription in ruleDescriptions {
             for insertionIndex in 0..<violations.count {
-                try testNewViolation(
+                try testViolationDetection(
                     violations: violations,
                     newViolationRuleDescription: ruleDescription,
                     insertionIndex: insertionIndex
@@ -125,7 +105,7 @@ final class BaselineTests: XCTestCase {
         }
     }
 
-    private func testNewViolation(
+    private func testViolationDetection(
         violations: [StyleViolation],
         lineShift: Int = 1,
         newViolationRuleDescription: RuleDescription,

@@ -138,9 +138,9 @@ final class BaselineTests: XCTestCase {
         let filePath = #filePath
         NSLog(">>>> Copying item from \(filePath) to \(sourceFilePath)")
         NSLog(">>>> filePath = \(#filePath)")
-        NSLog(">>>> path = \(#path)")
+        NSLog(">>>> file = \(#file)")
         NSLog(">>>> sourceFilePath = \(sourceFilePath)")
-        NSLog(">>>> currentDirectory = \(FileManager.default.currentDirectory)")
+        NSLog(">>>> currentDirectory = \(FileManager.default.currentDirectoryPath)")
         try FileManager.default.copyItem(atPath: filePath, toPath: sourceFilePath)
         defer {
             try? FileManager.default.removeItem(atPath: sourceFilePath)

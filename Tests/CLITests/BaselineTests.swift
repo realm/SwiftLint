@@ -161,12 +161,8 @@ final class BaselineTests: XCTestCase {
     private func testBlock(_ block: () throws -> Void) throws {
         let fixturesDirectory = "\(TestResources.path)/BaselineFixtures"
         let filePath = fixturesDirectory.bridge().appendingPathComponent("Example.swift")
-        #if os(macOS)
-        try FileManager.default.copyItem(atPath: filePath, toPath: sourceFilePath)
-        #else
         let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
         try data.write(to: URL(fileURLWithPath: sourceFilePath))
-        #endif
 
         defer {
             try? FileManager.default.removeItem(atPath: sourceFilePath)

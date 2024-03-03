@@ -1,6 +1,8 @@
 import Foundation
 import SwiftLintFramework
 
+typealias GroupedViolations = [String: [BaselineViolation]]
+
 struct BaselineViolation: Equatable, Codable, Hashable {
     let violation: StyleViolation
     let text: String
@@ -19,7 +21,7 @@ struct BaselineViolation: Equatable, Codable, Hashable {
 }
 
 struct Baseline: Equatable {
-    let violations: [String: [BaselineViolation]]
+    let violations: GroupedViolations
 
     init(fromPath path: String) throws {
         let url = URL(fileURLWithPath: path)
@@ -35,7 +37,7 @@ struct Baseline: Equatable {
         try write(violations.baselineViolations.groupedByFile(), toPath: path)
     }
 
-    static func write(_ violations: [String: [BaselineViolation]], toPath path: String) throws {
+    static func write(_ violations: GroupedViolations, toPath path: String) throws {
         let url = URL(fileURLWithPath: path)
         let data = try PropertyListEncoder().encode(violations)
         try data.write(to: url)
@@ -134,15 +136,15 @@ private extension Sequence where Element == BaselineViolation {
         }
     }
 
-    func groupedByFile() -> [String: [BaselineViolation]] {
+    func groupedByFile() -> GroupedViolations {
         Dictionary(grouping: self) { $0.violation.location.relativeFile ?? "" }
     }
 
-    func groupedByRuleIdentifier() -> [String: [BaselineViolation]] {
+    func groupedByRuleIdentifier() -> GroupedViolations {
         Dictionary(grouping: self) { $0.violation.ruleIdentifier }
     }
 
-    func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation]) -> [String: [BaselineViolation]] {
+    func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation]) -> GroupedViolations {
         let setOfExistingViolations = Set(existingViolations)
         let remainingViolations = filter { !setOfExistingViolations.contains($0) }
         return remainingViolations.groupedByRuleIdentifier()

@@ -142,7 +142,7 @@ final class BaselineTests: XCTestCase {
         NSLog(">>>> sourceFilePath = \(sourceFilePath)")
         NSLog(">>>> currentDirectory = \(FileManager.default.currentDirectoryPath)")
         let sourceRoot = ProcessInfo.processInfo.environment["SRCROOT"]
-        NSLog(">>>> sourceRoot = \(sourceRoot)")
+        NSLog(">>>> sourceRoot = \(String(describing: sourceRoot))")
 
         try FileManager.default.copyItem(atPath: filePath, toPath: sourceFilePath)
         defer {

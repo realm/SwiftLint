@@ -14,12 +14,7 @@ private extension SwiftLintFile {
             let url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
                 .appendingPathComponent(UUID().uuidString)
                 .appendingPathExtension("swift")
-            do {
-                _ = try contents.data(using: .utf8)!.write(to: url)
-                // XCTFail(">>>> Writing debugging data to >>\(url.path)<<")
-            } catch {
-                XCTFail("Could not write to \(url.path): \(error)")
-            }
+            _ = try? contents.data(using: .utf8)!.write(to: url)
             file = SwiftLintFile(path: url.path)!
         } else {
             file = SwiftLintFile(contents: contents)

@@ -135,6 +135,7 @@ final class BaselineTests: XCTestCase {
     }
 
     private func testBlock(_ block: () throws -> Void) throws {
+        NSLog(">>>> moving file at = \(#file)")
         try FileManager.default.copyItem(atPath: #file, toPath: sourceFilePath)
         defer {
             try? FileManager.default.removeItem(atPath: sourceFilePath)

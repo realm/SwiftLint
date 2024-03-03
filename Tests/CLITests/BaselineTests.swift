@@ -3,19 +3,16 @@
 import XCTest
 
 private var temporaryFilePath: String {
-    var result = URL(
+    let result = URL(
         fileURLWithPath: NSTemporaryDirectory(),
         isDirectory: true
     ).appendingPathComponent(UUID().uuidString).path
 
-    let prefix: String
 #if os(macOS)
-    // FileManager currentDirectoryPath prepends "/private" to the temporary directory path
-    prefix = "/private"
+    return "/private" + result
 #else
-    prefix = ""
+    return result
 #endif
-    return prefix + result
 }
 
 private var sourceFilePath: String = {

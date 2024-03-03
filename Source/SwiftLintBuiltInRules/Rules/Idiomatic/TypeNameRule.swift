@@ -88,14 +88,16 @@ private extension TypeNameRule {
                     reason: "Type name '\(name)' should only contain alphanumeric and other allowed characters",
                     severity: nameConfiguration.unallowedSymbolsSeverity.severity
                 )
-            } else if let caseCheckSeverity = nameConfiguration.validatesStartWithLowercase.severity,
+            }
+            if let caseCheckSeverity = nameConfiguration.validatesStartWithLowercase.severity,
                 name.first?.isLowercase == true {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
                     reason: "Type name '\(name)' should start with an uppercase character",
                     severity: caseCheckSeverity
                 )
-            } else if let severity = nameConfiguration.severity(forLength: name.count) {
+            }
+            if let severity = nameConfiguration.severity(forLength: name.count) {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
                     reason: "Type name '\(name)' should be between \(nameConfiguration.minLengthThreshold) and " +

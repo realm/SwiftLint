@@ -56,7 +56,8 @@ struct ColonRule: SubstitutionCorrectableRule, SourceKitFreeRule {
                     let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
                     let end = ByteCount(current.endPosition)
                     return ByteRange(location: start, length: end - start)
-                } else if current.trailingTrivia != [.spaces(1)] && !next.leadingTrivia.containsNewlines() {
+                }
+                if current.trailingTrivia != [.spaces(1)] && !next.leadingTrivia.containsNewlines() {
                     if case .spaces(1) = current.trailingTrivia.first {
                         return nil
                     }
@@ -75,9 +76,8 @@ struct ColonRule: SubstitutionCorrectableRule, SourceKitFreeRule {
                     }
 
                     return ByteRange(location: ByteCount(current.position), length: length)
-                } else {
-                    return nil
                 }
+                return nil
             }
             .compactMap { byteRange in
                 file.stringView.byteRangeToNSRange(byteRange)
@@ -138,9 +138,8 @@ private extension Trivia {
         contains { piece in
             if case .blockComment = piece {
                 return true
-            } else {
-                return false
             }
+            return false
         }
     }
 }

@@ -54,7 +54,8 @@ private extension ExprSyntax {
     var isDiscardExpression: Bool {
         if self.is(DiscardAssignmentExprSyntax.self) {
             return true
-        } else if let tuple = self.as(TupleExprSyntax.self) {
+        }
+        if let tuple = self.as(TupleExprSyntax.self) {
             return tuple.elements.allSatisfy { elem in
                 elem.expression.isDiscardExpression
             }

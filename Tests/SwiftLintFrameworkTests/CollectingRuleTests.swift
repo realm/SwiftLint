@@ -71,18 +71,16 @@ class CollectingRuleTests: SwiftLintTestCase {
                 if collectedInfo[file] == "baz" {
                     return [StyleViolation(ruleDescription: Self.description,
                                            location: Location(file: file, byteOffset: 2))]
-                } else {
-                    return []
                 }
+                return []
             }
 
             func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String]) -> [Correction] {
                 if collectedInfo[file] == "baz" {
                     return [Correction(ruleDescription: Self.description,
                                        location: Location(file: file, byteOffset: 2))]
-                } else {
-                    return []
                 }
+                return []
             }
         }
 
@@ -98,9 +96,8 @@ class CollectingRuleTests: SwiftLintTestCase {
                     if collectedInfo[file] == "baz" {
                         return [StyleViolation(ruleDescription: Spec.description,
                                                location: Location(file: file, byteOffset: 2))]
-                    } else {
-                        return []
                     }
+                    return []
             }
 
             func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String],
@@ -108,9 +105,8 @@ class CollectingRuleTests: SwiftLintTestCase {
                 if collectedInfo[file] == "baz" {
                     return [Correction(ruleDescription: Spec.description,
                                        location: Location(file: file, byteOffset: 2))]
-                } else {
-                    return []
                 }
+                return []
             }
         }
 

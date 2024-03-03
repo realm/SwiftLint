@@ -90,7 +90,8 @@ private extension SelfBindingRule {
                 )
 
                 return super.visit(node.with(\.pattern, newPattern))
-            } else if node.initializer == nil,
+            }
+            if node.initializer == nil,
                       identifierPattern.identifier.text == "self",
                       configuration.bindIdentifier != "self" {
                 correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
@@ -115,9 +116,8 @@ private extension SelfBindingRule {
                     .with(\.pattern, newPattern)
                     .with(\.initializer, newInitializer)
                 return super.visit(newNode)
-            } else {
-                return super.visit(node)
             }
+            return super.visit(node)
         }
     }
 }

@@ -219,17 +219,15 @@ private extension MemberAccessExprSyntax {
     var explicitInitPosition: AbsolutePosition? {
         if let base, base.isTypeReferenceLike, declName.baseName.text == "init" {
             return base.endPositionBeforeTrailingTrivia
-        } else {
-            return nil
         }
+        return nil
     }
 
     var bareInitPosition: AbsolutePosition? {
         if base == nil, declName.baseName.text == "init" {
             return period.positionAfterSkippingLeadingTrivia
-        } else {
-            return nil
         }
+        return nil
     }
 }
 
@@ -238,15 +236,16 @@ private extension ExprSyntax {
     var isTypeReferenceLike: Bool {
         if let expr = self.as(DeclReferenceExprSyntax.self), expr.baseName.text.startsWithUppercase {
             return true
-        } else if let expr = self.as(MemberAccessExprSyntax.self),
+        }
+        if let expr = self.as(MemberAccessExprSyntax.self),
                   expr.description.split(separator: ".").allSatisfy(\.startsWithUppercase) {
             return true
-        } else if let expr = self.as(GenericSpecializationExprSyntax.self)?.expression.as(DeclReferenceExprSyntax.self),
+        }
+        if let expr = self.as(GenericSpecializationExprSyntax.self)?.expression.as(DeclReferenceExprSyntax.self),
                   expr.baseName.text.startsWithUppercase {
             return true
-        } else {
-            return false
         }
+        return false
     }
 }
 

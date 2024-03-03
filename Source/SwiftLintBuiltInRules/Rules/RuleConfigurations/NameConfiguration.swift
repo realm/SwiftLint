@@ -91,10 +91,11 @@ extension NameConfiguration {
     func severity(forLength length: Int) -> ViolationSeverity? {
         if let minError = minLength.error, length < minError {
             return .error
-        } else if let maxError = maxLength.error, length > maxError {
+        }
+        if let maxError = maxLength.error, length > maxError {
             return .error
-        } else if length < minLength.warning ||
-                  length > maxLength.warning {
+        }
+        if length < minLength.warning || length > maxLength.warning {
             return .warning
         }
         return nil

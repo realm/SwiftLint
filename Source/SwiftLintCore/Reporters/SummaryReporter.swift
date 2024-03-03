@@ -42,7 +42,8 @@ private extension TextTable {
             let count2 = ruleIdentifiersToViolationsMap[$1]?.count ?? 0
             if count1 > count2 {
                 return true
-            } else if count1 == count2 {
+            }
+            if count1 == count2 {
                 return $0 < $1
             }
             return false

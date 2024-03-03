@@ -161,18 +161,16 @@ struct LintOrAnalyzeCommand {
             return violations.map {
                 if $0.severity == .error {
                     return $0.with(severity: .warning)
-                } else {
-                    return $0
                 }
+                return $0
             }
 
         case (false, true):
             return violations.map {
                 if $0.severity == .warning {
                     return $0.with(severity: .error)
-                } else {
-                    return $0
                 }
+                return $0
             }
 
         case (true, true):
@@ -254,9 +252,8 @@ struct LintOrAnalyzeOptions {
     var verb: String {
         if autocorrect {
             return "correcting"
-        } else {
-            return mode.verb
         }
+        return mode.verb
     }
 }
 
@@ -347,9 +344,8 @@ private func memoryUsage() -> String? {
         let bytes = Measurement<UnitInformationStorage>(value: Double(info.resident_size), unit: .bytes)
         let formatted = ByteCountFormatter().string(from: bytes)
         return "Memory used: \(formatted)"
-    } else {
-        let errorMessage = String(cString: mach_error_string(kerr), encoding: .ascii)
-        return "Error with task_info(): \(errorMessage ?? "unknown")"
     }
+    let errorMessage = String(cString: mach_error_string(kerr), encoding: .ascii)
+    return "Error with task_info(): \(errorMessage ?? "unknown")"
 #endif
 }

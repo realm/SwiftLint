@@ -57,18 +57,16 @@ private extension TokenSyntax {
             == nextToken.positionAfterSkippingLeadingTrivia - SourceLength(utf8Length: 1)
         if isImmediatelyNext || nextToken.hasLeadingNewline {
             return false
-        } else {
-            return true
         }
+        return true
     }
 
     private var hasLeadingNewline: Bool {
         leadingTrivia.contains { piece in
             if case .newlines = piece {
                 return true
-            } else {
-                return false
             }
+            return false
         }
     }
 }

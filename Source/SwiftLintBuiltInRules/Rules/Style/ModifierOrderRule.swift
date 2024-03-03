@@ -34,9 +34,8 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
                     reason: reason
                 )
             ]
-        } else {
-            return []
         }
+        return []
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {
@@ -148,7 +147,8 @@ private extension SourceKittenDictionary {
                         offset: offset,
                         length: length
                     )
-                } else if let kind = $0.kind {
+                }
+                if let kind = $0.kind {
                     let keyword = kind.lastComponentAfter(".")
                     return ModifierDescription(
                         keyword: keyword,

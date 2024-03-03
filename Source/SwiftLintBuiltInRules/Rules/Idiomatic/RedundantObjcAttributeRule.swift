@@ -61,18 +61,19 @@ private extension Syntax {
     var isFunctionOrStoredProperty: Bool {
         if self.is(FunctionDeclSyntax.self) {
             return true
-        } else if let variableDecl = self.as(VariableDeclSyntax.self),
+        }
+        if let variableDecl = self.as(VariableDeclSyntax.self),
                   variableDecl.bindings.allSatisfy({ $0.accessorBlock == nil }) {
             return true
-        } else {
-            return false
         }
+        return false
     }
 
     var functionOrVariableModifiers: DeclModifierListSyntax? {
         if let functionDecl = self.as(FunctionDeclSyntax.self) {
             return functionDecl.modifiers
-        } else if let variableDecl = self.as(VariableDeclSyntax.self) {
+        }
+        if let variableDecl = self.as(VariableDeclSyntax.self) {
             return variableDecl.modifiers
         }
         return nil
@@ -87,18 +88,20 @@ private extension AttributeListSyntax {
 
         if hasAttributeImplyingObjC, parent?.is(ExtensionDeclSyntax.self) != true {
             return objcAttribute
-        } else if parent?.is(EnumDeclSyntax.self) == true {
+        }
+        if parent?.is(EnumDeclSyntax.self) == true {
             return nil
-        } else if parent?.isFunctionOrStoredProperty == true,
+        }
+        if parent?.isFunctionOrStoredProperty == true,
                   let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
                   parentClassDecl.attributes.contains(attributeNamed: "objcMembers") {
             return parent?.functionOrVariableModifiers?.containsPrivateOrFileprivate() == true ? nil : objcAttribute
-        } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
+        }
+        if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
                   parentExtensionDecl.attributes.objCAttribute != nil {
             return objcAttribute
-        } else {
-            return nil
         }
+        return nil
     }
 }
 

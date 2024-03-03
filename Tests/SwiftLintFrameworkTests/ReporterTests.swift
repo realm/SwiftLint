@@ -66,7 +66,8 @@ class ReporterTests: SwiftLintTestCase {
         let result = try JSONSerialization.jsonObject(with: data, options: [])
         if let dict = (result as? [String: Any])?.bridge() {
             return dict
-        } else if let array = (result as? [Any])?.bridge() {
+        }
+        if let array = (result as? [Any])?.bridge() {
             return array
         }
         queuedFatalError("Unexpected value in JSON: \(result)")

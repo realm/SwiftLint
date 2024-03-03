@@ -50,12 +50,12 @@ private extension ExprSyntax {
     var shouldSkip: Bool {
         if self.is(StringLiteralExprSyntax.self) {
             return true
-        } else if let functionCall = self.as(FunctionCallExprSyntax.self),
+        }
+        if let functionCall = self.as(FunctionCallExprSyntax.self),
                   let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self),
                   calledExpression.baseName.text == "NSPredicate" {
             return true
-        } else {
-            return false
         }
+        return false
     }
 }

@@ -120,35 +120,34 @@ package extension Configuration {
                 // Remote vertices are only allowed to have remote references
                 if vertex.originatesFromRemote && !referencedVertex.originatesFromRemote {
                     throw Issue.genericWarning("Remote configs are not allowed to reference local configs.")
-                } else {
-                    let existingVertex = findPossiblyExistingVertex(sameAs: referencedVertex)
-                    let existingVertexCopy = existingVertex.map { $0.copy(withNewRootDirectory: rootDirectory) }
+                }
+                let existingVertex = findPossiblyExistingVertex(sameAs: referencedVertex)
+                let existingVertexCopy = existingVertex.map { $0.copy(withNewRootDirectory: rootDirectory) }
 
-                    edges.insert(
-                        type == .childConfig
-                            ? Edge(parent: vertex, child: existingVertexCopy ?? referencedVertex)
-                            : Edge(parent: existingVertexCopy ?? referencedVertex, child: vertex)
+                edges.insert(
+                    type == .childConfig
+                        ? Edge(parent: vertex, child: existingVertexCopy ?? referencedVertex)
+                        : Edge(parent: existingVertexCopy ?? referencedVertex, child: vertex)
+                )
+
+                if existingVertex == nil {
+                    vertices.insert(referencedVertex)
+
+                    // Use timeout config from vertex / parent of vertex if some
+                    let remoteConfigTimeout =
+                        vertex.configurationDict[Configuration.Key.remoteConfigTimeout.rawValue]
+                            as? TimeInterval
+                            ?? remoteConfigTimeoutOverride // from vertex parent
+                    let remoteConfigTimeoutIfCached =
+                        vertex.configurationDict[Configuration.Key.remoteConfigTimeoutIfCached.rawValue]
+                            as? TimeInterval
+                            ?? remoteConfigTimeoutIfCachedOverride // from vertex parent
+
+                    try process(
+                        vertex: referencedVertex,
+                        remoteConfigTimeoutOverride: remoteConfigTimeout,
+                        remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCached
                     )
-
-                    if existingVertex == nil {
-                        vertices.insert(referencedVertex)
-
-                        // Use timeout config from vertex / parent of vertex if some
-                        let remoteConfigTimeout =
-                            vertex.configurationDict[Configuration.Key.remoteConfigTimeout.rawValue]
-                                as? TimeInterval
-                                ?? remoteConfigTimeoutOverride // from vertex parent
-                        let remoteConfigTimeoutIfCached =
-                            vertex.configurationDict[Configuration.Key.remoteConfigTimeoutIfCached.rawValue]
-                                as? TimeInterval
-                                ?? remoteConfigTimeoutIfCachedOverride // from vertex parent
-
-                        try process(
-                            vertex: referencedVertex,
-                            remoteConfigTimeoutOverride: remoteConfigTimeout,
-                            remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCached
-                        )
-                    }
                 }
             }
         }

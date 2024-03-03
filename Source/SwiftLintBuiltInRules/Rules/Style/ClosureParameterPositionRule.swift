@@ -117,14 +117,13 @@ private extension ClosureParameterPositionRule {
             let lastPositionLine = locationConverter.location(for: lastPosition).line
             if lastPositionLine == startLine {
                 return
-            } else {
-                let localViolations = positionsToCheck.dropLast().filter { position in
-                    return locationConverter.location(for: position).line != startLine
-                }
-
-                violations.append(contentsOf: localViolations)
-                violations.append(lastPosition)
             }
+            let localViolations = positionsToCheck.dropLast().filter { position in
+                return locationConverter.location(for: position).line != startLine
+            }
+
+            violations.append(contentsOf: localViolations)
+            violations.append(lastPosition)
         }
     }
 }

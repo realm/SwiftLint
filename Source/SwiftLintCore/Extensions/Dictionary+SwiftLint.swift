@@ -157,7 +157,8 @@ public struct SourceKittenDictionary {
         return substructure.flatMap { subDict -> [SourceKittenDictionary] in
             if subDict.declarationKind == .varParameter {
                 return [subDict]
-            } else if subDict.expressionKind == .argument ||
+            }
+            if subDict.expressionKind == .argument ||
                 subDict.expressionKind == .closure {
                 return subDict.enclosedVarParameters
             }

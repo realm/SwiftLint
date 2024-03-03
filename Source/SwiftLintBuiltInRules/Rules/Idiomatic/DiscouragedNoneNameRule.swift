@@ -195,11 +195,11 @@ private extension DiscouragedNoneNameRule {
             let type: String? = {
                 if node.modifiers.contains(keyword: .class) {
                     return "`class` member"
-                } else if node.modifiers.contains(keyword: .static) {
-                    return "`static` member"
-                } else {
-                    return nil
                 }
+                if node.modifiers.contains(keyword: .static) {
+                    return "`static` member"
+                }
+                return nil
             }()
 
             guard let type else {

@@ -215,7 +215,8 @@ extension Configuration {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
             let stdinString = String(decoding: stdinData, as: UTF8.self)
             return [SwiftLintFile(contents: stdinString)]
-        } else if visitor.useScriptInputFiles {
+        }
+        if visitor.useScriptInputFiles {
             let files = try scriptInputFiles()
             guard visitor.forceExclude else {
                 return files
@@ -226,10 +227,9 @@ extension Configuration {
             if visitor.useExcludingByPrefix {
                 return filterExcludedPathsByPrefix(in: scriptInputPaths)
                     .map(SwiftLintFile.init(pathDeferringReading:))
-            } else {
-                return filterExcludedPaths(excludedPaths(), in: scriptInputPaths)
-                    .map(SwiftLintFile.init(pathDeferringReading:))
             }
+            return filterExcludedPaths(excludedPaths(), in: scriptInputPaths)
+                .map(SwiftLintFile.init(pathDeferringReading:))
         }
         if !visitor.quiet {
             let filesInfo: String

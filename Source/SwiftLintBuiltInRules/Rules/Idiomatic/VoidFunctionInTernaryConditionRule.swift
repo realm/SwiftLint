@@ -217,10 +217,10 @@ private extension ReturnClauseSyntax {
     var allowsImplicitReturns: Bool {
         if let simpleType = type.as(IdentifierTypeSyntax.self) {
             return simpleType.name.text != "Void" && simpleType.name.text != "Never"
-        } else if let tupleType = type.as(TupleTypeSyntax.self) {
-            return !tupleType.elements.isEmpty
-        } else {
-            return true
         }
+        if let tupleType = type.as(TupleTypeSyntax.self) {
+            return !tupleType.elements.isEmpty
+        }
+        return true
     }
 }

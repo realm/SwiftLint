@@ -116,13 +116,14 @@ private extension ReturnClauseSyntax {
     var containsRedundantVoidViolation: Bool {
         if parent?.is(FunctionTypeSyntax.self) == true {
             return false
-        } else if let simpleReturnType = type.as(IdentifierTypeSyntax.self) {
-           return simpleReturnType.typeName == "Void"
-        } else if let tupleReturnType = type.as(TupleTypeSyntax.self) {
-            return tupleReturnType.elements.isEmpty
-        } else {
-            return false
         }
+        if let simpleReturnType = type.as(IdentifierTypeSyntax.self) {
+           return simpleReturnType.typeName == "Void"
+        }
+        if let tupleReturnType = type.as(TupleTypeSyntax.self) {
+            return tupleReturnType.elements.isEmpty
+        }
+        return false
     }
 }
 

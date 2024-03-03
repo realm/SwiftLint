@@ -49,7 +49,6 @@ disabled_rules:
   - shorthand_argument
   - sorted_enum_cases
   - strict_fileprivate
-  - superfluous_else
   - switch_case_on_newline
   - todo
   - trailing_closure

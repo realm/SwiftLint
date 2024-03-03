@@ -67,12 +67,10 @@ extension Configuration {
         if let parentWarningTreshold = warningThreshold {
             if let childWarningTreshold = childConfiguration.warningThreshold {
                 return min(childWarningTreshold, parentWarningTreshold)
-            } else {
-                return parentWarningTreshold
             }
-        } else {
-            return childConfiguration.warningThreshold
+            return parentWarningTreshold
         }
+        return childConfiguration.warningThreshold
     }
 
     // MARK: Accessing File Configurations
@@ -96,44 +94,44 @@ extension Configuration {
 
         if Self.getIsNestedConfigurationSelf(forIdentifier: cacheIdentifier) == true {
             return self
-        } else if let cached = Self.getCached(forIdentifier: cacheIdentifier) {
-            return cached
-        } else {
-            var config: Configuration
-
-            if directory == rootDirectory {
-                // Use self if at level self
-                config = self
-            } else if
-                FileManager.default.fileExists(atPath: configurationSearchPath),
-                !fileGraph.includesFile(atPath: configurationSearchPath) {
-                // Use self merged with the nested config that was found
-                // iff that nested config has not already been used to build the main config
-
-                // Ignore parent_config / child_config specifications of nested configs
-                var childConfiguration = Configuration(
-                    configurationFiles: [configurationSearchPath],
-                    ignoreParentAndChildConfigs: true
-                )
-                childConfiguration.fileGraph = FileGraph(rootDirectory: directory)
-                config = merged(withChild: childConfiguration, rootDirectory: rootDirectory)
-
-                // Cache merged result to circumvent heavy merge recomputations
-                config.setCached(forIdentifier: cacheIdentifier)
-            } else if directory != "/" {
-                // If we are not at the root path, continue down the tree
-                config = configuration(forDirectory: directoryNSString.deletingLastPathComponent)
-            } else {
-                // Fallback to self
-                config = self
-            }
-
-            if config == self {
-                // Cache that for this path, the config equals self
-                Self.setIsNestedConfigurationSelf(forIdentifier: cacheIdentifier, value: true)
-            }
-
-            return config
         }
+        if let cached = Self.getCached(forIdentifier: cacheIdentifier) {
+            return cached
+        }
+        var config: Configuration
+
+        if directory == rootDirectory {
+            // Use self if at level self
+            config = self
+        } else if
+            FileManager.default.fileExists(atPath: configurationSearchPath),
+            !fileGraph.includesFile(atPath: configurationSearchPath) {
+            // Use self merged with the nested config that was found
+            // iff that nested config has not already been used to build the main config
+
+            // Ignore parent_config / child_config specifications of nested configs
+            var childConfiguration = Configuration(
+                configurationFiles: [configurationSearchPath],
+                ignoreParentAndChildConfigs: true
+            )
+            childConfiguration.fileGraph = FileGraph(rootDirectory: directory)
+            config = merged(withChild: childConfiguration, rootDirectory: rootDirectory)
+
+            // Cache merged result to circumvent heavy merge recomputations
+            config.setCached(forIdentifier: cacheIdentifier)
+        } else if directory != "/" {
+            // If we are not at the root path, continue down the tree
+            config = configuration(forDirectory: directoryNSString.deletingLastPathComponent)
+        } else {
+            // Fallback to self
+            config = self
+        }
+
+        if config == self {
+            // Cache that for this path, the config equals self
+            Self.setIsNestedConfigurationSelf(forIdentifier: cacheIdentifier, value: true)
+        }
+
+        return config
     }
 }

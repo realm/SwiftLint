@@ -193,7 +193,8 @@ private extension OptionalEnumCaseMatchingRule {
                     .with(\.whereClause,
                           node.whereClause?.with(\.leadingTrivia, expression.questionMark.trailingTrivia))
                 return super.visit(newNode)
-            } else if let expression = pattern.expression.as(TupleExprSyntax.self) {
+            }
+            if let expression = pattern.expression.as(TupleExprSyntax.self) {
                 var newExpression = expression
                 for element in expression.elements {
                     guard

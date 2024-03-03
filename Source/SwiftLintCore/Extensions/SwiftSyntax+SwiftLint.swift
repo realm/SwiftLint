@@ -61,13 +61,13 @@ public extension ExprSyntax {
     var asFunctionCall: FunctionCallExprSyntax? {
         if let functionCall = self.as(FunctionCallExprSyntax.self) {
             return functionCall
-        } else if let tuple = self.as(TupleExprSyntax.self),
+        }
+        if let tuple = self.as(TupleExprSyntax.self),
                   let firstElement = tuple.elements.onlyElement,
                   let functionCall = firstElement.expression.as(FunctionCallExprSyntax.self) {
             return functionCall
-        } else {
-            return nil
         }
+        return nil
     }
 }
 
@@ -249,9 +249,8 @@ public extension Trivia {
         contains { piece in
             if case .newlines = piece {
                 return true
-            } else {
-                return false
             }
+            return false
         }
     }
 

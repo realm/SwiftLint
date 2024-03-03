@@ -99,7 +99,8 @@ extension Array where Element == String {
         }.map {
             if $0 == "-O" {
                 return "-Onone"
-            } else if $0 == "-DNDEBUG=1" {
+            }
+            if $0 == "-DNDEBUG=1" {
                 return "-DDEBUG=1"
             }
             return $0

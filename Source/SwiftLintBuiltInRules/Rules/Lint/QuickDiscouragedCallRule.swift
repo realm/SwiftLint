@@ -64,9 +64,8 @@ struct QuickDiscouragedCallRule: OptInRule {
             let substructure = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
                 if dict.expressionKind == .closure {
                     return dict.substructure
-                } else {
-                    return [dict]
                 }
+                return [dict]
             }
 
             return substructure.flatMap(toViolationOffsets)

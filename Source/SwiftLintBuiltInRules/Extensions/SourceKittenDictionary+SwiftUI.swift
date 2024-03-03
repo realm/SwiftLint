@@ -109,11 +109,10 @@ extension SourceKittenDictionary {
                 }) {
                     // Found a match, continue to next argument.
                     continue
-                } else {
-                    // Did not find a match, exit loop over arguments.
-                    matchesArgs = false
-                    break
                 }
+                // Did not find a match, exit loop over arguments.
+                matchesArgs = false
+                break
             }
 
             // Return true if all arguments matched

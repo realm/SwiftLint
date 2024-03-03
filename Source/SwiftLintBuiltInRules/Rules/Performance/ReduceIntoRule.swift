@@ -130,7 +130,8 @@ private extension FunctionCallExprSyntax {
     var nameToken: TokenSyntax? {
         if let expr = calledExpression.as(MemberAccessExprSyntax.self) {
             return expr.declName.baseName
-        } else if let expr = calledExpression.as(DeclReferenceExprSyntax.self) {
+        }
+        if let expr = calledExpression.as(DeclReferenceExprSyntax.self) {
             return expr.baseName
         }
 
@@ -149,11 +150,13 @@ private extension ExprSyntax {
         if let expr = self.as(FunctionCallExprSyntax.self) {
             if let identifierExpr = expr.calledExpression.identifierExpr {
                 return identifierExpr.isCopyOnWriteType
-            } else if let memberAccesExpr = expr.calledExpression.as(MemberAccessExprSyntax.self),
+            }
+            if let memberAccesExpr = expr.calledExpression.as(MemberAccessExprSyntax.self),
                       memberAccesExpr.declName.baseName.text == "init",
                       let identifierExpr = memberAccesExpr.base?.identifierExpr {
                 return identifierExpr.isCopyOnWriteType
-            } else if expr.calledExpression.isCopyOnWriteType {
+            }
+            if expr.calledExpression.isCopyOnWriteType {
                 return true
             }
         }
@@ -164,7 +167,8 @@ private extension ExprSyntax {
     var identifierExpr: DeclReferenceExprSyntax? {
         if let identifierExpr = self.as(DeclReferenceExprSyntax.self) {
             return identifierExpr
-        } else if let specializeExpr = self.as(GenericSpecializationExprSyntax.self) {
+        }
+        if let specializeExpr = self.as(GenericSpecializationExprSyntax.self) {
             return specializeExpr.expression.identifierExpr
         }
 

@@ -12,7 +12,7 @@ private var sourceFilePath: String = {
     temporaryFilePath
 }()
 
-final class BaselineTests: XCTestCase {
+final public class BaselineTests: XCTestCase {
     private var violations: [StyleViolation] {
         [
             ArrayInitRule.description,
@@ -124,7 +124,7 @@ final class BaselineTests: XCTestCase {
             var newViolations = lineShift != 0
                 ? try violations.lineShifted(by: lineShift, path: sourceFilePath)
                 : violations
-            let line = ((insertionIndex + 1) * 5) - 2
+            let line = ((insertionIndex + 1) * 2) - 1 + lineShift
             let violation = StyleViolation(
                 ruleDescription: newViolationRuleDescription,
                 location: Location(file: sourceFilePath, line: line, character: 1)
@@ -135,14 +135,8 @@ final class BaselineTests: XCTestCase {
     }
 
     private func testBlock(_ block: () throws -> Void) throws {
-        let filePath = #filePath
-        NSLog(">>>> Copying item from \(filePath) to \(sourceFilePath)")
-        NSLog(">>>> filePath = \(#filePath)")
-        NSLog(">>>> file = \(#file)")
-        NSLog(">>>> sourceFilePath = \(sourceFilePath)")
-        NSLog(">>>> currentDirectory = \(FileManager.default.currentDirectoryPath)")
-        let sourceRoot = ProcessInfo.processInfo.environment["SRCROOT"]
-        NSLog(">>>> sourceRoot = \(String(describing: sourceRoot))")
+        let fixturesDirectory = "\(TestResources.path)/BaselineFixtures"
+        let filePath = (fixturesDirectory as NSString).appendingPathComponent("Example.swift")
 
         try FileManager.default.copyItem(atPath: filePath, toPath: sourceFilePath)
         defer {
@@ -190,8 +184,26 @@ private extension Sequence where Element == RuleDescription {
         enumerated().map { index, ruleDescription in
             StyleViolation(
                 ruleDescription: ruleDescription,
-                location: Location(file: sourceFilePath, line: (index + 1) * 5, character: 1)
+                location: Location(file: sourceFilePath, line: (index + 1) * 2, character: 1)
             )
         }
     }
+}
+
+private enum TestResources {
+    static var path: String {
+        if let rootProjectDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"] {
+            return "\(rootProjectDirectory)/Tests/SwiftLintFrameworkTests/Resources"
+        }
+
+        return URL(fileURLWithPath: #file, isDirectory: false)
+            .deletingLastPathComponent()
+            .appendingPathComponent("Resources")
+            .path
+            .absolutePathStandardized()
+    }
+}
+
+private extension XCTestCase {
+    var testResourcesPath: String { TestResources.path }
 }

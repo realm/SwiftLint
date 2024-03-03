@@ -12,6 +12,7 @@ class FileHeaderRuleTests: SwiftLintTestCase {
 
     func testFileHeaderWithDefaultConfiguration() {
         NSLog(">>>> fixturesDirectory = \(fixturesDirectory)")
+        XCTFail(">>>> fixturesDirectory = \(fixturesDirectory)")
         verifyRule(FileHeaderRule.description, skipCommentTests: true)
     }
 

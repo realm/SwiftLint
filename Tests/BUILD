@@ -11,7 +11,7 @@ filegroup(
     srcs = glob(
         ["CLITests/**/*.swift"],
         exclude = [
-            "SwiftLintFrameworkTests/Resources/**",
+            "CLITests/Resources/**",
         ],
     ),
 )

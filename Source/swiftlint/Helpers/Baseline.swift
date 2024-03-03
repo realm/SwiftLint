@@ -24,8 +24,7 @@ struct Baseline: Equatable {
     init(fromPath path: String) throws {
         let url = URL(fileURLWithPath: path)
         let data = try Data(contentsOf: url)
-        let violations = try PropertyListDecoder().decode([String: [BaselineViolation]].self, from: data)
-        self.violations = violations
+        self.violations = try PropertyListDecoder().decode([String: [BaselineViolation]].self, from: data)
     }
 
     init(violations: [StyleViolation]) {
@@ -43,10 +42,8 @@ struct Baseline: Equatable {
     }
 
     func filter(_ violations: [StyleViolation]) -> [StyleViolation] {
-        guard let firstViolation = violations.first else {
-            return []
-        }
-        guard let baselineViolations = self.violations[firstViolation.location.relativeFile ?? ""],
+        guard let firstViolation = violations.first,
+              let baselineViolations = self.violations[firstViolation.location.relativeFile ?? ""],
               baselineViolations.isNotEmpty else {
             return violations
         }
@@ -87,7 +84,6 @@ struct Baseline: Equatable {
             }
         }
 
-        // Restore the absolute paths, and the original order of the violations
         let violationsWithAbsolutePaths = Set(filteredViolations.violationsWithAbsolutePaths)
         return violations.filter { violationsWithAbsolutePaths.contains($0) }
     }
@@ -99,7 +95,7 @@ private extension Sequence where Element == StyleViolation {
         var result: [BaselineViolation] = []
         for violation in self {
             guard let absolutePath = violation.location.file,
-                  let lineNumber = violation.location.line != nil ? (violation.location.line ?? 0) - 1 : nil,
+                  let lineNumber = violation.location.line != nil ? violation.location.line! - 1 : nil,
                   lineNumber > 0 else {
                 result.append(BaselineViolation(violation: violation, text: ""))
                 continue

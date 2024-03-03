@@ -16,7 +16,7 @@ private extension SwiftLintFile {
                 .appendingPathExtension("swift")
             do {
                 _ = try contents.data(using: .utf8)!.write(to: url)
-                XCTFail(">>>> Writing debugging data to >>\(url.path)<<")
+                // XCTFail(">>>> Writing debugging data to >>\(url.path)<<")
             } catch {
                 XCTFail("Could not write to \(url.path): \(error)")
             }

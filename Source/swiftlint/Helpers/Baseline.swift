@@ -56,7 +56,6 @@ struct Baseline: Equatable {
             return []
         }
 
-        // remove any exactly identical matches
         let violationsByRuleIdentifier = relativePathViolations.groupedByRuleIdentifier(
             filteredBy: baselineViolations
         )
@@ -73,11 +72,9 @@ struct Baseline: Equatable {
                 filteredViolations.formUnion(ruleViolations)
                 continue
             }
-            let groupedRuleViolations = Dictionary(grouping: ruleViolations, by: { $0.line + $0.violation.reason })
-            let groupedBaselineViolations = Dictionary(
-                grouping: baselineViolations,
-                by: { $0.line + $0.violation.reason }
-            )
+
+            let groupedRuleViolations = Dictionary(grouping: ruleViolations) { $0.line + $0.violation.reason }
+            let groupedBaselineViolations = Dictionary(grouping: baselineViolations) { $0.line + $0.violation.reason }
 
             for (line, ruleViolations) in groupedRuleViolations {
                 guard let baselineViolations = groupedBaselineViolations[line] else {
@@ -102,7 +99,7 @@ private extension Sequence where Element == StyleViolation {
         var result: [BaselineViolation] = []
         for violation in self {
             guard let absolutePath = violation.location.file,
-                  let lineNumber = violation.location.line != nil ? (violation.location.line ?? 0) - 1: nil,
+                  let lineNumber = violation.location.line != nil ? (violation.location.line ?? 0) - 1 : nil,
                   lineNumber > 0 else {
                 result.append(BaselineViolation(violation: violation, line: ""))
                 continue

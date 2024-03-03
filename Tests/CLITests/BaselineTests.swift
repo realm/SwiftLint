@@ -149,7 +149,7 @@ private extension [StyleViolation] {
     func lineShifted(by shift: Int, path: String) throws -> [StyleViolation] {
         guard let file = first?.location.file else {
             XCTFail("Cannot shift non-existent file")
-            return []
+            return self
         }
         guard shift > 0 else {
             XCTFail("Shift must be positive")

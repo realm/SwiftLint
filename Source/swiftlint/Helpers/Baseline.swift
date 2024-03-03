@@ -3,9 +3,9 @@ import SwiftLintFramework
 
 struct BaselineViolation: Equatable, Codable, Hashable {
     let violation: StyleViolation
-    let line: String
+    let text: String
 
-    init(violation: StyleViolation, line: String) {
+    init(violation: StyleViolation, text: String) {
         let location = violation.location
         self.violation = violation.with(location: Location(
             // Within the baseline, we use relative paths, so that
@@ -14,7 +14,7 @@ struct BaselineViolation: Equatable, Codable, Hashable {
             line: location.line,
             character: location.character)
         )
-        self.line = line
+        self.text = text
     }
 }
 
@@ -73,8 +73,8 @@ struct Baseline: Equatable {
                 continue
             }
 
-            let groupedRuleViolations = Dictionary(grouping: ruleViolations) { $0.line + $0.violation.reason }
-            let groupedBaselineViolations = Dictionary(grouping: baselineViolations) { $0.line + $0.violation.reason }
+            let groupedRuleViolations = Dictionary(grouping: ruleViolations) { $0.text + $0.violation.reason }
+            let groupedBaselineViolations = Dictionary(grouping: baselineViolations) { $0.text + $0.violation.reason }
 
             for (line, ruleViolations) in groupedRuleViolations {
                 guard let baselineViolations = groupedBaselineViolations[line] else {
@@ -101,23 +101,23 @@ private extension Sequence where Element == StyleViolation {
             guard let absolutePath = violation.location.file,
                   let lineNumber = violation.location.line != nil ? (violation.location.line ?? 0) - 1 : nil,
                   lineNumber > 0 else {
-                result.append(BaselineViolation(violation: violation, line: ""))
+                result.append(BaselineViolation(violation: violation, text: ""))
                 continue
             }
             if let fileLines = lines[absolutePath] {
-                let line = (!fileLines.isEmpty && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
-                result.append(BaselineViolation(violation: violation, line: line))
+                let text = (!fileLines.isEmpty && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
+                result.append(BaselineViolation(violation: violation, text: text))
                 continue
             }
-            let line: String
+            let text: String
             if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map({ $0.content }),
                lineNumber < fileLines.count {
-                line = fileLines[lineNumber]
+                text = fileLines[lineNumber]
                 lines[absolutePath] = fileLines
             } else {
-                line = ""
+                text = ""
             }
-            result.append(BaselineViolation(violation: violation, line: line))
+            result.append(BaselineViolation(violation: violation, text: text))
         }
         return result
     }

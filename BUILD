@@ -195,6 +195,7 @@ filegroup(
     srcs = glob(["Source/**/*.swift"]) + [
         ".swiftlint.yml",
         "//Tests:SwiftLintFrameworkTestsData",
+        "//Tests:CLITestsData",
     ],
     visibility = ["//Tests:__subpackages__"],
 )

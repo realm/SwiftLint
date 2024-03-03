@@ -6,6 +6,7 @@ typealias GroupedViolations = [String: [BaselineViolation]]
 struct BaselineViolation: Equatable, Codable, Hashable {
     let violation: StyleViolation
     let text: String
+    var key: String { text + violation.reason }
 
     init(violation: StyleViolation, text: String) {
         let location = violation.location
@@ -71,8 +72,8 @@ struct Baseline: Equatable {
                 continue
             }
 
-            let groupedRuleViolations = Dictionary(grouping: ruleViolations) { $0.text + $0.violation.reason }
-            let groupedBaselineViolations = Dictionary(grouping: baselineViolations) { $0.text + $0.violation.reason }
+            let groupedRuleViolations = Dictionary(grouping: ruleViolations) { $0.key }
+            let groupedBaselineViolations = Dictionary(grouping: baselineViolations) { $0.key }
 
             for (key, ruleViolations) in groupedRuleViolations {
                 guard let baselineViolations = groupedBaselineViolations[key] else {

@@ -8,11 +8,14 @@ private var temporaryFilePath: String {
         isDirectory: true
     ).appendingPathComponent(UUID().uuidString).path
 
+    let prefix: String
 #if os(macOS)
     // FileManager currentDirectoryPath prepends "/private" to the temporary directory path
-    return "/private" + result
+    prefix = "/private"
+#else
+    prefix = ""
 #endif
-    return result
+    return prefix + result
 }
 
 private var sourceFilePath: String = {

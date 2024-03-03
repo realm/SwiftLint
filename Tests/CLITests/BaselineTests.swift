@@ -4,11 +4,11 @@ import XCTest
 
 private var temporaryFilePath: String {
     // FileManager currentDirectoryPath prepends "/private" to the temporary directory path
-    "/private" + FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path + ".swift"
+    "/private" + FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
 }
 
 private var sourceFilePath: String = {
-    temporaryFilePath
+    temporaryFilePath + ".swift"
 }()
 
 final class BaselineTests: XCTestCase {

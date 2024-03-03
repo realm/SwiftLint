@@ -19,7 +19,7 @@ filegroup(
 filegroup(
     name = "CLITestsData",
     srcs = glob(
-        ["**/**"],
+        ["CLITests/Resources/**"],
     ),
     visibility = ["//visibility:public"],
 )
@@ -96,7 +96,7 @@ filegroup(
 filegroup(
     name = "SwiftLintFrameworkTestsData",
     srcs = glob(
-        ["**/**"],
+        ["SwiftLintFrameworkTests/Resources/**"]
         # Bazel doesn't support paths with spaces in them
         exclude = ["SwiftLintFrameworkTests/Resources/FileNameNoSpaceRuleFixtures/**"],
     ),

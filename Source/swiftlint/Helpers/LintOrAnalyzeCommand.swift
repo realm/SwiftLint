@@ -96,7 +96,7 @@ struct LintOrAnalyzeCommand {
                     violations: linter.styleViolations(using: builder.storage)
                 )
             }
-            let filteredViolations = baseline != nil ? baseline?.filter(currentViolations) ?? [] : currentViolations
+            let filteredViolations = baseline != nil ? baseline!.filter(currentViolations) : currentViolations
             visitorMutationQueue.sync {
                 builder.allViolations += currentViolations
                 builder.violations += filteredViolations

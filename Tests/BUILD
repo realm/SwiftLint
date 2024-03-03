@@ -16,6 +16,14 @@ filegroup(
     ),
 )
 
+filegroup(
+    name = "CLITestsData",
+    srcs = glob(
+        ["**/**"],
+    ),
+    visibility = ["//visibility:public"],
+)
+
 swift_library(
     name = "CLITests.library",
     testonly = True,

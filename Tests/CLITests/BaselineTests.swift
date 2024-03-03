@@ -140,6 +140,7 @@ final class BaselineTests: XCTestCase {
             try? FileManager.default.removeItem(atPath: sourceFilePath)
         }
         let currentDirectoryPath = FileManager.default.currentDirectoryPath
+        NSLog(">>>> currentDirectoryPath = \(currentDirectoryPath)")
         // swiftlint:disable:next legacy_objc_type
         let testDirectoryPath = (sourceFilePath as NSString).deletingLastPathComponent
         XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(testDirectoryPath))

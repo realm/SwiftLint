@@ -107,35 +107,23 @@ final class BaselineTests: XCTestCase {
             ClosingBraceRule.description
         ].violations
 
-        for insertionIndex in 0..<violations.count {
-            try testNewViolation(
-                violations: violations,
-                newViolationRuleDescription: ArrayInitRule.description,
-                insertionIndex: insertionIndex
-            )
+        let ruleDescriptions = [
+            ArrayInitRule.description,
+            BlanketDisableCommandRule.description,
+            ClosingBraceRule.description,
+            DirectReturnRule.description
+        ]
+
+        for ruleDescription in ruleDescriptions {
+            for insertionIndex in 0..<violations.count {
+                try testNewViolation(
+                    violations: violations,
+                    newViolationRuleDescription: ruleDescription,
+                    insertionIndex: insertionIndex
+                )
+            }
         }
     }
-
-//    private func testLongerViolations(ruleDescription: RuleDescription, insertionIndex: Int) throws {
-//        let violations = [
-//            ArrayInitRule.description,
-//            BlanketDisableCommandRule.description,
-//            ArrayInitRule.description,
-//            ClosingBraceRule.description,
-//            ClosingBraceRule.description,
-//            ClosingBraceRule.description,
-//            BlanketDisableCommandRule.description,
-//            DirectReturnRule.description,
-//            ArrayInitRule.description,
-//            ClosingBraceRule.description
-//        ].violations
-//
-//        try testNewViolation(
-//            violations: violations,
-//            newViolationRuleDescription: ruleDescription,
-//            insertionIndex: insertionIndex
-//        )
-//    }
 
     private func testNewViolation(
         violations: [StyleViolation],
@@ -195,7 +183,7 @@ private extension [StyleViolation] {
         return map {
             let shiftedLocation = Location(
                 file: path,
-                line: $0.location.line != nil ? ($0.location.line ?? 0) + shift : nil,
+                line: $0.location.line != nil ? $0.location.line! + shift : nil,
                 character: $0.location.character
             )
             return $0.with(location: shiftedLocation)

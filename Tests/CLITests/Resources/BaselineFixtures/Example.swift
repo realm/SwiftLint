@@ -8,13 +8,14 @@ class Example: NSObject {
     init(foo: Int, bar: String) {
         self.foo = foo
         self.bar = bar
-    }
-
+    } // init
     func someFunction() -> Int {
         foo * 10
-    }
-
+    } // someFunction
     func someOtherFunction() -> String {
         bar
-    }
+    } // someOtherFunction
+    func yetAnotherFunction() -> (Int, String) {
+        (foo, bar)
+    } // yetAnotherFunction
 }

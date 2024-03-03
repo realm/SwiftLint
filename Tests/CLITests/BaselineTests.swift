@@ -1,6 +1,5 @@
 @testable import swiftlint
 @testable import SwiftLintBuiltInRules
-import SwiftLintFramework
 import XCTest
 
 private var temporaryFilePath: String {
@@ -12,7 +11,7 @@ private var sourceFilePath: String = {
     temporaryFilePath
 }()
 
-final public class BaselineTests: XCTestCase {
+final class BaselineTests: XCTestCase {
     private var violations: [StyleViolation] {
         [
             ArrayInitRule.description,
@@ -136,15 +135,14 @@ final public class BaselineTests: XCTestCase {
 
     private func testBlock(_ block: () throws -> Void) throws {
         let fixturesDirectory = "\(TestResources.path)/BaselineFixtures"
-        let filePath = (fixturesDirectory as NSString).appendingPathComponent("Example.swift")
+        let filePath = fixturesDirectory.bridge().appendingPathComponent("Example.swift")
 
         try FileManager.default.copyItem(atPath: filePath, toPath: sourceFilePath)
         defer {
             try? FileManager.default.removeItem(atPath: sourceFilePath)
         }
         let currentDirectoryPath = FileManager.default.currentDirectoryPath
-        // swiftlint:disable:next legacy_objc_type
-        let testDirectoryPath = (sourceFilePath as NSString).deletingLastPathComponent
+        let testDirectoryPath = sourceFilePath.bridge().deletingLastPathComponent
         XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(testDirectoryPath))
         defer {
             XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(currentDirectoryPath))

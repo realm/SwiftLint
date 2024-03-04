@@ -99,6 +99,17 @@ public struct Baseline: Equatable {
         let violationsWithAbsolutePaths = Set(filteredViolations.violationsWithAbsolutePaths)
         return violations.filter { violationsWithAbsolutePaths.contains($0) }
     }
+
+    /// The baseline's stored violations.
+    public var styleViolations: [StyleViolation] {
+        var result: [BaselineViolation] = []
+        for key in violations.keys.sorted() {
+            if let fileViolations = violations[key] {
+                result.append(contentsOf: fileViolations)
+            }
+        }
+        return result.violationsWithAbsolutePaths
+    }
 }
 
 private extension Sequence where Element == StyleViolation {

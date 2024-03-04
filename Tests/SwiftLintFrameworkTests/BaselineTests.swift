@@ -131,7 +131,6 @@ final class BaselineTests: XCTestCase {
         let filePath = fixturesDirectory.stringByAppendingPathComponent("BaselineExample.swift")
         let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
         try data.write(to: URL(fileURLWithPath: sourceFilePath))
-
         defer {
             try? FileManager.default.removeItem(atPath: sourceFilePath)
         }

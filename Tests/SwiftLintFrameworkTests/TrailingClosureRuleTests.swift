@@ -13,6 +13,8 @@ class TrailingClosureRuleTests: SwiftLintTestCase {
             .with(corrections: [
                 Example("foo.map(↓{ $0 + 1 })"):
                     Example("foo.map { $0 + 1 }"),
+                Example("f(↓{ g(↓{ 1 }) })"):
+                    Example("f { g { 1 }}"),
                 Example("""
                     for n in list {
                         n.forEach(↓{ print($0) })

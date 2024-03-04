@@ -34,7 +34,7 @@ public struct Baseline: Equatable {
     /// - parameter fromPath: The path to read from.
     public init(fromPath path: String) throws {
         let data = try Data(contentsOf: URL(fileURLWithPath: path))
-        self.violations = try PropertyListDecoder().decode([String: [BaselineViolation]].self, from: data)
+        self.violations = try PropertyListDecoder().decode(GroupedViolations.self, from: data)
     }
 
     init(violations: [StyleViolation]) {

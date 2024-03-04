@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 private func wrapExample(
     prefix: String = "",
     _ type: String,

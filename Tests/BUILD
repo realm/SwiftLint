@@ -6,28 +6,10 @@ copts = ["-enable-upcoming-feature", "ExistentialAny"]
 
 # CLITests
 
-filegroup(
-    name = "CLITestsSources",
-    srcs = glob(
-        ["CLITests/**/*.swift"],
-        exclude = [
-            "CLITests/Resources/**",
-        ],
-    ),
-)
-
-filegroup(
-    name = "CLITestsData",
-    srcs = glob(
-        ["CLITests/Resources/**"],
-    ),
-    visibility = ["//visibility:public"],
-)
-
 swift_library(
     name = "CLITests.library",
     testonly = True,
-    srcs = [":CLITestsSources"],
+    srcs = glob(["CLITests/**/*.swift"]),
     module_name = "CLITests",
     package_name = "SwiftLint",
     deps = [
@@ -38,9 +20,6 @@ swift_library(
 
 swift_test(
     name = "CLITests",
-    data = glob(
-        ["CLITests/Resources/**"],
-    ),
     visibility = ["//visibility:public"],
     deps = [":CLITests.library"],
 )

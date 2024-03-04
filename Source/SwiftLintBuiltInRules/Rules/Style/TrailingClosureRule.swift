@@ -60,6 +60,8 @@ struct TrailingClosureRule: OptInRule {
                 Example("foo.something(0) { $0 + 1 }"),
             Example("foo.something(param1: { _ in true }, param2: 0, param3: ↓{ _ in false })"):
                 Example("foo.something(param1: { _ in true }, param2: 0) { _ in false }"),
+            Example("f(a: ↓{ g(b: ↓{ 1 }) })"):
+                Example("f { g { 1 }}"),
             Example("""
                 for n in list {
                     n.forEach(↓{ print($0) })

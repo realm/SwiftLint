@@ -67,8 +67,8 @@ private extension Rule {
             return nil
         }
 
-        // Empty files shouldn't trigger violations
-        guard !shouldLintEmptyFiles, !file.isEmpty else {
+        // Empty files shouldn't trigger violations if `shouldLintEmptyFiles` is `false`
+        if file.isEmpty, !shouldLintEmptyFiles {
             return nil
         }
 
@@ -221,7 +221,7 @@ public struct CollectedLinter {
     private func getStyleViolations(using storage: RuleStorage,
                                     benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
         guard !rules.isEmpty else {
-            // Empty files shouldn't trigger violations
+            // Nothing to validate if there are no active rules!
             return ([], [])
         }
 

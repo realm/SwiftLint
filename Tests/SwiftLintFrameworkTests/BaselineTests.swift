@@ -1,5 +1,5 @@
-@testable import swiftlint
 @testable import SwiftLintBuiltInRules
+@testable import SwiftLintCore
 import XCTest
 
 private var temporaryFilePath: String {
@@ -128,7 +128,7 @@ final class BaselineTests: XCTestCase {
 
     private func testBlock(_ block: () throws -> Void) throws {
         let fixturesDirectory = "\(TestResources.path)/BaselineFixtures"
-        let filePath = fixturesDirectory.bridge().appendingPathComponent("Example.swift")
+        let filePath = fixturesDirectory.bridge().appendingPathComponent("BaselineExample.swift")
         let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
         try data.write(to: URL(fileURLWithPath: sourceFilePath))
 
@@ -179,19 +179,5 @@ private extension Sequence where Element == RuleDescription {
                 location: Location(file: sourceFilePath, line: (index + 1) * 2, character: 1)
             )
         }
-    }
-}
-
-private enum TestResources {
-    static var path: String {
-        if let rootProjectDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"] {
-            return "\(rootProjectDirectory)/Tests/CLITests/Resources"
-        }
-
-        return URL(fileURLWithPath: #file, isDirectory: false)
-            .deletingLastPathComponent()
-            .appendingPathComponent("Resources")
-            .path
-            .absolutePathStandardized()
     }
 }

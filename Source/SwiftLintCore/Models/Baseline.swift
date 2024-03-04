@@ -1,5 +1,4 @@
 import Foundation
-import SwiftLintFramework
 
 typealias GroupedViolations = [String: [BaselineViolation]]
 
@@ -21,10 +20,10 @@ struct BaselineViolation: Equatable, Codable, Hashable {
     }
 }
 
-struct Baseline: Equatable {
+public struct Baseline: Equatable {
     private let violations: GroupedViolations
 
-    init(fromPath path: String) throws {
+    public init(fromPath path: String) throws {
         let data = try Data(contentsOf: URL(fileURLWithPath: path))
         self.violations = try PropertyListDecoder().decode([String: [BaselineViolation]].self, from: data)
     }
@@ -33,7 +32,7 @@ struct Baseline: Equatable {
         self.violations = violations.baselineViolations.groupedByFile()
     }
 
-    static func write(_ violations: [StyleViolation], toPath path: String) throws {
+    public static func write(_ violations: [StyleViolation], toPath path: String) throws {
         try write(violations.baselineViolations.groupedByFile(), toPath: path)
     }
 
@@ -43,7 +42,7 @@ struct Baseline: Equatable {
         try data.write(to: url)
     }
 
-    func filter(_ violations: [StyleViolation]) -> [StyleViolation] {
+    public func filter(_ violations: [StyleViolation]) -> [StyleViolation] {
         guard let firstViolation = violations.first,
               let baselineViolations = self.violations[firstViolation.location.relativeFile ?? ""],
               baselineViolations.isNotEmpty else {

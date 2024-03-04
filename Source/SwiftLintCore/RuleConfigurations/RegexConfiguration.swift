@@ -12,7 +12,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     public var message = "Regex matched"
     /// The regular expression to apply to trigger violations for this custom rule.
     @ConfigurationElement(key: "regex")
-    var regex: RegularExpression! // swiftlint:disable:this implicitly_unwrapped_optional
+    package var regex: RegularExpression! // swiftlint:disable:this implicitly_unwrapped_optional
     /// Regular expressions to include when matching the file path.
     public var included: [NSRegularExpression] = []
     /// Regular expressions to exclude when matching the file path.
@@ -104,7 +104,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         hasher.combine(identifier)
     }
 
-    func shouldValidate(filePath: String) -> Bool {
+    package func shouldValidate(filePath: String) -> Bool {
         let pathRange = filePath.fullNSRange
         let isIncluded = included.isEmpty || included.contains { regex in
             regex.firstMatch(in: filePath, range: pathRange) != nil

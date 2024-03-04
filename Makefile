@@ -32,15 +32,15 @@ VERSION_STRING=$(shell ./tools/get-version)
 
 all: build
 
-sourcery: Source/SwiftLintBuiltInRules/Models/BuiltInRules.swift Source/SwiftLintCore/Models/ReportersList.swift Tests/GeneratedTests/GeneratedTests.swift
+sourcery: Source/SwiftLintBuiltInRules/Models/BuiltInRules.swift Source/SwiftLintFramework/Models/ReportersList.swift Tests/GeneratedTests/GeneratedTests.swift
 
 Source/SwiftLintBuiltInRules/Models/BuiltInRules.swift: Source/SwiftLintBuiltInRules/Rules/**/*.swift .sourcery/BuiltInRules.stencil
 	./tools/sourcery --sources Source/SwiftLintBuiltInRules/Rules --templates .sourcery/BuiltInRules.stencil --output .sourcery
 	mv .sourcery/BuiltInRules.generated.swift Source/SwiftLintBuiltInRules/Models/BuiltInRules.swift
 
-Source/SwiftLintCore/Models/ReportersList.swift: Source/SwiftLintCore/Reporters/*.swift .sourcery/ReportersList.stencil
-	./tools/sourcery --sources Source/SwiftLintCore/Reporters --templates .sourcery/ReportersList.stencil --output .sourcery
-	mv .sourcery/ReportersList.generated.swift Source/SwiftLintCore/Models/ReportersList.swift
+Source/SwiftLintFramework/Models/ReportersList.swift: Source/SwiftLintFramework/Reporters/*.swift .sourcery/ReportersList.stencil
+	./tools/sourcery --sources Source/SwiftLintFramework/Reporters --templates .sourcery/ReportersList.stencil --output .sourcery
+	mv .sourcery/ReportersList.generated.swift Source/SwiftLintFramework/Models/ReportersList.swift
 
 Tests/GeneratedTests/GeneratedTests.swift: Source/SwiftLint*/Rules/**/*.swift .sourcery/GeneratedTests.stencil
 	./tools/sourcery --sources Source/SwiftLintBuiltInRules/Rules --templates .sourcery/GeneratedTests.stencil --output .sourcery
@@ -187,7 +187,7 @@ endif
 	$(eval NEW_VERSION_AND_NAME := $(filter-out $@,$(MAKECMDGOALS)))
 	$(eval NEW_VERSION := $(shell echo $(NEW_VERSION_AND_NAME) | sed 's/:.*//' ))
 	@sed -i '' 's/## Main/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
-	@sed 's/__VERSION__/$(NEW_VERSION)/g' tools/Version.swift.template > Source/SwiftLintCore/Models/Version.swift
+	@sed 's/__VERSION__/$(NEW_VERSION)/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
 	@sed -e '3s/.*/    version = "$(NEW_VERSION)",/' -i '' MODULE.bazel
 	make clean
 	make package

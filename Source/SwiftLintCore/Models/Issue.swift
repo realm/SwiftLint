@@ -107,17 +107,17 @@ public enum Issue: LocalizedError, Equatable {
     /// - parameter error: Any `Error`.
     ///
     /// - returns: A `SwiftLintError.genericWarning` containing the message of the `error` argument.
-    static func wrap(error: some Error) -> Self {
+    package static func wrap(error: some Error) -> Self {
         error as? Self ?? Self.genericWarning(error.localizedDescription)
     }
 
     /// Make this issue an error.
-    var asError: Self {
+    package var asError: Self {
         Self.genericError(message)
     }
 
     /// The issues description which is ready to be printed to the console.
-    var errorDescription: String {
+    package var errorDescription: String {
         switch self {
         case .genericError:
             return "error: \(message)"
@@ -164,19 +164,15 @@ public enum Issue: LocalizedError, Equatable {
         case let .invalidRuleIDs(ruleIDs):
             return "The key(s) \(ruleIDs.formatted) used as rule identifier(s) is/are invalid."
         case let .ruleNotPresentInOnlyRules(id):
-            return "Found a configuration for '\(id)' rule, but it is not present in " +
-                   "'\(Configuration.Key.onlyRules.rawValue)'."
+            return "Found a configuration for '\(id)' rule, but it is not present in 'only_rules'."
         case let .ruleDisabledInDisabledRules(id):
-            return "Found a configuration for '\(id)' rule, but it is disabled in " +
-                   "'\(Configuration.Key.disabledRules.rawValue)'."
+            return "Found a configuration for '\(id)' rule, but it is disabled in 'disabled_rules'."
         case let .ruleDisabledInParentConfiguration(id):
             return "Found a configuration for '\(id)' rule, but it is disabled in a parent configuration."
         case let .ruleNotEnabledInOptInRules(id):
-            return "Found a configuration for '\(id)' rule, but it is not enabled in " +
-                   "'\(Configuration.Key.optInRules.rawValue)'."
+            return "Found a configuration for '\(id)' rule, but it is not enabled in 'opt_in_rules'."
         case let .ruleNotEnabledInParentOnlyRules(id):
-            return "Found a configuration for '\(id)' rule, but it is not present in the parent's " +
-                   "'\(Configuration.Key.onlyRules.rawValue)'."
+            return "Found a configuration for '\(id)' rule, but it is not present in the parent's 'only_rules'."
         case let .genericWarning(message), let .genericError(message):
             return message
         case let .ruleDeprecated(id):

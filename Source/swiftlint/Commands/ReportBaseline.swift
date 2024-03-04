@@ -17,7 +17,7 @@ extension SwiftLint {
 
         func run() throws {
             guard let baselinePath = baseline else {
-                return
+                throw SwiftLintError.usageError(description: "You must specify a baseline")
             }
             
             let savedBaseline = try Baseline(fromPath: baselinePath)

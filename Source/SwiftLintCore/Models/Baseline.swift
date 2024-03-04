@@ -24,6 +24,9 @@ private struct BaselineViolation: Equatable, Codable, Hashable {
 public struct Baseline: Equatable {
     private let violations: GroupedViolations
 
+    /// Creates a `Baseline` from a saved file.
+    ///
+    /// - parameter fromPath: The path to the saved Baseline.
     public init(fromPath path: String) throws {
         let data = try Data(contentsOf: URL(fileURLWithPath: path))
         self.violations = try PropertyListDecoder().decode([String: [BaselineViolation]].self, from: data)
@@ -33,6 +36,11 @@ public struct Baseline: Equatable {
         self.violations = violations.baselineViolations.groupedByFile()
     }
 
+
+    /// Writes a `Baseline` to disk.
+    ///
+    /// - parameter violations: The violations to save in the `Baseline`.
+    /// - parameter toPath: The path to write the saved `Baseline` to.
     public static func write(_ violations: [StyleViolation], toPath path: String) throws {
         try write(violations.baselineViolations.groupedByFile(), toPath: path)
     }
@@ -42,6 +50,10 @@ public struct Baseline: Equatable {
         try data.write(to: URL(fileURLWithPath: path))
     }
 
+    /// Filters out violations that are present in the `Baseline``.
+    ///
+    /// - parameter violations: The violations to filter.
+    /// - Returns: A violations that were not present in the `Baseline`.
     public func filter(_ violations: [StyleViolation]) -> [StyleViolation] {
         guard let firstViolation = violations.first,
               let baselineViolations = self.violations[firstViolation.location.relativeFile ?? ""],

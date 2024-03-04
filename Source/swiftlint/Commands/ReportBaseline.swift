@@ -19,7 +19,7 @@ extension SwiftLint {
             guard let baselinePath = baseline else {
                 throw SwiftLintError.usageError(description: "You must specify a baseline")
             }
-            
+
             let savedBaseline = try Baseline(fromPath: baselinePath)
             let reporterIdentifier = reporter ?? defaultReporterIdentifier()
             let reporter = reporterFrom(identifier: reporterIdentifier)

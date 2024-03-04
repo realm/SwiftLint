@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 @testable import SwiftLintBuiltInRules
-@testable import SwiftLintCore
+@testable import SwiftLintFramework
 import XCTest
 
 final class ReporterTests: SwiftLintTestCase {
@@ -199,7 +199,7 @@ final class ReporterTests: SwiftLintTestCase {
             with: FileManager.default.currentDirectoryPath
         ).replacingOccurrences(
             of: "${SWIFTLINT_VERSION}",
-            with: SwiftLintCore.Version.current.value
+            with: SwiftLintFramework.Version.current.value
         ).replacingOccurrences(
             of: "${TODAYS_DATE}",
             with: dateFormatter.string(from: Date())
@@ -213,7 +213,7 @@ final class ReporterTests: SwiftLintTestCase {
                 of: FileManager.default.currentDirectoryPath,
                 with: "${CURRENT_WORKING_DIRECTORY}"
             ).replacingOccurrences(
-                of: SwiftLintCore.Version.current.value,
+                of: SwiftLintFramework.Version.current.value,
                 with: "${SWIFTLINT_VERSION}"
             ).replacingOccurrences(
                 of: dateFormatter.string(from: Date()),

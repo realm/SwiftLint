@@ -50,7 +50,7 @@ private let syntaxKindsByLinesCache = Cache { $0.syntaxKindsByLine() }
 private let syntaxTokensByLinesCache = Cache { $0.syntaxTokensByLine() }
 private let linesWithTokensCache = Cache { $0.computeLinesWithTokens() }
 
-internal typealias AssertHandler = () -> Void
+package typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.
 // https://github.com/realm/SwiftLint/issues/3348
 package var parserDiagnosticsDisabledForTests = false
@@ -114,7 +114,7 @@ extension SwiftLintFile {
         }
     }
 
-    internal var assertHandler: AssertHandler? {
+    package var assertHandler: AssertHandler? {
         get {
             assertHandlerCache.get(self)
         }

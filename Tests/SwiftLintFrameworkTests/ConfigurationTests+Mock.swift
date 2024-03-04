@@ -1,4 +1,4 @@
-import SwiftLintCore
+import SwiftLintFramework
 
 // swiftlint:disable:next blanket_disable_command
 // swiftlint:disable nesting identifier_name

@@ -1,5 +1,6 @@
 import SourceKittenFramework
 @testable import SwiftLintCore
+@testable import SwiftLintFramework
 import XCTest
 
 // swiftlint:disable file_length
@@ -542,7 +543,7 @@ final class CustomRulesTests: SwiftLintTestCase {
             "only_rules": ["custom_rules", "superfluous_disable_command"],
             "custom_rules": customRules,
         ]
-        let configuration = try SwiftLintCore.Configuration(dict: configDict)
+        let configuration = try SwiftLintFramework.Configuration(dict: configDict)
         return SwiftLintTestHelpers.violations(
             example.skipWrappingInCommentTest(),
             config: configuration

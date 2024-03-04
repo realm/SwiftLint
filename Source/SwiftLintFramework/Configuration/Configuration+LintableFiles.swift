@@ -96,8 +96,9 @@ extension Configuration {
     /// - returns: The input paths after removing the excluded paths.
     public func filterExcludedPathsByPrefix(in paths: [String]...) -> [String] {
         let allPaths = paths.flatMap { $0 }
-        let excludedPaths = self.excludedPaths.parallelFlatMap(transform: Glob.resolveGlob)
-                                    .map { $0.absolutePathStandardized() }
+        let excludedPaths = self.excludedPaths
+            .parallelFlatMap { @Sendable in Glob.resolveGlob($0) }
+            .map { $0.absolutePathStandardized() }
         return allPaths.filter { path in
             !excludedPaths.contains { path.hasPrefix($0) }
         }

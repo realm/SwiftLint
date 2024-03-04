@@ -20,7 +20,14 @@ public struct StyleViolation: CustomStringConvertible, Codable, Hashable {
 
     /// A printable description for this violation.
     public var description: String {
-        XcodeReporter.generateForSingleViolation(self)
+        // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
+        [
+            "\(location): ",
+            "\(severity.rawValue): ",
+            "\(ruleName) Violation: ",
+            reason,
+            " (\(ruleIdentifier))",
+        ].joined()
     }
 
     /// Creates a `StyleViolation` by specifying its properties directly.

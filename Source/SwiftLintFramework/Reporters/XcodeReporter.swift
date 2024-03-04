@@ -16,13 +16,6 @@ struct XcodeReporter: Reporter {
     ///
     /// - returns: The report for a single violation.
     internal static func generateForSingleViolation(_ violation: StyleViolation) -> String {
-        // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
-        [
-            "\(violation.location): ",
-            "\(violation.severity.rawValue): ",
-            "\(violation.ruleName) Violation: ",
-            violation.reason,
-            " (\(violation.ruleIdentifier))",
-        ].joined()
+        violation.description
     }
 }

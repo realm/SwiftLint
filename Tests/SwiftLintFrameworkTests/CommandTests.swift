@@ -2,7 +2,7 @@
 import Foundation
 import SourceKittenFramework
 @testable import SwiftLintBuiltInRules
-@testable import SwiftLintCore
+@testable import SwiftLintFramework
 import XCTest
 
 private extension Command {

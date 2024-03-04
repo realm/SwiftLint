@@ -40,7 +40,7 @@ public struct RuleList {
 
     // MARK: - Internal
 
-    internal func allRulesWrapped(configurationDict: [String: Any] = [:]) throws -> [ConfigurationRuleWrapper] {
+    package func allRulesWrapped(configurationDict: [String: Any] = [:]) throws -> [ConfigurationRuleWrapper] {
         var rules = [String: ConfigurationRuleWrapper]()
 
         // Add rules where configuration exists
@@ -72,11 +72,11 @@ public struct RuleList {
         return Array(rules.values)
     }
 
-    internal func identifier(for alias: String) -> String? {
+    package func identifier(for alias: String) -> String? {
         return aliases[alias]
     }
 
-    internal func allValidIdentifiers() -> [String] {
+    package func allValidIdentifiers() -> [String] {
         return list.flatMap { _, rule -> [String] in
             rule.description.allIdentifiers
         }

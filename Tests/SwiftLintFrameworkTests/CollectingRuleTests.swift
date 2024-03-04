@@ -1,4 +1,4 @@
-@testable import SwiftLintCore
+@testable import SwiftLintFramework
 import SwiftLintTestHelpers
 import XCTest
 

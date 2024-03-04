@@ -19,14 +19,3 @@ custom_categories:
   - name: Rules
     children:
       - Rule Directory
-  - name: Reporters
-    children:
-      - CSVReporter
-      - CheckstyleReporter
-      - CodeClimateReporter
-      - EmojiReporter
-      - GitHubActionsLoggingReporter
-      - HTMLReporter
-      - JSONReporter
-      - JUnitReporter
-      - MarkdownReporter

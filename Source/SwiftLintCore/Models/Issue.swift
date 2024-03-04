@@ -58,17 +58,17 @@ public enum Issue: LocalizedError, Equatable {
     /// - parameter error: Any `Error`.
     ///
     /// - returns: A `SwiftLintError.genericWarning` containig the message of the `error` argument.
-    static func wrap(error: some Error) -> Self {
+    package static func wrap(error: some Error) -> Self {
         error as? Issue ?? Self.genericWarning(error.localizedDescription)
     }
 
     /// Make this issue an error.
-    var asError: Self {
+    package var asError: Self {
         Self.genericError(message)
     }
 
     /// The issues description which is ready to be printed to the console.
-    var errorDescription: String {
+    package var errorDescription: String {
         switch self {
         case .genericError:
             return "error: \(message)"

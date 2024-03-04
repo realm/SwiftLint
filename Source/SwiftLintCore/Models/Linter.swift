@@ -62,8 +62,13 @@ private extension Rule {
               configuration: Configuration,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
-        // Empty files shouldn't trigger violations
-        guard !file.isEmpty, SwiftVersion.current >= Self.description.minSwiftVersion else {
+        // We shouldn't lint if the current Swift version is not supported by the rule
+        guard SwiftVersion.current >= Self.description.minSwiftVersion else {
+            return nil
+        }
+
+        // Empty files shouldn't trigger violations if `shouldLintEmptyFiles` is `false`
+        if file.isEmpty, !shouldLintEmptyFiles {
             return nil
         }
 
@@ -145,7 +150,13 @@ public struct Linter {
         self.cache = cache
         self.configuration = configuration
         self.compilerArguments = compilerArguments
+
+        let fileIsEmpty = file.isEmpty
         let rules = configuration.rules.filter { rule in
+            if fileIsEmpty, !rule.shouldLintEmptyFiles {
+                return false
+            }
+
             if compilerArguments.isEmpty {
                 return !(rule is any AnalyzerRule)
             }
@@ -208,8 +219,8 @@ public struct CollectedLinter {
 
     private func getStyleViolations(using storage: RuleStorage,
                                     benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
-        guard !file.isEmpty else {
-            // Empty files shouldn't trigger violations
+        guard !rules.isEmpty else {
+            // Nothing to validate if there are no active rules!
             return ([], [])
         }
 

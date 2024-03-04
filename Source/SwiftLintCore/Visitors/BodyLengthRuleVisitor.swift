@@ -1,11 +1,16 @@
 import SwiftSyntax
 
-final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<SeverityLevelsConfiguration<Parent>> {
+/// Visitor that collection violations of code block lengths.
+public final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<SeverityLevelsConfiguration<Parent>> {
     private let kind: Kind
 
-    enum Kind {
+    /// The code block types to check.
+    public enum Kind {
+        /// Closure code blocks.
         case closure
+        /// Function body blocks.
         case function
+        /// Type (class, enum, ...) member blocks.
         case type
 
         fileprivate var name: String {
@@ -20,12 +25,18 @@ final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<Severit
         }
     }
 
-    init(kind: Kind, file: SwiftLintFile, configuration: SeverityLevelsConfiguration<Parent>) {
+    /// Initializer.
+    ///
+    /// - Parameters:
+    ///   - kind: The code block type to check. See ``Kind``.
+    ///   - file: The file to collect violation for.
+    ///   - configuration: The configuration that defines the acceptable limits.
+    public init(kind: Kind, file: SwiftLintFile, configuration: SeverityLevelsConfiguration<Parent>) {
         self.kind = kind
         super.init(configuration: configuration, file: file)
     }
 
-    override func visitPost(_ node: EnumDeclSyntax) {
+    override public func visitPost(_ node: EnumDeclSyntax) {
         if kind == .type {
             registerViolations(
                 leftBrace: node.memberBlock.leftBrace,
@@ -35,7 +46,7 @@ final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<Severit
         }
     }
 
-    override func visitPost(_ node: ClassDeclSyntax) {
+    override public func visitPost(_ node: ClassDeclSyntax) {
         if kind == .type {
             registerViolations(
                 leftBrace: node.memberBlock.leftBrace,
@@ -45,7 +56,7 @@ final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<Severit
         }
     }
 
-    override func visitPost(_ node: StructDeclSyntax) {
+    override public func visitPost(_ node: StructDeclSyntax) {
         if kind == .type {
             registerViolations(
                 leftBrace: node.memberBlock.leftBrace,
@@ -55,7 +66,7 @@ final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<Severit
         }
     }
 
-    override func visitPost(_ node: ActorDeclSyntax) {
+    override public func visitPost(_ node: ActorDeclSyntax) {
         if kind == .type {
             registerViolations(
                 leftBrace: node.memberBlock.leftBrace,
@@ -65,7 +76,7 @@ final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<Severit
         }
     }
 
-    override func visitPost(_ node: ClosureExprSyntax) {
+    override public func visitPost(_ node: ClosureExprSyntax) {
         if kind == .closure {
             registerViolations(
                 leftBrace: node.leftBrace,
@@ -75,7 +86,7 @@ final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<Severit
         }
     }
 
-    override func visitPost(_ node: FunctionDeclSyntax) {
+    override public func visitPost(_ node: FunctionDeclSyntax) {
         if kind == .function, let body = node.body {
             registerViolations(
                 leftBrace: body.leftBrace,
@@ -85,7 +96,7 @@ final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<Severit
         }
     }
 
-    override func visitPost(_ node: InitializerDeclSyntax) {
+    override public func visitPost(_ node: InitializerDeclSyntax) {
         if kind == .function, let body = node.body {
             registerViolations(
                 leftBrace: body.leftBrace,

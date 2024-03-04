@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 struct FunctionBodyLengthRule: SwiftSyntaxRule {
     var configuration = SeverityLevelsConfiguration<Self>(warning: 50, error: 100)
 

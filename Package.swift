@@ -57,9 +57,6 @@ let package = Package(
             dependencies: [
                 "swiftlint"
             ],
-            exclude: [
-                "Resources",
-            ],
             swiftSettings: swiftFeatures
         ),
         .target(

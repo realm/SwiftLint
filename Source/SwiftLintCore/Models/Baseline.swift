@@ -36,7 +36,6 @@ public struct Baseline: Equatable {
         self.violations = violations.baselineViolations.groupedByFile()
     }
 
-
     /// Writes a `Baseline` to disk.
     ///
     /// - parameter violations: The violations to save in the `Baseline`.

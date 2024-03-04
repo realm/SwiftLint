@@ -1,8 +1,8 @@
 import Foundation
 
-typealias GroupedViolations = [String: [BaselineViolation]]
+private typealias GroupedViolations = [String: [BaselineViolation]]
 
-struct BaselineViolation: Equatable, Codable, Hashable {
+private struct BaselineViolation: Equatable, Codable, Hashable {
     let violation: StyleViolation
     let text: String
     var key: String { text + violation.reason }
@@ -20,6 +20,7 @@ struct BaselineViolation: Equatable, Codable, Hashable {
     }
 }
 
+/// A set of violations that can be used to filter newly detected violations.
 public struct Baseline: Equatable {
     private let violations: GroupedViolations
 
@@ -36,10 +37,9 @@ public struct Baseline: Equatable {
         try write(violations.baselineViolations.groupedByFile(), toPath: path)
     }
 
-    static func write(_ violations: GroupedViolations, toPath path: String) throws {
-        let url = URL(fileURLWithPath: path)
+    private static func write(_ violations: GroupedViolations, toPath path: String) throws {
         let data = try PropertyListEncoder().encode(violations)
-        try data.write(to: url)
+        try data.write(to: URL(fileURLWithPath: path))
     }
 
     public func filter(_ violations: [StyleViolation]) -> [StyleViolation] {

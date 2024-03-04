@@ -128,7 +128,7 @@ final class BaselineTests: XCTestCase {
 
     private func testBlock(_ block: () throws -> Void) throws {
         let fixturesDirectory = "\(TestResources.path)/BaselineFixtures"
-        let filePath = fixturesDirectory.bridge().appendingPathComponent("BaselineExample.swift")
+        let filePath = fixturesDirectory.stringByAppendingPathComponent("BaselineExample.swift")
         let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
         try data.write(to: URL(fileURLWithPath: sourceFilePath))
 

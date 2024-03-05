@@ -75,8 +75,7 @@ private extension SwitchCaseOnNewlineRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseSyntax) {
             if isCaseOnSingleLine(node) {
-                if configuration.allowReturnlessCases && !containsReturnStatement(node) {
-                } else {
+                if !configuration.allowReturnlessCases || containsReturnStatement(node) {
                     violations.append(node.positionAfterSkippingLeadingTrivia)
                 }
             }

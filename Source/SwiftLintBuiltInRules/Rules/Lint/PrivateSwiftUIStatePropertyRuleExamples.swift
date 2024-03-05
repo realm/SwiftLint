@@ -197,6 +197,24 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
                         }
                         """),
         Example("""
+        struct ContentView: View {
+            @State private(set) ↓var isPlaying: Bool = false
+        }
+        """): Example("""
+                        struct ContentView: View {
+                            @State private var isPlaying: Bool = false
+                        }
+                        """),
+        Example("""
+        struct ContentView: View {
+            @State private(set) public ↓var isPlaying: Bool = false
+        }
+        """): Example("""
+                        struct ContentView: View {
+                            @State private var isPlaying: Bool = false
+                        }
+                        """),
+        Example("""
         struct MyApp: App {
             @State ↓var isPlaying: Bool = false
         }

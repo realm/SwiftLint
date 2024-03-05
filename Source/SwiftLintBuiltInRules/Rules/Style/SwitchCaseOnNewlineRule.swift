@@ -66,7 +66,10 @@ private extension SwitchCaseOnNewlineRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseSyntax) {
             if isCaseOnSingleLine(node) {
-                violations.append(node.positionAfterSkippingLeadingTrivia)
+                if configuration.allowReturnlessCases && !containsReturnStatement(node) {
+                } else {
+                    violations.append(node.positionAfterSkippingLeadingTrivia)
+                }
             }
         }
 
@@ -76,6 +79,14 @@ private extension SwitchCaseOnNewlineRule {
             let statementStartLine = locationConverter.location(for: statementsPosition).line
 
             return statementStartLine == caseEndLine
+        }
+
+        private func containsReturnStatement(_ node: SwitchCaseSyntax) -> Bool {
+            let lastReturn = node.statements
+                .last?.as(CodeBlockItemSyntax.self)?
+                .item.as(ReturnStmtSyntax.self)
+
+            return lastReturn != nil
         }
     }
 }

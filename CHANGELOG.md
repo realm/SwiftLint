@@ -15,6 +15,8 @@
 * Ignore absence of a non-initial local config instead of
   falling back to default.  
   [kohtenko](https://github.com/kohtenko)
+* Introduce SwiftLintCommand plugin.  
+  [garricn](https://github.com/garricn)
 
 * Add new option `ignore_typealiases_and_associatedtypes` to
   `nesting` rule. It excludes `typealias` and `associatedtype`

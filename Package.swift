@@ -32,6 +32,12 @@ let package = Package(
     ],
     targets: [
         .plugin(
+            name: "SwiftLintCommand",
+            capability: .command(intent: .custom(verb: "swiftlint", description: "SwiftLint Command Plugin")),
+            dependencies: [
+                .target(name: "SwiftLintBinary")
+            ]),
+        .plugin(
             name: "SwiftLintPlugin",
             capability: .buildTool(),
             dependencies: swiftLintPluginDependencies

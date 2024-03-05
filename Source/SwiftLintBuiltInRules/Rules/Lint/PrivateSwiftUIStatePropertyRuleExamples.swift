@@ -102,17 +102,12 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
         """),
         Example("""
         struct MyScene: Scene {
-            @State ↓public var isPlaying: Bool = false
+            @State public ↓var isPlaying: Bool = false
         }
         """),
         Example("""
         struct ContentView: View {
             @State ↓var isPlaying: Bool = false
-        }
-        """),
-        Example("""
-        struct ContentView: View {
-            @State ↓fileprivate var isPlaying: Bool = false
         }
         """),
         Example("""
@@ -174,11 +169,11 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
         """),
         Example("""
         struct ContentView: View {
-            @State ↓private(set) var isPlaying = false
+            @State private(set) ↓var isPlaying = false
         """),
         Example("""
         struct ContentView: View {
-            @State ↓fileprivate(set) var isPlaying = false
+            @State fileprivate(set) public ↓var isPlaying = false
         """)
     ]
 
@@ -194,7 +189,7 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
                         """),
         Example("""
         struct ContentView: View {
-            @State ↓public var isPlaying: Bool = false
+            @State public ↓var isPlaying: Bool = false
         }
         """): Example("""
                         struct ContentView: View {
@@ -228,24 +223,6 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
                         struct ContentView: View {
                             @State
                             private var isPlaying: Bool = false
-                        }
-                        """),
-        Example("""
-        struct ContentView: View {
-            @State ↓private(set) var isPlaying: Bool = false
-        }
-        """): Example("""
-                        struct ContentView: View {
-                            @State private var isPlaying: Bool = false
-                        }
-                        """),
-        Example("""
-        struct ContentView: View {
-            @State ↓fileprivate(set) var isPlaying: Bool = false
-        }
-        """): Example("""
-                        struct ContentView: View {
-                            @State private var isPlaying: Bool = false
                         }
                         """)
     ]

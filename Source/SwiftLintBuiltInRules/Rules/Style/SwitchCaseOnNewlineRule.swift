@@ -10,7 +10,7 @@ private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt 
 
 @SwiftSyntaxRule
 struct SwitchCaseOnNewlineRule: OptInRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = SwitchCaseOnNewLineConfiguration()
 
     static let description = RuleDescription(
         identifier: "switch_case_on_newline",

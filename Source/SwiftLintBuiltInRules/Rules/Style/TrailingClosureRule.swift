@@ -229,9 +229,8 @@ private extension LabeledExprListSyntax {
 
         if last.trailingComma == nil {
             return self
-        } else {
-            return LabeledExprListSyntax(dropLast()) + CollectionOfOne(last.with(\.trailingComma, nil))
         }
+        return LabeledExprListSyntax(dropLast()) + CollectionOfOne(last.with(\.trailingComma, nil))
     }
 }
 
@@ -239,9 +238,8 @@ private extension Trivia {
     var endsWithSpace: Bool {
         if case .spaces = pieces.last {
             return true
-        } else {
-            return false
         }
+        return false
     }
 
     var startsWithNewline: Bool {

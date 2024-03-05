@@ -65,12 +65,17 @@ struct SwitchCaseOnNewlineRule: OptInRule {
 private extension SwitchCaseOnNewlineRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseSyntax) {
+            if isCaseOnSingleLine(node) {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        private func isCaseOnSingleLine(_ node: SwitchCaseSyntax) -> Bool {
             let caseEndLine = locationConverter.location(for: node.label.endPositionBeforeTrailingTrivia).line
             let statementsPosition = node.statements.positionAfterSkippingLeadingTrivia
             let statementStartLine = locationConverter.location(for: statementsPosition).line
-            if statementStartLine == caseEndLine {
-                violations.append(node.positionAfterSkippingLeadingTrivia)
-            }
+
+            return statementStartLine == caseEndLine
         }
     }
 }

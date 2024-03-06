@@ -102,7 +102,7 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
         """),
         Example("""
         struct MyScene: Scene {
-            @State public ↓var isPlaying: Bool = false
+            @State ↓public var isPlaying: Bool = false
         }
         """),
         Example("""
@@ -169,11 +169,11 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
         """),
         Example("""
         struct ContentView: View {
-            @State private(set) ↓var isPlaying = false
+            @State ↓private(set) var isPlaying = false
         """),
         Example("""
         struct ContentView: View {
-            @State fileprivate(set) public ↓var isPlaying = false
+            @State ↓fileprivate(set) public var isPlaying = false
         """)
     ]
 

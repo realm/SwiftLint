@@ -74,7 +74,11 @@ private extension PrivateSwiftUIStatePropertyRule {
                 return
             }
 
-            violations.append(decl.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+            if let accessLevelModifier = decl.modifiers.accessLevelModifier {
+                violations.append(accessLevelModifier.positionAfterSkippingLeadingTrivia)
+            } else {
+                violations.append(decl.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 

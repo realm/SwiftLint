@@ -21,6 +21,7 @@ disabled_rules:
   - explicit_top_level_acl
   - explicit_type_interface
   - file_types_order
+  - final_class
   - final_test_case
   - force_unwrapping
   - function_default_parameter_at_end

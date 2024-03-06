@@ -415,6 +415,12 @@ class FileTypesOrderRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class FinalClassRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(FinalClassRule.description)
+    }
+}
+
 class FinalTestCaseRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FinalTestCaseRule.description)

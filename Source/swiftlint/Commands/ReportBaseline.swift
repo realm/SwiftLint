@@ -8,19 +8,15 @@ extension SwiftLint {
             abstract: "Reports the violations in a saved Baseline."
         )
 
+        @Option(help: "The path to a baseline file.")
+        var baseline: String
         @Option(help: "The reporter used to log errors and warnings.")
         var reporter: String?
-        @Option(help: "The path to a baseline file.")
-        var baseline: String?
         @Option(help: "The file where violations should be saved. Prints to stdout by default.")
         var output: String?
 
         func run() throws {
-            guard let baselinePath = baseline else {
-                throw SwiftLintError.usageError(description: "You must specify a baseline")
-            }
-
-            let savedBaseline = try Baseline(fromPath: baselinePath)
+            let savedBaseline = try Baseline(fromPath: baseline)
             let reporterIdentifier = reporter ?? defaultReporterIdentifier()
             let reporter = reporterFrom(identifier: reporterIdentifier)
             let report = reporter.generateReport(savedBaseline.styleViolations)

@@ -6,6 +6,6 @@ struct SwitchCaseOnNewLineConfiguration: SeverityBasedRuleConfiguration {
 
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(key: "allow_returnless_cases")
-    private(set) var allowReturnlessCases = false
+    @ConfigurationElement(key: "skip_switch_expressions")
+    private(set) var skipSwitchExpressions = false
 }

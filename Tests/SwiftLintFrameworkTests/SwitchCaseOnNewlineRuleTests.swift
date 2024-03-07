@@ -5,37 +5,22 @@ class SwitchCaseOnNewlineRuleTests: SwiftLintTestCase {
         verifyRule(
             SwitchCaseOnNewlineRule.description.with(
                 nonTriggeringExamples: [
-                    wrapInSwitch("case 1: true"),
-                    wrapInSwitch("case let value: true"),
-                    wrapInSwitch("default: true"),
-                    wrapInSwitch("case \"a string\": false"),
-                    wrapInSwitch("case .myCase: false // error from network"),
-                    wrapInSwitch("case let .myCase(value) where value > 10: false"),
-                    wrapInSwitch("case #selector(aFunction(_:)): false"),
-                    wrapInSwitch("case let .myCase(value)\n where value > 10: false"),
-                    wrapInSwitch("case .first,\n .second: false")
+                    Example("""
+                    let value = switch foo {
+                        case 1: true
+                    }
+                    """)
                 ],
                 triggeringExamples: [
-                    wrapInSwitch("↓case 1: return true"),
-                    wrapInSwitch("↓case let value: return true"),
-                    wrapInSwitch("↓default: return true"),
-                    wrapInSwitch("↓case \"a string\": return false"),
-                    wrapInSwitch("↓case .myCase: return false // error from network"),
-                    wrapInSwitch("↓case let .myCase(value) where value > 10: return false"),
-                    wrapInSwitch("↓case #selector(aFunction(_:)): return false"),
-                    wrapInSwitch("↓case let .myCase(value)\n where value > 10: return false"),
-                    wrapInSwitch("↓case .first,\n .second: return false")
+                    Example("""
+                    var value = false
+                    switch foo {
+                        ↓case 1: value = true
+                    }
+                    """)
                 ]
             ),
-            ruleConfiguration: ["allow_returnless_cases": true]
+            ruleConfiguration: ["skip_switch_expressions": true]
         )
     }
-}
-
-private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt = #line) -> Example {
-    return Example("""
-    switch foo {
-        \(str)
-    }
-    """, file: file, line: line)
 }

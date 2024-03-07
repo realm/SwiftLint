@@ -74,11 +74,23 @@ struct SwitchCaseOnNewlineRule: OptInRule {
 private extension SwitchCaseOnNewlineRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseSyntax) {
+            guard !shouldSkipValidation(for: node) else { return }
+
             if isCaseOnSingleLine(node) {
-                if !configuration.allowReturnlessCases || containsReturnStatement(node) {
-                    violations.append(node.positionAfterSkippingLeadingTrivia)
-                }
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
+        }
+
+        private func shouldSkipValidation(for node: SwitchCaseSyntax) -> Bool {
+            configuration.skipSwitchExpressions && isContainedInSwitchExpression(node)
+        }
+
+        private func isContainedInSwitchExpression(_ node: SwitchCaseSyntax) -> Bool {
+            guard let distantParent = node.parent?.parent?.parent else {
+                return false
+            }
+
+            return !distantParent.is(ExpressionStmtSyntax.self)
         }
 
         private func isCaseOnSingleLine(_ node: SwitchCaseSyntax) -> Bool {
@@ -87,14 +99,6 @@ private extension SwitchCaseOnNewlineRule {
             let statementStartLine = locationConverter.location(for: statementsPosition).line
 
             return statementStartLine == caseEndLine
-        }
-
-        private func containsReturnStatement(_ node: SwitchCaseSyntax) -> Bool {
-            let lastReturn = node.statements
-                .last?.as(CodeBlockItemSyntax.self)?
-                .item.as(ReturnStmtSyntax.self)
-
-            return lastReturn != nil
         }
     }
 }

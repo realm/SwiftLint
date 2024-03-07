@@ -125,7 +125,7 @@
 * Make `trailing_closure` correctable.  
   [KS1019](https://github.com/KS1019/)
 
-* Add new `final_class` rule to prefer `static` over `final class` methods.
+* Add new `static_over_final_class` rule to prefer `static` over `final class` declerations.  
   [phlippieb](https://github.com/phlippieb)
   [#5471](https://github.com/realm/SwiftLint/issues/5471)
 

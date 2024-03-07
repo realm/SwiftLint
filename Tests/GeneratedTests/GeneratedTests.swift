@@ -415,12 +415,6 @@ class FileTypesOrderRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-class FinalClassRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FinalClassRule.description)
-    }
-}
-
 class FinalTestCaseRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FinalTestCaseRule.description)
@@ -1132,6 +1126,12 @@ class StatementPositionRuleGeneratedTests: SwiftLintTestCase {
 class StaticOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StaticOperatorRule.description)
+    }
+}
+
+class StaticOverFinalClassRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(StaticOverFinalClassRule.description)
     }
 }
 

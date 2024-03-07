@@ -224,21 +224,23 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
         Example("""
         struct MyApp: App {
             @State
+            /// This will track if the content is currently playing
             ↓var isPlaying: Bool = false
         }
         """): Example("""
                         struct MyApp: App {
                             @State
+                            /// This will track if the content is currently playing
                             private var isPlaying: Bool = false
                         }
                         """),
         Example("""
         struct MyScene: Scene {
-            @State ↓var isPlaying: Bool = false
+            @State /* This is a comment */ ↓var isPlaying: Bool = false
         }
         """): Example("""
                         struct MyScene: Scene {
-                            @State private var isPlaying: Bool = false
+                            @State /* This is a comment */ private var isPlaying: Bool = false
                         }
                         """),
         Example("""

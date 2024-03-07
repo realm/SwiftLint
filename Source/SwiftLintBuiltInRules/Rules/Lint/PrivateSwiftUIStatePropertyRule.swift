@@ -130,6 +130,9 @@ private extension PrivateSwiftUIStatePropertyRule {
 
             correctionPositions.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
 
+            // If there are no modifiers present on the current syntax node,
+            // then we should retain the binding specifier's leading trivia
+            // by appending it to our inserted private access level modifier
             guard !node.modifiers.isEmpty else {
                 // Extract the leading trivia from the binding specifier and apply it to the private modifier
                 let privateModifier = DeclModifierSyntax(
@@ -147,6 +150,9 @@ private extension PrivateSwiftUIStatePropertyRule {
                 return DeclSyntax(newNode)
             }
 
+            // If any existing, violating access modifiers are present
+            // then we should extract their trivia and
+            // append it to the inserted private access level modifier
             let existingAccessLevelModifiers = node.modifiers.filter { $0.asAccessLevelModifier != nil }
             // Remove any existing access control modifiers, but preserve any of their leading and trailing trivia
             // Existing trivia will be appended to the rewritten access modifier

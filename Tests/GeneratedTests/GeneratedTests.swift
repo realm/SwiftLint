@@ -643,6 +643,12 @@ class LocalDocCommentRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class LocaleOverrideRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LocaleOverrideRule.description)
+    }
+}
+
 class LowerACLThanParentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LowerACLThanParentRule.description)

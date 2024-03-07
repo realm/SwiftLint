@@ -237,5 +237,8 @@ public let builtInRules: [any Rule.Type] = [
     WeakDelegateRule.self,
     XCTFailMessageRule.self,
     XCTSpecificMatcherRule.self,
-    YodaConditionRule.self
+    YodaConditionRule.self,
+
+    // Whatnot Rules
+    LocaleOverrideRule.self
 ]

@@ -223,11 +223,13 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
                         """),
         Example("""
         struct MyApp: App {
-            @State ↓var isPlaying: Bool = false
+            @State
+            ↓var isPlaying: Bool = false
         }
         """): Example("""
                         struct MyApp: App {
-                            @State private var isPlaying: Bool = false
+                            @State
+                            private var isPlaying: Bool = false
                         }
                         """),
         Example("""

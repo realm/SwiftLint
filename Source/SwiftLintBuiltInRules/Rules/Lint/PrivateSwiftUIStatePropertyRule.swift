@@ -32,7 +32,8 @@ private extension PrivateSwiftUIStatePropertyRule {
         }
 
         /// LIFO stack that stores type inheritance clauses for each visited node
-        /// `true` indicates the the most recently visited decl syntax should be evaluated for SwiftUI State access levels
+        /// `true` indicates the the most recently visited decl syntax 
+        /// should be evaluated for SwiftUI State access levels
         private var visitedScopes = Stack<Bool>()
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -129,6 +130,23 @@ private extension PrivateSwiftUIStatePropertyRule {
 
             correctionPositions.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
 
+            guard !node.modifiers.isEmpty else {
+                // Extract the leading trivia from the binding specifier and apply it to the private modifier
+                let privateModifier = DeclModifierSyntax(
+                    leadingTrivia: node.bindingSpecifier.leadingTrivia,
+                    name: .keyword(.private),
+                    trailingTrivia: .space
+                )
+
+                let bindingSpecifier = node.bindingSpecifier.with(\.leadingTrivia, [])
+
+                let newModifiers: DeclModifierListSyntax = [privateModifier]
+                let newNode = node
+                    .with(\.modifiers, newModifiers)
+                    .with(\.bindingSpecifier, bindingSpecifier)
+                return DeclSyntax(newNode)
+            }
+
             let existingAccessLevelModifiers = node.modifiers.filter { $0.asAccessLevelModifier != nil }
             // Remove any existing access control modifiers, but preserve any of their leading and trailing trivia
             // Existing trivia will be appended to the rewritten access modifier
@@ -147,12 +165,12 @@ private extension PrivateSwiftUIStatePropertyRule {
             let filteredModifiers = node.modifiers.filter { $0.asAccessLevelModifier == nil }
             // Extract the leading trivia from the binding specifier and apply it to the private modifier
             let privateModifier = DeclModifierSyntax(
-                leadingTrivia: previousAccessModifierLeadingTrivia.merging(node.bindingSpecifier.leadingTrivia),
+                leadingTrivia: previousAccessModifierLeadingTrivia,
                 name: .keyword(.private),
                 trailingTrivia: previousAccessModifierTrailingTrivia.merging(.space)
             )
 
-            let newModifiers: DeclModifierListSyntax = [privateModifier] + filteredModifiers
+            let newModifiers: DeclModifierListSyntax = filteredModifiers + [privateModifier]
             let newNode = node
                 .with(\.modifiers, newModifiers)
             return DeclSyntax(newNode)

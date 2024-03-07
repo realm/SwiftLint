@@ -207,11 +207,18 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
                         """),
         Example("""
         struct ContentView: View {
-            @State private(set) public ↓var isPlaying: Bool = false
+            @State
+            /// This will track if the content is currently playing
+            private(set)
+            // This is another comment about this property
+            public ↓var isPlaying: Bool = false
         }
         """): Example("""
                         struct ContentView: View {
-                            @State private var isPlaying: Bool = false
+                            @State
+                            /// This will track if the content is currently playing
+                            // This is another comment about this property
+                            private var isPlaying: Bool = false
                         }
                         """),
         Example("""
@@ -235,11 +242,13 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
         Example("""
         struct ContentView: View {
             @State
+            /// This will track if the content is currently playing
             ↓var isPlaying: Bool = false
         }
         """): Example("""
                         struct ContentView: View {
                             @State
+                            /// This will track if the content is currently playing
                             private var isPlaying: Bool = false
                         }
                         """)

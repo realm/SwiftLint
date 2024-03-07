@@ -127,10 +127,9 @@
 * Make `empty_count` auto-correctable.  
   [KS1019](https://github.com/KS1019/)
   
-* Make `private_swiftui_state` auto-correctable. 
-  Access control has been made stricter and treats `fileprivate` as a violation.
+* Make `private_swiftui_state` auto-correctable.  
+  Access control has been made stricter and treats `fileprivate` as a violation.  
   [mt00chikin](https://github.com/mt00chikin)
-  [#5447](https://github.com/realm/SwiftLint/pull/5447)
 
 * Make `trailing_closure` correctable.  
   [KS1019](https://github.com/KS1019/)

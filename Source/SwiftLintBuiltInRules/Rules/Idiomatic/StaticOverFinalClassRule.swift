@@ -73,51 +73,29 @@ struct StaticOverFinalClassRule: Rule {
     )
 }
 
-// Stack of flags indicating whether each level in the tree is a final class
-private typealias LevelIsFinalClassStack = Stack<Bool>
-
-private extension LevelIsFinalClassStack {
-    var lastIsFinalClass: Bool { peek() == true }
-}
-
 private extension StaticOverFinalClassRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private var levels = LevelIsFinalClassStack()
+        private var classContexts = Stack<Bool>()
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            levels.push(node.modifiers.contains(keyword: .final))
+            classContexts.push(node.modifiers.contains(keyword: .final))
             return .visitChildren
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            levels.pop()
-        }
-
-        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            validateNode(at: node.positionAfterSkippingLeadingTrivia, with: node.modifiers)
-            return .visitChildren
+            classContexts.pop()
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            levels.pop()
-        }
-
-        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
             validateNode(at: node.positionAfterSkippingLeadingTrivia, with: node.modifiers)
-            return .visitChildren
         }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            levels.pop()
-        }
-
-        override func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
             validateNode(at: node.positionAfterSkippingLeadingTrivia, with: node.modifiers)
-            return .visitChildren
         }
 
         override func visitPost(_ node: SubscriptDeclSyntax) {
-            levels.pop()
+            validateNode(at: node.positionAfterSkippingLeadingTrivia, with: node.modifiers)
         }
 
         // MARK: -
@@ -126,11 +104,9 @@ private extension StaticOverFinalClassRule {
                modifiers.contains(keyword: .class) {
                 violations.append(position)
             } else if modifiers.contains(keyword: .class),
-                      levels.lastIsFinalClass {
+                      classContexts.peek() == true {
                 violations.append(position)
             }
-
-            levels.push(false)
         }
     }
 }

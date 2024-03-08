@@ -190,6 +190,7 @@ public let builtInRules: [any Rule.Type] = [
     SortedImportsRule.self,
     StatementPositionRule.self,
     StaticOperatorRule.self,
+    StaticOverFinalClassRule.self,
     StrictFilePrivateRule.self,
     StrongIBOutletRule.self,
     SuperfluousElseRule.self,

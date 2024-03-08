@@ -273,12 +273,12 @@ Add SwiftLint to a target using the `plugins` parameter.
 
 You can also use SwiftLint as a Swift Package Command Plugin. After adding
 SwiftLint as a package dependency to your `Package.swift` file, simply add
-the `SwiftLintCommand` to a target using the `plugins` parameter.
+the `SwiftLintCommandPlugin` to a target using the `plugins` parameter.
 
 ```swift
 .target(
     ...
-    plugins: [.plugin(name: "SwiftLintCommand", package: "SwiftLint")]
+    plugins: [.plugin(name: "SwiftLintCommandPlugin", package: "SwiftLint")]
 ),
 ```
 

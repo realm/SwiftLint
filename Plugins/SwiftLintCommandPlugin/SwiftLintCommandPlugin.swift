@@ -2,13 +2,13 @@ import Foundation
 import PackagePlugin
 
 @main
-internal struct SwiftLintCommand: CommandPlugin {
-
+internal struct SwiftLintCommandPlugin: CommandPlugin {
     internal func performCommand(
         context: PluginContext,
         arguments: [String]
     ) throws {
         let tool: PluginContext.Tool = try context.tool(named: "swiftlint")
+        // Caching is managed internally because the cache must be located within the `pluginWorkDirectory`.
         guard !arguments.contains("--cache-path") else {
             Diagnostics.error("Setting Cache Path Not Allowed")
             return
@@ -16,6 +16,7 @@ internal struct SwiftLintCommand: CommandPlugin {
         let process: Process = .init()
         process.currentDirectoryURL = URL(fileURLWithPath: context.package.directory.string)
         process.executableURL = URL(fileURLWithPath: tool.path.string)
+        // The analyze command does not support the --cache-path argument
         if arguments.contains("analyze") {
             process.arguments = arguments
         } else {

@@ -16,6 +16,7 @@
   falling back to default.  
   [kohtenko](https://github.com/kohtenko)
 * Introduce SwiftLintCommand plugin.  
+* Introduce SwiftLintCommandPlugin plugin.  
   [garricn](https://github.com/garricn)
 
 * Add new option `ignore_typealiases_and_associatedtypes` to

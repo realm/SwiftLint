@@ -241,7 +241,7 @@ products.
 
 Select the target you want to add linting to and open the `Build Phases` inspector.
 Open `Run Build Tool Plug-ins` and select the `+` button.
-Select `SwiftLintPlugin` from the list and add it to the project.
+Select `SwiftLintBuildToolPlugin` from the list and add it to the project.
 
 ![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/select-swiftlint-plugin.png)
 
@@ -265,7 +265,7 @@ Add SwiftLint to a target using the `plugins` parameter.
 ```swift
 .target(
     ...
-    plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+    plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
 ),
 ```
 

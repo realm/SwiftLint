@@ -142,6 +142,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4801](https://github.com/realm/SwiftLint/pull/4801)
 
+* Support `private_over_fileprivate` rule for actors.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5489](https://github.com/realm/SwiftLint/pull/5489)
+
 * Fix some false positives in `multiline_literal_brackets` rule that would
   happen when comments are present.  
   [Marcelo Fabri](https://github.com/marcelofabri)

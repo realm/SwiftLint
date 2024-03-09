@@ -20,18 +20,17 @@ extension SwiftLint {
             let reporterIdentifier = reporter ?? defaultReporterIdentifier()
             let reporter = reporterFrom(identifier: reporterIdentifier)
             let report = reporter.generateReport(savedBaseline.violations)
-            guard report.isNotEmpty else {
-                return
-            }
-            if let output {
-                let data = Data((report + "\n").utf8)
-                do {
-                    try data.write(to: URL(fileURLWithPath: output))
-                } catch {
-                    Issue.fileNotWritable(path: output).print()
+            if report.isNotEmpty {
+                if let output {
+                    let data = Data((report + "\n").utf8)
+                    do {
+                        try data.write(to: URL(fileURLWithPath: output))
+                    } catch {
+                        Issue.fileNotWritable(path: output).print()
+                    }
+                } else {
+                    queuedPrint(report)
                 }
-            } else {
-                queuedPrint(report)
             }
             ExitHelper.successfullyExit()
         }

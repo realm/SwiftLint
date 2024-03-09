@@ -350,7 +350,7 @@ private extension IfExprSyntax {
     }
 
     private func lastStatementExitsScope(in block: CodeBlockSyntax) -> Bool {
-        guard let lastItem = block.statements.last?.as(CodeBlockItemSyntax.self)?.item else {
+        guard let lastItem = block.statements.last?.item else {
             return false
         }
         if [.returnStmt, .throwStmt, .continueStmt, .breakStmt].contains(lastItem.kind) {

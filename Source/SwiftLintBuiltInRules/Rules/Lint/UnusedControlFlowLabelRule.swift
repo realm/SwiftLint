@@ -99,10 +99,8 @@ private extension UnusedControlFlowLabelRule {
             guard let violationPosition = node.violationPosition else {
                 return super.visit(node)
             }
-
-            let newNode = node.statement.with(\.leadingTrivia, node.leadingTrivia)
             correctionPositions.append(violationPosition)
-            return visit(newNode).as(StmtSyntax.self) ?? newNode
+            return visit(node.statement.with(\.leadingTrivia, node.leadingTrivia))
         }
     }
 }

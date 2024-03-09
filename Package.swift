@@ -32,13 +32,13 @@ let package = Package(
     ],
     targets: [
         .plugin(
-            name: "SwiftLintCommandPlugin",
-            capability: .command(intent: .custom(verb: "swiftlint", description: "SwiftLint Command Plugin")),
+            name: "SwiftLintBuildToolPlugin",
+            capability: .buildTool(),
             dependencies: swiftLintPluginDependencies
         ),
         .plugin(
-            name: "SwiftLintBuildToolPlugin",
-            capability: .buildTool(),
+            name: "SwiftLintCommandPlugin",
+            capability: .command(intent: .custom(verb: "swiftlint", description: "SwiftLint Command Plugin")),
             dependencies: swiftLintPluginDependencies
         ),
         .executableTarget(

@@ -107,7 +107,7 @@ let package = Package(
                 "SwiftLintExtraRules",
                 "CollectionConcurrencyKit",
             ],
-            swiftSettings: swiftFeatures + strictConcurrency
+            swiftSettings: swiftFeatures
         ),
         .target(name: "DyldWarningWorkaround"),
         .target(

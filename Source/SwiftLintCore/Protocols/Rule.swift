@@ -3,18 +3,11 @@ import SourceKittenFramework
 
 /// An executable value that can identify issues (violations) in Swift source code.
 public protocol Rule {
-    /// The rule's description type.
-    associatedtype Description: Documentable
-
     /// The type of the configuration used to configure this rule.
     associatedtype ConfigurationType: RuleConfiguration
 
     /// A verbose description of many of this rule's properties.
     static var description: RuleDescription { get }
-
-    /// A description of how this rule has been configured to run. It can be built using the annotated result builder.
-    @RuleConfigurationDescriptionBuilder
-    var configurationDescription: Description { get }
 
     /// This rule's configuration.
     var configuration: ConfigurationType { get set }
@@ -31,6 +24,9 @@ public protocol Rule {
     ///
     /// - throws: Throws if the configuration didn't match the expected format.
     init(configuration: Any) throws
+
+    /// Create a description of how this rule has been configured to run.
+    func createConfigurationDescription(exclusiveOptions: Set<String>) -> RuleConfigurationDescription
 
     /// Executes the rule on a file and returns any violations to the rule's expectations.
     ///
@@ -109,11 +105,11 @@ public extension Rule {
     /// The cache description which will be used to determine if a previous
     /// cached value is still valid given the new cache value.
     var cacheDescription: String {
-        (self as? any CacheDescriptionProvider)?.cacheDescription ?? configurationDescription.oneLiner()
+        (self as? any CacheDescriptionProvider)?.cacheDescription ?? createConfigurationDescription().oneLiner()
     }
 
-    var configurationDescription: some Documentable {
-        RuleConfigurationDescription.from(configuration: configuration)
+    func createConfigurationDescription(exclusiveOptions: Set<String> = []) -> RuleConfigurationDescription {
+        RuleConfigurationDescription.from(configuration: configuration, exclusiveOptions: exclusiveOptions)
     }
 }
 

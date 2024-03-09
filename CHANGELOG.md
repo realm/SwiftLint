@@ -77,6 +77,12 @@
   one of the configured attributes.  
   [tonell-m](https://github.com/tonell-m)
   [#5366](https://github.com/realm/SwiftLint/issues/5366)
+* Add two new options to the `lint` and `analyze` commands: `--write-baseline`
+  to save a baseline to disk, and `--baseline` to read a saved baseline and
+  use it to filter out detected pre-existing violations. A new `report-baseline`
+  command uses the reporters to print the violations in a baseline.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5475](https://github.com/realm/SwiftLint/pull/5475)
 
 * Rewrite the following rules with SwiftSyntax:
   * `explicit_acl`

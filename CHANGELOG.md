@@ -9,6 +9,10 @@
 * None.
 
 #### Enhancements
+* Ignore absence of a non-initial local config instead of
+  falling back to default.  
+  [kohtenko](https://github.com/kohtenko)
+  [#5407](https://github.com/realm/SwiftLint/pull/5407)
 
 * Add new option `ignore_typealiases_and_associatedtypes` to
   `nesting` rule. It excludes `typealias` and `associatedtype`

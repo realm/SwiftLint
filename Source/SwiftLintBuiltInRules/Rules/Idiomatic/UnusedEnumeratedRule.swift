@@ -28,9 +28,9 @@ struct UnusedEnumeratedRule: Rule {
             Example("for (↓_, foo) in abc.bar.enumerated() { }"),
             Example("for (↓_, foo) in abc.something().enumerated() { }"),
             Example("for (idx, ↓_) in bar.enumerated() { }"),
-            Example("list.enumerated().map { idx, ↓_ in idx }").focused(),
+            Example("list.enumerated().map { idx, ↓_ in idx }"),
             Example("list.enumerated().map { ↓_, elem in elem }"),
-            Example("list.enumerated().forEach { print(↓$0) }"),
+            Example("list.enumerated().forEach { print(↓$0) }").focused(),
             Example("list.enumerated().map { ↓$1 }")
         ]
     )
@@ -66,30 +66,37 @@ private extension UnusedEnumeratedRule {
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.isEnumerated,
-                  let trailingClosure = node.parent?.parent?.as(FunctionCallExprSyntax.self)?.trailingClosure,
-                  let parameterClause = trailingClosure.signature?.parameterClause,
-                  let parameterClause = parameterClause.as(ClosureShorthandParameterListSyntax.self),
-                  parameterClause.count == 2,
-                  let firstElement = parameterClause.children(viewMode: .sourceAccurate).first?.as(ClosureShorthandParameterSyntax.self),
-                  let secondElement = parameterClause.children(viewMode: .sourceAccurate).last?.as(ClosureShorthandParameterSyntax.self),
-                  case let firstTokenIsUnderscore = firstElement.isUnderscore,
-                  case let lastTokenIsUnderscore = secondElement.isUnderscore,
-                  firstTokenIsUnderscore || lastTokenIsUnderscore
+                  let trailingClosure = node.parent?.parent?.as(FunctionCallExprSyntax.self)?.trailingClosure
             else {
                 return
             }
 
-            let position: AbsolutePosition
-            let reason: String
-            if firstTokenIsUnderscore {
-                position = firstElement.positionAfterSkippingLeadingTrivia
-                reason = "When the index is not used, `.enumerated()` can be removed"
-            } else {
-                position = secondElement.positionAfterSkippingLeadingTrivia
-                reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`"
-            }
+            if let parameterClause = trailingClosure.signature?.parameterClause {
+                guard let parameterClause = parameterClause.as(ClosureShorthandParameterListSyntax.self),
+                      parameterClause.count == 2,
+                      let firstElement = parameterClause.children(viewMode: .sourceAccurate).first?.as(ClosureShorthandParameterSyntax.self),
+                      let secondElement = parameterClause.children(viewMode: .sourceAccurate).last?.as(ClosureShorthandParameterSyntax.self),
+                      case let firstTokenIsUnderscore = firstElement.isUnderscore,
+                      case let lastTokenIsUnderscore = secondElement.isUnderscore,
+                      firstTokenIsUnderscore || lastTokenIsUnderscore
+                else {
+                    return
+                }
 
-            violations.append(ReasonedRuleViolation(position: position, reason: reason))
+                let position: AbsolutePosition
+                let reason: String
+                if firstTokenIsUnderscore {
+                    position = firstElement.positionAfterSkippingLeadingTrivia
+                    reason = "When the index is not used, `.enumerated()` can be removed"
+                } else {
+                    position = secondElement.positionAfterSkippingLeadingTrivia
+                    reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`"
+                }
+
+                violations.append(ReasonedRuleViolation(position: position, reason: reason))
+            } else {
+                print("Found another one")
+            }
         }
     }
 }

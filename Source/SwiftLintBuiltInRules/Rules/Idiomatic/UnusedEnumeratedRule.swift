@@ -89,8 +89,9 @@ private extension UnusedEnumeratedRule {
                 return
             }
 
-            guard let firstElement = parameterClause.children(viewMode: .sourceAccurate).first,
-                  let secondElement = parameterClause.children(viewMode: .sourceAccurate).last else {
+            let children = parameterClause.children(viewMode: .sourceAccurate)
+            guard let firstElement = children.first?.as(ClosureShorthandParameterSyntax.self),
+                  let secondElement = children.last?.as(ClosureShorthandParameterSyntax.self) else {
                 return
             }
 
@@ -100,15 +101,17 @@ private extension UnusedEnumeratedRule {
                 return
             }
 
+            let position: AbsolutePosition
+            let reason: String
+            if firstTokenIsUnderscore {
+                position = firstElement.positionAfterSkippingLeadingTrivia
+                reason = "When the index is not used, `.enumerated()` can be removed"
+            } else {
+                position = secondElement.positionAfterSkippingLeadingTrivia
+                reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`"
+            }
 
-    //            let singleArgument = node.arguments.onlyElement,
-    //            singleArgument.expression.is(BooleanLiteralExprSyntax.self),
-    //            let base = calledExpression.base?.as(DeclReferenceExprSyntax.self),
-    //            base.baseName.text == "Optional",
-    //            calledExpression.declName.baseName.text == "some"
-            print(">>>> found one")
-
-//            violations.append(node.positionAfterSkippingLeadingTrivia)
+            violations.append(ReasonedRuleViolation(position: position, reason: reason))
         }
     }
 }
@@ -135,5 +138,11 @@ private extension FunctionCallExprSyntax {
 private extension TuplePatternElementSyntax {
     var isUnderscore: Bool {
         pattern.is(WildcardPatternSyntax.self)
+    }
+}
+
+private extension ClosureShorthandParameterSyntax {
+    var isUnderscore: Bool {
+        name.tokenKind == .wildcard
     }
 }

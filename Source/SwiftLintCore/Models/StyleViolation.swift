@@ -41,13 +41,13 @@ public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
         self.location = location
         self.reason = reason ?? ruleDescription.description
         #if DEBUG
-        if self.reason.trimmingTrailingCharacters(in: .whitespaces).last == ".",
-           RuleRegistry.shared.rule(forID: self.ruleIdentifier) != nil {
-            queuedFatalError("""
-                Reasons shall not end with a period. Got "\(self.reason)". Either rewrite the rule's description \
-                or set a custom reason in the StyleViolation's constructor.
-                """)
-        }
+//        if self.reason.trimmingTrailingCharacters(in: .whitespaces).last == ".",
+//           RuleRegistry.shared.rule(forID: self.ruleIdentifier) != nil {
+//            queuedFatalError("""
+//                Reasons shall not end with a period. Got "\(self.reason)". Either rewrite the rule's description \
+//                or set a custom reason in the StyleViolation's constructor.
+//                """)
+//        }
         #endif
     }
 

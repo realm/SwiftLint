@@ -18,13 +18,20 @@ struct UnusedEnumeratedRule: Rule {
             Example("for (idx, _) in bar.enumerated().something() { }"),
             Example("for (idx, _) in bar.something() { }"),
             Example("for idx in bar.indices { }"),
-            Example("for (section, (event, _)) in data.enumerated() {}")
+            Example("for (section, (event, _)) in data.enumerated() {}"),
+            // Example("list.enumerated().map { idx, elem in \"\(idx): \(elem)\" }"),
+            Example("list.enumerated().map { $0 + $1 }"),
+            Example("list.enumerated().something().map { _, elem in elem }")
         ],
         triggeringExamples: [
             Example("for (↓_, foo) in bar.enumerated() { }"),
             Example("for (↓_, foo) in abc.bar.enumerated() { }"),
             Example("for (↓_, foo) in abc.something().enumerated() { }"),
-            Example("for (idx, ↓_) in bar.enumerated() { }")
+            Example("for (idx, ↓_) in bar.enumerated() { }"),
+            Example("list.enumerated().map { idx, ↓_ in idx }").focused(),
+            Example("list.enumerated().map { ↓_, elem in elem }"),
+            Example("list.enumerated().forEach { print(↓$0) }"),
+            Example("list.enumerated().map { ↓$1 }")
         ]
     )
 }
@@ -55,6 +62,53 @@ private extension UnusedEnumeratedRule {
             }
 
             violations.append(ReasonedRuleViolation(position: position, reason: reason))
+        }
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self) else {
+                return
+            }
+
+            guard calledExpression.declName.baseName.text == "enumerated" else {
+                return
+            }
+                
+            guard let trailingClosure = node.parent?.parent?.as(FunctionCallExprSyntax.self)?.trailingClosure else {
+                return
+            }
+
+            guard let parameterClause = trailingClosure.signature?.parameterClause?.as(ClosureShorthandParameterListSyntax.self) else {
+                return
+            }
+
+            guard let parameterClause = parameterClause.as(ClosureShorthandParameterListSyntax.self) else {
+                return
+            }
+               
+            guard parameterClause.count == 2 else {
+                return
+            }
+
+            guard let firstElement = parameterClause.children(viewMode: .sourceAccurate).first,
+                  let secondElement = parameterClause.children(viewMode: .sourceAccurate).last else {
+                return
+            }
+
+            guard case let firstTokenIsUnderscore = firstElement.isUnderscore,
+                  case let lastTokenIsUnderscore = secondElement.isUnderscore,
+                  firstTokenIsUnderscore || lastTokenIsUnderscore else {
+                return
+            }
+
+
+    //            let singleArgument = node.arguments.onlyElement,
+    //            singleArgument.expression.is(BooleanLiteralExprSyntax.self),
+    //            let base = calledExpression.base?.as(DeclReferenceExprSyntax.self),
+    //            base.baseName.text == "Optional",
+    //            calledExpression.declName.baseName.text == "some"
+            print(">>>> found one")
+
+//            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

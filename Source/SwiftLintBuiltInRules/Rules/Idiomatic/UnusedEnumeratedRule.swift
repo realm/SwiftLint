@@ -65,39 +65,17 @@ private extension UnusedEnumeratedRule {
         }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self) else {
-                return
-            }
-
-            guard calledExpression.declName.baseName.text == "enumerated" else {
-                return
-            }
-                
-            guard let trailingClosure = node.parent?.parent?.as(FunctionCallExprSyntax.self)?.trailingClosure else {
-                return
-            }
-
-            guard let parameterClause = trailingClosure.signature?.parameterClause?.as(ClosureShorthandParameterListSyntax.self) else {
-                return
-            }
-
-            guard let parameterClause = parameterClause.as(ClosureShorthandParameterListSyntax.self) else {
-                return
-            }
-               
-            guard parameterClause.count == 2 else {
-                return
-            }
-
-            let children = parameterClause.children(viewMode: .sourceAccurate)
-            guard let firstElement = children.first?.as(ClosureShorthandParameterSyntax.self),
-                  let secondElement = children.last?.as(ClosureShorthandParameterSyntax.self) else {
-                return
-            }
-
-            guard case let firstTokenIsUnderscore = firstElement.isUnderscore,
+            guard node.isEnumerated,
+                  let trailingClosure = node.parent?.parent?.as(FunctionCallExprSyntax.self)?.trailingClosure,
+                  let parameterClause = trailingClosure.signature?.parameterClause,
+                  let parameterClause = parameterClause.as(ClosureShorthandParameterListSyntax.self),
+                  parameterClause.count == 2,
+                  let firstElement = parameterClause.children(viewMode: .sourceAccurate).first?.as(ClosureShorthandParameterSyntax.self),
+                  let secondElement = parameterClause.children(viewMode: .sourceAccurate).last?.as(ClosureShorthandParameterSyntax.self),
+                  case let firstTokenIsUnderscore = firstElement.isUnderscore,
                   case let lastTokenIsUnderscore = secondElement.isUnderscore,
-                  firstTokenIsUnderscore || lastTokenIsUnderscore else {
+                  firstTokenIsUnderscore || lastTokenIsUnderscore
+            else {
                 return
             }
 

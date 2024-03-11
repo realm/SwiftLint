@@ -10,7 +10,7 @@ private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt 
 
 @SwiftSyntaxRule
 struct SwitchCaseOnNewlineRule: OptInRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = SwitchCaseOnNewLineConfiguration()
 
     static let description = RuleDescription(
         identifier: "switch_case_on_newline",
@@ -57,7 +57,16 @@ struct SwitchCaseOnNewlineRule: OptInRule {
             wrapInSwitch("↓case let .myCase(value) where value > 10: return false"),
             wrapInSwitch("↓case #selector(aFunction(_:)): return false"),
             wrapInSwitch("↓case let .myCase(value)\n where value > 10: return false"),
-            wrapInSwitch("↓case .first,\n .second: return false")
+            wrapInSwitch("↓case .first,\n .second: return false"),
+            wrapInSwitch("↓case 1: true"),
+            wrapInSwitch("↓case let value: true"),
+            wrapInSwitch("↓default: true"),
+            wrapInSwitch("↓case \"a string\": false"),
+            wrapInSwitch("↓case .myCase: false // error from network"),
+            wrapInSwitch("↓case let .myCase(value) where value > 10: false"),
+            wrapInSwitch("↓case #selector(aFunction(_:)): false"),
+            wrapInSwitch("↓case let .myCase(value)\n where value > 10: false"),
+            wrapInSwitch("↓case .first,\n .second: false")
         ]
     )
 }
@@ -65,12 +74,31 @@ struct SwitchCaseOnNewlineRule: OptInRule {
 private extension SwitchCaseOnNewlineRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseSyntax) {
+            guard !shouldSkipValidation(for: node) else { return }
+
+            if isCaseOnSingleLine(node) {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        private func shouldSkipValidation(for node: SwitchCaseSyntax) -> Bool {
+            configuration.skipSwitchExpressions && isContainedInSwitchExpression(node)
+        }
+
+        private func isContainedInSwitchExpression(_ node: SwitchCaseSyntax) -> Bool {
+            guard let distantParent = node.parent?.parent?.parent else {
+                return false
+            }
+
+            return !distantParent.is(ExpressionStmtSyntax.self)
+        }
+
+        private func isCaseOnSingleLine(_ node: SwitchCaseSyntax) -> Bool {
             let caseEndLine = locationConverter.location(for: node.label.endPositionBeforeTrailingTrivia).line
             let statementsPosition = node.statements.positionAfterSkippingLeadingTrivia
             let statementStartLine = locationConverter.location(for: statementsPosition).line
-            if statementStartLine == caseEndLine {
-                violations.append(node.positionAfterSkippingLeadingTrivia)
-            }
+
+            return statementStartLine == caseEndLine
         }
     }
 }

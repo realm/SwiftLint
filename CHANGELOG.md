@@ -10,6 +10,11 @@
 
 #### Enhancements
 
+* Add option `allow_returnless_cases` to `switch_case_on_newline` rule.
+  It excludes single line cases that have no return statement.
+  [gsl-anthonymerle](https://github.com/gsl-anthonymerle)
+  [#5485](https://github.com/realm/SwiftLint/pull/5485)
+  
 * Add new option `ignore_typealiases_and_associatedtypes` to
   `nesting` rule. It excludes `typealias` and `associatedtype`
   declarations from the analysis.

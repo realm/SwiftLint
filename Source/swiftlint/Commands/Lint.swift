@@ -27,18 +27,22 @@ extension SwiftLint {
         func run() async throws {
             Issue.printDeprecationWarnings = !silenceDeprecationWarnings
 
-            let allPaths: [String]
-            if let path {
+            if path != nil {
                 // TODO: [06/14/2024] Remove deprecation warning after ~2 years.
                 Issue.genericWarning(
                     "The --path option is deprecated. Pass the path(s) to lint last to the swiftlint command."
                 ).print()
-                allPaths = [path] + paths
-            } else if !paths.isEmpty {
-                allPaths = paths
-            } else {
-                allPaths = [""] // Lint files in current working directory if no paths were specified.
             }
+
+            let allPaths =
+                if let path {
+                    [path] + paths
+                } else if !paths.isEmpty {
+                    paths
+                } else {
+                    [""] // Lint files in current working directory if no paths were specified.
+                }
+
             let options = LintOrAnalyzeOptions(
                 mode: .lint,
                 paths: allPaths,

@@ -34,7 +34,7 @@ public struct Baseline: Equatable {
     /// - parameter fromPath: The path to read from.
     public init(fromPath path: String) throws {
         let data = try Data(contentsOf: URL(fileURLWithPath: path))
-        baselineViolations = try PropertyListDecoder().decode(GroupedViolations.self, from: data)
+        baselineViolations = try JSONDecoder().decode(GroupedViolations.self, from: data)
     }
 
     init(violations: [StyleViolation]) {
@@ -50,7 +50,7 @@ public struct Baseline: Equatable {
     }
 
     private static func write(_ violations: GroupedViolations, toPath path: String) throws {
-        let data = try PropertyListEncoder().encode(violations)
+        let data = try JSONEncoder().encode(violations)
         try data.write(to: URL(fileURLWithPath: path))
     }
 

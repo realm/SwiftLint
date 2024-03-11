@@ -10,6 +10,10 @@
 
 #### Enhancements
 
+* Add `Accessibility Font Size` rule to warn if a SwiftUI Text
+  has a fixed font size.  
+  [MartijnAmbagtsheer](https://github.com/MartijnAmbagtsheer)
+
 * Add new option `ignore_typealiases_and_associatedtypes` to
   `nesting` rule. It excludes `typealias` and `associatedtype`
   declarations from the analysis.

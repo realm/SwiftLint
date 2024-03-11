@@ -34,6 +34,10 @@ extension SwiftLint {
                 ).print()
             }
 
+            if common.fix, let leniency = common.leniency {
+                Issue.genericWarning("The option --\(leniency) has no effect together with --fix.").print()
+            }
+
             let allPaths =
                 if let path {
                     [path] + paths

@@ -10,6 +10,10 @@
 
 #### Enhancements
 
+* Make implicitly confirming to `Actor` to trigger warning.
+  [marunomi](https://github.com/marunomi)
+  [#issue_number](https://github.com/realm/SwiftLint/issues/issue_number)
+
 * Add new option `ignore_typealiases_and_associatedtypes` to
   `nesting` rule. It excludes `typealias` and `associatedtype`
   declarations from the analysis.

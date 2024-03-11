@@ -188,6 +188,27 @@ class MissingDocsRuleTests: SwiftLintTestCase {
         )
     }
 
+    func testExcludesImplicitlyActorHelitedTrueByDefault() {
+        let baseDescription = MissingDocsRule.description
+        let nonTriggeringExamples = [
+            Example("""
+            /// Docs
+            public final actor MyActor {
+                public nonisolated var unownedExecutor: UnownedSerialExecutor { }
+            }
+            """),
+            Example("""
+            /// Docs
+            public final actor MyActor: Actor {
+                public nonisolated var unownedExecutor: UnownedSerialExecutor { }
+            }
+            """)
+        ]
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+        verifyRule(description,
+                   ruleConfiguration: ["excludes_inherited_types": true])
+    }
+
     func testWithExcludesExtensionsDisabled() {
         // Perform additional tests with the ignores_comments settings disabled.
         let baseDescription = MissingDocsRule.description

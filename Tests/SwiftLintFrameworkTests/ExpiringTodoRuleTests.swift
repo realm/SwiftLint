@@ -1,4 +1,5 @@
 @testable import SwiftLintBuiltInRules
+import SwiftLintFramework
 import XCTest
 
 class ExpiringTodoRuleTests: SwiftLintTestCase {

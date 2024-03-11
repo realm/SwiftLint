@@ -37,7 +37,7 @@ public struct Example: Sendable {
     /// why a rule is applied and where not. Complex examples with rarely used language constructs or
     /// pathological use cases which are indeed important to test but not helpful for understanding can be
     /// hidden from the documentation with this option.
-    let excludeFromDocumentation: Bool
+    package let excludeFromDocumentation: Bool
 
     /// Specifies whether the test example should be the only example run during the current test case execution.
     package var isFocused: Bool

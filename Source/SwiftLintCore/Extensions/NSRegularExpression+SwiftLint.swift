@@ -15,7 +15,7 @@ public struct RegularExpression: Hashable, Comparable, ExpressibleByStringLitera
         try! self.init(pattern: value)
     }
 
-    var pattern: String { regex.pattern }
+    package var pattern: String { regex.pattern }
 
     var numberOfCaptureGroups: Int { regex.numberOfCaptureGroups }
 

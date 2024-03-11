@@ -127,7 +127,7 @@ swift_library(
     srcs = glob(
         ["Source/SwiftLintFramework/**/*.swift"],
     ),
-    copts = copts + strict_concurrency_copts,
+    copts = copts,  # TODO: strict_concurrency_copts
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [

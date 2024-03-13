@@ -41,7 +41,7 @@ public struct Baseline: Equatable {
         baselineViolations = violations.baselineViolations.groupedByFile()
     }
 
-    /// Writes a `Baseline` to disk.
+    /// Writes a `Baseline` to disk in JSON format.
     ///
     /// - parameter violations: The violations to save.
     /// - parameter toPath: The path to write to.
@@ -54,7 +54,7 @@ public struct Baseline: Equatable {
         try data.write(to: URL(fileURLWithPath: path))
     }
 
-    /// Filters out violations that are present in the `Baseline``.
+    /// Filters out violations that are present in the `Baseline`.
     ///
     /// - parameter violations: The violations to filter.
     /// - Returns: The new violations.

@@ -61,7 +61,7 @@ final class MakeAcceptableByConfigurationElementTests: XCTestCase {
                     .symbol(rawValue)
                 }
                 private init(fromAny value: Any, context ruleID: String) throws {
-                    if let value = value as? String, let newSelf = Self (rawValue: value) {
+                    if let value = value as? String, let newSelf = Self(rawValue: value) {
                         self = newSelf
                     } else {
                         throw Issue.invalidConfiguration(ruleID: ruleID)
@@ -89,7 +89,7 @@ final class MakeAcceptableByConfigurationElementTests: XCTestCase {
                     .symbol(rawValue)
                 }
                 public init(fromAny value: Any, context ruleID: String) throws {
-                    if let value = value as? String, let newSelf = Self (rawValue: value) {
+                    if let value = value as? String, let newSelf = Self(rawValue: value) {
                         self = newSelf
                     } else {
                         throw Issue.invalidConfiguration(ruleID: ruleID)

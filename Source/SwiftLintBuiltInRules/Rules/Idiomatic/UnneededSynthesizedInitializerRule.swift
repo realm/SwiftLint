@@ -234,7 +234,7 @@ private extension StructDeclSyntax {
 
 private extension InitializerDeclSyntax {
     var hasThrowsOrRethrowsKeyword: Bool {
-        signature.effectSpecifiers?.throwsSpecifier != nil
+        signature.effectSpecifiers?.throwsClause?.throwsSpecifier != nil
     }
     var isInlinable: Bool {
         attributes.contains(attributeNamed: "inlinable")

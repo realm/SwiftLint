@@ -333,8 +333,6 @@ public extension ClosureCaptureSyntax {
     }
 }
 
-extension PrecedenceGroupDeclSyntax: BracedSyntax {}
-
 private extension String {
     var isZero: Bool {
         if self == "0" { // fast path

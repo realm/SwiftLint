@@ -40,7 +40,17 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
             @State var nonTriggeringState: Bool = false
         }
         """),
+        Example("""
+        struct ContentView: View {
+            var s: Int {
+                @State
+                var s: Int = 3
+                return s
+            }
 
+            var body: some View { Text("") }
+        }
+        """),
         Example("""
         struct ContentView: View {
             var isPlaying = false

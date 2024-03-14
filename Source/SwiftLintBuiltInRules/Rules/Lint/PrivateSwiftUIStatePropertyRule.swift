@@ -31,50 +31,41 @@ private extension PrivateSwiftUIStatePropertyRule {
             [ProtocolDeclSyntax.self]
         }
 
-        /// LIFO stack that stores type inheritance clauses for each visited node
-        /// `true` indicates the the most recently visited decl syntax 
-        /// should be evaluated for SwiftUI State access levels
-        private var visitedScopes = Stack<Bool>()
+        /// LIFO stack that stores if a type conforms to SwiftUI protocols.
+        /// `true` indicates that SwiftUI state properties should be
+        /// checked in the scope of the last entered declaration.
+        private var swiftUITypeScopes = Stack<Bool>()
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            visitedScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
             return .visitChildren
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            visitedScopes.pop()
+            swiftUITypeScopes.pop()
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            visitedScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
             return .visitChildren
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            visitedScopes.pop()
+            swiftUITypeScopes.pop()
         }
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            visitedScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
             return .visitChildren
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            visitedScopes.pop()
-        }
-
-        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard let parent = node.parent, parent.is(MemberBlockItemSyntax.self) else {
-                return .skipChildren
-            }
-
-            return .visitChildren
+            swiftUITypeScopes.pop()
         }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard
-                let shouldCheckAccessLevel = visitedScopes.peek(),
-                shouldCheckAccessLevel,
+            guard node.parent?.is(MemberBlockItemSyntax.self) == true,
+                swiftUITypeScopes.peek() ?? false,
                 node.containsSwiftUIStateAccessLevelViolation
             else {
                 return
@@ -89,40 +80,38 @@ private extension PrivateSwiftUIStatePropertyRule {
     }
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
-        /// LIFO stack that stores type inheritance clauses for each visited node
-        /// `true` indicates the the most recently visited decl syntax
-        /// should be evaluated for SwiftUI State access levels
-        private var visitedScopes = Stack<Bool>()
+        /// LIFO stack that stores if a type conforms to SwiftUI protocols.
+        /// `true` indicates that SwiftUI state properties should be
+        /// checked in the scope of the last entered declaration.
+        private var swiftUITypeScopes = Stack<Bool>()
 
         override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
-            visitedScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
             return super.visit(node)
         }
 
         override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
-            visitedScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
             return super.visit(node)
         }
 
         override func visit(_ node: ActorDeclSyntax) -> DeclSyntax {
-            visitedScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
             return super.visit(node)
         }
 
         override func visitPost(_ node: Syntax) {
             if node.is(ClassDeclSyntax.self) ||
-                node.is(StructDeclSyntax.self) ||
-                node.is(ActorDeclSyntax.self) {
-                visitedScopes.pop()
+               node.is(StructDeclSyntax.self) ||
+               node.is(ActorDeclSyntax.self) {
+                swiftUITypeScopes.pop()
             }
         }
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
             guard
-                let parent = node.parent,
-                parent.is(MemberBlockItemSyntax.self),
-                let shouldCheckAccessLevel = visitedScopes.peek(),
-                shouldCheckAccessLevel,
+                node.parent?.is(MemberBlockItemSyntax.self) == true,
+                swiftUITypeScopes.peek() ?? false,
                 node.containsSwiftUIStateAccessLevelViolation
             else {
                 return DeclSyntax(node)
@@ -133,7 +122,7 @@ private extension PrivateSwiftUIStatePropertyRule {
             // If there are no modifiers present on the current syntax node,
             // then we should retain the binding specifier's leading trivia
             // by appending it to our inserted private access level modifier
-            guard !node.modifiers.isEmpty else {
+            if node.modifiers.isEmpty {
                 // Extract the leading trivia from the binding specifier and apply it to the private modifier
                 let privateModifier = DeclModifierSyntax(
                     leadingTrivia: node.bindingSpecifier.leadingTrivia,
@@ -142,10 +131,8 @@ private extension PrivateSwiftUIStatePropertyRule {
                 )
 
                 let bindingSpecifier = node.bindingSpecifier.with(\.leadingTrivia, [])
-
-                let newModifiers: DeclModifierListSyntax = [privateModifier]
                 let newNode = node
-                    .with(\.modifiers, newModifiers)
+                    .with(\.modifiers, [privateModifier])
                     .with(\.bindingSpecifier, bindingSpecifier)
                 return DeclSyntax(newNode)
             }
@@ -176,10 +163,9 @@ private extension PrivateSwiftUIStatePropertyRule {
                 trailingTrivia: previousAccessModifierTrailingTrivia.merging(.space)
             )
 
-            let newModifiers: DeclModifierListSyntax = filteredModifiers + [privateModifier]
-            let newNode = node
-                .with(\.modifiers, newModifiers)
-            return DeclSyntax(newNode)
+            return DeclSyntax(
+                node.with(\.modifiers, [privateModifier] + filteredModifiers)
+            )
         }
     }
 }
@@ -194,8 +180,7 @@ private extension InheritanceClauseSyntax? {
     static let applicableSwiftUIProtocols: Set<String> = ["View", "App", "Scene"]
 
     var conformsToApplicableSwiftUIProtocol: Bool {
-        guard let self else { return false }
-        return self.inheritedTypes.containsInheritedType(inheritedTypes: Self.applicableSwiftUIProtocols)
+        self?.inheritedTypes.containsInheritedType(inheritedTypes: Self.applicableSwiftUIProtocols) ?? false
     }
 }
 

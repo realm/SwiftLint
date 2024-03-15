@@ -20,6 +20,14 @@ unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 
 ## Installation
 
+### Using [Swift Package Manager](https://github.com/apple/swift-package-manager):
+
+> Replace `<version>` with the desired minimum version.
+
+```swift
+.package(url: "https://github.com/realm/SwiftLint.git", from: "<version>")
+```
+
 ### Using [Homebrew](http://brew.sh/):
 
 ```

@@ -214,6 +214,7 @@ The command plugin enables running SwiftLint from the command line as follows:
 swift package plugin swiftlint
 ```
 
+### Swift Package Build Tool Plugins
 
 The build tool plugin determines the SwiftLint working directory by locating 
 the topmost config file within the package/project directory. If a config file

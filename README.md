@@ -146,7 +146,7 @@ we encourage you to watch this presentation or read the transcript:
 
 [![Presentation](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/presentation.svg)](https://youtu.be/9Z1nTMTejqU)
 
-### Xcode
+### Xcode Run Script Build Phase
 
 Integrate SwiftLint into your Xcode project to get warnings and errors displayed
 in the issue navigator.
@@ -206,7 +206,7 @@ If you've installed SwiftLint via CocoaPods the script should look like this:
 "${PODS_ROOT}/SwiftLint/swiftlint"
 ```
 
-### Plugin Support
+### Swift Package Command Plugin
 
 SwiftLint can be used as a build tool plugin for both Swift Package projects 
 and Xcode projects.
@@ -239,7 +239,7 @@ plugin, please consider one of the following options:
 - You can also consider the use of a Run Script Build Phase in place of the
   build tool plugin.
 
-#### Xcode
+#### Xcode Projects
 
 You can integrate SwiftLint as an Xcode Build Tool Plugin if you're working
 with a project in Xcode.
@@ -262,7 +262,7 @@ For unattended use (e.g. on CI), you can disable the package and macro validatio
 _Note: This implicitly trusts all Xcode package plugins and macros in packages and bypasses Xcode's package validation
        dialogs, which has security implications._
 
-#### Swift Package
+#### Swift Package Projects
 
 You can integrate SwiftLint as a Swift Package Manager Plugin if you're working with
 a Swift Package with a `Package.swift` manifest.

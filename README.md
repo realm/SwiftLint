@@ -216,6 +216,9 @@ swift package plugin swiftlint
 
 ### Swift Package Build Tool Plugins
 
+SwiftLint can be used as a build tool plugin for both [Xcode projects](#xcode-projects) and
+[Swift Package projects](#swift-package-projects).
+
 The build tool plugin determines the SwiftLint working directory by locating 
 the topmost config file within the package/project directory. If a config file
 is not found therein, the package/project directory is used as the working 

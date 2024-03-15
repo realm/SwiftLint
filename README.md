@@ -208,8 +208,12 @@ If you've installed SwiftLint via CocoaPods the script should look like this:
 
 ### Swift Package Command Plugin
 
-SwiftLint can be used as a build tool plugin for both Swift Package projects 
-and Xcode projects.
+The command plugin enables running SwiftLint from the command line as follows:
+
+```shell
+swift package plugin swiftlint
+```
+
 
 The build tool plugin determines the SwiftLint working directory by locating 
 the topmost config file within the package/project directory. If a config file

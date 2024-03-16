@@ -88,17 +88,43 @@ package extension Configuration {
             )
 
             if !ignoreParentAndChildConfigs {
-                try processPossibleReference(
+                try processPossibleReferenceIgnoringFileAbsence(
                     ofType: .childConfig,
+                    from: vertex,
+                    remoteConfigTimeoutOverride: remoteConfigTimeoutOverride,
+                    remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCachedOverride)
+
+                try processPossibleReferenceIgnoringFileAbsence(
+                    ofType: .parentConfig,
+                    from: vertex,
+                    remoteConfigTimeoutOverride: remoteConfigTimeoutOverride,
+                    remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCachedOverride)
+            }
+        }
+
+        private mutating func processPossibleReferenceIgnoringFileAbsence(
+            ofType type: EdgeType,
+            from vertex: Vertex,
+            remoteConfigTimeoutOverride: TimeInterval?,
+            remoteConfigTimeoutIfCachedOverride: TimeInterval?
+        ) throws {
+            do {
+                try processPossibleReference(
+                    ofType: type,
                     from: vertex,
                     remoteConfigTimeoutOverride: remoteConfigTimeoutOverride,
                     remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCachedOverride
                 )
-                try processPossibleReference(
-                    ofType: .parentConfig,
-                    from: vertex,
-                    remoteConfigTimeoutOverride: remoteConfigTimeoutOverride,
-                    remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCachedOverride
+            } catch {
+                // If a child or parent config file doesn't exist, do not fail the rest of the config tree.
+                // Instead, just ignore this leaf of the config. Otherwise, rethrow the error.
+                guard case let Issue.fileNotFound(path) = error else {
+                    throw error
+                }
+                queuedPrintError("""
+                    A local configuration at \(path) was not found. \
+                    Ignoring this part of the configuration.
+                    """
                 )
             }
         }

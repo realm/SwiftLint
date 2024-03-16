@@ -32,6 +32,9 @@ public enum Issue: LocalizedError, Equatable {
     /// The initial configuration file was not found.
     case initialFileNotFound(path: String)
 
+    /// A file at specified path was not found.
+    case fileNotFound(path: String)
+
     /// The file at `path` is not readable or cannot be opened.
     case fileNotReadable(path: String?, ruleID: String)
 
@@ -125,6 +128,8 @@ public enum Issue: LocalizedError, Equatable {
             return "Cannot get cursor info from file at path '\(path ?? "...")' within '\(id)' rule."
         case let .yamlParsing(message):
             return "Cannot parse YAML file: \(message)"
+        case let .fileNotFound(path):
+            return "File at path '\(path)' not found."
         }
     }
 }

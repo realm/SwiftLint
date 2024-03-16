@@ -10,6 +10,10 @@
 
 #### Enhancements
 
+* Ignore absence of a non-initial local config instead of
+  falling back to default.  
+  [kohtenko](https://github.com/kohtenko)
+
 * Add new option `ignore_typealiases_and_associatedtypes` to
   `nesting` rule. It excludes `typealias` and `associatedtype`
   declarations from the analysis.

@@ -26,12 +26,6 @@ extension Reporter {
     var description: String { Self.description }
 }
 
-/// Returns the identifier for the default reporter.
-/// - returns: The identifier for the default reporter.
-public func defaultReporterIdentifier() -> String {
-    XcodeReporter.identifier
-}
-
 /// Returns the reporter with the specified identifier. Traps if the specified identifier doesn't correspond to any
 /// known reporters.
 ///

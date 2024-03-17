@@ -17,8 +17,7 @@ extension SwiftLint {
 
         func run() throws {
             let savedBaseline = try Baseline(fromPath: baseline)
-            let reporterIdentifier = reporter ?? defaultReporterIdentifier()
-            let reporter = reporterFrom(identifier: reporterIdentifier)
+            let reporter = reporterFrom(identifier: reporter)
             let report = reporter.generateReport(savedBaseline.violations)
             if report.isNotEmpty {
                 if let output {

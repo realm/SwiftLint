@@ -55,17 +55,10 @@ private extension UnusedEnumeratedRule {
                 return
             }
 
-            let position: AbsolutePosition
-            let reason: String
-            if firstTokenIsUnderscore {
-                position = firstElement.positionAfterSkippingLeadingTrivia
-                reason = "When the index is not used, `.enumerated()` can be removed"
-            } else {
-                position = secondElement.positionAfterSkippingLeadingTrivia
-                reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`"
-            }
-
-            violations.append(ReasonedRuleViolation(position: position, reason: reason))
+            addViolation(
+                zeroPosition: firstTokenIsUnderscore ? firstElement.positionAfterSkippingLeadingTrivia : nil,
+                onePosition: firstTokenIsUnderscore ? nil : secondElement.positionAfterSkippingLeadingTrivia
+            )
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
@@ -78,8 +71,8 @@ private extension UnusedEnumeratedRule {
             if let parameterClause = trailingClosure.signature?.parameterClause {
                 guard let parameterClause = parameterClause.as(ClosureShorthandParameterListSyntax.self),
                       parameterClause.count == 2,
-                      let firstElement = parameterClause.children(viewMode: .sourceAccurate).first?.as(ClosureShorthandParameterSyntax.self),
-                      let secondElement = parameterClause.children(viewMode: .sourceAccurate).last?.as(ClosureShorthandParameterSyntax.self),
+                      let firstElement = parameterClause.firstParameter,
+                      let secondElement = parameterClause.lastParameter,
                       case let firstTokenIsUnderscore = firstElement.isUnderscore,
                       case let lastTokenIsUnderscore = secondElement.isUnderscore,
                       firstTokenIsUnderscore || lastTokenIsUnderscore
@@ -87,23 +80,15 @@ private extension UnusedEnumeratedRule {
                     return .visitChildren
                 }
 
-                let position: AbsolutePosition
-                let reason: String
-                if firstTokenIsUnderscore {
-                    position = firstElement.positionAfterSkippingLeadingTrivia
-                    reason = "When the index is not used, `.enumerated()` can be removed"
-                } else {
-                    position = secondElement.positionAfterSkippingLeadingTrivia
-                    reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`"
-                }
-
-                violations.append(ReasonedRuleViolation(position: position, reason: reason))
-                return .visitChildren
+                addViolation(
+                    zeroPosition: firstTokenIsUnderscore ? firstElement.positionAfterSkippingLeadingTrivia : nil,
+                    onePosition: firstTokenIsUnderscore ? nil : secondElement.positionAfterSkippingLeadingTrivia
+                )
             } else {
-                print("Found another one")
                 lookForClosureExpressionSyntax = true
-                return .visitChildren
             }
+
+            return .visitChildren
         }
 
         override func visitPost(_ node: ClosureExprSyntax) {
@@ -118,18 +103,9 @@ private extension UnusedEnumeratedRule {
             guard (zeroPosition != nil) != (onePosition != nil) else {
                 return
             }
+
             // TODO: If there are references to neither, is that a violation?
-            let position: AbsolutePosition
-            let reason: String
-            if let zeroPosition {
-                position = zeroPosition
-                reason = "When the index is not used, `.enumerated()` can be removed"
-            } else {
-                position = onePosition!
-                reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`"
-            }
-            print(">>>>> we got one")
-            violations.append(ReasonedRuleViolation(position: position, reason: reason))
+            addViolation(zeroPosition: zeroPosition, onePosition: onePosition)
         }
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
@@ -140,6 +116,21 @@ private extension UnusedEnumeratedRule {
                 zeroPosition = node.positionAfterSkippingLeadingTrivia
             } else if node.baseName.text == "$1" {
                 onePosition = node.positionAfterSkippingLeadingTrivia
+            }
+        }
+
+        private func addViolation(zeroPosition: AbsolutePosition?, onePosition: AbsolutePosition?) {
+            var position: AbsolutePosition?
+            var reason: String?
+            if let zeroPosition {
+                position = zeroPosition
+                reason = "When the index is not used, `.enumerated()` can be removed"
+            } else if let onePosition {
+                position = onePosition
+                reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`"
+            }
+            if let position, let reason {
+                violations.append(ReasonedRuleViolation(position: position, reason: reason))
             }
         }
     }
@@ -173,5 +164,15 @@ private extension TuplePatternElementSyntax {
 private extension ClosureShorthandParameterSyntax {
     var isUnderscore: Bool {
         name.tokenKind == .wildcard
+    }
+}
+
+private extension ClosureShorthandParameterListSyntax {
+    var firstParameter: ClosureShorthandParameterSyntax? {
+        children(viewMode: .sourceAccurate).first?.as(ClosureShorthandParameterSyntax.self)
+    }
+
+    var lastParameter: ClosureShorthandParameterSyntax? {
+        children(viewMode: .sourceAccurate).last?.as(ClosureShorthandParameterSyntax.self)
     }
 }

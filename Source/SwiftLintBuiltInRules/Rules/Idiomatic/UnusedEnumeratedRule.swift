@@ -19,7 +19,7 @@ struct UnusedEnumeratedRule: Rule {
             Example("for (idx, _) in bar.something() { }"),
             Example("for idx in bar.indices { }"),
             Example("for (section, (event, _)) in data.enumerated() {}"),
-            // Example("list.enumerated().map { idx, elem in \"\(idx): \(elem)\" }"),
+//            Example("list.enumerated().map { idx, elem in \"\(idx): \(elem)\" }"),
             Example("list.enumerated().map { $0 + $1 }"),
             Example("list.enumerated().something().map { _, elem in elem }")
         ],
@@ -30,7 +30,7 @@ struct UnusedEnumeratedRule: Rule {
             Example("for (idx, ↓_) in bar.enumerated() { }"),
             Example("list.enumerated().map { idx, ↓_ in idx }"),
             Example("list.enumerated().map { ↓_, elem in elem }"),
-            Example("list.enumerated().forEach { print(↓$0) }").focused(),
+            Example("list.enumerated().forEach { print(↓$0) }"),
             Example("list.enumerated().map { ↓$1 }")
         ]
     )
@@ -38,6 +38,11 @@ struct UnusedEnumeratedRule: Rule {
 
 private extension UnusedEnumeratedRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private var lookForClosureExpressionSyntax = false
+        private var lookForDollarIdentifiers = false
+        private var zeroPosition: AbsolutePosition?
+        private var onePosition: AbsolutePosition?
+
         override func visitPost(_ node: ForStmtSyntax) {
             guard let tuplePattern = node.pattern.as(TuplePatternSyntax.self),
                   tuplePattern.elements.count == 2,
@@ -64,11 +69,11 @@ private extension UnusedEnumeratedRule {
             violations.append(ReasonedRuleViolation(position: position, reason: reason))
         }
 
-        override func visitPost(_ node: FunctionCallExprSyntax) {
+        override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
             guard node.isEnumerated,
                   let trailingClosure = node.parent?.parent?.as(FunctionCallExprSyntax.self)?.trailingClosure
             else {
-                return
+                return .visitChildren
             }
 
             if let parameterClause = trailingClosure.signature?.parameterClause {
@@ -80,7 +85,7 @@ private extension UnusedEnumeratedRule {
                       case let lastTokenIsUnderscore = secondElement.isUnderscore,
                       firstTokenIsUnderscore || lastTokenIsUnderscore
                 else {
-                    return
+                    return .visitChildren
                 }
 
                 let position: AbsolutePosition
@@ -94,8 +99,71 @@ private extension UnusedEnumeratedRule {
                 }
 
                 violations.append(ReasonedRuleViolation(position: position, reason: reason))
+                return .visitChildren
             } else {
                 print("Found another one")
+                lookForClosureExpressionSyntax = true
+                return .visitChildren
+            }
+        }
+//
+//        override func visitPost(_ node: FunctionCallExprSyntax) {
+//            guard lookForClosureExpressionSyntax else {
+//                return
+//            }
+//            defer {
+//                lookForClosureExpressionSyntax = false
+//                seenZero = false
+//                seenOne = false
+//            }
+//            guard seenZero != seenOne else {
+//                return
+//            }
+//            print("Found another one")
+//        }
+
+        // We can start counting here, *if* is was one of ours ...
+//        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+//            if lookForClosureExpressionSyntax {
+//                lookForDollarIdentifiers = true
+//            }
+//            return .visitChildren
+//        }
+//
+        override func visitPost(_ node: ClosureExprSyntax) {
+            guard lookForClosureExpressionSyntax else {
+                return
+            }
+            defer {
+                lookForClosureExpressionSyntax = false
+                zeroPosition = nil
+                onePosition = nil
+            }
+            guard (zeroPosition != nil) != (onePosition != nil) else {
+                return
+            }
+            // TODO: If there are references to neither, is that a violation?
+            let position: AbsolutePosition
+            let reason: String
+            if let zeroPosition {
+                position = zeroPosition
+                reason = "When the index is not used, `.enumerated()` can be removed"
+            } else {
+                position = onePosition!
+                reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`"
+            }
+            print(">>>>> we got one")
+            violations.append(ReasonedRuleViolation(position: position, reason: reason))
+        }
+
+        override func visitPost(_ node: DeclReferenceExprSyntax) {
+            guard lookForClosureExpressionSyntax else {
+                return
+            }
+            if node.baseName.text == "$0" {
+                zeroPosition = node.positionAfterSkippingLeadingTrivia
+            } else if node.baseName.text == "$1" {
+                onePosition = node.positionAfterSkippingLeadingTrivia
             }
         }
     }

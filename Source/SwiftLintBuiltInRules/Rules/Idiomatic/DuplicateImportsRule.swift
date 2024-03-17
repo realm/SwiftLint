@@ -153,7 +153,7 @@ private extension DuplicateImportsRule {
 
         override func visit(_ node: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
             let itemsToRemove = node
-                .enumerated()
+                .enumerated() // swiftlint:disable:next unused_enumerated
                 .filter { !$1.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) }
                 .map { ($0, $1.item.positionAfterSkippingLeadingTrivia) }
                 .filter { importPositionsToRemove.contains($1) }

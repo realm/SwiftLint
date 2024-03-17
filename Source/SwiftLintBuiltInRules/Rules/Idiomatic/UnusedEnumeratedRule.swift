@@ -19,7 +19,7 @@ struct UnusedEnumeratedRule: Rule {
             Example("for (idx, _) in bar.something() { }"),
             Example("for idx in bar.indices { }"),
             Example("for (section, (event, _)) in data.enumerated() {}"),
-//            Example("list.enumerated().map { idx, elem in \"\(idx): \(elem)\" }"),
+            Example("list.enumerated().map { idx, elem in \"\\(idx): \\(elem)\" }"),
             Example("list.enumerated().map { $0 + $1 }"),
             Example("list.enumerated().something().map { _, elem in elem }")
         ],

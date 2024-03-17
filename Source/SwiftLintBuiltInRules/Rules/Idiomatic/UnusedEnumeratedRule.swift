@@ -39,7 +39,6 @@ struct UnusedEnumeratedRule: Rule {
 private extension UnusedEnumeratedRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var lookForClosureExpressionSyntax = false
-        private var lookForDollarIdentifiers = false
         private var zeroPosition: AbsolutePosition?
         private var onePosition: AbsolutePosition?
 
@@ -106,30 +105,7 @@ private extension UnusedEnumeratedRule {
                 return .visitChildren
             }
         }
-//
-//        override func visitPost(_ node: FunctionCallExprSyntax) {
-//            guard lookForClosureExpressionSyntax else {
-//                return
-//            }
-//            defer {
-//                lookForClosureExpressionSyntax = false
-//                seenZero = false
-//                seenOne = false
-//            }
-//            guard seenZero != seenOne else {
-//                return
-//            }
-//            print("Found another one")
-//        }
 
-        // We can start counting here, *if* is was one of ours ...
-//        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-//            if lookForClosureExpressionSyntax {
-//                lookForDollarIdentifiers = true
-//            }
-//            return .visitChildren
-//        }
-//
         override func visitPost(_ node: ClosureExprSyntax) {
             guard lookForClosureExpressionSyntax else {
                 return

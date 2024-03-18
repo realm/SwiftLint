@@ -28,6 +28,8 @@ unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 .package(url: "https://github.com/realm/SwiftLint.git", from: "<version>")
 ```
 
+SwiftLint can be used as a [command plugin](#swift-package-command-plugin) or a [build tool plugin](#swift-package-build-tool-plugins).
+
 ### Using [Homebrew](http://brew.sh/):
 
 ```

@@ -10,7 +10,7 @@ import SwiftSyntax
 ///
 /// Declare state and state objects as private to prevent setting them from a memberwise initializer,
 /// which can conflict with the storage management that SwiftUI provides:
-@SwiftSyntaxRule
+@SwiftSyntaxRule(explicitRewriter: true)
 struct PrivateSwiftUIStatePropertyRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -19,179 +19,9 @@ struct PrivateSwiftUIStatePropertyRule: OptInRule {
         name: "Private SwiftUI State Properties",
         description: "SwiftUI state properties should be private",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
-            struct MyApp: App {
-                @State private var isPlaying: Bool = false
-            }
-            """),
-            Example("""
-            struct MyScene: Scene {
-                @State private var isPlaying: Bool = false
-            }
-            """),
-            Example("""
-            struct ContentView: View {
-                @State private var isPlaying: Bool = false
-            }
-            """),
-            Example("""
-            struct ContentView: View {
-                @State fileprivate var isPlaying: Bool = false
-            }
-            """),
-            Example("""
-            struct ContentView: View {
-                @State private var isPlaying: Bool = false
-
-                struct InnerView: View {
-                    @State private var showsIndicator: Bool = false
-                }
-            }
-            """),
-            Example("""
-            struct MyStruct {
-                struct ContentView: View {
-                    @State private var isPlaying: Bool = false
-                }
-            }
-            """),
-            Example("""
-            struct MyStruct {
-                struct ContentView: View {
-                    @State private var isPlaying: Bool = false
-                }
-
-                @State var nonTriggeringState: Bool = false
-            }
-            """),
-
-            Example("""
-            struct ContentView: View {
-                var isPlaying = false
-            }
-            """),
-            Example("""
-            struct MyApp: App {
-                @StateObject private var model = DataModel()
-            }
-            """),
-            Example("""
-            struct MyScene: Scene {
-                @StateObject private var model = DataModel()
-            }
-            """),
-            Example("""
-            struct ContentView: View {
-                @StateObject private var model = DataModel()
-            }
-            """),
-            Example("""
-            struct MyStruct {
-                struct ContentView: View {
-                    @StateObject private var dataModel = DataModel()
-                }
-
-                @StateObject var nonTriggeringObject = MyModel()
-            }
-            """),
-            Example("""
-            struct Foo {
-                @State var bar = false
-            }
-            """),
-            Example("""
-            class Foo: ObservableObject {
-                @State var bar = Bar()
-            }
-            """),
-            Example("""
-            extension MyObject {
-                struct ContentView: View {
-                    @State private var isPlaying: Bool = false
-                }
-            }
-            """),
-            Example("""
-            actor ContentView: View {
-                @State private var isPlaying: Bool = false
-            }
-            """)
-        ],
-        triggeringExamples: [
-            Example("""
-            struct MyApp: App {
-                @State ↓var isPlaying: Bool = false
-            }
-            """),
-            Example("""
-            struct MyScene: Scene {
-                @State ↓var isPlaying: Bool = false
-            }
-            """),
-            Example("""
-            struct ContentView: View {
-                @State ↓var isPlaying: Bool = false
-            }
-            """),
-            Example("""
-            struct ContentView: View {
-                struct InnerView: View {
-                    @State private var showsIndicator: Bool = false
-                }
-
-                @State ↓var isPlaying: Bool = false
-            }
-            """),
-            Example("""
-            struct MyStruct {
-                struct ContentView: View {
-                    @State ↓var isPlaying: Bool = false
-                }
-            }
-            """),
-            Example("""
-            struct MyStruct {
-                struct ContentView: View {
-                    @State ↓var isPlaying: Bool = false
-                }
-
-                @State var isPlaying: Bool = false
-            }
-            """),
-            Example("""
-            final class ContentView: View {
-                @State ↓var isPlaying: Bool = false
-            }
-            """),
-            Example("""
-            extension MyObject {
-                struct ContentView: View {
-                    @State ↓var isPlaying: Bool = false
-                }
-            }
-            """),
-            Example("""
-            actor ContentView: View {
-                @State ↓var isPlaying: Bool = false
-            }
-            """),
-            Example("""
-            struct MyApp: App {
-                @StateObject ↓var model = DataModel()
-            }
-            """),
-            Example("""
-            struct MyScene: Scene {
-                @StateObject ↓var model = DataModel()
-            }
-            """),
-            Example("""
-            struct ContentView: View {
-                @StateObject ↓var model = DataModel()
-            }
-            """)
-        ]
+        nonTriggeringExamples: PrivateSwiftUIStatePropertyRuleExamples.nonTriggeringExamples,
+        triggeringExamples: PrivateSwiftUIStatePropertyRuleExamples.triggeringExamples,
+        corrections: PrivateSwiftUIStatePropertyRuleExamples.corrections
     )
 }
 
@@ -201,59 +31,156 @@ private extension PrivateSwiftUIStatePropertyRule {
             [ProtocolDeclSyntax.self]
         }
 
-        /// LIFO stack that stores type inheritance clauses for each visited node
-        /// The last value is the inheritance clause for the most recently visited node
-        /// A nil value indicates that the node does not provide any inheritance clause
-        private var visitedTypeInheritances = Stack<InheritanceClauseSyntax?>()
+        /// LIFO stack that stores if a type conforms to SwiftUI protocols.
+        /// `true` indicates that SwiftUI state properties should be
+        /// checked in the scope of the last entered declaration.
+        private var swiftUITypeScopes = Stack<Bool>()
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            visitedTypeInheritances.push(node.inheritanceClause)
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
             return .visitChildren
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            visitedTypeInheritances.pop()
+            swiftUITypeScopes.pop()
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            visitedTypeInheritances.push(node.inheritanceClause)
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
             return .visitChildren
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            visitedTypeInheritances.pop()
+            swiftUITypeScopes.pop()
         }
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            visitedTypeInheritances.push(node.inheritanceClause)
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
             return .visitChildren
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            visitedTypeInheritances.pop()
+            swiftUITypeScopes.pop()
         }
 
-        override func visitPost(_ node: MemberBlockItemSyntax) {
-            guard
-                let decl = node.decl.as(VariableDeclSyntax.self),
-                let inheritanceClause = visitedTypeInheritances.peek() as? InheritanceClauseSyntax,
-                inheritanceClause.conformsToApplicableSwiftUIProtocol,
-                decl.attributes.hasStateAttribute,
-                !decl.modifiers.containsPrivateOrFileprivate()
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard node.parent?.is(MemberBlockItemSyntax.self) == true,
+                swiftUITypeScopes.peek() ?? false,
+                node.containsSwiftUIStateAccessLevelViolation
             else {
                 return
             }
 
-            violations.append(decl.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+            if let firstAccessLevelModifier = node.modifiers.accessLevelModifier {
+                violations.append(firstAccessLevelModifier.positionAfterSkippingLeadingTrivia)
+            } else {
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        /// LIFO stack that stores if a type conforms to SwiftUI protocols.
+        /// `true` indicates that SwiftUI state properties should be
+        /// checked in the scope of the last entered declaration.
+        private var swiftUITypeScopes = Stack<Bool>()
+
+        override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
+            return super.visit(node)
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
+            return super.visit(node)
+        }
+
+        override func visit(_ node: ActorDeclSyntax) -> DeclSyntax {
+            swiftUITypeScopes.push(node.inheritanceClause.conformsToApplicableSwiftUIProtocol)
+            return super.visit(node)
+        }
+
+        override func visitPost(_ node: Syntax) {
+            if node.is(ClassDeclSyntax.self) ||
+               node.is(StructDeclSyntax.self) ||
+               node.is(ActorDeclSyntax.self) {
+                swiftUITypeScopes.pop()
+            }
+        }
+
+        override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
+            guard
+                node.parent?.is(MemberBlockItemSyntax.self) == true,
+                swiftUITypeScopes.peek() ?? false,
+                node.containsSwiftUIStateAccessLevelViolation
+            else {
+                return DeclSyntax(node)
+            }
+
+            correctionPositions.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+
+            // If there are no modifiers present on the current syntax node,
+            // then we should retain the binding specifier's leading trivia
+            // by appending it to our inserted private access level modifier
+            if node.modifiers.isEmpty {
+                // Extract the leading trivia from the binding specifier and apply it to the private modifier
+                let privateModifier = DeclModifierSyntax(
+                    leadingTrivia: node.bindingSpecifier.leadingTrivia,
+                    name: .keyword(.private),
+                    trailingTrivia: .space
+                )
+
+                let bindingSpecifier = node.bindingSpecifier.with(\.leadingTrivia, [])
+                let newNode = node
+                    .with(\.modifiers, [privateModifier])
+                    .with(\.bindingSpecifier, bindingSpecifier)
+                return DeclSyntax(newNode)
+            }
+
+            // If any existing, violating access modifiers are present
+            // then we should extract their trivia and
+            // append it to the inserted private access level modifier
+            let existingAccessLevelModifiers = node.modifiers.filter { $0.asAccessLevelModifier != nil }
+            // Remove any existing access control modifiers, but preserve any of their leading and trailing trivia
+            // Existing trivia will be appended to the rewritten access modifier
+            let previousAccessModifierLeadingTrivia = existingAccessLevelModifiers
+                .map(\.leadingTrivia)
+                .reduce(Trivia(pieces: [])) { partialResult, trivia in
+                    partialResult.merging(trivia)
+                }
+
+            let previousAccessModifierTrailingTrivia = existingAccessLevelModifiers
+                .map(\.trailingTrivia)
+                .reduce(Trivia(pieces: [])) { partialResult, trivia in
+                    partialResult.merging(trivia)
+                }
+
+            let filteredModifiers = node.modifiers.filter { $0.asAccessLevelModifier == nil }
+            // Extract the leading trivia from the binding specifier and apply it to the private modifier
+            let privateModifier = DeclModifierSyntax(
+                leadingTrivia: previousAccessModifierLeadingTrivia,
+                name: .keyword(.private),
+                trailingTrivia: previousAccessModifierTrailingTrivia.merging(.space)
+            )
+
+            return DeclSyntax(
+                node.with(\.modifiers, [privateModifier] + filteredModifiers)
+            )
         }
     }
 }
 
-private extension InheritanceClauseSyntax {
+private extension VariableDeclSyntax {
+    var containsSwiftUIStateAccessLevelViolation: Bool {
+        attributes.hasStateAttribute && !modifiers.containsPrivateOrFileprivate()
+    }
+}
+
+private extension InheritanceClauseSyntax? {
     static let applicableSwiftUIProtocols: Set<String> = ["View", "App", "Scene"]
 
     var conformsToApplicableSwiftUIProtocol: Bool {
-        inheritedTypes.containsInheritedType(inheritedTypes: Self.applicableSwiftUIProtocols)
+        self?.inheritedTypes.containsInheritedType(inheritedTypes: Self.applicableSwiftUIProtocols) ?? false
     }
 }
 

@@ -130,6 +130,9 @@
 
 * Make `empty_count` auto-correctable.  
   [KS1019](https://github.com/KS1019/)
+  
+* Make `private_swiftui_state` auto-correctable.  
+  [mt00chikin](https://github.com/mt00chikin)
 
 * Make `trailing_closure` correctable.  
   [KS1019](https://github.com/KS1019/)

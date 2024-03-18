@@ -19,8 +19,7 @@
 * Introduce SwiftLintCommandPlugin plugin.  
 * Introduce SwiftLintCommandPlugin.
   Rename SwiftLintBuildToolPlugin.
-  Add Swift Package Manager installation instructions.
-  Improve README.md.  
+  Add Swift Package Manager installation instructions.    
   [garricn](https://github.com/garricn)
 
 * Add new option `ignore_typealiases_and_associatedtypes` to

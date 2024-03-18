@@ -793,6 +793,12 @@ class NotificationCenterDetachmentRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class NoUnnecessarySpacesRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NoUnnecessarySpacesRule.description)
+    }
+}
+
 class NumberSeparatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NumberSeparatorRule.description)

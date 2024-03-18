@@ -188,7 +188,7 @@ private func render(violations: [StyleViolation], in contents: String) -> String
 
 private func render(locations: [Location], in contents: String) -> String {
     var contents = StringView(contents).lines.map { $0.content }
-    for location in locations.sorted(by: > ) {
+    for location in locations.sorted(by: >) {
         guard let line = location.line, let character = location.character else { continue }
         let content = NSMutableString(string: contents[line - 1])
         content.insert("↓", at: character - 1)

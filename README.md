@@ -20,6 +20,16 @@ unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 
 ## Installation
 
+### Using [Swift Package Manager](https://github.com/apple/swift-package-manager):
+
+> Replace `<version>` with the desired minimum version.
+
+```swift
+.package(url: "https://github.com/realm/SwiftLint.git", from: "<version>")
+```
+
+SwiftLint can be used as a [command plugin](#swift-package-command-plugin) or a [build tool plugin](#swift-package-build-tool-plugins).
+
 ### Using [Homebrew](http://brew.sh/):
 
 ```
@@ -138,7 +148,7 @@ we encourage you to watch this presentation or read the transcript:
 
 [![Presentation](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/presentation.svg)](https://youtu.be/9Z1nTMTejqU)
 
-### Xcode
+### Xcode Run Script Build Phase
 
 Integrate SwiftLint into your Xcode project to get warnings and errors displayed
 in the issue navigator.
@@ -198,10 +208,18 @@ If you've installed SwiftLint via CocoaPods the script should look like this:
 "${PODS_ROOT}/SwiftLint/swiftlint"
 ```
 
-### Plug-in Support
+### Swift Package Command Plugin
 
-SwiftLint can be used as a build tool plugin for both Swift Package projects 
-and Xcode projects.
+The command plugin enables running SwiftLint from the command line as follows:
+
+```shell
+swift package plugin swiftlint
+```
+
+### Swift Package Build Tool Plugins
+
+SwiftLint can be used as a build tool plugin for both [Xcode projects](#xcode-projects) and
+[Swift Package projects](#swift-package-projects).
 
 The build tool plugin determines the SwiftLint working directory by locating 
 the topmost config file within the package/project directory. If a config file
@@ -231,17 +249,17 @@ plugin, please consider one of the following options:
 - You can also consider the use of a Run Script Build Phase in place of the
   build tool plugin.
 
-#### Xcode
+#### Xcode Projects
 
-You can integrate SwiftLint as an Xcode Build Tool Plug-in if you're working
+You can integrate SwiftLint as an Xcode Build Tool Plugin if you're working
 with a project in Xcode.
 
 Add SwiftLint as a package dependency to your project without linking any of the
 products.
 
 Select the target you want to add linting to and open the `Build Phases` inspector.
-Open `Run Build Tool Plug-ins` and select the `+` button.
-Select `SwiftLintPlugin` from the list and add it to the project.
+Open `Run Build Tool Plugins` and select the `+` button.
+Select `SwiftLintBuildToolPlugin` from the list and add it to the project.
 
 ![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/select-swiftlint-plugin.png)
 
@@ -254,9 +272,9 @@ For unattended use (e.g. on CI), you can disable the package and macro validatio
 _Note: This implicitly trusts all Xcode package plugins and macros in packages and bypasses Xcode's package validation
        dialogs, which has security implications._
 
-#### Swift Package
+#### Swift Package Projects
 
-You can integrate SwiftLint as a Swift Package Manager Plug-in if you're working with
+You can integrate SwiftLint as a Swift Package Manager Plugin if you're working with
 a Swift Package with a `Package.swift` manifest.
 
 Add SwiftLint as a package dependency to your `Package.swift` file.  
@@ -265,7 +283,7 @@ Add SwiftLint to a target using the `plugins` parameter.
 ```swift
 .target(
     ...
-    plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+    plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
 ),
 ```
 

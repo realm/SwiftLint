@@ -5,6 +5,11 @@
 * Rewrite `SwiftLintPlugin` using `BUILD_WORKSPACE_DIRECTORY` without relying
   on the `--config` option.  
   [Garric Nahapetian](https://github.com/garricn)
+  
+* Introduce SwiftLintCommandPlugin.
+  Rename SwiftLintBuildToolPlugin.
+  Add Swift Package Manager installation instructions.  
+  [garricn](https://github.com/garricn)
 
 #### Experimental
 

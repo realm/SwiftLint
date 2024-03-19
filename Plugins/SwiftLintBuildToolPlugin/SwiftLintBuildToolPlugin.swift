@@ -2,7 +2,7 @@ import Foundation
 import PackagePlugin
 
 @main
-struct SwiftLintPlugin: BuildToolPlugin {
+struct SwiftLintBuildToolPlugin: BuildToolPlugin {
     func createBuildCommands(
         context: PluginContext,
         target: Target
@@ -86,7 +86,7 @@ struct SwiftLintPlugin: BuildToolPlugin {
 import XcodeProjectPlugin
 
 // swiftlint:disable:next no_grouping_extension
-extension SwiftLintPlugin: XcodeBuildToolPlugin {
+extension SwiftLintBuildToolPlugin: XcodeBuildToolPlugin {
     func createBuildCommands(
         context: XcodePluginContext,
         target: XcodeTarget
@@ -125,7 +125,7 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
         let swiftFilesNotInProjectDirectory: [Path] = swiftFiles.filter { !$0.isDescendant(of: projectDirectory) }
 
         guard swiftFilesNotInProjectDirectory.isEmpty else {
-            throw SwiftLintPluginError.swiftFilesNotInProjectDirectory(projectDirectory)
+            throw SwiftLintBuildToolPluginError.swiftFilesNotInProjectDirectory(projectDirectory)
         }
 
         let directories: [Path] = try swiftFiles.map { try $0.resolveWorkingDirectory(in: projectDirectory) }
@@ -133,7 +133,7 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
         let swiftFilesNotInWorkingDirectory: [Path] = swiftFiles.filter { !$0.isDescendant(of: workingDirectory) }
 
         guard swiftFilesNotInWorkingDirectory.isEmpty else {
-            throw SwiftLintPluginError.swiftFilesNotInWorkingDirectory(workingDirectory)
+            throw SwiftLintBuildToolPluginError.swiftFilesNotInWorkingDirectory(workingDirectory)
         }
 
         return ["BUILD_WORKSPACE_DIRECTORY": "\(workingDirectory)"]

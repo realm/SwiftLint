@@ -16,7 +16,7 @@ extension Path {
 
     func resolveWorkingDirectory(in directory: Path) throws -> Path {
         guard "\(self)".hasPrefix("\(directory)") else {
-            throw SwiftLintPluginError.pathNotInDirectory(path: self, directory: directory)
+            throw SwiftLintBuildToolPluginError.pathNotInDirectory(path: self, directory: directory)
         }
 
         let path: Path? = sequence(first: self) { path in

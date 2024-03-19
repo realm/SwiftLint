@@ -5,6 +5,11 @@
 * Rewrite `SwiftLintPlugin` using `BUILD_WORKSPACE_DIRECTORY` without relying
   on the `--config` option.  
   [Garric Nahapetian](https://github.com/garricn)
+  
+* Introduce SwiftLintCommandPlugin.
+  Rename SwiftLintBuildToolPlugin.
+  Add Swift Package Manager installation instructions.    
+  [garricn](https://github.com/garricn)
 
 #### Experimental
 
@@ -15,12 +20,6 @@
 * Ignore absence of a non-initial local config instead of
   falling back to default.  
   [kohtenko](https://github.com/kohtenko)
-* Introduce SwiftLintCommand plugin.  
-* Introduce SwiftLintCommandPlugin plugin.  
-* Introduce SwiftLintCommandPlugin.
-  Rename SwiftLintBuildToolPlugin.
-  Add Swift Package Manager installation instructions.    
-  [garricn](https://github.com/garricn)
 
 * Add new option `ignore_typealiases_and_associatedtypes` to
   `nesting` rule. It excludes `typealias` and `associatedtype`

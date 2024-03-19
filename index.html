@@ -361,6 +361,15 @@ unacceptable behavior to <a href="mailto:info@realm.io">info@realm.io</a>.</p>
 <p>Language Switch: <a href="https://github.com/realm/SwiftLint/blob/main/README_CN.md">中文</a>, <a href="https://github.com/realm/SwiftLint/blob/main/README_KR.md">한국어</a>.</p>
 </blockquote>
 <h2 id='installation' class='heading'>Installation</h2>
+<h3 id='using-a-href-https-github-com-apple-swift-package-manager-swift-package-manager-a' class='heading'>Using <a href="https://github.com/apple/swift-package-manager">Swift Package Manager</a>:</h3>
+
+<blockquote>
+<p>Replace <code>&lt;version&gt;</code> with the desired minimum version.</p>
+</blockquote>
+<pre class="highlight swift"><code><span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/realm/SwiftLint.git"</span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="s">"&lt;version&gt;"</span><span class="p">)</span>
+</code></pre>
+
+<p>SwiftLint can be used as a <a href="#swift-package-command-plugin">command plugin</a> or a <a href="#swift-package-build-tool-plugins">build tool plugin</a>.</p>
 <h3 id='using-a-href-http-brew-sh-homebrew-a' class='heading'>Using <a href="http://brew.sh/">Homebrew</a>:</h3>
 <pre class="highlight plaintext"><code>brew install swiftlint
 </code></pre>
@@ -461,7 +470,7 @@ swiftlint_deps()
 we encourage you to watch this presentation or read the transcript:</p>
 
 <p><a href="https://youtu.be/9Z1nTMTejqU"><img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/presentation.svg" alt="Presentation"></a></p>
-<h3 id='xcode' class='heading'>Xcode</h3>
+<h3 id='xcode-run-script-build-phase' class='heading'>Xcode Run Script Build Phase</h3>
 
 <p>Integrate SwiftLint into your Xcode project to get warnings and errors displayed
 in the issue navigator.</p>
@@ -517,10 +526,15 @@ your project for remaining violations.</p>
 <p>If you&rsquo;ve installed SwiftLint via CocoaPods the script should look like this:</p>
 <pre class="highlight shell"><code><span class="s2">"</span><span class="k">${</span><span class="nv">PODS_ROOT</span><span class="k">}</span><span class="s2">/SwiftLint/swiftlint"</span>
 </code></pre>
-<h3 id='plug-in-support' class='heading'>Plug-in Support</h3>
+<h3 id='swift-package-command-plugin' class='heading'>Swift Package Command Plugin</h3>
 
-<p>SwiftLint can be used as a build tool plugin for both Swift Package projects 
-and Xcode projects.</p>
+<p>The command plugin enables running SwiftLint from the command line as follows:</p>
+<pre class="highlight shell"><code>swift package plugin swiftlint
+</code></pre>
+<h3 id='swift-package-build-tool-plugins' class='heading'>Swift Package Build Tool Plugins</h3>
+
+<p>SwiftLint can be used as a build tool plugin for both <a href="#xcode-projects">Xcode projects</a> and
+<a href="#swift-package-projects">Swift Package projects</a>.</p>
 
 <p>The build tool plugin determines the SwiftLint working directory by locating 
 the topmost config file within the package/project directory. If a config file
@@ -550,17 +564,17 @@ other config file, e.g., <code>parent_config: path/to/.swiftlint.yml</code>.</li
 <li>You can also consider the use of a Run Script Build Phase in place of the
 build tool plugin.</li>
 </ul>
-<h4 id='xcode' class='heading'>Xcode</h4>
+<h4 id='xcode-projects' class='heading'>Xcode Projects</h4>
 
-<p>You can integrate SwiftLint as an Xcode Build Tool Plug-in if you&rsquo;re working
+<p>You can integrate SwiftLint as an Xcode Build Tool Plugin if you&rsquo;re working
 with a project in Xcode.</p>
 
 <p>Add SwiftLint as a package dependency to your project without linking any of the
 products.</p>
 
 <p>Select the target you want to add linting to and open the <code>Build Phases</code> inspector.
-Open <code>Run Build Tool Plug-ins</code> and select the <code>+</code> button.
-Select <code>SwiftLintPlugin</code> from the list and add it to the project.</p>
+Open <code>Run Build Tool Plugins</code> and select the <code>+</code> button.
+Select <code>SwiftLintBuildToolPlugin</code> from the list and add it to the project.</p>
 
 <p><img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/select-swiftlint-plugin.png" alt=""></p>
 
@@ -574,16 +588,16 @@ for that user.</li>
 
 <p><em>Note: This implicitly trusts all Xcode package plugins and macros in packages and bypasses Xcode&rsquo;s package validation
        dialogs, which has security implications.</em></p>
-<h4 id='swift-package' class='heading'>Swift Package</h4>
+<h4 id='swift-package-projects' class='heading'>Swift Package Projects</h4>
 
-<p>You can integrate SwiftLint as a Swift Package Manager Plug-in if you&rsquo;re working with
+<p>You can integrate SwiftLint as a Swift Package Manager Plugin if you&rsquo;re working with
 a Swift Package with a <code>Package.swift</code> manifest.</p>
 
 <p>Add SwiftLint as a package dependency to your <code>Package.swift</code> file.<br>
 Add SwiftLint to a target using the <code>plugins</code> parameter.</p>
 <pre class="highlight swift"><code><span class="o">.</span><span class="nf">target</span><span class="p">(</span>
     <span class="o">...</span>
-    <span class="nv">plugins</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"SwiftLintPlugin"</span><span class="p">,</span> <span class="nv">package</span><span class="p">:</span> <span class="s">"SwiftLint"</span><span class="p">)]</span>
+    <span class="nv">plugins</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"SwiftLintBuildToolPlugin"</span><span class="p">,</span> <span class="nv">package</span><span class="p">:</span> <span class="s">"SwiftLint"</span><span class="p">)]</span>
 <span class="p">),</span>
 </code></pre>
 <h3 id='visual-studio-code' class='heading'>Visual Studio Code</h3>

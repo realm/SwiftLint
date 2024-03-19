@@ -5,7 +5,7 @@ private typealias GroupedViolations = [String: [BaselineViolation]]
 private struct BaselineViolation: Equatable, Codable, Hashable {
     let violation: StyleViolation
     let text: String
-    var key: String { text + violation.reason }
+    var key: String { text + violation.reason + violation.severity.rawValue }
 
     init(violation: StyleViolation, text: String) {
         let location = violation.location
@@ -55,6 +55,8 @@ public struct Baseline: Equatable {
     }
 
     /// Filters out violations that are present in the `Baseline`.
+    ///
+    /// Assumes that all violations are from the same file.
     ///
     /// - parameter violations: The violations to filter.
     /// - Returns: The new violations.

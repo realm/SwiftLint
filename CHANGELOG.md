@@ -8,7 +8,7 @@
   
 * Introduce SwiftLintCommandPlugin.
   Rename SwiftLintBuildToolPlugin.
-  Add Swift Package Manager installation instructions.    
+  Add Swift Package Manager installation instructions.  
   [garricn](https://github.com/garricn)
 
 #### Experimental

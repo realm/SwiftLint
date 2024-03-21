@@ -68,7 +68,9 @@ extension Configuration {
         #else
         let result = NSMutableOrderedSet(array: allPaths)
         #endif
-        let exclusionPatterns = self.excludedPaths.map { Glob.createFilenameMatcher(root: rootDirectory, pattern: $0) }
+        let exclusionPatterns = self.excludedPaths.flatMap {
+            Glob.createFilenameMatchers(root: rootDirectory, pattern: $0)
+        }
         return result
             .map { $0 as! String } // swiftlint:disable:this force_cast
             .filter { !exclusionPatterns.anyMatch(filename: $0) }

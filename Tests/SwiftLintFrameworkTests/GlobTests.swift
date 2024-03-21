@@ -83,18 +83,39 @@ final class GlobTests: SwiftLintTestCase {
         XCTAssertEqual(files.sorted(), expectedFiles.sorted())
     }
 
-    func testCreateFilenameMatcher() {
-        XCTAssert(Glob.createFilenameMatcher(root: "/a/b/", pattern: "c/*.swift").match(filename: "/a/b/c/d.swift"))
-        XCTAssert(Glob.createFilenameMatcher(root: "/a", pattern: "**/*.swift").match(filename: "/a/b/c/d.swift"))
-        XCTAssert(Glob.createFilenameMatcher(root: "/a/b", pattern: "/a/b/c/*.swift").match(filename: "/a/b/c/d.swift"))
-        XCTAssert(Glob.createFilenameMatcher(root: "/a/", pattern: "/a/b/c/*.swift").match(filename: "/a/b/c/d.swift"))
+    func testCreateFilenameMatchers() {
+        struct MatcherTest {
+            let root: String
+            let pattern: String
+            let filenames: [String]
 
-        XCTAssert(Glob.createFilenameMatcher(root: "", pattern: "/a/b/c").match(filename: "/a/b/c/d.swift"))
-        XCTAssert(Glob.createFilenameMatcher(root: "", pattern: "/a/b/c/").match(filename: "/a/b/c/d.swift"))
-        XCTAssert(Glob.createFilenameMatcher(root: "", pattern: "/a/b/c/*.swift").match(filename: "/a/b/c/d.swift"))
-        XCTAssert(Glob.createFilenameMatcher(root: "", pattern: "/d.swift/*.swift").match(filename: "/d.swift/e.swift"))
-        XCTAssert(Glob.createFilenameMatcher(root: "", pattern: "/a/**").match(filename: "/a/b/c/d.swift"))
+            func matchesAll() -> Bool {
+                filenames.allSatisfy { name in
+                    Glob.createFilenameMatchers(root: root, pattern: pattern).anyMatch(filename: name)
+                }
+            }
 
-        XCTAssertFalse(Glob.createFilenameMatcher(root: "/a/", pattern: "**/*.swift").match(filename: "/a/b.swift"))
+            func matchesNone() -> Bool {
+                filenames.allSatisfy { name in
+                    !Glob.createFilenameMatchers(root: root, pattern: pattern).anyMatch(filename: name)
+                }
+            }
+        }
+
+        [
+            .init(root: "/a/b/", pattern: "c/*.swift", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "/a", pattern: "**/*.swift", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "/a/b", pattern: "/a/b/c/*.swift", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "/a/", pattern: "/a/b/c/*.swift", filenames: ["/a/b/c/d.swift"]),
+
+            .init(root: "", pattern: "/a/b/c", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "", pattern: "/a/b/c/", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "", pattern: "/a/b/c/*.swift", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "", pattern: "/d.swift/*.swift", filenames: ["/d.swift/e.swift"]),
+            .init(root: "", pattern: "/a/**", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "", pattern: "**/*Test*", filenames: ["/a/b/c/MyTest2.swift", "/a/b/MyTests/c.swift"])
+        ].forEach { (test: MatcherTest) in XCTAssert(test.matchesAll()) }
+
+        XCTAssert(MatcherTest(root: "/a/", pattern: "**/*.swift", filenames: ["/a/b.swift"]).matchesNone())
     }
 }

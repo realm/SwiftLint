@@ -6,7 +6,7 @@ struct IdentifierNameConfiguration: RuleConfiguration {
 
     private static let defaultOperators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
 
-    @ConfigurationElement
+    @ConfigurationElement(inline: true)
     private(set) var nameConfiguration = NameConfiguration<Parent>(minLengthWarning: 3,
                                                                    minLengthError: 2,
                                                                    maxLengthWarning: 40,

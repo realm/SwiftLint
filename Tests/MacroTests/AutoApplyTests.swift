@@ -79,12 +79,12 @@ final class AutoApplyTests: XCTestCase {
 
                 mutating func apply(configuration: Any) throws {
                     var inlinableOptionsExist = false
-                    if $eA.inlinable {
+                    if $eA.inline {
                     inlinableOptionsExist = true
                     try eA.apply(configuration, ruleID: Parent.identifier)
                     try $eA.performAfterParseOperations()
                     }
-                    if $eB.inlinable {
+                    if $eB.inline {
                         inlinableOptionsExist = true
                         try eB.apply(configuration, ruleID: Parent.identifier)
                         try $eB.performAfterParseOperations()
@@ -96,14 +96,14 @@ final class AutoApplyTests: XCTestCase {
                             throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
                         }
                     }
-                    if !$eA.inlinable {
+                    if !$eA.inline {
                     if $eA.key.isEmpty {
                         $eA.key = "e_a"
                     }
                     try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
                     try $eA.performAfterParseOperations()
                     }
-                    if !$eB.inlinable {
+                    if !$eB.inline {
                         if $eB.key.isEmpty {
                             $eB.key = "e_b"
                         }
@@ -142,12 +142,12 @@ final class AutoApplyTests: XCTestCase {
 
                 mutating func apply(configuration: Any) throws {
                     var inlinableOptionsExist = false
-                    if $eA.inlinable {
+                    if $eA.inline {
                     inlinableOptionsExist = true
                     try eA.apply(configuration, ruleID: Parent.identifier)
                     try $eA.performAfterParseOperations()
                     }
-                    if $eB.inlinable {
+                    if $eB.inline {
                         inlinableOptionsExist = true
                         try eB.apply(configuration, ruleID: Parent.identifier)
                         try $eB.performAfterParseOperations()
@@ -159,14 +159,14 @@ final class AutoApplyTests: XCTestCase {
                             throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
                         }
                     }
-                    if !$eA.inlinable {
+                    if !$eA.inline {
                     if $eA.key.isEmpty {
                         $eA.key = "e_a"
                     }
                     try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
                     try $eA.performAfterParseOperations()
                     }
-                    if !$eB.inlinable {
+                    if !$eB.inline {
                         if $eB.key.isEmpty {
                             $eB.key = "e_b"
                         }

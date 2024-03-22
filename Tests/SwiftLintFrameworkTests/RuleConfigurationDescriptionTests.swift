@@ -31,11 +31,11 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         var list = ["string1", "string2"]
         @ConfigurationElement(key: "set")
         var set: Set<Int> = [1, 2, 3]
-        @ConfigurationElement
+        @ConfigurationElement(inline: true)
         var severityConfig = SeverityConfiguration<Parent>(.error)
         @ConfigurationElement(key: "SEVERITY")
         var renamedSeverityConfig = SeverityConfiguration<Parent>(.warning)
-        @ConfigurationElement
+        @ConfigurationElement(inline: true)
         var inlinedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 1, error: 2)
         @ConfigurationElement(key: "levels")
         var nestedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 3, error: nil)

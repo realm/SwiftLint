@@ -357,38 +357,53 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 ///
 /// Apply it to a simple (e.g. boolean) property like
 /// ```swift
-/// @ConfigurationElement(key: "name")
+/// @ConfigurationElement
 /// var property = true
 /// ```
-/// If the wrapped element is an ``InlinableOptionType``, there are two options for its representation
-/// in the documentation:
+/// to add a (boolean) option to a configuration. The name of the option will be inferred from the name of the property.
+/// In this case, it's just `property`. CamelCase names will translated into snake_case, i.e. `myOption` is going to be
+/// translated into `my_option` in the `.swiftlint.yml` configuration file.
 ///
-/// 1. It can be inlined into the parent configuration. For that, do not provide a name as an argument. E.g.
+/// This mechanism may be overwritten with an explicitly set key:
+/// ```swift
+/// @ConfigurationElement(key: "foo_bar")
+/// var property = true
+/// ```
+///
+/// If the wrapped element is an ``InlinableOptionType``, there are three ways to represent it in the documentation:
+///
+/// 1. It can be inlined into the parent configuration. For that, add the parameter `inline: true`. E.g.
 ///    ```swift
-///    @ConfigurationElement(key: "name")
-///    var property = true
-///    @ConfigurationElement
+///    @ConfigurationElement(inline: true)
 ///    var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
 ///    ```
 ///    will be documented as a linear list:
 ///    ```
-///    name: true
 ///    warning: 1
 ///    error: 2
 ///    ```
-/// 2. It can be represented as a separate nested configuration. In this case, it must have a name. E.g.
+/// 2. It can be represented as a separate nested configuration. In this case, it must not have set the `inline` flag to
+/// `true`. E.g.
 ///    ```swift
-///    @ConfigurationElement(key: "name")
-///    var property = true
-///    @ConfigurationElement(key: "levels")
+///    @ConfigurationElement
 ///    var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
 ///    ```
 ///    will have a nested configuration section:
 ///    ```
-///    name: true
 ///    levels: warning: 1
 ///            error: 2
 ///    ```
+/// 3. As mentioned in the beginning, the implict key inference meachnism can be overruled by specifying a `key` as in:
+///    ```swift
+///    @ConfigurationElement(key: "foo")
+///    var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
+///    ```
+///    It will appear in the documentation as:
+///    ```
+///    foo: warning: 1
+///         error: 2
+///    ```
+///
 @propertyWrapper
 public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: Equatable {
     /// Wrapped option value.
@@ -405,9 +420,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     public var key: String
 
     /// Whether this configuration element will be inlined into its description.
-    public var inlinable: Bool {
-        T.self is any InlinableOptionType.Type && key.isEmpty
-    }
+    public let inline: Bool
 
     private let postprocessor: (inout T) throws -> Void
 
@@ -415,14 +428,12 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///
     /// - Parameters:
     ///   - value: Value to be wrapped.
-    ///   - key: Name of the option.
+    ///   - key: Optional name of the option. If not specified, it will be inferred from the attributed property.
     ///   - postprocessor: Function to be applied to the wrapped value after parsing to validate and modify it.
     public init(wrappedValue value: T,
                 key: String = "",
                 postprocessor: @escaping (inout T) throws -> Void = { _ in }) {
-        self.wrappedValue = value
-        self.key = key
-        self.postprocessor = postprocessor
+        self.init(wrappedValue: value, key: key, inline: false, postprocessor: postprocessor)
 
         // Validate and modify the set value immediately. An exception means invalid defaults.
         try! performAfterParseOperations() // swiftlint:disable:this force_try
@@ -430,22 +441,42 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
 
     /// Constructor for optional values.
     ///
-    /// It allows to skip explicit initialization with `nil` of the property.
+    /// It allows to skip explicit initialization of the property with `nil`.
     ///
-    /// - Parameter value: Value to be wrapped.
+    /// - Parameters:
+    ///   - key: Optional name of the option. If not specified, it will be inferred from the attributed property.
     public init<Wrapped>(key: String = "") where T == Wrapped? {
-        self.init(wrappedValue: nil, key: key)
+        self.init(wrappedValue: nil, key: key, inline: false)
     }
 
-    /// Constructor for a ``ConfigurationElement`` without a key.
-    ///
-    /// ``InlinableOptionType``s are allowed to have an empty key. The configuration will be inlined into its
-    /// parent configuration in this specific case.
+    /// Constructor for an ``InlinableOptionType`` without a key.
     ///
     /// - Parameters:
     ///   - value: Value to be wrapped.
-    public init(wrappedValue value: T) where T: InlinableOptionType {
-        self.init(wrappedValue: value, key: "")
+    ///   - inline: If `true`, the option will be handled as it would be part of its parent. All of its options
+    ///             will be inlined. Otherwise, it will be treated as a normal nested configuration with its name
+    ///             inferred from the name of the attributed property.
+    public init(wrappedValue value: T, inline: Bool) where T: InlinableOptionType {
+        self.init(wrappedValue: value, key: "", inline: inline)
+    }
+
+    /// Constructor for an ``InlinableOptionType`` with a name. The configuration will explicitly not be inlined.
+    ///
+    /// - Parameters:
+    ///   - value: Value to be wrapped.
+    ///   - key: Name of the option.
+    public init(wrappedValue value: T, key: String) where T: InlinableOptionType {
+        self.init(wrappedValue: value, key: key, inline: false)
+    }
+
+    private init(wrappedValue: T,
+                 key: String,
+                 inline: Bool,
+                 postprocessor: @escaping (inout T) throws -> Void = { _ in }) {
+        self.wrappedValue = wrappedValue
+        self.key = key
+        self.inline = inline
+        self.postprocessor = postprocessor
     }
 
     /// Run operations to validate and modify the parsed value.

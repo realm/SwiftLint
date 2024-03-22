@@ -24,7 +24,7 @@ enum AutoApply: MemberMacro {
             }
         let inlinedOptionsUpdate = elementNames.map {
             """
-            if $\($0).inlinable {
+            if $\($0).inline {
                 inlinableOptionsExist = true
                 try \($0).apply(configuration, ruleID: Parent.identifier)
                 try $\($0).performAfterParseOperations()
@@ -33,7 +33,7 @@ enum AutoApply: MemberMacro {
         }
         let nonInlinedOptionsUpdate = elementNames.map {
             """
-            if !$\($0).inlinable {
+            if !$\($0).inline {
                 if $\($0).key.isEmpty {
                     $\($0).key = "\($0.snakeCased)"
                 }

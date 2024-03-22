@@ -332,7 +332,7 @@ public protocol AcceptableByConfigurationElement {
     func asDescription(with key: String) -> RuleConfigurationDescription
 
     /// Update the object.
-    /// 
+    ///
     /// - Parameter value: New underlying data for the object.
     mutating func apply(_ value: Any?, ruleID: String) throws
 }
@@ -402,7 +402,12 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     }
 
     /// Name of this configuration entry.
-    public let key: String
+    public var key: String
+
+    /// Whether this configuration element will be inlined into its description.
+    public var inlinable: Bool {
+        T.self is any InlinableOptionType.Type && key.isEmpty
+    }
 
     private let postprocessor: (inout T) throws -> Void
 
@@ -412,7 +417,9 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///   - value: Value to be wrapped.
     ///   - key: Name of the option.
     ///   - postprocessor: Function to be applied to the wrapped value after parsing to validate and modify it.
-    public init(wrappedValue value: T, key: String, postprocessor: @escaping (inout T) throws -> Void = { _ in }) {
+    public init(wrappedValue value: T,
+                key: String = "",
+                postprocessor: @escaping (inout T) throws -> Void = { _ in }) {
         self.wrappedValue = value
         self.key = key
         self.postprocessor = postprocessor
@@ -426,7 +433,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// It allows to skip explicit initialization with `nil` of the property.
     ///
     /// - Parameter value: Value to be wrapped.
-    public init<Wrapped>(key: String) where T == Wrapped? {
+    public init<Wrapped>(key: String = "") where T == Wrapped? {
         self.init(wrappedValue: nil, key: key)
     }
 

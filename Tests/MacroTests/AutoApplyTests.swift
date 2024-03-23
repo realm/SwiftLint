@@ -122,8 +122,12 @@ final class AutoApplyTests: XCTestCase {
                 var eC = 3
 
                 mutating func apply(configuration: Any) throws {
+                    do {
                     try eB.apply(configuration, ruleID: Parent.identifier)
                     try $eB.performAfterParseOperations()
+                    } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                    // Acceptable. Continue.
+                }
                     guard let configuration = configuration as? [String: Any] else {
                         return
                     }

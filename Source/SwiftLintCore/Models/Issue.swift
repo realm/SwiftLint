@@ -5,6 +5,9 @@ public enum Issue: LocalizedError, Equatable {
     /// The configuration didn't match internal expectations.
     case invalidConfiguration(ruleID: String)
 
+    /// Used in configuration parsing when no changes have been applied. Use only internally!
+    case nothingApplied(ruleID: String)
+
     /// Rule is listed multiple times in the configuration.
     case listedMultipleTime(ruleID: String, times: Int)
 
@@ -91,6 +94,8 @@ public enum Issue: LocalizedError, Equatable {
         switch self {
         case let .invalidConfiguration(id):
             return "Invalid configuration for '\(id)' rule. Falling back to default."
+        case let .nothingApplied(ruleID: id):
+            return Self.invalidConfiguration(ruleID: id).message
         case let .listedMultipleTime(id, times):
             return "'\(id)' is listed \(times) times in the configuration."
         case let .renamedIdentifier(old, new):

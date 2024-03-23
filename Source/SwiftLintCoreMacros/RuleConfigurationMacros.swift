@@ -3,6 +3,7 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 
 enum AutoApply: MemberMacro {
+    // swiftlint:disable:next function_body_length
     static func expansion(
         of node: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
@@ -35,8 +36,12 @@ enum AutoApply: MemberMacro {
         }
         let inlinedOptionsUpdate = elementNames[firstIndexWithoutKey...].map {
             """
-            try \($0).apply(configuration, ruleID: Parent.identifier)
-            try $\($0).performAfterParseOperations()
+            do {
+                try \($0).apply(configuration, ruleID: Parent.identifier)
+                try $\($0).performAfterParseOperations()
+            } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                // Acceptable. Continue.
+            }
             """
         }
         let nonInlinedOptionsUpdate = elementNames[..<firstIndexWithoutKey].map {

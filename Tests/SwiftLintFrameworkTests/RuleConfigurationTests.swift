@@ -66,17 +66,18 @@ class RuleConfigurationTests: SwiftLintTestCase {
         }
     }
 
-    func testSeverityConfigurationDoesNotChangeOnBadConfig() throws {
+    func testSeverityConfigurationThrowsNothingApplied() throws {
         let config = 17
         var severityConfig = SeverityConfiguration<RuleMock>(.error)
-        try severityConfig.apply(configuration: config)
-        XCTAssertEqual(severityConfig.severity, .error)
+        checkError(Issue.nothingApplied(ruleID: RuleMock.identifier)) {
+            try severityConfig.apply(configuration: config)
+        }
     }
 
-    func testSeverityConfigurationThrowsOnBadConfig() {
+    func testSeverityConfigurationThrowsInvalidConfiguration() {
         let config = "foo"
         var severityConfig = SeverityConfiguration<RuleMock>(.warning)
-        checkError(Issue.invalidConfiguration(ruleID: RuleMock.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: RuleMock.identifier)) {
             try severityConfig.apply(configuration: config)
         }
     }

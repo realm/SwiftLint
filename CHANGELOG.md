@@ -1478,7 +1478,7 @@ accordingly._
   progress bar instead of each file being processed.  
   [JP Simard](https://github.com/jpsim)
 
-* `--fix` now works with `--use-stdin`, printing the output to to STDOUT instead
+* `--fix` now works with `--use-stdin`, printing the output to STDOUT instead
   of crashing.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4127](https://github.com/realm/SwiftLint/issues/4127)

@@ -467,7 +467,7 @@ extension ConfigurationTests {
         // If the remote file is not allowed to reference a local file, the config should equal the default config.
         XCTAssertEqual(
             Configuration(
-                configurationFiles: [], // not specifiying a file means the .swiftlint.yml will be used
+                configurationFiles: [], // not specifying a file means the .swiftlint.yml will be used
                 mockedNetworkResults: [
                     "https://www.mock.com":
                     """
@@ -487,7 +487,7 @@ extension ConfigurationTests {
         // If the cycle is properly detected, the config should equal the default config.
         XCTAssertEqual(
             Configuration(
-                configurationFiles: [], // not specifiying a file means the .swiftlint.yml will be used
+                configurationFiles: [], // not specifying a file means the .swiftlint.yml will be used
                 mockedNetworkResults: [
                     "https://www.mock.com":
                     """

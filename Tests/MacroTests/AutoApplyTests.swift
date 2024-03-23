@@ -37,14 +37,9 @@ final class AutoApplyTests: XCTestCase {
             struct S {
 
                 mutating func apply(configuration: Any) throws {
-                    var inlinableOptionsExist = false
 
                     guard let configuration = configuration as? [String: Any] else {
-                        if inlinableOptionsExist {
-                            return
-                        } else {
-                            throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
-                        }
+                        throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
                     }
 
                     if !supportedKeys.isSuperset(of: configuration.keys) {
@@ -78,38 +73,20 @@ final class AutoApplyTests: XCTestCase {
                 var eB = 2
 
                 mutating func apply(configuration: Any) throws {
-                    var inlinableOptionsExist = false
-                    if $eA.inline {
-                    inlinableOptionsExist = true
-                    try eA.apply(configuration, ruleID: Parent.identifier)
-                    try $eA.performAfterParseOperations()
-                    }
-                    if $eB.inline {
-                        inlinableOptionsExist = true
-                        try eB.apply(configuration, ruleID: Parent.identifier)
-                        try $eB.performAfterParseOperations()
-                    }
+
                     guard let configuration = configuration as? [String: Any] else {
-                        if inlinableOptionsExist {
-                            return
-                        } else {
-                            throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
-                        }
+                        throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
                     }
-                    if !$eA.inline {
                     if $eA.key.isEmpty {
-                        $eA.key = "e_a"
+                    $eA.key = "e_a"
                     }
                     try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
                     try $eA.performAfterParseOperations()
+                    if $eB.key.isEmpty {
+                        $eB.key = "e_b"
                     }
-                    if !$eB.inline {
-                        if $eB.key.isEmpty {
-                            $eB.key = "e_b"
-                        }
-                        try eB.apply(configuration[$eB.key], ruleID: Parent.identifier)
-                        try $eB.performAfterParseOperations()
-                    }
+                    try eB.apply(configuration[$eB.key], ruleID: Parent.identifier)
+                    try $eB.performAfterParseOperations()
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
@@ -121,58 +98,45 @@ final class AutoApplyTests: XCTestCase {
         )
     }
 
-    func testConfigurationElementsWithKeys() {
+    func testInlinedConfigurationElements() {
         assertMacroExpansion(
             """
             @AutoApply
             struct S {
-                @ConfigurationElement(key: "eC")
+                @ConfigurationElement(key: "eD")
                 var eA = 1
-                @ConfigurationElement(key: "eD", other: 7)
+                @ConfigurationElement(inline: true)
                 var eB = 2
+                @ConfigurationElement(inline: false)
+                var eC = 3
             }
             """,
             expandedSource:
             """
             struct S {
-                @ConfigurationElement(key: "eC")
+                @ConfigurationElement(key: "eD")
                 var eA = 1
-                @ConfigurationElement(key: "eD", other: 7)
+                @ConfigurationElement(inline: true)
                 var eB = 2
+                @ConfigurationElement(inline: false)
+                var eC = 3
 
                 mutating func apply(configuration: Any) throws {
-                    var inlinableOptionsExist = false
-                    if $eA.inline {
-                    inlinableOptionsExist = true
-                    try eA.apply(configuration, ruleID: Parent.identifier)
-                    try $eA.performAfterParseOperations()
-                    }
-                    if $eB.inline {
-                        inlinableOptionsExist = true
-                        try eB.apply(configuration, ruleID: Parent.identifier)
-                        try $eB.performAfterParseOperations()
-                    }
+                    try eB.apply(configuration, ruleID: Parent.identifier)
+                    try $eB.performAfterParseOperations()
                     guard let configuration = configuration as? [String: Any] else {
-                        if inlinableOptionsExist {
-                            return
-                        } else {
-                            throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
-                        }
+                        return
                     }
-                    if !$eA.inline {
                     if $eA.key.isEmpty {
-                        $eA.key = "e_a"
+                    $eA.key = "e_a"
                     }
                     try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
                     try $eA.performAfterParseOperations()
+                    if $eC.key.isEmpty {
+                        $eC.key = "e_c"
                     }
-                    if !$eB.inline {
-                        if $eB.key.isEmpty {
-                            $eB.key = "e_b"
-                        }
-                        try eB.apply(configuration[$eB.key], ruleID: Parent.identifier)
-                        try $eB.performAfterParseOperations()
-                    }
+                    try eC.apply(configuration[$eC.key], ruleID: Parent.identifier)
+                    try $eC.performAfterParseOperations()
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)

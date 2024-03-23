@@ -1,6 +1,4 @@
 import Foundation
-import SwiftBasicFormat
-import SwiftSyntaxBuilder
 import SwiftSyntax
 import SwiftSyntaxMacros
 
@@ -14,45 +12,50 @@ enum AutoApply: MemberMacro {
             context.diagnose(SwiftLintCoreMacroError.notStruct.diagnose(at: declaration))
             return []
         }
-        let elementNames = configuration.memberBlock.members
+        var annotatedVarDecls = configuration.memberBlock.members
             .compactMap {
                 if let varDecl = $0.decl.as(VariableDeclSyntax.self),
-                   varDecl.configurationElementAnnotation != nil {
-                    return varDecl.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
+                   let annotation = varDecl.configurationElementAnnotation {
+                    return (varDecl, annotation)
                 }
                 return nil
             }
-        let inlinedOptionsUpdate = elementNames.map {
-            """
-            if $\($0).inline {
-                inlinableOptionsExist = true
-                try \($0).apply(configuration, ruleID: Parent.identifier)
-                try $\($0).performAfterParseOperations()
+        let firstIndexWithoutKey = annotatedVarDecls
+            .partition { _, annotation in
+                if case let .argumentList(arguments) = annotation.arguments {
+                    return arguments.contains {
+                           $0.label?.text == "inline"
+                        && $0.expression.as(BooleanLiteralExprSyntax.self)?.literal.text == "true"
+                    }
+                }
+                return false
             }
+        let elementNames = annotatedVarDecls.compactMap {
+            $0.0.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
+        }
+        let inlinedOptionsUpdate = elementNames[firstIndexWithoutKey...].map {
+            """
+            try \($0).apply(configuration, ruleID: Parent.identifier)
+            try $\($0).performAfterParseOperations()
             """
         }
-        let nonInlinedOptionsUpdate = elementNames.map {
+        let nonInlinedOptionsUpdate = elementNames[..<firstIndexWithoutKey].map {
             """
-            if !$\($0).inline {
-                if $\($0).key.isEmpty {
-                    $\($0).key = "\($0.snakeCased)"
-                }
-                try \($0).apply(configuration[$\($0).key], ruleID: Parent.identifier)
-                try $\($0).performAfterParseOperations()
+            if $\($0).key.isEmpty {
+                $\($0).key = "\($0.snakeCased)"
             }
+            try \($0).apply(configuration[$\($0).key], ruleID: Parent.identifier)
+            try $\($0).performAfterParseOperations()
             """
         }
         return [
             """
             mutating func apply(configuration: Any) throws {
-                var inlinableOptionsExist = false
                 \(raw: inlinedOptionsUpdate.joined())
                 guard let configuration = configuration as? [String: Any] else {
-                    if inlinableOptionsExist {
-                        return
-                    } else {
-                        throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
-                    }
+                    \(raw: inlinedOptionsUpdate.isEmpty
+                        ? "throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)"
+                        : "return")
                 }
                 \(raw: nonInlinedOptionsUpdate.joined())
                 if !supportedKeys.isSuperset(of: configuration.keys) {

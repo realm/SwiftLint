@@ -434,7 +434,7 @@ case it&rsquo;s active.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ChildOptionSeverityConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/RuleConfiguration.html">RuleConfiguration</a></span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ChildOptionSeverityConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/RuleConfiguration.html">RuleConfiguration</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/AcceptableByConfigurationElement.html">AcceptableByConfigurationElement</a></span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
 
                         </div>
                       </div>
@@ -836,39 +836,52 @@ non-triggering style</p>
                         <p>A single parameter of a rule configuration.</p>
 
 <p>Apply it to a simple (e.g. boolean) property like</p>
-<pre class="highlight swift"><code><span class="kd">@ConfigurationElement</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="s">"name"</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kd">@ConfigurationElement</span>
 <span class="k">var</span> <span class="nv">property</span> <span class="o">=</span> <span class="kc">true</span>
 </code></pre>
 
-<p>If the wrapped element is an <code><a href="Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a></code>, there are two options for its representation
-in the documentation:</p>
+<p>to add a (boolean) option to a configuration. The name of the option will be inferred from the name of the property.
+In this case, it&rsquo;s just <code>property</code>. CamelCase names will translated into snake_case, i.e. <code>myOption</code> is going to be
+translated into <code>my_option</code> in the <code>.swiftlint.yml</code> configuration file.</p>
+
+<p>This mechanism may be overwritten with an explicitly set key:</p>
+<pre class="highlight swift"><code><span class="kd">@ConfigurationElement</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="s">"foo_bar"</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">property</span> <span class="o">=</span> <span class="kc">true</span>
+</code></pre>
+
+<p>If the wrapped element is an <code><a href="Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a></code>, there are three ways to represent it in the documentation:</p>
 
 <ol>
-<li>It can be inlined into the parent configuration. For that, do not provide a name as an argument. E.g.
+<li>It can be inlined into the parent configuration. For that, add the parameter <code>inline: true</code>. E.g.
 <code>swift
-@ConfigurationElement(key: &quot;name&quot;)
-var property = true
-@ConfigurationElement
+@ConfigurationElement(inline: true)
 var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
 </code>
 will be documented as a linear list:
 <code>
-name: true
 warning: 1
 error: 2
 </code></li>
-<li>It can be represented as a separate nested configuration. In this case, it must have a name. E.g.
+<li>It can be represented as a separate nested configuration. In this case, it must not have set the <code>inline</code> flag to
+<code>true</code>. E.g.
 <code>swift
-@ConfigurationElement(key: &quot;name&quot;)
-var property = true
-@ConfigurationElement(key: &quot;levels&quot;)
+@ConfigurationElement
 var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
 </code>
 will have a nested configuration section:
 <code>
-name: true
 levels: warning: 1
        error: 2
+</code></li>
+<li>As mentioned in the beginning, the implict key inference meachnism can be overruled by specifying a <code>key</code> as in:
+<code>swift
+@ConfigurationElement(key: &quot;foo&quot;)
+var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
+</code>
+It will appear in the documentation as:
+<code>
+foo: warning: 1
+    error: 2
 </code></li>
 </ol>
 
@@ -884,7 +897,7 @@ levels: warning: 1
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L393-L452">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/RuleConfigurationDescription.swift#L417-L499">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -910,12 +923,12 @@ levels: warning: 1
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SeverityConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/SeverityBasedRuleConfiguration.html">SeverityBasedRuleConfiguration</a></span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SeverityConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/SeverityBasedRuleConfiguration.html">SeverityBasedRuleConfiguration</a></span><span class="p">,</span> <span class="kt"><a href="Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a></span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SeverityConfiguration.swift#L2-L31">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SeverityConfiguration.swift#L2-L33">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1265,12 +1278,13 @@ levels: warning: 1
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RegexConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/SeverityBasedRuleConfiguration.html">SeverityBasedRuleConfiguration</a></span><span class="p">,</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="Protocols/CacheDescriptionProvider.html">CacheDescriptionProvider</a></span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RegexConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/SeverityBasedRuleConfiguration.html">SeverityBasedRuleConfiguration</a></span><span class="p">,</span> <span class="kt">Hashable</span><span class="p">,</span>
+                                                <span class="kt"><a href="Protocols/CacheDescriptionProvider.html">CacheDescriptionProvider</a></span><span class="p">,</span> <span class="kt"><a href="Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/RuleConfigurations/RegexConfiguration.swift#L5-L147">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/RuleConfigurations/RegexConfiguration.swift#L5-L148">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1296,12 +1310,12 @@ levels: warning: 1
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SeverityLevelsConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/RuleConfiguration.html">RuleConfiguration</a></span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SeverityLevelsConfiguration</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/RuleConfiguration.html">RuleConfiguration</a></span><span class="p">,</span> <span class="kt"><a href="Protocols.html#/s:13SwiftLintCore19InlinableOptionTypeP">InlinableOptionType</a></span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/RuleConfigurations/SeverityLevelsConfiguration.swift#L2-L55">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/RuleConfigurations/SeverityLevelsConfiguration.swift#L2-L53">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

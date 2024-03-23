@@ -14,7 +14,7 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration {
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
         if let extraTestParentClasses = configurationDict[$testParentClasses.key] as? [String] {
             self.testParentClasses.formUnion(extraTestParentClasses)

@@ -93,7 +93,7 @@ enum MakeAcceptableByConfigurationElement: ExtensionMacro {
                         if let value = value as? String, let newSelf = Self(rawValue: value) {
                             self = newSelf
                         } else {
-                            throw Issue.unknownConfiguration(ruleID: ruleID)
+                            throw Issue.invalidConfiguration(ruleID: ruleID)
                         }
                     }
                 }

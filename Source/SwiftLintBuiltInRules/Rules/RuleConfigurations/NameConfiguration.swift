@@ -51,7 +51,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
 
         if let minLengthConfiguration = configurationDict[$minLength.key] {

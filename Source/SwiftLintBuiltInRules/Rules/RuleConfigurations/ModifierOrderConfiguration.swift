@@ -28,7 +28,7 @@ extension SwiftDeclarationAttributeKind.ModifierGroup: AcceptableByConfiguration
         if let value = value as? String, let newSelf = Self(rawValue: value), newSelf != .atPrefixed {
             self = newSelf
         } else {
-            throw Issue.unknownConfiguration(ruleID: ruleID)
+            throw Issue.invalidConfiguration(ruleID: ruleID)
         }
     }
 

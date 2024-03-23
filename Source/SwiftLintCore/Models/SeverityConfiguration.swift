@@ -26,7 +26,7 @@ public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguratio
             if let severity = ViolationSeverity(rawValue: severityString.lowercased()) {
                 self.severity = severity
             } else {
-                throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
+                throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
             }
         }
     }

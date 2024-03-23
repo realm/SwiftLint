@@ -22,10 +22,12 @@ public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguratio
     public mutating func apply(configuration: Any) throws {
         let configString = configuration as? String
         let configDict = configuration as? [String: Any]
-        guard let severityString: String = configString ?? configDict?[$severity.key] as? String,
-            let severity = ViolationSeverity(rawValue: severityString.lowercased()) else {
-            throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
+        if let severityString: String = configString ?? configDict?[$severity.key] as? String {
+            if let severity = ViolationSeverity(rawValue: severityString.lowercased()) {
+                self.severity = severity
+            } else {
+                throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
+            }
         }
-        self.severity = severity
     }
 }

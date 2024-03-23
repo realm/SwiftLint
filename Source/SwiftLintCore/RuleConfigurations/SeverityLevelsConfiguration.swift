@@ -48,8 +48,6 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Inli
             } else {
                 self.error = nil
             }
-        } else {
-            throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
         }
     }
 }

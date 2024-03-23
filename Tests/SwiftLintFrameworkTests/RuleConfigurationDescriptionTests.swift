@@ -36,16 +36,18 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         @ConfigurationElement(key: "SEVERITY")
         var renamedSeverityConfig = SeverityConfiguration<Parent>(.warning)
         @ConfigurationElement(inline: true)
-        var inlinedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 1, error: 2)
+        var inlinedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 1, error: nil)
         @ConfigurationElement(key: "levels")
-        var nestedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 3, error: nil)
+        var nestedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 3, error: 2)
 
         func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool { false }
     }
 
     // swiftlint:disable:next function_body_length
-    func testDescriptionFromConfiguration() {
-        let description = RuleConfigurationDescription.from(configuration: TestConfiguration())
+    func testDescriptionFromConfiguration() throws {
+        var configuration = TestConfiguration()
+        try configuration.apply(configuration: [:])
+        let description = RuleConfigurationDescription.from(configuration: configuration)
 
         XCTAssertEqual(description.oneLiner(), """
             flag: true; \
@@ -59,8 +61,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             severity: error; \
             SEVERITY: warning; \
             warning: 1; \
-            error: 2; \
-            levels: warning: 3
+            levels: warning: 3, error: 2
             """)
 
         XCTAssertEqual(description.markdown(), """
@@ -159,14 +160,6 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             </tr>
             <tr>
             <td>
-            error
-            </td>
-            <td>
-            2
-            </td>
-            </tr>
-            <tr>
-            <td>
             levels
             </td>
             <td>
@@ -181,6 +174,14 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             </td>
             <td>
             3
+            </td>
+            </tr>
+            <tr>
+            <td>
+            error
+            </td>
+            <td>
+            2
             </td>
             </tr>
             </tbody>
@@ -203,9 +204,9 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             severity: error
             SEVERITY: warning
             warning: 1
-            error: 2
             levels:
               warning: 3
+              error: 2
             """)
     }
 

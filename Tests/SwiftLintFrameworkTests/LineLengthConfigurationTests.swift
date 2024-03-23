@@ -69,7 +69,7 @@ class LineLengthConfigurationTests: SwiftLintTestCase {
     }
 
     func testLineLengthConfigurationThrowsOnBadConfig() {
-        let config = "unknown"
+        let config = ["warning": "unknown"]
         var configuration = LineLengthConfiguration(length: severityLevels)
         checkError(Issue.invalidConfiguration(ruleID: LineLengthRule.description.identifier)) {
             try configuration.apply(configuration: config)

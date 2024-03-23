@@ -350,7 +350,16 @@ public extension AcceptableByConfigurationElement {
     }
 }
 
-/// An option type that does not need a key when used in a ``ConfigurationElement``. Its value will be inlined.
+/// An option type that can appear inlined into its using configuration.
+///
+/// The ``ConfigurationElement`` must opt into this behavior. In this case, the option does not have a key. This is
+/// almost exclusively useful for common ``RuleConfiguration``s that are used in many other rules as child
+/// configurations.
+///
+/// > Warning: A type conforming to this protocol is assumed to throw an issue in its `apply` method only when it's
+/// absolutely clear that there is an error in the YAML configuration passed in. Since it may be used in a nested
+/// context and doesn't know about the outer configuration, it's not always clear if a certain key-value is really
+/// unacceptable.
 public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 
 /// A single parameter of a rule configuration.
@@ -613,7 +622,7 @@ extension RegularExpression: AcceptableByConfigurationElement {
 
 // MARK: RuleConfiguration conformances
 
-public extension RuleConfiguration {
+public extension AcceptableByConfigurationElement where Self: RuleConfiguration {
     func asOption() -> OptionType {
         .nested(.from(configuration: self))
     }

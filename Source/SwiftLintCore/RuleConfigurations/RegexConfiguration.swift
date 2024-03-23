@@ -2,7 +2,8 @@ import Foundation
 import SourceKittenFramework
 
 /// A rule configuration used for defining custom rules in yaml.
-public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Hashable, CacheDescriptionProvider {
+public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Hashable,
+                                                CacheDescriptionProvider, InlinableOptionType {
     /// The identifier for this custom rule.
     public let identifier: String
     /// The name for this custom rule.

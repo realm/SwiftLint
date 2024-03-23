@@ -1,5 +1,5 @@
 /// A rule configuration that allows specifying the desired severity level for violations.
-public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration {
+public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, InlinableOptionType {
     /// Configuration with a warning severity.
     public static var error: Self { Self(.error) }
     /// Configuration with an error severity.

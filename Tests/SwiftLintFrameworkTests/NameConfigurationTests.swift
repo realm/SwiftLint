@@ -65,7 +65,7 @@ class NameConfigurationTests: SwiftLintTestCase {
                                     minLengthError: 0,
                                     maxLengthWarning: 0,
                                     maxLengthError: 0)
-        checkError(Issue.unknownConfiguration(ruleID: RuleMock.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: RuleMock.description.identifier)) {
             try nameConfig.apply(configuration: config)
         }
     }

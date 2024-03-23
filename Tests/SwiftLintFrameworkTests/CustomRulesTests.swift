@@ -61,7 +61,7 @@ class CustomRulesTests: SwiftLintTestCase {
     func testCustomRuleConfigurationThrows() {
         let config = 17
         var customRulesConfig = CustomRulesConfiguration()
-        checkError(Issue.unknownConfiguration(ruleID: CustomRules.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: CustomRules.description.identifier)) {
             try customRulesConfig.apply(configuration: config)
         }
     }

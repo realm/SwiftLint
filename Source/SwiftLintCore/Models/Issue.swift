@@ -3,16 +3,13 @@ import Foundation
 /// All possible SwiftLint issues which are printed as warnings by default.
 public enum Issue: LocalizedError, Equatable {
     /// The configuration didn't match internal expectations.
-    case unknownConfiguration(ruleID: String)
+    case invalidConfiguration(ruleID: String)
 
     /// Rule is listed multiple times in the configuration.
     case listedMultipleTime(ruleID: String, times: Int)
 
     /// An identifier `old` has been renamed to `new`.
     case renamedIdentifier(old: String, new: String)
-
-    /// Configuration for a rule is invalid.
-    case invalidConfiguration(ruleID: String)
 
     /// Some configuration keys are invalid.
     case invalidConfigurationKeys(ruleID: String, keys: Set<String>)
@@ -92,14 +89,12 @@ public enum Issue: LocalizedError, Equatable {
 
     private var message: String {
         switch self {
-        case let .unknownConfiguration(id):
+        case let .invalidConfiguration(id):
             return "Invalid configuration for '\(id)' rule. Falling back to default."
         case let .listedMultipleTime(id, times):
             return "'\(id)' is listed \(times) times in the configuration."
         case let .renamedIdentifier(old, new):
             return "'\(old)' has been renamed to '\(new)' and will be completely removed in a future release."
-        case let .invalidConfiguration(id):
-            return "Invalid configuration for '\(id)'. Falling back to default."
         case let .invalidConfigurationKeys(id, keys):
             return "Configuration for '\(id)' rule contains the invalid key(s) \(keys.formatted)."
         case let .invalidRuleIDs(ruleIDs):

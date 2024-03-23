@@ -35,7 +35,7 @@ class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
 
     func testInvalidTypeOfValueInCustomConfiguration() {
         var config = ExplicitTypeInterfaceConfiguration()
-        checkError(Issue.unknownConfiguration(ruleID: ExplicitTypeInterfaceRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: ExplicitTypeInterfaceRule.description.identifier)) {
             try config.apply(configuration: ["severity": "foo"])
         }
     }

@@ -62,7 +62,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
         private static func parseVersion(string: String) throws -> (Int, Int, Int) {
             func parseNumber(_ string: String) throws -> Int {
                 guard let number = Int(string) else {
-                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+                    throw Issue.invalidConfiguration(ruleID: Parent.identifier)
                 }
                 return number
             }
@@ -70,7 +70,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
             let parts = string.components(separatedBy: ".")
             switch parts.count {
             case 0:
-                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+                throw Issue.invalidConfiguration(ruleID: Parent.identifier)
             case 1:
                 return (try parseNumber(parts[0]), 0, 0)
             case 2:
@@ -131,7 +131,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
         for (key, value) in configuration {
             if key == "severity", let value = value as? String {
@@ -139,7 +139,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
                 continue
             }
             guard let target = targets[key] else {
-                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+                throw Issue.invalidConfiguration(ruleID: Parent.identifier)
             }
             try target.update(using: value)
             if let extensionConfigurationKey = target.platform.appExtensionCounterpart?.configurationKey,

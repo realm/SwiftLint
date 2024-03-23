@@ -14,7 +14,7 @@ struct TransitiveModuleConfiguration<Parent: Rule>: Equatable, AcceptableByConfi
             let importedModule = configurationDict["module"] as? String,
             let transitivelyImportedModules = configurationDict["allowed_transitive_imports"] as? [String]
         else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
         self.importedModule = importedModule
         self.transitivelyImportedModules = transitivelyImportedModules

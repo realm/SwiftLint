@@ -1,3 +1,4 @@
+import Foundation
 import SwiftSyntax
 import SwiftSyntaxMacros
 
@@ -22,37 +23,41 @@ enum AutoApply: MemberMacro {
         let firstIndexWithoutKey = annotatedVarDecls
             .partition { _, annotation in
                 if case let .argumentList(arguments) = annotation.arguments {
-                    return arguments.contains { $0.label?.text == "key" } == true
+                    return arguments.contains {
+                           $0.label?.text == "inline"
+                        && $0.expression.as(BooleanLiteralExprSyntax.self)?.literal.text == "true"
+                    }
                 }
                 return false
             }
         let elementNames = annotatedVarDecls.compactMap {
             $0.0.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
         }
-        let elementsWithoutKeyUpdate = elementNames[..<firstIndexWithoutKey]
-            .map {
-                """
-                try \($0).apply(configuration, ruleID: Parent.identifier)
-                """
+        let inlinedOptionsUpdate = elementNames[firstIndexWithoutKey...].map {
+            """
+            try \($0).apply(configuration, ruleID: Parent.identifier)
+            try $\($0).performAfterParseOperations()
+            """
+        }
+        let nonInlinedOptionsUpdate = elementNames[..<firstIndexWithoutKey].map {
+            """
+            if $\($0).key.isEmpty {
+                $\($0).key = "\($0.snakeCased)"
             }
-        let elementsWithKeyUpdate = elementNames[firstIndexWithoutKey...]
-            .map {
-                """
-                try \($0).apply(configuration[$\($0).key], ruleID: Parent.identifier)
-                try $\($0).performAfterParseOperations()
-                """
-            }
-        let configBinding = elementsWithKeyUpdate.isEmpty ? "_" : "configuration"
+            try \($0).apply(configuration[$\($0).key], ruleID: Parent.identifier)
+            try $\($0).performAfterParseOperations()
+            """
+        }
         return [
             """
             mutating func apply(configuration: Any) throws {
-                \(raw: elementsWithoutKeyUpdate.joined(separator: "\n"))
-                guard let \(raw: configBinding) = configuration as? [String: Any] else {
-                    \(raw: elementsWithoutKeyUpdate.isEmpty
+                \(raw: inlinedOptionsUpdate.joined())
+                guard let configuration = configuration as? [String: Any] else {
+                    \(raw: inlinedOptionsUpdate.isEmpty
                         ? "throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)"
                         : "return")
                 }
-                \(raw: elementsWithKeyUpdate.joined(separator: "\n"))
+                \(raw: nonInlinedOptionsUpdate.joined())
                 if !supportedKeys.isSuperset(of: configuration.keys) {
                     let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                     throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
@@ -128,5 +133,18 @@ private extension EnumDeclSyntax {
             default: nil
             }
         }.first ?? ""
+    }
+}
+
+private extension String {
+    // swiftlint:disable:next force_try
+    static let regex = try! NSRegularExpression(pattern: "(?<!^)(?=[A-Z])")
+
+    var snakeCased: Self {
+        Self.regex.stringByReplacingMatches(
+            in: self,
+            range: NSRange(location: 0, length: utf16.count),
+            withTemplate: "_"
+        ).lowercased()
     }
 }

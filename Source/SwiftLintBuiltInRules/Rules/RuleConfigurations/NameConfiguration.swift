@@ -1,7 +1,7 @@
 import Foundation
 import SwiftLintCore
 
-struct NameConfiguration<Parent: Rule>: RuleConfiguration {
+struct NameConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
     typealias Severity = SeverityConfiguration<Parent>
     typealias SeverityLevels = SeverityLevelsConfiguration<Parent>
     typealias StartWithLowercaseConfiguration = ChildOptionSeverityConfiguration<Parent>

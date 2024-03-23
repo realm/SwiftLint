@@ -12,7 +12,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
 
         @ConfigurationElement(key: "flag")
         var flag = true
-        @ConfigurationElement(key: "string")
+        @ConfigurationElement
         var string = "value"
         @ConfigurationElement(key: "symbol")
         var symbol = try! Symbol(fromAny: "value", context: "rule") // swiftlint:disable:this force_try
@@ -20,8 +20,8 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         var integer = 2
         @ConfigurationElement(key: "null")
         var null: Int?
-        @ConfigurationElement(key: "double")
-        var double = 2.1
+        @ConfigurationElement
+        var myDouble = 2.1
         @ConfigurationElement(key: "severity")
         var severity = ViolationSeverity.warning
         @ConfigurationElement(
@@ -54,7 +54,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             string: "value"; \
             symbol: value; \
             integer: 2; \
-            double: 2.1; \
+            my_double: 2.1; \
             severity: warning; \
             list: ["STRING1", "STRING2"]; \
             set: [1, 2, 3]; \
@@ -104,7 +104,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             </tr>
             <tr>
             <td>
-            double
+            my_double
             </td>
             <td>
             2.1
@@ -197,7 +197,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             string: "value"
             symbol: value
             integer: 2
-            double: 2.1
+            my_double: 2.1
             severity: warning
             list: ["STRING1", "STRING2"]
             set: [1, 2, 3]
@@ -466,7 +466,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             "symbol": "new symbol",
             "integer": 5,
             "null": 0,
-            "double": 5.1,
+            "my_double": 5.1,
             "severity": "error",
             "list": ["string3", "string4"],
             "set": [4, 5, 6],
@@ -480,7 +480,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         XCTAssertEqual(configuration.symbol, try Symbol(fromAny: "new symbol", context: "rule"))
         XCTAssertEqual(configuration.integer, 5)
         XCTAssertEqual(configuration.null, 0)
-        XCTAssertEqual(configuration.double, 5.1)
+        XCTAssertEqual(configuration.myDouble, 5.1)
         XCTAssertEqual(configuration.severity, .error)
         XCTAssertEqual(configuration.list, ["STRING3", "STRING4"])
         XCTAssertEqual(configuration.set, [4, 5, 6])

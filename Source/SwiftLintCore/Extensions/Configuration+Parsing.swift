@@ -236,9 +236,8 @@ extension Configuration {
         if case .allEnabled = parentConfiguration?.rulesMode {
             if disabledRules.contains(ruleType.identifier) {
                 return Issue.ruleDisabledInDisabledRules(ruleID: ruleType.identifier)
-            } else {
-                return nil
             }
+            return nil
         }
 
         let allIdentifiers = ruleType.description.allIdentifiers
@@ -246,7 +245,8 @@ extension Configuration {
         if allEnabledRules.isDisjoint(with: allIdentifiers) {
             if disabledRules.isDisjoint(with: allIdentifiers) == false {
                 return Issue.ruleDisabledInDisabledRules(ruleID: ruleType.identifier)
-            } else if disabledInParentRules.isDisjoint(with: allIdentifiers) == false {
+            }
+            if disabledInParentRules.isDisjoint(with: allIdentifiers) == false {
                 return Issue.ruleDisabledInParentConfiguration(ruleID: ruleType.identifier)
             }
 

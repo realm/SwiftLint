@@ -37,11 +37,9 @@ final class AutoApplyTests: XCTestCase {
             struct S {
 
                 mutating func apply(configuration: Any) throws {
-
                     guard let configuration = configuration as? [String: Any] else {
                         throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
                     }
-
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
@@ -73,12 +71,11 @@ final class AutoApplyTests: XCTestCase {
                 var eB = 2
 
                 mutating func apply(configuration: Any) throws {
-
                     guard let configuration = configuration as? [String: Any] else {
                         throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
                     }
                     if $eA.key.isEmpty {
-                    $eA.key = "e_a"
+                        $eA.key = "e_a"
                     }
                     try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
                     try $eA.performAfterParseOperations()
@@ -123,16 +120,16 @@ final class AutoApplyTests: XCTestCase {
 
                 mutating func apply(configuration: Any) throws {
                     do {
-                    try eB.apply(configuration, ruleID: Parent.identifier)
-                    try $eB.performAfterParseOperations()
+                        try eB.apply(configuration, ruleID: Parent.identifier)
+                        try $eB.performAfterParseOperations()
                     } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
-                    // Acceptable. Continue.
-                }
+                        // Acceptable. Continue.
+                    }
                     guard let configuration = configuration as? [String: Any] else {
                         return
                     }
                     if $eA.key.isEmpty {
-                    $eA.key = "e_a"
+                        $eA.key = "e_a"
                     }
                     try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
                     try $eA.performAfterParseOperations()

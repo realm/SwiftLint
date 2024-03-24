@@ -1,5 +1,6 @@
 import Foundation
 import SwiftSyntax
+import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
 enum AutoApply: MemberMacro {
@@ -34,41 +35,46 @@ enum AutoApply: MemberMacro {
         let elementNames = annotatedVarDecls.compactMap {
             $0.0.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
         }
-        let inlinedOptionsUpdate = elementNames[firstIndexWithoutKey...].map {
-            """
-            do {
-                try \($0).apply(configuration, ruleID: Parent.identifier)
-                try $\($0).performAfterParseOperations()
-            } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
-                // Acceptable. Continue.
-            }
-            """
-        }
-        let nonInlinedOptionsUpdate = elementNames[..<firstIndexWithoutKey].map {
-            """
-            if $\($0).key.isEmpty {
-                $\($0).key = "\($0.snakeCased)"
-            }
-            try \($0).apply(configuration[$\($0).key], ruleID: Parent.identifier)
-            try $\($0).performAfterParseOperations()
-            """
-        }
         return [
-            """
-            mutating func apply(configuration: Any) throws {
-                \(raw: inlinedOptionsUpdate.joined())
+            DeclSyntax(try FunctionDeclSyntax("mutating func apply(configuration: Any) throws") {
+                let inlinedOptions = elementNames[firstIndexWithoutKey...]
+                for option in inlinedOptions {
+                    """
+                    do {
+                        try \(raw: option).apply(configuration, ruleID: Parent.identifier)
+                        try $\(raw: option).performAfterParseOperations()
+                    } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                        // Acceptable. Continue.
+                    }
+                    """
+                }
+                """
                 guard let configuration = configuration as? [String: Any] else {
-                    \(raw: inlinedOptionsUpdate.isEmpty
+                    \(raw: inlinedOptions.isEmpty
                         ? "throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)"
                         : "return")
                 }
-                \(raw: nonInlinedOptionsUpdate.joined())
+                """
+                for option in elementNames[..<firstIndexWithoutKey] {
+                    """
+                    if $\(raw: option).key.isEmpty {
+                        $\(raw: option).key = "\(raw: option.snakeCased)"
+                    }
+                    """
+                    """
+                    try \(raw: option).apply(configuration[$\(raw: option).key], ruleID: Parent.identifier)
+                    """
+                    """
+                    try $\(raw: option).performAfterParseOperations()
+                    """
+                }
+                """
                 if !supportedKeys.isSuperset(of: configuration.keys) {
                     let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                     throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
                 }
-            }
-            """
+                """
+            })
         ]
     }
 }

@@ -21,7 +21,7 @@ struct SyntacticSugarRule: CorrectableRule, SourceKitFreeRule {
             flattenViolations(visitor.violations)
         }.map { violation in
             return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
+                                  severity: configuration.violationSeverity,
                                   location: Location(file: file, byteOffset: ByteCount(violation.position)),
                                   reason: violation.type.violationReason)
         }

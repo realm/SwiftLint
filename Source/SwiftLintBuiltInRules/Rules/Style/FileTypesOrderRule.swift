@@ -79,7 +79,7 @@ struct FileTypesOrderRule: OptInRule {
 
                 let styleViolation = StyleViolation(
                     ruleDescription: Self.description,
-                    severity: configuration.severityConfiguration.severity,
+                    severity: configuration.severity.violationSeverity,
                     location: Location(file: file, byteOffset: fileTypeOffset.offset),
                     reason: "\(article) '\(fileType)' should not be placed amongst the file type(s) '\(expected)'"
                 )

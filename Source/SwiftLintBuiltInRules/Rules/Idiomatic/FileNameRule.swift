@@ -46,7 +46,7 @@ struct FileNameRule: OptInRule, SourceKitFreeRule {
         }
 
         return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
+                               severity: configuration.violationSeverity,
                                location: Location(file: filePath, line: 1))]
     }
 }

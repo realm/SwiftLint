@@ -5,7 +5,7 @@ struct VerticalWhitespaceClosingBracesConfiguration: SeverityBasedRuleConfigurat
     typealias Parent = VerticalWhitespaceClosingBracesRule
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "only_enforce_before_trivial_lines")
     private(set) var onlyEnforceBeforeTrivialLines = false
 }

@@ -56,7 +56,7 @@ struct TypeContentsOrderRule: OptInRule {
 
                 let styleViolation = StyleViolation(
                     ruleDescription: Self.description,
-                    severity: configuration.severityConfiguration.severity,
+                    severity: configuration.severity.violationSeverity,
                     location: Location(file: file, byteOffset: typeContentOffset.offset),
                     reason: "\(article) '\(content)' should not be placed amongst the type content(s) '\(expected)'"
                 )

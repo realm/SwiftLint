@@ -86,7 +86,7 @@ private extension TypeNameRule {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
                     reason: "Type name '\(name)' should only contain alphanumeric and other allowed characters",
-                    severity: nameConfiguration.unallowedSymbolsSeverity.severity
+                    severity: nameConfiguration.unallowedSymbolsSeverity.violationSeverity
                 )
             }
             if let caseCheckSeverity = nameConfiguration.validatesStartWithLowercase.severity,

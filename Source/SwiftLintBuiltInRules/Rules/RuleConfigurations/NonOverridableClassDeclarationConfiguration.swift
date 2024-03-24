@@ -11,7 +11,7 @@ struct NonOverridableClassDeclarationConfiguration: SeverityBasedRuleConfigurati
     }
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
+    private(set) var severity = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "final_class_modifier")
     private(set) var finalClassModifier = FinalClassModifier.finalClass
 }

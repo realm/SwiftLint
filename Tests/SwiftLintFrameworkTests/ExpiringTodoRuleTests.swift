@@ -178,9 +178,9 @@ class ExpiringTodoRuleTests: SwiftLintTestCase {
 
         if let config = ruleConfiguration {
             serializedConfig = [
-                "expired_severity": config.expiredSeverity.severity.rawValue,
-                "approaching_expiry_severity": config.approachingExpirySeverity.severity.rawValue,
-                "bad_formatting_severity": config.badFormattingSeverity.severity.rawValue,
+                "expired_severity": config.expiredSeverity.violationSeverity.rawValue,
+                "approaching_expiry_severity": config.approachingExpirySeverity.violationSeverity.rawValue,
+                "bad_formatting_severity": config.badFormattingSeverity.violationSeverity.rawValue,
                 "approaching_expiry_threshold": config.approachingExpiryThreshold,
                 "date_format": config.dateFormat,
                 "date_delimiters": [

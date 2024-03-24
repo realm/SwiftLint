@@ -32,7 +32,7 @@ public extension SwiftSyntaxRule where ConfigurationType: SeverityBasedRuleConfi
     func makeViolation(file: SwiftLintFile, violation: ReasonedRuleViolation) -> StyleViolation {
         StyleViolation(
             ruleDescription: Self.description,
-            severity: violation.severity ?? configuration.severity,
+            severity: violation.severity ?? configuration.violationSeverity,
             location: Location(file: file, position: violation.position),
             reason: violation.reason
         )

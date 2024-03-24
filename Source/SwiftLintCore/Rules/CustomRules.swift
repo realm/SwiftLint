@@ -76,7 +76,7 @@ struct CustomRules: Rule, CacheDescriptionProvider {
             let excludingKinds = configuration.excludedMatchKinds
             return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, captureGroup: captureGroup).map({
                 StyleViolation(ruleDescription: configuration.description,
-                               severity: configuration.severity,
+                               severity: configuration.violationSeverity,
                                location: Location(file: file, characterOffset: $0.location),
                                reason: configuration.message)
             }).filter { violation in

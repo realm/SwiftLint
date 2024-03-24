@@ -31,6 +31,10 @@
   [Julien Baillon](https://github.com/julien-baillon)
   [#5372](https://github.com/realm/SwiftLint/issues/5372)
 
+* Improve performance when exclude patterns resolve to a large set of files.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5018](https://github.com/realm/SwiftLint/issues/5018)
+
 * Add new `ignore_one_liners` option to `switch_case_alignment`
   rule to ignore switch statements written in a single line.  
   [tonell-m](https://github.com/tonell-m)

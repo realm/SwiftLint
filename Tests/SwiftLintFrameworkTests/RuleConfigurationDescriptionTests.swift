@@ -46,7 +46,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
     // swiftlint:disable:next function_body_length
     func testDescriptionFromConfiguration() throws {
         var configuration = TestConfiguration()
-        try configuration.apply(configuration: [:])
+        try configuration.apply(configuration: Void()) // Configure to set keys.
         let description = RuleConfigurationDescription.from(configuration: configuration)
 
         XCTAssertEqual(description.oneLiner(), """

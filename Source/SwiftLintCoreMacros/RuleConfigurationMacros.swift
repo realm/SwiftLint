@@ -35,9 +35,27 @@ enum AutoApply: MemberMacro {
         let elementNames = annotatedVarDecls.compactMap {
             $0.0.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
         }
+        let nonInlinedOptions = elementNames[..<firstIndexWithoutKey]
+        var inlinedOptions = elementNames[firstIndexWithoutKey...]
+        let isSeverityBased = configuration.inheritanceClause?.inheritedTypes.contains {
+            $0.type.as(IdentifierTypeSyntax.self)?.name.text == "SeverityBasedRuleConfiguration"
+        }
+        if isSeverityBased == true {
+            if nonInlinedOptions.contains("severityConfiguration") {
+                inlinedOptions.append("severityConfiguration")
+            } else {
+                context.diagnose(SwiftLintCoreMacroError.severityBasedWithoutProperty.diagnose(at: configuration.name))
+            }
+        }
         return [
             DeclSyntax(try FunctionDeclSyntax("mutating func apply(configuration: Any) throws") {
-                let inlinedOptions = elementNames[firstIndexWithoutKey...]
+                for option in nonInlinedOptions {
+                    """
+                    if $\(raw: option).key.isEmpty {
+                        $\(raw: option).key = "\(raw: option.snakeCased)"
+                    }
+                    """
+                }
                 for option in inlinedOptions {
                     """
                     do {
@@ -51,16 +69,11 @@ enum AutoApply: MemberMacro {
                 """
                 guard let configuration = configuration as? [String: Any] else {
                     \(raw: inlinedOptions.isEmpty
-                        ? "throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)"
+                        ? "throw Issue.invalidConfiguration(ruleID: Parent.identifier)"
                         : "return")
                 }
                 """
-                for option in elementNames[..<firstIndexWithoutKey] {
-                    """
-                    if $\(raw: option).key.isEmpty {
-                        $\(raw: option).key = "\(raw: option.snakeCased)"
-                    }
-                    """
+                for option in nonInlinedOptions {
                     """
                     try \(raw: option).apply(configuration[$\(raw: option).key], ruleID: Parent.identifier)
                     """

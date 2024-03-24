@@ -31,6 +31,11 @@
   [Julien Baillon](https://github.com/julien-baillon)
   [#5372](https://github.com/realm/SwiftLint/issues/5372)
 
+* Allow to set the severity of rules (if they have one) in the short form
+  `rule_name: warning|error` provided that no other attributes need to be
+  configured.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Add new `ignore_one_liners` option to `switch_case_alignment`
   rule to ignore switch statements written in a single line.  
   [tonell-m](https://github.com/tonell-m)

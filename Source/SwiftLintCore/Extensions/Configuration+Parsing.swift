@@ -243,10 +243,10 @@ extension Configuration {
         let allIdentifiers = ruleType.description.allIdentifiers
 
         if allEnabledRules.isDisjoint(with: allIdentifiers) {
-            if disabledRules.isDisjoint(with: allIdentifiers) == false {
+            if !disabledRules.isDisjoint(with: allIdentifiers) {
                 return Issue.ruleDisabledInDisabledRules(ruleID: ruleType.identifier)
             }
-            if disabledInParentRules.isDisjoint(with: allIdentifiers) == false {
+            if !disabledInParentRules.isDisjoint(with: allIdentifiers) {
                 return Issue.ruleDisabledInParentConfiguration(ruleID: ruleType.identifier)
             }
 

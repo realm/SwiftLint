@@ -1,165 +1,123 @@
-@testable import SwiftLintBuiltInRules
-
-class StatementPositionRuleTests: SwiftLintTestCase {
-    let nonTriggeringExamples = [
+internal struct StatementPositionRuleExamples {
+    static let nonTriggeringExamples = [
         Example("""
         if true {
             foo()
-        }
-        else {
+        } else {
             bar()
         }
         """),
         Example("""
         if true {
-            foo()
-        }
-        else if true {
+            foo
+        } else if true {
             bar()
-        }
-        else {
+        } else {
             return
         }
         """),
         Example("""
-        if true { foo() }
-        else { bar() }
-        """),
-        Example("""
-        if true { foo() }
-        else if true { bar() }
-        else { return }
-        """),
-        Example("""
         do {
             foo()
-        }
-        catch {
+        } catch {
             bar()
         }
         """),
         Example("""
         do {
             foo()
-        }
-        catch {
+        } catch let error {
             bar()
-        }
-        catch {
+        } catch {
             return
         }
         """),
         Example("""
-        do { foo() }
-        catch { bar() }
+        struct A { let catchphrase: Int }
+        let a = A(
+            catchphrase: 0
+        )
         """),
         Example("""
-        do { foo() }
-        catch { bar() }
-        catch { return }
+        struct A { let `catch`: Int }
+        let a = A(
+            `catch`: 0
+        )
         """)
     ]
 
-    let triggeringExamples = [
+    static let triggeringExamples = [
         Example("""
         if true {
             foo()
-        ↓} else {
+        ↓}else {
             bar()
         }
         """),
         Example("""
         if true {
             foo()
-        ↓} else if true {
+        ↓}    else if true {
             bar()
-        ↓} else {
-            return
         }
         """),
         Example("""
         if true {
             foo()
         ↓}
-            else {
+        else true {
             bar()
         }
         """),
         Example("""
         do {
             foo()
-        ↓} catch {
+        ↓}catch {
             bar()
         }
         """),
         Example("""
         do {
             foo()
-        ↓} catch let error {
+        ↓}    catch {
             bar()
-        ↓} catch {
-            return
         }
         """),
         Example("""
         do {
             foo()
         ↓}
-            catch {
+        catch {
             bar()
         }
         """)
     ]
 
-    let corrections = [
+    static let corrections = [
         Example("""
         if true {
             foo()
         ↓}
-            else {
+        else {
             bar()
         }
-        """):
-            Example("""
+        """): Example("""
             if true {
                 foo()
-            }
-            else {
+            } else {
                 bar()
             }
             """),
         Example("""
         if true {
             foo()
-        ↓} else if true {
-            bar()
-        ↓} else {
+        ↓}   else if true {
             bar()
         }
-        """):
-            Example("""
+        """): Example("""
             if true {
                 foo()
-            }
-            else if true {
-                bar()
-            }
-            else {
-                bar()
-            }
-            """),
-        Example("""
-        do {
-            foo()
-        ↓} catch {
-            bar()
-        }
-        """):
-            Example("""
-            do {
-                foo()
-            }
-            catch {
+            } else if true {
                 bar()
             }
             """),
@@ -167,28 +125,28 @@ class StatementPositionRuleTests: SwiftLintTestCase {
         do {
             foo()
         ↓}
-            catch {
+        catch {
             bar()
         }
-        """):
-            Example("""
+        """): Example("""
             do {
                 foo()
+            } catch {
+                bar()
             }
-            catch {
+            """),
+        Example("""
+        do {
+            foo()
+        ↓}    catch {
+            bar()
+        }
+        """): Example("""
+            do {
+                foo()
+            } catch {
                 bar()
             }
             """)
     ]
-
-    func testUncuddled() {
-        let configuration = ["statement_mode": "uncuddled_else"]
-
-        let description = StatementPositionRule.description
-            .with(nonTriggeringExamples: nonTriggeringExamples)
-            .with(triggeringExamples: triggeringExamples)
-            .with(corrections: corrections)
-
-        verifyRule(description, ruleConfiguration: configuration)
-    }
 }

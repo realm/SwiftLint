@@ -109,7 +109,6 @@ private extension UnusedEnumeratedRule {
                 return
             }
 
-            // TODO: If there are references to neither, is that a violation?
             addViolation(zeroPosition: zeroPosition, onePosition: onePosition)
         }
 

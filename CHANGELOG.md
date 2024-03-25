@@ -119,8 +119,8 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5418](https://github.com/realm/SwiftLint/pull/5418)
 
-* Add new `non_optional_string_data_conversion` rule to enforce 
-  non-failable conversions of UTF-8 `String` <-> `Data`.    
+* Add new `non_optional_string_data_conversion` rule to enforce
+  non-failable conversions of UTF-8 `String` <-> `Data`.  
   [Ben P](https://github.com/ben-p-commits)
   [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
@@ -194,7 +194,7 @@
   are defined in a tuple like `let (a, b) = (5, 10)` or `let a = (2, 3)`.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5305](https://github.com/realm/SwiftLint/pull/5305)
-  
+
 * Silence `pattern_matching_keywords` rule when an identifier is referenced
   in the argument list of a matching enum case.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -202,6 +202,11 @@
 
 * Don't trigger the `return_value_from_void_function` warning from initializers.  
   [mrbkap](https://github.com/mrbkap)
+
+* Fixes superfluous warnings about configurations for rules that were not
+  enabled, when the rules were enabled in a parent configuration.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4858](https://github.com/realm/SwiftLint/issues/4858)
 
 ## 0.54.0: Macro-Economic Forces
 

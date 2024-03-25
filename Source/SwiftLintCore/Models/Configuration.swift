@@ -285,7 +285,8 @@ extension Configuration: Hashable {
             lhs.rules == rhs.rules &&
             lhs.fileGraph == rhs.fileGraph &&
             lhs.allowZeroLintableFiles == rhs.allowZeroLintableFiles &&
-            lhs.strict == rhs.strict
+            lhs.strict == rhs.strict &&
+            lhs.rulesMode == rhs.rulesMode
     }
 }
 

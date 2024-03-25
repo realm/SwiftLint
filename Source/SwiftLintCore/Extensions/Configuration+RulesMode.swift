@@ -17,7 +17,7 @@ public extension Configuration {
     }
 
     /// Represents how a Configuration object can be configured with regards to rules.
-    enum RulesMode {
+    enum RulesMode: Equatable {
         /// The default rules mode, which will enable all rules that aren't defined as being opt-in
         /// (conforming to the `OptInRule` protocol), minus the rules listed in `disabled`, plus the rules listed in
         /// `optIn`.

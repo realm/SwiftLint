@@ -273,6 +273,7 @@ package extension Configuration {
             // Build succeeding configurations
             return try configurationData.reduce(firstConfiguration) {
                 var childConfiguration = try Configuration(
+                    parentConfiguration: $0,
                     dict: $1.configurationDict,
                     enableAllRules: enableAllRules,
                     cachePath: cachePath

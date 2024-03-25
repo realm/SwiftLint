@@ -42,6 +42,13 @@ class RuleConfigurationTests: SwiftLintTestCase {
         }
     }
 
+    func testSeverityWorksAsOnlyParameter() throws {
+        var config = AttributesConfiguration()
+        XCTAssertEqual(config.severity, .warning)
+        try config.apply(configuration: "error")
+        XCTAssertEqual(config.severity, .error)
+    }
+
     func testSeverityConfigurationFromString() {
         let config = "Warning"
         let comp = SeverityConfiguration<RuleMock>(.warning)

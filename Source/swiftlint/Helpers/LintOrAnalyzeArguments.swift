@@ -38,6 +38,10 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var benchmark = false
     @Option(help: "The reporter used to log errors and warnings.")
     var reporter: String?
+    @Option(help: "The path to a baseline file, which will be used to filter out detected violations.")
+    var baseline: String?
+    @Option(help: "The path to save detected violations to as a new baseline.")
+    var writeBaseline: String?
     @Flag(help: "Use the in-process version of SourceKit.")
     var inProcessSourcekit = false
     @Option(help: "The file where violations should be saved. Prints to stdout by default.")

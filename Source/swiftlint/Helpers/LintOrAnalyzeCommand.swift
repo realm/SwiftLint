@@ -44,6 +44,9 @@ struct LintOrAnalyzeCommand {
     private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws {
         let builder = LintOrAnalyzeResultBuilder(options)
         let files = try await collectViolations(builder: builder)
+        if let baselineOutputPath = options.writeBaseline {
+            try Baseline.write(builder.allViolations, toPath: baselineOutputPath)
+        }
         try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
             try postProcessViolations(files: files, builder: builder)
         }
@@ -52,6 +55,23 @@ struct LintOrAnalyzeCommand {
     private static func collectViolations(builder: LintOrAnalyzeResultBuilder) async throws -> [SwiftLintFile] {
         let options = builder.options
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
+        let baseline: Baseline?
+        if let baselinePath = options.baseline {
+            do {
+                baseline = try Baseline(fromPath: baselinePath)
+            } catch {
+                Issue.genericWarning(
+                    "The baseline file could not be read from \(baselinePath)."
+                ).print()
+                if options.writeBaseline == options.baseline {
+                    baseline = nil
+                } else {
+                    throw error
+                }
+            }
+        } else {
+            baseline = nil
+        }
         return try await builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
                                                                   storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
@@ -68,7 +88,6 @@ struct LintOrAnalyzeCommand {
                 visitorMutationQueue.sync {
                     builder.fileBenchmark.record(file: linter.file, from: start)
                     currentRuleTimes.forEach { builder.ruleBenchmark.record(id: $0, time: $1) }
-                    builder.violations += currentViolations
                 }
             } else {
                 currentViolations = applyLeniency(
@@ -76,19 +95,22 @@ struct LintOrAnalyzeCommand {
                     strict: builder.configuration.strict,
                     violations: linter.styleViolations(using: builder.storage)
                 )
-                visitorMutationQueue.sync {
-                    builder.violations += currentViolations
-                }
             }
+            let filteredViolations = baseline != nil ? baseline!.filter(currentViolations) : currentViolations
+            visitorMutationQueue.sync {
+                builder.allViolations += currentViolations
+                builder.violations += filteredViolations
+            }
+
             linter.file.invalidateCache()
-            builder.report(violations: currentViolations, realtimeCondition: true)
+            builder.report(violations: filteredViolations, realtimeCondition: true)
         }
     }
 
     private static func postProcessViolations(files: [SwiftLintFile], builder: LintOrAnalyzeResultBuilder) throws {
         let options = builder.options
         let configuration = builder.configuration
-        if isWarningThresholdBroken(configuration: configuration, violations: builder.violations)
+        if isWarningThresholdBroken(configuration: configuration, violations: builder.allViolations)
             && !options.lenient {
             builder.violations.append(
                 createThresholdViolation(threshold: configuration.warningThreshold!)
@@ -237,6 +259,8 @@ struct LintOrAnalyzeOptions {
     let useScriptInputFiles: Bool
     let benchmark: Bool
     let reporter: String?
+    let baseline: String?
+    let writeBaseline: String?
     let quiet: Bool
     let output: String?
     let progress: Bool
@@ -261,6 +285,7 @@ private class LintOrAnalyzeResultBuilder {
     var fileBenchmark = Benchmark(name: "files")
     var ruleBenchmark = Benchmark(name: "rules")
     var violations = [StyleViolation]()
+    var allViolations = [StyleViolation]()
     let storage = RuleStorage()
     let configuration: Configuration
     let reporter: any Reporter.Type

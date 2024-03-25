@@ -242,7 +242,7 @@ private extension SwiftLintFile {
     func offsetPerLine() -> [Int: Int64] {
         return Dictionary(
             uniqueKeysWithValues: contents.bridge()
-                .components(separatedBy: "\n") // swiftlint:disable:next unused_enumerated
+                .components(separatedBy: "\n")
                 .map { Int64($0.bridge().lengthOfBytes(using: .utf8)) }
                 .reduce(into: [0]) { result, length in
                     let newLineCharacterLength = Int64(1)

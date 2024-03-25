@@ -21,7 +21,8 @@ struct UnusedEnumeratedRule: Rule {
             Example("for (section, (event, _)) in data.enumerated() {}"),
             Example("list.enumerated().map { idx, elem in \"\\(idx): \\(elem)\" }"),
             Example("list.enumerated().map { $0 + $1 }"),
-            Example("list.enumerated().something().map { _, elem in elem }")
+            Example("list.enumerated().something().map { _, elem in elem }"),
+            Example("list.map { ($0.offset, $0.element) }")
         ],
         triggeringExamples: [
             Example("for (↓_, foo) in bar.enumerated() { }"),
@@ -38,7 +39,7 @@ struct UnusedEnumeratedRule: Rule {
 
 private extension UnusedEnumeratedRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private var lookForClosureExpressionSyntax = false
+        private var trailingClosure: ClosureExprSyntax?
         private var zeroPosition: AbsolutePosition?
         private var onePosition: AbsolutePosition?
 
@@ -85,18 +86,22 @@ private extension UnusedEnumeratedRule {
                     onePosition: firstTokenIsUnderscore ? nil : secondElement.positionAfterSkippingLeadingTrivia
                 )
             } else {
-                lookForClosureExpressionSyntax = true
+                self.trailingClosure = trailingClosure
             }
 
             return .visitChildren
         }
 
+        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+            node == trailingClosure ? .visitChildren : .skipChildren
+        }
+
         override func visitPost(_ node: ClosureExprSyntax) {
-            guard lookForClosureExpressionSyntax else {
+            guard node == trailingClosure else {
                 return
             }
             defer {
-                lookForClosureExpressionSyntax = false
+                trailingClosure = nil
                 zeroPosition = nil
                 onePosition = nil
             }
@@ -109,11 +114,15 @@ private extension UnusedEnumeratedRule {
         }
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
-            guard lookForClosureExpressionSyntax else {
+            guard trailingClosure != nil else {
                 return
             }
             if node.baseName.text == "$0" {
-                zeroPosition = node.positionAfterSkippingLeadingTrivia
+                if node.parent?.as(MemberAccessExprSyntax.self)?.declName.baseName.text == "element" {
+                    onePosition = node.positionAfterSkippingLeadingTrivia
+                } else {
+                    zeroPosition = node.positionAfterSkippingLeadingTrivia
+                }
             } else if node.baseName.text == "$1" {
                 onePosition = node.positionAfterSkippingLeadingTrivia
             }

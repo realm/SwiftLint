@@ -131,6 +131,9 @@ let package = Package(
                 "SwiftLintFramework",
                 "SwiftLintTestHelpers"
             ],
+            exclude: [
+                "default_rule_configurations.yml"
+            ],
             swiftSettings: swiftFeatures
         ),
         .testTarget(

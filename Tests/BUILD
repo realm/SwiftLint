@@ -141,7 +141,10 @@ swift_library(
 
 swift_test(
     name = "IntegrationTests",
-    data = ["//:LintInputs"],
+    data = [
+        "//:LintInputs",
+        "IntegrationTests/default_rule_configurations.yml"
+    ],
     visibility = ["//visibility:public"],
     deps = [":IntegrationTests.library"],
 )

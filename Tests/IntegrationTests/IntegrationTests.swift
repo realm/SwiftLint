@@ -53,6 +53,23 @@ class IntegrationTests: SwiftLintTestCase {
         }
     }
 
+    func testDefaultConfigurations() {
+        let defaultConfig = Configuration(rulesMode: .allEnabled).rules
+            .map { type(of: $0) }
+            .filter { $0.identifier != "custom_rules" }
+            .map {
+                """
+                \($0.identifier):
+                \($0.init().configurationDescription.yaml().indent(by: 2))
+                """
+            }
+            .joined(separator: "\n")
+        let referenceFile = URL(fileURLWithPath: #file)
+            .deletingLastPathComponent()
+            .appendingPathComponent("default_rule_configurations.yml")
+        XCTAssertEqual(defaultConfig + "\n", try String(contentsOf: referenceFile))
+    }
+
     func testSimulateHomebrewTest() {
         // Since this test uses the `swiftlint` binary built while building `SwiftLintPackageTests`,
         // we run it only on macOS using SwiftPM.

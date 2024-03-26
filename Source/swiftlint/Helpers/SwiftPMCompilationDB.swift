@@ -34,9 +34,10 @@ struct SwiftPMCompilationDB: Codable {
             // Running tests
             let nodes = try decoder.decode(SwiftPMNodes.self, from: yaml)
             let suffix = "/Source/swiftlint/"
-            let pathToReplace = Array(nodes.nodes.keys.filter({ node in
+            let filteredKeys: [String] = nodes.nodes.keys.filter { node in
                 node.hasSuffix(suffix)
-            }))[0].dropLast(suffix.count - 1)
+            }
+            let pathToReplace: String.SubSequence = filteredKeys[0].dropLast(suffix.count - 1)
             let stringFileContents = String(decoding: yaml, as: UTF8.self)
                 .replacingOccurrences(of: pathToReplace, with: "")
             compilationDB = try decoder.decode(Self.self, from: stringFileContents)
@@ -44,12 +45,16 @@ struct SwiftPMCompilationDB: Codable {
             compilationDB = try decoder.decode(Self.self, from: yaml)
         }
 
-        let swiftCompilerCommands = compilationDB.commands
+        let swiftCompilerCommands: [String: SwiftPMCommand] = compilationDB.commands
             .filter { $0.value.tool == "swift-compiler" }
-        let allSwiftSources = swiftCompilerCommands
-            .flatMap { $0.value.sources ?? [] }
-            .filter { $0.hasSuffix(".swift") }
-        return Dictionary(uniqueKeysWithValues: allSwiftSources.map { swiftSource in
+        let allSwiftSources: [String] = swiftCompilerCommands
+            .flatMap { element -> [String] in
+                element.value.sources ?? []
+            }
+            .filter { source -> Bool in
+                source.hasSuffix(".swift")
+            }
+        return Dictionary(uniqueKeysWithValues: allSwiftSources.map { swiftSource -> (String, [String]) in
             let command = swiftCompilerCommands
                 .values
                 .first { $0.sources?.contains(swiftSource) == true }
@@ -63,10 +68,14 @@ struct SwiftPMCompilationDB: Codable {
                 return (swiftSource, [])
             }
 
-            let args = ["-module-name", module] +
-                sources +
-                arguments.filteringCompilerArguments +
-                ["-I"] + importPaths
+            let moduleName: [String] = ["-module-name", module]
+            let filteredCompilerArguments: [String] = arguments.filteringCompilerArguments
+            let importPathsArgument = ["-I"]
+            let args: [String] = moduleName
+                + sources
+                + filteredCompilerArguments
+                + importPathsArgument
+                + importPaths
 
             return (swiftSource, args)
         })

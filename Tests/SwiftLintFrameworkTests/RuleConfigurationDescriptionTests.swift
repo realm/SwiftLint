@@ -12,7 +12,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
 
         @ConfigurationElement(key: "flag")
         var flag = true
-        @ConfigurationElement
+        @ConfigurationElement(key: "string")
         var string = "value"
         @ConfigurationElement(key: "symbol")
         var symbol = try! Symbol(fromAny: "value", context: "rule") // swiftlint:disable:this force_try
@@ -20,7 +20,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         var integer = 2
         @ConfigurationElement(key: "null")
         var null: Int?
-        @ConfigurationElement
+        @ConfigurationElement(key: "my_double")
         var myDouble = 2.1
         @ConfigurationElement(key: "severity")
         var severity = ViolationSeverity.warning

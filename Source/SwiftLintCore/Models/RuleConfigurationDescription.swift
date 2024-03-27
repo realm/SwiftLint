@@ -440,7 +440,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///   - key: Optional name of the option. If not specified, it will be inferred from the attributed property.
     ///   - postprocessor: Function to be applied to the wrapped value after parsing to validate and modify it.
     public init(wrappedValue value: T,
-                key: String = "",
+                key: String,
                 postprocessor: @escaping (inout T) throws -> Void = { _ in }) {
         self.init(wrappedValue: value, key: key, inline: false, postprocessor: postprocessor)
 
@@ -454,7 +454,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///
     /// - Parameters:
     ///   - key: Optional name of the option. If not specified, it will be inferred from the attributed property.
-    public init<Wrapped>(key: String = "") where T == Wrapped? {
+    public init<Wrapped>(key: String) where T == Wrapped? {
         self.init(wrappedValue: nil, key: key, inline: false)
     }
 
@@ -466,6 +466,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///             will be inlined. Otherwise, it will be treated as a normal nested configuration with its name
     ///             inferred from the name of the attributed property.
     public init(wrappedValue value: T, inline: Bool) where T: InlinableOptionType {
+        assert(inline, "Only 'inline: true' is allowed at the moment.")
         self.init(wrappedValue: value, key: "", inline: inline)
     }
 

@@ -11,7 +11,7 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration {
         [.anchorsMatchLines, .dotMatchesLineSeparators]
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "required_string")
     private var requiredString: String?
     @ConfigurationElement(key: "required_pattern")
@@ -60,8 +60,8 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration {
             }
         }
 
-        if let severityString = configuration[$severityConfiguration.key] {
-            try severityConfiguration.apply(configuration: severityString)
+        if let severityString = configuration[$severity.key] {
+            try severity.apply(configuration: severityString)
         }
     }
 

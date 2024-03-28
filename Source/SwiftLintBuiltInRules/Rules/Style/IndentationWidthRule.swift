@@ -66,7 +66,7 @@ struct IndentationWidthRule: OptInRule {
                 violations.append(
                     StyleViolation(
                         ruleDescription: Self.description,
-                        severity: configuration.severityConfiguration.severity,
+                        severity: configuration.severity.violationSeverity,
                         location: Location(file: file, characterOffset: line.range.location),
                         reason: "Code should be indented with tabs or " +
                         "\(configuration.indentationWidth) spaces, but not both in the same line"
@@ -90,7 +90,7 @@ struct IndentationWidthRule: OptInRule {
                     violations.append(
                         StyleViolation(
                             ruleDescription: Self.description,
-                            severity: configuration.severityConfiguration.severity,
+                            severity: configuration.severity.violationSeverity,
                             location: Location(file: file, characterOffset: line.range.location),
                             reason: "The first line shall not be indented"
                         )
@@ -115,7 +115,7 @@ struct IndentationWidthRule: OptInRule {
                 violations.append(
                     StyleViolation(
                         ruleDescription: Self.description,
-                        severity: configuration.severityConfiguration.severity,
+                        severity: configuration.severity.violationSeverity,
                         location: Location(file: file, characterOffset: line.range.location),
                         reason: isIndentation ?
                             "Code should be indented using one tab or \(indentWidth) spaces" :

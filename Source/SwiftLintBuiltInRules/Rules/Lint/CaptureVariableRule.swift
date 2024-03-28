@@ -164,7 +164,7 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
             .filter { capturedVariable in collectedInfo.values.contains { $0.contains(capturedVariable.usr) } }
             .map {
                 StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
+                               severity: configuration.violationSeverity,
                                location: Location(file: file, byteOffset: $0.offset))
             }
     }

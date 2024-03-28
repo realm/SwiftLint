@@ -170,7 +170,7 @@ extension ConfigurationTests {
             XCTFail("Custom rule is expected to be present")
             return
         }
-        XCTAssertEqual(customRule.severityConfiguration.severity, .error)
+        XCTAssertEqual(customRule.severity.severity, .error)
     }
 
     // MARK: - Nested Configurations

@@ -21,7 +21,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// be ignored and not count as a rule violation.
     public var excludedMatchKinds = Set<SyntaxKind>()
     @ConfigurationElement(key: "severity")
-    public var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    public var severity = SeverityConfiguration<Parent>(.warning)
     /// The index of the regex capture group to match.
     public var captureGroup: Int = 0
 
@@ -35,7 +35,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             excluded.map(\.pattern).joined(separator: ","),
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
                 .map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
-            severity.rawValue
+            violationSeverity.rawValue
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) {
             return String(decoding: jsonData, as: UTF8.self)
@@ -86,8 +86,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         if let message = configurationDict["message"] as? String {
             self.message = message
         }
-        if let severityString = configurationDict[$severityConfiguration.key] as? String {
-            try severityConfiguration.apply(configuration: severityString)
+        if let severityString = configurationDict[$severity.key] as? String {
+            try severity.apply(configuration: severityString)
         }
         if let captureGroup = configurationDict["capture_group"] as? Int {
             guard (0 ... regex.numberOfCaptureGroups).contains(captureGroup) else {

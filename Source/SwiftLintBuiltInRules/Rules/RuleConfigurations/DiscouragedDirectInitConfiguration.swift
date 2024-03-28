@@ -5,7 +5,7 @@ struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = DiscouragedDirectInitRule
 
     @ConfigurationElement(key: "severity")
-    var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    var severity = SeverityConfiguration<Parent>(.warning)
 
     @ConfigurationElement(
         key: "types",

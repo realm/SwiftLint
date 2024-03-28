@@ -117,7 +117,7 @@ private extension IdentifierNameRule {
                         \(type) should only contain alphanumeric and other \
                         allowed characters
                         """
-                    return (reason, nameConfiguration.unallowedSymbolsSeverity.severity)
+                    return (reason, nameConfiguration.unallowedSymbolsSeverity.violationSeverity)
                 }
 
                 if let severity = nameConfiguration.severity(forLength: type.name.count) {

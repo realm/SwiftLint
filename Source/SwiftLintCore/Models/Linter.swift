@@ -48,7 +48,7 @@ private extension Rule {
 
             return StyleViolation(
                 ruleDescription: type(of: superfluousDisableCommandRule).description,
-                severity: superfluousDisableCommandRule.configuration.severity,
+                severity: superfluousDisableCommandRule.configuration.violationSeverity,
                 location: region.start,
                 reason: superfluousDisableCommandRule.reason(for: self)
             )
@@ -350,7 +350,7 @@ public struct CollectedLinter {
             }).map { id in
                 return StyleViolation(
                     ruleDescription: type(of: superfluousDisableCommandRule).description,
-                    severity: superfluousDisableCommandRule.configuration.severity,
+                    severity: superfluousDisableCommandRule.configuration.violationSeverity,
                     location: region.start,
                     reason: superfluousDisableCommandRule.reason(forNonExistentRule: id.stringRepresentation)
                 )

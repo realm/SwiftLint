@@ -165,7 +165,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule {
 
             return StyleViolation(
                 ruleDescription: Self.description,
-                severity: configuration.severity,
+                severity: configuration.violationSeverity,
                 location: Location(file: file, characterOffset: characterOffset)
             )
         }

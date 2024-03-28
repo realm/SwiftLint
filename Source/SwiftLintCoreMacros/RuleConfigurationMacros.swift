@@ -41,8 +41,8 @@ enum AutoApply: MemberMacro {
             $0.type.as(IdentifierTypeSyntax.self)?.name.text == "SeverityBasedRuleConfiguration"
         }
         if isSeverityBased == true {
-            if nonInlinedOptions.contains("severityConfiguration") {
-                inlinedOptions.append("severityConfiguration")
+            if nonInlinedOptions.contains("severity") {
+                inlinedOptions.append("severity")
             } else {
                 context.diagnose(SwiftLintCoreMacroError.severityBasedWithoutProperty.diagnose(at: configuration.name))
             }

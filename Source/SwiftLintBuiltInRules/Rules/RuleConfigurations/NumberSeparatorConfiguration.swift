@@ -28,7 +28,7 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration {
     }
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "minimum_length")
     private(set) var minimumLength = 0
     @ConfigurationElement(key: "minimum_fraction_length")

@@ -5,7 +5,7 @@ struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration 
     typealias Parent = ConditionalReturnsOnNewlineRule
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "if_only")
     private(set) var ifOnly = false
 }

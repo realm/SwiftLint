@@ -79,7 +79,7 @@ private extension ShorthandArgumentRule {
                         ReasonedRuleViolation(
                             position: $0.position,
                             reason: "Multiple different shorthand arguments should be avoided",
-                            severity: configuration.severity
+                            severity: configuration.violationSeverity
                         )
                     })
                     // In this case, the rule triggers on all shorthand arguments, thus exit here.
@@ -93,7 +93,7 @@ private extension ShorthandArgumentRule {
                         ReasonedRuleViolation(
                             position: $0.position,
                             reason: "Accessing members of shorthand arguments should be avoided",
-                            severity: configuration.severity
+                            severity: configuration.violationSeverity
                         )
                     })
                 }
@@ -112,7 +112,7 @@ private extension ShorthandArgumentRule {
                             References to shorthand arguments too far away from the closure's beginning should \
                             be avoided
                             """,
-                        severity: configuration.severity
+                        severity: configuration.violationSeverity
                     )
                 }
             })

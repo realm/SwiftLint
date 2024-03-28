@@ -154,7 +154,7 @@ struct MultilineParametersBracketsRule: OptInRule {
 
         return StyleViolation(
             ruleDescription: Self.description,
-            severity: configuration.severity,
+            severity: configuration.violationSeverity,
             location: Location(file: file, characterOffset: invalidMatch.range.location + 1)
         )
     }
@@ -178,7 +178,7 @@ struct MultilineParametersBracketsRule: OptInRule {
         let characterOffset = lastParamRange.upperBound + invalidMatch.range.upperBound - 1
         return StyleViolation(
             ruleDescription: Self.description,
-            severity: configuration.severity,
+            severity: configuration.violationSeverity,
             location: Location(file: file, characterOffset: characterOffset)
         )
     }

@@ -29,7 +29,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
             return [
                 StyleViolation(
                     ruleDescription: Self.description,
-                    severity: configuration.severityConfiguration.severity,
+                    severity: configuration.severity.violationSeverity,
                     location: Location(file: file, byteOffset: offset),
                     reason: reason
                 )

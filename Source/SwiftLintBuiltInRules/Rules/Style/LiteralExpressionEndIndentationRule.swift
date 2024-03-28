@@ -133,7 +133,7 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
                      "got \(violation.indentationRanges.actual.length)"
 
         return StyleViolation(ruleDescription: Self.description,
-                              severity: configuration.severity,
+                              severity: configuration.violationSeverity,
                               location: Location(file: file, byteOffset: violation.endOffset),
                               reason: reason)
     }

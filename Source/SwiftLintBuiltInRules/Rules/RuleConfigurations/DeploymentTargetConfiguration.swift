@@ -105,12 +105,12 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
     private(set) var tvOSDeploymentTarget = Version(platform: .tvOS, major: 9)
     private(set) var tvOSAppExtensionDeploymentTarget = Version(platform: .tvOSApplicationExtension, major: 9)
 
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
 
     private let targets: [String: Version]
 
     var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
+        severity
         for (platform, target) in targets.sorted(by: { $0.key < $1.key }) {
             platform => .symbol(target.stringValue)
         }
@@ -135,7 +135,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
         }
         for (key, value) in configuration {
             if key == "severity", let value = value as? String {
-                try severityConfiguration.apply(configuration: value)
+                try severity.apply(configuration: value)
                 continue
             }
             guard let target = targets[key] else {

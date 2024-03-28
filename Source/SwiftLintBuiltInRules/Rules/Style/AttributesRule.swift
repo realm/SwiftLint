@@ -46,7 +46,7 @@ private extension AttributesRule {
                     ReasonedRuleViolation(
                         position: helper.violationPosition,
                         reason: reason,
-                        severity: configuration.severityConfiguration.severity
+                        severity: configuration.severity.violationSeverity
                     )
                 )
                 return

@@ -5,7 +5,7 @@ struct PrivateOutletConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = PrivateOutletRule
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allow_private_set")
     private(set) var allowPrivateSet = false
 }

@@ -16,7 +16,7 @@ struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration {
     ]
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "additional_terms")
     private(set) var additionalTerms: Set<String>?
     @ConfigurationElement(key: "override_terms")

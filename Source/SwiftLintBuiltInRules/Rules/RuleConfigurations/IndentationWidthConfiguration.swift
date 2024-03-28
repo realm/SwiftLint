@@ -5,7 +5,7 @@ struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = IndentationWidthRule
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
+    private(set) var severity = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(
         key: "indentation_width",
         postprocessor: { if $0 < 1 { throw Issue.invalidConfiguration(ruleID: Parent.identifier) } }

@@ -5,25 +5,25 @@ import XCTest
 class ImplicitlyUnwrappedOptionalConfigurationTests: SwiftLintTestCase {
     func testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary() throws {
         var configuration = ImplicitlyUnwrappedOptionalConfiguration(
-            severityConfiguration: SeverityConfiguration(.warning),
+            severity: .warning,
             mode: .allExceptIBOutlets
         )
 
         try configuration.apply(configuration: ["mode": "all", "severity": "error"])
         XCTAssertEqual(configuration.mode, .all)
-        XCTAssertEqual(configuration.severity, .error)
+        XCTAssertEqual(configuration.violationSeverity, .error)
 
         try configuration.apply(configuration: ["mode": "all_except_iboutlets"])
         XCTAssertEqual(configuration.mode, .allExceptIBOutlets)
-        XCTAssertEqual(configuration.severity, .error)
+        XCTAssertEqual(configuration.violationSeverity, .error)
 
         try configuration.apply(configuration: ["severity": "warning"])
         XCTAssertEqual(configuration.mode, .allExceptIBOutlets)
-        XCTAssertEqual(configuration.severity, .warning)
+        XCTAssertEqual(configuration.violationSeverity, .warning)
 
         try configuration.apply(configuration: ["mode": "all", "severity": "warning"])
         XCTAssertEqual(configuration.mode, .all)
-        XCTAssertEqual(configuration.severity, .warning)
+        XCTAssertEqual(configuration.violationSeverity, .warning)
     }
 
     func testImplicitlyUnwrappedOptionalConfigurationThrowsOnBadConfig() {
@@ -35,7 +35,7 @@ class ImplicitlyUnwrappedOptionalConfigurationTests: SwiftLintTestCase {
 
         for badConfig in badConfigs {
             var configuration = ImplicitlyUnwrappedOptionalConfiguration(
-                severityConfiguration: SeverityConfiguration(.warning),
+                severity: .warning,
                 mode: .allExceptIBOutlets
             )
 

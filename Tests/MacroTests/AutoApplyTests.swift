@@ -182,13 +182,12 @@ final class AutoApplyTests: XCTestCase {
     }
 
     func testSeverityAppliedTwice() {
-        // swiftlint:disable line_length
         assertMacroExpansion(
             """
             @AutoApply
             struct S: SeverityBasedRuleConfiguration {
                 @ConfigurationElement
-                var severityConfiguration = .warning
+                var severity = .warning
                 @ConfigurationElement
                 var foo = 2
             }
@@ -197,28 +196,28 @@ final class AutoApplyTests: XCTestCase {
             """
             struct S: SeverityBasedRuleConfiguration {
                 @ConfigurationElement
-                var severityConfiguration = .warning
+                var severity = .warning
                 @ConfigurationElement
                 var foo = 2
 
                 mutating func apply(configuration: Any) throws {
-                    if $severityConfiguration.key.isEmpty {
-                        $severityConfiguration.key = "severity_configuration"
+                    if $severity.key.isEmpty {
+                        $severity.key = "severity"
                     }
                     if $foo.key.isEmpty {
                         $foo.key = "foo"
                     }
                     do {
-                        try severityConfiguration.apply(configuration, ruleID: Parent.identifier)
-                        try $severityConfiguration.performAfterParseOperations()
+                        try severity.apply(configuration, ruleID: Parent.identifier)
+                        try $severity.performAfterParseOperations()
                     } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
                     guard let configuration = configuration as? [String: Any] else {
                         return
                     }
-                    try severityConfiguration.apply(configuration[$severityConfiguration.key], ruleID: Parent.identifier)
-                    try $severityConfiguration.performAfterParseOperations()
+                    try severity.apply(configuration[$severity.key], ruleID: Parent.identifier)
+                    try $severity.performAfterParseOperations()
                     try foo.apply(configuration[$foo.key], ruleID: Parent.identifier)
                     try $foo.performAfterParseOperations()
                     if !supportedKeys.isSuperset(of: configuration.keys) {
@@ -230,6 +229,5 @@ final class AutoApplyTests: XCTestCase {
             """,
             macros: macros
         )
-        // swiftlint:enable line_length
     }
 }

@@ -5,7 +5,7 @@ import XCTest
 class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
     func testDefaultConfiguration() {
         let config = ExplicitTypeInterfaceConfiguration()
-        XCTAssertEqual(config.severityConfiguration.severity, .warning)
+        XCTAssertEqual(config.severity.severity, .warning)
         XCTAssertEqual(config.allowedKinds, Set([.instance, .class, .static, .local]))
     }
 
@@ -14,7 +14,7 @@ class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
         try config.apply(configuration: ["severity": "error",
                                          "excluded": ["local"],
                                          "allow_redundancy": true] as [String: any Sendable])
-        XCTAssertEqual(config.severityConfiguration.severity, .error)
+        XCTAssertEqual(config.severity.severity, .error)
         XCTAssertEqual(config.allowedKinds, Set([.instance, .class, .static]))
         XCTAssertTrue(config.allowRedundancy)
     }

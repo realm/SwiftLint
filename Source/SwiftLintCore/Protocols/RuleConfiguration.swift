@@ -18,13 +18,13 @@ public protocol RuleConfiguration: Equatable {
 /// A configuration for a rule that allows to configure at least the severity.
 public protocol SeverityBasedRuleConfiguration: RuleConfiguration {
     /// The configuration of a rule's severity.
-    var severityConfiguration: SeverityConfiguration<Parent> { get }
+    var severity: SeverityConfiguration<Parent> { get }
 }
 
 public extension SeverityBasedRuleConfiguration {
     /// The severity of a rule.
-    var severity: ViolationSeverity {
-        severityConfiguration.severity
+    var violationSeverity: ViolationSeverity {
+        severity.violationSeverity
     }
 }
 

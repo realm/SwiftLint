@@ -45,7 +45,7 @@ struct TrailingNewlineRule: CorrectableRule, SourceKitFreeRule {
             return []
         }
         return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
+                               severity: configuration.violationSeverity,
                                location: Location(file: file.path, line: max(file.lines.count, 1)))]
     }
 

@@ -14,7 +14,7 @@ struct SortedImportsConfiguration: SeverityBasedRuleConfiguration {
     }
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "grouping")
     private(set) var grouping = SortedImportsGroupingConfiguration.names
 }

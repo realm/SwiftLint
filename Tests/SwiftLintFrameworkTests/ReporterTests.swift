@@ -100,23 +100,23 @@ class ReporterTests: SwiftLintTestCase {
     func testSARIFReporter() {
         let expectedOutput = stringFromFile("CannedSARIFReporterOutput.json")
 
-        var expectedDictionary: [String: Any] = [:]
+        var expectedDictionary: [String: AnyObject] = [:]
         do {
-            let myJson = try JSONSerialization.jsonObject(with: Data(expectedOutput.utf8), options: JSONSerialization.ReadingOptions.allowFragments) as! [String: Any]
+            expectedDictionary = try JSONSerialization.jsonObject(with: Data(expectedOutput.utf8), options: JSONSerialization.ReadingOptions.allowFragments) as! [String: AnyObject]
         } catch {
             print(error)
         }
 
         let result = SARIFReporter.generateReport(generateViolations())
 
-        var resultDictionary: [String: Any] = [:]
+        var resultDictionary: [String: AnyObject] = [:]
         do {
-            let myJson = try JSONSerialization.jsonObject(with: Data(result.utf8), options: JSONSerialization.ReadingOptions.allowFragments) as! [String: Any]
+            resultDictionary = try JSONSerialization.jsonObject(with: Data(result.utf8), options: JSONSerialization.ReadingOptions.allowFragments) as! [String: AnyObject]
         } catch {
             print(error)
         }
 
-        XCTAssertTrue(resultDictionary.isEqualTo(expectedDictionary))
+        XCTAssertEqual(expectedDictionary as NSDictionary, resultDictionary as NSDictionary)
     }
 
     func testJunitReporter() {

@@ -1,4 +1,4 @@
-("{
+{
   "$schema" : "https:\/\/docs.oasis-open.org\/sarif\/sarif\/v2.1.0\/cos02\/schemas\/sarif-schema-2.1.0.json",
   "runs" : [
     {
@@ -78,4 +78,4 @@
     }
   ],
   "version" : "2.1.0"
-}")
+}

@@ -72,8 +72,18 @@ public extension Configuration {
                     effectiveOptInRules = optInRules
                 }
 
-                warnAboutDuplicates(in: effectiveOptInRules + analyzerRules)
-                self = .default(disabled: Set(disabledRules), optIn: Set(effectiveOptInRules + analyzerRules))
+                let effectiveAnalyzerRules: [String]
+                if analyzerRules.contains(RuleIdentifier.all.stringRepresentation) {
+                    let allAnalyzerRules = RuleRegistry.shared.list.list.compactMap { ruleID, ruleType in
+                        ruleType is any AnalyzerRule.Type ? ruleID : nil
+                    }
+                    effectiveAnalyzerRules = allAnalyzerRules
+                } else {
+                    effectiveAnalyzerRules = analyzerRules
+                }
+
+                warnAboutDuplicates(in: effectiveOptInRules + effectiveAnalyzerRules)
+                self = .default(disabled: Set(disabledRules), optIn: Set(effectiveOptInRules + effectiveAnalyzerRules))
             }
         }
 

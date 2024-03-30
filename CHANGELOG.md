@@ -213,6 +213,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4858](https://github.com/realm/SwiftLint/issues/4858)
 
+* Add `all` pseudo-rule for `analyzer_rules` - enables all analyzer rules
+  that are not listed in `disabled_rules`.  
+  [woxtu](https://github.com/woxtu)
+  [#4999](https://github.com/realm/SwiftLint/issues/4999)
+
 ## 0.54.0: Macro-Economic Forces
 
 #### Breaking

@@ -95,19 +95,17 @@ extension SwiftLint {
                 topLevelDirectories.forEach { print($0) }
                 if askUser("\nDo you want SwiftLint to scan all of those directories?") {
                     return topLevelDirectories
-                } else {
-                    var selectedDirectories: [String] = []
-                    topLevelDirectories.forEach {
-                        if askUser("Do you want SwiftLint to scan the \($0) directory?") {
-                            selectedDirectories.append($0)
-                        }
-                    }
-                    return selectedDirectories
                 }
-            } else {
-                doYouWantToContinue("No .swift files found. Do you want to continue?")
-                return []
+                var selectedDirectories: [String] = []
+                topLevelDirectories.forEach {
+                    if askUser("Do you want SwiftLint to scan the \($0) directory?") {
+                        selectedDirectories.append($0)
+                    }
+                }
+                return selectedDirectories
             }
+            doYouWantToContinue("No .swift files found. Do you want to continue?")
+            return []
         }
 
         private func allowZeroLintableFiles() -> Bool {
@@ -184,9 +182,8 @@ extension SwiftLint {
                     ruleIdentifiersToDisable = dictionary.keys.sorted {
                         if dictionary[$0]!.count != dictionary[$1]!.count {
                             return dictionary[$0]!.count > dictionary[$1]!.count
-                        } else {
-                            return $0 > $1
                         }
+                        return $0 > $1
                     }
                 }
             }
@@ -198,18 +195,17 @@ extension SwiftLint {
             let analyzerRuleIdentifiers = RuleRegistry.shared.analyzerRuleIdentifiers.sorted()
             if askUser("\nDo you want to enable all (\(analyzerRuleIdentifiers.count)) of the analyzer rules?") {
                 return analyzerRuleIdentifiers
-            } else {
-                if askUser("\nDo you want to enable any of the analyzer rules?") {
-                    var analyzerRulesToEnable: [String] = []
-                    RuleRegistry.shared.analyzerRuleIdentifiers.forEach {
-                        if askUser("Do you want to enable the \($0) analyzer rule?") {
-                            analyzerRulesToEnable.append($0)
-                        }
-                    }
-                    return analyzerRulesToEnable
-                }
-                return []
             }
+            if askUser("\nDo you want to enable any of the analyzer rules?") {
+                var analyzerRulesToEnable: [String] = []
+                RuleRegistry.shared.analyzerRuleIdentifiers.forEach {
+                    if askUser("Do you want to enable the \($0) analyzer rule?") {
+                        analyzerRulesToEnable.append($0)
+                    }
+                }
+                return analyzerRulesToEnable
+            }
+            return []
         }
 
         private func reporterIdentifier() -> String {
@@ -268,13 +264,12 @@ extension SwiftLint {
                     print("Overwriting existing configuration.")
                     try writeConfigurationYML(configurationYML)
                     return true
-                } else {
-                    print("Found an existing configuration.")
-                    if !askUser("Do you want to exit without overwriting the existing configuration?") {
-                        if askUser("Do you want to overwrite the existing configuration?") {
-                            try writeConfigurationYML(configurationYML)
-                            return true
-                        }
+                }
+                print("Found an existing configuration.")
+                if !askUser("Do you want to exit without overwriting the existing configuration?") {
+                    if askUser("Do you want to overwrite the existing configuration?") {
+                        try writeConfigurationYML(configurationYML)
+                        return true
                     }
                 }
             } else {
@@ -370,11 +365,11 @@ private func askUser(_ message: String, colorizeOutput: Bool, auto: Bool) -> Boo
         if let character = readLine() {
             if character.isEmpty || character.lowercased() == "y" {
                 return true
-            } else if character.lowercased() == "n" {
-                return false
-            } else {
-                print("Invalid Response")
             }
+            if character.lowercased() == "n" {
+                return false
+            }
+            print("Invalid Response")
         }
     }
 }
@@ -387,8 +382,7 @@ private func print(_ message: String, terminator: String = "\n") {
 private func terminalSupportsColor() -> Bool {
     if
         isatty(1) != 0, let term = ProcessInfo.processInfo.environment["TERM"],
-        term.contains("color"), term.contains("256")
-    {
+        term.contains("color"), term.contains("256") {
         return true
     }
     return false

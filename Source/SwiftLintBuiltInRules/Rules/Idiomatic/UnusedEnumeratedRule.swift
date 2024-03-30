@@ -92,10 +92,6 @@ private extension UnusedEnumeratedRule {
             return .visitChildren
         }
 
-        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            node == trailingClosure ? .visitChildren : .skipChildren
-        }
-
         override func visitPost(_ node: ClosureExprSyntax) {
             guard node == trailingClosure else {
                 return

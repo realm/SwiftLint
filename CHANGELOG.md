@@ -213,6 +213,12 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4858](https://github.com/realm/SwiftLint/issues/4858)
 
+* Extends `unused_enumerated` rule to cover closure parameters, to
+  detect cases like `list.enumerated().map { idx, _ in idx }` and
+  `list.enumerated().map { $1 }`.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5470](https://github.com/realm/SwiftLint/issues/5470)
+
 ## 0.54.0: Macro-Economic Forces
 
 #### Breaking

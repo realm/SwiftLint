@@ -535,7 +535,8 @@ Rule inclusion:
 * `analyzer_rules`: This is an entirely separate list of rules that are only
   run by the `analyze` command. All analyzer rules are opt-in, so this is the
   only configurable rule list, there are no equivalents for `disabled_rules`
-  `only_rules`.
+  `only_rules`. The special `all` identifier can also be used here to enable
+  all analyzer rules, except the ones listed in `disabled_rules`.
 
 ```yaml
 # By default, SwiftLint uses a set of sensible default rules you can adjust:

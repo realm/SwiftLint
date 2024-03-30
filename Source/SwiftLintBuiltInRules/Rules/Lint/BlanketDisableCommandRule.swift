@@ -4,7 +4,9 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
     static let description = RuleDescription(
         identifier: "blanket_disable_command",
         name: "Blanket Disable Command",
-        description: "swiftlint:disable commands should be re-enabled before the end of the file",
+        description: "'swiftlint:disable' commands should use 'next', 'this' or 'previous' to disable rules for a " +
+                     "single line, or 'swiftlint:enable' to re-enable the rules immediately after the violations " +
+                     "to be ignored",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -144,8 +146,9 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
             }
 
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
-                let reason = "The disabled '\(disabledRuleIdentifier.stringRepresentation)' rule " +
-                             "should be re-enabled before the end of the file"
+                let reason = "Use 'next', 'this' or 'previous' to disable the " +
+                             "'\(disabledRuleIdentifier.stringRepresentation)' rule for a single line or " +
+                             "'swiftlint:enable' to re-enable the rule immediately after the violations to be ignored"
                 return violation(for: command, ruleIdentifier: disabledRuleIdentifier, in: file, reason: reason)
             }
             return nil

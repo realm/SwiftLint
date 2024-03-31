@@ -64,7 +64,8 @@ private extension UnusedEnumeratedRule {
 
         override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
             guard node.isEnumerated,
-                  let trailingClosure = node.parent?.parent?.as(FunctionCallExprSyntax.self)?.trailingClosure
+                  let trailingClosure = node.parent?.parent?.as(FunctionCallExprSyntax.self)?.trailingClosure,
+                  node.parent?.as(MemberAccessExprSyntax.self)?.declName.baseName.text != "filter"
             else {
                 return .visitChildren
             }

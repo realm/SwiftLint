@@ -523,6 +523,12 @@ class InclusiveLanguageRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class IndentationStyleRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(IndentationStyleRule.description)
+    }
+}
+
 class IndentationWidthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IndentationWidthRule.description)

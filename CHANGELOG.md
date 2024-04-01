@@ -218,6 +218,11 @@
   [woxtu](https://github.com/woxtu)
   [Martin Redington](https://github.com/mildm8nnered)
   [#4999](https://github.com/realm/SwiftLint/issues/4999)
+* The `superfluous_disable_command` rule will now be enabled for the `analyze`
+  command, unless it has been disabled, and will warn about superfluous
+  disablement of analyzer rules.
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4792](https://github.com/realm/SwiftLint/issues/4792)
 
 ## 0.54.0: Macro-Economic Forces
 

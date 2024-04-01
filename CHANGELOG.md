@@ -216,6 +216,7 @@
 * Add `all` pseudo-rule for `analyzer_rules` - enables all analyzer rules
   that are not listed in `disabled_rules`.  
   [woxtu](https://github.com/woxtu)
+  [Martin Redington](https://github.com/mildm8nnered)
   [#4999](https://github.com/realm/SwiftLint/issues/4999)
 
 ## 0.54.0: Macro-Economic Forces

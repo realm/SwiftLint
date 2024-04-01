@@ -160,7 +160,7 @@ public struct Linter {
             if compilerArguments.isEmpty {
                 return !(rule is any AnalyzerRule)
             }
-            return (rule is any AnalyzerRule || rule is SuperfluousDisableCommandRule)
+            return rule is any AnalyzerRule || rule is SuperfluousDisableCommandRule
         }
         self.rules = rules
         self.isCollecting = rules.contains(where: { $0 is any AnyCollectingRule })

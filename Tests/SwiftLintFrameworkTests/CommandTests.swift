@@ -1,8 +1,8 @@
 // swiftlint:disable file_length
 import Foundation
 import SourceKittenFramework
-@testable import SwiftLintCore
 @testable import SwiftLintBuiltInRules
+@testable import SwiftLintCore
 import XCTest
 
 private extension Command {

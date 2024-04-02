@@ -277,6 +277,10 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
                     view2.layoutIfNeeded()
                     hasLayoutedView2 = true
                 }
+
+                @IBSegueAction func prepareForNextVc(_ coder: NSCoder) -> UIViewController? {
+                    getRandomVc()
+                }
             }
             """),
         ]
@@ -330,6 +334,17 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
                 }
             }
             """),
+            Example("""
+                class C {
+                    func f() {}
+
+                    @IBSegueAction ↓func foo(_ coder: NSCoder) -> UIViewController? {
+                        nil
+                    }
+
+                    @IBAction func bar() {}
+                }
+            """),
         ]
 
         let groupedOrderDescription = TypeContentsOrderRule.description
@@ -344,6 +359,7 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
                     ["type_property", "instance_property", "ib_inspectable", "ib_outlet"],
                     ["initializer", "type_method", "deinitializer"],
                     ["view_life_cycle_method", "ib_action", "other_method", "subscript"],
+                    ["ib_segue_action"],
                 ],
             ]
         )

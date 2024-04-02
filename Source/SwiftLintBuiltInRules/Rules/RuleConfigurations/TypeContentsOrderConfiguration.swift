@@ -17,6 +17,7 @@ enum TypeContent: String {
     case otherMethod = "other_method"
     case `subscript` = "subscript"
     case deinitializer = "deinitializer"
+    case ibSegueAction = "ib_segue_action"
 }
 
 @AutoConfigParser

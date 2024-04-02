@@ -32,6 +32,10 @@
 * Support linting only provided file paths with command plugins.  
   [DanSkeel](https://github.com/DanSkeel)
 
+* Add new category for `@IBSegueAction` to `type_contents_order` rule.  
+  [dk-talks](https://github.com/dk-talks)  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
 
 * Ignore super calls with trailing closures in `unneeded_override` rule.  

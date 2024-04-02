@@ -64,7 +64,7 @@ final class MakeAcceptableByConfigurationElementTests: XCTestCase {
                     if let value = value as? String, let newSelf = Self (rawValue: value) {
                         self = newSelf
                     } else {
-                        throw Issue.unknownConfiguration(ruleID: ruleID)
+                        throw Issue.invalidConfiguration(ruleID: ruleID)
                     }
                 }
             }
@@ -92,7 +92,7 @@ final class MakeAcceptableByConfigurationElementTests: XCTestCase {
                     if let value = value as? String, let newSelf = Self (rawValue: value) {
                         self = newSelf
                     } else {
-                        throw Issue.unknownConfiguration(ruleID: ruleID)
+                        throw Issue.invalidConfiguration(ruleID: ruleID)
                     }
                 }
             }

@@ -3,7 +3,10 @@ import Foundation
 /// All possible SwiftLint issues which are printed as warnings by default.
 public enum Issue: LocalizedError, Equatable {
     /// The configuration didn't match internal expectations.
-    case unknownConfiguration(ruleID: String)
+    case invalidConfiguration(ruleID: String)
+
+    /// Used in configuration parsing when no changes have been applied. Use only internally!
+    case nothingApplied(ruleID: String)
 
     /// Rule is listed multiple times in the configuration.
     case listedMultipleTime(ruleID: String, times: Int)
@@ -11,14 +14,26 @@ public enum Issue: LocalizedError, Equatable {
     /// An identifier `old` has been renamed to `new`.
     case renamedIdentifier(old: String, new: String)
 
-    /// Configuration for a rule is invalid.
-    case invalidConfiguration(ruleID: String)
-
     /// Some configuration keys are invalid.
     case invalidConfigurationKeys(ruleID: String, keys: Set<String>)
 
     /// Used rule IDs are invalid.
     case invalidRuleIDs(Set<String>)
+
+    /// Found a rule configuration for a rule that is not present in `only_rules`.
+    case ruleNotPresentInOnlyRules(ruleID: String)
+
+    /// Found a rule configuration for a rule that is disabled.
+    case ruleDisabledInDisabledRules(ruleID: String)
+
+    /// Found a rule configuration for a rule that is disabled in the parent configuration.
+    case ruleDisabledInParentConfiguration(ruleID: String)
+
+    /// Found a rule configuration for a rule that is not enabled in `opt_in_rules`.
+    case ruleNotEnabledInOptInRules(ruleID: String)
+
+    /// Found a rule configuration for a rule that is not enabled in parent `only_rules`.
+    case ruleNotEnabledInParentOnlyRules(ruleID: String)
 
     /// A generic warning specified by a string.
     case genericWarning(String)
@@ -31,6 +46,9 @@ public enum Issue: LocalizedError, Equatable {
 
     /// The initial configuration file was not found.
     case initialFileNotFound(path: String)
+
+    /// A file at specified path was not found.
+    case fileNotFound(path: String)
 
     /// The file at `path` is not readable or cannot be opened.
     case fileNotReadable(path: String?, ruleID: String)
@@ -57,7 +75,7 @@ public enum Issue: LocalizedError, Equatable {
     ///
     /// - parameter error: Any `Error`.
     ///
-    /// - returns: A `SwiftLintError.genericWarning` containig the message of the `error` argument.
+    /// - returns: A `SwiftLintError.genericWarning` containing the message of the `error` argument.
     static func wrap(error: some Error) -> Self {
         error as? Issue ?? Self.genericWarning(error.localizedDescription)
     }
@@ -89,18 +107,32 @@ public enum Issue: LocalizedError, Equatable {
 
     private var message: String {
         switch self {
-        case let .unknownConfiguration(id):
+        case let .invalidConfiguration(id):
             return "Invalid configuration for '\(id)' rule. Falling back to default."
+        case let .nothingApplied(ruleID: id):
+            return Self.invalidConfiguration(ruleID: id).message
         case let .listedMultipleTime(id, times):
             return "'\(id)' is listed \(times) times in the configuration."
         case let .renamedIdentifier(old, new):
             return "'\(old)' has been renamed to '\(new)' and will be completely removed in a future release."
-        case let .invalidConfiguration(id):
-            return "Invalid configuration for '\(id)'. Falling back to default."
         case let .invalidConfigurationKeys(id, keys):
             return "Configuration for '\(id)' rule contains the invalid key(s) \(keys.formatted)."
         case let .invalidRuleIDs(ruleIDs):
             return "The key(s) \(ruleIDs.formatted) used as rule identifier(s) is/are invalid."
+        case let .ruleNotPresentInOnlyRules(id):
+            return "Found a configuration for '\(id)' rule, but it is not present in " +
+                   "'\(Configuration.Key.onlyRules.rawValue)'."
+        case let .ruleDisabledInDisabledRules(id):
+            return "Found a configuration for '\(id)' rule, but it is disabled in " +
+                   "'\(Configuration.Key.disabledRules.rawValue)'."
+        case let .ruleDisabledInParentConfiguration(id):
+            return "Found a configuration for '\(id)' rule, but it is disabled in a parent configuration."
+        case let .ruleNotEnabledInOptInRules(id):
+            return "Found a configuration for '\(id)' rule, but it is not enabled in " +
+                   "'\(Configuration.Key.optInRules.rawValue)'."
+        case let .ruleNotEnabledInParentOnlyRules(id):
+            return "Found a configuration for '\(id)' rule, but it is not present in the parent's " +
+                   "'\(Configuration.Key.onlyRules.rawValue)'."
         case let .genericWarning(message), let .genericError(message):
             return message
         case let .ruleDeprecated(id):
@@ -125,6 +157,8 @@ public enum Issue: LocalizedError, Equatable {
             return "Cannot get cursor info from file at path '\(path ?? "...")' within '\(id)' rule."
         case let .yamlParsing(message):
             return "Cannot parse YAML file: \(message)"
+        case let .fileNotFound(path):
+            return "File at path '\(path)' not found."
         }
     }
 }

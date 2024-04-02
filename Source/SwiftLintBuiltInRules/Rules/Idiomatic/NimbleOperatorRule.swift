@@ -92,10 +92,10 @@ private extension NimbleOperatorRule {
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
 
             let elements = ExprListSyntax([
-                expectation.baseExpr.with(\.trailingTrivia, .space).cast(ExprSyntax.self),
-                operatorExpr.with(\.trailingTrivia, .space).cast(ExprSyntax.self),
+                expectation.baseExpr.with(\.trailingTrivia, .space),
+                operatorExpr.with(\.trailingTrivia, .space),
                 expectedValueExpr.with(\.trailingTrivia, node.trailingTrivia)
-            ])
+            ].map(ExprSyntax.init))
             return super.visit(SequenceExprSyntax(elements: elements))
         }
     }
@@ -174,7 +174,7 @@ private struct Expectation {
         case .withArguments:
             expected
         case .nullary(let analogueValue):
-            analogueValue.cast(ExprSyntax.self)
+            ExprSyntax(analogueValue)
         }
     }
 

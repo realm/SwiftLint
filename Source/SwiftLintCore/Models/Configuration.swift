@@ -27,7 +27,7 @@ public struct Configuration {
     public let warningThreshold: Int?
 
     /// The identifier for the `Reporter` to use to report style violations.
-    public let reporter: String
+    public let reporter: String?
 
     /// The location of the persisted cache to use with this configuration.
     public let cachePath: String?
@@ -70,7 +70,7 @@ public struct Configuration {
         excludedPaths: [String],
         indentation: IndentationStyle,
         warningThreshold: Int?,
-        reporter: String,
+        reporter: String?,
         cachePath: String?,
         allowZeroLintableFiles: Bool,
         strict: Bool
@@ -160,7 +160,7 @@ public struct Configuration {
             excludedPaths: excludedPaths,
             indentation: indentation,
             warningThreshold: warningThreshold,
-            reporter: reporter ?? XcodeReporter.identifier,
+            reporter: reporter,
             cachePath: cachePath,
             allowZeroLintableFiles: allowZeroLintableFiles,
             strict: strict
@@ -285,7 +285,8 @@ extension Configuration: Hashable {
             lhs.rules == rhs.rules &&
             lhs.fileGraph == rhs.fileGraph &&
             lhs.allowZeroLintableFiles == rhs.allowZeroLintableFiles &&
-            lhs.strict == rhs.strict
+            lhs.strict == rhs.strict &&
+            lhs.rulesMode == rhs.rulesMode
     }
 }
 
@@ -298,7 +299,7 @@ extension Configuration: CustomStringConvertible {
             + "- Excluded Paths: \(excludedPaths)\n"
             + "- Warning Threshold: \(warningThreshold as Optional)\n"
             + "- Root Directory: \(rootDirectory as Optional)\n"
-            + "- Reporter: \(reporter)\n"
+            + "- Reporter: \(reporter ?? "default")\n"
             + "- Cache Path: \(cachePath as Optional)\n"
             + "- Computed Cache Description: \(computedCacheDescription as Optional)\n"
             + "- Rules: \(rules.map { type(of: $0).description.identifier })"

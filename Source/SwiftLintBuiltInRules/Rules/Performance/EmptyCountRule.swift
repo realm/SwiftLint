@@ -88,9 +88,9 @@ private extension EmptyCountRule {
             if let (count, position) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot) {
                 let newNode =
                     if let count = count.as(MemberAccessExprSyntax.self) {
-                        count.with(\.declName.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
+                        ExprSyntax(count.with(\.declName.baseName, "isEmpty").trimmed)
                     } else {
-                        count.as(DeclReferenceExprSyntax.self)?.with(\.baseName, "isEmpty").trimmed.as(ExprSyntax.self)
+                        ExprSyntax(count.as(DeclReferenceExprSyntax.self)?.with(\.baseName, "isEmpty").trimmed)
                     }
                 guard let newNode else { return super.visit(node) }
                 correctionPositions.append(position)

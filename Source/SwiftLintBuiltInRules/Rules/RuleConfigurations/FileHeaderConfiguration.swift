@@ -28,7 +28,7 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration {
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: String] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
 
         // Cache the created regexes if possible.

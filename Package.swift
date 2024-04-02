@@ -19,11 +19,12 @@ let package = Package(
     products: [
         .executable(name: "swiftlint", targets: ["swiftlint"]),
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"]),
-        .plugin(name: "SwiftLintPlugin", targets: ["SwiftLintPlugin"])
+        .plugin(name: "SwiftLintBuildToolPlugin", targets: ["SwiftLintBuildToolPlugin"]),
+        .plugin(name: "SwiftLintCommandPlugin", targets: ["SwiftLintCommandPlugin"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.2.1")),
-        .package(url: "https://github.com/apple/swift-syntax.git", exact: "509.1.1"),
+        .package(url: "https://github.com/apple/swift-syntax.git", exact: "510.0.0"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMinor(from: "0.34.1")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.6"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
@@ -32,8 +33,13 @@ let package = Package(
     ],
     targets: [
         .plugin(
-            name: "SwiftLintPlugin",
+            name: "SwiftLintBuildToolPlugin",
             capability: .buildTool(),
+            dependencies: swiftLintPluginDependencies
+        ),
+        .plugin(
+            name: "SwiftLintCommandPlugin",
+            capability: .command(intent: .custom(verb: "swiftlint", description: "SwiftLint Command Plugin")),
             dependencies: swiftLintPluginDependencies
         ),
         .executableTarget(
@@ -124,6 +130,9 @@ let package = Package(
             dependencies: [
                 "SwiftLintFramework",
                 "SwiftLintTestHelpers"
+            ],
+            exclude: [
+                "default_rule_configurations.yml"
             ],
             swiftSettings: swiftFeatures
         ),

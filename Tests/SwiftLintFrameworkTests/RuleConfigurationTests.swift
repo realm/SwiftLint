@@ -42,6 +42,13 @@ class RuleConfigurationTests: SwiftLintTestCase {
         }
     }
 
+    func testSeverityWorksAsOnlyParameter() throws {
+        var config = AttributesConfiguration()
+        XCTAssertEqual(config.severity, .warning)
+        try config.apply(configuration: "error")
+        XCTAssertEqual(config.severity, .error)
+    }
+
     func testSeverityConfigurationFromString() {
         let config = "Warning"
         let comp = SeverityConfiguration<RuleMock>(.warning)
@@ -66,10 +73,18 @@ class RuleConfigurationTests: SwiftLintTestCase {
         }
     }
 
-    func testSeverityConfigurationThrowsOnBadConfig() {
+    func testSeverityConfigurationThrowsNothingApplied() throws {
         let config = 17
+        var severityConfig = SeverityConfiguration<RuleMock>(.error)
+        checkError(Issue.nothingApplied(ruleID: RuleMock.identifier)) {
+            try severityConfig.apply(configuration: config)
+        }
+    }
+
+    func testSeverityConfigurationThrowsInvalidConfiguration() {
+        let config = "foo"
         var severityConfig = SeverityConfiguration<RuleMock>(.warning)
-        checkError(Issue.unknownConfiguration(ruleID: RuleMock.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: RuleMock.identifier)) {
             try severityConfig.apply(configuration: config)
         }
     }
@@ -100,7 +115,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
     func testRegexConfigurationThrows() {
         let config = 17
         var regexConfig = RegexConfiguration<RuleMock>(identifier: "")
-        checkError(Issue.unknownConfiguration(ruleID: RuleMock.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: RuleMock.description.identifier)) {
             try regexConfig.apply(configuration: config)
         }
     }
@@ -304,7 +319,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
         var configuration = ModifierOrderConfiguration()
         let config = ["severity": "warning", "preferred_modifier_order": ["specialize"]]  as [String: any Sendable]
 
-        checkError(Issue.unknownConfiguration(ruleID: ModifierOrderRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: ModifierOrderRule.description.identifier)) {
             try configuration.apply(configuration: config)
         }
     }
@@ -312,7 +327,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
     func testModifierOrderConfigurationThrowsOnNonModifiableGroup() {
         var configuration = ModifierOrderConfiguration()
         let config = ["severity": "warning", "preferred_modifier_order": ["atPrefixed"]]  as [String: any Sendable]
-        checkError(Issue.unknownConfiguration(ruleID: ModifierOrderRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: ModifierOrderRule.description.identifier)) {
             try configuration.apply(configuration: config)
         }
     }

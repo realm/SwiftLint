@@ -1,6 +1,6 @@
 /// A rule configuration that allows to disable (`off`) an option of a rule or specify its severity level in which
 /// case it's active.
-public struct ChildOptionSeverityConfiguration<Parent: Rule>: RuleConfiguration {
+public struct ChildOptionSeverityConfiguration<Parent: Rule>: RuleConfiguration, AcceptableByConfigurationElement {
     /// Configuration with a warning severity.
     public static var error: Self { Self(optionSeverity: .error) }
     /// Configuration with an error severity.
@@ -23,7 +23,7 @@ public struct ChildOptionSeverityConfiguration<Parent: Rule>: RuleConfiguration 
     public mutating func apply(configuration: Any) throws {
         guard let configString = configuration as? String,
             let optionSeverity = ChildOptionSeverity(rawValue: configString.lowercased()) else {
-            throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
         }
         self.optionSeverity = optionSeverity
     }

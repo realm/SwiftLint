@@ -2,7 +2,8 @@ import Foundation
 import SourceKittenFramework
 
 /// A rule configuration used for defining custom rules in yaml.
-public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Hashable, CacheDescriptionProvider {
+public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Hashable,
+                                                CacheDescriptionProvider, InlinableOptionType {
     /// The identifier for this custom rule.
     public let identifier: String
     /// The name for this custom rule.
@@ -58,7 +59,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any],
               let regexString = configurationDict[$regex.key] as? String else {
-            throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
         }
 
         regex = try RegularExpression(pattern: regexString)
@@ -90,7 +91,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         }
         if let captureGroup = configurationDict["capture_group"] as? Int {
             guard (0 ... regex.numberOfCaptureGroups).contains(captureGroup) else {
-                throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
+                throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
             }
             self.captureGroup = captureGroup
         }
@@ -140,7 +141,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             if let kind = SyntaxKind(shortName: $0) {
                 return kind
             }
-            throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
         }
         return Set(kinds)
     }

@@ -1,4 +1,4 @@
-@preconcurrency import SwiftSyntax
+import SwiftSyntax
 import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule(explicitRewriter: true)

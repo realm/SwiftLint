@@ -2,13 +2,24 @@
 
 #### Breaking
 
-* None.
+* Rewrite `SwiftLintPlugin` using `BUILD_WORKSPACE_DIRECTORY` without relying
+  on the `--config` option.  
+  [Garric Nahapetian](https://github.com/garricn)
+  
+* Introduce SwiftLintCommandPlugin.
+  Rename SwiftLintBuildToolPlugin.
+  Add Swift Package Manager installation instructions.  
+  [garricn](https://github.com/garricn)
 
 #### Experimental
 
 * None.
 
 #### Enhancements
+
+* Ignore absence of a non-initial local config instead of
+  falling back to default.  
+  [kohtenko](https://github.com/kohtenko)
 
 * Add new option `ignore_typealiases_and_associatedtypes` to
   `nesting` rule. It excludes `typealias` and `associatedtype`
@@ -20,6 +31,11 @@
   [Julien Baillon](https://github.com/julien-baillon)
   [#5372](https://github.com/realm/SwiftLint/issues/5372)
 
+* Allow to set the severity of rules (if they have one) in the short form
+  `rule_name: warning|error` provided that no other attributes need to be
+  configured.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Add new `ignore_one_liners` option to `switch_case_alignment`
   rule to ignore switch statements written in a single line.  
   [tonell-m](https://github.com/tonell-m)
@@ -30,6 +46,11 @@
   beginning of the closure. Options allow further cases to always trigger.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#70](https://github.com/realm/SwiftLint/issues/70)
+
+* Warn when `--fix` comes together with `--strict` or `--lenient` as only `--fix`
+  takes effect then.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5387](https://github.com/realm/SwiftLint/pull/5387)
 
 * Add new `one_declaration_per_file` rule that allows only a
   single class/struct/enum/protocol declaration per file.
@@ -103,8 +124,8 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5418](https://github.com/realm/SwiftLint/pull/5418)
 
-* Add new `non_optional_string_data_conversion` rule to enforce 
-  non-failable conversions of UTF-8 `String` <-> `Data`.    
+* Add new `non_optional_string_data_conversion` rule to enforce
+  non-failable conversions of UTF-8 `String` <-> `Data`.  
   [Ben P](https://github.com/ben-p-commits)
   [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
@@ -121,9 +142,17 @@
 
 * Make `empty_count` auto-correctable.  
   [KS1019](https://github.com/KS1019/)
+  
+* Make `private_swiftui_state` auto-correctable.  
+  [mt00chikin](https://github.com/mt00chikin)
 
 * Make `trailing_closure` correctable.  
   [KS1019](https://github.com/KS1019/)
+
+* Add new `static_over_final_class` rule to prefer `static` over
+  `final class` declaration.  
+  [phlippieb](https://github.com/phlippieb)
+  [#5471](https://github.com/realm/SwiftLint/issues/5471)
 
 #### Bug Fixes
 
@@ -136,6 +165,10 @@
   when attributes attached to declarations were spread over multiple lines.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4801](https://github.com/realm/SwiftLint/pull/4801)
+
+* Support `private_over_fileprivate` rule for actors.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5489](https://github.com/realm/SwiftLint/pull/5489)
 
 * Fix some false positives in `multiline_literal_brackets` rule that would
   happen when comments are present.  
@@ -166,7 +199,7 @@
   are defined in a tuple like `let (a, b) = (5, 10)` or `let a = (2, 3)`.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5305](https://github.com/realm/SwiftLint/pull/5305)
-  
+
 * Silence `pattern_matching_keywords` rule when an identifier is referenced
   in the argument list of a matching enum case.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -174,6 +207,17 @@
 
 * Don't trigger the `return_value_from_void_function` warning from initializers.  
   [mrbkap](https://github.com/mrbkap)
+
+* Fixes superfluous warnings about configurations for rules that were not
+  enabled, when the rules were enabled in a parent configuration.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4858](https://github.com/realm/SwiftLint/issues/4858)
+
+* Add `all` pseudo-rule for `analyzer_rules` - enables all analyzer rules
+  that are not listed in `disabled_rules`.  
+  [woxtu](https://github.com/woxtu)
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4999](https://github.com/realm/SwiftLint/issues/4999)
 
 ## 0.54.0: Macro-Economic Forces
 
@@ -841,10 +885,6 @@
 * Catch more valid `no_magic_numbers` violations.  
   [JP Simard](https://github.com/jpsim)
 
-* Rewrite `SwiftLintPlugin` using `BUILD_WORKSPACE_DIRECTORY` without relying
-  on the `--config` option.  
-  [Garric Nahapetian](https://github.com/garricn)
-
 * Add `blanket_disable_command` rule that checks whether
   rules are re-enabled after being disabled.  
   [Martin Redington](https://github.com/mildm8nnered)
@@ -1454,7 +1494,7 @@ accordingly._
   progress bar instead of each file being processed.  
   [JP Simard](https://github.com/jpsim)
 
-* `--fix` now works with `--use-stdin`, printing the output to to STDOUT instead
+* `--fix` now works with `--use-stdin`, printing the output to STDOUT instead
   of crashing.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4127](https://github.com/realm/SwiftLint/issues/4127)

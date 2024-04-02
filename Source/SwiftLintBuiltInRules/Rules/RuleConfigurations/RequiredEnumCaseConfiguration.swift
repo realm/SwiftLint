@@ -32,7 +32,7 @@ struct RequiredEnumCaseConfiguration: RuleConfiguration {
 
     mutating func apply(configuration: Any) throws {
         guard let config = configuration as? [String: [String: String]] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
 
         register(protocols: config)

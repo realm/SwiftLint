@@ -186,7 +186,7 @@ private extension VariableDeclSyntax {
         }
 
         return bindings.allSatisfy { binding in
-            guard let accessorBlock = binding.accessorBlock?.as(AccessorBlockSyntax.self) else {
+            guard let accessorBlock = binding.accessorBlock else {
                 return true
             }
 

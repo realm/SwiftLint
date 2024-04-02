@@ -3,6 +3,7 @@
 files=(
 "Source/SwiftLintBuiltInRules/Rules/Idiomatic/PrivateOverFilePrivateRule.swift"
 "Source/SwiftLintBuiltInRules/Rules/Idiomatic/ToggleBoolRule.swift"
+"Source/SwiftLintBuiltInRules/Rules/Lint/UnusedClosureParameterRule.swift"
 "Source/SwiftLintBuiltInRules/Rules/Style/EmptyEnumArgumentsRule.swift"
 "Source/SwiftLintBuiltInRules/Rules/Style/OptionalEnumCaseMatchingRule.swift"
 "Source/SwiftLintBuiltInRules/Rules/Style/TrailingCommaRule.swift"

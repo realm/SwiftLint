@@ -17,7 +17,7 @@ public extension Configuration {
     }
 
     /// Represents how a Configuration object can be configured with regards to rules.
-    enum RulesMode {
+    enum RulesMode: Equatable {
         /// The default rules mode, which will enable all rules that aren't defined as being opt-in
         /// (conforming to the `OptInRule` protocol), minus the rules listed in `disabled`, plus the rules listed in
         /// `optIn`.
@@ -72,8 +72,18 @@ public extension Configuration {
                     effectiveOptInRules = optInRules
                 }
 
-                warnAboutDuplicates(in: effectiveOptInRules + analyzerRules)
-                self = .default(disabled: Set(disabledRules), optIn: Set(effectiveOptInRules + analyzerRules))
+                let effectiveAnalyzerRules: [String]
+                if analyzerRules.contains(RuleIdentifier.all.stringRepresentation) {
+                    let allAnalyzerRules = RuleRegistry.shared.list.list.compactMap { ruleID, ruleType in
+                        ruleType is any AnalyzerRule.Type ? ruleID : nil
+                    }
+                    effectiveAnalyzerRules = allAnalyzerRules
+                } else {
+                    effectiveAnalyzerRules = analyzerRules
+                }
+
+                warnAboutDuplicates(in: effectiveOptInRules + effectiveAnalyzerRules)
+                self = .default(disabled: Set(disabledRules), optIn: Set(effectiveOptInRules + effectiveAnalyzerRules))
             }
         }
 

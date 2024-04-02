@@ -9,3 +9,4 @@ excluded:
 line_length: 80
 
 child_config: child1.yml
+parent_config: nonExistingParent.yml

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftLintCore
 
-struct NameConfiguration<Parent: Rule>: RuleConfiguration {
+struct NameConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
     typealias Severity = SeverityConfiguration<Parent>
     typealias SeverityLevels = SeverityLevelsConfiguration<Parent>
     typealias StartWithLowercaseConfiguration = ChildOptionSeverityConfiguration<Parent>
@@ -51,7 +51,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration {
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
 
         if let minLengthConfiguration = configurationDict[$minLength.key] {

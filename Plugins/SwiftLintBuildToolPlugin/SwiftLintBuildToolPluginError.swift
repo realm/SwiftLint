@@ -1,6 +1,6 @@
 import PackagePlugin
 
-enum SwiftLintPluginError: Error, CustomStringConvertible {
+enum SwiftLintBuildToolPluginError: Error, CustomStringConvertible {
     case pathNotInDirectory(path: Path, directory: Path)
     case swiftFilesNotInProjectDirectory(Path)
     case swiftFilesNotInWorkingDirectory(Path)

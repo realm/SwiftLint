@@ -1,7 +1,10 @@
+import Foundation
 import SwiftSyntax
+import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
 enum AutoApply: MemberMacro {
+    // swiftlint:disable:next function_body_length
     static func expansion(
         of node: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
@@ -22,43 +25,69 @@ enum AutoApply: MemberMacro {
         let firstIndexWithoutKey = annotatedVarDecls
             .partition { _, annotation in
                 if case let .argumentList(arguments) = annotation.arguments {
-                    return arguments.contains { $0.label?.text == "key" } == true
+                    return arguments.contains {
+                           $0.label?.text == "inline"
+                        && $0.expression.as(BooleanLiteralExprSyntax.self)?.literal.text == "true"
+                    }
                 }
                 return false
             }
         let elementNames = annotatedVarDecls.compactMap {
             $0.0.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
         }
-        let elementsWithoutKeyUpdate = elementNames[..<firstIndexWithoutKey]
-            .map {
-                """
-                try \($0).apply(configuration, ruleID: Parent.identifier)
-                """
+        let nonInlinedOptions = elementNames[..<firstIndexWithoutKey]
+        var inlinedOptions = elementNames[firstIndexWithoutKey...]
+        let isSeverityBased = configuration.inheritanceClause?.inheritedTypes.contains {
+            $0.type.as(IdentifierTypeSyntax.self)?.name.text == "SeverityBasedRuleConfiguration"
+        }
+        if isSeverityBased == true {
+            if nonInlinedOptions.contains("severityConfiguration") {
+                inlinedOptions.append("severityConfiguration")
+            } else {
+                context.diagnose(SwiftLintCoreMacroError.severityBasedWithoutProperty.diagnose(at: configuration.name))
             }
-        let elementsWithKeyUpdate = elementNames[firstIndexWithoutKey...]
-            .map {
-                """
-                try \($0).apply(configuration[$\($0).key], ruleID: Parent.identifier)
-                try $\($0).performAfterParseOperations()
-                """
-            }
-        let configBinding = elementsWithKeyUpdate.isEmpty ? "_" : "configuration"
+        }
         return [
-            """
-            mutating func apply(configuration: Any) throws {
-                \(raw: elementsWithoutKeyUpdate.joined(separator: "\n"))
-                guard let \(raw: configBinding) = configuration as? [String: Any] else {
-                    \(raw: elementsWithoutKeyUpdate.isEmpty
-                        ? "throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)"
+            DeclSyntax(try FunctionDeclSyntax("mutating func apply(configuration: Any) throws") {
+                for option in nonInlinedOptions {
+                    """
+                    if $\(raw: option).key.isEmpty {
+                        $\(raw: option).key = "\(raw: option.snakeCased)"
+                    }
+                    """
+                }
+                for option in inlinedOptions {
+                    """
+                    do {
+                        try \(raw: option).apply(configuration, ruleID: Parent.identifier)
+                        try $\(raw: option).performAfterParseOperations()
+                    } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                        // Acceptable. Continue.
+                    }
+                    """
+                }
+                """
+                guard let configuration = configuration as? [String: Any] else {
+                    \(raw: inlinedOptions.isEmpty
+                        ? "throw Issue.invalidConfiguration(ruleID: Parent.identifier)"
                         : "return")
                 }
-                \(raw: elementsWithKeyUpdate.joined(separator: "\n"))
+                """
+                for option in nonInlinedOptions {
+                    """
+                    try \(raw: option).apply(configuration[$\(raw: option).key], ruleID: Parent.identifier)
+                    """
+                    """
+                    try $\(raw: option).performAfterParseOperations()
+                    """
+                }
+                """
                 if !supportedKeys.isSuperset(of: configuration.keys) {
                     let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                     throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
                 }
-            }
-            """
+                """
+            })
         ]
     }
 }
@@ -88,7 +117,7 @@ enum MakeAcceptableByConfigurationElement: ExtensionMacro {
                         if let value = value as? String, let newSelf = Self(rawValue: value) {
                             self = newSelf
                         } else {
-                            throw Issue.unknownConfiguration(ruleID: ruleID)
+                            throw Issue.invalidConfiguration(ruleID: ruleID)
                         }
                     }
                 }
@@ -128,5 +157,18 @@ private extension EnumDeclSyntax {
             default: nil
             }
         }.first ?? ""
+    }
+}
+
+private extension String {
+    // swiftlint:disable:next force_try
+    static let regex = try! NSRegularExpression(pattern: "(?<!^)(?=[A-Z])")
+
+    var snakeCased: Self {
+        Self.regex.stringByReplacingMatches(
+            in: self,
+            range: NSRange(location: 0, length: utf16.count),
+            withTemplate: "_"
+        ).lowercased()
     }
 }

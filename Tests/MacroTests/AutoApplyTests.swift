@@ -37,11 +37,9 @@ final class AutoApplyTests: XCTestCase {
             struct S {
 
                 mutating func apply(configuration: Any) throws {
-
-                    guard let _ = configuration as? [String: Any] else {
-                        throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
+                    guard let configuration = configuration as? [String: Any] else {
+                        throw Issue.invalidConfiguration(ruleID: Parent.identifier)
                     }
-
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
@@ -59,26 +57,33 @@ final class AutoApplyTests: XCTestCase {
             @AutoApply
             struct S {
                 @ConfigurationElement
-                var e1 = 1
-                @ConfigurationElement(value: 7)
-                var e2 = 2
+                var eA = 1
+                @ConfigurationElement(key: "name")
+                var eB = 2
             }
             """,
             expandedSource:
             """
             struct S {
                 @ConfigurationElement
-                var e1 = 1
-                @ConfigurationElement(value: 7)
-                var e2 = 2
+                var eA = 1
+                @ConfigurationElement(key: "name")
+                var eB = 2
 
                 mutating func apply(configuration: Any) throws {
-                    try e1.apply(configuration, ruleID: Parent.identifier)
-                    try e2.apply(configuration, ruleID: Parent.identifier)
-                    guard let _ = configuration as? [String: Any] else {
-                        return
+                    if $eA.key.isEmpty {
+                        $eA.key = "e_a"
                     }
-
+                    if $eB.key.isEmpty {
+                        $eB.key = "e_b"
+                    }
+                    guard let configuration = configuration as? [String: Any] else {
+                        throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                    }
+                    try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
+                    try $eA.performAfterParseOperations()
+                    try eB.apply(configuration[$eB.key], ruleID: Parent.identifier)
+                    try $eB.performAfterParseOperations()
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
@@ -90,34 +95,49 @@ final class AutoApplyTests: XCTestCase {
         )
     }
 
-    func testConfigurationElementsWithKeys() {
+    func testInlinedConfigurationElements() {
         assertMacroExpansion(
             """
             @AutoApply
             struct S {
-                @ConfigurationElement(key: "e1")
-                var e1 = 1
-                @ConfigurationElement(key: "e2", other: 7)
-                var e2 = 2
+                @ConfigurationElement(key: "eD")
+                var eA = 1
+                @ConfigurationElement(inline: true)
+                var eB = 2
+                @ConfigurationElement(inline: false)
+                var eC = 3
             }
             """,
             expandedSource:
             """
             struct S {
-                @ConfigurationElement(key: "e1")
-                var e1 = 1
-                @ConfigurationElement(key: "e2", other: 7)
-                var e2 = 2
+                @ConfigurationElement(key: "eD")
+                var eA = 1
+                @ConfigurationElement(inline: true)
+                var eB = 2
+                @ConfigurationElement(inline: false)
+                var eC = 3
 
                 mutating func apply(configuration: Any) throws {
-
-                    guard let configuration = configuration as? [String: Any] else {
-                        throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
+                    if $eA.key.isEmpty {
+                        $eA.key = "e_a"
                     }
-                    try e1.apply(configuration[$e1.key], ruleID: Parent.identifier)
-                    try $e1.performAfterParseOperations()
-                    try e2.apply(configuration[$e2.key], ruleID: Parent.identifier)
-                    try $e2.performAfterParseOperations()
+                    if $eC.key.isEmpty {
+                        $eC.key = "e_c"
+                    }
+                    do {
+                        try eB.apply(configuration, ruleID: Parent.identifier)
+                        try $eB.performAfterParseOperations()
+                    } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                        // Acceptable. Continue.
+                    }
+                    guard let configuration = configuration as? [String: Any] else {
+                        return
+                    }
+                    try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
+                    try $eA.performAfterParseOperations()
+                    try eC.apply(configuration[$eC.key], ruleID: Parent.identifier)
+                    try $eC.performAfterParseOperations()
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
@@ -127,5 +147,89 @@ final class AutoApplyTests: XCTestCase {
             """,
             macros: macros
         )
+    }
+
+    func testSeverityBasedConfigurationWithoutSeverityProperty() {
+        assertMacroExpansion(
+            """
+            @AutoApply
+            struct S: SeverityBasedRuleConfiguration {
+            }
+            """,
+            expandedSource:
+            """
+            struct S: SeverityBasedRuleConfiguration {
+
+                mutating func apply(configuration: Any) throws {
+                    guard let configuration = configuration as? [String: Any] else {
+                        throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                    }
+                    if !supportedKeys.isSuperset(of: configuration.keys) {
+                        let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
+                        throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
+                    }
+                }
+            }
+            """,
+            diagnostics: [
+                DiagnosticSpec(
+                    message: SwiftLintCoreMacroError.severityBasedWithoutProperty.message,
+                    line: 2,
+                    column: 8
+                )
+            ],
+            macros: macros)
+    }
+
+    func testSeverityAppliedTwice() {
+        // swiftlint:disable line_length
+        assertMacroExpansion(
+            """
+            @AutoApply
+            struct S: SeverityBasedRuleConfiguration {
+                @ConfigurationElement
+                var severityConfiguration = .warning
+                @ConfigurationElement
+                var foo = 2
+            }
+            """,
+            expandedSource:
+            """
+            struct S: SeverityBasedRuleConfiguration {
+                @ConfigurationElement
+                var severityConfiguration = .warning
+                @ConfigurationElement
+                var foo = 2
+
+                mutating func apply(configuration: Any) throws {
+                    if $severityConfiguration.key.isEmpty {
+                        $severityConfiguration.key = "severity_configuration"
+                    }
+                    if $foo.key.isEmpty {
+                        $foo.key = "foo"
+                    }
+                    do {
+                        try severityConfiguration.apply(configuration, ruleID: Parent.identifier)
+                        try $severityConfiguration.performAfterParseOperations()
+                    } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                        // Acceptable. Continue.
+                    }
+                    guard let configuration = configuration as? [String: Any] else {
+                        return
+                    }
+                    try severityConfiguration.apply(configuration[$severityConfiguration.key], ruleID: Parent.identifier)
+                    try $severityConfiguration.performAfterParseOperations()
+                    try foo.apply(configuration[$foo.key], ruleID: Parent.identifier)
+                    try $foo.performAfterParseOperations()
+                    if !supportedKeys.isSuperset(of: configuration.keys) {
+                        let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
+                        throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
+                    }
+                }
+            }
+            """,
+            macros: macros
+        )
+        // swiftlint:enable line_length
     }
 }

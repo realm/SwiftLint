@@ -1,5 +1,5 @@
 /// A rule configuration that allows specifying thresholds for `warning` and `error` severities.
-public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration {
+public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
     /// The threshold for a violation to be a warning.
     @ConfigurationElement(key: "warning")
     public var warning: Int = 12
@@ -34,7 +34,7 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration {
                 if let warning = warningValue as? Int {
                     self.warning = warning
                 } else {
-                    throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
+                    throw Issue.invalidConfiguration(ruleID: Parent.identifier)
                 }
             }
             if let errorValue = configDict[$error.key] {
@@ -43,13 +43,13 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration {
                 } else if let error = errorValue as? Int {
                     self.error = error
                 } else {
-                    throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
+                    throw Issue.invalidConfiguration(ruleID: Parent.identifier)
                 }
             } else {
                 self.error = nil
             }
         } else {
-            throw Issue.invalidConfiguration(ruleID: Parent.description.identifier)
+            throw Issue.nothingApplied(ruleID: Parent.identifier)
         }
     }
 }

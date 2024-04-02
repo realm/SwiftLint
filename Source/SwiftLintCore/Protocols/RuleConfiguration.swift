@@ -1,5 +1,5 @@
 /// A configuration value for a rule to allow users to modify its behavior.
-public protocol RuleConfiguration: InlinableOptionType, Equatable {
+public protocol RuleConfiguration: Equatable {
     /// The type of the rule that's using this configuration.
     associatedtype Parent: Rule
 

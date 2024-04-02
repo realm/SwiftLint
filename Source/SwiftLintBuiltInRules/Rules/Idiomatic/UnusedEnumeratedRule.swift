@@ -49,10 +49,14 @@ private extension UnusedEnumeratedRule {
                   let functionCall = node.sequence.asFunctionCall,
                   functionCall.isEnumerated,
                   let firstElement = tuplePattern.elements.first,
-                  let secondElement = tuplePattern.elements.last,
-                  case let firstTokenIsUnderscore = firstElement.isUnderscore,
-                  case let lastTokenIsUnderscore = secondElement.isUnderscore,
-                  firstTokenIsUnderscore || lastTokenIsUnderscore else {
+                  let secondElement = tuplePattern.elements.last
+            else {
+                return
+            }
+
+            let firstTokenIsUnderscore = firstElement.isUnderscore
+            let lastTokenIsUnderscore = secondElement.isUnderscore
+            guard firstTokenIsUnderscore || lastTokenIsUnderscore else {
                 return
             }
 
@@ -64,8 +68,9 @@ private extension UnusedEnumeratedRule {
 
         override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
             guard node.isEnumerated,
-                  let trailingClosure = node.parent?.parent?.as(FunctionCallExprSyntax.self)?.trailingClosure,
-                  node.parent?.as(MemberAccessExprSyntax.self)?.declName.baseName.text != "filter"
+                  let parent = node.parent,
+                  parent.as(MemberAccessExprSyntax.self)?.declName.baseName.text != "filter",
+                  let trailingClosure = parent.parent?.as(FunctionCallExprSyntax.self)?.trailingClosure
             else {
                 return .visitChildren
             }
@@ -73,12 +78,15 @@ private extension UnusedEnumeratedRule {
             if let parameterClause = trailingClosure.signature?.parameterClause {
                 guard let parameterClause = parameterClause.as(ClosureShorthandParameterListSyntax.self),
                       parameterClause.count == 2,
-                      let firstElement = parameterClause.firstParameter,
-                      let secondElement = parameterClause.lastParameter,
-                      case let firstTokenIsUnderscore = firstElement.isUnderscore,
-                      case let lastTokenIsUnderscore = secondElement.isUnderscore,
-                      firstTokenIsUnderscore || lastTokenIsUnderscore
+                      let firstElement = parameterClause.first,
+                      let secondElement = parameterClause.last
                 else {
+                    return .visitChildren
+                }
+
+                let firstTokenIsUnderscore = firstElement.isUnderscore
+                let lastTokenIsUnderscore = secondElement.isUnderscore
+                guard firstTokenIsUnderscore || lastTokenIsUnderscore else {
                     return .visitChildren
                 }
 
@@ -169,15 +177,5 @@ private extension TuplePatternElementSyntax {
 private extension ClosureShorthandParameterSyntax {
     var isUnderscore: Bool {
         name.tokenKind == .wildcard
-    }
-}
-
-private extension ClosureShorthandParameterListSyntax {
-    var firstParameter: ClosureShorthandParameterSyntax? {
-        children(viewMode: .sourceAccurate).first?.as(ClosureShorthandParameterSyntax.self)
-    }
-
-    var lastParameter: ClosureShorthandParameterSyntax? {
-        children(viewMode: .sourceAccurate).last?.as(ClosureShorthandParameterSyntax.self)
     }
 }

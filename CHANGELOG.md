@@ -224,6 +224,7 @@
   [woxtu](https://github.com/woxtu)
   [Martin Redington](https://github.com/mildm8nnered)
   [#4999](https://github.com/realm/SwiftLint/issues/4999)
+
 * Updates the reasons provided by violations of the `blanket_disable_command`
   to omit language about the end of the file, and to direct users to
   re-enable the rule as soon as possible.  

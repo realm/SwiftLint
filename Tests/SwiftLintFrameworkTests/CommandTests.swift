@@ -2,6 +2,7 @@
 import Foundation
 import SourceKittenFramework
 @testable import SwiftLintCore
+@testable import SwiftLintBuiltInRules
 import XCTest
 
 private extension Command {
@@ -453,5 +454,29 @@ class CommandTests: SwiftLintTestCase {
             )),
             []
         )
+    }
+
+    func testSuperfluousDisableCommandsEnabledForAnalyzer() {
+        let configuration = Configuration(
+            rulesMode: .default(disabled: [], optIn: [UnusedDeclarationRule.description.identifier])
+        )
+        let violations = violations(
+            Example("""
+            public class Foo {
+                // swiftlint:disable:next unused_declaration
+                func foo() -> Int {
+                    1
+                }
+                // swiftlint:disable:next unused_declaration
+                func bar() {
+                   foo()
+                }
+            }
+            """),
+            config: configuration,
+            requiresFileOnDisk: true
+        )
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.ruleIdentifier, "superfluous_disable_command")
     }
 }

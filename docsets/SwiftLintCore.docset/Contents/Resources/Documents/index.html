@@ -826,7 +826,8 @@ Cannot be specified alongside <code>disabled_rules</code> or <code>opt_in_rules<
 <li><code>analyzer_rules</code>: This is an entirely separate list of rules that are only
 run by the <code>analyze</code> command. All analyzer rules are opt-in, so this is the
 only configurable rule list, there are no equivalents for <code>disabled_rules</code>
-<code>only_rules</code>.</li>
+and <code>only_rules</code>. The special <code>all</code> identifier can also be used here to enable
+all analyzer rules, except the ones listed in <code>disabled_rules</code>.</li>
 </ul>
 <pre class="highlight yaml"><code><span class="c1"># By default, SwiftLint uses a set of sensible default rules you can adjust:</span>
 <span class="na">disabled_rules</span><span class="pi">:</span> <span class="c1"># rule identifiers turned on by default to exclude from running</span>

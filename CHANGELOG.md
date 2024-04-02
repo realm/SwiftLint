@@ -5,11 +5,17 @@
 * Rewrite `SwiftLintPlugin` using `BUILD_WORKSPACE_DIRECTORY` without relying
   on the `--config` option.  
   [Garric Nahapetian](https://github.com/garricn)
-  
+
 * Introduce SwiftLintCommandPlugin.
   Rename SwiftLintBuildToolPlugin.
   Add Swift Package Manager installation instructions.  
   [garricn](https://github.com/garricn)
+
+* The `superfluous_disable_command` rule will now be enabled for the `analyze`
+  command, unless it has been disabled, and will warn about superfluous
+  disablement of analyzer rules.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4792](https://github.com/realm/SwiftLint/issues/4792)
 
 #### Experimental
 
@@ -153,12 +159,6 @@
   `final class` declaration.  
   [phlippieb](https://github.com/phlippieb)
   [#5471](https://github.com/realm/SwiftLint/issues/5471)
-
-* The `superfluous_disable_command` rule will now be enabled for the `analyze`
-  command, unless it has been disabled, and will warn about superfluous
-  disablement of analyzer rules.  
-  [Martin Redington](https://github.com/mildm8nnered)
-  [#4792](https://github.com/realm/SwiftLint/issues/4792)
 
 #### Bug Fixes
 

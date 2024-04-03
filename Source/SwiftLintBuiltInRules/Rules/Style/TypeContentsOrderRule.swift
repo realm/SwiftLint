@@ -133,7 +133,7 @@ struct TypeContentsOrderRule: OptInRule {
             if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.ibaction) {
                 return .ibAction
             }
-            if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.ibSegueAction) {
+            if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.ibsegueaction) {
                 return .ibSegueAction
             }
             return .otherMethod

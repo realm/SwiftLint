@@ -478,5 +478,6 @@ class CommandTests: SwiftLintTestCase {
         )
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.ruleIdentifier, "superfluous_disable_command")
+        XCTAssertEqual(violations.first?.location.line, 3)
     }
 }

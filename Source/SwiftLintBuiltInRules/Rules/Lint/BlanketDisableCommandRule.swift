@@ -148,10 +148,9 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
             }
 
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
-                let reason = "Use 'next', 'this' or 'previous' to disable the " +
-                             "'\(disabledRuleIdentifier.stringRepresentation)' rule for a single line or " +
-                             "'swiftlint:enable' to re-enable it as soon as possible"
-
+                let reason = "Use 'next', 'this' or 'previous' instead to disable the " +
+                              "'\(disabledRuleIdentifier.stringRepresentation)' rule once " +
+                              " or re-enable it as soon as possible"
                 return violation(for: command, ruleIdentifier: disabledRuleIdentifier, in: file, reason: reason)
             }
             return nil

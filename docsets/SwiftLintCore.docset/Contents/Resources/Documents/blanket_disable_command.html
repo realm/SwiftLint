@@ -341,7 +341,7 @@
             
             <h1 id='blanket-disable-command' class='heading'>Blanket Disable Command</h1>
 
-<p>swiftlint:disable commands should be re-enabled before the end of the file</p>
+<p><code>swiftlint:disable</code> commands should use <code>next</code>, <code>this</code> or <code>previous</code> to disable rules for a single line, or <code>swiftlint:enable</code> to re-enable the rules immediately after the violations to be ignored, instead of disabling the rule for the rest of the file.</p>
 
 <ul>
 <li><strong>Identifier:</strong> blanket_disable_command</li>

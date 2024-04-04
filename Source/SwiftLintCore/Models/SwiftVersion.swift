@@ -11,8 +11,29 @@ public struct SwiftVersion: RawRepresentable, Codable, Comparable, Sendable {
         self.rawValue = rawValue
     }
 
+    public static func == (lhs: SwiftVersion, rhs: SwiftVersion) -> Bool {
+        guard let lhsComparators = lhs.comparators, let rhsComparators = rhs.comparators
+        else { return lhs.rawValue == rhs.rawValue }
+
+        return lhsComparators == rhsComparators
+    }
+
     public static func < (lhs: SwiftVersion, rhs: SwiftVersion) -> Bool {
-        return lhs.rawValue < rhs.rawValue
+        guard let lhsComparators = lhs.comparators, let rhsComparators = rhs.comparators
+        else { return lhs.rawValue < rhs.rawValue }
+
+        return lhsComparators.lexicographicallyPrecedes(rhsComparators)
+    }
+
+    var comparators: [Int]? {
+        let components = self.rawValue.split(separator: ".").compactMap { Int($0) }
+
+        guard let major = components.first else { return nil }
+
+        let minor = components.dropFirst(1).first ?? 0
+        let patch = components.dropFirst(2).first ?? 0
+
+        return [major, minor, patch]
     }
 }
 

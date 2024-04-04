@@ -23,7 +23,7 @@ final class BaselineTests: XCTestCase {
     private var violations: [StyleViolation] {
         [
             ArrayInitRule.description,
-            BlanketDisableCommandRule.description,
+            BlockBasedKVORule.description,
             ClosingBraceRule.description,
             DirectReturnRule.description
         ].violations
@@ -76,12 +76,12 @@ final class BaselineTests: XCTestCase {
     func testViolationDetection() throws {
         let violations = [
             ArrayInitRule.description,
-            BlanketDisableCommandRule.description,
+            BlockBasedKVORule.description,
             ArrayInitRule.description,
             ClosingBraceRule.description,
             ClosingBraceRule.description,
             ClosingBraceRule.description,
-            BlanketDisableCommandRule.description,
+            BlockBasedKVORule.description,
             DirectReturnRule.description,
             ArrayInitRule.description,
             ClosingBraceRule.description
@@ -89,7 +89,7 @@ final class BaselineTests: XCTestCase {
 
         let ruleDescriptions = [
             ArrayInitRule.description,
-            BlanketDisableCommandRule.description,
+            BlockBasedKVORule.description,
             ClosingBraceRule.description,
             DirectReturnRule.description
         ]

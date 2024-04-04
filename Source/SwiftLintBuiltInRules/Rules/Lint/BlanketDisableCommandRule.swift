@@ -7,7 +7,7 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
         description: """
                      `swiftlint:disable` commands should use `next`, `this` or `previous` to disable rules for a \
                      single line, or `swiftlint:enable` to re-enable the rules immediately after the violations \
-                     to be ignored, instead of disabling the rule for the rest of the file
+                     to be ignored, instead of disabling the rule for the rest of the file.
                      """,
         kind: .lint,
         nonTriggeringExamples: [

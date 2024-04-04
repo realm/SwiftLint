@@ -88,14 +88,14 @@ struct UnusedEnumeratedRule: Rule {
 
 private extension UnusedEnumeratedRule {
     private struct Closure {
-        var closure: ClosureExprSyntax
+        let closure: ClosureExprSyntax
         var zeroPosition: AbsolutePosition?
         var onePosition: AbsolutePosition?
     }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var nextClosure: ClosureExprSyntax?
-        private var closures: [Closure] = []
+        private var closures = Stack<Closure>()
 
         override func visitPost(_ node: ForStmtSyntax) {
             guard let tuplePattern = node.pattern.as(TuplePatternSyntax.self),
@@ -157,17 +157,17 @@ private extension UnusedEnumeratedRule {
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             if node == nextClosure {
-                closures.append(Closure(closure: node))
+                closures.push(Closure(closure: node))
                 nextClosure = nil
             }
             return .visitChildren
         }
 
         override func visitPost(_ node: ClosureExprSyntax) {
-            guard let closure = closures.last, node == closure.closure else {
+            guard let closure = closures.peek(), node == closure.closure else {
                 return
             }
-            defer { closures.removeLast() }
+            defer { closures.pop() }
 
             guard (closure.zeroPosition != nil) != (closure.onePosition != nil) else {
                 return
@@ -177,7 +177,7 @@ private extension UnusedEnumeratedRule {
         }
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
-            guard var closure = closures.last, node.baseName.text == "$0" || node.baseName.text == "$1" else {
+            guard var closure = closures.peek(), node.baseName.text == "$0" || node.baseName.text == "$1" else {
                 return
             }
             if node.baseName.text == "$0" {
@@ -189,7 +189,8 @@ private extension UnusedEnumeratedRule {
             } else {
                 closure.onePosition = node.positionAfterSkippingLeadingTrivia
             }
-            closures[closures.count - 1] = closure
+            closures.pop()
+            closures.push(closure)
         }
 
         private func addViolation(zeroPosition: AbsolutePosition?, onePosition: AbsolutePosition?) {

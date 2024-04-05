@@ -10,6 +10,11 @@
   Rename SwiftLintBuildToolPlugin.
   Add Swift Package Manager installation instructions.  
   [garricn](https://github.com/garricn)
+  
+* Adjusting CodeClimate Reporter output to have lower case severity
+  values for use in Gitlab and other CodeClimate compatible tools can 
+  import the report without modification.
+  [waitButY](https://github.com/waitbutY)
 
 #### Experimental
 

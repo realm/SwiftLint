@@ -92,8 +92,12 @@ class ReporterTests: SwiftLintTestCase {
     }
 
     func testCodeClimateReporter() {
-        let expectedOutput = stringFromFile("CannedCodeClimateReporterOutput.json").filter{!$0.isWhitespace}
-        let result = CodeClimateReporter.generateReport(generateViolations()).filter{!$0.isWhitespace}
+        let expectedOutput = stringFromFile("CannedCodeClimateReporterOutput.json").filter {
+            !$0.isWhitespace
+        }
+        let result = CodeClimateReporter.generateReport(generateViolations()).filter {
+            !$0.isWhitespace
+        }
         XCTAssertEqual(result, expectedOutput)
     }
 

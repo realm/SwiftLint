@@ -64,7 +64,7 @@ struct UnusedEnumeratedRule: Rule {
                 }
                 return $0
             }
-            """)
+            """, excludeFromDocumentation: true)
         ]
     )
 }

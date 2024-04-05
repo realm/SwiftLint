@@ -139,9 +139,9 @@ private extension UnusedEnumeratedRule {
         }
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            if node.id == nextClosureId {
+            if let nextClosureId, nextClosureId == node.id {
                 closures.push(Closure(id: nextClosureId))
-                nextClosureId = nil
+                self.nextClosureId = nil
             }
             return .visitChildren
         }

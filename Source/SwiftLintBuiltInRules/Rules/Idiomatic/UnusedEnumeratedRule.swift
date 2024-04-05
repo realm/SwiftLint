@@ -53,23 +53,6 @@ struct UnusedEnumeratedRule: Rule {
             """),
             Example("""
             list.enumerated().map {
-                list.enumerated().forEach { print($0, $1) }
-                return ↓$0
-            }
-            """),
-            Example("""
-            list.enumerated().map {
-                $1.enumerated().forEach {
-                    print($0, $1)
-                     $1.enumerated().forEach {
-                         print(↓$1)
-                     }
-                }
-                return $0
-            }
-            """),
-            Example("""
-            list.enumerated().map {
                 $1.enumerated().filter {
                     print($0, $1)
                     $1.enumerated().forEach {

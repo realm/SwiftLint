@@ -71,13 +71,13 @@ struct UnusedEnumeratedRule: Rule {
 
 private extension UnusedEnumeratedRule {
     private struct Closure {
-        let closure: ClosureExprSyntax
+        let id: SyntaxIdentifier
         var zeroPosition: AbsolutePosition?
         var onePosition: AbsolutePosition?
     }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private var nextClosure: ClosureExprSyntax?
+        private var nextClosureId: SyntaxIdentifier?
         private var closures = Stack<Closure>()
 
         override func visitPost(_ node: ForStmtSyntax) {
@@ -132,22 +132,22 @@ private extension UnusedEnumeratedRule {
                     onePosition: firstTokenIsUnderscore ? nil : secondElement.positionAfterSkippingLeadingTrivia
                 )
             } else {
-                nextClosure = trailingClosure
+                nextClosureId = trailingClosure.id
             }
 
             return .visitChildren
         }
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            if node == nextClosure {
-                closures.push(Closure(closure: node))
-                nextClosure = nil
+            if node.id == nextClosureId {
+                closures.push(Closure(id: nextClosureId))
+                nextClosureId = nil
             }
             return .visitChildren
         }
 
         override func visitPost(_ node: ClosureExprSyntax) {
-            guard let closure = closures.peek(), node == closure.closure else {
+            guard let closure = closures.peek(), node.id == closure.id else {
                 return
             }
             defer { closures.pop() }

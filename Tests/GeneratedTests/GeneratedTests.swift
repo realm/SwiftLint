@@ -739,6 +739,12 @@ class NSObjectPreferIsEqualRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class NavigationTitleRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NavigationTitleRule.description)
+    }
+}
+
 class NestingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NestingRule.description)
@@ -1141,6 +1147,12 @@ class StrictFilePrivateRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class StringLocalizationCorrectArgumentsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(StringLocalizationCorrectArgumentsRule.description)
+    }
+}
+
 class StrongIBOutletRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StrongIBOutletRule.description)
@@ -1174,6 +1186,12 @@ class SyntacticSugarRuleGeneratedTests: SwiftLintTestCase {
 class TestCaseAccessibilityRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TestCaseAccessibilityRule.description)
+    }
+}
+
+class TextLocalizationRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TextLocalizationRule.description)
     }
 }
 

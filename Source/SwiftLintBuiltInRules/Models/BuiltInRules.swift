@@ -109,6 +109,7 @@ public let builtInRules: [any Rule.Type] = [
     LineLengthRule.self,
     LiteralExpressionEndIndentationRule.self,
     LocalDocCommentRule.self,
+    LocaleOverrideRule.self,
     LowerACLThanParentRule.self,
     MarkRule.self,
     MissingDocsRule.self,
@@ -124,6 +125,7 @@ public let builtInRules: [any Rule.Type] = [
     NSLocalizedStringRequireBundleRule.self,
     NSNumberInitAsFunctionReferenceRule.self,
     NSObjectPreferIsEqualRule.self,
+    NavigationTitleRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,
     NoExtensionAccessModifierRule.self,
@@ -191,12 +193,14 @@ public let builtInRules: [any Rule.Type] = [
     StatementPositionRule.self,
     StaticOperatorRule.self,
     StrictFilePrivateRule.self,
+    StringLocalizationCorrectArgumentsRule.self,
     StrongIBOutletRule.self,
     SuperfluousElseRule.self,
     SwitchCaseAlignmentRule.self,
     SwitchCaseOnNewlineRule.self,
     SyntacticSugarRule.self,
     TestCaseAccessibilityRule.self,
+    TextLocalizationRule.self,
     TodoRule.self,
     ToggleBoolRule.self,
     TrailingClosureRule.self,
@@ -237,8 +241,5 @@ public let builtInRules: [any Rule.Type] = [
     WeakDelegateRule.self,
     XCTFailMessageRule.self,
     XCTSpecificMatcherRule.self,
-    YodaConditionRule.self,
-
-    // Whatnot Rules
-    LocaleOverrideRule.self
+    YodaConditionRule.self
 ]

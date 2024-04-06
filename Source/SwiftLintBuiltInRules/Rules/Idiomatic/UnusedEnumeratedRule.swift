@@ -37,17 +37,17 @@ struct UnusedEnumeratedRule: Rule {
             Example("for (idx, ↓_) in bar.enumerated() { }"),
             Example("list.enumerated().map { idx, ↓_ in idx }"),
             Example("list.enumerated().map { ↓_, elem in elem }"),
-            Example("list.enumerated().forEach { print(↓$0) }"),
-            Example("list.enumerated().map { ↓$1 }"),
+            Example("list.↓enumerated().forEach { print($0) }"),
+            Example("list.↓enumerated().map { $1 }"),
             Example("""
             list.enumerated().map {
-                $1.enumerated().forEach { print(↓$1) }
+                $1.↓enumerated().forEach { print($1) }
                 return $0
             }
             """),
             Example("""
-            list.enumerated().map {
-                ↓$1.enumerated().forEach { print($0, $1) }
+            list.↓enumerated().map {
+                $1.enumerated().forEach { print($0, $1) }
                 return 1
             }
             """),
@@ -55,8 +55,8 @@ struct UnusedEnumeratedRule: Rule {
             list.enumerated().map {
                 $1.enumerated().filter {
                     print($0, $1)
-                    $1.enumerated().forEach {
-                         if ↓$1 == 2 {
+                    $1.↓enumerated().forEach {
+                         if $1 == 2 {
                              return true
                          }
                     }
@@ -72,12 +72,14 @@ struct UnusedEnumeratedRule: Rule {
 private extension UnusedEnumeratedRule {
     private struct Closure {
         let id: SyntaxIdentifier
+        let enumeratedPosition: AbsolutePosition
         var zeroPosition: AbsolutePosition?
         var onePosition: AbsolutePosition?
     }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var nextClosureId: SyntaxIdentifier?
+        private var lastEnumeratedPosition: AbsolutePosition?
         private var closures = Stack<Closure>()
 
         override func visitPost(_ node: ForStmtSyntax) {
@@ -133,14 +135,15 @@ private extension UnusedEnumeratedRule {
                 )
             } else {
                 nextClosureId = trailingClosure.id
+                lastEnumeratedPosition = node.enumeratedPosition
             }
 
             return .visitChildren
         }
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            if let nextClosureId, nextClosureId == node.id {
-                closures.push(Closure(id: nextClosureId))
+            if let nextClosureId, nextClosureId == node.id, let lastEnumeratedPosition {
+                closures.push(Closure(id: nextClosureId, enumeratedPosition: lastEnumeratedPosition))
                 self.nextClosureId = nil
             }
             return .visitChildren
@@ -156,7 +159,7 @@ private extension UnusedEnumeratedRule {
                 return
             }
 
-            addViolation(zeroPosition: closure.zeroPosition, onePosition: closure.onePosition)
+            addViolation(zeroPosition: closure.zeroPosition, onePosition: closure.onePosition, enumeratedPosition: closure.enumeratedPosition)
         }
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
@@ -176,7 +179,11 @@ private extension UnusedEnumeratedRule {
             closures.push(closure)
         }
 
-        private func addViolation(zeroPosition: AbsolutePosition?, onePosition: AbsolutePosition?) {
+        private func addViolation(
+            zeroPosition: AbsolutePosition?,
+            onePosition: AbsolutePosition?,
+            enumeratedPosition: AbsolutePosition? = nil
+        ) {
             var position: AbsolutePosition?
             var reason: String?
             if let zeroPosition {
@@ -186,6 +193,11 @@ private extension UnusedEnumeratedRule {
                 position = onePosition
                 reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`"
             }
+
+            if let enumeratedPosition {
+                position = enumeratedPosition
+            }
+
             if let position, let reason {
                 violations.append(ReasonedRuleViolation(position: position, reason: reason))
             }
@@ -203,6 +215,13 @@ private extension FunctionCallExprSyntax {
         }
 
         return true
+    }
+
+    var enumeratedPosition: AbsolutePosition? {
+        if let memberAccess = calledExpression.as(MemberAccessExprSyntax.self) {
+            return memberAccess.declName.positionAfterSkippingLeadingTrivia
+        }
+        return nil
     }
 
     var hasNoArguments: Bool {

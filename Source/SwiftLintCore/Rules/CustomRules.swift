@@ -90,7 +90,7 @@ struct CustomRules: Rule, CacheDescriptionProvider {
     }
 }
 
-private extension Region {
+extension Region {
     func isRuleDisabled(customRuleIdentifier: String) -> Bool {
         return disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
     }

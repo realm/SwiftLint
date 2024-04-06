@@ -159,7 +159,11 @@ private extension UnusedEnumeratedRule {
                 return
             }
 
-            addViolation(zeroPosition: closure.zeroPosition, onePosition: closure.onePosition, enumeratedPosition: closure.enumeratedPosition)
+            addViolation(
+                zeroPosition: closure.zeroPosition,
+                onePosition: closure.onePosition,
+                enumeratedPosition: closure.enumeratedPosition
+            )
         }
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {

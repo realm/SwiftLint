@@ -79,9 +79,14 @@ struct UnusedEnumeratedRule: Rule {
 private extension UnusedEnumeratedRule {
     private struct Closure {
         let id: SyntaxIdentifier
-        var enumeratedPosition: AbsolutePosition?
+        let enumeratedPosition: AbsolutePosition?
         var zeroPosition: AbsolutePosition?
         var onePosition: AbsolutePosition?
+
+        init(id: SyntaxIdentifier, enumeratedPosition: AbsolutePosition? = nil) {
+            self.id = id
+            self.enumeratedPosition = enumeratedPosition
+        }
     }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
@@ -154,9 +159,7 @@ private extension UnusedEnumeratedRule {
                 self.nextClosureId = nil
                 self.lastEnumeratedPosition = nil
             } else {
-                if closures.count > 0 {
-                    closures.push(Closure(id: node.id))
-                }
+                closures.push(Closure(id: node.id))
             }
             return .visitChildren
         }
@@ -179,7 +182,7 @@ private extension UnusedEnumeratedRule {
         }
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
-            guard 
+            guard
                 var closure = closures.peek(),
                     closure.enumeratedPosition != nil,
                     node.baseName.text == "$0" || node.baseName.text == "$1" else {

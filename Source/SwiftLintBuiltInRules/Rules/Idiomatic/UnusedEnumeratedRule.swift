@@ -65,6 +65,13 @@ struct UnusedEnumeratedRule: Rule {
                 return $0
             }
             """, excludeFromDocumentation: true)
+            ,
+            Example("""
+            list.↓enumerated().map {
+                $1.forEach { print($0) }
+                return $1
+            }
+            """, excludeFromDocumentation: true)
         ]
     )
 }
@@ -72,7 +79,7 @@ struct UnusedEnumeratedRule: Rule {
 private extension UnusedEnumeratedRule {
     private struct Closure {
         let id: SyntaxIdentifier
-        let enumeratedPosition: AbsolutePosition
+        var enumeratedPosition: AbsolutePosition?
         var zeroPosition: AbsolutePosition?
         var onePosition: AbsolutePosition?
     }
@@ -145,6 +152,11 @@ private extension UnusedEnumeratedRule {
             if let nextClosureId, nextClosureId == node.id, let lastEnumeratedPosition {
                 closures.push(Closure(id: nextClosureId, enumeratedPosition: lastEnumeratedPosition))
                 self.nextClosureId = nil
+                self.lastEnumeratedPosition = nil
+            } else {
+                if closures.count > 0 {
+                    closures.push(Closure(id: node.id))
+                }
             }
             return .visitChildren
         }
@@ -167,7 +179,10 @@ private extension UnusedEnumeratedRule {
         }
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
-            guard var closure = closures.peek(), node.baseName.text == "$0" || node.baseName.text == "$1" else {
+            guard 
+                var closure = closures.peek(),
+                    closure.enumeratedPosition != nil,
+                    node.baseName.text == "$0" || node.baseName.text == "$1" else {
                 return
             }
             if node.baseName.text == "$0" {

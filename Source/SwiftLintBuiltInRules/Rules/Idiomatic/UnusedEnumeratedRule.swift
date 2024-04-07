@@ -229,20 +229,17 @@ private extension UnusedEnumeratedRule {
 
 private extension FunctionCallExprSyntax {
     var isEnumerated: Bool {
-        guard let memberAccess = calledExpression.as(MemberAccessExprSyntax.self),
-              memberAccess.base != nil,
-              memberAccess.declName.baseName.text == "enumerated",
-              hasNoArguments else {
-            return false
-        }
-
-        return true
+        enumeratedPosition != nil
     }
 
     var enumeratedPosition: AbsolutePosition? {
-        if let memberAccess = calledExpression.as(MemberAccessExprSyntax.self) {
+        if let memberAccess = calledExpression.as(MemberAccessExprSyntax.self),
+              memberAccess.base != nil,
+              memberAccess.declName.baseName.text == "enumerated",
+              hasNoArguments {
             return memberAccess.declName.positionAfterSkippingLeadingTrivia
         }
+
         return nil
     }
 

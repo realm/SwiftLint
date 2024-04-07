@@ -183,22 +183,23 @@ private extension UnusedEnumeratedRule {
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
             guard
-                var closure = closures.peek(),
-                    closure.enumeratedPosition != nil,
-                    node.baseName.text == "$0" || node.baseName.text == "$1" else {
+                let closure = closures.peek(),
+                closure.enumeratedPosition != nil,
+                node.baseName.text == "$0" || node.baseName.text == "$1" 
+            else {
                 return
             }
-            if node.baseName.text == "$0" {
-                if node.parent?.as(MemberAccessExprSyntax.self)?.declName.baseName.text == "element" {
-                    closure.onePosition = node.positionAfterSkippingLeadingTrivia
+            closures.modifyLast {
+                if node.baseName.text == "$0" {
+                    if node.parent?.as(MemberAccessExprSyntax.self)?.declName.baseName.text == "element" {
+                        $0.onePosition = node.positionAfterSkippingLeadingTrivia
+                    } else {
+                        $0.zeroPosition = node.positionAfterSkippingLeadingTrivia
+                    }
                 } else {
-                    closure.zeroPosition = node.positionAfterSkippingLeadingTrivia
+                    $0.onePosition = node.positionAfterSkippingLeadingTrivia
                 }
-            } else {
-                closure.onePosition = node.positionAfterSkippingLeadingTrivia
             }
-            closures.pop()
-            closures.push(closure)
         }
 
         private func addViolation(

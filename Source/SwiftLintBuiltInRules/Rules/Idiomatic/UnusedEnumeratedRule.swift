@@ -165,8 +165,8 @@ private extension UnusedEnumeratedRule {
         override func visitPost(_ node: ClosureExprSyntax) {
             if let closure = closures.pop(), (closure.zeroPosition != nil) != (closure.onePosition != nil) {
                 addViolation(
-                    zeroPosition: closure.zeroPosition,
-                    onePosition: closure.onePosition,
+                    zeroPosition: closure.onePosition,
+                    onePosition: closure.zeroPosition,
                     enumeratedPosition: closure.enumeratedPosition
                 )
             }

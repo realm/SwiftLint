@@ -165,27 +165,20 @@ private extension UnusedEnumeratedRule {
         }
 
         override func visitPost(_ node: ClosureExprSyntax) {
-            guard let closure = closures.peek(), node.id == closure.id else {
-                return
+            if let closure = closures.pop(), (closure.zeroPosition != nil) != (closure.onePosition != nil) {
+                addViolation(
+                    zeroPosition: closure.zeroPosition,
+                    onePosition: closure.onePosition,
+                    enumeratedPosition: closure.enumeratedPosition
+                )
             }
-            defer { closures.pop() }
-
-            guard (closure.zeroPosition != nil) != (closure.onePosition != nil) else {
-                return
-            }
-
-            addViolation(
-                zeroPosition: closure.zeroPosition,
-                onePosition: closure.onePosition,
-                enumeratedPosition: closure.enumeratedPosition
-            )
         }
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
             guard
                 let closure = closures.peek(),
                 closure.enumeratedPosition != nil,
-                node.baseName.text == "$0" || node.baseName.text == "$1" 
+                node.baseName.text == "$0" || node.baseName.text == "$1"
             else {
                 return
             }

@@ -245,7 +245,7 @@ class CustomRulesTests: SwiftLintTestCase {
             "only_rules": ["custom_rules", "superfluous_disable_command"],
             "custom_rules": [
                 "dont_print": [
-                  "regex": "print"
+                  "regex": "print\\("
                   ]
             ]
         ]

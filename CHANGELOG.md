@@ -11,9 +11,8 @@
   Add Swift Package Manager installation instructions.  
   [garricn](https://github.com/garricn)
   
-* Adjusting CodeClimate Reporter output to have lower case severity
-  values for use in Gitlab and other CodeClimate compatible tools can 
-  import the report without modification.
+* Fix Code Climate reporter output by having lower case severity
+  values to comply with the Code Climate specification.  
   [waitButY](https://github.com/waitbutY)
 
 #### Experimental

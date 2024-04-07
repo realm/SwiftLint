@@ -196,18 +196,17 @@ final class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testSuperfluousDisableCommandWithCustomRules() throws {
-        let customRulesConfiguration: [String: Any] = [
-            "custom1": [
-                "regex": "pattern",
-                "match_kinds": "comment"
+        let configDict: [String: Any] = [
+            "only_rules": ["custom_rules", "superfluous_disable_command"],
+            "custom_rules": [
+                "custom1": [
+                  "regex": "pattern",
+                  "match_kinds": "comment"
+                  ]
             ]
         ]
-
-        let example = Example(
-            "// swiftlint:disable custom1\n",
-            configuration: customRulesConfiguration
-        ).skipWrappingInCommentTest()
-        let configuration = try XCTUnwrap(makeConfig(["custom_rules": customRulesConfiguration], "custom_rules"))
+        let configuration = try SwiftLintCore.Configuration(dict: configDict)
+        let example = Example("// swiftlint:disable custom1\n")
         let violations = violations(example, config: configuration)
 
         XCTAssertEqual(violations.count, 1)
@@ -218,30 +217,31 @@ final class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testSuperfluousDisableCommandWithMultipleCustomRules() throws {
-        let customRulesConfiguration: [String: Any] = [
-            "custom1": [
-                "regex": "pattern",
-                "match_kinds": "comment"
-            ],
-            "custom2": [
-                "regex": "10",
-                "match_kinds": "number"
-            ],
-            "custom3": [
-                "regex": "100",
-                "match_kinds": "number"
+        let configDict: [String: Any] = [
+            "only_rules": ["custom_rules", "superfluous_disable_command"],
+            "custom_rules": [
+                "custom1": [
+                    "regex": "pattern",
+                    "match_kinds": "comment"
+                ],
+                "custom2": [
+                    "regex": "10",
+                    "match_kinds": "number"
+                ],
+                "custom3": [
+                    "regex": "100",
+                    "match_kinds": "number"
+                ]
             ]
         ]
 
+        let configuration = try SwiftLintCore.Configuration(dict: configDict)
         let example = Example(
             """
             // swiftlint:disable custom1 custom3
             return 10
-
-            """,
-            configuration: customRulesConfiguration
+            """
         ).skipWrappingInCommentTest()
-        let configuration = try XCTUnwrap(makeConfig(["custom_rules": customRulesConfiguration], "custom_rules"))
         let violations = violations(example, config: configuration)
 
         XCTAssertEqual(violations.count, 3)
@@ -253,6 +253,25 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertTrue(violations.contains { violation in
             violation.description.contains("SwiftLint rule 'custom3' did not trigger a violation")
         })
+    }
+
+
+    func testSuperfluousDisableCommandDoesNotViolate() throws {
+        let configDict: [String: Any] = [
+            "only_rules": ["custom_rules", "superfluous_disable_command"],
+            "custom_rules": [
+                "use_stroke_colors": [
+                  "regex": "(?:border|stroke)Color = (?:(?:UI|CG)?Color)?\\.(?!stroke|always|pink)"
+                  ]
+            ]
+        ]
+        let configuration = try SwiftLintCore.Configuration(dict: configDict)
+        let example = Example("""
+                              // swiftlint:disable:next use_stroke_colors
+                              view.layer.borderColor = Color.clear.cgColor
+                              """)
+        let violations = violations(example, config: configuration)
+        XCTAssertTrue(violations.isEmpty)
     }
 
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {

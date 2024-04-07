@@ -132,7 +132,7 @@ private extension NonOverridableClassDeclarationRule {
                 reason: inFinalClass
                 ? "Class \(types) in final classes should themselves be final"
                 : "Private class methods and properties should be declared final",
-                severity: configuration.severity
+                severity: configuration.violationSeverity
             ))
             violationCorrections.append(
                 ViolationCorrection(

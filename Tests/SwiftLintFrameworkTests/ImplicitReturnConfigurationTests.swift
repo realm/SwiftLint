@@ -23,7 +23,7 @@ class ImplicitReturnConfigurationTests: SwiftLintTestCase {
             .initializer,
             .subscript
         ])
-        XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+        XCTAssertEqual(configuration.severity.violationSeverity, .error)
         XCTAssertEqual(configuration.includedKinds, expectedKinds)
     }
 

@@ -5,7 +5,7 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = PrivateUnitTestRule
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "test_parent_classes")
     private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 
@@ -52,8 +52,8 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration {
                 "warning: 'message' is ignored from now on. You may remove it from the configuration file."
             )
         }
-        if let severityString = configurationDict[$severityConfiguration.key] as? String {
-            try severityConfiguration.apply(configuration: severityString)
+        if let severityString = configurationDict[$severity.key] as? String {
+            try severity.apply(configuration: severityString)
         }
     }
 }

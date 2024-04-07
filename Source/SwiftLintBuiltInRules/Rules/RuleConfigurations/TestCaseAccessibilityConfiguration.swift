@@ -5,7 +5,7 @@ struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = TestCaseAccessibilityRule
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allowed_prefixes")
     private(set) var allowedPrefixes: Set<String> = []
     @ConfigurationElement(

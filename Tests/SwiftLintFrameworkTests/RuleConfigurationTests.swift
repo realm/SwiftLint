@@ -216,14 +216,14 @@ class RuleConfigurationTests: SwiftLintTestCase {
 
     func testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration() {
         var configuration = TrailingWhitespaceConfiguration(
-            severityConfiguration: .warning,
+            severity: .warning,
             ignoresEmptyLines: false,
             ignoresComments: true
         )
 
         do {
             try configuration.apply(configuration: ["severity": "error"])
-            XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+            XCTAssertEqual(configuration.violationSeverity, .error)
         } catch {
             XCTFail("Failed to apply severity")
         }
@@ -236,7 +236,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
         let conf1 = ["severity": "error", "excluded": "viewWillAppear(_:)"]
         do {
             try configuration.apply(configuration: conf1)
-            XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+            XCTAssertEqual(configuration.severity.severity, .error)
             XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
             XCTAssertFalse(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillDisappear(_:)"))
@@ -251,7 +251,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
         ] as [String: any Sendable]
         do {
             try configuration.apply(configuration: conf2)
-            XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+            XCTAssertEqual(configuration.severity.severity, .error)
             XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
             XCTAssertFalse(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillDisappear(_:)"))
@@ -268,7 +268,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
         ] as [String: any Sendable]
         do {
             try configuration.apply(configuration: conf3)
-            XCTAssertEqual(configuration.severityConfiguration.severity, .warning)
+            XCTAssertEqual(configuration.severity.severity, .warning)
             XCTAssertEqual(configuration.resolvedMethodNames.count, 2)
             XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod1()"))
@@ -311,7 +311,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
             .lazy,
             .dynamic
         ]
-        XCTAssertEqual(configuration.severityConfiguration.severity, .warning)
+        XCTAssertEqual(configuration.severity.severity, .warning)
         XCTAssertEqual(configuration.preferredModifierOrder, expected)
     }
 
@@ -337,7 +337,7 @@ class RuleConfigurationTests: SwiftLintTestCase {
         let config = ["severity": "error", "order": "set_get"]
         try configuration.apply(configuration: config)
 
-        XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+        XCTAssertEqual(configuration.severity.severity, .error)
         XCTAssertEqual(configuration.order, .setGet)
 
         XCTAssertEqual(

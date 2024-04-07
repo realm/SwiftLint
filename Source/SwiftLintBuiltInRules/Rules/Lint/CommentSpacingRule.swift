@@ -152,7 +152,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
         return violationRanges(in: file).map { range in
             StyleViolation(
                 ruleDescription: Self.description,
-                severity: configuration.severity,
+                severity: configuration.violationSeverity,
                 location: Location(file: file, characterOffset: range.location)
             )
         }

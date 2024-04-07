@@ -12,7 +12,7 @@ struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration {
     }
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "first_argument_location")
     private(set) var firstArgumentLocation = FirstArgumentLocation.anyLine
     @ConfigurationElement(key: "only_enforce_after_first_closure_on_first_line")

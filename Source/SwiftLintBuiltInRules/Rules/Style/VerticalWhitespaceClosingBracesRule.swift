@@ -31,7 +31,7 @@ struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule {
 
             return StyleViolation(
                 ruleDescription: Self.description,
-                severity: configuration.severityConfiguration.severity,
+                severity: configuration.severity.violationSeverity,
                 location: Location(file: file, characterOffset: characterOffset)
             )
         }

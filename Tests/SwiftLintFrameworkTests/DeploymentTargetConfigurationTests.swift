@@ -17,7 +17,7 @@ class DeploymentTargetConfigurationTests: SwiftLintTestCase {
             configuration.iOSAppExtensionDeploymentTarget,
             Version(platform: .iOSApplicationExtension, major: 10, minor: 1)
         )
-        XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+        XCTAssertEqual(configuration.severity.violationSeverity, .error)
 
         try configuration.apply(configuration: ["iOSApplicationExtension_deployment_target": "13.0"])
         XCTAssertEqual(
@@ -28,7 +28,7 @@ class DeploymentTargetConfigurationTests: SwiftLintTestCase {
             configuration.iOSAppExtensionDeploymentTarget,
             Version(platform: .iOSApplicationExtension, major: 13, minor: 0)
         )
-        XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+        XCTAssertEqual(configuration.severity.violationSeverity, .error)
 
         try configuration.apply(configuration: ["macOS_deployment_target": "10.11.3"])
         XCTAssertEqual(
@@ -47,7 +47,7 @@ class DeploymentTargetConfigurationTests: SwiftLintTestCase {
             configuration.macOSAppExtensionDeploymentTarget,
             Version(platform: .macOSApplicationExtension, major: 10, minor: 11, patch: 3)
         )
-        XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+        XCTAssertEqual(configuration.severity.violationSeverity, .error)
 
         try configuration.apply(configuration: ["macOSApplicationExtension_deployment_target": "12.4"])
         XCTAssertEqual(
@@ -66,7 +66,7 @@ class DeploymentTargetConfigurationTests: SwiftLintTestCase {
             configuration.macOSAppExtensionDeploymentTarget,
             Version(platform: .macOSApplicationExtension, major: 12, minor: 4)
         )
-        XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+        XCTAssertEqual(configuration.severity.violationSeverity, .error)
 
         try configuration.apply(configuration: ["severity": "warning"])
         XCTAssertEqual(
@@ -85,7 +85,7 @@ class DeploymentTargetConfigurationTests: SwiftLintTestCase {
             configuration.macOSAppExtensionDeploymentTarget,
             Version(platform: .macOSApplicationExtension, major: 12, minor: 4)
         )
-        XCTAssertEqual(configuration.severityConfiguration.severity, .warning)
+        XCTAssertEqual(configuration.severity.violationSeverity, .warning)
 
         try configuration.apply(configuration: ["tvOS_deployment_target": 10.2,
                                                 "tvOSApplicationExtension_deployment_target": 9.1,
@@ -123,7 +123,7 @@ class DeploymentTargetConfigurationTests: SwiftLintTestCase {
             configuration.watchOSAppExtensionDeploymentTarget,
             Version(platform: .watchOSApplicationExtension, major: 2, minor: 2)
         )
-        XCTAssertEqual(configuration.severityConfiguration.severity, .warning)
+        XCTAssertEqual(configuration.severity.violationSeverity, .warning)
     }
 
     func testThrowsOnBadConfig() {

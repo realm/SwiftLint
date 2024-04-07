@@ -70,7 +70,7 @@ struct SortedImportsRule: CorrectableRule, OptInRule {
         return violatingOffsets(inGroups: groups).map { index -> StyleViolation in
             let location = Location(file: file, characterOffset: index)
             return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
+                                  severity: configuration.violationSeverity,
                                   location: location)
         }
     }

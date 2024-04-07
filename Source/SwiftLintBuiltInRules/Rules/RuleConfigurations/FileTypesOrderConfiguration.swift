@@ -14,7 +14,7 @@ struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration {
     }
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "order")
     private(set) var order: [[FileType]] = [
         [.supportingType],

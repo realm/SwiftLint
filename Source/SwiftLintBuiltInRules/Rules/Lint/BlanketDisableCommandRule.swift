@@ -104,7 +104,7 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
     ) -> StyleViolation {
         StyleViolation(
             ruleDescription: Self.description,
-            severity: configuration.severity,
+            severity: configuration.violationSeverity,
             location: command.location(of: ruleIdentifier, in: file),
             reason: reason
         )

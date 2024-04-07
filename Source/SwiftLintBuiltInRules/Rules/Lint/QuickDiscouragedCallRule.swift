@@ -53,7 +53,7 @@ struct QuickDiscouragedCallRule: OptInRule {
 
         return violationOffsets(in: dictionary.enclosedArguments).map {
             StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
+                           severity: configuration.violationSeverity,
                            location: Location(file: file, byteOffset: $0),
                            reason: "Discouraged call inside a '\(name)' block")
         }

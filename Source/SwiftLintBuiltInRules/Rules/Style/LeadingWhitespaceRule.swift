@@ -28,7 +28,7 @@ struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
         }
 
         return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
+                               severity: configuration.violationSeverity,
                                location: Location(file: file.path, line: 1))]
     }
 

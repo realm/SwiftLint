@@ -11,7 +11,7 @@ struct StatementPositionConfiguration: SeverityBasedRuleConfiguration {
     }
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
+    private(set) var severity = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "statement_mode")
     private(set) var statementMode = StatementModeConfiguration.default
 }

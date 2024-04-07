@@ -89,7 +89,7 @@ private extension StatementPositionRule {
     func defaultValidate(file: SwiftLintFile) -> [StyleViolation] {
         return defaultViolationRanges(in: file, matching: Self.defaultPattern).compactMap { range in
             StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
+                           severity: configuration.violationSeverity,
                            location: Location(file: file, characterOffset: range.location))
         }
     }
@@ -124,7 +124,7 @@ private extension StatementPositionRule {
     func uncuddledValidate(file: SwiftLintFile) -> [StyleViolation] {
         return uncuddledViolationRanges(in: file).compactMap { range in
             StyleViolation(ruleDescription: Self.uncuddledDescription,
-                           severity: configuration.severity,
+                           severity: configuration.violationSeverity,
                            location: Location(file: file, characterOffset: range.location))
         }
     }

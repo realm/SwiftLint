@@ -45,7 +45,7 @@ struct VerticalWhitespaceRule: CorrectableRule {
         return linesSections.map { eachLastLine, eachSectionCount in
             return StyleViolation(
                 ruleDescription: Self.description,
-                severity: configuration.severityConfiguration.severity,
+                severity: configuration.severity.violationSeverity,
                 location: Location(file: file.path, line: eachLastLine.index),
                 reason: configuredDescriptionReason + "; currently \(eachSectionCount + 1)"
             )

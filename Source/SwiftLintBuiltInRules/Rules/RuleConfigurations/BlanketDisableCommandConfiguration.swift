@@ -5,7 +5,7 @@ struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = BlanketDisableCommandRule
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allowed_rules")
     private(set) var allowedRuleIdentifiers: Set<String> = [
         "file_header",

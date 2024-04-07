@@ -32,7 +32,7 @@ struct UnusedImportConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = UnusedImportRule
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
+    private(set) var severity = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "require_explicit_imports")
     private(set) var requireExplicitImports = false
     @ConfigurationElement(key: "allowed_transitive_imports")

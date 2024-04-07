@@ -12,7 +12,7 @@ class UnusedDeclarationConfigurationTests: XCTestCase {
 
         try testee.apply(configuration: config)
 
-        XCTAssertEqual(testee.severityConfiguration.severity, .warning)
+        XCTAssertEqual(testee.severity.violationSeverity, .warning)
         XCTAssertTrue(testee.includePublicAndOpen)
         XCTAssertEqual(testee.relatedUSRsToSkip, ["a", "b", "s:7SwiftUI15PreviewProviderP"])
     }

@@ -57,7 +57,7 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule {
 
         return classes.map { position in
             return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
+                                  severity: configuration.violationSeverity,
                                   location: Location(file: file, position: position.position),
                                   reason: "\(classes.count) test classes found in this file")
         }

@@ -5,7 +5,7 @@ struct FileNameConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = FileNameRule
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    private(set) var severity = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "excluded")
     private(set) var excluded: Set = ["main.swift", "LinuxMain.swift"]
     @ConfigurationElement(key: "prefix_pattern")

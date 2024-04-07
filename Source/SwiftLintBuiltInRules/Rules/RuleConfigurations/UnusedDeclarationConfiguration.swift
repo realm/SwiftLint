@@ -5,7 +5,7 @@ struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = UnusedDeclarationRule
 
     @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>.error
+    private(set) var severity = SeverityConfiguration<Parent>.error
     @ConfigurationElement(key: "include_public_and_open")
     private(set) var includePublicAndOpen = false
     @ConfigurationElement(

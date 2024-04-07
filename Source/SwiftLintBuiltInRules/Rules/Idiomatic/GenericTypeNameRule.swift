@@ -63,7 +63,7 @@ private extension GenericTypeNameRule {
                         reason: """
                             Generic type name '\(name)' should only contain alphanumeric and other allowed characters
                             """,
-                        severity: configuration.unallowedSymbolsSeverity.severity
+                        severity: configuration.unallowedSymbolsSeverity.violationSeverity
                     )
                 )
             } else if let caseCheckSeverity = configuration.validatesStartWithLowercase.severity,

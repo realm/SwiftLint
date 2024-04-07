@@ -20,7 +20,7 @@ struct ColonRule: SubstitutionCorrectableRule, SourceKitFreeRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         violationRanges(in: file).map { range in
             StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
+                           severity: configuration.severity.violationSeverity,
                            location: Location(file: file, characterOffset: range.location))
         }
     }

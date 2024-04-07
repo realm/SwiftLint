@@ -97,7 +97,7 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violatingOffsets(file: file, kind: kind, dictionary: dictionary).map { offset in
             return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
+                                  severity: configuration.violationSeverity,
                                   location: Location(file: file, characterOffset: offset))
         }
     }

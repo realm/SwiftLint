@@ -96,7 +96,7 @@ struct FileHeaderRule: OptInRule {
 
     private func makeViolation(at location: Location) -> StyleViolation {
         return StyleViolation(ruleDescription: Self.description,
-                              severity: configuration.severityConfiguration.severity,
+                              severity: configuration.severity.violationSeverity,
                               location: location,
                               reason: "Header comments should be consistent with project patterns")
     }

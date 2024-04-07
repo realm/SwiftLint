@@ -88,11 +88,11 @@ struct ExpiringTodoRule: OptInRule {
     private func severity(for violationLevel: ExpiryViolationLevel) -> ViolationSeverity? {
         switch violationLevel {
         case .approachingExpiry:
-            return configuration.approachingExpirySeverity.severity
+            return configuration.approachingExpirySeverity.violationSeverity
         case .expired:
-            return configuration.expiredSeverity.severity
+            return configuration.expiredSeverity.violationSeverity
         case .badFormatting:
-            return configuration.badFormattingSeverity.severity
+            return configuration.badFormattingSeverity.violationSeverity
         }
     }
 

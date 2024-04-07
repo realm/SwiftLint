@@ -40,7 +40,7 @@ struct TrailingWhitespaceRule: CorrectableRule {
 
         return filteredLines.map {
             StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
+                           severity: configuration.severity.violationSeverity,
                            location: Location(file: file.path, line: $0.index))
         }
     }

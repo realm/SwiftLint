@@ -62,7 +62,7 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
         let character = command.startingCharacterPosition(in: file)
         return StyleViolation(
             ruleDescription: Self.description,
-            severity: configuration.severity,
+            severity: configuration.violationSeverity,
             location: Location(file: file.path, line: command.line, character: character),
             reason: reason
         )

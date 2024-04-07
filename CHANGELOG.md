@@ -10,6 +10,10 @@
   Rename SwiftLintBuildToolPlugin.
   Add Swift Package Manager installation instructions.  
   [garricn](https://github.com/garricn)
+  
+* Fix Code Climate reporter output by having lower case severity
+  values to comply with the Code Climate specification.  
+  [waitButY](https://github.com/waitbutY)
 
 * The `superfluous_disable_command` rule will now be enabled for the `analyze`
   command, unless it has been disabled, and will warn about superfluous

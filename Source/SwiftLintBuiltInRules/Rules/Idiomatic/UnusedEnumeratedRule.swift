@@ -78,13 +78,11 @@ struct UnusedEnumeratedRule: Rule {
 
 private extension UnusedEnumeratedRule {
     private struct Closure {
-        let id: SyntaxIdentifier
         let enumeratedPosition: AbsolutePosition?
         var zeroPosition: AbsolutePosition?
         var onePosition: AbsolutePosition?
 
-        init(id: SyntaxIdentifier, enumeratedPosition: AbsolutePosition? = nil) {
-            self.id = id
+        init(enumeratedPosition: AbsolutePosition? = nil) {
             self.enumeratedPosition = enumeratedPosition
         }
     }
@@ -155,11 +153,11 @@ private extension UnusedEnumeratedRule {
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             if let nextClosureId, nextClosureId == node.id, let lastEnumeratedPosition {
-                closures.push(Closure(id: nextClosureId, enumeratedPosition: lastEnumeratedPosition))
+                closures.push(Closure(enumeratedPosition: lastEnumeratedPosition))
                 self.nextClosureId = nil
                 self.lastEnumeratedPosition = nil
             } else {
-                closures.push(Closure(id: node.id))
+                closures.push(Closure())
             }
             return .visitChildren
         }

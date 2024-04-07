@@ -244,15 +244,15 @@ class CustomRulesTests: SwiftLintTestCase {
         let configDict: [String: Any] = [
             "only_rules": ["custom_rules", "superfluous_disable_command"],
             "custom_rules": [
-                "use_stroke_colors": [
-                  "regex": "(?:border|stroke)Color = (?:(?:UI|CG)?Color)?\\.(?!stroke|always|pink)"
+                "dont_print": [
+                  "regex": "print"
                   ]
             ]
         ]
         let configuration = try SwiftLintCore.Configuration(dict: configDict)
         let example = Example("""
-                              // swiftlint:disable:next use_stroke_colors
-                              view.layer.borderColor = Color.clear.cgColor
+                              // swiftlint:disable:next dont_print
+                              print("Hello, world")
                               """)
         let violations = violations(example, config: configuration)
         XCTAssertTrue(violations.isEmpty)

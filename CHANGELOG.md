@@ -5,11 +5,21 @@
 * Rewrite `SwiftLintPlugin` using `BUILD_WORKSPACE_DIRECTORY` without relying
   on the `--config` option.  
   [Garric Nahapetian](https://github.com/garricn)
-  
+
 * Introduce SwiftLintCommandPlugin.
   Rename SwiftLintBuildToolPlugin.
   Add Swift Package Manager installation instructions.  
   [garricn](https://github.com/garricn)
+  
+* Fix Code Climate reporter output by having lower case severity
+  values to comply with the Code Climate specification.  
+  [waitButY](https://github.com/waitbutY)
+
+* The `superfluous_disable_command` rule will now be enabled for the `analyze`
+  command, unless it has been disabled, and will warn about superfluous
+  disablement of analyzer rules.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4792](https://github.com/realm/SwiftLint/issues/4792)
 
 #### Experimental
 
@@ -218,6 +228,12 @@
   [woxtu](https://github.com/woxtu)
   [Martin Redington](https://github.com/mildm8nnered)
   [#4999](https://github.com/realm/SwiftLint/issues/4999)
+
+* Updates the reasons provided by violations of the `blanket_disable_command`
+  to omit language about the end of the file, and to direct users to
+  re-enable the rule as soon as possible.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5450](https://github.com/realm/SwiftLint/issues/5450)
 
 ## 0.54.0: Macro-Economic Forces
 

@@ -11,7 +11,7 @@
       },
       "path" : "filename"
     },
-    "severity" : "MINOR",
+    "severity" : "minor",
     "type" : "issue"
   },
   {
@@ -26,7 +26,7 @@
       },
       "path" : "filename"
     },
-    "severity" : "MAJOR",
+    "severity" : "major",
     "type" : "issue"
   },
   {
@@ -41,7 +41,7 @@
       },
       "path" : "filename"
     },
-    "severity" : "MAJOR",
+    "severity" : "major",
     "type" : "issue"
   },
   {
@@ -56,7 +56,7 @@
       },
       "path" : null
     },
-    "severity" : "MAJOR",
+    "severity" : "major",
     "type" : "issue"
   }
 ]

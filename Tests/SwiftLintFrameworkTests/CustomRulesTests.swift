@@ -114,10 +114,18 @@ class CustomRulesTests: SwiftLintTestCase {
                                        reason: regexConfig.message)])
     }
 
-    func testLocalDisableCustomRule() {
-        let (_, customRules) = getCustomRules()
-        let file = SwiftLintFile(contents: "//swiftlint:disable custom \n// file with a pattern")
-        XCTAssertEqual(customRules.validate(file: file), [])
+    func testLocalDisableCustomRule() throws {
+        let customRules: [String: Any] = [
+            "custom": [
+                "regex": "pattern",
+                "match_kinds": "comment"
+            ]
+        ]
+
+        let configuration = try configuration(forCustomRules: customRules)
+        let example = Example("//swiftlint:disable custom \n// file with a pattern")
+        let violations = violations(example, config: configuration)
+        XCTAssertTrue(violations.isEmpty)
     }
 
     func testLocalDisableCustomRuleWithMultipleRules() {
@@ -180,16 +188,14 @@ class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testSuperfluousDisableCommandWithCustomRules() throws {
-        let configDict: [String: Any] = [
-            "only_rules": ["custom_rules", "superfluous_disable_command"],
-            "custom_rules": [
-                "custom1": [
-                  "regex": "pattern",
-                  "match_kinds": "comment"
-                  ]
+        let customRules: [String: Any] = [
+            "custom1": [
+                "regex": "pattern",
+                "match_kinds": "comment"
             ]
         ]
-        let configuration = try SwiftLintCore.Configuration(dict: configDict)
+
+        let configuration = try configuration(forCustomRules: customRules)
         let example = Example("// swiftlint:disable custom1\n")
         let violations = violations(example, config: configuration)
 
@@ -201,25 +207,22 @@ class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testSuperfluousDisableCommandWithMultipleCustomRules() throws {
-        let configDict: [String: Any] = [
-            "only_rules": ["custom_rules", "superfluous_disable_command"],
-            "custom_rules": [
-                "custom1": [
-                    "regex": "pattern",
-                    "match_kinds": "comment"
-                ],
-                "custom2": [
-                    "regex": "10",
-                    "match_kinds": "number"
-                ],
-                "custom3": [
-                    "regex": "100",
-                    "match_kinds": "number"
-                ]
+        let customRules: [String: Any] = [
+            "custom1": [
+                "regex": "pattern",
+                "match_kinds": "comment"
+            ],
+            "custom2": [
+                "regex": "10",
+                "match_kinds": "number"
+            ],
+            "custom3": [
+                "regex": "100",
+                "match_kinds": "number"
             ]
         ]
 
-        let configuration = try SwiftLintCore.Configuration(dict: configDict)
+        let configuration = try configuration(forCustomRules: customRules)
         let example = Example(
             """
             // swiftlint:disable custom1 custom3
@@ -309,5 +312,14 @@ class CustomRulesTests: SwiftLintTestCase {
 
     private func getTestTextFile() -> SwiftLintFile {
         return SwiftLintFile(path: "\(testResourcesPath)/test.txt")!
+    }
+
+    private func configuration(forCustomRules customRules: [String: Any]) throws -> SwiftLintCore.Configuration {
+        let configDict: [String: Any] = [
+            "only_rules": ["custom_rules", "superfluous_disable_command"],
+            "custom_rules": customRules
+        ]
+        return try SwiftLintCore.Configuration(dict: configDict)
+
     }
 }

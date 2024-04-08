@@ -129,10 +129,9 @@ final class CustomRulesTests: SwiftLintTestCase {
                 "match_kinds": "comment"
             ]
         ]
-
-        let configuration = try configuration(forCustomRules: customRules)
         let example = Example("//swiftlint:disable custom \n// file with a pattern")
-        let violations = violations(example, config: configuration)
+        let violations = try myViolations(forExample: example, customRules: customRules)
+
         XCTAssertTrue(violations.isEmpty)
     }
 
@@ -211,9 +210,8 @@ final class CustomRulesTests: SwiftLintTestCase {
             ]
         ]
 
-        let configuration = try configuration(forCustomRules: customRules)
         let example = Example("// swiftlint:disable custom1\n")
-        let violations = violations(example, config: configuration)
+        let violations = try myViolations(forExample: example, customRules: customRules)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertTrue(violations.allSatisfy { $0.ruleIdentifier == "superfluous_disable_command" })
@@ -238,14 +236,14 @@ final class CustomRulesTests: SwiftLintTestCase {
             ]
         ]
 
-        let configuration = try configuration(forCustomRules: customRules)
         let example = Example(
             """
             // swiftlint:disable custom1 custom3
             return 10
             """
-        ).skipWrappingInCommentTest()
-        let violations = violations(example, config: configuration)
+        )
+
+        let violations = try myViolations(forExample: example, customRules: customRules)
 
         XCTAssertEqual(violations.count, 3)
         XCTAssertEqual(violations.filter { $0.ruleIdentifier == "superfluous_disable_command" }.count, 2)
@@ -260,21 +258,16 @@ final class CustomRulesTests: SwiftLintTestCase {
 
 
     func testSuperfluousDisableCommandDoesNotViolate() throws {
-        let configDict: [String: Any] = [
-            "only_rules": ["custom_rules", "superfluous_disable_command"],
-            "custom_rules": [
-                "dont_print": [
-                  "regex": "print\\("
-                  ]
+        let customRules: [String: Any] = [
+            "dont_print": [
+                "regex": "print\\("
             ]
         ]
-        let configuration = try SwiftLintCore.Configuration(dict: configDict)
         let example = Example("""
                               // swiftlint:disable:next dont_print
                               print("Hello, world")
                               """)
-        let violations = violations(example, config: configuration)
-        XCTAssertTrue(violations.isEmpty)
+        XCTAssertTrue(try myViolations(forExample: example, customRules: customRules).isEmpty)
     }
 
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {
@@ -336,12 +329,15 @@ final class CustomRulesTests: SwiftLintTestCase {
         return SwiftLintFile(path: "\(testResourcesPath)/test.txt")!
     }
 
-    private func configuration(forCustomRules customRules: [String: Any]) throws -> SwiftLintCore.Configuration {
+    private func myViolations(forExample example: Example, customRules: [String: Any]) throws -> [StyleViolation] {
         let configDict: [String: Any] = [
             "only_rules": ["custom_rules", "superfluous_disable_command"],
             "custom_rules": customRules
         ]
-        return try SwiftLintCore.Configuration(dict: configDict)
-
+        let configuration = try SwiftLintCore.Configuration(dict: configDict)
+        return violations(
+            example.skipWrappingInCommentTest(),
+            config: configuration
+        )
     }
 }

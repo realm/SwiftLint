@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
 class OpeningBraceRuleTests: SwiftLintTestCase {
-    func testDefaultExamplesRunInMultilineMode() {
+    func testDefaultExamplesRunInMultilineFuncMode() {
         let description = OpeningBraceRule.description
             .with(triggeringExamples: OpeningBraceRule.description.triggeringExamples.removing([
                 Example("func abc(a: A,\n\tb: B)\n↓{"),
@@ -19,7 +19,7 @@ class OpeningBraceRuleTests: SwiftLintTestCase {
     }
 
     // swiftlint:disable:next function_body_length
-    func testWithAllowMultilineTrue() {
+    func testWithAllowMultilineFuncTrue() {
         let nonTriggeringExamples = [
             Example("""
                 func abc(
@@ -88,6 +88,59 @@ class OpeningBraceRuleTests: SwiftLintTestCase {
             .with(corrections: [:])
 
         verifyRule(description, ruleConfiguration: ["allow_multiline_func": true])
+    }
+
+    func testWithIgnoreMultilineConditionStatementsTrue() {
+        let nonTriggeringExamples = OpeningBraceRule.description.nonTriggeringExamples + [
+            Example("""
+                if x,
+                   y
+                {
+
+                } else if z,
+                          w
+                {
+
+                }
+                """),
+            Example("""
+                while
+                    x,
+                    y
+                {}
+                """)
+        ]
+
+        let triggeringExamples = [
+            Example("""
+                if x, y
+                {
+
+                }
+                """),
+            Example("""
+                if
+                    x,
+                    y
+                {
+
+                } else if z
+                {
+
+                }
+                """),
+            Example("""
+                while x, y
+                {}
+                """)
+        ]
+
+        let description = OpeningBraceRule.description
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
+            .with(corrections: [:])
+
+        verifyRule(description, ruleConfiguration: ["ignore_multiline_condition_statements": true])
     }
 }
 

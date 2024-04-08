@@ -21,6 +21,9 @@ private extension OpeningBraceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ActorDeclSyntax) {
             let body = node.memberBlock
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.actorKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -29,6 +32,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: ClassDeclSyntax) {
             let body = node.memberBlock
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.classKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -37,6 +43,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: EnumDeclSyntax) {
             let body = node.memberBlock
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.enumKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -45,6 +54,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
             let body = node.memberBlock
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.extensionKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -53,6 +65,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
             let body = node.memberBlock
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.protocolKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -61,6 +76,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: StructDeclSyntax) {
             let body = node.memberBlock
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.structKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -69,6 +87,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: CatchClauseSyntax) {
             let body = node.body
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.catchKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -77,6 +98,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: DeferStmtSyntax) {
             let body = node.body
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.deferKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -85,6 +109,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: DoStmtSyntax) {
             let body = node.body
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.doKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -93,6 +120,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: ForStmtSyntax) {
             let body = node.body
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.forKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -101,6 +131,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: GuardStmtSyntax) {
             let body = node.body
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.guardKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -109,7 +142,8 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: IfExprSyntax) {
             let body = node.body
-            if let correction = body.violationCorrection(locationConverter) {
+            if !isIgnoredMultilineConditionStatement(body, keywordToken: node.ifKeyword),
+               let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
             }
@@ -121,6 +155,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: RepeatStmtSyntax) {
             let body = node.body
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.repeatKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -129,6 +166,9 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: WhileStmtSyntax) {
             let body = node.body
+            if isIgnoredMultilineConditionStatement(body, keywordToken: node.whileKeyword) {
+                return
+            }
             if let correction = body.violationCorrection(locationConverter) {
                 violations.append(body.openingPosition)
                 violationCorrections.append(correction)
@@ -184,7 +224,7 @@ private extension OpeningBraceRule {
             guard let body = node.body else {
                 return
             }
-            if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.funcKeyword) {
+            if isIgnoredMultilineFunc(body, keywordToken: node.funcKeyword) {
                 return
             }
             if let correction = body.violationCorrection(locationConverter) {
@@ -197,7 +237,7 @@ private extension OpeningBraceRule {
             guard let body = node.body else {
                 return
             }
-            if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.initKeyword) {
+            if isIgnoredMultilineFunc(body, keywordToken: node.initKeyword) {
                 return
             }
             if let correction = body.violationCorrection(locationConverter) {
@@ -206,14 +246,33 @@ private extension OpeningBraceRule {
             }
         }
 
-        private func refersToMultilineFunction(_ body: CodeBlockSyntax, functionIndicator: TokenSyntax) -> Bool {
+        private func isIgnoredMultilineFunc(_ body: CodeBlockSyntax, keywordToken: TokenSyntax) -> Bool {
+            guard configuration.allowMultilineFunc else {
+                return false
+            }
+
+            return isBodyPredecessorMultiline(body, keywordToken: keywordToken)
+        }
+
+        private func isIgnoredMultilineConditionStatement(_ body: some BracedSyntax, keywordToken: TokenSyntax) -> Bool {
+            guard configuration.ignoreMultilineConditionStatement else {
+                return false
+            }
+
+            return isBodyPredecessorMultiline(body, keywordToken: keywordToken)
+        }
+
+        private func isBodyPredecessorMultiline(_ body: some BracedSyntax, keywordToken: TokenSyntax) -> Bool {
             guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
                 return false
             }
-            let startLocation = functionIndicator.endLocation(converter: locationConverter)
-            let endLocation = endToken.endLocation(converter: locationConverter)
+
+            let bodyPredecessorsStartLocation = keywordToken.endLocation(converter: locationConverter)
+            let bodyPredecessorsEndLocation = endToken.endLocation(converter: locationConverter)
             let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
-            return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
+
+            return bodyPredecessorsStartLocation.line != bodyPredecessorsEndLocation.line
+                && bodyPredecessorsEndLocation.line != braceLocation.line
         }
     }
 }
@@ -224,18 +283,24 @@ private extension BracedSyntax {
     }
 
     func violationCorrection(_ locationConverter: SourceLocationConverter) -> ViolationCorrection? {
-        if let previousToken = leftBrace.previousToken(viewMode: .sourceAccurate) {
-            let previousLocation = previousToken.endLocation(converter: locationConverter)
-            let leftBraceLocation = leftBrace.startLocation(converter: locationConverter)
-            if previousLocation.line != leftBraceLocation.line
-               || previousLocation.column + 1 != leftBraceLocation.column {
-                return ViolationCorrection(
-                    start: previousToken.endPositionBeforeTrailingTrivia,
-                    end: leftBrace.positionAfterSkippingLeadingTrivia,
-                    replacement: " "
-                )
-            }
+        guard let previousToken = leftBrace.previousToken(viewMode: .sourceAccurate) else {
+            return nil
         }
+
+        let previousLocation = previousToken.endLocation(converter: locationConverter)
+        let leftBraceLocation = leftBrace.startLocation(converter: locationConverter)
+
+        let leftBraceIsInSameLine = previousLocation.line == leftBraceLocation.line
+        let leftBraceHasOneLeadingSpace = previousLocation.column + 1 == leftBraceLocation.column
+
+        if !leftBraceIsInSameLine || !leftBraceHasOneLeadingSpace {
+            return ViolationCorrection(
+                start: previousToken.endPositionBeforeTrailingTrivia,
+                end: leftBrace.positionAfterSkippingLeadingTrivia,
+                replacement: " "
+            )
+        }
+
         return nil
     }
 }

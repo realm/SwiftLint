@@ -164,6 +164,10 @@
   [phlippieb](https://github.com/phlippieb)
   [#5471](https://github.com/realm/SwiftLint/issues/5471)
 
+* Add option for `opening_brace` rule not to trigger with multiline statements.  
+  [leonardosrodrigues0](https://github.com/leonardosrodrigues0)
+  [#3720](https://github.com/realm/SwiftLint/issues/3720)
+
 #### Bug Fixes
 
 * Silence `discarded_notification_center_observer` rule in closures. Furthermore,

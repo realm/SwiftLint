@@ -46,7 +46,13 @@ public struct Region: Equatable {
     ///
     /// - returns: True if the specified rule is disabled in this region.
     public func isRuleDisabled(_ rule: some Rule) -> Bool {
-        return areRulesDisabled(ruleIDs: type(of: rule).description.allIdentifiers)
+        if rule is CustomRules {
+            let customRulesConfiguration = rule.configuration as? CustomRulesConfiguration
+            let identifiers = customRulesConfiguration?.customRuleConfigurations.map { $0.identifier } ?? []
+            return areRulesDisabled(ruleIDs: identifiers)
+        } else {
+            return areRulesDisabled(ruleIDs: type(of: rule).description.allIdentifiers)
+        }
     }
 
     /// Whether the given rules are disabled in this region.

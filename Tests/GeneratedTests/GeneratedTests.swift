@@ -1189,6 +1189,12 @@ class TestCaseAccessibilityRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class TextConcatenationRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TextConcatenationRule.description)
+    }
+}
+
 class TextLocalizationRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TextLocalizationRule.description)

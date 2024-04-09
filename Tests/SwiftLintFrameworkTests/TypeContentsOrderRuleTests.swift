@@ -148,7 +148,6 @@ class TypeContentsOrderRuleTests: SwiftLintTestCase {
                     "subscript",
                     "other_method",
                     "ib_action",
-                    "ib_segue_action",
                     "view_life_cycle_method",
                     "type_method",
                     "initializer",
@@ -344,7 +343,7 @@ class TypeContentsOrderRuleTests: SwiftLintTestCase {
                     ["type_alias", "associated_type", "subtype"],
                     ["type_property", "instance_property", "ib_inspectable", "ib_outlet"],
                     ["initializer", "type_method", "deinitializer"],
-                    ["view_life_cycle_method", "ib_action", "ib_segue_action", "other_method", "subscript"]
+                    ["view_life_cycle_method", "ib_action", "other_method", "subscript"]
                 ]
             ]
         )

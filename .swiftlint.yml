@@ -55,6 +55,7 @@ disabled_rules:
   - type_contents_order
   - unused_capture_list
   - vertical_whitespace_between_cases
+  - json_decoding
 
 attributes:
   always_on_line_above:

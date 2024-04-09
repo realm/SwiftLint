@@ -547,6 +547,12 @@ class IsDisjointRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+class JSONDecodingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(JSONDecodingRule.description)
+    }
+}
+
 class JoinedDefaultParameterRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(JoinedDefaultParameterRule.description)

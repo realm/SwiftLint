@@ -93,6 +93,7 @@ public let builtInRules: [any Rule.Type] = [
     InertDeferRule.self,
     InvalidSwiftLintCommandRule.self,
     IsDisjointRule.self,
+    JSONDecodingRule.self,
     JoinedDefaultParameterRule.self,
     LargeTupleRule.self,
     LastWhereRule.self,

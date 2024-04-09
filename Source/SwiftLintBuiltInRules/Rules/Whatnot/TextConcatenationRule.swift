@@ -57,10 +57,10 @@ private extension TextConcatenationRule {
 
                 if isTextInit {
                     return funcCall
-                } else {
-                    return recursivelySearchForTextInitializerCall(funcCall.calledExpression)
                 }
-            } else if let memberAccess = node.as(MemberAccessExprSyntax.self), let base = memberAccess.base {
+                return recursivelySearchForTextInitializerCall(funcCall.calledExpression)
+            }
+            if let memberAccess = node.as(MemberAccessExprSyntax.self), let base = memberAccess.base {
                 return recursivelySearchForTextInitializerCall(base)
             }
 

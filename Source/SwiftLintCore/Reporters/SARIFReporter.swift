@@ -1,20 +1,18 @@
 import Foundation
 import SourceKittenFramework
 
-/// SARIFReporter
-/// For some tools (i.e. DataDog), code quality findings are reported in a SARIF () format.
-/// Some documentation re: SARIF:
+/// To some tools (i.e. Datadog), code quality findings are reported in the SARIF format:
 ///     - Full Spec: https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/sarif-v2.1.0-errata01-os-complete.html
 ///     - Samples: https://github.com/microsoft/sarif-tutorials/blob/main/samples/
 ///     - JSON Validator: https://sarifweb.azurewebsites.net/Validation
 struct SARIFReporter: Reporter {
     // MARK: - Reporter Conformance
-    static let identifier = "json"
+    static let identifier = "sarif"
     static let isRealtime = false
-    static let description: String = "Reports violations as a SARIF compatible JSON array."
+    static let description = "Reports violations in the Static Analysis Results Interchange Format (SARIF)"
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        let orderedViolations = Dictionary(grouping: violations, by: { $0.ruleIdentifier })
+        let groupedViolations = Dictionary(grouping: violations, by: \.ruleIdentifier)
         let SARIFJson = [
             "version": "2.1.0",
             "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/cos02/schemas/sarif-schema-2.1.0.json",
@@ -24,7 +22,7 @@ struct SARIFReporter: Reporter {
                         "driver": [
                             "name": "SwiftLint",
                             "semanticVersion": Version.current.value,
-                            "informationUri": "https://github.com/realm/SwiftLint/blob/main/README.md"
+                            "informationUri": "https://github.com/realm/SwiftLint/blob/\(Version.current.value)/README.md"
                         ]
                     ],
                     "results": orderedViolations.map(dictionary(for:))

@@ -28,7 +28,7 @@
 #### Enhancements
 
 * Add a reporter that outputs SARIF format JSON for tools
-  like DataDog.  
+  like Datadog.  
   [waitButY](https://github.com/waitbutY)
 
 * Ignore absence of a non-initial local config instead of

@@ -15,7 +15,16 @@
                   "startLine" : 1
                 }
               }
-            },
+            }
+          ],
+          "message" : {
+            "text" : "Violation Reason"
+          },
+          "ruleId" : "line_length"
+        },
+        {
+          "level" : "error",
+          "locations" : [
             {
               "physicalLocation" : {
                 "artifactLocation" : {
@@ -70,7 +79,7 @@
       ],
       "tool" : {
         "driver" : {
-          "informationUri" : "https:\/\/github.com\/realm\/SwiftLint\/blob\/main\/README.md",
+          "informationUri" : "https:\/\/github.com\/realm\/SwiftLint\/blob\/0.54.0\/README.md",
           "name" : "SwiftLint",
           "semanticVersion" : "0.54.0"
         }

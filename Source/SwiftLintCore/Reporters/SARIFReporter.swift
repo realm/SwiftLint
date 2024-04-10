@@ -12,7 +12,6 @@ struct SARIFReporter: Reporter {
     static let description = "Reports violations in the Static Analysis Results Interchange Format (SARIF)"
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        let groupedViolations = Dictionary(grouping: violations, by: \.ruleIdentifier)
         let SARIFJson = [
             "version": "2.1.0",
             "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/cos02/schemas/sarif-schema-2.1.0.json",
@@ -25,7 +24,7 @@ struct SARIFReporter: Reporter {
                             "informationUri": "https://github.com/realm/SwiftLint/blob/\(Version.current.value)/README.md"
                         ]
                     ],
-                    "results": orderedViolations.map(dictionary(for:))
+                    "results": violations.map(dictionary(for:))
                 ]
             ]
         ] as [String: Any]
@@ -35,24 +34,26 @@ struct SARIFReporter: Reporter {
 
     // MARK: - Private
 
-    private static func dictionary(for violation: Dictionary<String, [StyleViolation]>.Element) -> [String: Any] {
+    private static func dictionary(for violation: StyleViolation) -> [String: Any] {
         return [
-            "level": violation.value[0].severity.rawValue,
-            "ruleId": violation.key,
+            "level": violation.severity.rawValue,
+            "ruleId": violation.ruleIdentifier,
             "message": [
-                "text": violation.value[0].reason
+                "text": violation.reason
             ],
-            "locations": violation.value.map(dictionary(for:))
+            "locations": [
+                dictionary(for: violation.location)
+            ]
         ]
     }
 
-    private static func dictionary(for violation: StyleViolation) -> [String: Any] {
+    private static func dictionary(for location: Location) -> [String: Any] {
         // According to SARIF specification JSON1008, minimum value for line is 1
-        guard let line = violation.location.line, line > 0 else {
+        guard let line = location.line, line > 0 else {
             return [
                 "physicalLocation": [
                     "artifactLocation": [
-                        "uri": violation.location.file ?? ""
+                        "uri": location.file ?? ""
                     ]
                 ]
             ]
@@ -61,7 +62,7 @@ struct SARIFReporter: Reporter {
         return [
             "physicalLocation": [
                 "artifactLocation": [
-                    "uri": violation.location.file ?? ""
+                    "uri": location.file ?? ""
                 ],
                 "region": [
                     "startLine": line

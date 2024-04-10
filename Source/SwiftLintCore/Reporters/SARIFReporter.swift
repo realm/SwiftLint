@@ -10,7 +10,7 @@ struct SARIFReporter: Reporter {
     static let identifier = "sarif"
     static let isRealtime = false
     static let description = "Reports violations in the Static Analysis Results Interchange Format (SARIF)"
-
+    
     static func generateReport(_ violations: [StyleViolation]) -> String {
         let SARIFJson = [
             "version": "2.1.0",
@@ -28,12 +28,12 @@ struct SARIFReporter: Reporter {
                 ]
             ]
         ] as [String: Any]
-
+        
         return toJSON(SARIFJson)
     }
-
+    
     // MARK: - Private
-
+    
     private static func dictionary(for violation: StyleViolation) -> [String: Any] {
         return [
             "level": violation.severity.rawValue,
@@ -46,26 +46,27 @@ struct SARIFReporter: Reporter {
             ]
         ]
     }
-
+    
     private static func dictionary(for location: Location) -> [String: Any] {
         // According to SARIF specification JSON1008, minimum value for line is 1
-        guard let line = location.line, line > 0 else {
+        if let line = location.line, line > 0 {
             return [
                 "physicalLocation": [
                     "artifactLocation": [
                         "uri": location.file ?? ""
+                    ],
+                    "region": [
+                        "startLine": line,
+                        "startColumn": location.character ?? "1"
                     ]
                 ]
             ]
         }
-
+        
         return [
             "physicalLocation": [
                 "artifactLocation": [
                     "uri": location.file ?? ""
-                ],
-                "region": [
-                    "startLine": line
                 ]
             ]
         ]

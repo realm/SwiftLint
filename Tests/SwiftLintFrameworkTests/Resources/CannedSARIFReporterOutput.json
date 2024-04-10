@@ -12,6 +12,7 @@
                   "uri" : "filename"
                 },
                 "region" : {
+                  "startColumn" : 2,
                   "startLine" : 1
                 }
               }
@@ -31,6 +32,7 @@
                   "uri" : "filename"
                 },
                 "region" : {
+                  "startColumn" : 2,
                   "startLine" : 1
                 }
               }
@@ -50,6 +52,7 @@
                   "uri" : "filename"
                 },
                 "region" : {
+                  "startColumn" : 2,
                   "startLine" : 1
                 }
               }

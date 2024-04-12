@@ -22,7 +22,8 @@ struct UnusedEnumeratedRule: Rule {
             Example("list.enumerated().map { idx, elem in \"\\(idx): \\(elem)\" }"),
             Example("list.enumerated().map { $0 + $1 }"),
             Example("list.enumerated().something().map { _, elem in elem }"),
-            Example("list.map { ($0.offset, $0.element) }"),
+            Example("list.enumerated().map { ($0.offset, $0.element) }"),
+            Example("list.enumerated().map { ($0.0, $0.1) }"),
             Example("""
             list.enumerated().map {
                 $1.enumerated().forEach { print($0, $1) }
@@ -182,7 +183,8 @@ private extension UnusedEnumeratedRule {
             }
             closures.modifyLast {
                 if node.baseName.text == "$0" {
-                    if node.parent?.as(MemberAccessExprSyntax.self)?.declName.baseName.text == "element" {
+                    let member = node.parent?.as(MemberAccessExprSyntax.self)?.declName.baseName.text
+                    if member == "element" || member == "1" {
                         $0.onePosition = node.positionAfterSkippingLeadingTrivia
                     } else {
                         $0.zeroPosition = node.positionAfterSkippingLeadingTrivia

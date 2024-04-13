@@ -43,7 +43,7 @@ final class BaselineTests: XCTestCase {
                                      } // yetAnotherFunction
                                  }
                                  """
-    
+
     private static let violations: [StyleViolation] = {
         [
             ArrayInitRule.description,

@@ -167,6 +167,6 @@ private extension StyleViolation {
     }
 
     func baselineViolation(text: String = "") -> BaselineViolation {
-        BaselineViolation(violation: self, text:text)
+        BaselineViolation(violation: self, text: text)
     }
 }

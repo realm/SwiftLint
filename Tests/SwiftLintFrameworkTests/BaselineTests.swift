@@ -20,44 +20,44 @@ private var sourceFilePath: String = {
 }()
 
 final class BaselineTests: XCTestCase {
-    private var violations: [StyleViolation] {
+    private static let violations: [StyleViolation] = {
         [
             ArrayInitRule.description,
             BlockBasedKVORule.description,
             ClosingBraceRule.description,
             DirectReturnRule.description
         ].violations
-    }
+    }()
 
-    private var baseline: Baseline {
+    private static let baseline: Baseline = {
         Baseline(violations: violations)
-    }
+    }()
 
     func testWritingAndReading() throws {
         try testBlock {
             let baselinePath = temporaryFilePath
-            try Baseline(violations: violations).write(toPath: baselinePath)
+            try Baseline(violations: Self.violations).write(toPath: baselinePath)
             defer {
                 try? FileManager.default.removeItem(atPath: baselinePath)
             }
             let newBaseline = try Baseline(fromPath: baselinePath)
-            XCTAssertEqual(newBaseline, baseline)
+            XCTAssertEqual(newBaseline, Self.baseline)
         }
     }
 
     func testUnchangedViolations() throws {
-        try testBlock { XCTAssertEqual(baseline.filter(violations), []) }
+        try testBlock { XCTAssertEqual(Self.baseline.filter(Self.violations), []) }
     }
 
     func testShiftedViolations() throws {
         try testBlock {
-            XCTAssertEqual(baseline.filter(try violations.lineShifted(by: 2, path: sourceFilePath)), [])
+            XCTAssertEqual(Self.baseline.filter(try Self.violations.lineShifted(by: 2, path: sourceFilePath)), [])
         }
     }
 
     func testNewViolation() throws {
         try testViolationDetection(
-            violations: violations,
+            violations: Self.violations,
             newViolationRuleDescription: EmptyCollectionLiteralRule.description,
             insertionIndex: 2
         )
@@ -65,7 +65,7 @@ final class BaselineTests: XCTestCase {
 
     func testViolationsWithNoFile() throws {
         try testViolationDetection(
-            violations: violations.map { $0.with(location: Location(file: nil)) },
+            violations: Self.violations.map { $0.with(location: Location(file: nil)) },
             lineShift: 0,
             newViolationRuleDescription: ArrayInitRule.description,
             insertionIndex: 2

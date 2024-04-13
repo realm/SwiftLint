@@ -36,7 +36,6 @@ final class BaselineTests: XCTestCase {
     func testWritingAndReading() throws {
         try testBlock {
             let baselinePath = temporaryFilePath
-            let baseline = baseline
             try Baseline.write(violations, toPath: baselinePath)
             defer {
                 try? FileManager.default.removeItem(atPath: baselinePath)

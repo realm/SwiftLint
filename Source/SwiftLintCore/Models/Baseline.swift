@@ -2,7 +2,7 @@ import Foundation
 
 private typealias GroupedViolations = [String: [BaselineViolation]]
 
-private struct BaselineViolation: Equatable, Codable, Hashable {
+private struct BaselineViolation: Codable, Hashable {
     let violation: StyleViolation
     let text: String
     var key: String { text + violation.reason + violation.severity.rawValue }
@@ -89,8 +89,8 @@ public struct Baseline: Equatable {
                 continue
             }
 
-            let groupedRuleViolations = Dictionary(grouping: ruleViolations) { $0.key }
-            let groupedBaselineViolations = Dictionary(grouping: baselineViolations) { $0.key }
+            let groupedRuleViolations = Dictionary(grouping: ruleViolations, by: \.key)
+            let groupedBaselineViolations = Dictionary(grouping: baselineViolations, by: \.key)
 
             for (key, ruleViolations) in groupedRuleViolations {
                 guard let baselineViolations = groupedBaselineViolations[key] else {
@@ -125,7 +125,7 @@ private extension Sequence where Element == StyleViolation {
                 continue
             }
             let text: String
-            if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map({ $0.content }),
+            if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map(\.content),
                lineNumber < fileLines.count {
                 text = fileLines[lineNumber]
                 lines[absolutePath] = fileLines
@@ -162,8 +162,6 @@ private extension Sequence where Element == BaselineViolation {
     }
 
     func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation]) -> GroupedViolations {
-        let setOfExistingViolations = Set(existingViolations)
-        let remainingViolations = filter { !setOfExistingViolations.contains($0) }
-        return remainingViolations.groupedByRuleIdentifier()
+        Set(self).subtracting(existingViolations).groupedByRuleIdentifier()
     }
 }

@@ -386,6 +386,21 @@ warning
 </code></pre>
 <pre class="highlight swift"><code><span class="k">for</span> <span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">_</span><span class="p">))</span> <span class="k">in</span> <span class="n">data</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span> <span class="p">{}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">idx</span><span class="p">,</span> <span class="n">elem</span> <span class="k">in</span> <span class="s">"</span><span class="se">\(</span><span class="n">idx</span><span class="se">)</span><span class="s">: </span><span class="se">\(</span><span class="n">elem</span><span class="se">)</span><span class="s">"</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">+</span> <span class="nv">$1</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="nf">something</span><span class="p">()</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">elem</span> <span class="k">in</span> <span class="n">elem</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="p">(</span><span class="nv">$0</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="nv">$0</span><span class="o">.</span><span class="n">element</span><span class="p">)</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="p">(</span><span class="nv">$0</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span> <span class="nv">$0</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span>
+    <span class="nv">$1</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">forEach</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="nv">$0</span><span class="p">,</span> <span class="nv">$1</span><span class="p">)</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="nv">$0</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">for</span> <span class="p">(</span><span class="err">↓</span><span class="n">_</span><span class="p">,</span> <span class="n">foo</span><span class="p">)</span> <span class="k">in</span> <span class="n">bar</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
 </code></pre>
@@ -394,6 +409,24 @@ warning
 <pre class="highlight swift"><code><span class="k">for</span> <span class="p">(</span><span class="err">↓</span><span class="n">_</span><span class="p">,</span> <span class="n">foo</span><span class="p">)</span> <span class="k">in</span> <span class="n">abc</span><span class="o">.</span><span class="nf">something</span><span class="p">()</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">for</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="err">↓</span><span class="n">_</span><span class="p">)</span> <span class="k">in</span> <span class="n">bar</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">idx</span><span class="p">,</span> <span class="err">↓</span><span class="n">_</span> <span class="k">in</span> <span class="n">idx</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="err">↓</span><span class="n">_</span><span class="p">,</span> <span class="n">elem</span> <span class="k">in</span> <span class="n">elem</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="err">↓</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">forEach</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="err">↓</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$1</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span>
+    <span class="nv">$1</span><span class="o">.</span><span class="err">↓</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">forEach</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="nv">$1</span><span class="p">)</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="nv">$0</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">list</span><span class="o">.</span><span class="err">↓</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span>
+    <span class="nv">$1</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span><span class="o">.</span><span class="n">forEach</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="nv">$0</span><span class="p">,</span> <span class="nv">$1</span><span class="p">)</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">1</span>
+<span class="p">}</span>
 </code></pre>
 
           </div>

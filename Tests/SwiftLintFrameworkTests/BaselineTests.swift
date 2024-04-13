@@ -20,6 +20,30 @@ private var sourceFilePath: String = {
 }()
 
 final class BaselineTests: XCTestCase {
+    private static let example = """
+                                 import Foundation
+                                 import SwiftLintFramework
+
+                                 class Example: NSObject {
+                                     private var foo: Int
+                                     private var bar: String
+
+                                     init(foo: Int, bar: String) {
+                                         self.foo = foo
+                                         self.bar = bar
+                                     } // init
+                                     func someFunction() -> Int {
+                                         foo * 10
+                                     } // someFunction
+                                     func someOtherFunction() -> String {
+                                         bar
+                                     } // someOtherFunction
+                                     func yetAnotherFunction() -> (Int, String) {
+                                         (foo, bar)
+                                     } // yetAnotherFunction
+                                 }
+                                 """
+    
     private static let violations: [StyleViolation] = {
         [
             ArrayInitRule.description,
@@ -126,9 +150,10 @@ final class BaselineTests: XCTestCase {
     }
 
     private func testBlock(_ block: () throws -> Void) throws {
-        let fixturesDirectory = "\(TestResources.path)/BaselineFixtures"
-        let filePath = fixturesDirectory.stringByAppendingPathComponent("BaselineExample.swift")
-        let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
+        guard let data = Self.example.data(using: .utf8) else {
+            XCTFail("Could not convert example code to data using utf8 encoding")
+            return
+        }
         try data.write(to: URL(fileURLWithPath: sourceFilePath))
         defer {
             try? FileManager.default.removeItem(atPath: sourceFilePath)

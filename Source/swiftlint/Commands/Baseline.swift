@@ -2,12 +2,18 @@ import ArgumentParser
 import Foundation
 import SwiftLintFramework
 
+enum Action: String, ExpressibleByArgument {
+    case report
+}
+
 extension SwiftLint {
-    struct ReportBaseline: ParsableCommand {
+    struct Baseline: ParsableCommand {
         static let configuration = CommandConfiguration(
-            abstract: "Reports the violations in a saved Baseline."
+            abstract: "Performs operations on a saved Baseline."
         )
 
+        @Argument(help: "The operation to perform on the baseline.")
+        var action: Action = .report
         @Option(help: "The path to a baseline file.")
         var baseline: String
         @Option(help: "The reporter used to log errors and warnings.")
@@ -16,7 +22,7 @@ extension SwiftLint {
         var output: String?
 
         func run() throws {
-            let savedBaseline = try Baseline(fromPath: baseline)
+            let savedBaseline = try SwiftLintCore.Baseline(fromPath: baseline)
             let reporter = reporterFrom(identifier: reporter)
             let report = reporter.generateReport(savedBaseline.violations)
             if report.isNotEmpty {

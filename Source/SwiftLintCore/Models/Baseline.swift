@@ -37,20 +37,18 @@ public struct Baseline: Equatable {
         baselineViolations = try JSONDecoder().decode(GroupedViolations.self, from: data)
     }
 
-    init(violations: [StyleViolation]) {
+    /// Creates a `Baseline` from a list of violations.
+    ///
+    /// - parameter violations: The violations for the baseline.
+    public init(violations: [StyleViolation]) {
         baselineViolations = violations.baselineViolations.groupedByFile()
     }
 
     /// Writes a `Baseline` to disk in JSON format.
     ///
-    /// - parameter violations: The violations to save.
     /// - parameter toPath: The path to write to.
-    public static func write(_ violations: [StyleViolation], toPath path: String) throws {
-        try write(violations.baselineViolations.groupedByFile(), toPath: path)
-    }
-
-    private static func write(_ violations: GroupedViolations, toPath path: String) throws {
-        let data = try JSONEncoder().encode(violations)
+    public func write(toPath path: String) throws {
+        let data = try JSONEncoder().encode(baselineViolations)
         try data.write(to: URL(fileURLWithPath: path))
     }
 

@@ -45,7 +45,7 @@ struct LintOrAnalyzeCommand {
         let builder = LintOrAnalyzeResultBuilder(options)
         let files = try await collectViolations(builder: builder)
         if let baselineOutputPath = options.writeBaseline {
-            try Baseline.write(builder.allViolations, toPath: baselineOutputPath)
+            try Baseline(violations: builder.allViolations).write(toPath: baselineOutputPath)
         }
         try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
             try postProcessViolations(files: files, builder: builder)

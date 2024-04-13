@@ -112,14 +112,14 @@ private extension Sequence where Element == StyleViolation {
         var baselineViolations: [BaselineViolation] = []
         for violation in self {
             guard let absolutePath = violation.location.file,
-                  let lineNumber = violation.location.line != nil ? violation.location.line! - 1 : nil,
+                  let lineNumber = violation.location.line != nil ? (violation.location.line ?? 0) - 1 : nil,
                   lineNumber > 0 else {
-                baselineViolations.append(BaselineViolation(violation: violation, text: ""))
+                baselineViolations.append(violation.baselineViolation())
                 continue
             }
             if let fileLines = lines[absolutePath] {
                 let text = (!fileLines.isEmpty && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
-                baselineViolations.append(BaselineViolation(violation: violation, text: text))
+                baselineViolations.append(violation.baselineViolation(text: text))
                 continue
             }
             let text: String
@@ -130,7 +130,7 @@ private extension Sequence where Element == StyleViolation {
             } else {
                 text = ""
             }
-            baselineViolations.append(BaselineViolation(violation: violation, text: text))
+            baselineViolations.append(violation.baselineViolation(text: text))
         }
         return baselineViolations
     }
@@ -164,5 +164,9 @@ private extension StyleViolation {
         }
         let newLocation = Location(file: absolutePath, line: location.line, character: location.character)
         return with(location: newLocation)
+    }
+
+    func baselineViolation(text: String = "") -> BaselineViolation {
+        BaselineViolation(violation: self, text:text)
     }
 }

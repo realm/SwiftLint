@@ -164,6 +164,12 @@
   [phlippieb](https://github.com/phlippieb)
   [#5471](https://github.com/realm/SwiftLint/issues/5471)
 
+* Extends `unused_enumerated` rule to cover closure parameters, to
+  detect cases like `list.enumerated().map { idx, _ in idx }` and
+  `list.enumerated().map { $1 }`.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5470](https://github.com/realm/SwiftLint/issues/5470)
+
 #### Bug Fixes
 
 * Silence `discarded_notification_center_observer` rule in closures. Furthermore,

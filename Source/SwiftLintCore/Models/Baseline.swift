@@ -23,10 +23,13 @@ private struct BaselineViolation: Codable, Hashable {
 /// A set of violations that can be used to filter newly detected violations.
 public struct Baseline: Equatable {
     private let baselineViolations: GroupedViolations
+    private var sortedBaselineViolations: [BaselineViolation] {
+        baselineViolations.map { ($0, $1) }.sorted { $0.0 < $1.0 }.flatMap { $0.1 }
+    }
 
     /// The stored violations.
     public var violations: [StyleViolation] {
-        baselineViolations.map { ($0, $1) }.sorted { $0.0 < $1.0 }.flatMap { $0.1 }.violationsWithAbsolutePaths
+        sortedBaselineViolations.violationsWithAbsolutePaths
     }
 
     /// Creates a `Baseline` from a saved file.
@@ -34,7 +37,7 @@ public struct Baseline: Equatable {
     /// - parameter fromPath: The path to read from.
     public init(fromPath path: String) throws {
         let data = try Data(contentsOf: URL(fileURLWithPath: path))
-        baselineViolations = try JSONDecoder().decode(GroupedViolations.self, from: data)
+        baselineViolations = try JSONDecoder().decode([BaselineViolation].self, from: data).groupedByFile()
     }
 
     /// Creates a `Baseline` from a list of violations.
@@ -48,7 +51,7 @@ public struct Baseline: Equatable {
     ///
     /// - parameter toPath: The path to write to.
     public func write(toPath path: String) throws {
-        let data = try JSONEncoder().encode(baselineViolations)
+        let data = try JSONEncoder().encode(sortedBaselineViolations)
         try data.write(to: URL(fileURLWithPath: path))
     }
 

@@ -26,7 +26,7 @@ public struct Baseline: Equatable {
 
     /// The stored violations.
     public var violations: [StyleViolation] {
-        baselineViolations.keys.sorted().flatMap({ baselineViolations[$0]! }).violationsWithAbsolutePaths
+        baselineViolations.map { ($0, $1) }.sorted { $0.0 < $1.0 }.flatMap { $0.1 }.violationsWithAbsolutePaths
     }
 
     /// Creates a `Baseline` from a saved file.

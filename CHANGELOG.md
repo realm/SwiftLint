@@ -27,8 +27,8 @@
 
 #### Enhancements
 
-* Add a reporter that outputs SARIF format JSON for tools
-  like Datadog.  
+* Add a reporter that outputs violations in the Static
+  Analysis Results Interchange Format (SARIF).  
   [waitButY](https://github.com/waitbutY)
 
 * Ignore absence of a non-initial local config instead of

@@ -138,17 +138,7 @@ private extension Sequence where Element == StyleViolation {
 
 private extension Sequence where Element == BaselineViolation {
     var violationsWithAbsolutePaths: [StyleViolation] {
-        map {
-            let location = $0.violation.location
-            let absolutePath: String?
-            if let relativePath = location.file {
-                absolutePath = FileManager.default.currentDirectoryPath + "/" + relativePath
-            } else {
-                absolutePath = nil
-            }
-            let newLocation = Location(file: absolutePath, line: location.line, character: location.character)
-            return $0.violation.with(location: newLocation)
-        }
+        map { $0.violation.withAbsolutePath }
     }
 
     func groupedByFile() -> GroupedViolations {
@@ -161,5 +151,18 @@ private extension Sequence where Element == BaselineViolation {
 
     func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation]) -> GroupedViolations {
         Set(self).subtracting(existingViolations).groupedByRuleIdentifier()
+    }
+}
+
+private extension StyleViolation {
+    var withAbsolutePath: StyleViolation {
+        let absolutePath: String?
+        if let relativePath = location.file {
+            absolutePath = FileManager.default.currentDirectoryPath + "/" + relativePath
+        } else {
+            absolutePath = nil
+        }
+        let newLocation = Location(file: absolutePath, line: location.line, character: location.character)
+        return with(location: newLocation)
     }
 }

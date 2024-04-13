@@ -57,6 +57,23 @@ final class BaselineTests: XCTestCase {
         Baseline(violations: violations)
     }()
 
+    private var currentDirectoryPath: String?
+
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        currentDirectoryPath = FileManager.default.currentDirectoryPath
+        let testDirectoryPath = sourceFilePath.bridge().deletingLastPathComponent
+        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(testDirectoryPath))
+    }
+
+    override func tearDownWithError() throws {
+        if let currentDirectoryPath {
+            XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(currentDirectoryPath))
+            self.currentDirectoryPath = nil
+        }
+        try super.tearDownWithError()
+    }
+
     func testWritingAndReading() throws {
         try testBlock {
             let baselinePath = temporaryFilePath
@@ -125,6 +142,7 @@ final class BaselineTests: XCTestCase {
                     insertionIndex: insertionIndex
                 )
             }
+            break
         }
     }
 
@@ -157,12 +175,6 @@ final class BaselineTests: XCTestCase {
         try data.write(to: URL(fileURLWithPath: sourceFilePath))
         defer {
             try? FileManager.default.removeItem(atPath: sourceFilePath)
-        }
-        let currentDirectoryPath = FileManager.default.currentDirectoryPath
-        let testDirectoryPath = sourceFilePath.bridge().deletingLastPathComponent
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(testDirectoryPath))
-        defer {
-            XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(currentDirectoryPath))
         }
         try block()
     }

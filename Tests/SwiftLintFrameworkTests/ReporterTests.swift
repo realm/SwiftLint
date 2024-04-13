@@ -97,6 +97,12 @@ class ReporterTests: SwiftLintTestCase {
         XCTAssertEqual(result, expectedOutput)
     }
 
+    func testSARIFReporter() {
+        let expectedOutput = stringFromFile("CannedSARIFReporterOutput.json")
+        let result = SARIFReporter.generateReport(generateViolations())
+        XCTAssertEqual(expectedOutput, result)
+    }
+
     func testJunitReporter() {
         let expectedOutput = stringFromFile("CannedJunitReporterOutput.xml")
         let result = JUnitReporter.generateReport(generateViolations())

@@ -22,6 +22,11 @@ extension SwiftLint {
         var output: String?
 
         func run() throws {
+            try report()
+            ExitHelper.successfullyExit()
+        }
+
+        private func report() throws {
             let savedBaseline = try SwiftLintCore.Baseline(fromPath: baseline)
             let reporter = reporterFrom(identifier: reporter)
             let report = reporter.generateReport(savedBaseline.violations)
@@ -37,7 +42,6 @@ extension SwiftLint {
                     queuedPrint(report)
                 }
             }
-            ExitHelper.successfullyExit()
         }
     }
 }

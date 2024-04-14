@@ -13,13 +13,13 @@ extension SwiftLint {
         )
 
         @Argument(help: "The action to perform on the baseline.")
-        var action: Action = .report
+        var action: Action
         @Option(help: "The path to a baseline file.")
         var baseline: String
         @Option(
             help: """
                   The path to a new baseline to compare the baseline against. \
-                  Violations that are not present in the new baseline will be reported.
+                  New violations that are not present in the old baseline will be reported."
                   """
         )
         var newBaseline: String?
@@ -38,16 +38,25 @@ extension SwiftLint {
             ExitHelper.successfullyExit()
         }
 
+        mutating func validate() throws {
+            switch action {
+            case .report:
+                guard newBaseline == nil else {
+                    throw ValidationError("Unexpected argument '--new-baseline <new-baseline>'")
+                }
+            case .compare:
+                guard newBaseline != nil else {
+                    throw ValidationError("Missing expected argument '--new-baseline <new-baseline>'")
+                }
+            }
+        }
+
         private func report() throws {
             let savedBaseline = try SwiftLintCore.Baseline(fromPath: baseline)
             try report(savedBaseline.violations)
         }
 
         private func report(_ violations: [StyleViolation]) throws {
-            guard newBaseline == nil else {
-                Issue.genericError("Unexpected argument '--new-baseline <new-baseline>'").print()
-                return
-            }
             let reporter = reporterFrom(identifier: reporter)
             let report = reporter.generateReport(violations)
             if report.isNotEmpty {
@@ -66,12 +75,11 @@ extension SwiftLint {
 
         private func compare() throws {
             guard let newBaselinePath = newBaseline else {
-                Issue.genericError("Missing expected argument '--new-baseline <new-baseline>'").print()
                 return
             }
             let oldBaseline = try SwiftLintCore.Baseline(fromPath: baseline)
             let newBaseline = try SwiftLintCore.Baseline(fromPath: newBaselinePath)
-            let violations = newBaseline.compare(oldBaseline)
+            let violations = oldBaseline.compare(newBaseline)
             try report(violations)
         }
     }

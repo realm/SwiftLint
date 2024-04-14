@@ -110,6 +110,8 @@ public struct Baseline: Equatable {
 
     /// Returns the violations that are present in another `Baseline`, but not in this one.
     ///
+    /// The violations are filtered using the same algorithm as the `filter` method above.
+    ///
     /// - parameter otherBaseline: The other `Baseline`.
     public func compare(_ otherBaseline: Baseline) -> [StyleViolation] {
         otherBaseline.baselineViolations.flatMap {

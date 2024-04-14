@@ -19,7 +19,7 @@ extension SwiftLint {
         @Option(
             help: """
                   The path to a new baseline to compare the baseline against. \
-                  New violations that are not present in the old baseline will be reported."
+                  New violations that are not present in the old baseline will be reported.
                   """
         )
         var newBaseline: String?

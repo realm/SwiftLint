@@ -14,7 +14,7 @@ extension SwiftLint {
 
         @Argument(help: "The action to perform on the baseline ('\(Action.report)' or '\(Action.compare)').")
         var action: Action
-        @Option(help: "The path to a baseline file.")
+        @Option(help: "The path to the baseline file.")
         var baseline: String
         @Option(
             help: """

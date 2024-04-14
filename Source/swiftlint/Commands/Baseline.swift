@@ -9,10 +9,10 @@ enum Action: String, ExpressibleByArgument {
 extension SwiftLint {
     struct Baseline: ParsableCommand {
         static let configuration = CommandConfiguration(
-            abstract: "Performs report or compare actions on a saved Baseline."
+            abstract: "Performs '\(Action.report)' or '\(Action.compare)' actions on a saved Baseline."
         )
 
-        @Argument(help: "The action to perform on the baseline.")
+        @Argument(help: "The action to perform on the baseline ('\(Action.report)' or '\(Action.compare)').")
         var action: Action
         @Option(help: "The path to a baseline file.")
         var baseline: String
@@ -38,7 +38,7 @@ extension SwiftLint {
             ExitHelper.successfullyExit()
         }
 
-        mutating func validate() throws {
+        func validate() throws {
             switch action {
             case .report:
                 guard newBaseline == nil else {
@@ -56,6 +56,16 @@ extension SwiftLint {
             try report(savedBaseline.violations)
         }
 
+        private func compare() throws {
+            guard let newBaselinePath = newBaseline else {
+                return
+            }
+            let oldBaseline = try SwiftLintCore.Baseline(fromPath: baseline)
+            let newBaseline = try SwiftLintCore.Baseline(fromPath: newBaselinePath)
+            let violations = oldBaseline.compare(newBaseline)
+            try report(violations)
+        }
+
         private func report(_ violations: [StyleViolation]) throws {
             let reporter = reporterFrom(identifier: reporter)
             let report = reporter.generateReport(violations)
@@ -71,16 +81,6 @@ extension SwiftLint {
                     queuedPrint(report)
                 }
             }
-        }
-
-        private func compare() throws {
-            guard let newBaselinePath = newBaseline else {
-                return
-            }
-            let oldBaseline = try SwiftLintCore.Baseline(fromPath: baseline)
-            let newBaseline = try SwiftLintCore.Baseline(fromPath: newBaselinePath)
-            let violations = oldBaseline.compare(newBaseline)
-            try report(violations)
         }
     }
 }

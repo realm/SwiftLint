@@ -146,6 +146,17 @@ final class BaselineTests: XCTestCase {
         }
     }
 
+    func testCompare() throws {
+        try testBlock {
+            let oldViolations = Array(Self.violations.dropFirst())
+            let newViolations = Array(Self.violations.dropLast())
+            let oldBaseline = Baseline(violations: oldViolations)
+            let newBaseline = Baseline(violations: newViolations)
+            XCTAssertEqual(oldBaseline.compare(newBaseline), [Self.violations.first])
+            XCTAssertEqual(newBaseline.compare(oldBaseline), [Self.violations.last])
+        }
+    }
+
     private func testViolationDetection(
         violations: [StyleViolation],
         lineShift: Int = 1,

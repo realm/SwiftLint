@@ -9,7 +9,8 @@ enum Action: String, ExpressibleByArgument {
 extension SwiftLint {
     struct Baseline: ParsableCommand {
         static let configuration = CommandConfiguration(
-            abstract: "Performs '\(Action.report)' or '\(Action.compare)' actions on a saved Baseline."
+            abstract: "Reports the violations in a baseline (the '\(Action.report)' action) or the violations " +
+                      "that are present in another baseline, but not in the original (the '\(Action.compare)' action)."
         )
 
         @Argument(help: "The action to perform on the baseline ('\(Action.report)' or '\(Action.compare)').")
@@ -18,12 +19,13 @@ extension SwiftLint {
         var baseline: String
         @Option(
             help: """
-                  The path to a new baseline to compare the baseline against. \
-                  New violations that are not present in the old baseline will be reported.
+                  The path to a second baseline to compare against the baseline. Violations in \
+                  the second baseline that are not present in the original baseline will be reported \
+                  when the '\(Action.compare)' action is selected.
                   """
         )
-        var newBaseline: String?
-        @Option(help: "The reporter used to log errors and warnings.")
+        var otherBaseline: String?
+        @Option(help: "The reporter used to report violations.")
         var reporter: String?
         @Option(help: "The file where violations should be saved. Prints to stdout by default.")
         var output: String?
@@ -41,11 +43,11 @@ extension SwiftLint {
         func validate() throws {
             switch action {
             case .report:
-                guard newBaseline == nil else {
+                guard otherBaseline == nil else {
                     throw ValidationError("Unexpected argument '--new-baseline <new-baseline>'")
                 }
             case .compare:
-                guard newBaseline != nil else {
+                guard otherBaseline != nil else {
                     throw ValidationError("Missing expected argument '--new-baseline <new-baseline>'")
                 }
             }
@@ -57,13 +59,12 @@ extension SwiftLint {
         }
 
         private func compare() throws {
-            guard let newBaselinePath = newBaseline else {
+            guard let otherBaselinePath = otherBaseline else {
                 return
             }
-            let oldBaseline = try SwiftLintCore.Baseline(fromPath: baseline)
-            let newBaseline = try SwiftLintCore.Baseline(fromPath: newBaselinePath)
-            let violations = oldBaseline.compare(newBaseline)
-            try report(violations)
+            let baseline = try SwiftLintCore.Baseline(fromPath: baseline)
+            let otherBaseline = try SwiftLintCore.Baseline(fromPath: otherBaselinePath)
+            try report(baseline.compare(otherBaseline))
         }
 
         private func report(_ violations: [StyleViolation]) throws {

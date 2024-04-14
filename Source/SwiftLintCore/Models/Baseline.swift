@@ -107,6 +107,15 @@ public struct Baseline: Equatable {
         let violationsWithAbsolutePaths = Set(filteredViolations.violationsWithAbsolutePaths)
         return violations.filter { violationsWithAbsolutePaths.contains($0) }
     }
+
+    /// Returns the violations that are present in another `Baseline`, but not in this one.
+    ///
+    /// - parameter otherBaseline: The other `Baseline`.
+    public func compare(_ otherBaseline: Baseline) -> [StyleViolation] {
+        otherBaseline.baselineViolations.flatMap {
+            filter($1.violationsWithAbsolutePaths)
+        }
+    }
 }
 
 private extension Sequence where Element == StyleViolation {

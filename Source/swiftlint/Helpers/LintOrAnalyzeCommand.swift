@@ -55,21 +55,7 @@ struct LintOrAnalyzeCommand {
     private static func collectViolations(builder: LintOrAnalyzeResultBuilder) async throws -> [SwiftLintFile] {
         let options = builder.options
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
-        let baseline: Baseline?
-        if let baselinePath = options.baseline {
-            do {
-                baseline = try Baseline(fromPath: baselinePath)
-            } catch {
-                Issue.baselineNotReadable(path: baselinePath).print()
-                if options.writeBaseline == options.baseline {
-                    baseline = nil
-                } else {
-                    throw error
-                }
-            }
-        } else {
-            baseline = nil
-        }
+        let baseline = try baseline(options)
         return try await builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
                                                                   storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
@@ -133,6 +119,23 @@ struct LintOrAnalyzeCommand {
         }
         try builder.cache?.save()
         guard numberOfSeriousViolations == 0 else { exit(2) }
+    }
+
+    private static func baseline(_ options: LintOrAnalyzeOptions) throws -> Baseline? {
+        if let baselinePath = options.baseline {
+            do {
+                return try Baseline(fromPath: baselinePath)
+            } catch {
+                Issue.baselineNotReadable(path: baselinePath).print()
+                if options.writeBaseline == options.baseline {
+                    return nil
+                } else {
+                    throw error
+                }
+            }
+        } else {
+            return nil
+        }
     }
 
     private static func printStatus(violations: [StyleViolation], files: [SwiftLintFile], serious: Int, verb: String) {

@@ -132,7 +132,7 @@ private extension Sequence where Element == StyleViolation {
                 continue
             }
             if let fileLines = lines[absolutePath] {
-                let text = (!fileLines.isEmpty && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
+                let text = (fileLines.isNotEmpty && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
                 baselineViolations.append(violation.baselineViolation(text: text))
                 continue
             }

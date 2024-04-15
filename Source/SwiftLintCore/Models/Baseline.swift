@@ -24,7 +24,7 @@ private struct BaselineViolation: Codable, Hashable {
 public struct Baseline: Equatable {
     private let baselineViolations: GroupedViolations
     private var sortedBaselineViolations: [BaselineViolation] {
-        baselineViolations.map { ($0, $1) }.sorted { $0.0 < $1.0 }.flatMap { $0.1 }
+        baselineViolations.sorted(by: { $0.key < $1.key }).flatMap(\.value)
     }
 
     /// The stored violations.

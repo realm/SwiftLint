@@ -126,9 +126,8 @@ private extension Sequence where Element == StyleViolation {
         var lines: [String: [String]] = [:]
         var baselineViolations: [BaselineViolation] = []
         for violation in self {
-            guard let absolutePath = violation.location.file,
-                  let lineNumber = violation.location.line != nil ? (violation.location.line ?? 0) - 1 : nil,
-                  lineNumber > 0 else {
+            let lineNumber = (violation.location.line ?? 0) - 1
+            guard let absolutePath = violation.location.file, lineNumber > 0 else {
                 baselineViolations.append(violation.baselineViolation())
                 continue
             }
@@ -160,7 +159,7 @@ private extension Sequence where Element == BaselineViolation {
     }
 
     func groupedByRuleIdentifier() -> ViolationsPerRule {
-        Dictionary(grouping: self) { $0.violation.ruleIdentifier }
+        Dictionary(grouping: self, by: \.violation.ruleIdentifier)
     }
 
     func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation]) -> ViolationsPerRule {

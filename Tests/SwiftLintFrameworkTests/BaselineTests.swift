@@ -44,14 +44,12 @@ final class BaselineTests: XCTestCase {
                                  }
                                  """
 
-    private static let violations: [StyleViolation] = {
-        [
-            ArrayInitRule.description,
-            BlockBasedKVORule.description,
-            ClosingBraceRule.description,
-            DirectReturnRule.description
-        ].violations
-    }()
+    private static let violations = [
+        ArrayInitRule.description,
+        BlockBasedKVORule.description,
+        ClosingBraceRule.description,
+        DirectReturnRule.description
+    ].violations
 
     private static let baseline = Baseline(violations: violations)
 

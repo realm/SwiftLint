@@ -129,13 +129,11 @@ struct LintOrAnalyzeCommand {
                 Issue.baselineNotReadable(path: baselinePath).print()
                 if options.writeBaseline == options.baseline {
                     return nil
-                } else {
-                    throw error
                 }
+                throw error
             }
-        } else {
-            return nil
         }
+        return nil
     }
 
     private static func printStatus(violations: [StyleViolation], files: [SwiftLintFile], serious: Int, verb: String) {

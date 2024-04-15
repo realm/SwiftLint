@@ -1,6 +1,7 @@
 import Foundation
 
-private typealias GroupedViolations = [String: [BaselineViolation]]
+private typealias ViolationsPerFile = [String: [BaselineViolation]]
+private typealias ViolationsPerRule = [String: [BaselineViolation]]
 
 private struct BaselineViolation: Codable, Hashable {
     let violation: StyleViolation
@@ -22,7 +23,7 @@ private struct BaselineViolation: Codable, Hashable {
 
 /// A set of violations that can be used to filter newly detected violations.
 public struct Baseline: Equatable {
-    private let baselineViolations: GroupedViolations
+    private let baselineViolations: ViolationsPerFile
     private var sortedBaselineViolations: [BaselineViolation] {
         baselineViolations.sorted(by: { $0.key < $1.key }).flatMap(\.value)
     }
@@ -155,15 +156,15 @@ private extension Sequence where Element == BaselineViolation {
         map { $0.violation.withAbsolutePath }
     }
 
-    func groupedByFile() -> GroupedViolations {
+    func groupedByFile() -> ViolationsPerFile {
         Dictionary(grouping: self) { $0.violation.location.relativeFile ?? "" }
     }
 
-    func groupedByRuleIdentifier() -> GroupedViolations {
+    func groupedByRuleIdentifier() -> ViolationsPerRule {
         Dictionary(grouping: self) { $0.violation.ruleIdentifier }
     }
 
-    func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation]) -> GroupedViolations {
+    func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation]) -> ViolationsPerRule {
         Set(self).subtracting(existingViolations).groupedByRuleIdentifier()
     }
 }

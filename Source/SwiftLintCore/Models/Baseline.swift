@@ -123,14 +123,14 @@ public struct Baseline: Equatable {
 
 private extension Sequence where Element == StyleViolation {
     var baselineViolations: [BaselineViolation] {
-        var textExtractor = TextExtractor()
+        var lineCache = LineCache()
         return map {
-            $0.baselineViolation(text: textExtractor.text(at: $0.location))
+            $0.baselineViolation(text: lineCache.text(at: $0.location))
         }
     }
 }
 
-private struct TextExtractor {
+private struct LineCache {
     private var lines: [String: [String]] = [:]
 
     mutating func text(at location: Location) -> String {

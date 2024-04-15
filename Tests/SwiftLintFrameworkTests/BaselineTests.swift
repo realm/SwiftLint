@@ -53,9 +53,7 @@ final class BaselineTests: XCTestCase {
         ].violations
     }()
 
-    private static let baseline: Baseline = {
-        Baseline(violations: violations)
-    }()
+    private static let baseline = Baseline(violations: violations)
 
     private var currentDirectoryPath: String?
 

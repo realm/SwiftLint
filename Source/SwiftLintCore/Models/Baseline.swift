@@ -123,29 +123,29 @@ public struct Baseline: Equatable {
 
 private extension Sequence where Element == StyleViolation {
     var baselineViolations: [BaselineViolation] {
-        var lines: [String: [String]] = [:]
-        var baselineViolations: [BaselineViolation] = []
-        for violation in self {
-            let lineNumber = (violation.location.line ?? 0) - 1
-            guard let absolutePath = violation.location.file, lineNumber > 0 else {
-                baselineViolations.append(violation.baselineViolation())
-                continue
-            }
-            if let fileLines = lines[absolutePath] {
-                let text = (fileLines.isNotEmpty && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
-                baselineViolations.append(violation.baselineViolation(text: text))
-                continue
-            }
-            let text: String
-            if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map(\.content) {
-                lines[absolutePath] = fileLines
-                text = lineNumber < fileLines.count ? fileLines[lineNumber] : ""
-            } else {
-                text = ""
-            }
-            baselineViolations.append(violation.baselineViolation(text: text))
+        var textExtractor = TextExtractor()
+        return map {
+            $0.baselineViolation(text: textExtractor.text(at: $0.location))
         }
-        return baselineViolations
+    }
+}
+
+private struct TextExtractor {
+    private var lines: [String: [String]] = [:]
+
+    mutating func text(at location: Location) -> String {
+        let lineNumber = (location.line ?? 0) - 1
+        guard lineNumber > 0, let absolutePath = location.file else {
+            return ""
+        }
+        if let fileLines = lines[absolutePath] {
+            return (fileLines.isNotEmpty && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
+        }
+        if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map(\.content) {
+            lines[absolutePath] = fileLines
+            return lineNumber < fileLines.count ? fileLines[lineNumber] : ""
+        }
+        return ""
     }
 }
 

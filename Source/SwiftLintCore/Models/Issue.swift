@@ -193,7 +193,7 @@ public enum Issue: LocalizedError, Equatable {
         case let .yamlParsing(message):
             return "Cannot parse YAML file: \(message)"
         case let .baselineNotReadable(path):
-            return "Cannot open or read the baseline file at path '\(path)'"
+            return "Cannot open or read the baseline file at path '\(path)'."
         }
     }
 }

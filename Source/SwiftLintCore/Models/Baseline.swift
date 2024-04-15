@@ -138,10 +138,9 @@ private extension Sequence where Element == StyleViolation {
                 continue
             }
             let text: String
-            if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map(\.content),
-               lineNumber < fileLines.count {
-                text = fileLines[lineNumber]
+            if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map(\.content) {
                 lines[absolutePath] = fileLines
+                text = lineNumber < fileLines.count ? fileLines[lineNumber] : ""
             } else {
                 text = ""
             }
@@ -171,11 +170,10 @@ private extension Sequence where Element == BaselineViolation {
 
 private extension StyleViolation {
     var withAbsolutePath: StyleViolation {
-        let absolutePath: String?
-        if let relativePath = location.file {
-            absolutePath = FileManager.default.currentDirectoryPath + "/" + relativePath
+        let absolutePath: String? = if let relativePath = location.file {
+            FileManager.default.currentDirectoryPath + "/" + relativePath
         } else {
-            absolutePath = nil
+            nil
         }
         let newLocation = Location(file: absolutePath, line: location.line, character: location.character)
         return with(location: newLocation)

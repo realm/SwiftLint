@@ -25,7 +25,12 @@ extension SwiftLint {
                   """
         )
         var otherBaseline: String?
-        @Option(help: "The reporter used to report violations. The 'summary' reporter can be useful to provide an overview.")
+        @Option(
+            help: """
+                  The reporter used to report violations. The 'summary' reporter can be useful to \
+                  provide an overview.
+                  """
+        )
         var reporter: String?
         @Option(help: "The file where violations should be saved. Prints to stdout by default.")
         var output: String?

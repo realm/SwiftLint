@@ -53,21 +53,21 @@ final class BaselineTests: XCTestCase {
 
     private static let baseline = Baseline(violations: violations)
 
-    private var currentDirectoryPath: String?
+    private static var currentDirectoryPath: String?
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override class func setUp() {
+        super.setUp()
         currentDirectoryPath = FileManager.default.currentDirectoryPath
         let testDirectoryPath = sourceFilePath.bridge().deletingLastPathComponent
         XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(testDirectoryPath))
     }
 
-    override func tearDownWithError() throws {
+    override class func tearDown() {
         if let currentDirectoryPath {
             XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(currentDirectoryPath))
             self.currentDirectoryPath = nil
         }
-        try super.tearDownWithError()
+        super.tearDown()
     }
 
     func testWritingAndReading() throws {

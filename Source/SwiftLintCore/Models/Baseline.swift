@@ -134,18 +134,22 @@ private struct LineCache {
     private var lines: [String: [String]] = [:]
 
     mutating func text(at location: Location) -> String {
-        let lineNumber = (location.line ?? 0) - 1
-        guard lineNumber > 0, let absolutePath = location.file else {
-            return ""
-        }
-        if let fileLines = lines[absolutePath] {
-            return (fileLines.isNotEmpty && lineNumber < fileLines.count) ? fileLines[lineNumber] : ""
-        }
-        if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map(\.content) {
-            lines[absolutePath] = fileLines
-            return lineNumber < fileLines.count ? fileLines[lineNumber] : ""
+        let line = (location.line ?? 0) - 1
+        if line > 0, let file = location.file, let content = cached(file: file), line < content.count {
+            return content[line]
         }
         return ""
+    }
+
+    private mutating func cached(file: String) -> [String]? {
+        if let fileLines = lines[file] {
+            return fileLines
+        }
+        if let fileLines = SwiftLintFile(path: file)?.lines.map(\.content) {
+            lines[file] = fileLines
+            return fileLines
+        }
+        return nil
     }
 }
 
@@ -169,11 +173,12 @@ private extension Sequence where Element == BaselineViolation {
 
 private extension StyleViolation {
     var withAbsolutePath: StyleViolation {
-        let absolutePath: String? = if let relativePath = location.file {
-            FileManager.default.currentDirectoryPath + "/" + relativePath
-        } else {
-            nil
-        }
+        let absolutePath: String? =
+            if let relativePath = location.file {
+                FileManager.default.currentDirectoryPath + "/" + relativePath
+            } else {
+                nil
+            }
         let newLocation = Location(file: absolutePath, line: location.line, character: location.character)
         return with(location: newLocation)
     }

@@ -24,7 +24,6 @@ disabled_rules:
   - force_unwrapping
   - function_default_parameter_at_end
   - implicit_return
-  - implicitly_unwrapped_optional
   - indentation_width
   - inert_defer
   - missing_docs

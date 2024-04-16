@@ -94,7 +94,7 @@ struct LintOrAnalyzeCommand {
     private static func postProcessViolations(files: [SwiftLintFile], builder: LintOrAnalyzeResultBuilder) throws {
         let options = builder.options
         let configuration = builder.configuration
-        if isWarningThresholdBroken(configuration: configuration, violations: builder.unfilteredViolations)
+        if isWarningThresholdBroken(configuration: configuration, violations: builder.violations)
             && !options.lenient {
             builder.violations.append(
                 createThresholdViolation(threshold: configuration.warningThreshold!)

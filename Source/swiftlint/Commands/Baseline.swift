@@ -25,7 +25,7 @@ extension SwiftLint {
                   """
         )
         var otherBaseline: String?
-        @Option(help: "The reporter used to report violations.")
+        @Option(help: "The reporter used to report violations. The 'summary' reporter can be useful to provide an overview.")
         var reporter: String?
         @Option(help: "The file where violations should be saved. Prints to stdout by default.")
         var output: String?
@@ -44,11 +44,11 @@ extension SwiftLint {
             switch action {
             case .report:
                 guard otherBaseline == nil else {
-                    throw ValidationError("Unexpected argument '--new-baseline <new-baseline>'")
+                    throw ValidationError("Unexpected argument '--other-baseline <new-baseline>'")
                 }
             case .compare:
                 guard otherBaseline != nil else {
-                    throw ValidationError("Missing expected argument '--new-baseline <new-baseline>'")
+                    throw ValidationError("Missing expected argument '--other-baseline <other-baseline>'")
                 }
             }
         }

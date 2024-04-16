@@ -70,7 +70,7 @@ public struct Baseline: Equatable {
         }
 
         let relativePathViolations = violations.baselineViolations
-        guard relativePathViolations != baselineViolations else {
+        if relativePathViolations == baselineViolations {
             return []
         }
 

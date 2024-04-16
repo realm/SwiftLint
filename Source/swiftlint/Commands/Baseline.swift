@@ -32,8 +32,10 @@ extension SwiftLint {
     private struct Report: ParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Reports the violations in a baseline.")
 
-        @OptionGroup var options: BaselineOptions
-        @OptionGroup var reportingOptions: ReportingOptions
+        @OptionGroup 
+        var options: BaselineOptions
+        @OptionGroup 
+        var reportingOptions: ReportingOptions
 
         func run() throws {
             let savedBaseline = try SwiftLintCore.Baseline(fromPath: options.baseline)
@@ -48,7 +50,8 @@ extension SwiftLint {
                       "but not in the original baseline."
         )
 
-        @OptionGroup var options: BaselineOptions
+        @OptionGroup 
+        var options: BaselineOptions
         @Option(
             help: """
                   The path to a second baseline to compare against the baseline. Violations in \
@@ -56,7 +59,8 @@ extension SwiftLint {
                   """
         )
         var otherBaseline: String
-        @OptionGroup var reportingOptions: ReportingOptions
+        @OptionGroup 
+        var reportingOptions: ReportingOptions
 
         func run() throws {
             let baseline = try SwiftLintCore.Baseline(fromPath: options.baseline)

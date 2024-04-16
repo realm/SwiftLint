@@ -7,12 +7,13 @@ extension SwiftLint {
         static let configuration = CommandConfiguration(
             abstract: "Reports the violations in a baseline (the 'report' subcommand) or the violations " +
                       "that are present in another baseline, but not in the original (the 'compare' subcommand).",
-            subcommands: [Report.self, Compare.self]
+            subcommands: [Report.self, Compare.self],
+            defaultSubcommand: Report.self
         )
     }
 
     private struct BaselineOptions: ParsableArguments {
-        @Option(help: "The path to the baseline file.")
+        @Argument(help: "The path to the baseline file.")
         var baseline: String
     }
 

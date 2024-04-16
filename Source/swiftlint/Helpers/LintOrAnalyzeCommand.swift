@@ -45,7 +45,7 @@ struct LintOrAnalyzeCommand {
         let builder = LintOrAnalyzeResultBuilder(options)
         let files = try await collectViolations(builder: builder)
         if let baselineOutputPath = options.writeBaseline {
-            try Baseline(violations: builder.allViolations).write(toPath: baselineOutputPath)
+            try Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath)
         }
         try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
             try postProcessViolations(files: files, builder: builder)
@@ -82,7 +82,7 @@ struct LintOrAnalyzeCommand {
             }
             let filteredViolations = baseline?.filter(currentViolations) ?? currentViolations
             visitorMutationQueue.sync {
-                builder.allViolations += currentViolations
+                builder.unfilteredViolations += currentViolations
                 builder.violations += filteredViolations
             }
 
@@ -94,7 +94,7 @@ struct LintOrAnalyzeCommand {
     private static func postProcessViolations(files: [SwiftLintFile], builder: LintOrAnalyzeResultBuilder) throws {
         let options = builder.options
         let configuration = builder.configuration
-        if isWarningThresholdBroken(configuration: configuration, violations: builder.allViolations)
+        if isWarningThresholdBroken(configuration: configuration, violations: builder.unfilteredViolations)
             && !options.lenient {
             builder.violations.append(
                 createThresholdViolation(threshold: configuration.warningThreshold!)
@@ -283,8 +283,10 @@ struct LintOrAnalyzeOptions {
 private class LintOrAnalyzeResultBuilder {
     var fileBenchmark = Benchmark(name: "files")
     var ruleBenchmark = Benchmark(name: "rules")
+    /// All detected violations, unfiltered by the baseline, if any.
+    var unfilteredViolations = [StyleViolation]()
+    /// The violations to be reported, possibly filtered by a baseline, plus any threshold violations.
     var violations = [StyleViolation]()
-    var allViolations = [StyleViolation]()
     let storage = RuleStorage()
     let configuration: Configuration
     let reporter: any Reporter.Type

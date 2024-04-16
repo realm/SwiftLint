@@ -139,7 +139,7 @@ private struct LineCache {
             return ""
         }
         if let fileLines = lines[absolutePath] {
-            return (fileLines.isNotEmpty && lineNumber < fileLines.count ) ? fileLines[lineNumber] : ""
+            return (fileLines.isNotEmpty && lineNumber < fileLines.count) ? fileLines[lineNumber] : ""
         }
         if let fileLines = SwiftLintFile(path: absolutePath)?.lines.map(\.content) {
             lines[absolutePath] = fileLines

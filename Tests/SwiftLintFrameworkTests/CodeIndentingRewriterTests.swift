@@ -3,7 +3,7 @@ import SwiftParser
 import SwiftSyntax
 import XCTest
 
-class CodeIndentingRewriterTests: XCTestCase {
+final class CodeIndentingRewriterTests: XCTestCase {
     func testIndentDefaultStyle() {
         assertIndent(
             source: """

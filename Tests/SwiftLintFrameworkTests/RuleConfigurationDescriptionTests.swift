@@ -5,7 +5,7 @@ import XCTest
 // swiftlint:disable file_length
 
 // swiftlint:disable:next type_body_length
-class RuleConfigurationDescriptionTests: XCTestCase {
+final class RuleConfigurationDescriptionTests: XCTestCase {
     @AutoApply
     private struct TestConfiguration: RuleConfiguration {
         typealias Parent = RuleMock // swiftlint:disable:this nesting

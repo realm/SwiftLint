@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class UnusedDeclarationConfigurationTests: XCTestCase {
+final class UnusedDeclarationConfigurationTests: XCTestCase {
     func testParseConfiguration() throws {
         var testee = UnusedDeclarationConfiguration()
         let config = [

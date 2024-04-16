@@ -37,18 +37,17 @@ private extension TextTable {
         self.init(columns: columns)
 
         let ruleIdentifiersToViolationsMap = violations.group { $0.ruleIdentifier }
-        let sortedRuleIdentifiers = ruleIdentifiersToViolationsMap.keys.sorted {
-            let count1 = ruleIdentifiersToViolationsMap[$0]?.count ?? 0
-            let count2 = ruleIdentifiersToViolationsMap[$1]?.count ?? 0
+        let sortedRuleIdentifiers = ruleIdentifiersToViolationsMap.sorted { lhs, rhs in
+            let count1 = lhs.value.count
+            let count2 = rhs.value.count
             if count1 > count2 {
                 return true
             }
             if count1 == count2 {
-                // swiftlint:disable:next shorthand_argument
-                return $0 < $1
+                return lhs.key < rhs.key
             }
             return false
-        }
+        }.map { $0.key }
 
         var totalNumberOfWarnings = 0
         var totalNumberOfErrors = 0

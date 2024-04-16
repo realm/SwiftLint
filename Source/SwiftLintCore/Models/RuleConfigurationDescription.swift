@@ -531,8 +531,8 @@ extension ConfigurationElement: AnyConfigurationElement {
 
 extension Optional: AcceptableByConfigurationElement where Wrapped: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
-        if let value = self {
-            return value.asOption()
+        if let self {
+            return self.asOption()
         }
         return .empty
     }

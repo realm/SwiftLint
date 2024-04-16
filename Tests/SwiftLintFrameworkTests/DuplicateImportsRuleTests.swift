@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class DuplicateImportsRuleTests: XCTestCase {
+final class DuplicateImportsRuleTests: XCTestCase {
     func testDisableCommand() {
         let content = """
             import InspireAPI

@@ -69,7 +69,7 @@ struct TypeContentsOrderRule: OptInRule {
 
     private func typeContentOffsets(in typeStructure: SourceKittenDictionary) -> [TypeContentOffset] {
         return typeStructure.substructure.compactMap { typeContentStructure in
-            guard let typeContent = self.typeContent(for: typeContentStructure) else { return nil }
+            guard let typeContent = typeContent(for: typeContentStructure) else { return nil }
             return (typeContent, typeContentStructure.offset!)
         }
     }

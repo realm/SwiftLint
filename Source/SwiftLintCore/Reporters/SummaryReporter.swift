@@ -44,6 +44,7 @@ private extension TextTable {
                 return true
             }
             if count1 == count2 {
+                // swiftlint:disable:next shorthand_argument
                 return $0 < $1
             }
             return false

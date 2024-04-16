@@ -95,8 +95,10 @@ internal extension Configuration.FileGraph {
 
     // MARK: - Edge
     struct Edge: Hashable {
+        // swiftlint:disable implicitly_unwrapped_optional
         var parent: Vertex!
         var child: Vertex!
+        // swiftlint:enable implicitly_unwrapped_optional
     }
 
     // MARK: - EdgeType

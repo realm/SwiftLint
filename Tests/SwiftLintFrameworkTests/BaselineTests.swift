@@ -55,14 +55,14 @@ final class BaselineTests: XCTestCase {
 
     private static var currentDirectoryPath: String?
 
-    override class func setUp() {
+    override final class func setUp() {
         super.setUp()
         currentDirectoryPath = FileManager.default.currentDirectoryPath
         let testDirectoryPath = sourceFilePath.bridge().deletingLastPathComponent
         XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(testDirectoryPath))
     }
 
-    override class func tearDown() {
+    override final class func tearDown() {
         if let currentDirectoryPath {
             XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(currentDirectoryPath))
             self.currentDirectoryPath = nil

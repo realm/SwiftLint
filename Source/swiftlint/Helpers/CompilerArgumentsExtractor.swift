@@ -95,7 +95,7 @@ extension Array where Element == String {
                 "-serialize-diagnostics",
                 "-emit-dependencies",
                 "-use-frontend-parseable-output"
-            ].contains($0) // swiftlint:disable:this shorthand_argument
+            ].contains(arg)
         }.map {
             if $0 == "-O" {
                 return "-Onone"
@@ -103,7 +103,7 @@ extension Array where Element == String {
             if $0 == "-DNDEBUG=1" {
                 return "-DDEBUG=1"
             }
-            return $0  // swiftlint:disable:this shorthand_argument
+            return arg
         }
     }
 }

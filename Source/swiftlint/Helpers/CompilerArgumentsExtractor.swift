@@ -88,7 +88,7 @@ extension Array where Element == String {
             (args, shouldContinueToFilterArguments) = partiallyFilter(arguments: args)
         }
 
-        return args.filter {
+        return args.filter { arg in
             ![
                 "-parseable-output",
                 "-incremental",
@@ -96,11 +96,11 @@ extension Array where Element == String {
                 "-emit-dependencies",
                 "-use-frontend-parseable-output"
             ].contains(arg)
-        }.map {
-            if $0 == "-O" {
+        }.map { arg in
+            if arg == "-O" {
                 return "-Onone"
             }
-            if $0 == "-DNDEBUG=1" {
+            if arg == "-DNDEBUG=1" {
                 return "-DDEBUG=1"
             }
             return arg

@@ -47,7 +47,7 @@ private extension TextTable {
                 return lhs.key < rhs.key
             }
             return false
-        }.map { $0.key }
+        }.map(\.key)
 
         var totalNumberOfWarnings = 0
         var totalNumberOfErrors = 0

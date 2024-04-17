@@ -5,8 +5,7 @@ import SwiftLintFramework
 extension SwiftLint {
     struct Baseline: ParsableCommand {
         static let configuration = CommandConfiguration(
-            abstract: "Reports the violations in a baseline or the violations " +
-                      "that are present in another baseline, but not in the original.",
+            abstract: "Operations on existing baselines",
             subcommands: [Report.self, Compare.self],
             defaultSubcommand: Report.self
         )

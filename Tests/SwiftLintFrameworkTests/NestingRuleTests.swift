@@ -5,7 +5,7 @@
 private let detectingTypes = ["actor", "class", "struct", "enum"]
 
 // swiftlint:disable:next type_body_length
-class NestingRuleTests: SwiftLintTestCase {
+final class NestingRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
     func testNestingWithAlwaysAllowOneTypeInFunctions() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples

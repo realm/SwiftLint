@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
+final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
     func testSetGetConfiguration() {
         let nonTriggeringExamples = [
             Example("""

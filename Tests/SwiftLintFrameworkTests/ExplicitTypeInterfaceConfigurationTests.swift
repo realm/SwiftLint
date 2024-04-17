@@ -2,7 +2,7 @@
 @testable import SwiftLintCore
 import XCTest
 
-class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
+final class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
     func testDefaultConfiguration() {
         let config = ExplicitTypeInterfaceConfiguration()
         XCTAssertEqual(config.severityConfiguration.severity, .warning)

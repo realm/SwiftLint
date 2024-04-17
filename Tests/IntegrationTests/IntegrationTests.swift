@@ -13,7 +13,7 @@ private let config: Configuration = {
     return Configuration(configurationFiles: [Configuration.defaultFileName])
 }()
 
-class IntegrationTests: SwiftLintTestCase {
+final class IntegrationTests: SwiftLintTestCase {
     func testSwiftLintLints() {
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFiles(

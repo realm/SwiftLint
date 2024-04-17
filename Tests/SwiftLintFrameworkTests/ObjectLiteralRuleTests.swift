@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class ObjectLiteralRuleTests: SwiftLintTestCase {
+final class ObjectLiteralRuleTests: SwiftLintTestCase {
     // MARK: - Instance Properties
     private let imageLiteralTriggeringExamples = ["", ".init"].flatMap { (method: String) -> [Example] in
         ["UI", "NS"].flatMap { (prefix: String) -> [Example] in

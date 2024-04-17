@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class PrivateOverFilePrivateRuleTests: SwiftLintTestCase {
+final class PrivateOverFilePrivateRuleTests: SwiftLintTestCase {
     func testPrivateOverFilePrivateValidatingExtensions() {
         let baseDescription = PrivateOverFilePrivateRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [

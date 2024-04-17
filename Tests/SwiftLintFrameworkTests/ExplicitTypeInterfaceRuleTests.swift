@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
+final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
     func testLocalVars() {
         let nonTriggeringExamples = [
             Example("func foo() {\nlet intVal: Int = 1\n}"),

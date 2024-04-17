@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class ConditionalReturnsOnNewlineRuleTests: SwiftLintTestCase {
+final class ConditionalReturnsOnNewlineRuleTests: SwiftLintTestCase {
     func testConditionalReturnsOnNewlineWithIfOnly() {
         // Test with `if_only` set to true
         let nonTriggeringExamples = [

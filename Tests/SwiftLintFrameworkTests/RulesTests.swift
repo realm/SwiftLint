@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class RulesTests: SwiftLintTestCase {
+final class RulesTests: SwiftLintTestCase {
     func testLeadingWhitespace() {
         verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
                    testMultiByteOffsets: false, testShebang: false)

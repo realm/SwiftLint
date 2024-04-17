@@ -3,7 +3,7 @@ import XCTest
 
 private let fixturesDirectory = "\(TestResources.path)/FileNameRuleFixtures"
 
-class FileNameRuleTests: SwiftLintTestCase {
+final class FileNameRuleTests: SwiftLintTestCase {
     private func validate(fileName: String, excludedOverride: [String]? = nil,
                           prefixPattern: String? = nil, suffixPattern: String? = nil,
                           nestedTypeSeparator: String? = nil) throws -> [StyleViolation] {

@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class CyclomaticComplexityRuleTests: SwiftLintTestCase {
+final class CyclomaticComplexityRuleTests: SwiftLintTestCase {
     private lazy var complexSwitchExample: Example = {
         var example = "func switcheroo() {\n"
         example += "    switch foo {\n"

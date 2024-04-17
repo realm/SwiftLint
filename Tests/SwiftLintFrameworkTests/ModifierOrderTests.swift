@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class ModifierOrderTests: SwiftLintTestCase {
+final class ModifierOrderTests: SwiftLintTestCase {
     func testAttributeTypeMethod() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [

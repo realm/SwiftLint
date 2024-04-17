@@ -3,7 +3,7 @@ import SourceKittenFramework
 @testable import SwiftLintCore
 import XCTest
 
-class RuleConfigurationTests: SwiftLintTestCase {
+final class RuleConfigurationTests: SwiftLintTestCase {
     private let defaultNestingConfiguration = NestingConfiguration(
         typeLevel: SeverityLevelsConfiguration(warning: 0),
         functionLevel: SeverityLevelsConfiguration(warning: 0)

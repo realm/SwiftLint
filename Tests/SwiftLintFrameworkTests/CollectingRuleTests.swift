@@ -2,7 +2,7 @@
 import SwiftLintTestHelpers
 import XCTest
 
-class CollectingRuleTests: SwiftLintTestCase {
+final class CollectingRuleTests: SwiftLintTestCase {
     func testCollectsIntoStorage() {
         struct Spec: MockCollectingRule {
             var configuration = SeverityConfiguration<Self>(.warning)

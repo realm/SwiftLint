@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class RequiredEnumCaseConfigurationTests: SwiftLintTestCase {
+final class RequiredEnumCaseConfigurationTests: SwiftLintTestCase {
     private typealias RuleConfiguration = RequiredEnumCaseConfiguration
     private typealias RequiredCase = RuleConfiguration.RequiredCase
 

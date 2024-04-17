@@ -68,7 +68,7 @@ private class TestFileManager: LintableFileManager {
     }
 }
 
-class LinterCacheTests: SwiftLintTestCase {
+final class LinterCacheTests: SwiftLintTestCase {
     // MARK: Test Helpers
 
     private var cache = LinterCache(fileManager: TestFileManager())

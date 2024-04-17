@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class FileLengthRuleTests: SwiftLintTestCase {
+final class FileLengthRuleTests: SwiftLintTestCase {
     func testFileLengthWithDefaultConfiguration() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false,
                    testMultiByteOffsets: false, testShebang: false)

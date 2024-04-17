@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class ExplicitInitRuleTests: SwiftLintTestCase {
+final class ExplicitInitRuleTests: SwiftLintTestCase {
     func testIncludeBareInit() {
         let nonTriggeringExamples = [
             Example("let foo = Foo()"),

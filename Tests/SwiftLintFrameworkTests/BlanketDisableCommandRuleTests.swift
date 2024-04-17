@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class BlanketDisableCommandRuleTests: SwiftLintTestCase {
+final class BlanketDisableCommandRuleTests: SwiftLintTestCase {
     private lazy var emptyDescription = BlanketDisableCommandRule.description
         .with(triggeringExamples: [])
         .with(nonTriggeringExamples: [])

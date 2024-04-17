@@ -7,7 +7,7 @@ import SwiftLintTestHelpers
 
 {% for rule in types.structs %}
 {% if rule.name|hasSuffix:"Rule" %}
-class {{ rule.name }}GeneratedTests: SwiftLintTestCase {
+final class {{ rule.name }}GeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule({{ rule.name }}.description)
     }

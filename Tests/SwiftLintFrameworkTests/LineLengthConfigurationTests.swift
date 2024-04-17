@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class LineLengthConfigurationTests: SwiftLintTestCase {
+final class LineLengthConfigurationTests: SwiftLintTestCase {
     private let severityLevels = SeverityLevelsConfiguration<LineLengthRule>(warning: 100, error: 150)
 
     func testLineLengthConfigurationInitializerSetsLength() {

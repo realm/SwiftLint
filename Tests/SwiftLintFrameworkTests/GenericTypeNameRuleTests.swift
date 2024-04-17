@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class GenericTypeNameRuleTests: SwiftLintTestCase {
+final class GenericTypeNameRuleTests: SwiftLintTestCase {
     func testGenericTypeNameWithExcluded() {
         let baseDescription = GenericTypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [

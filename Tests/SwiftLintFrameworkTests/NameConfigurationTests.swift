@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class NameConfigurationTests: SwiftLintTestCase {
+final class NameConfigurationTests: SwiftLintTestCase {
     typealias TesteeType = NameConfiguration<RuleMock>
 
     func testNameConfigurationSetsCorrectly() {

@@ -1,7 +1,7 @@
 import SwiftLintFramework
 import XCTest
 
-class ExampleTests: SwiftLintTestCase {
+final class ExampleTests: SwiftLintTestCase {
     func testEquatableDoesNotLookAtFile() {
         let first = Example("foo", file: "a", line: 1)
         let second = Example("foo", file: "b", line: 1)

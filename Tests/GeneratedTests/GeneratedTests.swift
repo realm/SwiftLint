@@ -7,1417 +7,1417 @@ import SwiftLintTestHelpers
 // swiftlint:disable:next blanket_disable_command
 // swiftlint:disable file_length single_test_class type_name
 
-class AccessibilityLabelForImageRuleGeneratedTests: SwiftLintTestCase {
+final class AccessibilityLabelForImageRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AccessibilityLabelForImageRule.description)
     }
 }
 
-class AccessibilityTraitForButtonRuleGeneratedTests: SwiftLintTestCase {
+final class AccessibilityTraitForButtonRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AccessibilityTraitForButtonRule.description)
     }
 }
 
-class AnonymousArgumentInMultilineClosureRuleGeneratedTests: SwiftLintTestCase {
+final class AnonymousArgumentInMultilineClosureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AnonymousArgumentInMultilineClosureRule.description)
     }
 }
 
-class AnyObjectProtocolRuleGeneratedTests: SwiftLintTestCase {
+final class AnyObjectProtocolRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AnyObjectProtocolRule.description)
     }
 }
 
-class ArrayInitRuleGeneratedTests: SwiftLintTestCase {
+final class ArrayInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ArrayInitRule.description)
     }
 }
 
-class AttributesRuleGeneratedTests: SwiftLintTestCase {
+final class AttributesRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AttributesRule.description)
     }
 }
 
-class BalancedXCTestLifecycleRuleGeneratedTests: SwiftLintTestCase {
+final class BalancedXCTestLifecycleRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(BalancedXCTestLifecycleRule.description)
     }
 }
 
-class BlanketDisableCommandRuleGeneratedTests: SwiftLintTestCase {
+final class BlanketDisableCommandRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(BlanketDisableCommandRule.description)
     }
 }
 
-class BlockBasedKVORuleGeneratedTests: SwiftLintTestCase {
+final class BlockBasedKVORuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(BlockBasedKVORule.description)
     }
 }
 
-class CaptureVariableRuleGeneratedTests: SwiftLintTestCase {
+final class CaptureVariableRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CaptureVariableRule.description)
     }
 }
 
-class ClassDelegateProtocolRuleGeneratedTests: SwiftLintTestCase {
+final class ClassDelegateProtocolRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClassDelegateProtocolRule.description)
     }
 }
 
-class ClosingBraceRuleGeneratedTests: SwiftLintTestCase {
+final class ClosingBraceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosingBraceRule.description)
     }
 }
 
-class ClosureBodyLengthRuleGeneratedTests: SwiftLintTestCase {
+final class ClosureBodyLengthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosureBodyLengthRule.description)
     }
 }
 
-class ClosureEndIndentationRuleGeneratedTests: SwiftLintTestCase {
+final class ClosureEndIndentationRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosureEndIndentationRule.description)
     }
 }
 
-class ClosureParameterPositionRuleGeneratedTests: SwiftLintTestCase {
+final class ClosureParameterPositionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosureParameterPositionRule.description)
     }
 }
 
-class ClosureSpacingRuleGeneratedTests: SwiftLintTestCase {
+final class ClosureSpacingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosureSpacingRule.description)
     }
 }
 
-class CollectionAlignmentRuleGeneratedTests: SwiftLintTestCase {
+final class CollectionAlignmentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CollectionAlignmentRule.description)
     }
 }
 
-class ColonRuleGeneratedTests: SwiftLintTestCase {
+final class ColonRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ColonRule.description)
     }
 }
 
-class CommaInheritanceRuleGeneratedTests: SwiftLintTestCase {
+final class CommaInheritanceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CommaInheritanceRule.description)
     }
 }
 
-class CommaRuleGeneratedTests: SwiftLintTestCase {
+final class CommaRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CommaRule.description)
     }
 }
 
-class CommentSpacingRuleGeneratedTests: SwiftLintTestCase {
+final class CommentSpacingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CommentSpacingRule.description)
     }
 }
 
-class CompilerProtocolInitRuleGeneratedTests: SwiftLintTestCase {
+final class CompilerProtocolInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CompilerProtocolInitRule.description)
     }
 }
 
-class ComputedAccessorsOrderRuleGeneratedTests: SwiftLintTestCase {
+final class ComputedAccessorsOrderRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ComputedAccessorsOrderRule.description)
     }
 }
 
-class ConditionalReturnsOnNewlineRuleGeneratedTests: SwiftLintTestCase {
+final class ConditionalReturnsOnNewlineRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 }
 
-class ContainsOverFilterCountRuleGeneratedTests: SwiftLintTestCase {
+final class ContainsOverFilterCountRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ContainsOverFilterCountRule.description)
     }
 }
 
-class ContainsOverFilterIsEmptyRuleGeneratedTests: SwiftLintTestCase {
+final class ContainsOverFilterIsEmptyRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ContainsOverFilterIsEmptyRule.description)
     }
 }
 
-class ContainsOverFirstNotNilRuleGeneratedTests: SwiftLintTestCase {
+final class ContainsOverFirstNotNilRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ContainsOverFirstNotNilRule.description)
     }
 }
 
-class ContainsOverRangeNilComparisonRuleGeneratedTests: SwiftLintTestCase {
+final class ContainsOverRangeNilComparisonRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ContainsOverRangeNilComparisonRule.description)
     }
 }
 
-class ControlStatementRuleGeneratedTests: SwiftLintTestCase {
+final class ControlStatementRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ControlStatementRule.description)
     }
 }
 
-class ConvenienceTypeRuleGeneratedTests: SwiftLintTestCase {
+final class ConvenienceTypeRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ConvenienceTypeRule.description)
     }
 }
 
-class CyclomaticComplexityRuleGeneratedTests: SwiftLintTestCase {
+final class CyclomaticComplexityRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CyclomaticComplexityRule.description)
     }
 }
 
-class DeploymentTargetRuleGeneratedTests: SwiftLintTestCase {
+final class DeploymentTargetRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DeploymentTargetRule.description)
     }
 }
 
-class DirectReturnRuleGeneratedTests: SwiftLintTestCase {
+final class DirectReturnRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DirectReturnRule.description)
     }
 }
 
-class DiscardedNotificationCenterObserverRuleGeneratedTests: SwiftLintTestCase {
+final class DiscardedNotificationCenterObserverRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscardedNotificationCenterObserverRule.description)
     }
 }
 
-class DiscouragedAssertRuleGeneratedTests: SwiftLintTestCase {
+final class DiscouragedAssertRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedAssertRule.description)
     }
 }
 
-class DiscouragedDirectInitRuleGeneratedTests: SwiftLintTestCase {
+final class DiscouragedDirectInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedDirectInitRule.description)
     }
 }
 
-class DiscouragedNoneNameRuleGeneratedTests: SwiftLintTestCase {
+final class DiscouragedNoneNameRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedNoneNameRule.description)
     }
 }
 
-class DiscouragedObjectLiteralRuleGeneratedTests: SwiftLintTestCase {
+final class DiscouragedObjectLiteralRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedObjectLiteralRule.description)
     }
 }
 
-class DiscouragedOptionalBooleanRuleGeneratedTests: SwiftLintTestCase {
+final class DiscouragedOptionalBooleanRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedOptionalBooleanRule.description)
     }
 }
 
-class DiscouragedOptionalCollectionRuleGeneratedTests: SwiftLintTestCase {
+final class DiscouragedOptionalCollectionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedOptionalCollectionRule.description)
     }
 }
 
-class DuplicateConditionsRuleGeneratedTests: SwiftLintTestCase {
+final class DuplicateConditionsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicateConditionsRule.description)
     }
 }
 
-class DuplicateEnumCasesRuleGeneratedTests: SwiftLintTestCase {
+final class DuplicateEnumCasesRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicateEnumCasesRule.description)
     }
 }
 
-class DuplicateImportsRuleGeneratedTests: SwiftLintTestCase {
+final class DuplicateImportsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicateImportsRule.description)
     }
 }
 
-class DuplicatedKeyInDictionaryLiteralRuleGeneratedTests: SwiftLintTestCase {
+final class DuplicatedKeyInDictionaryLiteralRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicatedKeyInDictionaryLiteralRule.description)
     }
 }
 
-class DynamicInlineRuleGeneratedTests: SwiftLintTestCase {
+final class DynamicInlineRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DynamicInlineRule.description)
     }
 }
 
-class EmptyCollectionLiteralRuleGeneratedTests: SwiftLintTestCase {
+final class EmptyCollectionLiteralRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyCollectionLiteralRule.description)
     }
 }
 
-class EmptyCountRuleGeneratedTests: SwiftLintTestCase {
+final class EmptyCountRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyCountRule.description)
     }
 }
 
-class EmptyEnumArgumentsRuleGeneratedTests: SwiftLintTestCase {
+final class EmptyEnumArgumentsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyEnumArgumentsRule.description)
     }
 }
 
-class EmptyParametersRuleGeneratedTests: SwiftLintTestCase {
+final class EmptyParametersRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyParametersRule.description)
     }
 }
 
-class EmptyParenthesesWithTrailingClosureRuleGeneratedTests: SwiftLintTestCase {
+final class EmptyParenthesesWithTrailingClosureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 }
 
-class EmptyStringRuleGeneratedTests: SwiftLintTestCase {
+final class EmptyStringRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyStringRule.description)
     }
 }
 
-class EmptyXCTestMethodRuleGeneratedTests: SwiftLintTestCase {
+final class EmptyXCTestMethodRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyXCTestMethodRule.description)
     }
 }
 
-class EnumCaseAssociatedValuesLengthRuleGeneratedTests: SwiftLintTestCase {
+final class EnumCaseAssociatedValuesLengthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EnumCaseAssociatedValuesLengthRule.description)
     }
 }
 
-class ExpiringTodoRuleGeneratedTests: SwiftLintTestCase {
+final class ExpiringTodoRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExpiringTodoRule.description)
     }
 }
 
-class ExplicitACLRuleGeneratedTests: SwiftLintTestCase {
+final class ExplicitACLRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitACLRule.description)
     }
 }
 
-class ExplicitEnumRawValueRuleGeneratedTests: SwiftLintTestCase {
+final class ExplicitEnumRawValueRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitEnumRawValueRule.description)
     }
 }
 
-class ExplicitInitRuleGeneratedTests: SwiftLintTestCase {
+final class ExplicitInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitInitRule.description)
     }
 }
 
-class ExplicitSelfRuleGeneratedTests: SwiftLintTestCase {
+final class ExplicitSelfRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitSelfRule.description)
     }
 }
 
-class ExplicitTopLevelACLRuleGeneratedTests: SwiftLintTestCase {
+final class ExplicitTopLevelACLRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitTopLevelACLRule.description)
     }
 }
 
-class ExplicitTypeInterfaceRuleGeneratedTests: SwiftLintTestCase {
+final class ExplicitTypeInterfaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitTypeInterfaceRule.description)
     }
 }
 
-class ExtensionAccessModifierRuleGeneratedTests: SwiftLintTestCase {
+final class ExtensionAccessModifierRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExtensionAccessModifierRule.description)
     }
 }
 
-class FallthroughRuleGeneratedTests: SwiftLintTestCase {
+final class FallthroughRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FallthroughRule.description)
     }
 }
 
-class FatalErrorMessageRuleGeneratedTests: SwiftLintTestCase {
+final class FatalErrorMessageRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FatalErrorMessageRule.description)
     }
 }
 
-class FileHeaderRuleGeneratedTests: SwiftLintTestCase {
+final class FileHeaderRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FileHeaderRule.description)
     }
 }
 
-class FileLengthRuleGeneratedTests: SwiftLintTestCase {
+final class FileLengthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FileLengthRule.description)
     }
 }
 
-class FileNameNoSpaceRuleGeneratedTests: SwiftLintTestCase {
+final class FileNameNoSpaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FileNameNoSpaceRule.description)
     }
 }
 
-class FileNameRuleGeneratedTests: SwiftLintTestCase {
+final class FileNameRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FileNameRule.description)
     }
 }
 
-class FileTypesOrderRuleGeneratedTests: SwiftLintTestCase {
+final class FileTypesOrderRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FileTypesOrderRule.description)
     }
 }
 
-class FinalTestCaseRuleGeneratedTests: SwiftLintTestCase {
+final class FinalTestCaseRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FinalTestCaseRule.description)
     }
 }
 
-class FirstWhereRuleGeneratedTests: SwiftLintTestCase {
+final class FirstWhereRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FirstWhereRule.description)
     }
 }
 
-class FlatMapOverMapReduceRuleGeneratedTests: SwiftLintTestCase {
+final class FlatMapOverMapReduceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FlatMapOverMapReduceRule.description)
     }
 }
 
-class ForWhereRuleGeneratedTests: SwiftLintTestCase {
+final class ForWhereRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForWhereRule.description)
     }
 }
 
-class ForceCastRuleGeneratedTests: SwiftLintTestCase {
+final class ForceCastRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForceCastRule.description)
     }
 }
 
-class ForceTryRuleGeneratedTests: SwiftLintTestCase {
+final class ForceTryRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForceTryRule.description)
     }
 }
 
-class ForceUnwrappingRuleGeneratedTests: SwiftLintTestCase {
+final class ForceUnwrappingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForceUnwrappingRule.description)
     }
 }
 
-class FunctionBodyLengthRuleGeneratedTests: SwiftLintTestCase {
+final class FunctionBodyLengthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FunctionBodyLengthRule.description)
     }
 }
 
-class FunctionDefaultParameterAtEndRuleGeneratedTests: SwiftLintTestCase {
+final class FunctionDefaultParameterAtEndRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FunctionDefaultParameterAtEndRule.description)
     }
 }
 
-class FunctionParameterCountRuleGeneratedTests: SwiftLintTestCase {
+final class FunctionParameterCountRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FunctionParameterCountRule.description)
     }
 }
 
-class GenericTypeNameRuleGeneratedTests: SwiftLintTestCase {
+final class GenericTypeNameRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(GenericTypeNameRule.description)
     }
 }
 
-class IBInspectableInExtensionRuleGeneratedTests: SwiftLintTestCase {
+final class IBInspectableInExtensionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IBInspectableInExtensionRule.description)
     }
 }
 
-class IdenticalOperandsRuleGeneratedTests: SwiftLintTestCase {
+final class IdenticalOperandsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IdenticalOperandsRule.description)
     }
 }
 
-class IdentifierNameRuleGeneratedTests: SwiftLintTestCase {
+final class IdentifierNameRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IdentifierNameRule.description)
     }
 }
 
-class ImplicitGetterRuleGeneratedTests: SwiftLintTestCase {
+final class ImplicitGetterRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ImplicitGetterRule.description)
     }
 }
 
-class ImplicitReturnRuleGeneratedTests: SwiftLintTestCase {
+final class ImplicitReturnRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ImplicitReturnRule.description)
     }
 }
 
-class ImplicitlyUnwrappedOptionalRuleGeneratedTests: SwiftLintTestCase {
+final class ImplicitlyUnwrappedOptionalRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ImplicitlyUnwrappedOptionalRule.description)
     }
 }
 
-class InclusiveLanguageRuleGeneratedTests: SwiftLintTestCase {
+final class InclusiveLanguageRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(InclusiveLanguageRule.description)
     }
 }
 
-class IndentationWidthRuleGeneratedTests: SwiftLintTestCase {
+final class IndentationWidthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IndentationWidthRule.description)
     }
 }
 
-class InertDeferRuleGeneratedTests: SwiftLintTestCase {
+final class InertDeferRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(InertDeferRule.description)
     }
 }
 
-class InvalidSwiftLintCommandRuleGeneratedTests: SwiftLintTestCase {
+final class InvalidSwiftLintCommandRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(InvalidSwiftLintCommandRule.description)
     }
 }
 
-class IsDisjointRuleGeneratedTests: SwiftLintTestCase {
+final class IsDisjointRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IsDisjointRule.description)
     }
 }
 
-class JoinedDefaultParameterRuleGeneratedTests: SwiftLintTestCase {
+final class JoinedDefaultParameterRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(JoinedDefaultParameterRule.description)
     }
 }
 
-class LargeTupleRuleGeneratedTests: SwiftLintTestCase {
+final class LargeTupleRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LargeTupleRule.description)
     }
 }
 
-class LastWhereRuleGeneratedTests: SwiftLintTestCase {
+final class LastWhereRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LastWhereRule.description)
     }
 }
 
-class LeadingWhitespaceRuleGeneratedTests: SwiftLintTestCase {
+final class LeadingWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LeadingWhitespaceRule.description)
     }
 }
 
-class LegacyCGGeometryFunctionsRuleGeneratedTests: SwiftLintTestCase {
+final class LegacyCGGeometryFunctionsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyCGGeometryFunctionsRule.description)
     }
 }
 
-class LegacyConstantRuleGeneratedTests: SwiftLintTestCase {
+final class LegacyConstantRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyConstantRule.description)
     }
 }
 
-class LegacyConstructorRuleGeneratedTests: SwiftLintTestCase {
+final class LegacyConstructorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyConstructorRule.description)
     }
 }
 
-class LegacyHashingRuleGeneratedTests: SwiftLintTestCase {
+final class LegacyHashingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyHashingRule.description)
     }
 }
 
-class LegacyMultipleRuleGeneratedTests: SwiftLintTestCase {
+final class LegacyMultipleRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyMultipleRule.description)
     }
 }
 
-class LegacyNSGeometryFunctionsRuleGeneratedTests: SwiftLintTestCase {
+final class LegacyNSGeometryFunctionsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyNSGeometryFunctionsRule.description)
     }
 }
 
-class LegacyObjcTypeRuleGeneratedTests: SwiftLintTestCase {
+final class LegacyObjcTypeRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyObjcTypeRule.description)
     }
 }
 
-class LegacyRandomRuleGeneratedTests: SwiftLintTestCase {
+final class LegacyRandomRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyRandomRule.description)
     }
 }
 
-class LetVarWhitespaceRuleGeneratedTests: SwiftLintTestCase {
+final class LetVarWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LetVarWhitespaceRule.description)
     }
 }
 
-class LineLengthRuleGeneratedTests: SwiftLintTestCase {
+final class LineLengthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LineLengthRule.description)
     }
 }
 
-class LiteralExpressionEndIndentationRuleGeneratedTests: SwiftLintTestCase {
+final class LiteralExpressionEndIndentationRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LiteralExpressionEndIndentationRule.description)
     }
 }
 
-class LocalDocCommentRuleGeneratedTests: SwiftLintTestCase {
+final class LocalDocCommentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LocalDocCommentRule.description)
     }
 }
 
-class LowerACLThanParentRuleGeneratedTests: SwiftLintTestCase {
+final class LowerACLThanParentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LowerACLThanParentRule.description)
     }
 }
 
-class MarkRuleGeneratedTests: SwiftLintTestCase {
+final class MarkRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MarkRule.description)
     }
 }
 
-class MissingDocsRuleGeneratedTests: SwiftLintTestCase {
+final class MissingDocsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MissingDocsRule.description)
     }
 }
 
-class ModifierOrderRuleGeneratedTests: SwiftLintTestCase {
+final class ModifierOrderRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ModifierOrderRule.description)
     }
 }
 
-class MultilineArgumentsBracketsRuleGeneratedTests: SwiftLintTestCase {
+final class MultilineArgumentsBracketsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineArgumentsBracketsRule.description)
     }
 }
 
-class MultilineArgumentsRuleGeneratedTests: SwiftLintTestCase {
+final class MultilineArgumentsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineArgumentsRule.description)
     }
 }
 
-class MultilineFunctionChainsRuleGeneratedTests: SwiftLintTestCase {
+final class MultilineFunctionChainsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineFunctionChainsRule.description)
     }
 }
 
-class MultilineLiteralBracketsRuleGeneratedTests: SwiftLintTestCase {
+final class MultilineLiteralBracketsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineLiteralBracketsRule.description)
     }
 }
 
-class MultilineParametersBracketsRuleGeneratedTests: SwiftLintTestCase {
+final class MultilineParametersBracketsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineParametersBracketsRule.description)
     }
 }
 
-class MultilineParametersRuleGeneratedTests: SwiftLintTestCase {
+final class MultilineParametersRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineParametersRule.description)
     }
 }
 
-class MultipleClosuresWithTrailingClosureRuleGeneratedTests: SwiftLintTestCase {
+final class MultipleClosuresWithTrailingClosureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultipleClosuresWithTrailingClosureRule.description)
     }
 }
 
-class NSLocalizedStringKeyRuleGeneratedTests: SwiftLintTestCase {
+final class NSLocalizedStringKeyRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSLocalizedStringKeyRule.description)
     }
 }
 
-class NSLocalizedStringRequireBundleRuleGeneratedTests: SwiftLintTestCase {
+final class NSLocalizedStringRequireBundleRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSLocalizedStringRequireBundleRule.description)
     }
 }
 
-class NSNumberInitAsFunctionReferenceRuleGeneratedTests: SwiftLintTestCase {
+final class NSNumberInitAsFunctionReferenceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSNumberInitAsFunctionReferenceRule.description)
     }
 }
 
-class NSObjectPreferIsEqualRuleGeneratedTests: SwiftLintTestCase {
+final class NSObjectPreferIsEqualRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSObjectPreferIsEqualRule.description)
     }
 }
 
-class NestingRuleGeneratedTests: SwiftLintTestCase {
+final class NestingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NestingRule.description)
     }
 }
 
-class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
+final class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NimbleOperatorRule.description)
     }
 }
 
-class NoExtensionAccessModifierRuleGeneratedTests: SwiftLintTestCase {
+final class NoExtensionAccessModifierRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoExtensionAccessModifierRule.description)
     }
 }
 
-class NoFallthroughOnlyRuleGeneratedTests: SwiftLintTestCase {
+final class NoFallthroughOnlyRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoFallthroughOnlyRule.description)
     }
 }
 
-class NoGroupingExtensionRuleGeneratedTests: SwiftLintTestCase {
+final class NoGroupingExtensionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoGroupingExtensionRule.description)
     }
 }
 
-class NoMagicNumbersRuleGeneratedTests: SwiftLintTestCase {
+final class NoMagicNumbersRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoMagicNumbersRule.description)
     }
 }
 
-class NoSpaceInMethodCallRuleGeneratedTests: SwiftLintTestCase {
+final class NoSpaceInMethodCallRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoSpaceInMethodCallRule.description)
     }
 }
 
-class NonOptionalStringDataConversionRuleGeneratedTests: SwiftLintTestCase {
+final class NonOptionalStringDataConversionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NonOptionalStringDataConversionRule.description)
     }
 }
 
-class NonOverridableClassDeclarationRuleGeneratedTests: SwiftLintTestCase {
+final class NonOverridableClassDeclarationRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NonOverridableClassDeclarationRule.description)
     }
 }
 
-class NotificationCenterDetachmentRuleGeneratedTests: SwiftLintTestCase {
+final class NotificationCenterDetachmentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NotificationCenterDetachmentRule.description)
     }
 }
 
-class NumberSeparatorRuleGeneratedTests: SwiftLintTestCase {
+final class NumberSeparatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NumberSeparatorRule.description)
     }
 }
 
-class ObjectLiteralRuleGeneratedTests: SwiftLintTestCase {
+final class ObjectLiteralRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ObjectLiteralRule.description)
     }
 }
 
-class OneDelarationPerFileRuleGeneratedTests: SwiftLintTestCase {
+final class OneDelarationPerFileRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OneDelarationPerFileRule.description)
     }
 }
 
-class OpeningBraceRuleGeneratedTests: SwiftLintTestCase {
+final class OpeningBraceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OpeningBraceRule.description)
     }
 }
 
-class OperatorFunctionWhitespaceRuleGeneratedTests: SwiftLintTestCase {
+final class OperatorFunctionWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OperatorFunctionWhitespaceRule.description)
     }
 }
 
-class OperatorUsageWhitespaceRuleGeneratedTests: SwiftLintTestCase {
+final class OperatorUsageWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OperatorUsageWhitespaceRule.description)
     }
 }
 
-class OptionalEnumCaseMatchingRuleGeneratedTests: SwiftLintTestCase {
+final class OptionalEnumCaseMatchingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OptionalEnumCaseMatchingRule.description)
     }
 }
 
-class OrphanedDocCommentRuleGeneratedTests: SwiftLintTestCase {
+final class OrphanedDocCommentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OrphanedDocCommentRule.description)
     }
 }
 
-class OverriddenSuperCallRuleGeneratedTests: SwiftLintTestCase {
+final class OverriddenSuperCallRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OverriddenSuperCallRule.description)
     }
 }
 
-class OverrideInExtensionRuleGeneratedTests: SwiftLintTestCase {
+final class OverrideInExtensionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OverrideInExtensionRule.description)
     }
 }
 
-class PatternMatchingKeywordsRuleGeneratedTests: SwiftLintTestCase {
+final class PatternMatchingKeywordsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PatternMatchingKeywordsRule.description)
     }
 }
 
-class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
+final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PeriodSpacingRule.description)
     }
 }
 
-class PreferNimbleRuleGeneratedTests: SwiftLintTestCase {
+final class PreferNimbleRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferNimbleRule.description)
     }
 }
 
-class PreferSelfInStaticReferencesRuleGeneratedTests: SwiftLintTestCase {
+final class PreferSelfInStaticReferencesRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfInStaticReferencesRule.description)
     }
 }
 
-class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: SwiftLintTestCase {
+final class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
     }
 }
 
-class PreferZeroOverExplicitInitRuleGeneratedTests: SwiftLintTestCase {
+final class PreferZeroOverExplicitInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferZeroOverExplicitInitRule.description)
     }
 }
 
-class PrefixedTopLevelConstantRuleGeneratedTests: SwiftLintTestCase {
+final class PrefixedTopLevelConstantRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrefixedTopLevelConstantRule.description)
     }
 }
 
-class PrivateActionRuleGeneratedTests: SwiftLintTestCase {
+final class PrivateActionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateActionRule.description)
     }
 }
 
-class PrivateOutletRuleGeneratedTests: SwiftLintTestCase {
+final class PrivateOutletRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateOutletRule.description)
     }
 }
 
-class PrivateOverFilePrivateRuleGeneratedTests: SwiftLintTestCase {
+final class PrivateOverFilePrivateRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateOverFilePrivateRule.description)
     }
 }
 
-class PrivateSubjectRuleGeneratedTests: SwiftLintTestCase {
+final class PrivateSubjectRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateSubjectRule.description)
     }
 }
 
-class PrivateSwiftUIStatePropertyRuleGeneratedTests: SwiftLintTestCase {
+final class PrivateSwiftUIStatePropertyRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateSwiftUIStatePropertyRule.description)
     }
 }
 
-class PrivateUnitTestRuleGeneratedTests: SwiftLintTestCase {
+final class PrivateUnitTestRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateUnitTestRule.description)
     }
 }
 
-class ProhibitedInterfaceBuilderRuleGeneratedTests: SwiftLintTestCase {
+final class ProhibitedInterfaceBuilderRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ProhibitedInterfaceBuilderRule.description)
     }
 }
 
-class ProhibitedSuperRuleGeneratedTests: SwiftLintTestCase {
+final class ProhibitedSuperRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ProhibitedSuperRule.description)
     }
 }
 
-class ProtocolPropertyAccessorsOrderRuleGeneratedTests: SwiftLintTestCase {
+final class ProtocolPropertyAccessorsOrderRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ProtocolPropertyAccessorsOrderRule.description)
     }
 }
 
-class QuickDiscouragedCallRuleGeneratedTests: SwiftLintTestCase {
+final class QuickDiscouragedCallRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(QuickDiscouragedCallRule.description)
     }
 }
 
-class QuickDiscouragedFocusedTestRuleGeneratedTests: SwiftLintTestCase {
+final class QuickDiscouragedFocusedTestRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(QuickDiscouragedFocusedTestRule.description)
     }
 }
 
-class QuickDiscouragedPendingTestRuleGeneratedTests: SwiftLintTestCase {
+final class QuickDiscouragedPendingTestRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(QuickDiscouragedPendingTestRule.description)
     }
 }
 
-class RawValueForCamelCasedCodableEnumRuleGeneratedTests: SwiftLintTestCase {
+final class RawValueForCamelCasedCodableEnumRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RawValueForCamelCasedCodableEnumRule.description)
     }
 }
 
-class ReduceBooleanRuleGeneratedTests: SwiftLintTestCase {
+final class ReduceBooleanRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReduceBooleanRule.description)
     }
 }
 
-class ReduceIntoRuleGeneratedTests: SwiftLintTestCase {
+final class ReduceIntoRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReduceIntoRule.description)
     }
 }
 
-class RedundantDiscardableLetRuleGeneratedTests: SwiftLintTestCase {
+final class RedundantDiscardableLetRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantDiscardableLetRule.description)
     }
 }
 
-class RedundantNilCoalescingRuleGeneratedTests: SwiftLintTestCase {
+final class RedundantNilCoalescingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantNilCoalescingRule.description)
     }
 }
 
-class RedundantObjcAttributeRuleGeneratedTests: SwiftLintTestCase {
+final class RedundantObjcAttributeRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantObjcAttributeRule.description)
     }
 }
 
-class RedundantOptionalInitializationRuleGeneratedTests: SwiftLintTestCase {
+final class RedundantOptionalInitializationRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantOptionalInitializationRule.description)
     }
 }
 
-class RedundantSelfInClosureRuleGeneratedTests: SwiftLintTestCase {
+final class RedundantSelfInClosureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantSelfInClosureRule.description)
     }
 }
 
-class RedundantSetAccessControlRuleGeneratedTests: SwiftLintTestCase {
+final class RedundantSetAccessControlRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantSetAccessControlRule.description)
     }
 }
 
-class RedundantStringEnumValueRuleGeneratedTests: SwiftLintTestCase {
+final class RedundantStringEnumValueRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantStringEnumValueRule.description)
     }
 }
 
-class RedundantTypeAnnotationRuleGeneratedTests: SwiftLintTestCase {
+final class RedundantTypeAnnotationRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantTypeAnnotationRule.description)
     }
 }
 
-class RedundantVoidReturnRuleGeneratedTests: SwiftLintTestCase {
+final class RedundantVoidReturnRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantVoidReturnRule.description)
     }
 }
 
-class RequiredDeinitRuleGeneratedTests: SwiftLintTestCase {
+final class RequiredDeinitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RequiredDeinitRule.description)
     }
 }
 
-class RequiredEnumCaseRuleGeneratedTests: SwiftLintTestCase {
+final class RequiredEnumCaseRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RequiredEnumCaseRule.description)
     }
 }
 
-class ReturnArrowWhitespaceRuleGeneratedTests: SwiftLintTestCase {
+final class ReturnArrowWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }
 }
 
-class ReturnValueFromVoidFunctionRuleGeneratedTests: SwiftLintTestCase {
+final class ReturnValueFromVoidFunctionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReturnValueFromVoidFunctionRule.description)
     }
 }
 
-class SelfBindingRuleGeneratedTests: SwiftLintTestCase {
+final class SelfBindingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SelfBindingRule.description)
     }
 }
 
-class SelfInPropertyInitializationRuleGeneratedTests: SwiftLintTestCase {
+final class SelfInPropertyInitializationRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SelfInPropertyInitializationRule.description)
     }
 }
 
-class ShorthandArgumentRuleGeneratedTests: SwiftLintTestCase {
+final class ShorthandArgumentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ShorthandArgumentRule.description)
     }
 }
 
-class ShorthandOperatorRuleGeneratedTests: SwiftLintTestCase {
+final class ShorthandOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ShorthandOperatorRule.description)
     }
 }
 
-class ShorthandOptionalBindingRuleGeneratedTests: SwiftLintTestCase {
+final class ShorthandOptionalBindingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ShorthandOptionalBindingRule.description)
     }
 }
 
-class SingleTestClassRuleGeneratedTests: SwiftLintTestCase {
+final class SingleTestClassRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SingleTestClassRule.description)
     }
 }
 
-class SortedEnumCasesRuleGeneratedTests: SwiftLintTestCase {
+final class SortedEnumCasesRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SortedEnumCasesRule.description)
     }
 }
 
-class SortedFirstLastRuleGeneratedTests: SwiftLintTestCase {
+final class SortedFirstLastRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SortedFirstLastRule.description)
     }
 }
 
-class SortedImportsRuleGeneratedTests: SwiftLintTestCase {
+final class SortedImportsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SortedImportsRule.description)
     }
 }
 
-class StatementPositionRuleGeneratedTests: SwiftLintTestCase {
+final class StatementPositionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StatementPositionRule.description)
     }
 }
 
-class StaticOperatorRuleGeneratedTests: SwiftLintTestCase {
+final class StaticOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StaticOperatorRule.description)
     }
 }
 
-class StaticOverFinalClassRuleGeneratedTests: SwiftLintTestCase {
+final class StaticOverFinalClassRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StaticOverFinalClassRule.description)
     }
 }
 
-class StrictFilePrivateRuleGeneratedTests: SwiftLintTestCase {
+final class StrictFilePrivateRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StrictFilePrivateRule.description)
     }
 }
 
-class StrongIBOutletRuleGeneratedTests: SwiftLintTestCase {
+final class StrongIBOutletRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StrongIBOutletRule.description)
     }
 }
 
-class SuperfluousElseRuleGeneratedTests: SwiftLintTestCase {
+final class SuperfluousElseRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SuperfluousElseRule.description)
     }
 }
 
-class SwitchCaseAlignmentRuleGeneratedTests: SwiftLintTestCase {
+final class SwitchCaseAlignmentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SwitchCaseAlignmentRule.description)
     }
 }
 
-class SwitchCaseOnNewlineRuleGeneratedTests: SwiftLintTestCase {
+final class SwitchCaseOnNewlineRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SwitchCaseOnNewlineRule.description)
     }
 }
 
-class SyntacticSugarRuleGeneratedTests: SwiftLintTestCase {
+final class SyntacticSugarRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SyntacticSugarRule.description)
     }
 }
 
-class TestCaseAccessibilityRuleGeneratedTests: SwiftLintTestCase {
+final class TestCaseAccessibilityRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TestCaseAccessibilityRule.description)
     }
 }
 
-class TodoRuleGeneratedTests: SwiftLintTestCase {
+final class TodoRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TodoRule.description)
     }
 }
 
-class ToggleBoolRuleGeneratedTests: SwiftLintTestCase {
+final class ToggleBoolRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ToggleBoolRule.description)
     }
 }
 
-class TrailingClosureRuleGeneratedTests: SwiftLintTestCase {
+final class TrailingClosureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingClosureRule.description)
     }
 }
 
-class TrailingCommaRuleGeneratedTests: SwiftLintTestCase {
+final class TrailingCommaRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingCommaRule.description)
     }
 }
 
-class TrailingNewlineRuleGeneratedTests: SwiftLintTestCase {
+final class TrailingNewlineRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingNewlineRule.description)
     }
 }
 
-class TrailingSemicolonRuleGeneratedTests: SwiftLintTestCase {
+final class TrailingSemicolonRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingSemicolonRule.description)
     }
 }
 
-class TrailingWhitespaceRuleGeneratedTests: SwiftLintTestCase {
+final class TrailingWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingWhitespaceRule.description)
     }
 }
 
-class TypeBodyLengthRuleGeneratedTests: SwiftLintTestCase {
+final class TypeBodyLengthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeBodyLengthRule.description)
     }
 }
 
-class TypeContentsOrderRuleGeneratedTests: SwiftLintTestCase {
+final class TypeContentsOrderRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeContentsOrderRule.description)
     }
 }
 
-class TypeNameRuleGeneratedTests: SwiftLintTestCase {
+final class TypeNameRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeNameRule.description)
     }
 }
 
-class TypesafeArrayInitRuleGeneratedTests: SwiftLintTestCase {
+final class TypesafeArrayInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypesafeArrayInitRule.description)
     }
 }
 
-class UnavailableConditionRuleGeneratedTests: SwiftLintTestCase {
+final class UnavailableConditionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnavailableConditionRule.description)
     }
 }
 
-class UnavailableFunctionRuleGeneratedTests: SwiftLintTestCase {
+final class UnavailableFunctionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnavailableFunctionRule.description)
     }
 }
 
-class UnhandledThrowingTaskRuleGeneratedTests: SwiftLintTestCase {
+final class UnhandledThrowingTaskRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnhandledThrowingTaskRule.description)
     }
 }
 
-class UnneededBreakInSwitchRuleGeneratedTests: SwiftLintTestCase {
+final class UnneededBreakInSwitchRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededBreakInSwitchRule.description)
     }
 }
 
-class UnneededOverrideRuleGeneratedTests: SwiftLintTestCase {
+final class UnneededOverrideRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededOverrideRule.description)
     }
 }
 
-class UnneededParenthesesInClosureArgumentRuleGeneratedTests: SwiftLintTestCase {
+final class UnneededParenthesesInClosureArgumentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededParenthesesInClosureArgumentRule.description)
     }
 }
 
-class UnneededSynthesizedInitializerRuleGeneratedTests: SwiftLintTestCase {
+final class UnneededSynthesizedInitializerRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededSynthesizedInitializerRule.description)
     }
 }
 
-class UnownedVariableCaptureRuleGeneratedTests: SwiftLintTestCase {
+final class UnownedVariableCaptureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnownedVariableCaptureRule.description)
     }
 }
 
-class UntypedErrorInCatchRuleGeneratedTests: SwiftLintTestCase {
+final class UntypedErrorInCatchRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UntypedErrorInCatchRule.description)
     }
 }
 
-class UnusedCaptureListRuleGeneratedTests: SwiftLintTestCase {
+final class UnusedCaptureListRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedCaptureListRule.description)
     }
 }
 
-class UnusedClosureParameterRuleGeneratedTests: SwiftLintTestCase {
+final class UnusedClosureParameterRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedClosureParameterRule.description)
     }
 }
 
-class UnusedControlFlowLabelRuleGeneratedTests: SwiftLintTestCase {
+final class UnusedControlFlowLabelRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedControlFlowLabelRule.description)
     }
 }
 
-class UnusedDeclarationRuleGeneratedTests: SwiftLintTestCase {
+final class UnusedDeclarationRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedDeclarationRule.description)
     }
 }
 
-class UnusedEnumeratedRuleGeneratedTests: SwiftLintTestCase {
+final class UnusedEnumeratedRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedEnumeratedRule.description)
     }
 }
 
-class UnusedImportRuleGeneratedTests: SwiftLintTestCase {
+final class UnusedImportRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedImportRule.description)
     }
 }
 
-class UnusedOptionalBindingRuleGeneratedTests: SwiftLintTestCase {
+final class UnusedOptionalBindingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedOptionalBindingRule.description)
     }
 }
 
-class UnusedSetterValueRuleGeneratedTests: SwiftLintTestCase {
+final class UnusedSetterValueRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedSetterValueRule.description)
     }
 }
 
-class ValidIBInspectableRuleGeneratedTests: SwiftLintTestCase {
+final class ValidIBInspectableRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ValidIBInspectableRule.description)
     }
 }
 
-class VerticalParameterAlignmentOnCallRuleGeneratedTests: SwiftLintTestCase {
+final class VerticalParameterAlignmentOnCallRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalParameterAlignmentOnCallRule.description)
     }
 }
 
-class VerticalParameterAlignmentRuleGeneratedTests: SwiftLintTestCase {
+final class VerticalParameterAlignmentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalParameterAlignmentRule.description)
     }
 }
 
-class VerticalWhitespaceBetweenCasesRuleGeneratedTests: SwiftLintTestCase {
+final class VerticalWhitespaceBetweenCasesRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceBetweenCasesRule.description)
     }
 }
 
-class VerticalWhitespaceClosingBracesRuleGeneratedTests: SwiftLintTestCase {
+final class VerticalWhitespaceClosingBracesRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceClosingBracesRule.description)
     }
 }
 
-class VerticalWhitespaceOpeningBracesRuleGeneratedTests: SwiftLintTestCase {
+final class VerticalWhitespaceOpeningBracesRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceOpeningBracesRule.description)
     }
 }
 
-class VerticalWhitespaceRuleGeneratedTests: SwiftLintTestCase {
+final class VerticalWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceRule.description)
     }
 }
 
-class VoidFunctionInTernaryConditionRuleGeneratedTests: SwiftLintTestCase {
+final class VoidFunctionInTernaryConditionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VoidFunctionInTernaryConditionRule.description)
     }
 }
 
-class VoidReturnRuleGeneratedTests: SwiftLintTestCase {
+final class VoidReturnRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VoidReturnRule.description)
     }
 }
 
-class WeakDelegateRuleGeneratedTests: SwiftLintTestCase {
+final class WeakDelegateRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(WeakDelegateRule.description)
     }
 }
 
-class XCTFailMessageRuleGeneratedTests: SwiftLintTestCase {
+final class XCTFailMessageRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(XCTFailMessageRule.description)
     }
 }
 
-class XCTSpecificMatcherRuleGeneratedTests: SwiftLintTestCase {
+final class XCTSpecificMatcherRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(XCTSpecificMatcherRule.description)
     }
 }
 
-class YodaConditionRuleGeneratedTests: SwiftLintTestCase {
+final class YodaConditionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(YodaConditionRule.description)
     }

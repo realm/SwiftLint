@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class MissingDocsRuleTests: SwiftLintTestCase {
+final class MissingDocsRuleTests: SwiftLintTestCase {
     func testDescriptionEmpty() {
         let configuration = MissingDocsConfiguration()
         XCTAssertEqual(

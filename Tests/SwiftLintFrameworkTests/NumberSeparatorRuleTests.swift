@@ -2,7 +2,7 @@
 import SwiftParser
 import XCTest
 
-class NumberSeparatorRuleTests: SwiftLintTestCase {
+final class NumberSeparatorRuleTests: SwiftLintTestCase {
     func testNumberSeparatorWithMinimumLength() {
         let nonTriggeringExamples = [
             Example("let foo = 10_000"),

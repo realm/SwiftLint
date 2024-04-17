@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class ExpiringTodoRuleTests: SwiftLintTestCase {
+final class ExpiringTodoRuleTests: SwiftLintTestCase {
     private lazy var config: Configuration = makeConfiguration()
 
     func testExpiringTodo() {

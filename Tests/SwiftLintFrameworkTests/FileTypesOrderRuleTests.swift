@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class FileTypesOrderRuleTests: SwiftLintTestCase {
+final class FileTypesOrderRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
     func testFileTypesOrderReversedOrder() {
         // Test with reversed `order` entries

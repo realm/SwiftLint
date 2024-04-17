@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class ColonRuleTests: SwiftLintTestCase {
+final class ColonRuleTests: SwiftLintTestCase {
     func testColonWithFlexibleRightSpace() {
         // Verify Colon rule with test values for when flexible_right_spacing
         // is true.

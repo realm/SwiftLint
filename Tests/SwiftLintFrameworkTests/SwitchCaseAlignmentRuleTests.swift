@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class SwitchCaseAlignmentRuleTests: SwiftLintTestCase {
+final class SwitchCaseAlignmentRuleTests: SwiftLintTestCase {
     func testSwitchCaseAlignmentWithoutIndentedCases() {
         let baseDescription = SwitchCaseAlignmentRule.description
         let examples = SwitchCaseAlignmentRule.Examples(indentedCases: false)

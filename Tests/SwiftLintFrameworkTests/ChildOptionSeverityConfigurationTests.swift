@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class ChildOptionSeverityConfigurationTests: SwiftLintTestCase {
+final class ChildOptionSeverityConfigurationTests: SwiftLintTestCase {
     typealias TesteeType = ChildOptionSeverityConfiguration<RuleMock>
 
     func testSeverity() {

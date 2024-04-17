@@ -125,11 +125,13 @@ struct LintOrAnalyzeCommand {
         if let baselinePath = options.baseline {
             do {
                 return try Baseline(fromPath: baselinePath)
+            } catch CocoaError.fileReadNoSuchFile {
+                Issue.baselineNotReadable(path: baselinePath).print()
+                if options.writeBaseline != options.baseline {
+                    throw error
+                }
             } catch {
                 Issue.baselineNotReadable(path: baselinePath).print()
-                if options.writeBaseline == options.baseline {
-                    return nil
-                }
                 throw error
             }
         }

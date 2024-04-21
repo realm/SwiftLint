@@ -86,6 +86,7 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
             """),
             Example("var isEnabled↓: Bool = true"),
             Example("let a↓: [Int] = [Int]()"),
+            Example("let a↓: A.B = A.B()"),
             Example("""
             enum Direction {
                 case up
@@ -199,9 +200,6 @@ private extension RedundantTypeAnnotationRule {
 
 private extension TypeAnnotationSyntax {
     func isRedundant(with initializerExpr: ExprSyntax) -> Bool {
-        guard let typeName = type.name else {
-            return false
-        }
         var initializer = initializerExpr
         if let forceUnwrap = initializer.as(ForceUnwrapExprSyntax.self) {
             initializer = forceUnwrap.expression
@@ -210,9 +208,9 @@ private extension TypeAnnotationSyntax {
         // If the initializer is a boolean expression, we consider using the `Bool` type
         // annotation as redundant.
         if initializer.is(BooleanLiteralExprSyntax.self) {
-            return typeName == "Bool"
+            return type.trimmedDescription == "Bool"
         }
-        return initializer.firstAccessNames.contains(typeName)
+        return initializer.accessedNames.contains(type.trimmedDescription)
     }
 }
 
@@ -220,34 +218,19 @@ private extension ExprSyntax {
     /// An expression can represent an access to an identifier in one or another way depending on the exact underlying
     /// expression type. E.g. the expression `A` accesses `A` while `f()` accesses `f` and `a.b.c` accesses `a` in the
     /// sense of this property. In the context of this rule, `Set<Int>()` accesses `Set` as well as `Set<Int>`.
-    var firstAccessNames: [String] {
+    var accessedNames: [String] {
         if let declRef = `as`(DeclReferenceExprSyntax.self) {
-            return [declRef.trimmedDescription]
+            [declRef.trimmedDescription]
+        } else if let memberAccess = `as`(MemberAccessExprSyntax.self) {
+            (memberAccess.base?.accessedNames ?? []) + [memberAccess.trimmedDescription]
+        } else if let genericSpecialization = `as`(GenericSpecializationExprSyntax.self) {
+            [genericSpecialization.trimmedDescription] + genericSpecialization.expression.accessedNames
+        } else if let call = `as`(FunctionCallExprSyntax.self) {
+            call.calledExpression.accessedNames
+        } else if let arrayExpr = `as`(ArrayExprSyntax.self) {
+            [arrayExpr.trimmedDescription]
+        } else {
+            []
         }
-        if let memberAccess = `as`(MemberAccessExprSyntax.self) {
-            return memberAccess.base?.firstAccessNames ?? []
-        }
-        if let genericSpecialization = `as`(GenericSpecializationExprSyntax.self) {
-            return [genericSpecialization.trimmedDescription] + genericSpecialization.expression.firstAccessNames
-        }
-        if let call = `as`(FunctionCallExprSyntax.self) {
-            return call.calledExpression.firstAccessNames
-        }
-        if let arrayExpr = `as`(ArrayExprSyntax.self) {
-            return [arrayExpr.trimmedDescription]
-        }
-        return []
-    }
-}
-
-private extension TypeSyntax {
-    var name: String? {
-        if let idType = `as`(IdentifierTypeSyntax.self) {
-            return idType.trimmedDescription
-        }
-        if let arrayType = `as`(ArrayTypeSyntax.self) {
-            return arrayType.trimmedDescription
-        }
-        return nil
     }
 }

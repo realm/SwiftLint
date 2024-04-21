@@ -165,34 +165,30 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
 private extension RedundantTypeAnnotationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: PatternBindingSyntax) {
-            guard node.parentDoesNotContainIgnoredAttributes(for: configuration),
-                  let typeAnnotation = node.typeAnnotation,
-                  let initializer = node.initializer?.value,
-                  typeAnnotation.isRedundant(with: initializer)
-            else {
-                return
+            if node.parentDoesNotContainIgnoredAttributes(for: configuration),
+               let typeAnnotation = node.typeAnnotation,
+               let initializer = node.initializer?.value,
+               typeAnnotation.isRedundant(with: initializer) {
+                violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
+                violationCorrections.append(ViolationCorrection(
+                    start: typeAnnotation.position,
+                    end: typeAnnotation.endPositionBeforeTrailingTrivia,
+                    replacement: ""
+                ))
             }
-            violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
-            violationCorrections.append(ViolationCorrection(
-                start: typeAnnotation.position,
-                end: typeAnnotation.endPositionBeforeTrailingTrivia,
-                replacement: ""
-            ))
         }
 
         override func visitPost(_ node: OptionalBindingConditionSyntax) {
-            guard let typeAnnotation = node.typeAnnotation,
-                  let initializer = node.initializer?.value,
-                  typeAnnotation.isRedundant(with: initializer)
-            else {
-                return
+            if let typeAnnotation = node.typeAnnotation,
+               let initializer = node.initializer?.value,
+               typeAnnotation.isRedundant(with: initializer) {
+                violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
+                violationCorrections.append(ViolationCorrection(
+                    start: typeAnnotation.position,
+                    end: typeAnnotation.endPositionBeforeTrailingTrivia,
+                    replacement: ""
+                ))
             }
-            violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
-            violationCorrections.append(ViolationCorrection(
-                start: typeAnnotation.position,
-                end: typeAnnotation.endPositionBeforeTrailingTrivia,
-                replacement: ""
-            ))
         }
     }
 }

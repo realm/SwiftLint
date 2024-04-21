@@ -76,6 +76,7 @@ struct RedundantTypeAnnotationRule: OptInRule {
             Example("var set↓: Set = Set<Int>([]), otherSet: Set<Int>"),
             Example("var num↓: Int = Int.random(0..<10)"),
             Example("let a↓: A = A.b.c.d"),
+            Example("let a↓: A = A.f().b"),
             Example("""
             class ViewController: UIViewController {
               func someMethod() {
@@ -291,12 +292,15 @@ private extension TypeAnnotationSyntax {
             return genericSpecialization.expression.trimmedDescription == type.typeName
         }
 
+        // In the case of chained MemberAccessExprSyntax (e.g. let a: A = A.b.c), call this function recursively
+        // with the base sequence as root node (in this case A.b).
         if base.is(MemberAccessExprSyntax.self) {
-            // In the case of chained MemberAccessExprSyntax (e.g. let a: A = A.b.c), call this function recursively
-            // with the base sequence as root node (in this case A.b).
             return isMemberAccessViolation(node: base, type: type)
         }
-
+        // Same for FunctionCallExprSyntax ...
+        if let call = base.as(FunctionCallExprSyntax.self) {
+            return isMemberAccessViolation(node: call.calledExpression, type: type)
+        }
         return base.trimmedDescription == type.trimmedDescription
     }
 }

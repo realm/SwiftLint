@@ -174,7 +174,7 @@ final class BaselineTests: XCTestCase {
         }
     }
 
-    private func testBlock(_ block: () throws -> Void) throws {
+    private func withExampleFileCreated(_ block: (filePath: String) throws -> Void) throws {
         guard let data = Self.example.data(using: .utf8) else {
             XCTFail("Could not convert example code to data using utf8 encoding")
             return

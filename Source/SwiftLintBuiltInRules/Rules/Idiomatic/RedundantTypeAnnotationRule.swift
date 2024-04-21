@@ -1,8 +1,9 @@
-import Foundation
-import SourceKittenFramework
+import SwiftLintCore
+import SwiftSyntax
 
-struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+@SwiftSyntaxRule
+struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
+    var configuration = RedundantTypeAnnotationConfiguration()
 
     static let description = RuleDescription(
         identifier: "redundant_type_annotation",
@@ -12,7 +13,23 @@ struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule {
         nonTriggeringExamples: [
             Example("var url = URL()"),
             Example("var url: CustomStringConvertible = URL()"),
-            Example("@IBInspectable var color: UIColor = UIColor.white"),
+            Example("var one: Int = 1, two: Int = 2, three: Int"),
+            Example("guard let url = URL() else { return }"),
+            Example("if let url = URL() { return }"),
+            Example("let alphanumerics = CharacterSet.alphanumerics"),
+            Example("var set: Set<Int> = Set([])"),
+            Example("var set: Set<Int> = Set.init([])"),
+            Example("var set = Set<Int>([])"),
+            Example("var set = Set<Int>.init([])"),
+            Example("guard var set: Set<Int> = Set([]) else { return }"),
+            Example("if var set: Set<Int> = Set.init([]) { return }"),
+            Example("guard var set = Set<Int>([]) else { return }"),
+            Example("if var set = Set<Int>.init([]) { return }"),
+            Example("var one: A<T> = B()"),
+            Example("var one: A = B<T>()"),
+            Example("var one: A<T> = B<T>()"),
+            Example("let a = A.b.c.d"),
+            Example("let a: B = A.b.c.d"),
             Example("""
             enum Direction {
                 case up
@@ -28,7 +45,14 @@ struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule {
             }
 
             var direction = Direction.up
-            """)
+            """),
+            Example("@IgnoreMe var a: Int = Int(5)", configuration: ["ignore_attributes": ["IgnoreMe"]]),
+            Example("""
+            var a: Int {
+                @IgnoreMe let i: Int = Int(1)
+                return i
+            }
+            """, configuration: ["ignore_attributes": ["IgnoreMe"]])
         ],
         triggeringExamples: [
             Example("var url↓:URL=URL()"),
@@ -36,7 +60,23 @@ struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule {
             Example("var url↓: URL = URL()"),
             Example("let url↓: URL = URL()"),
             Example("lazy var url↓: URL = URL()"),
+            Example("let url↓: URL = URL()!"),
+            Example("var one: Int = 1, two↓: Int = Int(5), three: Int"),
+            Example("guard let url↓: URL = URL() else { return }"),
+            Example("if let url↓: URL = URL() { return }"),
             Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"),
+            Example("var set↓: Set<Int> = Set<Int>([])"),
+            Example("var set↓: Set<Int> = Set<Int>.init([])"),
+            Example("var set↓: Set = Set<Int>([])"),
+            Example("var set↓: Set = Set<Int>.init([])"),
+            Example("guard var set↓: Set = Set<Int>([]) else { return }"),
+            Example("if var set↓: Set = Set<Int>.init([]) { return }"),
+            Example("guard var set↓: Set<Int> = Set<Int>([]) else { return }"),
+            Example("if var set↓: Set<Int> = Set<Int>.init([]) { return }"),
+            Example("var set↓: Set = Set<Int>([]), otherSet: Set<Int>"),
+            Example("var num↓: Int = Int.random(0..<10)"),
+            Example("let a↓: A = A.b.c.d"),
+            Example("let a↓: A = A.f().b"),
             Example("""
             class ViewController: UIViewController {
               func someMethod() {
@@ -52,13 +92,43 @@ struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule {
             }
 
             var direction↓: Direction = Direction.up
-            """)
+            """),
+            Example("@DontIgnoreMe var a↓: Int = Int(5)", configuration: ["ignore_attributes": ["IgnoreMe"]]),
+            Example("""
+            @IgnoreMe
+            var a: Int {
+                let i↓: Int = Int(1)
+                return i
+            }
+            """, configuration: ["ignore_attributes": ["IgnoreMe"]])
         ],
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),
             Example("let url↓: URL = URL()"): Example("let url = URL()"),
+            Example("var one: Int = 1, two↓: Int = Int(5), three: Int"):
+                Example("var one: Int = 1, two = Int(5), three: Int"),
+            Example("guard let url↓: URL = URL() else { return }"):
+                Example("guard let url = URL() else { return }"),
+            Example("if let url↓: URL = URL() { return }"):
+                Example("if let url = URL() { return }"),
             Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"):
                 Example("let alphanumerics = CharacterSet.alphanumerics"),
+            Example("var set↓: Set<Int> = Set<Int>([])"):
+                Example("var set = Set<Int>([])"),
+            Example("var set↓: Set<Int> = Set<Int>.init([])"):
+                Example("var set = Set<Int>.init([])"),
+            Example("var set↓: Set = Set<Int>([])"):
+                Example("var set = Set<Int>([])"),
+            Example("var set↓: Set = Set<Int>.init([])"):
+                Example("var set = Set<Int>.init([])"),
+            Example("guard var set↓: Set<Int> = Set<Int>([]) else { return }"):
+                Example("guard var set = Set<Int>([]) else { return }"),
+            Example("if var set↓: Set<Int> = Set<Int>.init([]) { return }"):
+                Example("if var set = Set<Int>.init([]) { return }"),
+            Example("var set↓: Set = Set<Int>([]), otherSet: Set<Int>"):
+                Example("var set = Set<Int>([]), otherSet: Set<Int>"),
+            Example("let a↓: A = A.b.c.d"):
+                Example("let a = A.b.c.d"),
             Example("""
             class ViewController: UIViewController {
               func someMethod() {
@@ -72,97 +142,137 @@ struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule {
                 let myVar = Int(5)
               }
             }
+            """),
+            Example("var num: Int = Int.random(0..<10)"): Example("var num = Int.random(0..<10)"),
+            Example("""
+            @IgnoreMe
+            var a: Int {
+                let i↓: Int = Int(1)
+                return i
+            }
+            """, configuration: ["ignore_attributes": ["IgnoreMe"]]):
+            Example("""
+            @IgnoreMe
+            var a: Int {
+                let i = Int(1)
+                return i
+            }
             """)
         ]
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map { range in
-            StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: range.location)
-            )
+private extension RedundantTypeAnnotationRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: PatternBindingSyntax) {
+            if node.parentDoesNotContainIgnoredAttributes(for: configuration),
+               let typeAnnotation = node.typeAnnotation,
+               let initializer = node.initializer?.value,
+               typeAnnotation.isRedundant(with: initializer) {
+                violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
+                violationCorrections.append(ViolationCorrection(
+                    start: typeAnnotation.position,
+                    end: typeAnnotation.endPositionBeforeTrailingTrivia,
+                    replacement: ""
+                ))
+            }
+        }
+
+        override func visitPost(_ node: OptionalBindingConditionSyntax) {
+            if let typeAnnotation = node.typeAnnotation,
+               let initializer = node.initializer?.value,
+               typeAnnotation.isRedundant(with: initializer) {
+                violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
+                violationCorrections.append(ViolationCorrection(
+                    start: typeAnnotation.position,
+                    end: typeAnnotation.endPositionBeforeTrailingTrivia,
+                    replacement: ""
+                ))
+            }
         }
     }
+}
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
-    }
-
-    private let typeAnnotationPattern: String
-    private let expressionPattern: String
-
-    init() {
-        typeAnnotationPattern =
-            ":\\s*" + // semicolon and any number of whitespaces
-            "\\w+"    // type name
-
-        expressionPattern =
-            "(var|let)" + // var or let
-            "\\s+" +      // at least single whitespace
-            "\\w+" +      // variable name
-            "\\s*" +      // possible whitespaces
-            typeAnnotationPattern +
-            "\\s*=\\s*" + // assignment operator with possible surrounding whitespaces
-            "\\w+" +      // assignee name (type or keyword)
-            "[\\(\\.]?"   // possible opening parenthesis or dot
-    }
-
-    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file
-            .match(pattern: expressionPattern)
-            .filter {
-                $0.1 == [.keyword, .identifier, .typeidentifier, .identifier] ||
-                $0.1 == [.keyword, .identifier, .typeidentifier, .keyword]
-            }
-            .filter { !isFalsePositive(file: file, range: $0.0) }
-            .filter { !isIBInspectable(file: file, range: $0.0) }
-            .compactMap {
-                file.match(pattern: typeAnnotationPattern,
-                           excludingSyntaxKinds: SyntaxKind.commentAndStringKinds, range: $0.0).first
-            }
-    }
-
-    private func isFalsePositive(file: SwiftLintFile, range: NSRange) -> Bool {
-        guard let typeNames = getPartsOfExpression(in: file, range: range) else { return false }
-
-        let lhs = typeNames.variableTypeName
-        let rhs = typeNames.assigneeName
-
-        if lhs == rhs || (lhs == "Bool" && (rhs == "true" || rhs == "false")) {
+private extension TypeAnnotationSyntax {
+    func isRedundant(with initializerExpr: ExprSyntax) -> Bool {
+        // Extract type and type name from type annotation
+        guard let type = type.as(IdentifierTypeSyntax.self) else {
             return false
         }
-        return true
-    }
+        let typeName = type.trimmedDescription
 
-    private func getPartsOfExpression(
-        in file: SwiftLintFile, range: NSRange
-    ) -> (variableTypeName: String, assigneeName: String)? {
-        let substring = file.stringView.substring(with: range)
-        let components = substring.components(separatedBy: "=")
-
-        guard
-            components.count == 2,
-            let variableTypeName = components[0].components(separatedBy: ":").last?.trimmingCharacters(in: .whitespaces)
-        else {
-            return nil
+        var initializer = initializerExpr
+        if let forceUnwrap = initializer.as(ForceUnwrapExprSyntax.self) {
+            initializer = forceUnwrap.expression
         }
 
-        let charactersToTrimFromRhs = CharacterSet(charactersIn: ".(").union(.whitespaces)
-        let assigneeName = components[1].trimmingCharacters(in: charactersToTrimFromRhs)
+        // If the initializer is a boolean expression, we consider using the `Bool` type
+        // annotation as redundant.
+        if initializer.is(BooleanLiteralExprSyntax.self) {
+            return typeName == "Bool"
+        }
 
-        return (variableTypeName, assigneeName)
+        // If the initializer is a function call (generally a constructor or static builder),
+        // check if the base type is the same as the one from the type annotation.
+        if let functionCall = initializer.as(FunctionCallExprSyntax.self) {
+            if let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self) {
+                return calledExpression.baseName.text == typeName
+            }
+            // Parse generic arguments in the intializer if there are any (e.g. var s = Set<Int>(...))
+            if let genericSpecialization = functionCall.calledExpression.as(GenericSpecializationExprSyntax.self) {
+                // In this case it should be considered redundant if the type name is the same in the type annotation
+                // E.g. var s: Set = Set<Int>() should trigger a violation
+                return genericSpecialization.expression.trimmedDescription == type.typeName
+            }
+
+            // If the function call is a member access expression, check if it is a violation
+            return isMemberAccessViolation(node: functionCall.calledExpression, type: type)
+        }
+
+        // If the initializer is a member access, check if the base type name is the same as
+        // the type annotation
+        return isMemberAccessViolation(node: initializer, type: type)
     }
 
-    private func isIBInspectable(file: SwiftLintFile, range: NSRange) -> Bool {
-        guard
-            let byteRange = file.stringView.NSRangeToByteRange(start: range.location, length: range.length),
-            let dict = file.structureDictionary.structures(forByteOffset: byteRange.location).last,
-            let kind = dict.declarationKind,
-            SwiftDeclarationKind.variableKinds.contains(kind)
-        else { return false }
+    /// Checks if the given node is a member access (i.e. an enum case or a static property or function)
+    /// and if so checks if the base type is the same as the given type name.
+    private func isMemberAccessViolation(node: ExprSyntax, type: IdentifierTypeSyntax) -> Bool {
+        guard let memberAccess = node.as(MemberAccessExprSyntax.self),
+              let base = memberAccess.base
+        else {
+            // If the type is implicit, `base` will be nil, meaning there is no redundancy.
+            return false
+        }
 
-        return dict.enclosedSwiftAttributes.contains(.ibinspectable)
+        // Parse generic arguments in the intializer if there are any (e.g. var s = Set<Int>(...))
+        if let genericSpecialization = base.as(GenericSpecializationExprSyntax.self) {
+            // In this case it should be considered redundant if the type name is the same in the type annotation
+            // E.g. var s: Set = Set<Int>() should trigger a violation
+            return genericSpecialization.expression.trimmedDescription == type.typeName
+        }
+
+        // In the case of chained MemberAccessExprSyntax (e.g. let a: A = A.b.c), call this function recursively
+        // with the base sequence as root node (in this case A.b).
+        if base.is(MemberAccessExprSyntax.self) {
+            return isMemberAccessViolation(node: base, type: type)
+        }
+        // Same for FunctionCallExprSyntax ...
+        if let call = base.as(FunctionCallExprSyntax.self) {
+            return isMemberAccessViolation(node: call.calledExpression, type: type)
+        }
+        return base.trimmedDescription == type.trimmedDescription
+    }
+}
+
+private extension PatternBindingSyntax {
+    /// Checks if none of the attributes flagged as ignored in the configuration
+    /// are set for this node's parent's parent, if it's a variable declaration
+    func parentDoesNotContainIgnoredAttributes(for configuration: RedundantTypeAnnotationConfiguration) -> Bool {
+        guard let variableDecl = parent?.parent?.as(VariableDeclSyntax.self) else {
+            return true
+        }
+        return configuration.ignoreAttributes.allSatisfy {
+            !variableDecl.attributes.contains(attributeNamed: $0)
+        }
     }
 }

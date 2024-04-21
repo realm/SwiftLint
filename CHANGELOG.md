@@ -72,6 +72,12 @@
   [Muhammad Zeeshan](https://github.com/mzeeshanid)
   [#2802](https://github.com/realm/SwiftLint/issues/2802)
 
+* Add new `ignore_attributes` option to `redundant_type_annotation` rule
+  that allows disabling the rule for properties that are marked with at least
+  one of the configured attributes.  
+  [tonell-m](https://github.com/tonell-m)
+  [#5366](https://github.com/realm/SwiftLint/issues/5366)
+
 * Rewrite the following rules with SwiftSyntax:
   * `explicit_acl`
   * `extension_access_modifier`
@@ -83,6 +89,7 @@
   * `nimble_operator`
   * `opening_brace`
   * `orphaned_doc_comment`
+  * `redundant_type_annotation`
   * `trailing_closure`
   * `void_return`
 
@@ -91,6 +98,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)  
   [swiftty](https://github.com/swiftty)  
   [KS1019](https://github.com/KS1019)  
+  [tonell-m](https://github.com/tonell-m)
 
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)

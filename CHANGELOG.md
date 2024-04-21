@@ -228,9 +228,10 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5305](https://github.com/realm/SwiftLint/pull/5305)
 
-* Take array types into account in `redundant_type_annotation` rule.  
+* Take array and nested types into account in `redundant_type_annotation` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3141](https://github.com/realm/SwiftLint/pull/3141)
+  [#3146](https://github.com/realm/SwiftLint/pull/3146)
 
 * Silence `pattern_matching_keywords` rule when an identifier is referenced
   in the argument list of a matching enum case.  

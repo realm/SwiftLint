@@ -83,6 +83,7 @@
   * `nimble_operator`
   * `opening_brace`
   * `orphaned_doc_comment`
+  * `redundant_type_annotation`
   * `trailing_closure`
   * `void_return`
 

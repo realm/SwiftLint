@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct RedundantTypeAnnotationRule: OptInRule {
+@SwiftSyntaxRule
+struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
     var configuration = RedundantTypeAnnotationConfiguration()
 
     static let description = RuleDescription(
@@ -172,8 +172,12 @@ private extension RedundantTypeAnnotationRule {
             else {
                 return
             }
-
             violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
+            violationCorrections.append(ViolationCorrection(
+                start: typeAnnotation.position,
+                end: typeAnnotation.endPositionBeforeTrailingTrivia,
+                replacement: ""
+            ))
         }
 
         override func visitPost(_ node: OptionalBindingConditionSyntax) {
@@ -183,53 +187,12 @@ private extension RedundantTypeAnnotationRule {
             else {
                 return
             }
-
             violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
-        }
-    }
-
-    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
-        override func visit(_ node: PatternBindingSyntax) -> PatternBindingSyntax {
-            guard node.parentDoesNotContainIgnoredAttributes(for: configuration),
-                  let typeAnnotation = node.typeAnnotation,
-                  let initializer = node.initializer,
-                  typeAnnotation.isRedundant(with: initializer.value)
-            else {
-                return super.visit(node)
-            }
-
-            correctionPositions.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
-
-            // Add a leading whitespace to the initializer sequence so there is one
-            // between the variable name and the '=' sign
-            let initializerWithLeadingWhitespace = initializer
-                .with(\.leadingTrivia, Trivia.space)
-
-            return super.visit(
-                node.with(\.typeAnnotation, nil)
-                    .with(\.initializer, initializerWithLeadingWhitespace)
-            )
-        }
-
-        override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
-            guard let typeAnnotation = node.typeAnnotation,
-                  let initializer = node.initializer,
-                  typeAnnotation.isRedundant(with: initializer.value)
-            else {
-                return super.visit(node)
-            }
-
-            correctionPositions.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
-
-            // Add a leading whitespace to the initializer sequence so there is one
-            // between the variable name and the '=' sign
-            let initializerWithLeadingWhitespace = initializer
-                .with(\.leadingTrivia, Trivia.space)
-
-            return super.visit(
-                node.with(\.typeAnnotation, nil)
-                    .with(\.initializer, initializerWithLeadingWhitespace)
-            )
+            violationCorrections.append(ViolationCorrection(
+                start: typeAnnotation.position,
+                end: typeAnnotation.endPositionBeforeTrailingTrivia,
+                replacement: ""
+            ))
         }
     }
 }

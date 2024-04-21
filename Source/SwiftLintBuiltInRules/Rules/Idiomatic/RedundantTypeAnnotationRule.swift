@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct RedundantTypeAnnotationRule: OptInRule {
     var configuration = RedundantTypeAnnotationConfiguration()
 
     static let description = RuleDescription(
@@ -159,14 +159,6 @@ struct RedundantTypeAnnotationRule: SwiftSyntaxCorrectableRule, OptInRule {
             """)
         ]
     )
-
-    func makeRewriter(file: SwiftLintFile) -> (some ViolationsSyntaxRewriter)? {
-        Rewriter(
-            configuration: configuration,
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension RedundantTypeAnnotationRule {
@@ -195,17 +187,7 @@ private extension RedundantTypeAnnotationRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter {
-        private let configuration: ConfigurationType
-
-        init(configuration: ConfigurationType,
-             locationConverter: SourceLocationConverter,
-             disabledRegions: [SourceRange]) {
-            self.configuration = configuration
-
-            super.init(locationConverter: locationConverter, disabledRegions: disabledRegions)
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: PatternBindingSyntax) -> PatternBindingSyntax {
             guard node.parentDoesNotContainIgnoredAttributes(for: configuration),
                   let typeAnnotation = node.typeAnnotation,

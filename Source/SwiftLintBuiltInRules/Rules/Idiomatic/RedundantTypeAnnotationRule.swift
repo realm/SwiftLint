@@ -85,6 +85,7 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
             }
             """),
             Example("var isEnabled↓: Bool = true"),
+            Example("let a↓: [Int] = [Int]()"),
             Example("""
             enum Direction {
                 case up
@@ -165,8 +166,11 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
 private extension RedundantTypeAnnotationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: PatternBindingSyntax) {
-            if node.parentDoesNotContainIgnoredAttributes(for: configuration),
-               let typeAnnotation = node.typeAnnotation,
+            guard let varDecl = node.parent?.parent?.as(VariableDeclSyntax.self),
+                  configuration.ignoreAttributes.allSatisfy({ !varDecl.attributes.contains(attributeNamed: $0) }) else {
+                return
+            }
+            if let typeAnnotation = node.typeAnnotation,
                let initializer = node.initializer?.value,
                typeAnnotation.isRedundant(with: initializer) {
                 violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
@@ -195,12 +199,9 @@ private extension RedundantTypeAnnotationRule {
 
 private extension TypeAnnotationSyntax {
     func isRedundant(with initializerExpr: ExprSyntax) -> Bool {
-        // Extract type and type name from type annotation
-        guard let type = type.as(IdentifierTypeSyntax.self) else {
+        guard let typeName = type.name else {
             return false
         }
-        let typeName = type.trimmedDescription
-
         var initializer = initializerExpr
         if let forceUnwrap = initializer.as(ForceUnwrapExprSyntax.self) {
             initializer = forceUnwrap.expression
@@ -211,68 +212,42 @@ private extension TypeAnnotationSyntax {
         if initializer.is(BooleanLiteralExprSyntax.self) {
             return typeName == "Bool"
         }
-
-        // If the initializer is a function call (generally a constructor or static builder),
-        // check if the base type is the same as the one from the type annotation.
-        if let functionCall = initializer.as(FunctionCallExprSyntax.self) {
-            if let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self) {
-                return calledExpression.baseName.text == typeName
-            }
-            // Parse generic arguments in the intializer if there are any (e.g. var s = Set<Int>(...))
-            if let genericSpecialization = functionCall.calledExpression.as(GenericSpecializationExprSyntax.self) {
-                // In this case it should be considered redundant if the type name is the same in the type annotation
-                // E.g. var s: Set = Set<Int>() should trigger a violation
-                return genericSpecialization.expression.trimmedDescription == type.typeName
-            }
-
-            // If the function call is a member access expression, check if it is a violation
-            return isMemberAccessViolation(node: functionCall.calledExpression, type: type)
-        }
-
-        // If the initializer is a member access, check if the base type name is the same as
-        // the type annotation
-        return isMemberAccessViolation(node: initializer, type: type)
-    }
-
-    /// Checks if the given node is a member access (i.e. an enum case or a static property or function)
-    /// and if so checks if the base type is the same as the given type name.
-    private func isMemberAccessViolation(node: ExprSyntax, type: IdentifierTypeSyntax) -> Bool {
-        guard let memberAccess = node.as(MemberAccessExprSyntax.self),
-              let base = memberAccess.base
-        else {
-            // If the type is implicit, `base` will be nil, meaning there is no redundancy.
-            return false
-        }
-
-        // Parse generic arguments in the intializer if there are any (e.g. var s = Set<Int>(...))
-        if let genericSpecialization = base.as(GenericSpecializationExprSyntax.self) {
-            // In this case it should be considered redundant if the type name is the same in the type annotation
-            // E.g. var s: Set = Set<Int>() should trigger a violation
-            return genericSpecialization.expression.trimmedDescription == type.typeName
-        }
-
-        // In the case of chained MemberAccessExprSyntax (e.g. let a: A = A.b.c), call this function recursively
-        // with the base sequence as root node (in this case A.b).
-        if base.is(MemberAccessExprSyntax.self) {
-            return isMemberAccessViolation(node: base, type: type)
-        }
-        // Same for FunctionCallExprSyntax ...
-        if let call = base.as(FunctionCallExprSyntax.self) {
-            return isMemberAccessViolation(node: call.calledExpression, type: type)
-        }
-        return base.trimmedDescription == type.trimmedDescription
+        return initializer.firstAccessNames.contains(typeName)
     }
 }
 
-private extension PatternBindingSyntax {
-    /// Checks if none of the attributes flagged as ignored in the configuration
-    /// are set for this node's parent's parent, if it's a variable declaration
-    func parentDoesNotContainIgnoredAttributes(for configuration: RedundantTypeAnnotationConfiguration) -> Bool {
-        guard let variableDecl = parent?.parent?.as(VariableDeclSyntax.self) else {
-            return true
+private extension ExprSyntax {
+    /// An expression can represent an access to an identifier in one or another way depending on the exact underlying
+    /// expression type. E.g. the expression `A` accesses `A` while `f()` accesses `f` and `a.b.c` accesses `a` in the
+    /// sense of this property. In the context of this rule, `Set<Int>()` accesses `Set` as well as `Set<Int>`.
+    var firstAccessNames: [String] {
+        if let declRef = `as`(DeclReferenceExprSyntax.self) {
+            return [declRef.trimmedDescription]
         }
-        return configuration.ignoreAttributes.allSatisfy {
-            !variableDecl.attributes.contains(attributeNamed: $0)
+        if let memberAccess = `as`(MemberAccessExprSyntax.self) {
+            return memberAccess.base?.firstAccessNames ?? []
         }
+        if let genericSpecialization = `as`(GenericSpecializationExprSyntax.self) {
+            return [genericSpecialization.trimmedDescription] + genericSpecialization.expression.firstAccessNames
+        }
+        if let call = `as`(FunctionCallExprSyntax.self) {
+            return call.calledExpression.firstAccessNames
+        }
+        if let arrayExpr = `as`(ArrayExprSyntax.self) {
+            return [arrayExpr.trimmedDescription]
+        }
+        return []
+    }
+}
+
+private extension TypeSyntax {
+    var name: String? {
+        if let idType = `as`(IdentifierTypeSyntax.self) {
+            return idType.trimmedDescription
+        }
+        if let arrayType = `as`(ArrayTypeSyntax.self) {
+            return arrayType.trimmedDescription
+        }
+        return nil
     }
 }

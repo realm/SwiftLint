@@ -5,6 +5,9 @@ public enum Issue: LocalizedError, Equatable {
     /// The configuration didn't match internal expectations.
     case invalidConfiguration(ruleID: String)
 
+    /// Issued when an option is deprecated. Suggests an alternative optionally.
+    case deprecatedConfigurationOption(ruleID: String, key: String, alternative: String? = nil)
+
     /// Used in configuration parsing when no changes have been applied. Use only internally!
     case nothingApplied(ruleID: String)
 
@@ -71,6 +74,23 @@ public enum Issue: LocalizedError, Equatable {
     /// Flag to enable warnings for deprecations being printed to the console. Printing is enabled by default.
     public static var printDeprecationWarnings = true
 
+    /// Hook used to capture all messages normally printed to stdout and return them back to the caller.
+    ///
+    /// > Warning: Shall only be used in tests to verify console output.
+    ///
+    /// - parameter runner: The code to run. Messages printed during the execution are collected.
+    ///
+    /// - returns: The collected messages produced while running the code in the runner.
+    static func captureConsole(runner: () throws -> Void) rethrows -> String {
+        var console = ""
+        messageConsumer = { console += $0 }
+        defer { messageConsumer = nil }
+        try runner()
+        return console
+    }
+
+    private static var messageConsumer: ((String) -> Void)?
+
     /// Wraps any `Error` into a `SwiftLintError.genericWarning` if it is not already a `SwiftLintError`.
     ///
     /// - parameter error: Any `Error`.
@@ -102,13 +122,23 @@ public enum Issue: LocalizedError, Equatable {
         if case .ruleDeprecated = self, !Self.printDeprecationWarnings {
             return
         }
-        queuedPrintError(errorDescription)
+        if let consumer = Self.messageConsumer {
+            consumer(errorDescription)
+        } else {
+            queuedPrintError(errorDescription)
+        }
     }
 
     private var message: String {
         switch self {
         case let .invalidConfiguration(id):
             return "Invalid configuration for '\(id)' rule. Falling back to default."
+        case let .deprecatedConfigurationOption(id, key, alternative):
+            let baseMessage = "Configuration option '\(key)' in '\(id)' rule is deprecated."
+            if let alternative {
+                return baseMessage + " Use the option '\(alternative)' instead."
+            }
+            return baseMessage
         case let .nothingApplied(ruleID: id):
             return Self.invalidConfiguration(ruleID: id).message
         case let .listedMultipleTime(id, times):

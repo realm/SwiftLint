@@ -88,22 +88,22 @@ extension Array where Element == String {
             (args, shouldContinueToFilterArguments) = partiallyFilter(arguments: args)
         }
 
-        return args.filter { arg in
+        return args.filter {
             ![
                 "-parseable-output",
                 "-incremental",
                 "-serialize-diagnostics",
                 "-emit-dependencies",
                 "-use-frontend-parseable-output"
-            ].contains(arg)
-        }.map { arg in
-            if arg == "-O" {
+            ].contains($0) // swiftlint:disable:this shorthand_argument
+        }.map {
+            if $0 == "-O" {
                 return "-Onone"
             }
-            if arg == "-DNDEBUG=1" {
+            if $0 == "-DNDEBUG=1" {
                 return "-DDEBUG=1"
             }
-            return arg
+            return $0 // swiftlint:disable:this shorthand_argument
         }
     }
 }

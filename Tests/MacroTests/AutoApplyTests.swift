@@ -81,9 +81,7 @@ final class AutoApplyTests: XCTestCase {
                         throw Issue.invalidConfiguration(ruleID: Parent.identifier)
                     }
                     try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
-                    try $eA.performAfterParseOperations()
                     try eB.apply(configuration[$eB.key], ruleID: Parent.identifier)
-                    try $eB.performAfterParseOperations()
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
@@ -127,7 +125,6 @@ final class AutoApplyTests: XCTestCase {
                     }
                     do {
                         try eB.apply(configuration, ruleID: Parent.identifier)
-                        try $eB.performAfterParseOperations()
                     } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
@@ -135,9 +132,7 @@ final class AutoApplyTests: XCTestCase {
                         return
                     }
                     try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
-                    try $eA.performAfterParseOperations()
                     try eC.apply(configuration[$eC.key], ruleID: Parent.identifier)
-                    try $eC.performAfterParseOperations()
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
@@ -210,7 +205,6 @@ final class AutoApplyTests: XCTestCase {
                     }
                     do {
                         try severityConfiguration.apply(configuration, ruleID: Parent.identifier)
-                        try $severityConfiguration.performAfterParseOperations()
                     } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
@@ -218,9 +212,7 @@ final class AutoApplyTests: XCTestCase {
                         return
                     }
                     try severityConfiguration.apply(configuration[$severityConfiguration.key], ruleID: Parent.identifier)
-                    try $severityConfiguration.performAfterParseOperations()
                     try foo.apply(configuration[$foo.key], ruleID: Parent.identifier)
-                    try $foo.performAfterParseOperations()
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)

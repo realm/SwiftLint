@@ -60,7 +60,6 @@ enum AutoApply: MemberMacro {
                     """
                     do {
                         try \(raw: option).apply(configuration, ruleID: Parent.identifier)
-                        try $\(raw: option).performAfterParseOperations()
                     } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
@@ -76,9 +75,6 @@ enum AutoApply: MemberMacro {
                 for option in nonInlinedOptions {
                     """
                     try \(raw: option).apply(configuration[$\(raw: option).key], ruleID: Parent.identifier)
-                    """
-                    """
-                    try $\(raw: option).performAfterParseOperations()
                     """
                 }
                 """

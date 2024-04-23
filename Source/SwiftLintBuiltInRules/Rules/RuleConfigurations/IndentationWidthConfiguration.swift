@@ -4,11 +4,18 @@ import SwiftLintCore
 struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = IndentationWidthRule
 
+    private static let defaultIndentationWidth = 4
+
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(
         key: "indentation_width",
-        postprocessor: { if $0 < 1 { throw Issue.invalidConfiguration(ruleID: Parent.identifier) } }
+        postprocessor: {
+            if $0 < 1 {
+                Issue.invalidConfiguration(ruleID: Parent.identifier).print()
+                $0 = Self.defaultIndentationWidth
+            }
+        }
     )
     private(set) var indentationWidth = 4
     @ConfigurationElement(key: "include_comments")

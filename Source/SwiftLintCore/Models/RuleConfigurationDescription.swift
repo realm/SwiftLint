@@ -416,7 +416,13 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 @propertyWrapper
 public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: Equatable {
     /// Wrapped option value.
-    public var wrappedValue: T
+    public var wrappedValue: T {
+        didSet {
+            if wrappedValue != oldValue {
+                postprocessor(&wrappedValue)
+            }
+        }
+    }
 
     /// The wrapper itself providing access to all its data. This field can only be accessed by the
     /// element's name prefixed with a `$`.
@@ -431,7 +437,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// Whether this configuration element will be inlined into its description.
     public let inline: Bool
 
-    private let postprocessor: (inout T) throws -> Void
+    private let postprocessor: (inout T) -> Void
 
     /// Default constructor.
     ///
@@ -441,11 +447,11 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///   - postprocessor: Function to be applied to the wrapped value after parsing to validate and modify it.
     public init(wrappedValue value: T,
                 key: String,
-                postprocessor: @escaping (inout T) throws -> Void = { _ in }) {
+                postprocessor: @escaping (inout T) -> Void = { _ in }) {
         self.init(wrappedValue: value, key: key, inline: false, postprocessor: postprocessor)
 
-        // Validate and modify the set value immediately. An exception means invalid defaults.
-        try! performAfterParseOperations() // swiftlint:disable:this force_try
+        // Modify the set value immediately.
+        postprocessor(&wrappedValue)
     }
 
     /// Constructor for optional values.
@@ -482,16 +488,11 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     private init(wrappedValue: T,
                  key: String,
                  inline: Bool,
-                 postprocessor: @escaping (inout T) throws -> Void = { _ in }) {
+                 postprocessor: @escaping (inout T) -> Void = { _ in }) {
         self.wrappedValue = wrappedValue
         self.key = key
         self.inline = inline
         self.postprocessor = postprocessor
-    }
-
-    /// Run operations to validate and modify the parsed value.
-    public mutating func performAfterParseOperations() throws {
-        try postprocessor(&wrappedValue)
     }
 
     public static func == (lhs: ConfigurationElement, rhs: ConfigurationElement) -> Bool {

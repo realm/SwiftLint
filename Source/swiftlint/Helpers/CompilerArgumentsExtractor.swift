@@ -88,14 +88,14 @@ extension Array where Element == String {
             (args, shouldContinueToFilterArguments) = partiallyFilter(arguments: args)
         }
 
-        return args.filter { arg in
+        return args.filter { $0 in
             ![
                 "-parseable-output",
                 "-incremental",
                 "-serialize-diagnostics",
                 "-emit-dependencies",
                 "-use-frontend-parseable-output"
-            ].contains(arg)
+            ].contains($0) // swiftlint:disable:this shorthand_argument
         }.map { arg in
             if arg == "-O" {
                 return "-Onone"

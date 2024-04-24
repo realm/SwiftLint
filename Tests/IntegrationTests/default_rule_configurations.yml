@@ -177,6 +177,7 @@ file_name:
   prefix_pattern: ""
   suffix_pattern: "\+.*"
   nested_type_separator: "."
+  fully_qualified: false
 file_name_no_space:
   severity: warning
   excluded: []

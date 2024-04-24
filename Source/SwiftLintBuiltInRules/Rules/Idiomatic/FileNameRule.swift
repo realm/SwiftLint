@@ -35,7 +35,7 @@ struct FileNameRule: OptInRule, SourceKitFreeRule {
         }
 
         // Process nested type separator
-        let allDeclaredTypeNames = TypeNameCollectingVisitor(viewMode: .sourceAccurate)
+        let allDeclaredTypeNames = TypeNameCollectingVisitor(requireFullyQualifiedNames: configuration.fullyQualified)
             .walk(tree: file.syntaxTree, handler: \.names)
             .map {
                 $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
@@ -56,33 +56,98 @@ struct FileNameRule: OptInRule, SourceKitFreeRule {
 }
 
 private class TypeNameCollectingVisitor: SyntaxVisitor {
+    // All of a visited node's ancestor type names if that node is nested, starting with the furthest
+    // ancestor and ending with the direct parent
+    private var ancestorNames: [String] = []
+
+    // All of the type names found in the file
     private(set) var names: Set<String> = []
 
+    // If true, nested types are only allowed in the file name when used by their fully-qualified name
+    // (e.g. `My.Nested.Type` and not just `Type`)
+    private let requireFullyQualifiedNames: Bool
+
+    init(requireFullyQualifiedNames: Bool) {
+        self.requireFullyQualifiedNames = requireFullyQualifiedNames
+        super.init(viewMode: .sourceAccurate)
+    }
+
+    private func addVisitedNodeName(_ name: String) {
+        let fullyQualifiedName = (ancestorNames + [name]).joined(separator: ".")
+        names.insert(fullyQualifiedName)
+
+        if !requireFullyQualifiedNames {
+            names.insert(name)
+        }
+    }
+
+    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+        ancestorNames.append(node.name.text)
+        return .visitChildren
+    }
+
     override func visitPost(_ node: ClassDeclSyntax) {
-        names.insert(node.name.text)
+        ancestorNames.removeLast()
+        addVisitedNodeName(node.name.text)
+    }
+
+    override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+        ancestorNames.append(node.name.text)
+        return .visitChildren
     }
 
     override func visitPost(_ node: ActorDeclSyntax) {
-        names.insert(node.name.text)
+        ancestorNames.removeLast()
+        addVisitedNodeName(node.name.text)
+    }
+
+    override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+        ancestorNames.append(node.name.text)
+        return .visitChildren
     }
 
     override func visitPost(_ node: StructDeclSyntax) {
-        names.insert(node.name.text)
+        ancestorNames.removeLast()
+        addVisitedNodeName(node.name.text)
+    }
+
+    override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
+        ancestorNames.append(node.name.text)
+        return .visitChildren
     }
 
     override func visitPost(_ node: TypeAliasDeclSyntax) {
-        names.insert(node.name.text)
+        ancestorNames.removeLast()
+        addVisitedNodeName(node.name.text)
+    }
+
+    override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+        ancestorNames.append(node.name.text)
+        return .visitChildren
     }
 
     override func visitPost(_ node: EnumDeclSyntax) {
-        names.insert(node.name.text)
+        ancestorNames.removeLast()
+        addVisitedNodeName(node.name.text)
+    }
+
+    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        ancestorNames.append(node.name.text)
+        return .visitChildren
     }
 
     override func visitPost(_ node: ProtocolDeclSyntax) {
-        names.insert(node.name.text)
+        ancestorNames.removeLast()
+        addVisitedNodeName(node.name.text)
+    }
+
+    override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+        ancestorNames.append(node.extendedType.trimmedDescription)
+        return .visitChildren
     }
 
     override func visitPost(_ node: ExtensionDeclSyntax) {
-        names.insert(node.extendedType.trimmedDescription)
+        ancestorNames.removeLast()
+        addVisitedNodeName(node.extendedType.trimmedDescription)
     }
 }

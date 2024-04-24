@@ -14,4 +14,6 @@ struct FileNameConfiguration: SeverityBasedRuleConfiguration {
     private(set) var suffixPattern = "\\+.*"
     @ConfigurationElement(key: "nested_type_separator")
     private(set) var nestedTypeSeparator = "."
+    @ConfigurationElement(key: "fully_qualified")
+    private(set) var fullyQualified = false
 }

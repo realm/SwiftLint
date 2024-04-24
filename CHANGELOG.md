@@ -63,6 +63,12 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5711](https://github.com/realm/SwiftLint/issues/5711)
 
+* Fixes `file_name` rule to match fully-qualified names of nested types.
+  Additionally adds a `fully_qualified` boolean option to enforce that
+  file names match nested types only using their fully-qualified name.
+  [fraioli](https://github.com/fraioli)
+  [#issue_number](https://github.com/realm/SwiftLint/issues/issue_number)
+
 ## 0.57.0: Squeaky Clean Cycle
 
 #### Breaking

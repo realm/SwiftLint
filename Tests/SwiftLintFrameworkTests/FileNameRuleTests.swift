@@ -5,25 +5,32 @@ private let fixturesDirectory = "\(TestResources.path)/FileNameRuleFixtures"
 
 final class FileNameRuleTests: SwiftLintTestCase {
     private func validate(fileName: String,
-                          excludedOverride: [String]? = nil,
+                          excluded: [String]? = nil,
                           prefixPattern: String? = nil,
                           suffixPattern: String? = nil,
-                          nestedTypeSeparator: String? = nil) throws -> [StyleViolation] {
+                          nestedTypeSeparator: String? = nil,
+                          fullyQualified: Bool = false) throws -> [StyleViolation] {
         let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
-        let rule: FileNameRule
-        if let excluded = excludedOverride {
-            rule = try FileNameRule(configuration: ["excluded": excluded])
-        } else if let prefixPattern, let suffixPattern {
-            rule = try FileNameRule(configuration: ["prefix_pattern": prefixPattern, "suffix_pattern": suffixPattern])
-        } else if let prefixPattern {
-            rule = try FileNameRule(configuration: ["prefix_pattern": prefixPattern])
-        } else if let suffixPattern {
-            rule = try FileNameRule(configuration: ["suffix_pattern": suffixPattern])
-        } else if let nestedTypeSeparator {
-            rule = try FileNameRule(configuration: ["nested_type_separator": nestedTypeSeparator])
-        } else {
-            rule = FileNameRule()
+
+        var configuration = [String: Any]()
+
+        if let excluded {
+            configuration["excluded"] = excluded
         }
+        if let prefixPattern {
+            configuration["prefix_pattern"] = prefixPattern
+        }
+        if let suffixPattern {
+            configuration["suffix_pattern"] = suffixPattern
+        }
+        if let nestedTypeSeparator {
+            configuration["nested_type_separator"] = nestedTypeSeparator
+        }
+        if fullyQualified {
+            configuration["fully_qualified"] = fullyQualified
+        }
+
+        let rule = try FileNameRule(configuration: configuration)
 
         return rule.validate(file: file)
     }
@@ -52,6 +59,22 @@ final class FileNameRuleTests: SwiftLintTestCase {
         XCTAssert(try validate(fileName: "Notification.Name+Extension.swift").isEmpty)
     }
 
+    func testNestedTypeDoesntTrigger() {
+        XCTAssert(try validate(fileName: "Nested.MyType.swift").isEmpty)
+    }
+
+    func testMultipleLevelsDeeplyNestedTypeDoesntTrigger() {
+        XCTAssert(try validate(fileName: "Multiple.Levels.Deeply.Nested.MyType.swift").isEmpty)
+    }
+
+    func testNestedTypeNotFullyQualifiedDoesntTrigger() {
+        XCTAssert(try validate(fileName: "MyType.swift").isEmpty)
+    }
+
+    func testNestedTypeNotFullyQualifiedDoesTriggerWithOverride() {
+        XCTAssert(try !validate(fileName: "MyType.swift", fullyQualified: true).isEmpty)
+    }
+
     func testNestedTypeSeparatorDoesntTrigger() {
         XCTAssert(try validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "").isEmpty)
         XCTAssert(try validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: "__").isEmpty)
@@ -67,11 +90,11 @@ final class FileNameRuleTests: SwiftLintTestCase {
     }
 
     func testMisspelledNameDoesntTriggerWithOverride() {
-        XCTAssert(try validate(fileName: "MyStructf.swift", excludedOverride: ["MyStructf.swift"]).isEmpty)
+        XCTAssert(try validate(fileName: "MyStructf.swift", excluded: ["MyStructf.swift"]).isEmpty)
     }
 
     func testMainDoesTriggerWithoutOverride() {
-        XCTAssertEqual(try validate(fileName: "main.swift", excludedOverride: []).count, 1)
+        XCTAssertEqual(try validate(fileName: "main.swift", excluded: []).count, 1)
     }
 
     func testCustomSuffixPattern() {

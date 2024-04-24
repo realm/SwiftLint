@@ -2,7 +2,7 @@
 
 #### Breaking
 
-* Rewrite `SwiftLintPlugin` using `BUILD_WORKSPACE_DIRECTORY` without relying
+* Rewrite `SwiftLintBuildToolPlugin` using `BUILD_WORKSPACE_DIRECTORY` without relying
   on the `--config` option.  
   [Garric Nahapetian](https://github.com/garricn)
 

@@ -193,7 +193,7 @@ Xcode 构建工具插件。
 
 选择要添加修正的目标，打开 `Build Phases` 检查器。
 打开 `Run Build Tool Plug-ins` 并选择 `+` 按钮。
-从列表中选择 `SwiftLintPlugin` 并将其添加到项目中。
+从列表中选择 `SwiftLintBuildToolPlugin` 并将其添加到项目中。
 
 ![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/select-swiftlint-plugin.png)
 

@@ -88,7 +88,7 @@ extension Array where Element == String {
             (args, shouldContinueToFilterArguments) = partiallyFilter(arguments: args)
         }
 
-        return args.filter { $0 in
+        return args.filter {
             ![
                 "-parseable-output",
                 "-incremental",

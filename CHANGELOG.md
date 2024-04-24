@@ -21,6 +21,12 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4792](https://github.com/realm/SwiftLint/issues/4792)
 
+* Add `consider_default_literal_types_redundant` option to
+  `RedundantTypeAnnotationRule` supporting `Bool`, `Double`, `Int` and `String`.
+  Note that this option must be set to `true` to maintain the previous behavior.
+  [Garric Nahapetian](https://github.com/garricn)
+  [#4756](https://github.com/realm/SwiftLint/pull/4756)
+
 #### Experimental
 
 * Add two new options to the `lint` and `analyze` commands: `--write-baseline`

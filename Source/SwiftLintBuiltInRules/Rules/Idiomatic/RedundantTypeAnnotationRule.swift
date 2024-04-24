@@ -52,7 +52,11 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
                 @IgnoreMe let i: Int = Int(1)
                 return i
             }
-            """, configuration: ["ignore_attributes": ["IgnoreMe"]])
+            """, configuration: ["ignore_attributes": ["IgnoreMe"]]),
+            Example("var bol: Bool = true"),
+            Example("var dbl: Double = 0.0"),
+            Example("var int: Int = 0"),
+            Example("var str: String = \"str\"")
         ],
         triggeringExamples: [
             Example("var url↓:URL=URL()"),
@@ -84,7 +88,6 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
               }
             }
             """),
-            Example("var isEnabled↓: Bool = true"),
             Example("let a↓: [Int] = [Int]()"),
             Example("let a↓: A.B = A.B()"),
             Example("""
@@ -102,7 +105,11 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
                 let i↓: Int = Int(1)
                 return i
             }
-            """, configuration: ["ignore_attributes": ["IgnoreMe"]])
+            """, configuration: ["ignore_attributes": ["IgnoreMe"]]),
+            Example("var bol↓: Bool = true", configuration: ["consider_default_literal_types_redundant": true]),
+            Example("var dbl↓: Double = 0.0", configuration: ["consider_default_literal_types_redundant": true]),
+            Example("var int↓: Int = 0", configuration: ["consider_default_literal_types_redundant": true]),
+            Example("var str↓: String = \"str\"", configuration: ["consider_default_literal_types_redundant": true])
         ],
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),
@@ -159,7 +166,15 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
                 let i = Int(1)
                 return i
             }
-            """)
+            """),
+            Example("var bol: Bool = true", configuration: ["consider_default_literal_types_redundant": true]):
+                Example("var bol = true"),
+            Example("var dbl: Double = 0.0", configuration: ["consider_default_literal_types_redundant": true]):
+                Example("var dbl = 0.0"),
+            Example("var int: Int = 0", configuration: ["consider_default_literal_types_redundant": true]):
+                Example("var int = 0"),
+            Example("var str: String = \"str\"", configuration: ["consider_default_literal_types_redundant": true]):
+                Example("var str = \"str\"")
         ]
     )
 }
@@ -168,47 +183,69 @@ private extension RedundantTypeAnnotationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: PatternBindingSyntax) {
             guard let varDecl = node.parent?.parent?.as(VariableDeclSyntax.self),
-                  configuration.ignoreAttributes.allSatisfy({ !varDecl.attributes.contains(attributeNamed: $0) }) else {
+                  configuration.ignoreAttributes.allSatisfy({ !varDecl.attributes.contains(attributeNamed: $0) }),
+                  let typeAnnotation = node.typeAnnotation,
+                  let initializer = node.initializer?.value else {
                 return
             }
-            if let typeAnnotation = node.typeAnnotation,
-               let initializer = node.initializer?.value,
-               typeAnnotation.isRedundant(with: initializer) {
-                violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
-                violationCorrections.append(ViolationCorrection(
-                    start: typeAnnotation.position,
-                    end: typeAnnotation.endPositionBeforeTrailingTrivia,
-                    replacement: ""
-                ))
+            let isRedundant: Bool = typeAnnotation.isRedundant(
+                with: initializer,
+                considerLiteralsRedundant: configuration.considerDefaultLiteralTypesRedundant
+            )
+            guard isRedundant else {
+                return
             }
+            violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
+            violationCorrections.append(ViolationCorrection(
+                start: typeAnnotation.position,
+                end: typeAnnotation.endPositionBeforeTrailingTrivia,
+                replacement: ""
+            ))
         }
 
         override func visitPost(_ node: OptionalBindingConditionSyntax) {
-            if let typeAnnotation = node.typeAnnotation,
-               let initializer = node.initializer?.value,
-               typeAnnotation.isRedundant(with: initializer) {
-                violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
-                violationCorrections.append(ViolationCorrection(
-                    start: typeAnnotation.position,
-                    end: typeAnnotation.endPositionBeforeTrailingTrivia,
-                    replacement: ""
-                ))
+            guard let typeAnnotation = node.typeAnnotation,
+                  let initializer = node.initializer?.value else {
+                return
             }
+            let isRedundant: Bool = typeAnnotation.isRedundant(
+                with: initializer,
+                considerLiteralsRedundant: configuration.considerDefaultLiteralTypesRedundant
+            )
+            guard isRedundant else {
+                return
+            }
+            violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
+            violationCorrections.append(ViolationCorrection(
+                start: typeAnnotation.position,
+                end: typeAnnotation.endPositionBeforeTrailingTrivia,
+                replacement: ""
+            ))
         }
     }
 }
 
 private extension TypeAnnotationSyntax {
-    func isRedundant(with initializerExpr: ExprSyntax) -> Bool {
+    func isRedundant(with initializerExpr: ExprSyntax, considerLiteralsRedundant: Bool) -> Bool {
         var initializer = initializerExpr
         if let forceUnwrap = initializer.as(ForceUnwrapExprSyntax.self) {
             initializer = forceUnwrap.expression
         }
-
-        // If the initializer is a boolean expression, we consider using the `Bool` type
-        // annotation as redundant.
-        if initializer.is(BooleanLiteralExprSyntax.self) {
-            return type.trimmedDescription == "Bool"
+        // Consider the type annotation redundant if `considerLiteralsRedundant` is true and the expression is one of
+        // the supported compiler-inferred literals.
+        if considerLiteralsRedundant {
+            return switch initializer {
+            case let expr where expr.is(BooleanLiteralExprSyntax.self):
+                type.trimmedDescription == "Bool"
+            case let expr where expr.is(FloatLiteralExprSyntax.self):
+                type.trimmedDescription == "Double"
+            case let expr where expr.is(IntegerLiteralExprSyntax.self):
+                type.trimmedDescription == "Int"
+            case let expr where expr.is(StringLiteralExprSyntax.self):
+                type.trimmedDescription == "String"
+            default:
+                false
+            }
         }
         return initializer.accessedNames.contains(type.trimmedDescription)
     }

@@ -29,7 +29,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
             postprocessor: { list in list = list.map { $0.uppercased() } }
         )
         var list = ["string1", "string2"]
-        @ConfigurationElement(key: "set")
+        @ConfigurationElement(key: "set", deprecationNotice: .suggestAlternative(ruleID: "my_rule", name: "other_opt"))
         var set: Set<Int> = [1, 2, 3]
         @ConfigurationElement(inline: true)
         var severityConfig = SeverityConfiguration<Parent>(.error)
@@ -488,6 +488,15 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         XCTAssertEqual(configuration.renamedSeverityConfig, .error)
         XCTAssertEqual(configuration.inlinedSeverityLevels, SeverityLevelsConfiguration(warning: 12))
         XCTAssertEqual(configuration.nestedSeverityLevels, SeverityLevelsConfiguration(warning: 6, error: 7))
+    }
+
+    func testDeprecationWarning() throws {
+        var configuration = TestConfiguration()
+
+        XCTAssertEqual(
+            try Issue.captureConsole { try configuration.apply(configuration: ["set": [6, 7]]) },
+            "warning: Configuration option 'set' in 'my_rule' rule is deprecated. Use the option 'other_opt' instead."
+        )
     }
 
     func testInvalidKeys() throws {

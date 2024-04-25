@@ -415,9 +415,18 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 ///
 @propertyWrapper
 public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: Equatable {
+    /// A deprecation notice.
+    public enum DeprecationNotice {
+        /// Warning suggesting an alternative option.
+        case suggestAlternative(ruleID: String, name: String)
+    }
+
     /// Wrapped option value.
     public var wrappedValue: T {
         didSet {
+            if case let .suggestAlternative(id, name) = deprecationNotice {
+                Issue.deprecatedConfigurationOption(ruleID: id, key: key, alternative: name).print()
+            }
             if wrappedValue != oldValue {
                 postprocessor(&wrappedValue)
             }
@@ -437,6 +446,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// Whether this configuration element will be inlined into its description.
     public let inline: Bool
 
+    private let deprecationNotice: DeprecationNotice?
     private let postprocessor: (inout T) -> Void
 
     /// Default constructor.
@@ -444,11 +454,20 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// - Parameters:
     ///   - value: Value to be wrapped.
     ///   - key: Optional name of the option. If not specified, it will be inferred from the attributed property.
+    ///   - deprecationNotice: An optional deprecation notice in case an option is outdated and/or has been replaced by
+    ///                        an alternative.
     ///   - postprocessor: Function to be applied to the wrapped value after parsing to validate and modify it.
     public init(wrappedValue value: T,
                 key: String,
+                deprecationNotice: DeprecationNotice? = nil,
                 postprocessor: @escaping (inout T) -> Void = { _ in }) {
-        self.init(wrappedValue: value, key: key, inline: false, postprocessor: postprocessor)
+        self.init(
+            wrappedValue: value,
+            key: key,
+            inline: false,
+            deprecationNotice: deprecationNotice,
+            postprocessor: postprocessor
+        )
 
         // Modify the set value immediately.
         postprocessor(&wrappedValue)
@@ -488,10 +507,12 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     private init(wrappedValue: T,
                  key: String,
                  inline: Bool,
+                 deprecationNotice: DeprecationNotice? = nil,
                  postprocessor: @escaping (inout T) -> Void = { _ in }) {
         self.wrappedValue = wrappedValue
         self.key = key
         self.inline = inline
+        self.deprecationNotice = deprecationNotice
         self.postprocessor = postprocessor
     }
 

@@ -60,11 +60,9 @@ struct AccessibilityTraitForButtonRule: ASTRule, OptInRule {
                                    severity: configuration.severity,
                                    location: Location(file: file, byteOffset: offset))
                 )
-            }
-
-            // If dictionary did not represent a View with a tap gesture, recursively check substructure,
-            // unless it's a container that hides its children from accessibility.
-            else if dictionary.substructure.isNotEmpty {
+            } else if dictionary.substructure.isNotEmpty {
+                // If dictionary did not represent a View with a tap gesture, recursively check substructure,
+                // unless it's a container that hides its children from accessibility.
                 if dictionary.hasAccessibilityHiddenModifier(in: file) ||
                     dictionary.hasAccessibilityElementChildrenIgnoreModifier(in: file) {
                     continue

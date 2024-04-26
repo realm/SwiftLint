@@ -188,11 +188,9 @@ private extension RedundantTypeAnnotationRule {
                   let initializer = node.initializer?.value else {
                 return
             }
-            let isRedundant: Bool = typeAnnotation.isRedundant(
-                with: initializer,
-                considerLiteralsRedundant: configuration.considerDefaultLiteralTypesRedundant
-            )
-            guard isRedundant else {
+            let validateLiterals = configuration.considerDefaultLiteralTypesRedundant
+            let isLiteralRedundant = validateLiterals && initializer.hasRedundantLiteralType(typeAnnotation.type)
+            guard isLiteralRedundant || initializer.hasRedundantType(typeAnnotation.type) else {
                 return
             }
             violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
@@ -208,11 +206,9 @@ private extension RedundantTypeAnnotationRule {
                   let initializer = node.initializer?.value else {
                 return
             }
-            let isRedundant: Bool = typeAnnotation.isRedundant(
-                with: initializer,
-                considerLiteralsRedundant: configuration.considerDefaultLiteralTypesRedundant
-            )
-            guard isRedundant else {
+            let validateLiterals = configuration.considerDefaultLiteralTypesRedundant
+            let isLiteralRedundant = validateLiterals && initializer.hasRedundantLiteralType(typeAnnotation.type)
+            guard isLiteralRedundant || initializer.hasRedundantType(typeAnnotation.type) else {
                 return
             }
             violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
@@ -225,31 +221,26 @@ private extension RedundantTypeAnnotationRule {
     }
 }
 
-private extension TypeAnnotationSyntax {
-    func isRedundant(with initializerExpr: ExprSyntax, considerLiteralsRedundant: Bool) -> Bool {
-        var initializer = initializerExpr
-        if let forceUnwrap = initializer.as(ForceUnwrapExprSyntax.self) {
-            initializer = forceUnwrap.expression
+private extension SyntaxKind {
+    var compilerInferredLiteralType: String? {
+        switch self {
+        case .booleanLiteralExpr:
+            "Bool"
+        case .floatLiteralExpr:
+            "Double"
+        case .integerLiteralExpr:
+            "Int"
+        case .stringLiteralExpr:
+            "String"
+        default:
+            nil
         }
-        // Consider the type annotation redundant if `considerLiteralsRedundant` is true and the expression is one of
-        // the supported compiler-inferred literals.
-        if considerLiteralsRedundant {
-            return isCompilerInferredLiteral(initializer)
-        }
-        return initializer.accessedNames.contains(type.trimmedDescription)
     }
 
-    // Returns true if the expression is one of the supported compiler-inferred literals.
-    private func isCompilerInferredLiteral(_ expr: ExprSyntax) -> Bool {
-        switch expr {
-        case let expr where expr.is(BooleanLiteralExprSyntax.self):
-            type.trimmedDescription == "Bool"
-        case let expr where expr.is(FloatLiteralExprSyntax.self):
-            type.trimmedDescription == "Double"
-        case let expr where expr.is(IntegerLiteralExprSyntax.self):
-            type.trimmedDescription == "Int"
-        case let expr where expr.is(StringLiteralExprSyntax.self):
-            type.trimmedDescription == "String"
+    func isLiteralExpression() -> Bool {
+        switch self {
+        case .booleanLiteralExpr, .floatLiteralExpr, .integerLiteralExpr, .stringLiteralExpr:
+            true
         default:
             false
         }
@@ -274,5 +265,17 @@ private extension ExprSyntax {
         } else {
             []
         }
+    }
+
+    func hasRedundantLiteralType(_ type: TypeSyntax) -> Bool {
+        kind.isLiteralExpression() && kind.compilerInferredLiteralType == type.trimmedDescription
+    }
+
+    func hasRedundantType(_ type: TypeSyntax) -> Bool {
+        var expr = self
+        if let forceUnwrap = expr.as(ForceUnwrapExprSyntax.self) {
+            expr = forceUnwrap.expression
+        }
+        return expr.accessedNames.contains(type.trimmedDescription)
     }
 }

@@ -24,7 +24,8 @@
 * Add `consider_default_literal_types_redundant` option to the
   `redundant_type_annotation` rule supporting `Bool`, `Double`, `Int` and
   `String`. Setting the option to `true` lets the rule consider said types in
-  declarations like `let i: Int = 1` or `let s: String = ""` as redundant.  
+  declarations like `let i: Int = 1` or `let s: String = ""` as redundant.
+  Note that `Bool` literals will no longer be considered redundant by default.  
   [Garric Nahapetian](https://github.com/garricn)
 
 #### Experimental

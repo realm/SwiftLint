@@ -234,14 +234,14 @@ private extension TypeAnnotationSyntax {
         // Consider the type annotation redundant if `considerLiteralsRedundant` is true and the expression is one of
         // the supported compiler-inferred literals.
         if considerLiteralsRedundant {
-            return isCompilerInferredLiteral(expression: initializer)
+            return isCompilerInferredLiteral(initializer)
         }
         return initializer.accessedNames.contains(type.trimmedDescription)
     }
 
     // Returns true if the expression is one of the supported compiler-inferred literals.
-    private func isCompilerInferredLiteral(expression: ExprSyntax) -> Bool {
-        return switch expression {
+    private func isCompilerInferredLiteral(_ expr: ExprSyntax) -> Bool {
+        switch expr {
         case let expr where expr.is(BooleanLiteralExprSyntax.self):
             type.trimmedDescription == "Bool"
         case let expr where expr.is(FloatLiteralExprSyntax.self):

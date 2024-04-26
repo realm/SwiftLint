@@ -21,11 +21,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4792](https://github.com/realm/SwiftLint/issues/4792)
 
-* Add `consider_default_literal_types_redundant` option to
-  `RedundantTypeAnnotationRule` supporting `Bool`, `Double`, `Int` and `String`.
-  Note that this option must be set to `true` to maintain the previous behavior.
+* Add `consider_default_literal_types_redundant` option to the
+  `redundant_type_annotation` rule supporting `Bool`, `Double`, `Int` and
+  `String`. Setting the option to `true` lets the rule consider said types in
+  declarations like `let i: Int = 1` or `let s: String = ""` as redundant.  
   [Garric Nahapetian](https://github.com/garricn)
-  [#4756](https://github.com/realm/SwiftLint/pull/4756)
 
 #### Experimental
 

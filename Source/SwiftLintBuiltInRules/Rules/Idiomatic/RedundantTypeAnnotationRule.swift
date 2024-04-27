@@ -242,7 +242,7 @@ private extension ExprSyntax {
     }
 
     func hasRedundantLiteralType(_ type: TypeSyntax) -> Bool {
-        kind.isLiteralExpression() && kind.compilerInferredLiteralType == type.trimmedDescription
+        kind.isLiteralExpression() && type.trimmedDescription == kind.compilerInferredLiteralType 
     }
 
     func hasRedundantType(_ type: TypeSyntax) -> Bool {

@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class TrailingWhitespaceRuleTests: SwiftLintTestCase {
+final class TrailingWhitespaceRuleTests: SwiftLintTestCase {
     func testWithIgnoresEmptyLinesEnabled() {
         // Perform additional tests with the ignores_empty_lines setting enabled.
         // The set of non-triggering examples is extended by a whitespace-indented empty line

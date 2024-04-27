@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class ImplicitReturnConfigurationTests: SwiftLintTestCase {
+final class ImplicitReturnConfigurationTests: SwiftLintTestCase {
     func testImplicitReturnConfigurationFromDictionary() throws {
         var configuration = ImplicitReturnConfiguration(includedKinds: Set<ImplicitReturnConfiguration.ReturnKind>())
         let config: [String: Any] = [

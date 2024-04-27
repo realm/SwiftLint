@@ -2,7 +2,7 @@
 import XCTest
 
 // swiftlint:disable:next type_name
-class ImplicitlyUnwrappedOptionalConfigurationTests: SwiftLintTestCase {
+final class ImplicitlyUnwrappedOptionalConfigurationTests: SwiftLintTestCase {
     func testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary() throws {
         var configuration = ImplicitlyUnwrappedOptionalConfiguration(
             severityConfiguration: SeverityConfiguration(.warning),

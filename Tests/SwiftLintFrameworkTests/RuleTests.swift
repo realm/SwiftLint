@@ -19,7 +19,7 @@ struct RuleWithLevelsMock: Rule {
     func validate(file: SwiftLintFile) -> [StyleViolation] { return [] }
 }
 
-class RuleTests: SwiftLintTestCase {
+final class RuleTests: SwiftLintTestCase {
     fileprivate struct RuleMock1: Rule {
         var configuration = SeverityConfiguration<Self>(.warning)
         var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }

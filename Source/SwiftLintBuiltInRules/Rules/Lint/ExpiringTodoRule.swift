@@ -59,8 +59,8 @@ struct ExpiringTodoRule: OptInRule {
                 syntaxKinds.allSatisfy({ $0.isCommentLike }),
                 checkingResult.numberOfRanges > 1,
                 case let range = checkingResult.range(at: 1),
-                let violationLevel = self.violationLevel(for: expiryDate(file: file, range: range)),
-                let severity = self.severity(for: violationLevel) else {
+                let violationLevel = violationLevel(for: expiryDate(file: file, range: range)),
+                let severity = severity(for: violationLevel) else {
                 return nil
             }
 

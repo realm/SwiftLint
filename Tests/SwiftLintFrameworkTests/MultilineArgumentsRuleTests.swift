@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class MultilineArgumentsRuleTests: SwiftLintTestCase {
+final class MultilineArgumentsRuleTests: SwiftLintTestCase {
     func testMultilineArgumentsWithWithNextLine() {
         let nonTriggeringExamples = [
             Example("foo()"),

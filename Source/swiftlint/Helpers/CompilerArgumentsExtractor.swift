@@ -88,22 +88,22 @@ extension Array where Element == String {
             (args, shouldContinueToFilterArguments) = partiallyFilter(arguments: args)
         }
 
-        return args.filter {
+        return args.filter { arg in
             ![
                 "-parseable-output",
                 "-incremental",
                 "-serialize-diagnostics",
                 "-emit-dependencies",
                 "-use-frontend-parseable-output"
-            ].contains($0)
-        }.map {
-            if $0 == "-O" {
+            ].contains(arg)
+        }.map { arg in
+            if arg == "-O" {
                 return "-Onone"
             }
-            if $0 == "-DNDEBUG=1" {
+            if arg == "-DNDEBUG=1" {
                 return "-DDEBUG=1"
             }
-            return $0
+            return arg
         }
     }
 }

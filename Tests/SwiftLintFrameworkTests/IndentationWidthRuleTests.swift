@@ -3,7 +3,7 @@
 import SwiftLintTestHelpers
 import XCTest
 
-class IndentationWidthRuleTests: SwiftLintTestCase {
+final class IndentationWidthRuleTests: SwiftLintTestCase {
     func testInvalidIndentation() throws {
         var testee = IndentationWidthConfiguration()
         let defaultValue = testee.indentationWidth

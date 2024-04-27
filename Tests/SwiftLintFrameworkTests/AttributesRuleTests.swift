@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class AttributesRuleTests: SwiftLintTestCase {
+final class AttributesRuleTests: SwiftLintTestCase {
     func testAttributesWithAlwaysOnSameLine() {
         // Test with custom `always_on_same_line`
         let nonTriggeringExamples = [

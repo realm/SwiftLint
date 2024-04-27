@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class CollectionAlignmentRuleTests: SwiftLintTestCase {
+final class CollectionAlignmentRuleTests: SwiftLintTestCase {
     func testCollectionAlignmentWithAlignLeft() {
         let baseDescription = CollectionAlignmentRule.description
         let examples = CollectionAlignmentRule.Examples(alignColons: false)

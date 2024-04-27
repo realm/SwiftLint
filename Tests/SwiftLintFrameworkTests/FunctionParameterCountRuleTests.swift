@@ -9,7 +9,7 @@ private func funcWithParameters(_ parameters: String,
     return Example("func \(marker)abc(\(parameters)) {}\n", file: file, line: line)
 }
 
-class FunctionParameterCountRuleTests: SwiftLintTestCase {
+final class FunctionParameterCountRuleTests: SwiftLintTestCase {
     func testFunctionParameterCount() {
         let baseDescription = FunctionParameterCountRule.description
         let nonTriggeringExamples = [

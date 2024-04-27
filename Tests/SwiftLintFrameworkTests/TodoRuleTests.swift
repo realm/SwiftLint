@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class TodoRuleTests: SwiftLintTestCase {
+final class TodoRuleTests: SwiftLintTestCase {
     func testTodo() {
         verifyRule(TodoRule.description, commentDoesntViolate: false)
     }

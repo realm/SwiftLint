@@ -1,7 +1,7 @@
 @testable import SwiftLintCore
 import XCTest
 
-class SourceKitCrashTests: SwiftLintTestCase {
+final class SourceKitCrashTests: SwiftLintTestCase {
     func testAssertHandlerIsNotCalledOnNormalFile() {
         let file = SwiftLintFile(contents: "A file didn't crash SourceKitService")
         file.sourcekitdFailed = false

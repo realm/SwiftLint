@@ -2,7 +2,7 @@ import SourceKittenFramework
 @testable import SwiftLintCore
 import XCTest
 
-class CustomRulesTests: SwiftLintTestCase {
+final class CustomRulesTests: SwiftLintTestCase {
     typealias Configuration = RegexConfiguration<CustomRules>
     func testCustomRuleConfigurationSetsCorrectlyWithMatchKinds() {
         let configDict = [

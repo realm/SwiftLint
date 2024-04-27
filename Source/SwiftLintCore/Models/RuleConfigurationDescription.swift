@@ -531,10 +531,7 @@ extension ConfigurationElement: AnyConfigurationElement {
 
 extension Optional: AcceptableByConfigurationElement where Wrapped: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
-        if let value = self {
-            return value.asOption()
-        }
-        return .empty
+        self?.asOption() ?? .empty
     }
 
     public init(fromAny value: Any, context ruleID: String) throws {

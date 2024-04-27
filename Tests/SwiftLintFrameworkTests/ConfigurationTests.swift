@@ -7,9 +7,9 @@ import XCTest
 
 private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is any OptInRule }).map({ $0.0 })
 
-class ConfigurationTests: SwiftLintTestCase {
+final class ConfigurationTests: SwiftLintTestCase {
     // MARK: Setup & Teardown
-    private var previousWorkingDir: String!
+    private var previousWorkingDir: String! // swiftlint:disable:this implicitly_unwrapped_optional
 
     override func setUp() {
         super.setUp()

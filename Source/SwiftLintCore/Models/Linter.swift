@@ -233,11 +233,11 @@ public struct CollectedLinter {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
         let validationResults = rules.parallelCompactMap {
-            $0.lint(file: self.file, regions: regions, benchmark: benchmark,
+            $0.lint(file: file, regions: regions, benchmark: benchmark,
                     storage: storage,
-                    configuration: self.configuration,
+                    configuration: configuration,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
-                    compilerArguments: self.compilerArguments)
+                    compilerArguments: compilerArguments)
         }
         let undefinedSuperfluousCommandViolations = self.undefinedSuperfluousCommandViolations(
             regions: regions, configuration: configuration,
@@ -265,7 +265,7 @@ public struct CollectedLinter {
     }
 
     private func cachedStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)])? {
-        let start: Date! = benchmark ? Date() : nil
+        let start = Date()
         guard let cache, let file = file.path,
             let cachedViolations = cache.violations(forFile: file, configuration: configuration) else {
             return nil

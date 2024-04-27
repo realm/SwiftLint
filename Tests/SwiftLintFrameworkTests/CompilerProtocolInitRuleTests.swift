@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class CompilerProtocolInitRuleTests: SwiftLintTestCase {
+final class CompilerProtocolInitRuleTests: SwiftLintTestCase {
     private let ruleID = CompilerProtocolInitRule.description.identifier
 
     func testViolationMessageForExpressibleByIntegerLiteral() throws {

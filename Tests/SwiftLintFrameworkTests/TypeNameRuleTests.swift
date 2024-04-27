@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class TypeNameRuleTests: SwiftLintTestCase {
+final class TypeNameRuleTests: SwiftLintTestCase {
     func testTypeNameWithExcluded() {
         let baseDescription = TypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [

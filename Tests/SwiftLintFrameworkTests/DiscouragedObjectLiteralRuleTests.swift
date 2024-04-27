@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class DiscouragedObjectLiteralRuleTests: SwiftLintTestCase {
+final class DiscouragedObjectLiteralRuleTests: SwiftLintTestCase {
     func testWithImageLiteral() {
         let baseDescription = DiscouragedObjectLiteralRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [

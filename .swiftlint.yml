@@ -21,11 +21,9 @@ disabled_rules:
   - explicit_top_level_acl
   - explicit_type_interface
   - file_types_order
-  - final_test_case
   - force_unwrapping
   - function_default_parameter_at_end
   - implicit_return
-  - implicitly_unwrapped_optional
   - indentation_width
   - inert_defer
   - missing_docs
@@ -43,11 +41,8 @@ disabled_rules:
   - prefer_nimble
   - prefer_self_in_static_references
   - prefixed_toplevel_constant
-  - redundant_self_in_closure
   - required_deinit
-  - self_binding
   - static_over_final_class
-  - shorthand_argument
   - sorted_enum_cases
   - strict_fileprivate
   - switch_case_on_newline
@@ -84,7 +79,7 @@ balanced_xctest_lifecycle: &unit_test_configuration
     - XCTestCase
 empty_xctest_method: *unit_test_configuration
 single_test_class: *unit_test_configuration
-
+final_test_case: *unit_test_configuration
 function_body_length: 60
 type_body_length: 400
 

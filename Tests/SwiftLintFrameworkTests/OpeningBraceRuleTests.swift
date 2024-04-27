@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 
-class OpeningBraceRuleTests: SwiftLintTestCase {
+final class OpeningBraceRuleTests: SwiftLintTestCase {
     func testDefaultExamplesRunInMultilineMode() {
         let description = OpeningBraceRule.description
             .with(triggeringExamples: OpeningBraceRule.description.triggeringExamples.removing([

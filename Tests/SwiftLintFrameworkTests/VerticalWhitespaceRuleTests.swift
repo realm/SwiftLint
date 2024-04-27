@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
-class VerticalWhitespaceRuleTests: SwiftLintTestCase {
+final class VerticalWhitespaceRuleTests: SwiftLintTestCase {
     private let ruleID = VerticalWhitespaceRule.description.identifier
 
     func testAttributesWithMaxEmptyLines() {

@@ -35,12 +35,11 @@ private extension Rule {
                     }
                     return (configuration.identifier, regionsDisablingCurrentRule)
                 }
-            } else {
-                let regionsDisablingCurrentRule = regions.filter { region in
-                    return region.isRuleDisabled(self)
-                }
-                return [(Self.description.identifier, regionsDisablingCurrentRule)]
             }
+            let regionsDisablingCurrentRule = regions.filter { region in
+                return region.isRuleDisabled(self)
+            }
+            return [(Self.description.identifier, regionsDisablingCurrentRule)]
         }()
 
         return regionsWithIdentifiers.flatMap { ruleIdentifier, regionsDisablingCurrentRule in
@@ -110,9 +109,8 @@ private extension Rule {
         }.partitioned { violation, region in
             if self is CustomRules {
                 return !(region?.isRuleDisabled(customRuleIdentifier: violation.ruleIdentifier) ?? true)
-            } else {
-                return region?.isRuleEnabled(self) ?? true
             }
+            return region?.isRuleEnabled(self) ?? true
         }
 
         let customRulesIDs: [String] = {

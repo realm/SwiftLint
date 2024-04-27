@@ -221,32 +221,6 @@ private extension RedundantTypeAnnotationRule {
     }
 }
 
-private extension SyntaxKind {
-    var compilerInferredLiteralType: String? {
-        switch self {
-        case .booleanLiteralExpr:
-            "Bool"
-        case .floatLiteralExpr:
-            "Double"
-        case .integerLiteralExpr:
-            "Int"
-        case .stringLiteralExpr:
-            "String"
-        default:
-            nil
-        }
-    }
-
-    func isLiteralExpression() -> Bool {
-        switch self {
-        case .booleanLiteralExpr, .floatLiteralExpr, .integerLiteralExpr, .stringLiteralExpr:
-            true
-        default:
-            false
-        }
-    }
-}
-
 private extension ExprSyntax {
     /// An expression can represent an access to an identifier in one or another way depending on the exact underlying
     /// expression type. E.g. the expression `A` accesses `A` while `f()` accesses `f` and `a.b.c` accesses `a` in the
@@ -277,5 +251,31 @@ private extension ExprSyntax {
             expr = forceUnwrap.expression
         }
         return expr.accessedNames.contains(type.trimmedDescription)
+    }
+}
+
+private extension SyntaxKind {
+    var compilerInferredLiteralType: String? {
+        switch self {
+        case .booleanLiteralExpr:
+            "Bool"
+        case .floatLiteralExpr:
+            "Double"
+        case .integerLiteralExpr:
+            "Int"
+        case .stringLiteralExpr:
+            "String"
+        default:
+            nil
+        }
+    }
+
+    func isLiteralExpression() -> Bool {
+        switch self {
+        case .booleanLiteralExpr, .floatLiteralExpr, .integerLiteralExpr, .stringLiteralExpr:
+            true
+        default:
+            false
+        }
     }
 }

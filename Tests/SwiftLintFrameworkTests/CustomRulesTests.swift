@@ -256,7 +256,6 @@ final class CustomRulesTests: SwiftLintTestCase {
         })
     }
 
-
     func testSuperfluousDisableCommandDoesNotViolate() throws {
         let customRules: [String: Any] = [
             "dont_print": [

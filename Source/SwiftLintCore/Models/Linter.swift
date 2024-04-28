@@ -70,7 +70,7 @@ private extension Rule {
     }
 
     // As we need the configuration to get custom identifiers.
-    // swiftlint:disable:next function_parameter_count
+    // swiftlint:disable:next function_parameter_count function_body_length
     func lint(file: SwiftLintFile, regions: [Region], benchmark: Bool,
               storage: RuleStorage,
               configuration: Configuration,

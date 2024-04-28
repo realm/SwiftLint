@@ -269,6 +269,19 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
     }
 
+    func testDisableAll() throws {
+        let customRules: [String: Any] = [
+            "dont_print": [
+                "regex": "print\\("
+            ]
+        ]
+        let example = Example("""
+                              // swiftlint:disable:next all
+                              print("Hello, world")
+                              """)
+        XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
+    }
+
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {
         var config: [String: Any] = [
             "regex": "pattern",

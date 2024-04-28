@@ -177,7 +177,7 @@ final class BaselineTests: XCTestCase {
     private func withExampleFileCreated(_ block: (String) throws -> Void) throws {
         let sourceFilePath = temporaryDirectoryPath.stringByAppendingPathComponent("\(UUID().uuidString).swift")
         guard let data = Self.example.data(using: .utf8) else {
-            XCTFail("Could not convert example code to data using utf8 encoding")
+            XCTFail("Could not convert example code to data using UTF-8 encoding")
             return
         }
         try data.write(to: URL(fileURLWithPath: sourceFilePath))

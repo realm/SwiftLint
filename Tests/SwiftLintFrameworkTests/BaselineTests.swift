@@ -134,7 +134,6 @@ final class BaselineTests: XCTestCase {
                     insertionIndex: insertionIndex
                 )
             }
-            break
         }
     }
 

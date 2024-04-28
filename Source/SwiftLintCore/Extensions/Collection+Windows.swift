@@ -142,13 +142,13 @@ extension WindowsOfCountCollection: Collection {
 
   internal func offsetForward(_ i: Index, by distance: Int) -> Index {
     guard let index = offsetForward(i, by: distance, limitedBy: endIndex)
-      else { fatalError("Index is out of bounds") }
+      else { queudFatalError("Index is out of bounds") }
     return index
   }
 
   internal func offsetBackward(_ i: Index, by distance: Int) -> Index {
     guard let index = offsetBackward(i, by: distance, limitedBy: startIndex)
-      else { fatalError("Index is out of bounds") }
+      else { queudFatalError("Index is out of bounds") }
     return index
   }
 

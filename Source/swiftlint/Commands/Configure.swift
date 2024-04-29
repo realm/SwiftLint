@@ -293,12 +293,12 @@ extension SwiftLint {
             configuration: Configuration? = nil
         ) -> String {
             var configurationYML = "included:\n"
-            topLevelDirectories.forEach {
+            topLevelDirectories.forEach { directory in
                 let absolutePath: String
                 if let path {
-                    absolutePath = path.bridge().appendingPathComponent($0)
+                    absolutePath = path.bridge().appendingPathComponent(directory)
                 } else {
-                    absolutePath = $0
+                    absolutePath = directory
                 }
                 configurationYML += "  - \(absolutePath)\n"
             }

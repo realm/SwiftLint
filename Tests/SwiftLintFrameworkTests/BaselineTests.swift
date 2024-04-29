@@ -57,13 +57,13 @@ final class BaselineTests: XCTestCase {
         Baseline(violations: ruleDescriptions.violations(for: filePath))
     }
 
-    override final class func setUp() {
+    override static func setUp() {
         super.setUp()
         currentDirectoryPath = FileManager.default.currentDirectoryPath
         XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(temporaryDirectoryPath))
     }
 
-    override final class func tearDown() {
+    override static func tearDown() {
         if let currentDirectoryPath {
             XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(currentDirectoryPath))
             self.currentDirectoryPath = nil

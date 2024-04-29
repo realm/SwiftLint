@@ -162,12 +162,8 @@ private extension Sequence where Element == BaselineViolation {
         Dictionary(grouping: self) { $0.violation.location.relativeFile ?? "" }
     }
 
-    func groupedByRuleIdentifier() -> ViolationsPerRule {
-        Dictionary(grouping: self, by: \.violation.ruleIdentifier)
-    }
-
-    func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation]) -> ViolationsPerRule {
-        Set(self).subtracting(existingViolations).groupedByRuleIdentifier()
+    func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation] = []) -> ViolationsPerRule {
+        Dictionary(grouping: Set(self).subtracting(existingViolations), by: \.violation.ruleIdentifier)
     }
 }
 

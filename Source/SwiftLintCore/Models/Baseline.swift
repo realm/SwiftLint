@@ -1,7 +1,8 @@
 import Foundation
 
-private typealias ViolationsPerFile = [String: [BaselineViolation]]
-private typealias ViolationsPerRule = [String: [BaselineViolation]]
+private typealias BaselineGroup = [BaselineViolation]
+private typealias ViolationsPerFile = [String: BaselineGroup]
+private typealias ViolationsPerRule = [String: BaselineGroup]
 
 private struct BaselineViolation: Codable, Hashable {
     let violation: StyleViolation
@@ -24,7 +25,7 @@ private struct BaselineViolation: Codable, Hashable {
 /// A set of violations that can be used to filter newly detected violations.
 public struct Baseline: Equatable {
     private let baselineViolations: ViolationsPerFile
-    private var sortedBaselineViolations: [BaselineViolation] {
+    private var sortedBaselineViolations: BaselineGroup {
         baselineViolations.sorted(by: { $0.key < $1.key }).flatMap(\.value)
     }
 
@@ -38,14 +39,14 @@ public struct Baseline: Equatable {
     /// - parameter fromPath: The path to read from.
     public init(fromPath path: String) throws {
         let data = try Data(contentsOf: URL(fileURLWithPath: path))
-        baselineViolations = try JSONDecoder().decode([BaselineViolation].self, from: data).groupedByFile()
+        baselineViolations = try JSONDecoder().decode(BaselineGroup.self, from: data).groupedByFile()
     }
 
     /// Creates a `Baseline` from a list of violations.
     ///
     /// - parameter violations: The violations for the baseline.
     public init(violations: [StyleViolation]) {
-        baselineViolations = violations.baselineViolations.groupedByFile()
+        baselineViolations = BaselineGroup(violations).groupedByFile()
     }
 
     /// Writes a `Baseline` to disk in JSON format.
@@ -69,7 +70,7 @@ public struct Baseline: Equatable {
             return violations
         }
 
-        let relativePathViolations = violations.baselineViolations
+        let relativePathViolations = BaselineGroup(violations)
         if relativePathViolations == baselineViolations {
             return []
         }
@@ -121,15 +122,6 @@ public struct Baseline: Equatable {
     }
 }
 
-private extension Sequence where Element == StyleViolation {
-    var baselineViolations: [BaselineViolation] {
-        var lineCache = LineCache()
-        return map {
-            $0.baselineViolation(text: lineCache.text(at: $0.location))
-        }
-    }
-}
-
 private struct LineCache {
     private var lines: [String: [String]] = [:]
 
@@ -154,6 +146,11 @@ private struct LineCache {
 }
 
 private extension Sequence where Element == BaselineViolation {
+    init(_ violations: [StyleViolation]) where Self == BaselineGroup {
+        var lineCache = LineCache()
+        self = violations.map { $0.baselineViolation(text: lineCache.text(at: $0.location)) }
+    }
+
     var violationsWithAbsolutePaths: [StyleViolation] {
         map { $0.violation.withAbsolutePath }
     }

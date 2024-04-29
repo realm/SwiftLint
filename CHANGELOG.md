@@ -10,7 +10,10 @@
 
 #### Enhancements
 
-* None.
+* Add new `prefer_key_path` rule that triggers when a trailing closure on a function 
+  call is only hosting a (chained) member access expression since the closure can be
+  replaced with a key path argument.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Bug Fixes
 

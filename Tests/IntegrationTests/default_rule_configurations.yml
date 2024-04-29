@@ -398,6 +398,8 @@ pattern_matching_keywords:
   severity: warning
 period_spacing:
   severity: warning
+prefer_key_path:
+  severity: warning
 prefer_nimble:
   severity: warning
 prefer_self_in_static_references:

@@ -871,6 +871,12 @@ final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferKeyPathRule.description)
+    }
+}
+
 final class PreferNimbleRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferNimbleRule.description)

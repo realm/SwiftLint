@@ -147,6 +147,7 @@ public let builtInRules: [any Rule.Type] = [
     OverrideInExtensionRule.self,
     PatternMatchingKeywordsRule.self,
     PeriodSpacingRule.self,
+    PreferKeyPathRule.self,
     PreferNimbleRule.self,
     PreferSelfInStaticReferencesRule.self,
     PreferSelfTypeOverTypeOfSelfRule.self,

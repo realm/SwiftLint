@@ -11,7 +11,6 @@ opt_in_rules:
   - all
 disabled_rules:
   - anonymous_argument_in_multiline_closure
-  - anyobject_protocol
   - closure_body_length
   - conditional_returns_on_newline
   - convenience_type
@@ -25,7 +24,6 @@ disabled_rules:
   - function_default_parameter_at_end
   - implicit_return
   - indentation_width
-  - inert_defer
   - missing_docs
   - multiline_arguments
   - multiline_arguments_brackets
@@ -34,7 +32,6 @@ disabled_rules:
   - multiline_parameters
   - multiline_parameters_brackets
   - no_extension_access_modifier
-  - no_fallthrough_only
   - no_grouping_extension
   - no_magic_numbers
   - one_declaration_per_file
@@ -42,14 +39,12 @@ disabled_rules:
   - prefer_self_in_static_references
   - prefixed_toplevel_constant
   - required_deinit
-  - static_over_final_class
   - sorted_enum_cases
   - strict_fileprivate
   - switch_case_on_newline
   - todo
   - trailing_closure
   - type_contents_order
-  - unused_capture_list
   - vertical_whitespace_between_cases
 
 attributes:

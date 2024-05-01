@@ -457,6 +457,7 @@ redundant_string_enum_value:
 redundant_type_annotation:
   severity: warning
   ignore_attributes: ["IBInspectable"]
+  consider_default_literal_types_redundant: false
 redundant_void_return:
   severity: warning
   include_closures: true

@@ -90,7 +90,7 @@ private extension SwiftLintFile {
     }
 
     func referencedUSRs(index: SourceKittenDictionary) -> Set<String> {
-        return Set(index.traverseEntitiesDepthFirst { entity -> String? in
+        return Set(index.traverseEntitiesDepthFirst { _, entity -> String? in
             if let usr = entity.usr,
                 let kind = entity.kind,
                 kind.starts(with: "source.lang.swift.ref") {
@@ -104,7 +104,7 @@ private extension SwiftLintFile {
     func declaredUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
                       compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
     -> Set<UnusedDeclarationRule.DeclaredUSR> {
-        return Set(index.traverseEntitiesDepthFirst { indexEntity in
+        return Set(index.traverseEntitiesDepthFirst { _, indexEntity in
             self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
                              configuration: configuration)
         })
@@ -140,14 +140,14 @@ private extension SwiftLintFile {
         // Skip CodingKeys as they are used for Codable generation
         if kind == .enum,
             indexEntity.name == "CodingKeys",
-            case let allRelatedUSRs = indexEntity.traverseEntitiesDepthFirst(traverseBlock: { $0.usr }),
+            case let allRelatedUSRs = indexEntity.traverseEntitiesDepthFirst(traverseBlock: { $1.usr }),
             allRelatedUSRs.contains("s:s9CodingKeyP") {
             return nil
         }
 
         // Skip `static var allTests` members since those are used for Linux test discovery.
         if kind == .varStatic, indexEntity.name == "allTests" {
-            let allTestCandidates = indexEntity.traverseEntitiesDepthFirst { subEntity -> Bool in
+            let allTestCandidates = indexEntity.traverseEntitiesDepthFirst { _, subEntity -> Bool in
                 subEntity.value["key.is_test_candidate"] as? Bool == true
             }
 

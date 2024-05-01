@@ -190,6 +190,11 @@
 
 #### Bug Fixes
 
+* Fix version comparison algorithm which caused some version-dependent rules to
+  misbehave with Swift 5.10.  
+  [chandlerwall](https://github.com/chandlerwall)
+  [#5517](https://github.com/realm/SwiftLint/issues/5517)
+
 * Silence `discarded_notification_center_observer` rule in closures. Furthermore,
   handle `get` and `set` accessors correctly and consider implicit returns.  
   [SimplyDanny](https://github.com/SimplyDanny)

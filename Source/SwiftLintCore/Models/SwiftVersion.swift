@@ -12,27 +12,26 @@ public struct SwiftVersion: RawRepresentable, Codable, Comparable, Sendable {
     }
 
     public static func == (lhs: SwiftVersion, rhs: SwiftVersion) -> Bool {
-        guard let lhsComparators = lhs.comparators, let rhsComparators = rhs.comparators
-        else { return lhs.rawValue == rhs.rawValue }
-
-        return lhsComparators == rhsComparators
+        if let lhsComparators = lhs.comparators, let rhsComparators = rhs.comparators {
+            return lhsComparators == rhsComparators
+        }
+        return lhs.rawValue == rhs.rawValue
     }
 
     public static func < (lhs: SwiftVersion, rhs: SwiftVersion) -> Bool {
-        guard let lhsComparators = lhs.comparators, let rhsComparators = rhs.comparators
-        else { return lhs.rawValue < rhs.rawValue }
-
-        return lhsComparators.lexicographicallyPrecedes(rhsComparators)
+        if let lhsComparators = lhs.comparators, let rhsComparators = rhs.comparators {
+            return lhsComparators.lexicographicallyPrecedes(rhsComparators)
+        }
+        return lhs.rawValue < rhs.rawValue
     }
 
-    var comparators: [Int]? {
-        let components = self.rawValue.split(separator: ".").compactMap { Int($0) }
-
-        guard let major = components.first else { return nil }
-
+    private var comparators: [Int]? {
+        let components = rawValue.split(separator: ".").compactMap { Int($0) }
+        guard let major = components.first else {
+            return nil
+        }
         let minor = components.dropFirst(1).first ?? 0
         let patch = components.dropFirst(2).first ?? 0
-
         return [major, minor, patch]
     }
 }

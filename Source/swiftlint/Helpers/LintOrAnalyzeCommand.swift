@@ -44,7 +44,8 @@ struct LintOrAnalyzeCommand {
     private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws {
         let builder = LintOrAnalyzeResultBuilder(options)
         let files = try await collectViolations(builder: builder)
-        if let baselineOutputPath = options.writeBaseline {
+        let baselineOutputPath = options.writeBaseline ?? builder.configuration.writeBaseline
+        if let baselineOutputPath {
             try Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath)
         }
         try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
@@ -55,7 +56,7 @@ struct LintOrAnalyzeCommand {
     private static func collectViolations(builder: LintOrAnalyzeResultBuilder) async throws -> [SwiftLintFile] {
         let options = builder.options
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
-        let baseline = try baseline(options)
+        let baseline = try baseline(options, builder.configuration)
         return try await builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
                                                                   storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
@@ -121,8 +122,8 @@ struct LintOrAnalyzeCommand {
         guard numberOfSeriousViolations == 0 else { exit(2) }
     }
 
-    private static func baseline(_ options: LintOrAnalyzeOptions) throws -> Baseline? {
-        if let baselinePath = options.baseline {
+    private static func baseline(_ options: LintOrAnalyzeOptions, _ configuration: Configuration) throws -> Baseline? {
+        if let baselinePath = options.baseline ?? configuration.baseline {
             do {
                 return try Baseline(fromPath: baselinePath)
             } catch {

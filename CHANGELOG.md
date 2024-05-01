@@ -289,6 +289,10 @@
   consider said types in declarations like `let i: Int = 1` or
   `let s: String = ""` as redundant.  
   [Garric Nahapetian](https://github.com/garricn)
+* Adds `baseline` and `write_baseline` configuration file settings, equivalent
+  to the `--baseline` and `--write-baseline` command line options.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#XXXX](https://github.com/realm/SwiftLint/issues/XXXX)
 
 #### Bug Fixes
 

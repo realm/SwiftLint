@@ -161,6 +161,8 @@ extension SwiftLint {
                 useScriptInputFiles: false,
                 benchmark: false,
                 reporter: "summary", // SummaryReporter.identifier,
+                baseline: nil,
+                writeBaseline: nil,
                 quiet: false,
                 output: nil,
                 progress: true,

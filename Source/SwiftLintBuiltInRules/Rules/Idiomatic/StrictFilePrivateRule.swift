@@ -205,7 +205,7 @@ private extension StrictFilePrivateRule {
 
 private final class ProtocolCollector<Configuration: RuleConfiguration>: ViolationsSyntaxVisitor<Configuration> {
     private(set) var protocols = [String: [ProtocolRequirementType]]()
-    private var currentProtocolName: String = ""
+    private var currentProtocolName = ""
 
     override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .allExcept(ProtocolDeclSyntax.self) }
 

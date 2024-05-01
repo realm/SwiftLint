@@ -2,7 +2,7 @@
 public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
     /// The threshold for a violation to be a warning.
     @ConfigurationElement(key: "warning")
-    public var warning: Int = 12
+    public var warning = 12
     /// The threshold for a violation to be an error.
     @ConfigurationElement(key: "error")
     public var error: Int?

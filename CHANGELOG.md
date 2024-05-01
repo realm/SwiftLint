@@ -21,11 +21,10 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4792](https://github.com/realm/SwiftLint/issues/4792)
 
-* Add `consider_default_literal_types_redundant` option to the
-  `redundant_type_annotation` rule supporting `Bool`, `Double`, `Int` and
-  `String`. Setting the option to `true` lets the rule consider said types in
-  declarations like `let i: Int = 1` or `let s: String = ""` as redundant.
-  Note that `Bool` literals will no longer be considered redundant by default.  
+* With the introduction of the `consider_default_literal_types_redundant`
+  option to the `redundant_type_annotation` rule, `Bool` literals will no
+  longer be considered redundant by default. Set this option to true to
+  preserve the previous behavior.  
   [Garric Nahapetian](https://github.com/garricn)
 
 #### Experimental
@@ -194,6 +193,14 @@
   `list.enumerated().map { $1 }`.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5470](https://github.com/realm/SwiftLint/issues/5470)
+
+* Include `Double`, `Int` and `String` to the exiting redundant type validation
+  check of `Bool` in the `redundant_type_annotation` rule. Add
+  `consider_default_literal_types_redundant` option supporting `Bool`,
+  `Double`, `Int` and `String`. Setting this option to `true` lets the rule
+  consider said types in declarations like `let i: Int = 1` or
+  `let s: String = ""` as redundant.  
+  [Garric Nahapetian](https://github.com/garricn)
 
 #### Bug Fixes
 

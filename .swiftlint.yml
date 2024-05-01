@@ -1,9 +1,12 @@
+# Directory and file filters
 included:
   - Plugins
   - Source
   - Tests
 excluded:
   - Tests/SwiftLintFrameworkTests/Resources
+
+# Enabled/disabled rules
 analyzer_rules:
   - unused_declaration
   - unused_import
@@ -50,17 +53,17 @@ disabled_rules:
   - unused_capture_list
   - vertical_whitespace_between_cases
 
+# Configurations
 attributes:
   always_on_line_above:
     - "@ConfigurationElement"
     - "@OptionGroup"
     - "@RuleConfigurationDescriptionBuilder"
-identifier_name:
-  excluded:
-    - id
-large_tuple: 3
-number_separator:
-  minimum_length: 5
+balanced_xctest_lifecycle: &unit_test_configuration
+  test_parent_classes:
+    - SwiftLintTestCase
+    - XCTestCase
+empty_xctest_method: *unit_test_configuration
 file_name:
   excluded:
     - Exports.swift
@@ -68,21 +71,26 @@ file_name:
     - RuleConfigurationMacros.swift
     - SwiftSyntax+SwiftLint.swift
     - TestHelpers.swift
-unneeded_override:
-  affect_initializers: true
-
-balanced_xctest_lifecycle: &unit_test_configuration
-  test_parent_classes:
-    - SwiftLintTestCase
-    - XCTestCase
-empty_xctest_method: *unit_test_configuration
-single_test_class: *unit_test_configuration
 final_test_case: *unit_test_configuration
 function_body_length: 60
-type_body_length: 400
+identifier_name:
+  excluded:
+    - id
+large_tuple: 3
+number_separator:
+  minimum_length: 5
 redundant_type_annotation:
   consider_default_literal_types_redundant: true
+single_test_class: *unit_test_configuration
+type_body_length: 400
+unneeded_override:
+  affect_initializers: true
+unused_import:
+  always_keep_imports:
+    - SwiftSyntaxBuilder # we can't detect uses of string interpolation of swift syntax nodes
+    - SwiftLintFramework # now that this is a wrapper around other modules, don't treat as unused
 
+# Custom rules
 custom_rules:
   rule_id:
     included: Source/SwiftLintBuiltInRules/Rules/.+/\w+\.swift
@@ -104,8 +112,3 @@ custom_rules:
     message: Rule Test Function mustn't end with `rule`
     regex: func\s*test\w+(r|R)ule\(\)
     severity: error
-
-unused_import:
-  always_keep_imports:
-    - SwiftSyntaxBuilder # we can't detect uses of string interpolation of swift syntax nodes
-    - SwiftLintFramework # now that this is a wrapper around other modules, don't treat as unused

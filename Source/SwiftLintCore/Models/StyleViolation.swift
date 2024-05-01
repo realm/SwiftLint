@@ -1,5 +1,5 @@
 /// A value describing an instance of Swift source code that is considered invalid by a SwiftLint rule.
-public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
+public struct StyleViolation: CustomStringConvertible, Codable, Hashable {
     /// The identifier of the rule that generated this violation.
     public let ruleIdentifier: String
 
@@ -65,5 +65,9 @@ public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
         var new = self
         new.location = location
         return new
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(description)
     }
 }

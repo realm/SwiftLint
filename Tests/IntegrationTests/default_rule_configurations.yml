@@ -193,6 +193,8 @@ for_where:
   allow_for_as_filter: false
 force_cast:
   severity: error
+force_is:
+  severity: error
 force_try:
   severity: error
 force_unwrapping:

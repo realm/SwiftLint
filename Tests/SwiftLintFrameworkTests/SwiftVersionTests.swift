@@ -50,50 +50,50 @@ final class SwiftVersionTests: SwiftLintTestCase {
     }
 
     func testCompareBalancedSwiftVersion() {
-        XCTAssertFalse(SwiftVersion(rawValue: "5") == SwiftVersion(rawValue: "6"))
+        XCTAssertNotEqual(SwiftVersion(rawValue: "5"), SwiftVersion(rawValue: "6"))
         XCTAssertTrue(SwiftVersion(rawValue: "5") < SwiftVersion(rawValue: "6"))
         XCTAssertFalse(SwiftVersion(rawValue: "5") > SwiftVersion(rawValue: "6"))
         XCTAssertFalse(SwiftVersion(rawValue: "6") < SwiftVersion(rawValue: "5"))
 
-        XCTAssertFalse(SwiftVersion(rawValue: "5.1") == SwiftVersion(rawValue: "5.2"))
+        XCTAssertNotEqual(SwiftVersion(rawValue: "5.1"), SwiftVersion(rawValue: "5.2"))
         XCTAssertTrue(SwiftVersion(rawValue: "5.1") < SwiftVersion(rawValue: "5.2"))
         XCTAssertFalse(SwiftVersion(rawValue: "5.1") > SwiftVersion(rawValue: "5.2"))
         XCTAssertFalse(SwiftVersion(rawValue: "5.2") < SwiftVersion(rawValue: "5.1"))
 
-        XCTAssertFalse(SwiftVersion(rawValue: "5.1.1") == SwiftVersion(rawValue: "5.1.2"))
+        XCTAssertNotEqual(SwiftVersion(rawValue: "5.1.1"), SwiftVersion(rawValue: "5.1.2"))
         XCTAssertTrue(SwiftVersion(rawValue: "5.1.1") < SwiftVersion(rawValue: "5.1.2"))
         XCTAssertFalse(SwiftVersion(rawValue: "5.1.1") > SwiftVersion(rawValue: "5.1.2"))
         XCTAssertFalse(SwiftVersion(rawValue: "5.1.2") < SwiftVersion(rawValue: "5.1.1"))
     }
 
     func testCompareUnbalancedSwiftVersion() {
-        XCTAssertTrue(SwiftVersion(rawValue: "5") == SwiftVersion(rawValue: "5.0"))
+        XCTAssertEqual(SwiftVersion(rawValue: "5"), SwiftVersion(rawValue: "5.0"))
         XCTAssertFalse(SwiftVersion(rawValue: "5") < SwiftVersion(rawValue: "5.0"))
         XCTAssertFalse(SwiftVersion(rawValue: "5") > SwiftVersion(rawValue: "5.0"))
 
-        XCTAssertFalse(SwiftVersion(rawValue: "5.9") == SwiftVersion(rawValue: "6"))
+        XCTAssertNotEqual(SwiftVersion(rawValue: "5.9"), SwiftVersion(rawValue: "6"))
         XCTAssertTrue(SwiftVersion(rawValue: "5.9") < SwiftVersion(rawValue: "6"))
         XCTAssertFalse(SwiftVersion(rawValue: "5.9") > SwiftVersion(rawValue: "6"))
         XCTAssertFalse(SwiftVersion(rawValue: "6") < SwiftVersion(rawValue: "5.9"))
 
-        XCTAssertFalse(SwiftVersion(rawValue: "5.2") == SwiftVersion(rawValue: "5.10.3"))
+        XCTAssertNotEqual(SwiftVersion(rawValue: "5.2"), SwiftVersion(rawValue: "5.10.3"))
         XCTAssertTrue(SwiftVersion(rawValue: "5.2") < SwiftVersion(rawValue: "5.10.3"))
         XCTAssertFalse(SwiftVersion(rawValue: "5.2") > SwiftVersion(rawValue: "5.10.3"))
         XCTAssertFalse(SwiftVersion(rawValue: "5.10.3") < SwiftVersion(rawValue: "5.2"))
     }
 
     func testCompareProblematicSwiftVersion() {
-        XCTAssertTrue(SwiftVersion(rawValue: "5.010") == SwiftVersion(rawValue: "5.10"))
+        XCTAssertEqual(SwiftVersion(rawValue: "5.010"), SwiftVersion(rawValue: "5.10"))
         XCTAssertFalse(SwiftVersion(rawValue: "5.010") < SwiftVersion(rawValue: "5.10"))
         XCTAssertFalse(SwiftVersion(rawValue: "5.010") > SwiftVersion(rawValue: "5.10"))
 
-        XCTAssertFalse(SwiftVersion(rawValue: "-10") == SwiftVersion(rawValue: "-1"))
+        XCTAssertNotEqual(SwiftVersion(rawValue: "-10"), SwiftVersion(rawValue: "-1"))
         XCTAssertTrue(SwiftVersion(rawValue: "-10") < SwiftVersion(rawValue: "-1"))
 
-        XCTAssertFalse(SwiftVersion(rawValue: "0") == SwiftVersion(rawValue: "10"))
+        XCTAssertNotEqual(SwiftVersion(rawValue: "0"), SwiftVersion(rawValue: "10"))
         XCTAssertTrue(SwiftVersion(rawValue: "0") < SwiftVersion(rawValue: "10"))
 
-        XCTAssertFalse(SwiftVersion(rawValue: "alpha") == SwiftVersion(rawValue: "beta"))
+        XCTAssertNotEqual(SwiftVersion(rawValue: "alpha"), SwiftVersion(rawValue: "beta"))
         XCTAssertTrue(SwiftVersion(rawValue: "alpha") < SwiftVersion(rawValue: "beta"))
     }
 }

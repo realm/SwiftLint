@@ -292,7 +292,7 @@
 * Adds `baseline` and `write_baseline` configuration file settings, equivalent
   to the `--baseline` and `--write-baseline` command line options.  
   [Martin Redington](https://github.com/mildm8nnered)
-  [#XXXX](https://github.com/realm/SwiftLint/issues/XXXX)
+  [#5552](https://github.com/realm/SwiftLint/issues/5552)
 
 #### Bug Fixes
 

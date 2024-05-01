@@ -378,6 +378,14 @@ ignore_attributes
 [&ldquo;IBInspectable&rdquo;]
 </td>
 </tr>
+<tr>
+<td>
+consider_default_literal_types_redundant
+</td>
+<td>
+false
+</td>
+</tr>
 </tbody>
 </table></li>
 </ul>
@@ -441,6 +449,14 @@ ignore_attributes
     <span class="k">return</span> <span class="n">i</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">bol</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">dbl</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="mf">0.0</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">int</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">str</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"str"</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">url</span><span class="err">↓</span><span class="p">:</span><span class="kt">URL</span><span class="o">=</span><span class="kt">URL</span><span class="p">()</span>
 </code></pre>
@@ -492,8 +508,6 @@ ignore_attributes
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">isEnabled</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span>
-</code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">a</span><span class="err">↓</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]()</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">a</span><span class="err">↓</span><span class="p">:</span> <span class="kt">A</span><span class="o">.</span><span class="kt">B</span> <span class="o">=</span> <span class="kt">A</span><span class="o">.</span><span class="kt">B</span><span class="p">()</span>
@@ -512,6 +526,14 @@ ignore_attributes
     <span class="k">let</span> <span class="nv">i</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">i</span>
 <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">bol</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">dbl</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="mf">0.0</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">int</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">str</span><span class="err">↓</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"str"</span>
 </code></pre>
 
           </div>

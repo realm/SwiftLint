@@ -223,6 +223,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5489](https://github.com/realm/SwiftLint/pull/5489)
 
+* Ensure that declarations referenced only as extended types do not count as
+  used by means of the `unused_declaration` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5550](https://github.com/realm/SwiftLint/issues/5550)
+
 * Fix some false positives in `multiline_literal_brackets` rule that would
   happen when comments are present.  
   [Marcelo Fabri](https://github.com/marcelofabri)

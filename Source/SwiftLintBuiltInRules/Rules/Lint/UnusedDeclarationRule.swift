@@ -46,7 +46,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         }
 
         return FileUSRs(
-            referenced: file.referencedUSRs(index: index),
+            referenced: file.referencedUSRs(index: index, editorOpen: editorOpen),
             declared: file.declaredUSRs(index: index,
                                         editorOpen: editorOpen,
                                         compilerArguments: compilerArguments,
@@ -89,11 +89,16 @@ private extension SwiftLintFile {
             .map(SourceKittenDictionary.init)
     }
 
-    func referencedUSRs(index: SourceKittenDictionary) -> Set<String> {
-        return Set(index.traverseEntitiesDepthFirst { _, entity -> String? in
+    func referencedUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary) -> Set<String> {
+        return Set(index.traverseEntitiesDepthFirst { parent, entity -> String? in
             if let usr = entity.usr,
-                let kind = entity.kind,
-                kind.starts(with: "source.lang.swift.ref") {
+               let kind = entity.kind,
+               kind.starts(with: "source.lang.swift.ref"),
+               !parent.extends(reference: entity),
+               let line = entity.line,
+               let column = entity.column,
+               let nameOffset = stringView.byteOffset(forLine: line, bytePosition: column),
+               editorOpen.propertyAtOffset(nameOffset, property: \.kind) != "source.lang.swift.decl.extension" {
                 return usr
             }
 
@@ -133,7 +138,8 @@ private extension SwiftLintFile {
             return nil
         }
 
-        if !configuration.includePublicAndOpen, [.public, .open].contains(editorOpen.aclAtOffset(nameOffset)) {
+        if !configuration.includePublicAndOpen,
+           [.public, .open].contains(editorOpen.propertyAtOffset(nameOffset, property: \.accessibility)) {
             return nil
         }
 
@@ -230,14 +236,14 @@ private extension SourceKittenDictionary {
         return value["key.is_implicit"] as? Bool == true
     }
 
-    func aclAtOffset(_ offset: ByteCount) -> AccessControlLevel? {
+    func propertyAtOffset<T>(_ offset: ByteCount, property: KeyPath<Self, T?>) -> T? {
         if let nameOffset,
             nameOffset == offset,
-            let acl = accessibility {
-            return acl
+            let field = self[keyPath: property] {
+            return field
         }
         for child in substructure {
-            if let acl = child.aclAtOffset(offset) {
+            if let acl = child.propertyAtOffset(offset, property: property) {
                 return acl
             }
         }
@@ -295,6 +301,21 @@ private extension SourceKittenDictionary {
         ]
 
         return resultBuilderStaticMethods.contains(name)
+    }
+
+    func extends(reference other: Self) -> Bool {
+        if let kind, kind.starts(with: "source.lang.swift.decl.extension") {
+            let extendedKind = kind.components(separatedBy: ".").last
+            return extendedKind != nil && extendedKind == other.referencedKind
+        }
+        return false
+    }
+
+    private var referencedKind: String? {
+        if let kind, kind.starts(with: "source.lang.swift.ref") {
+            return kind.components(separatedBy: ".").last
+        }
+        return nil
     }
 }
 

@@ -182,39 +182,31 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
 private extension RedundantTypeAnnotationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: PatternBindingSyntax) {
-            guard let varDecl = node.parent?.parent?.as(VariableDeclSyntax.self),
-                  configuration.ignoreAttributes.allSatisfy({ !varDecl.attributes.contains(attributeNamed: $0) }),
-                  let typeAnnotation = node.typeAnnotation,
-                  let initializer = node.initializer?.value else {
-                return
+            if let varDecl = node.parent?.parent?.as(VariableDeclSyntax.self),
+               configuration.ignoreAttributes.allSatisfy({ !varDecl.attributes.contains(attributeNamed: $0) }),
+               let typeAnnotation = node.typeAnnotation,
+               let initializer = node.initializer?.value {
+                collectViolation(forType: typeAnnotation, withInitializer: initializer)
             }
-            let validateLiterals = configuration.considerDefaultLiteralTypesRedundant
-            let isLiteralRedundant = validateLiterals && initializer.hasRedundantLiteralType(typeAnnotation.type)
-            guard isLiteralRedundant || initializer.hasRedundantType(typeAnnotation.type) else {
-                return
-            }
-            violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
-            violationCorrections.append(ViolationCorrection(
-                start: typeAnnotation.position,
-                end: typeAnnotation.endPositionBeforeTrailingTrivia,
-                replacement: ""
-            ))
         }
 
         override func visitPost(_ node: OptionalBindingConditionSyntax) {
-            guard let typeAnnotation = node.typeAnnotation,
-                  let initializer = node.initializer?.value else {
-                return
+            if let typeAnnotation = node.typeAnnotation,
+               let initializer = node.initializer?.value {
+                collectViolation(forType: typeAnnotation, withInitializer: initializer)
             }
+        }
+
+        private func collectViolation(forType type: TypeAnnotationSyntax, withInitializer initializer: ExprSyntax) {
             let validateLiterals = configuration.considerDefaultLiteralTypesRedundant
-            let isLiteralRedundant = validateLiterals && initializer.hasRedundantLiteralType(typeAnnotation.type)
-            guard isLiteralRedundant || initializer.hasRedundantType(typeAnnotation.type) else {
+            let isLiteralRedundant = validateLiterals && initializer.hasRedundant(literalType: type.type)
+            guard isLiteralRedundant || initializer.hasRedundant(type: type.type) else {
                 return
             }
-            violations.append(typeAnnotation.positionAfterSkippingLeadingTrivia)
+            violations.append(type.positionAfterSkippingLeadingTrivia)
             violationCorrections.append(ViolationCorrection(
-                start: typeAnnotation.position,
-                end: typeAnnotation.endPositionBeforeTrailingTrivia,
+                start: type.position,
+                end: type.endPositionBeforeTrailingTrivia,
                 replacement: ""
             ))
         }
@@ -241,16 +233,13 @@ private extension ExprSyntax {
         }
     }
 
-    func hasRedundantLiteralType(_ type: TypeSyntax) -> Bool {
+    func hasRedundant(literalType type: TypeSyntax) -> Bool {
         type.trimmedDescription == kind.compilerInferredLiteralType
     }
 
-    func hasRedundantType(_ type: TypeSyntax) -> Bool {
-        var expr = self
-        if let forceUnwrap = expr.as(ForceUnwrapExprSyntax.self) {
-            expr = forceUnwrap.expression
-        }
-        return expr.accessedNames.contains(type.trimmedDescription)
+    func hasRedundant(type: TypeSyntax) -> Bool {
+        `as`(ForceUnwrapExprSyntax.self)?.expression.hasRedundant(type: type)
+            ?? accessedNames.contains(type.trimmedDescription)
     }
 }
 

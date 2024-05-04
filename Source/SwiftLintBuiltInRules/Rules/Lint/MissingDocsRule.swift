@@ -79,55 +79,21 @@ private extension MissingDocsRule {
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
-            } else {
-                return .visitChildren
             }
-        }
-
-        override func visitPost(_ node: ActorDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
-                return
-            }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.actorKeyword) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.actorKeyword)
+            return .visitChildren
         }
 
         override func visitPost(_ node: AssociatedTypeDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.associatedtypeKeyword) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.associatedtypeKeyword)
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
-            } else {
-                return .visitChildren
             }
-        }
-
-        override func visitPost(_ node: ClassDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
-                return
-            }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.classKeyword) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.classKeyword)
+            return .visitChildren
         }
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
@@ -139,220 +105,126 @@ private extension MissingDocsRule {
         }
 
         override func visitPost(_ node: EnumCaseDeclSyntax) {
-            if node.hasDocComment { return }
-
-            guard let enumDecl = node.parentDeclGroup?.as(EnumDeclSyntax.self) else { return }
-
-            let accessControlLevel = enumDecl.modifiers.accessibility ?? .internal
-            violations.append(contentsOf: node.elements.compactMap {
-                violation(for: accessControlLevel, at: $0.name)
-            })
+            guard !node.hasDocComment, let enumDecl = node.parentDeclGroup?.as(EnumDeclSyntax.self) else {
+                return
+            }
+            let acl = enumDecl.modifiers.accessibility ?? .internal
+            node.elements.forEach {
+                if let parameter = configuration.parameters.first(where: { $0.value == acl }) {
+                    violations.append(
+                        ReasonedRuleViolation(
+                            position: $0.name.positionAfterSkippingLeadingTrivia,
+                            reason: "\(acl) declarations should be documented",
+                            severity: parameter.severity
+                        )
+                    )
+                }
+            }
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
-            } else {
-                return .visitChildren
             }
-        }
-
-        override func visitPost(_ node: EnumDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
-                return
-            }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.enumKeyword) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.enumKeyword)
+            return .visitChildren
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
-            } else {
-                return .visitChildren
             }
-        }
-
-        override func visitPost(_ node: ExtensionDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
-                return
+            if configuration.excludesExtensions {
+                return .skipChildren
             }
-
-            if configuration.excludesExtensions { return }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.extensionKeyword) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.extensionKeyword)
+            return .visitChildren
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if node.modifiers.contains(keyword: .override) { return }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.funcKeyword) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.funcKeyword)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if node.modifiers.contains(keyword: .override) { return }
-
             if node.signature.parameterClause.parameters.isEmpty, configuration.excludesTrivialInit {
                 return
             }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.initKeyword) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.initKeyword)
         }
 
         override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
-            } else {
-                return .visitChildren
             }
-        }
-
-        override func visitPost(_ node: ProtocolDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
-                return
-            }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.protocolKeyword) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.protocolKeyword)
+            return .visitChildren
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
-            } else {
-                return .visitChildren
             }
-        }
-
-        override func visitPost(_ node: StructDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
-                return
-            }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.structKeyword) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.structKeyword)
+            return .visitChildren
         }
 
         override func visitPost(_ node: SubscriptDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if node.modifiers.contains(keyword: .override) { return }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.subscriptKeyword) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.subscriptKeyword)
         }
 
         override func visitPost(_ node: TypeAliasDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.typealiasKeyword) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.typealiasKeyword)
         }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            if node.hasDocComment { return }
-
-            if node.modifiers.contains(keyword: .override) { return }
-
-            if let violation = violation(
-                for: node.modifiers.accessibility ?? node.defaultAccessibility,
-                at: node.modifiers.staticOrClass ?? node.bindingSpecifier) {
-                violations.append(violation)
-            }
+            collectViolation(from: node, on: node.bindingSpecifier)
         }
 
-        private func violation(
-            for accessControlLevel: AccessControlLevel,
-            at token: TokenSyntax
-        ) -> ReasonedRuleViolation? {
-            if let parameter = configuration.parameters.first(where: { $0.value == accessControlLevel }) {
-                return ReasonedRuleViolation(
-                    position: token.positionAfterSkippingLeadingTrivia,
-                    reason: "\(accessControlLevel) declarations should be documented",
-                    severity: parameter.severity
+        private func collectViolation(from node: some WithModifiersSyntax, on token: TokenSyntax) {
+            if node.modifiers.contains(keyword: .override) || node.hasDocComment {
+                return
+            }
+            let acl = node.modifiers.accessibility ?? node.defaultAccessibility
+            if let parameter = configuration.parameters.first(where: { $0.value == acl }) {
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: (node.modifiers.staticOrClass ?? token).positionAfterSkippingLeadingTrivia,
+                        reason: "\(acl) declarations should be documented",
+                        severity: parameter.severity
+                    )
                 )
-            } else {
-                return nil
             }
         }
     }
 }
 
-private extension DeclSyntaxProtocol {
+private extension WithModifiersSyntax {
     var hasDocComment: Bool {
-        var pieces = leadingTrivia.pieces
-        loop: while let piece = pieces.last {
-            switch piece {
-            case .newlines, .spaces, .tabs:
-                pieces.removeLast()
-            default:
-                break loop
-            }
-        }
-        switch pieces.last {
-        case .docBlockComment, .docLineComment: return true
-        default: return false
+        switch leadingTrivia.pieces.last(where: { !$0.isWhitespace }) {
+        case .docBlockComment, .docLineComment: true
+        default: false
         }
     }
 }
 
 private extension SyntaxProtocol {
     var parentDeclGroup: (any DeclGroupSyntax)? {
-        guard let parent else { return nil }
+        guard let parent else {
+            return nil
+        }
         if let declGroup = parent.asProtocol((any DeclGroupSyntax).self) {
             return declGroup
-        } else {
-            return parent.parentDeclGroup
         }
+        return parent.parentDeclGroup
     }
 
     var defaultAccessibility: AccessControlLevel {
         if let declGroup = parentDeclGroup,
-           declGroup.is(ExtensionDeclSyntax.self) || declGroup.is(ProtocolDeclSyntax.self) {
-            return declGroup.modifiers.accessibility ?? .internal
-        } else {
-            return .internal
+           declGroup.is(ExtensionDeclSyntax.self) || declGroup.is(ProtocolDeclSyntax.self),
+           let accessibility = declGroup.modifiers.accessibility {
+            return accessibility
         }
+        return .internal
     }
 }
 

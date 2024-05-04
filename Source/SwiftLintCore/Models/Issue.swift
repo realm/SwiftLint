@@ -74,9 +74,6 @@ public enum Issue: LocalizedError, Equatable {
     /// The baseline file at `path` is not readable or cannot be opened.
     case baselineNotReadable(path: String)
 
-    /// Could not change directory to the specified working directory.
-    case couldNotChangeToWorkingDirectory(path: String)
-
     /// Flag to enable warnings for deprecations being printed to the console. Printing is enabled by default.
     public static var printDeprecationWarnings = true
 
@@ -112,7 +109,7 @@ public enum Issue: LocalizedError, Equatable {
     }
 
     /// The issues description which is ready to be printed to the console.
-    public var errorDescription: String? {
+    var errorDescription: String {
         switch self {
         case .genericError:
             return "error: \(message)"
@@ -126,9 +123,6 @@ public enum Issue: LocalizedError, Equatable {
     /// Print the issue to the console.
     public func print() {
         if case .ruleDeprecated = self, !Self.printDeprecationWarnings {
-            return
-        }
-        guard let errorDescription else {
             return
         }
         if let consumer = Self.messageConsumer {
@@ -200,8 +194,6 @@ public enum Issue: LocalizedError, Equatable {
             return "Cannot parse YAML file: \(message)"
         case let .baselineNotReadable(path):
             return "Cannot open or read the baseline file at path '\(path)'."
-        case let .couldNotChangeToWorkingDirectory(path):
-            return "Could not change working directory to '\(path)'."
         }
     }
 }

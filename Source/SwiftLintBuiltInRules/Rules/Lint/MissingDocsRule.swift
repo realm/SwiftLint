@@ -71,6 +71,12 @@ struct MissingDocsRule: OptInRule {
                 public ↓static let i = 1
             }
             """),
+            // `excludes_extensions` only excludes the extension declaration itself; not its children
+            Example("""
+            public extension A {
+                public ↓func f() {}
+            }
+            """),
             Example("""
             /// docs
             public class A {
@@ -83,7 +89,9 @@ struct MissingDocsRule: OptInRule {
             }
             """, configuration: ["excludes_inherited_types": false]),
             Example("""
-            public ↓extension A {}
+            public ↓extension A {
+                public ↓func f() {}
+            }
             """, configuration: ["excludes_extensions": false])
         ]
     )
@@ -150,7 +158,7 @@ private extension MissingDocsRule {
                 return .skipChildren
             }
             if configuration.excludesExtensions {
-                return .skipChildren
+                return .visitChildren
             }
             collectViolation(from: node, on: node.extensionKeyword)
             return .visitChildren

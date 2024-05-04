@@ -92,7 +92,21 @@ struct MissingDocsRule: OptInRule {
             public ↓extension A {
                 public ↓func f() {}
             }
-            """, configuration: ["excludes_extensions": false])
+            """, configuration: ["excludes_extensions": false]),
+            Example("""
+            public extension E {
+                ↓var i: Int {
+                    let j = 1
+                    func f() {}
+                    return j
+                }
+            }
+            """),
+            Example("""
+            #if os(macOS)
+            public ↓func f() {}
+            #endif
+            """)
         ]
     )
 }
@@ -205,6 +219,11 @@ private extension MissingDocsRule {
 
         private func collectViolation(from node: some WithModifiersSyntax, on token: TokenSyntax) {
             if node.modifiers.contains(keyword: .override) || node.hasDocComment {
+                return
+            }
+            if node.parent?.is(MemberBlockItemSyntax.self) != true, node.parentDeclGroup != nil {
+                // Declaration is not a member item but within another declaration. Nested declarations are implicitly
+                // hidden, hence don't require documentation.
                 return
             }
             let acl = node.modifiers.accessibility ?? node.defaultAccessibility

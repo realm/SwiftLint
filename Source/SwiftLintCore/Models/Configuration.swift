@@ -254,7 +254,7 @@ public struct Configuration {
             if useDefaultConfigOnFailure ?? !hasCustomConfigurationFiles {
                 // No files were explicitly specified, so maybe the user doesn't want a config at all -> warn
                 queuedPrintError(
-                    "\(Issue.wrap(error: error).errorDescription) – Falling back to default configuration"
+                    "\(Issue.wrap(error: error).errorDescription ?? "") – Falling back to default configuration"
                 )
                 self.init(rulesMode: rulesMode, cachePath: cachePath)
             } else {

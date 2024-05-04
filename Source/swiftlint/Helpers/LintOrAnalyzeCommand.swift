@@ -28,8 +28,7 @@ struct LintOrAnalyzeCommand {
     static func run(_ options: LintOrAnalyzeOptions) async throws {
         if let workingDirectory = options.workingDirectory {
             if !FileManager.default.changeCurrentDirectoryPath(workingDirectory) {
-                Issue.couldNotChangeToWorkingDirectory(path: workingDirectory).print()
-                exit(2)
+                throw Issue.couldNotChangeToWorkingDirectory(path: workingDirectory)
             }
         }
         if options.inProcessSourcekit {

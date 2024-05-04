@@ -112,7 +112,7 @@ public enum Issue: LocalizedError, Equatable {
     }
 
     /// The issues description which is ready to be printed to the console.
-    var errorDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .genericError:
             return "error: \(message)"
@@ -126,6 +126,9 @@ public enum Issue: LocalizedError, Equatable {
     /// Print the issue to the console.
     public func print() {
         if case .ruleDeprecated = self, !Self.printDeprecationWarnings {
+            return
+        }
+        guard let errorDescription else {
             return
         }
         if let consumer = Self.messageConsumer {

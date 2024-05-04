@@ -26,6 +26,11 @@ enum LintOrAnalyzeMode {
 
 struct LintOrAnalyzeCommand {
     static func run(_ options: LintOrAnalyzeOptions) async throws {
+        if let workingDirectory = options.workingDirectory {
+            if !FileManager.default.changeCurrentDirectoryPath(workingDirectory) {
+                throw Issue.couldNotChangeToWorkingDirectory(path: workingDirectory)
+            }
+        }
         if options.inProcessSourcekit {
             // TODO: [08/11/2024] Remove deprecation warning after ~2 years.
             queuedPrintError(
@@ -261,6 +266,7 @@ struct LintOrAnalyzeOptions {
     let reporter: String?
     let baseline: String?
     let writeBaseline: String?
+    let workingDirectory: String?
     let quiet: Bool
     let output: String?
     let progress: Bool

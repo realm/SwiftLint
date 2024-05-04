@@ -47,29 +47,44 @@ struct MissingDocsRule: OptInRule {
         ],
         triggeringExamples: [
             // public, undocumented
-            Example("public func a() {}"),
+            Example("public ↓func a() {}"),
             // public, undocumented
-            Example("// regular comment\npublic func a() {}"),
+            Example("// regular comment\npublic ↓func a() {}"),
             // public, undocumented
-            Example("/* regular comment */\npublic func a() {}"),
+            Example("/* regular comment */\npublic ↓func a() {}"),
             // protocol member and inherited member are both undocumented
             Example("""
             /// docs
             public protocol A {
-            // no docs
-            var b: Int { get } }
+                // no docs
+                ↓var b: Int { get }
+            }
             /// docs
             public struct C: A {
-
-            public let b: Int
+                public let b: Int
+            }
+            """),
+            // Violation marker is on `static` keyword
+            Example("""
+            /// a doc
+            public class C {
+                public ↓static let i = 1
             }
             """),
             Example("""
             /// docs
             public class A {
-                public init(argument: String) {}
+                public ↓init(argument: String) {}
             }
             """, configuration: ["excludes_trivial_init": true]),
+            Example("""
+            public ↓struct C: A {
+                public ↓let b: Int
+            }
+            """, configuration: ["excludes_inherited_types": false]),
+            Example("""
+            public ↓extension A {}
+            """, configuration: ["excludes_extensions": false])
         ]
     )
 }

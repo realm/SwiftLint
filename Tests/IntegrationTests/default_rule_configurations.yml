@@ -193,8 +193,6 @@ for_where:
   allow_for_as_filter: false
 force_cast:
   severity: error
-force_is:
-  severity: error
 force_try:
   severity: error
 force_unwrapping:
@@ -346,6 +344,8 @@ no_magic_numbers:
   test_parent_classes: ["QuickSpec", "XCTestCase"]
 no_space_in_method_call:
   severity: warning
+no_type_casting_and_checking_for_nil:
+  severity: error
 non_optional_string_data_conversion:
   severity: warning
 non_overridable_class_declaration:

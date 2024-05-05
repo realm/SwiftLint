@@ -5,9 +5,9 @@ struct NoTypeCastingAndCheckingForNilRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
-        identifier: "force_is",
-        name: "Force Is",
-        description: "Force is should be avoided",
+        identifier: "no_type_casting_and_checking_for_nil",
+        name: "No type casting and checking for nil",
+        description: "Type casting and then checking for nil should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("let dog = dog as? Dog"),

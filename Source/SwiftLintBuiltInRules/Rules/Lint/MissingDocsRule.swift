@@ -39,6 +39,11 @@ struct MissingDocsRule: OptInRule {
             public extension A {}
             """),
             Example("""
+            enum E {
+                case A
+            }
+            """),
+            Example("""
             /// docs
             public class A {
                 public init() {}
@@ -64,14 +69,14 @@ struct MissingDocsRule: OptInRule {
                 public let b: Int
             }
             """),
-            // Violation marker is on `static` keyword
+            // Violation marker is on `static` keyword.
             Example("""
             /// a doc
             public class C {
                 public ↓static let i = 1
             }
             """),
-            // `excludes_extensions` only excludes the extension declaration itself; not its children
+            // `excludes_extensions` only excludes the extension declaration itself; not its children.
             Example("""
             public extension A {
                 public ↓func f() {}
@@ -106,6 +111,21 @@ struct MissingDocsRule: OptInRule {
             #if os(macOS)
             public ↓func f() {}
             #endif
+            """),
+            Example("""
+            public ↓enum E {
+                case ↓A
+            }
+            """),
+            /// Nested types inherit the ACL from the declaring extension.
+            Example("""
+            /// a doc
+            public struct S {}
+            public extension S {
+                ↓enum E {
+                    case ↓A
+                }
+            }
             """)
         ]
     )
@@ -145,9 +165,11 @@ private extension MissingDocsRule {
             guard !node.hasDocComment, let enumDecl = node.parentDeclGroup?.as(EnumDeclSyntax.self) else {
                 return
             }
-            let acl = enumDecl.modifiers.accessibility ?? .internal
-            node.elements.forEach {
-                if let parameter = configuration.parameters.first(where: { $0.value == acl }) {
+            let acl = enumDecl.modifiers.accessibility
+                ?? enumDecl.parentDeclGroup?.as(ExtensionDeclSyntax.self)?.modifiers.accessibility
+                ?? .internal
+            if let parameter = configuration.parameters.first(where: { $0.value == acl }) {
+                node.elements.forEach {
                     violations.append(
                         ReasonedRuleViolation(
                             position: $0.name.positionAfterSkippingLeadingTrivia,

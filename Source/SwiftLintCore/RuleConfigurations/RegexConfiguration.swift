@@ -23,7 +23,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     @ConfigurationElement(key: "severity")
     public var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     /// The index of the regex capture group to match.
-    public var captureGroup: Int = 0
+    public var captureGroup = 0
 
     public var cacheDescription: String {
         let jsonObject: [String] = [

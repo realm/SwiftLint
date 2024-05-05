@@ -207,8 +207,23 @@ struct UnusedDeclarationRuleExamples {
         }
 
         _ = ComponentBuilder()
+        """),
+        Example("""
+        protocol ↓Foo {}
+        extension Foo {}
+        """),
+        Example("""
+        class ↓C<T> {}
+        extension C<Int> {}
         """)
-    ] + platformSpecificTriggeringExamples
+    ] + ["actor", "enum", "class", "struct"].map {
+        Example("""
+        protocol Foo {}
+        \($0) ↓FooImpl {}
+        extension FooImpl {}
+        extension FooImpl: Foo {}
+        """, excludeFromDocumentation: true)
+    } + platformSpecificTriggeringExamples
 
 #if os(macOS)
     private static let platformSpecificNonTriggeringExamples = [

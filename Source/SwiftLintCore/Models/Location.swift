@@ -15,9 +15,9 @@ public struct Location: CustomStringConvertible, Comparable, Codable, Sendable {
     public var description: String {
         // Xcode likes warnings and errors in the following format:
         // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
-        let fileString: String = file ?? "<nopath>"
-        let lineString: String = ":\(line ?? 1)"
-        let charString: String = ":\(character ?? 1)"
+        let fileString = file ?? "<nopath>"
+        let lineString = ":\(line ?? 1)"
+        let charString = ":\(character ?? 1)"
         return [fileString, lineString, charString].joined()
     }
 

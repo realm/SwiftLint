@@ -206,13 +206,13 @@ private extension SwiftLintFile {
         let offsets = self.captureListVariableOffsets()
         guard !offsets.isEmpty, let indexEntities = index(compilerArguments: compilerArguments) else { return Set() }
 
-        return Set(indexEntities.traverseEntitiesDepthFirst {
+        return Set(indexEntities.traverseEntitiesDepthFirst { _, entity in
             guard
-                let kind = $0.kind,
+                let kind = entity.kind,
                 kind.hasPrefix("source.lang.swift.ref.var."),
-                let usr = $0.usr,
-                let line = $0.line,
-                let column = $0.column,
+                let usr = entity.usr,
+                let line = entity.line,
+                let column = entity.column,
                 let offset = stringView.byteOffset(forLine: line, bytePosition: column)
             else { return nil }
             return offsets.contains(offset) ? CaptureVariableRule.Variable(usr: usr, offset: offset) : nil
@@ -245,16 +245,16 @@ private extension SwiftLintFile {
         let offsets = self.declaredVariableOffsets()
         guard !offsets.isEmpty, let indexEntities = index(compilerArguments: compilerArguments) else { return Set() }
 
-        return Set(indexEntities.traverseEntitiesDepthFirst {
+        return Set(indexEntities.traverseEntitiesDepthFirst { _, entity in
             guard
-                let declarationKind = $0.declarationKind,
+                let declarationKind = entity.declarationKind,
                 Self.checkedDeclarationKinds.contains(declarationKind),
-                let line = $0.line,
-                let column = $0.column,
+                let line = entity.line,
+                let column = entity.column,
                 let offset = stringView.byteOffset(forLine: line, bytePosition: column),
                 offsets.contains(offset)
             else { return nil }
-            return $0.usr
+            return entity.usr
         })
     }
 

@@ -21,6 +21,12 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4792](https://github.com/realm/SwiftLint/issues/4792)
 
+* With the introduction of the `consider_default_literal_types_redundant`
+  option to the `redundant_type_annotation` rule, `Bool` literals will no
+  longer be considered redundant by default. Set this option to true to
+  preserve the previous behavior.  
+  [Garric Nahapetian](https://github.com/garricn)
+
 #### Experimental
 
 * Add two new options to the `lint` and `analyze` commands: `--write-baseline`
@@ -188,7 +194,20 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5470](https://github.com/realm/SwiftLint/issues/5470)
 
+* Include `Double`, `Int` and `String` to the exiting redundant type validation
+  check of `Bool` in the `redundant_type_annotation` rule. Add
+  `consider_default_literal_types_redundant` option supporting `Bool`,
+  `Double`, `Int` and `String`. Setting this option to `true` lets the rule
+  consider said types in declarations like `let i: Int = 1` or
+  `let s: String = ""` as redundant.  
+  [Garric Nahapetian](https://github.com/garricn)
+
 #### Bug Fixes
+
+* Fix version comparison algorithm which caused some version-dependent rules to
+  misbehave with Swift 5.10.  
+  [chandlerwall](https://github.com/chandlerwall)
+  [#5517](https://github.com/realm/SwiftLint/issues/5517)
 
 * Silence `discarded_notification_center_observer` rule in closures. Furthermore,
   handle `get` and `set` accessors correctly and consider implicit returns.  
@@ -203,6 +222,11 @@
 * Support `private_over_fileprivate` rule for actors.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5489](https://github.com/realm/SwiftLint/pull/5489)
+
+* Ensure that declarations referenced only as extended types do not count as
+  used by means of the `unused_declaration` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5550](https://github.com/realm/SwiftLint/issues/5550)
 
 * Fix some false positives in `multiline_literal_brackets` rule that would
   happen when comments are present.  

@@ -190,6 +190,9 @@ public struct SourceKittenDictionary {
 }
 
 extension SourceKittenDictionary {
+    /// Block executed for every encountered entity during traversal of a dictionary.
+    public typealias TraverseBlock<T> = (_ parent: SourceKittenDictionary, _ entity: SourceKittenDictionary) -> T?
+
     /// Traversing all substuctures of the dictionary hierarchically, calling `traverseBlock` on each node.
     /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
     ///
@@ -216,21 +219,20 @@ extension SourceKittenDictionary {
     /// Traversing all entities of the dictionary hierarchically, calling `traverseBlock` on each node.
     /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
     ///
-    /// - parameter traverseBlock: block that will be called for each entity in the dictionary.
+    /// - parameter traverseBlock: Block that will be called for each entity and its parent in the dictionary.
     ///
     /// - returns: The list of entity dictionaries with updated values from the traverse block.
-    public func traverseEntitiesDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> T?) -> [T] {
+    public func traverseEntitiesDepthFirst<T>(traverseBlock: TraverseBlock<T>) -> [T] {
         var result: [T] = []
         traverseEntitiesDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
         return result
     }
 
-    private func traverseEntitiesDepthFirst<T>(collectingValuesInto array: inout [T],
-                                               traverseBlock: (SourceKittenDictionary) -> T?) {
+    private func traverseEntitiesDepthFirst<T>(collectingValuesInto array: inout [T], traverseBlock: TraverseBlock<T>) {
         entities.forEach { subDict in
             subDict.traverseEntitiesDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
 
-            if let collectedValue = traverseBlock(subDict) {
+            if let collectedValue = traverseBlock(self, subDict) {
                 array.append(collectedValue)
             }
         }

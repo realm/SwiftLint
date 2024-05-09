@@ -5,16 +5,16 @@ def swiftlint_repos(bzlmod = False):
     if not bzlmod:
         http_archive(
             name = "com_github_jpsim_sourcekitten",
-            sha256 = "fcc5ea783e6a0b58b3873c3d551c0ff7a146fdd536e66e1d37af13b1f52df3d4",
-            strip_prefix = "SourceKitten-0.34.1",
-            url = "https://github.com/jpsim/SourceKitten/releases/download/0.34.1/SourceKitten-0.34.1.tar.gz",
+            sha256 = "d9c559166f01627826505b0e655b56a59f86938389e1739259e6ce49c9fd95f0",
+            strip_prefix = "SourceKitten-0.35.0",
+            url = "https://github.com/jpsim/SourceKitten/releases/download/0.35.0/SourceKitten-0.35.0.tar.gz",
         )
 
         http_archive(
             name = "SwiftSyntax",
-            sha256 = "1cddda9f7d249612e3d75d4caa8fd9534c0621b8a890a7d7524a4689bce644f1",
-            strip_prefix = "swift-syntax-509.0.0",
-            url = "https://github.com/apple/swift-syntax/archive/refs/tags/509.0.0.tar.gz",
+            sha256 = "6572f60ca3c75c2a40f8ccec98c5cd0d3994599a39402d69b433381aaf2c1712",
+            strip_prefix = "swift-syntax-510.0.2",
+            url = "https://github.com/apple/swift-syntax/archive/refs/tags/510.0.2.tar.gz",
         )
 
     http_archive(

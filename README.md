@@ -170,14 +170,14 @@ bazel run -c opt @SwiftLint//:swiftlint
 
 ### Pre-Built Package
 
-You can also install SwiftLint by downloading `SwiftLint.pkg` from the
+Download `SwiftLint.pkg` from the
 [latest GitHub release](https://github.com/realm/SwiftLint/releases/latest) and
-running it.
+run it.
 
 ### From Source
 
-You can also build and install from source by cloning this project and running
-`make install` (Requires [bazel](https://bazel.build)).
+Cloning this project and run `make install`
+(Requires [bazel](https://bazel.build)).
 
 ## Setup
 

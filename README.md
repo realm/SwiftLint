@@ -41,13 +41,14 @@ https://github.com/apple/swift-package-manager
 SwiftLint can be used as a [command plugin](#swift-package-command-plugin)
 or a [build tool plugin](#swift-package-build-tool-plugins).
 
-Add the following to your `Package.swift` file:
+Add 
 
 ```swift
 .package(url: "https://github.com/realm/SwiftLint.git", from: "<version>")
 ```
 
-Or to pin to an exact version:
+to your Package.swift file to consume the latest release of SwiftLint
+automatically or pin the dependency to a specific version:
 
 ```swift
 .package(url: "https://github.com/realm/SwiftLint.git", exact: "<version>")

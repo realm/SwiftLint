@@ -190,6 +190,14 @@ You can also build and install from source by cloning this project and running
 
 ## Setup
 
+> [!IMPORTANT]
+> While it may seem intuitive to run SwiftLint before compiling Swift source
+> files to exit a build early when there are lint violations, it is important
+> to understand that SwiftLint is designed to analyze valid source code that
+> is compilable. Non-compiling code can very easily lead to unexpected and
+> confusing results, especially when executing with `--fix`/`--autocorrect`
+> command line arguments.
+
 ### Swift Package Command Plugin
 
 > [!IMPORTANT]
@@ -302,7 +310,7 @@ invocation. File inclusions and exclusions can be configured in the [`.swiftlint
 > more information.
 
 To do this, add a custom script to a `Run Script` phase of the `Build Phases`
-of the primary app target, before the `Compile Sources` phase. Use the
+of the primary app target, after the `Compile Sources` phase. Use the
 following script implementation:
 
 ```

@@ -66,8 +66,8 @@ https://github.com/realm/SwiftLint
 ```
 
 > [!IMPORTANT]
-> It is not required to add the `SwiftLintFramework` library or the
-> `swiftlint` executable to any targets, therefore, ensure `None`
+> Do not add the `SwiftLintFramework` library or the
+> `swiftlint` executable to any targets. Ensure `None`
 > is selected when asked to choose package products.
 
 ### Homebrew

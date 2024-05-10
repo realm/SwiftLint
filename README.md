@@ -177,7 +177,7 @@ running it.
 ### From Source
 
 You can also build and install from source by cloning this project and running
-`make install` (Xcode 15.0 or later).
+`make install` (Requires [bazel](https://bazel.build)).
 
 ## Setup
 

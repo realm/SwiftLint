@@ -93,7 +93,8 @@ your next `pod install` execution and will allow you to invoke it via
 `${PODS_ROOT}/SwiftLint/swiftlint` in your Script Build Phases.
 
 Installing via Cocoapods also enables pinning to a specific version of
-SwiftLint rather than simply the latest (which is the case with Homebrew).
+SwiftLint rather than simply the latest (which is the case with
+[Homebrew](#homebrew)).
 
 Note that this will add the SwiftLint binaries, its dependencies' binaries, and
 the Swift binary library distribution to the `Pods/` directory, so checking in

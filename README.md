@@ -292,7 +292,8 @@ If the build tool plugin does not work for your project setup or when
 additional custom setup is required, SwiftLint can be added as a Run Script
 Build Phase. This is useful when a project setup relies on the `--config`
 SwiftLint option or to lint all targets together in a single `swiftlint`
-invocation. File inclusions and exclusions can be configured in the [`.swiftlint.yml` configuration](#configuration).
+invocation. File inclusions and exclusions can be configured in the
+[`.swiftlint.yml` configuration](#configuration).
 
 > [!IMPORTANT]
 > Based upon the installation method used, the shell command syntax in the 

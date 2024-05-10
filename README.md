@@ -296,8 +296,10 @@ SwiftLint option or to lint all targets together in a single `swiftlint`
 invocation. File inclusions and exclusions can be configured in the [`.swiftlint.yml` configuration](#configuration).
 
 > [!IMPORTANT]
-> Compatibility is dependent upon the [installation](#installation) method that
-is used.
+> Based upon the installation method used, the shell command syntax in the 
+> Run Script Build Phase may be different or additional configuration could 
+> be required. Refer to the [installation](#installation) instructions for 
+> more information.
 
 To do this, add a custom script to a `Run Script` phase of the `Build Phases`
 of the primary app target, before the `Compile Sources` phase. Use the

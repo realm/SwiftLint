@@ -34,9 +34,7 @@ presentation recorded January 9th, 2017 by JP Simard (transcript provided):
 
 ## Installation
 
-### Swift Package Manager
-
-https://github.com/apple/swift-package-manager
+### [Swift Package Manager](https://github.com/apple/swift-package-manager)
 
 SwiftLint can be used as a [command plugin](#swift-package-command-plugin)
 or a [build tool plugin](#swift-package-build-tool-plugins).
@@ -47,7 +45,7 @@ Add
 .package(url: "https://github.com/realm/SwiftLint.git", from: "<version>")
 ```
 
-to your Package.swift file to consume the latest release of SwiftLint
+to your `Package.swift` file to consume the latest release of SwiftLint
 automatically or pin the dependency to a specific version:
 
 ```swift
@@ -57,7 +55,7 @@ automatically or pin the dependency to a specific version:
 > [!IMPORTANT]
 > Replace `<version>` with the desired minimum or exact version.
 
-### Xcode Package Dependency
+### [Xcode Package Dependency](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app)
 
 Use the following link to add SwiftLint as a Package Dependency to an Xcode
 project:
@@ -71,17 +69,13 @@ https://github.com/realm/SwiftLint
 > `swiftlint` executable to any targets. Ensure `None`
 > is selected when asked to choose package products.
 
-### Homebrew
-
-http://brew.sh
+### [Homebrew](http://brew.sh)
 
 ```
 brew install swiftlint
 ```
 
-### CocoaPods
-
-https://cocoapods.org
+### [CocoaPods](https://cocoapods.org)
 
 Add the following to your `Podfile`:
 
@@ -101,17 +95,13 @@ Note that this will add the SwiftLint binaries, its dependencies' binaries, and
 the Swift binary library distribution to the `Pods/` directory, so checking in
 this directory to SCM such as Git is discouraged.
 
-### Mint
-
-https://github.com/yonaskolb/mint
+### [Mint](https://github.com/yonaskolb/mint)
 
 ```
 $ mint install realm/SwiftLint
 ```
 
-### Bazel
-
-https://bazel.build
+### [Bazel](https://bazel.build)
 
 Put this in your `MODULE.bazel`:
 

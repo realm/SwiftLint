@@ -58,7 +58,7 @@ Or to pin to an exact version:
 
 ### Xcode Package Dependency
 
-Use the following link to add SwiftLint as a Package Dependnecy to an Xcode
+Use the following link to add SwiftLint as a Package Dependency to an Xcode
 project:
 
 ```
@@ -261,7 +261,7 @@ validations can be disabled with either of the following:
   ```
 * Setting Xcode defaults:
   ```
-  defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
+  defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
   defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
   ```
 

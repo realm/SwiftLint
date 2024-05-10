@@ -97,7 +97,7 @@ SwiftLint rather than simply the latest (which is the case with Homebrew).
 
 Note that this will add the SwiftLint binaries, its dependencies' binaries, and
 the Swift binary library distribution to the `Pods/` directory, so checking in
-this directory to SCM such as git is discouraged.
+this directory to SCM such as Git is discouraged.
 
 ### Mint
 
@@ -292,7 +292,7 @@ If the build tool plugin does not work for your project setup or when
 additional custom setup is required, SwiftLint can be added as a Run Script
 Build Phase. This is useful when a project setup relies on the `--config`
 SwiftLint option or to lint all targets together in a single `swiftlint`
-invocation.
+invocation. File inclusions and exclusions can be configured in the [`.swiftlint.yml` configuration](#configuration).
 
 > [!IMPORTANT]
 > Compatibility is dependent upon the [installation](#installation) method that
@@ -307,7 +307,7 @@ if command -v swiftlint >/dev/null 2>&1
 then
     swiftlint
 else
-    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint for installation instructions."
+    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
 fi
 ```
 
@@ -318,9 +318,9 @@ fi
 > builds, suppressing the unspecified outputs warning.
 
 Xcode 15 made a significant change by setting the default value of the
-`ENABLE_USER_SCRIPT_SANDBOXING` Build Setting from `NO` to `YES`.
+`ENABLE_USER_SCRIPT_SANDBOXING` build setting from `NO` to `YES`.
 As a result, SwiftLint encounters an error related to missing file permissions,
-which typically manifests as follows:
+which typically manifests as 
 `error: Sandbox: swiftlint(19427) deny(1) file-read-data.`
 
 To resolve this issue, it is necessary to manually set the
@@ -348,7 +348,7 @@ if command -v swiftlint >/dev/null 2>&1
 then
     swiftlint
 else
-    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint for installation instructions."
+    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
 fi
 ```
 
@@ -385,7 +385,7 @@ extension from the marketplace.
 ### Fastlane
 
 You can use the official
-[swiftlint fastlane action](https://docs.fastlane.tools/actions/swiftlint)
+[`swiftlint` fastlane action](https://docs.fastlane.tools/actions/swiftlint)
 to run SwiftLint as part of your fastlane process.
 
 ```ruby
@@ -467,8 +467,8 @@ To specify a list of files when using `lint` or `analyze`
 plugin, or modified files in the working tree based on `git ls-files -m`), you
 can do so by passing the option `--use-script-input-files` and setting the
 following instance variables: `SCRIPT_INPUT_FILE_COUNT`
-and `SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`...`
-SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT - 1}`.
+and `SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`, ..., 
+`SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT - 1}`.
 
 These are same environment variables set for input files to
 [custom Xcode script phases](http://indiestack.com/2014/12/speeding-up-custom-script-phases/).
@@ -547,7 +547,7 @@ are encouraged.
 You can find an updated list of rules and more information about them
 [here](https://realm.github.io/SwiftLint/rule-directory.html).
 
-You can also check
+You can also check the
 [Source/SwiftLintBuiltInRules/Rules](https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintBuiltInRules/Rules)
 directory to see their implementation.
 

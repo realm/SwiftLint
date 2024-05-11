@@ -7,7 +7,7 @@ private typealias ViolationsPerRule = [String: BaselineViolations]
 private struct BaselineViolation: Codable, Hashable {
     let violation: StyleViolation
     let text: String
-    var key: String { text + violation.reason + violation.severity.rawValue }
+    var key: String { text + violation.reason }
 
     init(violation: StyleViolation, text: String) {
         let location = violation.location

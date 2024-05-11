@@ -12,20 +12,11 @@ release_notes=$(mktemp)
 # Create GitHub Release
 
 release_title="$(sed -n '1s/^## //p' CHANGELOG.md)"
-gh release create "$version" --title "$release_title" -F "$release_notes"
+gh release create "$version" --title "$release_title" -F "$release_notes"   \
+    "bazel.tar.gz"                                                          \
+    "bazel.tar.gz.sha256"                                                   \
+    "portable_swiftlint.zip"                                                \
+    "SwiftLint.pkg"                                                         \
+    "SwiftLintBinary-macos.artifactbundle.zip"
 
 rm "$release_notes"
-
-# Upload release assets
-
-files_to_upload=(
-  "bazel.tar.gz"
-  "bazel.tar.gz.sha256"
-  "portable_swiftlint.zip"
-  "SwiftLint.pkg"
-  "SwiftLintBinary-macos.artifactbundle.zip"
-)
-
-for file in "${files_to_upload[@]}"; do
-  gh release upload "$version" "$file"
-done

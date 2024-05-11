@@ -86,7 +86,7 @@ public enum Issue: LocalizedError, Equatable {
     /// - returns: The collected messages produced while running the code in the runner.
     static func captureConsole(runner: () throws -> Void) rethrows -> String {
         var console = ""
-        messageConsumer = { console += $0 }
+        messageConsumer = { console += (console.isEmpty ? "" : "\n") + $0 }
         defer { messageConsumer = nil }
         try runner()
         return console

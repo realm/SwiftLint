@@ -204,6 +204,11 @@
 
 #### Bug Fixes
 
+* Invalid keys in a configuration don't lead to the default configuration being
+  used anymore. The invalid key will just be reported but otherwise ignored.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5565](https://github.com/realm/SwiftLint/issues/5565)
+
 * Fix version comparison algorithm which caused some version-dependent rules to
   misbehave with Swift 5.10.  
   [chandlerwall](https://github.com/chandlerwall)

@@ -502,14 +502,20 @@ final class RuleConfigurationDescriptionTests: XCTestCase {
     func testInvalidKeys() throws {
         var configuration = TestConfiguration()
 
-        checkError(Issue.invalidConfigurationKeys(ruleID: "RuleMock", keys: ["unknown", "unsupported"])) {
-            try configuration.apply(configuration: [
-                "severity": "error",
-                "warning": 3,
-                "unknown": 1,
-                "unsupported": true
-            ])
-        }
+        XCTAssertEqual(
+            try Issue.captureConsole {
+                try configuration.apply(configuration: [
+                    "severity": "error",
+                    "warning": 3,
+                    "unknown": 1,
+                    "unsupported": true
+                ])
+            },
+            """
+            warning: Configuration option 'set' in 'my_rule' rule is deprecated. Use the option 'other_opt' instead.
+            warning: Configuration for 'RuleMock' rule contains the invalid key(s) 'unknown', 'unsupported'.
+            """
+        )
     }
 
     private func description(@RuleConfigurationDescriptionBuilder _ content: () -> RuleConfigurationDescription)

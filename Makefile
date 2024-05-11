@@ -181,7 +181,7 @@ endif
 	make portable_zip
 	make spm_artifactbundle_macos
 	./tools/update-artifact-bundle.sh "$(NEW_VERSION)"
-	git commit -a -m "release $(NEW_VERSION)"
+	git commit -a -m "Release $(NEW_VERSION)"
 	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
 	git push origin HEAD
 	git push origin $(NEW_VERSION)

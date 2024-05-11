@@ -12,7 +12,7 @@ release_notes=$(mktemp)
 # Create GitHub Release
 
 release_title="$(sed -n '1s/^## //p' CHANGELOG.md)"
-gh release create "$version" --draft --title "$release_title" -F "$release_notes"
+gh release create "$version" --title "$release_title" -F "$release_notes"
 
 rm "$release_notes"
 

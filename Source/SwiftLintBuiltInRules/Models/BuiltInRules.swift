@@ -81,6 +81,7 @@ public let builtInRules: [any Rule.Type] = [
     FunctionBodyLengthRule.self,
     FunctionDefaultParameterAtEndRule.self,
     FunctionParameterCountRule.self,
+    FunctionParametersNewlineRule.self,
     GenericTypeNameRule.self,
     IBInspectableInExtensionRule.self,
     IdenticalOperandsRule.self,

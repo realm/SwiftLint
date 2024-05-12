@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* [New rule] Add new rule for functions parameters.  
+  [kimdv](https://github.com/kimdv)
+  [#issue_number](https://github.com/realm/SwiftLint/issues/5564)
 
 #### Bug Fixes
 

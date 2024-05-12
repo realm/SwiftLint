@@ -475,6 +475,12 @@ final class FunctionParameterCountRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class FunctionParametersNewlineRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(FunctionParametersNewlineRule.description)
+    }
+}
+
 final class GenericTypeNameRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(GenericTypeNameRule.description)

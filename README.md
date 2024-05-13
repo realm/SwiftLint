@@ -52,7 +52,7 @@ automatically or pin the dependency to a specific version:
 .package(url: "https://github.com/realm/SwiftLint.git", exact: "<version>")
 ```
 
-> [!IMPORTANT]
+> [!NOTE]
 > Replace `<version>` with the desired minimum or exact version.
 
 ### [Xcode Package Dependency](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app)
@@ -314,7 +314,7 @@ fi
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental
 > builds, suppressing the unspecified outputs warning.
 
-> [!IMPORTANT]
+> [!NOTE]
 > Based upon the installation method used, the shell command syntax in the
 > Run Script Build Phase may be different or additional configuration could
 > be required. Refer to the [installation](#installation) instructions for

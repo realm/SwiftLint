@@ -366,12 +366,6 @@ binary:
 ln -s /opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint
 ```
 
-You might want to move your SwiftLint phase directly before the
-'Compile Sources' step to detect errors quickly before compiling. However,
-SwiftLint is designed to run on valid Swift code that cleanly completes the
-compiler's parsing stage. So running SwiftLint before 'Compile Sources' might
-yield some incorrect results.
-
 **Additional Considerations**
 
 If you wish to fix violations as well, your script could run

@@ -39,7 +39,7 @@ presentation recorded January 9th, 2017 by JP Simard (transcript provided):
 SwiftLint can be used as a [command plugin](#swift-package-command-plugin)
 or a [build tool plugin](#swift-package-build-tool-plugins).
 
-Add 
+Add
 
 ```swift
 .package(url: "https://github.com/realm/SwiftLint.git", from: "<version>")
@@ -202,16 +202,16 @@ swift package plugin swiftlint
 
 ### Swift Package Build Tool Plugins
 
-SwiftLint can be used as a build tool plugin for both 
+SwiftLint can be used as a build tool plugin for both
 [Swift Package projects](#swift-package-projects)
 and [Xcode projects](#xcode-projects).
 
-The build tool plugin determines the SwiftLint working directory by locating 
+The build tool plugin determines the SwiftLint working directory by locating
 the topmost config file within the package/project directory. If a config file
-is not found therein, the package/project directory is used as the working 
+is not found therein, the package/project directory is used as the working
 directory.
 
-The plugin throws an error when it is unable to resolve the SwiftLint working 
+The plugin throws an error when it is unable to resolve the SwiftLint working
 directory. For example, this will occur in Xcode projects where the target's
 Swift files are not located within the project directory.
 
@@ -271,16 +271,16 @@ validations can be disabled with either of the following:
 
 #### Unexpected Xcode Project Structures
 
-Project structures where SwiftLint's configuration file is located 
-outside of the package/project directory are not directly supported 
-by the build tool plugin. This is because it isn't possible to pass 
-arguments to build tool plugins (e.g., passing the config file path). 
+Project structures where SwiftLint's configuration file is located
+outside of the package/project directory are not directly supported
+by the build tool plugin. This is because it isn't possible to pass
+arguments to build tool plugins (e.g., passing the config file path).
 
-If your project structure doesn't work directly with the build tool 
+If your project structure doesn't work directly with the build tool
 plugin, please consider one of the following options:
 
-- To use a config file located outside the package/project directory, a config 
-  file may be added to that directory specifying a parent config path to the 
+- To use a config file located outside the package/project directory, a config
+  file may be added to that directory specifying a parent config path to the
   other config file, e.g., `parent_config: path/to/.swiftlint.yml`.
 - You can also consider the use of a
   [Run Script Build Phase](#xcode-run-script-build-phase) in place of the build
@@ -325,7 +325,7 @@ fi
 Xcode 15 made a significant change by setting the default value of the
 `ENABLE_USER_SCRIPT_SANDBOXING` build setting from `NO` to `YES`.
 As a result, SwiftLint encounters an error related to missing file permissions,
-which typically manifests as 
+which typically manifests as
 `error: Sandbox: swiftlint(19427) deny(1) file-read-data.`
 
 To resolve this issue, it is necessary to manually set the
@@ -470,7 +470,7 @@ To specify a list of files when using `lint` or `analyze`
 plugin, or modified files in the working tree based on `git ls-files -m`), you
 can do so by passing the option `--use-script-input-files` and setting the
 following instance variables: `SCRIPT_INPUT_FILE_COUNT`
-and `SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`, ..., 
+and `SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`, ...,
 `SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT - 1}`.
 
 These are same environment variables set for input files to
@@ -735,9 +735,9 @@ following syntax:
 ```yaml
 custom_rules:
   pirates_beat_ninjas: # rule identifier
-    included: 
+    included:
       - ".*\\.swift" # regex that defines paths to include during linting. optional.
-    excluded: 
+    excluded:
       - ".*Test\\.swift" # regex that defines paths to exclude during linting. optional
     name: "Pirates Beat Ninjas" # rule name. optional.
     regex: "([nN]inja)" # matching pattern
@@ -759,10 +759,10 @@ This is what the output would look like:
 It is important to note that the regular expression pattern is used with the
 flags `s` and `m` enabled, that is `.`
 [matches newlines](https://developer.apple.com/documentation/foundation/nsregularexpression/options/1412529-dotmatcheslineseparators)
-and `^`/`$` 
+and `^`/`$`
 [match the start and end of lines](https://developer.apple.com/documentation/foundation/nsregularexpression/options/1408263-anchorsmatchlines),
 respectively. If you do not want to have `.` match newlines, for example, the
-regex can be prepended by `(?-s)`. 
+regex can be prepended by `(?-s)`.
 
 You can filter the matches by providing one or more `match_kinds`, which will
 reject matches that include syntax kinds that are not present in this list. Here
@@ -823,7 +823,7 @@ command invocation (incremental builds will fail) must be passed to `analyze`
 via the `--compiler-log-path` flag.
 e.g. `--compiler-log-path /path/to/xcodebuild.log`
 
-This can be obtained by 
+This can be obtained by
 
 1. Cleaning DerivedData (incremental builds won't work with analyze)
 2. Running `xcodebuild -workspace {WORKSPACE}.xcworkspace -scheme {SCHEME} > xcodebuild.log`

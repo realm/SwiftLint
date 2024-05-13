@@ -191,7 +191,7 @@ Cloning this project and run `make install`
 
 ### Swift Package Command Plugin
 
-> [!IMPORTANT]
+> [!NOTE]
 > Requires installing via [Swift Package Manager](#swift-package-manager).
 
 The command plugin enables running SwiftLint from the command line as follows:
@@ -220,7 +220,7 @@ the use of the `--config` option.
 
 ### Swift Package Projects
 
-> [!IMPORTANT]
+> [!NOTE]
 > Requires installing via [Swift Package Manager](#swift-package-manager).
 
 Build tool plugins run when building each target. When a project has multiple
@@ -237,7 +237,7 @@ To do this, add the plugin to the target(s) to be linted as follows:
 
 ### Xcode Projects
 
-> [!IMPORTANT]
+> [!NOTE]
 > Requires installing via [Xcode Package Dependency](#xcode-package-dependency).
 
 Build tool plugins run as a build phase of each target. When a project has

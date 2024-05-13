@@ -24,6 +24,11 @@
 * Linting got around 20% faster due to the praisworthy performance
   improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
   library.
+* Rewrite the following rules with SwiftSyntax:
+  * `missing_docs`
+
+  [woxtu](https://github.com/woxtu)  
+  [SimplyDanny](https://github.com/SimplyDanny)  
 
 * Adds `baseline` and `write_baseline` configuration file settings, equivalent
   to the `--baseline` and `--write-baseline` command line options.  
@@ -209,7 +214,6 @@
   * `identifier_name`
   * `let_var_whitespace`
   * `mark`
-  * `missing_docs`
   * `multiline_literal_brackets`
   * `nesting`
   * `nimble_operator`
@@ -225,7 +229,6 @@
   [swiftty](https://github.com/swiftty)  
   [KS1019](https://github.com/KS1019)  
   [tonell-m](https://github.com/tonell-m)
-  [woxtu](https://github.com/woxtu)  
 
 * Print invalid keys when configuration parsing fails.  
   [SimplyDanny](https://github.com/SimplyDanny)

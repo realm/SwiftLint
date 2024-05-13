@@ -295,12 +295,6 @@ SwiftLint option; or to lint all targets together in a single `swiftlint`
 invocation. File inclusions and exclusions can be configured in the
 [`.swiftlint.yml` configuration](#configuration).
 
-> [!IMPORTANT]
-> Based upon the installation method used, the shell command syntax in the 
-> Run Script Build Phase may be different or additional configuration could 
-> be required. Refer to the [installation](#installation) instructions for 
-> more information.
-
 To do this, add a custom script to a `Run Script` phase of the `Build Phases`
 of the primary app target, after the `Compile Sources` phase. Use the
 following script implementation:
@@ -319,6 +313,12 @@ fi
 > [!TIP]
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental
 > builds, suppressing the unspecified outputs warning.
+
+> [!IMPORTANT]
+> Based upon the installation method used, the shell command syntax in the
+> Run Script Build Phase may be different or additional configuration could
+> be required. Refer to the [installation](#installation) instructions for
+> more information.
 
 **Consideration for Xcode 15.0+**
 

@@ -320,6 +320,8 @@ fi
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental
 > builds, suppressing the unspecified outputs warning.
 
+**Consideration for Xcode 15.0+**
+
 Xcode 15 made a significant change by setting the default value of the
 `ENABLE_USER_SCRIPT_SANDBOXING` build setting from `NO` to `YES`.
 As a result, SwiftLint encounters an error related to missing file permissions,
@@ -329,6 +331,8 @@ which typically manifests as
 To resolve this issue, it is necessary to manually set the
 `ENABLE_USER_SCRIPT_SANDBOXING` setting to `NO` for the specific target that
 SwiftLint is being configured for.
+
+**Consideration for Apple Silicon**
 
 If you installed SwiftLint via Homebrew on Apple Silicon, you might experience
 this warning:
@@ -367,6 +371,8 @@ You might want to move your SwiftLint phase directly before the
 SwiftLint is designed to run on valid Swift code that cleanly completes the
 compiler's parsing stage. So running SwiftLint before 'Compile Sources' might
 yield some incorrect results.
+
+**Additional Considerations**
 
 If you wish to fix violations as well, your script could run
 `swiftlint --fix && swiftlint` instead of just `swiftlint`. This will mean

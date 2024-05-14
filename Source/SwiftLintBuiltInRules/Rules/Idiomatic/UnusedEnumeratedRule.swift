@@ -29,7 +29,14 @@ struct UnusedEnumeratedRule: Rule {
                 $1.enumerated().forEach { print($0, $1) }
                 return $0
             }
-            """)
+            """),
+            Example("""
+            list.enumerated().forEach {
+                f($0)
+                let (i, e) = $0
+                print(i)
+            }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("for (↓_, foo) in bar.enumerated() { }"),
@@ -72,7 +79,12 @@ struct UnusedEnumeratedRule: Rule {
                 $1.forEach { print($0) }
                 return $1
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
+            Example("""
+            list.↓enumerated().forEach {
+                let (i, _) = $0
+            }
+            """)
         ]
     )
 }
@@ -188,6 +200,9 @@ private extension UnusedEnumeratedRule {
                         $0.onePosition = node.positionAfterSkippingLeadingTrivia
                     } else {
                         $0.zeroPosition = node.positionAfterSkippingLeadingTrivia
+                        if node.isUnpacked {
+                            $0.onePosition = node.positionAfterSkippingLeadingTrivia
+                        }
                     }
                 } else {
                     $0.onePosition = node.positionAfterSkippingLeadingTrivia
@@ -253,5 +268,16 @@ private extension TuplePatternElementSyntax {
 private extension ClosureShorthandParameterSyntax {
     var isUnderscore: Bool {
         name.tokenKind == .wildcard
+    }
+}
+
+private extension DeclReferenceExprSyntax {
+    var isUnpacked: Bool {
+        if let initializer = parent?.as(InitializerClauseSyntax.self),
+           let binding = initializer.parent?.as(PatternBindingSyntax.self),
+           let elements = binding.pattern.as(TuplePatternSyntax.self)?.elements {
+            return elements.count == 2 && elements.allSatisfy { !$0.pattern.is(WildcardPatternSyntax.self) }
+        }
+        return false
     }
 }

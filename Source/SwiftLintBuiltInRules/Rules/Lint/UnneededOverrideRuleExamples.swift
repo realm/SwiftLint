@@ -206,6 +206,21 @@ struct UnneededOverrideRuleExamples {
                           // This is another function
                           func baz() {}
                       }
+                      """),
+        // Nothing happens to initializers by default.
+        Example("""
+        class Foo {
+            ↓override func foo() { super.foo() }
+            override init(i: Int) {
+                super.init(i: i)
+            }
+        }
+        """): Example("""
+                      class Foo {
+                          override init(i: Int) {
+                              super.init(i: i)
+                          }
+                      }
                       """)
     ]
 }

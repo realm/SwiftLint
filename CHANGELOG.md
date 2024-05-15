@@ -18,6 +18,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5573](https://github.com/realm/SwiftLint/issues/5573)
 
+* Remove redundant initializers in `unneeded_override` rule only when checking
+  initializers is actually enabled in the configuration.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5571](https://github.com/realm/SwiftLint/issues/5571)
+
 ## 0.55.0: Universal Washing Powder
 
 #### Breaking

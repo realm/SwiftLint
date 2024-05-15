@@ -41,7 +41,7 @@ private extension UnneededOverrideRule {
         }
 
         override func visit(_ node: InitializerDeclSyntax) -> DeclSyntax {
-            guard node.isUnneededOverride else {
+            guard configuration.affectInits, node.isUnneededOverride else {
                 return super.visit(node)
             }
 

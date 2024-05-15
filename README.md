@@ -447,7 +447,7 @@ Here you have more documentation about the usage of
 
 ## Command Line Usage
 
-```bash
+```txt
 $ swiftlint help
 OVERVIEW: A tool to enforce Swift style and conventions.
 

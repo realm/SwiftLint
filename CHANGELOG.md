@@ -28,6 +28,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5571](https://github.com/realm/SwiftLint/issues/5571)
 
+* Respect comments before opening brace in `opening_brace` rule when there is
+  one space before the brace after the comment. Everything else is still a
+  violation, yet the rewriter will not remove the comment anymore.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5578](https://github.com/realm/SwiftLint/issues/5578)
+
 ## 0.55.0: Universal Washing Powder
 
 #### Breaking

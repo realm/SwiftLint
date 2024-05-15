@@ -455,8 +455,9 @@ OPTIONS:
 SUBCOMMANDS:
   analyze                 Run analysis rules
   docs                    Open SwiftLint documentation website in the default web browser
-  generate-docs           Generates markdown documentation for all rules
+  generate-docs           Generates markdown documentation for selected group of rules
   lint (default)          Print lint warnings and errors
+  baseline                Operations on existing baselines
   reporters               Display the list of reporters and their identifiers
   rules                   Display the list of rules and their identifiers
   version                 Display the current version of SwiftLint

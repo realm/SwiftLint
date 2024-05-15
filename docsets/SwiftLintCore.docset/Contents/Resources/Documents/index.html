@@ -402,7 +402,7 @@ Replace <code>&lt;version&gt;</code> with the desired minimum or exact version.<
 
 <p>Use the following link to add SwiftLint as a Package Dependency to an Xcode
 project:</p>
-<pre class="highlight plaintext"><code>https://github.com/realm/SwiftLint
+<pre class="highlight shell"><code>https://github.com/realm/SwiftLint
 </code></pre>
 
 <blockquote>
@@ -412,7 +412,7 @@ Do not add the <code>SwiftLintFramework</code> library or the
 is selected when asked to choose package products.</p>
 </blockquote>
 <h3 id='a-href-http-brew-sh-homebrew-a' class='heading'><a href="http://brew.sh">Homebrew</a></h3>
-<pre class="highlight plaintext"><code>brew install swiftlint
+<pre class="highlight shell"><code>brew <span class="nb">install </span>swiftlint
 </code></pre>
 <h3 id='a-href-https-cocoapods-org-cocoapods-a' class='heading'><a href="https://cocoapods.org">CocoaPods</a></h3>
 
@@ -432,7 +432,7 @@ SwiftLint rather than simply the latest (which is the case with
 the Swift binary library distribution to the <code>Pods/</code> directory, so checking in
 this directory to SCM such as Git is discouraged.</p>
 <h3 id='a-href-https-github-com-yonaskolb-mint-mint-a' class='heading'><a href="https://github.com/yonaskolb/mint">Mint</a></h3>
-<pre class="highlight plaintext"><code>$ mint install realm/SwiftLint
+<pre class="highlight shell"><code>mint <span class="nb">install </span>realm/SwiftLint
 </code></pre>
 <h3 id='a-href-https-bazel-build-bazel-a' class='heading'><a href="https://bazel.build">Bazel</a></h3>
 
@@ -586,17 +586,18 @@ and enable the macros as well.</p>
 validations can be disabled with either of the following:</p>
 
 <ul>
-<li>Using <code>xcodebuild</code> options:
-<code>
--skipPackagePluginValidation
--skipMacroValidation
-</code></li>
-<li>Setting Xcode defaults:
-<code>
-defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
-defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
-</code></li>
+<li>Using <code>xcodebuild</code> options:</li>
 </ul>
+<pre class="highlight shell"><code>  <span class="nt">-skipPackagePluginValidation</span>
+  <span class="nt">-skipMacroValidation</span>
+</code></pre>
+
+<ul>
+<li>Setting Xcode defaults:</li>
+</ul>
+<pre class="highlight shell"><code>  defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation <span class="nt">-bool</span> YES
+  defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation <span class="nt">-bool</span> YES
+</code></pre>
 
 <blockquote>
 <p>[!IMPORTANT]
@@ -633,15 +634,13 @@ invocation. File inclusions and exclusions can be configured in the
 <p>To do this, add a custom script to a <code>Run Script</code> phase of the <code>Build Phases</code>
 of the primary app target, after the <code>Compile Sources</code> phase. Use the
 following script implementation:</p>
-<pre class="highlight plaintext"><code>if command -v swiftlint &gt;/dev/null 2&gt;&amp;1
-then
-    swiftlint
-else
-    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
-fi
+<pre class="highlight shell"><code><span class="k">if </span><span class="nb">command</span> <span class="nt">-v</span> swiftlint <span class="o">&gt;</span>/dev/null 2&gt;&amp;1
+<span class="k">then
+    </span>swiftlint
+<span class="k">else
+    </span><span class="nb">echo</span> <span class="s2">"warning: </span><span class="sb">`</span>swiftlint<span class="sb">`</span><span class="s2"> command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."</span>
+<span class="k">fi</span>
 </code></pre>
-
-<p><br></p>
 
 <blockquote>
 <p>[!TIP]
@@ -654,8 +653,7 @@ Run Script Build Phase may be different or additional configuration could
 be required. Refer to the <a href="#installation">installation</a> instructions for
 more information.</p>
 </blockquote>
-
-<p><strong>Consideration for Xcode 15.0+</strong></p>
+<h4 id='consideration-for-xcode-15-0' class='heading'>Consideration for Xcode 15.0</h4>
 
 <p>Xcode 15 made a significant change by setting the default value of the
 <code>ENABLE_USER_SCRIPT_SANDBOXING</code> build setting from <code>NO</code> to <code>YES</code>.
@@ -666,17 +664,12 @@ which typically manifests as
 <p>To resolve this issue, it is necessary to manually set the
 <code>ENABLE_USER_SCRIPT_SANDBOXING</code> setting to <code>NO</code> for the specific target that
 SwiftLint is being configured for.</p>
-
-<p><strong>Consideration for Apple Silicon</strong></p>
+<h4 id='consideration-for-apple-silicon' class='heading'>Consideration for Apple Silicon</h4>
 
 <p>If you installed SwiftLint via Homebrew on Apple Silicon, you might experience
 this warning:</p>
-<div class="aside aside-warning">
-    <p class="aside-title">Warning</p>
-    <p>SwiftLint not installed, download from
-<a href="https://github.com/realm/SwiftLint">https://github.com/realm/SwiftLint</a></p>
-
-</div>
+<pre class="highlight shell"><code>warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint
+</code></pre>
 
 <p>That is because Homebrew on Apple Silicon installs the binaries into the
 <code>/opt/homebrew/bin</code> folder by default. To instruct Xcode where to find
@@ -699,8 +692,7 @@ if </span><span class="nb">command</span> <span class="nt">-v</span> swiftlint <
 binary:</p>
 <pre class="highlight shell"><code><span class="nb">ln</span> <span class="nt">-s</span> /opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint
 </code></pre>
-
-<p><strong>Additional Considerations</strong></p>
+<h4 id='additional-considerations' class='heading'>Additional Considerations</h4>
 
 <p>If you wish to fix violations as well, your script could run
 <code>swiftlint --fix &amp;&amp; swiftlint</code> instead of just <code>swiftlint</code>. This will mean
@@ -761,25 +753,26 @@ Done linting! Found 0 violations, 0 serious <span class="k">in </span>490 files.
 <p>Here you have more documentation about the usage of
 <a href="https://docs.docker.com/">Docker Images</a>.</p>
 <h2 id='command-line-usage' class='heading'>Command Line Usage</h2>
-<pre class="highlight plaintext"><code>$ swiftlint help
-OVERVIEW: A tool to enforce Swift style and conventions.
+<pre class="highlight shell"><code><span class="nv">$ </span>swiftlint <span class="nb">help
+</span>OVERVIEW: A tool to enforce Swift style and conventions.
 
 USAGE: swiftlint &lt;subcommand&gt;
 
 OPTIONS:
-  --version               Show the version.
-  -h, --help              Show help information.
+  <span class="nt">--version</span>               Show the version.
+  <span class="nt">-h</span>, <span class="nt">--help</span>              Show <span class="nb">help </span>information.
 
 SUBCOMMANDS:
   analyze                 Run analysis rules
-  docs                    Open SwiftLint documentation website in the default web browser
-  generate-docs           Generates markdown documentation for all rules
-  lint (default)          Print lint warnings and errors
+  docs                    Open SwiftLint documentation website <span class="k">in </span>the default web browser
+  generate-docs           Generates markdown documentation <span class="k">for </span>selected group of rules
+  lint <span class="o">(</span>default<span class="o">)</span>          Print lint warnings and errors
+  baseline                Operations on existing baselines
   reporters               Display the list of reporters and their identifiers
   rules                   Display the list of rules and their identifiers
   version                 Display the current version of SwiftLint
 
-  See 'swiftlint help &lt;subcommand&gt;' for detailed help.
+  See <span class="s1">'swiftlint help &lt;subcommand&gt;'</span> <span class="k">for </span>detailed help.
 </code></pre>
 
 <p>Run <code>swiftlint</code> in the directory containing the Swift files to lint. Directories
@@ -827,7 +820,7 @@ the value passed in the paths above.</p>
 
 <p>You may also set the <code>TOOLCHAINS</code> environment variable to the reverse-DNS
 notation that identifies a Swift toolchain version:</p>
-<pre class="highlight shell"><code><span class="nv">$ TOOLCHAINS</span><span class="o">=</span>com.apple.dt.toolchain.Swift_2_3 swiftlint <span class="nt">--fix</span>
+<pre class="highlight shell"><code><span class="nv">TOOLCHAINS</span><span class="o">=</span>com.apple.dt.toolchain.Swift_2_3 swiftlint <span class="nt">--fix</span>
 </code></pre>
 
 <p>On Linux, SourceKit is expected to be located in

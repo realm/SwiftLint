@@ -52,7 +52,12 @@ struct OpeningBraceRuleExamples {
         Example("""
             if c {}
             else {}
-            """)
+            """),
+        Example("""
+            if c /* comment */ {
+                return
+            }
+        """)
     ]
 
     static let triggeringExamples = [
@@ -210,7 +215,7 @@ struct OpeningBraceRuleExamples {
             """),
         Example("""
             if c  ↓{}
-            else  ↓{}
+            else /* comment */  ↓{}
             """)
     ]
 
@@ -531,6 +536,15 @@ struct OpeningBraceRuleExamples {
                 precedencegroup Group {
                   assignment: true
                 }
-                """)
+                """),
+        Example("""
+            if c /* comment */    {
+                return
+            }
+        """): Example("""
+                if c /* comment */ {
+                    return
+                }
+            """)
     ]
 }

@@ -225,16 +225,32 @@ private extension BracedSyntax {
 
     func violationCorrection(_ locationConverter: SourceLocationConverter) -> ViolationCorrection? {
         if let previousToken = leftBrace.previousToken(viewMode: .sourceAccurate) {
+            let triviaBetween = previousToken.trailingTrivia + leftBrace.leadingTrivia
             let previousLocation = previousToken.endLocation(converter: locationConverter)
             let leftBraceLocation = leftBrace.startLocation(converter: locationConverter)
-            if previousLocation.line != leftBraceLocation.line
-               || previousLocation.column + 1 != leftBraceLocation.column {
+            let violation = ViolationCorrection(
+                start: previousToken.endPositionBeforeTrailingTrivia,
+                end: leftBrace.positionAfterSkippingLeadingTrivia,
+                replacement: " "
+            )
+            if previousLocation.line != leftBraceLocation.line {
+                return violation
+            }
+            if previousLocation.column + 1 == leftBraceLocation.column {
+                return nil
+            }
+            if triviaBetween.containsComments {
+                if triviaBetween.pieces.last == .spaces(1) {
+                    return nil
+                }
+                let comment = triviaBetween.description.trimmingTrailingCharacters(in: .whitespaces)
                 return ViolationCorrection(
-                    start: previousToken.endPositionBeforeTrailingTrivia,
+                    start: previousToken.endPositionBeforeTrailingTrivia + SourceLength(of: comment),
                     end: leftBrace.positionAfterSkippingLeadingTrivia,
                     replacement: " "
                 )
             }
+            return violation
         }
         return nil
     }

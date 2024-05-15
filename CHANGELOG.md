@@ -14,7 +14,9 @@
 
 #### Bug Fixes
 
-* None.
+* Silence `unused_enumerated` rule when `$0` in a closure is explicitly unpacked.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5573](https://github.com/realm/SwiftLint/issues/5573)
 
 ## 0.55.0: Universal Washing Powder
 

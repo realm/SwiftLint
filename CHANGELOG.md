@@ -19,6 +19,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5568](https://github.com/realm/SwiftLint/issues/5568)
 
+* Treat condionally activatable variable declarations and initializer as if
+  they were always active in `unneeded_synthesized_initializer` rule to avoid
+  compilation issues when unexpected items are there after all.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5574](https://github.com/realm/SwiftLint/issues/5574)
+
 * Silence `unused_enumerated` rule when `$0` in a closure is explicitly unpacked.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5573](https://github.com/realm/SwiftLint/issues/5573)

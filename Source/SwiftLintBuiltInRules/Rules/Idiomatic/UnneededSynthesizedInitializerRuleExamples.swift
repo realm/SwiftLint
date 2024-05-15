@@ -197,7 +197,44 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         print("perform side effect")
                     }
                 }
-                """)
+                """),
+        Example("""
+                struct Foo {
+                    let bar: Int
+
+                    init(bar: Int) {
+                        self.bar = bar
+                    }
+                    init?() {
+                        return nil
+                    }
+                }
+                """),
+        // Treat conditional code as if it was active.
+        Example("""
+        struct Foo {
+            var bar: String
+
+            init(bar: String) {
+                self.bar = bar
+            }
+
+            #if DEBUG
+            init() {
+                self.bar = ""
+            }
+            #endif
+        }
+        """, excludeFromDocumentation: true),
+        Example("""
+        struct Foo {
+            #if DEBUG
+            var bar: String
+            #endif
+
+            init() {}
+        }
+        """, excludeFromDocumentation: true)
     ]
 
     static let triggering = [
@@ -326,6 +363,20 @@ enum UnneededSynthesizedInitializerRuleExamples {
                        ↓init(baz: Int) {
                             self.baz = baz
                         }
+                    }
+                }
+                """),
+        Example("""
+                struct Foo {
+                    let i: Int
+                    struct Bar {
+                        let j: Int
+                        ↓init(j: Int) {
+                            self.j = j
+                        }
+                    }
+                    ↓init(i: Int) {
+                        self.i = i
                     }
                 }
                 """)

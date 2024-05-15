@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Clarify wording of `static_over_final_class` rule's violation message.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5570](https://github.com/realm/SwiftLint/issues/5570)
 
 #### Bug Fixes
 

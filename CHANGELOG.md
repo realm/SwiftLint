@@ -14,6 +14,11 @@
 
 #### Bug Fixes
 
+* Fix Bazel build when `bzlmod` is not in use by adding transitive dependencies
+  explicitly.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5568](https://github.com/realm/SwiftLint/issues/5568)
+
 * Silence `unused_enumerated` rule when `$0` in a closure is explicitly unpacked.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5573](https://github.com/realm/SwiftLint/issues/5573)

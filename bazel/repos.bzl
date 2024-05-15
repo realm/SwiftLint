@@ -17,6 +17,29 @@ def swiftlint_repos(bzlmod = False):
             url = "https://github.com/apple/swift-syntax/archive/refs/tags/510.0.2.tar.gz",
         )
 
+        http_archive(
+            name = "sourcekitten_com_github_apple_swift_argument_parser",
+            url = "https://github.com/apple/swift-argument-parser/archive/refs/tags/1.3.1.tar.gz",
+            sha256 = "4d964f874b251abc280ee28f0f187de3c13a6122a9561524f66a10768ca2d837",
+            build_file = "@com_github_jpsim_sourcekitten//bazel:SwiftArgumentParser.BUILD",
+            strip_prefix = "swift-argument-parser-1.3.1",
+        )
+
+        http_archive(
+            name = "sourcekitten_com_github_jpsim_yams",
+            url = "https://github.com/jpsim/Yams/releases/download/5.0.6/Yams-5.0.6.tar.gz",
+            sha256 = "a81c6b93f5d26bae1b619b7f8babbfe7c8abacf95b85916961d488888df886fb",
+            strip_prefix = "Yams-5.0.6",
+        )
+
+        http_archive(
+            name = "sourcekitten_com_github_drmohundro_SWXMLHash",
+            url = "https://github.com/drmohundro/SWXMLHash/archive/refs/tags/7.0.1.tar.gz",
+            build_file = "@com_github_jpsim_sourcekitten//bazel:SWXMLHash.BUILD",
+            sha256 = "bafa037a09aa296f180e5613206748db5053b79aa09258c78d093ae9f8102a18",
+            strip_prefix = "SWXMLHash-7.0.1",
+        )
+
     http_archive(
         name = "swiftlint_com_github_scottrhoyt_swifty_text_table",
         sha256 = "b77d403db9f33686caeb2a12986997fb02a0819e029e669c6b9554617c4fd6ae",

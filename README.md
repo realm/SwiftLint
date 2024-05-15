@@ -60,7 +60,7 @@ automatically or pin the dependency to a specific version:
 Use the following link to add SwiftLint as a Package Dependency to an Xcode
 project:
 
-```
+```bash
 https://github.com/realm/SwiftLint
 ```
 
@@ -71,7 +71,7 @@ https://github.com/realm/SwiftLint
 
 ### [Homebrew](http://brew.sh)
 
-```
+```bash
 brew install swiftlint
 ```
 
@@ -97,8 +97,8 @@ this directory to SCM such as Git is discouraged.
 
 ### [Mint](https://github.com/yonaskolb/mint)
 
-```
-$ mint install realm/SwiftLint
+```bash
+mint install realm/SwiftLint
 ```
 
 ### [Bazel](https://bazel.build)
@@ -258,12 +258,15 @@ For unattended use (e.g. on CI), package plugin and macro
 validations can be disabled with either of the following:
 
 * Using `xcodebuild` options:
-  ```
+
+  ```bash
   -skipPackagePluginValidation
   -skipMacroValidation
   ```
+
 * Setting Xcode defaults:
-  ```
+
+  ```bash
   defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
   defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
   ```
@@ -282,10 +285,10 @@ arguments to build tool plugins (e.g., passing the config file path).
 If your project structure doesn't work directly with the build tool
 plugin, please consider one of the following options:
 
-- To use a config file located outside the package/project directory, a config
+* To use a config file located outside the package/project directory, a config
   file may be added to that directory specifying a parent config path to the
   other config file, e.g., `parent_config: path/to/.swiftlint.yml`.
-- You can also consider the use of a
+* You can also consider the use of a
   [Run Script Build Phase](#xcode-run-script-build-phase) in place of the build
   tool plugin.
 
@@ -302,7 +305,7 @@ To do this, add a custom script to a `Run Script` phase of the `Build Phases`
 of the primary app target, after the `Compile Sources` phase. Use the
 following script implementation:
 
-```
+```bash
 if command -v swiftlint >/dev/null 2>&1
 then
     swiftlint
@@ -310,8 +313,6 @@ else
     echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
 fi
 ```
-
-<br>
 
 > [!TIP]
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental
@@ -323,7 +324,7 @@ fi
 > be required. Refer to the [installation](#installation) instructions for
 > more information.
 
-**Consideration for Xcode 15.0+**
+#### Consideration for Xcode 15.0
 
 Xcode 15 made a significant change by setting the default value of the
 `ENABLE_USER_SCRIPT_SANDBOXING` build setting from `NO` to `YES`.
@@ -335,13 +336,14 @@ To resolve this issue, it is necessary to manually set the
 `ENABLE_USER_SCRIPT_SANDBOXING` setting to `NO` for the specific target that
 SwiftLint is being configured for.
 
-**Consideration for Apple Silicon**
+#### Consideration for Apple Silicon
 
 If you installed SwiftLint via Homebrew on Apple Silicon, you might experience
 this warning:
 
-> warning: SwiftLint not installed, download from
-> https://github.com/realm/SwiftLint
+```bash
+warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint
+```
 
 That is because Homebrew on Apple Silicon installs the binaries into the
 `/opt/homebrew/bin` folder by default. To instruct Xcode where to find
@@ -369,7 +371,7 @@ binary:
 ln -s /opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint
 ```
 
-**Additional Considerations**
+#### Additional Considerations
 
 If you wish to fix violations as well, your script could run
 `swiftlint --fix && swiftlint` instead of just `swiftlint`. This will mean
@@ -417,17 +419,20 @@ swiftlint(
 SwiftLint is also available as a [Docker](https://www.docker.com/) image using
 `Ubuntu`. So just the first time you need to pull the docker image using the
 next command:
+
 ```bash
 docker pull ghcr.io/realm/swiftlint:latest
 ```
 
 Then following times, you just run `swiftlint` inside of the docker like:
+
 ```bash
 docker run -it -v `pwd`:`pwd` -w `pwd` ghcr.io/realm/swiftlint:latest
 ```
 
 This will execute `swiftlint` in the folder where you are right now (`pwd`),
 showing an output like:
+
 ```bash
 $ docker run -it -v `pwd`:`pwd` -w `pwd` ghcr.io/realm/swiftlint:latest
 Linting Swift files in current working directory
@@ -442,7 +447,7 @@ Here you have more documentation about the usage of
 
 ## Command Line Usage
 
-```
+```bash
 $ swiftlint help
 OVERVIEW: A tool to enforce Swift style and conventions.
 
@@ -511,7 +516,7 @@ You may also set the `TOOLCHAINS` environment variable to the reverse-DNS
 notation that identifies a Swift toolchain version:
 
 ```shell
-$ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint --fix
+TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint --fix
 ```
 
 On Linux, SourceKit is expected to be located in
@@ -536,6 +541,7 @@ Adjust `rev` to the SwiftLint version of your choice.  `pre-commit autoupdate`
 can be used to update to the current version.
 
 SwiftLint can be configured using `entry` to apply fixes and fail on errors:
+
 ```yaml
 -   repo: https://github.com/realm/SwiftLint
     rev: 0.50.3
@@ -874,7 +880,7 @@ conflicts.
 
 Here's an example, assuming you have the following file structure:
 
-```
+```txt
 ProjectRoot
     |_ .swiftlint.yml
     |_ .swiftlint_refinement.yml

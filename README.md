@@ -176,8 +176,11 @@ run it.
 
 ### From Source
 
-Cloning this project and run `make install`
-(Requires [bazel](https://bazel.build)).
+Make sure the build tool [Bazel](https://bazel.build) and a
+recent [Swift toolchain](https://www.swift.org/download/) are
+installed and all tools are discoverable in your `PATH`.
+
+To build SwiftLint, clone this repository and run `make install`.
 
 ## Setup
 
@@ -381,7 +384,7 @@ If you've installed SwiftLint via CocoaPods the script should look like this:
 
 ### Visual Studio Code
 
-To integrate SwiftLint with [vscode](https://code.visualstudio.com), install the
+To integrate SwiftLint with [Visual Studio Code](https://code.visualstudio.com), install the
 [`vscode-swiftlint`](https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftlint)
 extension from the marketplace.
 

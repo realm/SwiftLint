@@ -347,7 +347,11 @@
             
             <h1 id='swiftlint' class='heading'>SwiftLint</h1>
 
-<p>A tool to enforce Swift style and conventions, loosely based on the now archived <a href="https://github.com/github/swift-style-guide">GitHub Swift Style Guide</a>. SwiftLint enforces the style guide rules that are generally accepted by the Swift community. These rules are well described in popular style guides like <a href="https://github.com/kodecocodes/swift-style-guide">Kodeco&rsquo;s Swift Style Guide</a>.</p>
+<p>A tool to enforce Swift style and conventions, loosely based on the now
+archived <a href="https://github.com/github/swift-style-guide">GitHub Swift Style Guide</a>.
+SwiftLint enforces the style guide rules that are generally accepted by the
+Swift community. These rules are well described in popular style guides like
+<a href="https://github.com/kodecocodes/swift-style-guide">Kodeco&rsquo;s Swift Style Guide</a>.</p>
 
 <p>SwiftLint hooks into <a href="http://clang.llvm.org">Clang</a> and
 <a href="http://www.jpsim.com/uncovering-sourcekit">SourceKit</a> to use the
@@ -359,55 +363,78 @@ of your source files for more accurate results.</p>
 
 <p><img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/screenshot.png" alt=""></p>
 
-<p>This project adheres to the <a href="https://realm.io/conduct">Contributor Covenant Code of Conduct</a>.
+<p>This project adheres to the
+<a href="https://realm.io/conduct">Contributor Covenant Code of Conduct</a>.
 By participating, you are expected to uphold this code. Please report
 unacceptable behavior to <a href="mailto:info@realm.io">info@realm.io</a>.</p>
 
 <blockquote>
-<p>Language Switch: <a href="https://github.com/realm/SwiftLint/blob/main/README_CN.md">中文</a>, <a href="https://github.com/realm/SwiftLint/blob/main/README_KR.md">한국어</a>.</p>
+<p>Switch Language:
+<a href="https://github.com/realm/SwiftLint/blob/main/README_CN.md">中文</a>
+<a href="https://github.com/realm/SwiftLint/blob/main/README_KR.md">한국어</a></p>
 </blockquote>
-<h2 id='installation' class='heading'>Installation</h2>
-<h3 id='using-a-href-https-github-com-apple-swift-package-manager-swift-package-manager-a' class='heading'>Using <a href="https://github.com/apple/swift-package-manager">Swift Package Manager</a>:</h3>
+<h2 id='video-introduction' class='heading'>Video Introduction</h2>
 
-<blockquote>
-<p>Replace <code>&lt;version&gt;</code> with the desired minimum version.</p>
-</blockquote>
+<p>To get a high-level overview of SwiftLint, we encourage you to watch this
+presentation recorded January 9th, 2017 by JP Simard (transcript provided):</p>
+
+<p><a href="https://youtu.be/9Z1nTMTejqU"><img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/presentation.svg" alt="Presentation"></a></p>
+<h2 id='installation' class='heading'>Installation</h2>
+<h3 id='a-href-https-github-com-apple-swift-package-manager-swift-package-manager-a' class='heading'><a href="https://github.com/apple/swift-package-manager">Swift Package Manager</a></h3>
+
+<p>SwiftLint can be used as a <a href="#swift-package-command-plugin">command plugin</a>
+or a <a href="#swift-package-build-tool-plugins">build tool plugin</a>.</p>
+
+<p>Add</p>
 <pre class="highlight swift"><code><span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/realm/SwiftLint.git"</span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="s">"&lt;version&gt;"</span><span class="p">)</span>
 </code></pre>
 
-<p>SwiftLint can be used as a <a href="#swift-package-command-plugin">command plugin</a> or a <a href="#swift-package-build-tool-plugins">build tool plugin</a>.</p>
-<h3 id='using-a-href-http-brew-sh-homebrew-a' class='heading'>Using <a href="http://brew.sh/">Homebrew</a>:</h3>
+<p>to your <code>Package.swift</code> file to consume the latest release of SwiftLint
+automatically or pin the dependency to a specific version:</p>
+<pre class="highlight swift"><code><span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/realm/SwiftLint.git"</span><span class="p">,</span> <span class="nv">exact</span><span class="p">:</span> <span class="s">"&lt;version&gt;"</span><span class="p">)</span>
+</code></pre>
+
+<blockquote>
+<p>[!NOTE]
+Replace <code>&lt;version&gt;</code> with the desired minimum or exact version.</p>
+</blockquote>
+<h3 id='a-href-https-developer-apple-com-documentation-xcode-adding-package-dependencies-to-your-app-xcode-package-dependency-a' class='heading'><a href="https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app">Xcode Package Dependency</a></h3>
+
+<p>Use the following link to add SwiftLint as a Package Dependency to an Xcode
+project:</p>
+<pre class="highlight plaintext"><code>https://github.com/realm/SwiftLint
+</code></pre>
+
+<blockquote>
+<p>[!IMPORTANT]
+Do not add the <code>SwiftLintFramework</code> library or the
+<code>swiftlint</code> executable to any targets. Ensure <code>None</code>
+is selected when asked to choose package products.</p>
+</blockquote>
+<h3 id='a-href-http-brew-sh-homebrew-a' class='heading'><a href="http://brew.sh">Homebrew</a></h3>
 <pre class="highlight plaintext"><code>brew install swiftlint
 </code></pre>
-<h3 id='using-a-href-https-cocoapods-org-cocoapods-a' class='heading'>Using <a href="https://cocoapods.org">CocoaPods</a>:</h3>
+<h3 id='a-href-https-cocoapods-org-cocoapods-a' class='heading'><a href="https://cocoapods.org">CocoaPods</a></h3>
 
-<p>Simply add the following line to your Podfile:</p>
+<p>Add the following to your <code>Podfile</code>:</p>
 <pre class="highlight ruby"><code><span class="n">pod</span> <span class="s1">'SwiftLint'</span>
 </code></pre>
 
-<p>This will download the SwiftLint binaries and dependencies in <code>Pods/</code> during your next
-<code>pod install</code> execution and will allow you to invoke it via <code>${PODS_ROOT}/SwiftLint/swiftlint</code>
-in your Script Build Phases.</p>
+<p>This will download the SwiftLint binaries and dependencies in <code>Pods/</code> during
+your next <code>pod install</code> execution and will allow you to invoke it via
+<code>${PODS_ROOT}/SwiftLint/swiftlint</code> in your Script Build Phases.</p>
 
-<p>This is the recommended way to install a specific version of SwiftLint since it supports
-installing a pinned version rather than simply the latest (which is the case with Homebrew).</p>
+<p>Installing via Cocoapods also enables pinning to a specific version of
+SwiftLint rather than simply the latest (which is the case with
+<a href="#homebrew">Homebrew</a>).</p>
 
-<p>Note that this will add the SwiftLint binaries, its dependencies&rsquo; binaries, and the Swift binary
-library distribution to the <code>Pods/</code> directory, so checking in this directory to SCM such as
-git is discouraged.</p>
-<h3 id='using-a-href-https-github-com-yonaskolb-mint-mint-a' class='heading'>Using <a href="https://github.com/yonaskolb/mint">Mint</a>:</h3>
+<p>Note that this will add the SwiftLint binaries, its dependencies&rsquo; binaries, and
+the Swift binary library distribution to the <code>Pods/</code> directory, so checking in
+this directory to SCM such as Git is discouraged.</p>
+<h3 id='a-href-https-github-com-yonaskolb-mint-mint-a' class='heading'><a href="https://github.com/yonaskolb/mint">Mint</a></h3>
 <pre class="highlight plaintext"><code>$ mint install realm/SwiftLint
 </code></pre>
-<h3 id='using-a-pre-built-package' class='heading'>Using a pre-built package:</h3>
-
-<p>You can also install SwiftLint by downloading <code>SwiftLint.pkg</code> from the
-<a href="https://github.com/realm/SwiftLint/releases/latest">latest GitHub release</a> and
-running it.</p>
-<h3 id='installing-from-source' class='heading'>Installing from source:</h3>
-
-<p>You can also build and install from source by cloning this project and running
-<code>make install</code> (Xcode 15.0 or later).</p>
-<h3 id='using-bazel' class='heading'>Using Bazel</h3>
+<h3 id='a-href-https-bazel-build-bazel-a' class='heading'><a href="https://bazel.build">Bazel</a></h3>
 
 <p>Put this in your <code>MODULE.bazel</code>:</p>
 <pre class="highlight plaintext"><code>bazel_dep(name = "swiftlint", version = "0.52.4", repo_name = "SwiftLint")
@@ -469,60 +496,211 @@ swiftlint_deps()
 <p>Then you can run SwiftLint in the current directory with this command:</p>
 <pre class="highlight console"><code><span class="go">bazel run -c opt @SwiftLint//:swiftlint
 </span></code></pre>
-<h2 id='usage' class='heading'>Usage</h2>
-<h3 id='presentation' class='heading'>Presentation</h3>
+<h3 id='pre-built-package' class='heading'>Pre-Built Package</h3>
 
-<p>To get a high-level overview of recommended ways to integrate SwiftLint into your project,
-we encourage you to watch this presentation or read the transcript:</p>
+<p>Download <code>SwiftLint.pkg</code> from the
+<a href="https://github.com/realm/SwiftLint/releases/latest">latest GitHub release</a> and
+run it.</p>
+<h3 id='from-source' class='heading'>From Source</h3>
 
-<p><a href="https://youtu.be/9Z1nTMTejqU"><img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/presentation.svg" alt="Presentation"></a></p>
+<p>Make sure the build tool <a href="https://bazel.build">Bazel</a> and a
+recent <a href="https://www.swift.org/download/">Swift toolchain</a> are
+installed and all tools are discoverable in your <code>PATH</code>.</p>
+
+<p>To build SwiftLint, clone this repository and run <code>make install</code>.</p>
+<h2 id='setup' class='heading'>Setup</h2>
+
+<blockquote>
+<p>[!IMPORTANT]
+While it may seem intuitive to run SwiftLint before compiling Swift source
+files to exit a build early when there are lint violations, it is important
+to understand that SwiftLint is designed to analyze valid source code that
+is compilable. Non-compiling code can very easily lead to unexpected and
+confusing results, especially when executing with <code>--fix</code>/<code>--autocorrect</code>
+command line arguments.</p>
+</blockquote>
+<h3 id='swift-package-command-plugin' class='heading'>Swift Package Command Plugin</h3>
+
+<blockquote>
+<p>[!NOTE]
+Requires installing via <a href="#swift-package-manager">Swift Package Manager</a>.</p>
+</blockquote>
+
+<p>The command plugin enables running SwiftLint from the command line as follows:</p>
+<pre class="highlight shell"><code>swift package plugin swiftlint
+</code></pre>
+<h3 id='swift-package-build-tool-plugins' class='heading'>Swift Package Build Tool Plugins</h3>
+
+<p>SwiftLint can be used as a build tool plugin for both
+<a href="#swift-package-projects">Swift Package projects</a>
+and <a href="#xcode-projects">Xcode projects</a>.</p>
+
+<p>The build tool plugin determines the SwiftLint working directory by locating
+the topmost config file within the package/project directory. If a config file
+is not found therein, the package/project directory is used as the working
+directory.</p>
+
+<p>The plugin throws an error when it is unable to resolve the SwiftLint working
+directory. For example, this will occur in Xcode projects where the target&rsquo;s
+Swift files are not located within the project directory.</p>
+
+<p>To maximize compatibility with the plugin, avoid project structures that require
+the use of the <code>--config</code> option.</p>
+<h3 id='swift-package-projects' class='heading'>Swift Package Projects</h3>
+
+<blockquote>
+<p>[!NOTE]
+Requires installing via <a href="#swift-package-manager">Swift Package Manager</a>.</p>
+</blockquote>
+
+<p>Build tool plugins run when building each target. When a project has multiple
+targets, the plugin must be added to the desired targets individually.</p>
+
+<p>To do this, add the plugin to the target(s) to be linted as follows:</p>
+<pre class="highlight swift"><code><span class="o">.</span><span class="nf">target</span><span class="p">(</span>
+    <span class="o">...</span>
+    <span class="nv">plugins</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"SwiftLintBuildToolPlugin"</span><span class="p">,</span> <span class="nv">package</span><span class="p">:</span> <span class="s">"SwiftLint"</span><span class="p">)]</span>
+<span class="p">),</span>
+</code></pre>
+<h3 id='xcode-projects' class='heading'>Xcode Projects</h3>
+
+<blockquote>
+<p>[!NOTE]
+Requires installing via <a href="#xcode-package-dependency">Xcode Package Dependency</a>.</p>
+</blockquote>
+
+<p>Build tool plugins run as a build phase of each target. When a project has
+multiple targets, the plugin must be added to the desired targets individually.</p>
+
+<p>To do this, add the <code>SwiftLintBuildToolPlugin</code> to the <code>Run Build Tool Plug-ins</code>
+phase of the <code>Build Phases</code> for the target(s) to be linted.</p>
+
+<blockquote>
+<p>[!TIP]
+When using the plugin for the first time, be sure to trust and enable
+it when prompted. If a macros build warning exists, select it to trust
+and enable the macros as well.</p>
+</blockquote>
+
+<p>For unattended use (e.g. on CI), package plugin and macro
+validations can be disabled with either of the following:</p>
+
+<ul>
+<li>Using <code>xcodebuild</code> options:
+<code>
+-skipPackagePluginValidation
+-skipMacroValidation
+</code></li>
+<li>Setting Xcode defaults:
+<code>
+defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
+defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
+</code></li>
+</ul>
+
+<blockquote>
+<p>[!IMPORTANT]
+The unattended use options bypass Xcode&rsquo;s validation dialogs
+and implicitly trust all plugins and macros, which has security implications.</p>
+</blockquote>
+<h4 id='unexpected-xcode-project-structures' class='heading'>Unexpected Xcode Project Structures</h4>
+
+<p>Project structures where SwiftLint&rsquo;s configuration file is located
+outside of the package/project directory are not directly supported
+by the build tool plugin. This is because it isn&rsquo;t possible to pass
+arguments to build tool plugins (e.g., passing the config file path).</p>
+
+<p>If your project structure doesn&rsquo;t work directly with the build tool
+plugin, please consider one of the following options:</p>
+
+<ul>
+<li>To use a config file located outside the package/project directory, a config
+file may be added to that directory specifying a parent config path to the
+other config file, e.g., <code>parent_config: path/to/.swiftlint.yml</code>.</li>
+<li>You can also consider the use of a
+<a href="#xcode-run-script-build-phase">Run Script Build Phase</a> in place of the build
+tool plugin.</li>
+</ul>
 <h3 id='xcode-run-script-build-phase' class='heading'>Xcode Run Script Build Phase</h3>
 
-<p>Integrate SwiftLint into your Xcode project to get warnings and errors displayed
-in the issue navigator.</p>
+<p>If the build tool plugin does not work for your project setup or when
+additional custom setup is required, SwiftLint can be added as a Run Script
+Build Phase. This is useful when a project setup relies on the <code>--config</code>
+SwiftLint option; or to lint all targets together in a single <code>swiftlint</code>
+invocation. File inclusions and exclusions can be configured in the
+<a href="#configuration"><code>.swiftlint.yml</code> configuration</a>.</p>
 
-<p>To do this select the project in the file navigator, then select the primary app
-target, and go to Build Phases. Click the + and select &quot;New Run Script Phase&rdquo;.
-Insert the following as the script:</p>
+<p>To do this, add a custom script to a <code>Run Script</code> phase of the <code>Build Phases</code>
+of the primary app target, after the <code>Compile Sources</code> phase. Use the
+following script implementation:</p>
+<pre class="highlight plaintext"><code>if command -v swiftlint &gt;/dev/null 2&gt;&amp;1
+then
+    swiftlint
+else
+    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
+fi
+</code></pre>
 
-<p><img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/runscript.png" alt=""></p>
+<p><br></p>
 
-<p>Xcode 15 made a significant change by setting the default value of the <code>ENABLE_USER_SCRIPT_SANDBOXING</code> Build Setting from <code>NO</code> to <code>YES</code>.
+<blockquote>
+<p>[!TIP]
+Uncheck <code>Based on dependency analysis</code> to run <code>swiftlint</code> on all incremental
+builds, suppressing the unspecified outputs warning.</p>
+
+<p>[!NOTE]
+Based upon the installation method used, the shell command syntax in the
+Run Script Build Phase may be different or additional configuration could
+be required. Refer to the <a href="#installation">installation</a> instructions for
+more information.</p>
+</blockquote>
+
+<p><strong>Consideration for Xcode 15.0+</strong></p>
+
+<p>Xcode 15 made a significant change by setting the default value of the
+<code>ENABLE_USER_SCRIPT_SANDBOXING</code> build setting from <code>NO</code> to <code>YES</code>.
 As a result, SwiftLint encounters an error related to missing file permissions,
-which typically manifests as follows: <code>error: Sandbox: swiftlint(19427) deny(1) file-read-data.</code></p>
+which typically manifests as
+<code>error: Sandbox: swiftlint(19427) deny(1) file-read-data.</code></p>
 
-<p>To resolve this issue, it is necessary to manually set the <code>ENABLE_USER_SCRIPT_SANDBOXING</code> setting to <code>NO</code> for the specific target that SwiftLint is being configured for.</p>
+<p>To resolve this issue, it is necessary to manually set the
+<code>ENABLE_USER_SCRIPT_SANDBOXING</code> setting to <code>NO</code> for the specific target that
+SwiftLint is being configured for.</p>
 
-<p>If you installed SwiftLint via Homebrew on Apple Silicon, you might experience this warning:</p>
+<p><strong>Consideration for Apple Silicon</strong></p>
+
+<p>If you installed SwiftLint via Homebrew on Apple Silicon, you might experience
+this warning:</p>
 <div class="aside aside-warning">
     <p class="aside-title">Warning</p>
-    <p>SwiftLint not installed, download from <a href="https://github.com/realm/SwiftLint">https://github.com/realm/SwiftLint</a></p>
+    <p>SwiftLint not installed, download from
+<a href="https://github.com/realm/SwiftLint">https://github.com/realm/SwiftLint</a></p>
 
 </div>
 
-<p>That is because Homebrew on Apple Silicon installs the binaries into the <code>/opt/homebrew/bin</code>
-folder by default. To instruct Xcode where to find SwiftLint, you can either add
-<code>/opt/homebrew/bin</code> to the <code>PATH</code> environment variable in your build phase</p>
-<pre class="highlight shell"><code><span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">uname</span> <span class="nt">-m</span><span class="si">)</span><span class="s2">"</span> <span class="o">==</span> arm64 <span class="o">]]</span><span class="p">;</span> <span class="k">then
+<p>That is because Homebrew on Apple Silicon installs the binaries into the
+<code>/opt/homebrew/bin</code> folder by default. To instruct Xcode where to find
+SwiftLint, you can either add <code>/opt/homebrew/bin</code> to the <code>PATH</code> environment
+variable in your build phase:</p>
+<pre class="highlight shell"><code><span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">uname</span> <span class="nt">-m</span><span class="si">)</span><span class="s2">"</span> <span class="o">==</span> arm64 <span class="o">]]</span>
+<span class="k">then
     </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"/opt/homebrew/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
 <span class="k">fi
 
-if </span>which swiftlint <span class="o">&gt;</span> /dev/null<span class="p">;</span> <span class="k">then
-  </span>swiftlint
+if </span><span class="nb">command</span> <span class="nt">-v</span> swiftlint <span class="o">&gt;</span>/dev/null 2&gt;&amp;1
+<span class="k">then
+    </span>swiftlint
 <span class="k">else
-  </span><span class="nb">echo</span> <span class="s2">"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"</span>
+    </span><span class="nb">echo</span> <span class="s2">"warning: </span><span class="sb">`</span>swiftlint<span class="sb">`</span><span class="s2"> command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."</span>
 <span class="k">fi</span>
 </code></pre>
 
-<p>or you can create a symbolic link in <code>/usr/local/bin</code> pointing to the actual binary:</p>
+<p>or you can create a symbolic link in <code>/usr/local/bin</code> pointing to the actual
+binary:</p>
 <pre class="highlight shell"><code><span class="nb">ln</span> <span class="nt">-s</span> /opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint
 </code></pre>
 
-<p>You might want to move your SwiftLint phase directly before the &lsquo;Compile Sources&rsquo;
-step to detect errors quickly before compiling. However, SwiftLint is designed
-to run on valid Swift code that cleanly completes the compiler&rsquo;s parsing stage.
-So running SwiftLint before &lsquo;Compile Sources&rsquo; might yield some incorrect
-results.</p>
+<p><strong>Additional Considerations</strong></p>
 
 <p>If you wish to fix violations as well, your script could run
 <code>swiftlint --fix &amp;&amp; swiftlint</code> instead of just <code>swiftlint</code>. This will mean
@@ -532,87 +710,16 @@ your project for remaining violations.</p>
 <p>If you&rsquo;ve installed SwiftLint via CocoaPods the script should look like this:</p>
 <pre class="highlight shell"><code><span class="s2">"</span><span class="k">${</span><span class="nv">PODS_ROOT</span><span class="k">}</span><span class="s2">/SwiftLint/swiftlint"</span>
 </code></pre>
-<h3 id='swift-package-command-plugin' class='heading'>Swift Package Command Plugin</h3>
-
-<p>The command plugin enables running SwiftLint from the command line as follows:</p>
-<pre class="highlight shell"><code>swift package plugin swiftlint
-</code></pre>
-<h3 id='swift-package-build-tool-plugins' class='heading'>Swift Package Build Tool Plugins</h3>
-
-<p>SwiftLint can be used as a build tool plugin for both <a href="#xcode-projects">Xcode projects</a> and
-<a href="#swift-package-projects">Swift Package projects</a>.</p>
-
-<p>The build tool plugin determines the SwiftLint working directory by locating 
-the topmost config file within the package/project directory. If a config file
-is not found therein, the package/project directory is used as the working 
-directory.</p>
-
-<p>The plugin throws an error when it is unable to resolve the SwiftLint working 
-directory. For example, this will occur in Xcode projects where the target&rsquo;s
-Swift files are not located within the project directory.</p>
-
-<p>To maximize compatibility with the plugin, avoid project structures that require
-the use of the <code>--config</code> option.</p>
-<h4 id='unexpected-project-structures' class='heading'>Unexpected Project Structures</h4>
-
-<p>Project structures where SwiftLint&rsquo;s configuration file is located 
-outside of the package/project directory are not directly supported 
-by the build tool plugin. This is because it isn&rsquo;t possible to pass 
-arguments to build tool plugins (e.g., passing the config file path). </p>
-
-<p>If your project structure doesn&rsquo;t work directly with the build tool 
-plugin, please consider one of the following options:</p>
-
-<ul>
-<li>To use a config file located outside the package/project directory, a config 
-file may be added to that directory specifying a parent config path to the 
-other config file, e.g., <code>parent_config: path/to/.swiftlint.yml</code>.</li>
-<li>You can also consider the use of a Run Script Build Phase in place of the
-build tool plugin.</li>
-</ul>
-<h4 id='xcode-projects' class='heading'>Xcode Projects</h4>
-
-<p>You can integrate SwiftLint as an Xcode Build Tool Plugin if you&rsquo;re working
-with a project in Xcode.</p>
-
-<p>Add SwiftLint as a package dependency to your project without linking any of the
-products.</p>
-
-<p>Select the target you want to add linting to and open the <code>Build Phases</code> inspector.
-Open <code>Run Build Tool Plugins</code> and select the <code>+</code> button.
-Select <code>SwiftLintBuildToolPlugin</code> from the list and add it to the project.</p>
-
-<p><img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/select-swiftlint-plugin.png" alt=""></p>
-
-<p>For unattended use (e.g. on CI), you can disable the package and macro validation dialog by</p>
-
-<ul>
-<li>individually passing <code>-skipPackagePluginValidation</code> and <code>-skipMacroValidation</code> to <code>xcodebuild</code> or</li>
-<li>globally setting <code>defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES</code> and <code>defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES</code> 
-for that user.</li>
-</ul>
-
-<p><em>Note: This implicitly trusts all Xcode package plugins and macros in packages and bypasses Xcode&rsquo;s package validation
-       dialogs, which has security implications.</em></p>
-<h4 id='swift-package-projects' class='heading'>Swift Package Projects</h4>
-
-<p>You can integrate SwiftLint as a Swift Package Manager Plugin if you&rsquo;re working with
-a Swift Package with a <code>Package.swift</code> manifest.</p>
-
-<p>Add SwiftLint as a package dependency to your <code>Package.swift</code> file.<br>
-Add SwiftLint to a target using the <code>plugins</code> parameter.</p>
-<pre class="highlight swift"><code><span class="o">.</span><span class="nf">target</span><span class="p">(</span>
-    <span class="o">...</span>
-    <span class="nv">plugins</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"SwiftLintBuildToolPlugin"</span><span class="p">,</span> <span class="nv">package</span><span class="p">:</span> <span class="s">"SwiftLint"</span><span class="p">)]</span>
-<span class="p">),</span>
-</code></pre>
 <h3 id='visual-studio-code' class='heading'>Visual Studio Code</h3>
 
-<p>To integrate SwiftLint with <a href="https://code.visualstudio.com">vscode</a>, install the
-<a href="https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftlint"><code>vscode-swiftlint</code></a> extension from the marketplace.</p>
-<h3 id='fastlane' class='heading'>fastlane</h3>
+<p>To integrate SwiftLint with <a href="https://code.visualstudio.com">Visual Studio Code</a>, install the
+<a href="https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftlint"><code>vscode-swiftlint</code></a>
+extension from the marketplace.</p>
+<h3 id='fastlane' class='heading'>Fastlane</h3>
 
-<p>You can use the <a href="https://docs.fastlane.tools/actions/swiftlint">official swiftlint fastlane action</a> to run SwiftLint as part of your fastlane process.</p>
+<p>You can use the official
+<a href="https://docs.fastlane.tools/actions/swiftlint"><code>swiftlint</code> fastlane action</a>
+to run SwiftLint as part of your fastlane process.</p>
 <pre class="highlight ruby"><code><span class="n">swiftlint</span><span class="p">(</span>
     <span class="ss">mode: :lint</span><span class="p">,</span>                            <span class="c1"># SwiftLint mode: :lint (default) or :autocorrect</span>
     <span class="ss">executable: </span><span class="s2">"Pods/SwiftLint/swiftlint"</span><span class="p">,</span> <span class="c1"># The SwiftLint binary path (optional). Important if you've installed it via CocoaPods</span>
@@ -631,8 +738,9 @@ Add SwiftLint to a target using the <code>plugins</code> parameter.</p>
 </code></pre>
 <h3 id='docker' class='heading'>Docker</h3>
 
-<p><code>swiftlint</code> is also available as a <a href="https://www.docker.com/">Docker</a> image using <code>Ubuntu</code>.
-So just the first time you need to pull the docker image using the next command:</p>
+<p>SwiftLint is also available as a <a href="https://www.docker.com/">Docker</a> image using
+<code>Ubuntu</code>. So just the first time you need to pull the docker image using the
+next command:</p>
 <pre class="highlight shell"><code>docker pull ghcr.io/realm/swiftlint:latest
 </code></pre>
 
@@ -640,7 +748,8 @@ So just the first time you need to pull the docker image using the next command:
 <pre class="highlight shell"><code>docker run <span class="nt">-it</span> <span class="nt">-v</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> <span class="nt">-w</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> ghcr.io/realm/swiftlint:latest
 </code></pre>
 
-<p>This will execute <code>swiftlint</code> in the folder where you are right now (<code>pwd</code>), showing an output like:</p>
+<p>This will execute <code>swiftlint</code> in the folder where you are right now (<code>pwd</code>),
+showing an output like:</p>
 <pre class="highlight shell"><code><span class="nv">$ </span>docker run <span class="nt">-it</span> <span class="nt">-v</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> <span class="nt">-w</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> ghcr.io/realm/swiftlint:latest
 Linting Swift files <span class="k">in </span>current working directory
 Linting <span class="s1">'RuleDocumentation.swift'</span> <span class="o">(</span>1/490<span class="o">)</span>
@@ -649,8 +758,9 @@ Linting <span class="s1">'YamlSwiftLintTests.swift'</span> <span class="o">(</sp
 Done linting! Found 0 violations, 0 serious <span class="k">in </span>490 files.
 </code></pre>
 
-<p>Here you have more documentation about the usage of <a href="https://docs.docker.com/">Docker Images</a>.</p>
-<h3 id='command-line' class='heading'>Command Line</h3>
+<p>Here you have more documentation about the usage of
+<a href="https://docs.docker.com/">Docker Images</a>.</p>
+<h2 id='command-line-usage' class='heading'>Command Line Usage</h2>
 <pre class="highlight plaintext"><code>$ swiftlint help
 OVERVIEW: A tool to enforce Swift style and conventions.
 
@@ -680,12 +790,13 @@ will be searched recursively.</p>
 <a href="https://github.com/norio-nomura/ExtraBuildPhase"><code>ExtraBuildPhase</code></a> Xcode
 plugin, or modified files in the working tree based on <code>git ls-files -m</code>), you
 can do so by passing the option <code>--use-script-input-files</code> and setting the
-following instance variables: <code>SCRIPT_INPUT_FILE_COUNT</code> and
-<code>SCRIPT_INPUT_FILE_0</code>, <code>SCRIPT_INPUT_FILE_1</code>&hellip;<code>SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT - 1}</code>.</p>
+following instance variables: <code>SCRIPT_INPUT_FILE_COUNT</code>
+and <code>SCRIPT_INPUT_FILE_0</code>, <code>SCRIPT_INPUT_FILE_1</code>, &hellip;,
+<code>SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT - 1}</code>.</p>
 
 <p>These are same environment variables set for input files to
 <a href="http://indiestack.com/2014/12/speeding-up-custom-script-phases/">custom Xcode script phases</a>.</p>
-<h3 id='working-with-multiple-swift-versions' class='heading'>Working With Multiple Swift Versions</h3>
+<h2 id='working-with-multiple-swift-versions' class='heading'>Working With Multiple Swift Versions</h2>
 
 <p>SwiftLint hooks into SourceKit so it continues working even as Swift evolves!</p>
 
@@ -722,7 +833,7 @@ notation that identifies a Swift toolchain version:</p>
 <p>On Linux, SourceKit is expected to be located in
 <code>/usr/lib/libsourcekitdInProc.so</code> or specified by the <code>LINUX_SOURCEKIT_LIB_PATH</code>
 environment variable.</p>
-<h3 id='pre-commit' class='heading'>pre-commit</h3>
+<h2 id='git-code-pre-commit-code-hook' class='heading'>Git <code>pre-commit</code> Hook</h2>
 
 <p>SwiftLint can be run as a <a href="https://pre-commit.com/">pre-commit</a> hook.
 Once <a href="https://pre-commit.com/#install">installed</a>, add this to the
@@ -734,7 +845,8 @@ Once <a href="https://pre-commit.com/#install">installed</a>, add this to the
       <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">swiftlint</span>
 </code></pre>
 
-<p>Adjust <code>rev</code> to the SwiftLint version of your choice.  <code>pre-commit autoupdate</code> can be used to update to the current version.</p>
+<p>Adjust <code>rev</code> to the SwiftLint version of your choice.  <code>pre-commit autoupdate</code>
+can be used to update to the current version.</p>
 
 <p>SwiftLint can be configured using <code>entry</code> to apply fixes and fail on errors:</p>
 <pre class="highlight yaml"><code><span class="pi">-</span>   <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/realm/SwiftLint</span>
@@ -747,12 +859,14 @@ Once <a href="https://pre-commit.com/#install">installed</a>, add this to the
 
 <p>Over 200 rules are included in SwiftLint and the Swift community (that&rsquo;s you!)
 continues to contribute more over time.
-<a href="https://github.com/realm/SwiftLint/blob/main/CONTRIBUTING.md">Pull requests</a> are encouraged.</p>
+<a href="https://github.com/realm/SwiftLint/blob/main/CONTRIBUTING.md">Pull requests</a>
+are encouraged.</p>
 
 <p>You can find an updated list of rules and more information about them
 <a href="https://realm.github.io/SwiftLint/rule-directory.html">here</a>.</p>
 
-<p>You can also check <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintBuiltInRules/Rules">Source/SwiftLintBuiltInRules/Rules</a>
+<p>You can also check the
+<a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintBuiltInRules/Rules">Source/SwiftLintBuiltInRules/Rules</a>
 directory to see their implementation.</p>
 <h3 id='opt-in-rules' class='heading'>Opt-In Rules</h3>
 
@@ -786,7 +900,8 @@ matching enable comment:</p>
 <span class="k">let</span> <span class="nv">hasWarning</span> <span class="p">:</span><span class="kt">String</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// Warning generated about colons immediately after variable names</span>
 </code></pre>
 
-<p>Including the <code>all</code> keyword will disable all rules until the linter sees a matching enable comment:</p>
+<p>Including the <code>all</code> keyword will disable all rules until the linter sees a
+matching enable comment:</p>
 
 <p><code>// swiftlint:disable all</code>
 <code>// swiftlint:enable all</code></p>
@@ -923,9 +1038,9 @@ tested, and more.</p>
 following syntax:</p>
 <pre class="highlight yaml"><code><span class="na">custom_rules</span><span class="pi">:</span>
   <span class="na">pirates_beat_ninjas</span><span class="pi">:</span> <span class="c1"># rule identifier</span>
-    <span class="na">included</span><span class="pi">:</span> 
+    <span class="na">included</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="s2">"</span><span class="s">.*</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to include during linting. optional.</span>
-    <span class="na">excluded</span><span class="pi">:</span> 
+    <span class="na">excluded</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="s2">"</span><span class="s">.*Test</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to exclude during linting. optional</span>
     <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Pirates</span><span class="nv"> </span><span class="s">Beat</span><span class="nv"> </span><span class="s">Ninjas"</span> <span class="c1"># rule name. optional.</span>
     <span class="na">regex</span><span class="pi">:</span> <span class="s2">"</span><span class="s">([nN]inja)"</span> <span class="c1"># matching pattern</span>
@@ -944,12 +1059,13 @@ following syntax:</p>
 
 <p><img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/custom-rule.png" alt=""></p>
 
-<p>It is important to note that the regular expression pattern is used with the flags <code>s</code>
-and <code>m</code> enabled, that is <code>.</code>
+<p>It is important to note that the regular expression pattern is used with the
+flags <code>s</code> and <code>m</code> enabled, that is <code>.</code>
 <a href="https://developer.apple.com/documentation/foundation/nsregularexpression/options/1412529-dotmatcheslineseparators">matches newlines</a>
-and <code>^</code>/<code>$</code> 
+and <code>^</code>/<code>$</code>
 <a href="https://developer.apple.com/documentation/foundation/nsregularexpression/options/1408263-anchorsmatchlines">match the start and end of lines</a>,
-respectively. If you do not want to have <code>.</code> match newlines, for example, the regex can be prepended by <code>(?-s)</code>. </p>
+respectively. If you do not want to have <code>.</code> match newlines, for example, the
+regex can be prepended by <code>(?-s)</code>.</p>
 
 <p>You can filter the matches by providing one or more <code>match_kinds</code>, which will
 reject matches that include syntax kinds that are not present in this list. Here
@@ -1012,7 +1128,7 @@ command invocation (incremental builds will fail) must be passed to <code>analyz
 via the <code>--compiler-log-path</code> flag.
 e.g. <code>--compiler-log-path /path/to/xcodebuild.log</code></p>
 
-<p>This can be obtained by </p>
+<p>This can be obtained by</p>
 
 <ol>
 <li>Cleaning DerivedData (incremental builds won&rsquo;t work with analyze)</li>
@@ -1024,13 +1140,14 @@ e.g. <code>--compiler-log-path /path/to/xcodebuild.log</code></p>
 <h2 id='using-multiple-configuration-files' class='heading'>Using Multiple Configuration Files</h2>
 
 <p>SwiftLint offers a variety of ways to include multiple configuration files.
-Multiple configuration files get merged into one single configuration that is then applied
-just as a single configuration file would get applied.</p>
+Multiple configuration files get merged into one single configuration that is
+then applied just as a single configuration file would get applied.</p>
 
-<p>There are quite a lot of use cases where using multiple configuration files could be helpful:</p>
+<p>There are quite a lot of use cases where using multiple configuration files
+could be helpful:</p>
 
-<p>For instance, one could use a team-wide shared SwiftLint configuration while allowing overrides
-in each project via a child configuration file.</p>
+<p>For instance, one could use a team-wide shared SwiftLint configuration while
+allowing overrides in each project via a child configuration file.</p>
 
 <p>Team-Wide Configuration:</p>
 <pre class="highlight yaml"><code><span class="na">disabled_rules</span><span class="pi">:</span>
@@ -1043,12 +1160,14 @@ in each project via a child configuration file.</p>
 </code></pre>
 <h3 id='child-parent-configs-locally' class='heading'>Child / Parent Configs (Locally)</h3>
 
-<p>You can specify a <code>child_config</code> and / or a <code>parent_config</code> reference within a configuration file.
-These references should be local paths relative to the folder of the configuration file they are specified in.
-This even works recursively, as long as there are no cycles and no ambiguities.</p>
+<p>You can specify a <code>child_config</code> and / or a <code>parent_config</code> reference within a
+configuration file. These references should be local paths relative to the
+folder of the configuration file they are specified in. This even works
+recursively, as long as there are no cycles and no ambiguities.</p>
 
-<p><strong>A child config is treated as a refinement and therefore has a higher priority</strong>,
-while a parent config is considered a base with lower priority in case of conflicts.</p>
+<p><strong>A child config is treated as a refinement and thus has a higher priority</strong>,
+while a parent config is considered a base with lower priority in case of
+conflicts.</p>
 
 <p>Here&rsquo;s an example, assuming you have the following file structure:</p>
 <pre class="highlight plaintext"><code>ProjectRoot
@@ -1058,7 +1177,8 @@ while a parent config is considered a base with lower priority in case of confli
         |_ .swiftlint_base.yml
 </code></pre>
 
-<p>To include both the refinement and the base file, your <code>.swiftlint.yml</code> should look like this:</p>
+<p>To include both the refinement and the base file, your <code>.swiftlint.yml</code> should
+look like this:</p>
 <pre class="highlight yaml"><code><span class="na">child_config</span><span class="pi">:</span> <span class="s">.swiftlint_refinement.yml</span>
 <span class="na">parent_config</span><span class="pi">:</span> <span class="s">Base/.swiftlint_base.yml</span>
 </code></pre>
@@ -1068,9 +1188,10 @@ are processed carefully to account for differences in the directory location
 of the containing configuration files.</p>
 <h3 id='child-parent-configs-remote' class='heading'>Child / Parent Configs (Remote)</h3>
 
-<p>Just as you can provide local <code>child_config</code> / <code>parent_config</code> references, instead of
-referencing local paths, you can just put urls that lead to configuration files.
-In order for SwiftLint to detect these remote references, they must start with <code>http://</code> or <code>https://</code>.</p>
+<p>Just as you can provide local <code>child_config</code> / <code>parent_config</code> references,
+instead of referencing local paths, you can just put urls that lead to
+configuration files. In order for SwiftLint to detect these remote references,
+they must start with <code>http://</code> or <code>https://</code>.</p>
 
 <p>The referenced remote configuration files may even recursively reference other
 remote configuration files, but aren&rsquo;t allowed to include local references.</p>
@@ -1079,42 +1200,48 @@ remote configuration files, but aren&rsquo;t allowed to include local references
 <pre class="highlight yaml"><code><span class="na">parent_config</span><span class="pi">:</span> <span class="s">https://myteamserver.com/our-base-swiftlint-config.yml</span>
 </code></pre>
 
-<p>Every time you run SwiftLint and have an Internet connection, SwiftLint tries to get a new version of
-every remote configuration that is referenced. If this request times out, a cached version is
-used if available. If there is no cached version available, SwiftLint fails – but no worries, a cached version
-should be there once SwiftLint has run successfully at least once.</p>
+<p>Every time you run SwiftLint and have an Internet connection, SwiftLint tries
+to get a new version of every remote configuration that is referenced. If this
+request times out, a cached version is used if available. If there is no cached
+version available, SwiftLint fails – but no worries, a cached version should be
+there once SwiftLint has run successfully at least once.</p>
 
-<p>If needed, the timeouts for the remote configuration fetching can be specified manually via the
-configuration file(s) using the <code>remote_timeout</code> / <code>remote_timeout_if_cached</code> specifiers.
-These values default to 2 / 1 second(s).</p>
+<p>If needed, the timeouts for the remote configuration fetching can be specified
+manually via the configuration file(s) using the
+<code>remote_timeout</code> / <code>remote_timeout_if_cached</code> specifiers. These values default
+to 2 / 1 second(s).</p>
 <h3 id='command-line' class='heading'>Command Line</h3>
 
-<p>Instead of just providing one configuration file when running SwiftLint via the command line,
-you can also pass a hierarchy, where the first configuration is treated as a parent,
-while the last one is treated as the highest-priority child.</p>
+<p>Instead of just providing one configuration file when running SwiftLint via the
+command line, you can also pass a hierarchy, where the first configuration is
+treated as a parent, while the last one is treated as the highest-priority
+child.</p>
 
 <p>A simple example including just two configuration files looks like this:</p>
 
 <p><code>swiftlint --config .swiftlint.yml --config .swiftlint_child.yml</code></p>
 <h3 id='nested-configurations' class='heading'>Nested Configurations</h3>
 
-<p>In addition to a main configuration (the <code>.swiftlint.yml</code> file in the root folder),
-you can put other configuration files named <code>.swiftlint.yml</code> into the directory structure
-that then get merged as a child config, but only with an effect for those files
-that are within the same directory as the config or in a deeper directory where
-there isn&rsquo;t another configuration file. In other words: Nested configurations don&rsquo;t work 
-recursively – there&rsquo;s a maximum number of one nested configuration per file 
-that may be applied in addition to the main configuration.</p>
+<p>In addition to a main configuration (the <code>.swiftlint.yml</code> file in the root
+folder), you can put other configuration files named <code>.swiftlint.yml</code> into the
+directory structure that then get merged as a child config, but only with an
+effect for those files that are within the same directory as the config or in a
+deeper directory where there isn&rsquo;t another configuration file. In other words:
+Nested configurations don&rsquo;t work recursively – there&rsquo;s a maximum number of one
+nested configuration per file that may be applied in addition to the main
+configuration.</p>
 
-<p><code>.swiftlint.yml</code> files are only considered as a nested configuration if they have not been
-used to build the main configuration already (e. g. by having been referenced via something
-like <code>child_config: Folder/.swiftlint.yml</code>). Also, <code>parent_config</code> / <code>child_config</code>
-specifications of nested configurations are getting ignored because there&rsquo;s no sense to that.</p>
+<p><code>.swiftlint.yml</code> files are only considered as a nested configuration if they
+have not been used to build the main configuration already (e. g. by having
+been referenced via something like <code>child_config: Folder/.swiftlint.yml</code>).
+Also, <code>parent_config</code> / <code>child_config</code> specifications of nested configurations
+are getting ignored because there&rsquo;s no sense to that.</p>
 
-<p>If one (or more) SwiftLint file(s) are explicitly specified via the <code>--config</code> parameter,
-that configuration will be treated as an override, no matter whether there exist
-other <code>.swiftlint.yml</code> files somewhere within the directory. <strong>So if you want to use
- nested configurations, you can&rsquo;t use the <code>--config</code> parameter.</strong></p>
+<p>If one (or more) SwiftLint file(s) are explicitly specified via the <code>--config</code>
+parameter, that configuration will be treated as an override, no matter whether
+there exist other <code>.swiftlint.yml</code> files somewhere within the directory.
+<strong>So if you want to use nested configurations, you can&rsquo;t use the <code>--config</code>
+parameter.</strong></p>
 <h2 id='license' class='heading'>License</h2>
 
 <p><a href="https://github.com/realm/SwiftLint/blob/main/LICENSE">MIT licensed.</a></p>

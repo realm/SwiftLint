@@ -76,10 +76,7 @@ private final class ElementCollector: SyntaxAnyVisitor {
     var varDecls = [VariableDeclSyntax]()
 
     override func visitAny(_ node: Syntax) -> SyntaxVisitorContinueKind {
-        if node.isProtocol((any NamedDeclSyntax).self) {
-            return .skipChildren
-        }
-        return .visitChildren
+        node.isProtocol((any NamedDeclSyntax).self) ? .skipChildren : .visitChildren
     }
 
     override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {

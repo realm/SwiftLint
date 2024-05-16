@@ -71,42 +71,48 @@ private extension UnneededSynthesizedInitializerRule {
     }
 }
 
+private final class ElementCollector: SyntaxAnyVisitor {
+    var initializers = [InitializerDeclSyntax]()
+    var varDecls = [VariableDeclSyntax]()
+
+    override func visitAny(_ node: Syntax) -> SyntaxVisitorContinueKind {
+        node.isProtocol((any NamedDeclSyntax).self) ? .skipChildren : .visitChildren
+    }
+
+    override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+        initializers.append(node)
+        return .skipChildren
+    }
+
+    override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+        varDecls.append(node)
+        return .skipChildren
+    }
+}
+
 private extension StructDeclSyntax {
     var unneededInitializers: [InitializerDeclSyntax] {
-        let unneededInitializers = findUnneededInitializers()
-        let initializersCount = memberBlock.members.filter { $0.decl.is(InitializerDeclSyntax.self) }.count
-        if unneededInitializers.count == initializersCount {
+        let collector = ElementCollector(viewMode: .sourceAccurate)
+        collector.walk(memberBlock)
+        let unneededInitializers = findUnneededInitializers(in: collector)
+        if unneededInitializers.count == collector.initializers.count {
             return unneededInitializers
         }
         return []
     }
 
-    // Collects all of the initializers that could be replaced by the synthesized
+    // Finds all of the initializers that could be replaced by the synthesized
     // memberwise or default initializer(s).
-    private func findUnneededInitializers() -> [InitializerDeclSyntax] {
-        var storedProperties: [VariableDeclSyntax] = []
-        var initializers: [InitializerDeclSyntax] = []
-
-        for memberItem in memberBlock.members {
-            let member = memberItem.decl
-            // Collect all stored variables into a list.
-            if let varDecl = member.as(VariableDeclSyntax.self) {
-                if !varDecl.modifiers.contains(keyword: .static) {
-                    storedProperties.append(varDecl)
-                }
-            } else if let initDecl = member.as(InitializerDeclSyntax.self),
-                      initDecl.optionalMark == nil,
-                      !initDecl.hasThrowsOrRethrowsKeyword {
-                // Collect any possible redundant initializers into a list.
-                initializers.append(initDecl)
-            }
+    private func findUnneededInitializers(in collector: ElementCollector) -> [InitializerDeclSyntax] {
+        let initializers = collector.initializers.filter {
+            $0.optionalMark == nil && !$0.hasThrowsOrRethrowsKeyword
         }
-
+        let varDecls = collector.varDecls.filter { !$0.modifiers.contains(keyword: .static) }
         return initializers.filter {
-            self.initializerParameters($0.parameterList, match: storedProperties) &&
+            self.initializerParameters($0.parameterList, match: varDecls) &&
             (($0.parameterList.isEmpty && hasNoSideEffects($0.body)) ||
-             initializerBody($0.body, matches: storedProperties)) &&
-            initializerModifiers($0.modifiers, match: storedProperties) && !$0.isInlinable
+             initializerBody($0.body, matches: varDecls)) &&
+            initializerModifiers($0.modifiers, match: varDecls) && !$0.isInlinable
         }
     }
 

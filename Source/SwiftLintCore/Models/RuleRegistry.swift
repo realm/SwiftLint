@@ -1,5 +1,5 @@
 /// Container to register and look up SwiftLint rules.
-public final class RuleRegistry {
+public final class RuleRegistry: @unchecked Sendable {
     private var registeredRules = [any Rule.Type]()
 
     /// Shared rule registry instance.

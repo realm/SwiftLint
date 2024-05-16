@@ -82,9 +82,9 @@
       ],
       "tool" : {
         "driver" : {
-          "informationUri" : "https:\/\/github.com\/realm\/SwiftLint\/blob\/0.55.0\/README.md",
+          "informationUri" : "https:\/\/github.com\/realm\/SwiftLint\/blob\/${SWIFT_LINT_VERSION}\/README.md",
           "name" : "SwiftLint",
-          "semanticVersion" : "0.55.0"
+          "semanticVersion" : "${SWIFT_LINT_VERSION}"
         }
       }
     }

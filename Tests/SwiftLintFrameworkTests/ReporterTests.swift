@@ -98,7 +98,10 @@ final class ReporterTests: SwiftLintTestCase {
     }
 
     func testSARIFReporter() {
-        let expectedOutput = stringFromFile("CannedSARIFReporterOutput.json")
+        let expectedOutput = stringFromFile("CannedSARIFReporterOutput.json").replacingOccurrences(
+            of: "${SWIFT_LINT_VERSION}",
+            with: SwiftLintCore.Version.current.value
+        ).trimmingCharacters(in: .whitespacesAndNewlines)
         let result = SARIFReporter.generateReport(generateViolations())
         XCTAssertEqual(expectedOutput, result)
     }

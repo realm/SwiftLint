@@ -624,6 +624,14 @@ tool plugin.</li>
 </ul>
 <h3 id='xcode-run-script-build-phase' class='heading'>Xcode Run Script Build Phase</h3>
 
+<blockquote>
+<p>[!NOTE]
+Based upon the installation method used, the shell command syntax in the
+Run Script Build Phase may be different or additional configuration could
+be required. Refer to the <a href="#installation">installation</a> instructions for
+more information.</p>
+</blockquote>
+
 <p>If the build tool plugin does not work for your project setup or when
 additional custom setup is required, SwiftLint can be added as a Run Script
 Build Phase. This is useful when a project setup relies on the <code>--config</code>
@@ -646,12 +654,6 @@ following script implementation:</p>
 <p>[!TIP]
 Uncheck <code>Based on dependency analysis</code> to run <code>swiftlint</code> on all incremental
 builds, suppressing the unspecified outputs warning.</p>
-
-<p>[!NOTE]
-Based upon the installation method used, the shell command syntax in the
-Run Script Build Phase may be different or additional configuration could
-be required. Refer to the <a href="#installation">installation</a> instructions for
-more information.</p>
 </blockquote>
 <h4 id='consideration-for-xcode-15-0' class='heading'>Consideration for Xcode 15.0</h4>
 

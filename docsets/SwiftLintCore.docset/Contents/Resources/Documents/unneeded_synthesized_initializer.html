@@ -553,6 +553,14 @@ warning
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">bar</span><span class="p">:</span> <span class="kt">Int</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="kd">@Clamped</span> <span class="nv">bar</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">bar</span> <span class="o">=</span> <span class="n">bar</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">bar</span><span class="p">:</span> <span class="kt">Int</span>
 
     <span class="nf">init</span><span class="p">(</span><span class="nv">bar</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>

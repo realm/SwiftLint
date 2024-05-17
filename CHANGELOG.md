@@ -19,6 +19,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5592](https://github.com/realm/SwiftLint/issues/5592)
 
+* Keep initializers with attributed parameters in
+  `unneeded_synthesized_initializer` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5153](https://github.com/realm/SwiftLint/issues/5153)
+
 ## 0.55.1: Universal Washing Powder
 
 #### Breaking

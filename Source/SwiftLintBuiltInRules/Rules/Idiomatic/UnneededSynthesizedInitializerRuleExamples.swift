@@ -200,6 +200,15 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 """),
         Example("""
                 struct Foo {
+                    var bar: Int
+
+                    init(@Clamped bar: Int) {
+                        self.bar = bar
+                    }
+                }
+                """),
+        Example("""
+                struct Foo {
                     let bar: Int
 
                     init(bar: Int) {

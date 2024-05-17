@@ -132,7 +132,7 @@ private extension StructDeclSyntax {
         }
 
         for (idx, parameter) in initializerParameters.enumerated() {
-            guard parameter.secondName == nil else {
+            guard parameter.secondName == nil, parameter.attributes.isEmpty else {
                 return false
             }
             let property = storedProperties[idx]

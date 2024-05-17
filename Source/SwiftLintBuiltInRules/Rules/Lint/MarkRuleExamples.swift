@@ -20,6 +20,14 @@ internal struct MarkRuleExamples {
               // MARK: good
         }
         """),
+        Example("""
+        /// Comment
+        /// `xxx://marketingOptIn`
+        struct S {}
+
+          ///  //marketingOptIn
+        struct T {}
+        """, excludeFromDocumentation: true),
         issue1749Example
     ]
 

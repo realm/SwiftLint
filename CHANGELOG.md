@@ -14,7 +14,10 @@
 
 #### Bug Fixes
 
-* None.
+* Stop triggering `mark` rule on "mark" comments in the middle of another
+  comment.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5592](https://github.com/realm/SwiftLint/issues/5592)
 
 ## 0.55.1: Universal Washing Powder
 

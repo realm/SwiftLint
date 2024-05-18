@@ -60,7 +60,7 @@ final class IntegrationTests: SwiftLintTestCase {
             .map {
                 """
                 \($0.identifier):
-                \($0.init().configurationDescription.yaml().indent(by: 2))
+                \($0.init().createConfigurationDescription().yaml().indent(by: 2))
                 """
             }
             .joined(separator: "\n")

@@ -133,7 +133,10 @@ struct MissingDocsRule: OptInRule {
 
 private extension MissingDocsRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private var aclScope = Stack<AccessControlBehavior>()
+
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+            defer { aclScope.push(node.modifiers.accessibility) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -141,16 +144,25 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
+        override func visitPost(_ node: ActorDeclSyntax) {
+            aclScope.pop()
+        }
+
         override func visitPost(_ node: AssociatedTypeDeclSyntax) {
             collectViolation(from: node, on: node.associatedtypeKeyword)
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            defer { aclScope.push(node.modifiers.accessibility) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
             collectViolation(from: node, on: node.classKeyword)
             return .visitChildren
+        }
+
+        override func visitPost(_ node: ClassDeclSyntax) {
+            aclScope.pop()
         }
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
@@ -182,6 +194,7 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            defer { aclScope.push(node.modifiers.accessibility) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -189,7 +202,12 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
+        override func visitPost(_ node: EnumDeclSyntax) {
+            aclScope.pop()
+        }
+
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            defer { aclScope.push(node.modifiers.accessibility, appliesToChildren: true) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -200,18 +218,24 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: FunctionDeclSyntax) {
-            collectViolation(from: node, on: node.funcKeyword)
+        override func visitPost(_ node: ExtensionDeclSyntax) {
+            aclScope.pop()
         }
 
-        override func visitPost(_ node: InitializerDeclSyntax) {
-            if node.signature.parameterClause.parameters.isEmpty, configuration.excludesTrivialInit {
-                return
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+            collectViolation(from: node, on: node.funcKeyword)
+            return .skipChildren
+        }
+
+        override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+            if node.signature.parameterClause.parameters.isNotEmpty || !configuration.excludesTrivialInit {
+                collectViolation(from: node, on: node.initKeyword)
             }
-            collectViolation(from: node, on: node.initKeyword)
+            return .skipChildren
         }
 
         override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+            defer { aclScope.push(node.modifiers.accessibility, appliesToChildren: true) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -219,7 +243,12 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
+        override func visitPost(_ node: ProtocolDeclSyntax) {
+            aclScope.pop()
+        }
+
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            defer { aclScope.push(node.modifiers.accessibility) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -227,28 +256,29 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: SubscriptDeclSyntax) {
+        override func visitPost(_ node: StructDeclSyntax) {
+            aclScope.pop()
+        }
+
+        override func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
             collectViolation(from: node, on: node.subscriptKeyword)
+            return .skipChildren
         }
 
         override func visitPost(_ node: TypeAliasDeclSyntax) {
             collectViolation(from: node, on: node.typealiasKeyword)
         }
 
-        override func visitPost(_ node: VariableDeclSyntax) {
+        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
             collectViolation(from: node, on: node.bindingSpecifier)
+            return .skipChildren
         }
 
         private func collectViolation(from node: some WithModifiersSyntax, on token: TokenSyntax) {
             if node.modifiers.contains(keyword: .override) || node.hasDocComment {
                 return
             }
-            if node.parent?.is(MemberBlockItemSyntax.self) != true, node.parentDeclGroup != nil {
-                // Declaration is not a member item but within another declaration. Nested declarations are implicitly
-                // hidden, hence don't require documentation.
-                return
-            }
-            let acl = node.modifiers.accessibility ?? node.defaultAccessibility
+            let acl = aclScope.computeAcl(givenExplicitAcl: node.modifiers.accessibility)
             if let parameter = configuration.parameters.first(where: { $0.value == acl }) {
                 violations.append(
                     ReasonedRuleViolation(
@@ -299,5 +329,46 @@ private extension DeclModifierListSyntax {
 
     var staticOrClass: TokenSyntax? {
         first { $0.name.text == "static" || $0.name.text == "class" }?.name
+    }
+}
+
+private enum AccessControlBehavior {
+    /// ACL as specified or inherited from the declaration's parent.
+    case strict(AccessControlLevel)
+    /// Internal visibility for declarations in otherwise public contexts.
+    case impliedInternal
+}
+
+/// Implementation of Swift's effective ACL logic. Should be moved to a specialized syntax visitor for reuse some time.
+private extension Stack<AccessControlBehavior> {
+    mutating func push(_ acl: AccessControlLevel?, appliesToChildren: Bool = false) {
+        if let parentBehavior = peek() {
+            if case let .strict(parentAcl) = parentBehavior {
+                if let acl, acl < parentAcl {
+                    push(.strict(acl))
+                } else {
+                    push(.strict(parentAcl))
+                }
+            } else {
+                push(.strict(acl ?? .internal))
+            }
+        } else if let acl {
+            push(appliesToChildren || acl < .public ? .strict(acl) : .impliedInternal)
+        } else {
+            push(.strict(.internal))
+        }
+    }
+
+    func computeAcl(givenExplicitAcl acl: AccessControlLevel?) -> AccessControlLevel {
+        switch peek() {
+        case let .strict(parentAcl):
+            if let acl, acl < parentAcl {
+                acl
+            } else {
+                parentAcl
+            }
+        case .impliedInternal, .none:
+            acl ?? .internal
+        }
     }
 }

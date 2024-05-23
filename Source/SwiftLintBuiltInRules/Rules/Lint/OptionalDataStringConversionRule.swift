@@ -22,8 +22,9 @@ private extension OptionalDataStringConversionRule {
         override func visitPost(_ node: DeclReferenceExprSyntax) {
             if node.baseName.text == "String",
                let parent = node.parent?.as(FunctionCallExprSyntax.self),
-               parent.arguments.map({ $0.label?.text }) == ["decoding", "as"],
-               parent.arguments.last?.expression.as(IdentifierTypeSyntax.self)?.name == "UTF8.self" {
+               let expr = parent.arguments.last?.expression.as(MemberAccessExprSyntax.self),
+               expr.base?.description == "UTF8",
+               expr.declName.baseName.description == "self" {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }

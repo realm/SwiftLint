@@ -5,16 +5,14 @@ struct NonOptionalStringDataConversionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
     static let description = RuleDescription(
         identifier: "non_optional_string_data_conversion",
-        name: "Non-Optional String <-> Data Conversion",
-        description: "Prefer using UTF-8 encoded strings when converting between `String` and `Data`",
+        name: "Non-Optional String -> Data Conversion",
+        description: "Prefer using non-optional Data(_:) when converting a UTF-8 String to Data",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("Data(\"foo\".utf8)"),
-            Example("String(decoding: data, as: UTF8.self)"),
+            Example("Data(\"foo\".utf8)")
         ],
         triggeringExamples: [
-            Example("\"foo\".data(using: .utf8)"),
-            Example("String(data: data, encoding: .utf8)"),
+            Example("\"foo\".data(using: .utf8)")
         ]
     )
 }
@@ -28,15 +26,6 @@ private extension NonOptionalStringDataConversionRule {
                let argument = parent.arguments.onlyElement,
                argument.label?.text == "using",
                argument.expression.as(MemberAccessExprSyntax.self)?.isUTF8 == true {
-                violations.append(node.positionAfterSkippingLeadingTrivia)
-            }
-        }
-
-        override func visitPost(_ node: DeclReferenceExprSyntax) {
-            if node.baseName.text == "String",
-               let parent = node.parent?.as(FunctionCallExprSyntax.self),
-               parent.arguments.map({ $0.label?.text }) == ["data", "encoding"],
-               parent.arguments.last?.expression.as(MemberAccessExprSyntax.self)?.isUTF8 == true {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }

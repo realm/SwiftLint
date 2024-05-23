@@ -18,6 +18,10 @@
   `ignore_multiline_function_signatures`.  
   [leonardosrodrigues0](https://github.com/leonardosrodrigues0)
   [#3720](https://github.com/realm/SwiftLint/issues/3720)
+* Add new `optional_data_string_conversion` rule to enforce
+  failable conversions of `Data` -> UTF-8 `String`.
+  [Sam Rayner](https://github.com/samrayner)
+  [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
 #### Bug Fixes
 
@@ -233,6 +237,11 @@
   rule.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5709](https://github.com/realm/SwiftLint/issues/5709)
+
+* Revert `optional_data_string_conversion` enforcing
+  non-failable conversions of `Data` -> UTF-8 `String`.
+  [Sam Rayner](https://github.com/samrayner)
+  [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
 ## 0.55.1: Universal Washing Powder
 

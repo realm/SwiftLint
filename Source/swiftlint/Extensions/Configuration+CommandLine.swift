@@ -213,8 +213,10 @@ extension Configuration {
     fileprivate func getFiles(with visitor: LintableFilesVisitor) async throws -> [SwiftLintFile] {
         if visitor.useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
-            let stdinString = String(decoding: stdinData, as: UTF8.self)
-            return [SwiftLintFile(contents: stdinString)]
+            if let stdinString = String(data: stdinData, encoding: .utf8) {
+                return [SwiftLintFile(contents: stdinString)]
+            }
+            throw SwiftLintError.usageError(description: "stdin isn't a UTF8-encoded string")
         }
         if visitor.useScriptInputFiles {
             let files = try scriptInputFiles()

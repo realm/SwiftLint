@@ -71,6 +71,16 @@ public struct Baseline: Equatable {
         }
 
         let relativePathViolations = BaselineViolations(violations)
+        let violationsWithAbsolutePaths = filter(
+            relativePathViolations: relativePathViolations,
+            baselineViolations: baselineViolations
+        )
+        return violations.filter { violationsWithAbsolutePaths.contains($0) }
+    }
+
+    private func filter(
+        relativePathViolations: BaselineViolations, baselineViolations: BaselineViolations
+    ) -> Set<StyleViolation> {
         if relativePathViolations == baselineViolations {
             return []
         }
@@ -106,8 +116,7 @@ public struct Baseline: Equatable {
             }
         }
 
-        let violationsWithAbsolutePaths = Set(filteredViolations.violationsWithAbsolutePaths)
-        return violations.filter { violationsWithAbsolutePaths.contains($0) }
+        return Set(filteredViolations.violationsWithAbsolutePaths)
     }
 
     /// Returns the violations that are present in another `Baseline`, but not in this one.
@@ -116,8 +125,13 @@ public struct Baseline: Equatable {
     ///
     /// - parameter otherBaseline: The other `Baseline`.
     public func compare(_ otherBaseline: Baseline) -> [StyleViolation] {
-        otherBaseline.baseline.flatMap {
-            filter($1.violationsWithAbsolutePaths)
+        otherBaseline.baseline.flatMap { relativePath, otherBaselineViolations -> Set<StyleViolation> in
+            if let baselineViolations = baseline[relativePath] {
+                return filter(relativePathViolations: otherBaselineViolations, baselineViolations: baselineViolations)
+            }
+            return Set(otherBaselineViolations.violationsWithAbsolutePaths)
+        }.sorted {
+            $0.location == $1.location ? $0.ruleIdentifier < $1.ruleIdentifier : $0.location < $1.location
         }
     }
 }

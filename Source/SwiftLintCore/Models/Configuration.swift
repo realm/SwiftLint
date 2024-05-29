@@ -44,6 +44,9 @@ public struct Configuration {
     /// The path to write a baseline to.
     public let writeBaseline: String?
 
+    /// Check for updates
+    public let checkForUpdates: Bool
+
     /// This value is `true` iff the `--config` parameter was used to specify (a) configuration file(s)
     /// In particular, this means that the value is also `true` if the `--config` parameter
     /// was used to explicitly specify the default `.swiftlint.yml` as the configuration file
@@ -82,6 +85,7 @@ public struct Configuration {
         strict: Bool,
         baseline: String?,
         writeBaseline: String?
+        checkForUpdates: Bool
     ) {
         self.rulesWrapper = rulesWrapper
         self.fileGraph = fileGraph
@@ -95,6 +99,7 @@ public struct Configuration {
         self.strict = strict
         self.baseline = baseline
         self.writeBaseline = writeBaseline
+        self.checkForUpdates = checkForUpdates
     }
 
     /// Creates a Configuration by copying an existing configuration.
@@ -114,6 +119,7 @@ public struct Configuration {
         strict = configuration.strict
         baseline = configuration.baseline
         writeBaseline = configuration.writeBaseline
+        checkForUpdates = configuration.checkForUpdates
     }
 
     /// Creates a `Configuration` by specifying its properties directly,
@@ -125,7 +131,7 @@ public struct Configuration {
     /// - parameter ruleList:               The list of all rules. Used for alias resolving and as a fallback
     ///                                     if `allRulesWrapped` is nil.
     /// - parameter filePath                The underlaying file graph. If `nil` is specified, a empty file graph
-    ///                                     with the current working directory as the `rootDirectory` will be used
+    ///                                     with the current working directory as the `rootDirectory` will be used.
     /// - parameter includedPaths:          Included paths to lint.
     /// - parameter excludedPaths:          Excluded paths to not lint.
     /// - parameter indentation:            The style to use when indenting Swift source code.
@@ -139,6 +145,7 @@ public struct Configuration {
     /// - parameter strict:                 Treat warnings as errors.
     /// - parameter baseline:               The path to read a baseline from.
     /// - parameter writeBaseline:          The path to write a baseline to.
+    /// - parameter checkForUpdates:        Check for updates to SwiftLint.
     package init(
         rulesMode: RulesMode = .default(disabled: [], optIn: []),
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
@@ -154,7 +161,8 @@ public struct Configuration {
         allowZeroLintableFiles: Bool = false,
         strict: Bool = false,
         baseline: String? = nil,
-        writeBaseline: String? = nil
+        writeBaseline: String? = nil,
+        checkForUpdates: Bool = false
     ) {
         if let pinnedVersion, pinnedVersion != Version.current.value {
             queuedPrintError(
@@ -183,6 +191,7 @@ public struct Configuration {
             strict: strict,
             baseline: baseline,
             writeBaseline: writeBaseline
+            checkForUpdates: checkForUpdates
         )
     }
 
@@ -289,6 +298,7 @@ extension Configuration: Hashable {
         hasher.combine(strict)
         hasher.combine(baseline)
         hasher.combine(writeBaseline)
+        hasher.combine(checkForUpdates)
         hasher.combine(basedOnCustomConfigurationFiles)
         hasher.combine(cachePath)
         hasher.combine(rules.map { type(of: $0).description.identifier })
@@ -309,6 +319,7 @@ extension Configuration: Hashable {
             lhs.strict == rhs.strict &&
             lhs.baseline == rhs.baseline &&
             lhs.writeBaseline == rhs.writeBaseline &&
+            lhs.checkForUpdates == rhs.checkForUpdates &&
             lhs.rulesMode == rhs.rulesMode
     }
 }

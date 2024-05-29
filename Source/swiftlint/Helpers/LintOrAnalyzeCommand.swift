@@ -48,9 +48,6 @@ struct LintOrAnalyzeCommand {
         try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
             try await options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
         }
-        if options.checkForUpdates {
-            UpdateChecker.checkForUpdates()
-        }
         ExitHelper.successfullyExit()
     }
 
@@ -62,6 +59,9 @@ struct LintOrAnalyzeCommand {
         }
         try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
             try postProcessViolations(files: files, builder: builder)
+        }
+        if options.checkForUpdates || builder.configuration.checkForUpdates {
+            UpdateChecker.checkForUpdates()
         }
     }
 

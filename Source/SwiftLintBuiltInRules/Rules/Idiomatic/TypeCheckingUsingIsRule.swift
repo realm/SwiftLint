@@ -12,13 +12,37 @@ struct TypeCheckingUsingIsRule: Rule {
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("let dog = dog as? Dog"),
-            Example("nonTriggering is Example")
+            Example("nonTriggering is Example"),
+            Example("""
+            if a is Dog {
+                doSomeThing()
+            }
+            """),
+            Example("""
+            if let dog = dog as? Dog {
+                dog.run()
+            }
+            """)
         ],
         triggeringExamples: [
-            Example("triggering ↓as? Example != nil")
+            Example("triggering ↓as? Example != nil"),
+            Example("""
+            if a ↓as? Dog != nil {
+                doSomeThing()
+            }
+            """)
         ],
         corrections: [
-            Example("triggering ↓as? Example != nil"): Example("triggering is Example")
+            Example("triggering ↓as? Example != nil"): Example("triggering is Example"),
+            Example("""
+            if a ↓as? Dog != nil {
+                doSomeThing()
+            }
+            """): Example("""
+            if a is Dog {
+                doSomeThing()
+            }
+            """)
         ]
     )
 }

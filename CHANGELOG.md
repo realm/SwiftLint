@@ -2,6 +2,76 @@
 
 #### Breaking
 
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Stop triggering `mark` rule on "mark" comments in the middle of another
+  comment.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5592](https://github.com/realm/SwiftLint/issues/5592)
+
+* Keep initializers with attributed parameters in
+  `unneeded_synthesized_initializer` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5153](https://github.com/realm/SwiftLint/issues/5153)
+
+## 0.55.1: Universal Washing Powder
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Clarify wording of `static_over_final_class` rule's violation message.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5570](https://github.com/realm/SwiftLint/issues/5570)
+
+#### Bug Fixes
+
+* Fix Bazel build when `bzlmod` is not in use by adding transitive dependencies
+  explicitly.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5568](https://github.com/realm/SwiftLint/issues/5568)
+
+* Treat condionally activatable variable declarations and initializer as if
+  they were always active in `unneeded_synthesized_initializer` rule to avoid
+  compilation issues when unexpected items are there after all.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5574](https://github.com/realm/SwiftLint/issues/5574)
+
+* Silence `unused_enumerated` rule when `$0` in a closure is explicitly unpacked.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5573](https://github.com/realm/SwiftLint/issues/5573)
+
+* Remove redundant initializers in `unneeded_override` rule only when checking
+  initializers is actually enabled in the configuration.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5571](https://github.com/realm/SwiftLint/issues/5571)
+
+* Respect comments before opening brace in `opening_brace` rule when there is
+  one space before the brace after the comment. Everything else is still a
+  violation, yet the rewriter will not remove the comment anymore.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5578](https://github.com/realm/SwiftLint/issues/5578)
+
+## 0.55.0: Universal Washing Powder
+
+#### Breaking
+
 * Rewrite `SwiftLintBuildToolPlugin` using `BUILD_WORKSPACE_DIRECTORY` without relying
   on the `--config` option.  
   [Garric Nahapetian](https://github.com/garricn)
@@ -207,6 +277,11 @@
   [#5295](https://github.com/realm/SwiftLint/issues/5295)
 
 #### Bug Fixes
+
+* Invalid keys in a configuration don't lead to the default configuration being
+  used anymore. The invalid key will just be reported but otherwise ignored.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5565](https://github.com/realm/SwiftLint/issues/5565)
 
 * Fix version comparison algorithm which caused some version-dependent rules to
   misbehave with Swift 5.10.  

@@ -80,7 +80,7 @@ enum AutoApply: MemberMacro {
                 """
                 if !supportedKeys.isSuperset(of: configuration.keys) {
                     let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                    throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
+                    Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                 }
                 """
             })

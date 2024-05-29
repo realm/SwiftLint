@@ -23,9 +23,9 @@ let package = Package(
         .plugin(name: "SwiftLintCommandPlugin", targets: ["SwiftLintCommandPlugin"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.2.1")),
-        .package(url: "https://github.com/apple/swift-syntax.git", exact: "510.0.0"),
-        .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMinor(from: "0.34.1")),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.1"),
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "510.0.2"),
+        .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMinor(from: "0.35.0")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.6"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
         .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit.git", from: "0.2.0"),
@@ -143,11 +143,6 @@ let package = Package(
                 "SwiftLintTestHelpers"
             ]
         ),
-        .binaryTarget(
-            name: "SwiftLintBinary",
-            url: "https://github.com/realm/SwiftLint/releases/download/0.54.0/SwiftLintBinary-macos.artifactbundle.zip",
-            checksum: "963121d6babf2bf5fd66a21ac9297e86d855cbc9d28322790646b88dceca00f1"
-        ),
         .macro(
             name: "SwiftLintCoreMacros",
             dependencies: [
@@ -167,3 +162,13 @@ let package = Package(
         ),
     ]
 )
+
+#if os(macOS)
+package.targets.append(
+    .binaryTarget(
+        name: "SwiftLintBinary",
+            url: "https://github.com/realm/SwiftLint/releases/download/0.55.1/SwiftLintBinary-macos.artifactbundle.zip",
+            checksum: "722a705de1cf4e0e07f2b7d2f9f631f3a8b2635a0c84cce99f9677b38aa4a1d6"
+    )
+)
+#endif

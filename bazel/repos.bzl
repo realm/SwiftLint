@@ -5,16 +5,39 @@ def swiftlint_repos(bzlmod = False):
     if not bzlmod:
         http_archive(
             name = "com_github_jpsim_sourcekitten",
-            sha256 = "fcc5ea783e6a0b58b3873c3d551c0ff7a146fdd536e66e1d37af13b1f52df3d4",
-            strip_prefix = "SourceKitten-0.34.1",
-            url = "https://github.com/jpsim/SourceKitten/releases/download/0.34.1/SourceKitten-0.34.1.tar.gz",
+            sha256 = "d9c559166f01627826505b0e655b56a59f86938389e1739259e6ce49c9fd95f0",
+            strip_prefix = "SourceKitten-0.35.0",
+            url = "https://github.com/jpsim/SourceKitten/releases/download/0.35.0/SourceKitten-0.35.0.tar.gz",
         )
 
         http_archive(
             name = "SwiftSyntax",
-            sha256 = "1cddda9f7d249612e3d75d4caa8fd9534c0621b8a890a7d7524a4689bce644f1",
-            strip_prefix = "swift-syntax-509.0.0",
-            url = "https://github.com/apple/swift-syntax/archive/refs/tags/509.0.0.tar.gz",
+            sha256 = "6572f60ca3c75c2a40f8ccec98c5cd0d3994599a39402d69b433381aaf2c1712",
+            strip_prefix = "swift-syntax-510.0.2",
+            url = "https://github.com/apple/swift-syntax/archive/refs/tags/510.0.2.tar.gz",
+        )
+
+        http_archive(
+            name = "sourcekitten_com_github_apple_swift_argument_parser",
+            url = "https://github.com/apple/swift-argument-parser/archive/refs/tags/1.3.1.tar.gz",
+            sha256 = "4d964f874b251abc280ee28f0f187de3c13a6122a9561524f66a10768ca2d837",
+            build_file = "@com_github_jpsim_sourcekitten//bazel:SwiftArgumentParser.BUILD",
+            strip_prefix = "swift-argument-parser-1.3.1",
+        )
+
+        http_archive(
+            name = "sourcekitten_com_github_jpsim_yams",
+            url = "https://github.com/jpsim/Yams/releases/download/5.0.6/Yams-5.0.6.tar.gz",
+            sha256 = "a81c6b93f5d26bae1b619b7f8babbfe7c8abacf95b85916961d488888df886fb",
+            strip_prefix = "Yams-5.0.6",
+        )
+
+        http_archive(
+            name = "sourcekitten_com_github_drmohundro_SWXMLHash",
+            url = "https://github.com/drmohundro/SWXMLHash/archive/refs/tags/7.0.1.tar.gz",
+            build_file = "@com_github_jpsim_sourcekitten//bazel:SWXMLHash.BUILD",
+            sha256 = "bafa037a09aa296f180e5613206748db5053b79aa09258c78d093ae9f8102a18",
+            strip_prefix = "SWXMLHash-7.0.1",
         )
 
     http_archive(

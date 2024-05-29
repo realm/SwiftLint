@@ -254,6 +254,12 @@ public extension Trivia {
         }
     }
 
+    var containsComments: Bool {
+        isNotEmpty && contains { piece in
+            !piece.isWhitespace && !piece.isNewline
+        }
+    }
+
     var isSingleSpace: Bool {
         self == .spaces(1)
     }

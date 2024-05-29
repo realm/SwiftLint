@@ -42,7 +42,7 @@ final class AutoApplyTests: XCTestCase {
                     }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
+                        Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                     }
                 }
             }
@@ -84,7 +84,7 @@ final class AutoApplyTests: XCTestCase {
                     try eB.apply(configuration[$eB.key], ruleID: Parent.identifier)
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
+                        Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                     }
                 }
             }
@@ -135,7 +135,7 @@ final class AutoApplyTests: XCTestCase {
                     try eC.apply(configuration[$eC.key], ruleID: Parent.identifier)
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
+                        Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                     }
                 }
             }
@@ -161,7 +161,7 @@ final class AutoApplyTests: XCTestCase {
                     }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
+                        Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                     }
                 }
             }
@@ -215,7 +215,7 @@ final class AutoApplyTests: XCTestCase {
                     try foo.apply(configuration[$foo.key], ruleID: Parent.identifier)
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        throw Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys)
+                        Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                     }
                 }
             }

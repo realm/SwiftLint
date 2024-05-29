@@ -7,7 +7,7 @@ struct StaticOverFinalClassRule: Rule {
     static let description = RuleDescription(
         identifier: "static_over_final_class",
         name: "Static Over Final Class",
-        description: "Prefer `static` over `final class` for non-overridable declarations",
+        description: "Prefer `static` over `final class`",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

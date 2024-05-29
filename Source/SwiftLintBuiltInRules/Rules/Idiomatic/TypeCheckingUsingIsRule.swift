@@ -1,6 +1,7 @@
 import SwiftSyntax
+import SwiftSyntaxBuilder
 
-@SwiftSyntaxRule
+@SwiftSyntaxRule(explicitRewriter: true)
 struct TypeCheckingUsingIsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
@@ -15,6 +16,9 @@ struct TypeCheckingUsingIsRule: Rule {
         ],
         triggeringExamples: [
             Example("triggering ↓as? Example != nil")
+        ],
+        corrections: [
+            Example("triggering ↓as? Example != nil"): Example("triggering is Example")
         ]
     )
 }
@@ -31,6 +35,30 @@ private extension TypeCheckingUsingIsRule {
             }
 
             violations.append(unresolvedAsExpr.positionAfterSkippingLeadingTrivia)
+        }
+    }
+    
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visit(_ node: ExprListSyntax) -> ExprListSyntax {
+            guard
+                node.castsTypeAndChecksForNil,
+                let unresolvedAsExpr = node.dropFirst().first,
+                let indexUnresolvedAsExpr = node.index(of: unresolvedAsExpr),
+                let typeExpr = node.dropFirst(2).first
+            else {
+                return super.visit(node)
+            }
+            correctionPositions.append(unresolvedAsExpr.positionAfterSkippingLeadingTrivia)
+            let elements = node
+                .with(
+                    \.[indexUnresolvedAsExpr],
+                     "is \(typeExpr.trimmed)"
+                )
+                .dropLast(3)
+            let newNode = ExprListSyntax(elements)
+                .with(\.leadingTrivia, node.leadingTrivia)
+                .with(\.trailingTrivia, node.trailingTrivia)
+            return super.visit(newNode)
         }
     }
 }

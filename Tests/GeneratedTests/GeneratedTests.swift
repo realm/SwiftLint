@@ -775,12 +775,6 @@ final class NoSpaceInMethodCallRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class NoTypeCastingAndCheckingForNilRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NoTypeCastingAndCheckingForNilRule.description)
-    }
-}
-
 final class NonOptionalStringDataConversionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NonOptionalStringDataConversionRule.description)
@@ -1228,6 +1222,12 @@ final class TrailingWhitespaceRuleGeneratedTests: SwiftLintTestCase {
 final class TypeBodyLengthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeBodyLengthRule.description)
+    }
+}
+
+final class TypeCheckingUsingIsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TypeCheckingUsingIsRule.description)
     }
 }
 

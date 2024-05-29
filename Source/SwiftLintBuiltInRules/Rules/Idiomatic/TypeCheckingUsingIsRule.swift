@@ -1,13 +1,13 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct NoTypeCastingAndCheckingForNilRule: Rule {
+struct TypeCheckingUsingIsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
-        identifier: "no_type_casting_and_checking_for_nil",
-        name: "No type casting and checking for nil",
-        description: "Type casting and then checking for nil should be avoided",
+        identifier: "type_checking_using_is",
+        name: "Type checking using is",
+        description: "Type checking using is should be preferred",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("let dog = dog as? Dog"),
@@ -19,7 +19,7 @@ struct NoTypeCastingAndCheckingForNilRule: Rule {
     )
 }
 
-private extension NoTypeCastingAndCheckingForNilRule {
+private extension TypeCheckingUsingIsRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ExprListSyntax) {
             guard

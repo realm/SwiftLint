@@ -344,8 +344,6 @@ no_magic_numbers:
   test_parent_classes: ["QuickSpec", "XCTestCase"]
 no_space_in_method_call:
   severity: warning
-no_type_casting_and_checking_for_nil:
-  severity: error
 non_optional_string_data_conversion:
   severity: warning
 non_overridable_class_declaration:
@@ -546,6 +544,8 @@ trailing_whitespace:
 type_body_length:
   warning: 250
   error: 350
+type_checking_using_is:
+  severity: error
 type_contents_order:
   severity: warning
   order: [[case], [type_alias, associated_type], [subtype], [type_property], [instance_property], [ib_inspectable], [ib_outlet], [initializer], [type_method], [view_life_cycle_method], [ib_action], [other_method], [subscript], [deinitializer]]

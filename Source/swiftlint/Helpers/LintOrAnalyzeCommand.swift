@@ -48,6 +48,9 @@ struct LintOrAnalyzeCommand {
         try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
             try await options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
         }
+        if options.checkForUpdates {
+            UpdateChecker.checkForUpdates()
+        }
         ExitHelper.successfullyExit()
     }
 
@@ -283,6 +286,7 @@ struct LintOrAnalyzeOptions {
     let compilerLogPath: String?
     let compileCommands: String?
     let inProcessSourcekit: Bool
+    let checkForUpdates: Bool
 
     var verb: String {
         if autocorrect {

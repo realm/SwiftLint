@@ -61,7 +61,7 @@ private extension TypeCheckingUsingIsRule {
             violations.append(unresolvedAsExpr.positionAfterSkippingLeadingTrivia)
         }
     }
-    
+
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ExprListSyntax) -> ExprListSyntax {
             guard
@@ -76,7 +76,7 @@ private extension TypeCheckingUsingIsRule {
             let elements = node
                 .with(
                     \.[indexUnresolvedAsExpr],
-                     "is \(typeExpr.trimmed)"
+                    "is \(typeExpr.trimmed)"
                 )
                 .dropLast(3)
             let newNode = ExprListSyntax(elements)

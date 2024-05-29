@@ -5,6 +5,8 @@ extension SwiftLint {
     struct Version: ParsableCommand {
         @Flag(help: "Display full version info")
         var verbose = false
+        @Flag(help: "Check whether a later version of SwiftLint is available")
+        var checkForUpdates = false
 
         static let configuration = CommandConfiguration(abstract: "Display the current version of SwiftLint")
 
@@ -16,6 +18,9 @@ extension SwiftLint {
                 print("Build ID:", buildID)
             } else {
                 print(Self.value)
+            }
+            if checkForUpdates {
+                UpdateChecker.checkForUpdates()
             }
             ExitHelper.successfullyExit()
         }

@@ -140,7 +140,9 @@ public struct Baseline: Equatable {
                 return filter(relativePathViolations: otherBaselineViolations, baselineViolations: baselineViolations)
             }
             return Set(otherBaselineViolations.violationsWithAbsolutePaths)
-        }.sorted()
+        }.sorted {
+            $0.location == $1.location ? $0.ruleIdentifier < $1.ruleIdentifier : $0.location < $1.location
+        }
     }
 }
 

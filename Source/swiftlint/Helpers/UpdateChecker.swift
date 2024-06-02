@@ -1,17 +1,28 @@
+// swiftlint:disable file_header
+//
+// Adapted from periphery's UpdateChecker.swift
+//
+// https://github.com/peripheryapp/periphery
+//
+// Copyright (c) 2019 Ian Leitch
+// Licensed under the MIT License
+//
+// See https://github.com/peripheryapp/periphery/blob/master/LICENSE.md for license information
+//
+
 import Foundation
 import SwiftLintFramework
 
 enum UpdateChecker {
     static func checkForUpdates() {
-        guard let url = URL(string: "https://api.github.com/repos/realm/SwiftLint/releases/latest") else {
+        guard let url = URL(string: "https://api.github.com/repos/realm/SwiftLint/releases/latest"),
+              let data = sendSynchronousRequest(to: url),
+              let latestVersionNumber = parseVersionNumber(data)
+        else {
+            print("Could not check latest SwiftLint version")
             return
         }
-        guard let data = sendSynchronousRequest(to: url) else {
-            return
-        }
-        guard let latestVersionNumber = parseVersionNumber(data) else {
-            return
-        }
+
         let latestVersion = SwiftLintFramework.Version(value: latestVersionNumber)
         if latestVersion > SwiftLintFramework.Version.current {
             print("A new version of SwiftLint is available: \(latestVersionNumber)")
@@ -30,6 +41,7 @@ enum UpdateChecker {
 
     private static func sendSynchronousRequest(to url: URL) -> Data? {
         var request = URLRequest(url: url)
+        request.setValue("SwiftLint", forHTTPHeaderField: "User-Agent")
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
         let semaphore = DispatchSemaphore(value: 0)
         var result: Data?

@@ -680,7 +680,7 @@ opt_in_rules: # some rules are turned off by default, so you need to opt-in
 analyzer_rules: # rules run by `swiftlint analyze`
   - explicit_self
 
-included: # case-sensitive paths to include during linting. `--path` is ignored if present
+included: # case-sensitive paths to include during linting.
   - Sources
 excluded: # case-sensitive paths to ignore during linting. Takes precedence over `included`
   - Carthage

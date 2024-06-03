@@ -7,8 +7,6 @@ extension SwiftLint {
 
         @OptionGroup
         var common: LintOrAnalyzeArguments
-        @Option(help: pathOptionDescription(for: .analyze))
-        var path: String?
         @Flag(help: quietOptionDescription(for: .analyze))
         var quiet = false
         @Option(help: "The path of the full xcodebuild log to use when running AnalyzerRules.")
@@ -20,13 +18,7 @@ extension SwiftLint {
 
         func run() async throws {
             let allPaths: [String]
-            if let path {
-                // TODO: [06/14/2024] Remove deprecation warning after ~2 years.
-                Issue.genericWarning(
-                    "The --path option is deprecated. Pass the path(s) to analyze last to the swiftlint command."
-                ).print()
-                allPaths = [path] + paths
-            } else if !paths.isEmpty {
+            if !paths.isEmpty {
                 allPaths = paths
             } else {
                 allPaths = [""] // Analyze files in current working directory if no paths were specified.

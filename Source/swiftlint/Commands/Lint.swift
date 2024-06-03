@@ -7,8 +7,6 @@ extension SwiftLint {
 
         @OptionGroup
         var common: LintOrAnalyzeArguments
-        @Option(help: pathOptionDescription(for: .lint))
-        var path: String?
         @Flag(help: "Lint standard input.")
         var useSTDIN = false
         @Flag(help: quietOptionDescription(for: .lint))
@@ -27,21 +25,12 @@ extension SwiftLint {
         func run() async throws {
             Issue.printDeprecationWarnings = !silenceDeprecationWarnings
 
-            if path != nil {
-                // TODO: [06/14/2024] Remove deprecation warning after ~2 years.
-                Issue.genericWarning(
-                    "The --path option is deprecated. Pass the path(s) to lint last to the swiftlint command."
-                ).print()
-            }
-
             if common.fix, let leniency = common.leniency {
                 Issue.genericWarning("The option --\(leniency) has no effect together with --fix.").print()
             }
 
             let allPaths =
-                if let path {
-                    [path] + paths
-                } else if !paths.isEmpty {
+                if !paths.isEmpty {
                     paths
                 } else {
                     [""] // Lint files in current working directory if no paths were specified.

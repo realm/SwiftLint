@@ -745,6 +745,12 @@ final class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class NoEmptyFunctionRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NoEmptyFunctionRule.description)
+    }
+}
+
 final class NoExtensionAccessModifierRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoExtensionAccessModifierRule.description)

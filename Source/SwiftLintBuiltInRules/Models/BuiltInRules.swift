@@ -126,6 +126,7 @@ public let builtInRules: [any Rule.Type] = [
     NSObjectPreferIsEqualRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,
+    NoEmptyFunctionRule.self,
     NoExtensionAccessModifierRule.self,
     NoFallthroughOnlyRule.self,
     NoGroupingExtensionRule.self,

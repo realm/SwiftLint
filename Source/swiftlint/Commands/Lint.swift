@@ -29,13 +29,8 @@ extension SwiftLint {
                 Issue.genericWarning("The option --\(leniency) has no effect together with --fix.").print()
             }
 
-            let allPaths =
-                if !paths.isEmpty {
-                    paths
-                } else {
-                    [""] // Lint files in current working directory if no paths were specified.
-                }
-
+            // Lint files in current working directory if no paths were specified.
+            let allPaths = paths.isNotEmpty ? paths : [""]
             let options = LintOrAnalyzeOptions(
                 mode: .lint,
                 paths: allPaths,

@@ -17,12 +17,8 @@ extension SwiftLint {
         var paths = [String]()
 
         func run() async throws {
-            let allPaths: [String]
-            if !paths.isEmpty {
-                allPaths = paths
-            } else {
-                allPaths = [""] // Analyze files in current working directory if no paths were specified.
-            }
+            // Analyze files in current working directory if no paths were specified.
+            let allPaths = paths.isNotEmpty ? paths : [""]
             let options = LintOrAnalyzeOptions(
                 mode: .analyze,
                 paths: allPaths,

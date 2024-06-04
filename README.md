@@ -680,7 +680,7 @@ opt_in_rules: # some rules are turned off by default, so you need to opt-in
 analyzer_rules: # rules run by `swiftlint analyze`
   - explicit_self
 
-# case-sensitive paths to include during linting. Directory paths supplied on the
+# Case-sensitive paths to include during linting. Directory paths supplied on the
 # command line will be ignored.
 included: 
   - Sources

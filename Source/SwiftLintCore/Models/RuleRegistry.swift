@@ -12,7 +12,7 @@ public final class RuleRegistry: @unchecked Sendable {
     ///         accessed will not work.
     public private(set) lazy var list = RuleList(rules: registeredRules)
 
-    private init() {}
+    private init() { /* To guarantee that this is singleton. */ }
 
     /// Register rules.
     ///

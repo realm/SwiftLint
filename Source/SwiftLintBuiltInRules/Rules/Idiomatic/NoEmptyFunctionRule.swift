@@ -7,7 +7,7 @@ struct NoEmptyFunctionRule: OptInRule {
     static let description = RuleDescription(
         identifier: "no_empty_function",
         name: "No Empty Function",
-        description: "Function body should not be empty, please add comment to explain why it's empty",
+        description: "Init/Deinit/Function body should not be empty, add comment to explain why it's empty",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -21,14 +21,13 @@ struct NoEmptyFunctionRule: OptInRule {
                 }
                 """),
             Example("""
-                func f() { // coment
-                }
-                """)
+                init() { /* comment */ }
+            """),
+            Example("""
+                deinit { /* comment */ }
+            """)
         ],
         triggeringExamples: [
-            Example("""
-                func f() ↓{}
-            """),
             Example("""
                 func f() ↓{
                 }
@@ -36,6 +35,12 @@ struct NoEmptyFunctionRule: OptInRule {
             Example("""
                 // comment
                 func f() ↓{}
+            """),
+            Example("""
+                init() ↓{}
+            """),
+            Example("""
+                deinit ↓{}
             """)
         ]
     )
@@ -44,22 +49,38 @@ struct NoEmptyFunctionRule: OptInRule {
 private extension NoEmptyFunctionRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard let body = node.body,
-                  body.statements.isEmpty else {
-                return
+            guard let body = node.body else { return }
+            if let violation = validateBody(body) {
+                violations.append(violation)
+            }
+        }
+
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            guard let body = node.body else { return }
+            if let violation = validateBody(body) {
+                violations.append(violation)
+            }
+        }
+
+        override func visitPost(_ node: DeinitializerDeclSyntax) {
+            guard let body = node.body else { return }
+            if let violation = validateBody(body) {
+                violations.append(violation)
+            }
+        }
+
+        func validateBody(_ node: CodeBlockSyntax) -> ReasonedRuleViolation? {
+            guard node.statements.isEmpty,
+                  !node.leftBrace.trailingTrivia.containsComments,
+                  !node.rightBrace.leadingTrivia.containsComments else {
+                return nil
             }
 
-            guard !body.leftBrace.trailingTrivia.containsComments,
-                  !body.rightBrace.leadingTrivia.containsComments else {
-                return
-            }
-
-            let violation = ReasonedRuleViolation(
-                position: body.leftBrace.positionAfterSkippingLeadingTrivia,
-                reason: "Function body should not be empty, please add comment to explain why it's empty",
+            return ReasonedRuleViolation(
+                position: node.leftBrace.positionAfterSkippingLeadingTrivia,
+                reason: "Init/Deinit/Function body should not be empty, add comment to explain why it's empty",
                 severity: .warning
             )
-            violations.append(violation)
         }
     }
 }

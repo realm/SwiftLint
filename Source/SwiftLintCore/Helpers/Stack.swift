@@ -3,7 +3,7 @@ public struct Stack<Element> {
     private var elements = [Element]()
 
     /// Creates an empty `Stack`.
-    public init() {}
+    public init() { /* No Body */ }
 
     /// The number of elements in this stack.
     public var count: Int {

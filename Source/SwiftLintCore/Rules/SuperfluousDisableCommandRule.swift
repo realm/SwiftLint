@@ -1,7 +1,7 @@
 package struct SuperfluousDisableCommandRule: SourceKitFreeRule {
     package var configuration = SeverityConfiguration<Self>(.warning)
 
-    package init() {}
+    package init() { /* No Body */ }
 
     package static let description = RuleDescription(
         identifier: "superfluous_disable_command",

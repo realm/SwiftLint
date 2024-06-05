@@ -25,6 +25,7 @@
   improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
   library.
 *  Add `non_empty_function` opt-in rule to validate that functions should not have empty body. Otherwise show warning to write comments.
+*  Add `non_empty_function` opt-in rule to validate that `function`, `init` and `deinit` should not have empty body. Otherwise show warning to ask to write comments.
     [Ueeek](https://github.com/Ueeek)
     [#5615](https://github.com/realm/SwiftLint/issues/5615)
 

@@ -10,7 +10,7 @@ struct RuleWithLevelsMock: Rule {
                                              kind: .style,
                                              deprecatedAliases: ["mock"])
 
-    init() {}
+    init() { /* conformance for test */ }
     init(configuration: Any) throws {
         self.init()
         try self.configuration.apply(configuration: configuration)
@@ -26,7 +26,7 @@ final class RuleTests: SwiftLintTestCase {
         static let description = RuleDescription(identifier: "RuleMock1", name: "",
                                                  description: "", kind: .style)
 
-        init() {}
+        init() { /* conformance for test */ }
         init(configuration: Any) throws { self.init() }
 
         func validate(file: SwiftLintFile) -> [StyleViolation] {
@@ -40,7 +40,7 @@ final class RuleTests: SwiftLintTestCase {
         static let description = RuleDescription(identifier: "RuleMock2", name: "",
                                                  description: "", kind: .style)
 
-        init() {}
+        init() { /* conformance for test */ }
         init(configuration: Any) throws { self.init() }
 
         func validate(file: SwiftLintFile) -> [StyleViolation] {
@@ -55,7 +55,7 @@ final class RuleTests: SwiftLintTestCase {
                                                  name: "",
                                                  description: "", kind: .style)
 
-        init() {}
+        init() { /* conformance for test */ }
         init(configuration: Any) throws {
             self.init()
             try self.configuration.apply(configuration: configuration)

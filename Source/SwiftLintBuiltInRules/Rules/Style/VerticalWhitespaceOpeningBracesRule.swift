@@ -141,7 +141,7 @@ struct VerticalWhitespaceOpeningBracesRule: Rule {
 }
 
 extension VerticalWhitespaceOpeningBracesRule: OptInRule {
-    init(configuration: Any) throws {}
+    init(configuration: Any) throws { /* No Body */ }
 
     static let description = RuleDescription(
         identifier: "vertical_whitespace_opening_braces",

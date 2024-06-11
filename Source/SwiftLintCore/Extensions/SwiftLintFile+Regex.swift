@@ -273,6 +273,7 @@ extension SwiftLintFile {
         return violatingRanges.filter { range in
             let region = fileRegions.first {
                 $0.contains(Location(file: self, characterOffset: range.location))
+                || $0.contains(Location(file: self, characterOffset: range.location + range.length - 1))
             }
             return region?.isRuleEnabled(rule) ?? true
         }

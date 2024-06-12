@@ -118,17 +118,11 @@ private extension SwiftLintFile {
             )
         }
 
-        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports))
-            .map { ImportUsage.unused(module: $0, range: $1) }
-
-        guard configuration.requireExplicitImports else {
-            return unusedImportUsages
-        }
-
+        /// Find the missing imports, which should be imported, but are not.
         let currentModule = (compilerArguments.firstIndex(of: "-module-name")?.advanced(by: 1))
             .map { compilerArguments[$0] }
 
-        let missingImports = usrFragments
+        var missingImports = usrFragments
             .subtracting(imports + [currentModule].compactMap({ $0 }))
             .filter { module in
                 let modulesAllowedToImportCurrentModule = configuration.allowedTransitiveImports
@@ -139,6 +133,30 @@ private extension SwiftLintFile {
                 return modulesAllowedToImportCurrentModule.isEmpty ||
                     imports.isDisjoint(with: modulesAllowedToImportCurrentModule)
             }
+
+        // Check if unused imports were used for transitive imports
+        var foundUmbrellaModules = Set<String>()
+        for missingImport in missingImports {
+            let umbrellaModules = configuration.allowedTransitiveImports
+                .filter { $0.transitivelyImportedModules.contains(missingImport) }
+                .map { $0.importedModule }
+
+            umbrellaModules.forEach { umbrellaModule in
+                missingImports.remove(missingImport)
+                if unusedImports.contains(umbrellaModule) {
+                    foundUmbrellaModules.insert(umbrellaModule)
+                }
+            }
+        }
+
+        unusedImports.subtract(foundUmbrellaModules)
+
+        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports))
+            .map { ImportUsage.unused(module: $0, range: $1) }
+
+        guard configuration.requireExplicitImports else {
+            return unusedImportUsages
+        }
 
         return unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
     }

@@ -100,6 +100,16 @@ public extension DeclModifierListSyntax {
         first { $0.asAccessLevelModifier != nil }
     }
 
+    func accessLevelModifier(setter: Bool = false) -> DeclModifierSyntax? {
+        first {
+            if $0.asAccessLevelModifier == nil {
+                return false
+            }
+            let hasSetDetail = $0.detail?.detail.tokenKind == .identifier("set")
+            return setter ? hasSetDetail : !hasSetDetail
+        }
+    }
+
     func contains(keyword: Keyword) -> Bool {
         contains { $0.name.tokenKind == .keyword(keyword) }
     }

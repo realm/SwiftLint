@@ -27,8 +27,8 @@ private struct BaselineViolation: Codable, Hashable, Comparable {
 
     static func < (lhs: Self, rhs: Self) -> Bool {
         lhs.violation.location == rhs.violation.location
-        ? lhs.violation.ruleIdentifier < rhs.violation.ruleIdentifier
-        : lhs.violation.location < rhs.violation.location
+            ? lhs.violation.ruleIdentifier < rhs.violation.ruleIdentifier
+            : lhs.violation.location < rhs.violation.location
     }
 }
 

@@ -7,7 +7,11 @@ struct StaticOverFinalClassRule: Rule {
     static let description = RuleDescription(
         identifier: "static_over_final_class",
         name: "Static Over Final Class",
-        description: "Prefer `static` over `final class`",
+        description: """
+            Prefer `static` over `class` when the declaration is not allowed to be overridden \
+            in child classes due to its context being final. Likewise, the compiler complains \
+            about `open` being used in `final` classes.
+            """,
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -100,12 +104,21 @@ private extension StaticOverFinalClassRule {
 
         // MARK: -
         private func validateNode(at position: AbsolutePosition, with modifiers: DeclModifierListSyntax) {
-            if modifiers.contains(keyword: .final),
-               modifiers.contains(keyword: .class) {
-                violations.append(position)
-            } else if modifiers.contains(keyword: .class),
-                      classContexts.peek() == true {
-                violations.append(position)
+            let reason: String? = if modifiers.contains(keyword: .final), modifiers.contains(keyword: .class) {
+                                      "Prefer `static` over `final class`"
+                                  } else if modifiers.contains(keyword: .class), classContexts.peek() == true {
+                                      "Prefer `static` over `class` in a final class"
+                                  } else {
+                                      nil
+                                  }
+            if let reason {
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: position,
+                        reason: reason,
+                        severity: configuration.severity
+                    )
+                )
             }
         }
     }

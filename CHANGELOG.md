@@ -2,7 +2,9 @@
 
 #### Breaking
 
-* None.
+* The deprecated `--path` argument has now been removed completely.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5614](https://github.com/realm/SwiftLint/issues/5614)
 
 #### Experimental
 

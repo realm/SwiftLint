@@ -55,10 +55,6 @@ struct LintOrAnalyzeArguments: ParsableArguments {
 // It'd be great to be able to parameterize an `@OptionGroup` so we could move these options into
 // `LintOrAnalyzeArguments`.
 
-func pathOptionDescription(for mode: LintOrAnalyzeMode) -> ArgumentHelp {
-    ArgumentHelp(visibility: .hidden)
-}
-
 func pathsArgumentDescription(for mode: LintOrAnalyzeMode) -> ArgumentHelp {
     "List of paths to the files or directories to \(mode.imperative)."
 }

@@ -1,0 +1,118 @@
+name: macOS Tests
+
+on:
+  pull_request:
+
+env:
+  XCODE_VERSION: '15.0'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./SwiftLint
+
+jobs:
+  bazel:
+    name: Bazel Test
+    runs-on: macos-13
+    steps:
+    - name: Select Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ env.XCODE_VERSION }}
+    - name: Checkout SwiftLint
+      uses: actions/checkout@v4
+      with:
+        path: SwiftLint
+    - name: Build
+      run: bazel build :swiftlint
+    - name: Test
+      run: bazel test --test_output=errors //Tests/...
+
+  bazel-tsan:
+    name: Bazel TSan Test
+    runs-on: macos-13
+    steps:
+    - name: Select Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ env.XCODE_VERSION }}
+    - name: Checkout SwiftLint
+      uses: actions/checkout@v4
+      with:
+        path: SwiftLint
+    - name: Test
+      run: bazel test --test_output=errors --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
+
+  bazel-strict-concurrency:
+    name: "Bazel Build With Strict Concurrency Enabled"
+    runs-on: macos-13
+    steps:
+    - name: Select Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ env.XCODE_VERSION }}
+    - name: Checkout SwiftLint
+      uses: actions/checkout@v4
+      with:
+        path: SwiftLint
+    - name: Add @preconcurrency attribute
+      run: ./tools/add-preconcurrency-imports.sh
+    - name: Build
+      run: bazel build --define strict_concurrency_builtin_rules=true :swiftlint
+    - name: Clean up
+      run: git reset --hard
+
+  danger:
+    name: Danger
+    runs-on: macos-13
+    env:
+      DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DANGER_GITHUB_BEARER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - name: Select Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ env.XCODE_VERSION }}
+    - name: Checkout SwiftLint
+      uses: actions/checkout@v4
+      with:
+        path: SwiftLint
+    - name: Install Bundler
+      run: gem install bundler
+    - name: Bundle Install
+      run: bundle install
+    - name: Run Danger
+      run: bundle exec danger --verbose
+
+  sourcery:
+    name: No Changes in Sourcery
+    runs-on: macos-13
+    steps:
+    - name: Select Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ env.XCODE_VERSION }}
+    - name: Checkout SwiftLint
+      uses: actions/checkout@v4
+      with:
+        path: SwiftLint
+    - name: Install Sourcery
+      run: HOMEBREW_NO_AUTO_UPDATE=1 brew install sourcery
+    - name: Run Sourcery
+      run: make --always-make sourcery
+
+  swift-package-manager:
+    name: Swift Package Manager Tests
+    runs-on: macos-13
+    steps:
+    - name: Select Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ env.XCODE_VERSION }}
+    - name: Checkout SwiftLint
+      uses: actions/checkout@v4
+      with:
+        path: SwiftLint
+    - name: Build and Test
+      run: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES

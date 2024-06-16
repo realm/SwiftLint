@@ -28,6 +28,8 @@ config_setting(
 copts = [
     "-enable-upcoming-feature",
     "ExistentialAny",
+    "-enable-upcoming-feature",
+    "ConciseMagicFile",
 ]
 
 strict_concurrency_copts = [

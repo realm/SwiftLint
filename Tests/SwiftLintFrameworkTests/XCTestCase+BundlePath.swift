@@ -7,7 +7,7 @@ enum TestResources {
             return "\(rootProjectDirectory)/Tests/SwiftLintFrameworkTests/Resources"
         }
 
-        return URL(fileURLWithPath: #file, isDirectory: false)
+        return URL(fileURLWithPath: #filePath, isDirectory: false)
             .deletingLastPathComponent()
             .appendingPathComponent("Resources")
             .path

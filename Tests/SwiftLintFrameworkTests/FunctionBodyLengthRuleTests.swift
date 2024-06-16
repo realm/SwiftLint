@@ -3,13 +3,13 @@ import XCTest
 
 private func funcWithBody(_ body: String,
                           violates: Bool = false,
-                          file: StaticString = #file,
+                          file: StaticString = #filePath,
                           line: UInt = #line) -> Example {
     let marker = violates ? "↓" : ""
     return Example("func \(marker)abc() {\n\(body)}\n", file: file, line: line)
 }
 
-private func violatingFuncWithBody(_ body: String, file: StaticString = #file, line: UInt = #line) -> Example {
+private func violatingFuncWithBody(_ body: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
     return funcWithBody(body, violates: true, file: file, line: line)
 }
 

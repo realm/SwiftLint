@@ -7,7 +7,8 @@ let swiftFeatures: [SwiftSetting] = [
     .enableUpcomingFeature("ConciseMagicFile"),
     .enableUpcomingFeature("ImportObjcForwardDeclarations"),
     .enableUpcomingFeature("ForwardTrailingClosures"),
-    .enableUpcomingFeature("InternalImportsByDefault")
+    .enableUpcomingFeature("InternalImportsByDefault"),
+    .enableUpcomingFeature("ImplicitOpenExistentials")
 ]
 
 let swiftLintPluginDependencies: [Target.Dependency]

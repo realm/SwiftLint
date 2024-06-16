@@ -36,6 +36,8 @@ copts = [
     "ForwardTrailingClosures",
     "-enable-upcoming-feature",
     "InternalImportsByDefault",
+    "-enable-upcoming-feature",
+    "ImplicitOpenExistentials",
 ]
 
 strict_concurrency_copts = [

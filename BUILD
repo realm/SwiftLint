@@ -34,6 +34,8 @@ copts = [
     "ImportObjcForwardDeclarations",
     "-enable-upcoming-feature",
     "ForwardTrailingClosures",
+    "-enable-upcoming-feature",
+    "InternalImportsByDefault",
 ]
 
 strict_concurrency_copts = [

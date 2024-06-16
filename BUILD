@@ -32,6 +32,8 @@ copts = [
     "ConciseMagicFile",
     "-enable-upcoming-feature",
     "ImportObjcForwardDeclarations",
+    "-enable-upcoming-feature",
+    "ForwardTrailingClosures",
 ]
 
 strict_concurrency_copts = [

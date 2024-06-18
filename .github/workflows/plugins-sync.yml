@@ -21,3 +21,4 @@ jobs:
           IS_FINE_GRAINED: true
           CONFIG_PATH: .github/plugins-sync.yml
           SKIP_PR: true
+          COMMIT_PREFIX: 🔄 Workflow in 'realm/SwiftLint'

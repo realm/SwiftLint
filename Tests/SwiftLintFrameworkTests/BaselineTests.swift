@@ -139,12 +139,16 @@ final class BaselineTests: XCTestCase {
 
     func testCompare() throws {
         try withExampleFileCreated { sourceFilePath in
-            let violations = Self.violations(for: sourceFilePath)
-            let oldBaseline = Baseline(violations: Array(violations.dropFirst()))
-            let newViolations = Array(try violations.lineShifted(by: 2, path: sourceFilePath).dropLast())
-            let newBaseline = Baseline(violations: newViolations)
-            XCTAssertEqual(oldBaseline.compare(newBaseline), [newViolations.first])
-            XCTAssertEqual(newBaseline.compare(oldBaseline), [violations.last])
+            let ruleDescriptions = Self.ruleDescriptions + Self.ruleDescriptions
+            let violations = ruleDescriptions.violations(for: sourceFilePath)
+            let numberofViolationsToDrop = 3
+            let oldBaseline = Baseline(violations: Array(violations.dropFirst(numberofViolationsToDrop)).reversed())
+            let newViolations = Array(
+                try violations.lineShifted(by: 2, path: sourceFilePath).dropLast(numberofViolationsToDrop)
+            )
+            let newBaseline = Baseline(violations: newViolations.reversed())
+            XCTAssertEqual(oldBaseline.compare(newBaseline), Array(newViolations.prefix(numberofViolationsToDrop)))
+            XCTAssertEqual(newBaseline.compare(oldBaseline), Array(violations.suffix(numberofViolationsToDrop)))
         }
     }
 

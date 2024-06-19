@@ -1,0 +1,17 @@
+name: Plugins Release
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch release of plugins package
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.SIMPLYDANNY_PLUGINS_SYNC }}
+          repository: SimplyDanny/SwiftLintPlugins
+          event-type: swiftlint-release
+          client-payload: '{"title": "${{ github.event.release.name }}", "tag": "${{ github.ref_name }}"}'

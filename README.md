@@ -58,10 +58,10 @@ Therein, replace `<version>` with the desired minimum or exact version.
 > Consuming the plugins directly from the SwiftLint repository comes
 > with several drawbacks. To avoid them and reduce the overhead imposed, it's
 > highly recommended to consume the plugins from the dedicated
-> [SwiftLintPlugins repository](https://github.com/SimplyDanny/SwiftLintPlugins)
+> [SwiftLintPlugins repository](https://github.com/SimplyDanny/SwiftLintPlugins),
 > even though plugins from the SwiftLint repository are also absolutely
-> functional. To do so, just use the URL `https://github.com/realm/SwiftLint`
-> instead.
+> functional. If the plugins from SwiftLint are preferred, just use the URL
+> `https://github.com/realm/SwiftLint` in the package declarations above.
 >
 > However, [SwiftLintPlugins](https://github.com/SimplyDanny/SwiftLintPlugins)
 > facilitates plugin adoption massively. It lists some of the reasons that

@@ -42,18 +42,35 @@ or a [build tool plugin](#build-tool-plugins).
 Add
 
 ```swift
-.package(url: "https://github.com/realm/SwiftLint.git", from: "<version>")
+.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "<version>")
 ```
 
 to your `Package.swift` file to consume the latest release of SwiftLint
 automatically or pin the dependency to a specific version:
 
 ```swift
-.package(url: "https://github.com/realm/SwiftLint.git", exact: "<version>")
+.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "<version>")
 ```
 
+Therein, replace `<version>` with the desired minimum or exact version.
+
 > [!NOTE]
-> Replace `<version>` with the desired minimum or exact version.
+> Consuming the plugins directly from the SwiftLint repository comes
+> with several drawbacks. To avoid them and reduce the overhead imposed, it's
+> highly recommended to consume the plugins from the dedicated
+> [SwiftLintPlugins repository](https://github.com/SimplyDanny/SwiftLintPlugins)
+> even though plugins from the SwiftLint repository are also absolutely
+> functional. To do so, just use the URL `https://github.com/realm/SwiftLint`
+> instead.
+>
+> However, [SwiftLintPlugins](https://github.com/SimplyDanny/SwiftLintPlugins)
+> facilitates plugin adoption massively. It lists some of the reasons that
+> drive the plugins as provided by SwiftLint itself very troublesome. Since
+> the plugin code and the releases are kept in sync, there is no difference
+> in functionality between the two, but you spare yourself a lot of time and
+> trouble using the dedicated plugins repository.
+>
+> This document assumes you're relying on SwiftLintPlugins.
 
 ### [Xcode Package Dependency](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app)
 
@@ -61,13 +78,8 @@ Use the following link to add SwiftLint as a Package Dependency to an Xcode
 project:
 
 ```bash
-https://github.com/realm/SwiftLint
+https://github.com/SimplyDanny/SwiftLintPlugins
 ```
-
-> [!IMPORTANT]
-> Do not add the `SwiftLintFramework` library or the
-> `swiftlint` executable to any targets. Ensure `None`
-> is selected when asked to choose package products.
 
 ### [Homebrew](http://brew.sh)
 
@@ -223,7 +235,7 @@ To do this, add the plugin to the target(s) to be linted as follows:
 ```swift
 .target(
     ...
-    plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
+    plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
 ),
 ```
 

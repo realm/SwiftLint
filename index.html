@@ -383,34 +383,44 @@ presentation recorded January 9th, 2017 by JP Simard (transcript provided):</p>
 <h3 id='a-href-https-github-com-apple-swift-package-manager-swift-package-manager-a' class='heading'><a href="https://github.com/apple/swift-package-manager">Swift Package Manager</a></h3>
 
 <p>SwiftLint can be used as a <a href="#swift-package-command-plugin">command plugin</a>
-or a <a href="#swift-package-build-tool-plugins">build tool plugin</a>.</p>
+or a <a href="#build-tool-plugins">build tool plugin</a>.</p>
 
 <p>Add</p>
-<pre class="highlight swift"><code><span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/realm/SwiftLint.git"</span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="s">"&lt;version&gt;"</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/SimplyDanny/SwiftLintPlugins"</span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="s">"&lt;version&gt;"</span><span class="p">)</span>
 </code></pre>
 
 <p>to your <code>Package.swift</code> file to consume the latest release of SwiftLint
 automatically or pin the dependency to a specific version:</p>
-<pre class="highlight swift"><code><span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/realm/SwiftLint.git"</span><span class="p">,</span> <span class="nv">exact</span><span class="p">:</span> <span class="s">"&lt;version&gt;"</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/SimplyDanny/SwiftLintPlugins"</span><span class="p">,</span> <span class="nv">exact</span><span class="p">:</span> <span class="s">"&lt;version&gt;"</span><span class="p">)</span>
 </code></pre>
+
+<p>Therein, replace <code>&lt;version&gt;</code> with the desired minimum or exact version.</p>
 
 <blockquote>
 <p>[!NOTE]
-Replace <code>&lt;version&gt;</code> with the desired minimum or exact version.</p>
+Consuming the plugins directly from the SwiftLint repository comes
+with several drawbacks. To avoid them and reduce the overhead imposed, it&rsquo;s
+highly recommended to consume the plugins from the dedicated
+<a href="https://github.com/SimplyDanny/SwiftLintPlugins">SwiftLintPlugins repository</a>
+even though plugins from the SwiftLint repository are also absolutely
+functional. To do so, just use the URL <code>https://github.com/realm/SwiftLint</code>
+instead.</p>
+
+<p>However, <a href="https://github.com/SimplyDanny/SwiftLintPlugins">SwiftLintPlugins</a>
+facilitates plugin adoption massively. It lists some of the reasons that
+drive the plugins as provided by SwiftLint itself very troublesome. Since
+the plugin code and the releases are kept in sync, there is no difference
+in functionality between the two, but you spare yourself a lot of time and
+trouble using the dedicated plugins repository.</p>
+
+<p>This document assumes you&rsquo;re relying on SwiftLintPlugins.</p>
 </blockquote>
 <h3 id='a-href-https-developer-apple-com-documentation-xcode-adding-package-dependencies-to-your-app-xcode-package-dependency-a' class='heading'><a href="https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app">Xcode Package Dependency</a></h3>
 
 <p>Use the following link to add SwiftLint as a Package Dependency to an Xcode
 project:</p>
-<pre class="highlight shell"><code>https://github.com/realm/SwiftLint
+<pre class="highlight shell"><code>https://github.com/SimplyDanny/SwiftLintPlugins
 </code></pre>
-
-<blockquote>
-<p>[!IMPORTANT]
-Do not add the <code>SwiftLintFramework</code> library or the
-<code>swiftlint</code> executable to any targets. Ensure <code>None</code>
-is selected when asked to choose package products.</p>
-</blockquote>
 <h3 id='a-href-http-brew-sh-homebrew-a' class='heading'><a href="http://brew.sh">Homebrew</a></h3>
 <pre class="highlight shell"><code>brew <span class="nb">install </span>swiftlint
 </code></pre>
@@ -519,17 +529,7 @@ is compilable. Non-compiling code can very easily lead to unexpected and
 confusing results, especially when executing with <code>--fix</code>/<code>--autocorrect</code>
 command line arguments.</p>
 </blockquote>
-<h3 id='swift-package-command-plugin' class='heading'>Swift Package Command Plugin</h3>
-
-<blockquote>
-<p>[!NOTE]
-Requires installing via <a href="#swift-package-manager">Swift Package Manager</a>.</p>
-</blockquote>
-
-<p>The command plugin enables running SwiftLint from the command line as follows:</p>
-<pre class="highlight shell"><code>swift package plugin swiftlint
-</code></pre>
-<h3 id='swift-package-build-tool-plugins' class='heading'>Swift Package Build Tool Plugins</h3>
+<h3 id='build-tool-plugins' class='heading'>Build Tool Plugins</h3>
 
 <p>SwiftLint can be used as a build tool plugin for both
 <a href="#swift-package-projects">Swift Package projects</a>
@@ -559,8 +559,18 @@ targets, the plugin must be added to the desired targets individually.</p>
 <p>To do this, add the plugin to the target(s) to be linted as follows:</p>
 <pre class="highlight swift"><code><span class="o">.</span><span class="nf">target</span><span class="p">(</span>
     <span class="o">...</span>
-    <span class="nv">plugins</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"SwiftLintBuildToolPlugin"</span><span class="p">,</span> <span class="nv">package</span><span class="p">:</span> <span class="s">"SwiftLint"</span><span class="p">)]</span>
+    <span class="nv">plugins</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"SwiftLintBuildToolPlugin"</span><span class="p">,</span> <span class="nv">package</span><span class="p">:</span> <span class="s">"SwiftLintPlugins"</span><span class="p">)]</span>
 <span class="p">),</span>
+</code></pre>
+<h3 id='swift-package-command-plugin' class='heading'>Swift Package Command Plugin</h3>
+
+<blockquote>
+<p>[!NOTE]
+Requires installing via <a href="#swift-package-manager">Swift Package Manager</a>.</p>
+</blockquote>
+
+<p>The command plugin enables running SwiftLint from the command line as follows:</p>
+<pre class="highlight shell"><code>swift package plugin swiftlint
 </code></pre>
 <h3 id='xcode-projects' class='heading'>Xcode Projects</h3>
 

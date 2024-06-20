@@ -82,4 +82,40 @@ final class GlobTests: SwiftLintTestCase {
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("**/*.swift"))
         XCTAssertEqual(files.sorted(), expectedFiles.sorted())
     }
+
+    func testCreateFilenameMatchers() {
+        struct MatcherTest {
+            let root: String
+            let pattern: String
+            let filenames: [String]
+
+            func matchesAll() -> Bool {
+                filenames.allSatisfy { name in
+                    Glob.createFilenameMatchers(root: root, pattern: pattern).anyMatch(filename: name)
+                }
+            }
+
+            func matchesNone() -> Bool {
+                filenames.allSatisfy { name in
+                    !Glob.createFilenameMatchers(root: root, pattern: pattern).anyMatch(filename: name)
+                }
+            }
+        }
+
+        [
+            .init(root: "/a/b/", pattern: "c/*.swift", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "/a", pattern: "**/*.swift", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "/a/b", pattern: "/a/b/c/*.swift", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "/a/", pattern: "/a/b/c/*.swift", filenames: ["/a/b/c/d.swift"]),
+
+            .init(root: "", pattern: "/a/b/c", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "", pattern: "/a/b/c/", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "", pattern: "/a/b/c/*.swift", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "", pattern: "/d.swift/*.swift", filenames: ["/d.swift/e.swift"]),
+            .init(root: "", pattern: "/a/**", filenames: ["/a/b/c/d.swift"]),
+            .init(root: "", pattern: "**/*Test*", filenames: ["/a/b/c/MyTest2.swift", "/a/b/MyTests/c.swift"])
+        ].forEach { (test: MatcherTest) in XCTAssert(test.matchesAll()) }
+
+        XCTAssert(MatcherTest(root: "/a/", pattern: "**/*.swift", filenames: ["/a/b.swift"]).matchesNone())
+    }
 }

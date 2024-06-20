@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Improve performance when exclude patterns resolve to a large set of files.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5018](https://github.com/realm/SwiftLint/issues/5018)
 
 #### Bug Fixes
 

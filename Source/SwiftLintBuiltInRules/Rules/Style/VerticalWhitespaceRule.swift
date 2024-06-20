@@ -1,9 +1,11 @@
 import Foundation
 import SourceKittenFramework
+import SwiftIDEUtils
+import SwiftSyntax
 
 private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line"
 
-struct VerticalWhitespaceRule: CorrectableRule {
+struct VerticalWhitespaceRule: CorrectableRule, SourceKitFreeRule {
     var configuration = VerticalWhitespaceConfiguration()
 
     static let description = RuleDescription(
@@ -15,12 +17,46 @@ struct VerticalWhitespaceRule: CorrectableRule {
             Example("let abc = 0\n"),
             Example("let abc = 0\n\n"),
             Example("/* bcs \n\n\n\n*/"),
-            Example("// bca \n\n")
+            Example("// bca \n\n"),
+            Example(#"""
+            """
+            This is a
+
+
+
+
+                  very long
+
+
+
+                      string with newlines
+
+
+
+
+
+
+            """
+            """#),
+            Example(#"""
+            example(value: """
+            Something
+
+
+            """)
+            """#)
         ],
         triggeringExamples: [
             Example("let aaaa = 0\n\n\n"),
             Example("struct AAAA {}\n\n\n\n"),
-            Example("class BBBB {}\n\n\n")
+            Example("class BBBB {}\n\n\n"),
+            Example("""
+            func foo() {}
+
+
+            // MARK: - Something
+
+            """)
         ],
         corrections: [
             Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\nclass AAA {}\n"),
@@ -67,14 +103,13 @@ struct VerticalWhitespaceRule: CorrectableRule {
         let blankLinesSections = extractSections(from: filteredLines)
 
         // filtering out violations in comments and strings
-        let stringAndComments = SyntaxKind.commentAndStringKinds
-        let syntaxMap = file.syntaxMap
         let result = blankLinesSections.compactMap { eachSection -> (lastLine: Line, linesToRemove: Int)? in
             guard let lastLine = eachSection.last else {
                 return nil
             }
-            let kindInSection = syntaxMap.kinds(inByteRange: lastLine.byteRange)
-            if stringAndComments.isDisjoint(with: kindInSection) {
+
+            guard let classificationsInRange = file.syntaxTree.classification(at: lastLine.byteRange.location.value),
+                  classificationsInRange.kind.isStringOrComment else {
                 return (lastLine, eachSection.count)
             }
 
@@ -146,5 +181,17 @@ struct VerticalWhitespaceRule: CorrectableRule {
             return corrections
         }
         return []
+    }
+}
+
+private extension SyntaxClassification {
+    var isStringOrComment: Bool {
+        switch self {
+        case .docBlockComment, .docLineComment, .blockComment, .lineComment, .stringLiteral:
+            return true
+        case .attribute, .dollarIdentifier, .editorPlaceholder, .floatLiteral, .identifier,
+            .ifConfigDirective, .integerLiteral, .keyword, .none, .operator, .regexLiteral, .type:
+            return false
+        }
     }
 }

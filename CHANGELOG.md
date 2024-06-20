@@ -10,7 +10,10 @@
 
 #### Enhancements
 
-* None.
+* Add new `optional_data_string_conversion` rule to enforce
+  failable conversions of `Data` -> UTF-8 `String`.
+  [Sam Rayner](https://github.com/samrayner)
+  [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
 #### Bug Fixes
 
@@ -23,6 +26,11 @@
   `unneeded_synthesized_initializer` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5153](https://github.com/realm/SwiftLint/issues/5153)
+
+* Revert `optional_data_string_conversion` enforcing
+  non-failable conversions of `Data` -> UTF-8 `String`.
+  [Sam Rayner](https://github.com/samrayner)
+  [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
 ## 0.55.1: Universal Washing Powder
 

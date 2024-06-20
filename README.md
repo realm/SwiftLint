@@ -37,7 +37,7 @@ presentation recorded January 9th, 2017 by JP Simard (transcript provided):
 ### [Swift Package Manager](https://github.com/apple/swift-package-manager)
 
 SwiftLint can be used as a [command plugin](#swift-package-command-plugin)
-or a [build tool plugin](#swift-package-build-tool-plugins).
+or a [build tool plugin](#build-tool-plugins).
 
 Add
 
@@ -192,18 +192,7 @@ To build SwiftLint, clone this repository and run `make install`.
 > confusing results, especially when executing with `--fix`/`--autocorrect`
 > command line arguments.
 
-### Swift Package Command Plugin
-
-> [!NOTE]
-> Requires installing via [Swift Package Manager](#swift-package-manager).
-
-The command plugin enables running SwiftLint from the command line as follows:
-
-```shell
-swift package plugin swiftlint
-```
-
-### Swift Package Build Tool Plugins
+### Build Tool Plugins
 
 SwiftLint can be used as a build tool plugin for both
 [Swift Package projects](#swift-package-projects)
@@ -236,6 +225,17 @@ To do this, add the plugin to the target(s) to be linted as follows:
     ...
     plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
 ),
+```
+
+### Swift Package Command Plugin
+
+> [!NOTE]
+> Requires installing via [Swift Package Manager](#swift-package-manager).
+
+The command plugin enables running SwiftLint from the command line as follows:
+
+```shell
+swift package plugin swiftlint
 ```
 
 ### Xcode Projects

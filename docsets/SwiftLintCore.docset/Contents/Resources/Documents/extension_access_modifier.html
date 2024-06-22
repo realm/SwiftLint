@@ -447,6 +447,10 @@ warning
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
+  <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="mi">1</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
    <span class="kd">public</span> <span class="k">var</span> <span class="nv">bar</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">1</span> <span class="p">}</span>
@@ -496,6 +500,10 @@ warning
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="err">↓</span><span class="kd">private</span> <span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span>
   <span class="err">↓</span><span class="kd">private</span> <span class="kd">func</span> <span class="nf">baz</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
+  <span class="kd">private(set)</span> <span class="kd">public</span> <span class="k">var</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="mi">1</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 

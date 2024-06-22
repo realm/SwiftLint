@@ -12,9 +12,15 @@
 
 #### Enhancements
 
-* None.
+* Linting got around 20% faster due to the praisworthy performance
+  improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
+  library.
 
 #### Bug Fixes
+
+* Fix a few false positives and negatives by updating the parser to support
+  Swift 6 with all its new language constructs.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 * Stop triggering `mark` rule on "mark" comments in the middle of another
   comment.  

@@ -43,7 +43,7 @@ struct StaticOperatorRule: OptInRule {
                 }
               }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -73,7 +73,7 @@ struct StaticOperatorRule: OptInRule {
                 return false
               }
             }
-            """)
+            """),
         ]
     )
 }

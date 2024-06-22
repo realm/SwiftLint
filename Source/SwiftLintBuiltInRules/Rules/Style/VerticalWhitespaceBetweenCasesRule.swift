@@ -52,8 +52,8 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
             "    \n",
             "default:    \n",
             "    print(\"not one\")    \n",
-            "}    "
-        ].joined())
+            "}    ",
+        ].joined()),
     ]
 
     private static let violatingToValidExamples: [Example: Example] = [
@@ -124,7 +124,7 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
                 print("multiple ...")
                 print("... lines")
             }
-        """)
+        """),
     ]
 
     private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default):[ \\t]*\\n)"

@@ -31,7 +31,7 @@ struct LegacyConstructorRule: Rule {
             Example("NSEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)"),
             Example("NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)"),
             Example("UIOffset(horizontal: 0, vertical: 10)"),
-            Example("UIOffset(horizontal: horizontal, vertical: vertical)")
+            Example("UIOffset(horizontal: horizontal, vertical: vertical)"),
         ],
         triggeringExamples: [
             Example("↓CGPointMake(10, 10)"),
@@ -57,7 +57,7 @@ struct LegacyConstructorRule: Rule {
             Example("↓NSEdgeInsetsMake(top, left, bottom, right)"),
             Example("↓CGVectorMake(10, 10)\n↓NSMakeRange(10, 1)"),
             Example("↓UIOffsetMake(0, 10)"),
-            Example("↓UIOffsetMake(horizontal, vertical)")
+            Example("↓UIOffsetMake(horizontal, vertical)"),
         ],
         corrections: [
             Example("↓CGPointMake(10,  10)"): Example("CGPoint(x: 10,  y: 10)"),
@@ -95,33 +95,37 @@ struct LegacyConstructorRule: Rule {
             Example("↓CGPointMake(calculateX(), 10)"): Example("CGPoint(x: calculateX(), y: 10)"),
             Example("↓UIOffsetMake(0, 10)"): Example("UIOffset(horizontal: 0, vertical: 10)"),
             Example("↓UIOffsetMake(horizontal, vertical)"):
-                Example("UIOffset(horizontal: horizontal, vertical: vertical)")
+                Example("UIOffset(horizontal: horizontal, vertical: vertical)"),
         ]
     )
 
-    private static let constructorsToArguments = ["CGRectMake": ["x", "y", "width", "height"],
-                                                  "CGPointMake": ["x", "y"],
-                                                  "CGSizeMake": ["width", "height"],
-                                                  "CGVectorMake": ["dx", "dy"],
-                                                  "NSMakePoint": ["x", "y"],
-                                                  "NSMakeSize": ["width", "height"],
-                                                  "NSMakeRect": ["x", "y", "width", "height"],
-                                                  "NSMakeRange": ["location", "length"],
-                                                  "UIEdgeInsetsMake": ["top", "left", "bottom", "right"],
-                                                  "NSEdgeInsetsMake": ["top", "left", "bottom", "right"],
-                                                  "UIOffsetMake": ["horizontal", "vertical"]]
+    private static let constructorsToArguments = [
+        "CGRectMake": ["x", "y", "width", "height"],
+        "CGPointMake": ["x", "y"],
+        "CGSizeMake": ["width", "height"],
+        "CGVectorMake": ["dx", "dy"],
+        "NSMakePoint": ["x", "y"],
+        "NSMakeSize": ["width", "height"],
+        "NSMakeRect": ["x", "y", "width", "height"],
+        "NSMakeRange": ["location", "length"],
+        "UIEdgeInsetsMake": ["top", "left", "bottom", "right"],
+        "NSEdgeInsetsMake": ["top", "left", "bottom", "right"],
+        "UIOffsetMake": ["horizontal", "vertical"],
+    ]
 
-    private static let constructorsToCorrectedNames = ["CGRectMake": "CGRect",
-                                                       "CGPointMake": "CGPoint",
-                                                       "CGSizeMake": "CGSize",
-                                                       "CGVectorMake": "CGVector",
-                                                       "NSMakePoint": "NSPoint",
-                                                       "NSMakeSize": "NSSize",
-                                                       "NSMakeRect": "NSRect",
-                                                       "NSMakeRange": "NSRange",
-                                                       "UIEdgeInsetsMake": "UIEdgeInsets",
-                                                       "NSEdgeInsetsMake": "NSEdgeInsets",
-                                                       "UIOffsetMake": "UIOffset"]
+    private static let constructorsToCorrectedNames = [
+        "CGRectMake": "CGRect",
+        "CGPointMake": "CGPoint",
+        "CGSizeMake": "CGSize",
+        "CGVectorMake": "CGVector",
+        "NSMakePoint": "NSPoint",
+        "NSMakeSize": "NSSize",
+        "NSMakeRect": "NSRect",
+        "NSMakeRange": "NSRange",
+        "UIEdgeInsetsMake": "UIEdgeInsets",
+        "NSEdgeInsetsMake": "NSEdgeInsets",
+        "UIOffsetMake": "UIOffset",
+    ]
 }
 
 private extension LegacyConstructorRule {

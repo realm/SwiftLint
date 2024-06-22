@@ -28,7 +28,7 @@ struct LocalDocCommentRule: SwiftSyntaxRule, OptInRule {
             /// Look here for more info:
             /// https://github.com.
             var myGreatProperty: String!
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -36,7 +36,7 @@ struct LocalDocCommentRule: SwiftSyntaxRule, OptInRule {
               ↓/// Docstring inside a function declaration
               print("foo")
             }
-            """)
+            """),
         ]
     )
 

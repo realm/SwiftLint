@@ -42,7 +42,7 @@ struct CyclomaticComplexityRule: Rule {
                     if true {}; if true {}; if true {}; if true {}; if true {}
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -67,7 +67,7 @@ struct CyclomaticComplexityRule: Rule {
                     }
                 }
             }
-            """)
+            """),
         ]
     )
 }

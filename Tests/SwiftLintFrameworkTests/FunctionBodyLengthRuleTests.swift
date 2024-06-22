@@ -19,11 +19,17 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
         XCTAssertEqual(self.violations(longFunctionBody), [])
 
         let longerFunctionBody = violatingFuncWithBody(repeatElement("x = 0\n", count: 51).joined())
-        XCTAssertEqual(self.violations(longerFunctionBody), [StyleViolation(
-            ruleDescription: FunctionBodyLengthRule.description,
-            location: Location(file: nil, line: 1, character: 6),
-            reason: "Function body should span 50 lines or less excluding comments and " +
-            "whitespace: currently spans 51 lines")])
+        XCTAssertEqual(
+            self.violations(longerFunctionBody),
+            [
+                StyleViolation(
+                    ruleDescription: FunctionBodyLengthRule.description,
+                    location: Location(file: nil, line: 1, character: 6),
+                    reason: "Function body should span 50 lines or less excluding comments and " +
+                            "whitespace: currently spans 51 lines"
+                ),
+            ]
+        )
 
         let longerFunctionBodyWithEmptyLines = funcWithBody(
             repeatElement("\n", count: 100).joined()
@@ -42,11 +48,17 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
             repeatElement("x = 0\n", count: 51).joined() +
             "// comment only line should be ignored.\n"
         )
-        XCTAssertEqual(self.violations(longerFunctionBodyWithComments), [StyleViolation(
-            ruleDescription: FunctionBodyLengthRule.description,
-            location: Location(file: nil, line: 1, character: 6),
-            reason: "Function body should span 50 lines or less excluding comments and " +
-            "whitespace: currently spans 51 lines")])
+        XCTAssertEqual(
+            self.violations(longerFunctionBodyWithComments),
+            [
+                StyleViolation(
+                    ruleDescription: FunctionBodyLengthRule.description,
+                    location: Location(file: nil, line: 1, character: 6),
+                    reason: "Function body should span 50 lines or less excluding comments and " +
+                            "whitespace: currently spans 51 lines"
+                ),
+            ]
+        )
     }
 
     func testFunctionBodyLengthsWithMultilineComments() {
@@ -60,11 +72,17 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
             repeatElement("x = 0\n", count: 51).joined() +
             "/* multi line comment only line should be ignored.\n*/\n"
         )
-        XCTAssertEqual(self.violations(longerFunctionBodyWithMultilineComments), [StyleViolation(
-            ruleDescription: FunctionBodyLengthRule.description,
-            location: Location(file: nil, line: 1, character: 6),
-            reason: "Function body should span 50 lines or less excluding comments and " +
-            "whitespace: currently spans 51 lines")])
+        XCTAssertEqual(
+            self.violations(longerFunctionBodyWithMultilineComments),
+            [
+                StyleViolation(
+                    ruleDescription: FunctionBodyLengthRule.description,
+                    location: Location(file: nil, line: 1, character: 6),
+                    reason: "Function body should span 50 lines or less excluding comments and " +
+                            "whitespace: currently spans 51 lines"
+                ),
+            ]
+        )
     }
 
     func testConfiguration() {

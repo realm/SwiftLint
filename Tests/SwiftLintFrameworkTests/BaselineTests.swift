@@ -44,7 +44,7 @@ final class BaselineTests: XCTestCase {
         ArrayInitRule.description,
         BlockBasedKVORule.description,
         ClosingBraceRule.description,
-        DirectReturnRule.description
+        DirectReturnRule.description,
     ]
 
     private static var currentDirectoryPath: String?
@@ -116,14 +116,14 @@ final class BaselineTests: XCTestCase {
             BlockBasedKVORule.description,
             DirectReturnRule.description,
             ArrayInitRule.description,
-            ClosingBraceRule.description
+            ClosingBraceRule.description,
         ]
 
         let ruleDescriptions = [
             ArrayInitRule.description,
             BlockBasedKVORule.description,
             ClosingBraceRule.description,
-            DirectReturnRule.description
+            DirectReturnRule.description,
         ]
 
         for ruleDescription in ruleDescriptions {

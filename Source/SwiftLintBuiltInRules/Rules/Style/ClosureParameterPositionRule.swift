@@ -29,7 +29,7 @@ struct ClosureParameterPositionRule: Rule {
             let mediaView: UIView = { [weak self] index in
                return UIView()
             }(index)
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -91,7 +91,7 @@ struct ClosureParameterPositionRule: Rule {
                 [weak ↓self] in
                 self?.bar()
             }
-            """)
+            """),
         ]
     )
 }

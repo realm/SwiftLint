@@ -25,11 +25,11 @@ struct OverrideInExtensionRule: OptInRule, SwiftSyntaxRule {
             extension Foo.Bar {
                 override var description: String { return "" }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("extension Person {\n  override ↓var age: Int { return 42 }\n}"),
-            Example("extension Person {\n  override ↓func celebrateBirthday() {}\n}")
+            Example("extension Person {\n  override ↓func celebrateBirthday() {}\n}"),
         ]
     )
 

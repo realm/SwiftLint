@@ -44,7 +44,7 @@ private extension ReturnValueFromVoidFunctionRule {
                             \.leadingTrivia,
                             .newline + (returnStmt.leadingTrivia.indentation(isOnNewline: false) ?? []))
                         .with(\.trailingTrivia, returnStmt.trailingTrivia)
-                )))
+                ))),
             ]
             return super.visit(CodeBlockItemListSyntax(newStmtList))
         }

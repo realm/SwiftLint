@@ -26,7 +26,7 @@ struct SortedFirstLastRule: OptInRule {
             Example("myList.sorted().first(where: someFunction)"),
             Example("myList.sorted().last(where: someFunction)"),
             Example("myList.sorted().first { $0 == key }"),
-            Example("myList.sorted().last { $0 == key }")
+            Example("myList.sorted().last { $0 == key }"),
         ],
         triggeringExamples: [
             Example("↓myList.sorted().first"),
@@ -41,7 +41,7 @@ struct SortedFirstLastRule: OptInRule {
             Example("↓myList.map { $0 + 1 }.sorted().last"),
             Example("↓myList.sorted(by: someFunction).last"),
             Example("↓myList.map { $0 + 1 }.sorted { $0.description < $1.description }.last"),
-            Example("↓myList.map { $0 + 1 }.sorted { $0.first < $1.first }.last")
+            Example("↓myList.map { $0 + 1 }.sorted { $0.first < $1.first }.last"),
         ]
     )
 }

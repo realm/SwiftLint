@@ -20,7 +20,7 @@ struct MultipleClosuresWithTrailingClosureRule: Rule {
             }
             """),
             Example("foo.method { print(0) } arg2: { print(1) }"),
-            Example("foo.methodWithParenArgs((0, 1), arg2: (0, 1, 2)) { $0 } arg4: { $0 }")
+            Example("foo.methodWithParenArgs((0, 1), arg2: (0, 1, 2)) { $0 } arg4: { $0 }"),
         ],
         triggeringExamples: [
             Example("foo.something(param1: { $0 }) ↓{ $0 + 1 }"),
@@ -32,7 +32,7 @@ struct MultipleClosuresWithTrailingClosureRule: Rule {
             }
             """),
             Example("foo.multipleTrailing(arg1: { $0 }) { $0 } arg3: { $0 }"),
-            Example("foo.methodWithParenArgs(param1: { $0 }, param2: (0, 1), (0, 1)) { $0 }")
+            Example("foo.methodWithParenArgs(param1: { $0 }, param2: (0, 1), (0, 1)) { $0 }"),
         ]
     )
 }

@@ -32,7 +32,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: reason
-                )
+                ),
             ]
         }
         return []
@@ -85,7 +85,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
                         file: file,
                         byteOffset: offset
                     )
-                )
+                ),
             ]
         }
         return corrections

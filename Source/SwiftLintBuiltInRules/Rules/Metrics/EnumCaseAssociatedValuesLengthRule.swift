@@ -20,7 +20,7 @@ struct EnumCaseAssociatedValuesLengthRule: OptInRule {
             enum Barcode {
                 case upc(Int, Int, Int, Int)
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -33,7 +33,7 @@ struct EnumCaseAssociatedValuesLengthRule: OptInRule {
             enum Barcode {
                 case ↓upc(Int, Int, Int, Int, Int, Int)
             }
-            """)
+            """),
         ]
     )
 }

@@ -12,7 +12,7 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
             Example("// swiftlint:disable:next unused_import"),
             Example("// swiftlint:disable:previous unused_import"),
             Example("// swiftlint:disable:this unused_import"),
-            Example("//swiftlint:disable:this unused_import")
+            Example("//swiftlint:disable:this unused_import"),
         ],
         triggeringExamples: [
             Example("// ↓swiftlint:"),
@@ -29,7 +29,7 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
             Example("// ↓swiftlint:enable:"),
             Example("// ↓swiftlint:enable: "),
             Example("// ↓swiftlint:disable: unused_import"),
-            Example("// s↓swiftlint:disable unused_import")
+            Example("// s↓swiftlint:disable unused_import"),
         ].skipWrappingInCommentTests()
     )
 

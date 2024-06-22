@@ -22,7 +22,7 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule,
             protocol G {
                 associatedtype Model: Codable, Equatable
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("struct A: Codable↓ & Equatable {}"),
@@ -36,7 +36,7 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule,
             protocol G {
                 associatedtype Model: Codable↓ & Equatable
             }
-            """)
+            """),
         ],
         corrections: [
             Example("struct A: Codable↓ & Equatable {}"): Example("struct A: Codable, Equatable {}"),
@@ -54,7 +54,7 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule,
             protocol G {
                 associatedtype Model: Codable, Equatable
             }
-            """)
+            """),
         ]
     )
 

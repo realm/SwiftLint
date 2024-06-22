@@ -14,6 +14,6 @@ struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration {
     private(set) var discouragedInits: Set = [
         "Bundle",
         "NSError",
-        "UIDevice"
+        "UIDevice",
     ]
 }

@@ -144,7 +144,7 @@ extension SourceKittenDictionary {
                 SwiftUIModifier(
                     name: "accessibility",
                     arguments: [.init(name: "hidden", values: ["true"])]
-                )
+                ),
             ],
             in: file
         )
@@ -158,7 +158,7 @@ extension SourceKittenDictionary {
                 SwiftUIModifier(
                     name: "accessibilityElement",
                     arguments: [.init(name: "children", required: false, values: [".ignore"], matchType: .suffix)]
-                )
+                ),
             ],
             in: file
         )

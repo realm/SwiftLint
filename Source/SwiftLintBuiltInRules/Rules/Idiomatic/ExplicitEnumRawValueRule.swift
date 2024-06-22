@@ -39,7 +39,7 @@ struct ExplicitEnumRawValueRule: OptInRule {
             enum Numbers: Algebra {
               case one
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -74,7 +74,7 @@ struct ExplicitEnumRawValueRule: OptInRule {
                   case ↓one, ↓two
                 }
             }
-            """)
+            """),
         ]
     )
 }

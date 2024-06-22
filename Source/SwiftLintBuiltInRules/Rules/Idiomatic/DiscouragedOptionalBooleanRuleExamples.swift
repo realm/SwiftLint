@@ -47,7 +47,7 @@ internal struct DiscouragedOptionalBooleanRuleExamples {
 
         wrapExample("enum", "func foo(input: Bool = true) {}"),
         wrapExample("enum", "func foo(input: [String: Bool] = [:]) {}"),
-        wrapExample("enum", "func foo(input: [Bool] = []) {}")
+        wrapExample("enum", "func foo(input: [Bool] = []) {}"),
     ]
 
     static let triggeringExamples = [
@@ -157,7 +157,7 @@ internal struct DiscouragedOptionalBooleanRuleExamples {
         wrapExample("enum", "static func foo(input: [↓Bool?]) {}"),
 
         // Optional chaining
-        Example("_ = ↓Bool?.values()")
+        Example("_ = ↓Bool?.values()"),
     ]
 }
 

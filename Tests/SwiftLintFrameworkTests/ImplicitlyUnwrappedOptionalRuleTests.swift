@@ -13,7 +13,7 @@ final class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
         let triggeringExamples = [
             Example("@IBOutlet private var label: UILabel!"),
             Example("@IBOutlet var label: UILabel!"),
-            Example("let int: Int!")
+            Example("let int: Int!"),
         ]
 
         let nonTriggeringExamples = [Example("if !boolean {}")]
@@ -29,7 +29,7 @@ final class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
         let triggeringExamples = [
             Example("private weak var label: ↓UILabel!"),
             Example("weak var label: ↓UILabel!"),
-            Example("@objc weak var label: ↓UILabel!")
+            Example("@objc weak var label: ↓UILabel!"),
         ]
 
         let nonTriggeringExamples = [
@@ -37,7 +37,7 @@ final class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
             Example("@IBOutlet var label: UILabel!"),
             Example("@IBOutlet weak var label: UILabel!"),
             Example("var label: UILabel!"),
-            Example("let int: Int!")
+            Example("let int: Int!"),
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)

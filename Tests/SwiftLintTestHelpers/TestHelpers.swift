@@ -36,7 +36,7 @@ private extension SwiftLintFile {
             "-F",
             frameworks,
             "-sdk", sdk,
-            "-j4", path!
+            "-j4", path!,
         ]
     }
 }
@@ -172,7 +172,8 @@ private func render(violations: [StyleViolation], in contents: String) -> String
             "\(violation.severity.rawValue): ",
             "\(violation.ruleName) Violation: ",
             violation.reason,
-            " (\(violation.ruleIdentifier))"].joined()
+            " (\(violation.ruleIdentifier))",
+        ].joined()
         if line >= contents.count {
             contents.append(message)
         } else {

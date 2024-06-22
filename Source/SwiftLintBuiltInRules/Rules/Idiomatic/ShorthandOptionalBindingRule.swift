@@ -24,7 +24,7 @@ struct ShorthandOptionalBindingRule: OptInRule {
                 if let i,
                    var i = a,
                    j > 0 {}
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -48,7 +48,7 @@ struct ShorthandOptionalBindingRule: OptInRule {
             """),
             Example("""
                 while ↓var i = i { i = nil }
-            """)
+            """),
         ],
         corrections: [
             Example("""
@@ -75,7 +75,7 @@ struct ShorthandOptionalBindingRule: OptInRule {
                 while j > 0, ↓var i = i   { i = nil }
             """): Example("""
                 while j > 0, var i   { i = nil }
-            """)
+            """),
         ],
         deprecatedAliases: ["if_let_shadowing"]
     )

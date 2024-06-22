@@ -21,7 +21,7 @@ struct OneDelarationPerFileRule: OptInRule {
                     struct S {
                         struct N {}
                     }
-                    """)
+                    """),
         ],
         triggeringExamples: [
             Example("""
@@ -35,7 +35,7 @@ struct OneDelarationPerFileRule: OptInRule {
             Example("""
                     struct Foo {}
                     ↓struct Bar {}
-                    """)
+                    """),
         ]
     )
 }

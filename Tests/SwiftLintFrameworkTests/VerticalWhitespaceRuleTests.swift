@@ -21,7 +21,7 @@ final class VerticalWhitespaceRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: [])
             .with(corrections: [
                 Example("let b = 0\n\n↓\n↓\n↓\n\nclass AAA {}\n"): Example("let b = 0\n\n\nclass AAA {}\n"),
-                Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\n\nclass AAA {}\n")
+                Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\n\nclass AAA {}\n"),
             ])
 
         verifyRule(maxEmptyLinesDescription,

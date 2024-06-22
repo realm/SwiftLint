@@ -30,7 +30,7 @@ final class ImplicitlyUnwrappedOptionalConfigurationTests: SwiftLintTestCase {
         let badConfigs: [[String: Any]] = [
             ["mode": "everything"],
             ["mode": false],
-            ["mode": 42]
+            ["mode": 42],
         ]
 
         for badConfig in badConfigs {

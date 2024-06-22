@@ -28,7 +28,7 @@ struct UnusedControlFlowLabelRule: Rule {
                     break loop
                 }
             } while true
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("↓loop: while true { break }"),
@@ -48,7 +48,7 @@ struct UnusedControlFlowLabelRule: Rule {
                     break
                 }
             } while true
-            """)
+            """),
         ],
         corrections: [
             Example("↓loop: while true { break }"): Example("while true { break }"),
@@ -80,7 +80,7 @@ struct UnusedControlFlowLabelRule: Rule {
                         break
                     }
                 } while true
-                """)
+                """),
         ]
     )
 }

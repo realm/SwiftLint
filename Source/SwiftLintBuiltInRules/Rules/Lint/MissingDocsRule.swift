@@ -90,7 +90,7 @@ struct MissingDocsRule: OptInRule {
             public class A {
                 public init() {}
             }
-            """, configuration: ["excludes_trivial_init": true])
+            """, configuration: ["excludes_trivial_init": true]),
         ],
         triggeringExamples: [
             // public, undocumented
@@ -116,7 +116,7 @@ struct MissingDocsRule: OptInRule {
             public class A {
                 public init(argument: String) {}
             }
-            """, configuration: ["excludes_trivial_init": true])
+            """, configuration: ["excludes_trivial_init": true]),
         ]
     )
 

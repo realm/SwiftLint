@@ -16,7 +16,7 @@ struct FirstWhereRule: OptInRule {
             Example("(myList.filter { $0 == 1 }.suffix(2)).first"),
             Example(#"collection.filter("stringCol = '3'").first"#),
             Example(#"realm?.objects(User.self).filter(NSPredicate(format: "email ==[c] %@", email)).first"#),
-            Example(#"if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { print(pause) }"#)
+            Example(#"if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { print(pause) }"#),
         ],
         triggeringExamples: [
             Example("↓myList.filter { $0 % 2 == 0 }.first"),
@@ -27,7 +27,7 @@ struct FirstWhereRule: OptInRule {
             Example("↓myList.filter({ $0 % 2 == 0 })\n.first"),
             Example("(↓myList.filter { $0 == 1 }).first"),
             Example(#"↓myListOfDict.filter { dict in dict["1"] }.first"#),
-            Example(#"↓myListOfDict.filter { $0["someString"] }.first"#)
+            Example(#"↓myListOfDict.filter { $0["someString"] }.first"#),
         ]
     )
 }

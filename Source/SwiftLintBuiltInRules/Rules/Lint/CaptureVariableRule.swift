@@ -72,7 +72,7 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
             closure()
             j = 1
             closure()
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -147,7 +147,7 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
                 func test(_ completionHandler: @escaping (Int) -> Void) {
                 }
             }
-            """)
+            """),
         ],
         requiresFileOnDisk: true
     )

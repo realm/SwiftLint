@@ -7,11 +7,11 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("let Apple = 0"),
             Example("let some_apple = 0"),
-            Example("let Test123 = 0")
+            Example("let Test123 = 0"),
         ]
         let triggeringExamples = baseDescription.triggeringExamples + [
             Example("let ap_ple = 0"),
-            Example("let AppleJuice = 0")
+            Example("let AppleJuice = 0"),
         ]
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
                                                triggeringExamples: triggeringExamples)
@@ -24,7 +24,7 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
             Example("let myLet$ = 0"),
             Example("let myLet% = 0"),
             Example("let myLet$% = 0"),
-            Example("let _myLet = 0")
+            Example("let _myLet = 0"),
         ]
         let triggeringExamples = baseDescription.triggeringExamples.filter { !$0.code.contains("_") }
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
@@ -51,7 +51,7 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
             Example("class C { class let ↓MyLet = 0 }"),
             Example("class C { static func ↓MyFunc() {} }"),
             Example("class C { class func ↓MyFunc() {} }"),
-            Example("func ↓√ (arg: Double) -> Double { arg }")
+            Example("func ↓√ (arg: Double) -> Double { arg }"),
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()
@@ -68,12 +68,12 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         let triggeringExamples = [
             Example("let ↓MyLet = 0"),
             Example("enum Foo { case ↓MyCase }"),
-            Example("func ↓IsOperator(name: String) -> Bool { true }")
+            Example("func ↓IsOperator(name: String) -> Bool { true }"),
         ]
         let nonTriggeringExamples = [
             Example("let myLet = 0"),
             Example("enum Foo { case myCase }"),
-            Example("func isOperator(name: String) -> Bool { true }")
+            Example("func isOperator(name: String) -> Bool { true }"),
         ]
 
         verifyRule(
@@ -99,11 +99,11 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
                 ])
                 .with(nonTriggeringExamples: [
                     Example("let MyLet = 0"),
-                    Example("enum Foo { case myCase }")
+                    Example("enum Foo { case myCase }"),
                 ]),
             ruleConfiguration: [
                 "validates_start_with_lowercase": true,
-                "allowed_symbols": ["M"]
+                "allowed_symbols": ["M"],
             ] as [String: any Sendable]
         )
     }

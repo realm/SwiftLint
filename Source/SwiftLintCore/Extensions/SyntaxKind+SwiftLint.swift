@@ -10,14 +10,18 @@ public extension SyntaxKind {
 
     static let commentAndStringKinds: Set<SyntaxKind> = commentKinds.union([.string])
 
-    static let commentKinds: Set<SyntaxKind> = [.comment, .commentMark, .commentURL,
-                                                .docComment, .docCommentField]
+    static let commentKinds: Set<SyntaxKind> = [
+        .comment, .commentMark, .commentURL,
+        .docComment, .docCommentField,
+    ]
 
-    static let allKinds: Set<SyntaxKind> = [.argument, .attributeBuiltin, .attributeID, .buildconfigID,
-                                            .buildconfigKeyword, .comment, .commentMark, .commentURL,
-                                            .docComment, .docCommentField, .identifier, .keyword, .number,
-                                            .objectLiteral, .parameter, .placeholder, .string,
-                                            .stringInterpolationAnchor, .typeidentifier]
+    static let allKinds: Set<SyntaxKind> = [
+        .argument, .attributeBuiltin, .attributeID, .buildconfigID,
+        .buildconfigKeyword, .comment, .commentMark, .commentURL,
+        .docComment, .docCommentField, .identifier, .keyword, .number,
+        .objectLiteral, .parameter, .placeholder, .string,
+        .stringInterpolationAnchor, .typeidentifier,
+    ]
 
     /// Syntax kinds that don't have associated module info when getting their cursor info.
     static var kindsWithoutModuleInfo: Set<SyntaxKind> {
@@ -33,7 +37,7 @@ public extension SyntaxKind {
             .buildconfigID,
             .commentURL,
             .comment,
-            .docCommentField
+            .docCommentField,
         ]
     }
 }

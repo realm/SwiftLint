@@ -9,7 +9,7 @@ struct DuplicateImportsRule: SwiftSyntaxCorrectableRule {
     static let importKinds = [
         "typealias", "struct", "class",
         "enum", "protocol", "let",
-        "var", "func"
+        "var", "func",
     ]
 
     static let description = RuleDescription(

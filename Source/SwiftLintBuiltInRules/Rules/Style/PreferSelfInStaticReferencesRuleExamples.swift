@@ -100,7 +100,7 @@ enum PreferSelfInStaticReferencesRuleExamples {
                     let s2 = S1<S1>()
                 }
             }
-        """, excludeFromDocumentation: true)
+        """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [
@@ -222,7 +222,7 @@ enum PreferSelfInStaticReferencesRuleExamples {
                     child = (input as! T).child
                 }
             }
-        """, excludeFromDocumentation: true)
+        """, excludeFromDocumentation: true),
     ]
 
     static let corrections = [
@@ -264,6 +264,6 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 static func f(_ l: Int = Self.i) -> Int { l*Self.j }
                 func g() { Self.i + Self.f() + k }
             }
-        """)
+        """),
     ]
 }

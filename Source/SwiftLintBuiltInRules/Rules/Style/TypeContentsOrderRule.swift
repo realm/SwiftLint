@@ -118,7 +118,7 @@ struct TypeContentsOrderRule: OptInRule {
                 "viewDidAppear(",
                 "viewWillDisappear(",
                 "viewDidDisappear(",
-                "willMove("
+                "willMove(",
             ]
 
             if typeContentStructure.name!.starts(with: "init(") {

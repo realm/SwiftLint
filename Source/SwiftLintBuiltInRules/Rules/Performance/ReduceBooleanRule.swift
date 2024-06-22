@@ -12,7 +12,7 @@ struct ReduceBooleanRule: Rule {
         nonTriggeringExamples: [
             Example("nums.reduce(0) { $0.0 + $0.1 }"),
             Example("nums.reduce(0.0) { $0.0 + $0.1 }"),
-            Example("nums.reduce(initial: true) { $0.0 && $0.1 == 3 }")
+            Example("nums.reduce(initial: true) { $0.0 && $0.1 == 3 }"),
         ],
         triggeringExamples: [
             Example("let allNines = nums.↓reduce(true) { $0.0 && $0.1 == 9 }"),
@@ -23,7 +23,7 @@ struct ReduceBooleanRule: Rule {
             Example("let anyNines = nums.↓reduce(false, { $0.0 || $0.1 == 9 })"),
             Example("let allValid = validators.↓reduce(true, { $0 && $1(input) })"),
             Example("let anyValid = validators.↓reduce(false, { $0 || $1(input) })"),
-            Example("nums.reduce(into: true) { (r: inout Bool, s) in r = r && (s == 3) }")
+            Example("nums.reduce(into: true) { (r: inout Bool, s) in r = r && (s == 3) }"),
         ]
     )
 }

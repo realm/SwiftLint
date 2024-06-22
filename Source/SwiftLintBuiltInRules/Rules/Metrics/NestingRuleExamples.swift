@@ -48,7 +48,7 @@ internal struct NestingRuleExamples {
                     extension Example_0 {
                         \(type) Example_1 {}
                     }
-                """)
+                """),
             ]
         }
 
@@ -99,7 +99,7 @@ internal struct NestingRuleExamples {
                     }
                 }
             }
-        """)
+        """),
     ]
 
     private static let nonTriggeringProtocolExamples =
@@ -131,7 +131,7 @@ internal struct NestingRuleExamples {
                     extension Example_0 {
                         protocol Example_1 {}
                     }
-                """)
+                """),
             ]
         }
 
@@ -180,7 +180,7 @@ internal struct NestingRuleExamples {
                             }
                         }
                     })
-                """)
+                """),
             ]
         }
 
@@ -225,7 +225,7 @@ internal struct NestingRuleExamples {
                             }
                         }
                     }
-                """)
+                """),
             ]
         }
 }
@@ -284,7 +284,7 @@ extension NestingRuleExamples {
                             ↓\(type) Example_2 {}
                         }
                     }
-                """)
+                """),
             ]
         }
 
@@ -343,7 +343,7 @@ extension NestingRuleExamples {
                     }
                 }
             }
-        """)
+        """),
     ]
 
     private static let triggeringClosureAndStatementExamples =
@@ -401,7 +401,7 @@ extension NestingRuleExamples {
                             }
                         }
                     })
-                """)
+                """),
             ]
         }
 
@@ -442,7 +442,7 @@ extension NestingRuleExamples {
                             ↓protocol Example_2 {}
                         }
                     }
-                """)
+                """),
             ]
         }
 
@@ -496,7 +496,7 @@ extension NestingRuleExamples {
                             }
                         }
                     }
-                """)
+                """),
             ]
         }
 }

@@ -46,7 +46,7 @@ struct MultilineLiteralBracketsRule: OptInRule {
                     5, 6,
                     7, 8, 9
                 ]
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -107,7 +107,7 @@ struct MultilineLiteralBracketsRule: OptInRule {
                         $0.isValid
                     }.sum()↓]
             }
-            """)
+            """),
         ]
     )
 }

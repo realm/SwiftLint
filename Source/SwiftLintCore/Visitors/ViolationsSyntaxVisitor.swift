@@ -90,7 +90,7 @@ public extension Array where Element == any DeclSyntaxProtocol.Type {
         ProtocolDeclSyntax.self,
         StructDeclSyntax.self,
         SubscriptDeclSyntax.self,
-        VariableDeclSyntax.self
+        VariableDeclSyntax.self,
     ]
 
     /// All declarations except for the specified ones.

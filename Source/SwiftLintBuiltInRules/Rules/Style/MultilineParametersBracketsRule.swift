@@ -53,7 +53,7 @@ struct MultilineParametersBracketsRule: OptInRule {
                 func foo(a: [Int] = [
                     1
                 ])
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -86,7 +86,7 @@ struct MultilineParametersBracketsRule: OptInRule {
             func foo<T>(↓param1: T, param2: String,
                      param3: String
             ) -> T
-            """)
+            """),
         ]
     )
 

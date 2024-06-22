@@ -46,7 +46,7 @@ private extension DeploymentTargetRule {
                 "tvOS": configuration.tvOSDeploymentTarget,
                 "tvOSApplicationExtension": configuration.tvOSAppExtensionDeploymentTarget,
                 "watchOS": configuration.watchOSDeploymentTarget,
-                "watchOSApplicationExtension": configuration.watchOSAppExtensionDeploymentTarget
+                "watchOSApplicationExtension": configuration.watchOSAppExtensionDeploymentTarget,
             ]
         }
 

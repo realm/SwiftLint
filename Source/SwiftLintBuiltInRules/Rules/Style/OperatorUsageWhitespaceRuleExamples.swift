@@ -90,7 +90,7 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         """,
         configuration: ["allowed_no_space_operators": ["<--<"]],
         excludeFromDocumentation: true
-        )
+        ),
     ]
 
     static let triggeringExamples = [
@@ -137,7 +137,7 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         """),
         Example("tabbedViewController.title↓  = nil"),
         Example("let foo = bar ? 0↓:1"),
-        Example("let foo = bar↓ ?   0 : 1")
+        Example("let foo = bar↓ ?   0 : 1"),
     ]
 
     static let corrections = [
@@ -158,6 +158,6 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         Example("let foo↓  = \"1\""): Example("let foo = \"1\""),
         Example("let foo↓ =  \"1\""): Example("let foo = \"1\""),
         Example("let foo = bar ? 0↓:1"): Example("let foo = bar ? 0 : 1"),
-        Example("let foo = bar↓ ?   0 : 1"): Example("let foo = bar ? 0 : 1")
+        Example("let foo = bar↓ ?   0 : 1"): Example("let foo = bar ? 0 : 1"),
     ]
 }

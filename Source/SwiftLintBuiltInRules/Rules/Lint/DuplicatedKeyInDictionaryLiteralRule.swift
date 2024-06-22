@@ -39,7 +39,7 @@ struct DuplicatedKeyInDictionaryLiteralRule: Rule {
                     #line: "1",
                     #line: "2"
                 ]
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -74,7 +74,7 @@ struct DuplicatedKeyInDictionaryLiteralRule: Rule {
                     .four: "4",
                     .five: "5"
                 ]
-            """)
+            """),
         ]
     )
 }

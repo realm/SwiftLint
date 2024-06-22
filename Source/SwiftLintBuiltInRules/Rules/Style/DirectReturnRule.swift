@@ -40,7 +40,7 @@ struct DirectReturnRule: OptInRule {
                         return i
                     }(1)
                 }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -82,7 +82,7 @@ struct DirectReturnRule: OptInRule {
                         return b
                     }
                 }
-            """)
+            """),
         ],
         corrections: [
             Example("""
@@ -175,7 +175,7 @@ struct DirectReturnRule: OptInRule {
                 func f() -> Bool {
                     return true as Bool
                 }
-            """)
+            """),
         ]
     )
 }

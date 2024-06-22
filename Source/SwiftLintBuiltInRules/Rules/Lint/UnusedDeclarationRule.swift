@@ -274,7 +274,7 @@ private extension SourceKittenDictionary {
             "tableView(_:commit:forRowAt:)",
             "tableView(_:editingStyleForRowAt:)",
             "tableView(_:willDisplayHeaderView:forSection:)",
-            "tableView(_:willSelectRowAt:)"
+            "tableView(_:willSelectRowAt:)",
         ]
 
         return functionsToSkipForSR11985.contains(name)
@@ -297,7 +297,7 @@ private extension SourceKittenDictionary {
             "buildFinalResult(_:)",
             // https://github.com/apple/swift-evolution/blob/main/proposals/0348-buildpartialblock.md
             "buildPartialBlock(first:)",
-            "buildPartialBlock(accumulated:next:)"
+            "buildPartialBlock(accumulated:next:)",
         ]
 
         return resultBuilderStaticMethods.contains(name)
@@ -330,7 +330,7 @@ private let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
     .functionConstructor,
     .functionDestructor,
     .functionSubscript,
-    .genericTypeParam
+    .genericTypeParam,
 ]
 
 private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
@@ -338,5 +338,5 @@ private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
     .main,
     .nsApplicationMain,
     .override,
-    .uiApplicationMain
+    .uiApplicationMain,
 ]

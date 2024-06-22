@@ -19,7 +19,7 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration {
         .required,
         .convenience,
         .typeMethods,
-        .owned
+        .owned,
     ]
 }
 

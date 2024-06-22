@@ -29,7 +29,7 @@ struct OrphanedDocCommentRule: Rule {
             /// Look here for more info:
             /// https://github.com.
             var myGreatProperty: String!
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -64,7 +64,7 @@ struct OrphanedDocCommentRule: Rule {
                 // Not a doc string
                 var myGreatProperty: String!
             }
-            """)
+            """),
         ]
     )
 }

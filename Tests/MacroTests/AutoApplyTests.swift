@@ -171,7 +171,7 @@ final class AutoApplyTests: XCTestCase {
                     message: SwiftLintCoreMacroError.severityBasedWithoutProperty.message,
                     line: 2,
                     column: 8
-                )
+                ),
             ],
             macros: macros)
     }

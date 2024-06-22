@@ -150,7 +150,7 @@ final class CommandTests: SwiftLintTestCase {
                                   modifier: .previous)
             let expanded = [
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 0, character: nil),
-                Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 0, character: .max)
+                Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 0, character: .max),
             ]
             XCTAssertEqual(command.expand(), expanded)
         }
@@ -159,7 +159,7 @@ final class CommandTests: SwiftLintTestCase {
                                   modifier: .previous)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 0, character: nil),
-                Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 0, character: .max)
+                Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 0, character: .max),
             ]
             XCTAssertEqual(command.expand(), expanded)
         }
@@ -168,7 +168,7 @@ final class CommandTests: SwiftLintTestCase {
                                   modifier: .previous)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 0, character: nil),
-                Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 0, character: .max)
+                Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 0, character: .max),
             ]
             XCTAssertEqual(command.expand(), expanded)
         }
@@ -180,7 +180,7 @@ final class CommandTests: SwiftLintTestCase {
                                   modifier: .this)
             let expanded = [
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, character: nil),
-                Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: .max)
+                Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: .max),
             ]
             XCTAssertEqual(command.expand(), expanded)
         }
@@ -189,7 +189,7 @@ final class CommandTests: SwiftLintTestCase {
                                   modifier: .this)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: nil),
-                Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, character: .max)
+                Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, character: .max),
             ]
             XCTAssertEqual(command.expand(), expanded)
         }
@@ -198,7 +198,7 @@ final class CommandTests: SwiftLintTestCase {
                                   modifier: .this)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 1, character: nil),
-                Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 1, character: .max)
+                Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 1, character: .max),
             ]
             XCTAssertEqual(command.expand(), expanded)
         }
@@ -210,7 +210,7 @@ final class CommandTests: SwiftLintTestCase {
                                   modifier: .next)
             let expanded = [
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 2, character: nil),
-                Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 2, character: .max)
+                Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 2, character: .max),
             ]
             XCTAssertEqual(command.expand(), expanded)
         }
@@ -219,7 +219,7 @@ final class CommandTests: SwiftLintTestCase {
                                   modifier: .next)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 2, character: nil),
-                Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 2, character: .max)
+                Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 2, character: .max),
             ]
             XCTAssertEqual(command.expand(), expanded)
         }
@@ -228,7 +228,7 @@ final class CommandTests: SwiftLintTestCase {
                                   modifier: .next)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 2, character: nil),
-                Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 2, character: .max)
+                Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 2, character: .max),
             ]
             XCTAssertEqual(command.expand(), expanded)
         }

@@ -38,7 +38,7 @@ struct RedundantStringEnumValueRule: Rule {
             enum Numbers: String {
               case one, two
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -56,7 +56,7 @@ struct RedundantStringEnumValueRule: Rule {
             enum Numbers: String {
               case one, two = ↓"two"
             }
-            """)
+            """),
         ]
     )
 }

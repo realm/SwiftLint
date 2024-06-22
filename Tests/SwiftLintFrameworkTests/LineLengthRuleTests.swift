@@ -11,7 +11,7 @@ final class LineLengthRuleTests: SwiftLintTestCase {
             "c: String, d: String, e: String, f: String, g: String, h: String, i: String, " +
             "j: String, k: String, l: String, m: String, n: String, o: String, p: String, " +
             "q: String, r: String, s: String, t: String, u: String, v: String, w: String, " +
-            "x: String, y: String, z: String) {\n")
+            "x: String, y: String, z: String) {\n"),
     ]
 
     private let longComment = Example(String(repeating: "/", count: 121) + "\n")
@@ -50,7 +50,7 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         let triggeringLines = [Example(String(repeating: "/", count: 121) + "\(url)\n")]
         let nonTriggeringLines = [
             Example("\(url) " + String(repeating: "/", count: 118) + " \(url)\n"),
-            Example("\(url)/" + String(repeating: "a", count: 120))
+            Example("\(url)/" + String(repeating: "a", count: 120)),
         ]
 
         let baseDescription = LineLengthRule.description

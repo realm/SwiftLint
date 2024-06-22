@@ -50,8 +50,11 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
 
     func testDescriptionMultipleSeverities() {
         let configuration = MissingDocsConfiguration(
-            parameters: [RuleParameter<AccessControlLevel>(severity: .error, value: .open),
-                         RuleParameter<AccessControlLevel>(severity: .warning, value: .public)])
+            parameters: [
+                RuleParameter<AccessControlLevel>(severity: .error, value: .open),
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
+            ]
+        )
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "error: [open]; warning: [public]; excludes_extensions: true; " +
@@ -61,8 +64,11 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
 
     func testDescriptionMultipleAcls() {
         let configuration = MissingDocsConfiguration(
-            parameters: [RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
-                         RuleParameter<AccessControlLevel>(severity: .warning, value: .public)])
+            parameters: [
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
+            ]
+        )
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
@@ -93,8 +99,10 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         try? configuration.apply(configuration: ["warning": "public", "error": "open"])
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
-             RuleParameter<AccessControlLevel>(severity: .error, value: .open)]
+            [
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
+                RuleParameter<AccessControlLevel>(severity: .error, value: .open),
+            ]
         )
     }
 
@@ -103,8 +111,10 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         try? configuration.apply(configuration: ["warning": ["public", "open"]])
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
-             RuleParameter<AccessControlLevel>(severity: .warning, value: .open)]
+            [
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
+            ]
         )
         XCTAssertTrue(configuration.excludesExtensions)
         XCTAssertTrue(configuration.excludesInheritedTypes)
@@ -122,8 +132,10 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertTrue(configuration.excludesInheritedTypes)
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
-             RuleParameter<AccessControlLevel>(severity: .warning, value: .open)]
+            [
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
+            ]
         )
     }
 
@@ -141,8 +153,10 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertFalse(configuration.excludesInheritedTypes)
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
-             RuleParameter<AccessControlLevel>(severity: .warning, value: .open)]
+            [
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
+            ]
         )
     }
 
@@ -153,8 +167,10 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertTrue(configuration.excludesInheritedTypes)
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
-             RuleParameter<AccessControlLevel>(severity: .warning, value: .open)]
+            [
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
+            ]
         )
     }
 
@@ -165,8 +181,9 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertFalse(configuration.excludesInheritedTypes)
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
-             RuleParameter<AccessControlLevel>(severity: .warning, value: .open)]
+            [   RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
+            ]
         )
     }
 
@@ -176,7 +193,7 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             configuration: [
                 "excludes_extensions": true,
                 "excludes_inherited_types": false,
-                "error": ["public"]
+                "error": ["public"],
             ] as [String: any Sendable]
         )
 
@@ -191,12 +208,7 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
     func testWithExcludesExtensionsDisabled() {
         // Perform additional tests with the ignores_comments settings disabled.
         let baseDescription = MissingDocsRule.description
-        let triggeringComments = [
-            Example("""
-            public extension A {}
-            """
-            )
-        ]
+        let triggeringComments = [Example("public extension A {}")]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples
             .filter { !triggeringComments.contains($0) }
         let triggeringExamples = baseDescription.triggeringExamples + triggeringComments
@@ -228,7 +240,7 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             public class B: NSObject {
             // no docs
             override public var description: String { fatalError() } }
-            """)
+            """),
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples
             .filter { !triggeringComments.contains($0) }

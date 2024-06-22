@@ -133,7 +133,7 @@ private extension SourceKittenDictionary {
                 SwiftUIModifier(
                     name: "accessibility",
                     arguments: [.init(name: "label", values: [])]
-                )
+                ),
             ],
             in: file
         )

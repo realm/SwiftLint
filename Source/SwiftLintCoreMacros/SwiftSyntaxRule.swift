@@ -34,7 +34,7 @@ enum SwiftSyntaxRule: ExtensionMacro {
                     }
                 }
                 """
-            )
+            ),
         ].compactMap { $0 }
     }
 

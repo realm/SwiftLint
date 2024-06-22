@@ -94,7 +94,7 @@ extension Array where Element == String {
                 "-incremental",
                 "-serialize-diagnostics",
                 "-emit-dependencies",
-                "-use-frontend-parseable-output"
+                "-use-frontend-parseable-output",
             ].contains(arg)
         }.map { arg in
             if arg == "-O" {

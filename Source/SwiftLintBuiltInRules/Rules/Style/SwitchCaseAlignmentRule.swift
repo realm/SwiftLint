@@ -34,7 +34,7 @@ struct SwitchCaseAlignmentRule: Rule {
                 }
               }
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
@@ -140,7 +140,7 @@ extension SwitchCaseAlignmentRule {
                     \(violationMarker)case 1: 1
                     \(violationMarker)default: 2
                 }
-                """)
+                """),
             ]
         }
 
@@ -193,7 +193,7 @@ extension SwitchCaseAlignmentRule {
                     \(violationMarker)default: 2
                     }
                 }
-                """)
+                """),
             ]
         }
 
@@ -224,7 +224,7 @@ extension SwitchCaseAlignmentRule {
                 \(indentation)case 1: 1
                     \(indentation)\(indentedCasesOption ? "" : violationMarker)default: 2
                 }
-                """)
+                """),
             ]
         }
 
@@ -236,7 +236,7 @@ extension SwitchCaseAlignmentRule {
             Example(
                 "let a = switch i { case .x: 1 default: 0 }",
                 configuration: ["ignore_one_liners": true]
-            )
+            ),
         ]
 
         private var invalidOneLiners: [Example] {
@@ -265,7 +265,7 @@ extension SwitchCaseAlignmentRule {
                 Example("""
                 let a = switch i {
                 \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
-                """, configuration: ["ignore_one_liners": true])
+                """, configuration: ["ignore_one_liners": true]),
             ]
         }
     }

@@ -243,7 +243,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
 
             init() {}
         }
-        """, excludeFromDocumentation: true)
+        """, excludeFromDocumentation: true),
     ]
 
     static let triggering = [
@@ -388,7 +388,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.i = i
                     }
                 }
-                """)
+                """),
     ]
 
     static let corrections = [
@@ -539,6 +539,6 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         let prop: Int
                     }
                 }
-                """)
+                """),
     ]
 }

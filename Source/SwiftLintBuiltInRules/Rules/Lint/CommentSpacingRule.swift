@@ -58,7 +58,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
             """),
             Example("""
             /*#-editable-code Swift Platground editable area*/default/*#-end-editable-code*/
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -89,7 +89,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
             """),
             Example("""
             //:↓Swift Playground prose section
-            """)
+            """),
         ],
         corrections: [
             Example("//↓Something"): Example("// Something"),
@@ -113,7 +113,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
                 print("Something")
             }
             // We should improve above function
-            """)
+            """),
         ]
     )
 

@@ -146,7 +146,7 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
             }
           }
         }
-        """#, excludeFromDocumentation: true)
+        """#, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [
@@ -289,7 +289,7 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
           }
           ↓return foo()
         }
-        """)
+        """),
     ]
 
     static let corrections = [
@@ -320,6 +320,6 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
                     return
                 }
             }
-            """)
+            """),
     ]
 }

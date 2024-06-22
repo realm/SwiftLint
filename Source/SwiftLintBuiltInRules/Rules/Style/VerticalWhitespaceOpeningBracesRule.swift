@@ -22,7 +22,7 @@ struct VerticalWhitespaceOpeningBracesRule: Rule {
 
             }
         */
-        """)
+        """),
     ]
 
     private static let violatingToValidExamples: [Example: Example] = [
@@ -134,7 +134,7 @@ struct VerticalWhitespaceOpeningBracesRule: Rule {
               self.dismiss(animated: false, completion: {
               })
             }
-            """)
+            """),
     ]
 
     private let pattern = "([{(\\[][ \\t]*(?:[^\\n{]+ in[ \\t]*$)?)((?:\\n[ \\t]*)+)(\\n)"

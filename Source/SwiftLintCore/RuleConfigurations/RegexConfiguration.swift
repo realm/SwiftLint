@@ -35,7 +35,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             excluded.map(\.pattern).joined(separator: ","),
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
                 .map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
-            severity.rawValue
+            severity.rawValue,
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) {
             return String(decoding: jsonData, as: UTF8.self)

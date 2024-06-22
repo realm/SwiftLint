@@ -79,7 +79,7 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                 }
             }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -198,7 +198,7 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                 }
             }
-        """)
+        """),
     ]
 
     static let corrections = [
@@ -224,6 +224,6 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                 }
             }
-        """)
+        """),
     ]
 }

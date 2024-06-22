@@ -46,7 +46,7 @@ struct OptionalEnumCaseMatchingRule: OptInRule {
             case .none:
               break
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -83,7 +83,7 @@ struct OptionalEnumCaseMatchingRule: OptInRule {
              case (_, .bar↓?): break
              default: break
             }
-            """)
+            """),
         ],
         corrections: [
             Example("""
@@ -150,7 +150,7 @@ struct OptionalEnumCaseMatchingRule: OptInRule {
              case (_, .bar): break
              default: break
             }
-            """)
+            """),
         ]
     )
 }

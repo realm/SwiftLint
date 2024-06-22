@@ -29,7 +29,7 @@ struct ForceUnwrappingRule: OptInRule {
             Example("func foo() -> [Int]!"),
             Example("func foo() -> [AnyHashable: Any]!"),
             Example("func foo() -> [Int]! { return [] }"),
-            Example("return self")
+            Example("return self"),
         ],
         triggeringExamples: [
             Example("let url = NSURL(string: query)↓!"),
@@ -62,7 +62,7 @@ struct ForceUnwrappingRule: OptInRule {
             Example("open var computed: String { return foo.bar↓! }"),
             Example("return self↓!"),
             Example("[1, 3, 5, 6].first { $0.isMultiple(of: 2) }↓!"),
-            Example("map[\"a\"]↓!↓!")
+            Example("map[\"a\"]↓!↓!"),
         ]
     )
 }

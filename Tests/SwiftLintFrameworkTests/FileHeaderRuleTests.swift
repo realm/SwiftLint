@@ -17,14 +17,14 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
     func testFileHeaderWithRequiredString() {
         let nonTriggeringExamples = [
             Example("// **Header"),
-            Example("//\n// **Header")
+            Example("//\n// **Header"),
         ]
         let triggeringExamples = [
             Example("↓// Copyright\n"),
             Example("let foo = \"**Header\""),
             Example("let foo = 2 // **Header"),
             Example("let foo = 2\n// **Header"),
-            Example("let foo = 2 // **Header")
+            Example("let foo = 2 // **Header"),
         ]
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
@@ -38,12 +38,12 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
     func testFileHeaderWithRequiredPattern() {
         let nonTriggeringExamples = [
             Example("// Copyright © 2016 Realm"),
-            Example("//\n// Copyright © 2016 Realm)")
+            Example("//\n// Copyright © 2016 Realm)"),
         ]
         let triggeringExamples = [
             Example("↓// Copyright\n"),
             Example("↓// Copyright © foo Realm"),
-            Example("↓// Copyright © 2016 MyCompany")
+            Example("↓// Copyright © 2016 MyCompany"),
         ]
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
@@ -77,11 +77,11 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
             Example("let foo = \"**All rights reserved.\""),
             Example("let foo = 2 // **All rights reserved."),
             Example("let foo = 2\n// **All rights reserved."),
-            Example("let foo = 2 // **All rights reserved.")
+            Example("let foo = 2 // **All rights reserved."),
         ]
         let triggeringExamples = [
             Example("// ↓**All rights reserved."),
-            Example("//\n// ↓**All rights reserved.")
+            Example("//\n// ↓**All rights reserved."),
         ]
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
@@ -97,11 +97,11 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
             Example("// FileHeaderRuleTests.m\n"),
             Example("let foo = \"FileHeaderRuleTests.swift\""),
             Example("let foo = 2 // FileHeaderRuleTests.swift."),
-            Example("let foo = 2\n // FileHeaderRuleTests.swift.")
+            Example("let foo = 2\n // FileHeaderRuleTests.swift."),
         ]
         let triggeringExamples = [
             Example("//↓ FileHeaderRuleTests.swift"),
-            Example("//\n//↓ FileHeaderRuleTests.swift")
+            Example("//\n//↓ FileHeaderRuleTests.swift"),
         ]
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
@@ -114,11 +114,11 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
     func testFileHeaderWithForbiddenPatternAndDocComment() {
         let nonTriggeringExamples = [
             Example("/// This is great tool with tests.\nclass GreatTool {}"),
-            Example("class GreatTool {}")
+            Example("class GreatTool {}"),
         ]
         let triggeringExamples = [
             Example("// FileHeaderRule↓Tests.swift"),
-            Example("//\n// FileHeaderRule↓Tests.swift")
+            Example("//\n// FileHeaderRule↓Tests.swift"),
         ]
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
@@ -154,8 +154,9 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
 
     func testFileHeaderWithRequiredPatternUsingFilenamePlaceholder() {
         let configuration1 = ["required_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
-        let configuration2 = ["required_pattern":
-            "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\""]
+        let configuration2 = [
+            "required_pattern": "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\"",
+        ]
 
         // Non triggering tests
         XCTAssert(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration1).isEmpty)

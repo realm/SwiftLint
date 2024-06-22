@@ -15,12 +15,12 @@ final class AttributesRuleTests: SwiftLintTestCase {
             """),
             Example("""
             @objc(XYZFoo) class Foo: NSObject {}
-            """)
+            """),
         ]
         let triggeringExamples = [
             Example("@objc\n ↓var x: String"),
             Example("@objc\n ↓func foo()"),
-            Example("@nonobjc ↓func foo()")
+            Example("@nonobjc ↓func foo()"),
         ]
 
         let alwaysOnSameLineDescription = AttributesRule.description
@@ -36,12 +36,12 @@ final class AttributesRuleTests: SwiftLintTestCase {
         let nonTriggeringExamples = [
             Example("@objc\n var x: String"),
             Example("@objc\n func foo()"),
-            Example("@nonobjc\n func foo()")
+            Example("@nonobjc\n func foo()"),
         ]
         let triggeringExamples = [
             Example("@objc ↓var x: String"),
             Example("@objc ↓func foo()"),
-            Example("@nonobjc ↓func foo()")
+            Example("@nonobjc ↓func foo()"),
         ]
 
         let alwaysOnNewLineDescription = AttributesRule.description
@@ -66,7 +66,7 @@ final class AttributesRuleTests: SwiftLintTestCase {
                 @objc optional func tagDidSelect(_ title: String, sender: TagListView)
                 @objc optional func tagDidDeselect(_ title: String, sender: TagListView)
             }
-            """)
+            """),
         ]
 
         let triggeringExamples = [
@@ -84,16 +84,21 @@ final class AttributesRuleTests: SwiftLintTestCase {
                 optional ↓func tagDidSelect(_ title: String, sender: TagListView)
                 @objc optional func tagDidDeselect(_ title: String, sender: TagListView)
             }
-            """)
+            """),
         ]
 
         let alwaysOnNewLineDescription = AttributesRule.description
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(alwaysOnNewLineDescription,
-                   ruleConfiguration: ["always_on_same_line": ["@discardableResult", "@objc",
-                                                               "@IBAction", "@IBDesignable"]])
+        verifyRule(
+            alwaysOnNewLineDescription,
+            ruleConfiguration: [
+                "always_on_same_line": [
+                    "@discardableResult", "@objc", "@IBAction", "@IBDesignable",
+                ],
+            ]
+        )
     }
 
     func testAttributesWithArgumentsAlwaysOnLineAboveFalse() {
@@ -104,7 +109,7 @@ final class AttributesRuleTests: SwiftLintTestCase {
             Example("""
             @Environment(\\.presentationMode)
             private ↓var presentationMode
-            """)
+            """),
         ]
 
         let argumentsAlwaysOnLineDescription = AttributesRule.description

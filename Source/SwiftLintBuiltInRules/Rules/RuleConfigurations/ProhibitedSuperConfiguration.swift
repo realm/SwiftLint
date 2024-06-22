@@ -19,7 +19,7 @@ struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration {
         // NSView
         "updateLayer()",
         // UIViewController
-        "loadView()"
+        "loadView()",
     ]
 
     var resolvedMethodNames: [String] {

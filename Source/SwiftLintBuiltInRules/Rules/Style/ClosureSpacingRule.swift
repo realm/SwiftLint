@@ -21,7 +21,7 @@ struct ClosureSpacingRule: OptInRule {
             Example("""
             let test1 = func1(arg: { /* do nothing */ })
             let test2 = func1 { /* do nothing */ }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("[].filter↓{ $0.contains(location) }"),
@@ -31,7 +31,7 @@ struct ClosureSpacingRule: OptInRule {
             Example("filter ↓{ sorted ↓{ $0 < $1}}"),
             Example("""
             var tapped: (UITapGestureRecognizer) -> Void = ↓{ _ in /* no-op */  }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         corrections: [
             Example("[].filter(↓{$0.contains(location) })"):
@@ -41,7 +41,7 @@ struct ClosureSpacingRule: OptInRule {
             Example("filter ↓{sorted ↓{ $0 < $1}}"):
                 Example("filter { sorted { $0 < $1 } }"),
             Example("(↓{each in return result.contains(where: ↓{e in return 0})}).count"):
-                Example("({ each in return result.contains(where: { e in return 0 }) }).count")
+                Example("({ each in return result.contains(where: { e in return 0 }) }).count"),
         ]
     )
 }
@@ -189,7 +189,7 @@ private extension TokenSyntax {
             .postfixQuestionMark,
             .rightParen,
             .rightSquare,
-            .semicolon
+            .semicolon,
         ]
         if case .newlines = trailingTrivia.first {
             return true

@@ -185,9 +185,9 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
                 "date_format": config.dateFormat,
                 "date_delimiters": [
                     "opening": config.dateDelimiters.opening,
-                    "closing": config.dateDelimiters.closing
+                    "closing": config.dateDelimiters.closing,
                 ],
-                "date_separator": config.dateSeparator
+                "date_separator": config.dateSeparator,
             ]
         }
 

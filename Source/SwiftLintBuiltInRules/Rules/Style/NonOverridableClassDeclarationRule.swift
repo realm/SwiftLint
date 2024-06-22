@@ -50,7 +50,7 @@ struct NonOverridableClassDeclarationRule: SwiftSyntaxCorrectableRule, OptInRule
                     class func f() {}
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -72,7 +72,7 @@ struct NonOverridableClassDeclarationRule: SwiftSyntaxCorrectableRule, OptInRule
                 private ↓class var b: Bool { true }
                 private ↓class func f() {}
             }
-            """)
+            """),
         ],
         corrections: [
             Example("""
@@ -92,7 +92,7 @@ struct NonOverridableClassDeclarationRule: SwiftSyntaxCorrectableRule, OptInRule
                 final class C {
                     static var b: Bool { true }
                 }
-                """)
+                """),
         ]
     )
 }

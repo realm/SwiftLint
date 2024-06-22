@@ -70,13 +70,13 @@ private extension TokenSyntax {
             "^// MARK:$",
 
             // comment start with `Mark ...` is ignored
-            "^\(twoOrThreeSlashes) +[Mm]ark[^:]"
+            "^\(twoOrThreeSlashes) +[Mm]ark[^:]",
         ].map(nonCapturingGroup).joined(separator: "|")
 
         private static let badPattern = capturingGroup([
             "MARK[^\\s:]",
             "[Mm]ark",
-            "MARK"
+            "MARK",
         ].map(basePattern).joined(separator: "|")) + capturingGroup(hyphenOrEmpty)
 
         private static let anySpace = " *"

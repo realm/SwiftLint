@@ -16,17 +16,17 @@ struct ToggleBoolRule: OptInRule {
             Example("func foo() { abc.toggle() }"),
             Example("view.clipsToBounds = !clipsToBounds"),
             Example("disconnected = !connected"),
-            Example("result = !result.toggle()")
+            Example("result = !result.toggle()"),
         ],
         triggeringExamples: [
             Example("↓isHidden = !isHidden"),
             Example("↓view.clipsToBounds = !view.clipsToBounds"),
-            Example("func foo() { ↓abc = !abc }")
+            Example("func foo() { ↓abc = !abc }"),
         ],
         corrections: [
             Example("↓isHidden = !isHidden"): Example("isHidden.toggle()"),
             Example("↓view.clipsToBounds = !view.clipsToBounds"): Example("view.clipsToBounds.toggle()"),
-            Example("func foo() { ↓abc = !abc }"): Example("func foo() { abc.toggle() }")
+            Example("func foo() { ↓abc = !abc }"): Example("func foo() { abc.toggle() }"),
         ]
     )
 }

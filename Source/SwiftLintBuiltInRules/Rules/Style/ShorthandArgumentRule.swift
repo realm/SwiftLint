@@ -32,7 +32,7 @@ struct ShorthandArgumentRule: OptInRule {
                 f {
                     $0
                   +  g { $0 }
-            """, configuration: ["allow_until_line_after_opening_brace": 1])
+            """, configuration: ["allow_until_line_after_opening_brace": 1]),
         ],
         triggeringExamples: [
             Example("""
@@ -64,7 +64,7 @@ struct ShorthandArgumentRule: OptInRule {
                   + $1
                   + ↓$2.c
             }
-            """, configuration: ["always_disallow_member_access": true, "allow_until_line_after_opening_brace": 3])
+            """, configuration: ["always_disallow_member_access": true, "allow_until_line_after_opening_brace": 3]),
         ]
     )
 }

@@ -43,7 +43,7 @@ struct RedundantOptionalInitializationRule: Rule {
             func funcName() {
               let myVar: String? = nil
             }
-            """)
+            """),
         ],
         triggeringExamples: triggeringExamples,
         corrections: corrections
@@ -63,7 +63,7 @@ struct RedundantOptionalInitializationRule: Rule {
             func funcName() {
                 var myVar: String?↓ = nil
             }
-            """)
+            """),
     ]
 
     private static let corrections: [Example: Example] = [
@@ -102,7 +102,7 @@ struct RedundantOptionalInitializationRule: Rule {
             func foo() {
                 var myVar: String?, b: Int
             }
-            """)
+            """),
     ]
 }
 

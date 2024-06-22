@@ -472,7 +472,7 @@ final class RuleConfigurationDescriptionTests: XCTestCase {
             "set": [4, 5, 6],
             "SEVERITY": "error",
             "warning": 12,
-            "levels": ["warning": 6, "error": 7]
+            "levels": ["warning": 6, "error": 7],
         ])
 
         XCTAssertFalse(configuration.flag)
@@ -508,7 +508,7 @@ final class RuleConfigurationDescriptionTests: XCTestCase {
                     "severity": "error",
                     "warning": 3,
                     "unknown": 1,
-                    "unsupported": true
+                    "unsupported": true,
                 ])
             },
             """

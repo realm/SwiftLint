@@ -82,6 +82,8 @@ number_separator:
 redundant_type_annotation:
   consider_default_literal_types_redundant: true
 single_test_class: *unit_test_configuration
+trailing_comma:
+  mandatory_comma: true
 type_body_length: 400
 unneeded_override:
   affect_initializers: true

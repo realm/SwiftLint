@@ -58,7 +58,7 @@ internal struct SortedImportsRuleExamples {
         Example("""
         @_exported @testable import BBB
           import AAA
-        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true)
+        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [
@@ -114,7 +114,7 @@ internal struct SortedImportsRuleExamples {
         Example("""
           import AAA
         @_exported @testable import ↓BBB
-        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true)
+        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
     ]
 
     static let corrections = [
@@ -228,6 +228,6 @@ internal struct SortedImportsRuleExamples {
             Example("""
             @_exported @testable import BBB
               import AAA
-            """)
+            """),
     ]
 }

@@ -43,7 +43,7 @@ struct StaticOverFinalClassRule: Rule {
                   class func f() {}
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -72,7 +72,7 @@ struct StaticOverFinalClassRule: Rule {
                     ↓class func f() {}
                 }
             }
-            """)
+            """),
         ]
     )
 }

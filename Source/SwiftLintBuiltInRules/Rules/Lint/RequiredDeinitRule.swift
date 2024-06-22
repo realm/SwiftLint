@@ -31,7 +31,7 @@ struct RequiredDeinitRule: OptInRule {
                     deinit { print("Deinit Inner") }
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("↓class Apple { }"),
@@ -63,7 +63,7 @@ struct RequiredDeinitRule: OptInRule {
                     deinit { }
                 }
             }
-            """)
+            """),
         ]
     )
 }

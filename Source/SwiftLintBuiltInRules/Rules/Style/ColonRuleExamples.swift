@@ -74,7 +74,7 @@ internal struct ColonRuleExamples {
           case 0x2029 /* PARAGRAPH SEPARATOR */: return true
           default: return false
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -135,7 +135,7 @@ internal struct ColonRuleExamples {
         case .bar↓ : return baz
         }
         """),
-        Example("private var action↓:(() -> Void)?")
+        Example("private var action↓:(() -> Void)?"),
     ]
 
     static let corrections = [
@@ -219,6 +219,6 @@ internal struct ColonRuleExamples {
             case .bar: return baz
             }
             """),
-        Example("private var action↓:(() -> Void)?"): Example("private var action: (() -> Void)?")
+        Example("private var action↓:(() -> Void)?"): Example("private var action: (() -> Void)?"),
     ]
 }

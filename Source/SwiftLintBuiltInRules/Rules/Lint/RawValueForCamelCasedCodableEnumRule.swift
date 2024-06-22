@@ -58,7 +58,7 @@ struct RawValueForCamelCasedCodableEnumRule: OptInRule {
                 case notAcceptable
                 case maybeAcceptable = -1
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -88,7 +88,7 @@ struct RawValueForCamelCasedCodableEnumRule: OptInRule {
                 case ↓notAcceptable
                 case maybeAcceptable = "maybe_acceptable"
             }
-            """)
+            """),
         ]
     )
 }

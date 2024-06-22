@@ -259,7 +259,7 @@ private extension SwiftLintFile {
         guard let kind else { return false }
         return [
             "source.lang.swift.ref.function.operator",
-            "source.lang.swift.ref.function.method.static"
+            "source.lang.swift.ref.function.method.static",
         ].contains { kind.hasPrefix($0) }
     }
 

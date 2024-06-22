@@ -8,12 +8,12 @@ final class RulesFilterTests: XCTestCase {
             rules: [
                 RuleMock1.self,
                 RuleMock2.self,
-                CorrectableRuleMock.self
+                CorrectableRuleMock.self,
             ]
         )
         let enabledRules: [any Rule] = [
             RuleMock1(),
-            CorrectableRuleMock()
+            CorrectableRuleMock(),
         ]
         let rulesFilter = RulesFilter(
             allRules: allRules,
@@ -33,12 +33,12 @@ final class RulesFilterTests: XCTestCase {
             rules: [
                 RuleMock1.self,
                 RuleMock2.self,
-                CorrectableRuleMock.self
+                CorrectableRuleMock.self,
             ]
         )
         let enabledRules: [any Rule] = [
             RuleMock1(),
-            CorrectableRuleMock()
+            CorrectableRuleMock(),
         ]
         let rulesFilter = RulesFilter(
             allRules: allRules,
@@ -58,12 +58,12 @@ final class RulesFilterTests: XCTestCase {
             rules: [
                 RuleMock1.self,
                 RuleMock2.self,
-                CorrectableRuleMock.self
+                CorrectableRuleMock.self,
             ]
         )
         let enabledRules: [any Rule] = [
             RuleMock1(),
-            CorrectableRuleMock()
+            CorrectableRuleMock(),
         ]
         let rulesFilter = RulesFilter(
             allRules: allRules,
@@ -83,12 +83,12 @@ final class RulesFilterTests: XCTestCase {
             rules: [
                 RuleMock1.self,
                 RuleMock2.self,
-                CorrectableRuleMock.self
+                CorrectableRuleMock.self,
             ]
         )
         let enabledRules: [any Rule] = [
             RuleMock1(),
-            CorrectableRuleMock()
+            CorrectableRuleMock(),
         ]
         let rulesFilter = RulesFilter(
             allRules: allRules,
@@ -108,7 +108,7 @@ final class RulesFilterTests: XCTestCase {
             rules: [
                 RuleMock1.self,
                 RuleMock2.self,
-                CorrectableRuleMock.self
+                CorrectableRuleMock.self,
             ]
         )
         let enabledRules: [any Rule] = [

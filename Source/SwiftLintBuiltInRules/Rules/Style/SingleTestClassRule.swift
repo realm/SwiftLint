@@ -11,7 +11,7 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule {
         nonTriggeringExamples: [
             Example("class FooTests {  }"),
             Example("class FooTests: QuickSpec {  }"),
-            Example("class FooTests: XCTestCase {  }")
+            Example("class FooTests: XCTestCase {  }"),
         ],
         triggeringExamples: [
             Example("""
@@ -45,7 +45,7 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule {
             final ↓class FooTests: QuickSpec {  }
             ↓class BarTests: XCTestCase {  }
             class TotoTests {  }
-            """)
+            """),
         ]
     )
 

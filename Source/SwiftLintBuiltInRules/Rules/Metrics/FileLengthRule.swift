@@ -14,7 +14,7 @@ struct FileLengthRule: Rule {
         triggeringExamples: [
             Example(repeatElement("print(\"swiftlint\")\n", count: 401).joined()),
             Example((repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()),
-            Example(repeatElement("print(\"swiftlint\")\n\n", count: 201).joined())
+            Example(repeatElement("print(\"swiftlint\")\n\n", count: 201).joined()),
         ].skipWrappingInCommentTests()
     )
 
@@ -39,10 +39,14 @@ struct FileLengthRule: Rule {
             let reason = "File should contain \(configuration.severityConfiguration.warning) lines or less" +
                          (configuration.ignoreCommentOnlyLines ? " excluding comments and whitespaces" : "") +
                          ": currently contains \(lineCount)"
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: parameter.severity,
-                                   location: Location(file: file.path, line: file.lines.count),
-                                   reason: reason)]
+            return [
+                StyleViolation(
+                    ruleDescription: Self.description,
+                    severity: parameter.severity,
+                    location: Location(file: file.path, line: file.lines.count),
+                    reason: reason
+                ),
+            ]
         }
 
         return []

@@ -59,7 +59,7 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             Example("""
             subscript(index: Int) -> Int {
                 index == 0 ? defaultValue() : compute(index)
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("success ↓? askQuestion() : exit()"),
@@ -103,7 +103,7 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                     index == 0 ↓? something() : somethingElse(index)
                     return index
                 }
-            """)
+            """),
         ]
     )
 }

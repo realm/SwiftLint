@@ -15,15 +15,15 @@ struct RedundantDiscardableLetRule: Rule {
             Example("guard let _ = foo() else { return }"),
             Example("let _: ExplicitType = foo()"),
             Example("while let _ = SplashStyle(rawValue: maxValue) { maxValue += 1 }"),
-            Example("async let _ = await foo()")
+            Example("async let _ = await foo()"),
         ],
         triggeringExamples: [
             Example("↓let _ = foo()"),
-            Example("if _ = foo() { ↓let _ = bar() }")
+            Example("if _ = foo() { ↓let _ = bar() }"),
         ],
         corrections: [
             Example("↓let _ = foo()"): Example("_ = foo()"),
-            Example("if _ = foo() { ↓let _ = bar() }"): Example("if _ = foo() { _ = bar() }")
+            Example("if _ = foo() { ↓let _ = bar() }"): Example("if _ = foo() { _ = bar() }"),
         ]
     )
 }

@@ -10,7 +10,7 @@ internal enum DeploymentTargetRuleExamples {
         Example("if #available(iOS 10, *) {}"),
         Example("guard #available(iOS 12.0, *) else { return }"),
         Example("#if #unavailable(iOS 15.0) {}"),
-        Example("#guard #unavailable(iOS 15.0) {} else { return }")
+        Example("#guard #unavailable(iOS 15.0) {} else { return }"),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -32,6 +32,6 @@ internal enum DeploymentTargetRuleExamples {
         Example("guard ↓#available(iOS 6.0, *) else { return }"),
         Example("if ↓#unavailable(iOS 7.0) {}"),
         Example("if ↓#unavailable(iOS 6.9) {}"),
-        Example("guard ↓#unavailable(iOS 7.0) {} else { return }")
+        Example("guard ↓#unavailable(iOS 7.0) {} else { return }"),
     ]
 }

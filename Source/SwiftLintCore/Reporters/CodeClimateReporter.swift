@@ -29,11 +29,11 @@ struct CodeClimateReporter: Reporter {
                 "path": violation.location.relativeFile ?? NSNull() as Any,
                 "lines": [
                     "begin": violation.location.line ?? NSNull() as Any,
-                    "end": violation.location.line ?? NSNull() as Any
-                ]
+                    "end": violation.location.line ?? NSNull() as Any,
+                ],
             ],
             "severity": violation.severity == .error ? "major" : "minor",
-            "type": "issue"
+            "type": "issue",
         ]
     }
 
@@ -46,7 +46,7 @@ struct CodeClimateReporter: Reporter {
 
         return [
             "\(fingerprintLocation)",
-            "\(violation.ruleIdentifier)"
+            "\(violation.ruleIdentifier)",
         ].joined().sha256()
     }
 }

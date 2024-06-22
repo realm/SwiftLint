@@ -98,7 +98,7 @@ internal struct EmptyXCTestMethodRuleExamples {
         enum E {
             override func foo(a: Int) {}
         }
-        """, excludeFromDocumentation: true)
+        """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [
@@ -187,6 +187,6 @@ internal struct EmptyXCTestMethodRuleExamples {
         class BarTests: XCTestCase {
             ↓func testFoo() {}
         }
-        """)
+        """),
     ]
 }

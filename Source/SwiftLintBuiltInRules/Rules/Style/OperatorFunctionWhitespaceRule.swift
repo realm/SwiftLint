@@ -12,7 +12,7 @@ struct OperatorFunctionWhitespaceRule: Rule {
         nonTriggeringExamples: [
             Example("func <| (lhs: Int, rhs: Int) -> Int {}"),
             Example("func <|< <A>(lhs: A, rhs: A) -> A {}"),
-            Example("func abc(lhs: Int, rhs: Int) -> Int {}")
+            Example("func abc(lhs: Int, rhs: Int) -> Int {}"),
         ],
         triggeringExamples: [
             Example("↓func <|(lhs: Int, rhs: Int) -> Int {}"),   // no spaces after
@@ -20,7 +20,7 @@ struct OperatorFunctionWhitespaceRule: Rule {
             Example("↓func <|  (lhs: Int, rhs: Int) -> Int {}"), // 2 spaces after
             Example("↓func <|<  <A>(lhs: A, rhs: A) -> A {}"),   // 2 spaces after
             Example("↓func  <| (lhs: Int, rhs: Int) -> Int {}"), // 2 spaces before
-            Example("↓func  <|< <A>(lhs: A, rhs: A) -> A {}")    // 2 spaces before
+            Example("↓func  <|< <A>(lhs: A, rhs: A) -> A {}"),   // 2 spaces before
         ]
     )
 }

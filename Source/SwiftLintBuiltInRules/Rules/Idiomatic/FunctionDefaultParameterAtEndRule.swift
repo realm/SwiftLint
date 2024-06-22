@@ -41,12 +41,12 @@ struct FunctionDefaultParameterAtEndRule: OptInRule {
             """),
             Example("""
             func expect<T>(file: String = #file, _ expression: @autoclosure () -> (() throws -> T)) -> Expectation<T> {}
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("↓func foo(bar: Int = 0, baz: String) {}"),
             Example("private ↓func foo(bar: Int = 0, baz: String) {}"),
-            Example("public ↓init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}")
+            Example("public ↓init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}"),
         ]
     )
 }

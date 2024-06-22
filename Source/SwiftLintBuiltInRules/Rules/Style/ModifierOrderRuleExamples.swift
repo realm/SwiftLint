@@ -110,7 +110,7 @@ internal struct ModifierOrderRuleExamples {
         class Foo {
            internal lazy var bar: String = "foo"
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -223,6 +223,6 @@ internal struct ModifierOrderRuleExamples {
         class Foo {
            lazy internal var bar: String = "foo"
         }
-        """)
+        """),
     ]
 }

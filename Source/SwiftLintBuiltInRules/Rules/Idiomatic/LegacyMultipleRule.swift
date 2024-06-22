@@ -22,7 +22,7 @@ struct LegacyMultipleRule: OptInRule {
             let constant = 56
             let secret = value % constant == 5
             """),
-            Example("let secretValue = (value % 3) + 2")
+            Example("let secretValue = (value % 3) + 2"),
         ],
         triggeringExamples: [
             Example("cell.contentView.backgroundColor = indexPath.row ↓% 2 == 0 ? .gray : .white"),
@@ -34,7 +34,7 @@ struct LegacyMultipleRule: OptInRule {
             Example("""
             let constant = 56
             let isMultiple = value ↓% constant == 0
-            """)
+            """),
         ]
     )
 }

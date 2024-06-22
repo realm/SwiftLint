@@ -60,7 +60,7 @@ struct PrefixedTopLevelConstantRule: OptInRule {
                     print("\(number) is a small number")
                 }
             }
-            """#)
+            """#),
         ],
         triggeringExamples: [
             Example("private let ↓Foo = 20.0"),
@@ -76,7 +76,7 @@ struct PrefixedTopLevelConstantRule: OptInRule {
             let ↓foo = {
                 return a + b
             }()
-            """)
+            """),
         ]
     )
 }

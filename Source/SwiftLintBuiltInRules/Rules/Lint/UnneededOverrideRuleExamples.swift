@@ -113,7 +113,7 @@ struct UnneededOverrideRuleExamples {
                 super.bar(value: value)
             }
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -167,7 +167,7 @@ struct UnneededOverrideRuleExamples {
                 super.bar(animated: animated, completion: completion)
             }
         }
-        """)
+        """),
     ]
 
     static let corrections = [
@@ -221,6 +221,6 @@ struct UnneededOverrideRuleExamples {
                               super.init(i: i)
                           }
                       }
-                      """)
+                      """),
     ]
 }

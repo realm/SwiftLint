@@ -15,20 +15,20 @@ struct EmptyParametersRule: Rule {
             Example("func foo(completion: () throws -> Void)"),
             Example("let foo: (ConfigurationTests) -> Void throws -> Void)"),
             Example("let foo: (ConfigurationTests) ->   Void throws -> Void)"),
-            Example("let foo: (ConfigurationTests) ->Void throws -> Void)")
+            Example("let foo: (ConfigurationTests) ->Void throws -> Void)"),
         ],
         triggeringExamples: [
             Example("let abc: ↓(Void) -> Void = {}"),
             Example("func foo(completion: ↓(Void) -> Void)"),
             Example("func foo(completion: ↓(Void) throws -> Void)"),
-            Example("let foo: ↓(Void) -> () throws -> Void)")
+            Example("let foo: ↓(Void) -> () throws -> Void)"),
         ],
         corrections: [
             Example("let abc: ↓(Void) -> Void = {}"): Example("let abc: () -> Void = {}"),
             Example("func foo(completion: ↓(Void) -> Void)"): Example("func foo(completion: () -> Void)"),
             Example("func foo(completion: ↓(Void) throws -> Void)"):
                 Example("func foo(completion: () throws -> Void)"),
-            Example("let foo: ↓(Void) -> () throws -> Void)"): Example("let foo: () -> () throws -> Void)")
+            Example("let foo: ↓(Void) -> () throws -> Void)"): Example("let foo: () -> () throws -> Void)"),
         ]
     )
 }

@@ -73,7 +73,7 @@ struct ConvenienceTypeRule: OptInRule {
             @globalActor actor MyActor {
               static let shared = MyActor()
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -112,7 +112,7 @@ struct ConvenienceTypeRule: OptInRule {
             ↓class SomeClass {
                 static func foo() {}
             }
-            """)
+            """),
         ]
     )
 }

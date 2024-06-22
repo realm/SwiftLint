@@ -25,7 +25,7 @@ internal struct TypeNameRuleExamples {
             case x, y, z
           }
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -57,6 +57,6 @@ internal struct TypeNameRuleExamples {
           associatedtype ↓\(repeatElement("A", count: 41).joined())
         }
         """),
-        Example("protocol ↓X {}")
+        Example("protocol ↓X {}"),
     ]
 }

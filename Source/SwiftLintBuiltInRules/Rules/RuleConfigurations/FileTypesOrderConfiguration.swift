@@ -21,6 +21,6 @@ struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration {
         [.mainType],
         [.extension],
         [.previewProvider],
-        [.libraryContentProvider]
+        [.libraryContentProvider],
     ]
 }

@@ -31,7 +31,7 @@ private struct CacheTestHelper {
             StyleViolation(ruleDescription: ruleDescription,
                            severity: .error,
                            location: Location(file: file, line: 5, character: nil),
-                           reason: "Something is wrong")
+                           reason: "Something is wrong"),
         ]
     }
 
@@ -195,7 +195,7 @@ final class LinterCacheTests: SwiftLintTestCase {
         let initialConfig = try Configuration(
             dict: [
                 "only_rules": ["custom_rules", "rule1"],
-                "custom_rules": ["rule1": ["regex": "([n,N]inja)"]]
+                "custom_rules": ["rule1": ["regex": "([n,N]inja)"]],
             ],
             ruleList: RuleList(rules: CustomRules.self)
         )
@@ -205,7 +205,7 @@ final class LinterCacheTests: SwiftLintTestCase {
         try validateNewConfigDoesntHitCache(
             dict: [
                 "only_rules": ["custom_rules", "rule1"],
-                "custom_rules": ["rule1": ["regex": "([n,N]injas)"]]
+                "custom_rules": ["rule1": ["regex": "([n,N]injas)"]],
             ],
             initialConfig: initialConfig
         )
@@ -214,7 +214,7 @@ final class LinterCacheTests: SwiftLintTestCase {
         try validateNewConfigDoesntHitCache(
             dict: [
                 "only_rules": ["custom_rules", "rule1"],
-                "custom_rules": ["rule1": ["regex": "([n,N]injas)"], "rule2": ["regex": "([k,K]ittens)"]]
+                "custom_rules": ["rule1": ["regex": "([n,N]injas)"], "rule2": ["regex": "([k,K]ittens)"]],
             ],
             initialConfig: initialConfig
         )

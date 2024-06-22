@@ -32,7 +32,7 @@ struct ProhibitedSuperRule: OptInRule {
                     }
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -67,7 +67,7 @@ struct ProhibitedSuperRule: OptInRule {
                     }
                 }
             }
-            """)
+            """),
         ]
     )
 }

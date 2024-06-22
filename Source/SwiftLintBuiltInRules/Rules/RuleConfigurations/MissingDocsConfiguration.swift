@@ -5,7 +5,7 @@ struct MissingDocsConfiguration: RuleConfiguration {
 
     private(set) var parameters = [
         RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
-        RuleParameter<AccessControlLevel>(severity: .warning, value: .public)
+        RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
     ]
 
     @ConfigurationElement(key: "excludes_extensions")

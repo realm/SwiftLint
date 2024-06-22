@@ -9,7 +9,7 @@ internal struct LegacyConstantRuleExamples {
         Example("NSSize.zero"),
         Example("CGRect.null"),
         Example("CGFloat.pi"),
-        Example("Float.pi")
+        Example("Float.pi"),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -22,7 +22,7 @@ internal struct LegacyConstantRuleExamples {
         Example("↓NSZeroSize"),
         Example("↓CGRectNull"),
         Example("↓CGFloat(M_PI)"),
-        Example("↓Float(M_PI)")
+        Example("↓Float(M_PI)"),
     ]
 
     static let corrections: [Example: Example] = [
@@ -37,7 +37,7 @@ internal struct LegacyConstantRuleExamples {
         Example("↓CGRectInfinite\n↓CGRectNull"): Example("CGRect.infinite\nCGRect.null"),
         Example("↓CGFloat(M_PI)"): Example("CGFloat.pi"),
         Example("↓Float(M_PI)"): Example("Float.pi"),
-        Example("↓CGFloat(M_PI)\n↓Float(M_PI)"): Example("CGFloat.pi\nFloat.pi")
+        Example("↓CGFloat(M_PI)\n↓Float(M_PI)"): Example("CGFloat.pi\nFloat.pi"),
     ]
 
     static let patterns = [
@@ -48,6 +48,6 @@ internal struct LegacyConstantRuleExamples {
         "NSZeroPoint": "NSPoint.zero",
         "NSZeroRect": "NSRect.zero",
         "NSZeroSize": "NSSize.zero",
-        "CGRectNull": "CGRect.null"
+        "CGRectNull": "CGRect.null",
     ]
 }

@@ -8,7 +8,7 @@ struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration {
         "whitelist",
         "blacklist",
         "master",
-        "slave"
+        "slave",
     ]
 
     private static let defaultAllowedTerms: Set<String> = [

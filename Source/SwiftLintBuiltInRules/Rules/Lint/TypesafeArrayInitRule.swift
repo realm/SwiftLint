@@ -24,7 +24,7 @@ struct TypesafeArrayInitRule: AnalyzerRule {
                 }
                 let ints = IntArray()
                 let intsCopy = ints.map { $0 }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -45,7 +45,7 @@ struct TypesafeArrayInitRule: AnalyzerRule {
                     func next() -> Int? { nil }
                 }
                 let array = Generator().↓map { i in i }
-            """)
+            """),
         ],
         requiresFileOnDisk: true
     )

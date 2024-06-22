@@ -54,7 +54,7 @@ struct DiscardedNotificationCenterObserverRule: OptInRule {
             """),
             Example("""
             f { return nc.addObserver(forName: $0, object: object, queue: queue, using: block) }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }"),
@@ -88,7 +88,7 @@ struct DiscardedNotificationCenterObserverRule: OptInRule {
                     ↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
                 }
             }
-            """)
+            """),
         ]
     )
 }

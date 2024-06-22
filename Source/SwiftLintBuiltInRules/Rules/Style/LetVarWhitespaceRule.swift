@@ -120,7 +120,7 @@ struct LetVarWhitespaceRule: OptInRule {
                 var format = false
                 @Flag(help: "help")
                 var useAlternativeExcluding = false
-            """#, excludeFromDocumentation: true)
+            """#, excludeFromDocumentation: true),
         ].map(Self.wrapIntoClass) + [
             Example("""
                 a = 2
@@ -155,7 +155,7 @@ struct LetVarWhitespaceRule: OptInRule {
                     return 1
                     #endif
                 }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -189,7 +189,7 @@ struct LetVarWhitespaceRule: OptInRule {
                 let a = 0
                 ↓func f() {}
                 #endif
-            """)
+            """),
         ].map(Self.wrapIntoClass) + [
             Example("""
                 let a = 2
@@ -203,7 +203,7 @@ struct LetVarWhitespaceRule: OptInRule {
                 func f() {}
                 ↓let a = 1
                 #endif
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ]
     )
 

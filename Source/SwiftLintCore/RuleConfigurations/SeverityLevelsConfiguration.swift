@@ -19,8 +19,10 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Inli
     /// The rule parameters that define the thresholds that should map to each severity.
     public var params: [RuleParameter<Int>] {
         if let error {
-            return [RuleParameter(severity: .error, value: error),
-                    RuleParameter(severity: .warning, value: warning)]
+            return [
+                RuleParameter(severity: .error, value: error),
+                RuleParameter(severity: .warning, value: warning),
+            ]
         }
         return [RuleParameter(severity: .warning, value: warning)]
     }

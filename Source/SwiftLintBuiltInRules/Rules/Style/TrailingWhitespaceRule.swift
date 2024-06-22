@@ -11,14 +11,14 @@ struct TrailingWhitespaceRule: CorrectableRule {
         kind: .style,
         nonTriggeringExamples: [
             Example("let name: String\n"), Example("//\n"), Example("// \n"),
-            Example("let name: String //\n"), Example("let name: String // \n")
+            Example("let name: String //\n"), Example("let name: String // \n"),
         ],
         triggeringExamples: [
             Example("let name: String \n"), Example("/* */ let name: String \n")
         ],
         corrections: [
             Example("let name: String \n"): Example("let name: String\n"),
-            Example("/* */ let name: String \n"): Example("/* */ let name: String\n")
+            Example("/* */ let name: String \n"): Example("/* */ let name: String\n"),
         ]
     )
 

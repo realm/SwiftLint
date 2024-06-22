@@ -6,7 +6,7 @@ final class DisableAllTests: SwiftLintTestCase {
     private let violatingPhrases = [
         Example("let r = 0"), // Violates identifier_name
         Example(#"let myString:String = """#), // Violates colon_whitespace
-        Example("// TODO: Some todo") // Violates todo
+        Example("// TODO: Some todo"), // Violates todo
     ]
 
     // MARK: Violating Phrase

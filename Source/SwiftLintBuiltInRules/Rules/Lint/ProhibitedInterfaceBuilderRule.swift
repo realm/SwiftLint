@@ -11,11 +11,11 @@ struct ProhibitedInterfaceBuilderRule: OptInRule {
         kind: .lint,
         nonTriggeringExamples: [
             wrapExample("var label: UILabel!"),
-            wrapExample("@objc func buttonTapped(_ sender: UIButton) {}")
+            wrapExample("@objc func buttonTapped(_ sender: UIButton) {}"),
         ],
         triggeringExamples: [
             wrapExample("@IBOutlet ↓var label: UILabel!"),
-            wrapExample("@IBAction ↓func buttonTapped(_ sender: UIButton) {}")
+            wrapExample("@IBAction ↓func buttonTapped(_ sender: UIButton) {}"),
         ]
     )
 }

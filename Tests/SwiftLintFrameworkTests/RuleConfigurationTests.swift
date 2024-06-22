@@ -18,7 +18,7 @@ final class RuleConfigurationTests: SwiftLintTestCase {
                 "warning": 8, "error": 18
             ],
             "check_nesting_in_closures_and_statements": false,
-            "always_allow_one_type_in_functions": true
+            "always_allow_one_type_in_functions": true,
         ] as [String: any Sendable]
         var nestingConfig = defaultNestingConfiguration
         do {
@@ -91,8 +91,10 @@ final class RuleConfigurationTests: SwiftLintTestCase {
 
     func testSeverityLevelConfigParams() {
         let severityConfig = SeverityLevelsConfiguration<RuleMock>(warning: 17, error: 7)
-        XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .error, value: 7),
-                                               RuleParameter(severity: .warning, value: 17)])
+        XCTAssertEqual(
+            severityConfig.params,
+            [RuleParameter(severity: .error, value: 7), RuleParameter(severity: .warning, value: 17)]
+        )
     }
 
     func testSeverityLevelConfigPartialParams() {
@@ -247,7 +249,7 @@ final class RuleConfigurationTests: SwiftLintTestCase {
         let conf2 = [
             "severity": "error",
             "excluded": "viewWillAppear(_:)",
-            "included": ["*", "testMethod1()", "testMethod2(_:)"]
+            "included": ["*", "testMethod1()", "testMethod2(_:)"],
         ] as [String: any Sendable]
         do {
             try configuration.apply(configuration: conf2)
@@ -264,7 +266,7 @@ final class RuleConfigurationTests: SwiftLintTestCase {
         let conf3 = [
             "severity": "warning",
             "excluded": "*",
-            "included": ["testMethod1()", "testMethod2(_:)"]
+            "included": ["testMethod1()", "testMethod2(_:)"],
         ] as [String: any Sendable]
         do {
             try configuration.apply(configuration: conf3)
@@ -293,8 +295,8 @@ final class RuleConfigurationTests: SwiftLintTestCase {
                 "required",
                 "convenience",
                 "lazy",
-                "dynamic"
-            ]
+                "dynamic",
+            ],
         ]
 
         try configuration.apply(configuration: config)
@@ -309,7 +311,7 @@ final class RuleConfigurationTests: SwiftLintTestCase {
             .required,
             .convenience,
             .lazy,
-            .dynamic
+            .dynamic,
         ]
         XCTAssertEqual(configuration.severityConfiguration.severity, .warning)
         XCTAssertEqual(configuration.preferredModifierOrder, expected)

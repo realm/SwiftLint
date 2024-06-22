@@ -41,7 +41,7 @@ struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
                 fileprivate struct Inner {}
               }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("↓fileprivate enum MyEnum {}"),
@@ -54,7 +54,7 @@ struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
             ↓fileprivate actor MyActor {
               fileprivate let myInt = 4
             }
-            """)
+            """),
         ],
         corrections: [
             Example("↓fileprivate enum MyEnum {}"):
@@ -64,7 +64,7 @@ struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
             Example("↓fileprivate class MyClass { fileprivate(set) var myInt = 4 }"):
                 Example("private class MyClass { fileprivate(set) var myInt = 4 }"),
             Example("↓fileprivate actor MyActor { fileprivate(set) var myInt = 4 }"):
-                Example("private actor MyActor { fileprivate(set) var myInt = 4 }")
+                Example("private actor MyActor { fileprivate(set) var myInt = 4 }"),
         ]
     )
 }

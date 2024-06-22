@@ -8,7 +8,7 @@ struct SwiftLintCoreMacros: CompilerPlugin {
     let providingMacros: [any Macro.Type] = [
         AutoApply.self,
         MakeAcceptableByConfigurationElement.self,
-        SwiftSyntaxRule.self
+        SwiftSyntaxRule.self,
     ]
 }
 

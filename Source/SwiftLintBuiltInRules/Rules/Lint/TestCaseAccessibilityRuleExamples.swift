@@ -74,7 +74,7 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             func testFoo() {}
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -105,7 +105,7 @@ internal struct TestCaseAccessibilityRuleExamples {
         final class BarTests: XCTestCase {
             ↓class Nested {}
         }
-        """)
+        """),
     ]
 
     static let corrections = [
@@ -142,6 +142,6 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             private func helperFunction() {}
         }
-        """)
+        """),
     ]
 }

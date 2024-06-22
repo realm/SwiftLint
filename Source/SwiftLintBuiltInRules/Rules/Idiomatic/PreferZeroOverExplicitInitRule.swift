@@ -14,7 +14,7 @@ struct PreferZeroOverExplicitInitRule: OptInRule {
             Example("CGPoint(x: 0, y: -1)"),
             Example("CGSize(width: 2, height: 4)"),
             Example("CGVector(dx: -5, dy: 0)"),
-            Example("UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 1)")
+            Example("UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 1)"),
         ],
         triggeringExamples: [
             Example("↓CGPoint(x: 0, y: 0)"),
@@ -23,7 +23,7 @@ struct PreferZeroOverExplicitInitRule: OptInRule {
             Example("↓CGRect(x: 0, y: 0, width: 0, height: 0)"),
             Example("↓CGSize(width: 0, height: 0)"),
             Example("↓CGVector(dx: 0, dy: 0)"),
-            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)")
+            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)"),
         ],
         corrections: [
             Example("↓CGPoint(x: 0, y: 0)"): Example("CGPoint.zero"),
@@ -31,7 +31,7 @@ struct PreferZeroOverExplicitInitRule: OptInRule {
             Example("↓CGRect(x: 0, y: 0, width: 0, height: 0)"): Example("CGRect.zero"),
             Example("↓CGSize(width: 0, height: 0.000)"): Example("CGSize.zero"),
             Example("↓CGVector(dx: 0, dy: 0)"): Example("CGVector.zero"),
-            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)"): Example("UIEdgeInsets.zero")
+            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)"): Example("UIEdgeInsets.zero"),
         ]
     )
 }

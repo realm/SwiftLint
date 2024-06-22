@@ -1,4 +1,3 @@
-@_spi(SyntaxTransformVisitor)
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
@@ -166,26 +165,22 @@ private extension ControlStatementRule {
     }
 }
 
-private class TrailingClosureFinder: SyntaxTransformVisitor {
-    func visitAny(_ node: Syntax) -> Bool {
-        false
-    }
-
-    func visit(_ node: FunctionCallExprSyntax) -> Bool {
-        node.trailingClosure != nil
-    }
-
-    func visit(_ node: SequenceExprSyntax) -> Bool {
-        node.elements.contains(where: visit)
-    }
-}
-
 private extension ExprSyntax {
     var unwrapped: ExprSyntax? {
         if let expr = self.as(TupleExprSyntax.self)?.elements.onlyElement?.expression {
-            return TrailingClosureFinder().visit(expr) ? nil : expr
+            return containsTrailingClosure(Syntax(expr)) ? nil : expr
         }
         return nil
+    }
+
+   private func containsTrailingClosure(_ node: Syntax) -> Bool {
+        switch node.as(SyntaxEnum.self) {
+        case .functionCallExpr(let node):
+            node.trailingClosure != nil
+        case .sequenceExpr(let node):
+            node.elements.contains { containsTrailingClosure(Syntax($0)) }
+        default: false
+        }
     }
 }
 

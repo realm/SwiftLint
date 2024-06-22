@@ -26,6 +26,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5153](https://github.com/realm/SwiftLint/issues/5153)
 
+* Ignore access level modifiers restricted to value setting in
+  `extension_access_modifier` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5623](https://github.com/realm/SwiftLint/issues/5623)
+
 ## 0.55.1: Universal Washing Powder
 
 #### Breaking

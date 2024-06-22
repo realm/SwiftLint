@@ -3,6 +3,7 @@ included:
   - Plugins
   - Source
   - Tests
+  - Package.swift
 excluded:
   - Tests/SwiftLintFrameworkTests/Resources
 

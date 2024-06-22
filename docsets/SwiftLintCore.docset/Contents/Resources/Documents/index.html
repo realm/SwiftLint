@@ -971,7 +971,9 @@ all analyzer rules, except the ones listed in <code>disabled_rules</code>.</li>
 <span class="na">analyzer_rules</span><span class="pi">:</span> <span class="c1"># rules run by `swiftlint analyze`</span>
   <span class="pi">-</span> <span class="s">explicit_self</span>
 
-<span class="na">included</span><span class="pi">:</span> <span class="c1"># case-sensitive paths to include during linting. `--path` is ignored if present</span>
+<span class="c1"># Case-sensitive paths to include during linting. Directory paths supplied on the</span>
+<span class="c1"># command line will be ignored.</span>
+<span class="na">included</span><span class="pi">:</span> 
   <span class="pi">-</span> <span class="s">Sources</span>
 <span class="na">excluded</span><span class="pi">:</span> <span class="c1"># case-sensitive paths to ignore during linting. Takes precedence over `included`</span>
   <span class="pi">-</span> <span class="s">Carthage</span>

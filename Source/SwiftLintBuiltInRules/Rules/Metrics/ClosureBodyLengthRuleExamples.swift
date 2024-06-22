@@ -29,7 +29,7 @@ internal struct ClosureBodyLengthRuleExamples {
 
 // MARK: - Private
 
-private func singleLineClosure(file: StaticString = #file, line: UInt = #line) -> Example {
+private func singleLineClosure(file: StaticString = #filePath, line: UInt = #line) -> Example {
     return Example("foo.bar { $0 }", file: file, line: line)
 }
 
@@ -37,7 +37,7 @@ private func trailingClosure(_ violationSymbol: String = "",
                              codeLinesCount: Int,
                              commentLinesCount: Int,
                              emptyLinesCount: Int,
-                             file: StaticString = #file,
+                             file: StaticString = #filePath,
                              line: UInt = #line) -> Example {
     return Example("""
         foo.bar \(violationSymbol){ toto in
@@ -50,7 +50,7 @@ private func trailingClosure(_ violationSymbol: String = "",
 
 private func argumentClosure(_ violationSymbol: String = "",
                              codeLinesCount: Int,
-                             file: StaticString = #file,
+                             file: StaticString = #filePath,
                              line: UInt = #line) -> Example {
     return Example("""
         foo.bar(\(violationSymbol){ toto in
@@ -61,7 +61,7 @@ private func argumentClosure(_ violationSymbol: String = "",
 
 private func labeledArgumentClosure(_ violationSymbol: String = "",
                                     codeLinesCount: Int,
-                                    file: StaticString = #file,
+                                    file: StaticString = #filePath,
                                     line: UInt = #line) -> Example {
     return Example("""
         foo.bar(label: \(violationSymbol){ toto in
@@ -72,7 +72,7 @@ private func labeledArgumentClosure(_ violationSymbol: String = "",
 
 private func multiLabeledArgumentClosures(_ violationSymbol: String = "",
                                           codeLinesCount: Int,
-                                          file: StaticString = #file,
+                                          file: StaticString = #filePath,
                                           line: UInt = #line) -> Example {
     return Example("""
         foo.bar(label: \(violationSymbol){ toto in
@@ -85,7 +85,7 @@ private func multiLabeledArgumentClosures(_ violationSymbol: String = "",
 
 private func labeledAndTrailingClosures(_ violationSymbol: String = "",
                                         codeLinesCount: Int,
-                                        file: StaticString = #file,
+                                        file: StaticString = #filePath,
                                         line: UInt = #line) -> Example {
     return Example("""
         foo.bar(label: \(violationSymbol){ toto in
@@ -98,7 +98,7 @@ private func labeledAndTrailingClosures(_ violationSymbol: String = "",
 
 private func lazyInitialization(_ violationSymbol: String = "",
                                 codeLinesCount: Int,
-                                file: StaticString = #file,
+                                file: StaticString = #filePath,
                                 line: UInt = #line) -> Example {
     return Example("""
         let foo: Bar = \(violationSymbol){ toto in

@@ -5,7 +5,7 @@ import XCTest
 
 private let config: Configuration = {
     let bazelWorkspaceDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"]
-    let rootProjectDirectory = bazelWorkspaceDirectory ?? #file.bridge()
+    let rootProjectDirectory = bazelWorkspaceDirectory ?? #filePath.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent
@@ -21,7 +21,7 @@ final class IntegrationTests: SwiftLintTestCase {
             forceExclude: false,
             excludeBy: .paths(excludedPaths: config.excludedPaths()))
         XCTAssert(
-            swiftFiles.contains(where: { #file.bridge().absolutePathRepresentation() == $0.path }),
+            swiftFiles.contains(where: { #filePath.bridge().absolutePathRepresentation() == $0.path }),
             "current file should be included"
         )
 
@@ -64,7 +64,7 @@ final class IntegrationTests: SwiftLintTestCase {
                 """
             }
             .joined(separator: "\n")
-        let referenceFile = URL(fileURLWithPath: #file)
+        let referenceFile = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
             .appendingPathComponent("default_rule_configurations.yml")
         XCTAssertEqual(defaultConfig + "\n", try String(contentsOf: referenceFile))

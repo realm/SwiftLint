@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt = #line) -> Example {
+private func wrapInSwitch(_ str: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
     return Example("""
     switch foo {
         \(str)

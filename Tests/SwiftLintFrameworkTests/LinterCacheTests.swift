@@ -78,7 +78,7 @@ final class LinterCacheTests: SwiftLintTestCase {
     }
 
     private func cacheAndValidate(violations: [StyleViolation], forFile: String, configuration: Configuration,
-                                  file: StaticString = #file, line: UInt = #line) {
+                                  file: StaticString = #filePath, line: UInt = #line) {
         cache.cache(violations: violations, forFile: forFile, configuration: configuration)
         cache = cache.flushed()
         XCTAssertEqual(cache.violations(forFile: forFile, configuration: configuration)!,
@@ -86,7 +86,7 @@ final class LinterCacheTests: SwiftLintTestCase {
     }
 
     private func cacheAndValidateNoViolationsTwoFiles(configuration: Configuration,
-                                                      file: StaticString = #file, line: UInt = #line) {
+                                                      file: StaticString = #filePath, line: UInt = #line) {
         let (file1, file2) = ("file1.swift", "file2.swift")
         // swiftlint:disable:next force_cast
         let fileManager = cache.fileManager as! TestFileManager
@@ -97,7 +97,7 @@ final class LinterCacheTests: SwiftLintTestCase {
     }
 
     private func validateNewConfigDoesntHitCache(dict: [String: Any], initialConfig: Configuration,
-                                                 file: StaticString = #file, line: UInt = #line) throws {
+                                                 file: StaticString = #filePath, line: UInt = #line) throws {
         let newConfig = try Configuration(dict: dict)
         let (file1, file2) = ("file1.swift", "file2.swift")
 

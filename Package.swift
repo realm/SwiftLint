@@ -3,7 +3,8 @@ import CompilerPluginSupport
 import PackageDescription
 
 let swiftFeatures: [SwiftSetting] = [
-    .enableUpcomingFeature("ExistentialAny")
+    .enableUpcomingFeature("ExistentialAny"),
+    .enableUpcomingFeature("ConciseMagicFile")
 ]
 
 let swiftLintPluginDependencies: [Target.Dependency]

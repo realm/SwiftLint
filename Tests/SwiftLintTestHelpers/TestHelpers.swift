@@ -325,7 +325,7 @@ public extension XCTestCase {
                     skipDisableCommandTests: Bool = false,
                     testMultiByteOffsets: Bool = true,
                     testShebang: Bool = true,
-                    file: StaticString = #file,
+                    file: StaticString = #filePath,
                     line: UInt = #line) {
         guard ruleDescription.minSwiftVersion <= .current else {
             return
@@ -349,7 +349,8 @@ public extension XCTestCase {
         self.verifyLint(ruleDescription, config: config, commentDoesntViolate: commentDoesntViolate,
                         stringDoesntViolate: stringDoesntViolate, skipCommentTests: skipCommentTests,
                         skipStringTests: skipStringTests, disableCommands: disableCommands,
-                        testMultiByteOffsets: testMultiByteOffsets, testShebang: testShebang)
+                        testMultiByteOffsets: testMultiByteOffsets, testShebang: testShebang,
+                        file: file, line: line)
         self.verifyCorrections(ruleDescription, config: config, disableCommands: disableCommands,
                                testMultiByteOffsets: testMultiByteOffsets)
     }
@@ -363,11 +364,11 @@ public extension XCTestCase {
                     disableCommands: [String] = [],
                     testMultiByteOffsets: Bool = true,
                     testShebang: Bool = true,
-                    file: StaticString = #file,
+                    file: StaticString = #filePath,
                     line: UInt = #line) {
         func verify(triggers: [Example], nonTriggers: [Example]) {
             verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config,
-                           requiresFileOnDisk: ruleDescription.requiresFileOnDisk, file: file, line: line)
+                           requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
         }
         func makeViolations(_ example: Example) -> [StyleViolation] {
             return violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
@@ -458,9 +459,7 @@ public extension XCTestCase {
     }
 
     private func verifyExamples(triggers: [Example], nonTriggers: [Example],
-                                configuration config: Configuration, requiresFileOnDisk: Bool,
-                                file callSiteFile: StaticString = #file,
-                                line callSiteLine: UInt = #line) {
+                                configuration config: Configuration, requiresFileOnDisk: Bool) {
         // Non-triggering examples don't violate
         for nonTrigger in nonTriggers {
             let unexpectedViolations = violations(nonTrigger, config: config,
@@ -527,7 +526,7 @@ public extension XCTestCase {
 
     // file and line parameters are first so we can use trailing closure syntax with the closure
     func checkError<T: Error & Equatable>(
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line,
         _ error: T,
         closure: () throws -> Void) {

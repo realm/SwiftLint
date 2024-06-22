@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
-        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentKinds)
     }
 }
 
@@ -57,6 +57,22 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
     ]
 
     private static let violatingToValidExamples: [Example: Example] = [
+        Example("""
+            switch x {
+            case 0..<5:
+                return "x is valid"
+        ↓    default:
+                return "x is invalid"
+            }
+        """): Example("""
+            switch x {
+            case 0..<5:
+                return "x is valid"
+
+            default:
+                return "x is invalid"
+            }
+        """),
         Example("""
             switch x {
             case 0..<5:

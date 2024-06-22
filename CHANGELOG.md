@@ -31,6 +31,11 @@
   `unneeded_synthesized_initializer` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5153](https://github.com/realm/SwiftLint/issues/5153)
+  
+* Make `vertical_whitespace_between_cases` rule work for
+  cases ending with a string literal.  
+  [ilendemli](https://github.com/ilendemli)
+  [#5612](https://github.com/realm/SwiftLint/issues/5612)
 
 * Ignore access level modifiers restricted to value setting in
   `extension_access_modifier` rule.  

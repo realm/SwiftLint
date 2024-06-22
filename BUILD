@@ -30,6 +30,14 @@ copts = [
     "ExistentialAny",
     "-enable-upcoming-feature",
     "ConciseMagicFile",
+    "-enable-upcoming-feature",
+    "ImportObjcForwardDeclarations",
+    "-enable-upcoming-feature",
+    "ForwardTrailingClosures",
+    "-enable-upcoming-feature",
+    "InternalImportsByDefault",
+    "-enable-upcoming-feature",
+    "ImplicitOpenExistentials",
 ]
 
 strict_concurrency_copts = [

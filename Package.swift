@@ -4,7 +4,11 @@ import PackageDescription
 
 let swiftFeatures: [SwiftSetting] = [
     .enableUpcomingFeature("ExistentialAny"),
-    .enableUpcomingFeature("ConciseMagicFile")
+    .enableUpcomingFeature("ConciseMagicFile"),
+    .enableUpcomingFeature("ImportObjcForwardDeclarations"),
+    .enableUpcomingFeature("ForwardTrailingClosures"),
+    .enableUpcomingFeature("InternalImportsByDefault"),
+    .enableUpcomingFeature("ImplicitOpenExistentials")
 ]
 
 let swiftLintPluginDependencies: [Target.Dependency]

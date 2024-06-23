@@ -32,6 +32,9 @@ struct MissingDocsRule: OptInRule {
             Example("""
             /// docs
             public class A {
+                var j = 1
+                var i: Int { 1 }
+                func f() {}
                 deinit {}
             }
             """),
@@ -115,8 +118,19 @@ struct MissingDocsRule: OptInRule {
             Example("""
             public ↓enum E {
                 case ↓A
+                func f() {}
+                init(_ i: Int) { self = .A }
             }
             """),
+            Example("""
+            open ↓class C {
+                public ↓enum E {
+                    case ↓A
+                    func f() {}
+                    init(_ i: Int) { self = .A }
+                }
+            }
+            """, excludeFromDocumentation: true),
             /// Nested types inherit the ACL from the declaring extension.
             Example("""
             /// a doc
@@ -349,10 +363,9 @@ private extension Stack<AccessControlBehavior> {
                 } else {
                     push(.strict(parentAcl))
                 }
-            } else {
-                push(.strict(acl ?? .internal))
             }
-        } else if let acl {
+        }
+        if let acl {
             push(appliesToChildren || acl < .public ? .strict(acl) : .impliedInternal)
         } else {
             push(.strict(.internal))

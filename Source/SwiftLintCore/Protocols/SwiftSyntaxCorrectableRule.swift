@@ -50,7 +50,7 @@ public extension SwiftSyntaxCorrectableRule {
                 }
             }
             .filter { file.ruleEnabled(violatingRange: $0.range, for: self) != nil }
-            .reversed()
+            .sorted(by: { $0.range.location > $1.range.location })
         var corrections = [Correction]()
         var contents = file.contents
         for range in correctionRanges {

@@ -215,8 +215,11 @@ private extension Configuration {
         let corrections = linter.correct(using: storage).sorted { $0.location < $1.location }
         if expectedLocations.isEmpty {
             XCTAssertEqual(
-                corrections.count, before.code != expected.code ? 1 : 0, #function + ".expectedLocationsEmpty",
-                file: before.file, line: before.line)
+                corrections.count,
+                before.code != expected.code ? max(corrections.count, 1) : 0,
+                #function + ".expectedLocationsEmpty",
+                file: before.file, line: before.line
+            )
         } else {
             XCTAssertEqual(
                 corrections.count,

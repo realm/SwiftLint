@@ -57,6 +57,14 @@ struct OpeningBraceRuleExamples {
             if c /* comment */ {
                 return
             }
+        """),
+        Example("""
+            if
+                "test".isEmpty
+            // swiftlint:disable:next opening_brace
+            {
+                // code here
+            }
         """)
     ]
 
@@ -544,6 +552,26 @@ struct OpeningBraceRuleExamples {
         """): Example("""
                 if c /* comment */ {
                     return
+                }
+            """),
+        // https://github.com/realm/SwiftLint/issues/5598
+        Example("""
+            func foo() {
+                if q1, q2
+                {
+                    do1()
+                } else if q3, q4
+                {
+                    do2()
+                }
+            }
+        """): Example("""
+                func foo() {
+                    if q1, q2 {
+                        do1()
+                    } else if q3, q4 {
+                        do2()
+                    }
                 }
             """)
     ]

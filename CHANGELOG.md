@@ -42,6 +42,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5623](https://github.com/realm/SwiftLint/issues/5623)
 
+* Fix `opening_brace` correction.  
+  [swiftty](https://github.com/swiftty)
+  [#issue_number](https://github.com/realm/SwiftLint/issues/issue_number)
+
 ## 0.55.1: Universal Washing Powder
 
 #### Breaking

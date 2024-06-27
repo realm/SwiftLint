@@ -988,6 +988,12 @@ all analyzer rules, except the ones listed in <code>disabled_rules</code>.</li>
 <span class="c1"># If true, SwiftLint will treat all warnings as errors.</span>
 <span class="na">strict</span><span class="pi">:</span> <span class="kc">false</span>
 
+<span class="c1"># The path to a baseline file, which will be used to filter out detected violations.</span>
+<span class="na">baseline</span><span class="pi">:</span> <span class="s">Baseline.json</span>
+
+<span class="c1"># The path to save detected violations to as a new baseline.</span>
+<span class="na">write_baseline</span><span class="pi">:</span> <span class="s">Baseline.json</span>
+
 <span class="c1"># configurable rules can be customized from this configuration file</span>
 <span class="c1"># binary rules can set their severity level</span>
 <span class="na">force_cast</span><span class="pi">:</span> <span class="s">warning</span> <span class="c1"># implicitly</span>

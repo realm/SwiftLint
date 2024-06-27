@@ -745,9 +745,9 @@ final class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class NoEmptyFunctionRuleGeneratedTests: SwiftLintTestCase {
+final class NoEmptyBlockRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(NoEmptyFunctionBodyRule.description)
+        verifyRule(NoEmptyBlockRule.description)
     }
 }
 

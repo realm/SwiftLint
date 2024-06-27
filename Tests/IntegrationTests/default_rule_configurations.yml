@@ -333,7 +333,7 @@ nesting:
   ignore_typealiases_and_associatedtypes: false
 nimble_operator:
   severity: warning
-no_empty_function:
+no_empty_block:
   severity: warning
 no_extension_access_modifier:
   severity: error

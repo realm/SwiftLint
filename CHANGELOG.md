@@ -24,7 +24,7 @@
 * Linting got around 20% faster due to the praisworthy performance
   improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
   library.
-*  Add `non_empty_function_body` default rule to validate that `function`, `init` and `deinit` should not have empty body. Otherwise show warning to ask to write comments.
+*  Add `no_empty_block` default rule to validate that `function`, `init`, `deinit`, `catch and `defer` should not have empty code block. They should at least contain a comment.
     [Ueeek](https://github.com/Ueeek)
     [#5615](https://github.com/realm/SwiftLint/issues/5615)
 

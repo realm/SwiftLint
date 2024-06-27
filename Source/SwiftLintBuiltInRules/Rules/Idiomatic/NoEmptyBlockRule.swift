@@ -1,13 +1,14 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct NoEmptyFunctionBodyRule: Rule {
+struct NoEmptyBlockRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
-        identifier: "no_empty_function_body",
-        name: "No Empty Function Body",
-        description: "Function bodies should not be empty; they should at least contain a comment",
+        identifier: "no_empty_block",
+        name: "No Empty Block",
+        // swiftlint:disable:next line_length
+        description: "Code Blocks(Function bodies, catch, defer) should not be empty; they should at least contain a comment",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -25,6 +26,17 @@ struct NoEmptyFunctionBodyRule: Rule {
             """),
             Example("""
                 deinit { /* comment */ }
+            """),
+            Example("""
+            defer {
+                /* comment */ 
+            }
+            """),
+            Example("""
+            do {
+            } catch {
+                /* comment */ 
+            }
             """)
         ],
         triggeringExamples: [
@@ -41,12 +53,22 @@ struct NoEmptyFunctionBodyRule: Rule {
             """),
             Example("""
                 deinit ↓{}
+            """),
+            Example("""
+            defer ↓{
+            }
+            """),
+            Example("""
+            do {
+                // some codes
+            } catch ↓{
+            }
             """)
         ]
     )
 }
 
-private extension NoEmptyFunctionBodyRule {
+private extension NoEmptyBlockRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             validateBody(node.body)
@@ -57,6 +79,14 @@ private extension NoEmptyFunctionBodyRule {
         }
 
         override func visitPost(_ node: DeinitializerDeclSyntax) {
+            validateBody(node.body)
+        }
+
+        override func visitPost(_ node: DeferStmtSyntax) {
+            validateBody(node.body)
+        }
+
+        override func visitPost(_ node: CatchClauseSyntax) {
             validateBody(node.body)
         }
 

@@ -29,13 +29,13 @@ struct NoEmptyBlockRule: Rule {
             """),
             Example("""
             defer {
-                /* comment */ 
+                /* comment */
             }
             """),
             Example("""
             do {
             } catch {
-                /* comment */ 
+                /* comment */
             }
             """)
         ],

@@ -15,6 +15,8 @@ extension Configuration {
         case analyzerRules = "analyzer_rules"
         case allowZeroLintableFiles = "allow_zero_lintable_files"
         case strict = "strict"
+        case baseline = "baseline"
+        case writeBaseline = "write_baseline"
         case childConfig = "child_config"
         case parentConfig = "parent_config"
         case remoteConfigTimeout = "remote_timeout"
@@ -95,7 +97,9 @@ extension Configuration {
             cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
             pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },
             allowZeroLintableFiles: dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false,
-            strict: dict[Key.strict.rawValue] as? Bool ?? false
+            strict: dict[Key.strict.rawValue] as? Bool ?? false,
+            baseline: dict[Key.baseline.rawValue] as? String,
+            writeBaseline: dict[Key.writeBaseline.rawValue] as? String
         )
     }
 

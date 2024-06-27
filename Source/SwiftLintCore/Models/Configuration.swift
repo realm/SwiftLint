@@ -35,8 +35,14 @@ public struct Configuration {
     /// Allow or disallow SwiftLint to exit successfully when passed only ignored or unlintable files.
     public let allowZeroLintableFiles: Bool
 
-    /// Treat warnings as errors
+    /// Treat warnings as errors.
     public let strict: Bool
+
+    /// The path to read a baseline from.
+    public let baseline: String?
+
+    /// The path to write a baseline to.
+    public let writeBaseline: String?
 
     /// This value is `true` iff the `--config` parameter was used to specify (a) configuration file(s)
     /// In particular, this means that the value is also `true` if the `--config` parameter
@@ -73,7 +79,9 @@ public struct Configuration {
         reporter: String?,
         cachePath: String?,
         allowZeroLintableFiles: Bool,
-        strict: Bool
+        strict: Bool,
+        baseline: String?,
+        writeBaseline: String?
     ) {
         self.rulesWrapper = rulesWrapper
         self.fileGraph = fileGraph
@@ -85,6 +93,8 @@ public struct Configuration {
         self.cachePath = cachePath
         self.allowZeroLintableFiles = allowZeroLintableFiles
         self.strict = strict
+        self.baseline = baseline
+        self.writeBaseline = writeBaseline
     }
 
     /// Creates a Configuration by copying an existing configuration.
@@ -102,6 +112,8 @@ public struct Configuration {
         cachePath = configuration.cachePath
         allowZeroLintableFiles = configuration.allowZeroLintableFiles
         strict = configuration.strict
+        baseline = configuration.baseline
+        writeBaseline = configuration.writeBaseline
     }
 
     /// Creates a `Configuration` by specifying its properties directly,
@@ -122,8 +134,11 @@ public struct Configuration {
     /// - parameter reporter:               The identifier for the `Reporter` to use to report style violations.
     /// - parameter cachePath:              The location of the persisted cache to use whith this configuration.
     /// - parameter pinnedVersion:          The SwiftLint version defined in this configuration.
-    /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable files
-    /// - parameter strict:                 Treat warnings as errors
+    /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable
+    ///                                     files.
+    /// - parameter strict:                 Treat warnings as errors.
+    /// - parameter baseline:               The path to read a baseline from.
+    /// - parameter writeBaseline:          The path to write a baseline to.
     package init(
         rulesMode: RulesMode = .default(disabled: [], optIn: []),
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
@@ -137,7 +152,9 @@ public struct Configuration {
         cachePath: String? = nil,
         pinnedVersion: String? = nil,
         allowZeroLintableFiles: Bool = false,
-        strict: Bool = false
+        strict: Bool = false,
+        baseline: String? = nil,
+        writeBaseline: String? = nil
     ) {
         if let pinnedVersion, pinnedVersion != Version.current.value {
             queuedPrintError(
@@ -163,7 +180,9 @@ public struct Configuration {
             reporter: reporter,
             cachePath: cachePath,
             allowZeroLintableFiles: allowZeroLintableFiles,
-            strict: strict
+            strict: strict,
+            baseline: baseline,
+            writeBaseline: writeBaseline
         )
     }
 
@@ -268,6 +287,8 @@ extension Configuration: Hashable {
         hasher.combine(reporter)
         hasher.combine(allowZeroLintableFiles)
         hasher.combine(strict)
+        hasher.combine(baseline)
+        hasher.combine(writeBaseline)
         hasher.combine(basedOnCustomConfigurationFiles)
         hasher.combine(cachePath)
         hasher.combine(rules.map { type(of: $0).description.identifier })
@@ -286,6 +307,8 @@ extension Configuration: Hashable {
             lhs.fileGraph == rhs.fileGraph &&
             lhs.allowZeroLintableFiles == rhs.allowZeroLintableFiles &&
             lhs.strict == rhs.strict &&
+            lhs.baseline == rhs.baseline &&
+            lhs.writeBaseline == rhs.writeBaseline &&
             lhs.rulesMode == rhs.rulesMode
     }
 }

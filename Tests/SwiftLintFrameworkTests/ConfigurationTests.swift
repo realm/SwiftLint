@@ -56,6 +56,8 @@ final class ConfigurationTests: SwiftLintTestCase {
         XCTAssertEqual(reporterFrom(identifier: config.reporter).identifier, "xcode")
         XCTAssertFalse(config.allowZeroLintableFiles)
         XCTAssertFalse(config.strict)
+        XCTAssertNil(config.baseline)
+        XCTAssertNil(config.writeBaseline)
     }
 
     func testInitWithRelativePathAndRootPath() {
@@ -70,6 +72,8 @@ final class ConfigurationTests: SwiftLintTestCase {
         XCTAssertEqual(config.reporter, expectedConfig.reporter)
         XCTAssertTrue(config.allowZeroLintableFiles)
         XCTAssertTrue(config.strict)
+        XCTAssertNotNil(config.baseline)
+        XCTAssertNotNil(config.writeBaseline)
     }
 
     func testEnableAllRulesConfiguration() throws {
@@ -426,6 +430,18 @@ final class ConfigurationTests: SwiftLintTestCase {
     func testStrict() throws {
         let configuration = try Configuration(dict: ["strict": true])
         XCTAssertTrue(configuration.strict)
+    }
+
+    func testBaseline() throws {
+        let baselinePath = "Baseline.json"
+        let configuration = try Configuration(dict: ["baseline": baselinePath])
+        XCTAssertEqual(configuration.baseline, baselinePath)
+    }
+
+    func testWriteBaseline() throws {
+        let baselinePath = "Baseline.json"
+        let configuration = try Configuration(dict: ["write_baseline": baselinePath])
+        XCTAssertEqual(configuration.writeBaseline, baselinePath)
     }
 }
 

@@ -25,7 +25,9 @@ extension Configuration {
             reporter: reporter,
             cachePath: cachePath,
             allowZeroLintableFiles: childConfiguration.allowZeroLintableFiles,
-            strict: childConfiguration.strict
+            strict: childConfiguration.strict,
+            baseline: childConfiguration.baseline,
+            writeBaseline: childConfiguration.writeBaseline
         )
     }
 

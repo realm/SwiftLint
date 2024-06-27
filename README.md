@@ -697,6 +697,12 @@ allow_zero_lintable_files: false
 # If true, SwiftLint will treat all warnings as errors.
 strict: false
 
+# The path to a baseline file, which will be used to filter out detected violations.
+baseline: Baseline.json
+
+# The path to save detected violations to as a new baseline.
+write_baseline: Baseline.json
+
 # configurable rules can be customized from this configuration file
 # binary rules can set their severity level
 force_cast: warning # implicitly

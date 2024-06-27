@@ -1,13 +1,13 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct NoEmptyFunctionRule: Rule {
+struct NoEmptyFunctionBodyRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
-        identifier: "no_empty_function",
-        name: "No Empty Function",
-        description: "Init/Deinit/Function body should not be empty, add comment to explain why it's empty",
+        identifier: "no_empty_function_body",
+        name: "No Empty Function Body",
+        description: "Function bodies should not be empty; they should at least contain a comment",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
@@ -46,41 +46,29 @@ struct NoEmptyFunctionRule: Rule {
     )
 }
 
-private extension NoEmptyFunctionRule {
+private extension NoEmptyFunctionBodyRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard let body = node.body else { return }
-            if let violation = validateBody(body) {
-                violations.append(violation)
-            }
+            validateBody(node.body)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            guard let body = node.body else { return }
-            if let violation = validateBody(body) {
-                violations.append(violation)
-            }
+            validateBody(node.body)
         }
 
         override func visitPost(_ node: DeinitializerDeclSyntax) {
-            guard let body = node.body else { return }
-            if let violation = validateBody(body) {
-                violations.append(violation)
-            }
+            validateBody(node.body)
         }
 
-        func validateBody(_ node: CodeBlockSyntax) -> ReasonedRuleViolation? {
-            guard node.statements.isEmpty,
+        func validateBody(_ node: CodeBlockSyntax?) {
+            guard let node,
+                  node.statements.isEmpty,
                   !node.leftBrace.trailingTrivia.containsComments,
                   !node.rightBrace.leadingTrivia.containsComments else {
-                return nil
+                return
             }
 
-            return ReasonedRuleViolation(
-                position: node.leftBrace.positionAfterSkippingLeadingTrivia,
-                reason: "Init/Deinit/Function body should not be empty, add comment to explain why it's empty",
-                severity: .warning
-            )
+            violations.append(node.leftBrace.positionAfterSkippingLeadingTrivia)
         }
     }
 }

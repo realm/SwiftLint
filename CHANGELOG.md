@@ -6,6 +6,15 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5614](https://github.com/realm/SwiftLint/issues/5614)
 
+* When SwiftLint corrects violations automatically (`swiftlint lint --fix`)
+  it doesn't report the exact location of the fix any longer. The new format
+  is `<file-path>: Correcting <rule-name>` without line and column numbers.
+  Reason: Correction positions are likely just incorrect, especially when
+  multiple rules apply their rewrites. Fixing that is not trivial and likely
+  not worth the effort also considering that there haven't been any bug
+  reports about wrong correction positions so far.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Experimental
 
 * None.

@@ -44,7 +44,7 @@ public struct Configuration {
     /// The path to write a baseline to.
     public let writeBaseline: String?
 
-    /// Check for updates
+    /// Check for updates.
     public let checkForUpdates: Bool
 
     /// This value is `true` iff the `--config` parameter was used to specify (a) configuration file(s)

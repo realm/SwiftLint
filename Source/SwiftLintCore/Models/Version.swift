@@ -8,7 +8,7 @@ public struct Version {
 
     /// Public initializer.
     ///
-    /// - parameter value: the string value for this version.
+    /// - parameter value: The string value for this version.
     public init(value: String) {
         self.value = value
     }

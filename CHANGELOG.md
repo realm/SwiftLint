@@ -47,6 +47,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5623](https://github.com/realm/SwiftLint/issues/5623)
 
+* Fix `baseline compare` incorrectly reporting some violations
+  as new, and also now sorts the violations from `baseline compare`
+  deterministically.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5606](https://github.com/realm/SwiftLint/issues/5606)
+
 ## 0.55.1: Universal Washing Powder
 
 #### Breaking

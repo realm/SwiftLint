@@ -4,7 +4,7 @@ private typealias BaselineViolations = [BaselineViolation]
 private typealias ViolationsPerFile = [String: BaselineViolations]
 private typealias ViolationsPerRule = [String: BaselineViolations]
 
-private struct BaselineViolation: Codable, Hashable {
+private struct BaselineViolation: Codable, Hashable, Comparable {
     let violation: StyleViolation
     let text: String
     var key: String { text + violation.reason }
@@ -20,13 +20,23 @@ private struct BaselineViolation: Codable, Hashable {
         )
         self.text = text
     }
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.violation == rhs.violation && lhs.text == rhs.text
+    }
+
+    static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.violation.location == rhs.violation.location
+            ? lhs.violation.ruleIdentifier < rhs.violation.ruleIdentifier
+            : lhs.violation.location < rhs.violation.location
+    }
 }
 
 /// A set of violations that can be used to filter newly detected violations.
 public struct Baseline: Equatable {
     private let baseline: ViolationsPerFile
     private var sortedBaselineViolations: BaselineViolations {
-        baseline.sorted(by: { $0.key < $1.key }).flatMap(\.value)
+        baseline.flatMap(\.value).sorted()
     }
 
     /// The stored violations.
@@ -71,6 +81,16 @@ public struct Baseline: Equatable {
         }
 
         let relativePathViolations = BaselineViolations(violations)
+        let violationsWithAbsolutePaths = filter(
+            relativePathViolations: relativePathViolations,
+            baselineViolations: baselineViolations
+        )
+        return violations.filter { violationsWithAbsolutePaths.contains($0) }
+    }
+
+    private func filter(
+        relativePathViolations: BaselineViolations, baselineViolations: BaselineViolations
+    ) -> Set<StyleViolation> {
         if relativePathViolations == baselineViolations {
             return []
         }
@@ -106,8 +126,7 @@ public struct Baseline: Equatable {
             }
         }
 
-        let violationsWithAbsolutePaths = Set(filteredViolations.violationsWithAbsolutePaths)
-        return violations.filter { violationsWithAbsolutePaths.contains($0) }
+        return Set(filteredViolations.violationsWithAbsolutePaths)
     }
 
     /// Returns the violations that are present in another `Baseline`, but not in this one.
@@ -116,8 +135,13 @@ public struct Baseline: Equatable {
     ///
     /// - parameter otherBaseline: The other `Baseline`.
     public func compare(_ otherBaseline: Baseline) -> [StyleViolation] {
-        otherBaseline.baseline.flatMap {
-            filter($1.violationsWithAbsolutePaths)
+        otherBaseline.baseline.flatMap { relativePath, otherBaselineViolations -> Set<StyleViolation> in
+            if let baselineViolations = baseline[relativePath] {
+                return filter(relativePathViolations: otherBaselineViolations, baselineViolations: baselineViolations)
+            }
+            return Set(otherBaselineViolations.violationsWithAbsolutePaths)
+        }.sorted {
+            $0.location == $1.location ? $0.ruleIdentifier < $1.ruleIdentifier : $0.location < $1.location
         }
     }
 }

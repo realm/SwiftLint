@@ -99,12 +99,9 @@ extension Configuration {
             pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },
             allowZeroLintableFiles: dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false,
             strict: dict[Key.strict.rawValue] as? Bool ?? false,
-<<<<<<< HEAD
             baseline: dict[Key.baseline.rawValue] as? String,
-            writeBaseline: dict[Key.writeBaseline.rawValue] as? String
-=======
+            writeBaseline: dict[Key.writeBaseline.rawValue] as? String,
             checkForUpdates: dict[Key.checkForUpdates.rawValue] as? Bool ?? false
->>>>>>> 9093d9cc9 (Also support check for updates in configuration files)
         )
     }
 

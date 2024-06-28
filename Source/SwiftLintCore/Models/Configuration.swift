@@ -84,7 +84,7 @@ public struct Configuration {
         allowZeroLintableFiles: Bool,
         strict: Bool,
         baseline: String?,
-        writeBaseline: String?
+        writeBaseline: String?,
         checkForUpdates: Bool
     ) {
         self.rulesWrapper = rulesWrapper
@@ -190,7 +190,7 @@ public struct Configuration {
             allowZeroLintableFiles: allowZeroLintableFiles,
             strict: strict,
             baseline: baseline,
-            writeBaseline: writeBaseline
+            writeBaseline: writeBaseline,
             checkForUpdates: checkForUpdates
         )
     }

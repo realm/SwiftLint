@@ -29,8 +29,8 @@ struct LintOrAnalyzeCommand {
         if let workingDirectory = options.workingDirectory {
             if !FileManager.default.changeCurrentDirectoryPath(workingDirectory) {
                 throw SwiftLintError.usageError(
-                    description:"Could not change working directory to '\(workingDirectory)'. " +
-                                "Make sure it exists and is accessible."
+                    description: "Could not change working directory to '\(workingDirectory)'. " +
+                                 "Make sure it exists and is accessible."
                 )
             }
         }

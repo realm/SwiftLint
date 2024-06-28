@@ -53,7 +53,7 @@ final class GlobTests: SwiftLintTestCase {
     func testMatchesMultipleFiles() {
         let expectedFiles: Set = [
             mockPath.stringByAppendingPathComponent("Level0.swift"),
-            mockPath.stringByAppendingPathComponent("Directory.swift")
+            mockPath.stringByAppendingPathComponent("Directory.swift"),
         ]
 
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("*.swift"))
@@ -75,7 +75,7 @@ final class GlobTests: SwiftLintTestCase {
                 "Level1/Level2/Level2.swift",
                 "Level1/Level2/Level3/Level3.swift",
                 "NestedConfig/Test/Main.swift",
-                "NestedConfig/Test/Sub/Sub.swift"
+                "NestedConfig/Test/Sub/Sub.swift",
             ].map(mockPath.stringByAppendingPathComponent)
         )
 

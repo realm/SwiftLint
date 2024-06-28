@@ -23,7 +23,7 @@ struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule {
                 return 1
             }
             """),
-            Example("typealias SuccessBlock = ((Data) -> Void)")
+            Example("typealias SuccessBlock = ((Data) -> Void)"),
         ],
         triggeringExamples: [
             Example("func abc()↓->Int {}"),
@@ -39,7 +39,7 @@ struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule {
             Example("func abc()\n  ↓->  Int {}"),
             Example("func abc()\n ↓->  Int {}"),
             Example("func abc()↓  ->\n  Int {}"),
-            Example("func abc()↓  ->\nInt {}")
+            Example("func abc()↓  ->\nInt {}"),
         ],
         corrections: [
             Example("func abc()↓->Int {}"): Example("func abc() -> Int {}"),
@@ -49,7 +49,7 @@ struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule {
             Example("func abc()\n  ↓->  Int {}"): Example("func abc()\n  -> Int {}"),
             Example("func abc()\n ↓->  Int {}"): Example("func abc()\n -> Int {}"),
             Example("func abc()↓  ->\n  Int {}"): Example("func abc() ->\n  Int {}"),
-            Example("func abc()↓  ->\nInt {}"): Example("func abc() ->\nInt {}")
+            Example("func abc()↓  ->\nInt {}"): Example("func abc() ->\nInt {}"),
         ]
     )
 }

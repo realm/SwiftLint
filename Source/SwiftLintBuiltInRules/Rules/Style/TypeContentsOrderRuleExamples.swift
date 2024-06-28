@@ -119,7 +119,7 @@ internal struct TypeContentsOrderRuleExamples {
             deinit {
                 log.debug("deinit")
             }
-        """
+        """,
     ]
 
     static let nonTriggeringExamples = [
@@ -127,7 +127,7 @@ internal struct TypeContentsOrderRuleExamples {
         class TestViewController: UIViewController {
         \(Self.defaultOrderParts.joined(separator: "\n\n")),
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -254,6 +254,6 @@ internal struct TypeContentsOrderRuleExamples {
             // MARK: Other Methods
             func goToNextVc() { /* TODO */ }
         }
-        """)
+        """),
     ]
 }

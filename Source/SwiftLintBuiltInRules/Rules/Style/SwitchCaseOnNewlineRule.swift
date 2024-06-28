@@ -46,7 +46,7 @@ struct SwitchCaseOnNewlineRule: OptInRule {
               let loadedToken = try tokenManager.decodeToken(from: response)
               return loadedToken
             } catch { throw error }
-            """)
+            """),
         ],
         triggeringExamples: [
             wrapInSwitch("↓case 1: return true"),
@@ -57,7 +57,7 @@ struct SwitchCaseOnNewlineRule: OptInRule {
             wrapInSwitch("↓case let .myCase(value) where value > 10: return false"),
             wrapInSwitch("↓case #selector(aFunction(_:)): return false"),
             wrapInSwitch("↓case let .myCase(value)\n where value > 10: return false"),
-            wrapInSwitch("↓case .first,\n .second: return false")
+            wrapInSwitch("↓case .first,\n .second: return false"),
         ]
     )
 }

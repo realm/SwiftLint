@@ -59,7 +59,7 @@ struct EmptyEnumArgumentsRule: Rule {
               guard case .settings(.notifications(_, nil)) = nav else { return false }
               return true
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             wrapInSwitch("case .bar↓(_)"),
@@ -85,7 +85,7 @@ struct EmptyEnumArgumentsRule: Rule {
               guard case .settings(.notifications↓(_, _)) = nav else { return false }
               return true
             }
-            """)
+            """),
         ],
         corrections: [
             wrapInSwitch("case .bar↓(_)"): wrapInSwitch("case .bar"),
@@ -108,7 +108,7 @@ struct EmptyEnumArgumentsRule: Rule {
                   guard case .settings(.notifications) = nav else { return false }
                   return true
                 }
-                """)
+                """),
         ]
     )
 }

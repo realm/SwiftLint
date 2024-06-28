@@ -21,12 +21,12 @@ struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("protocol SomeProtocol {}"),
             Example("protocol SomeClassOnlyProtocol: AnyObject {}"),
             Example("protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}"),
-            Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}")
+            Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}"),
         ],
         triggeringExamples: [
             Example("protocol SomeClassOnlyProtocol: ↓class {}"),
             Example("protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}"),
-            Example("@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}")
+            Example("@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}"),
         ],
         corrections: [
             Example("protocol SomeClassOnlyProtocol: ↓class {}"):
@@ -34,7 +34,7 @@ struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule {
             Example("protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}"):
                 Example("protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}"),
             Example("@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}"):
-                Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}")
+                Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}"),
         ]
     )
 

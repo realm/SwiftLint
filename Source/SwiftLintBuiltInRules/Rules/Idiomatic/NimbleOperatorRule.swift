@@ -29,7 +29,7 @@ struct NimbleOperatorRule: OptInRule {
                 expect(value).to(equal(expectedValue), description: "Failed")
                 return Bar(value: ())
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("↓expect(seagull.squawk).toNot(equal(\"Hi\"))"),
@@ -45,7 +45,7 @@ struct NimbleOperatorRule: OptInRule {
             Example("↓expect(success).to(beFalse())"),
             Example("↓expect(value).to(beNil())"),
             Example("↓expect(value).toNot(beNil())"),
-            Example("expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))")
+            Example("expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))"),
         ],
         corrections: [
             Example("↓expect(seagull.squawk).toNot(equal(\"Hi\"))"): Example("expect(seagull.squawk) != \"Hi\""),
@@ -65,7 +65,7 @@ struct NimbleOperatorRule: OptInRule {
             Example("↓expect(success).toNot(beTrue())"): Example("expect(success) != true"),
             Example("↓expect(value).to(beNil())"): Example("expect(value) == nil"),
             Example("↓expect(value).toNot(beNil())"): Example("expect(value) != nil"),
-            Example("expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))"): Example("expect(10) > 2\n expect(10) > 2")
+            Example("expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))"): Example("expect(10) > 2\n expect(10) > 2"),
         ]
     )
 }
@@ -94,7 +94,7 @@ private extension NimbleOperatorRule {
             let elements = ExprListSyntax([
                 expectation.baseExpr.with(\.trailingTrivia, .space),
                 operatorExpr.with(\.trailingTrivia, .space),
-                expectedValueExpr.with(\.trailingTrivia, node.trailingTrivia)
+                expectedValueExpr.with(\.trailingTrivia, node.trailingTrivia),
             ].map(ExprSyntax.init))
             return super.visit(SequenceExprSyntax(elements: elements))
         }
@@ -111,7 +111,7 @@ private extension NimbleOperatorRule {
         "beLessThanOrEqualTo": (to: "<=", toNot: nil, .withArguments),
         "beTrue": (to: "==", toNot: "!=", .nullary(analogueValue: BooleanLiteralExprSyntax(booleanLiteral: true))),
         "beFalse": (to: "==", toNot: "!=", .nullary(analogueValue: BooleanLiteralExprSyntax(booleanLiteral: false))),
-        "beNil": (to: "==", toNot: "!=", .nullary(analogueValue: NilLiteralExprSyntax(nilKeyword: .keyword(.nil))))
+        "beNil": (to: "==", toNot: "!=", .nullary(analogueValue: NilLiteralExprSyntax(nilKeyword: .keyword(.nil)))),
     ]
 
     static func predicateDescription(for node: FunctionCallExprSyntax) -> PredicateDescription? {

@@ -33,7 +33,7 @@ final class ReporterTests: SwiftLintTestCase {
             StyleViolation(ruleDescription: ColonRule.description,
                            severity: .error,
                            location: Location(file: nil),
-                           reason: nil)
+                           reason: nil),
         ]
     }
 

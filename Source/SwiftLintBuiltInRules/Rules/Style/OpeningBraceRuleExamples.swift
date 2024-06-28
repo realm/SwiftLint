@@ -57,7 +57,7 @@ struct OpeningBraceRuleExamples {
             if c /* comment */ {
                 return
             }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -216,7 +216,7 @@ struct OpeningBraceRuleExamples {
         Example("""
             if c  ↓{}
             else /* comment */  ↓{}
-            """)
+            """),
     ]
 
     static let corrections = [
@@ -545,6 +545,6 @@ struct OpeningBraceRuleExamples {
                 if c /* comment */ {
                     return
                 }
-            """)
+            """),
     ]
 }

@@ -51,9 +51,15 @@ extension ConfigurationTests {
     }
 
     func testOnlyRulesMerging() {
-        let baseConfiguration = Configuration(rulesMode: .default(disabled: [],
-                                                                  optIn: [ForceTryRule.description.identifier,
-                                                                          ForceCastRule.description.identifier]))
+        let baseConfiguration = Configuration(
+            rulesMode: .default(
+                disabled: [],
+                optIn: [
+                    ForceTryRule.description.identifier,
+                    ForceCastRule.description.identifier,
+                ]
+            )
+        )
         let onlyConfiguration = Configuration(rulesMode: .only([TodoRule.description.identifier]))
         XCTAssertTrue(baseConfiguration.contains(rule: TodoRule.self))
         XCTAssertEqual(onlyConfiguration.rules.count, 1)
@@ -275,7 +281,7 @@ extension ConfigurationTests {
             Mock.Dir.childConfigCycle3,
             Mock.Dir.parentConfigCycle1,
             Mock.Dir.parentConfigCycle2,
-            Mock.Dir.parentConfigCycle3
+            Mock.Dir.parentConfigCycle3,
         ] {
             FileManager.default.changeCurrentDirectoryPath(path)
 
@@ -331,7 +337,7 @@ extension ConfigurationTests {
             TestCase(optedInInParent: false, disabledInParent: false, optedInInChild: true, disabledInChild: true, isEnabled: false),
             TestCase(optedInInParent: true, disabledInParent: false, optedInInChild: true, disabledInChild: true, isEnabled: false),
             TestCase(optedInInParent: false, disabledInParent: true, optedInInChild: true, disabledInChild: true, isEnabled: false),
-            TestCase(optedInInParent: true, disabledInParent: true, optedInInChild: true, disabledInChild: true, isEnabled: false)
+            TestCase(optedInInParent: true, disabledInParent: true, optedInInChild: true, disabledInChild: true, isEnabled: false),
             // swiftlint:enable line_length
         ]
         XCTAssertEqual(testCases.unique.count, 4 * 4)
@@ -366,7 +372,7 @@ extension ConfigurationTests {
             TestCase(disabledInParent: false, disabledInChild: false, isEnabled: true),
             TestCase(disabledInParent: true, disabledInChild: false, isEnabled: false),
             TestCase(disabledInParent: false, disabledInChild: true, isEnabled: false),
-            TestCase(disabledInParent: true, disabledInChild: true, isEnabled: false)
+            TestCase(disabledInParent: true, disabledInChild: true, isEnabled: false),
         ]
         XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = BlanketDisableCommandRule.self
@@ -398,7 +404,7 @@ extension ConfigurationTests {
             TestCase(optedInInChild: false, disabledInChild: false, isEnabled: true),
             TestCase(optedInInChild: true, disabledInChild: false, isEnabled: true),
             TestCase(optedInInChild: false, disabledInChild: true, isEnabled: false),
-            TestCase(optedInInChild: true, disabledInChild: true, isEnabled: false)
+            TestCase(optedInInChild: true, disabledInChild: true, isEnabled: false),
         ]
         XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = ImplicitReturnRule.self
@@ -438,14 +444,14 @@ extension ConfigurationTests {
             Configuration.disabledDefaultConfiguration(ruleIdentifier),
             Configuration.emptyOnlyConfiguration(),
             Configuration.enabledOnlyConfiguration(ruleIdentifier),
-            Configuration.allEnabledConfiguration()
+            Configuration.allEnabledConfiguration(),
         ]
 
         let configurations = [
             Configuration(rulesMode: .default(disabled: [], optIn: [])),
             Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier])),
             Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier])),
-            Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: []))
+            Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [])),
         ]
 
         for parentConfiguration in parentConfigurations {
@@ -530,7 +536,7 @@ extension ConfigurationTests {
                     included:
                       - Test/Test1/Test/Test
                       - Test/Test2/Test/Test
-                    """
+                    """,
                 ]
             ),
             Configuration(configurationFiles: ["expected.yml"])
@@ -555,7 +561,7 @@ extension ConfigurationTests {
                       - Test/Test2/Test
 
                     line_length: 80
-                    """
+                    """,
                 ]
             ),
             Configuration(configurationFiles: ["expected.yml"])
@@ -575,7 +581,7 @@ extension ConfigurationTests {
                     line_length: 60
 
                     child_config: child2.yml
-                    """
+                    """,
                 ]
             ),
             Configuration()
@@ -593,7 +599,7 @@ extension ConfigurationTests {
                     "https://www.mock.com":
                     """
                     child_config: https://www.mock.com
-                    """
+                    """,
                 ]
             ),
             Configuration()

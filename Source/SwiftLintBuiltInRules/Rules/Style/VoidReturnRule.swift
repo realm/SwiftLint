@@ -23,7 +23,7 @@ struct VoidReturnRule: Rule {
             Example("let foo: () -> () async -> Void"),
             Example("func foo() -> () async throws -> Void {}"),
             Example("func foo() async throws -> () async -> Void { return {} }"),
-            Example("func foo() -> () async -> Int { 1 }")
+            Example("func foo() -> () async -> Int { 1 }"),
         ],
         triggeringExamples: [
             Example("let abc: () -> ↓() = {}"),
@@ -34,7 +34,7 @@ struct VoidReturnRule: Rule {
             Example("func foo(completion: () -> ↓(Void))"),
             Example("let foo: (ConfigurationTests) -> () throws -> ↓()"),
             Example("func foo() async -> ↓()"),
-            Example("func foo() async throws -> ↓()")
+            Example("func foo() async throws -> ↓()"),
         ],
         corrections: [
             Example("let abc: () -> ↓() = {}"): Example("let abc: () -> Void = {}"),
@@ -45,7 +45,7 @@ struct VoidReturnRule: Rule {
             Example("func foo(completion: () -> ↓(Void))"): Example("func foo(completion: () -> Void)"),
             Example("let foo: (ConfigurationTests) -> () throws -> ↓()"):
                 Example("let foo: (ConfigurationTests) -> () throws -> Void"),
-            Example("func foo() async throws -> ↓()"): Example("func foo() async throws -> Void")
+            Example("func foo() async throws -> ↓()"): Example("func foo() async throws -> Void"),
         ]
     )
 }

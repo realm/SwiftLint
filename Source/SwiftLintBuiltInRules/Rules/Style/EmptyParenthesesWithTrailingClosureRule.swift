@@ -22,14 +22,14 @@ struct EmptyParenthesesWithTrailingClosureRule: Rule {
             }, completion: { _ in
                ()
             })
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("[1, 2].map↓() { $0 + 1 }"),
             Example("[1, 2].map↓( ) { $0 + 1 }"),
             Example("[1, 2].map↓() { number in\n number + 1 \n}"),
             Example("[1, 2].map↓(  ) { number in\n number + 1 \n}"),
-            Example("func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}")
+            Example("func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}"),
         ],
         corrections: [
             Example("[1, 2].map↓() { $0 + 1 }"): Example("[1, 2].map { $0 + 1 }"),
@@ -41,7 +41,7 @@ struct EmptyParenthesesWithTrailingClosureRule: Rule {
             Example("func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}"):
                 Example("func foo() -> [Int] {\n    return [1, 2].map { $0 + 1 }\n}"),
             Example("class C {\n#if true\nfunc f() {\n[1, 2].map↓() { $0 + 1 }\n}\n#endif\n}"):
-                Example("class C {\n#if true\nfunc f() {\n[1, 2].map { $0 + 1 }\n}\n#endif\n}")
+                Example("class C {\n#if true\nfunc f() {\n[1, 2].map { $0 + 1 }\n}\n#endif\n}"),
         ]
     )
 }

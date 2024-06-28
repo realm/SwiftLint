@@ -6,7 +6,7 @@ public extension SwiftDeclarationAttributeKind {
             .objc,
             .objcName,
             .objcMembers,
-            .objcNonLazyRealization
+            .objcNonLazyRealization,
         ]
     }
 
@@ -27,7 +27,7 @@ public extension SwiftDeclarationAttributeKind {
         public init?(rawAttribute: String) {
             let allModifierGroups: Set<SwiftDeclarationAttributeKind.ModifierGroup> = [
                 .acl, .setterACL, .mutators, .override, .owned, .atPrefixed, .dynamic, .final, .typeMethods,
-                .required, .convenience, .lazy
+                .required, .convenience, .lazy,
             ]
             let modifierGroup = allModifierGroups.first {
                 $0.swiftDeclarationAttributeKinds.contains(where: { $0.rawValue == rawAttribute })
@@ -48,7 +48,7 @@ public extension SwiftDeclarationAttributeKind {
                     .fileprivate,
                     .internal,
                     .public,
-                    .open
+                    .open,
                 ]
             case .setterACL:
                 return [
@@ -56,12 +56,12 @@ public extension SwiftDeclarationAttributeKind {
                     .setterFilePrivate,
                     .setterInternal,
                     .setterPublic,
-                    .setterOpen
+                    .setterOpen,
                 ]
             case .mutators:
                 return [
                     .mutating,
-                    .nonmutating
+                    .nonmutating,
                 ]
             case .override:
                 return [.override]
@@ -89,7 +89,7 @@ public extension SwiftDeclarationAttributeKind {
                     .ibdesignable,
                     .ibinspectable,
                     .nsManaged,
-                    .nsCopying
+                    .nsCopying,
                 ]
             }
         }

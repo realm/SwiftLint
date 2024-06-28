@@ -12,13 +12,13 @@ struct NoGroupingExtensionRule: OptInRule {
         nonTriggeringExamples: [
             Example("protocol Food {}\nextension Food {}"),
             Example("class Apples {}\nextension Oranges {}"),
-            Example("class Box<T> {}\nextension Box where T: Vegetable {}")
+            Example("class Box<T> {}\nextension Box where T: Vegetable {}"),
         ],
         triggeringExamples: [
             Example("enum Fruit {}\n↓extension Fruit {}"),
             Example("↓extension Tea: Error {}\nstruct Tea {}"),
             Example("class Ham { class Spam {}}\n↓extension Ham.Spam {}"),
-            Example("extension External { struct Gotcha {}}\n↓extension External.Gotcha {}")
+            Example("extension External { struct Gotcha {}}\n↓extension External.Gotcha {}"),
         ]
     )
 
@@ -55,7 +55,7 @@ private extension NoGroupingExtensionRule {
                 FunctionDeclSyntax.self,
                 VariableDeclSyntax.self,
                 InitializerDeclSyntax.self,
-                SubscriptDeclSyntax.self
+                SubscriptDeclSyntax.self,
             ]
         }
 

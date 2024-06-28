@@ -125,7 +125,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
                 watchOSDeploymentTarget,
                 watchOSAppExtensionDeploymentTarget,
                 tvOSDeploymentTarget,
-                tvOSAppExtensionDeploymentTarget
+                tvOSAppExtensionDeploymentTarget,
         ].map { ($0.platform.configurationKey, $0) })
     }
 

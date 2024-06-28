@@ -17,7 +17,7 @@ struct ObjectLiteralRule: OptInRule {
             Example("let color = UIColor(red: value, green: value, blue: value, alpha: 1)"),
             Example("let image = NSImage(named: aVariable)"),
             Example("let image = NSImage(named: \"interpolated \\(variable)\")"),
-            Example("let color = NSColor(red: value, green: value, blue: value, alpha: 1)")
+            Example("let color = NSColor(red: value, green: value, blue: value, alpha: 1)"),
         ],
         triggeringExamples: ["", ".init"].flatMap { (method: String) -> [Example] in
             ["UI", "NS"].flatMap { (prefix: String) -> [Example] in
@@ -26,7 +26,7 @@ struct ObjectLiteralRule: OptInRule {
                     Example("let color = ↓\(prefix)Color\(method)(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)"),
                     // swiftlint:disable:next line_length
                     Example("let color = ↓\(prefix)Color\(method)(red: 100 / 255.0, green: 50 / 255.0, blue: 0, alpha: 1)"),
-                    Example("let color = ↓\(prefix)Color\(method)(white: 0.5, alpha: 1)")
+                    Example("let color = ↓\(prefix)Color\(method)(white: 0.5, alpha: 1)"),
                 ]
             }
         }
@@ -75,7 +75,7 @@ private extension ObjectLiteralRule {
             return names.flatMap { name in
                 [
                     name,
-                    name + ".init"
+                    name + ".init",
                 ]
             }
         }

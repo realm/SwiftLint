@@ -17,7 +17,7 @@ package struct SuperfluousDisableCommandRule: SourceKitFreeRule {
                 // swiftlint:disable colon
                 let abc:Void
                 // swiftlint:enable colon
-                """)
+                """),
         ],
         triggeringExamples: [
             Example("let abc: Void // swiftlint:disable:this colon"),
@@ -25,7 +25,7 @@ package struct SuperfluousDisableCommandRule: SourceKitFreeRule {
                 // swiftlint:disable colon
                 let abc: Void
                 // swiftlint:enable colon
-                """)
+                """),
         ]
     )
 

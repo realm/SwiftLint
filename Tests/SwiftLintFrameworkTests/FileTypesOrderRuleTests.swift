@@ -66,7 +66,7 @@ final class FileTypesOrderRuleTests: SwiftLintTestCase {
                     LibraryItem(ContentView())
                 }
             }
-            """)
+            """),
         ]
 
         let reversedOrderDescription = FileTypesOrderRule.description
@@ -108,7 +108,7 @@ final class FileTypesOrderRuleTests: SwiftLintTestCase {
             extension TestViewController: UITableViewDelegate {
                 func someMethod() {}
             }
-            """)
+            """),
         ]
         let triggeringExamples = [
             Example("""
@@ -132,7 +132,7 @@ final class FileTypesOrderRuleTests: SwiftLintTestCase {
             }
 
             class TestViewController: UIViewController {}
-            """)
+            """),
         ]
 
         let groupedOrderDescription = FileTypesOrderRule.description

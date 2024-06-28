@@ -12,14 +12,14 @@ struct ProtocolPropertyAccessorsOrderRule: Rule {
         nonTriggeringExamples: [
             Example("protocol Foo {\n var bar: String { get set }\n }"),
             Example("protocol Foo {\n var bar: String { get }\n }"),
-            Example("protocol Foo {\n var bar: String { set }\n }")
+            Example("protocol Foo {\n var bar: String { set }\n }"),
         ],
         triggeringExamples: [
             Example("protocol Foo {\n var bar: String { ↓set get }\n }")
         ],
         corrections: [
             Example("protocol Foo {\n var bar: String { ↓set get }\n }"):
-                Example("protocol Foo {\n var bar: String { get set }\n }")
+                Example("protocol Foo {\n var bar: String { get set }\n }"),
         ]
     )
 }

@@ -35,7 +35,7 @@ struct TrailingClosureRule: OptInRule {
             for i in h({ [1,2,3] }) {
                 print(i)
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("foo.map(↓{ $0 + 1 })"),
@@ -47,7 +47,7 @@ struct TrailingClosureRule: OptInRule {
             for n in list {
                 n.forEach(↓{ print($0) })
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         corrections: [
             Example("foo.map(↓{ $0 + 1 })"):
@@ -100,7 +100,7 @@ struct TrailingClosureRule: OptInRule {
                 f(a: 2, /* comment1 */ c /* comment2 */ : /* comment3 */ { 3 } /* comment4 */)
                 """): Example("""
                     f(a: 2) /* comment1 */ /* comment2 */ /* comment3 */ { 3 } /* comment4 */
-                    """)
+                    """),
         ]
     )
 }

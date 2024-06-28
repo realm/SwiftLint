@@ -13,11 +13,11 @@ struct IsDisjointRule: Rule {
             Example("_ = Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)"),
             Example("let isObjc = !objcAttributes.isDisjoint(with: dictionary.enclosedSwiftAttributes)"),
             Example("_ = Set(syntaxKinds).intersection(commentAndStringKindsSet)"),
-            Example("_ = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes)")
+            Example("_ = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes)"),
         ],
         triggeringExamples: [
             Example("_ = Set(syntaxKinds).↓intersection(commentAndStringKindsSet).isEmpty"),
-            Example("let isObjc = !objcAttributes.↓intersection(dictionary.enclosedSwiftAttributes).isEmpty")
+            Example("let isObjc = !objcAttributes.↓intersection(dictionary.enclosedSwiftAttributes).isEmpty"),
         ]
     )
 }

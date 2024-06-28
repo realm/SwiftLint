@@ -76,7 +76,7 @@ struct ExplicitACLRule: OptInRule {
                     let b = 2
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("↓enum A {}"),
@@ -101,7 +101,7 @@ struct ExplicitACLRule: OptInRule {
                     ↓let b = 2
                 }
             }
-            """)
+            """),
         ]
     )
 }
@@ -121,7 +121,7 @@ private extension ExplicitACLRule {
                 SubscriptDeclSyntax.self,
                 VariableDeclSyntax.self,
                 ProtocolDeclSyntax.self,
-                InitializerDeclSyntax.self
+                InitializerDeclSyntax.self,
             ]
         }
 

@@ -94,7 +94,7 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             """,
             diagnostics: [
                 DiagnosticSpec(message: SwiftLintCoreMacroError.noBooleanLiteral.message, line: 1, column: 35),
-                DiagnosticSpec(message: SwiftLintCoreMacroError.noBooleanLiteral.message, line: 1, column: 63)
+                DiagnosticSpec(message: SwiftLintCoreMacroError.noBooleanLiteral.message, line: 1, column: 63),
             ],
             macros: macros
         )

@@ -22,12 +22,12 @@ struct SARIFReporter: Reporter {
                         "driver": [
                             "name": "SwiftLint",
                             "semanticVersion": Version.current.value,
-                            "informationUri": swiftlintVersion
-                        ]
+                            "informationUri": swiftlintVersion,
+                        ],
                     ],
-                    "results": violations.map(dictionary(for:))
-                ]
-            ]
+                    "results": violations.map(dictionary(for:)),
+                ],
+            ],
         ] as [String: Any]
 
         return toJSON(SARIFJson)
@@ -44,7 +44,7 @@ struct SARIFReporter: Reporter {
             ],
             "locations": [
                 dictionary(for: violation.location)
-            ]
+            ],
         ]
     }
 
@@ -58,9 +58,9 @@ struct SARIFReporter: Reporter {
                     ],
                     "region": [
                         "startLine": line,
-                        "startColumn": location.character ?? "1"
-                    ]
-                ]
+                        "startColumn": location.character ?? "1",
+                    ],
+                ],
             ]
         }
 
@@ -68,8 +68,8 @@ struct SARIFReporter: Reporter {
             "physicalLocation": [
                 "artifactLocation": [
                     "uri": location.file ?? ""
-                ]
-            ]
+                ],
+            ],
         ]
     }
 }

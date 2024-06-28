@@ -36,7 +36,7 @@ struct UnusedEnumeratedRule: Rule {
                 let (i, e) = $0
                 print(i)
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("for (↓_, foo) in bar.enumerated() { }"),
@@ -84,7 +84,7 @@ struct UnusedEnumeratedRule: Rule {
             list.↓enumerated().forEach {
                 let (i, _) = $0
             }
-            """)
+            """),
         ]
     )
 }

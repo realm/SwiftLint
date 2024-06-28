@@ -104,7 +104,7 @@ struct RequiredEnumCaseRule: OptInRule {
                 case error
                 case notConnected(error: Error)
             }
-            """, configuration: exampleConfiguration)
+            """, configuration: exampleConfiguration),
         ],
         triggeringExamples: [
             Example("""
@@ -128,7 +128,7 @@ struct RequiredEnumCaseRule: OptInRule {
                 case success
                 case error
             }
-            """, configuration: exampleConfiguration)
+            """, configuration: exampleConfiguration),
         ]
     )
 }

@@ -38,7 +38,7 @@ struct PreferSelfTypeOverTypeOfSelfRule: OptInRule {
                     print(type(of: self))
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -61,7 +61,7 @@ struct PreferSelfTypeOverTypeOfSelfRule: OptInRule {
                     print(↓Swift.type(of: self).baz)
                 }
             }
-            """)
+            """),
         ],
         corrections: [
             Example("""
@@ -102,7 +102,7 @@ struct PreferSelfTypeOverTypeOfSelfRule: OptInRule {
                     print(Self.baz)
                 }
             }
-            """)
+            """),
         ]
     )
 }

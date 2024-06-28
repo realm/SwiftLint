@@ -14,7 +14,7 @@ struct FileHeaderRule: OptInRule {
         nonTriggeringExamples: [
             Example("let foo = \"Copyright\""),
             Example("let foo = 2 // Copyright"),
-            Example("let foo = 2\n // Copyright")
+            Example("let foo = 2\n // Copyright"),
         ],
         triggeringExamples: [
             Example("// ↓Copyright"),
@@ -27,7 +27,7 @@ struct FileHeaderRule: OptInRule {
             //  Created by Marcelo Fabri on 27/11/16.
             //  ↓Copyright © 2016 Realm. All rights reserved.
             //
-            """)
+            """),
         ].skipWrappingInCommentTests()
     )
 

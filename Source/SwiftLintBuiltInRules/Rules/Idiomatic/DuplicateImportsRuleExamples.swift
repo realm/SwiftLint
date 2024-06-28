@@ -32,7 +32,7 @@ internal struct DuplicateImportsRuleExamples {
         #if TEST
         func test() {
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = Array(corrections.keys.sorted())
@@ -169,7 +169,7 @@ internal struct DuplicateImportsRuleExamples {
             """, excludeFromDocumentation: true): Example("""
                 import A
 
-                """)
+                """),
         ]
 
         DuplicateImportsRule.importKinds.map { importKind in

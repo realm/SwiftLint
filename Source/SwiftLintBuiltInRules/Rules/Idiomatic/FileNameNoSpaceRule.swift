@@ -19,8 +19,12 @@ struct FileNameNoSpaceRule: OptInRule, SourceKitFreeRule {
             return []
         }
 
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: filePath, line: 1))]
+        return [
+            StyleViolation(
+                ruleDescription: Self.description,
+                severity: configuration.severity,
+                location: Location(file: filePath, line: 1)
+            ),
+        ]
     }
 }

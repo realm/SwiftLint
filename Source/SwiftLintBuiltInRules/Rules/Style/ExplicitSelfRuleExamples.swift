@@ -34,7 +34,7 @@ struct ExplicitSelfRuleExamples {
         func f1() {
             A(p1: 10).$p1
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -80,7 +80,7 @@ struct ExplicitSelfRuleExamples {
         func f1() {
             A(p1: 10).$p1
         }
-        """)
+        """),
     ]
 
     static let corrections = [
@@ -168,6 +168,6 @@ struct ExplicitSelfRuleExamples {
         func f1() {
             A(p1: 10).$p1
         }
-        """)
+        """),
     ]
 }

@@ -12,8 +12,12 @@ final class CollectingRuleTests: SwiftLintTestCase {
             }
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: Int]) -> [StyleViolation] {
                 XCTAssertEqual(collectedInfo[file], 42)
-                return [StyleViolation(ruleDescription: Self.description,
-                                       location: Location(file: file, byteOffset: 0))]
+                return [
+                    StyleViolation(
+                        ruleDescription: Self.description,
+                        location: Location(file: file, byteOffset: 0)
+                    ),
+                ]
             }
         }
 
@@ -32,8 +36,12 @@ final class CollectingRuleTests: SwiftLintTestCase {
                 XCTAssertTrue(values.contains("foo"))
                 XCTAssertTrue(values.contains("bar"))
                 XCTAssertTrue(values.contains("baz"))
-                return [StyleViolation(ruleDescription: Self.description,
-                                       location: Location(file: file, byteOffset: 0))]
+                return [
+                    StyleViolation(
+                        ruleDescription: Self.description,
+                        location: Location(file: file, byteOffset: 0)
+                    ),
+                ]
             }
         }
 
@@ -51,8 +59,12 @@ final class CollectingRuleTests: SwiftLintTestCase {
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: [String]], compilerArguments: [String])
                 -> [StyleViolation] {
                     XCTAssertEqual(collectedInfo[file], compilerArguments)
-                    return [StyleViolation(ruleDescription: Self.description,
-                                           location: Location(file: file, byteOffset: 0))]
+                    return [
+                        StyleViolation(
+                            ruleDescription: Self.description,
+                            location: Location(file: file, byteOffset: 0)
+                        ),
+                    ]
             }
         }
 
@@ -69,16 +81,24 @@ final class CollectingRuleTests: SwiftLintTestCase {
 
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String]) -> [StyleViolation] {
                 if collectedInfo[file] == "baz" {
-                    return [StyleViolation(ruleDescription: Self.description,
-                                           location: Location(file: file, byteOffset: 2))]
+                    return [
+                        StyleViolation(
+                            ruleDescription: Self.description,
+                            location: Location(file: file, byteOffset: 2)
+                        ),
+                    ]
                 }
                 return []
             }
 
             func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String]) -> [Correction] {
                 if collectedInfo[file] == "baz" {
-                    return [Correction(ruleDescription: Self.description,
-                                       location: Location(file: file, byteOffset: 2))]
+                    return [
+                        Correction(
+                            ruleDescription: Self.description,
+                            location: Location(file: file, byteOffset: 2)
+                        ),
+                    ]
                 }
                 return []
             }
@@ -94,19 +114,21 @@ final class CollectingRuleTests: SwiftLintTestCase {
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String], compilerArguments: [String])
                 -> [StyleViolation] {
                     if collectedInfo[file] == "baz" {
-                        return [StyleViolation(ruleDescription: Spec.description,
-                                               location: Location(file: file, byteOffset: 2))]
+                        return [
+                            StyleViolation(
+                                ruleDescription: Spec.description,
+                                location: Location(file: file, byteOffset: 2)
+                            ),
+                        ]
                     }
                     return []
             }
 
             func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String],
                          compilerArguments: [String]) -> [Correction] {
-                if collectedInfo[file] == "baz" {
-                    return [Correction(ruleDescription: Spec.description,
-                                       location: Location(file: file, byteOffset: 2))]
-                }
-                return []
+                collectedInfo[file] == "baz"
+                    ? [Correction(ruleDescription: Spec.description, location: Location(file: file, byteOffset: 2))]
+                    : []
             }
         }
 

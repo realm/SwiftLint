@@ -102,7 +102,7 @@ struct ExtensionAccessModifierRule: OptInRule {
             public extension Foo {
               private(set) var value: Int { 1 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -166,7 +166,7 @@ struct ExtensionAccessModifierRule: OptInRule {
             ↓extension Foo {
               private(set) public var value: Int { 1 }
             }
-            """)
+            """),
         ]
     )
 }
@@ -190,7 +190,7 @@ private extension ExtensionAccessModifierRule {
                 .explicit(.keyword(.internal)),
                 .explicit(.keyword(.private)),
                 .explicit(.keyword(.open)),
-                .implicit
+                .implicit,
             ].contains(acl)
         }
     }

@@ -31,7 +31,7 @@ struct GitLabJUnitReporter: Reporter {
                 return [
                     "\n\t<testcase name='\(message)\'>\n",
                     "\t\t<failure>\(body)\n\t\t</failure>\n",
-                    "\t</testcase>"
+                    "\t</testcase>",
                 ].joined()
             }).joined() + "\n</testsuite></testsuites>\n"
     }

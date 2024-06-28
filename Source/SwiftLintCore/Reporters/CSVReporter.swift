@@ -16,7 +16,7 @@ struct CSVReporter: Reporter {
             "severity",
             "type",
             "reason",
-            "rule_id"
+            "rule_id",
         ].joined(separator: ",")
 
         let rows = [keys] + violations.map(csvRow(for:))
@@ -33,7 +33,7 @@ struct CSVReporter: Reporter {
             violation.severity.rawValue.capitalized,
             violation.ruleName.escapedForCSV(),
             violation.reason.escapedForCSV(),
-            violation.ruleIdentifier
+            violation.ruleIdentifier,
         ].joined(separator: ",")
     }
 }

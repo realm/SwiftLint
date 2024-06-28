@@ -14,7 +14,7 @@ struct CheckstyleReporter: Reporter {
                 .group(by: { ($0.location.file ?? "<nopath>").escapedForXML() })
                 .sorted(by: { $0.key < $1.key })
                 .map(generateForViolationFile).joined(),
-            "\n</checkstyle>"
+            "\n</checkstyle>",
         ].joined()
     }
 
@@ -24,7 +24,7 @@ struct CheckstyleReporter: Reporter {
         return [
             "\n\t<file name=\"", file, "\">\n",
             violations.map(generateForSingleViolation).joined(),
-            "\t</file>"
+            "\t</file>",
         ].joined()
     }
 
@@ -40,7 +40,7 @@ struct CheckstyleReporter: Reporter {
             "column=\"\(col)\" ",
             "severity=\"", severity, "\" ",
             "message=\"", reason, "\" ",
-            "source=\"\(source)\"/>\n"
+            "source=\"\(source)\"/>\n",
         ].joined()
     }
 }

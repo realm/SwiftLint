@@ -196,7 +196,7 @@ internal struct MultilineParametersRuleExamples {
                 param3: [String]
             ) { }
         }
-        """, configuration: ["allows_single_line": false])
+        """, configuration: ["allows_single_line": false]),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -335,6 +335,6 @@ internal struct MultilineParametersRuleExamples {
         Example("func ↓foo(param1: Int, param2: Bool) { }",
                 configuration: ["allows_single_line": false]),
         Example("func ↓foo(param1: Int, param2: Bool, param3: [String]) { }",
-                configuration: ["allows_single_line": false])
+                configuration: ["allows_single_line": false]),
     ]
 }

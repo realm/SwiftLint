@@ -108,7 +108,7 @@ internal struct FileTypesOrderRuleExamples {
                 return 1
             }
         }
-        """
+        """,
     ]
 
     static let nonTriggeringExamples = [
@@ -138,7 +138,7 @@ internal struct FileTypesOrderRuleExamples {
                 LibraryItem(ContentView())
             }
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -222,6 +222,6 @@ internal struct FileTypesOrderRuleExamples {
                 Text("Hello, World!")
             }
         }
-        """)
+        """),
     ]
 }

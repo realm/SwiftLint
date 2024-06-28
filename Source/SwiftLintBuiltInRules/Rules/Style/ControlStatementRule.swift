@@ -28,7 +28,7 @@ struct ControlStatementRule: Rule {
             Example("if max(a, b) < c {}"),
             Example("switch (lhs, rhs) {}"),
             Example("if (f() { g() {} }) {}"),
-            Example("if (a + f() {} == 1) {}")
+            Example("if (a + f() {} == 1) {}"),
         ],
         triggeringExamples: [
             Example("↓if (condition) {}"),
@@ -43,7 +43,7 @@ struct ControlStatementRule: Rule {
             Example("do { ; } ↓while (condition) {}"),
             Example("↓switch (foo) {}"),
             Example("do {} ↓catch(let error as NSError) {}"),
-            Example("↓if (max(a, b) < c) {}")
+            Example("↓if (max(a, b) < c) {}"),
         ],
         corrections: [
             Example("↓if (condition) {}"): Example("if condition {}"),
@@ -67,7 +67,7 @@ struct ControlStatementRule: Rule {
             """): Example("""
                 if a,
                    b == 1 {}
-                """)
+                """),
         ]
     )
 }

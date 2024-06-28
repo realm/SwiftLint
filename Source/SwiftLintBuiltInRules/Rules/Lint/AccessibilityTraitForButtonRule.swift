@@ -111,7 +111,7 @@ private extension SourceKittenDictionary {
                     arguments: [
                         .init(name: "", values: ["TapGesture()", "TapGesture(count: 1)"], matchType: .prefix)
                     ]
-                )
+                ),
             ],
             in: file
         )
@@ -129,7 +129,7 @@ private extension SourceKittenDictionary {
                 SwiftUIModifier(
                     name: "accessibility",
                     arguments: [.init(name: "addTraits", values: [trait], matchType: .substring)]
-                )
+                ),
             ],
             in: file
         )

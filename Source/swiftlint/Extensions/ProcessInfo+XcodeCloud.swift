@@ -20,7 +20,7 @@ extension ProcessInfo {
             "CI_WORKSPACE",
             "CI_XCODE_PROJECT",
             "CI_XCODE_SCHEME",
-            "CI_XCODEBUILD_ACTION"
+            "CI_XCODEBUILD_ACTION",
         ]
 
         return requiredKeys.isSubset(of: environment.keys)

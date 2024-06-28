@@ -25,7 +25,7 @@ struct LowerACLThanParentRule: OptInRule {
             Example("public extension Foo { struct Bar { public func baz() {} }}"),
             Example("public extension Foo { struct Bar { internal func baz() {} }}"),
             Example("internal extension Foo { struct Bar { internal func baz() {} }}"),
-            Example("extension Foo { struct Bar { internal func baz() {} }}")
+            Example("extension Foo { struct Bar { internal func baz() {} }}"),
         ],
         triggeringExamples: [
             Example("struct Foo { ↓public func bar() {} }"),
@@ -47,7 +47,7 @@ struct LowerACLThanParentRule: OptInRule {
             Example("private extension Foo { struct Bar { ↓internal func baz() {} }}"),
             Example("fileprivate extension Foo { struct Bar { ↓internal func baz() {} }}"),
             Example("public extension Foo { struct Bar { struct Baz { ↓public func qux() {} }}}"),
-            Example("final class Foo { ↓public func bar() {} }")
+            Example("final class Foo { ↓public func bar() {} }"),
         ],
         corrections: [
             Example("struct Foo { ↓public func bar() {} }"):
@@ -77,7 +77,7 @@ struct LowerACLThanParentRule: OptInRule {
                 struct Foo {
                     func bar() {}
                 }
-                """)
+                """),
         ]
     )
 }

@@ -22,7 +22,7 @@ final class UnneededOverrideRuleTests: SwiftLintTestCase {
             private override init() {
                 super.init()
             }
-            """)
+            """),
         ] + UnneededOverrideRuleExamples.nonTriggeringExamples
 
         let triggeringExamples = [
@@ -39,7 +39,7 @@ final class UnneededOverrideRuleTests: SwiftLintTestCase {
                     super.init(frame: frame)
                 }
             }
-            """)
+            """),
         ]
 
         let corrections = [
@@ -52,7 +52,7 @@ final class UnneededOverrideRuleTests: SwiftLintTestCase {
             """): Example("""
                           class Foo {
                           }
-                          """)
+                          """),
         ]
 
         let description = UnneededOverrideRule.description

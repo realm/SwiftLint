@@ -80,7 +80,7 @@ struct ExplicitSelfRule: CorrectableRule, AnalyzerRule {
 
 private let kindsToFind: Set = [
     "source.lang.swift.ref.function.method.instance",
-    "source.lang.swift.ref.var.instance"
+    "source.lang.swift.ref.var.instance",
 ]
 
 private extension SwiftLintFile {

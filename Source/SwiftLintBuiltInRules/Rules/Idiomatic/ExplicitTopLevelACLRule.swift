@@ -18,14 +18,14 @@ struct ExplicitTopLevelACLRule: OptInRule {
             Example("internal\nclass Foo {}"),
             Example("internal func a() {}"),
             Example("extension A: Equatable {}"),
-            Example("extension A {}")
+            Example("extension A {}"),
         ],
         triggeringExamples: [
             Example("↓enum A {}"),
             Example("final ↓class B {}"),
             Example("↓struct C {}"),
             Example("↓func a() {}"),
-            Example("internal let a = 0\n↓func b() {}")
+            Example("internal let a = 0\n↓func b() {}"),
         ]
     )
 }

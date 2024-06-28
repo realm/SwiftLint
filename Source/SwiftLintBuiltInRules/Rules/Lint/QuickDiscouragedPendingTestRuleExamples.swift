@@ -13,7 +13,7 @@ internal struct QuickDiscouragedPendingTestRuleExamples {
                }
            }
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -87,6 +87,6 @@ internal struct QuickDiscouragedPendingTestRuleExamples {
                ↓xitBehavesLike("foo")
            }
         }
-        """)
+        """),
     ]
 }

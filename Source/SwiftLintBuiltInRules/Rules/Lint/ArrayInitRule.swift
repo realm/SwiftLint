@@ -19,7 +19,7 @@ struct ArrayInitRule: OptInRule {
             Example("foo.map { $0! /* force unwrap */ }"),
             Example("foo.something { RouteMapper.map($0) }"),
             Example("foo.map { !$0 }"),
-            Example("foo.map { /* a comment */ !$0 }")
+            Example("foo.map { /* a comment */ !$0 }"),
         ],
         triggeringExamples: [
             Example("foo.↓map({ $0 })"),
@@ -46,7 +46,7 @@ struct ArrayInitRule: OptInRule {
                 }
             """),
             Example("foo.↓map { $0 /* a comment */ }"),
-            Example("foo.↓map { /* a comment */ $0 }")
+            Example("foo.↓map { /* a comment */ $0 }"),
         ]
     )
 }

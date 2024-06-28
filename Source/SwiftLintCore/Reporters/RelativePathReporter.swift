@@ -25,7 +25,7 @@ struct RelativePathReporter: Reporter {
             "\(violation.severity.rawValue): ",
             "\(violation.ruleName) Violation: ",
             violation.reason,
-            " (\(violation.ruleIdentifier))"
+            " (\(violation.ruleIdentifier))",
         ].joined()
     }
 }

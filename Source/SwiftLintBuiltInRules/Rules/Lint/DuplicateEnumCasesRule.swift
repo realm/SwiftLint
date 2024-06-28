@@ -43,7 +43,7 @@ struct DuplicateEnumCasesRule: Rule {
               case file(URL)
             #endif
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -52,7 +52,7 @@ struct DuplicateEnumCasesRule: Rule {
                 case addURL(url: URL)
                 case ↓add(data: Data)
             }
-            """)
+            """),
         ]
     )
 }

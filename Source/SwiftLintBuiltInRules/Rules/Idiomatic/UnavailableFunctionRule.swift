@@ -36,7 +36,7 @@ struct UnavailableFunctionRule: OptInRule {
                 // Crash the app to re-start the onboarding flow.
                 fatalError("Onboarding re-start crash.")
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -67,7 +67,7 @@ struct UnavailableFunctionRule: OptInRule {
                 // Crash the app to re-start the onboarding flow.
                 fatalError("Onboarding re-start crash.")
             }
-            """)
+            """),
         ]
     )
 }
@@ -131,7 +131,7 @@ private extension CodeBlockSyntax? {
         let terminatingFunctions: Set = [
             "abort",
             "fatalError",
-            "preconditionFailure"
+            "preconditionFailure",
         ]
 
         return statements.contains { item in

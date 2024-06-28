@@ -10,7 +10,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
                     let x: Int = 1
                 }
             }
-            """)
+            """),
         ]
         let triggeringExamples = [
             Example("func foo() {\nlet ↓intVal = 1\n}"),
@@ -20,7 +20,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
                     let ↓x = 1
                 }
             }
-            """)
+            """),
         ]
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -44,12 +44,12 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
     func testExcludeClassVars() {
         let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
             Example("class Foo {\n  static var myStaticVar = 0\n}\n"),
-            Example("class Foo {\n  static let myStaticLet = 0\n}\n")
+            Example("class Foo {\n  static let myStaticLet = 0\n}\n"),
         ]
         let triggeringExamples: [Example] = [
             Example("class Foo {\n  var ↓myVar = 0\n\n}\n"),
             Example("class Foo {\n  let ↓mylet = 0\n\n}\n"),
-            Example("class Foo {\n  class var ↓myClassVar = 0\n}\n")
+            Example("class Foo {\n  class var ↓myClassVar = 0\n}\n"),
         ]
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -72,7 +72,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
             Example("class Foo {\n  let array = [String]()\n}\n"),
             Example("class Foo {\n  let dict = [String: String]()\n}\n"),
             Example("class Foo {\n  let dict = [String: [String: Array<String>]]()\n}\n"),
-            Example("class Foo {\n  let l10n = L10n.Communication.self\n}\n")
+            Example("class Foo {\n  let l10n = L10n.Communication.self\n}\n"),
         ]
         let triggeringExamples: [Example] = [
             Example("class Foo {\n  var ↓myVar = 0\n\n}\n"),
@@ -80,7 +80,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
             Example("class Foo {\n  static var ↓myStaticVar = 0\n}\n"),
             Example("class Foo {\n  class var ↓myClassVar = 0\n}\n"),
             Example("class Foo {\n  let ↓array = [\"foo\", \"bar\"]\n}\n"),
-            Example("class Foo {\n  let ↓dict = [\"foo\": \"bar\"]\n}\n")
+            Example("class Foo {\n  let ↓dict = [\"foo\": \"bar\"]\n}\n"),
         ]
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -106,7 +106,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
             case let error as SomeError: break
             default: break
             }
-            """)
+            """),
         ]
         let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
         let description = ExplicitTypeInterfaceRule.description
@@ -139,7 +139,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
                     }
                 }
             }
-            """)
+            """),
         ]
         let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
         let description = ExplicitTypeInterfaceRule.description
@@ -162,7 +162,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
                 let elements: [Int] = [1, 2]
                 for (index, element) in elements.enumerated() {}
             }
-            """)
+            """),
         ]
 
         let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
@@ -198,7 +198,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
                 case var (x, y): break
                 }
             }
-            """)
+            """),
         ]
 
         let triggeringExamples = [
@@ -226,7 +226,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
                 default: let ↓fooBar = 1
                 }
             }
-            """)
+            """),
         ]
 
         let description = ExplicitTypeInterfaceRule.description

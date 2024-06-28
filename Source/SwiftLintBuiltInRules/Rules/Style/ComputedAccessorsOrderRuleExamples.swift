@@ -163,7 +163,7 @@ struct ComputedAccessorsOrderRuleExamples {
             protocol Foo {
                 subscript(i: Int) -> Int { set get }
             }
-            """)
+            """),
         ]
     }
 
@@ -230,7 +230,7 @@ struct ComputedAccessorsOrderRuleExamples {
                     }
                 }
             }
-            """)
+            """),
         ]
     }
 }

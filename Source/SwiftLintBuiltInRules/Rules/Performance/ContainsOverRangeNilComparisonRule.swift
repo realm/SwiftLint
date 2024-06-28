@@ -13,7 +13,7 @@ struct ContainsOverRangeNilComparisonRule: OptInRule {
             Example("let range = myString.range(of: \"Test\")"),
             Example("myString.contains(\"Test\")"),
             Example("!myString.contains(\"Test\")"),
-            Example("resourceString.range(of: rule.regex, options: .regularExpression) != nil")
+            Example("resourceString.range(of: rule.regex, options: .regularExpression) != nil"),
         ],
         triggeringExamples: ["!=", "=="].flatMap { comparison in
             return [

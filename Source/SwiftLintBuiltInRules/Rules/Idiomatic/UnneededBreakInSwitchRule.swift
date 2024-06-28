@@ -39,13 +39,13 @@ struct UnneededBreakInSwitchRule: Rule {
                     }
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             embedInSwitch("something()\n    ↓break"),
             embedInSwitch("something()\n    ↓break // comment"),
             embedInSwitch("something()\n    ↓break", case: "default"),
-            embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition")
+            embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition"),
         ],
         corrections: [
             embedInSwitch("something()\n    ↓break")
@@ -83,7 +83,7 @@ struct UnneededBreakInSwitchRule: Rule {
             embedInSwitch("something()\n    ↓break", case: "default")
             : embedInSwitch("something()", case: "default"),
             embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition")
-            : embedInSwitch("something()", case: "case .foo, .foo2 where condition")
+            : embedInSwitch("something()", case: "case .foo, .foo2 where condition"),
         ]
     )
 }

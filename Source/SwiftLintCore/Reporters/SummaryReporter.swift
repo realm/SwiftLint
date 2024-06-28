@@ -32,7 +32,7 @@ private extension TextTable {
             TextTableColumn(header: numberOfWarningsHeader),
             TextTableColumn(header: numberOfErrorsHeader),
             TextTableColumn(header: numberOfViolationsHeader),
-            TextTableColumn(header: numberOfFilesHeader)
+            TextTableColumn(header: numberOfFilesHeader),
         ]
         self.init(columns: columns)
 
@@ -75,7 +75,7 @@ private extension TextTable {
                 numberOfWarnings.formattedString.leftPadded(forHeader: numberOfWarningsHeader),
                 numberOfErrors.formattedString.leftPadded(forHeader: numberOfErrorsHeader),
                 numberOfViolations.formattedString.leftPadded(forHeader: numberOfViolationsHeader),
-                numberOfFiles.formattedString.leftPadded(forHeader: numberOfFilesHeader)
+                numberOfFiles.formattedString.leftPadded(forHeader: numberOfFilesHeader),
             ])
         }
 
@@ -89,7 +89,7 @@ private extension TextTable {
             totalNumberOfWarnings.formattedString.leftPadded(forHeader: numberOfWarningsHeader),
             totalNumberOfErrors.formattedString.leftPadded(forHeader: numberOfErrorsHeader),
             totalNumberOfViolations.formattedString.leftPadded(forHeader: numberOfViolationsHeader),
-            totalNumberOfFiles.formattedString.leftPadded(forHeader: numberOfFilesHeader)
+            totalNumberOfFiles.formattedString.leftPadded(forHeader: numberOfFilesHeader),
         ])
     }
 

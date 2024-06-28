@@ -83,7 +83,7 @@ enum AutoApply: MemberMacro {
                     Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                 }
                 """
-            })
+            }),
         ]
     }
 }
@@ -117,7 +117,7 @@ enum MakeAcceptableByConfigurationElement: ExtensionMacro {
                         }
                     }
                 }
-                """)
+                """),
         ]
     }
 }

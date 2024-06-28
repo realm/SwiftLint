@@ -10,7 +10,7 @@ final class ColonRuleTests: SwiftLintTestCase {
             Example("let abc:  ([Void], String, Int)\n"),
             Example("let abc:  [([Void], String, Int)]\n"),
             Example("func abc(def:  Void) {}\n"),
-            Example("let abc = [Void:  Void]()\n")
+            Example("let abc = [Void:  Void]()\n"),
         ]
         let triggeringExamples: [Example] = [
             Example("let abc↓:Void\n"),
@@ -34,7 +34,7 @@ final class ColonRuleTests: SwiftLintTestCase {
             Example("let abc = [Void↓ : Void]()\n"),
             Example("let abc = [Void↓ :  Void]()\n"),
             Example("let abc = [1: [3↓ : 2], 3: 4]\n"),
-            Example("let abc = [1: [3↓ : 2], 3:  4]\n")
+            Example("let abc = [1: [3↓ : 2], 3:  4]\n"),
         ]
         let corrections: [Example: Example] = [
             Example("let abc↓:Void\n"): Example("let abc: Void\n"),
@@ -58,7 +58,7 @@ final class ColonRuleTests: SwiftLintTestCase {
             Example("let abc = [Void↓ : Void]()\n"): Example("let abc = [Void: Void]()\n"),
             Example("let abc = [Void↓ :  Void]()\n"): Example("let abc = [Void: Void]()\n"),
             Example("let abc = [1: [3↓ : 2], 3: 4]\n"): Example("let abc = [1: [3: 2], 3: 4]\n"),
-            Example("let abc = [1: [3↓ : 2], 3:  4]\n"): Example("let abc = [1: [3: 2], 3:  4]\n")
+            Example("let abc = [1: [3↓ : 2], 3:  4]\n"): Example("let abc = [1: [3: 2], 3:  4]\n"),
         ]
         let description = ColonRule.description.with(triggeringExamples: triggeringExamples)
                                                .with(nonTriggeringExamples: nonTriggeringExamples)
@@ -74,7 +74,7 @@ final class ColonRuleTests: SwiftLintTestCase {
             Example("let abc = [Void:  Void]()\n"),
             Example("let abc = [Void :  Void]()\n"),
             Example("let abc = [1: [3 : 2], 3: 4]\n"),
-            Example("let abc = [1: [3 : 2], 3:  4]\n")
+            Example("let abc = [1: [3 : 2], 3:  4]\n"),
         ]
         let triggeringExamples: [Example] = [
             Example("let abc↓:Void\n"),
@@ -98,7 +98,7 @@ final class ColonRuleTests: SwiftLintTestCase {
             Example("func abc(def↓:  Void) {}\n"),
             Example("func abc(def↓ :Void) {}\n"),
             Example("func abc(def↓ : Void) {}\n"),
-            Example("func abc(def: Void, ghi↓ :Void) {}\n")
+            Example("func abc(def: Void, ghi↓ :Void) {}\n"),
         ]
         let corrections: [Example: Example] = [
             Example("let abc↓:Void\n"): Example("let abc: Void\n"),
@@ -122,7 +122,7 @@ final class ColonRuleTests: SwiftLintTestCase {
             Example("func abc(def↓:  Void) {}\n"): Example("func abc(def: Void) {}\n"),
             Example("func abc(def↓ :Void) {}\n"): Example("func abc(def: Void) {}\n"),
             Example("func abc(def↓ : Void) {}\n"): Example("func abc(def: Void) {}\n"),
-            Example("func abc(def: Void, ghi↓ :Void) {}\n"): Example("func abc(def: Void, ghi: Void) {}\n")
+            Example("func abc(def: Void, ghi↓ :Void) {}\n"): Example("func abc(def: Void, ghi: Void) {}\n"),
         ]
 
         let description = ColonRule.description.with(triggeringExamples: triggeringExamples)

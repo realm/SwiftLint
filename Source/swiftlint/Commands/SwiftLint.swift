@@ -27,7 +27,7 @@ struct SwiftLint: AsyncParsableCommand {
                 Baseline.self,
                 Reporters.self,
                 Rules.self,
-                Version.self
+                Version.self,
             ],
             defaultSubcommand: Lint.self
         )

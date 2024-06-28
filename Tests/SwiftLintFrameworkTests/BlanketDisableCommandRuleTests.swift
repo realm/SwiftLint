@@ -14,7 +14,7 @@ final class BlanketDisableCommandRuleTests: SwiftLintTestCase {
             Example("// swiftlint:disable file_length\n// swiftlint:enable ↓file_length"),
             Example("// swiftlint:disable:previous ↓file_length"),
             Example("// swiftlint:disable:this ↓file_length"),
-            Example("// swiftlint:disable:next ↓file_length")
+            Example("// swiftlint:disable:next ↓file_length"),
         ]
         verifyRule(emptyDescription.with(triggeringExamples: triggeringExamples),
                    ruleConfiguration: ["always_blanket_disable": ["file_length"]],
@@ -31,7 +31,7 @@ final class BlanketDisableCommandRuleTests: SwiftLintTestCase {
     func testAllowedRules() {
         let nonTriggeringExamples = [
             Example("// swiftlint:disable file_length"),
-            Example("// swiftlint:disable single_test_class")
+            Example("// swiftlint:disable single_test_class"),
         ]
         verifyRule(emptyDescription.with(nonTriggeringExamples: nonTriggeringExamples))
     }

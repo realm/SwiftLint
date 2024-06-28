@@ -173,7 +173,7 @@ public extension EnumDeclSyntax {
             "Int", "Int8", "Int16", "Int32", "Int64",
             "UInt", "UInt8", "UInt16", "UInt32", "UInt64",
             "Double", "Float", "Float80", "Decimal", "NSNumber",
-            "NSDecimalNumber", "NSInteger", "String", "CGFloat"
+            "NSDecimalNumber", "NSInteger", "String", "CGFloat",
         ]
 
         return inheritedTypeCollection.contains { element in

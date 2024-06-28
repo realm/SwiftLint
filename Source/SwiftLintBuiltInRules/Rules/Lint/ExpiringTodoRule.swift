@@ -33,14 +33,14 @@ struct ExpiringTodoRule: OptInRule {
             Example("/* FIXME: */"),
             Example("/* TODO: */"),
             Example("/** FIXME: */"),
-            Example("/** TODO: */")
+            Example("/** TODO: */"),
         ],
         triggeringExamples: [
             Example("// TODO: [↓10/14/2019]"),
             Example("// FIXME: [↓10/14/2019]"),
             Example("// FIXME: [↓1/14/2019]"),
             Example("// FIXME: [↓10/14/2019]"),
-            Example("// TODO: [↓9999/14/10]")
+            Example("// TODO: [↓9999/14/10]"),
         ].skipWrappingInCommentTests()
     )
 

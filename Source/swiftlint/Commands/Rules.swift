@@ -112,7 +112,7 @@ private extension TextTable {
             TextTableColumn(header: "kind"),
             TextTableColumn(header: "analyzer"),
             TextTableColumn(header: "uses sourcekit"),
-            TextTableColumn(header: "configuration")
+            TextTableColumn(header: "configuration"),
         ]
         self.init(columns: columns)
         func truncate(_ string: String) -> String {
@@ -141,7 +141,7 @@ private extension TextTable {
                 ruleType.description.kind.rawValue,
                 (rule is any AnalyzerRule) ? "yes" : "no",
                 (rule is any SourceKitFreeRule) ? "no" : "yes",
-                truncate((defaultConfig ? rule : configuredRule ?? rule).configurationDescription.oneLiner())
+                truncate((defaultConfig ? rule : configuredRule ?? rule).configurationDescription.oneLiner()),
             ])
         }
     }

@@ -21,7 +21,7 @@ final class TrailingCommaRuleTests: SwiftLintTestCase {
         Example("struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n"),
         Example("let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n"),
         Example("let foo = [1, 2,\n 3↓  ]"),
-        Example("let foo = [\"אבג\", \"αβγ\",\n\"🇺🇸\"↓]\n")
+        Example("let foo = [\"אבג\", \"αβγ\",\n\"🇺🇸\"↓]\n"),
     ]
 
     private static let nonTriggeringExamples = [
@@ -38,7 +38,7 @@ final class TrailingCommaRuleTests: SwiftLintTestCase {
         Example("let foo = [1: 2, 2: 3]\n"),
         Example("let foo = [1: 2, 2: 3   ]\n"),
         Example("struct Bar {\n let foo = [1: 2, 2: 3]\n}\n"),
-        Example("let foo = [1, 2, 3] + [4, 5, 6]\n")
+        Example("let foo = [1, 2, 3] + [4, 5, 6]\n"),
     ]
 
     private static let corrections: [Example: Example] = {

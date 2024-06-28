@@ -19,7 +19,7 @@ struct EmptyCountRule: OptInRule {
             Example("[Int]().count == 0b01"),
             Example("[Int]().count == 0o07"),
             Example("discount == 0"),
-            Example("order.discount == 0")
+            Example("order.discount == 0"),
         ],
         triggeringExamples: [
             Example("[Int]().↓count == 0"),
@@ -31,7 +31,7 @@ struct EmptyCountRule: OptInRule {
             Example("[Int]().↓count == 0x00_00"),
             Example("[Int]().↓count == 0b00"),
             Example("[Int]().↓count == 0o00"),
-            Example("↓count == 0")
+            Example("↓count == 0"),
         ],
         corrections: [
             Example("[].↓count == 0"):
@@ -61,7 +61,7 @@ struct EmptyCountRule: OptInRule {
             Example("↓count == 0 && [Int]().↓count == 0o00"):
                 Example("isEmpty && [Int]().isEmpty"),
             Example("[Int]().count != 3 && [Int]().↓count != 0 || ↓count == 0 && [Int]().count > 2"):
-                Example("[Int]().count != 3 && ![Int]().isEmpty || isEmpty && [Int]().count > 2")
+                Example("[Int]().count != 3 && ![Int]().isEmpty || isEmpty && [Int]().count > 2"),
         ]
     )
 }

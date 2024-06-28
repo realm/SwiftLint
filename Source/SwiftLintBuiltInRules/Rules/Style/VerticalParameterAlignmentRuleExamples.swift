@@ -59,7 +59,7 @@ internal struct VerticalParameterAlignmentRuleExamples {
             init(foo: Int,
                  bar: String)
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -85,6 +85,6 @@ internal struct VerticalParameterAlignmentRuleExamples {
             init(data: Data,
                         ↓@ViewBuilder content: @escaping (Data.Element.IdentifiedValue) -> Content) {}
         }
-        """)
+        """),
     ]
 }

@@ -15,7 +15,7 @@ struct FallthroughRule: OptInRule {
             case .bar, .bar2, .bar3:
               something()
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -25,7 +25,7 @@ struct FallthroughRule: OptInRule {
             case .bar2:
               something()
             }
-            """)
+            """),
         ]
     )
 }

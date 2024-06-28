@@ -23,7 +23,7 @@ struct JSONReporter: Reporter {
             "severity": violation.severity.rawValue.capitalized,
             "type": violation.ruleName,
             "rule_id": violation.ruleIdentifier,
-            "reason": violation.reason
+            "reason": violation.reason,
         ]
     }
 }

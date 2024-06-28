@@ -11,7 +11,7 @@ struct PreferNimbleRule: OptInRule {
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("expect(foo) == 1"),
-            Example("expect(foo).to(equal(1))")
+            Example("expect(foo).to(equal(1))"),
         ],
         triggeringExamples: [
             Example("↓XCTAssertTrue(foo)"),
@@ -19,7 +19,7 @@ struct PreferNimbleRule: OptInRule {
             Example("↓XCTAssertNotEqual(foo, 2)"),
             Example("↓XCTAssertNil(foo)"),
             Example("↓XCTAssert(foo)"),
-            Example("↓XCTAssertGreaterThan(foo, 10)")
+            Example("↓XCTAssertGreaterThan(foo, 10)"),
         ]
     )
 }

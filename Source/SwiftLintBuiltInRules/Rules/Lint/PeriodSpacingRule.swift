@@ -27,7 +27,7 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
 
             - Sentence 2 new line characters after.
             **/
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("/* Only god knows why. ↓ This symbol does nothing. */", testWrappingInComment: false),
@@ -35,7 +35,7 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
             Example("// Single. Double. ↓ End.", testWrappingInComment: false),
             Example("// Single. Double. ↓ Triple. ↓  End.", testWrappingInComment: false),
             Example("// Triple. ↓  Quad. ↓   End.", testWrappingInComment: false),
-            Example("///   - code: Identifier of the error. ↓ Integer.", testWrappingInComment: false)
+            Example("///   - code: Identifier of the error. ↓ Integer.", testWrappingInComment: false),
         ],
         corrections: [
             Example("/* Why. ↓ Symbol does nothing. */"): Example("/* Why. Symbol does nothing. */"),
@@ -43,7 +43,7 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
             Example("// Single. Double. ↓ End."): Example("// Single. Double. End."),
             Example("// Single. Double. ↓ Triple. ↓  End."): Example("// Single. Double. Triple. End."),
             Example("// Triple. ↓  Quad. ↓   End."): Example("// Triple. Quad. End."),
-            Example("///   - code: Identifier. ↓ Integer."): Example("///   - code: Identifier. Integer.")
+            Example("///   - code: Identifier. ↓ Integer."): Example("///   - code: Identifier. Integer."),
         ]
     )
 

@@ -48,7 +48,7 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
                key: 0,
                key2: 20
             ]
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -67,7 +67,7 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
             let x = [
                key: value
                ↓]
-            """)
+            """),
         ],
         corrections: [
             Example("""
@@ -117,7 +117,7 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
                3,
                4
             ]
-            """)
+            """),
         ]
     )
 

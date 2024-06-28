@@ -14,7 +14,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 public class SomeClass {
                    static public func someFunc() {}
                 }
-                """)
+                """),
             ])
             .with(triggeringExamples: [
                 Example("""
@@ -26,7 +26,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 public class SomeClass {
                    public static func someFunc() {}
                 }
-                """)
+                """),
             ])
             .with(corrections: [:])
 
@@ -43,7 +43,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 "  fileprivate static  func bar() {} \n" +
                 "  open class func barFoo() {} }"),
                 Example("public struct Foo {" +
-                "  private mutating func bar() {} }")
+                "  private mutating func bar() {} }"),
             ])
             .with(triggeringExamples: [
                 Example("public protocol Foo: class {} \n" +
@@ -52,18 +52,24 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 "  static fileprivate func bar() {} \n" +
                 "  class open func barFoo() {} }"),
                 Example("public struct Foo {" +
-                "  mutating private func bar() {} }")
+                "  mutating private func bar() {} }"),
             ])
             .with(corrections: [:])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["acl",
-                                                                    "typeMethods",
-                                                                    "owned",
-                                                                    "setterACL",
-                                                                    "final",
-                                                                    "mutators",
-                                                                    "override"]])
+        verifyRule(
+            descriptionOverride,
+            ruleConfiguration: [
+                "preferred_modifier_order": [
+                    "acl",
+                    "typeMethods",
+                    "owned",
+                    "setterACL",
+                    "final",
+                    "mutators",
+                    "override",
+                ],
+            ]
+        )
     }
 
     // swiftlint:disable:next function_body_length
@@ -112,7 +118,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 public class Foo {
                    @NSCopying public final var foo: NSString
                 }
-                """#)
+                """#),
             ])
             .with(triggeringExamples: [
                 Example(#"""
@@ -156,7 +162,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 public class Foo {
                     @NSManaged final public var foo: NSString
                 }
-                """)
+                """),
             ])
             .with(corrections: [:])
 
@@ -186,7 +192,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 class Foo {
                     final override private weak var bar: UIView?
                 }
-                """)
+                """),
             ])
             .with(triggeringExamples: [
                 Example("""
@@ -208,7 +214,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 class Foo {
                     override final private weak var bar: UIView?
                 }
-                """)
+                """),
             ])
             .with(corrections: [:])
 
@@ -276,7 +282,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 """):
                 Example("""
                 final private class Foo {}
-                """)
+                """),
             ])
 
         verifyRule(descriptionOverride,
@@ -347,7 +353,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 class Foo {
                     var bar: UIView?
                 }
-                """)
+                """),
             ])
 
         verifyRule(descriptionOverride,
@@ -369,7 +375,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 """):
                 Example("""
                 public protocol Foo: class {}\n
-                """)
+                """),
             ])
 
         verifyRule(descriptionOverride,

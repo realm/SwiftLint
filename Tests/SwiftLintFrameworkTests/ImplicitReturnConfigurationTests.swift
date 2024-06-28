@@ -11,8 +11,8 @@ final class ImplicitReturnConfigurationTests: SwiftLintTestCase {
                 "function",
                 "getter",
                 "initializer",
-                "subscript"
-            ]
+                "subscript",
+            ],
         ]
 
         try configuration.apply(configuration: config)
@@ -21,7 +21,7 @@ final class ImplicitReturnConfigurationTests: SwiftLintTestCase {
             .function,
             .getter,
             .initializer,
-            .subscript
+            .subscript,
         ])
         XCTAssertEqual(configuration.severityConfiguration.severity, .error)
         XCTAssertEqual(configuration.includedKinds, expectedKinds)

@@ -68,7 +68,7 @@ struct SuperfluousElseRule: OptInRule {
                         break
                     }
                 }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -119,7 +119,7 @@ struct SuperfluousElseRule: OptInRule {
                         throw error
                     }
                 }
-            """)
+            """),
         ],
         corrections: [
             Example("""
@@ -240,7 +240,7 @@ struct SuperfluousElseRule: OptInRule {
                         throw error
                     }
                 }
-            """)
+            """),
         ]
     )
 }

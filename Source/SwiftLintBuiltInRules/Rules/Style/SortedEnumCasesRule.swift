@@ -60,7 +60,7 @@ struct SortedEnumCasesRule: OptInRule {
                 case a
                 case c, f, d
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -104,7 +104,7 @@ struct SortedEnumCasesRule: OptInRule {
                 case a(foo: Foo)
                 case ↓c, ↓b(String)
             }
-            """)
+            """),
         ]
     )
 }

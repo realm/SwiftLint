@@ -14,7 +14,7 @@ struct TrailingCommaRule: Rule {
         Example("let example = [ 1,\n2↓,\n // 3,\n]"),
         Example("let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]"),
         Example("class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}"),
-        Example("foo([1: \"\\(error)\"↓,])")
+        Example("foo([1: \"\\(error)\"↓,])"),
     ]
 
     private static let corrections: [Example: Example] = {
@@ -42,7 +42,7 @@ struct TrailingCommaRule: Rule {
             Example("let foo = [Void]()"),
             Example("let example = [ 1,\n 2\n // 3,\n]"),
             Example("foo([1: \"\\(error)\"])"),
-            Example("let foo = [Int]()")
+            Example("let foo = [Int]()"),
         ],
         triggeringExamples: Self.triggeringExamples,
         corrections: Self.corrections

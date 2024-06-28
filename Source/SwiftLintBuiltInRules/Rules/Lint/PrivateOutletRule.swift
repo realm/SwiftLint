@@ -36,7 +36,7 @@ struct PrivateOutletRule: OptInRule {
             Example(
                 "class Foo { @IBOutlet fileprivate(set) weak var label: UILabel? }",
                 configuration: ["allow_private_set": true]
-            )
+            ),
         ],
         triggeringExamples: [
             Example("class Foo { @IBOutlet ↓var label: UILabel? }"),
@@ -73,7 +73,7 @@ struct PrivateOutletRule: OptInRule {
                     ellipsisButtonDidTouch?(self)
                 }
             }
-            """, configuration: ["allow_private_set": false], excludeFromDocumentation: true)
+            """, configuration: ["allow_private_set": false], excludeFromDocumentation: true),
         ]
     )
 }

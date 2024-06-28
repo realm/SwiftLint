@@ -11,8 +11,8 @@ final class CustomRulesTests: SwiftLintTestCase {
                 "message": "Message",
                 "regex": "regex",
                 "match_kinds": "comment",
-                "severity": "error"
-            ]
+                "severity": "error",
+            ],
         ]
         var comp = Configuration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
@@ -38,8 +38,8 @@ final class CustomRulesTests: SwiftLintTestCase {
                 "message": "Message",
                 "regex": "regex",
                 "excluded_match_kinds": "comment",
-                "severity": "error"
-            ]
+                "severity": "error",
+            ],
         ]
         var comp = Configuration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
@@ -73,7 +73,7 @@ final class CustomRulesTests: SwiftLintTestCase {
             "regex": "regex",
             "match_kinds": "comment",
             "excluded_match_kinds": "argument",
-            "severity": "error"
+            "severity": "error",
         ]
 
         var configuration = Configuration(identifier: "my_custom_rule")
@@ -87,12 +87,14 @@ final class CustomRulesTests: SwiftLintTestCase {
 
     func testCustomRuleConfigurationIgnoreInvalidRules() throws {
         let configDict = [
-            "my_custom_rule": ["name": "MyCustomRule",
-                               "message": "Message",
-                               "regex": "regex",
-                               "match_kinds": "comment",
-                               "severity": "error"],
-            "invalid_rule": ["name": "InvalidRule"] // missing `regex`
+            "my_custom_rule": [
+                "name": "MyCustomRule",
+                "message": "Message",
+                "regex": "regex",
+                "match_kinds": "comment",
+                "severity": "error",
+            ],
+            "invalid_rule": ["name": "InvalidRule"], // missing `regex`
         ]
         var customRulesConfig = CustomRulesConfiguration()
         try customRulesConfig.apply(configuration: configDict)
@@ -107,11 +109,17 @@ final class CustomRulesTests: SwiftLintTestCase {
         let (regexConfig, customRules) = getCustomRules()
 
         let file = SwiftLintFile(contents: "// My file with\n// a pattern")
-        XCTAssertEqual(customRules.validate(file: file),
-                       [StyleViolation(ruleDescription: regexConfig.description,
-                                       severity: .warning,
-                                       location: Location(file: nil, line: 2, character: 6),
-                                       reason: regexConfig.message)])
+        XCTAssertEqual(
+            customRules.validate(file: file),
+            [
+                StyleViolation(
+                    ruleDescription: regexConfig.description,
+                    severity: .warning,
+                    location: Location(file: nil, line: 2, character: 6),
+                    reason: regexConfig.message
+                ),
+            ]
+        )
     }
 
     func testLocalDisableCustomRule() {
@@ -123,11 +131,17 @@ final class CustomRulesTests: SwiftLintTestCase {
     func testLocalDisableCustomRuleWithMultipleRules() {
         let (configs, customRules) = getCustomRulesWithTwoRules()
         let file = SwiftLintFile(contents: "//swiftlint:disable \(configs.1.identifier) \n// file with a pattern")
-        XCTAssertEqual(customRules.validate(file: file),
-                       [StyleViolation(ruleDescription: configs.0.description,
-                                       severity: .warning,
-                                       location: Location(file: nil, line: 2, character: 16),
-                                       reason: configs.0.message)])
+        XCTAssertEqual(
+            customRules.validate(file: file),
+            [
+                StyleViolation(
+                    ruleDescription: configs.0.description,
+                    severity: .warning,
+                    location: Location(file: nil, line: 2, character: 16),
+                    reason: configs.0.message
+                ),
+            ]
+        )
     }
 
     func testCustomRulesIncludedDefault() {
@@ -171,8 +185,10 @@ final class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testCustomRulesCaptureGroup() {
-        let (_, customRules) = getCustomRules(["regex": #"\ba\s+(\w+)"#,
-                                               "capture_group": 1])
+        let (_, customRules) = getCustomRules([
+            "regex": #"\ba\s+(\w+)"#,
+            "capture_group": 1,
+        ])
         let violations = customRules.validate(file: getTestTextFile())
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations[0].location.line, 2)
@@ -180,8 +196,10 @@ final class CustomRulesTests: SwiftLintTestCase {
     }
 
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {
-        var config: [String: Any] = ["regex": "pattern",
-                                     "match_kinds": "comment"]
+        var config: [String: Any] = [
+            "regex": "pattern",
+            "match_kinds": "comment",
+        ]
         extraConfig.forEach { config[$0] = $1 }
 
         var regexConfig = RegexConfiguration<CustomRules>(identifier: "custom")
@@ -200,8 +218,10 @@ final class CustomRulesTests: SwiftLintTestCase {
     }
 
     private func getCustomRulesWithTwoRules() -> ((Configuration, Configuration), CustomRules) {
-        let config1 = ["regex": "pattern",
-                       "match_kinds": "comment"]
+        let config1 = [
+            "regex": "pattern",
+            "match_kinds": "comment",
+        ]
 
         var regexConfig1 = Configuration(identifier: "custom1")
         do {
@@ -210,8 +230,10 @@ final class CustomRulesTests: SwiftLintTestCase {
             XCTFail("Failed regex config")
         }
 
-        let config2 = ["regex": "something",
-                       "match_kinds": "comment"]
+        let config2 = [
+            "regex": "something",
+            "match_kinds": "comment",
+        ]
 
         var regexConfig2 = Configuration(identifier: "custom2")
         do {

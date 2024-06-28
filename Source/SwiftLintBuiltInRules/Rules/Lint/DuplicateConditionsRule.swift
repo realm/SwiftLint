@@ -72,7 +72,7 @@ struct DuplicateConditionsRule: Rule {
                 if true {
                   if true { foo() }
                 }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -152,7 +152,7 @@ struct DuplicateConditionsRule: Rule {
                 if ↓x < 5 {}
                 else if ↓x < 5 {}
                 else if ↓x < 5 {}
-            """)
+            """),
         ]
     )
 }

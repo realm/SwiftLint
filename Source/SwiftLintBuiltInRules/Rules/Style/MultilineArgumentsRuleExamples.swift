@@ -68,7 +68,7 @@ internal struct MultilineArgumentsRuleExamples {
         } completion: { _ in
             print("b")
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -89,6 +89,6 @@ internal struct MultilineArgumentsRuleExamples {
             0, ↓param1: 1,
             param2: true, ↓param3: [3]
         )
-        """)
+        """),
     ]
 }

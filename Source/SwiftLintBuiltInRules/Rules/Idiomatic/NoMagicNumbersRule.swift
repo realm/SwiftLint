@@ -80,7 +80,7 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let range = 12..."),
             Example("let (lowerBound, upperBound) = (400, 599)"),
             Example("let a = (5, 10)"),
-            Example("let notFound = (statusCode: 404, description: \"Not Found\", isError: true)")
+            Example("let notFound = (statusCode: 404, description: \"Not Found\", isError: true)"),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -106,7 +106,7 @@ struct NoMagicNumbersRule: OptInRule {
             }
             """),
             Example("let imageHeight = (width - ↓24)"),
-            Example("return (↓5, ↓10, ↓15)")
+            Example("return (↓5, ↓10, ↓15)"),
         ]
     )
 }

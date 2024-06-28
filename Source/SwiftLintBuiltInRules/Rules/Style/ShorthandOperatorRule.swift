@@ -25,7 +25,7 @@ struct ShorthandOperatorRule: Rule {
             """),
             Example("var helloWorld = \"world!\"\n helloWorld = \"Hello, \" + helloWorld"),
             Example("angle = someCheck ? angle : -angle"),
-            Example("seconds = seconds * 60 + value")
+            Example("seconds = seconds * 60 + value"),
         ],
         triggeringExamples: [
             Example("↓foo = foo * 1"),
@@ -34,7 +34,7 @@ struct ShorthandOperatorRule: Rule {
             Example("↓foo.aProperty = foo.aProperty - 1"),
             Example("↓self.aProperty = self.aProperty * 1"),
             Example("↓n = n + i / outputLength"),
-            Example("↓n = n - i / outputLength")
+            Example("↓n = n - i / outputLength"),
         ]
     )
 

@@ -29,7 +29,7 @@ struct RedundantSetAccessControlRule: Rule {
             extension Color {
                 public internal(set) static var someColor = Color.anotherColor
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("↓private(set) private var foo: Int"),
@@ -55,7 +55,7 @@ struct RedundantSetAccessControlRule: Rule {
             fileprivate class A {
               ↓fileprivate(set) var value: Int
             }
-            """)
+            """),
         ]
     )
 }

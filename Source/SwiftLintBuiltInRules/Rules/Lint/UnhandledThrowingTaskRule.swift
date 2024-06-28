@@ -105,7 +105,7 @@ struct UnhandledThrowingTaskRule: OptInRule {
                   try someThrowingFunc()
               }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -181,7 +181,7 @@ struct UnhandledThrowingTaskRule: OptInRule {
                 try await someThrowingFunction()
               }
             }
-            """)
+            """),
         ]
     )
 }

@@ -18,7 +18,7 @@ struct RedundantNilCoalescingRule: OptInRule {
         ],
         corrections: [
             Example("var myVar: Int? = nil; let foo = myVar ↓?? nil"):
-                Example("var myVar: Int? = nil; let foo = myVar")
+                Example("var myVar: Int? = nil; let foo = myVar"),
         ]
     )
 }

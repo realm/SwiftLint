@@ -60,7 +60,7 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
             Example("""
             self.happeningNewsletterOn = self.updateCurrentUser
                 .map { $0.newsletters.happening }.skipNil().skipRepeats()
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -88,7 +88,7 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
             a.b {
             //  ““
             }↓.e()
-            """)
+            """),
         ]
     )
 

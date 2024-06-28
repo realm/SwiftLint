@@ -78,7 +78,7 @@ internal struct NoFallthroughOnlyRuleExamples {
             @unknown default:
                 print("it's not a")
             }
-            """)
+            """),
     ]
 
     static let triggeringExamples = [
@@ -154,6 +154,6 @@ internal struct NoFallthroughOnlyRuleExamples {
         case "abc":
             let two = 2
         }
-        """)
+        """),
     ]
 }

@@ -117,7 +117,7 @@ extension CollectionAlignmentRule {
                     "b"  ↓:2,
                     "c"    :      3
                 ]
-                """)
+                """),
             ]
         }
 
@@ -150,7 +150,7 @@ extension CollectionAlignmentRule {
                 Example("""
                 NSAttributedString(string: "…", attributes: [.font: UIFont.systemFont(ofSize: 12, weight: .regular),
                                                   .foregroundColor: UIColor(white: 0, alpha: 0.2)])
-                """)
+                """),
             ]
         }
 
@@ -179,7 +179,7 @@ extension CollectionAlignmentRule {
                                 "lunch": "sandwich",
                     ↓"dinner": "burger"
                 ]
-                """)
+                """),
             ]
         }
 
@@ -212,7 +212,7 @@ extension CollectionAlignmentRule {
                 Example("""
                 NSAttributedString(string: "…", attributes: [.font: UIFont.systemFont(ofSize: 12, weight: .regular),
                                                              .foregroundColor: UIColor(white: 0, alpha: 0.2)])
-                """)
+                """),
             ]
         }
 
@@ -231,7 +231,7 @@ extension CollectionAlignmentRule {
                   ↓4,
                     6
                 ]
-                """)
+                """),
             ]
         }
 
@@ -263,7 +263,7 @@ extension CollectionAlignmentRule {
                 let abc = [
                     "foo": "bar", "fizz": "buzz"
                 ]
-                """)
+                """),
             ]
         }
     }

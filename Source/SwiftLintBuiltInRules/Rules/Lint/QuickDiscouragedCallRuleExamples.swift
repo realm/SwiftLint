@@ -172,7 +172,7 @@ internal struct QuickDiscouragedCallRuleExamples {
                xitBehavesLike("foo")
            }
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -323,6 +323,6 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """)
+        """),
     ]
 }

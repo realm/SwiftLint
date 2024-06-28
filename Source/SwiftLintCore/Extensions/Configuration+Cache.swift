@@ -84,7 +84,7 @@ extension Configuration {
         let versionedDirectory = [
             "SwiftLint",
             Version.current.value,
-            ExecutableInfo.buildID
+            ExecutableInfo.buildID,
         ].compactMap({ $0 }).joined(separator: "/")
 
         let folder = baseURL.appendingPathComponent(versionedDirectory)

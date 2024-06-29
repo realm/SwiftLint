@@ -55,7 +55,6 @@ struct NoEmptyBlockRule: Rule {
             while i < 10 { /* do something */ }
             """)
         ],
-
         triggeringExamples: [
             Example("""
             var flag = true {

@@ -126,8 +126,8 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "custom": [
                 "regex": "pattern",
-                "match_kinds": "comment"
-            ]
+                "match_kinds": "comment",
+            ],
         ]
         let example = Example("//swiftlint:disable custom \n// file with a pattern")
         let violations = try violations(forExample: example, customRules: customRules)
@@ -206,8 +206,8 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "custom1": [
                 "regex": "pattern",
-                "match_kinds": "comment"
-            ]
+                "match_kinds": "comment",
+            ],
         ]
 
         let example = Example("// swiftlint:disable custom1\n")
@@ -224,16 +224,16 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "custom1": [
                 "regex": "pattern",
-                "match_kinds": "comment"
+                "match_kinds": "comment",
             ],
             "custom2": [
                 "regex": "10",
-                "match_kinds": "number"
+                "match_kinds": "number",
             ],
             "custom3": [
                 "regex": "100",
-                "match_kinds": "number"
-            ]
+                "match_kinds": "number",
+            ],
         ]
 
         let example = Example(

@@ -131,6 +131,13 @@ struct MissingDocsRule: OptInRule {
                 }
             }
             """, excludeFromDocumentation: true),
+            Example("""
+            public ↓struct C {
+                extension E {
+                    public ↓func f() {}
+                }
+            }
+            """, excludeFromDocumentation: true),
             /// Nested types inherit the ACL from the declaring extension.
             Example("""
             /// a doc
@@ -140,7 +147,7 @@ struct MissingDocsRule: OptInRule {
                     case ↓A
                 }
             }
-            """)
+            """),
         ]
     )
 }
@@ -221,7 +228,11 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(node.modifiers.accessibility, appliesToChildren: true) }
+            defer {
+                // The default ACL of extension depends on the visibility of the extended type.
+                // Since it cannot be figured out reliably, we go with the most visible level by default.
+                aclScope.push(node.modifiers.accessibility ?? .public, appliesToChildren: true)
+            }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }

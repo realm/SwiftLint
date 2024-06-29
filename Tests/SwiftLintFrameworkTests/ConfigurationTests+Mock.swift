@@ -90,7 +90,7 @@ struct RuleMock: Rule {
     static let description = RuleDescription(identifier: "RuleMock", name: "",
                                              description: "", kind: .style)
 
-    init() {}
+    init() { /* conformance for test */ }
     init(configuration: Any) throws { self.init() }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] { [] }

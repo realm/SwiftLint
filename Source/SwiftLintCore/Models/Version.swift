@@ -3,6 +3,7 @@ public struct Version: VersionComparable {
     /// The string value for this version.
     public let value: String
 
+    /// An alias for `value` required for protocol conformance.
     public var rawValue: String {
         value
     }

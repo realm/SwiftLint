@@ -25,15 +25,15 @@
   improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
   library.
 
-* Add `no_empty_block` default rule to validate that code blocks are not empty.
-  They should at least contain a comment.  
-    [Ueeek](https://github.com/Ueeek)
-    [#5615](https://github.com/realm/SwiftLint/issues/5615)
-
 * Adds `baseline` and `write_baseline` configuration file settings, equivalent
   to the `--baseline` and `--write-baseline` command line options.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5552](https://github.com/realm/SwiftLint/issues/5552)
+
+* Add `no_empty_block` default rule to validate that code blocks are not empty.
+  They should at least contain a comment.  
+    [Ueeek](https://github.com/Ueeek)
+    [#5615](https://github.com/realm/SwiftLint/issues/5615)
 
 #### Bug Fixes
 

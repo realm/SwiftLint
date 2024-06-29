@@ -221,7 +221,7 @@ final class RuleConfigurationDescriptionTests: XCTestCase {
             @ConfigurationElement(key: "invisible")
             var invisible = true
 
-            mutating func apply(configuration: Any) throws { /* Comformance for test */ }
+            mutating func apply(configuration: Any) throws { /* Conformance for test */ }
 
             func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool { false }
         }

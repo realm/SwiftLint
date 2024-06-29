@@ -370,13 +370,10 @@ private extension Stack<AccessControlBehavior> {
                 }
             }
         }
-        if isExtension {
-            // Assume `public` if there is no explicit ACL on an extension.
-            push(.strict(acl ?? .public))
-        } else if let acl {
+        if let acl {
             push(appliesToChildren || acl < .public ? .strict(acl) : .impliedInternal)
         } else {
-            push(.strict(.internal))
+            push(isExtension ? .impliedInternal : .strict(.internal))
         }
     }
 

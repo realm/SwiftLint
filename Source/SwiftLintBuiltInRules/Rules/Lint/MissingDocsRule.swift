@@ -86,6 +86,11 @@ struct MissingDocsRule: OptInRule {
             }
             """),
             Example("""
+            extension E {
+                public ↓func f() {}
+            }
+            """),
+            Example("""
             /// docs
             public class A {
                 public ↓init(argument: String) {}
@@ -128,13 +133,6 @@ struct MissingDocsRule: OptInRule {
                     case ↓A
                     func f() {}
                     init(_ i: Int) { self = .A }
-                }
-            }
-            """, excludeFromDocumentation: true),
-            Example("""
-            public ↓struct C {
-                extension E {
-                    public ↓func f() {}
                 }
             }
             """, excludeFromDocumentation: true),
@@ -228,11 +226,7 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer {
-                // The default ACL of extension depends on the visibility of the extended type.
-                // Since it cannot be figured out reliably, we go with the most visible level by default.
-                aclScope.push(node.modifiers.accessibility ?? .public, appliesToChildren: true)
-            }
+            defer { aclScope.push(node.modifiers.accessibility, appliesToChildren: true, isExtension: true) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -366,7 +360,7 @@ private enum AccessControlBehavior {
 
 /// Implementation of Swift's effective ACL logic. Should be moved to a specialized syntax visitor for reuse some time.
 private extension Stack<AccessControlBehavior> {
-    mutating func push(_ acl: AccessControlLevel?, appliesToChildren: Bool = false) {
+    mutating func push(_ acl: AccessControlLevel?, appliesToChildren: Bool = false, isExtension: Bool = false) {
         if let parentBehavior = peek() {
             if case let .strict(parentAcl) = parentBehavior {
                 if let acl, acl < parentAcl {
@@ -376,7 +370,10 @@ private extension Stack<AccessControlBehavior> {
                 }
             }
         }
-        if let acl {
+        if isExtension {
+            // Assume `public` if there is no explicit ACL on an extension.
+            push(.strict(acl ?? .public))
+        } else if let acl {
             push(appliesToChildren || acl < .public ? .strict(acl) : .impliedInternal)
         } else {
             push(.strict(.internal))

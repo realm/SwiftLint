@@ -163,6 +163,7 @@ extension SwiftLint {
                 reporter: "summary", // SummaryReporter.identifier,
                 baseline: nil,
                 writeBaseline: nil,
+                workingDirectory: nil,
                 quiet: false,
                 output: nil,
                 progress: true,

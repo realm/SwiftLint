@@ -17,4 +17,3 @@ public struct Version: VersionComparable {
         self.value = value
     }
 }
-

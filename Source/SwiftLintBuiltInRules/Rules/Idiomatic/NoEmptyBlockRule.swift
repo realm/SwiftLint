@@ -53,7 +53,7 @@ struct NoEmptyBlockRule: Rule {
             """),
             Example("""
             while i < 10 { /* do something */ }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -91,7 +91,7 @@ struct NoEmptyBlockRule: Rule {
             """),
             Example("""
             while i < 10 ↓{}
-            """)
+            """),
         ]
     )
 }

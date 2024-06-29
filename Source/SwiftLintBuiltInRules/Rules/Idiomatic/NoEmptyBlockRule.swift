@@ -7,62 +7,91 @@ struct NoEmptyBlockRule: Rule {
     static let description = RuleDescription(
         identifier: "no_empty_block",
         name: "No Empty Block",
-        // swiftlint:disable:next line_length
-        description: "Code Blocks(Function bodies, catch, defer) should not be empty; they should at least contain a comment",
+        description: "Code blocks should not be empty; they should at least contain a comment",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
-                func f() {
-                    let a = 1
-                }
-                """),
-            Example("""
-                func f() {
-                    // comment
-                }
-                """),
-            Example("""
-                init() { /* comment */ }
+            var flag = true {
+                willSet { /* do something */ }
+            }
             """),
             Example("""
-                deinit { /* comment */ }
+            do {
+                /* do something */
+            } catch {
+                /* do something */
+            }
             """),
             Example("""
             defer {
-                /* comment */
+                /* do something */
             }
             """),
             Example("""
-            do {
-            } catch {
-                /* comment */
+            deinit { /* do something */ }
+            """),
+            Example("""
+            for _ in 0..<10 { /* do something */ }
+            """),
+            Example("""
+            func f() {
+                /* do something */
             }
+            """),
+            Example("""
+            if flag {
+                /* do something */
+            } else {
+                /* do something */
+            }
+            """),
+            Example("""
+            init() { /* do something */ }
+            """),
+            Example("""
+            repeat { /* do something */ } while (flag)
+            """),
+            Example("""
+            while i < 10 { /* do something */ }
             """)
         ],
+
         triggeringExamples: [
             Example("""
-                func f() ↓{
-                }
-            """),
-            Example("""
-                // comment
-                func f() ↓{}
-            """),
-            Example("""
-                init() ↓{}
-            """),
-            Example("""
-                deinit ↓{}
-            """),
-            Example("""
-            defer ↓{
+            var flag = true {
+                willSet ↓{}
             }
             """),
             Example("""
-            do {
-                // some codes
+            do ↓{
             } catch ↓{
             }
+            """),
+            Example("""
+            defer ↓{}
+            """),
+            Example("""
+            deinit ↓{}
+            """),
+            Example("""
+            for _ in 0..<10 ↓{}
+            """),
+            Example("""
+            func f() ↓{}
+            """),
+            Example("""
+            if flag ↓{
+            } else ↓{
+            }
+            """),
+            Example("""
+            init() ↓{}
+            """),
+            Example("""
+            repeat ↓{} while (flag)
+            """),
+            Example("""
+            while i < 10 ↓{}
             """)
         ]
     )
@@ -70,29 +99,11 @@ struct NoEmptyBlockRule: Rule {
 
 private extension NoEmptyBlockRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: FunctionDeclSyntax) {
-            validateBody(node.body)
-        }
+        override func visitPost(_ node: CodeBlockSyntax) {
+            // No need to show a warning since Empty Block of `guard` is compile error.
+            guard node.parent?.kind != .guardStmt else { return }
 
-        override func visitPost(_ node: InitializerDeclSyntax) {
-            validateBody(node.body)
-        }
-
-        override func visitPost(_ node: DeinitializerDeclSyntax) {
-            validateBody(node.body)
-        }
-
-        override func visitPost(_ node: DeferStmtSyntax) {
-            validateBody(node.body)
-        }
-
-        override func visitPost(_ node: CatchClauseSyntax) {
-            validateBody(node.body)
-        }
-
-        func validateBody(_ node: CodeBlockSyntax?) {
-            guard let node,
-                  node.statements.isEmpty,
+            guard node.statements.isEmpty,
                   !node.leftBrace.trailingTrivia.containsComments,
                   !node.rightBrace.leadingTrivia.containsComments else {
                 return

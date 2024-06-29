@@ -260,7 +260,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "dont_print": [
                 "regex": "print\\("
-            ]
+            ],
         ]
         let example = Example("""
                               // swiftlint:disable:next dont_print
@@ -273,7 +273,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "dont_print": [
                 "regex": "print\\("
-            ]
+            ],
         ]
         let example = Example("""
                               // swiftlint:disable:next all
@@ -344,7 +344,7 @@ final class CustomRulesTests: SwiftLintTestCase {
     private func violations(forExample example: Example, customRules: [String: Any]) throws -> [StyleViolation] {
         let configDict: [String: Any] = [
             "only_rules": ["custom_rules", "superfluous_disable_command"],
-            "custom_rules": customRules
+            "custom_rules": customRules,
         ]
         let configuration = try SwiftLintCore.Configuration(dict: configDict)
         return SwiftLintTestHelpers.violations(

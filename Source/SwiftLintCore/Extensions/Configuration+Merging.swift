@@ -27,7 +27,8 @@ extension Configuration {
             allowZeroLintableFiles: childConfiguration.allowZeroLintableFiles,
             strict: childConfiguration.strict,
             baseline: childConfiguration.baseline,
-            writeBaseline: childConfiguration.writeBaseline
+            writeBaseline: childConfiguration.writeBaseline,
+            checkForUpdates: childConfiguration.checkForUpdates
         )
     }
 

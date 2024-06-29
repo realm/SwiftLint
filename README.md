@@ -703,6 +703,9 @@ baseline: Baseline.json
 # The path to save detected violations to as a new baseline.
 write_baseline: Baseline.json
 
+# If true, SwiftLint will check for updates after linting or analyzing.
+check_for_updates: true
+
 # configurable rules can be customized from this configuration file
 # binary rules can set their severity level
 force_cast: warning # implicitly

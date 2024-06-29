@@ -60,6 +60,9 @@ struct LintOrAnalyzeCommand {
         try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
             try postProcessViolations(files: files, builder: builder)
         }
+        if options.checkForUpdates || builder.configuration.checkForUpdates {
+            UpdateChecker.checkForUpdates()
+        }
     }
 
     private static func collectViolations(builder: LintOrAnalyzeResultBuilder) async throws -> [SwiftLintFile] {
@@ -283,6 +286,7 @@ struct LintOrAnalyzeOptions {
     let compilerLogPath: String?
     let compileCommands: String?
     let inProcessSourcekit: Bool
+    let checkForUpdates: Bool
 
     var verb: String {
         if autocorrect {

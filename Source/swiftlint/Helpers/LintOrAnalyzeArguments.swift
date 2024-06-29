@@ -50,6 +50,8 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var output: String?
     @Flag(help: "Show a live-updating progress bar instead of each file being processed.")
     var progress = false
+    @Flag(help: "Check whether a later version of SwiftLint is available after processing all files.")
+    var checkForUpdates = false
 }
 
 // MARK: - Common Argument Help

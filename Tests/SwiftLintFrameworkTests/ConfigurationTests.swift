@@ -58,6 +58,7 @@ final class ConfigurationTests: SwiftLintTestCase {
         XCTAssertFalse(config.strict)
         XCTAssertNil(config.baseline)
         XCTAssertNil(config.writeBaseline)
+        XCTAssertFalse(config.checkForUpdates)
     }
 
     func testInitWithRelativePathAndRootPath() {
@@ -446,6 +447,11 @@ final class ConfigurationTests: SwiftLintTestCase {
         let baselinePath = "Baseline.json"
         let configuration = try Configuration(dict: ["write_baseline": baselinePath])
         XCTAssertEqual(configuration.writeBaseline, baselinePath)
+    }
+
+    func testCheckForUpdates() throws {
+        let configuration = try Configuration(dict: ["check_for_updates": true])
+        XCTAssertTrue(configuration.checkForUpdates)
     }
 }
 

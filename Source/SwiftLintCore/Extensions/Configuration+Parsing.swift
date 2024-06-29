@@ -17,6 +17,7 @@ extension Configuration {
         case strict = "strict"
         case baseline = "baseline"
         case writeBaseline = "write_baseline"
+        case checkForUpdates = "check_for_updates"
         case childConfig = "child_config"
         case parentConfig = "parent_config"
         case remoteConfigTimeout = "remote_timeout"
@@ -99,7 +100,8 @@ extension Configuration {
             allowZeroLintableFiles: dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false,
             strict: dict[Key.strict.rawValue] as? Bool ?? false,
             baseline: dict[Key.baseline.rawValue] as? String,
-            writeBaseline: dict[Key.writeBaseline.rawValue] as? String
+            writeBaseline: dict[Key.writeBaseline.rawValue] as? String,
+            checkForUpdates: dict[Key.checkForUpdates.rawValue] as? Bool ?? false
         )
     }
 

@@ -7,7 +7,7 @@ struct NoEmptyBlockRule: Rule {
     static let description = RuleDescription(
         identifier: "no_empty_block",
         name: "No Empty Block",
-        description: "Code blocks should not be empty; they should at least contain a comment",
+        description: "Code blocks should contain at least one statement or comment",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

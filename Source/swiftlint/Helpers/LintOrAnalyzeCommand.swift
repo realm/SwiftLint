@@ -26,6 +26,16 @@ enum LintOrAnalyzeMode {
 
 struct LintOrAnalyzeCommand {
     static func run(_ options: LintOrAnalyzeOptions) async throws {
+        if let workingDirectory = options.workingDirectory {
+            if !FileManager.default.changeCurrentDirectoryPath(workingDirectory) {
+                throw SwiftLintError.usageError(
+                    description: """
+                                 Could not change working directory to '\(workingDirectory)'. \
+                                 Make sure it exists and is accessible.
+                                 """
+                    )
+            }
+        }
         if options.inProcessSourcekit {
             // TODO: [08/11/2024] Remove deprecation warning after ~2 years.
             queuedPrintError(
@@ -261,6 +271,7 @@ struct LintOrAnalyzeOptions {
     let reporter: String?
     let baseline: String?
     let writeBaseline: String?
+    let workingDirectory: String?
     let quiet: Bool
     let output: String?
     let progress: Bool

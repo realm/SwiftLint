@@ -406,6 +406,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5450](https://github.com/realm/SwiftLint/issues/5450)
 
+* Add a `--working-directory` command line option, for users who cannot
+  otherwise control which directory SwiftLint is run from.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5424](https://github.com/realm/SwiftLint/issues/5424)
+
 ## 0.54.0: Macro-Economic Forces
 
 #### Breaking

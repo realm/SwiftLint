@@ -42,6 +42,8 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var baseline: String?
     @Option(help: "The path to save detected violations to as a new baseline.")
     var writeBaseline: String?
+    @Option(help: "The working directory to use when running SwiftLint.")
+    var workingDirectory: String?
     @Flag(help: "Use the in-process version of SourceKit.")
     var inProcessSourcekit = false
     @Option(help: "The file where violations should be saved. Prints to stdout by default.")

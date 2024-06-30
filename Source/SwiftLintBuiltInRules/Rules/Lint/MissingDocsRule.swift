@@ -83,6 +83,7 @@ struct MissingDocsRule: OptInRule {
             Example("""
             public extension A {
                 public ↓func f() {}
+                ↓static var i: Int { 1 }
             }
             """),
             Example("""
@@ -146,6 +147,14 @@ struct MissingDocsRule: OptInRule {
                 }
             }
             """),
+            Example("""
+            public extension URL {
+                fileprivate enum E {
+                    static let source = ""
+                }
+                ↓static var a: Int { 1 }
+            }
+            """, excludeFromDocumentation: true)
         ]
     )
 }
@@ -369,8 +378,7 @@ private extension Stack<AccessControlBehavior> {
                     push(.strict(parentAcl))
                 }
             }
-        }
-        if let acl {
+        } else if let acl {
             push(appliesToChildren || acl < .public ? .strict(acl) : .impliedInternal)
         } else {
             push(isExtension ? .impliedInternal : .strict(.internal))

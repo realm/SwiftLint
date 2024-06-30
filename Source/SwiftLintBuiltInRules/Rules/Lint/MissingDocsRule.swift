@@ -1,6 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
+// swiftlint:disable file_length
+
 @SwiftSyntaxRule
 struct MissingDocsRule: OptInRule {
     var configuration = MissingDocsConfiguration()
@@ -84,6 +86,28 @@ struct MissingDocsRule: OptInRule {
             public extension A {
                 public ↓func f() {}
                 ↓static var i: Int { 1 }
+                ↓struct S {
+                    func f() {}
+                }
+                ↓class C {
+                    func f() {}
+                }
+                ↓actor A {
+                    func f() {}
+                }
+                ↓enum E {
+                    case ↓a
+                    func f() {}
+                }
+            }
+            """),
+            Example("""
+            public extension A {
+                ↓enum E {
+                    enum Inner {
+                        case a
+                    }
+                }
             }
             """),
             Example("""
@@ -154,7 +178,7 @@ struct MissingDocsRule: OptInRule {
                 }
                 ↓static var a: Int { 1 }
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ]
     )
 }
@@ -164,7 +188,7 @@ private extension MissingDocsRule {
         private var aclScope = Stack<AccessControlBehavior>()
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(node.modifiers.accessibility) }
+            defer { aclScope.push(behavior: .actor(node.modifiers.accessibility)) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -181,7 +205,7 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(node.modifiers.accessibility) }
+            defer { aclScope.push(behavior: .class(node.modifiers.accessibility)) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -202,12 +226,10 @@ private extension MissingDocsRule {
         }
 
         override func visitPost(_ node: EnumCaseDeclSyntax) {
-            guard !node.hasDocComment, let enumDecl = node.parentDeclGroup?.as(EnumDeclSyntax.self) else {
+            guard !node.hasDocComment, case let .enum(enumAcl) = aclScope.peek() else {
                 return
             }
-            let acl = enumDecl.modifiers.accessibility
-                ?? enumDecl.parentDeclGroup?.as(ExtensionDeclSyntax.self)?.modifiers.accessibility
-                ?? .internal
+            let acl = enumAcl ?? .internal
             if let parameter = configuration.parameters.first(where: { $0.value == acl }) {
                 node.elements.forEach {
                     violations.append(
@@ -222,7 +244,7 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(node.modifiers.accessibility) }
+            defer { aclScope.push(behavior: .enum(node.modifiers.accessibility)) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -235,14 +257,13 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(node.modifiers.accessibility, appliesToChildren: true, isExtension: true) }
+            defer { aclScope.push(.extension(node.modifiers.accessibility)) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
-            if configuration.excludesExtensions {
-                return .visitChildren
+            if !configuration.excludesExtensions {
+                collectViolation(from: node, on: node.extensionKeyword)
             }
-            collectViolation(from: node, on: node.extensionKeyword)
             return .visitChildren
         }
 
@@ -263,7 +284,7 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(node.modifiers.accessibility, appliesToChildren: true) }
+            defer { aclScope.push(behavior: .protocol(node.modifiers.accessibility)) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -276,7 +297,7 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(node.modifiers.accessibility) }
+            defer { aclScope.push(behavior: .struct(node.modifiers.accessibility)) }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -361,40 +382,77 @@ private extension DeclModifierListSyntax {
 }
 
 private enum AccessControlBehavior {
-    /// ACL as specified or inherited from the declaration's parent.
-    case strict(AccessControlLevel)
-    /// Internal visibility for declarations in otherwise public contexts.
-    case impliedInternal
+    case `actor`(AccessControlLevel?)
+    case local
+    case `class`(AccessControlLevel?)
+    case `enum`(AccessControlLevel?)
+    case `extension`(AccessControlLevel?)
+    case `protocol`(AccessControlLevel?)
+    case `struct`(AccessControlLevel?)
+
+    var acl: AccessControlLevel {
+        let optionalAcl: AccessControlLevel? = switch self {
+                                               case let .actor(acl): acl
+                                               case .local: nil
+                                               case let .class(acl): acl
+                                               case let .enum(acl): acl
+                                               case let .extension(acl): acl
+                                               case let .protocol(acl): acl
+                                               case let .struct(acl): acl
+                                               }
+        return optionalAcl ?? .internal
+    }
+
+    func sameWith(acl: AccessControlLevel) -> Self {
+        switch self {
+        case .actor: .actor(acl)
+        case .local: .local
+        case .class: .class(acl)
+        case .enum: .enum(acl)
+        case .extension: .extension(acl)
+        case .protocol: .protocol(acl)
+        case .struct: .struct(acl)
+        }
+    }
 }
 
 /// Implementation of Swift's effective ACL logic. Should be moved to a specialized syntax visitor for reuse some time.
 private extension Stack<AccessControlBehavior> {
-    mutating func push(_ acl: AccessControlLevel?, appliesToChildren: Bool = false, isExtension: Bool = false) {
-        if let parentBehavior = peek() {
-            if case let .strict(parentAcl) = parentBehavior {
-                if let acl, acl < parentAcl {
-                    push(.strict(acl))
-                } else {
-                    push(.strict(parentAcl))
-                }
+    mutating func push(behavior: AccessControlBehavior) {
+        let parentBehavior = peek()
+        switch parentBehavior {
+        case .none:
+            push(behavior)
+        case .local:
+            push(.local)
+        case .actor, .class, .struct, .enum:
+            if behavior.acl <= parentBehavior!.acl {
+                push(behavior)
+            } else {
+                push(behavior.sameWith(acl: parentBehavior!.acl))
             }
-        } else if let acl {
-            push(appliesToChildren || acl < .public ? .strict(acl) : .impliedInternal)
-        } else {
-            push(isExtension ? .impliedInternal : .strict(.internal))
+        case .extension, .protocol:
+            push(behavior.sameWith(acl: parentBehavior!.acl))
         }
     }
 
     func computeAcl(givenExplicitAcl acl: AccessControlLevel?) -> AccessControlLevel {
-        switch peek() {
-        case let .strict(parentAcl):
-            if let acl, acl < parentAcl {
-                acl
-            } else {
-                parentAcl
-            }
-        case .impliedInternal, .none:
-            acl ?? .internal
-        }
+        let parentBehavior = peek()
+        return switch parentBehavior {
+               case .none:
+                   acl ?? .internal
+               case .local:
+                   .private
+               case .actor, .class, .struct, .enum:
+                   if let acl {
+                       acl < parentBehavior!.acl ? acl : parentBehavior!.acl
+                   } else {
+                       parentBehavior!.acl >= .internal ? .internal : parentBehavior!.acl
+                   }
+               case .protocol:
+                   parentBehavior!.acl
+               case .extension:
+                   acl ?? parentBehavior!.acl
+               }
     }
 }

@@ -408,6 +408,8 @@ prefer_self_in_static_references:
   severity: warning
 prefer_self_type_over_type_of_self:
   severity: warning
+prefer_type_checking:
+  severity: warning
 prefer_zero_over_explicit_init:
   severity: warning
 prefixed_toplevel_constant:

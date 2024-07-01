@@ -889,6 +889,12 @@ final class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class PreferTypeCheckingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferTypeCheckingRule.description)
+    }
+}
+
 final class PreferZeroOverExplicitInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferZeroOverExplicitInitRule.description)

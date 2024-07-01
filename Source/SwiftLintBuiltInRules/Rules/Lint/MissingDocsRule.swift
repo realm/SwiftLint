@@ -59,6 +59,11 @@ struct MissingDocsRule: OptInRule {
                 public func f() {}
             }
             """, configuration: ["evaluate_effective_access_control_level": true]),
+            Example("""
+            public struct S: ~Copyable, P {
+                public init() {}
+            }
+            """),
         ],
         triggeringExamples: [
             // public, undocumented
@@ -196,6 +201,11 @@ struct MissingDocsRule: OptInRule {
                 public ↓func f() {}
             }
             """, configuration: ["evaluate_effective_access_control_level": false]),
+            Example("""
+            public ↓struct S: ~Copyable {
+                public ↓init() {}
+            }
+            """),
         ]
     )
 }
@@ -211,7 +221,7 @@ private extension MissingDocsRule {
                     evalEffectiveAcl: configuration.evaluateEffectiveAccessControlLevel
                 )
             }
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
+            if node.inherits, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
             collectViolation(from: node, on: node.actorKeyword)
@@ -233,7 +243,7 @@ private extension MissingDocsRule {
                     evalEffectiveAcl: configuration.evaluateEffectiveAccessControlLevel
                 )
             }
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
+            if node.inherits, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
             collectViolation(from: node, on: node.classKeyword)
@@ -277,7 +287,7 @@ private extension MissingDocsRule {
                     evalEffectiveAcl: configuration.evaluateEffectiveAccessControlLevel
                 )
             }
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
+            if node.inherits, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
             collectViolation(from: node, on: node.enumKeyword)
@@ -290,7 +300,7 @@ private extension MissingDocsRule {
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
             defer { aclScope.push(.extension(node.modifiers.accessibility)) }
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
+            if node.inherits, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
             if !configuration.excludesExtensions {
@@ -322,7 +332,7 @@ private extension MissingDocsRule {
                     evalEffectiveAcl: configuration.evaluateEffectiveAccessControlLevel
                 )
             }
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
+            if node.inherits, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
             collectViolation(from: node, on: node.protocolKeyword)
@@ -340,7 +350,7 @@ private extension MissingDocsRule {
                     evalEffectiveAcl: configuration.evaluateEffectiveAccessControlLevel
                 )
             }
-            if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
+            if node.inherits, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
             collectViolation(from: node, on: node.structKeyword)
@@ -392,6 +402,24 @@ private extension WithModifiersSyntax {
         case .docBlockComment, .docLineComment: true
         default: false
         }
+    }
+}
+
+private extension DeclGroupSyntax {
+    var inherits: Bool {
+        if let types = inheritanceClause?.inheritedTypes, types.isNotEmpty {
+            return types.contains { !$0.isUncopyable }
+        }
+        return false
+    }
+}
+
+private extension InheritedTypeSyntax {
+    var isUncopyable: Bool {
+        if let suppressedType = type.as(SuppressedTypeSyntax.self) {
+            return suppressedType.type.as(IdentifierTypeSyntax.self)?.name.text == "Copyable"
+        }
+        return false
     }
 }
 

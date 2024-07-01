@@ -15,6 +15,8 @@ struct NestingConfiguration: RuleConfiguration {
     private(set) var alwaysAllowOneTypeInFunctions = false
     @ConfigurationElement(key: "ignore_typealiases_and_associatedtypes")
     private(set) var ignoreTypealiasesAndAssociatedtypes = false
+    @ConfigurationElement(key: "ignore_coding_keys")
+    private(set) var ignoreCodingKeys = false
 
     func severity(with config: Severity, for level: Int) -> ViolationSeverity? {
         if let error = config.error, level > error {

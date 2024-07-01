@@ -112,6 +112,13 @@ struct MissingDocsRule: OptInRule {
             """),
             Example("""
             extension E {
+                public ↓struct S {
+                    public ↓static let i = 1
+                }
+            }
+            """),
+            Example("""
+            extension E {
                 public ↓func f() {}
             }
             """),
@@ -390,17 +397,20 @@ private enum AccessControlBehavior {
     case `protocol`(AccessControlLevel?)
     case `struct`(AccessControlLevel?)
 
-    var acl: AccessControlLevel {
-        let optionalAcl: AccessControlLevel? = switch self {
-                                               case let .actor(acl): acl
-                                               case .local: nil
-                                               case let .class(acl): acl
-                                               case let .enum(acl): acl
-                                               case let .extension(acl): acl
-                                               case let .protocol(acl): acl
-                                               case let .struct(acl): acl
-                                               }
-        return optionalAcl ?? .internal
+    var effectiveAcl: AccessControlLevel {
+        explicitAcl ?? .internal
+    }
+
+    var explicitAcl: AccessControlLevel? {
+        switch self {
+        case let .actor(acl): acl
+        case .local: nil
+        case let .class(acl): acl
+        case let .enum(acl): acl
+        case let .extension(acl): acl
+        case let .protocol(acl): acl
+        case let .struct(acl): acl
+        }
     }
 
     func sameWith(acl: AccessControlLevel) -> Self {
@@ -426,13 +436,17 @@ private extension Stack<AccessControlBehavior> {
         case .local:
             push(.local)
         case .actor, .class, .struct, .enum:
-            if behavior.acl <= parentBehavior!.acl {
+            if behavior.effectiveAcl <= parentBehavior!.effectiveAcl {
                 push(behavior)
             } else {
-                push(behavior.sameWith(acl: parentBehavior!.acl))
+                push(behavior.sameWith(acl: parentBehavior!.effectiveAcl))
             }
         case .extension, .protocol:
-            push(behavior.sameWith(acl: parentBehavior!.acl))
+            if behavior.explicitAcl != nil {
+                push(behavior)
+            } else {
+                push(behavior.sameWith(acl: parentBehavior!.effectiveAcl))
+            }
         }
     }
 
@@ -445,14 +459,14 @@ private extension Stack<AccessControlBehavior> {
                    .private
                case .actor, .class, .struct, .enum:
                    if let acl {
-                       acl < parentBehavior!.acl ? acl : parentBehavior!.acl
+                       acl < parentBehavior!.effectiveAcl ? acl : parentBehavior!.effectiveAcl
                    } else {
-                       parentBehavior!.acl >= .internal ? .internal : parentBehavior!.acl
+                       parentBehavior!.effectiveAcl >= .internal ? .internal : parentBehavior!.effectiveAcl
                    }
                case .protocol:
-                   parentBehavior!.acl
+                   parentBehavior!.effectiveAcl
                case .extension:
-                   acl ?? parentBehavior!.acl
+                   acl ?? parentBehavior!.effectiveAcl
                }
     }
 }

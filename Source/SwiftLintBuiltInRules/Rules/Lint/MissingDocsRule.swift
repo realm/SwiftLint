@@ -429,44 +429,46 @@ private enum AccessControlBehavior {
 /// Implementation of Swift's effective ACL logic. Should be moved to a specialized syntax visitor for reuse some time.
 private extension Stack<AccessControlBehavior> {
     mutating func push(behavior: AccessControlBehavior) {
-        let parentBehavior = peek()
-        switch parentBehavior {
-        case .none:
+        if let parentBehavior = peek() {
+            switch parentBehavior {
+            case .local:
+                push(.local)
+            case .actor, .class, .struct, .enum:
+                if behavior.effectiveAcl <= parentBehavior.effectiveAcl {
+                    push(behavior)
+                } else {
+                    push(behavior.sameWith(acl: parentBehavior.effectiveAcl))
+                }
+            case .extension, .protocol:
+                if behavior.explicitAcl != nil {
+                    push(behavior)
+                } else {
+                    push(behavior.sameWith(acl: parentBehavior.effectiveAcl))
+                }
+            }
+        } else {
             push(behavior)
-        case .local:
-            push(.local)
-        case .actor, .class, .struct, .enum:
-            if behavior.effectiveAcl <= parentBehavior!.effectiveAcl {
-                push(behavior)
-            } else {
-                push(behavior.sameWith(acl: parentBehavior!.effectiveAcl))
-            }
-        case .extension, .protocol:
-            if behavior.explicitAcl != nil {
-                push(behavior)
-            } else {
-                push(behavior.sameWith(acl: parentBehavior!.effectiveAcl))
-            }
         }
     }
 
     func computeAcl(givenExplicitAcl acl: AccessControlLevel?) -> AccessControlLevel {
-        let parentBehavior = peek()
-        return switch parentBehavior {
-               case .none:
-                   acl ?? .internal
+        if let parentBehavior = peek() {
+            switch parentBehavior {
                case .local:
                    .private
                case .actor, .class, .struct, .enum:
                    if let acl {
-                       acl < parentBehavior!.effectiveAcl ? acl : parentBehavior!.effectiveAcl
+                       acl < parentBehavior.effectiveAcl ? acl : parentBehavior.effectiveAcl
                    } else {
-                       parentBehavior!.effectiveAcl >= .internal ? .internal : parentBehavior!.effectiveAcl
+                       parentBehavior.effectiveAcl >= .internal ? .internal : parentBehavior.effectiveAcl
                    }
                case .protocol:
-                   parentBehavior!.effectiveAcl
+                   parentBehavior.effectiveAcl
                case .extension:
-                   acl ?? parentBehavior!.effectiveAcl
+                   acl ?? parentBehavior.effectiveAcl
                }
+        } else {
+            acl ?? .internal
+        }
     }
 }

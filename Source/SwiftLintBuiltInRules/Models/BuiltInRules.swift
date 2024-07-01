@@ -207,6 +207,7 @@ public let builtInRules: [any Rule.Type] = [
     TrailingSemicolonRule.self,
     TrailingWhitespaceRule.self,
     TypeBodyLengthRule.self,
+    TypeCheckingUsingIsRule.self,
     TypeContentsOrderRule.self,
     TypeNameRule.self,
     TypesafeArrayInitRule.self,

@@ -1231,6 +1231,12 @@ final class TypeBodyLengthRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class TypeCheckingUsingIsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TypeCheckingUsingIsRule.description)
+    }
+}
+
 final class TypeContentsOrderRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeContentsOrderRule.description)

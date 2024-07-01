@@ -303,6 +303,7 @@ missing_docs:
   excludes_extensions: true
   excludes_inherited_types: true
   excludes_trivial_init: false
+  evaluate_effective_access_control_level: false
 modifier_order:
   severity: warning
   preferred_modifier_order: [override, acl, setterACL, dynamic, mutators, lazy, final, required, convenience, typeMethods, owned]

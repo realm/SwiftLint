@@ -54,6 +54,11 @@ struct MissingDocsRule: OptInRule {
                 public init() {}
             }
             """, configuration: ["excludes_trivial_init": true]),
+            Example("""
+            class C {
+                public func f() {}
+            }
+            """, configuration: ["evaluate_effective_access_control_level": true]),
         ],
         triggeringExamples: [
             // public, undocumented
@@ -186,6 +191,11 @@ struct MissingDocsRule: OptInRule {
                 ↓static var a: Int { 1 }
             }
             """, excludeFromDocumentation: true),
+            Example("""
+            class C {
+                public ↓func f() {}
+            }
+            """, configuration: ["evaluate_effective_access_control_level": false]),
         ]
     )
 }
@@ -195,7 +205,12 @@ private extension MissingDocsRule {
         private var aclScope = Stack<AccessControlBehavior>()
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(behavior: .actor(node.modifiers.accessibility)) }
+            defer {
+                aclScope.push(
+                    behavior: .actor(node.modifiers.accessibility),
+                    evalEffectiveAcl: configuration.evaluateEffectiveAccessControlLevel
+                )
+            }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -212,7 +227,12 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(behavior: .class(node.modifiers.accessibility)) }
+            defer {
+                aclScope.push(
+                    behavior: .class(node.modifiers.accessibility),
+                    evalEffectiveAcl: configuration.evaluateEffectiveAccessControlLevel
+                )
+            }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -251,7 +271,12 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(behavior: .enum(node.modifiers.accessibility)) }
+            defer {
+                aclScope.push(
+                    behavior: .enum(node.modifiers.accessibility),
+                    evalEffectiveAcl: configuration.evaluateEffectiveAccessControlLevel
+                )
+            }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -291,7 +316,12 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(behavior: .protocol(node.modifiers.accessibility)) }
+            defer {
+                aclScope.push(
+                    behavior: .protocol(node.modifiers.accessibility),
+                    evalEffectiveAcl: configuration.evaluateEffectiveAccessControlLevel
+                )
+            }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -304,7 +334,12 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            defer { aclScope.push(behavior: .struct(node.modifiers.accessibility)) }
+            defer {
+                aclScope.push(
+                    behavior: .struct(node.modifiers.accessibility),
+                    evalEffectiveAcl: configuration.evaluateEffectiveAccessControlLevel
+                )
+            }
             if node.inheritanceClause != nil, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
@@ -334,7 +369,10 @@ private extension MissingDocsRule {
             if node.modifiers.contains(keyword: .override) || node.hasDocComment {
                 return
             }
-            let acl = aclScope.computeAcl(givenExplicitAcl: node.modifiers.accessibility)
+            let acl = aclScope.computeAcl(
+                givenExplicitAcl: node.modifiers.accessibility,
+                evalEffectiveAcl: configuration.evaluateEffectiveAccessControlLevel
+            )
             if let parameter = configuration.parameters.first(where: { $0.value == acl }) {
                 violations.append(
                     ReasonedRuleViolation(
@@ -428,13 +466,13 @@ private enum AccessControlBehavior {
 
 /// Implementation of Swift's effective ACL logic. Should be moved to a specialized syntax visitor for reuse some time.
 private extension Stack<AccessControlBehavior> {
-    mutating func push(behavior: AccessControlBehavior) {
+    mutating func push(behavior: AccessControlBehavior, evalEffectiveAcl: Bool) {
         if let parentBehavior = peek() {
             switch parentBehavior {
             case .local:
                 push(.local)
             case .actor, .class, .struct, .enum:
-                if behavior.effectiveAcl <= parentBehavior.effectiveAcl {
+                if behavior.effectiveAcl <= parentBehavior.effectiveAcl || !evalEffectiveAcl {
                     push(behavior)
                 } else {
                     push(behavior.sameWith(acl: parentBehavior.effectiveAcl))
@@ -451,14 +489,14 @@ private extension Stack<AccessControlBehavior> {
         }
     }
 
-    func computeAcl(givenExplicitAcl acl: AccessControlLevel?) -> AccessControlLevel {
+    func computeAcl(givenExplicitAcl acl: AccessControlLevel?, evalEffectiveAcl: Bool) -> AccessControlLevel {
         if let parentBehavior = peek() {
             switch parentBehavior {
                case .local:
                    .private
                case .actor, .class, .struct, .enum:
                    if let acl {
-                       acl < parentBehavior.effectiveAcl ? acl : parentBehavior.effectiveAcl
+                       acl < parentBehavior.effectiveAcl || !evalEffectiveAcl ? acl : parentBehavior.effectiveAcl
                    } else {
                        parentBehavior.effectiveAcl >= .internal ? .internal : parentBehavior.effectiveAcl
                    }

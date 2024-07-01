@@ -24,6 +24,7 @@
 * Linting got around 20% faster due to the praisworthy performance
   improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
   library.
+
 * Rewrite the following rules with SwiftSyntax:
   * `missing_docs`
 
@@ -37,8 +38,14 @@
 
 * Add `no_empty_block` default rule to validate that code blocks are not empty.
   They should at least contain a comment.  
-    [Ueeek](https://github.com/Ueeek)
-    [#5615](https://github.com/realm/SwiftLint/issues/5615)
+  [Ueeek](https://github.com/Ueeek)
+  [#5615](https://github.com/realm/SwiftLint/issues/5615)
+
+* Add new option `evaluate_effective_access_control_level` to `missing_docs`
+  rule. Setting it to `true` stops the rule from triggering on declarations
+  inside of types with lower visibility. These declarations effectively
+  have at most the same access level.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Bug Fixes
 

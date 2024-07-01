@@ -7,7 +7,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false"
+            "excludes_inherited_types: true; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
@@ -16,7 +17,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: false; " +
-            "excludes_inherited_types: false; excludes_trivial_init: false"
+            "excludes_inherited_types: false; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
@@ -25,16 +27,22 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: false; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false"
+            "excludes_inherited_types: true; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
     func testDescriptionExcludesExtensionsTrueExcludesInheritedTypesFalse() {
-        let configuration = MissingDocsConfiguration(excludesExtensions: true, excludesInheritedTypes: false)
+        let configuration = MissingDocsConfiguration(
+            excludesExtensions: true,
+            excludesInheritedTypes: false,
+            evaluateEffectiveAccessControlLevel: true
+        )
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: false; excludes_trivial_init: false"
+            "excludes_inherited_types: false; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: true"
         )
     }
 
@@ -44,7 +52,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "error: [open]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false"
+            "excludes_inherited_types: true; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
@@ -58,7 +67,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "error: [open]; warning: [public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false"
+            "excludes_inherited_types: true; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
@@ -72,7 +82,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false"
+            "excludes_inherited_types: true; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
@@ -81,7 +92,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: true"
+            "excludes_inherited_types: true; excludes_trivial_init: true; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 

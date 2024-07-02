@@ -184,6 +184,25 @@ public extension EnumDeclSyntax {
             return rawValueTypes.contains(identifier)
         }
     }
+
+    /// True if this enum is a `CodingKey`
+    var isCodingKey: Bool {
+        guard let inheritedTypeCollection = inheritanceClause?.inheritedTypes else {
+            return false
+        }
+        
+        guard self.name.text == "CodingKeys" else {
+            return false
+        }
+
+        return inheritedTypeCollection.contains { element in
+            guard let identifier = element.type.as(IdentifierTypeSyntax.self)?.name.text else {
+                return false
+            }
+
+            return identifier == "CodingKey"
+        }
+    }
 }
 
 public extension FunctionDeclSyntax {

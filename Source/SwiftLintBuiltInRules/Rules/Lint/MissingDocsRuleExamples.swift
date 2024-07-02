@@ -208,7 +208,7 @@ struct MissingDocsRuleExamples {
         }
         """, configuration: ["evaluate_effective_access_control_level": false]),
         Example("""
-        public ↓struct S: ~Copyable {
+        public ↓struct S: ~Copyable, ~Escapable {
             public ↓init() {}
         }
         """),

@@ -204,16 +204,7 @@ private extension MissingDocsRule {
 private extension DeclGroupSyntax {
     var inherits: Bool {
         if let types = inheritanceClause?.inheritedTypes, types.isNotEmpty {
-            return types.contains { !$0.isUncopyable }
-        }
-        return false
-    }
-}
-
-private extension InheritedTypeSyntax {
-    var isUncopyable: Bool {
-        if let suppressedType = type.as(SuppressedTypeSyntax.self) {
-            return suppressedType.type.as(IdentifierTypeSyntax.self)?.name.text == "Copyable"
+            return types.contains { !$0.type.is(SuppressedTypeSyntax.self) }
         }
         return false
     }

@@ -220,16 +220,6 @@ private extension InheritedTypeSyntax {
 }
 
 private extension SyntaxProtocol {
-    var parentDeclGroup: (any DeclGroupSyntax)? {
-        guard let parent else {
-            return nil
-        }
-        if let declGroup = parent.asProtocol((any DeclGroupSyntax).self) {
-            return declGroup
-        }
-        return parent.parentDeclGroup
-    }
-
     var hasDocComment: Bool {
         switch leadingTrivia.pieces.last(where: { !$0.isWhitespace }) {
         case .docBlockComment, .docLineComment:
@@ -249,15 +239,6 @@ private extension SyntaxProtocol {
             }
             return false
         }
-    }
-
-    var defaultAccessibility: AccessControlLevel {
-        if let declGroup = parentDeclGroup,
-           declGroup.is(ExtensionDeclSyntax.self) || declGroup.is(ProtocolDeclSyntax.self),
-           let accessibility = declGroup.modifiers.accessibility {
-            return accessibility
-        }
-        return .internal
     }
 }
 

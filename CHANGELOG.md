@@ -16,6 +16,10 @@
   improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
   library.
 
+* Add `ignore_codingkeys` parameter to `nesting` rule.  
+  [braker1nine](https://github.com/braker1nine)
+  [#5641](https://github.com/realm/SwiftLint/issues/5641)
+
 #### Bug Fixes
 
 * Fix a few false positives and negatives by updating the parser to support

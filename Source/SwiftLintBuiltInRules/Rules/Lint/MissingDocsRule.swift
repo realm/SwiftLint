@@ -201,15 +201,6 @@ private extension MissingDocsRule {
     }
 }
 
-private extension WithModifiersSyntax {
-    var hasDocComment: Bool {
-        switch leadingTrivia.pieces.last(where: { !$0.isWhitespace }) {
-        case .docBlockComment, .docLineComment: true
-        default: false
-        }
-    }
-}
-
 private extension DeclGroupSyntax {
     var inherits: Bool {
         if let types = inheritanceClause?.inheritedTypes, types.isNotEmpty {
@@ -237,6 +228,27 @@ private extension SyntaxProtocol {
             return declGroup
         }
         return parent.parentDeclGroup
+    }
+
+    var hasDocComment: Bool {
+        switch leadingTrivia.pieces.last(where: { !$0.isWhitespace }) {
+        case .docBlockComment, .docLineComment:
+            return true
+        default:
+            guard let item = parent?.as(CodeBlockItemSyntax.self),
+                  let itemList = item.parent?.as(CodeBlockItemListSyntax.self),
+                  itemList.first == item else {
+                return false
+            }
+            let ifConfigDecl = itemList
+                              .parent?.as(IfConfigClauseSyntax.self)?
+                              .parent?.as(IfConfigClauseListSyntax.self)?
+                              .parent?.as(IfConfigDeclSyntax.self)
+            if let ifConfigDecl {
+                return ifConfigDecl.hasDocComment
+            }
+            return false
+        }
     }
 
     var defaultAccessibility: AccessControlLevel {

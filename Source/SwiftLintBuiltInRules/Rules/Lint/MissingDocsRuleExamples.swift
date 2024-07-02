@@ -51,6 +51,24 @@ struct MissingDocsRuleExamples {
             public init() {}
         }
         """),
+        Example("""
+        /// my doc
+        #if os(macOS)
+        public func f() {}
+        #else
+        public func f() async {}
+        #endif
+        """, excludeFromDocumentation: true),
+        Example("""
+        /// my doc
+        #if os(macOS)
+            #if is(iOS)
+            public func f() {}
+            #endif
+        #else
+        public func f() async {}
+        #endif
+        """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [
@@ -194,5 +212,12 @@ struct MissingDocsRuleExamples {
             public ↓init() {}
         }
         """),
+        Example("""
+        /// my doc
+        #if os(macOS)
+        public func f() {}
+        public ↓func g() {}
+        #endif
+        """, excludeFromDocumentation: true),
     ]
 }

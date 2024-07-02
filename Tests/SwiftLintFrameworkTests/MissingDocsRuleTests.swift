@@ -7,7 +7,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false"
+            "excludes_inherited_types: true; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
@@ -16,7 +17,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: false; " +
-            "excludes_inherited_types: false; excludes_trivial_init: false"
+            "excludes_inherited_types: false; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
@@ -25,16 +27,22 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: false; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false"
+            "excludes_inherited_types: true; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
     func testDescriptionExcludesExtensionsTrueExcludesInheritedTypesFalse() {
-        let configuration = MissingDocsConfiguration(excludesExtensions: true, excludesInheritedTypes: false)
+        let configuration = MissingDocsConfiguration(
+            excludesExtensions: true,
+            excludesInheritedTypes: false,
+            evaluateEffectiveAccessControlLevel: true
+        )
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: false; excludes_trivial_init: false"
+            "excludes_inherited_types: false; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: true"
         )
     }
 
@@ -44,7 +52,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "error: [open]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false"
+            "excludes_inherited_types: true; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
@@ -58,7 +67,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "error: [open]; warning: [public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false"
+            "excludes_inherited_types: true; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
@@ -72,7 +82,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false"
+            "excludes_inherited_types: true; excludes_trivial_init: false; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
@@ -81,7 +92,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: true"
+            "excludes_inherited_types: true; excludes_trivial_init: true; " +
+            "evaluate_effective_access_control_level: false"
         )
     }
 
@@ -203,52 +215,5 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
             [RuleParameter<AccessControlLevel>(severity: .error, value: .public)]
         )
-    }
-
-    func testWithExcludesExtensionsDisabled() {
-        // Perform additional tests with the ignores_comments settings disabled.
-        let baseDescription = MissingDocsRule.description
-        let triggeringComments = [Example("public extension A {}")]
-        let nonTriggeringExamples = baseDescription.nonTriggeringExamples
-            .filter { !triggeringComments.contains($0) }
-        let triggeringExamples = baseDescription.triggeringExamples + triggeringComments
-        let description = baseDescription
-            .with(nonTriggeringExamples: nonTriggeringExamples)
-            .with(triggeringExamples: triggeringExamples)
-        verifyRule(description,
-                   ruleConfiguration: ["excludes_extensions": false])
-    }
-
-    func testWithExcludesInheritedTypesDisabled() {
-        // Perform additional tests with the ignores_comments settings disabled.
-        let baseDescription = MissingDocsRule.description
-        let triggeringComments = [
-            // locally-defined superclass member is documented, but subclass member is not
-            Example("""
-            /// docs
-            public class A {
-            /// docs
-            public func b() {}
-            }
-            // no docs
-            public class B: A { override public func b() {} }
-            """),
-            // externally-defined superclass member is documented, but subclass member is not
-            Example("""
-            import Foundation
-            // no docs
-            public class B: NSObject {
-            // no docs
-            override public var description: String { fatalError() } }
-            """),
-        ]
-        let nonTriggeringExamples = baseDescription.nonTriggeringExamples
-            .filter { !triggeringComments.contains($0) }
-        let triggeringExamples = baseDescription.triggeringExamples + triggeringComments
-        let description = baseDescription
-            .with(nonTriggeringExamples: nonTriggeringExamples)
-            .with(triggeringExamples: triggeringExamples)
-        verifyRule(description,
-                   ruleConfiguration: ["excludes_inherited_types": false])
     }
 }

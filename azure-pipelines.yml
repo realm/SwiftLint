@@ -8,8 +8,8 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      swift59:
-        containerImage: swift:5.9
+      swift5101:
+        containerImage: swift:5.10.1
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES

@@ -540,5 +540,22 @@ enum UnneededSynthesizedInitializerRuleExamples {
                     }
                 }
                 """),
+        Example("""
+                struct Title {
+                    let text: String
+
+                    init(@Localised text: String) {
+                        self.text = text
+                    }
+                }
+                """): Example("""
+                struct Title {
+                    let text: String
+
+                    init(@Localised text: String) {
+                        self.text = text
+                    }
+                }
+                """),
     ]
 }

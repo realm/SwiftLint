@@ -47,9 +47,9 @@
   have at most the same access level.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* Add new `--check-for-updates` command line option to check for new versions
-  of SwiftLint, and an equivalent `check_for_updates` configuration file
-  setting.  
+* Add new `--check-for-updates` command line option for the `lint`, `analyze`,
+  and `version` subcommands to check for new versions  of SwiftLint, and an
+  equivalent `check_for_updates` configuration file setting.  
   [Martin Redington](https://github.com/mildm8nnered)
   [SimplyDanny](https://github.com/SimplyDanny)
   [Ian Leitch](https://github.com/ileitch)

@@ -232,6 +232,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/SwiftSyntaxRule.html">SwiftSyntaxRule</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/VersionComparable.html">VersionComparable</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -993,6 +996,9 @@ all analyzer rules, except the ones listed in <code>disabled_rules</code>.</li>
 
 <span class="c1"># The path to save detected violations to as a new baseline.</span>
 <span class="na">write_baseline</span><span class="pi">:</span> <span class="s">Baseline.json</span>
+
+<span class="c1"># If true, SwiftLint will check for updates after linting or analyzing.</span>
+<span class="na">check_for_updates</span><span class="pi">:</span> <span class="kc">true</span>
 
 <span class="c1"># configurable rules can be customized from this configuration file</span>
 <span class="c1"># binary rules can set their severity level</span>

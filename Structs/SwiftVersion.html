@@ -233,6 +233,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/SwiftSyntaxRule.html">SwiftSyntaxRule</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/VersionComparable.html">VersionComparable</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -349,14 +352,14 @@
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SwiftVersion</span> <span class="p">:</span> <span class="kt">RawRepresentable</span><span class="p">,</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">Sendable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SwiftVersion</span> <span class="p">:</span> <span class="kt">RawRepresentable</span><span class="p">,</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt"><a href="../Protocols/VersionComparable.html">VersionComparable</a></span><span class="p">,</span> <span class="kt">Sendable</span></code></pre>
 
                 </div>
               </div>
             <p>A value describing the version of the Swift compiler.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L5-L37">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L5-L13">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -455,64 +458,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:SQ2eeoiySbx_xtFZ"></a>
-                    <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:SQ2eeoiySbx_xtFZ">==(_:<wbr>_:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">==</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">SwiftVersion</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">SwiftVersion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L14-L19">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:SL1loiySbx_xtFZ"></a>
-                    <a name="//apple_ref/swift/Method/&lt;(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:SL1loiySbx_xtFZ"><(_:<wbr>_:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">SwiftVersion</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">SwiftVersion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L21-L26">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:13SwiftLintCore0A7VersionV4fiveACvpZ"></a>
                     <a name="//apple_ref/swift/Variable/five" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SwiftLintCore0A7VersionV4fiveACvpZ">five</a>
@@ -535,7 +480,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L41">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L49">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -565,7 +510,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L43">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L51">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -595,7 +540,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L45">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L53">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -625,7 +570,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L47">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L55">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -655,7 +600,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L49">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L57">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -685,7 +630,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L51">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L59">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -715,7 +660,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L53">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L61">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -745,7 +690,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L55">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L63">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -775,7 +720,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L57">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L65">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -805,7 +750,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L59">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L67">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -840,7 +785,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L64">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftVersion.swift#L72">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

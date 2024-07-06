@@ -12,7 +12,7 @@ public struct SwiftVersion: RawRepresentable, Codable, VersionComparable, Sendab
     }
 }
 
-protocol VersionComparable: Comparable {
+public protocol VersionComparable: Comparable {
     var rawValue: String { get }
 }
 

@@ -20,7 +20,7 @@ extension SwiftLint {
                 print(Self.value)
             }
             if checkForUpdates {
-                await UpdateChecker.checkForUpdates()
+                UpdateChecker.checkForUpdates()
             }
             ExitHelper.successfullyExit()
         }

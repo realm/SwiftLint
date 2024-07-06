@@ -61,7 +61,7 @@ struct LintOrAnalyzeCommand {
             try postProcessViolations(files: files, builder: builder)
         }
         if options.checkForUpdates || builder.configuration.checkForUpdates {
-            await UpdateChecker.checkForUpdates()
+            UpdateChecker.checkForUpdates()
         }
     }
 

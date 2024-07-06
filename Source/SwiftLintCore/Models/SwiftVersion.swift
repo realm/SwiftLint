@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 /// A value describing the version of the Swift compiler.
-public struct SwiftVersion: RawRepresentable, Codable, Comparable, Sendable {
+public struct SwiftVersion: RawRepresentable, Codable, VersionComparable, Sendable {
     public typealias RawValue = String
 
     public let rawValue: String
@@ -10,15 +10,23 @@ public struct SwiftVersion: RawRepresentable, Codable, Comparable, Sendable {
     public init(rawValue: String) {
         self.rawValue = rawValue
     }
+}
 
-    public static func == (lhs: SwiftVersion, rhs: SwiftVersion) -> Bool {
+/// A comparable `major.minor.patch` version number.
+public protocol VersionComparable: Comparable {
+    /// The version string.
+    var rawValue: String { get }
+}
+
+extension VersionComparable {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         if let lhsComparators = lhs.comparators, let rhsComparators = rhs.comparators {
             return lhsComparators == rhsComparators
         }
         return lhs.rawValue == rhs.rawValue
     }
 
-    public static func < (lhs: SwiftVersion, rhs: SwiftVersion) -> Bool {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
         if let lhsComparators = lhs.comparators, let rhsComparators = rhs.comparators {
             return lhsComparators.lexicographicallyPrecedes(rhsComparators)
         }

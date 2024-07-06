@@ -12,6 +12,7 @@ public struct SwiftVersion: RawRepresentable, Codable, VersionComparable, Sendab
     }
 }
 
+/// A comparable `major.minor.patch` version number.
 public protocol VersionComparable: Comparable {
     var rawValue: String { get }
 }

@@ -353,7 +353,7 @@
 <p>Test cases should only contain private non-test members</p>
 
 <ul>
-<li><strong>Identifier:</strong> test_case_accessibility</li>
+<li><strong>Identifier:</strong> <code>test_case_accessibility</code></li>
 <li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> Yes</li>
 <li><strong>Kind:</strong> lint</li>
@@ -444,9 +444,14 @@ test_parent_classes
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">FooTests</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allowed_prefixes: ["allowedPrefix"]</span>
+<span class="c1">//</span>
+
+<span class="kd">class</span> <span class="kt">FooTests</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">allowedPrefixTestFoo</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">setUp</span><span class="p">()</span> <span class="p">{}</span>

@@ -353,7 +353,7 @@
 <p>Returning Void in a function declaration is redundant</p>
 
 <ul>
-<li><strong>Identifier:</strong> redundant_void_return</li>
+<li><strong>Identifier:</strong> <code>redundant_void_return</code></li>
 <li><strong>Enabled by default:</strong> Yes</li>
 <li><strong>Supports autocorrection:</strong> Yes</li>
 <li><strong>Kind:</strong> idiomatic</li>
@@ -413,9 +413,14 @@ true
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="n">doSomething</span> <span class="p">{</span> <span class="n">arg</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="k">in</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// include_closures: false</span>
+<span class="c1">//</span>
+
+<span class="n">doSomething</span> <span class="p">{</span> <span class="n">arg</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="k">in</span>
     <span class="nf">print</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
 <span class="p">}</span>
+
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span><span class="err">↓</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{}</span>

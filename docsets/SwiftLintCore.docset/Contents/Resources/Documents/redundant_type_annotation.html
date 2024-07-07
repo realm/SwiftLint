@@ -353,7 +353,7 @@
 <p>Variables should not have redundant type annotation</p>
 
 <ul>
-<li><strong>Identifier:</strong> redundant_type_annotation</li>
+<li><strong>Identifier:</strong> <code>redundant_type_annotation</code></li>
 <li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> Yes</li>
 <li><strong>Kind:</strong> idiomatic</li>
@@ -445,12 +445,22 @@ false
 
 <span class="k">var</span> <span class="nv">direction</span> <span class="o">=</span> <span class="kt">Direction</span><span class="o">.</span><span class="n">up</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">@IgnoreMe</span> <span class="k">var</span> <span class="nv">a</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// ignore_attributes: ["IgnoreMe"]</span>
+<span class="c1">//</span>
+
+<span class="kd">@IgnoreMe</span> <span class="k">var</span> <span class="nv">a</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">a</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// ignore_attributes: ["IgnoreMe"]</span>
+<span class="c1">//</span>
+
+<span class="k">var</span> <span class="nv">a</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
     <span class="kd">@IgnoreMe</span> <span class="k">let</span> <span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">i</span>
 <span class="p">}</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">bol</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span>
 </code></pre>
@@ -522,21 +532,51 @@ false
 
 <span class="k">var</span> <span class="nv">direction</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Direction</span> <span class="o">=</span> <span class="kt">Direction</span><span class="o">.</span><span class="n">up</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">@DontIgnoreMe</span> <span class="k">var</span> <span class="nv">a</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// ignore_attributes: ["IgnoreMe"]</span>
+<span class="c1">//</span>
+
+<span class="kd">@DontIgnoreMe</span> <span class="k">var</span> <span class="nv">a</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">@IgnoreMe</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// ignore_attributes: ["IgnoreMe"]</span>
+<span class="c1">//</span>
+
+<span class="kd">@IgnoreMe</span>
 <span class="k">var</span> <span class="nv">a</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">i</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">i</span>
 <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">bol</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// consider_default_literal_types_redundant: true</span>
+<span class="c1">//</span>
+
+<span class="k">var</span> <span class="nv">bol</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">dbl</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="mf">0.0</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// consider_default_literal_types_redundant: true</span>
+<span class="c1">//</span>
+
+<span class="k">var</span> <span class="nv">dbl</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="mf">0.0</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">int</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// consider_default_literal_types_redundant: true</span>
+<span class="c1">//</span>
+
+<span class="k">var</span> <span class="nv">int</span><span class="err">↓</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">str</span><span class="err">↓</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"str"</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// consider_default_literal_types_redundant: true</span>
+<span class="c1">//</span>
+
+<span class="k">var</span> <span class="nv">str</span><span class="err">↓</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"str"</span>
+
 </code></pre>
 
           </div>

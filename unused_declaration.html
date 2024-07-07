@@ -353,7 +353,7 @@
 <p>Declarations should be referenced at least once within all files linted</p>
 
 <ul>
-<li><strong>Identifier:</strong> unused_declaration</li>
+<li><strong>Identifier:</strong> <code>unused_declaration</code></li>
 <li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> No</li>
 <li><strong>Kind:</strong> lint</li>
@@ -583,7 +583,12 @@ related_usrs_to_skip
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="err">↓</span><span class="nf">foo</span><span class="p">()</span> <span class="p">{}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// include_public_and_open: true</span>
+<span class="c1">//</span>
+
+<span class="kd">public</span> <span class="kd">func</span> <span class="err">↓</span><span class="nf">foo</span><span class="p">()</span> <span class="p">{}</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="err">↓</span><span class="nf">bar1</span><span class="p">()</span>

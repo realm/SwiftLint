@@ -354,7 +354,7 @@
 Private types may start with an underscore.</p>
 
 <ul>
-<li><strong>Identifier:</strong> type_name</li>
+<li><strong>Identifier:</strong> <code>type_name</code></li>
 <li><strong>Enabled by default:</strong> Yes</li>
 <li><strong>Supports autocorrection:</strong> No</li>
 <li><strong>Kind:</strong> idiomatic</li>
@@ -492,7 +492,12 @@ true
 <span class="k">case</span> <span class="n">value</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// validate_protocols: false</span>
+<span class="c1">//</span>
+
+<span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">SomeStruct</span> <span class="p">{</span>
   <span class="kd">enum</span> <span class="p">`</span><span class="nv">Type</span><span class="p">`</span> <span class="p">{</span>

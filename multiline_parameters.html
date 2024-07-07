@@ -353,7 +353,7 @@
 <p>Functions and methods parameters should be either on the same line, or one per line</p>
 
 <ul>
-<li><strong>Identifier:</strong> multiline_parameters</li>
+<li><strong>Identifier:</strong> <code>multiline_parameters</code></li>
 <li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> No</li>
 <li><strong>Kind:</strong> style</li>
@@ -605,29 +605,54 @@ true
         <span class="nv">param3</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">((</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)?</span> <span class="o">=</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span> <span class="p">})</span> <span class="p">{</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allows_single_line: false</span>
+<span class="c1">//</span>
+
+<span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allows_single_line: false</span>
+<span class="c1">//</span>
+
+<span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">Foo</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allows_single_line: false</span>
+<span class="c1">//</span>
+
+<span class="kd">protocol</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
              <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span>
              <span class="nv">param3</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">])</span> <span class="p">{</span> <span class="p">}</span>
 <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">Foo</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allows_single_line: false</span>
+<span class="c1">//</span>
+
+<span class="kd">protocol</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span>
         <span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span>
     <span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
 <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">Foo</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allows_single_line: false</span>
+<span class="c1">//</span>
+
+<span class="kd">protocol</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span>
         <span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
         <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span>
         <span class="nv">param3</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span>
     <span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
 <span class="p">}</span>
+
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="err">↓</span><span class="nf">foo</span><span class="p">(</span><span class="n">_</span> <span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
@@ -740,9 +765,19 @@ true
         <span class="nv">param3</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">((</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)?</span> <span class="o">=</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span> <span class="p">})</span> <span class="p">{</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="err">↓</span><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allows_single_line: false</span>
+<span class="c1">//</span>
+
+<span class="kd">func</span> <span class="err">↓</span><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="err">↓</span><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">param3</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">])</span> <span class="p">{</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allows_single_line: false</span>
+<span class="c1">//</span>
+
+<span class="kd">func</span> <span class="err">↓</span><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">param3</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">])</span> <span class="p">{</span> <span class="p">}</span>
+
 </code></pre>
 
           </div>

@@ -353,7 +353,7 @@
 <p>Shorthand arguments like <code>$0</code>, <code>$1</code>, etc. in closures can be confusing. Avoid using them too far away from the beginning of the closure. Optionally, while usage of a single shorthand argument is okay, more than one or complex ones with field accesses might increase the risk of obfuscation.</p>
 
 <ul>
-<li><strong>Identifier:</strong> shorthand_argument</li>
+<li><strong>Identifier:</strong> <code>shorthand_argument</code></li>
 <li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> No</li>
 <li><strong>Kind:</strong> style</li>
@@ -411,9 +411,14 @@ false
 </code></pre>
 <pre class="highlight swift"><code>    <span class="n">f</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="nv">$0</span><span class="o">.</span><span class="n">b</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code>    <span class="n">f</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allow_until_line_after_opening_brace: 1</span>
+<span class="c1">//</span>
+
+    <span class="n">f</span> <span class="p">{</span>
         <span class="nv">$0</span>
       <span class="o">+</span>  <span class="n">g</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
+
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code>    <span class="n">f</span> <span class="p">{</span>
@@ -424,7 +429,11 @@ false
       <span class="o">+</span> <span class="err">↓</span><span class="nv">$0</span>
     <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code>    <span class="n">f</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allow_until_line_after_opening_brace: 5</span>
+<span class="c1">//</span>
+
+    <span class="n">f</span> <span class="p">{</span>
         <span class="nv">$0</span>
       <span class="o">+</span> <span class="nv">$1</span>
       <span class="o">+</span> <span class="nv">$2</span>
@@ -432,15 +441,27 @@ false
       <span class="o">+</span> <span class="nv">$0</span>
       <span class="o">+</span> <span class="err">↓</span><span class="nv">$1</span>
     <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code>    <span class="n">f</span> <span class="p">{</span> <span class="err">↓</span><span class="nv">$0</span> <span class="o">+</span> <span class="err">↓</span><span class="nv">$1</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// always_disallow_more_than_one: true</span>
+<span class="c1">//</span>
+
+    <span class="n">f</span> <span class="p">{</span> <span class="err">↓</span><span class="nv">$0</span> <span class="o">+</span> <span class="err">↓</span><span class="nv">$1</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code>    <span class="n">f</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allow_until_line_after_opening_brace: 3</span>
+<span class="c1">// always_disallow_member_access: true</span>
+<span class="c1">//</span>
+
+    <span class="n">f</span> <span class="p">{</span>
         <span class="err">↓</span><span class="nv">$0</span><span class="o">.</span><span class="n">a</span>
       <span class="o">+</span> <span class="err">↓</span><span class="nv">$0</span><span class="o">.</span><span class="n">b</span>
       <span class="o">+</span> <span class="nv">$1</span>
       <span class="o">+</span> <span class="err">↓</span><span class="nv">$2</span><span class="o">.</span><span class="n">c</span>
 <span class="p">}</span>
+
 </code></pre>
 
           </div>

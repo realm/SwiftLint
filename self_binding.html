@@ -353,7 +353,7 @@
 <p>Re-bind <code>self</code> to a consistent identifier name.</p>
 
 <ul>
-<li><strong>Identifier:</strong> self_binding</li>
+<li><strong>Identifier:</strong> <code>self_binding</code></li>
 <li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> Yes</li>
 <li><strong>Kind:</strong> style</li>
@@ -393,9 +393,19 @@ bind_identifier
 </code></pre>
 <pre class="highlight swift"><code><span class="k">guard</span> <span class="k">let</span> <span class="nv">this</span> <span class="o">=</span> <span class="n">this</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="k">let</span> <span class="nv">this</span> <span class="o">=</span> <span class="k">self</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// bind_identifier: "this"</span>
+<span class="c1">//</span>
+
+<span class="k">if</span> <span class="k">let</span> <span class="nv">this</span> <span class="o">=</span> <span class="k">self</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">guard</span> <span class="k">let</span> <span class="nv">this</span> <span class="o">=</span> <span class="k">self</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// bind_identifier: "this"</span>
+<span class="c1">//</span>
+
+<span class="k">guard</span> <span class="k">let</span> <span class="nv">this</span> <span class="o">=</span> <span class="k">self</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">if</span> <span class="kd">let</span> <span class="err">↓</span><span class="p">`</span><span class="nv">self</span><span class="p">`</span> <span class="o">=</span> <span class="k">self</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
@@ -406,13 +416,33 @@ bind_identifier
 </code></pre>
 <pre class="highlight swift"><code><span class="k">guard</span> <span class="kd">let</span> <span class="err">↓</span><span class="n">this</span> <span class="o">=</span> <span class="k">self</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="kd">let</span> <span class="err">↓</span><span class="k">self</span> <span class="o">=</span> <span class="k">self</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// bind_identifier: "this"</span>
+<span class="c1">//</span>
+
+<span class="k">if</span> <span class="kd">let</span> <span class="err">↓</span><span class="k">self</span> <span class="o">=</span> <span class="k">self</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">guard</span> <span class="kd">let</span> <span class="err">↓</span><span class="k">self</span> <span class="o">=</span> <span class="k">self</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// bind_identifier: "this"</span>
+<span class="c1">//</span>
+
+<span class="k">guard</span> <span class="kd">let</span> <span class="err">↓</span><span class="k">self</span> <span class="o">=</span> <span class="k">self</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="kd">let</span> <span class="err">↓</span><span class="k">self</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// bind_identifier: "this"</span>
+<span class="c1">//</span>
+
+<span class="k">if</span> <span class="kd">let</span> <span class="err">↓</span><span class="k">self</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">guard</span> <span class="kd">let</span> <span class="err">↓</span><span class="k">self</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// bind_identifier: "this"</span>
+<span class="c1">//</span>
+
+<span class="k">guard</span> <span class="kd">let</span> <span class="err">↓</span><span class="k">self</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+
 </code></pre>
 
           </div>

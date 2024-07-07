@@ -353,7 +353,7 @@
 <p>Top-level constants should be prefixed by <code>k</code></p>
 
 <ul>
-<li><strong>Identifier:</strong> prefixed_toplevel_constant</li>
+<li><strong>Identifier:</strong> <code>prefixed_toplevel_constant</code></li>
 <li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> No</li>
 <li><strong>Kind:</strong> style</li>
@@ -393,7 +393,12 @@ false
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">kFoo</span> <span class="o">=</span> <span class="kc">true</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">Foo</span> <span class="o">=</span> <span class="kc">true</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// only_private: true</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">Foo</span> <span class="o">=</span> <span class="kc">true</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">bar</span> <span class="o">=</span> <span class="mf">20.0</span>

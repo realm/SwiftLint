@@ -353,7 +353,7 @@
 <p>Test cases should be final</p>
 
 <ul>
-<li><strong>Identifier:</strong> final_test_case</li>
+<li><strong>Identifier:</strong> <code>final_test_case</code></li>
 <li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> Yes</li>
 <li><strong>Kind:</strong> performance</li>
@@ -393,14 +393,24 @@ test_parent_classes
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Test</span><span class="p">:</span> <span class="kt">MyTestCase</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Test</span><span class="p">:</span> <span class="kt">MyTestCase</span> <span class="p">{}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// test_parent_classes: ["MyTestCase", "QuickSpec", "XCTestCase"]</span>
+<span class="c1">//</span>
+
+<span class="kd">struct</span> <span class="kt">Test</span><span class="p">:</span> <span class="kt">MyTestCase</span> <span class="p">{}</span>
+
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="err">↓</span><span class="kt">Test</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="err">↓</span><span class="kt">Test</span><span class="p">:</span> <span class="kt">QuickSpec</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">class</span> <span class="err">↓</span><span class="kt">Test</span><span class="p">:</span> <span class="kt">MyTestCase</span> <span class="p">{}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// test_parent_classes: ["MyTestCase", "QuickSpec", "XCTestCase"]</span>
+<span class="c1">//</span>
+
+<span class="kd">class</span> <span class="err">↓</span><span class="kt">Test</span><span class="p">:</span> <span class="kt">MyTestCase</span> <span class="p">{}</span>
+
 </code></pre>
 
           </div>

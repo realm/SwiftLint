@@ -353,7 +353,7 @@
 <p>Underscores should be used as thousand separator in large numbers with a configurable number of digits. In other words, there should be an underscore after every 3 digits in the integral as well as the fractional part of a number.</p>
 
 <ul>
-<li><strong>Identifier:</strong> number_separator</li>
+<li><strong>Identifier:</strong> <code>number_separator</code></li>
 <li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> Yes</li>
 <li><strong>Kind:</strong> style</li>
@@ -494,13 +494,28 @@ exclude_ranges
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mi">1</span><span class="n">__000</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">1.0001</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">1.0001</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">1_000_000.000000_1</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">1_000_000.000000_1</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">1000000.000000_1</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">6.2832e-6</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">6.2832e-6</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mi">10_0</span>
 </code></pre>
@@ -512,13 +527,28 @@ exclude_ranges
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mi">1</span><span class="n">__000</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mf">1.0001</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mf">1.0001</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mf">1_000_000.000000_1</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mf">1_000_000.000000_1</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mf">1000000.000000_1</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mf">6.2832e-6</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mf">6.2832e-6</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mi">10_0</span>
 </code></pre>
@@ -530,31 +560,76 @@ exclude_ranges
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mi">1</span><span class="n">__000</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mf">1.0001</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mf">1.0001</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mf">1_000_000.000000_1</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mf">1_000_000.000000_1</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mf">1000000.000000_1</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mf">6.2832e-6</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mf">6.2832e-6</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="err">↓</span><span class="mi">100000</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="err">↓</span><span class="mf">10.000000_1</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="err">↓</span><span class="mf">10.000000_1</span><span class="p">)</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="err">↓</span><span class="mi">123456</span> <span class="o">/</span> <span class="err">↓</span><span class="mf">447.214214</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="err">↓</span><span class="mi">123456</span> <span class="o">/</span> <span class="err">↓</span><span class="mf">447.214214</span><span class="p">)</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">+</span><span class="p">(</span><span class="err">↓</span><span class="mi">100000</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">+</span><span class="p">(</span><span class="err">↓</span><span class="mf">10.000000_1</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">+</span><span class="p">(</span><span class="err">↓</span><span class="mf">10.000000_1</span><span class="p">)</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">+</span><span class="p">(</span><span class="err">↓</span><span class="mi">123456</span> <span class="o">/</span> <span class="err">↓</span><span class="mf">447.214214</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">+</span><span class="p">(</span><span class="err">↓</span><span class="mi">123456</span> <span class="o">/</span> <span class="err">↓</span><span class="mf">447.214214</span><span class="p">)</span>
+
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="p">(</span><span class="err">↓</span><span class="mi">100000</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="p">(</span><span class="err">↓</span><span class="mf">10.000000_1</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="p">(</span><span class="err">↓</span><span class="mf">10.000000_1</span><span class="p">)</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="p">(</span><span class="err">↓</span><span class="mi">123456</span> <span class="o">/</span> <span class="err">↓</span><span class="mf">447.214214</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// minimum_fraction_length: 3</span>
+<span class="c1">//</span>
+
+<span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="p">(</span><span class="err">↓</span><span class="mi">123456</span> <span class="o">/</span> <span class="err">↓</span><span class="mf">447.214214</span><span class="p">)</span>
+
 </code></pre>
 
           </div>

@@ -353,7 +353,7 @@
 <p>IBOutlets should be private to avoid leaking UIKit to higher layers</p>
 
 <ul>
-<li><strong>Identifier:</strong> private_outlet</li>
+<li><strong>Identifier:</strong> <code>private_outlet</code></li>
 <li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> No</li>
 <li><strong>Kind:</strong> lint</li>
@@ -397,15 +397,40 @@ false
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="kd">fileprivate</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allow_private_set: true</span>
+<span class="c1">//</span>
+
+<span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allow_private_set: true</span>
+<span class="c1">//</span>
+
+<span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="k">weak</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allow_private_set: true</span>
+<span class="c1">//</span>
+
+<span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="k">weak</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="kd">private(set)</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allow_private_set: true</span>
+<span class="c1">//</span>
+
+<span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="kd">private(set)</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span> <span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="nf">fileprivate</span><span class="p">(</span><span class="k">set</span><span class="p">)</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allow_private_set: true</span>
+<span class="c1">//</span>
+
+<span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="nf">fileprivate</span><span class="p">(</span><span class="k">set</span><span class="p">)</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span> <span class="p">}</span>
+
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">@IBOutlet</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span> <span class="p">}</span>

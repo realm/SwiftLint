@@ -1345,6 +1345,12 @@ final class UnusedOptionalBindingRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class UnusedParameterRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnusedParameterRule.description)
+    }
+}
+
 final class UnusedSetterValueRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedSetterValueRule.description)

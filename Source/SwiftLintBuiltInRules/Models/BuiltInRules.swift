@@ -226,6 +226,7 @@ public let builtInRules: [any Rule.Type] = [
     UnusedEnumeratedRule.self,
     UnusedImportRule.self,
     UnusedOptionalBindingRule.self,
+    UnusedParameterRule.self,
     UnusedSetterValueRule.self,
     ValidIBInspectableRule.self,
     VerticalParameterAlignmentOnCallRule.self,

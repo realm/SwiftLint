@@ -48,6 +48,7 @@ disabled_rules:
   - trailing_closure
   - type_contents_order
   - unused_capture_list
+  - unused_parameter
   - vertical_whitespace_between_cases
 
 # Configurations
@@ -62,7 +63,7 @@ balanced_xctest_lifecycle: &unit_test_configuration
     - XCTestCase
 closure_body_length:
     warning: 50
-    error: 100    
+    error: 100
 empty_xctest_method: *unit_test_configuration
 file_name:
   excluded:

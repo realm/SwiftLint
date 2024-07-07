@@ -603,6 +603,8 @@ unused_import:
 unused_optional_binding:
   severity: warning
   ignore_optional_try: false
+unused_parameter:
+  severity: warning
 unused_setter_value:
   severity: warning
 valid_ibinspectable:

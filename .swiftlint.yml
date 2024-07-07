@@ -16,7 +16,6 @@ opt_in_rules:
 disabled_rules:
   - anonymous_argument_in_multiline_closure
   - anyobject_protocol
-  - closure_body_length
   - conditional_returns_on_newline
   - convenience_type
   - discouraged_optional_collection
@@ -34,7 +33,6 @@ disabled_rules:
   - multiline_arguments
   - multiline_arguments_brackets
   - multiline_function_chains
-  - multiline_literal_brackets
   - multiline_parameters
   - multiline_parameters_brackets
   - no_extension_access_modifier
@@ -64,6 +62,9 @@ balanced_xctest_lifecycle: &unit_test_configuration
   test_parent_classes:
     - SwiftLintTestCase
     - XCTestCase
+closure_body_length:
+    warning: 50
+    error: 100    
 empty_xctest_method: *unit_test_configuration
 file_name:
   excluded:

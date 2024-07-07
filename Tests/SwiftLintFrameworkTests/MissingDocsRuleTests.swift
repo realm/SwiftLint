@@ -193,7 +193,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
         XCTAssertFalse(configuration.excludesInheritedTypes)
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [   RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
+            [
+                RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
             ]
         )

@@ -27,7 +27,7 @@ public protocol Documentable {
 public struct RuleConfigurationDescription: Equatable {
     fileprivate let options: [RuleConfigurationOption]
 
-    fileprivate init(options: [RuleConfigurationOption]) {
+    fileprivate init(options: [RuleConfigurationOption], exclusiveOptions: Set<String> = []) {
         if options.contains(.noOptions) {
             if options.count > 1 {
                 queuedFatalError(
@@ -39,15 +39,18 @@ public struct RuleConfigurationDescription: Equatable {
                 )
             }
             self.options = []
-        } else {
-            self.options = options.filter { $0.value != .empty }
+            return
         }
+        let nonEmptyOptions = options.filter { $0.value != .empty }
+        self.options = exclusiveOptions.isEmpty
+            ? nonEmptyOptions
+            : nonEmptyOptions.filter { exclusiveOptions.contains($0.key) }
     }
 
-    static func from(configuration: some RuleConfiguration) -> Self {
+    static func from(configuration: some RuleConfiguration, exclusiveOptions: Set<String> = []) -> Self {
         // Prefer custom descriptions.
         if let customDescription = configuration.parameterDescription {
-            return customDescription
+            return Self(options: customDescription.options, exclusiveOptions: exclusiveOptions)
         }
         let options: [RuleConfigurationOption] = Mirror(reflecting: configuration).children
             .compactMap { child -> RuleConfigurationDescription? in
@@ -69,7 +72,7 @@ public struct RuleConfigurationDescription: Equatable {
                 """
             )
         }
-        return Self(options: options)
+        return Self(options: options, exclusiveOptions: exclusiveOptions)
     }
 
     func allowedKeys() -> [String] {

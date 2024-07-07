@@ -41,6 +41,9 @@
   [Ueeek](https://github.com/Ueeek)
   [#5615](https://github.com/realm/SwiftLint/issues/5615)
 
+* Add modified configurations to examples in rule documentation.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Add new option `evaluate_effective_access_control_level` to `missing_docs`
   rule. Setting it to `true` stops the rule from triggering on declarations
   inside of types with lower visibility. These declarations effectively

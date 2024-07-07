@@ -70,10 +70,11 @@ extension SwiftLint {
             }
 
             print("\(description.consoleDescription)")
-            if rule.configurationDescription.hasContent {
+            let configDescription = rule.createConfigurationDescription()
+            if configDescription.hasContent {
                 print("\nConfiguration (YAML):\n")
                 print("  \(description.identifier):")
-                print(rule.configurationDescription.yaml().indent(by: 4))
+                print(configDescription.yaml().indent(by: 4))
             }
 
             guard description.triggeringExamples.isNotEmpty else { return }
@@ -85,9 +86,10 @@ extension SwiftLint {
         }
 
         private func printConfig(for rule: any Rule) {
-            if rule.configurationDescription.hasContent {
+            let configDescription = rule.createConfigurationDescription()
+            if configDescription.hasContent {
                 print("\(type(of: rule).identifier):")
-                print(rule.configurationDescription.yaml().indent(by: 2))
+                print(configDescription.yaml().indent(by: 2))
             }
         }
 
@@ -141,7 +143,7 @@ private extension TextTable {
                 ruleType.description.kind.rawValue,
                 (rule is any AnalyzerRule) ? "yes" : "no",
                 (rule is any SourceKitFreeRule) ? "no" : "yes",
-                truncate((defaultConfig ? rule : configuredRule ?? rule).configurationDescription.oneLiner()),
+                truncate((defaultConfig ? rule : configuredRule ?? rule).createConfigurationDescription().oneLiner()),
             ])
         }
     }

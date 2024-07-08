@@ -251,6 +251,6 @@ final class CustomRulesTests: SwiftLintTestCase {
     }
 
     private func getTestTextFile() -> SwiftLintFile {
-        return SwiftLintFile(path: "\(testResourcesPath)/test.txt")!
+        SwiftLintFile(path: "\(testResourcesPath)/test.txt")!
     }
 }

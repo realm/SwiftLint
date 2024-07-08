@@ -27,7 +27,7 @@ public protocol ASTRule: Rule {
 
 public extension ASTRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return validate(file: file, dictionary: file.structureDictionary)
+        validate(file: file, dictionary: file.structureDictionary)
     }
 
     /// Executes the rule on a file and a subset of its AST structure, returning any violations to the rule's
@@ -38,7 +38,7 @@ public extension ASTRule {
     ///
     /// - returns: All style violations to the rule's expectations.
     func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.traverseDepthFirst { subDict in
+        dictionary.traverseDepthFirst { subDict in
             guard let kind = self.kind(from: subDict) else { return nil }
             return validate(file: file, kind: kind, dictionary: subDict)
         }
@@ -47,18 +47,18 @@ public extension ASTRule {
 
 public extension ASTRule where KindType == SwiftDeclarationKind {
     func kind(from dictionary: SourceKittenDictionary) -> KindType? {
-        return dictionary.declarationKind
+        dictionary.declarationKind
     }
 }
 
 public extension ASTRule where KindType == SwiftExpressionKind {
     func kind(from dictionary: SourceKittenDictionary) -> KindType? {
-        return dictionary.expressionKind
+        dictionary.expressionKind
     }
 }
 
 public extension ASTRule where KindType == StatementKind {
     func kind(from dictionary: SourceKittenDictionary) -> KindType? {
-        return dictionary.statementKind
+        dictionary.statementKind
     }
 }

@@ -16,7 +16,7 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, SourceKitFreeRul
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(file: file).map { range, _ in
+        violationRanges(file: file).map { range, _ in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: range.location))
@@ -45,7 +45,7 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, SourceKitFreeRul
                 return (range, correction)
             }
             .filter { range, _ in
-                return file.ruleEnabled(violatingRanges: [range], for: self).isNotEmpty
+                file.ruleEnabled(violatingRanges: [range], for: self).isNotEmpty
             }
 
         var correctedContents = file.contents
@@ -100,7 +100,7 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, SourceKitFreeRul
             .flatMap { [lineIndex + $0, lineIndex - $0] }
 
         func isValidIndex(_ idx: Int) -> Bool {
-            return idx != lineIndex && idx >= 0 && idx < file.stringView.lines.count
+            idx != lineIndex && idx >= 0 && idx < file.stringView.lines.count
         }
 
         for lineIndex in lineIndexesAround where isValidIndex(lineIndex) {
@@ -214,7 +214,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
 
 private extension Trivia {
     var containsTooMuchWhitespacing: Bool {
-        return contains { element in
+        contains { element in
             guard case let .spaces(spaces) = element, spaces > 1 else {
                 return false
             }

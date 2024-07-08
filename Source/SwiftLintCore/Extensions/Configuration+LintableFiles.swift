@@ -18,7 +18,7 @@ extension Configuration {
     /// - returns: Files to lint.
     public func lintableFiles(inPath path: String, forceExclude: Bool,
                               excludeBy: ExcludeBy) -> [SwiftLintFile] {
-        return lintablePaths(inPath: path, forceExclude: forceExclude, excludeBy: excludeBy)
+        lintablePaths(inPath: path, forceExclude: forceExclude, excludeBy: excludeBy)
             .compactMap(SwiftLintFile.init(pathDeferringReading:))
     }
 
@@ -109,7 +109,7 @@ extension Configuration {
     ///
     /// - returns: The expanded excluded file paths.
     public func excludedPaths(fileManager: some LintableFileManager = FileManager.default) -> [String] {
-        return excludedPaths
+        excludedPaths
             .flatMap(Glob.resolveGlob)
             .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
     }

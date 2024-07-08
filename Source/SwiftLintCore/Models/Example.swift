@@ -86,7 +86,7 @@ public extension Example {
 
     /// Returns a copy of the Example with all instances of the "↓" character removed.
     func removingViolationMarkers() -> Example {
-        return with(code: code.replacingOccurrences(of: "↓", with: ""))
+        with(code: code.replacingOccurrences(of: "↓", with: ""))
     }
 }
 
@@ -127,7 +127,7 @@ extension Example: Hashable {
     public static func == (lhs: Example, rhs: Example) -> Bool {
         // Ignoring file/line metadata because two Examples could represent
         // the same idea, but captured at two different points in the code
-        return lhs.code == rhs.code
+        lhs.code == rhs.code
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -139,7 +139,7 @@ extension Example: Hashable {
 
 extension Example: Comparable {
     public static func < (lhs: Example, rhs: Example) -> Bool {
-        return lhs.code < rhs.code
+        lhs.code < rhs.code
     }
 }
 

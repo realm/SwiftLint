@@ -306,7 +306,7 @@ extension Configuration: Hashable {
     }
 
     public static func == (lhs: Configuration, rhs: Configuration) -> Bool {
-        return lhs.includedPaths == rhs.includedPaths &&
+        lhs.includedPaths == rhs.includedPaths &&
             lhs.excludedPaths == rhs.excludedPaths &&
             lhs.indentation == rhs.indentation &&
             lhs.warningThreshold == rhs.warningThreshold &&
@@ -327,7 +327,7 @@ extension Configuration: Hashable {
 // MARK: - CustomStringConvertible
 extension Configuration: CustomStringConvertible {
     public var description: String {
-        return "Configuration: \n"
+        "Configuration: \n"
             + "- Indentation Style: \(indentation)\n"
             + "- Included Paths: \(includedPaths)\n"
             + "- Excluded Paths: \(excludedPaths)\n"

@@ -10,14 +10,14 @@ struct ContainsOverFirstNotNilRule: OptInRule {
         description: "Prefer `contains` over `first(where:) != nil` and `firstIndex(where:) != nil`.",
         kind: .performance,
         nonTriggeringExamples: ["first", "firstIndex"].flatMap { method in
-            return [
+            [
                 Example("let \(method) = myList.\(method)(where: { $0 % 2 == 0 })"),
                 Example("let \(method) = myList.\(method) { $0 % 2 == 0 }"),
             ]
         },
         triggeringExamples: ["first", "firstIndex"].flatMap { method in
-            return ["!=", "=="].flatMap { comparison in
-                return [
+            ["!=", "=="].flatMap { comparison in
+                [
                     Example("↓myList.\(method) { $0 % 2 == 0 } \(comparison) nil"),
                     Example("↓myList.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil"),
                     Example("↓myList.map { $0 + 1 }.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil"),

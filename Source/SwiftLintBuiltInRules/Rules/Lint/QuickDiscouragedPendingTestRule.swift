@@ -48,7 +48,7 @@ private extension ClassDeclSyntax {
 
 private extension FunctionDeclSyntax {
     var isSpecFunction: Bool {
-        return name.tokenKind == .identifier("spec") &&
+        name.tokenKind == .identifier("spec") &&
         signature.parameterClause.parameters.isEmpty &&
             modifiers.contains(keyword: .override)
     }

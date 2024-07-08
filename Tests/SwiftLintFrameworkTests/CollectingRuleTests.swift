@@ -8,7 +8,7 @@ final class CollectingRuleTests: SwiftLintTestCase {
             var configuration = SeverityConfiguration<Self>(.warning)
 
             func collectInfo(for file: SwiftLintFile) -> Int {
-                return 42
+                42
             }
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: Int]) -> [StyleViolation] {
                 XCTAssertEqual(collectedInfo[file], 42)
@@ -29,7 +29,7 @@ final class CollectingRuleTests: SwiftLintTestCase {
             var configuration = SeverityConfiguration<Self>(.warning)
 
             func collectInfo(for file: SwiftLintFile) -> String {
-                return file.contents
+                file.contents
             }
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String]) -> [StyleViolation] {
                 let values = collectedInfo.values
@@ -54,7 +54,7 @@ final class CollectingRuleTests: SwiftLintTestCase {
             var configuration = SeverityConfiguration<Self>(.warning)
 
             func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> [String] {
-                return compilerArguments
+                compilerArguments
             }
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: [String]], compilerArguments: [String])
                 -> [StyleViolation] {
@@ -76,7 +76,7 @@ final class CollectingRuleTests: SwiftLintTestCase {
             var configuration = SeverityConfiguration<Self>(.warning)
 
             func collectInfo(for file: SwiftLintFile) -> String {
-                return file.contents
+                file.contents
             }
 
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String]) -> [StyleViolation] {
@@ -108,7 +108,7 @@ final class CollectingRuleTests: SwiftLintTestCase {
             var configuration = SeverityConfiguration<Self>(.warning)
 
             func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> String {
-                return file.contents
+                file.contents
             }
 
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String], compilerArguments: [String])
@@ -143,10 +143,10 @@ extension MockCollectingRule {
     @RuleConfigurationDescriptionBuilder
     var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
     static var description: RuleDescription {
-        return RuleDescription(identifier: "test_rule", name: "", description: "", kind: .lint)
+        RuleDescription(identifier: "test_rule", name: "", description: "", kind: .lint)
     }
     static var configuration: Configuration? {
-        return Configuration(rulesMode: .only([description.identifier]), ruleList: RuleList(rules: self))
+        Configuration(rulesMode: .only([description.identifier]), ruleList: RuleList(rules: self))
     }
 
     init(configuration: Any) throws { self.init() }

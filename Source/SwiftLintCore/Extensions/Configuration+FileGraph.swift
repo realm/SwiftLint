@@ -179,7 +179,7 @@ package extension Configuration {
         }
 
         private func findPossiblyExistingVertex(sameAs vertex: Vertex) -> Vertex? {
-            return vertices.first {
+            vertices.first {
                 $0.originalRemoteString != nil && $0.originalRemoteString == vertex.originalRemoteString
             } ?? vertices.first { $0.filePath == vertex.filePath }
         }
@@ -237,7 +237,7 @@ package extension Configuration {
             }
 
             return verticesToMerge.map {
-                return (
+                (
                     configurationDict: $0.configurationDict,
                     rootDirectory: $0.rootDirectory
                 )

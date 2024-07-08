@@ -1,6 +1,6 @@
 internal struct NumberSeparatorRuleExamples {
     static let nonTriggeringExamples: [Example] = {
-        return ["-", "+", ""].flatMap { (sign: String) -> [Example] in
+        ["-", "+", ""].flatMap { (sign: String) -> [Example] in
             [
                 Example("let foo = \(sign)100"),
                 Example("let foo = \(sign)1_000"),
@@ -33,7 +33,7 @@ internal struct NumberSeparatorRuleExamples {
     static let corrections = makeCorrections(signs: [("-↓", "-"), ("+↓", "+"), ("↓", "")])
 
     private static func makeTriggeringExamples(signs: [String]) -> [Example] {
-        return signs.flatMap { (sign: String) -> [Example] in
+        signs.flatMap { (sign: String) -> [Example] in
             [
                 Example("let foo = \(sign)10_0"),
                 Example("let foo = \(sign)1000"),

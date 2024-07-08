@@ -85,13 +85,11 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration {
     }
 
     private func regexFromString(for file: SwiftLintFile, using pattern: String) -> NSRegularExpression? {
-        return makeRegex(for: file, using: pattern, options: Self.stringRegexOptions,
-                         escapeFileName: false)
+        makeRegex(for: file, using: pattern, options: Self.stringRegexOptions, escapeFileName: false)
     }
 
     private func regexFromPattern(for file: SwiftLintFile, using pattern: String) -> NSRegularExpression? {
-        return makeRegex(for: file, using: pattern, options: Self.patternRegexOptions,
-                         escapeFileName: true)
+        makeRegex(for: file, using: pattern, options: Self.patternRegexOptions, escapeFileName: true)
     }
 
     func forbiddenRegex(for file: SwiftLintFile) -> NSRegularExpression? {

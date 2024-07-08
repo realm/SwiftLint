@@ -5,7 +5,7 @@ internal struct HashableConfigurationRuleWrapperWrapper: Hashable {
         lhs: HashableConfigurationRuleWrapperWrapper, rhs: HashableConfigurationRuleWrapperWrapper
     ) -> Bool {
         // Only use identifier for equality check (not taking config into account)
-        return type(of: lhs.configurationRuleWrapper.rule).description.identifier
+        type(of: lhs.configurationRuleWrapper.rule).description.identifier
             == type(of: rhs.configurationRuleWrapper.rule).description.identifier
     }
 

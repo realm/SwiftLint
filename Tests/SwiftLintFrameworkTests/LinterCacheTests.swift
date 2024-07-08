@@ -11,7 +11,7 @@ private struct CacheTestHelper {
 
     private var fileManager: TestFileManager {
         // swiftlint:disable:next force_cast
-        return cache.fileManager as! TestFileManager
+        cache.fileManager as! TestFileManager
     }
 
     fileprivate init(dict: [String: Any], cache: LinterCache) {
@@ -36,7 +36,7 @@ private struct CacheTestHelper {
     }
 
     fileprivate func makeConfig(dict: [String: Any]) -> Configuration {
-        return try! Configuration(dict: dict, ruleList: ruleList) // swiftlint:disable:this force_try
+        try! Configuration(dict: dict, ruleList: ruleList) // swiftlint:disable:this force_try
     }
 
     fileprivate func touch(file: String) {
@@ -48,19 +48,19 @@ private struct CacheTestHelper {
     }
 
     fileprivate func fileCount() -> Int {
-        return fileManager.stubbedModificationDateByPath.count
+        fileManager.stubbedModificationDateByPath.count
     }
 }
 
 private class TestFileManager: LintableFileManager {
     fileprivate func filesToLint(inPath: String, rootDirectory: String? = nil) -> [String] {
-        return []
+        []
     }
 
     fileprivate var stubbedModificationDateByPath = [String: Date]()
 
     fileprivate func modificationDate(forFileAtPath path: String) -> Date? {
-        return stubbedModificationDateByPath[path]
+        stubbedModificationDateByPath[path]
     }
 
     fileprivate func isFile(atPath path: String) -> Bool {
@@ -74,7 +74,7 @@ final class LinterCacheTests: SwiftLintTestCase {
     private var cache = LinterCache(fileManager: TestFileManager())
 
     private func makeCacheTestHelper(dict: [String: Any]) -> CacheTestHelper {
-        return CacheTestHelper(dict: dict, cache: cache)
+        CacheTestHelper(dict: dict, cache: cache)
     }
 
     private func cacheAndValidate(violations: [StyleViolation], forFile: String, configuration: Configuration,

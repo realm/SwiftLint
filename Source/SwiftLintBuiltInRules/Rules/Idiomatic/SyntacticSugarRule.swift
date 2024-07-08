@@ -20,15 +20,15 @@ struct SyntacticSugarRule: CorrectableRule, SourceKitFreeRule {
         return visitor.walk(file: file) { visitor in
             flattenViolations(visitor.violations)
         }.map { violation in
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: ByteCount(violation.position)),
-                                  reason: violation.type.violationReason)
+            StyleViolation(ruleDescription: Self.description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: ByteCount(violation.position)),
+                           reason: violation.type.violationReason)
         }
     }
 
     private func flattenViolations(_ violations: [SyntacticSugarRuleViolation]) -> [SyntacticSugarRuleViolation] {
-        return violations.flatMap { [$0] + flattenViolations($0.children) }
+        violations.flatMap { [$0] + flattenViolations($0.children) }
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {

@@ -74,31 +74,31 @@ private extension FunctionCallExprSyntax {
     }
 
     var isCGPointZeroCall: Bool {
-        return name == "CGPoint" &&
+        name == "CGPoint" &&
             argumentNames == ["x", "y"] &&
             argumentsAreAllZero
     }
 
     var isCGSizeCall: Bool {
-        return name == "CGSize" &&
+        name == "CGSize" &&
             argumentNames == ["width", "height"] &&
             argumentsAreAllZero
     }
 
     var isCGRectCall: Bool {
-        return name == "CGRect" &&
+        name == "CGRect" &&
             argumentNames == ["x", "y", "width", "height"] &&
             argumentsAreAllZero
     }
 
     var isCGVectorCall: Bool {
-        return name == "CGVector" &&
+        name == "CGVector" &&
             argumentNames == ["dx", "dy"] &&
             argumentsAreAllZero
     }
 
     var isUIEdgeInsetsCall: Bool {
-        return name == "UIEdgeInsets" &&
+        name == "UIEdgeInsets" &&
             argumentNames == ["top", "left", "bottom", "right"] &&
             argumentsAreAllZero
     }

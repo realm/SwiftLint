@@ -8,7 +8,7 @@ struct GitHubActionsLoggingReporter: Reporter {
                                     "machine for Actions can recognize as messages."
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        return violations.map(generateForSingleViolation).joined(separator: "\n")
+        violations.map(generateForSingleViolation).joined(separator: "\n")
     }
 
     // MARK: - Private
@@ -17,7 +17,7 @@ struct GitHubActionsLoggingReporter: Reporter {
         // swiftlint:disable:next line_length
         // https://help.github.com/en/github/automating-your-workflow-with-github-actions/development-tools-for-github-actions#logging-commands
         // ::(warning|error) file={relative_path_to_file},line={:line},col={:character}::{content}
-        return [
+        [
             "::\(violation.severity.rawValue) ",
             "file=\(violation.location.relativeFile ?? ""),",
             "line=\(violation.location.line ?? 1),",

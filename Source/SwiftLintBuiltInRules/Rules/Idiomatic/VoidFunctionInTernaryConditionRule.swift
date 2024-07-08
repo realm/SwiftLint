@@ -144,7 +144,7 @@ private extension VoidFunctionInTernaryConditionRule {
 
 private extension ExprListSyntax {
     var containsAssignment: Bool {
-        return children(viewMode: .sourceAccurate).contains(where: { $0.is(AssignmentExprSyntax.self) })
+        children(viewMode: .sourceAccurate).contains(where: { $0.is(AssignmentExprSyntax.self) })
     }
 }
 

@@ -32,7 +32,7 @@ public class RuleStorage: CustomStringConvertible {
     ///
     /// - returns: All file information for a given rule that was collected via `collect(...)`.
     func collectedInfo<R: CollectingRule>(for rule: R) -> [SwiftLintFile: R.FileInfo]? {
-        return access.sync {
+        access.sync {
             storage[ObjectIdentifier(R.self)] as? [SwiftLintFile: R.FileInfo]
         }
     }

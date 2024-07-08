@@ -54,11 +54,11 @@ public extension CollectingRule {
         return validate(file: file, collectedInfo: info, compilerArguments: compilerArguments)
     }
     func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> FileInfo {
-        return collectInfo(for: file)
+        collectInfo(for: file)
     }
     func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
                   compilerArguments: [String]) -> [StyleViolation] {
-        return validate(file: file, collectedInfo: collectedInfo)
+        validate(file: file, collectedInfo: collectedInfo)
     }
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:collectedInfo:)` for CollectingRule")
@@ -116,7 +116,7 @@ package protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
 package extension CollectingCorrectableRule {
     func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
                  compilerArguments: [String]) -> [Correction] {
-        return correct(file: file, collectedInfo: collectedInfo)
+        correct(file: file, collectedInfo: collectedInfo)
     }
 
     func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {

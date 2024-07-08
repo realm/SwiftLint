@@ -14,7 +14,7 @@ extension String {
     }
 
     fileprivate func trailingNewlineCount() -> Int? {
-        return countOfTrailingCharacters(in: .newlines)
+        countOfTrailingCharacters(in: .newlines)
     }
 }
 

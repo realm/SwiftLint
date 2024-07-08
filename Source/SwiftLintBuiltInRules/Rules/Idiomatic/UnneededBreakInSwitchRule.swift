@@ -4,7 +4,7 @@ private func embedInSwitch(
     _ text: String,
     case: String = "case .bar",
     file: StaticString = #filePath, line: UInt = #line) -> Example {
-    return Example("""
+    Example("""
         switch foo {
         \(`case`):
             \(text)

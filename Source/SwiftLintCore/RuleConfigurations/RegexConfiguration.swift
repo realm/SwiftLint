@@ -45,8 +45,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
 
     /// The `RuleDescription` for the custom rule defined here.
     public var description: RuleDescription {
-        return RuleDescription(identifier: identifier, name: name ?? identifier,
-                               description: "", kind: .style)
+        RuleDescription(identifier: identifier, name: name ?? identifier,
+                        description: "", kind: .style)
     }
 
     /// Create a `RegexConfiguration` with the specified identifier, with other properties to be set later.

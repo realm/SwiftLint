@@ -10,7 +10,7 @@ struct ContainsOverFilterCountRule: OptInRule {
         description: "Prefer `contains` over comparing `filter(where:).count` to 0",
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
-            return [
+            [
                 Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1"),
                 Example("let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1"),
                 Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 01"),
@@ -21,7 +21,7 @@ struct ContainsOverFilterCountRule: OptInRule {
             Example("let result = myList.contains(10)"),
         ],
         triggeringExamples: [">", "==", "!="].flatMap { operation in
-            return [
+            [
                 Example("let result = ↓myList.filter(where: { $0 % 2 == 0 }).count \(operation) 0"),
                 Example("let result = ↓myList.filter { $0 % 2 == 0 }.count \(operation) 0"),
                 Example("let result = ↓myList.filter(where: someFunction).count \(operation) 0"),

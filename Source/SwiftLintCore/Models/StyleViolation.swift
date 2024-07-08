@@ -20,7 +20,7 @@ public struct StyleViolation: CustomStringConvertible, Codable, Hashable {
 
     /// A printable description for this violation.
     public var description: String {
-        return XcodeReporter.generateForSingleViolation(self)
+        XcodeReporter.generateForSingleViolation(self)
     }
 
     /// Creates a `StyleViolation` by specifying its properties directly.

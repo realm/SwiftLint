@@ -214,7 +214,7 @@ private func wrapExample(_ type: String,
                          _ test: String,
                          file: StaticString = #filePath,
                          line: UInt = #line) -> Example {
-    return Example("""
+    Example("""
         \(type) Foo {
             \(test)
         }

@@ -95,10 +95,10 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
     func validate(file: SwiftLintFile,
                   kind: SwiftExpressionKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violatingOffsets(file: file, kind: kind, dictionary: dictionary).map { offset in
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: offset))
+        violatingOffsets(file: file, kind: kind, dictionary: dictionary).map { offset in
+            StyleViolation(ruleDescription: Self.description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: offset))
         }
     }
 
@@ -214,7 +214,7 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
 
 private extension SourceKittenDictionary {
     var subcalls: [SourceKittenDictionary] {
-        return substructure.compactMap { dictionary -> SourceKittenDictionary? in
+        substructure.compactMap { dictionary -> SourceKittenDictionary? in
             guard dictionary.expressionKind == .call else {
                 return nil
             }

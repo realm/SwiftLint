@@ -43,7 +43,7 @@ private extension SwiftLintFile {
 
 public extension String {
     func stringByAppendingPathComponent(_ pathComponent: String) -> String {
-        return bridge().appendingPathComponent(pathComponent)
+        bridge().appendingPathComponent(pathComponent)
     }
 }
 
@@ -82,12 +82,12 @@ public func violations(_ example: Example, config inputConfig: Configuration = C
 public extension Collection where Element == String {
     func violations(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false)
         -> [StyleViolation] {
-            return map { SwiftLintFile.testFile(withContents: $0, persistToDisk: requiresFileOnDisk) }
+            map { SwiftLintFile.testFile(withContents: $0, persistToDisk: requiresFileOnDisk) }
                 .violations(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 
     func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
-        return map { SwiftLintFile.testFile(withContents: $0, persistToDisk: requiresFileOnDisk) }
+        map { SwiftLintFile.testFile(withContents: $0, persistToDisk: requiresFileOnDisk) }
             .corrections(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 }
@@ -123,7 +123,7 @@ public extension Collection where Element: SwiftLintFile {
 
 private extension Collection where Element == StyleViolation {
     func withoutFiles() -> [StyleViolation] {
-        return map { violation in
+        map { violation in
             let locationWithoutFile = Location(file: nil, line: violation.location.line,
                                                character: violation.location.character)
             return violation.with(location: locationWithoutFile)
@@ -133,7 +133,7 @@ private extension Collection where Element == StyleViolation {
 
 private extension Collection where Element == Correction {
     func withoutFiles() -> [Correction] {
-        return map { correction in
+        map { correction in
             let locationWithoutFile = Location(file: nil, line: correction.location.line,
                                                character: correction.location.character)
             return Correction(ruleDescription: correction.ruleDescription, location: locationWithoutFile)
@@ -146,7 +146,7 @@ public extension Collection where Element == Example {
     ///
     /// - returns: A new `Array`.
     func removingViolationMarkers() -> [Element] {
-        return map { $0.removingViolationMarkers() }
+        map { $0.removingViolationMarkers() }
     }
 }
 
@@ -260,7 +260,7 @@ private extension Configuration {
 
 private extension String {
     func toStringLiteral() -> String {
-        return "\"" + replacingOccurrences(of: "\n", with: "\\n") + "\""
+        "\"" + replacingOccurrences(of: "\n", with: "\\n") + "\""
     }
 }
 
@@ -307,11 +307,11 @@ private func testCorrection(_ correction: (Example, Example),
 }
 
 private func addEmoji(_ example: Example) -> Example {
-    return example.with(code: "/* 👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦 */\n\(example.code)")
+    example.with(code: "/* 👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦 */\n\(example.code)")
 }
 
 private func addShebang(_ example: Example) -> Example {
-    return example.with(code: "#!/usr/bin/env swift\n\(example.code)")
+    example.with(code: "#!/usr/bin/env swift\n\(example.code)")
 }
 
 public extension XCTestCase {
@@ -372,7 +372,7 @@ public extension XCTestCase {
                            requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
         }
         func makeViolations(_ example: Example) -> [StyleViolation] {
-            return violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
+            violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
         }
 
         let ruleDescription = ruleDescription.focused()
@@ -574,6 +574,6 @@ private struct FocusedRuleDescription {
 
 private extension RuleDescription {
     func focused() -> FocusedRuleDescription {
-        return FocusedRuleDescription(rule: self)
+        FocusedRuleDescription(rule: self)
     }
 }

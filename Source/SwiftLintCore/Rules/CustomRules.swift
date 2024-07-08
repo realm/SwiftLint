@@ -38,7 +38,7 @@ struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
 
 struct CustomRules: Rule, CacheDescriptionProvider {
     var cacheDescription: String {
-        return configuration.cacheDescription
+        configuration.cacheDescription
     }
 
     static let description = RuleDescription(
@@ -92,6 +92,6 @@ struct CustomRules: Rule, CacheDescriptionProvider {
 
 private extension Region {
     func isRuleDisabled(customRuleIdentifier: String) -> Bool {
-        return disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
+        disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
     }
 }

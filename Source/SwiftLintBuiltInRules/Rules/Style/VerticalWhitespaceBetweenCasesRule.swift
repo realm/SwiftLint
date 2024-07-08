@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
-        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentKinds)
+        match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentKinds)
     }
 }
 
@@ -130,7 +130,7 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
     private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default):[ \\t]*\\n)"
 
     private func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.violatingRanges(for: pattern).filter {
+        file.violatingRanges(for: pattern).filter {
             !isFalsePositive(in: file, range: $0)
         }
     }

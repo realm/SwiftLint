@@ -53,16 +53,16 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
             .filter(\.kind.isComment)
             .map { $0.range.toSourceKittenByteRange() }
             .compactMap { (range: ByteRange) -> [NSRange]? in
-                return file.stringView
+                file.stringView
                     .substringWithByteRange(range)
                     .map(StringView.init)
                     .map { commentBody in
                         // Look for a period followed by two or more whitespaces but not new line or carriage returns
-                        return regex(#"\.[^\S\r\n]{2,}"#)
+                        regex(#"\.[^\S\r\n]{2,}"#)
                             .matches(in: commentBody)
                             .compactMap { result in
                                 // Set the location to start from the second whitespace till the last one.
-                                return file.stringView.byteRangeToNSRange(
+                                file.stringView.byteRangeToNSRange(
                                     ByteRange(
                                         // Safe to mix NSRange offsets with byte offsets here because the
                                         // regex can't contain multi-byte characters
@@ -77,7 +77,7 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
     }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map { range in
+        violationRanges(in: file).map { range in
             StyleViolation(
                 ruleDescription: Self.description,
                 severity: configuration.severity,
@@ -87,6 +87,6 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
     }
 
     func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
+        (violationRange, "")
     }
 }

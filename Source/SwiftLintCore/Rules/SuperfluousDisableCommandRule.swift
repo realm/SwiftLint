@@ -31,7 +31,7 @@ package struct SuperfluousDisableCommandRule: SourceKitFreeRule {
 
     package func validate(file: SwiftLintFile) -> [StyleViolation] {
         // This rule is implemented in Linter.swift
-        return []
+        []
     }
 
     func reason(for rule: (some Rule).Type) -> String {
@@ -42,6 +42,6 @@ package struct SuperfluousDisableCommandRule: SourceKitFreeRule {
     }
 
     func reason(forNonExistentRule rule: String) -> String {
-        return "'\(rule)' is not a valid SwiftLint rule; remove it from the disable command"
+        "'\(rule)' is not a valid SwiftLint rule; remove it from the disable command"
     }
 }

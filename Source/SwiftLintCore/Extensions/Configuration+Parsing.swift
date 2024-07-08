@@ -44,7 +44,7 @@ extension Configuration {
         enableAllRules: Bool = false,
         cachePath: String? = nil
     ) throws {
-        func defaultStringArray(_ object: Any?) -> [String] { return [String].array(of: object) ?? [] }
+        func defaultStringArray(_ object: Any?) -> [String] { [String].array(of: object) ?? [] }
 
         // Use either the new 'opt_in_rules' or fallback to the deprecated 'enabled_rules'
         let optInRules = defaultStringArray(dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue])
@@ -107,7 +107,7 @@ extension Configuration {
 
     // MARK: - Methods: Validations
     private static func validKeys(ruleList: RuleList) -> Set<String> {
-        return validGlobalKeys.union(ruleList.allValidIdentifiers())
+        validGlobalKeys.union(ruleList.allValidIdentifiers())
     }
 
     private static func getIndentationLogIfInvalid(from dict: [String: Any]) -> IndentationStyle {
@@ -136,12 +136,12 @@ extension Configuration {
 
         // Deprecation warning for rules
         let deprecatedRulesIdentifiers = ruleList.list.flatMap { identifier, rule -> [(String, String)] in
-            return rule.description.deprecatedAliases.map { ($0, identifier) }
+            rule.description.deprecatedAliases.map { ($0, identifier) }
         }
 
         let userProvidedRuleIDs = Set(disabledRules + optInRules + onlyRules)
         let deprecatedUsages = deprecatedRulesIdentifiers.filter { deprecatedIdentifier, _ in
-            return dict[deprecatedIdentifier] != nil || userProvidedRuleIDs.contains(deprecatedIdentifier)
+            dict[deprecatedIdentifier] != nil || userProvidedRuleIDs.contains(deprecatedIdentifier)
         }
 
         for (deprecatedIdentifier, identifier) in deprecatedUsages {

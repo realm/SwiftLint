@@ -13,14 +13,14 @@ struct CodeClimateReporter: Reporter {
     static let description = "Reports violations as a JSON array in Code Climate format."
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        return toJSON(violations.map(dictionary(for:)))
+        toJSON(violations.map(dictionary(for:)))
             .replacingOccurrences(of: "\\/", with: "/")
     }
 
     // MARK: - Private
 
     private static func dictionary(for violation: StyleViolation) -> [String: Any] {
-        return [
+        [
             "check_name": violation.ruleName,
             "description": violation.reason,
             "engine_name": "SwiftLint",

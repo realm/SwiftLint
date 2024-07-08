@@ -124,7 +124,7 @@ private enum TwoArgsXCTAssert: String {
             .prefix(2)
             .map { $0.expression.trimmedDescription }
             .sorted { arg1, _ -> Bool in
-                return protectedArguments.contains(arg1)
+                protectedArguments.contains(arg1)
             }
 
         //

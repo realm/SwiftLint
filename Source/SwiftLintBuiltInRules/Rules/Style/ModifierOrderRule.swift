@@ -39,7 +39,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
+        file.structureDictionary.traverseDepthFirst { subDict in
             guard subDict.declarationKind != nil else { return nil }
             return correct(file: file, dictionary: subDict)
         }
@@ -171,7 +171,7 @@ private extension SourceKittenDictionary {
 
 private extension String {
     func lastComponentAfter(_ character: String) -> String {
-        return components(separatedBy: character).last ?? ""
+        components(separatedBy: character).last ?? ""
     }
 }
 
@@ -180,5 +180,5 @@ private struct ModifierDescription: Equatable {
     let group: SwiftDeclarationAttributeKind.ModifierGroup
     let offset: ByteCount
     let length: ByteCount
-    var range: ByteRange { return ByteRange(location: offset, length: length) }
+    var range: ByteRange { ByteRange(location: offset, length: length) }
 }

@@ -24,7 +24,7 @@ struct MarkdownReporter: Reporter {
     // MARK: - Private
 
     private static func markdownRow(for violation: StyleViolation) -> String {
-        return [
+        [
             violation.location.file?.escapedForMarkdown() ?? "",
             violation.location.line?.description ?? "",
             severity(for: violation.severity),

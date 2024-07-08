@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 private func wrapInSwitch(_ str: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
-    return Example("""
+    Example("""
     switch foo {
         \(str)
     }

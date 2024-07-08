@@ -21,7 +21,7 @@ final class ObjectLiteralRuleTests: SwiftLintTestCase {
     }
 
     private var allTriggeringExamples: [Example] {
-        return imageLiteralTriggeringExamples + colorLiteralTriggeringExamples
+        imageLiteralTriggeringExamples + colorLiteralTriggeringExamples
     }
 
     // MARK: - Test Methods

@@ -152,7 +152,7 @@ struct LintOrAnalyzeCommand {
 
     private static func printStatus(violations: [StyleViolation], files: [SwiftLintFile], serious: Int, verb: String) {
         let pluralSuffix = { (collection: [Any]) -> String in
-            return collection.count != 1 ? "s" : ""
+            collection.count != 1 ? "s" : ""
         }
         queuedPrintError(
             "Done \(verb)! Found \(violations.count) violation\(pluralSuffix(violations)), " +
@@ -253,7 +253,7 @@ struct LintOrAnalyzeCommand {
             }
 
             let pluralSuffix = { (collection: [Any]) -> String in
-                return collection.count != 1 ? "s" : ""
+                collection.count != 1 ? "s" : ""
             }
             queuedPrintError("Done correcting \(files.count) file\(pluralSuffix(files))!")
         }

@@ -47,7 +47,7 @@ extension FileManager: LintableFileManager {
     }
 
     public func modificationDate(forFileAtPath path: String) -> Date? {
-        return (try? attributesOfItem(atPath: path))?[.modificationDate] as? Date
+        (try? attributesOfItem(atPath: path))?[.modificationDate] as? Date
     }
 
     public func isFile(atPath path: String) -> Bool {

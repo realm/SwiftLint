@@ -6,7 +6,7 @@ import XCTest
 
 private extension Configuration {
     func contains<T: Rule>(rule: T.Type) -> Bool {
-        return rules.contains { $0 is T }
+        rules.contains { $0 is T }
     }
 }
 
@@ -32,7 +32,7 @@ extension ConfigurationTests {
     // MARK: - Merging Aspects
     func testWarningThresholdMerging() {
         func configuration(forWarningThreshold warningThreshold: Int?) -> Configuration {
-            return Configuration(
+            Configuration(
                 warningThreshold: warningThreshold,
                 reporter: XcodeReporter.identifier
             )

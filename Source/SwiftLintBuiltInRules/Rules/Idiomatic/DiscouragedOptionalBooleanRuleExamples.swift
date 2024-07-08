@@ -167,5 +167,5 @@ private func wrapExample(_ type: String,
                          _ test: String,
                          file: StaticString = #filePath,
                          line: UInt = #line) -> Example {
-    return Example("\(type) Foo {\n\t\(test)\n}", file: file, line: line)
+    Example("\(type) Foo {\n\t\(test)\n}", file: file, line: line)
 }

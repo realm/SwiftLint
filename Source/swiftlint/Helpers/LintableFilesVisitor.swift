@@ -7,11 +7,11 @@ typealias Arguments = [String]
 
 class CompilerInvocations {
     static func buildLog(compilerInvocations: [[String]]) -> CompilerInvocations {
-        return ArrayCompilerInvocations(invocations: compilerInvocations)
+        ArrayCompilerInvocations(invocations: compilerInvocations)
     }
 
     static func compilationDatabase(compileCommands: [File: Arguments]) -> CompilerInvocations {
-        return CompilationDatabaseInvocations(compileCommands: compileCommands)
+        CompilationDatabaseInvocations(compileCommands: compileCommands)
     }
 
     /// Default implementation
@@ -31,8 +31,8 @@ class CompilerInvocations {
         }
 
         override func arguments(forFile path: String?) -> Arguments {
-            return path.flatMap { path in
-                return invocationsByArgument[path]?.first
+            path.flatMap { path in
+                invocationsByArgument[path]?.first
             } ?? []
         }
     }
@@ -45,8 +45,8 @@ class CompilerInvocations {
         }
 
         override func arguments(forFile path: String?) -> Arguments {
-            return path.flatMap { path in
-                return compileCommands[path] ??
+            path.flatMap { path in
+                compileCommands[path] ??
                 compileCommands[path.path(relativeTo: FileManager.default.currentDirectoryPath)]
             } ?? []
         }
@@ -59,7 +59,7 @@ enum LintOrAnalyzeModeWithCompilerArguments {
 }
 
 private func resolveParamsFiles(args: [String]) -> [String] {
-    return args.reduce(into: []) { (allArgs: inout [String], arg: String) in
+    args.reduce(into: []) { (allArgs: inout [String], arg: String) in
         if arg.hasPrefix("@"), let contents = try? String(contentsOfFile: String(arg.dropFirst())) {
             allArgs.append(contentsOf: resolveParamsFiles(args: contents.split(separator: "\n").map(String.init)))
         } else {

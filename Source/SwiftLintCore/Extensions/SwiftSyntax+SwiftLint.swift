@@ -12,7 +12,7 @@ public extension SwiftLintSyntaxVisitor {
     }
 
     func walk<T>(file: SwiftLintFile, handler: (Self) -> [T]) -> [T] {
-        return walk(tree: file.syntaxTree, handler: handler)
+        walk(tree: file.syntaxTree, handler: handler)
     }
 }
 

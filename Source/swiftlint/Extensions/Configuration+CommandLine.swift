@@ -41,7 +41,7 @@ private func scriptInputFiles() throws -> [SwiftLintFile] {
 }
 
 #if os(Linux)
-private func autoreleasepool<T>(block: () -> T) -> T { return block() }
+private func autoreleasepool<T>(block: () -> T) -> T { block() }
 #endif
 
 extension Configuration {

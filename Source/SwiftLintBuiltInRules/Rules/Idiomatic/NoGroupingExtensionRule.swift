@@ -23,9 +23,9 @@ struct NoGroupingExtensionRule: OptInRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return Visitor(configuration: configuration, file: file)
+        Visitor(configuration: configuration, file: file)
             .walk(tree: file.syntaxTree) { visitor in
-                return visitor.extensionDeclarations.compactMap { decl in
+                visitor.extensionDeclarations.compactMap { decl in
                     guard visitor.typeDeclarations.contains(decl.name) else {
                         return nil
                     }

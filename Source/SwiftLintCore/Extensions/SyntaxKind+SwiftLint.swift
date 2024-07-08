@@ -25,7 +25,7 @@ public extension SyntaxKind {
 
     /// Syntax kinds that don't have associated module info when getting their cursor info.
     static var kindsWithoutModuleInfo: Set<SyntaxKind> {
-        return [
+        [
             .attributeBuiltin,
             .keyword,
             .number,

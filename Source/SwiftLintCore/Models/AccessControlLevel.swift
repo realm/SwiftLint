@@ -50,7 +50,7 @@ public enum AccessControlLevel: String, CustomStringConvertible {
 
     /// Returns true if is `private` or `fileprivate`
     public var isPrivate: Bool {
-        return self == .private || self == .fileprivate
+        self == .private || self == .fileprivate
     }
 }
 
@@ -67,6 +67,6 @@ extension AccessControlLevel: Comparable {
     }
 
     public static func < (lhs: AccessControlLevel, rhs: AccessControlLevel) -> Bool {
-        return lhs.priority < rhs.priority
+        lhs.priority < rhs.priority
     }
 }

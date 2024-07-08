@@ -29,6 +29,6 @@ struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration {
     }
 
     func isKindIncluded(_ kind: ReturnKind) -> Bool {
-        return self.includedKinds.contains(kind)
+        includedKinds.contains(kind)
     }
 }

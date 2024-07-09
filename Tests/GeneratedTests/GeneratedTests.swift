@@ -507,7 +507,7 @@ final class ImplicitGetterRuleGeneratedTests: SwiftLintTestCase {
 
 final class ImplicitReturnRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(ImplicitReturnRule.description, skipDisableCommandTests: true)
+        verifyRule(ImplicitReturnRule.description)
     }
 }
 

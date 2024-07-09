@@ -67,12 +67,7 @@ struct ImplicitReturnRuleExamples {
                         ↓return true
                     })
                 }
-                """, 
-                    testMultiByteOffsets: false,
-                    testWrappingInComment: false,
-                    testWrappingInString: false,
-                    testDisableCommand: false
-                   ).focused(): Example("""
+                """): Example("""
                 func foo() -> Int {
                     [1, 2].first(where: {
                         true

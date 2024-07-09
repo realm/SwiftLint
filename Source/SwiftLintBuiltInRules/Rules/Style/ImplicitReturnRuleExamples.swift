@@ -63,8 +63,8 @@ struct ImplicitReturnRuleExamples {
                 """),
             Example("""
                 func foo() -> Int {
-                    return [1, 2].first(where: {
-                        return true
+                    ↓return [1, 2].first(where: {
+                        ↓return true
                     })
                 }
                 """, 

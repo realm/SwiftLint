@@ -61,19 +61,6 @@ struct ImplicitReturnRuleExamples {
                     true
                 })
                 """),
-            Example("""
-                func foo() -> Int {
-                    ↓return [1, 2].first(where: {
-                        ↓return true
-                    })
-                }
-                """): Example("""
-                func foo() -> Int {
-                    [1, 2].first(where: {
-                        true
-                    })
-                }
-                """),
         ]
     }
 
@@ -346,6 +333,24 @@ struct ImplicitReturnRuleExamples {
         ]
     }
 
+    struct MixedExamples {
+        static let corrections = [
+            Example("""
+                func foo() -> Int {
+                    ↓return [1, 2].first(where: {
+                        ↓return true
+                    })
+                }
+                """).focused(): Example("""
+                func foo() -> Int {
+                    [1, 2].first(where: {
+                        true
+                    })
+                }
+                """),
+        ]
+    }
+
     static let nonTriggeringExamples =
         ClosureExamples.nonTriggeringExamples +
         FunctionExamples.nonTriggeringExamples +
@@ -367,6 +372,7 @@ struct ImplicitReturnRuleExamples {
             GetterExamples.corrections,
             InitializerExamples.corrections,
             SubscriptExamples.corrections,
+            MixedExamples.corrections,
         ]
         .reduce(into: [:]) { result, element in
             result.merge(element) { _, _ in

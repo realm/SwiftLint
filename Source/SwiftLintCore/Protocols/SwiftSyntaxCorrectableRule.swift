@@ -51,10 +51,12 @@ public extension SwiftSyntaxCorrectableRule {
                     CorrectionRange(range: range, correction: correction.replacement)
                 }
             }
-            .filter { (correctionRange: CorrectionRange) in file.ruleEnabled(violatingRange: correctionRange.range, for: self) != nil }
-            .sorted(by: { (a: CorrectionRange, b: CorrectionRange) -> Bool in
-                a.range.location > b.range.location
-            })
+            .filter { (correctionRange: CorrectionRange) in
+                file.ruleEnabled(violatingRange: correctionRange.range, for: self) != nil
+            }
+            .sorted { (lhs: CorrectionRange, rhs: CorrectionRange) -> Bool in
+                lhs.range.location > rhs.range.location
+            }
 
         var corrections = [Correction]()
         var contents = file.contents

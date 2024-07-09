@@ -61,6 +61,19 @@ struct ImplicitReturnRuleExamples {
                     true
                 })
                 """),
+            Example("""
+                func foo() -> Int {
+                    return [1, 2].first(where: {
+                        return true
+                    })
+                }
+                """): Example("""
+                func foo() -> Int {
+                    [1, 2].first(where: {
+                        true
+                    })
+                }
+                """),
         ]
     }
 

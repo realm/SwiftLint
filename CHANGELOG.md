@@ -91,7 +91,7 @@
   [#5606](https://github.com/realm/SwiftLint/issues/5606)
 
 * Fix rewriting for `implicit_return` rule when violations are
-  nested within each other.
+  nested within each other.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5660](https://github.com/realm/SwiftLint/issues/5660)
 

@@ -1,3 +1,4 @@
+import Foundation
 import SwiftSyntax
 
 /// A SwiftLint CorrectableRule that performs its corrections using a SwiftSyntax `SyntaxRewriter`.
@@ -43,14 +44,20 @@ public extension SwiftSyntaxCorrectableRule {
         if violationCorrections.isEmpty {
             return []
         }
+        typealias CorrectionRange = (range: NSRange, correction: String)
         let correctionRanges = violationCorrections
             .compactMap { correction in
                 file.stringView.NSRange(start: correction.start, end: correction.end).map { range in
-                    (range: range, correction: correction.replacement)
+                    CorrectionRange(range: range, correction: correction.replacement)
                 }
             }
-            .filter { file.ruleEnabled(violatingRange: $0.range, for: self) != nil }
-            .reversed()
+            .filter { (correctionRange: CorrectionRange) in
+                file.ruleEnabled(violatingRange: correctionRange.range, for: self) != nil
+            }
+            .sorted { (lhs: CorrectionRange, rhs: CorrectionRange) -> Bool in
+                lhs.range.location > rhs.range.location
+            }
+
         var corrections = [Correction]()
         var contents = file.contents
         for range in correctionRanges {

@@ -73,7 +73,7 @@
   `unneeded_synthesized_initializer` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5153](https://github.com/realm/SwiftLint/issues/5153)
-  
+
 * Make `vertical_whitespace_between_cases` rule work for
   cases ending with a string literal.  
   [ilendemli](https://github.com/ilendemli)
@@ -89,6 +89,11 @@
   deterministically.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5606](https://github.com/realm/SwiftLint/issues/5606)
+
+* Fix rewriting for `implicit_return` rule when violations are
+  nested within each other.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5660](https://github.com/realm/SwiftLint/issues/5660)
 
 ## 0.55.1: Universal Washing Powder
 

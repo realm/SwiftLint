@@ -6,7 +6,7 @@ public struct SourceKittenDictionary {
     /// The underlying SourceKitten dictionary.
     public let value: [String: any SourceKitRepresentable]
     /// The cached substructure for this dictionary. Empty if there is no substructure.
-    public let substructure: [SourceKittenDictionary]
+    public let substructure: [Self]
 
     /// The kind of Swift expression represented by this dictionary, if it is an expression.
     public let expressionKind: SwiftExpressionKind?
@@ -135,26 +135,26 @@ public struct SourceKittenDictionary {
     }
 
     /// The fully preserved SourceKitten dictionaries for all the attributes associated with this dictionary.
-    public var swiftAttributes: [SourceKittenDictionary] {
+    public var swiftAttributes: [Self] {
         let array = value["key.attributes"] as? [any SourceKitRepresentable] ?? []
         return array.compactMap { $0 as? [String: any SourceKitRepresentable] }
             .map(Self.init)
     }
 
-    public var elements: [SourceKittenDictionary] {
+    public var elements: [Self] {
         let elements = value["key.elements"] as? [any SourceKitRepresentable] ?? []
         return elements.compactMap { $0 as? [String: any SourceKitRepresentable] }
         .map(Self.init)
     }
 
-    public var entities: [SourceKittenDictionary] {
+    public var entities: [Self] {
         let entities = value["key.entities"] as? [any SourceKitRepresentable] ?? []
         return entities.compactMap { $0 as? [String: any SourceKitRepresentable] }
             .map(Self.init)
     }
 
-    public var enclosedVarParameters: [SourceKittenDictionary] {
-        substructure.flatMap { subDict -> [SourceKittenDictionary] in
+    public var enclosedVarParameters: [Self] {
+        substructure.flatMap { subDict -> [Self] in
             if subDict.declarationKind == .varParameter {
                 return [subDict]
             }
@@ -167,8 +167,8 @@ public struct SourceKittenDictionary {
         }
     }
 
-    public var enclosedArguments: [SourceKittenDictionary] {
-        substructure.flatMap { subDict -> [SourceKittenDictionary] in
+    public var enclosedArguments: [Self] {
+        substructure.flatMap { subDict -> [Self] in
             guard subDict.expressionKind == .argument else {
                 return []
             }
@@ -182,7 +182,7 @@ public struct SourceKittenDictionary {
         return array.compactMap { ($0 as? [String: String]).flatMap { $0["key.name"] } }
     }
 
-    public var secondarySymbols: [SourceKittenDictionary] {
+    public var secondarySymbols: [Self] {
         let array = value["key.secondary_symbols"] as? [any SourceKitRepresentable] ?? []
         return array.compactMap { $0 as? [String: any SourceKitRepresentable] }
             .map(Self.init)

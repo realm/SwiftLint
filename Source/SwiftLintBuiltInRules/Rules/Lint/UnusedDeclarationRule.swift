@@ -6,7 +6,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         var referenced: Set<String>
         var declared: Set<DeclaredUSR>
 
-        fileprivate static var empty: FileUSRs { Self(referenced: [], declared: []) }
+        fileprivate static var empty: Self { Self(referenced: [], declared: []) }
     }
 
     struct DeclaredUSR: Hashable {
@@ -28,7 +28,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         requiresFileOnDisk: true
     )
 
-    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
+    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> Self.FileUSRs {
         guard compilerArguments.isNotEmpty else {
             Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
             return .empty
@@ -54,7 +54,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         )
     }
 
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: UnusedDeclarationRule.FileUSRs],
+    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: Self.FileUSRs],
                   compilerArguments: [String]) -> [StyleViolation] {
         let allReferencedUSRs = collectedInfo.values.reduce(into: Set()) { $0.formUnion($1.referenced) }
         return violationOffsets(declaredUSRs: collectedInfo[file]?.declared ?? [],

@@ -91,7 +91,7 @@ public struct RuleDescription: Equatable, Sendable {
 
     // MARK: Equatable
 
-    public static func == (lhs: RuleDescription, rhs: RuleDescription) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.identifier == rhs.identifier
     }
 }

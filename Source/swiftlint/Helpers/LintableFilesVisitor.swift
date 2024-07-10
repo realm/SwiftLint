@@ -114,7 +114,7 @@ struct LintableFilesVisitor {
                        cache: LinterCache?,
                        allowZeroLintableFiles: Bool,
                        block: @escaping (CollectedLinter) async -> Void)
-        throws -> LintableFilesVisitor {
+        throws -> Self {
         try Signposts.record(name: "LintableFilesVisitor.Create") {
             let compilerInvocations: CompilerInvocations?
             if options.mode == .lint {

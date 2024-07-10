@@ -13,7 +13,7 @@ private struct FileCacheEntry: Codable {
 private struct FileCache: Codable {
     var entries: [String: FileCacheEntry]
 
-    static var empty: FileCache { Self(entries: [:]) }
+    static var empty: Self { Self(entries: [:]) }
 }
 
 /// A persisted cache for storing and retrieving linter results.

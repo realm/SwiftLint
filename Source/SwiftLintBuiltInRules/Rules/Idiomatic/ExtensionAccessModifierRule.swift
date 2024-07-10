@@ -176,7 +176,7 @@ private extension ExtensionAccessModifierRule {
         case implicit
         case explicit(TokenKind)
 
-        static func from(tokenKind: TokenKind?) -> ACL {
+        static func from(tokenKind: TokenKind?) -> Self {
             switch tokenKind {
             case nil:
                 return .implicit

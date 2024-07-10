@@ -107,7 +107,7 @@ private struct SyntacticSugarRuleViolation {
 
     let correction: Correction
 
-    var children: [SyntacticSugarRuleViolation] = []
+    var children: [Self] = []
 }
 
 private final class SyntacticSugarRuleVisitor: SyntaxVisitor {

@@ -8,7 +8,7 @@ public enum ViolationSeverity: String, Comparable, Codable, InlinableOptionType 
 
     // MARK: Comparable
 
-    public static func < (lhs: ViolationSeverity, rhs: ViolationSeverity) -> Bool {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
         lhs == .warning && rhs == .error
     }
 }

@@ -87,7 +87,7 @@ public extension Configuration {
             }
         }
 
-        internal func applied(aliasResolver: (String) -> String) -> RulesMode {
+        internal func applied(aliasResolver: (String) -> String) -> Self {
             switch self {
             case let .default(disabled, optIn):
                 return .default(
@@ -103,7 +103,7 @@ public extension Configuration {
             }
         }
 
-        internal func activateCustomRuleIdentifiers(allRulesWrapped: [ConfigurationRuleWrapper]) -> RulesMode {
+        internal func activateCustomRuleIdentifiers(allRulesWrapped: [ConfigurationRuleWrapper]) -> Self {
             // In the only mode, if the custom rules rule is enabled, all custom rules are also enabled implicitly
             // This method makes the implicitly explicit
             switch self {

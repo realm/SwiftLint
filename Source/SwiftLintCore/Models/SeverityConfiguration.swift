@@ -8,7 +8,7 @@ public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguratio
     @ConfigurationElement(key: "severity")
     var severity = ViolationSeverity.warning
 
-    public var severityConfiguration: SeverityConfiguration {
+    public var severityConfiguration: Self {
         self
     }
 

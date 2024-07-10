@@ -5,7 +5,7 @@ import SourceKittenFramework
 public struct Configuration {
     // MARK: - Properties: Static
     /// The default Configuration resulting from an empty configuration file.
-    public static var `default`: Configuration {
+    public static var `default`: Self {
         // This is realized via a getter to account for differences of the current working directory
         Self()
     }
@@ -105,7 +105,7 @@ public struct Configuration {
     /// Creates a Configuration by copying an existing configuration.
     ///
     /// - parameter copying:    The existing configuration to copy.
-    internal init(copying configuration: Configuration) {
+    internal init(copying configuration: Self) {
         rulesWrapper = configuration.rulesWrapper
         fileGraph = configuration.fileGraph
         includedPaths = configuration.includedPaths

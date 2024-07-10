@@ -13,7 +13,7 @@ public struct Command: Equatable {
 
         /// - returns: The inverse action that can cancel out the current action, restoring the SwifttLint engine's
         ///            state prior to the current action.
-        internal func inverse() -> Action {
+        internal func inverse() -> Self {
             switch self {
             case .enable: return .disable
             case .disable: return .enable
@@ -143,7 +143,7 @@ public struct Command: Equatable {
     /// If the command doesn't have a modifier, it is returned as-is.
     ///
     /// - returns: The expanded commands.
-    internal func expand() -> [Command] {
+    internal func expand() -> [Self] {
         guard let modifier else {
             return [self]
         }

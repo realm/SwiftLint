@@ -1,10 +1,26 @@
 import SwiftSyntax
 
+public enum Declaration: Hashable {
+    case parameter(position: AbsolutePosition, name: String)
+    case localVariable(position: AbsolutePosition, name: String)
+    case implicitVariable(name: String)
+    case stopMarker
+
+    public var name: String {
+        switch self {
+        case let .parameter(_, name): name
+        case let .localVariable(_, name): name
+        case let .implicitVariable(name): name
+        case .stopMarker: ""
+        }
+    }
+}
+
 /// A specialized `ViolationsSyntaxVisitor` that tracks declared identifiers per scope while traversing the AST.
 open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
         ViolationsSyntaxVisitor<Configuration> {
     /// A type that remembers the declared identifiers (in order) up to the current position in the code.
-    public typealias Scope = Stack<Set<String>>
+    public typealias Scope = Stack<Set<Declaration>>
 
     /// The hierarchical stack of identifiers declared up to the current position in the code.
     public var scope: Scope
@@ -25,14 +41,14 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
     ///
     /// - parameter identifier: An identifier.
     public func hasSeenDeclaration(for identifier: String) -> Bool {
-        scope.contains { $0.contains(identifier) }
+        scope.contains { $0.contains { $0.name == identifier } }
     }
 
     override open func visit(_ node: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
+        scope.openChildScope()
         guard let parent = node.parent, !parent.is(SourceFileSyntax.self), let grandParent = parent.parent else {
             return .visitChildren
         }
-        scope.openChildScope()
         if let ifStmt = grandParent.as(IfExprSyntax.self), parent.keyPathInParent != \IfExprSyntax.elseBody {
             collectIdentifiers(from: ifStmt.conditions)
         } else if let whileStmt = grandParent.as(WhileStmtSyntax.self) {
@@ -40,6 +56,10 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
         } else if let pattern = grandParent.as(ForStmtSyntax.self)?.pattern {
             collectIdentifiers(from: pattern)
         } else if let parameters = grandParent.as(FunctionDeclSyntax.self)?.signature.parameterClause.parameters {
+            collectIdentifiers(from: parameters)
+        } else if let parameters = grandParent.as(InitializerDeclSyntax.self)?.signature.parameterClause.parameters {
+            collectIdentifiers(from: parameters)
+        } else if let parameters = grandParent.as(SubscriptDeclSyntax.self)?.parameterClause.parameters {
             collectIdentifiers(from: parameters)
         } else if let closureParameters = parent.as(ClosureExprSyntax.self)?.signature?.parameterClause {
             collectIdentifiers(from: closureParameters)
@@ -67,16 +87,44 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
         collectIdentifiers(from: node.conditions)
     }
 
+    // MARK: Type declaration boundaries
+
+    override open func visit(_ node: MemberBlockSyntax) -> SyntaxVisitorContinueKind {
+        if node.belongsToTypeDefinableInFunction {
+            scope.push([.stopMarker])
+        }
+        return .visitChildren
+    }
+
+    override open func visitPost(_ node: MemberBlockSyntax) {
+        if node.belongsToTypeDefinableInFunction {
+            scope.pop()
+        }
+    }
+
+    // MARK: Private methods
+
     private func collectIdentifiers(from parameters: FunctionParameterListSyntax) {
-        parameters.forEach { scope.addToCurrentScope(($0.secondName ?? $0.firstName).text) }
+        for param in parameters {
+            let name = param.secondName ?? param.firstName
+            if name.tokenKind != .wildcard {
+                scope.addToCurrentScope(.parameter(position: name.positionAfterSkippingLeadingTrivia, name: name.text))
+            }
+        }
     }
 
     private func collectIdentifiers(from closureParameters: ClosureSignatureSyntax.ParameterClause) {
         switch closureParameters {
         case let .parameterClause(parameters):
-            parameters.parameters.forEach { scope.addToCurrentScope(($0.secondName ?? $0.firstName).text) }
+            for param in parameters.parameters {
+                let name = param.secondName ?? param.firstName
+                scope.addToCurrentScope(.parameter(position: name.positionAfterSkippingLeadingTrivia, name: name.text))
+            }
         case let .simpleInput(parameters):
-            parameters.forEach { scope.addToCurrentScope($0.name.text) }
+            for param in parameters {
+                let name = param.name
+                scope.addToCurrentScope(.parameter(position: name.positionAfterSkippingLeadingTrivia, name: name.text))
+            }
         }
     }
 
@@ -101,18 +149,21 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
             .compactMap { pattern -> IdentifierPatternSyntax? in
                 pattern.as(IdentifierPatternSyntax.self)
             }
-            .forEach { scope.addToCurrentScope($0.identifier.text) }
+            .forEach {
+                let id = $0.identifier
+                scope.addToCurrentScope(.localVariable(position: id.positionAfterSkippingLeadingTrivia, name: id.text))
+            }
     }
 
     private func collectIdentifiers(from catchClause: CatchClauseSyntax) {
         let items = catchClause.catchItems
-        if items.isNotEmpty {
+        if items.isEmpty {
+            // A catch clause without explicit catch items has an implicit `error` variable in scope.
+            scope.addToCurrentScope(.implicitVariable(name: "error"))
+        } else {
             items
                 .compactMap { $0.pattern?.as(ValueBindingPatternSyntax.self)?.pattern }
                 .forEach(collectIdentifiers(from:))
-        } else {
-            // A catch clause without explicit catch items has an implicit `error` variable in scope.
-            scope.addToCurrentScope("error")
         }
     }
 
@@ -123,18 +174,27 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
     }
 
     private func collectIdentifiers(from pattern: PatternSyntax) {
-        if let name = pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
-            scope.addToCurrentScope(name)
+        if let id = pattern.as(IdentifierPatternSyntax.self)?.identifier {
+            scope.addToCurrentScope(.localVariable(position: id.positionAfterSkippingLeadingTrivia, name: id.text))
         }
     }
 }
 
 private extension DeclaredIdentifiersTrackingVisitor.Scope {
-    mutating func addToCurrentScope(_ identifier: String) {
-        modifyLast { $0.insert(identifier) }
+    mutating func addToCurrentScope(_ decl: Declaration) {
+        modifyLast { $0.insert(decl) }
     }
 
     mutating func openChildScope() {
         push([])
+    }
+}
+
+private extension MemberBlockSyntax {
+    var belongsToTypeDefinableInFunction: Bool {
+        if let parent {
+            return [.actorDecl, .classDecl, .enumDecl, .structDecl].contains(parent.kind)
+        }
+        return false
     }
 }

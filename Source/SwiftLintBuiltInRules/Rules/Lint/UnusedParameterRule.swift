@@ -104,75 +104,39 @@ struct UnusedParameterRule: OptInRule {
     )
 }
 
-private class Parameter {
-    fileprivate static let stopParameter = Parameter(position: .init(utf8Offset: 0), name: "")
-
-    let position: AbsolutePosition
-    let name: String
-    var used = false
-
-    init(position: AbsolutePosition, name: String) {
-        self.position = position
-        self.name = name
-    }
-}
+// MARK: Visitor
 
 private extension UnusedParameterRule {
-    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private static let parameterBoundary = [Parameter.stopParameter]
-
-        private var declaredParameters = Stack<[Parameter]>()
+    final class Visitor: DeclaredIdentifiersTrackingVisitor<ConfigurationType> {
+        private var referencedParameters = Set<Declaration>()
         private var referencedVariables = Stack<Set<String>>()
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         // MARK: Parameter declarations
 
-        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            if !node.modifiers.contains(keyword: .override) {
-                initializeStacks(parameters: node.signature.parameterClause.parameters)
+        override func visit(_ node: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
+            if node.grandParent?.isNonOverriddenFunctionLike == true {
+                referencedVariables.push([])
             }
-            return .visitChildren
-        }
-
-        override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
-            if !node.modifiers.contains(keyword: .override) {
-                initializeStacks(parameters: node.signature.parameterClause.parameters)
-            }
-            return .visitChildren
-        }
-
-        override func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
-            if !node.modifiers.contains(keyword: .override) {
-                initializeStacks(parameters: node.parameterClause.parameters)
-            }
-            return .visitChildren
+            return super.visit(node)
         }
 
         // MARK: Violation checking
 
-        override func visitPost(_ node: FunctionDeclSyntax) {
-            if !node.modifiers.contains(keyword: .override) {
+        override func visitPost(_ node: CodeBlockItemListSyntax) {
+            if node.grandParent?.isNonOverriddenFunctionLike == true {
                 collectViolations()
             }
-        }
-
-        override func visitPost(_ node: InitializerDeclSyntax) {
-            if !node.modifiers.contains(keyword: .override) {
-                collectViolations()
-            }
-        }
-
-        override func visitPost(_ node: SubscriptDeclSyntax) {
-            if !node.modifiers.contains(keyword: .override) {
-                collectViolations()
-            }
+            super.visitPost(node)
         }
 
         // MARK: Reference collection
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
-            addReference(node.baseName.text)
+            if node.keyPathInParent != \MemberAccessExprSyntax.declName {
+                addReference(node.baseName.text)
+            }
         }
 
         override func visitPost(_ node: OptionalBindingConditionSyntax) {
@@ -181,85 +145,55 @@ private extension UnusedParameterRule {
             }
         }
 
-        // MARK: Type declaration boundaries
-
-        override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            declaredParameters.push(Self.parameterBoundary)
-            return .visitChildren
-        }
-
-        override func visitPost(_ node: ActorDeclSyntax) {
-            declaredParameters.pop()
-        }
-
-        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            declaredParameters.push(Self.parameterBoundary)
-            return .visitChildren
-        }
-
-        override func visitPost(_ node: ClassDeclSyntax) {
-            declaredParameters.pop()
-        }
-
-        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            declaredParameters.push(Self.parameterBoundary)
-            return .visitChildren
-        }
-
-        override func visitPost(_ node: EnumDeclSyntax) {
-            declaredParameters.pop()
-        }
-
-        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            declaredParameters.push(Self.parameterBoundary)
-            return .visitChildren
-        }
-
-        override func visitPost(_ node: StructDeclSyntax) {
-            declaredParameters.pop()
-        }
-
         // MARK: Private methods
 
-        private func initializeStacks(parameters: FunctionParameterListSyntax) {
-            let parameters = parameters.compactMap {
-                let name = $0.secondName ?? $0.firstName
-                return name.tokenKind == .wildcard
-                    ? nil
-                    : Parameter(position: name.positionAfterSkippingLeadingTrivia, name: name.text)
-            }
-            declaredParameters.push(parameters)
-            referencedVariables.push([])
-        }
-
         private func addReference(_ id: String) {
-            referencedVariables.modifyLast {
-                $0.insert(id.trimmingCharacters(in: .init(charactersIn: "`")))
-            }
+            referencedVariables.modifyLast { $0.insert(id.trimmingCharacters(in: .init(charactersIn: "`"))) }
         }
 
         private func collectViolations() {
-            for reference in referencedVariables.pop() ?? [] {
-                parameters: for parameters in declaredParameters.reversed() {
-                    if parameters.onlyElement === Parameter.stopParameter {
-                        break parameters
-                    }
-                    for parameter in parameters where reference == parameter.name {
-                        parameter.used = true
-                        break parameters
-                    }
+            var variables = referencedVariables.pop() ?? []
+            for declarations in scope.reversed() {
+                if declarations.onlyElement == .stopMarker {
+                    break
                 }
-            }
-            (declaredParameters.pop() ?? [])
-                .filter { !$0.used }
-                .forEach {
+                for declaration in declarations where !referencedParameters.contains(declaration) {
+                    guard case let .parameter(position, name) = declaration else {
+                        continue
+                    }
+                    if variables.contains(name) {
+                        variables.remove(name)
+                        referencedParameters.insert(declaration)
+                        continue
+                    }
                     let violation = ReasonedRuleViolation(
-                        position: $0.position,
-                        reason: "Parameter '\($0.name)' is unused; consider removing or replacing it with '_'",
+                        position: position,
+                        reason: "Parameter '\(name)' is unused; consider removing or replacing it with '_'",
                         severity: configuration.severity
                     )
                     violations.append(violation)
                 }
+                if variables.isEmpty {
+                    return
+                }
+            }
         }
+    }
+}
+
+private extension SyntaxProtocol {
+    var grandParent: Syntax? {
+        if let parent, !parent.is(SourceFileSyntax.self) {
+            return parent.parent
+        }
+        return nil
+    }
+
+    var isNonOverriddenFunctionLike: Bool {
+        if [.functionDecl, .initializerDecl, .subscriptDecl].contains(kind),
+           let modifiers = asProtocol((any WithModifiersSyntax).self)?.modifiers {
+            return !modifiers.contains(keyword: .override)
+        }
+        return false
     }
 }

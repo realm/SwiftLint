@@ -341,7 +341,7 @@ struct ImplicitReturnRuleExamples {
                         ↓return true
                     })
                 }
-                """).focused(): Example("""
+                """): Example("""
                 func foo() -> Int {
                     [1, 2].first(where: {
                         true

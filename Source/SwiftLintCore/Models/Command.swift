@@ -67,8 +67,12 @@ public struct Command: Equatable {
     ///                              defined.
     /// - parameter modifier:        This command's modifier, if any.
     /// - parameter trailingComment: The comment following this command's `-` delimiter, if any.
-    public init(action: Action, ruleIdentifiers: Set<RuleIdentifier> = [], line: Int = 0,
-                character: Int? = nil, modifier: Modifier? = nil, trailingComment: String? = nil) {
+    public init(action: Action,
+                ruleIdentifiers: Set<RuleIdentifier> = [],
+                line: Int = 0,
+                character: Int? = nil,
+                modifier: Modifier? = nil,
+                trailingComment: String? = nil) {
         self.action = action
         self.ruleIdentifiers = ruleIdentifiers
         self.line = line

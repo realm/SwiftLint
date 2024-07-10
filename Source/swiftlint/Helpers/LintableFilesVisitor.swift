@@ -83,10 +83,18 @@ struct LintableFilesVisitor {
     let mode: LintOrAnalyzeModeWithCompilerArguments
     let block: (CollectedLinter) async -> Void
 
-    private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, showProgressBar: Bool,
-                 useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
-                 cache: LinterCache?, compilerInvocations: CompilerInvocations?,
-                 allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) async -> Void) {
+    private init(paths: [String],
+                 action: String,
+                 useSTDIN: Bool,
+                 quiet: Bool,
+                 showProgressBar: Bool,
+                 useScriptInputFiles: Bool,
+                 forceExclude: Bool,
+                 useExcludingByPrefix: Bool,
+                 cache: LinterCache?,
+                 compilerInvocations: CompilerInvocations?,
+                 allowZeroLintableFiles: Bool,
+                 block: @escaping (CollectedLinter) async -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN

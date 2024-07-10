@@ -119,7 +119,8 @@ extension ClosureEndIndentationRule {
         }
     }
 
-    private func violations(in file: SwiftLintFile, of kind: SwiftExpressionKind,
+    private func violations(in file: SwiftLintFile,
+                            of kind: SwiftExpressionKind,
                             dictionary: SourceKittenDictionary) -> [Violation] {
         guard kind == .call else {
             return []
@@ -269,7 +270,8 @@ extension ClosureEndIndentationRule {
     }
 
     private func isSingleLineClosure(dictionary: SourceKittenDictionary,
-                                     endPosition: ByteCount, file: SwiftLintFile) -> Bool {
+                                     endPosition: ByteCount,
+                                     file: SwiftLintFile) -> Bool {
         let contents = file.stringView
 
         guard let start = dictionary.bodyOffset,
@@ -282,7 +284,8 @@ extension ClosureEndIndentationRule {
     }
 
     private func containsSingleLineClosure(dictionary: SourceKittenDictionary,
-                                           endPosition: ByteCount, file: SwiftLintFile) -> Bool {
+                                           endPosition: ByteCount,
+                                           file: SwiftLintFile) -> Bool {
         let contents = file.stringView
 
         guard let closure = trailingClosure(dictionary: dictionary, file: file),

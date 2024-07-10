@@ -3,7 +3,8 @@ import SwiftSyntax
 private func wrapInSwitch(
     variable: String = "foo",
     _ str: String,
-    file: StaticString = #filePath, line: UInt = #line) -> Example {
+    file: StaticString = #filePath,
+    line: UInt = #line) -> Example {
     Example(
         """
         switch \(variable) {

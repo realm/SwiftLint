@@ -93,7 +93,8 @@ extension SwiftLint {
             }
         }
 
-        private func createInstance(of ruleType: any Rule.Type, using config: Configuration,
+        private func createInstance(of ruleType: any Rule.Type,
+                                    using config: Configuration,
                                     configure: Bool) -> any Rule {
             configure
                 ? config.configuredRule(forID: ruleType.identifier) ?? ruleType.init()

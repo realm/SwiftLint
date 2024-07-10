@@ -252,7 +252,9 @@ extension Configuration {
         }
     }
 
-    func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
+    func visitLintableFiles(options: LintOrAnalyzeOptions,
+                            cache: LinterCache? = nil,
+                            storage: RuleStorage,
                             visitorBlock: @escaping (CollectedLinter) async -> Void) async throws -> [SwiftLintFile] {
         let visitor = try LintableFilesVisitor.create(options, cache: cache,
                                                       allowZeroLintableFiles: allowZeroLintableFiles,

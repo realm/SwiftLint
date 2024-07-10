@@ -54,7 +54,8 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         )
     }
 
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: Self.FileUSRs],
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: Self.FileUSRs],
                   compilerArguments _: [String]) -> [StyleViolation] {
         let allReferencedUSRs = collectedInfo.values.reduce(into: Set()) { $0.formUnion($1.referenced) }
         return violationOffsets(declaredUSRs: collectedInfo[file]?.declared ?? [],
@@ -106,17 +107,20 @@ private extension SwiftLintFile {
         })
     }
 
-    func declaredUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
-                      compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
-    -> Set<UnusedDeclarationRule.DeclaredUSR> {
+    func declaredUSRs(index: SourceKittenDictionary,
+                      editorOpen: SourceKittenDictionary,
+                      compilerArguments: [String],
+                      configuration: UnusedDeclarationConfiguration) -> Set<UnusedDeclarationRule.DeclaredUSR> {
         Set(index.traverseEntitiesDepthFirst { _, indexEntity in
             self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
                              configuration: configuration)
         })
     }
 
-    func declaredUSR(indexEntity: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
-                     compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
+    func declaredUSR(indexEntity: SourceKittenDictionary,
+                     editorOpen: SourceKittenDictionary,
+                     compilerArguments: [String],
+                     configuration: UnusedDeclarationConfiguration)
     -> UnusedDeclarationRule.DeclaredUSR? {
         guard let stringKind = indexEntity.kind,
               stringKind.starts(with: "source.lang.swift.decl."),

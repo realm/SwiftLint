@@ -16,7 +16,7 @@ struct ContainsOverRangeNilComparisonRule: OptInRule {
             Example("resourceString.range(of: rule.regex, options: .regularExpression) != nil"),
         ],
         triggeringExamples: ["!=", "=="].flatMap { comparison in
-            return [
+            [
                 Example("↓myString.range(of: \"Test\") \(comparison) nil")
             ]
         }

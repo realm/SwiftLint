@@ -95,14 +95,14 @@ public extension SwiftVersion {
 
 private extension Dictionary where Key == String {
     var versionMajor: Int? {
-        return (self["key.version_major"] as? Int64).flatMap({ Int($0) })
+        (self["key.version_major"] as? Int64).flatMap({ Int($0) })
     }
 
     var versionMinor: Int? {
-        return (self["key.version_minor"] as? Int64).flatMap({ Int($0) })
+        (self["key.version_minor"] as? Int64).flatMap({ Int($0) })
     }
 
     var versionPatch: Int? {
-        return (self["key.version_patch"] as? Int64).flatMap({ Int($0) })
+        (self["key.version_patch"] as? Int64).flatMap({ Int($0) })
     }
 }

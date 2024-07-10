@@ -15,11 +15,11 @@ public extension String {
     }
 
     func isUppercase() -> Bool {
-        return self == uppercased()
+        self == uppercased()
     }
 
     func isLowercase() -> Bool {
-        return self == lowercased()
+        self == lowercased()
     }
 
     private subscript (range: Range<Int>) -> String {
@@ -63,14 +63,14 @@ public extension String {
     }
 
     var fullNSRange: NSRange {
-        return NSRange(location: 0, length: utf16.count)
+        NSRange(location: 0, length: utf16.count)
     }
 
     /// Returns a new string, converting the path to a canonical absolute path.
     ///
     /// - returns: A new `String`.
     func absolutePathStandardized() -> String {
-        return bridge().absolutePathRepresentation().bridge().standardizingPath
+        bridge().absolutePathRepresentation().bridge().standardizingPath
     }
 
     var isFile: Bool {
@@ -88,7 +88,7 @@ public extension String {
     /// - Parameter character: Character to count
     /// - Returns: Number of times `character` occurs in `self`
     func countOccurrences(of character: Character) -> Int {
-        return self.reduce(0, {
+        self.reduce(0, {
             $1 == character ? $0 + 1 : $0
         })
     }

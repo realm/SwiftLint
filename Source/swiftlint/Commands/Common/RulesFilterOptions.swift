@@ -4,11 +4,11 @@ enum RuleEnablementOptions: String, EnumerableFlag {
     case enabled, disabled
 
     static func name(for value: RuleEnablementOptions) -> NameSpecification {
-        return .shortAndLong
+        .shortAndLong
     }
 
     static func help(for value: RuleEnablementOptions) -> ArgumentHelp? {
-        return "Only show \(value.rawValue) rules"
+        "Only show \(value.rawValue) rules"
     }
 }
 

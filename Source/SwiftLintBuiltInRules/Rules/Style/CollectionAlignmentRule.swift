@@ -93,7 +93,7 @@ extension CollectionAlignmentRule {
         }
 
         private var alignColonsTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -122,7 +122,7 @@ extension CollectionAlignmentRule {
         }
 
         private var alignColonsNonTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -155,7 +155,7 @@ extension CollectionAlignmentRule {
         }
 
         private var alignLeftTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -184,7 +184,7 @@ extension CollectionAlignmentRule {
         }
 
         private var alignLeftNonTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -217,7 +217,7 @@ extension CollectionAlignmentRule {
         }
 
         private var sharedTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 let coordinates = [
                     CLLocationCoordinate2D(latitude: 0, longitude: 33),
@@ -236,7 +236,7 @@ extension CollectionAlignmentRule {
         }
 
         private var sharedNonTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 let coordinates = [
                     CLLocationCoordinate2D(latitude: 0, longitude: 33),

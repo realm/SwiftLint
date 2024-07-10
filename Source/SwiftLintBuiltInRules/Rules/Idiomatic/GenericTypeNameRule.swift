@@ -39,7 +39,7 @@ struct GenericTypeNameRule: Rule {
             Example("typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)"),
             Example("typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>"),
         ] + ["class", "struct", "enum"].flatMap { type -> [Example] in
-            return [
+            [
                 Example("\(type) Foo<↓T_Foo> {}"),
                 Example("\(type) Foo<T, ↓U_Foo> {}"),
                 Example("\(type) Foo<↓T_Foo, ↓U_Foo> {}"),

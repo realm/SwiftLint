@@ -152,7 +152,7 @@ private struct StaticStringImitator {
         }
 
         var staticString: StaticString {
-            return unsafeBitCast(self, to: StaticString.self)
+            unsafeBitCast(self, to: StaticString.self)
         }
     }
 }

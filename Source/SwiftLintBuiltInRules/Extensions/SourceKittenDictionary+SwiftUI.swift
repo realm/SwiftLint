@@ -135,7 +135,7 @@ extension SourceKittenDictionary {
     /// Whether or not the dictionary represents a SwiftUI View with an `accesibilityHidden(true)`
     /// or `accessibility(hidden: true)` modifier.
     func hasAccessibilityHiddenModifier(in file: SwiftLintFile) -> Bool {
-        return hasModifier(
+        hasModifier(
             anyOf: [
                 SwiftUIModifier(
                     name: "accessibilityHidden",
@@ -153,7 +153,7 @@ extension SourceKittenDictionary {
     /// Whether or not the dictionary represents a SwiftUI View with an `accessibilityElement()` or
     /// `accessibilityElement(children: .ignore)` modifier (`.ignore` is the default parameter value).
     func hasAccessibilityElementChildrenIgnoreModifier(in file: SwiftLintFile) -> Bool {
-        return hasModifier(
+        hasModifier(
             anyOf: [
                 SwiftUIModifier(
                     name: "accessibilityElement",

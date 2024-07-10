@@ -47,22 +47,22 @@ public final class SwiftLintFile {
 
     /// The path on disk for this file.
     public var path: String? {
-        return file.path
+        file.path
     }
 
     /// The file's contents.
     public var contents: String {
-        return file.contents
+        file.contents
     }
 
     /// A string view into the contents of this file optimized for string manipulation operations.
     public var stringView: StringView {
-        return file.stringView
+        file.stringView
     }
 
     /// The parsed lines for this file's contents.
     public var lines: [Line] {
-        return file.lines
+        file.lines
     }
 
     /// Mark this file as used for testing purposes.

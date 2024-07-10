@@ -9,14 +9,14 @@ struct SonarQubeReporter: Reporter {
     static let description = "Reports violations in SonarQube import format."
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        return toJSON(["issues": violations.map(dictionary(for:))])
+        toJSON(["issues": violations.map(dictionary(for:))])
     }
 
     // MARK: - Private
 
     // refer to https://docs.sonarqube.org/display/SONAR/Generic+Issue+Data
     private static func dictionary(for violation: StyleViolation) -> [String: Any] {
-        return [
+        [
             "engineId": "SwiftLint",
             "ruleId": violation.ruleIdentifier,
             "primaryLocation": [

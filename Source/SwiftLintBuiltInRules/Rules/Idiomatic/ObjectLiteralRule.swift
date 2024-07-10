@@ -72,7 +72,7 @@ private extension ObjectLiteralRule {
         }
 
         private func inits(forClasses names: [String]) -> [String] {
-            return names.flatMap { name in
+            names.flatMap { name in
                 [
                     name,
                     name + ".init",

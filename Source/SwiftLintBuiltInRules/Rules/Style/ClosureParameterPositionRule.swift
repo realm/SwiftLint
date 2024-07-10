@@ -119,7 +119,7 @@ private extension ClosureParameterPositionRule {
                 return
             }
             let localViolations = positionsToCheck.dropLast().filter { position in
-                return locationConverter.location(for: position).line != startLine
+                locationConverter.location(for: position).line != startLine
             }
 
             violations.append(contentsOf: localViolations)

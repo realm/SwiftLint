@@ -12,7 +12,7 @@ final class ReporterTests: SwiftLintTestCase {
     }
 
     private func stringFromFile(_ filename: String) -> String {
-        return SwiftLintFile(path: "\(testResourcesPath)/\(filename)")!.contents
+        SwiftLintFile(path: "\(testResourcesPath)/\(filename)")!.contents
     }
 
     private func generateViolations() -> [StyleViolation] {

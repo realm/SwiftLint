@@ -11,6 +11,6 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration {
     private(set) var ignoresCaseStatements = false
 
     var params: [RuleParameter<Int>] {
-        return length.params
+        length.params
     }
 }

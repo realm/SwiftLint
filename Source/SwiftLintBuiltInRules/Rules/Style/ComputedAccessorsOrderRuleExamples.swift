@@ -1,6 +1,6 @@
 struct ComputedAccessorsOrderRuleExamples {
     static var nonTriggeringExamples: [Example] {
-        return [
+        [
             Example("""
             class Foo {
                 var foo: Int {
@@ -168,7 +168,7 @@ struct ComputedAccessorsOrderRuleExamples {
     }
 
     static var triggeringExamples: [Example] {
-        return [
+        [
             Example("""
             class Foo {
                 var foo: Int {

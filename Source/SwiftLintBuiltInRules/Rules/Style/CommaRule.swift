@@ -89,7 +89,7 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
+        violationRanges(in: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0.0.location))

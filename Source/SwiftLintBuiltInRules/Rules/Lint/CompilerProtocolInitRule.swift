@@ -105,7 +105,7 @@ private struct ExpressibleByCompiler {
     }()
 
     func match(arguments: [String]) -> Bool {
-        return self.arguments.contains(arguments)
+        self.arguments.contains(arguments)
     }
 
     private static let byArrayLiteral: ExpressibleByCompiler = {

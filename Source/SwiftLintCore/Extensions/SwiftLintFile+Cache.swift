@@ -22,18 +22,18 @@ private let responseCache = Cache { file -> [String: any SourceKitRepresentable]
     }
 }
 private let structureDictionaryCache = Cache { file in
-    return responseCache.get(file).map(Structure.init).map { SourceKittenDictionary($0.dictionary) }
+    responseCache.get(file).map(Structure.init).map { SourceKittenDictionary($0.dictionary) }
 }
 private let syntaxTreeCache = Cache { file -> SourceFileSyntax in
-    return Parser.parse(source: file.contents)
+    Parser.parse(source: file.contents)
 }
 private let foldedSyntaxTreeCache = Cache { file -> SourceFileSyntax? in
-    return OperatorTable.standardOperators
+    OperatorTable.standardOperators
         .foldAll(file.syntaxTree) { _ in }
         .as(SourceFileSyntax.self)
 }
 private let locationConverterCache = Cache { file -> SourceLocationConverter in
-    return SourceLocationConverter(fileName: file.path ?? "<nopath>", tree: file.syntaxTree)
+    SourceLocationConverter(fileName: file.path ?? "<nopath>", tree: file.syntaxTree)
 }
 private let commandsCache = Cache { file -> [Command] in
     guard file.contents.contains("swiftlint:") else {
@@ -98,12 +98,12 @@ private class Cache<T> {
 
 extension SwiftLintFile {
     fileprivate var cacheKey: FileCacheKey {
-        return id
+        id
     }
 
     public var sourcekitdFailed: Bool {
         get {
-            return responseCache.get(self) == nil
+            responseCache.get(self) == nil
         }
         set {
             if newValue {
@@ -116,7 +116,7 @@ extension SwiftLintFile {
 
     internal var assertHandler: AssertHandler? {
         get {
-            return assertHandlerCache.get(self)
+            assertHandlerCache.get(self)
         }
         set {
             assertHandlerCache.set(key: cacheKey, value: newValue)

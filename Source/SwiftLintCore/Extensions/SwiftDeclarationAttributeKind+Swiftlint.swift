@@ -2,7 +2,7 @@ import SourceKittenFramework
 
 public extension SwiftDeclarationAttributeKind {
     static var attributesRequiringFoundation: Set<SwiftDeclarationAttributeKind> {
-        return [
+        [
             .objc,
             .objcName,
             .objcMembers,
@@ -95,7 +95,7 @@ public extension SwiftDeclarationAttributeKind {
         }
 
         public var debugDescription: String {
-            return self.rawValue
+            self.rawValue
         }
     }
 }

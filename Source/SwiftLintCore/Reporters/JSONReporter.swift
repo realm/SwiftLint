@@ -10,13 +10,13 @@ struct JSONReporter: Reporter {
     static let description = "Reports violations as a JSON array."
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        return toJSON(violations.map(dictionary(for:)))
+        toJSON(violations.map(dictionary(for:)))
     }
 
     // MARK: - Private
 
     private static func dictionary(for violation: StyleViolation) -> [String: Any] {
-        return [
+        [
             "file": violation.location.file ?? NSNull() as Any,
             "line": violation.location.line ?? NSNull() as Any,
             "character": violation.location.character ?? NSNull() as Any,

@@ -31,7 +31,7 @@ struct Benchmark {
         let entriesKeyValues: [(String, Double)] = entriesDict.sorted { $0.1 < $1.1 }
         let lines: [String] = entriesKeyValues.map { id, time -> String in
             // swiftlint:disable:next legacy_objc_type
-            return "\(numberFormatter.string(from: NSNumber(value: time))!): \(id)"
+            "\(numberFormatter.string(from: NSNumber(value: time))!): \(id)"
         }
         let string: String = lines.joined(separator: "\n") + "\n"
         let url = URL(fileURLWithPath: "benchmark_\(name)_\(timestamp).txt", isDirectory: false)

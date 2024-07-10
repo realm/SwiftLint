@@ -69,7 +69,7 @@ private extension VariableDeclSyntax {
 }
 
 private func wrapExample(_ text: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
-    return Example("""
+    Example("""
     class ViewController: UIViewController {
         \(text)
     }

@@ -15,8 +15,7 @@ struct HTMLReporter: Reporter {
     static let description = "Reports violations as HTML."
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        return generateReport(violations, swiftlintVersion: Version.current.value,
-                              dateString: formatter.string(from: Date()))
+        generateReport(violations, swiftlintVersion: Version.current.value, dateString: formatter.string(from: Date()))
     }
 
     // MARK: - Internal

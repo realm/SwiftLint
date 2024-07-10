@@ -36,7 +36,7 @@ struct SARIFReporter: Reporter {
     // MARK: - Private
 
     private static func dictionary(for violation: StyleViolation) -> [String: Any] {
-        return [
+        [
             "level": violation.severity.rawValue,
             "ruleId": violation.ruleIdentifier,
             "message": [

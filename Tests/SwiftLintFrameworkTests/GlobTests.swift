@@ -3,7 +3,7 @@ import XCTest
 
 final class GlobTests: SwiftLintTestCase {
     private var mockPath: String {
-        return testResourcesPath.stringByAppendingPathComponent("ProjectMock")
+        testResourcesPath.stringByAppendingPathComponent("ProjectMock")
     }
 
     func testNonExistingDirectory() {

@@ -18,6 +18,6 @@ struct LineLengthConfiguration: RuleConfiguration {
     private(set) var excludedLinesPatterns: Set<String> = []
 
     var params: [RuleParameter<Int>] {
-        return length.params
+        length.params
     }
 }

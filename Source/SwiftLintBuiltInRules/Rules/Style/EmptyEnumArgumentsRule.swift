@@ -4,7 +4,7 @@ private func wrapInSwitch(
     variable: String = "foo",
     _ str: String,
     file: StaticString = #filePath, line: UInt = #line) -> Example {
-    return Example(
+    Example(
         """
         switch \(variable) {
         \(str): break
@@ -13,7 +13,7 @@ private func wrapInSwitch(
 }
 
 private func wrapInFunc(_ str: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
-    return Example("""
+    Example("""
     func example(foo: Foo) {
         switch foo {
         case \(str):

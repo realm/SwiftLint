@@ -95,15 +95,15 @@ struct FileHeaderRule: OptInRule {
     }
 
     private func makeViolation(at location: Location) -> StyleViolation {
-        return StyleViolation(ruleDescription: Self.description,
-                              severity: configuration.severityConfiguration.severity,
-                              location: location,
-                              reason: "Header comments should be consistent with project patterns")
+        StyleViolation(ruleDescription: Self.description,
+                       severity: configuration.severityConfiguration.severity,
+                       location: location,
+                       reason: "Header comments should be consistent with project patterns")
     }
 }
 
 private extension SyntaxKind {
     var isFileHeaderKind: Bool {
-        return self == .comment || self == .commentURL
+        self == .comment || self == .commentURL
     }
 }

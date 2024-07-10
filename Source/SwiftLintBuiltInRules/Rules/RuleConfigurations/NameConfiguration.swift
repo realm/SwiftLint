@@ -20,11 +20,11 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
     private(set) var validatesStartWithLowercase = StartWithLowercaseConfiguration.error
 
     var minLengthThreshold: Int {
-        return max(minLength.warning, minLength.error ?? minLength.warning)
+        max(minLength.warning, minLength.error ?? minLength.warning)
     }
 
     var maxLengthThreshold: Int {
-        return min(maxLength.warning, maxLength.error ?? maxLength.warning)
+        min(maxLength.warning, maxLength.error ?? maxLength.warning)
     }
 
     var allowedSymbolsAndAlphanumerics: CharacterSet {

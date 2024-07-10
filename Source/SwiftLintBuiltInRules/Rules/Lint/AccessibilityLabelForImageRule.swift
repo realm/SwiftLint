@@ -124,7 +124,7 @@ private extension SourceKittenDictionary {
     /// Whether or not the dictionary represents a SwiftUI View with an `accesibilityLabel(_:)`
     /// or `accessibility(label:)` modifier.
     func hasAccessibilityLabelModifier(in file: SwiftLintFile) -> Bool {
-        return hasModifier(
+        hasModifier(
             anyOf: [
                 SwiftUIModifier(
                     name: "accessibilityLabel",

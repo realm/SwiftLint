@@ -6,7 +6,7 @@ private func wrapExample(
     _ add: String = "",
     file: StaticString = #filePath,
     line: UInt = #line) -> Example {
-    return Example("\(prefix)\(type) Abc {\n" +
+    Example("\(prefix)\(type) Abc {\n" +
                    repeatElement(template, count: count).joined() + "\(add)}\n", file: file, line: line)
 }
 

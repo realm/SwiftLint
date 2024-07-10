@@ -18,7 +18,7 @@ struct UnusedImportRule: CorrectableRule, AnalyzerRule {
     )
 
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
-        return importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
+        importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: importUsage.violationRange?.location ?? 1),
@@ -186,7 +186,7 @@ private extension SwiftLintFile {
     }
 
     func rangedAndSortedUnusedImports(of unusedImports: [String]) -> [(String, NSRange)] {
-        return unusedImports
+        unusedImports
             .compactMap { module in
                 match(pattern: "^(@(?!_exported)\\w+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
             }
@@ -240,7 +240,7 @@ private extension SwiftLintFile {
     }
 
     func offsetPerLine() -> [Int: Int64] {
-        return Dictionary(
+        Dictionary(
             uniqueKeysWithValues: contents.bridge()
                 .components(separatedBy: "\n")
                 .map { Int64($0.bridge().lengthOfBytes(using: .utf8)) }

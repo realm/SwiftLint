@@ -7,7 +7,7 @@ struct RelativePathReporter: Reporter {
     static let description = "Reports violations with relative paths."
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        return violations.map(generateForSingleViolation).joined(separator: "\n")
+        violations.map(generateForSingleViolation).joined(separator: "\n")
     }
 
     /// Generates a report for a single violation.
@@ -18,7 +18,7 @@ struct RelativePathReporter: Reporter {
     internal static func generateForSingleViolation(_ violation: StyleViolation) -> String {
         // {relative_path_to_file}{:line}{:character}: {error,warning}: {content}
 
-        return [
+        [
             "\(violation.location.relativeFile ?? "<nopath>")",
             ":\(violation.location.line ?? 1)",
             ":\(violation.location.character ?? 1): ",

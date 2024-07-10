@@ -57,17 +57,17 @@ public extension NSRegularExpression {
 
     func matches(in stringView: StringView,
                  options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
-        return matches(in: stringView.string, options: options, range: stringView.range)
+        matches(in: stringView.string, options: options, range: stringView.range)
     }
 
     func matches(in stringView: StringView,
                  options: NSRegularExpression.MatchingOptions = [],
                  range: NSRange) -> [NSTextCheckingResult] {
-        return matches(in: stringView.string, options: options, range: range)
+        matches(in: stringView.string, options: options, range: range)
     }
 
     func matches(in file: SwiftLintFile,
                  options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
-        return matches(in: file.stringView.string, options: options, range: file.stringView.range)
+        matches(in: file.stringView.string, options: options, range: file.stringView.range)
     }
 }

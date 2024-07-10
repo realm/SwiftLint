@@ -26,7 +26,7 @@ struct CSVReporter: Reporter {
     // MARK: - Private
 
     private static func csvRow(for violation: StyleViolation) -> String {
-        return [
+        [
             violation.location.file?.escapedForCSV() ?? "",
             violation.location.line?.description ?? "",
             violation.location.character?.description ?? "",

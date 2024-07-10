@@ -26,7 +26,6 @@ disabled_rules:
   - file_types_order
   - force_unwrapping
   - function_default_parameter_at_end
-  - implicit_return
   - indentation_width
   - inert_defer
   - missing_docs

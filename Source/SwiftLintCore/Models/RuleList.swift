@@ -73,11 +73,11 @@ public struct RuleList {
     }
 
     internal func identifier(for alias: String) -> String? {
-        return aliases[alias]
+        aliases[alias]
     }
 
     internal func allValidIdentifiers() -> [String] {
-        return list.flatMap { _, rule -> [String] in
+        list.flatMap { _, rule -> [String] in
             rule.description.allIdentifiers
         }
     }
@@ -85,7 +85,7 @@ public struct RuleList {
 
 extension RuleList: Equatable {
     public static func == (lhs: RuleList, rhs: RuleList) -> Bool {
-        return lhs.list.map { $0.0 } == rhs.list.map { $0.0 }
+        lhs.list.map { $0.0 } == rhs.list.map { $0.0 }
             && lhs.list.map { $0.1.description } == rhs.list.map { $0.1.description }
             && lhs.aliases == rhs.aliases
     }

@@ -84,11 +84,11 @@ public extension Rule {
 
     func validate(file: SwiftLintFile, using storage: RuleStorage,
                   compilerArguments: [String]) -> [StyleViolation] {
-        return validate(file: file, compilerArguments: compilerArguments)
+        validate(file: file, compilerArguments: compilerArguments)
     }
 
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
-        return validate(file: file)
+        validate(file: file)
     }
 
     func isEqualTo(_ rule: any Rule) -> Bool {
@@ -153,10 +153,10 @@ public protocol CorrectableRule: Rule {
 
 public extension CorrectableRule {
     func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
-        return correct(file: file)
+        correct(file: file)
     }
     func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
-        return correct(file: file, compilerArguments: compilerArguments)
+        correct(file: file, compilerArguments: compilerArguments)
     }
 }
 

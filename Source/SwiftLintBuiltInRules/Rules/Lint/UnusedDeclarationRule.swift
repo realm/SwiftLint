@@ -70,7 +70,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         // Unused declarations are:
         // 1. all declarations
         // 2. minus all references
-        return declaredUSRs
+        declaredUSRs
             .filter { !allReferencedUSRs.contains($0.usr) }
             .map { $0.nameOffset }
             .sorted()
@@ -81,7 +81,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
 
 private extension SwiftLintFile {
     func index(compilerArguments: [String]) -> SourceKittenDictionary? {
-        return path
+        path
             .flatMap { path in
                 try? Request.index(file: path, arguments: compilerArguments)
                             .send()
@@ -90,7 +90,7 @@ private extension SwiftLintFile {
     }
 
     func referencedUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary) -> Set<String> {
-        return Set(index.traverseEntitiesDepthFirst { parent, entity -> String? in
+        Set(index.traverseEntitiesDepthFirst { parent, entity -> String? in
             if let usr = entity.usr,
                let kind = entity.kind,
                kind.starts(with: "source.lang.swift.ref"),
@@ -109,7 +109,7 @@ private extension SwiftLintFile {
     func declaredUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
                       compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
     -> Set<UnusedDeclarationRule.DeclaredUSR> {
-        return Set(index.traverseEntitiesDepthFirst { _, indexEntity in
+        Set(index.traverseEntitiesDepthFirst { _, indexEntity in
             self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
                              configuration: configuration)
         })
@@ -225,15 +225,15 @@ private extension SwiftLintFile {
 
 private extension SourceKittenDictionary {
     var usr: String? {
-        return value["key.usr"] as? String
+        value["key.usr"] as? String
     }
 
     var annotatedDeclaration: String? {
-        return value["key.annotated_decl"] as? String
+        value["key.annotated_decl"] as? String
     }
 
     var isImplicit: Bool {
-        return value["key.is_implicit"] as? Bool == true
+        value["key.is_implicit"] as? Bool == true
     }
 
     func propertyAtOffset<T>(_ offset: ByteCount, property: KeyPath<Self, T?>) -> T? {
@@ -251,7 +251,7 @@ private extension SourceKittenDictionary {
     }
 
     func shouldSkipRelated(relatedUSRsToSkip: Set<String>) -> Bool {
-        return (value["key.related"] as? [[String: any SourceKitRepresentable]])?
+        (value["key.related"] as? [[String: any SourceKitRepresentable]])?
             .compactMap { SourceKittenDictionary($0).usr }
             .contains(where: relatedUSRsToSkip.contains) == true
     }

@@ -27,6 +27,6 @@ public final class RuleRegistry: @unchecked Sendable {
     ///
     /// - returns: The rule matching the specified ID, if one was found.
     public func rule(forID id: String) -> (any Rule.Type)? {
-        return list.list[id]
+        list.list[id]
     }
 }

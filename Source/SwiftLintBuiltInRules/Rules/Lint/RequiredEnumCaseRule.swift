@@ -167,7 +167,7 @@ private extension RequiredEnumCaseRule {
 
 private extension EnumDeclSyntax {
     var enumCasesNames: [String] {
-        return memberBlock.members
+        memberBlock.members
             .flatMap { member -> [String] in
                 guard let enumCaseDecl = member.decl.as(EnumCaseDeclSyntax.self) else {
                     return []

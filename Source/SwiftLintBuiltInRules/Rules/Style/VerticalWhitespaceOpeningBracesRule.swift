@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
-        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+        match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
     }
 }
 

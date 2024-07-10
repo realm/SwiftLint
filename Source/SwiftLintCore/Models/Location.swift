@@ -23,7 +23,7 @@ public struct Location: CustomStringConvertible, Comparable, Codable, Sendable {
 
     /// The file path for this location relative to the current working directory.
     public var relativeFile: String? {
-        return file?.replacingOccurrences(of: FileManager.default.currentDirectoryPath + "/", with: "")
+        file?.replacingOccurrences(of: FileManager.default.currentDirectoryPath + "/", with: "")
     }
 
     /// Creates a `Location` by specifying its properties directly.

@@ -93,14 +93,13 @@ extension SwitchCaseAlignmentRule {
         }
 
         var triggeringExamples: [Example] {
-            return (indentedCasesOption ? nonIndentedCases : indentedCases)
+            (indentedCasesOption ? nonIndentedCases : indentedCases)
                 + invalidCases
                 + invalidOneLiners
         }
 
         var nonTriggeringExamples: [Example] {
-            return indentedCasesOption ? indentedCases : nonIndentedCases
-                + validOneLiners
+            indentedCasesOption ? indentedCases : nonIndentedCases + validOneLiners
         }
 
         private var indentedCases: [Example] {

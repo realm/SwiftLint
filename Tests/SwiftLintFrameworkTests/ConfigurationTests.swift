@@ -251,7 +251,7 @@ final class ConfigurationTests: SwiftLintTestCase {
         }
 
         func modificationDate(forFileAtPath path: String) -> Date? {
-            return nil
+            nil
         }
 
         func isFile(atPath path: String) -> Bool {

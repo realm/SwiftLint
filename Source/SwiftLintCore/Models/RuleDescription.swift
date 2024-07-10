@@ -52,11 +52,11 @@ public struct RuleDescription: Equatable, Sendable {
     public let requiresFileOnDisk: Bool
 
     /// The console-printable string for this description.
-    public var consoleDescription: String { return "\(name) (\(identifier)): \(description)" }
+    public var consoleDescription: String { "\(name) (\(identifier)): \(description)" }
 
     /// All identifiers that have been used to uniquely identify this rule in past and current SwiftLint versions.
     public var allIdentifiers: [String] {
-        return Array(deprecatedAliases) + [identifier]
+        Array(deprecatedAliases) + [identifier]
     }
 
     /// Creates a `RuleDescription` by specifying all its properties directly.
@@ -92,6 +92,6 @@ public struct RuleDescription: Equatable, Sendable {
     // MARK: Equatable
 
     public static func == (lhs: RuleDescription, rhs: RuleDescription) -> Bool {
-        return lhs.identifier == rhs.identifier
+        lhs.identifier == rhs.identifier
     }
 }

@@ -61,7 +61,7 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule,
     // MARK: - Rule
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
+        violationRanges(in: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
@@ -71,7 +71,7 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule,
     // MARK: - SubstitutionCorrectableRule
 
     func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, ", ")
+        (violationRange, ", ")
     }
 
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {

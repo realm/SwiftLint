@@ -134,7 +134,7 @@ public struct Baseline: Equatable {
     /// The violations are filtered using the same algorithm as the `filter` method above.
     ///
     /// - parameter otherBaseline: The other `Baseline`.
-    public func compare(_ otherBaseline: Baseline) -> [StyleViolation] {
+    public func compare(_ otherBaseline: Self) -> [StyleViolation] {
         otherBaseline.baseline.flatMap { relativePath, otherBaselineViolations -> Set<StyleViolation> in
             if let baselineViolations = baseline[relativePath] {
                 return filter(relativePathViolations: otherBaselineViolations, baselineViolations: baselineViolations)

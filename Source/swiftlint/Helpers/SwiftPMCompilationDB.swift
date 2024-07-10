@@ -28,7 +28,7 @@ struct SwiftPMCompilationDB: Codable {
 
     static func parse(yaml: Data) throws -> [File: Arguments] {
         let decoder = YAMLDecoder()
-        let compilationDB: SwiftPMCompilationDB
+        let compilationDB: Self
 
         if ProcessInfo.processInfo.environment["TEST_SRCDIR"] != nil {
             // Running tests

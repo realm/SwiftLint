@@ -2,7 +2,7 @@ internal struct HashableConfigurationRuleWrapperWrapper: Hashable {
     let configurationRuleWrapper: ConfigurationRuleWrapper
 
     static func == (
-        lhs: HashableConfigurationRuleWrapperWrapper, rhs: HashableConfigurationRuleWrapperWrapper
+        lhs: Self, rhs: Self
     ) -> Bool {
         // Only use identifier for equality check (not taking config into account)
         type(of: lhs.configurationRuleWrapper.rule).description.identifier

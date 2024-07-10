@@ -53,7 +53,7 @@ public struct RuleConfigurationDescription: Equatable {
             return Self(options: customDescription.options, exclusiveOptions: exclusiveOptions)
         }
         let options: [RuleConfigurationOption] = Mirror(reflecting: configuration).children
-            .compactMap { child -> RuleConfigurationDescription? in
+            .compactMap { child -> Self? in
                 // Property wrappers have names prefixed by an underscore.
                 guard let codingKey = child.label, codingKey.starts(with: "_") else {
                     return nil
@@ -182,7 +182,7 @@ public enum OptionType: Equatable {
     /// Special option for a ``ViolationSeverity``.
     case severity(ViolationSeverity)
     /// A list of options.
-    case list([OptionType])
+    case list([Self])
     /// An option which is another set of configuration options to be nested in the serialized output.
     case nested(RuleConfigurationDescription)
 }
@@ -438,7 +438,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
 
     /// The wrapper itself providing access to all its data. This field can only be accessed by the
     /// element's name prefixed with a `$`.
-    public var projectedValue: ConfigurationElement {
+    public var projectedValue: Self {
         get { self }
         _modify { yield &self }
     }
@@ -519,7 +519,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
         self.postprocessor = postprocessor
     }
 
-    public static func == (lhs: ConfigurationElement, rhs: ConfigurationElement) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.wrappedValue == rhs.wrappedValue && lhs.key == rhs.key
     }
 }

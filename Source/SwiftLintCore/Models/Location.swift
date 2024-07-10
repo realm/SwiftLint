@@ -80,7 +80,7 @@ public struct Location: CustomStringConvertible, Comparable, Codable, Sendable {
 
     // MARK: Comparable
 
-    public static func < (lhs: Location, rhs: Location) -> Bool {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
         if lhs.file != rhs.file {
             return lhs.file < rhs.file
         }

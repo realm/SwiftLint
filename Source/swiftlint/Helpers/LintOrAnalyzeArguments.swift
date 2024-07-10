@@ -3,7 +3,7 @@ import ArgumentParser
 enum LeniencyOptions: String, EnumerableFlag {
     case strict, lenient
 
-    static func help(for value: LeniencyOptions) -> ArgumentHelp? {
+    static func help(for value: Self) -> ArgumentHelp? {
         switch value {
         case .strict:
             return "Upgrades warnings to serious violations (errors)."

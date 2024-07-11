@@ -281,6 +281,7 @@ struct LintOrAnalyzeOptions {
     let cachePath: String?
     let ignoreCache: Bool
     let enableAllRules: Bool
+    let onlyRule: String?
     let autocorrect: Bool
     let format: Bool
     let compilerLogPath: String?

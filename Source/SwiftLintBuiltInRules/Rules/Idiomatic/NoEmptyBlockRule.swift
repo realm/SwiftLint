@@ -1,8 +1,9 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct NoEmptyBlockRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+struct NoEmptyBlockRule: OptInRule {
+    var configuration = NoEmptyBlockConfiguration()
 
     static let description = RuleDescription(
         identifier: "no_empty_block",
@@ -102,13 +103,36 @@ private extension NoEmptyBlockRule {
             // No need to show a warning since Empty Block of `guard` is compile error.
             guard node.parent?.kind != .guardStmt else { return }
 
+            if let codeBlockType = node.codeBlockType, configuration.enabledBlockTypes.contains(codeBlockType) {
+                validate(node: node)
+            }
+        }
+
+        func validate(node: CodeBlockSyntax) {
             guard node.statements.isEmpty,
                   !node.leftBrace.trailingTrivia.containsComments,
                   !node.rightBrace.leadingTrivia.containsComments else {
                 return
             }
-
             violations.append(node.leftBrace.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension CodeBlockSyntax {
+    var codeBlockType: NoEmptyBlockConfiguration.CodeBlockType? {
+        guard let kind = self.parent?.kind else { return nil }
+        switch kind {
+        case .accessorDecl:
+            return .accessorBodies
+        case .functionDecl:
+            return .functionBodies
+        case .initializerDecl, .deinitializerDecl:
+            return .initializerBodies
+        case .forStmt, .doStmt, .whileStmt, .repeatStmt, .ifExpr, .guardStmt, .catchClause, .deferStmt:
+            return .statementBlocks
+        default:
+            return nil
         }
     }
 }

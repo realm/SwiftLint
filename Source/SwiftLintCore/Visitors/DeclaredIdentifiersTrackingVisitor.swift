@@ -1,17 +1,23 @@
 import SwiftSyntax
 
-public enum Declaration: Hashable {
+/// An identifier declaration.
+public enum IdentifierDeclaration: Hashable {
+    /// Parameter declaration with a name token.
     case parameter(name: TokenSyntax)
+    /// Local variable declaration with a name token.
     case localVariable(name: TokenSyntax)
+    /// An variable that is implicitly added by the compiler (e.g. `error` in `catch` clauses).
     case implicitVariable(name: String)
-    case stopMarker
+    /// Special case that marks a type boundary at which name lookup stops.
+    case lookupBoundary
 
+    /// The name of the declared identifier (e.g. in `let a = 1` this is `a`).
     public var name: String {
         switch self {
         case let .parameter(name): name.text
         case let .localVariable(name): name.text
         case let .implicitVariable(name): name
-        case .stopMarker: ""
+        case .lookupBoundary: ""
         }
     }
 }
@@ -20,7 +26,7 @@ public enum Declaration: Hashable {
 open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
         ViolationsSyntaxVisitor<Configuration> {
     /// A type that remembers the declared identifiers (in order) up to the current position in the code.
-    public typealias Scope = Stack<[Declaration]>
+    public typealias Scope = Stack<[IdentifierDeclaration]>
 
     /// The hierarchical stack of identifiers declared up to the current position in the code.
     public var scope: Scope
@@ -39,7 +45,9 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
 
     /// Indicate whether a given identifier is in scope.
     ///
-    /// - parameter identifier: An identifier.
+    /// - Parameters:
+    ///   - identifier: An identifier.
+    /// - Returns: `true` if the identifier was declared previously.
     public func hasSeenDeclaration(for identifier: String) -> Bool {
         scope.contains { $0.contains { $0.name == identifier } }
     }
@@ -91,7 +99,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
 
     override open func visit(_ node: MemberBlockSyntax) -> SyntaxVisitorContinueKind {
         if node.belongsToTypeDefinableInFunction {
-            scope.push([.stopMarker])
+            scope.push([.lookupBoundary])
         }
         return .visitChildren
     }
@@ -175,7 +183,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
 }
 
 private extension DeclaredIdentifiersTrackingVisitor.Scope {
-    mutating func addToCurrentScope(_ decl: Declaration) {
+    mutating func addToCurrentScope(_ decl: IdentifierDeclaration) {
         if decl.name != "_" {
             modifyLast { $0.append(decl) }
         }

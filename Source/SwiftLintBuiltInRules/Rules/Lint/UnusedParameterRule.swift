@@ -132,7 +132,7 @@ struct UnusedParameterRule: SwiftSyntaxCorrectableRule, OptInRule {
 
 private extension UnusedParameterRule {
     final class Visitor: DeclaredIdentifiersTrackingVisitor<ConfigurationType> {
-        private var referencedDeclarations = Set<Declaration>()
+        private var referencedDeclarations = Set<IdentifierDeclaration>()
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
@@ -193,7 +193,7 @@ private extension UnusedParameterRule {
         private func addReference(_ id: String) {
             let id = id.trimmingCharacters(in: .init(charactersIn: "`"))
             for declarations in scope.reversed() {
-                if declarations.onlyElement == .stopMarker {
+                if declarations.onlyElement == .lookupBoundary {
                     return
                 }
                 for declaration in declarations.reversed() where declaration.name == id {

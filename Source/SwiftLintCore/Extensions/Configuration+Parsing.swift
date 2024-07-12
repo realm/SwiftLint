@@ -74,18 +74,21 @@ extension Configuration {
 
         let rulesMode = try RulesMode(
             enableAllRules: enableAllRules,
+            onlyRule: onlyRule,
             onlyRules: onlyRules,
             optInRules: optInRules,
             disabledRules: disabledRules,
             analyzerRules: analyzerRules
         )
 
-        Self.validateConfiguredRulesAreEnabled(
-            parentConfiguration: parentConfiguration,
-            configurationDictionary: dict,
-            ruleList: ruleList,
-            rulesMode: rulesMode
-        )
+        if onlyRule == nil {
+            Self.validateConfiguredRulesAreEnabled(
+                parentConfiguration: parentConfiguration,
+                configurationDictionary: dict,
+                ruleList: ruleList,
+                rulesMode: rulesMode
+            )
+        }
 
         self.init(
             rulesMode: rulesMode,

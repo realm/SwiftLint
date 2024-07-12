@@ -41,6 +41,11 @@
   [Ueeek](https://github.com/Ueeek)
   [#5615](https://github.com/realm/SwiftLint/issues/5615)
 
+* Add new `unused_parameter` rule that triggers on function/initializer/subscript
+  parameters that are not used inside of the function/initializer/subscript.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#2120](https://github.com/realm/SwiftLint/issues/2120)
+
 * Add modified configurations to examples in rule documentation.  
   [SimplyDanny](https://github.com/SimplyDanny)
 

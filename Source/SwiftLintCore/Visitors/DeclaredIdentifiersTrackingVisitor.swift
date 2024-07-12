@@ -1,15 +1,15 @@
 import SwiftSyntax
 
 public enum Declaration: Hashable {
-    case parameter(position: AbsolutePosition, name: String)
-    case localVariable(position: AbsolutePosition, name: String)
+    case parameter(name: TokenSyntax)
+    case localVariable(name: TokenSyntax)
     case implicitVariable(name: String)
     case stopMarker
 
     public var name: String {
         switch self {
-        case let .parameter(_, name): name
-        case let .localVariable(_, name): name
+        case let .parameter(name): name.text
+        case let .localVariable(name): name.text
         case let .implicitVariable(name): name
         case .stopMarker: ""
         }
@@ -20,7 +20,7 @@ public enum Declaration: Hashable {
 open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
         ViolationsSyntaxVisitor<Configuration> {
     /// A type that remembers the declared identifiers (in order) up to the current position in the code.
-    public typealias Scope = Stack<Set<Declaration>>
+    public typealias Scope = Stack<[Declaration]>
 
     /// The hierarchical stack of identifiers declared up to the current position in the code.
     public var scope: Scope
@@ -107,9 +107,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
     private func collectIdentifiers(from parameters: FunctionParameterListSyntax) {
         for param in parameters {
             let name = param.secondName ?? param.firstName
-            if name.tokenKind != .wildcard {
-                scope.addToCurrentScope(.parameter(position: name.positionAfterSkippingLeadingTrivia, name: name.text))
-            }
+            scope.addToCurrentScope(.parameter(name: name))
         }
     }
 
@@ -118,12 +116,12 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
         case let .parameterClause(parameters):
             for param in parameters.parameters {
                 let name = param.secondName ?? param.firstName
-                scope.addToCurrentScope(.parameter(position: name.positionAfterSkippingLeadingTrivia, name: name.text))
+                scope.addToCurrentScope(.parameter(name: name))
             }
         case let .simpleInput(parameters):
             for param in parameters {
                 let name = param.name
-                scope.addToCurrentScope(.parameter(position: name.positionAfterSkippingLeadingTrivia, name: name.text))
+                scope.addToCurrentScope(.parameter(name: name))
             }
         }
     }
@@ -146,12 +144,8 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
             .map { patternExpr -> any PatternSyntaxProtocol in
                 patternExpr.pattern.as(ValueBindingPatternSyntax.self)?.pattern ?? patternExpr.pattern
             }
-            .compactMap { pattern -> IdentifierPatternSyntax? in
-                pattern.as(IdentifierPatternSyntax.self)
-            }
             .forEach {
-                let id = $0.identifier
-                scope.addToCurrentScope(.localVariable(position: id.positionAfterSkippingLeadingTrivia, name: id.text))
+                collectIdentifiers(from: PatternSyntax(fromProtocol: $0))
             }
     }
 
@@ -175,14 +169,16 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
 
     private func collectIdentifiers(from pattern: PatternSyntax) {
         if let id = pattern.as(IdentifierPatternSyntax.self)?.identifier {
-            scope.addToCurrentScope(.localVariable(position: id.positionAfterSkippingLeadingTrivia, name: id.text))
+            scope.addToCurrentScope(.localVariable(name: id))
         }
     }
 }
 
 private extension DeclaredIdentifiersTrackingVisitor.Scope {
     mutating func addToCurrentScope(_ decl: Declaration) {
-        modifyLast { $0.insert(decl) }
+        if decl.name != "_" {
+            modifyLast { $0.append(decl) }
+        }
     }
 
     mutating func openChildScope() {

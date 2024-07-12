@@ -2,7 +2,7 @@ import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct UnusedParameterRule: OptInRule {
+struct UnusedParameterRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -40,11 +40,6 @@ struct UnusedParameterRule: OptInRule {
             }
             """),
             Example("""
-            class C1: C2 {
-                override func f(a: Int, b c: String) {}
-            }
-            """),
-            Example("""
             func f(a: Int, c: Int) -> Int {
                 struct S {
                     let b = 1
@@ -56,6 +51,12 @@ struct UnusedParameterRule: OptInRule {
             Example("""
             func f(a: Int?) {
                 if let a {}
+            }
+            """),
+            Example("""
+            func f(a: Int) {
+                let a = a
+                return a
             }
             """),
         ],
@@ -100,6 +101,29 @@ struct UnusedParameterRule: OptInRule {
                 return S().f(a: c)
             }
             """),
+            Example("""
+            func f(↓a: Int, c: String) {
+                let a = 1
+                return a + c
+            }
+            """),
+        ],
+        corrections: [
+            Example("""
+            func f(a: Int) {}
+            """): Example("""
+            func f(a _: Int) {}
+            """),
+            Example("""
+            func f(a b: Int) {}
+            """): Example("""
+            func f(a _: Int) {}
+            """),
+            Example("""
+            func f(_ a: Int) {}
+            """): Example("""
+            func f(_: Int) {}
+            """),
         ]
     )
 }
@@ -108,25 +132,44 @@ struct UnusedParameterRule: OptInRule {
 
 private extension UnusedParameterRule {
     final class Visitor: DeclaredIdentifiersTrackingVisitor<ConfigurationType> {
-        private var referencedParameters = Set<Declaration>()
-        private var referencedVariables = Stack<Set<String>>()
+        private var referencedDeclarations = Set<Declaration>()
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
-
-        // MARK: Parameter declarations
-
-        override func visit(_ node: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
-            if node.grandParent?.isNonOverriddenFunctionLike == true {
-                referencedVariables.push([])
-            }
-            return super.visit(node)
-        }
 
         // MARK: Violation checking
 
         override func visitPost(_ node: CodeBlockItemListSyntax) {
-            if node.grandParent?.isNonOverriddenFunctionLike == true {
-                collectViolations()
+            let declarations = scope.peek() ?? []
+            for declaration in declarations.reversed() where !referencedDeclarations.contains(declaration) {
+                // Violation
+                guard case let .parameter(name) = declaration else {
+                    continue
+                }
+                let violation = ReasonedRuleViolation(
+                    position: name.positionAfterSkippingLeadingTrivia,
+                    reason: "Parameter '\(name.text)' is unused; consider removing or replacing it with '_'",
+                    severity: configuration.severity
+                )
+                violations.append(violation)
+
+                // Correction
+                guard let previousToken = name.previousToken(viewMode: .sourceAccurate) else {
+                    continue
+                }
+                let startPosReplacement =
+                    if previousToken.tokenKind == .wildcard {
+                        (previousToken.positionAfterSkippingLeadingTrivia, "_")
+                    } else if case .identifier = previousToken.tokenKind {
+                        (name.positionAfterSkippingLeadingTrivia, "_")
+                    } else {
+                        (name.positionAfterSkippingLeadingTrivia, name.text + " _")
+                    }
+                let correction = ViolationCorrection(
+                    start: startPosReplacement.0,
+                    end: name.endPositionBeforeTrailingTrivia,
+                    replacement: startPosReplacement.1
+                )
+                violationCorrections.append(correction)
             }
             super.visitPost(node)
         }
@@ -148,52 +191,17 @@ private extension UnusedParameterRule {
         // MARK: Private methods
 
         private func addReference(_ id: String) {
-            referencedVariables.modifyLast { $0.insert(id.trimmingCharacters(in: .init(charactersIn: "`"))) }
-        }
-
-        private func collectViolations() {
-            var variables = referencedVariables.pop() ?? []
+            let id = id.trimmingCharacters(in: .init(charactersIn: "`"))
             for declarations in scope.reversed() {
                 if declarations.onlyElement == .stopMarker {
-                    break
-                }
-                for declaration in declarations where !referencedParameters.contains(declaration) {
-                    guard case let .parameter(position, name) = declaration else {
-                        continue
-                    }
-                    if variables.contains(name) {
-                        variables.remove(name)
-                        referencedParameters.insert(declaration)
-                        continue
-                    }
-                    let violation = ReasonedRuleViolation(
-                        position: position,
-                        reason: "Parameter '\(name)' is unused; consider removing or replacing it with '_'",
-                        severity: configuration.severity
-                    )
-                    violations.append(violation)
-                }
-                if variables.isEmpty {
                     return
+                }
+                for declaration in declarations.reversed() where declaration.name == id {
+                    if referencedDeclarations.insert(declaration).inserted {
+                        return
+                    }
                 }
             }
         }
-    }
-}
-
-private extension SyntaxProtocol {
-    var grandParent: Syntax? {
-        if let parent, !parent.is(SourceFileSyntax.self) {
-            return parent.parent
-        }
-        return nil
-    }
-
-    var isNonOverriddenFunctionLike: Bool {
-        if [.functionDecl, .initializerDecl, .subscriptDecl].contains(kind),
-           let modifiers = asProtocol((any WithModifiersSyntax).self)?.modifiers {
-            return !modifiers.contains(keyword: .override)
-        }
-        return false
     }
 }

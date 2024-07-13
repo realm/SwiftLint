@@ -7,7 +7,7 @@ struct AccessControlSetterSpacingRule: Rule {
     static let description = RuleDescription(
         identifier: "access_control_setter_spacing",
         name: "Access Control Setter Spacing",
-        description: "There should not be a space between the access control modifier and (set)",
+        description: "There should be no space between the access control modifier and setter scope",
         kind: .style,
         nonTriggeringExamples: [
             Example("private(set) var foo: Bool = false"),

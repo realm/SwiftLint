@@ -21,6 +21,11 @@
 
 #### Enhancements
 
+* Adds `access_control_setter_spacing` default rule to prevent errors with
+  access control modifier with a setter scope in Swift 6.  
+  [aryamansharda](https://github.com/aryamansharda)
+  [#5667](https://github.com/realm/SwiftLint/issues/5667)
+  
 * Linting got around 20% faster due to the praisworthy performance
   improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
   library.

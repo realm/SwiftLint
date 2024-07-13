@@ -2,7 +2,7 @@ import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct AccessControlSetterSpacingRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
         identifier: "access_control_setter_spacing",

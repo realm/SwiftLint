@@ -94,14 +94,14 @@ struct MissingDocsRuleExamples {
         Example("""
         /// a doc
         public class C {
-            public ↓static let i = 1
+            public static ↓let i = 1
         }
         """),
         // `excludes_extensions` only excludes the extension declaration itself; not its children.
         Example("""
         public extension A {
             public ↓func f() {}
-            ↓static var i: Int { 1 }
+            static ↓var i: Int { 1 }
             ↓struct S {
                 func f() {}
             }
@@ -112,7 +112,7 @@ struct MissingDocsRuleExamples {
                 func f() {}
             }
             ↓enum E {
-                case ↓a
+                ↓case a
                 func f() {}
             }
         }
@@ -129,7 +129,7 @@ struct MissingDocsRuleExamples {
         Example("""
         extension E {
             public ↓struct S {
-                public ↓static let i = 1
+                public static ↓let i = 1
             }
         }
         """),
@@ -170,7 +170,7 @@ struct MissingDocsRuleExamples {
         """),
         Example("""
         public ↓enum E {
-            case ↓A
+            ↓case A, B
             func f() {}
             init(_ i: Int) { self = .A }
         }
@@ -178,7 +178,7 @@ struct MissingDocsRuleExamples {
         Example("""
         open ↓class C {
             public ↓enum E {
-                case ↓A
+                ↓case A
                 func f() {}
                 init(_ i: Int) { self = .A }
             }
@@ -190,7 +190,7 @@ struct MissingDocsRuleExamples {
         public struct S {}
         public extension S {
             ↓enum E {
-                case ↓A
+                ↓case A
             }
         }
         """),
@@ -199,7 +199,7 @@ struct MissingDocsRuleExamples {
             fileprivate enum E {
                 static let source = ""
             }
-            ↓static var a: Int { 1 }
+            static ↓var a: Int { 1 }
         }
         """, excludeFromDocumentation: true),
         Example("""

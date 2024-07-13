@@ -34,7 +34,7 @@ private extension MissingDocsRule {
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            aclScope.pop()
+          collectViolation(from: node, on: node.actorKeyword)
         }
 
         override func visitPost(_ node: AssociatedTypeDeclSyntax) {

@@ -21,6 +21,10 @@
 
 #### Enhancements
 
+* Make implicitly confirming to `Actor` to trigger warning.
+  [marunomi](https://github.com/marunomi)
+  [#5442](https://github.com/realm/SwiftLint/issues/5442)
+
 * Linting got around 20% faster due to the praisworthy performance
   improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
   library.

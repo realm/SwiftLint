@@ -59,6 +59,9 @@ struct UnusedParameterRule: SwiftSyntaxCorrectableRule, OptInRule {
                 return a
             }
             """),
+            Example("""
+            func f(`operator`: Int) -> Int { `operator` }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -191,12 +194,11 @@ private extension UnusedParameterRule {
         // MARK: Private methods
 
         private func addReference(_ id: String) {
-            let id = id.trimmingCharacters(in: .init(charactersIn: "`"))
             for declarations in scope.reversed() {
                 if declarations.onlyElement == .lookupBoundary {
                     return
                 }
-                for declaration in declarations.reversed() where declaration.name == id {
+                for declaration in declarations.reversed() where declaration.declares(id: id) {
                     if referencedDeclarations.insert(declaration).inserted {
                         return
                     }

@@ -1,3 +1,4 @@
+import Foundation
 import SwiftSyntax
 
 /// An identifier declaration.
@@ -6,19 +7,40 @@ public enum IdentifierDeclaration: Hashable {
     case parameter(name: TokenSyntax)
     /// Local variable declaration with a name token.
     case localVariable(name: TokenSyntax)
-    /// An variable that is implicitly added by the compiler (e.g. `error` in `catch` clauses).
+    /// A variable that is implicitly added by the compiler (e.g. `error` in `catch` clauses).
     case implicitVariable(name: String)
+    /// A variable hidden from scope because its name is a wildcard `_`.
+    case wildcard
     /// Special case that marks a type boundary at which name lookup stops.
     case lookupBoundary
 
     /// The name of the declared identifier (e.g. in `let a = 1` this is `a`).
-    public var name: String {
+    fileprivate var name: String {
         switch self {
         case let .parameter(name): name.text
         case let .localVariable(name): name.text
         case let .implicitVariable(name): name
+        case .wildcard: "_"
         case .lookupBoundary: ""
         }
+    }
+
+    /// Check whether self declares a variable given by name.
+    ///
+    /// - Parameters:
+    ///   - id: Name of the variable.
+    ///   - disregardBackticks: If `true`, normalize all names before comparison by removing all backticks. This is the
+    ///                         default since backticks only disambiguate, but don't contribute to name resolution.
+    public func declares(id: String, disregardBackticks: Bool = true) -> Bool {
+        if self == .wildcard || id == "_" {
+            // Insignificant names cannot refer to each other.
+            return false
+        }
+        if disregardBackticks {
+            let backticks = CharacterSet(charactersIn: "`")
+            return id.trimmingCharacters(in: backticks) == name.trimmingCharacters(in: backticks)
+        }
+        return id == name
     }
 }
 
@@ -184,9 +206,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
 
 private extension DeclaredIdentifiersTrackingVisitor.Scope {
     mutating func addToCurrentScope(_ decl: IdentifierDeclaration) {
-        if decl.name != "_" {
-            modifyLast { $0.append(decl) }
-        }
+        modifyLast { $0.append(decl.name == "_" ? .wildcard : decl) }
     }
 
     mutating func openChildScope() {

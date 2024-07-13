@@ -36,19 +36,17 @@ private extension AccessControlSetterSpacingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: DeclModifierSyntax) {
             // If there is an access level modifier followed be a (set)
-            guard let _ = node.asAccessLevelModifier, node.detail?.detail.tokenKind == .identifier("set") else {
+            guard let _ = node.asAccessLevelModifier, node.detail?.detail.tokenKind == .identifier("set"), node.name.trailingTrivia.isNotEmpty else {
                 return
             }
 
-            if node.name.trailingTrivia.isNotEmpty {
-                violations.append(node.name.endPosition)
-            }
+            violations.append(node.name.endPosition)
         }
     }
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: DeclModifierSyntax) -> DeclModifierSyntax {
-            guard node.name.trailingTrivia.isNotEmpty else {
+            guard let _ = node.asAccessLevelModifier, node.detail?.detail.tokenKind == .identifier("set"), node.name.trailingTrivia.isNotEmpty else {
                 return super.visit(node)
             }
 

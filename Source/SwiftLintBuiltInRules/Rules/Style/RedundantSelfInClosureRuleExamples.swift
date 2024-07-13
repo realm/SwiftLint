@@ -80,6 +80,19 @@ struct RedundantSelfInClosureRuleExamples {
                 }
             }
         """),
+        Example("""
+        class C {
+            var a = 0
+            init(_ a: Int) {
+                self.a = a
+                f { [weak self] in
+                    guard let self else { return }
+                    self.a = 1
+                }
+            }
+            func f(_: () -> Void) {}
+        }
+        """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [

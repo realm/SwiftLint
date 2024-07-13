@@ -58,6 +58,13 @@
   [Ian Leitch](https://github.com/ileitch)
   [#5613](https://github.com/realm/SwiftLint/issues/5613)
 
+* Add new `--only-rule` command line option for the `lint` and `analyze`,
+  subcommands that overrides configuration file rule enablement and
+  disablement, in particular to facilitate running `--fix` for single rules
+  without having to temporarily edit the configuration file.
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5666](https://github.com/realm/SwiftLint/issues/5666)
+
 #### Bug Fixes
 
 * Fix a few false positives and negatives by updating the parser to support

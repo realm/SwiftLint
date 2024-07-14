@@ -32,7 +32,7 @@ struct AccessControlSetterSpacingRule: Rule {
             let closure2 = { @MainActor
               (a: Int, b: Int) in
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("private ↓(set) var foo: Bool = false"),
@@ -43,13 +43,13 @@ struct AccessControlSetterSpacingRule: Rule {
             Example("@ ↓MainActor"),
             Example("func funcWithEscapingClosure(_ x: @ ↓escaping () -> Int) {}"),
             Example("func funcWithEscapingClosure(_ x: @escaping↓() -> Int) {}"),
-            Example("@available ↓(*, deprecated)").focused(),
+            Example("@available ↓(*, deprecated)"),
             Example("@MyPropertyWrapper ↓(param: 2) "),
             Example("nonisolated ↓(unsafe) var _value: X?"),
             Example("""
             let closure1 = { @MainActor ↓(a, b) in
             }
-            """)
+            """),
         ],
         corrections: [
             Example("private ↓(set) var foo: Bool = false"): Example("private(set) var foo: Bool = false"),
@@ -64,7 +64,7 @@ struct AccessControlSetterSpacingRule: Rule {
 private extension AccessControlSetterSpacingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: DeclModifierSyntax) {
-            guard node.detail !=  nil, node.name.trailingTrivia.isNotEmpty else {
+            guard node.detail != nil, node.name.trailingTrivia.isNotEmpty else {
                 return
             }
 
@@ -79,7 +79,7 @@ private extension AccessControlSetterSpacingRule {
             }
 
             let hasTrailingTrivia = node.attributeName.trailingTrivia.isNotEmpty
-            
+
             // Handles cases like @MyPropertyWrapper (param: 2)
             if let arguments = node.arguments?.as(LabeledExprListSyntax.self), arguments.isNotEmpty, hasTrailingTrivia {
                 violations.append(node.attributeName.endPosition)
@@ -93,8 +93,7 @@ private extension AccessControlSetterSpacingRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: DeclModifierSyntax) -> DeclModifierSyntax {
-            guard node.asAccessLevelModifier != nil, node.detail?.detail.tokenKind == .identifier("set"),
-                  node.name.trailingTrivia.isNotEmpty else {
+            guard node.detail != nil, node.name.trailingTrivia.isNotEmpty else {
                 return super.visit(node)
             }
 

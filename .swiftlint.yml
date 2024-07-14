@@ -48,7 +48,6 @@ disabled_rules:
   - trailing_closure
   - type_contents_order
   - unused_capture_list
-  - unused_parameter
   - vertical_whitespace_between_cases
 
 # Configurations

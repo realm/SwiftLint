@@ -86,7 +86,7 @@ private extension StaticOverFinalClassRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClassDeclSyntax) {
+        override func visitPost(_: ClassDeclSyntax) {
             classContexts.pop()
         }
 

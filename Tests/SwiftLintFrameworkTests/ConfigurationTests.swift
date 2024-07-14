@@ -234,7 +234,7 @@ final class ConfigurationTests: SwiftLintTestCase {
     }
 
     private class TestFileManager: LintableFileManager {
-        func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
+        func filesToLint(inPath path: String, rootDirectory _: String? = nil) -> [String] {
             var filesToLint: [String] = []
             switch path {
             case "directory": filesToLint = [
@@ -250,7 +250,7 @@ final class ConfigurationTests: SwiftLintTestCase {
             return filesToLint.absolutePathsStandardized()
         }
 
-        func modificationDate(forFileAtPath path: String) -> Date? {
+        func modificationDate(forFileAtPath _: String) -> Date? {
             nil
         }
 

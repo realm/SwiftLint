@@ -101,7 +101,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
         return .visitChildren
     }
 
-    override open func visitPost(_ node: CodeBlockItemListSyntax) {
+    override open func visitPost(_: CodeBlockItemListSyntax) {
         scope.pop()
     }
 

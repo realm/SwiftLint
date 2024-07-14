@@ -145,7 +145,7 @@ private final class ShorthandArgumentCollector: SyntaxVisitor {
         }
     }
 
-    override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
         .skipChildren
     }
 }

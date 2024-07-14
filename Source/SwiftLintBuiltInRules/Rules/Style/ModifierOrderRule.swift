@@ -14,7 +14,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
     )
 
     func validate(file: SwiftLintFile,
-                  kind: SwiftDeclarationKind,
+                  kind _: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset else {
             return []

@@ -108,7 +108,7 @@ private extension NonOverridableClassDeclarationRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClassDeclSyntax) {
+        override func visitPost(_: ClassDeclSyntax) {
             _ = finalClassScope.pop()
         }
 

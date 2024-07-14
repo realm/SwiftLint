@@ -39,21 +39,21 @@ private extension RedundantSelfInClosureRule {
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
-        override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
             typeDeclarations.push(.likeClass)
             return .visitChildren
         }
 
-        override func visitPost(_ node: ActorDeclSyntax) {
+        override func visitPost(_: ActorDeclSyntax) {
             typeDeclarations.pop()
         }
 
-        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
             typeDeclarations.push(.likeClass)
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClassDeclSyntax) {
+        override func visitPost(_: ClassDeclSyntax) {
             typeDeclarations.pop()
         }
 
@@ -85,12 +85,12 @@ private extension RedundantSelfInClosureRule {
             selfCaptures.pop()
         }
 
-        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
             typeDeclarations.push(.likeStruct)
             return .visitChildren
         }
 
-        override func visitPost(_ node: EnumDeclSyntax) {
+        override func visitPost(_: EnumDeclSyntax) {
             typeDeclarations.pop()
         }
 
@@ -103,16 +103,16 @@ private extension RedundantSelfInClosureRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: FunctionCallExprSyntax) {
+        override func visitPost(_: FunctionCallExprSyntax) {
             functionCalls.pop()
         }
 
-        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: StructDeclSyntax) -> SyntaxVisitorContinueKind {
             typeDeclarations.push(.likeStruct)
             return .visitChildren
         }
 
-        override func visitPost(_ node: StructDeclSyntax) {
+        override func visitPost(_: StructDeclSyntax) {
             typeDeclarations.pop()
         }
     }
@@ -147,7 +147,7 @@ private class ExplicitSelfVisitor<Configuration: RuleConfiguration>: DeclaredIde
         }
     }
 
-    override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
         // Will be handled separately by the parent visitor.
         .skipChildren
     }

@@ -119,7 +119,7 @@ private extension TrailingClosureRule {
             }
         }
 
-        override func visit(_ node: ConditionElementListSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ConditionElementListSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 

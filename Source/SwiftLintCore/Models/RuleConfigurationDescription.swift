@@ -405,7 +405,7 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 ///    levels: warning: 1
 ///            error: 2
 ///    ```
-/// 3. As mentioned in the beginning, the implict key inference meachnism can be overruled by specifying a `key` as in:
+/// 3. As mentioned in the beginning, the implicit key inference mechanism can be overruled by specifying a `key` as in:
 ///    ```swift
 ///    @ConfigurationElement(key: "foo")
 ///    var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
@@ -657,13 +657,13 @@ public extension AcceptableByConfigurationElement where Self: RuleConfiguration 
         return RuleConfigurationDescription(options: [key => asOption()])
     }
 
-    mutating func apply(_ value: Any?, ruleID: String) throws {
+    mutating func apply(_ value: Any?, ruleID _: String) throws {
         if let value {
             try apply(configuration: value)
         }
     }
 
-    init(fromAny value: Any, context ruleID: String) throws {
+    init(fromAny _: Any, context _: String) throws {
         throw Issue.genericError("Do not call this initializer")
     }
 }

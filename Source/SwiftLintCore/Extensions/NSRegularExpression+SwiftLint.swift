@@ -7,7 +7,7 @@ private let regexCacheLock = NSLock()
 public struct RegularExpression: Hashable, Comparable, ExpressibleByStringLiteral {
     public let regex: NSRegularExpression
 
-    public init(pattern: String, options: NSRegularExpression.Options? = nil) throws {
+    public init(pattern: String, options _: NSRegularExpression.Options? = nil) throws {
         regex = try .cached(pattern: pattern)
     }
     public init(stringLiteral value: String) {

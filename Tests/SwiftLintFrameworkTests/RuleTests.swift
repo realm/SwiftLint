@@ -16,7 +16,7 @@ struct RuleWithLevelsMock: Rule {
         try self.configuration.apply(configuration: configuration)
     }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] { [] }
+    func validate(file _: SwiftLintFile) -> [StyleViolation] { [] }
 }
 
 final class RuleTests: SwiftLintTestCase {
@@ -27,9 +27,9 @@ final class RuleTests: SwiftLintTestCase {
                                                  description: "", kind: .style)
 
         init() { /* conformance for test */ }
-        init(configuration: Any) throws { self.init() }
+        init(configuration _: Any) throws { self.init() }
 
-        func validate(file: SwiftLintFile) -> [StyleViolation] {
+        func validate(file _: SwiftLintFile) -> [StyleViolation] {
             []
         }
     }
@@ -41,9 +41,9 @@ final class RuleTests: SwiftLintTestCase {
                                                  description: "", kind: .style)
 
         init() { /* conformance for test */ }
-        init(configuration: Any) throws { self.init() }
+        init(configuration _: Any) throws { self.init() }
 
-        func validate(file: SwiftLintFile) -> [StyleViolation] {
+        func validate(file _: SwiftLintFile) -> [StyleViolation] {
             []
         }
     }
@@ -61,7 +61,7 @@ final class RuleTests: SwiftLintTestCase {
             try self.configuration.apply(configuration: configuration)
         }
 
-        func validate(file: SwiftLintFile) -> [StyleViolation] { [] }
+        func validate(file _: SwiftLintFile) -> [StyleViolation] { [] }
     }
 
     func testRuleIsEqualTo() {

@@ -15,7 +15,7 @@ class CompilerInvocations {
     }
 
     /// Default implementation
-    func arguments(forFile path: String?) -> Arguments { [] }
+    func arguments(forFile _: String?) -> Arguments { [] }
 
     // MARK: - Private
 

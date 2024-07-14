@@ -31,7 +31,7 @@ struct DuplicateImportsRule: SwiftSyntaxCorrectableRule {
         }
     }
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+    func makeVisitor(file _: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         queuedFatalError("Unreachable: `validate(file:)` will be used instead")
     }
 

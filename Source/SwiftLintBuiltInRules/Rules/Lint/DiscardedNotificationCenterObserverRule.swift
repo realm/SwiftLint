@@ -105,12 +105,12 @@ private extension DiscardedNotificationCenterObserverRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         var scopes = Stack<CodeBlockScope>()
 
-        override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: SourceFileSyntax) -> SyntaxVisitorContinueKind {
             scopes.push(.file)
             return .visitChildren
         }
 
-        override func visitPost(_ node: SourceFileSyntax) {
+        override func visitPost(_: SourceFileSyntax) {
             scopes.pop()
         }
 
@@ -119,7 +119,7 @@ private extension DiscardedNotificationCenterObserverRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: FunctionDeclSyntax) {
+        override func visitPost(_: FunctionDeclSyntax) {
             scopes.pop()
         }
 
@@ -130,7 +130,7 @@ private extension DiscardedNotificationCenterObserverRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: AccessorBlockSyntax) {
+        override func visitPost(_: AccessorBlockSyntax) {
             scopes.pop()
         }
 
@@ -143,7 +143,7 @@ private extension DiscardedNotificationCenterObserverRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: AccessorDeclSyntax) {
+        override func visitPost(_: AccessorDeclSyntax) {
             scopes.pop()
         }
 
@@ -152,7 +152,7 @@ private extension DiscardedNotificationCenterObserverRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClosureExprSyntax) {
+        override func visitPost(_: ClosureExprSyntax) {
             scopes.pop()
         }
 

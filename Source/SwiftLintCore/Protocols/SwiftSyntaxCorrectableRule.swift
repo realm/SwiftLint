@@ -13,7 +13,7 @@ public protocol SwiftSyntaxCorrectableRule: SwiftSyntaxRule, CorrectableRule {
 }
 
 public extension SwiftSyntaxCorrectableRule {
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>? {
+    func makeRewriter(file _: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>? {
         nil
     }
 

@@ -59,7 +59,6 @@ private extension Rule {
     // swiftlint:disable:next function_parameter_count
     func lint(file: SwiftLintFile, regions: [Region], benchmark: Bool,
               storage: RuleStorage,
-              configuration: Configuration,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
         // We shouldn't lint if the current Swift version is not supported by the rule
@@ -235,7 +234,6 @@ public struct CollectedLinter {
         let validationResults = rules.parallelCompactMap {
             $0.lint(file: file, regions: regions, benchmark: benchmark,
                     storage: storage,
-                    configuration: configuration,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
                     compilerArguments: compilerArguments)
         }

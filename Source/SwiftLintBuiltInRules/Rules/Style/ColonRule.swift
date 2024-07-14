@@ -84,7 +84,7 @@ struct ColonRule: SubstitutionCorrectableRule, SourceKitFreeRule {
             }
     }
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in _: SwiftLintFile) -> (NSRange, String)? {
         (violationRange, ": ")
     }
 }

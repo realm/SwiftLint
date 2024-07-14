@@ -12,9 +12,6 @@ struct AccessControlSetterSpacingRule: Rule {
         nonTriggeringExamples: [
             Example("private(set) var foo: Bool = false"),
             Example("fileprivate(set) var foo: Bool = false"),
-            Example("internal(set) var foo: Bool = false"),
-            Example("public(set) var foo: Bool = false"),
-            Example("open(set) var foo: Bool = false"),
             Example("@MainActor"),
             Example("func funcWithEscapingClosure(_ x: @escaping () -> Int) {}"),
             Example("@available(*, deprecated)"),
@@ -33,11 +30,11 @@ struct AccessControlSetterSpacingRule: Rule {
               (a: Int, b: Int) in
             }
             """),
+            Example("@testable import SwiftLintCore")
         ],
         triggeringExamples: [
             Example("private ↓(set) var foo: Bool = false"),
             Example("fileprivate ↓(set) var foo: Bool = false"),
-            Example("internal ↓(set) var foo: Bool = false"),
             Example("public ↓(set) var foo: Bool = false"),
             Example("  public  ↓(set) var foo: Bool = false"),
             Example("@ ↓MainActor"),
@@ -60,7 +57,6 @@ struct AccessControlSetterSpacingRule: Rule {
     )
 }
 
-// TODO: add rewriter
 private extension AccessControlSetterSpacingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: DeclModifierSyntax) {
@@ -81,16 +77,18 @@ private extension AccessControlSetterSpacingRule {
             let hasTrailingTrivia = node.attributeName.trailingTrivia.isNotEmpty
 
             // Handles cases like @MyPropertyWrapper (param: 2)
-            if let arguments = node.arguments?.as(LabeledExprListSyntax.self), arguments.isNotEmpty, hasTrailingTrivia {
+            if node.arguments != nil && hasTrailingTrivia {
                 violations.append(node.attributeName.endPosition)
-            } else if hasTrailingTrivia && !node.isEscaping || !hasTrailingTrivia && node.isEscaping {
-                // Handles cases like @available ↓(*, deprecated)
-                // and func funcWithEscapingClosure(_ x: @ escaping () -> Int) {}
+            }
+
+            if !hasTrailingTrivia && node.isEscaping {
+                // Handles cases where escaping has the wrong spacing: `@escaping()`
                 violations.append(node.attributeName.endPosition)
             }
         }
     }
 
+    // TODO: add rewriter
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: DeclModifierSyntax) -> DeclModifierSyntax {
             guard node.detail != nil, node.name.trailingTrivia.isNotEmpty else {

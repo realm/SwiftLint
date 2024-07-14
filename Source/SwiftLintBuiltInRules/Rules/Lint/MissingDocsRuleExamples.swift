@@ -69,6 +69,18 @@ struct MissingDocsRuleExamples {
         public func f() async {}
         #endif
         """, excludeFromDocumentation: true),
+        Example("""
+        /// Docs
+        public final actor MyActor {
+            public nonisolated var unownedExecutor: UnownedSerialExecutor { }
+        }
+        """, configuration: ["excludes_inherited_types": true]),
+        Example("""
+        /// Docs
+        public final actor MyActor: Actor {
+            public nonisolated var unownedExecutor: UnownedSerialExecutor { }
+        }
+        """, configuration: ["excludes_inherited_types": true])
     ]
 
     static let triggeringExamples = [

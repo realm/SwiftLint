@@ -29,12 +29,11 @@ private extension MissingDocsRule {
             if node.inherits, configuration.excludesInheritedTypes {
                 return .skipChildren
             }
-            collectViolation(from: node, on: node.actorKeyword)
             return .visitChildren
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-          collectViolation(from: node, on: node.actorKeyword)
+          aclScope.pop()
         }
 
         override func visitPost(_ node: AssociatedTypeDeclSyntax) {

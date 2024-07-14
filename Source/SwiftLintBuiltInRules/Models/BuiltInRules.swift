@@ -3,7 +3,7 @@
 
 /// The rule list containing all available rules built into SwiftLint.
 public let builtInRules: [any Rule.Type] = [
-    AccessControlSetterSpacingRule.self,
+    AttributeNameSpacing.self,
     AccessibilityLabelForImageRule.self,
     AccessibilityTraitForButtonRule.self,
     AnonymousArgumentInMultilineClosureRule.self,

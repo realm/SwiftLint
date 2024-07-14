@@ -9,7 +9,7 @@ import SwiftLintTestHelpers
 
 final class AccessControlSetterSpacingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(AccessControlSetterSpacingRule.description)
+        verifyRule(AttributeNameSpacing.description)
     }
 }
 

@@ -1,13 +1,13 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
-struct AccessControlSetterSpacingRule: Rule {
+struct AttributeNameSpacing: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
-        identifier: "access_control_setter_spacing",
-        name: "Access Control Setter Spacing",
-        description: "There should be no space between the access control modifier and setter scope",
+        identifier: "attribute_name_spacing",
+        name: "Attribute Name Spacing",
+        description: "There should not be a space between an attribute name and (",
         kind: .style,
         nonTriggeringExamples: [
             Example("private(set) var foo: Bool = false"),
@@ -18,6 +18,7 @@ struct AccessControlSetterSpacingRule: Rule {
             Example("@MyPropertyWrapper(param: 2) "),
             Example("nonisolated(unsafe) var _value: X?"),
             Example("@testable import SwiftLintCore"),
+            Example("func func_type_attribute_with_space(x: @convention(c) () -> Int) {}"),
             Example("""
             @propertyWrapper
             struct MyPropertyWrapper {
@@ -57,7 +58,7 @@ struct AccessControlSetterSpacingRule: Rule {
     )
 }
 
-private extension AccessControlSetterSpacingRule {
+private extension AttributeNameSpacing {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: DeclModifierSyntax) {
             guard node.detail != nil, node.name.trailingTrivia.isNotEmpty else {

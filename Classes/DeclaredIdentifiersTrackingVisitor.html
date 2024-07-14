@@ -120,6 +120,9 @@
                 <a class="nav-group-task-link" href="../Enums/ExecutableInfo.html">ExecutableInfo</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/IdentifierDeclaration.html">IdentifierDeclaration</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/Issue.html">Issue</a>
               </li>
               <li class="nav-group-task">
@@ -360,7 +363,7 @@
             <p>A specialized <code><a href="../Classes/ViolationsSyntaxVisitor.html">ViolationsSyntaxVisitor</a></code> that tracks declared identifiers per scope while traversing the AST.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L4-L130">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L48-L205">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -389,12 +392,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">Scope</span> <span class="o">=</span> <span class="kt"><a href="../Structs/Stack.html">Stack</a></span><span class="o">&lt;</span><span class="kt">Set</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;&gt;</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">Scope</span> <span class="o">=</span> <span class="kt"><a href="../Structs/Stack.html">Stack</a></span><span class="o">&lt;</span><span class="p">[</span><span class="kt"><a href="../Enums/IdentifierDeclaration.html">IdentifierDeclaration</a></span><span class="p">]</span><span class="o">&gt;</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L7">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L51">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -402,9 +405,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC5scopeAA5StackVyShySSGGvp"></a>
+                    <a name="/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC5scopeAA5StackVySayAA21IdentifierDeclarationOGGvp"></a>
                     <a name="//apple_ref/swift/Property/scope" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC5scopeAA5StackVyShySSGGvp">scope</a>
+                    <a class="token" href="#/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC5scopeAA5StackVySayAA21IdentifierDeclarationOGGvp">scope</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -424,7 +427,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L10">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L54">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -432,9 +435,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC13configuration4file5scopeACyxGx_AA0aB4FileCAA5StackVyShySSGGtcfc"></a>
+                    <a name="/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC13configuration4file5scopeACyxGx_AA0aB4FileCAA5StackVySayAA21IdentifierDeclarationOGGtcfc"></a>
                     <a name="//apple_ref/swift/Method/init(configuration:file:scope:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC13configuration4file5scopeACyxGx_AA0aB4FileCAA5StackVyShySSGGtcfc">init(configuration:<wbr>file:<wbr>scope:<wbr>)</a>
+                    <a class="token" href="#/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC13configuration4file5scopeACyxGx_AA0aB4FileCAA5StackVySayAA21IdentifierDeclarationOGGtcfc">init(configuration:<wbr>file:<wbr>scope:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -498,7 +501,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L19-L22">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L63-L66">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -546,8 +549,12 @@
                           </tbody>
                         </table>
                       </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p><code>true</code> if the identifier was declared previously.</p>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L27-L29">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L73-L75">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -576,7 +583,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L31-L52">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L77-L102">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -605,7 +612,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L54-L56">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L104-L106">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -634,7 +641,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L58-L64">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L108-L114">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -663,7 +670,78 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L66-L68">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L116-L118">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Type%20declaration%20boundaries"></a>
+                <a name="//apple_ref/swift/Section/Type declaration boundaries" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Type%20declaration%20boundaries"></a>
+                  <h3 class="section-name"><span>Type declaration boundaries</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC5visity0A6Syntax0iG12ContinueKindOAE011MemberBlockI0VF"></a>
+                    <a name="//apple_ref/swift/Method/visit(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC5visity0A6Syntax0iG12ContinueKindOAE011MemberBlockI0VF">visit(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">visit</span><span class="p">(</span><span class="n">_</span> <span class="nv">node</span><span class="p">:</span> <span class="kt">MemberBlockSyntax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">SyntaxVisitorContinueKind</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L122-L127">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC9visitPostyy0A6Syntax011MemberBlockJ0VF"></a>
+                    <a name="//apple_ref/swift/Method/visitPost(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore34DeclaredIdentifiersTrackingVisitorC9visitPostyy0A6Syntax011MemberBlockJ0VF">visitPost(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">visitPost</span><span class="p">(</span><span class="n">_</span> <span class="nv">node</span><span class="p">:</span> <span class="kt">MemberBlockSyntax</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/DeclaredIdentifiersTrackingVisitor.swift#L129-L133">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

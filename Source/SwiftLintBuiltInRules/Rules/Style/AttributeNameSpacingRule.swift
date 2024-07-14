@@ -72,7 +72,7 @@ struct AttributeNameSpacingRule: Rule {
     )
 }
 
-private extension AttributeNameSpacing {
+private extension AttributeNameSpacingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: DeclModifierSyntax) {
             guard node.detail != nil, node.name.trailingTrivia.isNotEmpty else {

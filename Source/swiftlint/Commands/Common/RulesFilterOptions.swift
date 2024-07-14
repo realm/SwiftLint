@@ -3,7 +3,7 @@ import ArgumentParser
 enum RuleEnablementOptions: String, EnumerableFlag {
     case enabled, disabled
 
-    static func name(for value: Self) -> NameSpecification {
+    static func name(for _: Self) -> NameSpecification {
         .shortAndLong
     }
 

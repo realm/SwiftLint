@@ -86,7 +86,7 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
         }
     }
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in _: SwiftLintFile) -> (NSRange, String)? {
         (violationRange, "")
     }
 }

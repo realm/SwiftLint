@@ -53,7 +53,7 @@ private struct CacheTestHelper {
 }
 
 private class TestFileManager: LintableFileManager {
-    fileprivate func filesToLint(inPath: String, rootDirectory: String? = nil) -> [String] {
+    fileprivate func filesToLint(inPath _: String, rootDirectory _: String? = nil) -> [String] {
         []
     }
 
@@ -63,7 +63,7 @@ private class TestFileManager: LintableFileManager {
         stubbedModificationDateByPath[path]
     }
 
-    fileprivate func isFile(atPath path: String) -> Bool {
+    fileprivate func isFile(atPath _: String) -> Bool {
         false
     }
 }

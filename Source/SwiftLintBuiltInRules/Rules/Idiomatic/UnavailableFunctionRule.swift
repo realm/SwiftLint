@@ -157,15 +157,15 @@ private extension CodeBlockSyntax? {
 private final class ReturnFinderVisitor: SyntaxVisitor {
     private(set) var containsReturn = false
 
-    override func visitPost(_ node: ReturnStmtSyntax) {
+    override func visitPost(_: ReturnStmtSyntax) {
         containsReturn = true
     }
 
-    override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
         .skipChildren
     }
 
-    override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
         .skipChildren
     }
 }

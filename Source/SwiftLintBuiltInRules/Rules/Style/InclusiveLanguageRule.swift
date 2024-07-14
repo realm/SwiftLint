@@ -101,7 +101,7 @@ private extension InclusiveLanguageRule {
             }
         }
 
-        override func visit(_ node: StringLiteralExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: StringLiteralExprSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 

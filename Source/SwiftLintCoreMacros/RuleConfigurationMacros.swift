@@ -6,7 +6,7 @@ import SwiftSyntaxMacros
 enum AutoApply: MemberMacro {
     // swiftlint:disable:next function_body_length
     static func expansion(
-        of node: AttributeSyntax,
+        of _: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
@@ -90,10 +90,10 @@ enum AutoApply: MemberMacro {
 
 enum MakeAcceptableByConfigurationElement: ExtensionMacro {
     static func expansion(
-        of node: AttributeSyntax,
+        of _: AttributeSyntax,
         attachedTo declaration: some DeclGroupSyntax,
         providingExtensionsOf type: some TypeSyntaxProtocol,
-        conformingTo protocols: [TypeSyntax],
+        conformingTo _: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
         guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {

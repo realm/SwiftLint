@@ -66,11 +66,11 @@ private extension ExplicitTopLevelACLRule {
             collectViolations(decl: node, token: node.bindingSpecifier)
         }
 
-        override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
-        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 

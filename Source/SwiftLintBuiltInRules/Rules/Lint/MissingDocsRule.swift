@@ -33,7 +33,7 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ActorDeclSyntax) {
+        override func visitPost(_: ActorDeclSyntax) {
             aclScope.pop()
         }
 
@@ -55,15 +55,15 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClassDeclSyntax) {
+        override func visitPost(_: ClassDeclSyntax) {
             aclScope.pop()
         }
 
-        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
-        override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
@@ -97,7 +97,7 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: EnumDeclSyntax) {
+        override func visitPost(_: EnumDeclSyntax) {
             aclScope.pop()
         }
 
@@ -112,7 +112,7 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ExtensionDeclSyntax) {
+        override func visitPost(_: ExtensionDeclSyntax) {
             aclScope.pop()
         }
 
@@ -142,7 +142,7 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ProtocolDeclSyntax) {
+        override func visitPost(_: ProtocolDeclSyntax) {
             aclScope.pop()
         }
 
@@ -160,7 +160,7 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: StructDeclSyntax) {
+        override func visitPost(_: StructDeclSyntax) {
             aclScope.pop()
         }
 

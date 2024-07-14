@@ -53,33 +53,33 @@ public extension CollectingRule {
         }
         return validate(file: file, collectedInfo: info, compilerArguments: compilerArguments)
     }
-    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> FileInfo {
+    func collectInfo(for file: SwiftLintFile, compilerArguments _: [String]) -> FileInfo {
         collectInfo(for: file)
     }
     func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
-                  compilerArguments: [String]) -> [StyleViolation] {
+                  compilerArguments _: [String]) -> [StyleViolation] {
         validate(file: file, collectedInfo: collectedInfo)
     }
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile) -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:collectedInfo:)` for CollectingRule")
     }
-    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile, compilerArguments _: [String]) -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:collectedInfo:compilerArguments:)` for CollectingRule")
     }
 }
 
 public extension CollectingRule where Self: AnalyzerRule {
-    func collectInfo(for file: SwiftLintFile) -> FileInfo {
+    func collectInfo(for _: SwiftLintFile) -> FileInfo {
         queuedFatalError(
             "Must call `collect(infoFor:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )
     }
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile) -> [StyleViolation] {
         queuedFatalError(
             "Must call `validate(file:collectedInfo:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )
     }
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile, collectedInfo _: [SwiftLintFile: FileInfo]) -> [StyleViolation] {
         queuedFatalError(
             "Must call `validate(file:collectedInfo:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )
@@ -115,7 +115,7 @@ package protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
 
 package extension CollectingCorrectableRule {
     func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
-                 compilerArguments: [String]) -> [Correction] {
+                 compilerArguments _: [String]) -> [Correction] {
         correct(file: file, collectedInfo: collectedInfo)
     }
 
@@ -126,23 +126,23 @@ package extension CollectingCorrectableRule {
         return correct(file: file, collectedInfo: info, compilerArguments: compilerArguments)
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file _: SwiftLintFile) -> [Correction] {
         queuedFatalError("Must call `correct(file:collectedInfo:)` for AnalyzerRule")
     }
 
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
+    func correct(file _: SwiftLintFile, compilerArguments _: [String]) -> [Correction] {
         queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
     }
 }
 
 package extension CollectingCorrectableRule where Self: AnalyzerRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file _: SwiftLintFile) -> [Correction] {
         queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
     }
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
+    func correct(file _: SwiftLintFile, compilerArguments _: [String]) -> [Correction] {
         queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
     }
-    func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [Correction] {
+    func correct(file _: SwiftLintFile, collectedInfo _: [SwiftLintFile: FileInfo]) -> [Correction] {
         queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
     }
 }

@@ -70,7 +70,7 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule,
 
     // MARK: - SubstitutionCorrectableRule
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in _: SwiftLintFile) -> (NSRange, String)? {
         (violationRange, ", ")
     }
 

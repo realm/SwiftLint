@@ -44,11 +44,11 @@ private extension PreferSelfInStaticReferencesRule {
             return .skipChildren
         }
 
-        override func visitPost(_ node: ActorDeclSyntax) {
+        override func visitPost(_: ActorDeclSyntax) {
             parentDeclScopes.pop()
         }
 
-        override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: AttributeSyntax) -> SyntaxVisitorContinueKind {
             if case .skipReferences = variableDeclScopes.peek() {
                 return .skipChildren
             }
@@ -60,16 +60,16 @@ private extension PreferSelfInStaticReferencesRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClassDeclSyntax) {
+        override func visitPost(_: ClassDeclSyntax) {
             parentDeclScopes.pop()
         }
 
-        override func visit(_ node: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
             variableDeclScopes.push(.handleReferences)
             return .visitChildren
         }
 
-        override func visitPost(_ node: CodeBlockItemListSyntax) {
+        override func visitPost(_: CodeBlockItemListSyntax) {
             variableDeclScopes.pop()
         }
 
@@ -78,16 +78,16 @@ private extension PreferSelfInStaticReferencesRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: EnumDeclSyntax) {
+        override func visitPost(_: EnumDeclSyntax) {
             parentDeclScopes.pop()
         }
 
-        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
             parentDeclScopes.push(.skipReferences)
             return .visitChildren
         }
 
-        override func visitPost(_ node: ExtensionDeclSyntax) {
+        override func visitPost(_: ExtensionDeclSyntax) {
             parentDeclScopes.pop()
         }
 
@@ -111,14 +111,14 @@ private extension PreferSelfInStaticReferencesRule {
             addViolation(on: node.baseName)
         }
 
-        override func visit(_ node: InitializerClauseSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: InitializerClauseSyntax) -> SyntaxVisitorContinueKind {
             if case .skipReferences = variableDeclScopes.peek() {
                 return .skipChildren
             }
             return .visitChildren
         }
 
-        override func visit(_ node: MemberBlockSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: MemberBlockSyntax) -> SyntaxVisitorContinueKind {
             if case .likeClass = parentDeclScopes.peek() {
                 variableDeclScopes.push(.skipReferences)
             } else {
@@ -127,7 +127,7 @@ private extension PreferSelfInStaticReferencesRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: MemberBlockSyntax) {
+        override func visitPost(_: MemberBlockSyntax) {
             variableDeclScopes.pop()
         }
 
@@ -138,23 +138,23 @@ private extension PreferSelfInStaticReferencesRule {
             return .skipChildren
         }
 
-        override func visit(_ node: FunctionParameterClauseSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: FunctionParameterClauseSyntax) -> SyntaxVisitorContinueKind {
             if case .likeStruct = parentDeclScopes.peek() {
                 return .visitChildren
             }
             return .skipChildren
         }
 
-        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
             parentDeclScopes.push(.skipReferences)
             return .skipChildren
         }
 
-        override func visitPost(_ node: ProtocolDeclSyntax) {
+        override func visitPost(_: ProtocolDeclSyntax) {
             parentDeclScopes.pop()
         }
 
-        override func visit(_ node: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
             if case .likeStruct = parentDeclScopes.peek() {
                 return .visitChildren
             }
@@ -166,11 +166,11 @@ private extension PreferSelfInStaticReferencesRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: StructDeclSyntax) {
+        override func visitPost(_: StructDeclSyntax) {
             parentDeclScopes.pop()
         }
 
-        override func visit(_ node: GenericArgumentListSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: GenericArgumentListSyntax) -> SyntaxVisitorContinueKind {
             if case .likeClass = parentDeclScopes.peek() {
                 return .skipChildren
             }
@@ -191,7 +191,7 @@ private extension PreferSelfInStaticReferencesRule {
             }
         }
 
-        override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
             if case .likeClass = parentDeclScopes.peek() {
                 return .skipChildren
             }

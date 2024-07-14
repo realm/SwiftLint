@@ -175,7 +175,7 @@ private extension UnusedEnumeratedRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClosureExprSyntax) {
+        override func visitPost(_: ClosureExprSyntax) {
             if let closure = closures.pop(), (closure.zeroPosition != nil) != (closure.onePosition != nil) {
                 addViolation(
                     zeroPosition: closure.onePosition,

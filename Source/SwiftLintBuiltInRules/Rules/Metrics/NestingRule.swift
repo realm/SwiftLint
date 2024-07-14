@@ -50,7 +50,7 @@ private extension NestingRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ActorDeclSyntax) {
+        override func visitPost(_: ActorDeclSyntax) {
             levels.pop()
         }
 
@@ -59,7 +59,7 @@ private extension NestingRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClassDeclSyntax) {
+        override func visitPost(_: ClassDeclSyntax) {
             levels.pop()
         }
 
@@ -68,7 +68,7 @@ private extension NestingRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: EnumDeclSyntax) {
+        override func visitPost(_: EnumDeclSyntax) {
             levels.pop()
         }
 
@@ -77,7 +77,7 @@ private extension NestingRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ExtensionDeclSyntax) {
+        override func visitPost(_: ExtensionDeclSyntax) {
             levels.pop()
         }
 
@@ -86,7 +86,7 @@ private extension NestingRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: FunctionDeclSyntax) {
+        override func visitPost(_: FunctionDeclSyntax) {
             levels.pop()
         }
 
@@ -95,7 +95,7 @@ private extension NestingRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ProtocolDeclSyntax) {
+        override func visitPost(_: ProtocolDeclSyntax) {
             levels.pop()
         }
 
@@ -104,7 +104,7 @@ private extension NestingRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: StructDeclSyntax) {
+        override func visitPost(_: StructDeclSyntax) {
             levels.pop()
         }
 

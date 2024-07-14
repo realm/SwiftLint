@@ -5,7 +5,7 @@ import XCTest
 // swiftlint:disable file_length
 
 private extension Configuration {
-    func contains<T: Rule>(rule: T.Type) -> Bool {
+    func contains<T: Rule>(rule _: T.Type) -> Bool {
         rules.contains { $0 is T }
     }
 }

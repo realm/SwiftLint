@@ -55,7 +55,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
     }
 
     func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: Self.FileUSRs],
-                  compilerArguments: [String]) -> [StyleViolation] {
+                  compilerArguments _: [String]) -> [StyleViolation] {
         let allReferencedUSRs = collectedInfo.values.reduce(into: Set()) { $0.formUnion($1.referenced) }
         return violationOffsets(declaredUSRs: collectedInfo[file]?.declared ?? [],
                                 allReferencedUSRs: allReferencedUSRs)

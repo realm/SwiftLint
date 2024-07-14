@@ -7,7 +7,7 @@ final class CollectingRuleTests: SwiftLintTestCase {
         struct Spec: MockCollectingRule {
             var configuration = SeverityConfiguration<Self>(.warning)
 
-            func collectInfo(for file: SwiftLintFile) -> Int {
+            func collectInfo(for _: SwiftLintFile) -> Int {
                 42
             }
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: Int]) -> [StyleViolation] {
@@ -53,7 +53,7 @@ final class CollectingRuleTests: SwiftLintTestCase {
         struct Spec: MockCollectingRule, AnalyzerRule {
             var configuration = SeverityConfiguration<Self>(.warning)
 
-            func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> [String] {
+            func collectInfo(for _: SwiftLintFile, compilerArguments: [String]) -> [String] {
                 compilerArguments
             }
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: [String]], compilerArguments: [String])
@@ -107,11 +107,11 @@ final class CollectingRuleTests: SwiftLintTestCase {
         struct AnalyzerSpec: MockCollectingRule, AnalyzerRule, CollectingCorrectableRule {
             var configuration = SeverityConfiguration<Self>(.warning)
 
-            func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> String {
+            func collectInfo(for file: SwiftLintFile, compilerArguments _: [String]) -> String {
                 file.contents
             }
 
-            func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String], compilerArguments: [String])
+            func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String], compilerArguments _: [String])
                 -> [StyleViolation] {
                     if collectedInfo[file] == "baz" {
                         return [
@@ -125,7 +125,7 @@ final class CollectingRuleTests: SwiftLintTestCase {
             }
 
             func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String],
-                         compilerArguments: [String]) -> [Correction] {
+                         compilerArguments _: [String]) -> [Correction] {
                 collectedInfo[file] == "baz"
                     ? [Correction(ruleDescription: Spec.description, location: Location(file: file, byteOffset: 2))]
                     : []
@@ -149,5 +149,5 @@ extension MockCollectingRule {
         Configuration(rulesMode: .only([description.identifier]), ruleList: RuleList(rules: self))
     }
 
-    init(configuration: Any) throws { self.init() }
+    init(configuration _: Any) throws { self.init() }
 }

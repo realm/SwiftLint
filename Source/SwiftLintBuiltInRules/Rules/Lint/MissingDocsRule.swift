@@ -33,7 +33,7 @@ private extension MissingDocsRule {
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-          aclScope.pop()
+            aclScope.pop()
         }
 
         override func visitPost(_ node: AssociatedTypeDeclSyntax) {

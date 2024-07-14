@@ -56,8 +56,8 @@ struct AttributeNameSpacing: Rule {
             Example("public ↓(set) var foo: Bool = false"): Example("public(set) var foo: Bool = false"),
             Example("public  ↓(set) var foo: Bool = false"): Example("public(set) var foo: Bool = false"),
             Example("@ ↓MainActor"): Example("@MainActor"),
-            Example("func funcWithEscapingClosure(_ x: @ ↓escaping () -> Int) {}"): Example("func funcWithEscapingClosure(_ x: @escaping () -> Int) {}"),
-            Example("func funcWithEscapingClosure(_ x: @escaping↓() -> Int) {}"): Example("func funcWithEscapingClosure(_ x: @escaping () -> Int) {}"),
+            Example("func test(_ x: @ ↓escaping () -> Int) {}"): Example("func test(_ x: @escaping () -> Int) {}"),
+            Example("func test(_ x: @escaping↓() -> Int) {}"): Example("func test(_ x: @escaping () -> Int) {}"),
             Example("@available ↓(*, deprecated)"): Example("@available(*, deprecated)"),
             Example("@MyPropertyWrapper ↓(param: 2) "): Example("@MyPropertyWrapper(param: 2) "),
             Example("nonisolated ↓(unsafe) var _value: X?"): Example("nonisolated(unsafe) var _value: X?"),
@@ -118,8 +118,8 @@ private extension AttributeNameSpacing {
         }
 
         override func visit(_ node: AttributeSyntax) -> AttributeSyntax {
+            // Check for trailing trivia after the '@' sign and clean it if present
             if node.atSign.trailingTrivia.isNotEmpty {
-                // Remove trailing whitespace from the '@' sign
                 let cleanedAtSign = node.atSign.with(\.trailingTrivia, Trivia())
                 let newNode = node.with(\.atSign, cleanedAtSign)
 

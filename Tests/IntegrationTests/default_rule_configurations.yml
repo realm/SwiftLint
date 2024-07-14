@@ -1,5 +1,3 @@
-attribute_name_spacing:
-  severity: error
 accessibility_label_for_image:
   severity: warning
 accessibility_trait_for_button:
@@ -10,6 +8,8 @@ anyobject_protocol:
   severity: warning
 array_init:
   severity: warning
+attribute_name_spacing:
+  severity: error
 attributes:
   severity: warning
   attributes_with_arguments_always_on_line_above: true

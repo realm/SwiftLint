@@ -43,7 +43,7 @@ struct AccessControlSetterSpacingRule: Rule {
             Example("@ ↓MainActor"),
             Example("func funcWithEscapingClosure(_ x: @ ↓escaping () -> Int) {}"),
             Example("func funcWithEscapingClosure(_ x: @escaping↓() -> Int) {}"),
-            Example("@available ↓(*, deprecated)"),
+            Example("@available ↓(*, deprecated)").focused(),
             Example("@MyPropertyWrapper ↓(param: 2) "),
             Example("nonisolated ↓(unsafe) var _value: X?"),
             Example("""
@@ -72,17 +72,20 @@ private extension AccessControlSetterSpacingRule {
         }
 
         override func visitPost(_ node: AttributeSyntax) {
+            // Check for trailing trivia after the '@' sign
             // Handles cases like `@ MainActor` / `@ escaping`
             if node.atSign.trailingTrivia.isNotEmpty {
                 violations.append(node.atSign.endPosition)
             }
 
+            let hasTrailingTrivia = node.attributeName.trailingTrivia.isNotEmpty
+            
             // Handles cases like @MyPropertyWrapper (param: 2)
-            if let arguments = node.arguments?.as(LabeledExprListSyntax.self), arguments.isNotEmpty,  node.attributeName.trailingTrivia.isNotEmpty {
+            if let arguments = node.arguments?.as(LabeledExprListSyntax.self), arguments.isNotEmpty, hasTrailingTrivia {
                 violations.append(node.attributeName.endPosition)
-            } else if node.attributeName.trailingTrivia.isNotEmpty && node.attributeNameText != "escaping" {
-                violations.append(node.attributeName.endPosition)
-            } else if node.attributeName.trailingTrivia.isEmpty && node.attributeNameText == "escaping" {
+            } else if hasTrailingTrivia && !node.isEscaping || !hasTrailingTrivia && node.isEscaping {
+                // Handles cases like @available ↓(*, deprecated)
+                // and func funcWithEscapingClosure(_ x: @ escaping () -> Int) {}
                 violations.append(node.attributeName.endPosition)
             }
         }
@@ -102,5 +105,11 @@ private extension AccessControlSetterSpacingRule {
             let newNode = node.with(\.name, cleanedName)
             return super.visit(newNode)
         }
+    }
+}
+
+private extension AttributeSyntax {
+    var isEscaping: Bool {
+        attributeNameText == "escaping"
     }
 }

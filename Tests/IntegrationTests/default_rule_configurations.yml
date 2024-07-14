@@ -1,4 +1,4 @@
-access_control_setter_spacing:
+attribute_name_spacing:
   severity: error
 accessibility_label_for_image:
   severity: warning

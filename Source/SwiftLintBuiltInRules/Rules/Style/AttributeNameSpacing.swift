@@ -54,6 +54,20 @@ struct AttributeNameSpacing: Rule {
             Example("fileprivate ↓(set) var foo: Bool = false"): Example("fileprivate(set) var foo: Bool = false"),
             Example("internal ↓(set) var foo: Bool = false"): Example("internal(set) var foo: Bool = false"),
             Example("public ↓(set) var foo: Bool = false"): Example("public(set) var foo: Bool = false"),
+            Example("public  ↓(set) var foo: Bool = false"): Example("public(set) var foo: Bool = false"),
+            Example("@ ↓MainActor"): Example("@MainActor"),
+            Example("func funcWithEscapingClosure(_ x: @ ↓escaping () -> Int) {}"): Example("func funcWithEscapingClosure(_ x: @escaping () -> Int) {}"),
+            Example("func funcWithEscapingClosure(_ x: @escaping↓() -> Int) {}"): Example("func funcWithEscapingClosure(_ x: @escaping () -> Int) {}"),
+            Example("@available ↓(*, deprecated)"): Example("@available(*, deprecated)"),
+            Example("@MyPropertyWrapper ↓(param: 2) "): Example("@MyPropertyWrapper(param: 2) "),
+            Example("nonisolated ↓(unsafe) var _value: X?"): Example("nonisolated(unsafe) var _value: X?"),
+            Example("""
+            let closure1 = { @MainActor ↓(a, b) in
+            }
+            """): Example("""
+            let closure1 = { @MainActor(a, b) in
+            }
+            """),
         ]
     )
 }
@@ -89,7 +103,6 @@ private extension AttributeNameSpacing {
         }
     }
 
-    // TODO: add rewriter
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: DeclModifierSyntax) -> DeclModifierSyntax {
             guard node.detail != nil, node.name.trailingTrivia.isNotEmpty else {
@@ -98,10 +111,39 @@ private extension AttributeNameSpacing {
 
             correctionPositions.append(node.name.endPosition)
 
-            // Remove trailing whitespace from the name token
-            let cleanedName = node.name.with(\.trailingTrivia, Trivia())
-            let newNode = node.with(\.name, cleanedName)
+            // Remove leading and trailing whitespace from the name token
+            let sanitizedName = node.name.with(\.trailingTrivia, Trivia())
+            let newNode = node.with(\.name, sanitizedName)
             return super.visit(newNode)
+        }
+
+        override func visit(_ node: AttributeSyntax) -> AttributeSyntax {
+            if node.atSign.trailingTrivia.isNotEmpty {
+                // Remove trailing whitespace from the '@' sign
+                let cleanedAtSign = node.atSign.with(\.trailingTrivia, Trivia())
+                let newNode = node.with(\.atSign, cleanedAtSign)
+
+                correctionPositions.append(node.atSign.endPosition)
+                return super.visit(newNode)
+            }
+
+            let hasTrailingTrivia = node.attributeName.trailingTrivia.isNotEmpty
+            if node.arguments != nil && hasTrailingTrivia {
+                correctionPositions.append(node.attributeName.endPosition)
+                let cleanedAttributeName = node.attributeName.with(\.trailingTrivia, Trivia())
+                let newNode = node.with(\.attributeName, cleanedAttributeName)
+                return super.visit(newNode)
+            }
+
+            if !hasTrailingTrivia && node.isEscaping {
+                // Handles cases where escaping has the wrong spacing: `@escaping()`
+                correctionPositions.append(node.attributeName.endPosition)
+                let cleanedAttributeName = node.attributeName.with(\.trailingTrivia, .space)
+                let newNode = node.with(\.attributeName, cleanedAttributeName)
+                return super.visit(newNode)
+            }
+
+            return super.visit(node)
         }
     }
 }

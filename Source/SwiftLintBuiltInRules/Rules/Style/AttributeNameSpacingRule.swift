@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
-struct AttributeNameSpacing: Rule {
+struct AttributeNameSpacingRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(

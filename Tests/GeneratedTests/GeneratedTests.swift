@@ -7,12 +7,6 @@ import SwiftLintTestHelpers
 // swiftlint:disable:next blanket_disable_command
 // swiftlint:disable file_length single_test_class type_name
 
-final class AccessControlSetterSpacingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(AttributeNameSpacing.description)
-    }
-}
-
 final class AccessibilityLabelForImageRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AccessibilityLabelForImageRule.description)
@@ -40,6 +34,12 @@ final class AnyObjectProtocolRuleGeneratedTests: SwiftLintTestCase {
 final class ArrayInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ArrayInitRule.description)
+    }
+}
+
+final class AttributeNameSpacingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(AttributeNameSpacingRule.description)
     }
 }
 

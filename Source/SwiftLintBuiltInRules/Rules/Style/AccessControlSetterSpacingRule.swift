@@ -17,6 +17,7 @@ struct AccessControlSetterSpacingRule: Rule {
             Example("@available(*, deprecated)"),
             Example("@MyPropertyWrapper(param: 2) "),
             Example("nonisolated(unsafe) var _value: X?"),
+            Example("@testable import SwiftLintCore"),
             Example("""
             @propertyWrapper
             struct MyPropertyWrapper {
@@ -30,7 +31,6 @@ struct AccessControlSetterSpacingRule: Rule {
               (a: Int, b: Int) in
             }
             """),
-            Example("@testable import SwiftLintCore")
         ],
         triggeringExamples: [
             Example("private ↓(set) var foo: Bool = false"),

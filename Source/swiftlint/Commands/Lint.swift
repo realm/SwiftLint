@@ -19,7 +19,7 @@ extension SwiftLint {
         var noCache = false
         @Flag(help: "Run all rules, even opt-in and disabled ones, ignoring `only_rules`.")
         var enableAllRules = false
-        @Option(help: "Run only the specified rule, ignoring the configuration file.")
+        @Option(help: "Run only the specified rule, ignoring `only_rules`, `optin_rules` and `disabled_rules`.")
         var onlyRule: String?
         @Argument(help: pathsArgumentDescription(for: .lint))
         var paths = [String]()

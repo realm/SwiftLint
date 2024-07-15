@@ -60,6 +60,28 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             subscript(index: Int) -> Int {
                 index == 0 ? defaultValue() : compute(index)
             """),
+            Example("""
+            func example() -> String {
+                if true {
+                    isTrue ? defaultValue() : defaultValue()
+                } else {
+                    "Default"
+                }
+            }
+            """).focused(),
+            Example("""
+            func exampleNestedIfExpr() -> String {
+                if true {
+                  if true {
+                    if true {
+                      isTrue ? defaultValue() : defaultValue()
+                    }
+                  }
+                } else {
+                    "Default"
+                }
+            }
+            """).focused(),
         ],
         triggeringExamples: [
             Example("success ↓? askQuestion() : exit()"),
@@ -152,7 +174,7 @@ private extension CodeBlockItemSyntax {
     var isImplicitReturn: Bool {
         isClosureImplictReturn || isFunctionImplicitReturn ||
         isVariableImplicitReturn || isSubscriptImplicitReturn ||
-        isAcessorImplicitReturn
+        isAcessorImplicitReturn || isIfExprImplicitReturn
     }
 
     var isClosureImplictReturn: Bool {
@@ -199,6 +221,17 @@ private extension CodeBlockItemSyntax {
 
         return parent.children(viewMode: .sourceAccurate).count == 1
     }
+
+    var isIfExprImplicitReturn: Bool {
+      guard let parent = parent?.as(CodeBlockItemListSyntax.self),
+            let ifExprSytax = parent.parent?.parent?.as(IfExprSyntax.self) else {
+        return false
+      }
+      guard let funcDecl = ifExprSytax.parent?.findParent(ofType: FunctionDeclSyntax.self) else {
+        return false
+      }
+      return parent.children(viewMode: .sourceAccurate).count == 1 && funcDecl.signature.allowsImplicitReturns
+    }
 }
 
 private extension FunctionSignatureSyntax {
@@ -222,5 +255,19 @@ private extension ReturnClauseSyntax {
             return !tupleType.elements.isEmpty
         }
         return true
+    }
+}
+
+// Helper method that traces back the parent until a particular node reaches FunctionDeclSyntax.
+extension Syntax {
+    func findParent<T: SyntaxProtocol>(ofType type: T.Type) -> T? {
+        var current: Syntax? = self
+        while let parent = current?.parent {
+            if let parentNode = parent.as(T.self) {
+                return parentNode
+            }
+            current = parent
+        }
+        return nil
     }
 }

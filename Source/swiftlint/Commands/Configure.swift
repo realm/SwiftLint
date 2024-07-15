@@ -174,7 +174,8 @@ extension SwiftLint {
                 format: false,
                 compilerLogPath: nil,
                 compileCommands: nil,
-                inProcessSourcekit: false
+                inProcessSourcekit: false,
+                checkForUpdates: false
             )
 
             Issue.printDeprecationWarnings = false
@@ -428,25 +429,25 @@ private extension RuleRegistry {
 
 private extension Configuration {
     var customYML: String {
-        var customYML = ""
+        let customYML = ""
         for rule in rules {
             let ruleIdentifier = type(of: rule).description.identifier
             guard ruleIdentifier != "file_name", ruleIdentifier != "required_enum_case" else {
                 continue
             }
-            if rule.configurationDescription.hasContent {
-                let defaultRule = type(of: rule).init()
-                let defaultYML = defaultRule.configurationDescription.yaml()
-                let ruleYML = rule.configurationDescription.yaml()
-                if ruleYML != defaultYML {
-                    customYML += """
-
-                             \(type(of: rule).description.identifier):
-                             \(ruleYML.indent(by: 4))
-
-                             """
-                }
-            }
+//            if rule.configurationDescription.hasContent {
+//                let defaultRule = type(of: rule).init()
+//                let defaultYML = defaultRule.configurationDescription.yaml()
+//                let ruleYML = rule.configurationDescription.yaml()
+//                if ruleYML != defaultYML {
+//                    customYML += """
+//
+//                             \(type(of: rule).description.identifier):
+//                             \(ruleYML.indent(by: 4))
+//
+//                             """
+//                }
+//            }
         }
         return customYML
     }

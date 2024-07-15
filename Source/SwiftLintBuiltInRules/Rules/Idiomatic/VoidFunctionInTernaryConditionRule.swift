@@ -382,3 +382,17 @@ private extension ReturnClauseSyntax {
         return true
     }
 }
+
+// Helper method that traces back the parent until a particular node reaches FunctionDeclSyntax.
+extension Syntax {
+    func findParent<T: SyntaxProtocol>(ofType type: T.Type) -> T? {
+        var current: Syntax? = self
+        while let parent = current?.parent {
+            if let parentNode = parent.as(T.self) {
+                return parentNode
+            }
+            current = parent
+        }
+        return nil
+    }
+}

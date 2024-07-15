@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct AttributeNameSpacingRule: Rule {
+@SwiftSyntaxRule
+struct AttributeNameSpacingRule: SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
@@ -50,19 +50,19 @@ struct AttributeNameSpacingRule: Rule {
             """),
         ],
         corrections: [
-            Example("private ↓(set) var foo: Bool = false"): Example("private(set) var foo: Bool = false"),
-            Example("fileprivate ↓(set) var foo: Bool = false"): Example("fileprivate(set) var foo: Bool = false"),
-            Example("internal ↓(set) var foo: Bool = false"): Example("internal(set) var foo: Bool = false"),
-            Example("public ↓(set) var foo: Bool = false"): Example("public(set) var foo: Bool = false"),
-            Example("public  ↓(set) var foo: Bool = false"): Example("public(set) var foo: Bool = false"),
-            Example("@ ↓MainActor"): Example("@MainActor"),
-            Example("func test(_ x: @ ↓escaping () -> Int) {}"): Example("func test(_ x: @escaping () -> Int) {}"),
+            Example("private↓ (set) var foo: Bool = false"): Example("private(set) var foo: Bool = false"),
+            Example("fileprivate↓ (set) var foo: Bool = false"): Example("fileprivate(set) var foo: Bool = false"),
+            Example("internal↓ (set) var foo: Bool = false"): Example("internal(set) var foo: Bool = false"),
+            Example("public↓ (set) var foo: Bool = false"): Example("public(set) var foo: Bool = false"),
+            Example("public↓  (set) var foo: Bool = false"): Example("public(set) var foo: Bool = false"),
+            Example("@↓ MainActor"): Example("@MainActor"),
+            Example("func test(_ x: @↓ escaping () -> Int) {}"): Example("func test(_ x: @escaping () -> Int) {}"),
             Example("func test(_ x: @escaping↓() -> Int) {}"): Example("func test(_ x: @escaping () -> Int) {}"),
-            Example("@available ↓(*, deprecated)"): Example("@available(*, deprecated)"),
-            Example("@MyPropertyWrapper ↓(param: 2) "): Example("@MyPropertyWrapper(param: 2) "),
-            Example("nonisolated ↓(unsafe) var _value: X?"): Example("nonisolated(unsafe) var _value: X?"),
+            Example("@available↓ (*, deprecated)"): Example("@available(*, deprecated)"),
+            Example("@MyPropertyWrapper↓ (param: 2) "): Example("@MyPropertyWrapper(param: 2) "),
+            Example("nonisolated↓ (unsafe) var _value: X?"): Example("nonisolated(unsafe) var _value: X?"),
             Example("""
-            let closure1 = { @MainActor ↓(a, b) in
+            let closure1 = { @MainActor↓ (a, b) in
             }
             """): Example("""
             let closure1 = { @MainActor(a, b) in
@@ -80,6 +80,11 @@ private extension AttributeNameSpacingRule {
             }
 
             violations.append(node.name.endPosition)
+            violationCorrections.append(ViolationCorrection(
+                start: node.name.endPositionBeforeTrailingTrivia,
+                end: node.name.endPosition,
+                replacement: ""
+            ))
         }
 
         override func visitPost(_ node: AttributeSyntax) {
@@ -87,6 +92,11 @@ private extension AttributeNameSpacingRule {
             // Handles cases like `@ MainActor` / `@ escaping`
             if node.atSign.trailingTrivia.isNotEmpty {
                 violations.append(node.atSign.endPosition)
+                violationCorrections.append(ViolationCorrection(
+                    start: node.atSign.endPositionBeforeTrailingTrivia,
+                    end: node.atSign.endPosition,
+                    replacement: ""
+                ))
             }
 
             let hasTrailingTrivia = node.attributeName.trailingTrivia.isNotEmpty
@@ -94,56 +104,22 @@ private extension AttributeNameSpacingRule {
             // Handles cases like @MyPropertyWrapper (param: 2)
             if node.arguments != nil && hasTrailingTrivia {
                 violations.append(node.attributeName.endPosition)
+                violationCorrections.append(ViolationCorrection(
+                    start: node.attributeName.endPositionBeforeTrailingTrivia,
+                    end: node.attributeName.endPosition,
+                    replacement: ""
+                ))
             }
 
             if !hasTrailingTrivia && node.isEscaping {
                 // Handles cases where escaping has the wrong spacing: `@escaping()`
                 violations.append(node.attributeName.endPosition)
+                violationCorrections.append(ViolationCorrection(
+                    start: node.attributeName.endPositionBeforeTrailingTrivia,
+                    end: node.attributeName.endPosition,
+                    replacement: " "
+                ))
             }
-        }
-    }
-
-    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
-        override func visit(_ node: DeclModifierSyntax) -> DeclModifierSyntax {
-            guard node.detail != nil, node.name.trailingTrivia.isNotEmpty else {
-                return super.visit(node)
-            }
-
-            correctionPositions.append(node.name.endPosition)
-
-            // Remove leading and trailing whitespace from the name token
-            let sanitizedName = node.name.with(\.trailingTrivia, Trivia())
-            let newNode = node.with(\.name, sanitizedName)
-            return super.visit(newNode)
-        }
-
-        override func visit(_ node: AttributeSyntax) -> AttributeSyntax {
-            // Check for trailing trivia after the '@' sign and clean it if present
-            if node.atSign.trailingTrivia.isNotEmpty {
-                let cleanedAtSign = node.atSign.with(\.trailingTrivia, Trivia())
-                let newNode = node.with(\.atSign, cleanedAtSign)
-
-                correctionPositions.append(node.atSign.endPosition)
-                return super.visit(newNode)
-            }
-
-            let hasTrailingTrivia = node.attributeName.trailingTrivia.isNotEmpty
-            if node.arguments != nil && hasTrailingTrivia {
-                correctionPositions.append(node.attributeName.endPosition)
-                let cleanedAttributeName = node.attributeName.with(\.trailingTrivia, Trivia())
-                let newNode = node.with(\.attributeName, cleanedAttributeName)
-                return super.visit(newNode)
-            }
-
-            if !hasTrailingTrivia && node.isEscaping {
-                // Handles cases where escaping has the wrong spacing: `@escaping()`
-                correctionPositions.append(node.attributeName.endPosition)
-                let cleanedAttributeName = node.attributeName.with(\.trailingTrivia, .space)
-                let newNode = node.with(\.attributeName, cleanedAttributeName)
-                return super.visit(newNode)
-            }
-
-            return super.visit(node)
         }
     }
 }

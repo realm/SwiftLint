@@ -68,7 +68,7 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                     "Default"
                 }
             }
-            """).focused(),
+            """),
             Example("""
             func exampleNestedIfExpr() -> String {
                 if true {
@@ -81,7 +81,7 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                     "Default"
                 }
             }
-            """).focused(),
+            """),
         ],
         triggeringExamples: [
             Example("success ↓? askQuestion() : exit()"),
@@ -125,6 +125,15 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                     index == 0 ↓? something() : somethingElse(index)
                     return index
                 }
+            """),
+            Example("""
+            func example() -> Void {
+                if true {
+                    isTrue ↓? defaultValue() : defaultValue()
+                } else {
+                    print("false")
+                }
+            }
             """),
         ]
     )

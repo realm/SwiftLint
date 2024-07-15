@@ -266,6 +266,7 @@ extension Configuration {
         self.init(
             configurationFiles: options.configurationFiles,
             enableAllRules: options.enableAllRules,
+            onlyRule: options.onlyRule,
             cachePath: options.cachePath
         )
     }

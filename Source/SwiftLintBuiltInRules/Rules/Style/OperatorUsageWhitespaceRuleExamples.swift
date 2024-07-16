@@ -21,10 +21,10 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         Example("let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)"),
         Example("\"let foo =  1\""),
         Example("""
-          enum Enum {
-          case hello   = 1
-          case hello2  = 1
-          }
+        enum Enum {
+        case hello   = 1
+        case hello2  = 1
+        }
         """),
         Example("""
         let something = Something<GenericParameter1,
@@ -112,22 +112,22 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         Example("let foo↓  = \"1\""),
         Example("let foo↓ =  \"1\""),
         Example("""
-          enum Enum {
-          case one↓  =  1
-          case two  = 1
-          }
+        enum Enum {
+        case one↓  =  1
+        case two  = 1
+        }
         """),
         Example("""
-          enum Enum {
-          case one  = 1
-          case two↓  =  1
-          }
+        enum Enum {
+        case one  = 1
+        case two↓  =  1
+        }
         """),
         Example("""
-          enum Enum {
-          case one↓   = 1
-          case two↓  = 1
-          }
+        enum Enum {
+        case one↓   = 1
+        case two↓  = 1
+        }
         """),
         Example("typealias Foo↓ =  Bar"),
         Example("""

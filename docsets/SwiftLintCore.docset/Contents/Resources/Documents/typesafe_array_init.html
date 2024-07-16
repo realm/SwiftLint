@@ -380,34 +380,34 @@ warning
 </table></li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
-<pre class="highlight swift"><code>    <span class="kd">enum</span> <span class="kt">MyError</span><span class="p">:</span> <span class="kt">Error</span> <span class="p">{}</span>
-    <span class="k">let</span> <span class="nv">myResult</span><span class="p">:</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">MyError</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="s">""</span><span class="p">)</span>
-    <span class="k">let</span> <span class="nv">result</span><span class="p">:</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Any</span><span class="p">,</span> <span class="kt">MyError</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">myResult</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">MyError</span><span class="p">:</span> <span class="kt">Error</span> <span class="p">{}</span>
+<span class="k">let</span> <span class="nv">myResult</span><span class="p">:</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">MyError</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="s">""</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">result</span><span class="p">:</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Any</span><span class="p">,</span> <span class="kt">MyError</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">myResult</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code>    <span class="kd">struct</span> <span class="kt">IntArray</span> <span class="p">{</span>
-        <span class="k">let</span> <span class="nv">elements</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-        <span class="kd">func</span> <span class="n">map</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">transformer</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">)</span> <span class="k">rethrows</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">T</span><span class="p">]</span> <span class="p">{</span>
-            <span class="k">try</span> <span class="n">elements</span><span class="o">.</span><span class="nf">map</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
-        <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">IntArray</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">elements</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="kd">func</span> <span class="n">map</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">transformer</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">)</span> <span class="k">rethrows</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">T</span><span class="p">]</span> <span class="p">{</span>
+        <span class="k">try</span> <span class="n">elements</span><span class="o">.</span><span class="nf">map</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
     <span class="p">}</span>
-    <span class="k">let</span> <span class="nv">ints</span> <span class="o">=</span> <span class="kt">IntArray</span><span class="p">()</span>
-    <span class="k">let</span> <span class="nv">intsCopy</span> <span class="o">=</span> <span class="n">ints</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">let</span> <span class="nv">ints</span> <span class="o">=</span> <span class="kt">IntArray</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">intsCopy</span> <span class="o">=</span> <span class="n">ints</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code>    <span class="kd">func</span> <span class="n">f</span><span class="o">&lt;</span><span class="kt">Seq</span><span class="p">:</span> <span class="kt">Sequence</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">s</span><span class="p">:</span> <span class="kt">Seq</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Seq</span><span class="o">.</span><span class="kt">Element</span><span class="p">]</span> <span class="p">{</span>
-        <span class="n">s</span><span class="o">.</span><span class="err">↓</span><span class="nf">map</span><span class="p">({</span> <span class="nv">$0</span> <span class="p">})</span>
-    <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="n">f</span><span class="o">&lt;</span><span class="kt">Seq</span><span class="p">:</span> <span class="kt">Sequence</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">s</span><span class="p">:</span> <span class="kt">Seq</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Seq</span><span class="o">.</span><span class="kt">Element</span><span class="p">]</span> <span class="p">{</span>
+    <span class="n">s</span><span class="o">.</span><span class="err">↓</span><span class="nf">map</span><span class="p">({</span> <span class="nv">$0</span> <span class="p">})</span>
+<span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code>    <span class="kd">func</span> <span class="nf">f</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]</span> <span class="p">{</span>
-        <span class="n">array</span><span class="o">.</span><span class="err">↓</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
-    <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">f</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]</span> <span class="p">{</span>
+    <span class="n">array</span><span class="o">.</span><span class="err">↓</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
+<span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code>    <span class="k">let</span> <span class="nv">myInts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="err">↓</span><span class="n">map</span> <span class="p">{</span> <span class="k">return</span> <span class="nv">$0</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">myInts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="err">↓</span><span class="n">map</span> <span class="p">{</span> <span class="k">return</span> <span class="nv">$0</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code>    <span class="kd">struct</span> <span class="kt">Generator</span><span class="p">:</span> <span class="kt">Sequence</span><span class="p">,</span> <span class="kt">IteratorProtocol</span> <span class="p">{</span>
-        <span class="kd">func</span> <span class="nf">next</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span><span class="p">?</span> <span class="p">{</span> <span class="kc">nil</span> <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">let</span> <span class="nv">array</span> <span class="o">=</span> <span class="kt">Generator</span><span class="p">()</span><span class="o">.</span><span class="err">↓</span><span class="n">map</span> <span class="p">{</span> <span class="n">i</span> <span class="k">in</span> <span class="n">i</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Generator</span><span class="p">:</span> <span class="kt">Sequence</span><span class="p">,</span> <span class="kt">IteratorProtocol</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">next</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span><span class="p">?</span> <span class="p">{</span> <span class="kc">nil</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">let</span> <span class="nv">array</span> <span class="o">=</span> <span class="kt">Generator</span><span class="p">()</span><span class="o">.</span><span class="err">↓</span><span class="n">map</span> <span class="p">{</span> <span class="n">i</span> <span class="k">in</span> <span class="n">i</span> <span class="p">}</span>
 </code></pre>
 
           </div>

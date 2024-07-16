@@ -431,14 +431,14 @@ warning
 <pre class="highlight swift"><code><span class="k">guard</span> <span class="n">foo</span> <span class="o">==</span> <span class="o">.</span><span class="nf">bar</span><span class="p">()</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">if</span> <span class="k">case</span> <span class="o">.</span><span class="n">appStore</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">appInstaller</span><span class="p">,</span> <span class="o">!</span><span class="kt">UIDevice</span><span class="o">.</span><span class="nf">isSimulator</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">viewController</span><span class="o">.</span><span class="nf">present</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">animated</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+    <span class="n">viewController</span><span class="o">.</span><span class="nf">present</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">animated</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
 <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-  <span class="kt">UIApplication</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">open</span><span class="p">(</span><span class="k">self</span><span class="o">.</span><span class="n">appInstaller</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="kt">UIApplication</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">open</span><span class="p">(</span><span class="k">self</span><span class="o">.</span><span class="n">appInstaller</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">updatedUserNotificationSettings</span> <span class="o">=</span> <span class="n">deepLink</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="n">nav</span> <span class="k">in</span>
-  <span class="k">guard</span> <span class="k">case</span> <span class="o">.</span><span class="nf">settings</span><span class="p">(</span><span class="o">.</span><span class="nf">notifications</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="kc">nil</span><span class="p">))</span> <span class="o">=</span> <span class="n">nav</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span> <span class="p">}</span>
-  <span class="k">return</span> <span class="kc">true</span>
+    <span class="k">guard</span> <span class="k">case</span> <span class="o">.</span><span class="nf">settings</span><span class="p">(</span><span class="o">.</span><span class="nf">notifications</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="kc">nil</span><span class="p">))</span> <span class="o">=</span> <span class="n">nav</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="kc">true</span>
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
@@ -486,14 +486,14 @@ warning
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">if</span> <span class="k">case</span> <span class="o">.</span><span class="n">appStore</span><span class="err">↓</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">appInstaller</span><span class="p">,</span> <span class="o">!</span><span class="kt">UIDevice</span><span class="o">.</span><span class="nf">isSimulator</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">viewController</span><span class="o">.</span><span class="nf">present</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">animated</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+    <span class="n">viewController</span><span class="o">.</span><span class="nf">present</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">animated</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
 <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-  <span class="kt">UIApplication</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">open</span><span class="p">(</span><span class="k">self</span><span class="o">.</span><span class="n">appInstaller</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="kt">UIApplication</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">open</span><span class="p">(</span><span class="k">self</span><span class="o">.</span><span class="n">appInstaller</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">updatedUserNotificationSettings</span> <span class="o">=</span> <span class="n">deepLink</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="n">nav</span> <span class="k">in</span>
-  <span class="k">guard</span> <span class="k">case</span> <span class="o">.</span><span class="nf">settings</span><span class="p">(</span><span class="o">.</span><span class="n">notifications</span><span class="err">↓</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">))</span> <span class="o">=</span> <span class="n">nav</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span> <span class="p">}</span>
-  <span class="k">return</span> <span class="kc">true</span>
+    <span class="k">guard</span> <span class="k">case</span> <span class="o">.</span><span class="nf">settings</span><span class="p">(</span><span class="o">.</span><span class="n">notifications</span><span class="err">↓</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">))</span> <span class="o">=</span> <span class="n">nav</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="kc">true</span>
 <span class="p">}</span>
 </code></pre>
 

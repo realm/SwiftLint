@@ -380,28 +380,28 @@ warning
 </table></li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
-<pre class="highlight swift"><code>    <span class="k">if</span> <span class="k">let</span> <span class="nv">i</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">a</span> <span class="p">{}</span>
-    <span class="k">guard</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="nf">f</span><span class="p">()</span> <span class="k">else</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="nf">i</span><span class="p">()</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span> <span class="k">as?</span> <span class="kt">Foo</span> <span class="p">{}</span>
-    <span class="k">guard</span> <span class="kd">let</span> <span class="p">`</span><span class="nv">self</span><span class="p">`</span> <span class="o">=</span> <span class="k">self</span> <span class="k">else</span> <span class="p">{}</span>
-    <span class="k">while</span> <span class="k">var</span> <span class="nv">i</span> <span class="p">{</span> <span class="n">i</span> <span class="o">=</span> <span class="kc">nil</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="k">let</span> <span class="nv">i</span> <span class="p">{}</span>
+<span class="k">if</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">a</span> <span class="p">{}</span>
+<span class="k">guard</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="nf">f</span><span class="p">()</span> <span class="k">else</span> <span class="p">{}</span>
+<span class="k">if</span> <span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="nf">i</span><span class="p">()</span> <span class="p">{}</span>
+<span class="k">if</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span> <span class="k">as?</span> <span class="kt">Foo</span> <span class="p">{}</span>
+<span class="k">guard</span> <span class="kd">let</span> <span class="p">`</span><span class="nv">self</span><span class="p">`</span> <span class="o">=</span> <span class="k">self</span> <span class="k">else</span> <span class="p">{}</span>
+<span class="k">while</span> <span class="k">var</span> <span class="nv">i</span> <span class="p">{</span> <span class="n">i</span> <span class="o">=</span> <span class="kc">nil</span> <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code>    <span class="k">if</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">self</span> <span class="o">=</span> <span class="k">self</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="err">↓</span><span class="kd">var</span> <span class="p">`</span><span class="nv">self</span><span class="p">`</span> <span class="o">=</span> <span class="p">`</span><span class="nv">self</span><span class="p">`</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">j</span> <span class="o">=</span> <span class="n">j</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">,</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">j</span> <span class="o">=</span> <span class="n">j</span> <span class="p">{}</span>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span> <span class="p">{}</span>
+<span class="k">if</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">self</span> <span class="o">=</span> <span class="k">self</span> <span class="p">{}</span>
+<span class="k">if</span> <span class="err">↓</span><span class="kd">var</span> <span class="p">`</span><span class="nv">self</span><span class="p">`</span> <span class="o">=</span> <span class="p">`</span><span class="nv">self</span><span class="p">`</span> <span class="p">{}</span>
+<span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">j</span> <span class="o">=</span> <span class="n">j</span> <span class="p">{}</span>
+<span class="k">if</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">,</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">j</span> <span class="o">=</span> <span class="n">j</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code>    <span class="k">guard</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span> <span class="k">else</span> <span class="p">{}</span>
-    <span class="k">guard</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">self</span> <span class="o">=</span> <span class="k">self</span> <span class="k">else</span> <span class="p">{}</span>
-    <span class="k">guard</span> <span class="err">↓</span><span class="kd">var</span> <span class="p">`</span><span class="nv">self</span><span class="p">`</span> <span class="o">=</span> <span class="p">`</span><span class="nv">self</span><span class="p">`</span> <span class="k">else</span> <span class="p">{}</span>
-    <span class="k">guard</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">j</span> <span class="o">=</span> <span class="n">j</span> <span class="k">else</span> <span class="p">{}</span>
-    <span class="k">guard</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">,</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">j</span> <span class="o">=</span> <span class="n">j</span> <span class="k">else</span> <span class="p">{}</span>
+<pre class="highlight swift"><code><span class="k">guard</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span> <span class="k">else</span> <span class="p">{}</span>
+<span class="k">guard</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">self</span> <span class="o">=</span> <span class="k">self</span> <span class="k">else</span> <span class="p">{}</span>
+<span class="k">guard</span> <span class="err">↓</span><span class="kd">var</span> <span class="p">`</span><span class="nv">self</span><span class="p">`</span> <span class="o">=</span> <span class="p">`</span><span class="nv">self</span><span class="p">`</span> <span class="k">else</span> <span class="p">{}</span>
+<span class="k">guard</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">j</span> <span class="o">=</span> <span class="n">j</span> <span class="k">else</span> <span class="p">{}</span>
+<span class="k">guard</span> <span class="err">↓</span><span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">,</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">j</span> <span class="o">=</span> <span class="n">j</span> <span class="k">else</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code>    <span class="k">while</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span> <span class="p">{</span> <span class="n">i</span> <span class="o">=</span> <span class="kc">nil</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="k">while</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="n">i</span> <span class="p">{</span> <span class="n">i</span> <span class="o">=</span> <span class="kc">nil</span> <span class="p">}</span>
 </code></pre>
 
           </div>

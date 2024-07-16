@@ -389,113 +389,113 @@ order
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">TestViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
-    <span class="c1">// Type Aliases</span>
-    <span class="kd">typealias</span> <span class="kt">CompletionHandler</span> <span class="o">=</span> <span class="p">((</span><span class="kt">TestEnum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span>
+<span class="c1">// Type Aliases</span>
+<span class="kd">typealias</span> <span class="kt">CompletionHandler</span> <span class="o">=</span> <span class="p">((</span><span class="kt">TestEnum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span>
 
-    <span class="c1">// Subtypes</span>
-    <span class="kd">class</span> <span class="kt">TestClass</span> <span class="p">{</span>
-        <span class="c1">// 10 lines</span>
+<span class="c1">// Subtypes</span>
+<span class="kd">class</span> <span class="kt">TestClass</span> <span class="p">{</span>
+    <span class="c1">// 10 lines</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">TestStruct</span> <span class="p">{</span>
+    <span class="c1">// 3 lines</span>
+<span class="p">}</span>
+
+<span class="kd">enum</span> <span class="kt">TestEnum</span> <span class="p">{</span>
+    <span class="c1">// 5 lines</span>
+<span class="p">}</span>
+
+<span class="c1">// Type Properties</span>
+<span class="kd">static</span> <span class="k">let</span> <span class="nv">cellIdentifier</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"AmazingCell"</span>
+
+<span class="c1">// Instance Properties</span>
+<span class="k">var</span> <span class="nv">shouldLayoutView1</span><span class="p">:</span> <span class="kt">Bool</span><span class="o">!</span>
+<span class="k">weak</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">TestViewControllerDelegate</span><span class="p">?</span>
+<span class="kd">private</span> <span class="k">var</span> <span class="nv">hasLayoutedView1</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="kd">private</span> <span class="k">var</span> <span class="nv">hasLayoutedView2</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span>
+
+<span class="kd">private</span> <span class="k">var</span> <span class="nv">hasAnyLayoutedView</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span>
+     <span class="k">return</span> <span class="n">hasLayoutedView1</span> <span class="o">||</span> <span class="n">hasLayoutedView2</span>
+<span class="p">}</span>
+
+<span class="c1">// IBOutlets</span>
+<span class="kd">@IBOutlet</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">view1</span><span class="p">:</span> <span class="kt">UIView</span><span class="o">!</span>
+<span class="kd">@IBOutlet</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">view2</span><span class="p">:</span> <span class="kt">UIView</span><span class="o">!</span>
+
+<span class="c1">// Initializers</span>
+<span class="k">override</span> <span class="nf">init</span><span class="p">(</span><span class="n">nibName</span> <span class="nv">nibNameOrNil</span><span class="p">:</span> <span class="kt">String</span><span class="p">?,</span> <span class="n">bundle</span> <span class="nv">nibBundleOrNil</span><span class="p">:</span> <span class="kt">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+    <span class="k">super</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">nibName</span><span class="p">:</span> <span class="n">nibNameOrNil</span><span class="p">,</span> <span class="nv">bundle</span><span class="p">:</span> <span class="n">nibBundleOrNil</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">required</span> <span class="nf">init</span><span class="p">?(</span><span class="n">coder</span> <span class="nv">aDecoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">fatalError</span><span class="p">(</span><span class="s">"init(coder:) has not been implemented"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// Type Methods</span>
+<span class="kd">static</span> <span class="kd">func</span> <span class="nf">makeViewController</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">TestViewController</span> <span class="p">{</span>
+    <span class="c1">// some code</span>
+<span class="p">}</span>
+
+<span class="c1">// View Life-Cycle Methods</span>
+<span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+
+    <span class="n">view1</span><span class="o">.</span><span class="nf">setNeedsLayout</span><span class="p">()</span>
+    <span class="n">view1</span><span class="o">.</span><span class="nf">layoutIfNeeded</span><span class="p">()</span>
+    <span class="n">hasLayoutedView1</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
+
+<span class="k">override</span> <span class="kd">func</span> <span class="nf">willMove</span><span class="p">(</span><span class="n">toParent</span> <span class="nv">parent</span><span class="p">:</span> <span class="kt">UIViewController</span><span class="p">?)</span> <span class="p">{</span>
+    <span class="k">super</span><span class="o">.</span><span class="nf">willMove</span><span class="p">(</span><span class="nv">toParent</span><span class="p">:</span> <span class="n">parent</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">parent</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="n">viewModel</span><span class="o">.</span><span class="nf">willMoveToParent</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLayoutSubviews</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLayoutSubviews</span><span class="p">()</span>
+
+    <span class="n">view2</span><span class="o">.</span><span class="nf">setNeedsLayout</span><span class="p">()</span>
+    <span class="n">view2</span><span class="o">.</span><span class="nf">layoutIfNeeded</span><span class="p">()</span>
+    <span class="n">hasLayoutedView2</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
+
+<span class="k">override</span> <span class="kd">func</span> <span class="nf">viewIsAppearing</span><span class="p">(</span><span class="n">_</span> <span class="nv">animated</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">super</span><span class="o">.</span><span class="nf">viewIsAppearing</span><span class="p">(</span><span class="n">animated</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// IBActions</span>
+<span class="kd">@IBAction</span> <span class="kd">func</span> <span class="nf">goNextButtonPressed</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nf">goToNextVc</span><span class="p">()</span>
+    <span class="n">delegate</span><span class="p">?</span><span class="o">.</span><span class="nf">didPressTrackedButton</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="c1">// Other Methods</span>
+<span class="kd">func</span> <span class="nf">goToNextVc</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* TODO */</span> <span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">goToInfoVc</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* TODO */</span> <span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">goToRandomVc</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">viewCtrl</span> <span class="o">=</span> <span class="nf">getRandomVc</span><span class="p">()</span>
+    <span class="nf">present</span><span class="p">(</span><span class="n">viewCtrl</span><span class="p">,</span> <span class="nv">animated</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">private</span> <span class="kd">func</span> <span class="nf">getRandomVc</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">UIViewController</span> <span class="p">{</span> <span class="k">return</span> <span class="kt">UIViewController</span><span class="p">()</span> <span class="p">}</span>
+
+<span class="c1">// Subscripts</span>
+<span class="nf">subscript</span><span class="p">(</span><span class="n">_</span> <span class="nv">someIndexThatIsNotEvenUsed</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">get</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s">"This is just a test"</span>
     <span class="p">}</span>
 
-    <span class="kd">struct</span> <span class="kt">TestStruct</span> <span class="p">{</span>
-        <span class="c1">// 3 lines</span>
+    <span class="k">set</span> <span class="p">{</span>
+        <span class="n">log</span><span class="o">.</span><span class="nf">warning</span><span class="p">(</span><span class="s">"Just a test"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
     <span class="p">}</span>
+<span class="p">}</span>
 
-    <span class="kd">enum</span> <span class="kt">TestEnum</span> <span class="p">{</span>
-        <span class="c1">// 5 lines</span>
-    <span class="p">}</span>
-
-    <span class="c1">// Type Properties</span>
-    <span class="kd">static</span> <span class="k">let</span> <span class="nv">cellIdentifier</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"AmazingCell"</span>
-
-    <span class="c1">// Instance Properties</span>
-    <span class="k">var</span> <span class="nv">shouldLayoutView1</span><span class="p">:</span> <span class="kt">Bool</span><span class="o">!</span>
-    <span class="k">weak</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">TestViewControllerDelegate</span><span class="p">?</span>
-    <span class="kd">private</span> <span class="k">var</span> <span class="nv">hasLayoutedView1</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span>
-    <span class="kd">private</span> <span class="k">var</span> <span class="nv">hasLayoutedView2</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span>
-
-    <span class="kd">private</span> <span class="k">var</span> <span class="nv">hasAnyLayoutedView</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span>
-         <span class="k">return</span> <span class="n">hasLayoutedView1</span> <span class="o">||</span> <span class="n">hasLayoutedView2</span>
-    <span class="p">}</span>
-
-    <span class="c1">// IBOutlets</span>
-    <span class="kd">@IBOutlet</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">view1</span><span class="p">:</span> <span class="kt">UIView</span><span class="o">!</span>
-    <span class="kd">@IBOutlet</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">view2</span><span class="p">:</span> <span class="kt">UIView</span><span class="o">!</span>
-
-    <span class="c1">// Initializers</span>
-    <span class="k">override</span> <span class="nf">init</span><span class="p">(</span><span class="n">nibName</span> <span class="nv">nibNameOrNil</span><span class="p">:</span> <span class="kt">String</span><span class="p">?,</span> <span class="n">bundle</span> <span class="nv">nibBundleOrNil</span><span class="p">:</span> <span class="kt">Bundle</span><span class="p">?)</span> <span class="p">{</span>
-        <span class="k">super</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">nibName</span><span class="p">:</span> <span class="n">nibNameOrNil</span><span class="p">,</span> <span class="nv">bundle</span><span class="p">:</span> <span class="n">nibBundleOrNil</span><span class="p">)</span>
-    <span class="p">}</span>
-
-    <span class="kd">required</span> <span class="nf">init</span><span class="p">?(</span><span class="n">coder</span> <span class="nv">aDecoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nf">fatalError</span><span class="p">(</span><span class="s">"init(coder:) has not been implemented"</span><span class="p">)</span>
-    <span class="p">}</span>
-
-    <span class="c1">// Type Methods</span>
-    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">makeViewController</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">TestViewController</span> <span class="p">{</span>
-        <span class="c1">// some code</span>
-    <span class="p">}</span>
-
-    <span class="c1">// View Life-Cycle Methods</span>
-    <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
-
-        <span class="n">view1</span><span class="o">.</span><span class="nf">setNeedsLayout</span><span class="p">()</span>
-        <span class="n">view1</span><span class="o">.</span><span class="nf">layoutIfNeeded</span><span class="p">()</span>
-        <span class="n">hasLayoutedView1</span> <span class="o">=</span> <span class="kc">true</span>
-    <span class="p">}</span>
-
-    <span class="k">override</span> <span class="kd">func</span> <span class="nf">willMove</span><span class="p">(</span><span class="n">toParent</span> <span class="nv">parent</span><span class="p">:</span> <span class="kt">UIViewController</span><span class="p">?)</span> <span class="p">{</span>
-        <span class="k">super</span><span class="o">.</span><span class="nf">willMove</span><span class="p">(</span><span class="nv">toParent</span><span class="p">:</span> <span class="n">parent</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">parent</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-            <span class="n">viewModel</span><span class="o">.</span><span class="nf">willMoveToParent</span><span class="p">()</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLayoutSubviews</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLayoutSubviews</span><span class="p">()</span>
-
-        <span class="n">view2</span><span class="o">.</span><span class="nf">setNeedsLayout</span><span class="p">()</span>
-        <span class="n">view2</span><span class="o">.</span><span class="nf">layoutIfNeeded</span><span class="p">()</span>
-        <span class="n">hasLayoutedView2</span> <span class="o">=</span> <span class="kc">true</span>
-    <span class="p">}</span>
-
-    <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewIsAppearing</span><span class="p">(</span><span class="n">_</span> <span class="nv">animated</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">super</span><span class="o">.</span><span class="nf">viewIsAppearing</span><span class="p">(</span><span class="n">animated</span><span class="p">)</span>
-    <span class="p">}</span>
-
-    <span class="c1">// IBActions</span>
-    <span class="kd">@IBAction</span> <span class="kd">func</span> <span class="nf">goNextButtonPressed</span><span class="p">()</span> <span class="p">{</span>
-        <span class="nf">goToNextVc</span><span class="p">()</span>
-        <span class="n">delegate</span><span class="p">?</span><span class="o">.</span><span class="nf">didPressTrackedButton</span><span class="p">()</span>
-    <span class="p">}</span>
-
-    <span class="c1">// Other Methods</span>
-    <span class="kd">func</span> <span class="nf">goToNextVc</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* TODO */</span> <span class="p">}</span>
-
-    <span class="kd">func</span> <span class="nf">goToInfoVc</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* TODO */</span> <span class="p">}</span>
-
-    <span class="kd">func</span> <span class="nf">goToRandomVc</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">let</span> <span class="nv">viewCtrl</span> <span class="o">=</span> <span class="nf">getRandomVc</span><span class="p">()</span>
-        <span class="nf">present</span><span class="p">(</span><span class="n">viewCtrl</span><span class="p">,</span> <span class="nv">animated</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
-    <span class="p">}</span>
-
-    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">getRandomVc</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">UIViewController</span> <span class="p">{</span> <span class="k">return</span> <span class="kt">UIViewController</span><span class="p">()</span> <span class="p">}</span>
-
-    <span class="c1">// Subscripts</span>
-    <span class="nf">subscript</span><span class="p">(</span><span class="n">_</span> <span class="nv">someIndexThatIsNotEvenUsed</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
-        <span class="k">get</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="s">"This is just a test"</span>
-        <span class="p">}</span>
-
-        <span class="k">set</span> <span class="p">{</span>
-            <span class="n">log</span><span class="o">.</span><span class="nf">warning</span><span class="p">(</span><span class="s">"Just a test"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="kd">deinit</span> <span class="p">{</span>
-        <span class="n">log</span><span class="o">.</span><span class="nf">debug</span><span class="p">(</span><span class="s">"deinit"</span><span class="p">)</span>
-    <span class="p">},</span>
+<span class="kd">deinit</span> <span class="p">{</span>
+    <span class="n">log</span><span class="o">.</span><span class="nf">debug</span><span class="p">(</span><span class="s">"deinit"</span><span class="p">)</span>
+<span class="p">},</span>
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>

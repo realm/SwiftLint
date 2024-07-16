@@ -74,52 +74,40 @@ struct AttributeNameSpacingRule: SwiftSyntaxCorrectableRule {
 
 private extension AttributeNameSpacingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+
         override func visitPost(_ node: DeclModifierSyntax) {
             guard node.detail != nil, node.name.trailingTrivia.isNotEmpty else {
                 return
             }
-
-            violations.append(node.name.endPosition)
-            violationCorrections.append(ViolationCorrection(
-                start: node.name.endPositionBeforeTrailingTrivia,
-                end: node.name.endPosition,
-                replacement: ""
-            ))
+            
+            addViolation(startPosition: node.name.endPositionBeforeTrailingTrivia, endPosition: node.name.endPosition, replacement: "")
         }
 
         override func visitPost(_ node: AttributeSyntax) {
             // Check for trailing trivia after the '@' sign
             // Handles cases like `@ MainActor` / `@ escaping`
             if node.atSign.trailingTrivia.isNotEmpty {
-                violations.append(node.atSign.endPosition)
-                violationCorrections.append(ViolationCorrection(
-                    start: node.atSign.endPositionBeforeTrailingTrivia,
-                    end: node.atSign.endPosition,
-                    replacement: ""
-                ))
+                addViolation(startPosition: node.atSign.endPositionBeforeTrailingTrivia, endPosition: node.atSign.endPosition, replacement: "")
             }
 
             let hasTrailingTrivia = node.attributeName.trailingTrivia.isNotEmpty
 
             // Handles cases like @MyPropertyWrapper (param: 2)
             if node.arguments != nil && hasTrailingTrivia {
-                violations.append(node.attributeName.endPosition)
-                violationCorrections.append(ViolationCorrection(
-                    start: node.attributeName.endPositionBeforeTrailingTrivia,
-                    end: node.attributeName.endPosition,
-                    replacement: ""
-                ))
+                addViolation(startPosition: node.attributeName.endPositionBeforeTrailingTrivia, endPosition: node.attributeName.endPosition, replacement: "")
             }
 
             if !hasTrailingTrivia && node.isEscaping {
                 // Handles cases where escaping has the wrong spacing: `@escaping()`
-                violations.append(node.attributeName.endPosition)
-                violationCorrections.append(ViolationCorrection(
-                    start: node.attributeName.endPositionBeforeTrailingTrivia,
-                    end: node.attributeName.endPosition,
-                    replacement: " "
-                ))
+                addViolation(startPosition: node.attributeName.endPositionBeforeTrailingTrivia, endPosition: node.attributeName.endPosition, replacement: " ")
             }
+        }
+
+        private func addViolation(startPosition: AbsolutePosition, endPosition: AbsolutePosition, replacement: String) {
+            violations.append(endPosition)
+
+            let correction = ViolationCorrection(start: startPosition, end: endPosition, replacement: replacement)
+            violationCorrections.append(correction)
         }
     }
 }

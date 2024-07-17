@@ -44,13 +44,13 @@ struct PreferKeyPathRule: OptInRule {
             Example("f.map { $0.a }"):
                 Example("f.map(\\.a)"),
             Example("""
-            // begin
-            f.map { $0.a } // end
-            """):
-                Example("""
                 // begin
-                f.map(\\.a) // end
-                """),
+                f.map { $0.a } // end
+                """):
+                Example("""
+                    // begin
+                    f.map(\\.a) // end
+                    """),
             Example("f.map({ $0.a })"):
                 Example("f.map(\\.a)"),
             Example("f { $0.a }", configuration: checkAllClosures):
@@ -100,7 +100,7 @@ private extension PreferKeyPathRule {
             }
             node = node.with(
                 \.arguments,
-                node.arguments + [LabeledExprSyntax(expression: "\\\(declName.asKeyPath)" as ExprSyntax)]
+                node.arguments + [LabeledExprSyntax(expression: declName.asKeyPath)]
             )
             if node.rightParen == nil {
                 node = node.with(\.rightParen, .rightParenToken())
@@ -119,7 +119,10 @@ private extension PreferKeyPathRule {
                expr.accesses(identifier: node.onlyParameter) == true,
                let declName = expr.as(MemberAccessExprSyntax.self) {
                 correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-                return super.visit("\(node.leadingTrivia)\\\(declName.asKeyPath)\(node.trailingTrivia)")
+                let node = declName.asKeyPath
+                    .with(\.leadingTrivia, node.leadingTrivia)
+                    .with(\.trailingTrivia, node.trailingTrivia)
+                return super.visit(node)
             }
             return super.visit(node)
         }
@@ -183,6 +186,14 @@ private extension FunctionCallExprSyntax {
 
 private extension MemberAccessExprSyntax {
     var asKeyPath: ExprSyntax {
-        "\(with(\.base, nil).with(\.trailingTrivia, []))" as ExprSyntax
+        var this = base
+        var elements = [declName]
+        while this?.is(DeclReferenceExprSyntax.self) != true {
+            if let memberAccess = this?.as(MemberAccessExprSyntax.self) {
+                elements.append(memberAccess.declName)
+                this = memberAccess.base
+            }
+        }
+        return "\\.\(raw: elements.reversed().map(\.baseName.text).joined(separator: "."))" as ExprSyntax
     }
 }

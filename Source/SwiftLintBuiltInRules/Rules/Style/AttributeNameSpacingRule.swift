@@ -100,7 +100,7 @@ private extension AttributeNameSpacingRule {
             let hasTrailingTrivia = node.attributeName.trailingTrivia.isNotEmpty
 
             // Handles cases like @MyPropertyWrapper (param: 2)
-            if node.arguments != nil && hasTrailingTrivia {
+            if node.arguments != nil, hasTrailingTrivia {
                 addViolation(
                     startPosition: node.attributeName.endPositionBeforeTrailingTrivia,
                     endPosition: node.attributeName.endPosition,

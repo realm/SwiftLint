@@ -39,7 +39,7 @@
     {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-syntax.git",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
         "revision" : "55c4e4669c031d697e1924022b8ba250cfde0f2f",
         "version" : "600.0.0-prerelease-2024-04-02"

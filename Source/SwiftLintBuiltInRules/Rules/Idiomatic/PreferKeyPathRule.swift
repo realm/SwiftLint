@@ -26,10 +26,14 @@ struct PreferKeyPathRule: OptInRule {
             Example("f { a, b in a.b }", configuration: checkAllClosures),
             Example("f { (a, b) in a.b }", configuration: checkAllClosures),
             Example("f { $0.a } g: { $0.b }", configuration: checkAllClosures),
+            Example("[1, 2, 3].reduce(1) { $0 + $1 }", configuration: checkAllClosures),
         ],
         triggeringExamples: [
             Example("f.map ↓{ $0.a }"),
             Example("f.filter ↓{ $0.a }"),
+            Example("f.first ↓{ $0.a }"),
+            Example("f.contains ↓{ $0.a }"),
+            Example("f.contains(where: ↓{ $0.a })"),
             Example("f ↓{ $0.a }", configuration: checkAllClosures),
             Example("f ↓{ a in a.b }", configuration: checkAllClosures),
             Example("f ↓{ a in a.b.c }", configuration: checkAllClosures),
@@ -65,6 +69,10 @@ struct PreferKeyPathRule: OptInRule {
                 Example("let f: (Int) -> Int = \\.bigEndian"),
             Example("f ↓{ $0.a.b }", configuration: checkAllClosures):
                 Example("f(\\.a.b)"),
+            Example("f.contains ↓{ $0.a.b }", configuration: checkAllClosures):
+                Example("f.contains(where: \\.a.b)"),
+            Example("f.first ↓{ element in element.a }", configuration: checkAllClosures):
+                Example("f.first(where: \\.a)"),
         ]
     )
 }
@@ -98,9 +106,13 @@ private extension PreferKeyPathRule {
             if node.leftParen == nil {
                 node = node.with(\.leftParen, .leftParenToken())
             }
+            let newArg = LabeledExprSyntax(
+                label: ["contains", "first"].contains(node.calleeName) ? "where" : nil,
+                expression: declName.asKeyPath
+            )
             node = node.with(
                 \.arguments,
-                node.arguments + [LabeledExprSyntax(expression: declName.asKeyPath)]
+                node.arguments + [newArg]
             )
             if node.rightParen == nil {
                 node = node.with(\.rightParen, .rightParenToken())
@@ -175,12 +187,22 @@ private extension ClosureExprSyntax {
 
 private extension FunctionCallExprSyntax {
     var isStandardFunction: Bool {
-        let declRef = calledExpression.as(DeclReferenceExprSyntax.self)
-            ?? calledExpression.as(MemberAccessExprSyntax.self)?.declName
-        if let declRef {
-            return ["map", "filter", "reduce"].contains(declRef.baseName.text)
+        if let calleeName {
+            return [
+                "allSatisfy",
+                "contains",
+                "filter",
+                "first",
+                "flatMap",
+                "map",
+            ].contains(calleeName)
         }
         return false
+    }
+
+    var calleeName: String? {
+        (calledExpression.as(DeclReferenceExprSyntax.self)
+            ?? calledExpression.as(MemberAccessExprSyntax.self)?.declName)?.baseName.text
     }
 }
 

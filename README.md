@@ -332,7 +332,7 @@ else
 fi
 ```
 
-If you're using the SwiftLintPlugins plugin. Use the
+If you're using the SwiftLintPlugin. Use the
 following script implementation:
 
 ```bash

@@ -120,8 +120,7 @@ private extension SwiftLintFile {
     func declaredUSR(indexEntity: SourceKittenDictionary,
                      editorOpen: SourceKittenDictionary,
                      compilerArguments: [String],
-                     configuration: UnusedDeclarationConfiguration)
-    -> UnusedDeclarationRule.DeclaredUSR? {
+                     configuration: UnusedDeclarationConfiguration) -> UnusedDeclarationRule.DeclaredUSR? {
         guard let stringKind = indexEntity.kind,
               stringKind.starts(with: "source.lang.swift.decl."),
               !stringKind.contains(".accessor."),

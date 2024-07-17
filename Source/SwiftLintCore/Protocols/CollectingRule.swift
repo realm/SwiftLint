@@ -118,11 +118,9 @@ package protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
 }
 
 package extension CollectingCorrectableRule {
-    func correct(
-        file: SwiftLintFile,
+    func correct(file: SwiftLintFile,
         collectedInfo: [SwiftLintFile: FileInfo],
-        compilerArguments _: [String]
-    ) -> [Correction] {
+        compilerArguments _: [String]) -> [Correction] {
         correct(file: file, collectedInfo: collectedInfo)
     }
 

@@ -332,6 +332,21 @@ else
 fi
 ```
 
+If you're using the SwiftLintPlugins plugin. Use the
+following script implementation:
+
+```bash
+SWIFT_PACKAGE_DIR="${BUILD_DIR%Build/*}SourcePackages/artifacts"
+SWIFTLINT_CMD=$SWIFT_PACKAGE_DIR/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-*/bin/swiftlint
+
+if test -f $SWIFTLINT_CMD 2>&1
+then
+    $SWIFTLINT_CMD
+else
+    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
+fi
+```
+
 > [!TIP]
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental
 > builds, suppressing the unspecified outputs warning.

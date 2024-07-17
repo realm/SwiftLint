@@ -108,7 +108,7 @@ private extension AttributeNameSpacingRule {
                 )
             }
 
-            if !hasTrailingTrivia && node.isEscaping {
+            if !hasTrailingTrivia, node.isEscaping {
                 // Handles cases where escaping has the wrong spacing: `@escaping()`
                 addViolation(
                     startPosition: node.attributeName.endPositionBeforeTrailingTrivia,

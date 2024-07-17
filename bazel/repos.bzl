@@ -14,7 +14,7 @@ def swiftlint_repos(bzlmod = False):
             name = "SwiftSyntax",
             sha256 = "6572f60ca3c75c2a40f8ccec98c5cd0d3994599a39402d69b433381aaf2c1712",
             strip_prefix = "swift-syntax-510.0.2",
-            url = "https://github.com/apple/swift-syntax/archive/refs/tags/510.0.2.tar.gz",
+            url = "https://github.com/swiftlang/swift-syntax/archive/refs/tags/510.0.2.tar.gz",
         )
 
         http_archive(

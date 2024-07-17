@@ -22,7 +22,7 @@
 #### Enhancements
 
 * Linting got around 20% faster due to the praisworthy performance
-  improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
+  improvements done in the [SwiftSyntax](https://github.com/swiftlang/swift-syntax)
   library.
 
 * Rewrite the following rules with SwiftSyntax:

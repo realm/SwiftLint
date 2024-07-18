@@ -332,8 +332,9 @@ else
 fi
 ```
 
-If you're using the SwiftLintPlugin from SPM. Use the
-following script implementation:
+If you're using the SwiftLintPlugin in a Swift package,
+you may refer to the `swiftlint` executable in the
+following way:
 
 ```bash
 SWIFT_PACKAGE_DIR="${BUILD_DIR%Build/*}SourcePackages/artifacts"

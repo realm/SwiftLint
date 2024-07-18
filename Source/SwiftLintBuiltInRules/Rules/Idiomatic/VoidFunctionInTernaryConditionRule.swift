@@ -120,6 +120,14 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                 }
             }
             """),
+            Example("""
+            func collectionView() -> CGSize {
+                switch indexPath.section {
+                case 0: isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
+                default: .zero
+                }
+            }
+            """),
         ],
         triggeringExamples: [
             Example("success ↓? askQuestion() : exit()"),
@@ -380,19 +388,5 @@ private extension ReturnClauseSyntax {
             return !tupleType.elements.isEmpty
         }
         return true
-    }
-}
-
-// Helper method that traces back the parent until a particular node reaches FunctionDeclSyntax.
-private extension Syntax {
-    func findParent<T: SyntaxProtocol>(ofType _: T.Type) -> T? {
-        var current: Syntax? = self
-        while let parent = current?.parent {
-            if let parentNode = parent.as(T.self) {
-                return parentNode
-            }
-            current = parent
-        }
-        return nil
     }
 }

@@ -59,9 +59,15 @@ public extension Example {
     ///                           Defaults to the file where this initializer is called.
     ///   - line:                 The line in the file where the example is located.
     ///                           Defaults to the line where this initializer is called.
-    init(_ code: String, configuration: [String: any Sendable]? = nil, testMultiByteOffsets: Bool = true,
-         testWrappingInComment: Bool = true, testWrappingInString: Bool = true, testDisableCommand: Bool = true,
-         testOnLinux: Bool = true, file: StaticString = #filePath, line: UInt = #line,
+    init(_ code: String,
+         configuration: [String: any Sendable]? = nil,
+         testMultiByteOffsets: Bool = true,
+         testWrappingInComment: Bool = true,
+         testWrappingInString: Bool = true,
+         testDisableCommand: Bool = true,
+         testOnLinux: Bool = true,
+         file: StaticString = #filePath,
+         line: UInt = #line,
          excludeFromDocumentation: Bool = false) {
         self.code = code
         self.configuration = configuration

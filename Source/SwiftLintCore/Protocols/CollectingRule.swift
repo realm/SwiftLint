@@ -29,7 +29,8 @@ public protocol CollectingRule: AnyCollectingRule {
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     ///
     /// - returns: All style violations to the rule's expectations.
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: FileInfo],
                   compilerArguments: [String]) -> [StyleViolation]
 
     /// Executes the rule on a file after collecting file info for all files and returns any violations to the rule's
@@ -56,7 +57,9 @@ public extension CollectingRule {
     func collectInfo(for file: SwiftLintFile, compilerArguments _: [String]) -> FileInfo {
         collectInfo(for: file)
     }
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
+
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: FileInfo],
                   compilerArguments _: [String]) -> [StyleViolation] {
         validate(file: file, collectedInfo: collectedInfo)
     }
@@ -98,7 +101,8 @@ package protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     ///
     /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
+    func correct(file: SwiftLintFile,
+                 collectedInfo: [SwiftLintFile: FileInfo],
                  compilerArguments: [String]) -> [Correction]
 
     /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
@@ -114,7 +118,8 @@ package protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
 }
 
 package extension CollectingCorrectableRule {
-    func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
+    func correct(file: SwiftLintFile,
+                 collectedInfo: [SwiftLintFile: FileInfo],
                  compilerArguments _: [String]) -> [Correction] {
         correct(file: file, collectedInfo: collectedInfo)
     }

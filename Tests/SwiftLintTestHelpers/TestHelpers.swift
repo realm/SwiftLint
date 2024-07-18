@@ -60,7 +60,8 @@ public extension Configuration {
     }
 }
 
-public func violations(_ example: Example, config inputConfig: Configuration = Configuration.default,
+public func violations(_ example: Example,
+                       config inputConfig: Configuration = Configuration.default,
                        requiresFileOnDisk: Bool = false) -> [StyleViolation] {
     SwiftLintFile.clearCaches()
     let config = inputConfig.applyingConfiguration(from: example)
@@ -264,7 +265,8 @@ private extension String {
     }
 }
 
-public func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,
+public func makeConfig(_ ruleConfiguration: Any?,
+                       _ identifier: String,
                        skipDisableCommandTests: Bool = false) -> Configuration? {
     let superfluousDisableCommandRuleIdentifier = SuperfluousDisableCommandRule.description.identifier
     let identifiers: Set<String> = skipDisableCommandTests ? [identifier]
@@ -433,8 +435,10 @@ public extension XCTestCase {
         }
     }
 
-    func verifyCorrections(_ ruleDescription: RuleDescription, config: Configuration,
-                           disableCommands: [String], testMultiByteOffsets: Bool,
+    func verifyCorrections(_ ruleDescription: RuleDescription,
+                           config: Configuration,
+                           disableCommands: [String],
+                           testMultiByteOffsets: Bool,
                            parserDiagnosticsDisabledForTests: Bool = true) {
         let ruleDescription = ruleDescription.focused()
 
@@ -459,8 +463,10 @@ public extension XCTestCase {
         }
     }
 
-    private func verifyExamples(triggers: [Example], nonTriggers: [Example],
-                                configuration config: Configuration, requiresFileOnDisk: Bool) {
+    private func verifyExamples(triggers: [Example],
+                                nonTriggers: [Example],
+                                configuration config: Configuration,
+                                requiresFileOnDisk: Bool) {
         // Non-triggering examples don't violate
         for nonTrigger in nonTriggers {
             let unexpectedViolations = violations(nonTrigger, config: config,

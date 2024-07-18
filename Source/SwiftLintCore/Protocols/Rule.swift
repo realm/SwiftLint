@@ -82,8 +82,7 @@ public extension Rule {
         try self.configuration.apply(configuration: configuration)
     }
 
-    func validate(file: SwiftLintFile, using _: RuleStorage,
-                  compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, using _: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
         validate(file: file, compilerArguments: compilerArguments)
     }
 

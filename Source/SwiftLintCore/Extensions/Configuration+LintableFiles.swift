@@ -16,7 +16,8 @@ extension Configuration {
     /// - parameter excludeByPrefix: Whether or not uses excluding by prefix algorithm.
     ///
     /// - returns: Files to lint.
-    public func lintableFiles(inPath path: String, forceExclude: Bool,
+    public func lintableFiles(inPath path: String,
+                              forceExclude: Bool,
                               excludeBy: ExcludeBy) -> [SwiftLintFile] {
         lintablePaths(inPath: path, forceExclude: forceExclude, excludeBy: excludeBy)
             .compactMap(SwiftLintFile.init(pathDeferringReading:))

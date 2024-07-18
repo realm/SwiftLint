@@ -158,7 +158,8 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
         file.declaredVariables(compilerArguments: compilerArguments)
     }
 
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: Self.FileInfo],
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: Self.FileInfo],
                   compilerArguments: [String]) -> [StyleViolation] {
         file.captureListVariables(compilerArguments: compilerArguments)
             .filter { capturedVariable in collectedInfo.values.contains { $0.contains(capturedVariable.usr) } }

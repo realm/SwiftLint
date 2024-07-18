@@ -57,7 +57,9 @@ private extension Rule {
 
     // As we need the configuration to get custom identifiers.
     // swiftlint:disable:next function_parameter_count
-    func lint(file: SwiftLintFile, regions: [Region], benchmark: Bool,
+    func lint(file: SwiftLintFile,
+              regions: [Region],
+              benchmark: Bool,
               storage: RuleStorage,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
@@ -143,7 +145,9 @@ public struct Linter {
     /// - parameter configuration:     The SwiftLint configuration to apply to this linter.
     /// - parameter cache:             The persisted cache to use for this linter.
     /// - parameter compilerArguments: The compiler arguments to use for this linter if it is to execute analyzer rules.
-    public init(file: SwiftLintFile, configuration: Configuration = Configuration.default, cache: LinterCache? = nil,
+    public init(file: SwiftLintFile,
+                configuration: Configuration = Configuration.default,
+                cache: LinterCache? = nil,
                 compilerArguments: [String] = []) {
         self.file = file
         self.cache = cache

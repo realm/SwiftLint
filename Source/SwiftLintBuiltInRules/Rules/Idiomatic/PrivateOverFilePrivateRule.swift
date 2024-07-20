@@ -113,14 +113,14 @@ private extension PrivateOverFilePrivateRule {
 
         private func visit(withModifier node: some WithModifiersSyntax) {
             if let modifier = node.modifiers.first(where: { $0.name.tokenKind == .keyword(.fileprivate) }) {
-                violations.append(modifier.positionAfterSkippingLeadingTrivia)
-                violationCorrections.append(
-                    ViolationCorrection(
+                violations.append(.init(
+                    position: modifier.positionAfterSkippingLeadingTrivia,
+                    correction: .init(
                         start: modifier.positionAfterSkippingLeadingTrivia,
                         end: modifier.endPositionBeforeTrailingTrivia,
                         replacement: "private"
                     )
-                )
+                ))
             }
         }
     }

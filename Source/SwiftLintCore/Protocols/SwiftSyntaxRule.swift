@@ -75,22 +75,53 @@ public extension SwiftSyntaxRule {
 
 /// A violation produced by `ViolationsSyntaxVisitor`s.
 public struct ReasonedRuleViolation: Comparable, Hashable {
+    /// The correction of a violation that is basically the violation's range in the source code and a
+    /// replacement for this range that would fix the violation.
+    public struct ViolationCorrection: Hashable {
+        /// Start position of the violation range.
+        let start: AbsolutePosition
+        /// End position of the violation range.
+        let end: AbsolutePosition
+        /// Replacement for the violating range.
+        let replacement: String
+
+        /// Create a ``ViolationCorrection``.
+        /// - Parameters:
+        ///   - start:          Start position of the violation range.
+        ///   - end:            End position of the violation range.
+        ///   - replacement:    Replacement for the violating range.
+        public init(start: AbsolutePosition, end: AbsolutePosition, replacement: String) {
+            self.start = start
+            self.end = end
+            self.replacement = replacement
+        }
+    }
+
     /// The violation's position.
     public let position: AbsolutePosition
     /// A specific reason for the violation.
     public let reason: String?
     /// The violation's severity.
     public let severity: ViolationSeverity?
+    /// An optional correction of the violation to be used in rewriting (see ``SwiftSyntaxCorrectableRule``). Can be
+    /// left unset when creating a violation, especially if the rule is not correctable or provides a custom rewriter.
+    public let correction: ViolationCorrection?
 
     /// Creates a `ReasonedRuleViolation`.
     ///
-    /// - parameter position: The violations position in the analyzed source file.
-    /// - parameter reason: The reason for the violation if different from the rule's description.
-    /// - parameter severity: The severity of the violation if different from the rule's default configured severity.
-    public init(position: AbsolutePosition, reason: String? = nil, severity: ViolationSeverity? = nil) {
+    /// - Parameters:
+    ///   - position: The violations position in the analyzed source file.
+    ///   - reason: The reason for the violation if different from the rule's description.
+    ///   - severity: The severity of the violation if different from the rule's default configured severity.
+    ///   - correction: An optional correction of the violation to be used in rewriting.
+    public init(position: AbsolutePosition,
+                reason: String? = nil,
+                severity: ViolationSeverity? = nil,
+                correction: ViolationCorrection? = nil) {
         self.position = position
         self.reason = reason
         self.severity = severity
+        self.correction = correction
     }
 
     public static func < (lhs: Self, rhs: Self) -> Bool {

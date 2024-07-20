@@ -40,7 +40,9 @@ public extension SwiftSyntaxCorrectableRule {
         }
 
         // There is no rewriter. Falling back to the correction ranges collected by the visitor (if any).
-        let violationCorrections = makeVisitor(file: file).walk(tree: syntaxTree, handler: \.violationCorrections)
+        let violationCorrections = makeVisitor(file: file)
+            .walk(tree: syntaxTree, handler: \.violations)
+            .compactMap(\.correction)
         if violationCorrections.isEmpty {
             return []
         }

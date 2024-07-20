@@ -214,14 +214,14 @@ private extension PreferSelfInStaticReferencesRule {
 
         private func addViolation(on node: TokenSyntax) {
             if let parentName = parentDeclScopes.peek()?.parentName, node.tokenKind == .identifier(parentName) {
-                violations.append(node.positionAfterSkippingLeadingTrivia)
-                violationCorrections.append(
-                    ViolationCorrection(
+                violations.append(.init(
+                    position: node.positionAfterSkippingLeadingTrivia,
+                    correction: .init(
                         start: node.positionAfterSkippingLeadingTrivia,
                         end: node.endPositionBeforeTrailingTrivia,
                         replacement: "Self"
                     )
-                )
+                ))
             }
         }
     }

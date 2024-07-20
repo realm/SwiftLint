@@ -26,7 +26,7 @@ struct ArrayInitRule: OptInRule {
         ```
             foo.map { !$0 }
         ```
-        """
+        """,
         kind: .lint,
         nonTriggeringExamples: [
             Example("Array(foo)"),

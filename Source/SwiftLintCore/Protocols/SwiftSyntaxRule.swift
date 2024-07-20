@@ -46,8 +46,13 @@ public extension SwiftSyntaxRule {
             return []
         }
 
-        return makeVisitor(file: file)
+        let violations = makeVisitor(file: file)
             .walk(tree: syntaxTree, handler: \.violations)
+        assert(
+            violations.allSatisfy { $0.correction == nil || self is any SwiftSyntaxCorrectableRule },
+            "\(Self.self) produced corrections without being correctable."
+        )
+        return violations
             .sorted()
             .map { makeViolation(file: file, violation: $0) }
     }

@@ -566,5 +566,20 @@ struct OpeningBraceRuleExamples {
                     }
                 }
                 """),
+        Example("""
+            if
+                "test".isEmpty
+            // swiftlint:disable:next opening_brace
+            {
+                // code here
+            }
+            """): Example("""
+                if
+                    "test".isEmpty
+                // swiftlint:disable:next opening_brace
+                {
+                    // code here
+                }
+                """),
     ]
 }

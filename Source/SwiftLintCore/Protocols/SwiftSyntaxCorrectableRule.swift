@@ -24,7 +24,7 @@ public extension SwiftSyntaxCorrectableRule {
         if let rewriter = makeRewriter(file: file) {
             let newTree = rewriter.visit(syntaxTree)
             let positions = rewriter.correctionPositions
-            if positions.isEmpty {
+            guard positions.isNotEmpty else {
                 return []
             }
             let corrections = positions
@@ -40,25 +40,32 @@ public extension SwiftSyntaxCorrectableRule {
         }
 
         // There is no rewriter. Falling back to the correction ranges collected by the visitor (if any).
-        let violationCorrections = makeVisitor(file: file)
+        let violations = makeVisitor(file: file)
             .walk(tree: syntaxTree, handler: \.violations)
-            .compactMap(\.correction)
-        if violationCorrections.isEmpty {
+        guard violations.isNotEmpty else {
             return []
         }
+
+        let locationConverter = file.locationConverter
+        let disabledRegions = file.regions()
+            .filter { $0.areRulesDisabled(ruleIDs: Self.description.allIdentifiers) }
+            .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
+
         typealias CorrectionRange = (range: NSRange, correction: String)
-        let correctionRanges = violationCorrections
+        let correctionRanges = violations
+            .filter { !$0.position.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) }
+            .compactMap(\.correction)
             .compactMap { correction in
                 file.stringView.NSRange(start: correction.start, end: correction.end).map { range in
                     CorrectionRange(range: range, correction: correction.replacement)
                 }
             }
-            .filter { (correctionRange: CorrectionRange) in
-                file.ruleEnabled(violatingRange: correctionRange.range, for: self) != nil
-            }
             .sorted { (lhs: CorrectionRange, rhs: CorrectionRange) -> Bool in
                 lhs.range.location > rhs.range.location
             }
+        guard correctionRanges.isNotEmpty else {
+            return []
+        }
 
         var corrections = [Correction]()
         var contents = file.contents

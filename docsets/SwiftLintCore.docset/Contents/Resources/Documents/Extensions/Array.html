@@ -287,6 +287,9 @@
                 <a class="nav-group-task-link" href="../Structs/ReasonedRuleViolation.html">ReasonedRuleViolation</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ReasonedRuleViolation/ViolationCorrection.html">– ViolationCorrection</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/RegexConfiguration.html">RegexConfiguration</a>
               </li>
               <li class="nav-group-task">
@@ -336,9 +339,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/Version.html">Version</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ViolationCorrection.html">ViolationCorrection</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/YamlParser.html">YamlParser</a>
@@ -670,7 +670,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Append a minimal violation for the specified position.</p>
+                        <p>Add a violation at the specified position using the default description and severity.</p>
 
                       </div>
                       <div class="declaration">
@@ -701,7 +701,68 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxRule.swift#L107-L109">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxRule.swift#L138-L140">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sa13SwiftLintCoreAA21ReasonedRuleViolationVRszlE6append2at10correctiony0A6Syntax16AbsolutePositionV_AC0F10CorrectionVSgtF"></a>
+                    <a name="//apple_ref/swift/Method/append(at:correction:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa13SwiftLintCoreAA21ReasonedRuleViolationVRszlE6append2at10correctiony0A6Syntax16AbsolutePositionV_AC0F10CorrectionVSgtF">append(at:<wbr>correction:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a violation and the correction at the specified position using the default description and severity.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">append</span><span class="p">(</span><span class="n">at</span> <span class="nv">position</span><span class="p">:</span> <span class="kt">AbsolutePosition</span><span class="p">,</span> <span class="nv">correction</span><span class="p">:</span> <span class="kt"><a href="../Structs/ReasonedRuleViolation.html">ReasonedRuleViolation</a></span><span class="o">.</span><span class="kt">ViolationCorrection</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>position</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The position for the violation to append.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>correction</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>An optional correction to be applied when running with <code>--fix</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxRule.swift#L146-L148">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -719,7 +780,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Append minimal violations for the specified positions.</p>
+                        <p>Add violations for the specified positions using the default description and severity.</p>
 
                       </div>
                       <div class="declaration">
@@ -750,7 +811,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxRule.swift#L114-L116">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/SwiftSyntaxRule.swift#L153-L155">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -793,7 +854,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L83">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L58">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -846,7 +907,7 @@
                         <p>All declarations except for the specified ones.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L101-L103">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L76-L78">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

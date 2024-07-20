@@ -287,6 +287,9 @@
                 <a class="nav-group-task-link" href="../Structs/ReasonedRuleViolation.html">ReasonedRuleViolation</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ReasonedRuleViolation/ViolationCorrection.html">– ViolationCorrection</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/RegexConfiguration.html">RegexConfiguration</a>
               </li>
               <li class="nav-group-task">
@@ -338,9 +341,6 @@
                 <a class="nav-group-task-link" href="../Structs/Version.html">Version</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ViolationCorrection.html">ViolationCorrection</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/YamlParser.html">YamlParser</a>
               </li>
             </ul>
@@ -362,7 +362,7 @@
             <p>A SwiftSyntax <code>SyntaxVisitor</code> that produces absolute positions where violations should be reported.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L4-L57">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L4-L54">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -556,37 +556,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore23ViolationsSyntaxVisitorC20violationCorrectionsSayAA19ViolationCorrectionVGvp"></a>
-                    <a name="//apple_ref/swift/Property/violationCorrections" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore23ViolationsSyntaxVisitorC20violationCorrectionsSayAA19ViolationCorrectionVGvp">violationCorrections</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Ranges of violations to be used in rewriting (see <code><a href="../Protocols/SwiftSyntaxCorrectableRule.html">SwiftSyntaxCorrectableRule</a></code>). It is not mandatory to fill
-this list while traversing the AST, especially not if the rule is not correctable or provides a custom rewriter.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">violationCorrections</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/ViolationCorrection.html">ViolationCorrection</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L29">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:13SwiftLintCore23ViolationsSyntaxVisitorC21skippableDeclarationsSay0aE004DeclE8Protocol_pXpGvp"></a>
                     <a name="//apple_ref/swift/Property/skippableDeclarations" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SwiftLintCore23ViolationsSyntaxVisitorC21skippableDeclarationsSay0aE004DeclE8Protocol_pXpGvp">skippableDeclarations</a>
@@ -609,7 +578,7 @@ this list while traversing the AST, especially not if the rule is not correctabl
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L32">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L29">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -638,7 +607,7 @@ this list while traversing the AST, especially not if the rule is not correctabl
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L34">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L31">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -667,7 +636,7 @@ this list while traversing the AST, especially not if the rule is not correctabl
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L36">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L33">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -696,7 +665,7 @@ this list while traversing the AST, especially not if the rule is not correctabl
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L38">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L35">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -725,7 +694,7 @@ this list while traversing the AST, especially not if the rule is not correctabl
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L40">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L37">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -754,7 +723,7 @@ this list while traversing the AST, especially not if the rule is not correctabl
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L42">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L39">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -783,7 +752,7 @@ this list while traversing the AST, especially not if the rule is not correctabl
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L44">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L41">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -812,7 +781,7 @@ this list while traversing the AST, especially not if the rule is not correctabl
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L46">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L43">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -841,7 +810,7 @@ this list while traversing the AST, especially not if the rule is not correctabl
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L48">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L45">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -870,7 +839,7 @@ this list while traversing the AST, especially not if the rule is not correctabl
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L50">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L47">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -899,7 +868,7 @@ this list while traversing the AST, especially not if the rule is not correctabl
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L52">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/ViolationsSyntaxVisitor.swift#L49">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

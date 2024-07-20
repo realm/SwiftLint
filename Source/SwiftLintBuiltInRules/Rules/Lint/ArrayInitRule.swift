@@ -8,6 +8,25 @@ struct ArrayInitRule: Rule, @unchecked Sendable {
         identifier: "array_init",
         name: "Array Init",
         description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array",
+        rationale: """
+        Prefer
+
+        ```
+            Array(foo)
+        ```
+
+        to
+
+        ```
+            foo.↓map({ $0 })
+        ```
+
+        for cases where the argument to map is just the element. More complex closures are fine. For example
+
+        ```
+            foo.map { !$0 }
+        ```
+        """
         kind: .lint,
         nonTriggeringExamples: [
             Example("Array(foo)"),

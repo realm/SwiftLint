@@ -11,6 +11,9 @@ public struct RuleDescription: Equatable, Sendable {
     /// explanation of the rule's purpose and rationale.
     public let description: String
 
+    /// A longer  explanation of the rule's purpose and rationale.
+    public let rationale: String?
+
     /// The `RuleKind` that best categorizes this rule.
     public let kind: RuleKind
 
@@ -74,6 +77,7 @@ public struct RuleDescription: Equatable, Sendable {
     public init(identifier: String,
                 name: String,
                 description: String,
+                rationale: String? = nil,
                 kind: RuleKind,
                 minSwiftVersion: SwiftVersion = .five,
                 nonTriggeringExamples: [Example] = [],
@@ -84,6 +88,7 @@ public struct RuleDescription: Equatable, Sendable {
         self.identifier = identifier
         self.name = name
         self.description = description
+        self.rationale = rationale
         self.kind = kind
         self.nonTriggeringExamples = nonTriggeringExamples
         self.triggeringExamples = triggeringExamples

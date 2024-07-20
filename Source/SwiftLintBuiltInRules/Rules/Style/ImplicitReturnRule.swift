@@ -66,15 +66,15 @@ private extension ImplicitReturnRule {
                 return
             }
             let returnKeyword = returnStmt.returnKeyword
-            violations.append(.init(
-                position: returnKeyword.positionAfterSkippingLeadingTrivia,
+            violations.append(
+                at: returnKeyword.positionAfterSkippingLeadingTrivia,
                 correction: .init(
                     start: returnKeyword.positionAfterSkippingLeadingTrivia,
                     end: returnKeyword.endPositionBeforeTrailingTrivia
                             .advanced(by: returnStmt.expression == nil ? 0 : 1),
                     replacement: ""
                 )
-            ))
+            )
         }
     }
 }

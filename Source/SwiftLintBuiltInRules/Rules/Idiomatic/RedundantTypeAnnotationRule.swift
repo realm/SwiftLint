@@ -203,14 +203,14 @@ private extension RedundantTypeAnnotationRule {
             guard isLiteralRedundant || initializer.hasRedundant(type: type.type) else {
                 return
             }
-            violations.append(.init(
-                position: type.positionAfterSkippingLeadingTrivia,
+            violations.append(
+                at: type.positionAfterSkippingLeadingTrivia,
                 correction: .init(
                     start: type.position,
                     end: type.endPositionBeforeTrailingTrivia,
                     replacement: ""
                 )
-            ))
+            )
         }
     }
 }

@@ -136,14 +136,14 @@ private class ExplicitSelfVisitor<Configuration: RuleConfiguration>: DeclaredIde
 
     override func visitPost(_ node: MemberAccessExprSyntax) {
         if !hasSeenDeclaration(for: node.declName.baseName.text), node.isBaseSelf, isSelfRedundant {
-            violations.append(.init(
-                position: node.positionAfterSkippingLeadingTrivia,
+            violations.append(
+                at: node.positionAfterSkippingLeadingTrivia,
                 correction: .init(
                     start: node.positionAfterSkippingLeadingTrivia,
                     end: node.period.endPositionBeforeTrailingTrivia,
                     replacement: ""
                 )
-            ))
+            )
         }
     }
 

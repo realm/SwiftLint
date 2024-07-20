@@ -132,14 +132,22 @@ public struct ReasonedRuleViolation: Comparable, Hashable {
 /// Extension for arrays of `ReasonedRuleViolation`s that provides the automatic conversion of
 /// `AbsolutePosition`s into `ReasonedRuleViolation`s (without a specific reason).
 public extension Array where Element == ReasonedRuleViolation {
-    /// Append a minimal violation for the specified position.
+    /// Add a violation at the specified position using the default description and severity.
     ///
     /// - parameter position: The position for the violation to append.
     mutating func append(_ position: AbsolutePosition) {
         append(ReasonedRuleViolation(position: position))
     }
 
-    /// Append minimal violations for the specified positions.
+    /// Add a violation and the correction at the specified position using the default description and severity.
+    ///
+    /// - parameter position: The position for the violation to append.
+    /// - parameter correction: An optional correction to be applied when running with `--fix`.
+    mutating func append(at position: AbsolutePosition, correction: ReasonedRuleViolation.ViolationCorrection? = nil) {
+        append(ReasonedRuleViolation(position: position, correction: correction))
+    }
+
+    /// Add violations for the specified positions using the default description and severity.
     ///
     /// - parameter positions: The positions for the violations to append.
     mutating func append(contentsOf positions: [AbsolutePosition]) {

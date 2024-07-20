@@ -58,6 +58,9 @@ extension SwiftLint {
             }
 
             print("\(description.consoleDescription)")
+            if let rationale = description.rationale {
+                print("\nRationale:\n\n\(rationale)")
+            }
             let configDescription = rule.createConfigurationDescription()
             if configDescription.hasContent {
                 print("\nConfiguration (YAML):\n")

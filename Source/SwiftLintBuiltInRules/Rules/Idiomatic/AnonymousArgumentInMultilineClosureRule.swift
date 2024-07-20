@@ -9,7 +9,7 @@ struct AnonymousArgumentInMultilineClosureRule: Rule {
         name: "Anonymous Argument in Multiline Closure",
         description: "Use named arguments in multiline closures",
         rationale: """
-        In multiline closures, prefer
+        In multiline closures, prefer using named arguments
 
         ```
             closure { arg in
@@ -17,7 +17,7 @@ struct AnonymousArgumentInMultilineClosureRule: Rule {
             }
         ```
 
-        to
+        to anonymous arguments
 
         ```
             closure {

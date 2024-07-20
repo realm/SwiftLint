@@ -8,6 +8,23 @@ struct AnonymousArgumentInMultilineClosureRule: Rule {
         identifier: "anonymous_argument_in_multiline_closure",
         name: "Anonymous Argument in Multiline Closure",
         description: "Use named arguments in multiline closures",
+        rationale: """
+        In multiline closures, prefer
+
+        ```
+            closure { arg in
+                print(arg)
+            }
+        ```
+
+        to
+
+        ```
+            closure {
+                print(↓$0)
+            }
+        ```
+        """,
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("closure { $0 }"),

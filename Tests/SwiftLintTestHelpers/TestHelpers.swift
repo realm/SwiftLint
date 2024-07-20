@@ -75,8 +75,8 @@ public func violations(_ example: Example,
 
     let file = SwiftLintFile.testFile(withContents: stringStrippingMarkers.code, persistToDisk: true)
     let storage = RuleStorage()
-    let collecter = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
-    let linter = collecter.collect(into: storage)
+    let collector = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
+    let linter = collector.collect(into: storage)
     return linter.styleViolations(using: storage).withoutFiles()
 }
 
@@ -212,8 +212,8 @@ private extension Configuration {
         let includeCompilerArguments = self.rules.contains(where: { $0 is any AnalyzerRule })
         let compilerArguments = includeCompilerArguments ? file.makeCompilerArguments() : []
         let storage = RuleStorage()
-        let collecter = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
-        let linter = collecter.collect(into: storage)
+        let collector = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
+        let linter = collector.collect(into: storage)
         let corrections = linter.correct(using: storage).sorted { $0.location < $1.location }
         if expectedLocations.isEmpty {
             XCTAssertEqual(
@@ -420,14 +420,14 @@ public extension XCTestCase {
                 .map { $0.with(code: command + $0.code) }
 
             for trigger in disabledTriggers {
-                let violationsPartionedByType = makeViolations(trigger)
+                let violationsPartitionedByType = makeViolations(trigger)
                     .partitioned { $0.ruleIdentifier == SuperfluousDisableCommandRule.description.identifier }
 
-                XCTAssert(violationsPartionedByType.first.isEmpty,
+                XCTAssert(violationsPartitionedByType.first.isEmpty,
                           "Violation(s) still triggered although rule was disabled",
                           file: trigger.file,
                           line: trigger.line)
-                XCTAssert(violationsPartionedByType.second.isEmpty,
+                XCTAssert(violationsPartitionedByType.second.isEmpty,
                           "Disable command was superfluous since no violations(s) triggered",
                           file: trigger.file,
                           line: trigger.line)

@@ -92,7 +92,7 @@ open class ViolationsSyntaxRewriter<Configuration: RuleConfiguration>: SyntaxRew
     /// Positions in a source file where corrections were applied.
     public var correctionPositions = [AbsolutePosition]()
 
-    /// Initilizer for a ``ViolationsSyntaxRewriter``.
+    /// Initializer for a ``ViolationsSyntaxRewriter``.
     ///
     /// - Parameters:
     ///   - configuration: Configuration of a rule.

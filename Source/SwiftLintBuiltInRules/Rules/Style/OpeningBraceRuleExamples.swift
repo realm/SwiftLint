@@ -198,10 +198,10 @@ struct OpeningBraceRuleExamples {
                 let bar: String? = "bar"
 
                 if
-                    let foooo = foo,
-                    let barrr = bar
+                    let foo = foo,
+                    let bar = bar
                 ↓{
-                    print(foooo + barrr)
+                    print(foo + bar)
                 }
             }
             """),

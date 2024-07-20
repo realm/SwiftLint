@@ -106,9 +106,12 @@
   nested within each other.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5660](https://github.com/realm/SwiftLint/issues/5660)
-* Fix `opening_brace` correction.  
+
+* Fix `opening_brace` correction and make sure that disable commands
+  are taken into account before applying a fix.  
   [swiftty](https://github.com/swiftty)
-  [#issue_number](https://github.com/realm/SwiftLint/issues/issue_number)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5598](https://github.com/realm/SwiftLint/issues/5598)
 
 ## 0.55.1: Universal Washing Powder
 

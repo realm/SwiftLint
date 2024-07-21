@@ -8,6 +8,24 @@ struct ClassDelegateProtocolRule: Rule {
         identifier: "class_delegate_protocol",
         name: "Class Delegate Protocol",
         description: "Delegate protocols should be class-only so they can be weakly referenced",
+        rationale: """
+        Delegate protocols are usually `weak`, to avoid retain cycles, or bad references to deallocated delegates.
+
+        The `weak` operator is only supported for classes, and so this rule enforces that protocols ending in \
+        "Delegate" are class based.
+
+        For example
+
+        ```
+            protocol FooDelegate: class {}
+        ```
+
+        versus
+
+        ```
+            ↓protocol FooDelegate {}
+        ```
+        """
         kind: .lint,
         nonTriggeringExamples: [
             Example("protocol FooDelegate: class {}"),

@@ -11,7 +11,7 @@ struct OneDelarationPerFileRule: OptInRule {
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
-                    class Foo {}
+                    actor Foo {}
                     """),
             Example("""
                     class Foo {}

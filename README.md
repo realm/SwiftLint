@@ -348,7 +348,7 @@ else
 fi
 ```
 > [!NOTE]
-> The `SWIFTLINT_CMD` path is using the default xcode condiguration and has been tested on xcode 15/16, in case of another configuration like
+> The `SWIFTLINT_CMD` path use the default xcode condiguration and has been tested on xcode 15/16, in case of another configuration like
 > custom package path, please change the values accordinaly.
 
 > [!TIP]

@@ -347,9 +347,11 @@ else
     echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
 fi
 ```
+
 > [!NOTE]
-> The `SWIFTLINT_CMD` path use the default Xcode configuration and has been tested on Xcode 15/16, in case of another configuration like
-> custom Swift package path, please change the values accordinaly.
+> The `SWIFTLINT_CMD` path uses the default Xcode configuration and has been
+> tested on Xcode 15/16. In case of another configuration (e.g. a custom
+> Swift package path), please adapt the values accordingly.
 
 > [!TIP]
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental

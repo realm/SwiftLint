@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct OneDelarationPerFileRule: OptInRule {
+struct OneDeclarationPerFileRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -40,7 +40,7 @@ struct OneDelarationPerFileRule: OptInRule {
     )
 }
 
-private extension OneDelarationPerFileRule {
+private extension OneDeclarationPerFileRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var declarationVisited = false
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }

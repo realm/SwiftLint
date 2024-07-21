@@ -137,7 +137,7 @@ public let builtInRules: [any Rule.Type] = [
     NotificationCenterDetachmentRule.self,
     NumberSeparatorRule.self,
     ObjectLiteralRule.self,
-    OneDelarationPerFileRule.self,
+    OneDeclarationPerFileRule.self,
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
     OperatorUsageWhitespaceRule.self,

@@ -811,9 +811,9 @@ final class ObjectLiteralRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class OneDelarationPerFileRuleGeneratedTests: SwiftLintTestCase {
+final class OneDeclarationPerFileRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(OneDelarationPerFileRule.description)
+        verifyRule(OneDeclarationPerFileRule.description)
     }
 }
 

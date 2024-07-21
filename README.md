@@ -342,7 +342,7 @@ SWIFTLINT_CMD=$SWIFT_PACKAGE_DIR/swiftlintplugins/SwiftLintBinary/SwiftLintBinar
 
 if test -f $SWIFTLINT_CMD 2>&1
 then
-    $SWIFTLINT_CMD
+    "$SWIFTLINT_CMD"
 else
     echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
 fi

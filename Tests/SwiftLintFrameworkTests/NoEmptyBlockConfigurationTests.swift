@@ -14,7 +14,7 @@ final class NoEmptyBlockConfigurationTests: SwiftLintTestCase {
         try config.apply(
             configuration: [
                 "severity": "error",
-                "disabled": ["function_bodies", "accessor_bodies"],
+                "disabled_block_types": ["function_bodies"],
             ] as [String: any Sendable]
         )
         XCTAssertEqual(config.severityConfiguration.severity, .error)
@@ -45,10 +45,10 @@ final class NoEmptyBlockConfigurationTests: SwiftLintTestCase {
 
     func testConsoleDescription() throws {
         var config = NoEmptyBlockConfiguration()
-        try config.apply(configuration: ["disabled": ["initializer_bodies", "statement_blocks"]])
+        try config.apply(configuration: ["disabled_block_types": ["initializer_bodies", "statement_blocks"]])
         XCTAssertEqual(
             RuleConfigurationDescription.from(configuration: config).oneLiner(),
-            "severity: warning; disabled: [initializer_bodies, statement_blocks]"
+            "severity: warning; disabled_block_types: [initializer_bodies, statement_blocks]"
         )
     }
 }

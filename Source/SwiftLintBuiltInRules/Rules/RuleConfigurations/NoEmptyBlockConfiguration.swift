@@ -6,7 +6,6 @@ struct NoEmptyBlockConfiguration: SeverityBasedRuleConfiguration {
 
     @MakeAcceptableByConfigurationElement
     enum CodeBlockType: String, CaseIterable {
-        case accessorBodies = "accessor_bodies"
         case functionBodies = "function_bodies"
         case initializerBodies = "initializer_bodies"
         case statementBlocks = "statement_blocks"
@@ -17,7 +16,7 @@ struct NoEmptyBlockConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
-    @ConfigurationElement(key: "disabled")
+    @ConfigurationElement(key: "disabled_block_types")
     private(set) var disabledBlockTypes: [CodeBlockType] = []
 
     var enabledBlockTypes: Set<CodeBlockType> {

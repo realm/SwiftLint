@@ -55,6 +55,42 @@ struct NoEmptyBlockRule: OptInRule {
             Example("""
             while i < 10 { /* do something */ }
             """),
+            Example("""
+            var flag = true {
+                willSet {}
+            }
+            """, configuration: ["disabled_block_types": ["function_bodies"]]),
+            Example("""
+            func f() {}
+            """, configuration: ["disabled_block_types": ["function_bodies"]]),
+            Example("""
+            deinit {}
+            """, configuration: ["disabled_block_types": ["initializer_bodies"]]),
+            Example("""
+            init() {}
+            """, configuration: ["disabled_block_types": ["initializer_bodies"]]),
+            Example("""
+            for _ in 0..<10 {}
+            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
+            Example("""
+            do {
+            } catch {
+            }
+            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
+            Example("""
+            defer {}
+            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
+            Example("""
+            if flag {
+            } else {
+            }
+            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
+            Example("""
+            repeat {} while (flag)
+            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
+            Example("""
+            while i < 10 {}
+            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
         ],
         triggeringExamples: [
             Example("""
@@ -100,9 +136,6 @@ struct NoEmptyBlockRule: OptInRule {
 private extension NoEmptyBlockRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: CodeBlockSyntax) {
-            // No need to show a warning since Empty Block of `guard` is compile error.
-            guard node.parent?.kind != .guardStmt else { return }
-
             if let codeBlockType = node.codeBlockType, configuration.enabledBlockTypes.contains(codeBlockType) {
                 validate(node: node)
             }
@@ -122,17 +155,19 @@ private extension NoEmptyBlockRule {
 private extension CodeBlockSyntax {
     var codeBlockType: NoEmptyBlockConfiguration.CodeBlockType? {
         guard let kind = self.parent?.kind else { return nil }
-        switch kind {
-        case .accessorDecl:
-            return .accessorBodies
-        case .functionDecl:
-            return .functionBodies
+
+        return switch kind {
+        case .functionDecl, .accessorDecl:
+            .functionBodies
         case .initializerDecl, .deinitializerDecl:
-            return .initializerBodies
-        case .forStmt, .doStmt, .whileStmt, .repeatStmt, .ifExpr, .guardStmt, .catchClause, .deferStmt:
-            return .statementBlocks
+            .initializerBodies
+        case .forStmt, .doStmt, .whileStmt, .repeatStmt, .ifExpr, .catchClause, .deferStmt:
+            .statementBlocks
+        case .guardStmt:
+            // No need to handle this case since Empty Block of `guard` is compile error.
+            nil
         default:
-            return nil
+            nil
         }
     }
 }

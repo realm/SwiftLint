@@ -340,7 +340,7 @@ following way:
 SWIFT_PACKAGE_DIR="${BUILD_DIR%Build/*}SourcePackages/artifacts"
 SWIFTLINT_CMD=$SWIFT_PACKAGE_DIR/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-*/bin/swiftlint
 
-if test -f $SWIFTLINT_CMD 2>&1
+if test -f "$SWIFTLINT_CMD" 2>&1
 then
     "$SWIFTLINT_CMD"
 else

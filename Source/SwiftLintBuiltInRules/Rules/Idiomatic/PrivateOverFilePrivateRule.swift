@@ -12,9 +12,10 @@ struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
         nonTriggeringExamples: [
             Example("extension String {}"),
             Example("private extension String {}"),
-            Example("public \n enum MyEnum {}"),
+            Example("public protocol P {}"),
             Example("open extension \n String {}"),
             Example("internal extension String {}"),
+            Example("package typealias P = Int"),
             Example("""
             extension String {
               fileprivate func Something(){}
@@ -36,7 +37,7 @@ struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
             }
             """),
             Example("""
-            struct Outter {
+            struct Outer {
               struct Inter {
                 fileprivate struct Inner {}
               }
@@ -54,6 +55,10 @@ struct PrivateOverFilePrivateRule: SwiftSyntaxCorrectableRule {
             ↓fileprivate actor MyActor {
               fileprivate let myInt = 4
             }
+            """),
+            Example("""
+                ↓fileprivate func f() {}
+                ↓fileprivate var x = 0
             """),
         ],
         corrections: [

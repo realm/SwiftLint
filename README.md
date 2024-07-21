@@ -332,6 +332,27 @@ else
 fi
 ```
 
+If you're using the SwiftLintPlugin in a Swift package,
+you may refer to the `swiftlint` executable in the
+following way:
+
+```bash
+SWIFT_PACKAGE_DIR="${BUILD_DIR%Build/*}SourcePackages/artifacts"
+SWIFTLINT_CMD=$(ls "$SWIFT_PACKAGE_DIR"/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-*/bin/swiftlint | head -n 1)
+
+if test -f "$SWIFTLINT_CMD" 2>&1
+then
+    "$SWIFTLINT_CMD"
+else
+    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
+fi
+```
+
+> [!NOTE]
+> The `SWIFTLINT_CMD` path uses the default Xcode configuration and has been
+> tested on Xcode 15/16. In case of another configuration (e.g. a custom
+> Swift package path), please adapt the values accordingly.
+
 > [!TIP]
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental
 > builds, suppressing the unspecified outputs warning.

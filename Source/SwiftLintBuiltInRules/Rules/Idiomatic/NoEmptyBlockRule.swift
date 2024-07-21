@@ -154,9 +154,7 @@ private extension NoEmptyBlockRule {
 
 private extension CodeBlockSyntax {
     var codeBlockType: NoEmptyBlockConfiguration.CodeBlockType? {
-        guard let kind = self.parent?.kind else { return nil }
-
-        return switch kind {
+        switch parent?.kind {
         case .functionDecl, .accessorDecl:
             .functionBodies
         case .initializerDecl, .deinitializerDecl:

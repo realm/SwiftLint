@@ -6,7 +6,7 @@ typealias FinalTestCaseConfiguration = UnitTestConfiguration<FinalTestCaseRule>
 typealias NoMagicNumbersConfiguration = UnitTestConfiguration<NoMagicNumbersRule>
 typealias SingleTestClassConfiguration = UnitTestConfiguration<SingleTestClassRule>
 
-@AutoApply
+@AutoConfigParser
 struct UnitTestConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)

@@ -1,10 +1,10 @@
 import SwiftLintCore
 
-@AutoApply // swiftlint:disable:next type_name
+@AutoConfigParser // swiftlint:disable:next type_name
 struct NonOverridableClassDeclarationConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = NonOverridableClassDeclarationRule
 
-    @MakeAcceptableByConfigurationElement
+    @AcceptableByConfigurationElement
     enum FinalClassModifier: String {
         case finalClass = "final class"
         case `static` = "static"

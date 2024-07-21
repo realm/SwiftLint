@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = DiscouragedDirectInitRule
 

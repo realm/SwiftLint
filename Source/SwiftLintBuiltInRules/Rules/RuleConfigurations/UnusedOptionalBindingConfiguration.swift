@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct UnusedOptionalBindingConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = UnusedOptionalBindingRule
 

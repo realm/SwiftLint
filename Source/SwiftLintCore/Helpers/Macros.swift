@@ -4,9 +4,20 @@
     member,
     names: named(apply)
 )
+public macro AutoConfigParser() = #externalMacro(
+    module: "SwiftLintCoreMacros",
+    type: "AutoConfigParser"
+)
+
+/// Deprecated. Use `AutoConfigParser` instead.
+@available(*, deprecated, renamed: "AutoConfigParser")
+@attached(
+    member,
+    names: named(apply)
+)
 public macro AutoApply() = #externalMacro(
     module: "SwiftLintCoreMacros",
-    type: "AutoApply"
+    type: "AutoConfigParser"
 )
 
 /// Macro that lets an enum with a ``String`` raw type automatically conform to ``AcceptableByConfigurationElement``.
@@ -15,9 +26,21 @@ public macro AutoApply() = #externalMacro(
     conformances: AcceptableByConfigurationElement,
     names: named(init(fromAny:context:)), named(asOption)
 )
+public macro AcceptableByConfigurationElement() = #externalMacro(
+    module: "SwiftLintCoreMacros",
+    type: "AcceptableByConfigurationElement"
+)
+
+/// Deprecated. Use `AcceptableByConfigurationElement` instead.
+@available(*, deprecated, renamed: "AcceptableByConfigurationElement")
+@attached(
+    extension,
+    conformances: AcceptableByConfigurationElement,
+    names: named(init(fromAny:context:)), named(asOption)
+)
 public macro MakeAcceptableByConfigurationElement() = #externalMacro(
     module: "SwiftLintCoreMacros",
-    type: "MakeAcceptableByConfigurationElement"
+    type: "AcceptableByConfigurationElement"
 )
 
 /// Macro that adds a conformance to the ``SwiftSyntaxRule`` protocol and a default `makeVisitor(file:)` implementation
@@ -27,7 +50,7 @@ public macro MakeAcceptableByConfigurationElement() = #externalMacro(
 ///   - foldExpressions: Setting it to `true` adds an implementation of `preprocess(file:)` which folds expressions
 ///                      before they are passed to the visitor.
 ///   - explicitRewriter: Set it to `true` to add a `makeRewriter(file:)` implementation which creates a rewriter
-///                       defined in the rule struct. In this case, the rule automatically conforms to 
+///                       defined in the rule struct. In this case, the rule automatically conforms to
 ///                       ``SwiftSyntaxCorrectableRule``.
 @attached(
     extension,

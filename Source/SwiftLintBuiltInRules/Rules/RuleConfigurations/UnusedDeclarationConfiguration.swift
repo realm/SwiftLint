@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = UnusedDeclarationRule
 

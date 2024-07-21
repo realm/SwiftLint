@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct ExpiringTodoConfiguration: RuleConfiguration {
     typealias Parent = ExpiringTodoRule
     typealias Severity = SeverityConfiguration<Parent>

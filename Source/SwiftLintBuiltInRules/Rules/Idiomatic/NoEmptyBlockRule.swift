@@ -12,121 +12,113 @@ struct NoEmptyBlockRule: OptInRule {
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""
+            func f() {
+                /* do something */
+            }
+
             var flag = true {
                 willSet { /* do something */ }
             }
             """),
+
             Example("""
+            class Apple {
+                init() { /* do something */ }
+
+                deinit { /* do something */ }
+            }
+            """),
+
+            Example("""
+            for _ in 0..<10 { /* do something */ }
+
             do {
                 /* do something */
             } catch {
                 /* do something */
             }
-            """),
-            Example("""
+
             defer {
                 /* do something */
             }
-            """),
-            Example("""
-            deinit { /* do something */ }
-            """),
-            Example("""
-            for _ in 0..<10 { /* do something */ }
-            """),
-            Example("""
-            func f() {
-                /* do something */
-            }
-            """),
-            Example("""
+
             if flag {
                 /* do something */
             } else {
                 /* do something */
             }
-            """),
-            Example("""
-            init() { /* do something */ }
-            """),
-            Example("""
+
             repeat { /* do something */ } while (flag)
-            """),
-            Example("""
+
             while i < 10 { /* do something */ }
             """),
+
             Example("""
+            func f() {}
+
             var flag = true {
                 willSet {}
             }
             """, configuration: ["disabled_block_types": ["function_bodies"]]),
+
             Example("""
-            func f() {}
-            """, configuration: ["disabled_block_types": ["function_bodies"]]),
-            Example("""
-            deinit {}
+            class Apple {
+                init() {}
+
+                deinit {}
+            }
             """, configuration: ["disabled_block_types": ["initializer_bodies"]]),
-            Example("""
-            init() {}
-            """, configuration: ["disabled_block_types": ["initializer_bodies"]]),
+
             Example("""
             for _ in 0..<10 {}
-            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
-            Example("""
+
             do {
             } catch {
             }
-            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
-            Example("""
+
             defer {}
-            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
-            Example("""
+
             if flag {
             } else {
             }
-            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
-            Example("""
+
             repeat {} while (flag)
-            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
-            Example("""
+
             while i < 10 {}
             """, configuration: ["disabled_block_types": ["statement_blocks"]]),
         ],
         triggeringExamples: [
             Example("""
+            func f() ↓{}
+
             var flag = true {
                 willSet ↓{}
             }
             """),
+
             Example("""
+            class Apple {
+                init() ↓{}
+
+                deinit ↓{}
+            }
+            """),
+
+            Example("""
+            for _ in 0..<10 ↓{}
+
             do ↓{
             } catch ↓{
             }
-            """),
-            Example("""
+
             defer ↓{}
-            """),
-            Example("""
-            deinit ↓{}
-            """),
-            Example("""
-            for _ in 0..<10 ↓{}
-            """),
-            Example("""
-            func f() ↓{}
-            """),
-            Example("""
+
             if flag ↓{
             } else ↓{
             }
-            """),
-            Example("""
-            init() ↓{}
-            """),
-            Example("""
+
             repeat ↓{} while (flag)
-            """),
-            Example("""
+
             while i < 10 ↓{}
             """),
         ]

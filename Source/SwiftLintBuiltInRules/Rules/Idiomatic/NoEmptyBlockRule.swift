@@ -38,8 +38,11 @@ struct NoEmptyBlockRule: OptInRule {
                 /* do something */
             }
 
-            defer {
-                /* do something */
+            func f() {
+                defer {
+                    /* do something */
+                }
+                print("other code")
             }
 
             if flag {
@@ -76,7 +79,10 @@ struct NoEmptyBlockRule: OptInRule {
             } catch {
             }
 
-            defer {}
+            func f() {
+                defer {}
+                print("other code")
+            }
 
             if flag {
             } else {
@@ -111,7 +117,10 @@ struct NoEmptyBlockRule: OptInRule {
             } catch ↓{
             }
 
-            defer ↓{}
+            func f() {
+                defer ↓{}
+                print("other code")
+            }
 
             if flag ↓{
             } else ↓{

@@ -357,7 +357,7 @@
 
 <ul>
 <li><strong>Identifier:</strong> <code>no_empty_block</code></li>
-<li><strong>Enabled by default:</strong> Yes</li>
+<li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> No</li>
 <li><strong>Kind:</strong> idiomatic</li>
 <li><strong>Analyzer rule:</strong> No</li>
@@ -376,70 +376,134 @@ severity
 warning
 </td>
 </tr>
+<tr>
+<td>
+disabled_block_types
+</td>
+<td>
+[]
+</td>
+</tr>
 </tbody>
 </table></li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">flag</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span>
+    <span class="cm">/* do something */</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">flag</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">{</span>
     <span class="k">willSet</span> <span class="p">{</span> <span class="cm">/* do something */</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Apple</span> <span class="p">{</span>
+    <span class="nf">init</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* do something */</span> <span class="p">}</span>
+
+    <span class="kd">deinit</span> <span class="p">{</span> <span class="cm">/* do something */</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">for</span> <span class="n">_</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..&lt;</span><span class="mi">10</span> <span class="p">{</span> <span class="cm">/* do something */</span> <span class="p">}</span>
+
+<span class="k">do</span> <span class="p">{</span>
     <span class="cm">/* do something */</span>
 <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
     <span class="cm">/* do something */</span>
 <span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">defer</span> <span class="p">{</span>
-    <span class="cm">/* do something */</span>
+
+<span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">defer</span> <span class="p">{</span>
+        <span class="cm">/* do something */</span>
+    <span class="p">}</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"other code"</span><span class="p">)</span>
 <span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">deinit</span> <span class="p">{</span> <span class="cm">/* do something */</span> <span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">for</span> <span class="n">_</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..&lt;</span><span class="mi">10</span> <span class="p">{</span> <span class="cm">/* do something */</span> <span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span>
-    <span class="cm">/* do something */</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="n">flag</span> <span class="p">{</span>
+
+<span class="k">if</span> <span class="n">flag</span> <span class="p">{</span>
     <span class="cm">/* do something */</span>
 <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
     <span class="cm">/* do something */</span>
 <span class="p">}</span>
+
+<span class="k">repeat</span> <span class="p">{</span> <span class="cm">/* do something */</span> <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="p">{</span> <span class="cm">/* do something */</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="nf">init</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* do something */</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// disabled_block_types: [function_bodies]</span>
+<span class="c1">//</span>
+
+<span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{}</span>
+
+<span class="k">var</span> <span class="nv">flag</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">{</span>
+    <span class="k">willSet</span> <span class="p">{}</span>
+<span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">repeat</span> <span class="p">{</span> <span class="cm">/* do something */</span> <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// disabled_block_types: [initializer_bodies]</span>
+<span class="c1">//</span>
+
+<span class="kd">class</span> <span class="kt">Apple</span> <span class="p">{</span>
+    <span class="nf">init</span><span class="p">()</span> <span class="p">{}</span>
+
+    <span class="kd">deinit</span> <span class="p">{}</span>
+<span class="p">}</span>
+
 </code></pre>
-<pre class="highlight swift"><code><span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="p">{</span> <span class="cm">/* do something */</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// disabled_block_types: [statement_blocks]</span>
+<span class="c1">//</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..&lt;</span><span class="mi">10</span> <span class="p">{}</span>
+
+<span class="k">do</span> <span class="p">{</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">defer</span> <span class="p">{}</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"other code"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="n">flag</span> <span class="p">{</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="k">repeat</span> <span class="p">{}</span> <span class="k">while</span> <span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="p">{}</span>
+
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">flag</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="err">↓</span><span class="p">{}</span>
+
+<span class="k">var</span> <span class="nv">flag</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">{</span>
     <span class="k">willSet</span> <span class="err">↓</span><span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="err">↓</span><span class="p">{</span>
-<span class="p">}</span> <span class="k">catch</span> <span class="err">↓</span><span class="p">{</span>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Apple</span> <span class="p">{</span>
+    <span class="nf">init</span><span class="p">()</span> <span class="err">↓</span><span class="p">{}</span>
+
+    <span class="kd">deinit</span> <span class="err">↓</span><span class="p">{}</span>
 <span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">defer</span> <span class="err">↓</span><span class="p">{}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">deinit</span> <span class="err">↓</span><span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">for</span> <span class="n">_</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..&lt;</span><span class="mi">10</span> <span class="err">↓</span><span class="p">{}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="err">↓</span><span class="p">{}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">if</span> <span class="n">flag</span> <span class="err">↓</span><span class="p">{</span>
+
+<span class="k">do</span> <span class="err">↓</span><span class="p">{</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="err">↓</span><span class="p">{</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">defer</span> <span class="err">↓</span><span class="p">{}</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"other code"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="n">flag</span> <span class="err">↓</span><span class="p">{</span>
 <span class="p">}</span> <span class="k">else</span> <span class="err">↓</span><span class="p">{</span>
 <span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="nf">init</span><span class="p">()</span> <span class="err">↓</span><span class="p">{}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">repeat</span> <span class="err">↓</span><span class="p">{}</span> <span class="k">while</span> <span class="p">(</span><span class="n">flag</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="err">↓</span><span class="p">{}</span>
+
+<span class="k">repeat</span> <span class="err">↓</span><span class="p">{}</span> <span class="k">while</span> <span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="err">↓</span><span class="p">{}</span>
 </code></pre>
 
           </div>

@@ -36,7 +36,7 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
 
         You can also specify rules which must always be applied to the entire file, and should never be scoped or \
         re-enabled with the `always_blanket_disable` configuration parameter.
-        """
+        """,
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

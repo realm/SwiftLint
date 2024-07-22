@@ -20,7 +20,7 @@ struct AttributesRule: Rule {
 
         "This approach limits declaration length. It allows a member to float below its attribute and supports \
         flush-left access modifiers, so `internal`, `public`, etc appear in the leftmost column."
-        """
+        """,
         kind: .style,
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
         triggeringExamples: AttributesRuleExamples.triggeringExamples

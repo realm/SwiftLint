@@ -1,10 +1,10 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ExplicitTypeInterfaceRule
 
-    @MakeAcceptableByConfigurationElement
+    @AcceptableByConfigurationElement
     enum VariableKind: String, CaseIterable {
         case instance
         case local

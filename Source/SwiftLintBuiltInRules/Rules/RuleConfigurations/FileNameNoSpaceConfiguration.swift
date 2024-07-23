@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct FileNameNoSpaceConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = FileNameNoSpaceRule
 

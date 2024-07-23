@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = IndentationWidthRule
 

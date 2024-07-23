@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct TrailingCommaConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = TrailingCommaRule
 

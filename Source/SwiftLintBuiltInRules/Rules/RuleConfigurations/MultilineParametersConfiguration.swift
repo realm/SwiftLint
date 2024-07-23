@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = MultilineParametersRule
 

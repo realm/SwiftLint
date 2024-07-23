@@ -3,7 +3,7 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-enum AutoApply: MemberMacro {
+enum AutoConfigParser: MemberMacro {
     // swiftlint:disable:next function_body_length
     static func expansion(
         of _: AttributeSyntax,
@@ -88,7 +88,7 @@ enum AutoApply: MemberMacro {
     }
 }
 
-enum MakeAcceptableByConfigurationElement: ExtensionMacro {
+enum AcceptableByConfigurationElement: ExtensionMacro {
     static func expansion(
         of _: AttributeSyntax,
         attachedTo declaration: some DeclGroupSyntax,

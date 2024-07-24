@@ -57,7 +57,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
             */
             """),
             Example("""
-            /*#-editable-code Swift Platground editable area*/default/*#-end-editable-code*/
+            /*#-editable-code Swift Playground editable area*/default/*#-end-editable-code*/
             """),
         ],
         triggeringExamples: [

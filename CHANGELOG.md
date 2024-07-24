@@ -46,6 +46,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#2120](https://github.com/realm/SwiftLint/issues/2120)
 
+* Support `--target` paths being passed to command plugin by Xcode.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5603](https://github.com/realm/SwiftLint/issues/5603)
+
 * Add modified configurations to examples in rule documentation.  
   [SimplyDanny](https://github.com/SimplyDanny)
 

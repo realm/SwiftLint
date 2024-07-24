@@ -3,38 +3,34 @@ import PackagePlugin
 
 @main
 struct SwiftLintCommandPlugin: CommandPlugin {
-    func performCommand(
-        context: PluginContext,
-        arguments: [String]
-    ) throws {
-        let tool: PluginContext.Tool = try context.tool(named: "swiftlint")
-        // Caching is managed internally because the cache must be located within the `pluginWorkDirectory`.
-        if arguments.contains("--cache-path") {
-            Diagnostics.error("Setting Cache Path Not Allowed")
+    func performCommand(context: PluginContext, arguments: [String]) throws {
+        let tool = try context.tool(named: "swiftlint")
+        guard !arguments.contains("--cache-path") else {
+            Diagnostics.error("Caching is managed by the plugin and so setting `--cache-path` is not allowed")
             return
         }
-        let process: Process = .init()
+        let process = Process()
         process.currentDirectoryURL = URL(fileURLWithPath: context.package.directory.string)
         process.executableURL = URL(fileURLWithPath: tool.path.string)
-        // The analyze command does not support the `--cache-path` argument
-        if arguments.contains("analyze") {
-            process.arguments = arguments
-        } else {
-            process.arguments = arguments + ["--cache-path", "\(context.pluginWorkDirectory.string)"]
-        }
+        process.arguments = if arguments.contains("analyze") {
+                                // The analyze command does not support the `--cache-path` argument.
+                                arguments
+                            } else {
+                                arguments + ["--cache-path", "\(context.pluginWorkDirectory.string)"]
+                            }
+
         try process.run()
         process.waitUntilExit()
         switch process.terminationReason {
         case .exit:
             break
         case .uncaughtSignal:
-            Diagnostics.error("Uncaught Signal")
+            Diagnostics.error("Uncaught signal")
         @unknown default:
-            Diagnostics.error("Unexpected Termination Reason")
+            Diagnostics.error("Unexpected termination reason")
         }
-        guard process.terminationStatus == EXIT_SUCCESS else {
-            Diagnostics.error("Command Failed")
-            return
+        if process.terminationStatus != EXIT_SUCCESS {
+            Diagnostics.warning("Command found violations or failed to execute")
         }
     }
 }

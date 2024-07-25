@@ -8,6 +8,7 @@ public let builtInRules: [any Rule.Type] = [
     AnonymousArgumentInMultilineClosureRule.self,
     AnyObjectProtocolRule.self,
     ArrayInitRule.self,
+    AttributeNameSpacingRule.self,
     AttributesRule.self,
     BalancedXCTestLifecycleRule.self,
     BlanketDisableCommandRule.self,

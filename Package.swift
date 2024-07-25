@@ -7,7 +7,6 @@ let swiftFeatures: [SwiftSetting] = [
     .enableUpcomingFeature("ConciseMagicFile"),
     .enableUpcomingFeature("ImportObjcForwardDeclarations"),
     .enableUpcomingFeature("ForwardTrailingClosures"),
-    .enableUpcomingFeature("InternalImportsByDefault"),
     .enableUpcomingFeature("ImplicitOpenExistentials"),
 ]
 

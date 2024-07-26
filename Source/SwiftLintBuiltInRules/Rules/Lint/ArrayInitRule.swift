@@ -10,7 +10,7 @@ struct ArrayInitRule: Rule, @unchecked Sendable {
         description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array",
         rationale: """
         When converting a the elements of sequence directly into an `Array`, for clarity and to better convey \
-        intent, prefer using the `Array` constructor to `map`. For example
+        intent, prefer using the `Array` constructor over calling `map`. For example
 
         ```
             Array(foo)

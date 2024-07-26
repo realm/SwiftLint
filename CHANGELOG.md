@@ -85,6 +85,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5592](https://github.com/realm/SwiftLint/issues/5592)
 
+* Use correct types and relative paths in SARIF reporter output. Generally
+  avoid escaping slashes in JSON output as well.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5598](https://github.com/realm/SwiftLint/issues/5598)
+  [#5599](https://github.com/realm/SwiftLint/issues/5599)
+
 * Keep initializers with attributed parameters in
   `unneeded_synthesized_initializer` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

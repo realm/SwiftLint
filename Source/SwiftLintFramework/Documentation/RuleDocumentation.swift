@@ -40,6 +40,10 @@ struct RuleDocumentation {
     var fileContents: String {
         let description = ruleType.description
         var content = [h1(description.name), description.description, detailsSummary(ruleType.init())]
+        if let rationale = description.rationale {
+            content += [h2("Rationale")]
+            content.append(formattedRationale(rationale))
+        }
         let nonTriggeringExamples = description.nonTriggeringExamples.filter { !$0.excludeFromDocumentation }
         if nonTriggeringExamples.isNotEmpty {
             content += [h2("Non Triggering Examples")]
@@ -51,6 +55,26 @@ struct RuleDocumentation {
             content += triggeringExamples.map(formattedCode)
         }
         return content.joined(separator: "\n\n")
+    }
+
+    private func formattedRationale(_ rationale: String) -> String {
+        var result = ""
+        var insideMultilineString = false
+        rationale.enumerateLines { line, _ in
+            var formattedLine = line
+            if line.contains("```") {
+                if insideMultilineString {
+                    insideMultilineString = false
+                } else {
+                    insideMultilineString = true
+                    if line.hasSuffix("```") {
+                        formattedLine += "swift"
+                    }
+                }
+            }
+            result += formattedLine + "\n"
+        }
+        return result
     }
 
     private func formattedCode(_ example: Example) -> String {

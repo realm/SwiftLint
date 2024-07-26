@@ -3,29 +3,29 @@
 	<testcase name='warning: line_length in filename:1'>
 		<failure>Severity: warning
 Rule: line_length
-Reason: Violation Reason
+Reason: Violation Reason 1
 
 File: filename
 Line: 1
-Column: 2
+Column: 1
 		</failure>
 	</testcase>
 	<testcase name='error: line_length in filename:1'>
 		<failure>Severity: error
 Rule: line_length
-Reason: Violation Reason
+Reason: Violation Reason 2
 
 File: filename
 Line: 1
-Column: 2
+Column: nil
 		</failure>
 	</testcase>
-	<testcase name='error: syntactic_sugar in filename:1'>
+	<testcase name='error: syntactic_sugar in path/file.swift:1'>
 		<failure>Severity: error
 Rule: syntactic_sugar
 Reason: Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;
 
-File: filename
+File: path/file.swift
 Line: 1
 Column: 2
 		</failure>

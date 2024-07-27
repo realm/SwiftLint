@@ -58,8 +58,8 @@ extension SwiftLint {
             }
 
             print("\(description.consoleDescription)")
-            if let rationale = description.rationale {
-                print("\nRationale:\n\n\(rationale)")
+            if let consoleRationale = description.consoleRationale {
+                print("\nRationale:\n\n\(consoleRationale)")
             }
             let configDescription = rule.createConfigurationDescription()
             if configDescription.hasContent {

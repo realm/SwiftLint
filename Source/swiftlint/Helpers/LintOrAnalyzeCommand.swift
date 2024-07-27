@@ -36,15 +36,6 @@ struct LintOrAnalyzeCommand {
                     )
             }
         }
-        if options.inProcessSourcekit {
-            // TODO: [08/11/2024] Remove deprecation warning after ~2 years.
-            queuedPrintError(
-                """
-                warning: The --in-process-sourcekit option is deprecated. \
-                SwiftLint now always uses an in-process SourceKit.
-                """
-            )
-        }
         try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
             try await options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
         }
@@ -286,7 +277,6 @@ struct LintOrAnalyzeOptions {
     let format: Bool
     let compilerLogPath: String?
     let compileCommands: String?
-    let inProcessSourcekit: Bool
     let checkForUpdates: Bool
 
     var verb: String {

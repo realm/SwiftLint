@@ -59,7 +59,6 @@ extension SwiftLint {
                 format: common.format,
                 compilerLogPath: nil,
                 compileCommands: nil,
-                inProcessSourcekit: common.inProcessSourcekit,
                 checkForUpdates: common.checkForUpdates
             )
             try await LintOrAnalyzeCommand.run(options)

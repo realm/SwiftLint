@@ -58,23 +58,20 @@ struct RuleDocumentation {
     }
 
     private func formattedRationale(_ rationale: String) -> String {
-        var result = ""
         var insideMultilineString = false
-        rationale.enumerateLines { line, _ in
-            var formattedLine = line
+        return rationale.components(separatedBy: "\n").map { line in
             if line.contains("```") {
                 if insideMultilineString {
                     insideMultilineString = false
                 } else {
                     insideMultilineString = true
                     if line.hasSuffix("```") {
-                        formattedLine += "swift"
+                        return line + "swift"
                     }
                 }
             }
-            result += formattedLine + "\n"
-        }
-        return result
+            return line
+        }.joined(separator: "\n")
     }
 
     private func formattedCode(_ example: Example) -> String {

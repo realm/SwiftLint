@@ -20,128 +20,78 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
 private extension OpeningBraceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ActorDeclSyntax) {
-            let body = node.memberBlock
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.memberBlock)
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            let body = node.memberBlock
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.memberBlock)
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            let body = node.memberBlock
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.memberBlock)
         }
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
-            let body = node.memberBlock
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.memberBlock)
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
-            let body = node.memberBlock
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.memberBlock)
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            let body = node.memberBlock
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.memberBlock)
         }
 
         override func visitPost(_ node: CatchClauseSyntax) {
-            let body = node.body
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.body)
         }
 
         override func visitPost(_ node: DeferStmtSyntax) {
-            let body = node.body
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.body)
         }
 
         override func visitPost(_ node: DoStmtSyntax) {
-            let body = node.body
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.body)
         }
 
         override func visitPost(_ node: ForStmtSyntax) {
-            let body = node.body
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.body)
         }
 
         override func visitPost(_ node: GuardStmtSyntax) {
-            let body = node.body
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.body)
         }
 
         override func visitPost(_ node: IfExprSyntax) {
-            let body = node.body
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
-            if case let .codeBlock(body) = node.elseBody, let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
+            collectViolation(for: node.body)
+            if case let .codeBlock(body) = node.elseBody {
+                collectViolation(for: body)
             }
         }
 
         override func visitPost(_ node: RepeatStmtSyntax) {
-            let body = node.body
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.body)
         }
 
         override func visitPost(_ node: WhileStmtSyntax) {
-            let body = node.body
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.body)
         }
 
         override func visitPost(_ node: SwitchExprSyntax) {
-            if let correction = node.violationCorrection(locationConverter) {
-                violations.append(at: node.openingPosition, correction: correction)
-            }
+            collectViolation(for: node)
         }
 
         override func visitPost(_ node: AccessorDeclSyntax) {
-            if let body = node.body, let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.body)
         }
 
         override func visitPost(_ node: PatternBindingSyntax) {
-            if let body = node.accessorBlock, let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: node.accessorBlock)
         }
 
         override func visitPost(_ node: PrecedenceGroupDeclSyntax) {
-            if let correction = node.violationCorrection(locationConverter) {
-                violations.append(at: node.openingPosition, correction: correction)
-            }
+            collectViolation(for: node)
         }
 
         override func visitPost(_ node: ClosureExprSyntax) {
@@ -153,10 +103,9 @@ private extension OpeningBraceRule {
                 return
             }
             if parent.is(FunctionCallExprSyntax.self) || parent.is(MultipleTrailingClosureElementSyntax.self),
-               node.keyPathInParent != \FunctionCallExprSyntax.calledExpression,
-               let correction = node.violationCorrection(locationConverter) {
+               node.keyPathInParent != \FunctionCallExprSyntax.calledExpression {
                 // Trailing closure
-                violations.append(at: node.openingPosition, correction: correction)
+                collectViolation(for: node)
             }
         }
 
@@ -167,9 +116,7 @@ private extension OpeningBraceRule {
             if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.funcKeyword) {
                 return
             }
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: body)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
@@ -179,9 +126,7 @@ private extension OpeningBraceRule {
             if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.initKeyword) {
                 return
             }
-            if let correction = body.violationCorrection(locationConverter) {
-                violations.append(at: body.openingPosition, correction: correction)
-            }
+            collectViolation(for: body)
         }
 
         private func refersToMultilineFunction(_ body: CodeBlockSyntax, functionIndicator: TokenSyntax) -> Bool {
@@ -193,28 +138,33 @@ private extension OpeningBraceRule {
             let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
             return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
         }
-    }
-}
 
-private extension BracedSyntax {
-    typealias ViolationCorrection = ReasonedRuleViolation.ViolationCorrection
+        private func collectViolation(for bracedItem: (some BracedSyntax)?) {
+            if let bracedItem, let correction = violationCorrection(bracedItem) {
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: bracedItem.openingPosition,
+                        correction: correction
+                    )
+                )
+            }
+        }
 
-    var openingPosition: AbsolutePosition {
-        leftBrace.positionAfterSkippingLeadingTrivia
-    }
-
-    func violationCorrection(_ locationConverter: SourceLocationConverter) -> ViolationCorrection? {
-        if let previousToken = leftBrace.previousToken(viewMode: .sourceAccurate) {
+        private func violationCorrection(_ node: some BracedSyntax) -> ReasonedRuleViolation.ViolationCorrection? {
+            let leftBrace = node.leftBrace
+            guard let previousToken = leftBrace.previousToken(viewMode: .sourceAccurate) else {
+                return nil
+            }
+            let openingPosition = node.openingPosition
             let triviaBetween = previousToken.trailingTrivia + leftBrace.leadingTrivia
             let previousLocation = previousToken.endLocation(converter: locationConverter)
             let leftBraceLocation = leftBrace.startLocation(converter: locationConverter)
-            let violation = ViolationCorrection(
-                start: previousToken.endPositionBeforeTrailingTrivia,
-                end: openingPosition,
-                replacement: " "
-            )
             if previousLocation.line != leftBraceLocation.line {
-                return violation
+                return .init(
+                    start: previousToken.endPositionBeforeTrailingTrivia,
+                    end: openingPosition,
+                    replacement: " "
+                )
             }
             if previousLocation.column + 1 == leftBraceLocation.column {
                 return nil
@@ -224,14 +174,23 @@ private extension BracedSyntax {
                     return nil
                 }
                 let comment = triviaBetween.description.trimmingTrailingCharacters(in: .whitespaces)
-                return ViolationCorrection(
+                return .init(
                     start: previousToken.endPositionBeforeTrailingTrivia + SourceLength(of: comment),
                     end: openingPosition,
                     replacement: " "
                 )
             }
-            return violation
+            return .init(
+                start: previousToken.endPositionBeforeTrailingTrivia,
+                end: openingPosition,
+                replacement: " "
+            )
         }
-        return nil
+    }
+}
+
+private extension BracedSyntax {
+    var openingPosition: AbsolutePosition {
+        leftBrace.positionAfterSkippingLeadingTrivia
     }
 }

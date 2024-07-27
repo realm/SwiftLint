@@ -47,7 +47,6 @@ extension SwiftLint {
                 format: common.format,
                 compilerLogPath: compilerLogPath,
                 compileCommands: compileCommands,
-                inProcessSourcekit: common.inProcessSourcekit,
                 checkForUpdates: common.checkForUpdates
             )
 

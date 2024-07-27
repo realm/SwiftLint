@@ -2,8 +2,10 @@
 
 #### Breaking
 
-* The deprecated `--path` argument has now been removed completely.  
+* The deprecated `--path` and `--in-process-sourcekit` arguments have now been
+  removed completely.  
   [Martin Redington](https://github.com/mildm8nnered)
+  [SimplyDanny](https://github.com/SimplyDanny)
   [#5614](https://github.com/realm/SwiftLint/issues/5614)
 
 * When SwiftLint corrects violations automatically (`swiftlint lint --fix`)

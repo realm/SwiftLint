@@ -87,6 +87,6 @@ struct CustomRules: Rule, CacheDescriptionProvider {
 extension Region {
     func isRuleDisabled(customRuleIdentifier: String) -> Bool {
         disabledRuleIdentifiers.contains(.all) ||
-          disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
+            disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
     }
 }

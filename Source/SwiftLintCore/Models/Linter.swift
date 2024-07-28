@@ -31,7 +31,7 @@ private extension Rule {
             if let customRules = self as? CustomRules {
                 return customRules.configuration.customRuleConfigurations.map { configuration in
                     let regionsDisablingCurrentRule = regions.filter { region in
-                        region.isRuleDisabled(customRuleIdentifier: configuration.identifier)
+                        region.isCustomRuleDisabled(customRuleIdentifier: configuration.identifier)
                     }
                     return (configuration.identifier, regionsDisablingCurrentRule)
                 }
@@ -109,7 +109,7 @@ private extension Rule {
             (violation, regions.first { $0.contains(violation.location) })
         }.partitioned { violation, region in
             if self is CustomRules {
-                return !(region?.isRuleDisabled(customRuleIdentifier: violation.ruleIdentifier) ?? false)
+                return !(region?.isCustomRuleDisabled(customRuleIdentifier: violation.ruleIdentifier) ?? false)
             }
             return region?.isRuleEnabled(self) ?? true
         }

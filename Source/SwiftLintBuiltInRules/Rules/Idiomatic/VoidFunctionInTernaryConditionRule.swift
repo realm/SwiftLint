@@ -273,9 +273,10 @@ private extension CodeBlockItemSyntax {
         return false
       }
       if let codeBlockItemListSyntax = ifExprSytax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self),
-         let expressionStmtSyntax = codeBlockItemListSyntax.last?.item.as(ExpressionStmtSyntax.self)
-      {
-        return parent.children(viewMode: .sourceAccurate).count == 1 && ( codeBlockItemListSyntax.count == 1 || expressionStmtSyntax.expression.is(IfExprSyntax.self)) && funcDecl.signature.allowsImplicitReturns
+         let expressionStmtSyntax = codeBlockItemListSyntax.last?.item.as(ExpressionStmtSyntax.self) {
+        return parent.children(viewMode: .sourceAccurate).count == 1 &&
+        ( codeBlockItemListSyntax.count == 1 || expressionStmtSyntax.expression.is(IfExprSyntax.self)) &&
+        funcDecl.signature.allowsImplicitReturns
       }
       return false
     }
@@ -288,7 +289,9 @@ private extension CodeBlockItemSyntax {
       guard let funcDecl = switchExprSytax.parent?.parent?.parent?.parent?.parent?.as(FunctionDeclSyntax.self) else {
         return false
       }
-      return parent.children(viewMode: .sourceAccurate).count == 1 && funcDecl.signature.allowsImplicitReturns && switchExprSytax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self)?.count == 1
+      return parent.children(viewMode: .sourceAccurate).count == 1 &&
+      funcDecl.signature.allowsImplicitReturns &&
+      switchExprSytax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self)?.count == 1
     }
 }
 

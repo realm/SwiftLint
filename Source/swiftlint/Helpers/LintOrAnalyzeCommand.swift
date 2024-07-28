@@ -37,7 +37,7 @@ struct LintOrAnalyzeCommand {
             }
         }
         if options.inProcessSourcekit {
-            // TODO: [08/11/2024] Remove deprecation warning after ~2 years.
+            // TODO: [08/21/2024] Remove deprecation warning after ~2 years.
             queuedPrintError(
                 """
                 warning: The --in-process-sourcekit option is deprecated. \

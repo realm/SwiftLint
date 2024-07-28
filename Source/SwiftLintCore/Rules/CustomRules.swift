@@ -89,7 +89,7 @@ extension Region {
         disabledRuleIdentifiers.intersection(
             [
                 .all,
-                RuleIdentifier(customRuleIdentifier), 
+                RuleIdentifier(customRuleIdentifier),
                 RuleIdentifier(CustomRules.description.identifier),
             ]
         ).isNotEmpty

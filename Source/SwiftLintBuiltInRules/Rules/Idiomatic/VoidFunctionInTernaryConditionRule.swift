@@ -121,6 +121,16 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             }
             """),
             Example("""
+            func exampleNestedIfExpr() -> String {
+                test()
+                if true {
+                  isTrue ? defaultValue() : defaultValue()
+                } else {
+                    "Default"
+                }
+            }
+            """),
+            Example("""
             func collectionView() -> CGSize {
                 switch indexPath.section {
                 case 0: isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)

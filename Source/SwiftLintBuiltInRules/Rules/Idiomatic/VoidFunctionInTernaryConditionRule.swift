@@ -79,6 +79,16 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             }
             """),
             Example("""
+            func exampleNestedIfExpr() -> String {
+                test()
+                if true {
+                  isTrue ? defaultValue() : defaultValue()
+                } else {
+                    "Default"
+                }
+            }
+            """),
+            Example("""
             func collectionView() -> CGSize {
                 switch indexPath.section {
                 case 0: isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
@@ -262,7 +272,12 @@ private extension CodeBlockItemSyntax {
       guard let funcDecl = ifExprSytax.parent?.parent?.parent?.parent?.parent?.as(FunctionDeclSyntax.self) else {
         return false
       }
-      return parent.children(viewMode: .sourceAccurate).count == 1 && funcDecl.signature.allowsImplicitReturns && ifExprSytax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self)?.count == 1
+      if let codeBlockItemListSyntax = ifExprSytax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self),
+         let expressionStmtSyntax = codeBlockItemListSyntax.last?.item.as(ExpressionStmtSyntax.self)
+      {
+        return parent.children(viewMode: .sourceAccurate).count == 1 && ( codeBlockItemListSyntax.count == 1 || expressionStmtSyntax.expression.is(IfExprSyntax.self)) && funcDecl.signature.allowsImplicitReturns
+      }
+      return false
     }
 
     var isSwitchExprImplicitReturn: Bool {

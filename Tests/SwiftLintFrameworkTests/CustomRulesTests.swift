@@ -238,6 +238,23 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
+    func testSuperfluousCommandWorksForCustomRulesWorks() throws {
+        let customRules: [String: Any] = [
+            "forbidden": [
+                "regex": "FORBIDDEN",
+            ],
+        ]
+
+        let example = Example("""
+                              // swiftlint:disable:next custom_rules
+                              let ALLOWED = 2
+                              """)
+
+        let violations = try violations(forExample: example, customRules: customRules)
+        // Reports the superfluous_disable_command as being for `forbidden`??
+        XCTAssertEqual(violations.count, 1)
+    }
+
     func testSuperfluousDisableCommandWithCustomRules() throws {
         let customRules: [String: Any] = [
             "custom1": [

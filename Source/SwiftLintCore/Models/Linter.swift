@@ -109,7 +109,7 @@ private extension Rule {
             (violation, regions.first { $0.contains(violation.location) })
         }.partitioned { violation, region in
             if self is CustomRules {
-                return !(region?.isRuleDisabled(customRuleIdentifier: violation.ruleIdentifier) ?? true)
+                return !(region?.isRuleDisabled(customRuleIdentifier: violation.ruleIdentifier) ?? false)
             }
             return region?.isRuleEnabled(self) ?? true
         }

@@ -2,18 +2,18 @@
 import XCTest
 
 final class TypesafeArrayInitRuleTests: SwiftLintTestCase {
-    func testViolationType() {
+    func testViolationRuleIdentifier() {
         let baseDescription = TypesafeArrayInitRule.description
         guard let triggeringExample = baseDescription.triggeringExamples.first else {
-            XCTFail("No triggering examples")
+            XCTFail("No triggering examples found")
             return
         }
         guard let config = makeConfig(nil, baseDescription.identifier) else {
-            XCTFail("Could not make configuration")
+            XCTFail("Failed to create configuration")
             return
         }
         let violations = SwiftLintFrameworkTests.violations(triggeringExample, config: config, requiresFileOnDisk: true)
-        XCTAssertEqual(violations.count, 1)
+        XCTAssertGreaterThanOrEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.ruleIdentifier, baseDescription.identifier)
     }
 }

@@ -125,6 +125,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5598](https://github.com/realm/SwiftLint/issues/5598)
 
+* Violations of the `typesafe_array_init` rule will now be correctly
+  reported as such, instead of as violations of the `array_init`
+  rule.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5709](https://github.com/realm/SwiftLint/issues/5709)
+
 ## 0.55.1: Universal Washing Powder
 
 #### Breaking

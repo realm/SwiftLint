@@ -222,6 +222,22 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations.count, 2)
     }
 
+    func testDisablingCustomRulesWorks() throws {
+        let customRules: [String: Any] = [
+            "forbidden": [
+                "regex": "FORBIDDEN",
+            ],
+        ]
+
+        let example = Example("""
+                              // swiftlint:disable:next custom_rules
+                              let FORBIDDEN = 1
+                              """)
+
+        let violations = try violations(forExample: example, customRules: customRules)
+        XCTAssertEqual(violations.count, 0)
+    }
+
     func testSuperfluousDisableCommandWithCustomRules() throws {
         let customRules: [String: Any] = [
             "custom1": [

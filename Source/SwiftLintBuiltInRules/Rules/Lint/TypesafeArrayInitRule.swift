@@ -31,21 +31,21 @@ struct TypesafeArrayInitRule: AnalyzerRule {
                 func f<Seq: Sequence>(s: Seq) -> [Seq.Element] {
                     s.↓map({ $0 })
                 }
-            """),
+                """),
             Example("""
                 func f(array: [Int]) -> [Int] {
                     array.↓map { $0 }
                 }
-            """),
+                """),
             Example("""
                 let myInts = [1, 2, 3].↓map { return $0 }
-            """),
+                """),
             Example("""
                 struct Generator: Sequence, IteratorProtocol {
                     func next() -> Int? { nil }
                 }
                 let array = Generator().↓map { i in i }
-            """),
+                """),
         ],
         requiresFileOnDisk: true
     )

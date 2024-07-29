@@ -29,12 +29,20 @@ private extension Rule {
 
         let regionsWithIdentifiers: [(String, [Region])] = {
             if let customRules = self as? CustomRules {
-                return customRules.configuration.customRuleConfigurations.map { configuration in
+                // So I think we only want to be returned from here if the identifier is explicitly cited
+                var result = customRules.configuration.customRuleConfigurations.map { configuration in
                     let regionsDisablingCurrentRule = regions.filter { region in
-                        region.isCustomRuleDisabled(customRuleIdentifier: configuration.identifier)
+                        region.isCustomRuleSpecificallyDisabled(customRuleIdentifier: configuration.identifier)
                     }
                     return (configuration.identifier, regionsDisablingCurrentRule)
                 }
+                let regionsDisablingAllCustomRules = regions.filter { region in
+                    region.areAllCustomRulesDisabled()
+                }
+                if regionsDisablingAllCustomRules.isNotEmpty {
+                    result.append(("custom_rules", regionsDisablingAllCustomRules))
+                }
+                return result
             }
             let regionsDisablingCurrentRule = regions.filter { region in
                 region.isRuleDisabled(self)

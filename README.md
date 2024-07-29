@@ -851,8 +851,18 @@ All syntax kinds used in a snippet of Swift code can be extracted asking
 
 which match to `keyword` and `identifier` in the above list.
 
-If using custom rules in combination with `only_rules`, make sure to add
-`custom_rules` as an item under `only_rules`.
+If using custom rules in combination with `only_rules`, you must include the 
+literal string `custom_rules` in the `only_rules` list:
+
+```yaml
+only_rules:
+  - custom_rules
+
+custom_rules:
+  no_hiding_in_strings:
+    regex: "([nN]inja)"
+    match_kinds: string
+```
 
 Unlike Swift custom rules, you can use official SwiftLint builds
 (e.g. from Homebrew) to run regex custom rules.

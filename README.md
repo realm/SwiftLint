@@ -921,9 +921,9 @@ opt_in_rules:
 - force_cast
 ```
 
-### Child / Parent Configs (Locally)
+### Child/Parent Configs (Locally)
 
-You can specify a `child_config` and / or a `parent_config` reference within a
+You can specify a `child_config` and/or a `parent_config` reference within a
 configuration file. These references should be local paths relative to the
 folder of the configuration file they are specified in. This even works
 recursively, as long as there are no cycles and no ambiguities.
@@ -954,9 +954,9 @@ When merging parent and child configs, `included` and `excluded` configurations
 are processed carefully to account for differences in the directory location
 of the containing configuration files.
 
-### Child / Parent Configs (Remote)
+### Child/Parent Configs (Remote)
 
-Just as you can provide local `child_config` / `parent_config` references,
+Just as you can provide local `child_config`/`parent_config` references,
 instead of referencing local paths, you can just put urls that lead to
 configuration files. In order for SwiftLint to detect these remote references,
 they must start with `http://` or `https://`.
@@ -978,8 +978,8 @@ there once SwiftLint has run successfully at least once.
 
 If needed, the timeouts for the remote configuration fetching can be specified
 manually via the configuration file(s) using the
-`remote_timeout` / `remote_timeout_if_cached` specifiers. These values default
-to 2 / 1 second(s).
+`remote_timeout`/`remote_timeout_if_cached` specifiers. These values default
+to 2 seconds or 1 second, respectively.
 
 ### Command Line
 
@@ -1006,7 +1006,7 @@ configuration.
 `.swiftlint.yml` files are only considered as a nested configuration if they
 have not been used to build the main configuration already (e. g. by having
 been referenced via something like `child_config: Folder/.swiftlint.yml`).
-Also, `parent_config` / `child_config` specifications of nested configurations
+Also, `parent_config`/`child_config` specifications of nested configurations
 are getting ignored because there's no sense to that.
 
 If one (or more) SwiftLint file(s) are explicitly specified via the `--config`

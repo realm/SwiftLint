@@ -256,8 +256,16 @@ final class CustomRulesTests: SwiftLintTestCase {
                               """)
 
         let violations = try violations(forExample: example, customRules: customRules)
-        // Reports a superfluous_disable_command violation for each defined custom rule
         XCTAssertEqual(violations.count, 1)
+
+        let example2 = Example("""
+                              // swiftlint:disable:next forbidden forbidden2
+                              let ALLOWED = 2
+                              """)
+
+        let violations2 = try self.violations(forExample: example2, customRules: customRules)
+        // Should report a superfluous_disable_command violation for each explicitly mentioned rule
+        XCTAssertEqual(violations2.count, 2)
     }
 
     func testSuperfluousDisableCommandWithCustomRules() throws {

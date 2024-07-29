@@ -204,23 +204,24 @@ final class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testSuperfluousDisableCommandAndViolationWithCustomRules() throws {
+        let customRuleIdentifier = "forbidden"
         let customRules: [String: Any] = [
-            "forbidden": [
+            customRuleIdentifier: [
                 "regex": "FORBIDDEN",
             ],
         ]
 
         let example = Example("""
                               let FORBIDDEN = 1
-                              // swiftlint:disable:next forbidden
+                              // swiftlint:disable:next \(customRuleIdentifier)
                               let ALLOWED = 2
                               """)
 
         let violations = try violations(forExample: example, customRules: customRules)
 
-        // We should get a violation on the first line, and a superfluous_disable_command
-        // violation on the second
         XCTAssertEqual(violations.count, 2)
+        XCTAssertEqual(violations.first?.ruleIdentifier, customRuleIdentifier)
+        XCTAssertEqual(violations[1].ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
     }
 
     func testDisablingCustomRulesWorks() throws {
@@ -349,6 +350,9 @@ final class CustomRulesTests: SwiftLintTestCase {
 
         let file2 = SwiftLintFile(contents: "// swiftlint:disable custom\n")
         XCTAssertFalse(file2.regions().first?.isRuleEnabled(customRules) ?? true)
+
+        let file3 = SwiftLintFile(contents: "// swiftlint:disable all\n")
+        XCTAssertFalse(file3.regions().first?.isRuleEnabled(customRules) ?? true)
     }
 
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {

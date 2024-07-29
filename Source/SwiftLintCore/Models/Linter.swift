@@ -47,7 +47,6 @@ private extension Rule {
                 let isSuperfluousRuleDisabled = regionsDisablingSuperfluousDisableRule.contains {
                     $0.contains(region.start)
                 }
-
                 guard !isSuperfluousRuleDisabled else {
                     return nil
                 }

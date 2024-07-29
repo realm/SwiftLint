@@ -1207,9 +1207,9 @@ allowing overrides in each project via a child configuration file.</p>
 <pre class="highlight yaml"><code><span class="na">opt_in_rules</span><span class="pi">:</span>
 <span class="pi">-</span> <span class="s">force_cast</span>
 </code></pre>
-<h3 id='child-parent-configs-locally' class='heading'>Child / Parent Configs (Locally)</h3>
+<h3 id='child-parent-configs-locally' class='heading'>Child/Parent Configs (Locally)</h3>
 
-<p>You can specify a <code>child_config</code> and / or a <code>parent_config</code> reference within a
+<p>You can specify a <code>child_config</code> and/or a <code>parent_config</code> reference within a
 configuration file. These references should be local paths relative to the
 folder of the configuration file they are specified in. This even works
 recursively, as long as there are no cycles and no ambiguities.</p>
@@ -1235,9 +1235,9 @@ look like this:</p>
 <p>When merging parent and child configs, <code>included</code> and <code>excluded</code> configurations
 are processed carefully to account for differences in the directory location
 of the containing configuration files.</p>
-<h3 id='child-parent-configs-remote' class='heading'>Child / Parent Configs (Remote)</h3>
+<h3 id='child-parent-configs-remote' class='heading'>Child/Parent Configs (Remote)</h3>
 
-<p>Just as you can provide local <code>child_config</code> / <code>parent_config</code> references,
+<p>Just as you can provide local <code>child_config</code>/<code>parent_config</code> references,
 instead of referencing local paths, you can just put urls that lead to
 configuration files. In order for SwiftLint to detect these remote references,
 they must start with <code>http://</code> or <code>https://</code>.</p>
@@ -1257,8 +1257,8 @@ there once SwiftLint has run successfully at least once.</p>
 
 <p>If needed, the timeouts for the remote configuration fetching can be specified
 manually via the configuration file(s) using the
-<code>remote_timeout</code> / <code>remote_timeout_if_cached</code> specifiers. These values default
-to 2 / 1 second(s).</p>
+<code>remote_timeout</code>/<code>remote_timeout_if_cached</code> specifiers. These values default
+to 2 seconds or 1 second, respectively.</p>
 <h3 id='command-line' class='heading'>Command Line</h3>
 
 <p>Instead of just providing one configuration file when running SwiftLint via the
@@ -1283,7 +1283,7 @@ configuration.</p>
 <p><code>.swiftlint.yml</code> files are only considered as a nested configuration if they
 have not been used to build the main configuration already (e. g. by having
 been referenced via something like <code>child_config: Folder/.swiftlint.yml</code>).
-Also, <code>parent_config</code> / <code>child_config</code> specifications of nested configurations
+Also, <code>parent_config</code>/<code>child_config</code> specifications of nested configurations
 are getting ignored because there&rsquo;s no sense to that.</p>
 
 <p>If one (or more) SwiftLint file(s) are explicitly specified via the <code>--config</code>

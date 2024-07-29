@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct VerticalWhitespaceConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = VerticalWhitespaceRule
 

@@ -23,7 +23,8 @@ struct AccessibilityTraitForButtonRule: ASTRule, OptInRule {
 
     // MARK: AST Rule
 
-    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+    func validate(file: SwiftLintFile,
+                  kind: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         // Only proceed to check View structs.
         guard kind == .struct,

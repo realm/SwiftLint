@@ -29,22 +29,22 @@ struct ArrayInitRule: OptInRule {
                 foo.↓map { elem in
                     elem
                 }
-            """),
+                """),
             Example("""
                 foo.↓map { elem in
                     return elem
                 }
-            """),
+                """),
             Example("""
                 foo.↓map { (elem: String) in
                     elem
                 }
-            """),
+                """),
             Example("""
                 foo.↓map { elem -> String in
                     elem
                 }
-            """),
+                """),
             Example("foo.↓map { $0 /* a comment */ }"),
             Example("foo.↓map { /* a comment */ $0 }"),
         ]

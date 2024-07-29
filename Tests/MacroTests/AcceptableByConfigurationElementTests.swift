@@ -3,15 +3,14 @@ import SwiftSyntaxMacrosTestSupport
 import XCTest
 
 private let macros = [
-    "MakeAcceptableByConfigurationElement": MakeAcceptableByConfigurationElement.self
+    "AcceptableByConfigurationElement": AcceptableByConfigurationElement.self
 ]
 
-// swiftlint:disable:next type_name
-final class MakeAcceptableByConfigurationElementTests: XCTestCase {
+final class AcceptableByConfigurationElementTests: XCTestCase {
     func testNoEnum() {
         assertMacroExpansion(
             """
-            @MakeAcceptableByConfigurationElement
+            @AcceptableByConfigurationElement
             struct S {
             }
             """,
@@ -29,7 +28,7 @@ final class MakeAcceptableByConfigurationElementTests: XCTestCase {
     func testNoStringRawType() {
         assertMacroExpansion(
             """
-            @MakeAcceptableByConfigurationElement
+            @AcceptableByConfigurationElement
             enum E {
             }
             """,
@@ -47,7 +46,7 @@ final class MakeAcceptableByConfigurationElementTests: XCTestCase {
     func testPrivateEnum() {
         assertMacroExpansion(
             """
-            @MakeAcceptableByConfigurationElement
+            @AcceptableByConfigurationElement
             private enum E: String {
             }
             """,
@@ -75,7 +74,7 @@ final class MakeAcceptableByConfigurationElementTests: XCTestCase {
     func testPublicEnum() {
         assertMacroExpansion(
             """
-            @MakeAcceptableByConfigurationElement
+            @AcceptableByConfigurationElement
             public enum E: String {
             }
             """,

@@ -210,6 +210,7 @@ public struct Configuration {
     public init(
         configurationFiles: [String], // No default value here to avoid ambiguous Configuration() initializer
         enableAllRules: Bool = false,
+        onlyRule: String? = nil,
         cachePath: String? = nil,
         ignoreParentAndChildConfigs: Bool = false,
         mockedNetworkResults: [String: String] = [:],
@@ -247,6 +248,7 @@ public struct Configuration {
             )
             let resultingConfiguration = try fileGraph.resultingConfiguration(
                 enableAllRules: enableAllRules,
+                onlyRule: onlyRule,
                 cachePath: cachePath
             )
 

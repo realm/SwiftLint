@@ -336,6 +336,7 @@ nimble_operator:
   severity: warning
 no_empty_block:
   severity: warning
+  disabled_block_types: []
 no_extension_access_modifier:
   severity: error
 no_fallthrough_only:

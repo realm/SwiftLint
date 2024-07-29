@@ -12,18 +12,24 @@ struct ExplicitTopLevelACLRule: OptInRule {
         nonTriggeringExamples: [
             Example("internal enum A {}"),
             Example("public final class B {}"),
-            Example("private struct C {}"),
+            Example("""
+                private struct S1 {
+                    struct S2 {}
+                }
+                """),
             Example("internal enum A { enum B {} }"),
-            Example("internal final class Foo {}"),
-            Example("internal\nclass Foo {}"),
+            Example("internal final actor Foo {}"),
+            Example("internal typealias Foo = Bar"),
             Example("internal func a() {}"),
             Example("extension A: Equatable {}"),
             Example("extension A {}"),
+            Example("f { func f() {} }", excludeFromDocumentation: true),
+            Example("do { func f() {} }", excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("↓enum A {}"),
             Example("final ↓class B {}"),
-            Example("↓struct C {}"),
+            Example("↓protocol P {}"),
             Example("↓func a() {}"),
             Example("internal let a = 0\n↓func b() {}"),
         ]

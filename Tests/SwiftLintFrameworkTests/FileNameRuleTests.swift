@@ -4,8 +4,10 @@ import XCTest
 private let fixturesDirectory = "\(TestResources.path)/FileNameRuleFixtures"
 
 final class FileNameRuleTests: SwiftLintTestCase {
-    private func validate(fileName: String, excludedOverride: [String]? = nil,
-                          prefixPattern: String? = nil, suffixPattern: String? = nil,
+    private func validate(fileName: String,
+                          excludedOverride: [String]? = nil,
+                          prefixPattern: String? = nil,
+                          suffixPattern: String? = nil,
                           nestedTypeSeparator: String? = nil) throws -> [StyleViolation] {
         let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule: FileNameRule

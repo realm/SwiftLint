@@ -12,38 +12,38 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
 
     private static let nonTriggeringExamples: [Example] = [
         Example("""
-        switch x {
+            switch x {
 
-        case 0..<5:
-            print("x is low")
+            case 0..<5:
+                print("x is low")
 
-        case 5..<10:
-            print("x is high")
+            case 5..<10:
+                print("x is high")
 
-        default:
-            print("x is invalid")
+            default:
+                print("x is invalid")
 
-        }
-        """),
+            }
+            """),
         Example("""
-        switch x {
-        case 0..<5:
-            print("x is low")
+            switch x {
+            case 0..<5:
+                print("x is low")
 
-        case 5..<10:
-            print("x is high")
+            case 5..<10:
+                print("x is high")
 
-        default:
-            print("x is invalid")
-        }
-        """),
+            default:
+                print("x is invalid")
+            }
+            """),
         Example("""
-        switch x {
-        case 0..<5: print("x is low")
-        case 5..<10: print("x is high")
-        default: print("x is invalid")
-        }
-        """),
+            switch x {
+            case 0..<5: print("x is low")
+            case 5..<10: print("x is high")
+            default: print("x is invalid")
+            }
+            """),
         // Testing handling of trailing spaces: do not convert to """ style
         Example([
             "switch x {    \n",
@@ -61,70 +61,70 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
             switch x {
             case 0..<5:
                 return "x is valid"
-        ↓    default:
+            ↓default:
                 return "x is invalid"
             }
-        """): Example("""
-            switch x {
-            case 0..<5:
-                return "x is valid"
+            """): Example("""
+                switch x {
+                case 0..<5:
+                    return "x is valid"
 
-            default:
-                return "x is invalid"
-            }
-        """),
+                default:
+                    return "x is invalid"
+                }
+                """),
         Example("""
             switch x {
             case 0..<5:
                 print("x is valid")
-        ↓    default:
+            ↓default:
                 print("x is invalid")
             }
-        """): Example("""
-            switch x {
-            case 0..<5:
-                print("x is valid")
+            """): Example("""
+                switch x {
+                case 0..<5:
+                    print("x is valid")
 
-            default:
-                print("x is invalid")
-            }
-        """),
+                default:
+                    print("x is invalid")
+                }
+                """),
         Example("""
             switch x {
             case .valid:
                 print("x is valid")
-        ↓    case .invalid:
+            ↓case .invalid:
                 print("x is invalid")
             }
-        """): Example("""
-            switch x {
-            case .valid:
-                print("x is valid")
+            """): Example("""
+                switch x {
+                case .valid:
+                    print("x is valid")
 
-            case .invalid:
-                print("x is invalid")
-            }
-        """),
+                case .invalid:
+                    print("x is invalid")
+                }
+                """),
         Example("""
             switch x {
             case .valid:
                 print("multiple ...")
                 print("... lines")
-        ↓    case .invalid:
+            ↓case .invalid:
                 print("multiple ...")
                 print("... lines")
             }
-        """): Example("""
-            switch x {
-            case .valid:
-                print("multiple ...")
-                print("... lines")
+            """): Example("""
+                switch x {
+                case .valid:
+                    print("multiple ...")
+                    print("... lines")
 
-            case .invalid:
-                print("multiple ...")
-                print("... lines")
-            }
-        """),
+                case .invalid:
+                    print("multiple ...")
+                    print("... lines")
+                }
+                """),
     ]
 
     private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default):[ \\t]*\\n)"

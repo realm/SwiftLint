@@ -21,7 +21,8 @@ struct HTMLReporter: Reporter {
     // MARK: - Internal
 
     // swiftlint:disable:next function_body_length
-    internal static func generateReport(_ violations: [StyleViolation], swiftlintVersion: String,
+    internal static func generateReport(_ violations: [StyleViolation],
+                                        swiftlintVersion: String,
                                         dateString: String) -> String {
         let rows = violations.enumerated()
             .map { generateSingleRow(for: $1, at: $0 + 1) }

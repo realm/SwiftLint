@@ -3,7 +3,8 @@ import SwiftSyntax
 private func embedInSwitch(
     _ text: String,
     case: String = "case .bar",
-    file: StaticString = #filePath, line: UInt = #line) -> Example {
+    file: StaticString = #filePath,
+    line: UInt = #line) -> Example {
     Example("""
         switch foo {
         \(`case`):

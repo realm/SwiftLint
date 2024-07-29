@@ -71,9 +71,13 @@ public struct RuleDescription: Equatable, Sendable {
     /// - parameter corrections:           Sets the description's `corrections` property.
     /// - parameter deprecatedAliases:     Sets the description's `deprecatedAliases` property.
     /// - parameter requiresFileOnDisk:    Sets the description's `requiresFileOnDisk` property.
-    public init(identifier: String, name: String, description: String, kind: RuleKind,
+    public init(identifier: String,
+                name: String,
+                description: String,
+                kind: RuleKind,
                 minSwiftVersion: SwiftVersion = .five,
-                nonTriggeringExamples: [Example] = [], triggeringExamples: [Example] = [],
+                nonTriggeringExamples: [Example] = [],
+                triggeringExamples: [Example] = [],
                 corrections: [Example: Example] = [:],
                 deprecatedAliases: Set<String> = [],
                 requiresFileOnDisk: Bool = false) {

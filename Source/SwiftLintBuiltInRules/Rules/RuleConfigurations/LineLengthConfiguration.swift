@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct LineLengthConfiguration: RuleConfiguration {
     typealias Parent = LineLengthRule
 

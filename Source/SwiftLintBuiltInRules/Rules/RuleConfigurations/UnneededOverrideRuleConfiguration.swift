@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct UnneededOverrideRuleConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = UnneededOverrideRule
 

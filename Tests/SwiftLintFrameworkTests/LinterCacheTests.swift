@@ -77,8 +77,11 @@ final class LinterCacheTests: SwiftLintTestCase {
         CacheTestHelper(dict: dict, cache: cache)
     }
 
-    private func cacheAndValidate(violations: [StyleViolation], forFile: String, configuration: Configuration,
-                                  file: StaticString = #filePath, line: UInt = #line) {
+    private func cacheAndValidate(violations: [StyleViolation],
+                                  forFile: String,
+                                  configuration: Configuration,
+                                  file: StaticString = #filePath,
+                                  line: UInt = #line) {
         cache.cache(violations: violations, forFile: forFile, configuration: configuration)
         cache = cache.flushed()
         XCTAssertEqual(cache.violations(forFile: forFile, configuration: configuration)!,
@@ -86,7 +89,8 @@ final class LinterCacheTests: SwiftLintTestCase {
     }
 
     private func cacheAndValidateNoViolationsTwoFiles(configuration: Configuration,
-                                                      file: StaticString = #filePath, line: UInt = #line) {
+                                                      file: StaticString = #filePath,
+                                                      line: UInt = #line) {
         let (file1, file2) = ("file1.swift", "file2.swift")
         // swiftlint:disable:next force_cast
         let fileManager = cache.fileManager as! TestFileManager
@@ -96,8 +100,10 @@ final class LinterCacheTests: SwiftLintTestCase {
         cacheAndValidate(violations: [], forFile: file2, configuration: configuration, file: file, line: line)
     }
 
-    private func validateNewConfigDoesntHitCache(dict: [String: Any], initialConfig: Configuration,
-                                                 file: StaticString = #filePath, line: UInt = #line) throws {
+    private func validateNewConfigDoesntHitCache(dict: [String: Any],
+                                                 initialConfig: Configuration,
+                                                 file: StaticString = #filePath,
+                                                 line: UInt = #line) throws {
         let newConfig = try Configuration(dict: dict)
         let (file1, file2) = ("file1.swift", "file2.swift")
 

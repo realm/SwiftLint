@@ -2,8 +2,10 @@
 
 #### Breaking
 
-* The deprecated `--path` argument has now been removed completely.  
+* The deprecated `--path` and `--in-process-sourcekit` arguments have now been
+  removed completely.  
   [Martin Redington](https://github.com/mildm8nnered)
+  [SimplyDanny](https://github.com/SimplyDanny)
   [#5614](https://github.com/realm/SwiftLint/issues/5614)
 
 * When SwiftLint corrects violations automatically (`swiftlint lint --fix`)
@@ -21,8 +23,8 @@
 
 #### Enhancements
 
-* Linting got around 20% faster due to the praisworthy performance
-  improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
+* Linting got up to 30% faster due to the praisworthy performance
+  improvements done in the [SwiftSyntax](https://github.com/swiftlang/swift-syntax)
   library.
 
 * Rewrite the following rules with SwiftSyntax:
@@ -36,7 +38,7 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5552](https://github.com/realm/SwiftLint/issues/5552)
 
-* Add `no_empty_block` default rule to validate that code blocks are not empty.
+* Add `no_empty_block` opt-in rule to validate that code blocks are not empty.
   They should at least contain a comment.  
   [Ueeek](https://github.com/Ueeek)
   [#5615](https://github.com/realm/SwiftLint/issues/5615)
@@ -45,6 +47,10 @@
   parameters that are not used inside of the function/initializer/subscript.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#2120](https://github.com/realm/SwiftLint/issues/2120)
+
+* Support `--target` paths being passed to command plugin by Xcode.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5603](https://github.com/realm/SwiftLint/issues/5603)
 
 * Add modified configurations to examples in rule documentation.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -63,6 +69,13 @@
   [Ian Leitch](https://github.com/ileitch)
   [#5613](https://github.com/realm/SwiftLint/issues/5613)
 
+* Add new `--only-rule` command line option for the `lint` and `analyze`,
+  subcommands that overrides configuration file rule enablement and
+  disablement, in particular to facilitate running `--fix` for single rules
+  without having to temporarily edit the configuration file.
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5666](https://github.com/realm/SwiftLint/issues/5666)
+
 #### Bug Fixes
 
 * Fix a few false positives and negatives by updating the parser to support
@@ -73,6 +86,12 @@
   comment.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5592](https://github.com/realm/SwiftLint/issues/5592)
+
+* Use correct types and relative paths in SARIF reporter output. Generally
+  avoid escaping slashes in JSON output as well.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5598](https://github.com/realm/SwiftLint/issues/5598)
+  [#5599](https://github.com/realm/SwiftLint/issues/5599)
 
 * Keep initializers with attributed parameters in
   `unneeded_synthesized_initializer` rule.  
@@ -99,6 +118,18 @@
   nested within each other.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5660](https://github.com/realm/SwiftLint/issues/5660)
+
+* Fix `opening_brace` correction and make sure that disable commands
+  are taken into account before applying a fix.  
+  [swiftty](https://github.com/swiftty)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5598](https://github.com/realm/SwiftLint/issues/5598)
+
+* Violations of the `typesafe_array_init` rule will now be correctly
+  reported as such, instead of as violations of the `array_init`
+  rule.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5709](https://github.com/realm/SwiftLint/issues/5709)
 
 ## 0.55.1: Universal Washing Powder
 

@@ -53,7 +53,8 @@ private extension LocalDocCommentRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let docCommentRanges: [ByteSourceRange]
 
-        init(configuration: ConfigurationType, file: SwiftLintFile,
+        init(configuration: ConfigurationType,
+             file: SwiftLintFile,
              classifications: [SyntaxClassifiedRange]) {
             self.docCommentRanges = classifications
                 .filter { $0.kind == .docLineComment || $0.kind == .docBlockComment }

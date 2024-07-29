@@ -11,8 +11,8 @@ SwiftLint hooks into [Clang](http://clang.llvm.org) and
 [AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) representation
 of your source files for more accurate results.
 
-[![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
-[![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=main)](https://codecov.io/github/realm/SwiftLint?branch=main)
+[![Azure Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
+[![Buildkite Build Status](https://badge.buildkite.com/e2a5bc32c347e76e2793e4c5764a5f42bcd42bbe32f79c3a53.svg?branch=main)](https://buildkite.com/swiftlint/swiftlint)
 
 ![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/screenshot.png)
 
@@ -331,6 +331,27 @@ else
     echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
 fi
 ```
+
+If you're using the SwiftLintPlugin in a Swift package,
+you may refer to the `swiftlint` executable in the
+following way:
+
+```bash
+SWIFT_PACKAGE_DIR="${BUILD_DIR%Build/*}SourcePackages/artifacts"
+SWIFTLINT_CMD=$(ls "$SWIFT_PACKAGE_DIR"/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-*/bin/swiftlint | head -n 1)
+
+if test -f "$SWIFTLINT_CMD" 2>&1
+then
+    "$SWIFTLINT_CMD"
+else
+    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
+fi
+```
+
+> [!NOTE]
+> The `SWIFTLINT_CMD` path uses the default Xcode configuration and has been
+> tested on Xcode 15/16. In case of another configuration (e.g. a custom
+> Swift package path), please adapt the values accordingly.
 
 > [!TIP]
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental

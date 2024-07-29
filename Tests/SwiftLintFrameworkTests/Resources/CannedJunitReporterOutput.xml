@@ -2,12 +2,12 @@
 <testsuites failures="1" errors="3">
 	<testsuite failures="1" errors="3">
 		<testcase classname='Formatting Test' name='filename'>
-			<failure message='Violation Reason'>Warning:Line:1</failure>
+			<failure message='Violation Reason 1'>Warning:Line:1</failure>
 		</testcase>
 		<testcase classname='Formatting Test' name='filename'>
-			<failure message='Violation Reason'>Error:Line:1</failure>
+			<failure message='Violation Reason 2'>Error:Line:1</failure>
 		</testcase>
-		<testcase classname='Formatting Test' name='filename'>
+		<testcase classname='Formatting Test' name='${CURRENT_WORKING_DIRECTORY}/path/file.swift'>
 			<failure message='Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;'>Error:Line:1</failure>
 		</testcase>
 		<testcase classname='Formatting Test' name='&lt;nopath&gt;'>

@@ -1,10 +1,10 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct TodoConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = TodoRule
 
-    @MakeAcceptableByConfigurationElement
+    @AcceptableByConfigurationElement
     enum TodoKeyword: String, CaseIterable {
         case todo = "TODO"
         case fixme = "FIXME"

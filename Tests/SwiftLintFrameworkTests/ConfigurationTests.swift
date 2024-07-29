@@ -87,6 +87,16 @@ final class ConfigurationTests: SwiftLintTestCase {
         XCTAssertEqual(configuration.rules.count, RuleRegistry.shared.list.list.count)
     }
 
+    func testOnlyRule() throws {
+        let configuration = try Configuration(
+            dict: [:],
+            onlyRule: "nesting",
+            cachePath: nil
+        )
+
+        XCTAssertEqual(configuration.rules.count, 1)
+    }
+
     func testOnlyRules() throws {
         let only = ["nesting", "todo"]
 

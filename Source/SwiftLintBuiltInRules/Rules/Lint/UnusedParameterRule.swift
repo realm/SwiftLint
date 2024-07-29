@@ -144,19 +144,8 @@ private extension UnusedParameterRule {
         override func visitPost(_ node: CodeBlockItemListSyntax) {
             let declarations = scope.peek() ?? []
             for declaration in declarations.reversed() where !referencedDeclarations.contains(declaration) {
-                // Violation
-                guard case let .parameter(name) = declaration else {
-                    continue
-                }
-                let violation = ReasonedRuleViolation(
-                    position: name.positionAfterSkippingLeadingTrivia,
-                    reason: "Parameter '\(name.text)' is unused; consider removing or replacing it with '_'",
-                    severity: configuration.severity
-                )
-                violations.append(violation)
-
-                // Correction
-                guard let previousToken = name.previousToken(viewMode: .sourceAccurate) else {
+                guard case let .parameter(name) = declaration,
+                      let previousToken = name.previousToken(viewMode: .sourceAccurate) else {
                     continue
                 }
                 let startPosReplacement =
@@ -167,12 +156,16 @@ private extension UnusedParameterRule {
                     } else {
                         (name.positionAfterSkippingLeadingTrivia, name.text + " _")
                     }
-                let correction = ViolationCorrection(
-                    start: startPosReplacement.0,
-                    end: name.endPositionBeforeTrailingTrivia,
-                    replacement: startPosReplacement.1
-                )
-                violationCorrections.append(correction)
+                violations.append(.init(
+                    position: name.positionAfterSkippingLeadingTrivia,
+                    reason: "Parameter '\(name.text)' is unused; consider removing or replacing it with '_'",
+                    severity: configuration.severity,
+                    correction: .init(
+                        start: startPosReplacement.0,
+                        end: name.endPositionBeforeTrailingTrivia,
+                        replacement: startPosReplacement.1
+                    )
+                ))
             }
             super.visitPost(node)
         }

@@ -79,9 +79,8 @@ private extension RedundantSelfInClosureRule {
                 functionCallType: activeFunctionCallType,
                 selfCaptureKind: activeSelfCaptureKind,
                 scope: scope
-            ).walk(tree: node.statements, handler: \.violationCorrections)
-            violations.append(contentsOf: localViolationCorrections.map(\.start))
-            violationCorrections.append(contentsOf: localViolationCorrections)
+            ).walk(tree: node.statements, handler: \.violations)
+            violations.append(contentsOf: localViolationCorrections)
             selfCaptures.pop()
         }
 
@@ -137,8 +136,9 @@ private class ExplicitSelfVisitor<Configuration: RuleConfiguration>: DeclaredIde
 
     override func visitPost(_ node: MemberAccessExprSyntax) {
         if !hasSeenDeclaration(for: node.declName.baseName.text), node.isBaseSelf, isSelfRedundant {
-            violationCorrections.append(
-                ViolationCorrection(
+            violations.append(
+                at: node.positionAfterSkippingLeadingTrivia,
+                correction: .init(
                     start: node.positionAfterSkippingLeadingTrivia,
                     end: node.period.endPositionBeforeTrailingTrivia,
                     replacement: ""

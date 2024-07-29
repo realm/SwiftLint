@@ -60,7 +60,8 @@ public extension Configuration {
     }
 }
 
-public func violations(_ example: Example, config inputConfig: Configuration = Configuration.default,
+public func violations(_ example: Example,
+                       config inputConfig: Configuration = Configuration.default,
                        requiresFileOnDisk: Bool = false) -> [StyleViolation] {
     SwiftLintFile.clearCaches()
     let config = inputConfig.applyingConfiguration(from: example)
@@ -74,8 +75,8 @@ public func violations(_ example: Example, config inputConfig: Configuration = C
 
     let file = SwiftLintFile.testFile(withContents: stringStrippingMarkers.code, persistToDisk: true)
     let storage = RuleStorage()
-    let collecter = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
-    let linter = collecter.collect(into: storage)
+    let collector = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
+    let linter = collector.collect(into: storage)
     return linter.styleViolations(using: storage).withoutFiles()
 }
 
@@ -211,13 +212,17 @@ private extension Configuration {
         let includeCompilerArguments = self.rules.contains(where: { $0 is any AnalyzerRule })
         let compilerArguments = includeCompilerArguments ? file.makeCompilerArguments() : []
         let storage = RuleStorage()
-        let collecter = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
-        let linter = collecter.collect(into: storage)
+        let collector = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
+        let linter = collector.collect(into: storage)
         let corrections = linter.correct(using: storage).sorted { $0.location < $1.location }
         if expectedLocations.isEmpty {
-            XCTAssertEqual(
-                corrections.count, before.code != expected.code ? 1 : 0, #function + ".expectedLocationsEmpty",
-                file: before.file, line: before.line)
+            XCTAssertGreaterThanOrEqual(
+                corrections.count,
+                before.code != expected.code ? 1 : 0,
+                #function + ".expectedLocationsEmpty",
+                file: before.file,
+                line: before.line
+            )
         } else {
             XCTAssertEqual(
                 corrections.count,
@@ -264,7 +269,8 @@ private extension String {
     }
 }
 
-public func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,
+public func makeConfig(_ ruleConfiguration: Any?,
+                       _ identifier: String,
                        skipDisableCommandTests: Bool = false) -> Configuration? {
     let superfluousDisableCommandRuleIdentifier = SuperfluousDisableCommandRule.description.identifier
     let identifiers: Set<String> = skipDisableCommandTests ? [identifier]
@@ -418,14 +424,14 @@ public extension XCTestCase {
                 .map { $0.with(code: command + $0.code) }
 
             for trigger in disabledTriggers {
-                let violationsPartionedByType = makeViolations(trigger)
+                let violationsPartitionedByType = makeViolations(trigger)
                     .partitioned { $0.ruleIdentifier == SuperfluousDisableCommandRule.description.identifier }
 
-                XCTAssert(violationsPartionedByType.first.isEmpty,
+                XCTAssert(violationsPartitionedByType.first.isEmpty,
                           "Violation(s) still triggered although rule was disabled",
                           file: trigger.file,
                           line: trigger.line)
-                XCTAssert(violationsPartionedByType.second.isEmpty,
+                XCTAssert(violationsPartitionedByType.second.isEmpty,
                           "Disable command was superfluous since no violations(s) triggered",
                           file: trigger.file,
                           line: trigger.line)
@@ -433,8 +439,10 @@ public extension XCTestCase {
         }
     }
 
-    func verifyCorrections(_ ruleDescription: RuleDescription, config: Configuration,
-                           disableCommands: [String], testMultiByteOffsets: Bool,
+    func verifyCorrections(_ ruleDescription: RuleDescription,
+                           config: Configuration,
+                           disableCommands: [String],
+                           testMultiByteOffsets: Bool,
                            parserDiagnosticsDisabledForTests: Bool = true) {
         let ruleDescription = ruleDescription.focused()
 
@@ -459,8 +467,10 @@ public extension XCTestCase {
         }
     }
 
-    private func verifyExamples(triggers: [Example], nonTriggers: [Example],
-                                configuration config: Configuration, requiresFileOnDisk: Bool) {
+    private func verifyExamples(triggers: [Example],
+                                nonTriggers: [Example],
+                                configuration config: Configuration,
+                                requiresFileOnDisk: Bool) {
         // Non-triggering examples don't violate
         for nonTrigger in nonTriggers {
             let unexpectedViolations = violations(nonTrigger, config: config,

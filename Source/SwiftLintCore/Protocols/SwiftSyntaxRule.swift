@@ -46,8 +46,13 @@ public extension SwiftSyntaxRule {
             return []
         }
 
-        return makeVisitor(file: file)
+        let violations = makeVisitor(file: file)
             .walk(tree: syntaxTree, handler: \.violations)
+        assert(
+            violations.allSatisfy { $0.correction == nil || self is any SwiftSyntaxCorrectableRule },
+            "\(Self.self) produced corrections without being correctable."
+        )
+        return violations
             .sorted()
             .map { makeViolation(file: file, violation: $0) }
     }
@@ -75,22 +80,53 @@ public extension SwiftSyntaxRule {
 
 /// A violation produced by `ViolationsSyntaxVisitor`s.
 public struct ReasonedRuleViolation: Comparable, Hashable {
+    /// The correction of a violation that is basically the violation's range in the source code and a
+    /// replacement for this range that would fix the violation.
+    public struct ViolationCorrection: Hashable {
+        /// Start position of the violation range.
+        let start: AbsolutePosition
+        /// End position of the violation range.
+        let end: AbsolutePosition
+        /// Replacement for the violating range.
+        let replacement: String
+
+        /// Create a ``ViolationCorrection``.
+        /// - Parameters:
+        ///   - start:          Start position of the violation range.
+        ///   - end:            End position of the violation range.
+        ///   - replacement:    Replacement for the violating range.
+        public init(start: AbsolutePosition, end: AbsolutePosition, replacement: String) {
+            self.start = start
+            self.end = end
+            self.replacement = replacement
+        }
+    }
+
     /// The violation's position.
     public let position: AbsolutePosition
     /// A specific reason for the violation.
     public let reason: String?
     /// The violation's severity.
     public let severity: ViolationSeverity?
+    /// An optional correction of the violation to be used in rewriting (see ``SwiftSyntaxCorrectableRule``). Can be
+    /// left unset when creating a violation, especially if the rule is not correctable or provides a custom rewriter.
+    public let correction: ViolationCorrection?
 
     /// Creates a `ReasonedRuleViolation`.
     ///
-    /// - parameter position: The violations position in the analyzed source file.
-    /// - parameter reason: The reason for the violation if different from the rule's description.
-    /// - parameter severity: The severity of the violation if different from the rule's default configured severity.
-    public init(position: AbsolutePosition, reason: String? = nil, severity: ViolationSeverity? = nil) {
+    /// - Parameters:
+    ///   - position: The violations position in the analyzed source file.
+    ///   - reason: The reason for the violation if different from the rule's description.
+    ///   - severity: The severity of the violation if different from the rule's default configured severity.
+    ///   - correction: An optional correction of the violation to be used in rewriting.
+    public init(position: AbsolutePosition,
+                reason: String? = nil,
+                severity: ViolationSeverity? = nil,
+                correction: ViolationCorrection? = nil) {
         self.position = position
         self.reason = reason
         self.severity = severity
+        self.correction = correction
     }
 
     public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -101,14 +137,22 @@ public struct ReasonedRuleViolation: Comparable, Hashable {
 /// Extension for arrays of `ReasonedRuleViolation`s that provides the automatic conversion of
 /// `AbsolutePosition`s into `ReasonedRuleViolation`s (without a specific reason).
 public extension Array where Element == ReasonedRuleViolation {
-    /// Append a minimal violation for the specified position.
+    /// Add a violation at the specified position using the default description and severity.
     ///
     /// - parameter position: The position for the violation to append.
     mutating func append(_ position: AbsolutePosition) {
         append(ReasonedRuleViolation(position: position))
     }
 
-    /// Append minimal violations for the specified positions.
+    /// Add a violation and the correction at the specified position using the default description and severity.
+    ///
+    /// - parameter position: The position for the violation to append.
+    /// - parameter correction: An optional correction to be applied when running with `--fix`.
+    mutating func append(at position: AbsolutePosition, correction: ReasonedRuleViolation.ViolationCorrection? = nil) {
+        append(ReasonedRuleViolation(position: position, correction: correction))
+    }
+
+    /// Add violations for the specified positions using the default description and severity.
     ///
     /// - parameter positions: The positions for the violations to append.
     mutating func append(contentsOf positions: [AbsolutePosition]) {

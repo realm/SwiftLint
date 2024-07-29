@@ -35,8 +35,6 @@ copts = [
     "-enable-upcoming-feature",
     "ForwardTrailingClosures",
     "-enable-upcoming-feature",
-    "InternalImportsByDefault",
-    "-enable-upcoming-feature",
     "ImplicitOpenExistentials",
 ]
 

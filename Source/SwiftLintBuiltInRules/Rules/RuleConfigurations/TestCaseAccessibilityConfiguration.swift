@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = TestCaseAccessibilityRule
 

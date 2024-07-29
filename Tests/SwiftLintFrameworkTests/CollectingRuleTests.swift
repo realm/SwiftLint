@@ -124,7 +124,8 @@ final class CollectingRuleTests: SwiftLintTestCase {
                     return []
             }
 
-            func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String],
+            func correct(file: SwiftLintFile,
+                         collectedInfo: [SwiftLintFile: String],
                          compilerArguments _: [String]) -> [Correction] {
                 collectedInfo[file] == "baz"
                     ? [Correction(ruleDescription: Spec.description, location: Location(file: file, byteOffset: 2))]

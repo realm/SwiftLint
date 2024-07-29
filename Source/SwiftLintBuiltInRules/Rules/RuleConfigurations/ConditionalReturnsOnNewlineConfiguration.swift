@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ConditionalReturnsOnNewlineRule
 

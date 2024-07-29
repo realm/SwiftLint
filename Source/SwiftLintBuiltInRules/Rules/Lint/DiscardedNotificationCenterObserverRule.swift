@@ -38,8 +38,8 @@ struct DiscardedNotificationCenterObserverRule: OptInRule {
             obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))
             """),
             Example("""
-            func foo(_ notif: Any) {
-               obs.append(notif)
+            func foo(_ notify: Any) {
+               obs.append(notify)
             }
             foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))
             """),

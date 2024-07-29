@@ -220,7 +220,8 @@ extension LiteralExpressionEndIndentationRule {
         }
     }
 
-    private func violation(in file: SwiftLintFile, of kind: SwiftExpressionKind,
+    private func violation(in file: SwiftLintFile,
+                           of kind: SwiftExpressionKind,
                            dictionary: SourceKittenDictionary) -> Violation? {
         guard kind == .dictionary || kind == .array else {
             return nil

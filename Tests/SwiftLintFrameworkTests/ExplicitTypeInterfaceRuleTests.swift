@@ -48,7 +48,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
         ]
         let triggeringExamples: [Example] = [
             Example("class Foo {\n  var ↓myVar = 0\n\n}\n"),
-            Example("class Foo {\n  let ↓mylet = 0\n\n}\n"),
+            Example("class Foo {\n  let ↓myLet = 0\n\n}\n"),
             Example("class Foo {\n  class var ↓myClassVar = 0\n}\n"),
         ]
         let description = ExplicitTypeInterfaceRule.description
@@ -76,7 +76,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
         ]
         let triggeringExamples: [Example] = [
             Example("class Foo {\n  var ↓myVar = 0\n\n}\n"),
-            Example("class Foo {\n  let ↓mylet = 0\n\n}\n"),
+            Example("class Foo {\n  let ↓myLet = 0\n\n}\n"),
             Example("class Foo {\n  static var ↓myStaticVar = 0\n}\n"),
             Example("class Foo {\n  class var ↓myClassVar = 0\n}\n"),
             Example("class Foo {\n  let ↓array = [\"foo\", \"bar\"]\n}\n"),
@@ -150,7 +150,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
     }
 
     func testFastEnumerationDeclaration() {
-        let nonTriggeringExaples = [
+        let nonTriggeringExamples = [
             Example("""
             func foo() {
                 let elements: [Int] = [1, 2]
@@ -168,7 +168,7 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
         let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
-            .with(nonTriggeringExamples: nonTriggeringExaples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
         verifyRule(description)
     }
 

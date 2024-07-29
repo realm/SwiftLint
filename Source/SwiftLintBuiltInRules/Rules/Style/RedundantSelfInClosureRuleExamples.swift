@@ -12,7 +12,7 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                 }
             }
-        """),
+            """),
         Example("""
             class C {
                 var x = 0
@@ -28,7 +28,7 @@ struct RedundantSelfInClosureRuleExamples {
                     f { [weak self] in if let self { x = 1 } }
                 }
             }
-        """),
+            """),
         Example("""
             struct S {
                 var x = 0, error = 0, exception = 0
@@ -58,7 +58,7 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                 }
             }
-        """),
+            """),
         Example("""
             enum E {
                 case a(Int)
@@ -79,20 +79,20 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                 }
             }
-        """),
+            """),
         Example("""
-        class C {
-            var a = 0
-            init(_ a: Int) {
-                self.a = a
-                f { [weak self] in
-                    guard let self else { return }
-                    self.a = 1
+            class C {
+                var a = 0
+                init(_ a: Int) {
+                    self.a = a
+                    f { [weak self] in
+                        guard let self else { return }
+                        self.a = 1
+                    }
                 }
+                func f(_: () -> Void) {}
             }
-            func f(_: () -> Void) {}
-        }
-        """, excludeFromDocumentation: true),
+            """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [
@@ -107,7 +107,7 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                 }
             }
-        """),
+            """),
         Example("""
             class C {
                 var x = 0
@@ -118,7 +118,7 @@ struct RedundantSelfInClosureRuleExamples {
                     }()
                 }
             }
-        """),
+            """),
         Example("""
             class C {
                 var x = 0
@@ -131,7 +131,7 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                 }
             }
-        """),
+            """),
         Example("""
             class C {
                 var x = 0
@@ -142,7 +142,7 @@ struct RedundantSelfInClosureRuleExamples {
                     f { [s = self] in s.x = 1 }
                 }
             }
-        """),
+            """),
         Example("""
             struct S {
                 var x = 0
@@ -171,7 +171,7 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                 }
             }
-        """),
+            """),
         Example("""
             struct S {
                 func f(_ work: @escaping () -> Void) { work() }
@@ -179,7 +179,7 @@ struct RedundantSelfInClosureRuleExamples {
                     f { let g = ↓self.g() }
                 }
             }
-        """, excludeFromDocumentation: true),
+            """, excludeFromDocumentation: true),
         Example("""
             extension E {
                 static func f(_ work: @escaping () -> Void) { work() }
@@ -188,7 +188,7 @@ struct RedundantSelfInClosureRuleExamples {
                     func g() { E.f { ↓self.g() } }
                 }
             }
-        """, excludeFromDocumentation: true),
+            """, excludeFromDocumentation: true),
         Example("""
             class C {
                 var x = 0
@@ -211,7 +211,7 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                 }
             }
-        """),
+            """),
     ]
 
     static let corrections = [
@@ -226,17 +226,17 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                 }
             }
-        """): Example("""
-            struct S {
-                var x = 0
-                func f(_ work: @escaping () -> Void) { work() }
-                func g() {
-                    f {
-                        x = 1
-                        if x == 1 { g() }
+            """): Example("""
+                struct S {
+                    var x = 0
+                    func f(_ work: @escaping () -> Void) { work() }
+                    func g() {
+                        f {
+                            x = 1
+                            if x == 1 { g() }
+                        }
                     }
                 }
-            }
-        """),
+                """),
     ]
 }

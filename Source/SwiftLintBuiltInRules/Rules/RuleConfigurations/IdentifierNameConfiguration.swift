@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct IdentifierNameConfiguration: RuleConfiguration {
     typealias Parent = IdentifierNameRule
 

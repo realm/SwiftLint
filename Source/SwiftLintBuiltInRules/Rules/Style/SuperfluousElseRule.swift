@@ -19,7 +19,7 @@ struct SuperfluousElseRule: OptInRule {
                 } else {
                     return 3
                 }
-            """),
+                """),
             Example("""
                 if i > 0 {
                     let a = 1
@@ -32,7 +32,7 @@ struct SuperfluousElseRule: OptInRule {
                 } else {
                     return 3
                 }
-            """),
+                """),
             Example("""
                 if i > 0 {
                     if a > 1 {
@@ -41,7 +41,7 @@ struct SuperfluousElseRule: OptInRule {
                 } else {
                     return 3
                 }
-            """),
+                """),
             Example("""
                 if i > 0 {
                     if a > 1 {
@@ -54,7 +54,7 @@ struct SuperfluousElseRule: OptInRule {
                 } else {
                     return 3
                 }
-            """, excludeFromDocumentation: true),
+                """, excludeFromDocumentation: true),
             Example("""
                 for i in list {
                     if i > 12 {
@@ -68,7 +68,7 @@ struct SuperfluousElseRule: OptInRule {
                         break
                     }
                 }
-            """),
+                """),
         ],
         triggeringExamples: [
             Example("""
@@ -78,7 +78,7 @@ struct SuperfluousElseRule: OptInRule {
                 } ↓else {
                     return 2
                 }
-            """),
+                """),
             Example("""
                 if i > 0 {
                     return 1
@@ -87,7 +87,7 @@ struct SuperfluousElseRule: OptInRule {
                 } ↓else if i > 18 {
                     return 3
                 }
-            """),
+                """),
             Example("""
                 if i > 0 {
                     if i < 12 {
@@ -106,7 +106,7 @@ struct SuperfluousElseRule: OptInRule {
                 } ↓else {
                     return 3
                 }
-            """),
+                """),
             Example("""
                 for i in list {
                     if i > 13 {
@@ -119,7 +119,7 @@ struct SuperfluousElseRule: OptInRule {
                         throw error
                     }
                 }
-            """),
+                """),
         ],
         corrections: [
             Example("""
@@ -133,17 +133,17 @@ struct SuperfluousElseRule: OptInRule {
                         // yet another comment
                     }
                 }
-            """): Example("""
-                func f() -> Int {
-                    if i > 0 {
-                        return 1
-                        // comment
+                """): Example("""
+                    func f() -> Int {
+                        if i > 0 {
+                            return 1
+                            // comment
+                        }
+                        // another comment
+                        return 2
+                        // yet another comment
                     }
-                    // another comment
-                    return 2
-                    // yet another comment
-                }
-            """),
+                    """),
             Example("""
                 func f() -> Int {
                     if i > 0 {
@@ -155,18 +155,18 @@ struct SuperfluousElseRule: OptInRule {
                         return 3
                     }
                 }
-            """): Example("""
-                func f() -> Int {
-                    if i > 0 {
-                        return 1
-                        // comment
+                """): Example("""
+                    func f() -> Int {
+                        if i > 0 {
+                            return 1
+                            // comment
+                        }
+                        if i < 10 {
+                            return 2
+                        }
+                        return 3
                     }
-                    if i < 10 {
-                        return 2
-                    }
-                    return 3
-                }
-            """),
+                    """),
             Example("""
                 func f() -> Int {
 
@@ -178,19 +178,19 @@ struct SuperfluousElseRule: OptInRule {
                         return 2
                     }
                 }
-            """): Example("""
-                func f() -> Int {
+                """): Example("""
+                    func f() -> Int {
 
-                    if i > 0 {
-                        return 1
-                        // comment
+                        if i > 0 {
+                            return 1
+                            // comment
+                        }
+                        if i < 10 {
+                            // another comment
+                            return 2
+                        }
                     }
-                    if i < 10 {
-                        // another comment
-                        return 2
-                    }
-                }
-            """),
+                    """),
             Example("""
                 {
                     if i > 0 {
@@ -199,14 +199,14 @@ struct SuperfluousElseRule: OptInRule {
                         return 2
                     }
                 }()
-            """): Example("""
-                {
-                    if i > 0 {
-                        return 1
-                    }
-                    return 2
-                }()
-            """),
+                """): Example("""
+                    {
+                        if i > 0 {
+                            return 1
+                        }
+                        return 2
+                    }()
+                    """),
             Example("""
                 for i in list {
                     if i > 13 {
@@ -223,24 +223,24 @@ struct SuperfluousElseRule: OptInRule {
 
                     }
                 }
-            """): Example("""
-                for i in list {
-                    if i > 13 {
-                        return
+                """): Example("""
+                    for i in list {
+                        if i > 13 {
+                            return
+                        }
+                        if i > 12 {
+                            continue // continue with next index
+                        }
+                        if i > 11 {
+                            break
+                            // end of loop
+                        }
+                        if i > 10 {
+                            // Some error
+                            throw error
+                        }
                     }
-                    if i > 12 {
-                        continue // continue with next index
-                    }
-                    if i > 11 {
-                        break
-                        // end of loop
-                    }
-                    if i > 10 {
-                        // Some error
-                        throw error
-                    }
-                }
-            """),
+                    """),
         ]
     )
 }

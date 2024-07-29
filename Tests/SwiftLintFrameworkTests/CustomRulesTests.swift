@@ -336,6 +336,31 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
     }
 
+    func testRegionsForCustomRules() {
+        let file = SwiftLintFile(contents: "// swiftlint:disable custom_rules\n")
+        XCTAssertFalse(file.regions().first?.isRuleEnabled(CustomRules()) ?? true)
+
+        let config: [String: Any] = [
+            "regex": "pattern",
+        ]
+
+        var regexConfig = RegexConfiguration<CustomRules>(identifier: "custom")
+        do {
+            try regexConfig.apply(configuration: config)
+        } catch {
+            XCTFail("Failed regex config")
+        }
+
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = [regexConfig]
+
+        var customRules = CustomRules()
+        customRules.configuration = customRuleConfiguration
+
+        let file2 = SwiftLintFile(contents: "// swiftlint:disable custom\n")
+        XCTAssertFalse(file2.regions().first?.isRuleEnabled(customRules) ?? true)
+    }
+
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {
         var config: [String: Any] = [
             "regex": "pattern",

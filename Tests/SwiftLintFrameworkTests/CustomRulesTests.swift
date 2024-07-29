@@ -344,18 +344,8 @@ final class CustomRulesTests: SwiftLintTestCase {
             "regex": "pattern",
         ]
 
-        var regexConfig = RegexConfiguration<CustomRules>(identifier: "custom")
-        do {
-            try regexConfig.apply(configuration: config)
-        } catch {
-            XCTFail("Failed regex config")
-        }
-
-        var customRuleConfiguration = CustomRulesConfiguration()
-        customRuleConfiguration.customRuleConfigurations = [regexConfig]
-
-        var customRules = CustomRules()
-        customRules.configuration = customRuleConfiguration
+        let regexConfig = configuration(withIdentifier: "custom", configurationDict: config)
+        let customRules = customRules(withConfigurations: [regexConfig])
 
         let file2 = SwiftLintFile(contents: "// swiftlint:disable custom\n")
         XCTAssertFalse(file2.regions().first?.isRuleEnabled(customRules) ?? true)
@@ -368,18 +358,8 @@ final class CustomRulesTests: SwiftLintTestCase {
         ]
         extraConfig.forEach { config[$0] = $1 }
 
-        var regexConfig = RegexConfiguration<CustomRules>(identifier: "custom")
-        do {
-            try regexConfig.apply(configuration: config)
-        } catch {
-            XCTFail("Failed regex config")
-        }
-
-        var customRuleConfiguration = CustomRulesConfiguration()
-        customRuleConfiguration.customRuleConfigurations = [regexConfig]
-
-        var customRules = CustomRules()
-        customRules.configuration = customRuleConfiguration
+        let regexConfig = configuration(withIdentifier: "custom", configurationDict: config)
+        let customRules = customRules(withConfigurations: [regexConfig])
         return (regexConfig, customRules)
     }
 
@@ -389,30 +369,16 @@ final class CustomRulesTests: SwiftLintTestCase {
             "match_kinds": "comment",
         ]
 
-        var regexConfig1 = Configuration(identifier: "custom1")
-        do {
-            try regexConfig1.apply(configuration: config1)
-        } catch {
-            XCTFail("Failed regex config")
-        }
+        let regexConfig1 = configuration(withIdentifier: "custom1", configurationDict: config1)
 
         let config2 = [
             "regex": "something",
             "match_kinds": "comment",
         ]
 
-        var regexConfig2 = Configuration(identifier: "custom2")
-        do {
-            try regexConfig2.apply(configuration: config2)
-        } catch {
-            XCTFail("Failed regex config")
-        }
+        let regexConfig2 = configuration(withIdentifier: "custom2", configurationDict: config2)
 
-        var customRuleConfiguration = CustomRulesConfiguration()
-        customRuleConfiguration.customRuleConfigurations = [regexConfig1, regexConfig2]
-
-        var customRules = CustomRules()
-        customRules.configuration = customRuleConfiguration
+        let customRules = customRules(withConfigurations: [regexConfig1, regexConfig2])
         return ((regexConfig1, regexConfig2), customRules)
     }
 
@@ -430,5 +396,23 @@ final class CustomRulesTests: SwiftLintTestCase {
             example.skipWrappingInCommentTest(),
             config: configuration
         )
+    }
+
+    private func configuration(withIdentifier identifier: String, configurationDict: [String:Any]) -> Configuration {
+        var regexConfig = Configuration(identifier: identifier)
+        do {
+            try regexConfig.apply(configuration: configurationDict)
+        } catch {
+            XCTFail("Failed regex config")
+        }
+        return regexConfig
+    }
+
+    private func customRules(withConfigurations configurations: [Configuration]) -> CustomRules {
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = configurations
+        var customRules = CustomRules()
+        customRules.configuration = customRuleConfiguration
+        return customRules
     }
 }

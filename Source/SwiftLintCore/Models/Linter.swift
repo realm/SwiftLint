@@ -40,7 +40,7 @@ private extension Rule {
                     region.areAllCustomRulesDisabled()
                 }
                 if regionsDisablingAllCustomRules.isNotEmpty {
-                    result.append(("custom_rules", regionsDisablingAllCustomRules))
+                    result.append((CustomRules.description.identifier, regionsDisablingAllCustomRules))
                 }
                 return result
             }

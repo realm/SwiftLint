@@ -245,6 +245,9 @@ final class CustomRulesTests: SwiftLintTestCase {
             "forbidden": [
                 "regex": "FORBIDDEN",
             ],
+            "forbidden2": [
+                "regex": "FORBIDDEN",
+            ],
         ]
 
         let example = Example("""
@@ -253,7 +256,7 @@ final class CustomRulesTests: SwiftLintTestCase {
                               """)
 
         let violations = try violations(forExample: example, customRules: customRules)
-        // Reports the superfluous_disable_command as being for `forbidden`??
+        // Reports a superfluous_disable_command violation for each defined custom rule
         XCTAssertEqual(violations.count, 1)
     }
 

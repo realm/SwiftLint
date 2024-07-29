@@ -1145,8 +1145,16 @@ are all the possible syntax kinds:</p>
 
 <p>which match to <code>keyword</code> and <code>identifier</code> in the above list.</p>
 
-<p>If using custom rules in combination with <code>only_rules</code>, make sure to add
-<code><a href="custom_rules.html">custom_rules</a></code> as an item under <code>only_rules</code>.</p>
+<p>If using custom rules in combination with <code>only_rules</code>, you must include the 
+literal string <code><a href="custom_rules.html">custom_rules</a></code> in the <code>only_rules</code> list:</p>
+<pre class="highlight yaml"><code><span class="na">only_rules</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">custom_rules</span>
+
+<span class="na">custom_rules</span><span class="pi">:</span>
+  <span class="na">no_hiding_in_strings</span><span class="pi">:</span>
+    <span class="na">regex</span><span class="pi">:</span> <span class="s2">"</span><span class="s">([nN]inja)"</span>
+    <span class="na">match_kinds</span><span class="pi">:</span> <span class="s">string</span>
+</code></pre>
 
 <p>Unlike Swift custom rules, you can use official SwiftLint builds
 (e.g. from Homebrew) to run regex custom rules.</p>

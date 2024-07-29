@@ -26,6 +26,16 @@ struct ArrayInitRule: Rule, @unchecked Sendable {
         ```
             foo.map { !$0 }
         ```
+
+        Constructs like
+
+        ```
+            enum MyError: Error {}
+            let myResult: Result<String, MyError> = .success("")
+            let result: Result<Any, MyError> = myResult.map { $0 }
+        ```
+
+        may be picked up as false positives by the `array_init` rule. If your codebase contains constructs like this, consider using the `typesafe_array_init` analyzer rule instead.
         """,
         kind: .lint,
         nonTriggeringExamples: [

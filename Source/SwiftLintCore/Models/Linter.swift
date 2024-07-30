@@ -17,7 +17,6 @@ private struct LintResult {
 }
 
 private extension Rule {
-    // swiftlint:disable:next function_body_length
     func superfluousDisableCommandViolations(regions: [Region],
                                              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
                                              allViolations: [StyleViolation]) -> [StyleViolation] {

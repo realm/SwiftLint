@@ -62,7 +62,7 @@ private extension Rule {
                 }
 
                 let noViolationsInDisabledRegion = !allViolations.contains { violation in
-                    contains(violation: violation, in: region, disabledRuleIdentifier: ruleIdentifier)
+                    isViolationDisabled(violation: violation, in: region, byDisabledRuleIdentifier: ruleIdentifier)
                 }
                 guard noViolationsInDisabledRegion else {
                     return nil
@@ -78,7 +78,9 @@ private extension Rule {
         }
     }
 
-    private func contains(violation: StyleViolation, in region: Region, disabledRuleIdentifier: String) -> Bool {
+    private func isViolationDisabled(violation: StyleViolation,
+                                     in region: Region,
+                                     byDisabledRuleIdentifier disabledRuleIdentifier: String) -> Bool {
         guard region.contains(violation.location) else {
             return false
         }

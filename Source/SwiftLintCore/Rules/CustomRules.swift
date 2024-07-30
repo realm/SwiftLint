@@ -96,12 +96,7 @@ extension Region {
     }
 
     func isCustomRuleSpecificallyDisabled(customRuleIdentifier: String) -> Bool {
-        disabledRuleIdentifiers.intersection(
-            [
-                .all,
-                RuleIdentifier(customRuleIdentifier),
-            ]
-        ).isNotEmpty
+        disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
     }
 
     func areAllCustomRulesDisabled() -> Bool {

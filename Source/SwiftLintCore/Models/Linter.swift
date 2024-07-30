@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
+// swiftlint:disable file_length
 private let warnSourceKitFailedOnceImpl: Void = {
     Issue.genericWarning("SourceKit-based rules will be skipped because sourcekitd has failed.").print()
 }()
@@ -16,6 +17,7 @@ private struct LintResult {
 }
 
 private extension Rule {
+    // swiftlint:disable:next function_body_length
     func superfluousDisableCommandViolations(regions: [Region],
                                              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
                                              allViolations: [StyleViolation]) -> [StyleViolation] {
@@ -60,7 +62,19 @@ private extension Rule {
                 }
 
                 let noViolationsInDisabledRegion = !allViolations.contains { violation in
-                    region.contains(violation.location) && violation.ruleIdentifier == ruleIdentifier
+                    guard region.contains(violation.location) else {
+                        return false
+                    }
+                    guard violation.ruleIdentifier != ruleIdentifier else {
+                        return true
+                    }
+                    guard let customRules = self as? CustomRules, region.areAllCustomRulesDisabled() else {
+                        return false
+                    }
+                    let customRuleIdentifiers = customRules.configuration.customRuleConfigurations.map {
+                        $0.identifier
+                    }
+                    return customRuleIdentifiers.contains(violation.ruleIdentifier)
                 }
                 guard noViolationsInDisabledRegion else {
                     return nil

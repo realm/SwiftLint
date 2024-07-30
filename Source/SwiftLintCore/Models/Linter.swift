@@ -34,7 +34,7 @@ private extension Rule {
                 // So I think we only want to be returned from here if the identifier is explicitly cited
                 var result = customRules.configuration.customRuleConfigurations.map { configuration in
                     let regionsDisablingCurrentRule = regions.filter { region in
-                        region.isCustomRuleSpecificallyDisabled(customRuleIdentifier: configuration.identifier)
+                        region.disabledRuleIdentifiers.contains(RuleIdentifier(configuration.identifier))
                     }
                     return (configuration.identifier, regionsDisablingCurrentRule)
                 }
@@ -62,19 +62,7 @@ private extension Rule {
                 }
 
                 let noViolationsInDisabledRegion = !allViolations.contains { violation in
-                    guard region.contains(violation.location) else {
-                        return false
-                    }
-                    guard violation.ruleIdentifier != ruleIdentifier else {
-                        return true
-                    }
-                    guard let customRules = self as? CustomRules, region.areAllCustomRulesDisabled() else {
-                        return false
-                    }
-                    let customRuleIdentifiers = customRules.configuration.customRuleConfigurations.map {
-                        $0.identifier
-                    }
-                    return customRuleIdentifiers.contains(violation.ruleIdentifier)
+                    contains(violation: violation, in: region, disabledRuleIdentifier: ruleIdentifier)
                 }
                 guard noViolationsInDisabledRegion else {
                     return nil
@@ -88,6 +76,20 @@ private extension Rule {
                 )
             }
         }
+    }
+
+    private func contains(violation: StyleViolation, in region: Region, disabledRuleIdentifier: String) -> Bool {
+        guard region.contains(violation.location) else {
+            return false
+        }
+        if violation.ruleIdentifier == disabledRuleIdentifier {
+            return true
+        }
+        guard let customRules = self as? CustomRules, region.areAllCustomRulesDisabled() else {
+            return false
+        }
+        let customRulesIdentifiers = Set(customRules.configuration.customRuleConfigurations.map { $0.identifier })
+        return customRuleIdentifiers.contains(violation.ruleIdentifier)
     }
 
     // As we need the configuration to get custom identifiers.

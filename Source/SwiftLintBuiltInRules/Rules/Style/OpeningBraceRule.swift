@@ -8,8 +8,14 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
     static let description = RuleDescription(
         identifier: "opening_brace",
         name: "Opening Brace Spacing",
-        description: "Opening braces should be preceded by a single space and on the same line " +
-                     "as the declaration",
+        description: """
+            The correct positioning of braces that introduce a block of code or member list is highly controversial. \
+            No matter which style is preferred, consistency is key. Apart from different tastes, \
+            the positioning of braces can also have a significant impact on the readability of the code, \
+            especially for visually impaired developers. This rule ensures that braces are either preceded \
+            by a single space and on the same line as the declaration or on a separate line after the declaration \
+            itself. Comments between the declaration and the opening brace are respected.
+            """,
         kind: .style,
         nonTriggeringExamples: OpeningBraceRuleExamples.nonTriggeringExamples,
         triggeringExamples: OpeningBraceRuleExamples.triggeringExamples,
@@ -144,6 +150,12 @@ private extension OpeningBraceRule {
                 violations.append(
                     ReasonedRuleViolation(
                         position: bracedItem.openingPosition,
+                        reason: configuration.braceOnNewLine
+                            ? "Opening brace should be on a separate line"
+                            : """
+                              Opening braces should be preceded by a single space and on the same line \
+                              as the declaration
+                              """,
                         correction: correction
                     )
                 )
@@ -159,6 +171,18 @@ private extension OpeningBraceRule {
             let triviaBetween = previousToken.trailingTrivia + leftBrace.leadingTrivia
             let previousLocation = previousToken.endLocation(converter: locationConverter)
             let leftBraceLocation = leftBrace.startLocation(converter: locationConverter)
+            if configuration.braceOnNewLine {
+                let parentStartColumn = node.parent?.startLocation(converter: locationConverter).column ?? 1
+                if previousLocation.line + 1 == leftBraceLocation.line, leftBraceLocation.column == parentStartColumn {
+                    return nil
+                }
+                let comment = triviaBetween.description.trimmingTrailingCharacters(in: .whitespacesAndNewlines)
+                return .init(
+                    start: previousToken.endPositionBeforeTrailingTrivia + SourceLength(of: comment),
+                    end: openingPosition,
+                    replacement: "\n" + String(repeating: " ", count: parentStartColumn - 1)
+                )
+            }
             if previousLocation.line != leftBraceLocation.line {
                 return .init(
                     start: previousToken.endPositionBeforeTrailingTrivia,

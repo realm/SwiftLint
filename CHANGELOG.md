@@ -43,6 +43,10 @@
   [Ueeek](https://github.com/Ueeek)
   [#5615](https://github.com/realm/SwiftLint/issues/5615)
 
+* Add new `brace_on_new_line` option to `opening_brace` rule that enforces opening
+  braces to be on a separate line after the preceding declaration.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Add new `unused_parameter` rule that triggers on function/initializer/subscript
   parameters that are not used inside of the function/initializer/subscript.  
   [SimplyDanny](https://github.com/SimplyDanny)

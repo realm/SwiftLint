@@ -376,6 +376,7 @@ one_declaration_per_file:
 opening_brace:
   severity: warning
   allow_multiline_func: false
+  brace_on_new_line: false
 operator_usage_whitespace:
   severity: warning
   lines_look_around: 2

@@ -28,7 +28,7 @@ private extension Rule {
             region.isRuleDisabled(superfluousDisableCommandRule)
         }
 
-        let regionsWithIdentifiers: [(String, [Region])] = {
+        let identifiersWithRegions: [(String, [Region])] = {
             if let customRules = self as? CustomRules {
                 // So I think we only want to be returned from here if the identifier is explicitly cited
                 var result = customRules.configuration.customRuleConfigurations.map { configuration in
@@ -51,7 +51,7 @@ private extension Rule {
             return [(Self.description.identifier, regionsDisablingCurrentRule)]
         }()
 
-        return regionsWithIdentifiers.flatMap { ruleIdentifier, regionsDisablingCurrentRule in
+        return identifiersWithRegions.flatMap { ruleIdentifier, regionsDisablingCurrentRule in
             regionsDisablingCurrentRule.compactMap { region -> StyleViolation? in
                 let isSuperfluousRuleDisabled = regionsDisablingSuperfluousDisableRule.contains {
                     $0.contains(region.start)

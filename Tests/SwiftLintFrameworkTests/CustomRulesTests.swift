@@ -413,7 +413,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         )
     }
 
-    private func configuration(withIdentifier identifier: String, configurationDict: [String:Any]) -> Configuration {
+    private func configuration(withIdentifier identifier: String, configurationDict: [String: Any]) -> Configuration {
         var regexConfig = Configuration(identifier: identifier)
         do {
             try regexConfig.apply(configuration: configurationDict)

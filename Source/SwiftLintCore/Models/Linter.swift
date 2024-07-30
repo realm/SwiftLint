@@ -30,7 +30,6 @@ private extension Rule {
 
         let identifiersWithRegions: [(String, [Region])] = {
             if let customRules = self as? CustomRules {
-                // So I think we only want to be returned from here if the identifier is explicitly cited
                 var result = customRules.configuration.customRuleConfigurations.map { configuration in
                     let regionsDisablingCurrentRule = regions.filter { region in
                         region.disabledRuleIdentifiers.contains(RuleIdentifier(configuration.identifier))

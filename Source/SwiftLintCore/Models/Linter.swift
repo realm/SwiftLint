@@ -89,7 +89,7 @@ private extension Rule {
             return false
         }
         let customRulesIdentifiers = Set(customRules.configuration.customRuleConfigurations.map { $0.identifier })
-        return customRuleIdentifiers.contains(violation.ruleIdentifier)
+        return customRulesIdentifiers.contains(violation.ruleIdentifier)
     }
 
     // As we need the configuration to get custom identifiers.

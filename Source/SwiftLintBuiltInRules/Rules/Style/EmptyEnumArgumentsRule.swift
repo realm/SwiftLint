@@ -17,7 +17,7 @@ private func wrapInFunc(_ str: String, file: StaticString = #filePath, line: UIn
     Example("""
     func example(foo: Foo) {
         switch foo {
-        case \(str):
+        \(str):
             break
         }
     }

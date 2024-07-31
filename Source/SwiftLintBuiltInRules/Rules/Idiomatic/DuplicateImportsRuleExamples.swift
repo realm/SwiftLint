@@ -33,6 +33,10 @@ internal struct DuplicateImportsRuleExamples {
         func test() {
         }
         """),
+        Example("""
+        import Foo
+        @testable import struct Foo.Bar
+        """),
     ]
 
     static let triggeringExamples = Array(corrections.keys.sorted())
@@ -125,6 +129,12 @@ internal struct DuplicateImportsRuleExamples {
             """): Example("""
                 import Foundation
 
+                """),
+            Example("""
+            @testable import Foo
+            import struct Foo.Bar
+            """): Example("""
+                @testable import Foo
                 """),
             Example("""
             ↓import A.B.C

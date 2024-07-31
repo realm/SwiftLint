@@ -91,6 +91,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5592](https://github.com/realm/SwiftLint/issues/5592)
 
+* Don't consider specialized imports with attributes as duplicates in
+  `duplicate_imports` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5716](https://github.com/realm/SwiftLint/issues/5716)
+
 * Use correct types and relative paths in SARIF reporter output. Generally
   avoid escaping slashes in JSON output as well.  
   [SimplyDanny](https://github.com/SimplyDanny)

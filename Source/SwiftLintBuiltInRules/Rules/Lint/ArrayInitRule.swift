@@ -13,27 +13,27 @@ struct ArrayInitRule: Rule, @unchecked Sendable {
         constructor over calling `map`. For example
 
         ```
-            Array(foo)
+        Array(foo)
         ```
 
         rather than
 
         ```
-            foo.↓map({ $0 })
+        foo.↓map({ $0 })
         ```
 
         If some processing of the elements is required, then using `map` is fine. For example
 
         ```
-            foo.map { !$0 }
+        foo.map { !$0 }
         ```
 
         Constructs like
 
         ```
-            enum MyError: Error {}
-            let myResult: Result<String, MyError> = .success("")
-            let result: Result<Any, MyError> = myResult.map { $0 }
+        enum MyError: Error {}
+        let myResult: Result<String, MyError> = .success("")
+        let result: Result<Any, MyError> = myResult.map { $0 }
         ```
 
         may be picked up as false positives by the `array_init` rule. If your codebase contains constructs like this, \

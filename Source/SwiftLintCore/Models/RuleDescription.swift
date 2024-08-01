@@ -64,8 +64,22 @@ public struct RuleDescription: Equatable, Sendable {
         guard let rationale else {
             return nil
         }
-        return rationale.components(separatedBy: "\n").compactMap { line in
-            line.contains("```") ? nil : line
+        var insideMultilineString = false
+        return rationale.components(separatedBy: "\n").map { line in
+            if line.contains("```") {
+                if insideMultilineString {
+                    insideMultilineString = false
+                } else {
+                    insideMultilineString = true
+                    if line.hasSuffix("```") {
+                        return line + "swift"
+                    }
+                }
+            }
+            if insideMultilineString {
+                return "     \(line)"
+            }
+            return line
         }.joined(separator: "\n")
     }
 

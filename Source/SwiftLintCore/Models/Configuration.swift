@@ -130,7 +130,7 @@ public struct Configuration {
     /// - parameter allRulesWrapped:        The rules with their own configurations already applied.
     /// - parameter ruleList:               The list of all rules. Used for alias resolving and as a fallback
     ///                                     if `allRulesWrapped` is nil.
-    /// - parameter filePath                The underlaying file graph. If `nil` is specified, a empty file graph
+    /// - parameter filePath                The underlying file graph. If `nil` is specified, a empty file graph
     ///                                     with the current working directory as the `rootDirectory` will be used.
     /// - parameter includedPaths:          Included paths to lint.
     /// - parameter excludedPaths:          Excluded paths to not lint.
@@ -138,7 +138,7 @@ public struct Configuration {
     /// - parameter warningThreshold:       The threshold for the number of warnings to tolerate before treating the
     ///                                     lint as having failed.
     /// - parameter reporter:               The identifier for the `Reporter` to use to report style violations.
-    /// - parameter cachePath:              The location of the persisted cache to use whith this configuration.
+    /// - parameter cachePath:              The location of the persisted cache to use with this configuration.
     /// - parameter pinnedVersion:          The SwiftLint version defined in this configuration.
     /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable
     ///                                     files.

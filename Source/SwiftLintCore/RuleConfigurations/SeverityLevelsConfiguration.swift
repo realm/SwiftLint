@@ -7,7 +7,7 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Inli
     @ConfigurationElement(key: "error")
     public var error: Int?
 
-    /// Create a `SeverityLevelsConfiguration` based on the sepecified `warning` and `error` thresholds.
+    /// Create a `SeverityLevelsConfiguration` based on the specified `warning` and `error` thresholds.
     ///
     /// - parameter warning: The threshold for a violation to be a warning.
     /// - parameter error:   The threshold for a violation to be an error.

@@ -9,7 +9,8 @@ struct ArrayInitRule: Rule, @unchecked Sendable {
         name: "Array Init",
         description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array",
         rationale: """
-        When converting the elements of sequence directly into an `Array`, for clarity, prefer using the `Array` constructor over calling `map`. For example
+        When converting the elements of sequence directly into an `Array`, for clarity, prefer using the `Array` \
+        constructor over calling `map`. For example
 
         ```
             Array(foo)
@@ -35,7 +36,8 @@ struct ArrayInitRule: Rule, @unchecked Sendable {
             let result: Result<Any, MyError> = myResult.map { $0 }
         ```
 
-        may be picked up as false positives by the `array_init` rule. If your codebase contains constructs like this, consider using the `typesafe_array_init` analyzer rule instead.
+        may be picked up as false positives by the `array_init` rule. If your codebase contains constructs like this, \
+        consider using the `typesafe_array_init` analyzer rule instead.
         """,
         kind: .lint,
         nonTriggeringExamples: [

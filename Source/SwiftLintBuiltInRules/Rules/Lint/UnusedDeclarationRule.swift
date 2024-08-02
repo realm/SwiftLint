@@ -337,6 +337,7 @@ private let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
 ]
 
 private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
+    .ibsegueaction,
     .ibaction,
     .main,
     .nsApplicationMain,

@@ -85,6 +85,7 @@ public extension SwiftDeclarationAttributeKind {
                     .nonobjc,
                     .objcMembers,
                     .ibaction,
+                    .ibsegueaction,
                     .iboutlet,
                     .ibdesignable,
                     .ibinspectable,

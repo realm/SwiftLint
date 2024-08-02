@@ -15,7 +15,11 @@ internal extension Configuration {
             let configurationCustomRulesIdentifiers =
                 (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?
                     .configuration.customRuleConfigurations.map(\.identifier) ?? []
-            return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)
+            return Set(
+                regularRuleIdentifiers 
+                + configurationCustomRulesIdentifiers
+                + [RuleIdentifier.all.stringRepresentation]
+            )
         }
 
         private var cachedResultingRules: [any Rule]?

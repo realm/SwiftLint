@@ -33,6 +33,11 @@
   [woxtu](https://github.com/woxtu)  
   [SimplyDanny](https://github.com/SimplyDanny)  
 
+* Add new `prefer_key_path` rule that triggers when a trailing closure on a function 
+  call is only hosting a (chained) member access expression since the closure can be
+  replaced with a key path argument.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Adds `baseline` and `write_baseline` configuration file settings, equivalent
   to the `--baseline` and `--write-baseline` command line options.  
   [Martin Redington](https://github.com/mildm8nnered)

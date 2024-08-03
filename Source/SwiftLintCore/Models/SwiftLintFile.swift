@@ -1,48 +1,53 @@
 import Foundation
-import SourceKittenFramework
+@preconcurrency import SourceKittenFramework
 
 /// A unit of Swift source code, either on disk or in memory.
-public final class SwiftLintFile {
+public struct SwiftLintFile: Sendable {
     /// The underlying SourceKitten file.
     public let file: File
     /// The associated unique identifier for this file.
     public let id: UUID
-    /// Whether or not this is a file generated for testing purposes.
-    public private(set) var isTestFile = false
     /// A file is virtual if it is not backed by a filesystem path.
-    public private(set) var isVirtual = false
+    public let isVirtual: Bool
+    /// Whether or not this is a file generated for testing purposes.
+    public let isTestFile: Bool
 
     /// Creates a `SwiftLintFile` with a SourceKitten `File`.
     ///
     /// - parameter file: A file from SourceKitten.
-    public init(file: File) {
+    /// - parameter isVirtual: Whether or not this file is virtual.
+    /// - parameter isTestFile: Whether or not this file is a test file.
+    public init(file: File, isVirtual: Bool = false, isTestFile: Bool = false) {
         self.file = file
         self.id = UUID()
+        self.isVirtual = isVirtual
+        self.isTestFile = isTestFile
     }
 
     /// Creates a `SwiftLintFile` by specifying its path on disk.
     /// Fails if the file does not exist.
     ///
     /// - parameter path: The path to a file on disk. Relative and absolute paths supported.
-    public convenience init?(path: String) {
+    /// - parameter isTestFile: Whether or not this file is a test file.
+    public init?(path: String, isTestFile: Bool = false) {
         guard let file = File(path: path) else { return nil }
-        self.init(file: file)
+        self.init(file: file, isTestFile: isTestFile)
     }
 
     /// Creates a `SwiftLintFile` by specifying its path on disk. Unlike the  `SwiftLintFile(path:)` initializer, this
     /// one does not read its contents immediately, but rather traps at runtime when attempting to access its contents.
     ///
     /// - parameter path: The path to a file on disk. Relative and absolute paths supported.
-    public convenience init(pathDeferringReading path: String) {
+    public init(pathDeferringReading path: String) {
         self.init(file: File(pathDeferringReading: path))
     }
 
     /// Creates a `SwiftLintFile` that is not backed by a file on disk by specifying its contents.
     ///
     /// - parameter contents: The contents of the file.
-    public convenience init(contents: String) {
-        self.init(file: File(contents: contents))
-        isVirtual = true
+    /// - parameter isTestFile: Whether or not this file is a test file.
+    public init(contents: String, isTestFile: Bool = false) {
+        self.init(file: File(contents: contents), isVirtual: true, isTestFile: isTestFile)
     }
 
     /// The path on disk for this file.
@@ -63,11 +68,6 @@ public final class SwiftLintFile {
     /// The parsed lines for this file's contents.
     public var lines: [Line] {
         file.lines
-    }
-
-    /// Mark this file as used for testing purposes.
-    package func markAsTestFile() {
-        isTestFile = true
     }
 }
 

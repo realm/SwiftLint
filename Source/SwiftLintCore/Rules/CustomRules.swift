@@ -68,7 +68,12 @@ struct CustomRules: Rule, CacheDescriptionProvider {
         return configurations.flatMap { configuration -> [StyleViolation] in
             let start = Date()
             defer {
-                CustomRuleTimer.shared.register(time: -start.timeIntervalSinceNow, forRuleID: configuration.identifier)
+                Task {
+                    await CustomRuleTimer.shared.register(
+                        time: -start.timeIntervalSinceNow,
+                        forRuleID: configuration.identifier
+                    )
+                }
             }
 
             let pattern = configuration.regex.pattern

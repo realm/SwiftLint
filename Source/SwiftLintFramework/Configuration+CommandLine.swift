@@ -45,27 +45,41 @@ private func autoreleasepool<T>(block: () -> T) -> T { block() }
 
 extension Configuration {
     func visitLintableFiles(with visitor: LintableFilesVisitor, storage: RuleStorage) async throws -> [SwiftLintFile] {
-        let files = try await Signposts.record(name: "Configuration.VisitLintableFiles.GetFiles") {
+        let files = try await Signposts.record(
+            name: "Configuration.VisitLintableFiles.GetFiles"
+        ) { @Sendable in
             try await getFiles(with: visitor)
         }
-        let groupedFiles = try Signposts.record(name: "Configuration.VisitLintableFiles.GroupFiles") {
+        let groupedFiles = try await Signposts.record(
+            name: "Configuration.VisitLintableFiles.GroupFiles"
+        ) { @Sendable in
             try groupFiles(files, visitor: visitor)
         }
-        let lintersForFile = Signposts.record(name: "Configuration.VisitLintableFiles.LintersForFile") {
+        let lintersForFile = await Signposts.record(
+            name: "Configuration.VisitLintableFiles.LintersForFile"
+        ) { @Sendable in
             groupedFiles.map { file in
                 linters(for: [file.key: file.value], visitor: visitor)
             }
         }
-        let duplicateFileNames = Signposts.record(name: "Configuration.VisitLintableFiles.DuplicateFileNames") {
+        let duplicateFileNames = await Signposts.record(
+            name: "Configuration.VisitLintableFiles.DuplicateFileNames"
+        ) { @Sendable in
             lintersForFile.map(\.duplicateFileNames)
         }
-        let collected = await Signposts.record(name: "Configuration.VisitLintableFiles.Collect") {
+        let collected = await Signposts.record(
+            name: "Configuration.VisitLintableFiles.Collect"
+        ) { @Sendable in
             await zip(lintersForFile, duplicateFileNames).asyncMap { linters, duplicateFileNames in
-                await collect(linters: linters, visitor: visitor, storage: storage,
-                              duplicateFileNames: duplicateFileNames)
+                await collect(
+                    linters: linters,
+                    visitor: visitor,
+                    storage: storage,
+                    duplicateFileNames: duplicateFileNames
+                )
             }
         }
-        let result = await Signposts.record(name: "Configuration.VisitLintableFiles.Visit") {
+        let result = await Signposts.record(name: "Configuration.VisitLintableFiles.Visit") { @Sendable in
             await collected.asyncMap { linters, duplicateFileNames in
                 await visit(linters: linters, visitor: visitor, duplicateFileNames: duplicateFileNames)
             }
@@ -201,7 +215,7 @@ extension Configuration {
                 }
             }
 
-            await Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
+            await Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) { @Sendable in
                 await visitor.block(linter)
             }
             return linter.file
@@ -254,13 +268,17 @@ extension Configuration {
         }
     }
 
-    func visitLintableFiles(options: LintOrAnalyzeOptions,
-                            cache: LinterCache? = nil,
-                            storage: RuleStorage,
-                            visitorBlock: @escaping (CollectedLinter) async -> Void) async throws -> [SwiftLintFile] {
-        let visitor = try LintableFilesVisitor.create(options, cache: cache,
-                                                      allowZeroLintableFiles: allowZeroLintableFiles,
-                                                      block: visitorBlock)
+    func visitLintableFiles(
+      options: LintOrAnalyzeOptions,
+      cache: LinterCache? = nil,
+      storage: RuleStorage,
+      visitorBlock: @escaping @Sendable (CollectedLinter) async -> Void) async throws -> [SwiftLintFile] {
+        let visitor = try await LintableFilesVisitor.create(
+            options,
+            cache: cache,
+            allowZeroLintableFiles: allowZeroLintableFiles,
+            block: visitorBlock
+        )
         return try await visitLintableFiles(with: visitor, storage: storage)
     }
 

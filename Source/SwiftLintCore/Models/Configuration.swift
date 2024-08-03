@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 /// The configuration struct for SwiftLint. User-defined in the `.swiftlint.yml` file, drives the behavior of SwiftLint.
-public struct Configuration {
+public struct Configuration: Sendable {
     // MARK: - Properties: Static
     /// The default Configuration resulting from an empty configuration file.
     public static var `default`: Self {

@@ -150,7 +150,7 @@ swift_library(
     name = "swiftlint.library",
     package_name = "SwiftLint",
     srcs = glob(["Source/swiftlint/**/*.swift"]),
-    copts = copts,  # TODO: strict_concurrency_copts
+    copts = copts + strict_concurrency_copts,
     module_name = "swiftlint",
     visibility = ["//visibility:public"],
     deps = [

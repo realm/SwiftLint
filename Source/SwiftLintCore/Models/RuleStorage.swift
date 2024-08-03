@@ -1,7 +1,7 @@
 import Dispatch
 
 /// A storage mechanism for aggregating the results of `CollectingRule`s.
-public class RuleStorage: CustomStringConvertible {
+public class RuleStorage: CustomStringConvertible, @unchecked Sendable {
     private var storage: [ObjectIdentifier: [SwiftLintFile: Any]]
     private let access = DispatchQueue(label: "io.realm.swiftlint.ruleStorageAccess", attributes: .concurrent)
 

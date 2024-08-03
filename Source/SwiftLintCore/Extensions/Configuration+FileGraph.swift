@@ -1,7 +1,7 @@
 import Foundation
 
 package extension Configuration {
-    struct FileGraph: Hashable {
+    struct FileGraph: Hashable, Sendable {
         // MARK: - Properties
         private static let defaultRemoteConfigTimeout: TimeInterval = 2
         private static let defaultRemoteConfigTimeoutIfCached: TimeInterval = 1
@@ -83,11 +83,10 @@ package extension Configuration {
             remoteConfigTimeoutOverride: TimeInterval? = nil,
             remoteConfigTimeoutIfCachedOverride: TimeInterval? = nil
         ) throws {
-            try vertex.build(
+            try vertex.adaptFromConfig(
                 remoteConfigTimeout: remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeout,
                 remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCachedOverride
-                    ?? remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeoutIfCached
-            )
+                    ?? remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeoutIfCached)
 
             if !ignoreParentAndChildConfigs {
                 try processPossibleReferenceIgnoringFileAbsence(

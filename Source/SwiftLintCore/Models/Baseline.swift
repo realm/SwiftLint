@@ -33,7 +33,7 @@ private struct BaselineViolation: Codable, Hashable, Comparable {
 }
 
 /// A set of violations that can be used to filter newly detected violations.
-public struct Baseline: Equatable {
+public struct Baseline: Equatable, Sendable {
     private let baseline: ViolationsPerFile
     private var sortedBaselineViolations: BaselineViolations {
         baseline.flatMap(\.value).sorted()

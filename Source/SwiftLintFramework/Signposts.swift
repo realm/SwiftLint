@@ -1,8 +1,8 @@
 #if canImport(os)
 import os.signpost
 
-private let timelineLog = OSLog(subsystem: "io.realm.swiftlint", category: "Timeline")
-private let fileLog = OSLog(subsystem: "io.realm.swiftlint", category: "File")
+@MainActor private let timelineLog = OSLog(subsystem: "io.realm.swiftlint", category: "Timeline")
+@MainActor private let fileLog = OSLog(subsystem: "io.realm.swiftlint", category: "File")
 #endif
 
 struct Signposts {
@@ -10,38 +10,10 @@ struct Signposts {
         case timeline, file(String)
     }
 
-    static func record<R>(name: StaticString, span: Span = .timeline, body: () throws -> R) rethrows -> R {
-#if canImport(os)
-        let log: OSLog
-        let description: String?
-        switch span {
-        case .timeline:
-            log = timelineLog
-            description = nil
-        case .file(let file):
-            log = fileLog
-            description = file
-        }
-        let signpostID = OSSignpostID(log: log)
-        if let description {
-            os_signpost(.begin, log: log, name: name, signpostID: signpostID, "%{public}s", description)
-        } else {
-            os_signpost(.begin, log: log, name: name, signpostID: signpostID)
-        }
-
-        let result = try body()
-        if let description {
-            os_signpost(.end, log: log, name: name, signpostID: signpostID, "%{public}s", description)
-        } else {
-            os_signpost(.end, log: log, name: name, signpostID: signpostID)
-        }
-        return result
-#else
-        return try body()
-#endif
-    }
-
-    static func record<R>(name: StaticString, span: Span = .timeline, body: () async throws -> R) async rethrows -> R {
+    @MainActor
+    static func record<R: Sendable>(name: StaticString,
+                                    span: Span = .timeline,
+                                    body: () async throws -> R) async rethrows -> R {
 #if canImport(os)
         let log: OSLog
         let description: String?

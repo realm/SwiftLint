@@ -215,12 +215,12 @@ struct LetVarWhitespaceRule: OptInRule {
 private extension LetVarWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberBlockItemListSyntax) {
-            collectViolations(from: node, using: { $0.decl })
+            collectViolations(from: node, using: { $0.decl }) // swiftlint:disable:this prefer_key_path
         }
 
         override func visitPost(_ node: CodeBlockItemListSyntax) {
             if node.isInValidContext {
-                collectViolations(from: node, using: { $0.unwrap })
+                collectViolations(from: node, using: \.unwrap)
             }
         }
 

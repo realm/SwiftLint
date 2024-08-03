@@ -256,7 +256,7 @@ private extension Trivia {
 
     func removingLeadingNewlines() -> Self {
         if startsWithNewline {
-            Trivia(pieces: pieces.drop(while: { $0.isNewline }))
+            Trivia(pieces: pieces.drop(while: \.isNewline))
         } else {
             self
         }

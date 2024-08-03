@@ -230,7 +230,14 @@ public struct Configuration {
         defer { basedOnCustomConfigurationFiles = hasCustomConfigurationFiles }
 
         let currentWorkingDirectory = FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
-        let rulesMode: RulesMode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
+        let rulesMode: RulesMode
+        if enableAllRules {
+            rulesMode = .allEnabled
+        } else if let onlyRule {
+            rulesMode = .only(Set([onlyRule]))
+        } else {
+            rulesMode = .default(disabled: [], optIn: [])
+        }
 
         // Try obtaining cached config
         let cacheIdentifier = "\(currentWorkingDirectory) - \(configurationFiles)"

@@ -35,7 +35,7 @@ public struct RuleListDocumentation {
     private var indexContents: String {
         let defaultRuleDocumentations = ruleDocumentations.filter { !$0.isOptInRule }
         let optInRuleDocumentations = ruleDocumentations.filter { $0.isOptInRule && !$0.isAnalyzerRule }
-        let analyzerRuleDocumentations = ruleDocumentations.filter { $0.isAnalyzerRule }
+        let analyzerRuleDocumentations = ruleDocumentations.filter(\.isAnalyzerRule)
 
         return """
             # Rule Directory

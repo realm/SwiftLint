@@ -130,7 +130,7 @@ public struct SourceKittenDictionary {
 
     /// The `SwiftDeclarationAttributeKind` values associated with this dictionary.
     public var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
-        swiftAttributes.compactMap { $0.attribute }
+        swiftAttributes.compactMap(\.attribute)
             .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
     }
 

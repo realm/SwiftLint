@@ -73,7 +73,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         // 2. minus all references
         declaredUSRs
             .filter { !allReferencedUSRs.contains($0.usr) }
-            .map { $0.nameOffset }
+            .map(\.nameOffset)
             .sorted()
     }
 }

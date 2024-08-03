@@ -115,7 +115,7 @@ private extension Rule {
                 return violation
             }
         } else {
-            enabledViolations = enabledViolationsAndRegions.map { $0.0 }
+            enabledViolations = enabledViolationsAndRegions.map(\.0)
         }
         let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
             let identifiers = region?.deprecatedAliasesDisabling(rule: self) ?? []
@@ -245,10 +245,10 @@ public struct CollectedLinter {
             regions: regions, configuration: configuration,
             superfluousDisableCommandRule: superfluousDisableCommandRule)
 
-        let violations = validationResults.flatMap { $0.violations } + undefinedSuperfluousCommandViolations
-        let ruleTimes = validationResults.compactMap { $0.ruleTime }
+        let violations = validationResults.flatMap(\.violations) + undefinedSuperfluousCommandViolations
+        let ruleTimes = validationResults.compactMap(\.ruleTime)
         var deprecatedToValidIdentifier = [String: String]()
-        for (key, value) in validationResults.flatMap({ $0.deprecatedToValidIDPairs }) {
+        for (key, value) in validationResults.flatMap(\.deprecatedToValidIDPairs) {
             deprecatedToValidIdentifier[key] = value
         }
 

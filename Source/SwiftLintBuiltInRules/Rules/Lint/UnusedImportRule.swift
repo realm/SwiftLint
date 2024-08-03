@@ -28,7 +28,7 @@ struct UnusedImportRule: CorrectableRule, AnalyzerRule {
 
     func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
         let importUsages = importUsage(in: file, compilerArguments: compilerArguments)
-        let matches = file.ruleEnabled(violatingRanges: importUsages.compactMap({ $0.violationRange }), for: self)
+        let matches = file.ruleEnabled(violatingRanges: importUsages.compactMap(\.violationRange), for: self)
 
         var contents = file.stringView.nsString
         let description = Self.description
@@ -113,7 +113,7 @@ private extension SwiftLintFile {
             unusedImports.subtract(
                 operatorImports(
                     arguments: compilerArguments,
-                    processedTokenOffsets: Set(syntaxMap.tokens.map { $0.offset })
+                    processedTokenOffsets: Set(syntaxMap.tokens.map(\.offset))
                 )
             )
         }
@@ -134,7 +134,7 @@ private extension SwiftLintFile {
                 let modulesAllowedToImportCurrentModule = configuration.allowedTransitiveImports
                     .filter { !unusedImports.contains($0.importedModule) }
                     .filter { $0.transitivelyImportedModules.contains(module) }
-                    .map { $0.importedModule }
+                    .map(\.importedModule)
 
                 return modulesAllowedToImportCurrentModule.isEmpty ||
                     imports.isDisjoint(with: modulesAllowedToImportCurrentModule)

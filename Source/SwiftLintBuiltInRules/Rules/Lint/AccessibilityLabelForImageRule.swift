@@ -98,7 +98,7 @@ private extension SourceKittenDictionary {
         // Image(decorative: "myImage").resizable().frame
         //     --> Image(decorative: "myImage").resizable
         //         --> Image
-        return substructure.contains(where: { $0.isImage })
+        return substructure.contains(where: \.isImage)
     }
 
     /// Whether or not the dictionary represents a SwiftUI Image using the `Image(decorative:)` constructor (hides
@@ -119,7 +119,7 @@ private extension SourceKittenDictionary {
         // Image(decorative: "myImage").resizable().frame
         //     --> Image(decorative: "myImage").resizable
         //         --> Image
-        return substructure.contains(where: { $0.isDecorativeOrLabeledImage })
+        return substructure.contains(where: \.isDecorativeOrLabeledImage)
     }
 
     /// Whether or not the dictionary represents a SwiftUI View with an `accesibilityLabel(_:)`

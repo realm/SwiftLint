@@ -9,7 +9,7 @@ struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
     var cacheDescription: String {
         customRuleConfigurations
             .sorted { $0.identifier < $1.identifier }
-            .map { $0.cacheDescription }
+            .map(\.cacheDescription)
             .joined(separator: "\n")
     }
     var customRuleConfigurations = [RegexConfiguration<Parent>]()

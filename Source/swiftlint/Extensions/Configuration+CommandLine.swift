@@ -222,7 +222,7 @@ extension Configuration {
                 return files
             }
 
-            let scriptInputPaths = files.compactMap { $0.path }
+            let scriptInputPaths = files.compactMap(\.path)
 
             if visitor.useExcludingByPrefix {
                 return filterExcludedPathsByPrefix(in: scriptInputPaths)

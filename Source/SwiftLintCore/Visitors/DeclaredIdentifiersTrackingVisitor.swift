@@ -164,9 +164,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
             .compactMap { pattern -> FunctionCallExprSyntax? in
                 pattern.as(ExpressionPatternSyntax.self)?.expression.asFunctionCall
             }
-            .map { call -> LabeledExprListSyntax in
-                call.arguments
-            }
+            .map(\.arguments)
             .flatMap { $0 }
             .compactMap { labeledExpr -> PatternExprSyntax? in
                 labeledExpr.expression.as(PatternExprSyntax.self)

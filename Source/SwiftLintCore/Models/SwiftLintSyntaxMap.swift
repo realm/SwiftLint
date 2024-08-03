@@ -49,6 +49,6 @@ public struct SwiftLintSyntaxMap {
     ///
     /// - returns: The syntax kinds in the specified byte range.
     public func kinds(inByteRange byteRange: ByteRange) -> [SyntaxKind] {
-        tokens(inByteRange: byteRange).compactMap { $0.kind }
+        tokens(inByteRange: byteRange).compactMap(\.kind)
     }
 }

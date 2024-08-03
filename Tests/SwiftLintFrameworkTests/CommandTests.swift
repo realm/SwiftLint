@@ -238,7 +238,7 @@ final class CommandTests: SwiftLintTestCase {
 
     func testSuperfluousDisableCommands() {
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting\nprint(123)\n")).map { $0.ruleIdentifier },
+            violations(Example("// swiftlint:disable nesting\nprint(123)\n")).map(\.ruleIdentifier),
             ["blanket_disable_command", "superfluous_disable_command"]
         )
         XCTAssertEqual(
@@ -297,9 +297,7 @@ final class CommandTests: SwiftLintTestCase {
     func testSuperfluousDisableCommandsIgnoreDelimiter() {
         let longComment = "Comment with a large number of words that shouldn't register as superfluous"
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting - \(longComment)\nprint(123)\n")).map {
-                $0.ruleIdentifier
-            },
+            violations(Example("// swiftlint:disable nesting - \(longComment)\nprint(123)\n")).map(\.ruleIdentifier),
             ["blanket_disable_command", "superfluous_disable_command"]
         )
         XCTAssertEqual(

@@ -76,7 +76,7 @@ private extension DuplicateEnumCasesRule {
 
             let duplicatedElementPositions = elementsByName
                 .filter { $0.value.count > 1 }
-                .flatMap { $0.value }
+                .flatMap(\.value)
 
             violations.append(contentsOf: duplicatedElementPositions)
         }

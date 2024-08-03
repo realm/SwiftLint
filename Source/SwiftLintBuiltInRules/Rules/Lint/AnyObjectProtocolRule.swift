@@ -9,7 +9,7 @@ private func warnDeprecatedOnce() {
     _ = warnDeprecatedOnceImpl
 }
 
-struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule {
+struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, DeprecatedRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

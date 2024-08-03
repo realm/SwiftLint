@@ -175,6 +175,12 @@ final class ContainsOverRangeNilComparisonRuleGeneratedTests: SwiftLintTestCase 
     }
 }
 
+final class ContrastedOpeningBraceRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ContrastedOpeningBraceRule.description)
+    }
+}
+
 final class ControlStatementRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ControlStatementRule.description)

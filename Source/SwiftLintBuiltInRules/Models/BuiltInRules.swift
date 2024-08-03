@@ -31,6 +31,7 @@ public let builtInRules: [any Rule.Type] = [
     ContainsOverFilterIsEmptyRule.self,
     ContainsOverFirstNotNilRule.self,
     ContainsOverRangeNilComparisonRule.self,
+    ContrastedOpeningBraceRule.self,
     ControlStatementRule.self,
     ConvenienceTypeRule.self,
     CyclomaticComplexityRule.self,

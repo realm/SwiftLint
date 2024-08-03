@@ -12,9 +12,9 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
             The correct positioning of braces that introduce a block of code or member list is highly controversial. \
             No matter which style is preferred, consistency is key. Apart from different tastes, \
             the positioning of braces can also have a significant impact on the readability of the code, \
-            especially for visually impaired developers. This rule ensures that braces are either preceded \
-            by a single space and on the same line as the declaration or on a separate line after the declaration \
-            itself. Comments between the declaration and the opening brace are respected.
+            especially for visually impaired developers. This rule ensures that braces are preceded \
+            by a single space and on the same line as the declaration. Comments between the declaration and the \
+            opening brace are respected. Check out the `contrasted_opening_brace` rule for a different style.
             """,
         kind: .style,
         nonTriggeringExamples: OpeningBraceRuleExamples.nonTriggeringExamples,
@@ -24,97 +24,7 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
 }
 
 private extension OpeningBraceRule {
-    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: ActorDeclSyntax) {
-            collectViolation(for: node.memberBlock)
-        }
-
-        override func visitPost(_ node: ClassDeclSyntax) {
-            collectViolation(for: node.memberBlock)
-        }
-
-        override func visitPost(_ node: EnumDeclSyntax) {
-            collectViolation(for: node.memberBlock)
-        }
-
-        override func visitPost(_ node: ExtensionDeclSyntax) {
-            collectViolation(for: node.memberBlock)
-        }
-
-        override func visitPost(_ node: ProtocolDeclSyntax) {
-            collectViolation(for: node.memberBlock)
-        }
-
-        override func visitPost(_ node: StructDeclSyntax) {
-            collectViolation(for: node.memberBlock)
-        }
-
-        override func visitPost(_ node: CatchClauseSyntax) {
-            collectViolation(for: node.body)
-        }
-
-        override func visitPost(_ node: DeferStmtSyntax) {
-            collectViolation(for: node.body)
-        }
-
-        override func visitPost(_ node: DoStmtSyntax) {
-            collectViolation(for: node.body)
-        }
-
-        override func visitPost(_ node: ForStmtSyntax) {
-            collectViolation(for: node.body)
-        }
-
-        override func visitPost(_ node: GuardStmtSyntax) {
-            collectViolation(for: node.body)
-        }
-
-        override func visitPost(_ node: IfExprSyntax) {
-            collectViolation(for: node.body)
-            if case let .codeBlock(body) = node.elseBody {
-                collectViolation(for: body)
-            }
-        }
-
-        override func visitPost(_ node: RepeatStmtSyntax) {
-            collectViolation(for: node.body)
-        }
-
-        override func visitPost(_ node: WhileStmtSyntax) {
-            collectViolation(for: node.body)
-        }
-
-        override func visitPost(_ node: SwitchExprSyntax) {
-            collectViolation(for: node)
-        }
-
-        override func visitPost(_ node: AccessorDeclSyntax) {
-            collectViolation(for: node.body)
-        }
-
-        override func visitPost(_ node: PatternBindingSyntax) {
-            collectViolation(for: node.accessorBlock)
-        }
-
-        override func visitPost(_ node: PrecedenceGroupDeclSyntax) {
-            collectViolation(for: node)
-        }
-
-        override func visitPost(_ node: ClosureExprSyntax) {
-            guard let parent = node.parent else {
-                return
-            }
-            if parent.is(LabeledExprSyntax.self) {
-                // Function parameter
-                return
-            }
-            if parent.is(FunctionCallExprSyntax.self) || parent.is(MultipleTrailingClosureElementSyntax.self),
-               node.keyPathInParent != \FunctionCallExprSyntax.calledExpression {
-                // Trailing closure
-                collectViolation(for: node)
-            }
-        }
-
+    final class Visitor: CodeBlockVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard let body = node.body else {
                 return
@@ -122,7 +32,7 @@ private extension OpeningBraceRule {
             if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.funcKeyword) {
                 return
             }
-            collectViolation(for: body)
+            collectViolations(for: body)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
@@ -132,7 +42,7 @@ private extension OpeningBraceRule {
             if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.initKeyword) {
                 return
             }
-            collectViolation(for: body)
+            collectViolations(for: body)
         }
 
         private func refersToMultilineFunction(_ body: CodeBlockSyntax, functionIndicator: TokenSyntax) -> Bool {
@@ -145,14 +55,12 @@ private extension OpeningBraceRule {
             return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
         }
 
-        private func collectViolation(for bracedItem: (some BracedSyntax)?) {
+        override func collectViolations(for bracedItem: (some BracedSyntax)?) {
             if let bracedItem, let correction = violationCorrection(bracedItem) {
                 violations.append(
                     ReasonedRuleViolation(
                         position: bracedItem.openingPosition,
-                        reason: configuration.braceOnNewLine
-                            ? "Opening brace should be on a separate line"
-                            : """
+                        reason: """
                               Opening braces should be preceded by a single space and on the same line \
                               as the declaration
                               """,
@@ -171,18 +79,6 @@ private extension OpeningBraceRule {
             let triviaBetween = previousToken.trailingTrivia + leftBrace.leadingTrivia
             let previousLocation = previousToken.endLocation(converter: locationConverter)
             let leftBraceLocation = leftBrace.startLocation(converter: locationConverter)
-            if configuration.braceOnNewLine {
-                let parentStartColumn = node.parent?.startLocation(converter: locationConverter).column ?? 1
-                if previousLocation.line + 1 == leftBraceLocation.line, leftBraceLocation.column == parentStartColumn {
-                    return nil
-                }
-                let comment = triviaBetween.description.trimmingTrailingCharacters(in: .whitespacesAndNewlines)
-                return .init(
-                    start: previousToken.endPositionBeforeTrailingTrivia + SourceLength(of: comment),
-                    end: openingPosition,
-                    replacement: "\n" + String(repeating: " ", count: parentStartColumn - 1)
-                )
-            }
             if previousLocation.line != leftBraceLocation.line {
                 return .init(
                     start: previousToken.endPositionBeforeTrailingTrivia,

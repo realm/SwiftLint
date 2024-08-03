@@ -5,7 +5,7 @@ import SwiftSyntax
 struct PreferKeyPathRule: OptInRule {
     var configuration = PreferKeyPathConfiguration()
 
-    private static let checkAllClosures = ["restrict_to_standard_functions": false]
+    private static let extendedMode = ["restrict_to_standard_functions": false]
 
     static var description = RuleDescription(
         identifier: "prefer_key_path",
@@ -18,15 +18,17 @@ struct PreferKeyPathRule: OptInRule {
             Example("f { $0 }"),
             Example("f { $0.a }"),
             Example("let f = { $0.a }(b)"),
-            Example("f {}", configuration: checkAllClosures),
-            Example("f { $0 }", configuration: checkAllClosures),
-            Example("f() { g() }", configuration: checkAllClosures),
-            Example("f { a.b.c }", configuration: checkAllClosures),
-            Example("f { a in a }", configuration: checkAllClosures),
-            Example("f { a, b in a.b }", configuration: checkAllClosures),
-            Example("f { (a, b) in a.b }", configuration: checkAllClosures),
-            Example("f { $0.a } g: { $0.b }", configuration: checkAllClosures),
-            Example("[1, 2, 3].reduce(1) { $0 + $1 }", configuration: checkAllClosures),
+            Example("f {}", configuration: extendedMode),
+            Example("f { $0 }", configuration: extendedMode),
+            Example("f() { g() }", configuration: extendedMode),
+            Example("f { a.b.c }", configuration: extendedMode),
+            Example("f { a in a }", configuration: extendedMode),
+            Example("f { a, b in a.b }", configuration: extendedMode),
+            Example("f { (a, b) in a.b }", configuration: extendedMode),
+            Example("f { $0.a } g: { $0.b }", configuration: extendedMode),
+            Example("[1, 2, 3].reduce(1) { $0 + $1 }", configuration: extendedMode),
+            Example("f.map(1) { $0.a }"),
+            Example("f.filter({ $0.a }, x)"),
         ],
         triggeringExamples: [
             Example("f.map ↓{ $0.a }"),
@@ -34,15 +36,15 @@ struct PreferKeyPathRule: OptInRule {
             Example("f.first ↓{ $0.a }"),
             Example("f.contains ↓{ $0.a }"),
             Example("f.contains(where: ↓{ $0.a })"),
-            Example("f ↓{ $0.a }", configuration: checkAllClosures),
-            Example("f ↓{ a in a.b }", configuration: checkAllClosures),
-            Example("f ↓{ a in a.b.c }", configuration: checkAllClosures),
-            Example("f ↓{ (a: A) in a.b }", configuration: checkAllClosures),
-            Example("f ↓{ (a b: A) in b.c }", configuration: checkAllClosures),
-            Example("f ↓{ $0.0.a }", configuration: checkAllClosures),
-            Example("f(a: ↓{ $0.b })", configuration: checkAllClosures),
-            Example("f ↓{ $0.a.b }", configuration: checkAllClosures),
-            Example("let f: (Int) -> Int = ↓{ $0.bigEndian }", configuration: checkAllClosures),
+            Example("f(↓{ $0.a })", configuration: extendedMode),
+            Example("f(a: ↓{ $0.b })", configuration: extendedMode),
+            Example("f(a: ↓{ a in a.b }, x)", configuration: extendedMode),
+            Example("f.map ↓{ a in a.b.c }"),
+            Example("f.allSatisfy ↓{ (a: A) in a.b }"),
+            Example("f.first ↓{ (a b: A) in b.c }"),
+            Example("f.contains ↓{ $0.0.a }"),
+            Example("f.flatMap ↓{ $0.a.b }"),
+            Example("let f: (Int) -> Int = ↓{ $0.bigEndian }", configuration: extendedMode),
         ],
         corrections: [
             Example("f.map { $0.a }"):
@@ -57,22 +59,24 @@ struct PreferKeyPathRule: OptInRule {
                     """),
             Example("f.map({ $0.a })"):
                 Example("f.map(\\.a)"),
-            Example("f { $0.a }", configuration: checkAllClosures):
+            Example("f(a: { $0.a })", configuration: extendedMode):
+                Example("f(a: \\.a)"),
+            Example("f({ $0.a })", configuration: extendedMode):
                 Example("f(\\.a)"),
-            Example("f() { $0.a }", configuration: checkAllClosures):
-                Example("f(\\.a)"),
-            Example("let f = /* begin */ { $0.a } // end", configuration: checkAllClosures):
+            Example("let f = /* begin */ { $0.a } // end", configuration: extendedMode):
                 Example("let f = /* begin */ \\.a // end"),
             Example("let f = { $0.a }(b)"):
                 Example("let f = { $0.a }(b)"),
-            Example("let f: (Int) -> Int = ↓{ $0.bigEndian }", configuration: checkAllClosures):
+            Example("let f: (Int) -> Int = ↓{ $0.bigEndian }", configuration: extendedMode):
                 Example("let f: (Int) -> Int = \\.bigEndian"),
-            Example("f ↓{ $0.a.b }", configuration: checkAllClosures):
-                Example("f(\\.a.b)"),
-            Example("f.contains ↓{ $0.a.b }", configuration: checkAllClosures):
+            Example("f.partition ↓{ $0.a.b }"):
+                Example("f.partition(by: \\.a.b)"),
+            Example("f.contains ↓{ $0.a.b }"):
                 Example("f.contains(where: \\.a.b)"),
-            Example("f.first ↓{ element in element.a }", configuration: checkAllClosures):
+            Example("f.first ↓{ element in element.a }"):
                 Example("f.first(where: \\.a)"),
+            Example("f.drop ↓{ element in element.a }"):
+                Example("f.drop(while: \\.a)"),
         ]
     )
 }
@@ -80,7 +84,7 @@ struct PreferKeyPathRule: OptInRule {
 private extension PreferKeyPathRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ClosureExprSyntax) {
-            if node.isInvalid(standardFunctionsOnly: configuration.restrictToStandardFunctions) {
+            if node.isInvalid(restrictToStandardFunctions: configuration.restrictToStandardFunctions) {
                 return
             }
             if node.onlyExprStmt?.accesses(identifier: node.onlyParameter) == true {
@@ -91,14 +95,13 @@ private extension PreferKeyPathRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            if configuration.restrictToStandardFunctions, !node.isStandardFunction {
-                return super.visit(node)
-            }
             guard node.additionalTrailingClosures.isEmpty,
                   let closure = node.trailingClosure,
+                  !closure.isInvalid(restrictToStandardFunctions: configuration.restrictToStandardFunctions),
                   let expr = closure.onlyExprStmt,
                   expr.accesses(identifier: closure.onlyParameter) == true,
-                  let declName = expr.as(MemberAccessExprSyntax.self) else {
+                  let declName = expr.as(MemberAccessExprSyntax.self),
+                  let calleeName = node.calleeName else {
                 return super.visit(node)
             }
             correctionPositions.append(closure.positionAfterSkippingLeadingTrivia)
@@ -107,12 +110,10 @@ private extension PreferKeyPathRule {
                 node = node.with(\.leftParen, .leftParenToken())
             }
             let newArg = LabeledExprSyntax(
-                label: ["contains", "first"].contains(node.calleeName) ? "where" : nil,
+                label: argumentLabelByStandardFunction[calleeName, default: nil],
                 expression: declName.asKeyPath
             )
-            node = node.with(
-                \.arguments,
-                node.arguments + [newArg]
+            node = node.with(\.arguments, [newArg]
             )
             if node.rightParen == nil {
                 node = node.with(\.rightParen, .rightParenToken())
@@ -124,7 +125,7 @@ private extension PreferKeyPathRule {
         }
 
         override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
-            if node.isInvalid(standardFunctionsOnly: configuration.restrictToStandardFunctions) {
+            if node.isInvalid(restrictToStandardFunctions: configuration.restrictToStandardFunctions) {
                 return super.visit(node)
             }
             if let expr = node.onlyExprStmt,
@@ -172,30 +173,37 @@ private extension ClosureExprSyntax {
         return nil
     }
 
-    private var surroundingFunction: FunctionCallExprSyntax? {
-           parent?.as(FunctionCallExprSyntax.self)
-        ?? parent?.as(LabeledExprSyntax.self)?.parent?.parent?.as(FunctionCallExprSyntax.self)
-    }
-
-    func isInvalid(standardFunctionsOnly: Bool) -> Bool {
-           keyPathInParent == \FunctionCallExprSyntax.calledExpression
-        || parent?.is(MultipleTrailingClosureElementSyntax.self) == true
-        || surroundingFunction?.additionalTrailingClosures.isNotEmpty == true
-        || standardFunctionsOnly && surroundingFunction?.isStandardFunction == false
+    func isInvalid(restrictToStandardFunctions: Bool) -> Bool {
+        if keyPathInParent == \FunctionCallExprSyntax.calledExpression {
+            return true
+        }
+        if parent?.is(MultipleTrailingClosureElementSyntax.self) == true {
+            return true
+        }
+        if let call = parent?.as(LabeledExprSyntax.self)?.parent?.parent?.as(FunctionCallExprSyntax.self) {
+            // Closure is function argument.
+            return restrictToStandardFunctions && !call.isStandardFunction
+        }
+        return parent?.as(FunctionCallExprSyntax.self)?.isStandardFunction == false
     }
 }
 
+private let argumentLabelByStandardFunction: [String: String?] = [
+    "allSatisfy": nil,
+    "contains": "where",
+    "drop": "while",
+    "filter": nil,
+    "first": "where",
+    "flatMap": nil,
+    "map": nil,
+    "partition": "by",
+    "prefix": "while",
+]
+
 private extension FunctionCallExprSyntax {
     var isStandardFunction: Bool {
-        if let calleeName {
-            return [
-                "allSatisfy",
-                "contains",
-                "filter",
-                "first",
-                "flatMap",
-                "map",
-            ].contains(calleeName)
+        if let calleeName, argumentLabelByStandardFunction.keys.contains(calleeName) {
+            return arguments.count + (trailingClosure == nil ? 0 : 1) == 1
         }
         return false
     }

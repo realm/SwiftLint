@@ -58,18 +58,6 @@ struct OpeningBraceRuleExamples {
                 return
             }
         """),
-        Example("""
-            if c
-            {
-                // code here
-            }
-            """, configuration: ["brace_on_new_line": true]),
-        Example("""
-            @MyProperty struct S
-            {
-                // code here
-            }
-            """, configuration: ["brace_on_new_line": true]),
     ]
 
     static let triggeringExamples = [
@@ -229,17 +217,6 @@ struct OpeningBraceRuleExamples {
             if c  ↓{}
             else /* comment */  ↓{}
             """),
-        Example("""
-            if c
-              ↓{
-                // code here
-            }
-            """, configuration: ["brace_on_new_line": true]),
-        Example("""
-            @MyProperty struct S ↓{
-                // code here
-            }
-            """, configuration: ["brace_on_new_line": true]),
     ]
 
     static let corrections = [
@@ -602,62 +579,6 @@ struct OpeningBraceRuleExamples {
                 // swiftlint:disable:next opening_brace
                 {
                     // code here
-                }
-                """),
-        Example("""
-            if c
-              {
-                // code here
-            }
-            """, configuration: ["brace_on_new_line": true]): Example("""
-                if c
-                {
-                    // code here
-                }
-                """),
-        Example("""
-            @MyProperty struct S {
-                // code here
-            }
-            """, configuration: ["brace_on_new_line": true]): Example("""
-                @MyProperty struct S
-                {
-                    // code here
-                }
-                """),
-        Example("""
-            private func f()
-
-            {
-                let a = 1
-            }
-            """, configuration: ["brace_on_new_line": true]): Example("""
-                private func f()
-                {
-                    let a = 1
-                }
-                """),
-        Example("""
-            private func f()
-                // comment
-            {
-                let a = 1
-            }
-            """, configuration: ["brace_on_new_line": true]): Example("""
-                private func f()
-                    // comment
-                {
-                    let a = 1
-                }
-                """),
-        Example("""
-            while true /* endless loop */ {
-                // nothing
-            }
-            """, configuration: ["brace_on_new_line": true]): Example("""
-                while true /* endless loop */
-                {
-                    // nothing
                 }
                 """),
     ]

@@ -66,6 +66,8 @@ contains_over_first_not_nil:
   severity: warning
 contains_over_range_nil_comparison:
   severity: warning
+contrasted_opening_brace:
+  severity: warning
 control_statement:
   severity: warning
 convenience_type:
@@ -376,7 +378,6 @@ one_declaration_per_file:
 opening_brace:
   severity: warning
   allow_multiline_func: false
-  brace_on_new_line: false
 operator_usage_whitespace:
   severity: warning
   lines_look_around: 2

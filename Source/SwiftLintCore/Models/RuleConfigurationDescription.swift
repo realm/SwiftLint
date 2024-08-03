@@ -276,7 +276,7 @@ public struct RuleConfigurationDescriptionBuilder {
 
     /// :nodoc:
     public static func buildArray(_ components: [Description]) -> Description {
-        Description(options: components.flatMap { $0.options })
+        Description(options: components.flatMap(\.options))
     }
 }
 

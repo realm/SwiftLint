@@ -56,7 +56,7 @@ struct ExpiringTodoRule: OptInRule {
 
         return file.matchesAndSyntaxKinds(matching: regex).compactMap { checkingResult, syntaxKinds in
             guard
-                syntaxKinds.allSatisfy({ $0.isCommentLike }),
+                syntaxKinds.allSatisfy(\.isCommentLike),
                 checkingResult.numberOfRanges > 1,
                 case let range = checkingResult.range(at: 1),
                 let violationLevel = violationLevel(for: expiryDate(file: file, range: range)),

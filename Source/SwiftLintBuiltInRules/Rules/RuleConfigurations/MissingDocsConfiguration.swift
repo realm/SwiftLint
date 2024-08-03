@@ -82,7 +82,7 @@ struct MissingDocsConfiguration: RuleConfiguration {
             }
         }
 
-        guard parameters.count == parameters.map({ $0.value }).unique.count else {
+        guard parameters.count == parameters.map(\.value).unique.count else {
             throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
 

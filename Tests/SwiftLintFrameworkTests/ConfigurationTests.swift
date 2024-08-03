@@ -5,7 +5,7 @@ import XCTest
 
 // swiftlint:disable file_length
 
-private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is any OptInRule }).map({ $0.0 })
+private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is any OptInRule }).map(\.0)
 
 final class ConfigurationTests: SwiftLintTestCase {
     // MARK: Setup & Teardown
@@ -425,14 +425,14 @@ final class ConfigurationTests: SwiftLintTestCase {
     func testConfiguresCorrectlyFromDict() throws {
         let ruleConfiguration = [1, 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
-        let rules = try testRuleList.allRulesWrapped(configurationDict: config).map { $0.rule }
+        let rules = try testRuleList.allRulesWrapped(configurationDict: config).map(\.rule)
         // swiftlint:disable:next xct_specific_matcher
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 
     func testConfigureFallsBackCorrectly() throws {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
-        let rules = try testRuleList.allRulesWrapped(configurationDict: config).map { $0.rule }
+        let rules = try testRuleList.allRulesWrapped(configurationDict: config).map(\.rule)
         // swiftlint:disable:next xct_specific_matcher
         XCTAssertTrue(rules == [RuleWithLevelsMock()])
     }

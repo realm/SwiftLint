@@ -28,7 +28,7 @@ struct HTMLReporter: Reporter {
             .map { generateSingleRow(for: $1, at: $0 + 1) }
             .joined(separator: "\n")
 
-        let fileCount = Set(violations.compactMap({ $0.location.file })).count
+        let fileCount = Set(violations.compactMap(\.location.file)).count
         let warningCount = violations.filter({ $0.severity == .warning }).count
         let errorCount = violations.filter({ $0.severity == .error }).count
 

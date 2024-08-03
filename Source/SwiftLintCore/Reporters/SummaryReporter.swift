@@ -65,7 +65,7 @@ private extension TextTable {
             totalNumberOfWarnings += numberOfWarnings
             totalNumberOfErrors += numberOfErrors
             let ruleViolations = ruleIdentifiersToViolationsMap[ruleIdentifier] ?? []
-            let numberOfFiles = Set(ruleViolations.map { $0.location.file }).count
+            let numberOfFiles = Set(ruleViolations.map(\.location.file)).count
 
             addRow(values: [
                 ruleIdentifier,
@@ -80,7 +80,7 @@ private extension TextTable {
         }
 
         let totalNumberOfViolations = totalNumberOfWarnings + totalNumberOfErrors
-        let totalNumberOfFiles = Set(violations.map { $0.location.file }).count
+        let totalNumberOfFiles = Set(violations.map(\.location.file)).count
         addRow(values: [
             "Total",
             "",

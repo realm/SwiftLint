@@ -174,7 +174,7 @@ private extension DuplicateConditionsRule {
 
             let positionsByConditions = statementChain
                 .reduce(into: [Set<String>: [AbsolutePosition]]()) { acc, elt in
-                    let conditions = elt.conditions.map { $0.condition.trimmedDescription }
+                    let conditions = elt.conditions.map(\.condition.trimmedDescription)
                     let location = elt.conditions.positionAfterSkippingLeadingTrivia
                     acc[Set(conditions), default: []].append(location)
                 }

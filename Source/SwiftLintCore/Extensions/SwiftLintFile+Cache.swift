@@ -165,7 +165,7 @@ extension SwiftLintFile {
 
     public var locationConverter: SourceLocationConverter { locationConverterCache.get(self) }
 
-    public var commands: [Command] { commandsCache.get(self).filter { $0.isValid } }
+    public var commands: [Command] { commandsCache.get(self).filter(\.isValid) }
 
     public var invalidCommands: [Command] { commandsCache.get(self).filter { !$0.isValid } }
 

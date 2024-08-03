@@ -96,7 +96,7 @@ extension SwiftLintFile {
     public func match(pattern: String, with syntaxKinds: [SyntaxKind], range: NSRange? = nil) -> [NSRange] {
         match(pattern: pattern, range: range)
             .filter { $0.1 == syntaxKinds }
-            .map { $0.0 }
+            .map(\.0)
     }
 
     public func matchesAndTokens(matching pattern: String,
@@ -185,7 +185,7 @@ extension SwiftLintFile {
             return nil
         }
 
-        return tokens.map { $0.kinds }
+        return tokens.map(\.kinds)
     }
 
     /**
@@ -205,7 +205,7 @@ extension SwiftLintFile {
                       captureGroup: Int = 0) -> [NSRange] {
         match(pattern: pattern, range: range, captureGroup: captureGroup)
             .filter { syntaxKinds.isDisjoint(with: $0.1) }
-            .map { $0.0 }
+            .map(\.0)
     }
 
     public typealias MatchMapping = (NSTextCheckingResult) -> NSRange
@@ -214,7 +214,7 @@ extension SwiftLintFile {
                       range: NSRange? = nil,
                       excludingSyntaxKinds: Set<SyntaxKind>,
                       excludingPattern: String,
-                      exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
+                      exclusionMapping: MatchMapping = \.range) -> [NSRange] {
         let matches = match(pattern: pattern, excludingSyntaxKinds: excludingSyntaxKinds)
         if matches.isEmpty {
             return []

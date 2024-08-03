@@ -25,7 +25,7 @@ extension Configuration {
     }
 
     // MARK: - Properties
-    private static let validGlobalKeys: Set<String> = Set(Key.allCases.map { $0.rawValue })
+    private static let validGlobalKeys: Set<String> = Set(Key.allCases.map(\.rawValue))
 
     // MARK: - Initializers
     /// Creates a Configuration value based on the specified parameters.

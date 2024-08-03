@@ -16,7 +16,7 @@ internal extension Configuration {
                 (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?
                     .configuration.customRuleConfigurations.map(\.identifier) ?? []
             return Set(
-                regularRuleIdentifiers 
+                regularRuleIdentifiers
                 + configurationCustomRulesIdentifiers
                 + [RuleIdentifier.all.stringRepresentation]
             )

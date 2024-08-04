@@ -85,10 +85,12 @@ private extension Rule {
         if violation.ruleIdentifier == disabledRuleIdentifier {
             return true
         }
-        guard let customRules = self as? CustomRules, region.areAllCustomRulesDisabled() else {
+        guard
+            let customRules = self as? CustomRules,
+            disabledRuleIdentifier == CustomRules.description.identifier else {
             return false
         }
-        let customRulesIdentifiers = Set(customRules.configuration.customRuleConfigurations.map { $0.identifier })
+        let customRulesIdentifiers = Set(customRules.configuration.customRuleConfigurations.map(\.identifier))
         return customRulesIdentifiers.contains(violation.ruleIdentifier)
     }
 

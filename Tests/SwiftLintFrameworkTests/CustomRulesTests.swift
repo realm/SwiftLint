@@ -2,7 +2,8 @@ import SourceKittenFramework
 @testable import SwiftLintCore
 import XCTest
 
-// swiftlint:disable file_length type_body_length
+// swiftlint:disable file_length
+// swiftlint:disable:next type_body_length
 final class CustomRulesTests: SwiftLintTestCase {
     typealias Configuration = RegexConfiguration<CustomRules>
     func testCustomRuleConfigurationSetsCorrectlyWithMatchKinds() {

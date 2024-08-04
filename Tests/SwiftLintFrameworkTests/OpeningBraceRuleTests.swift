@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
 final class OpeningBraceRuleTests: SwiftLintTestCase {
-    func testDefaultExamplesRunInMultilineMode() {
+    func testDefaultExamplesRunInMultilineMode() async {
         let description = OpeningBraceRule.description
             .with(triggeringExamples: OpeningBraceRule.description.triggeringExamples.removing([
                 Example("func abc(a: A,\n\tb: B)\n↓{"),
@@ -15,11 +15,11 @@ final class OpeningBraceRuleTests: SwiftLintTestCase {
                     """),
             ]))
 
-        verifyRule(description, ruleConfiguration: ["allow_multiline_func": true])
+        await verifyRule(description, ruleConfiguration: ["allow_multiline_func": true])
     }
 
     // swiftlint:disable:next function_body_length
-    func testWithAllowMultilineTrue() {
+    func testWithAllowMultilineTrue() async {
         let nonTriggeringExamples = [
             Example("""
                 func abc(
@@ -87,7 +87,7 @@ final class OpeningBraceRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: [:])
 
-        verifyRule(description, ruleConfiguration: ["allow_multiline_func": true])
+        await verifyRule(description, ruleConfiguration: ["allow_multiline_func": true])
     }
 }
 

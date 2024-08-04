@@ -1,8 +1,9 @@
 @testable import SwiftLintBuiltInRules
 import XCTest
 
+// swiftlint:disable file_length
 final class ModifierOrderTests: SwiftLintTestCase {
-    func testAttributeTypeMethod() {
+    func testAttributeTypeMethod() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
                 Example("""
@@ -30,11 +31,13 @@ final class ModifierOrderTests: SwiftLintTestCase {
             ])
             .with(corrections: [:])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["typeMethods", "acl"]])
+        await verifyRule(
+            descriptionOverride,
+            ruleConfiguration: ["preferred_modifier_order": ["typeMethods", "acl"]]
+        )
     }
 
-    func testRightOrderedModifierGroups() {
+    func testRightOrderedModifierGroups() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
                 Example("public protocol Foo: class {}\n" +
@@ -56,7 +59,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
             ])
             .with(corrections: [:])
 
-        verifyRule(
+        await verifyRule(
             descriptionOverride,
             ruleConfiguration: [
                 "preferred_modifier_order": [
@@ -73,7 +76,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
     }
 
     // swiftlint:disable:next function_body_length
-    func testAtPrefixedGroup() {
+    func testAtPrefixedGroup() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
                 Example(#"""
@@ -166,11 +169,13 @@ final class ModifierOrderTests: SwiftLintTestCase {
             ])
             .with(corrections: [:])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "owned", "final"]])
+        await verifyRule(
+            descriptionOverride,
+            ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "owned", "final"]]
+        )
     }
 
-    func testNonSpecifiedModifiersDontInterfere() {
+    func testNonSpecifiedModifiersDontInterfere() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
                 Example("""
@@ -218,12 +223,14 @@ final class ModifierOrderTests: SwiftLintTestCase {
             ])
             .with(corrections: [:])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl"]])
+        await verifyRule(
+            descriptionOverride,
+            ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl"]]
+        )
     }
 
     // swiftlint:disable:next function_body_length
-    func testCorrectionsAreAppliedCorrectly() {
+    func testCorrectionsAreAppliedCorrectly() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
             .with(corrections: [
@@ -285,12 +292,14 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 """),
             ])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
+        await verifyRule(
+            descriptionOverride,
+            ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]]
+        )
     }
 
     // swiftlint:disable:next function_body_length
-    func testCorrectionsAreNotAppliedToIrrelevantModifier() {
+    func testCorrectionsAreNotAppliedToIrrelevantModifier() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
             .with(corrections: [
@@ -356,11 +365,13 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 """),
             ])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
+        await verifyRule(
+            descriptionOverride,
+            ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]]
+        )
     }
 
-    func testTypeMethodClassCorrection() {
+    func testTypeMethodClassCorrection() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
             .with(corrections: [
@@ -378,18 +389,20 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 """),
             ])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["final", "typeMethods", "acl"]])
+        await verifyRule(
+            descriptionOverride,
+            ruleConfiguration: ["preferred_modifier_order": ["final", "typeMethods", "acl"]]
+        )
     }
 
-    func testViolationMessage() {
+    func testViolationMessage() async {
         let ruleID = ModifierOrderRule.description.identifier
         guard let config = makeConfig(["preferred_modifier_order": ["acl", "final"]], ruleID) else {
             XCTFail("Failed to create configuration")
             return
         }
 
-        let allViolations = violations(Example("final public var foo: String"), config: config)
+        let allViolations = await violations(Example("final public var foo: String"), config: config)
         let modifierOrderRuleViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         if let violation = modifierOrderRuleViolation {
             XCTAssertEqual(violation.reason, "public modifier should come before final")

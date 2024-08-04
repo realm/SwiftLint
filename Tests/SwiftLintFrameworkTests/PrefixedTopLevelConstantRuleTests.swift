@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
 final class PrefixedTopLevelConstantRuleTests: SwiftLintTestCase {
-    func testPrivateOnly() {
+    func testPrivateOnly() async {
         let triggeringExamples = [
             Example("private let ↓Foo = 20.0"),
             Example("fileprivate let ↓foo = 20.0"),
@@ -16,6 +16,6 @@ final class PrefixedTopLevelConstantRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["only_private": true])
+        await verifyRule(description, ruleConfiguration: ["only_private": true])
     }
 }

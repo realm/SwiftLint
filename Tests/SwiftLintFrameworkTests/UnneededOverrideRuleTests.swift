@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
 final class UnneededOverrideRuleTests: SwiftLintTestCase {
-    func testIncludeAffectInits() {
+    func testIncludeAffectInits() async {
         let nonTriggeringExamples = [
             Example("""
             override init() {
@@ -60,6 +60,6 @@ final class UnneededOverrideRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: corrections)
 
-        verifyRule(description, ruleConfiguration: ["affect_initializers": true])
+        await verifyRule(description, ruleConfiguration: ["affect_initializers": true])
     }
 }

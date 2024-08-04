@@ -2,7 +2,7 @@
 import XCTest
 
 final class IdentifierNameRuleTests: SwiftLintTestCase {
-    func testIdentifierNameWithExcluded() {
+    func testIdentifierNameWithExcluded() async {
         let baseDescription = IdentifierNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("let Apple = 0"),
@@ -15,10 +15,10 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         ]
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
                                                triggeringExamples: triggeringExamples)
-        verifyRule(description, ruleConfiguration: ["excluded": ["Apple", "some.*", ".*\\d+.*"]])
+        await verifyRule(description, ruleConfiguration: ["excluded": ["Apple", "some.*", ".*\\d+.*"]])
     }
 
-    func testIdentifierNameWithAllowedSymbols() {
+    func testIdentifierNameWithAllowedSymbols() async {
         let baseDescription = IdentifierNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("let myLet$ = 0"),
@@ -29,20 +29,20 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         let triggeringExamples = baseDescription.triggeringExamples.filter { !$0.code.contains("_") }
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
                                                triggeringExamples: triggeringExamples)
-        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%", "_"]])
+        await verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%", "_"]])
     }
 
-    func testIdentifierNameWithAllowedSymbolsAndViolation() {
+    func testIdentifierNameWithAllowedSymbolsAndViolation() async {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamples = [
             Example("let ↓my_Let$ = 0")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
-        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+        await verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testIdentifierNameWithIgnoreStartWithLowercase() {
+    func testIdentifierNameWithIgnoreStartWithLowercase() async {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamplesToRemove = [
             Example("let ↓MyLet = 0"),
@@ -61,10 +61,10 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
+        await verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
     }
 
-    func testStartsWithLowercaseCheck() {
+    func testStartsWithLowercaseCheck() async {
         let triggeringExamples = [
             Example("let ↓MyLet = 0"),
             Example("enum Foo { case ↓MyCase }"),
@@ -76,14 +76,14 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
             Example("func isOperator(name: String) -> Bool { true }"),
         ]
 
-        verifyRule(
+        await verifyRule(
             IdentifierNameRule.description
                 .with(triggeringExamples: triggeringExamples)
                 .with(nonTriggeringExamples: nonTriggeringExamples),
             ruleConfiguration: ["validates_start_with_lowercase": true]
         )
 
-        verifyRule(
+        await verifyRule(
             IdentifierNameRule.description
                 .with(triggeringExamples: [])
                 .with(nonTriggeringExamples: nonTriggeringExamples + triggeringExamples.removingViolationMarkers()),
@@ -91,8 +91,8 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testStartsWithLowercaseCheckInCombinationWithAllowedSymbols() {
-        verifyRule(
+    func testStartsWithLowercaseCheckInCombinationWithAllowedSymbols() async {
+        await verifyRule(
             IdentifierNameRule.description
                 .with(triggeringExamples: [
                     Example("let ↓OneLet = 0")
@@ -108,14 +108,14 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testLinuxCrashOnEmojiNames() {
+    func testLinuxCrashOnEmojiNames() async {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamples = [
             Example("let 👦🏼 = \"👦🏼\"")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
-        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+        await verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
     func testFunctionNameInViolationMessage() {

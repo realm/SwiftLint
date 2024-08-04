@@ -9,14 +9,14 @@ extension Configuration {
     package func merged(
         withChild childConfiguration: Configuration,
         rootDirectory: String = ""
-    ) -> Configuration {
+    ) async -> Configuration {
         let mergedIncludedAndExcluded = self.mergedIncludedAndExcluded(
             with: childConfiguration,
             rootDirectory: rootDirectory
         )
 
         return Configuration(
-            rulesWrapper: rulesWrapper.merged(with: childConfiguration.rulesWrapper),
+            rulesWrapper: await rulesWrapper.merged(with: childConfiguration.rulesWrapper),
             fileGraph: FileGraph(rootDirectory: rootDirectory),
             includedPaths: mergedIncludedAndExcluded.includedPaths,
             excludedPaths: mergedIncludedAndExcluded.excludedPaths,
@@ -83,11 +83,14 @@ extension Configuration {
     /// - parameter file: The file for which to obtain a configuration value.
     ///
     /// - returns: A new configuration.
-    public func configuration(for file: SwiftLintFile) -> Configuration {
-        (file.path?.bridge().deletingLastPathComponent).map(configuration(forDirectory:)) ?? self
+    public func configuration(for file: SwiftLintFile) async -> Configuration {
+        if let path = file.path?.bridge().deletingLastPathComponent {
+            return await configuration(forDirectory: path)
+         }
+         return self
     }
 
-    private func configuration(forDirectory directory: String) -> Configuration {
+    private func configuration(forDirectory directory: String) async -> Configuration {
         // If the configuration was explicitly specified via the `--config` param, don't use nested configs
         guard !basedOnCustomConfigurationFiles else { return self }
 
@@ -113,18 +116,18 @@ extension Configuration {
             // iff that nested config has not already been used to build the main config
 
             // Ignore parent_config / child_config specifications of nested configs
-            var childConfiguration = Configuration(
+            var childConfiguration = await Configuration(
                 configurationFiles: [configurationSearchPath],
                 ignoreParentAndChildConfigs: true
             )
             childConfiguration.fileGraph = FileGraph(rootDirectory: directory)
-            config = merged(withChild: childConfiguration, rootDirectory: rootDirectory)
+            config = await merged(withChild: childConfiguration, rootDirectory: rootDirectory)
 
             // Cache merged result to circumvent heavy merge recomputations
             config.setCached(forIdentifier: cacheIdentifier)
         } else if directory != "/" {
             // If we are not at the root path, continue down the tree
-            config = configuration(forDirectory: directoryNSString.deletingLastPathComponent)
+            config = await configuration(forDirectory: directoryNSString.deletingLastPathComponent)
         } else {
             // Fallback to self
             config = self

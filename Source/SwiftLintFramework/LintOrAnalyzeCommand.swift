@@ -165,8 +165,7 @@ public struct LintOrAnalyzeCommand {
             if options.benchmark {
                 await CustomRuleTimer.shared.activate()
                 let start = Date()
-                let (violationsBeforeLeniency, currentRuleTimes) =
-                    linter
+                let (violationsBeforeLeniency, currentRuleTimes) = await linter
                     .styleViolationsAndRuleTimes(using: builder.storage)
                 currentViolations = applyLeniency(
                     options: options,
@@ -178,7 +177,7 @@ public struct LintOrAnalyzeCommand {
                     await builder.recordRuleBenchmark(id: id, time: time)
                 }
             } else {
-                currentViolations = applyLeniency(
+                currentViolations = await applyLeniency(
                     options: options,
                     strict: builder.configuration.strict,
                     violations: linter.styleViolations(using: builder.storage)
@@ -323,7 +322,7 @@ public struct LintOrAnalyzeCommand {
 
     private static func autocorrect(_ options: LintOrAnalyzeOptions) async throws {
         let storage = RuleStorage()
-        let configuration = Configuration(options: options)
+        let configuration = await Configuration(options: options)
         let correctionsBuilder = CorrectionsBuilder()
         let files =
             try await configuration
@@ -337,7 +336,7 @@ public struct LintOrAnalyzeCommand {
                     }
                 }
 
-                let corrections = linter.correct(using: storage)
+                let corrections = await linter.correct(using: storage)
                 if !corrections.isEmpty && !options.quiet {
                     if options.useSTDIN {
                         queuedPrint(linter.file.contents)
@@ -383,9 +382,8 @@ private actor LintOrAnalyzeResultBuilder {
     let options: LintOrAnalyzeOptions
 
     init(_ options: LintOrAnalyzeOptions) async {
-        let config = await Signposts.record(name: "LintOrAnalyzeCommand.ParseConfiguration") {
-            @Sendable in
-            Configuration(options: options)
+        let config = await Signposts.record(name: "LintOrAnalyzeCommand.ParseConfiguration") { @Sendable in
+            await Configuration(options: options)
         }
         configuration = config
         reporter = reporterFrom(identifier: options.reporter ?? config.reporter)

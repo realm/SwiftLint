@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
 final class AttributesRuleTests: SwiftLintTestCase {
-    func testAttributesWithAlwaysOnSameLine() {
+    func testAttributesWithAlwaysOnSameLine() async {
         // Test with custom `always_on_same_line`
         let nonTriggeringExamples = [
             Example("@objc var x: String"),
@@ -27,11 +27,10 @@ final class AttributesRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(alwaysOnSameLineDescription,
-                   ruleConfiguration: ["always_on_same_line": ["@objc"]])
+        await verifyRule(alwaysOnSameLineDescription, ruleConfiguration: ["always_on_same_line": ["@objc"]])
     }
 
-    func testAttributesWithAlwaysOnLineAbove() {
+    func testAttributesWithAlwaysOnLineAbove() async {
         // Test with custom `always_on_line_above`
         let nonTriggeringExamples = [
             Example("@objc\n var x: String"),
@@ -48,11 +47,10 @@ final class AttributesRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(alwaysOnNewLineDescription,
-                   ruleConfiguration: ["always_on_line_above": ["@objc"]])
+        await verifyRule(alwaysOnNewLineDescription, ruleConfiguration: ["always_on_line_above": ["@objc"]])
     }
 
-    func testAttributesWithAttributesOnLineAboveButOnOtherDeclaration() {
+    func testAttributesWithAttributesOnLineAboveButOnOtherDeclaration() async {
         let nonTriggeringExamples = [
             Example("""
             @IBDesignable open class TagListView: UIView {
@@ -91,7 +89,7 @@ final class AttributesRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(
+        await verifyRule(
             alwaysOnNewLineDescription,
             ruleConfiguration: [
                 "always_on_same_line": [
@@ -101,7 +99,7 @@ final class AttributesRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testAttributesWithArgumentsAlwaysOnLineAboveFalse() {
+    func testAttributesWithArgumentsAlwaysOnLineAboveFalse() async {
         let nonTriggeringExamples = [
             Example("@Environment(\\.presentationMode) private var presentationMode")
         ]
@@ -116,11 +114,13 @@ final class AttributesRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(argumentsAlwaysOnLineDescription,
-                   ruleConfiguration: ["attributes_with_arguments_always_on_line_above": false])
+        await verifyRule(
+            argumentsAlwaysOnLineDescription,
+            ruleConfiguration: ["attributes_with_arguments_always_on_line_above": false]
+        )
     }
 
-    func testAttributesWithArgumentsAlwaysOnLineAboveTrue() {
+    func testAttributesWithArgumentsAlwaysOnLineAboveTrue() async {
         let nonTriggeringExamples = [
             Example("@Environment(\\.presentationMode)\nprivate var presentationMode")
         ]
@@ -132,7 +132,9 @@ final class AttributesRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(argumentsAlwaysOnLineDescription,
-                   ruleConfiguration: ["attributes_with_arguments_always_on_line_above": true])
+        await verifyRule(
+            argumentsAlwaysOnLineDescription,
+            ruleConfiguration: ["attributes_with_arguments_always_on_line_above": true]
+        )
     }
 }

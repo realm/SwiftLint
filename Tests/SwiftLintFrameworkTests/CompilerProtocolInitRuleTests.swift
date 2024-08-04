@@ -4,9 +4,9 @@ import XCTest
 final class CompilerProtocolInitRuleTests: SwiftLintTestCase {
     private let ruleID = CompilerProtocolInitRule.description.identifier
 
-    func testViolationMessageForExpressibleByIntegerLiteral() throws {
+    func testViolationMessageForExpressibleByIntegerLiteral() async throws {
         let config = try XCTUnwrap(makeConfig(nil, ruleID))
-        let allViolations = violations(Example("let a = NSNumber(integerLiteral: 1)"), config: config)
+        let allViolations = await violations(Example("let a = NSNumber(integerLiteral: 1)"), config: config)
 
         let compilerProtocolInitViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         let violation = try XCTUnwrap(

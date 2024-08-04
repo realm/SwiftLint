@@ -206,8 +206,8 @@ public struct CollectedLinter: @unchecked Sendable { // TODO: Make `Rule` @Senda
     /// - parameter storage: The storage object containing all collected info.
     ///
     /// - returns: All style violations found by this linter.
-    public func styleViolations(using storage: RuleStorage) -> [StyleViolation] {
-        getStyleViolations(using: storage).0
+    public func styleViolations(using storage: RuleStorage) async -> [StyleViolation] {
+        await getStyleViolations(using: storage).0
     }
 
     /// Computes or retrieves style violations and the time spent executing each rule.
@@ -216,12 +216,12 @@ public struct CollectedLinter: @unchecked Sendable { // TODO: Make `Rule` @Senda
     ///
     /// - returns: All style violations found by this linter, and the time spent executing each rule.
     public func styleViolationsAndRuleTimes(using storage: RuleStorage)
-        -> ([StyleViolation], [(id: String, time: Double)]) {
-            getStyleViolations(using: storage, benchmark: true)
+            async -> ([StyleViolation], [(id: String, time: Double)]) {
+        await getStyleViolations(using: storage, benchmark: true)
     }
 
     private func getStyleViolations(using storage: RuleStorage,
-                                    benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
+                                    benchmark: Bool = false) async -> ([StyleViolation], [(id: String, time: Double)]) {
         guard !rules.isEmpty else {
             // Nothing to validate if there are no active rules!
             return ([], [])
@@ -235,7 +235,7 @@ public struct CollectedLinter: @unchecked Sendable { // TODO: Make `Rule` @Senda
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        let validationResults = rules.parallelCompactMap {
+        let validationResults = await rules.parallelCompactMap {
             $0.lint(file: file, regions: regions, benchmark: benchmark,
                     storage: storage,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
@@ -292,12 +292,12 @@ public struct CollectedLinter: @unchecked Sendable { // TODO: Make `Rule` @Senda
     /// - parameter storage: The storage object containing all collected info.
     ///
     /// - returns: All corrections that were applied.
-    public func correct(using storage: RuleStorage) -> [Correction] {
+    public func correct(using storage: RuleStorage) async -> [Correction] {
         if let violations = cachedStyleViolations()?.0, violations.isEmpty {
             return []
         }
 
-        if let parserDiagnostics = file.parserDiagnostics, parserDiagnostics.isNotEmpty {
+        if let parserDiagnostics = await file.parserDiagnostics, parserDiagnostics.isNotEmpty {
             queuedPrintError(
                 "warning: Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
             )

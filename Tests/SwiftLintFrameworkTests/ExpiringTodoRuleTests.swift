@@ -4,49 +4,49 @@ import XCTest
 final class ExpiringTodoRuleTests: SwiftLintTestCase {
     private lazy var config: Configuration = makeConfiguration()
 
-    func testExpiringTodo() {
-        verifyRule(ExpiringTodoRule.description, commentDoesntViolate: false)
+    func testExpiringTodo() async {
+        await verifyRule(ExpiringTodoRule.description, commentDoesntViolate: false)
     }
 
-    func testExpiredTodo() {
+    func testExpiredTodo() async {
         let example = Example("fatalError() // TODO: [\(dateString(for: .expired))] Implement")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODO/FIXME has expired and must be resolved")
     }
 
-    func testExpiredFixMe() {
+    func testExpiredFixMe() async {
         let example = Example("fatalError() // FIXME: [\(dateString(for: .expired))] Implement")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODO/FIXME has expired and must be resolved")
     }
 
-    func testApproachingExpiryTodo() {
+    func testApproachingExpiryTodo() async {
         let example = Example("fatalError() // TODO: [\(dateString(for: .approachingExpiry))] Implement")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODO/FIXME is approaching its expiry and should be resolved soon")
     }
 
-    func testNonExpiredTodo() {
+    func testNonExpiredTodo() async {
         let example = Example("fatalError() // TODO: [\(dateString(for: .badFormatting))] Implement")
-        XCTAssertEqual(violations(example).count, 0)
+        await AsyncAssertEqual(await violations(example).count, 0)
     }
 
-    func testExpiredCustomDelimiters() {
+    func testExpiredCustomDelimiters() async {
         let ruleConfig: ExpiringTodoConfiguration = .init(
             dateDelimiters: .init(opening: "<", closing: ">")
         )
         config = makeConfiguration(with: ruleConfig)
 
         let example = Example("fatalError() // TODO: <\(dateString(for: .expired))> Implement")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODO/FIXME has expired and must be resolved")
     }
 
-    func testExpiredCustomSeparator() {
+    func testExpiredCustomSeparator() async {
         let ruleConfig: ExpiringTodoConfiguration = .init(
             dateFormat: "MM-dd-yyyy",
             dateSeparator: "-"
@@ -54,31 +54,31 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
         config = makeConfiguration(with: ruleConfig)
 
         let example = Example("fatalError() // TODO: [\(dateString(for: .expired))] Implement")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODO/FIXME has expired and must be resolved")
     }
 
-    func testExpiredCustomFormat() {
+    func testExpiredCustomFormat() async {
         let ruleConfig: ExpiringTodoConfiguration = .init(
             dateFormat: "yyyy/MM/dd"
         )
         config = makeConfiguration(with: ruleConfig)
 
         let example = Example("fatalError() // TODO: [\(dateString(for: .expired))] Implement")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODO/FIXME has expired and must be resolved")
     }
 
-    func testMultipleExpiredTodos() {
+    func testMultipleExpiredTodos() async {
         let example = Example(
             """
             fatalError() // TODO: [\(dateString(for: .expired))] Implement one
             fatalError() // TODO: Implement two by [\(dateString(for: .expired))]
             """
         )
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
         XCTAssertEqual(violations.count, 2)
         XCTAssertEqual(violations[0].reason, "TODO/FIXME has expired and must be resolved")
         XCTAssertEqual(violations[0].location.line, 1)
@@ -86,7 +86,7 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
         XCTAssertEqual(violations[1].location.line, 2)
     }
 
-    func testTodoAndExpiredTodo() {
+    func testTodoAndExpiredTodo() async {
         let example = Example(
             """
             // TODO: Implement one - without deadline
@@ -94,13 +94,13 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
             // TODO: Implement two by [\(dateString(for: .expired))]
             """
         )
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations[0].reason, "TODO/FIXME has expired and must be resolved")
         XCTAssertEqual(violations[0].location.line, 3)
     }
 
-    func testMultilineExpiredTodo() {
+    func testMultilineExpiredTodo() async {
         let example = Example(
             """
             // TODO: Multi-line task
@@ -109,39 +109,39 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
             //       severity: fatal
             """
         )
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations[0].reason, "TODO/FIXME has expired and must be resolved")
         XCTAssertEqual(violations[0].location.line, 3)
     }
 
-    func testTodoFunctionAndExpiredTodo() {
+    func testTodoFunctionAndExpiredTodo() async {
         let example = Example(
             """
             TODO()
             // TODO: Implement two by [\(dateString(for: .expired))]
             """
         )
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations[0].reason, "TODO/FIXME has expired and must be resolved")
         XCTAssertEqual(violations[0].location.line, 2)
     }
 
-    func testBadExpiryTodoFormat() throws {
+    func testBadExpiryTodoFormat() async throws {
         let ruleConfig: ExpiringTodoConfiguration = .init(
             dateFormat: "dd/yyyy/MM"
         )
         config = makeConfiguration(with: ruleConfig)
 
         let example = Example("fatalError() // TODO: [31/01/2020] Implement")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Expiring TODO/FIXME is incorrectly formatted")
     }
 
-    private func violations(_ example: Example) -> [StyleViolation] {
-        SwiftLintFrameworkTests.violations(example, config: config)
+    private func violations(_ example: Example) async -> [StyleViolation] {
+        await SwiftLintFrameworkTests.violations(example, config: config)
     }
 
     private func dateString(for status: ExpiringTodoRule.ExpiryViolationLevel) -> String {

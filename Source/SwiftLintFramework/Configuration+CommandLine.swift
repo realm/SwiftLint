@@ -53,7 +53,7 @@ extension Configuration {
         let groupedFiles = try await Signposts.record(
             name: "Configuration.VisitLintableFiles.GroupFiles"
         ) { @Sendable in
-            try groupFiles(files, visitor: visitor)
+            try await groupFiles(files, visitor: visitor)
         }
         let lintersForFile = await Signposts.record(
             name: "Configuration.VisitLintableFiles.LintersForFile"
@@ -87,7 +87,7 @@ extension Configuration {
         return result.flatMap { $0 }
     }
 
-    private func groupFiles(_ files: [SwiftLintFile], visitor: LintableFilesVisitor) throws
+    private func groupFiles(_ files: [SwiftLintFile], visitor: LintableFilesVisitor) async throws
         -> [Configuration: [SwiftLintFile]] {
         if files.isEmpty && !visitor.allowZeroLintableFiles {
             throw SwiftLintError.usageError(
@@ -97,7 +97,7 @@ extension Configuration {
 
         var groupedFiles = [Configuration: [SwiftLintFile]]()
         for file in files {
-            let fileConfiguration = configuration(for: file)
+            let fileConfiguration = await configuration(for: file)
             let fileConfigurationRootPath = fileConfiguration.rootDirectory.bridge()
 
             // Files whose configuration specifies they should be excluded will be skipped
@@ -241,10 +241,10 @@ extension Configuration {
             let scriptInputPaths = files.compactMap(\.path)
 
             if options.useExcludingByPrefix {
-                return filterExcludedPathsByPrefix(in: scriptInputPaths)
+                return await filterExcludedPathsByPrefix(in: scriptInputPaths)
                     .map(SwiftLintFile.init(pathDeferringReading:))
             }
-            return filterExcludedPaths(excludedPaths(), in: scriptInputPaths)
+            return await filterExcludedPaths(excludedPaths(), in: scriptInputPaths)
                 .map(SwiftLintFile.init(pathDeferringReading:))
         }
         if !options.quiet {
@@ -257,11 +257,11 @@ extension Configuration {
 
             queuedPrintError("\(options.capitalizedVerb) Swift files \(filesInfo)")
         }
-        let excludeLintableFilesBy = options.useExcludingByPrefix
+        let excludeLintableFilesBy = await options.useExcludingByPrefix
                     ? Configuration.ExcludeBy.prefix
                     : .paths(excludedPaths: excludedPaths())
-        return options.paths.flatMap {
-            self.lintableFiles(
+        return await options.paths.asyncFlatMap {
+            await self.lintableFiles(
                 inPath: $0,
                 forceExclude: options.forceExclude,
                 excludeBy: excludeLintableFilesBy)
@@ -284,8 +284,8 @@ extension Configuration {
 
     // MARK: LintOrAnalyze Command
 
-    init(options: LintOrAnalyzeOptions) {
-        self.init(
+    init(options: LintOrAnalyzeOptions) async {
+        await self.init(
             configurationFiles: options.configurationFiles,
             enableAllRules: options.enableAllRules,
             onlyRule: options.onlyRule,

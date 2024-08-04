@@ -3,31 +3,33 @@ import SwiftLintFramework
 import SwiftLintTestHelpers
 import XCTest
 
-private let config: Configuration = {
-    let bazelWorkspaceDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"]
-    let rootProjectDirectory = bazelWorkspaceDirectory ?? #filePath.bridge()
-        .deletingLastPathComponent.bridge()
-        .deletingLastPathComponent.bridge()
-        .deletingLastPathComponent
-    _ = FileManager.default.changeCurrentDirectoryPath(rootProjectDirectory)
-    return Configuration(configurationFiles: [Configuration.defaultFileName])
-}()
+private var config: Configuration {
+    get async {
+        let bazelWorkspaceDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"]
+        let rootProjectDirectory = bazelWorkspaceDirectory ?? #filePath.bridge()
+            .deletingLastPathComponent.bridge()
+            .deletingLastPathComponent.bridge()
+            .deletingLastPathComponent
+        _ = FileManager.default.changeCurrentDirectoryPath(rootProjectDirectory)
+        return await Configuration(configurationFiles: [Configuration.defaultFileName])
+    }
+}
 
 final class IntegrationTests: SwiftLintTestCase {
-    func testSwiftLintLints() {
+    func testSwiftLintLints() async {
         // This is as close as we're ever going to get to a self-hosting linter.
-        let swiftFiles = config.lintableFiles(
+        let swiftFiles = await config.lintableFiles(
             inPath: "",
             forceExclude: false,
-            excludeBy: .paths(excludedPaths: config.excludedPaths()))
+            excludeBy: .paths(excludedPaths: await config.excludedPaths()))
         XCTAssert(
             swiftFiles.contains(where: { #filePath.bridge().absolutePathRepresentation() == $0.path }),
             "current file should be included"
         )
 
         let storage = RuleStorage()
-        let violations = swiftFiles.parallelFlatMap {
-            Linter(file: $0, configuration: config).collect(into: storage).styleViolations(using: storage)
+        let violations = await swiftFiles.parallelFlatMap {
+            await Linter(file: $0, configuration: config).collect(into: storage).styleViolations(using: storage)
         }
         violations.forEach { violation in
             violation.location.file!.withStaticString {
@@ -36,14 +38,14 @@ final class IntegrationTests: SwiftLintTestCase {
         }
     }
 
-    func testSwiftLintAutoCorrects() {
-        let swiftFiles = config.lintableFiles(
+    func testSwiftLintAutoCorrects() async {
+        let swiftFiles = await config.lintableFiles(
             inPath: "",
             forceExclude: false,
-            excludeBy: .paths(excludedPaths: config.excludedPaths()))
+            excludeBy: .paths(excludedPaths: await config.excludedPaths()))
         let storage = RuleStorage()
-        let corrections = swiftFiles.parallelFlatMap {
-            Linter(file: $0, configuration: config).collect(into: storage).correct(using: storage)
+        let corrections = await swiftFiles.parallelFlatMap {
+            await Linter(file: $0, configuration: config).collect(into: storage).correct(using: storage)
         }
         for correction in corrections {
             correction.location.file!.withStaticString {

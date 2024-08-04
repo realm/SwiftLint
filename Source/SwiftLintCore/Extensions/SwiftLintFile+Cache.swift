@@ -53,7 +53,7 @@ private let linesWithTokensCache = Cache { $0.computeLinesWithTokens() }
 internal typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.
 // https://github.com/realm/SwiftLint/issues/3348
-package var parserDiagnosticsDisabledForTests = false
+@MainActor package var parserDiagnosticsDisabledForTests = false
 
 private let assertHandlers = [FileCacheKey: AssertHandler]()
 private let assertHandlerCache = Cache { file in assertHandlers[file.cacheKey] }
@@ -123,7 +123,7 @@ extension SwiftLintFile {
         }
     }
 
-    public var parserDiagnostics: [String]? {
+    @MainActor public var parserDiagnostics: [String]? {
         if parserDiagnosticsDisabledForTests {
             return nil
         }

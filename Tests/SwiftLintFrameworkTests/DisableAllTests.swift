@@ -11,10 +11,10 @@ final class DisableAllTests: SwiftLintTestCase {
 
     // MARK: Violating Phrase
     /// Tests whether example violating phrases trigger when not applying disable rule
-    func testViolatingPhrase() {
+    func testViolatingPhrase() async {
         for violatingPhrase in violatingPhrases {
-            XCTAssertEqual(
-                violations(violatingPhrase.with(code: violatingPhrase.code + "\n")).count,
+            await AsyncAssertEqual(
+                await violations(violatingPhrase.with(code: violatingPhrase.code + "\n")).count,
                 1,
                 #function,
                 file: violatingPhrase.file,
@@ -24,12 +24,12 @@ final class DisableAllTests: SwiftLintTestCase {
 
     // MARK: Enable / Disable Base
     /// Tests whether swiftlint:disable all protects properly
-    func testDisableAll() {
+    func testDisableAll() async {
         for violatingPhrase in violatingPhrases {
             let code = "// swiftlint:disable all\n" + violatingPhrase.code + "\n// swiftlint:enable all\n"
             let protectedPhrase = violatingPhrase.with(code: code)
-            XCTAssertEqual(
-                violations(protectedPhrase).count,
+            await AsyncAssertEqual(
+                await violations(protectedPhrase).count,
                 0,
                 #function,
                 file: violatingPhrase.file,
@@ -38,7 +38,7 @@ final class DisableAllTests: SwiftLintTestCase {
     }
 
     /// Tests whether swiftlint:enable all unprotects properly
-    func testEnableAll() {
+    func testEnableAll() async {
         for violatingPhrase in violatingPhrases {
             let unprotectedPhrase = violatingPhrase.with(code: """
                 // swiftlint:disable all
@@ -46,8 +46,8 @@ final class DisableAllTests: SwiftLintTestCase {
                 // swiftlint:enable all
                 \(violatingPhrase.code)\n
                 """)
-            XCTAssertEqual(
-                violations(unprotectedPhrase).count,
+            await AsyncAssertEqual(
+                await violations(unprotectedPhrase).count,
                 1,
                 #function,
                 file: violatingPhrase.file,
@@ -57,15 +57,15 @@ final class DisableAllTests: SwiftLintTestCase {
 
     // MARK: Enable / Disable Previous
     /// Tests whether swiftlint:disable:previous all protects properly
-    func testDisableAllPrevious() {
+    func testDisableAllPrevious() async {
         for violatingPhrase in violatingPhrases {
             let protectedPhrase = violatingPhrase
                 .with(code: """
                     \(violatingPhrase.code)
                     // swiftlint:disable:previous all\n
                     """)
-            XCTAssertEqual(
-                violations(protectedPhrase).count,
+            await AsyncAssertEqual(
+                await violations(protectedPhrase).count,
                 0,
                 #function,
                 file: violatingPhrase.file,
@@ -74,7 +74,7 @@ final class DisableAllTests: SwiftLintTestCase {
     }
 
     /// Tests whether swiftlint:enable:previous all unprotects properly
-    func testEnableAllPrevious() {
+    func testEnableAllPrevious() async {
         for violatingPhrase in violatingPhrases {
             let unprotectedPhrase = violatingPhrase.with(code: """
                 // swiftlint:disable all
@@ -83,8 +83,8 @@ final class DisableAllTests: SwiftLintTestCase {
                 // swiftlint:enable:previous all
                 // swiftlint:enable all
                 """)
-            XCTAssertEqual(
-                violations(unprotectedPhrase).count,
+            await AsyncAssertEqual(
+                await violations(unprotectedPhrase).count,
                 1,
                 #function,
                 file: violatingPhrase.file,
@@ -94,11 +94,11 @@ final class DisableAllTests: SwiftLintTestCase {
 
     // MARK: Enable / Disable Next
     /// Tests whether swiftlint:disable:next all protects properly
-    func testDisableAllNext() {
+    func testDisableAllNext() async {
         for violatingPhrase in violatingPhrases {
             let protectedPhrase = violatingPhrase.with(code: "// swiftlint:disable:next all\n" + violatingPhrase.code)
-            XCTAssertEqual(
-                violations(protectedPhrase).count,
+            await AsyncAssertEqual(
+                await violations(protectedPhrase).count,
                 0,
                 #function,
                 file: violatingPhrase.file,
@@ -107,7 +107,7 @@ final class DisableAllTests: SwiftLintTestCase {
     }
 
     /// Tests whether swiftlint:enable:next all unprotects properly
-    func testEnableAllNext() {
+    func testEnableAllNext() async {
         for violatingPhrase in violatingPhrases {
             let unprotectedPhrase = violatingPhrase.with(code: """
                 // swiftlint:disable all
@@ -116,8 +116,8 @@ final class DisableAllTests: SwiftLintTestCase {
                 \(violatingPhrase.code)
                 // swiftlint:enable all
                 """)
-            XCTAssertEqual(
-                violations(unprotectedPhrase).count,
+            await AsyncAssertEqual(
+                await violations(unprotectedPhrase).count,
                 1,
                 #function,
                 file: violatingPhrase.file,
@@ -127,12 +127,12 @@ final class DisableAllTests: SwiftLintTestCase {
 
     // MARK: Enable / Disable This
     /// Tests whether swiftlint:disable:this all protects properly
-    func testDisableAllThis() {
+    func testDisableAllThis() async {
         for violatingPhrase in violatingPhrases {
             let rawViolatingPhrase = violatingPhrase.code.replacingOccurrences(of: "\n", with: "")
             let protectedPhrase = violatingPhrase.with(code: rawViolatingPhrase + "// swiftlint:disable:this all\n")
-            XCTAssertEqual(
-                violations(protectedPhrase).count,
+            await AsyncAssertEqual(
+                await violations(protectedPhrase).count,
                 0,
                 #function,
                 file: violatingPhrase.file,
@@ -141,7 +141,7 @@ final class DisableAllTests: SwiftLintTestCase {
     }
 
     /// Tests whether swiftlint:enable:next all unprotects properly
-    func testEnableAllThis() {
+    func testEnableAllThis() async {
         for violatingPhrase in violatingPhrases {
             let rawViolatingPhrase = violatingPhrase.code.replacingOccurrences(of: "\n", with: "")
             let unprotectedPhrase = violatingPhrase.with(code: """
@@ -150,8 +150,8 @@ final class DisableAllTests: SwiftLintTestCase {
                 \(rawViolatingPhrase)// swiftlint:enable:this all
                 // swiftlint:enable all
                 """)
-            XCTAssertEqual(
-                violations(unprotectedPhrase).count,
+            await AsyncAssertEqual(
+                await violations(unprotectedPhrase).count,
                 1,
                 #function,
                 file: violatingPhrase.file,

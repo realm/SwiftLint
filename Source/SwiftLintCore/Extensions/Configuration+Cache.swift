@@ -54,7 +54,7 @@ extension Configuration {
     }
 
     // MARK: SwiftLint Cache (On-Disk)
-    internal var cacheDescription: String {
+    internal nonisolated var cacheDescription: String {
         if let computedCacheDescription {
             return computedCacheDescription
         }

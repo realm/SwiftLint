@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
 final class ConditionalReturnsOnNewlineRuleTests: SwiftLintTestCase {
-    func testConditionalReturnsOnNewlineWithIfOnly() {
+    func testConditionalReturnsOnNewlineWithIfOnly() async {
         // Test with `if_only` set to true
         let nonTriggeringExamples = [
             Example("guard true else {\n return true\n}"),
@@ -24,6 +24,6 @@ final class ConditionalReturnsOnNewlineRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["if_only": true])
+        await verifyRule(description, ruleConfiguration: ["if_only": true])
     }
 }

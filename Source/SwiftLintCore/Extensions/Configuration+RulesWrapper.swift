@@ -1,16 +1,16 @@
 import Foundation
 
 internal extension Configuration {
-    final class RulesWrapper: @unchecked Sendable { // TODO: Remove `@unchecked`
+    actor RulesWrapper {
         // MARK: - Properties
         private static var isOptInRuleCache: [String: Bool] = [:]
 
-        let allRulesWrapped: [ConfigurationRuleWrapper]
+        nonisolated let allRulesWrapped: [ConfigurationRuleWrapper]
         internal let mode: RulesMode
-        private let aliasResolver: (String) -> String
+        private let aliasResolver: @Sendable (String) -> String
 
-        private var invalidRuleIdsWarnedAbout: Set<String> = []
-        private var validRuleIdentifiers: Set<String> {
+        private nonisolated(unsafe) var invalidRuleIdsWarnedAbout: Set<String> = []
+        private nonisolated var validRuleIdentifiers: Set<String> {
             let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).description.identifier }
             let configurationCustomRulesIdentifiers =
                 (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?
@@ -18,12 +18,12 @@ internal extension Configuration {
             return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)
         }
 
-        private var cachedResultingRules: [any Rule]?
+        private nonisolated(unsafe) var cachedResultingRules: [any Rule]?
         private let resultingRulesLock = NSLock()
 
         /// All rules enabled in this configuration,
         /// derived from rule mode (only / optIn - disabled) & existing rules
-        var resultingRules: [any Rule] {
+        nonisolated var resultingRules: [any Rule] {
             // Lock for thread-safety (that's also why this is not a lazy var)
             resultingRulesLock.lock()
             defer { resultingRulesLock.unlock() }
@@ -74,7 +74,7 @@ internal extension Configuration {
             return resultingRules
         }
 
-        lazy var disabledRuleIdentifiers: [String] = {
+        lazy nonisolated var disabledRuleIdentifiers: [String] = {
             switch mode {
             case let .default(disabled, _):
                 return validate(ruleIds: disabled, valid: validRuleIdentifiers, silent: true)
@@ -98,7 +98,7 @@ internal extension Configuration {
         init(
             mode: RulesMode,
             allRulesWrapped: [ConfigurationRuleWrapper],
-            aliasResolver: @escaping (String) -> String,
+            aliasResolver: @escaping @Sendable (String) -> String,
             originatesFromMergingProcess: Bool = false
         ) {
             self.allRulesWrapped = allRulesWrapped
@@ -113,17 +113,24 @@ internal extension Configuration {
         }
 
         // MARK: - Methods: Validation
-        private func validate(optInRuleIds: Set<String>, valid: Set<String>) -> Set<String> {
+        private nonisolated func validate(optInRuleIds: Set<String>, valid: Set<String>) -> Set<String> {
             validate(ruleIds: optInRuleIds, valid: valid.union([RuleIdentifier.all.stringRepresentation]))
         }
 
-        private func validate(ruleIds: Set<String>, valid: Set<String>, silent: Bool = false) -> Set<String> {
+        private nonisolated func validate(ruleIds: Set<String>,
+                                          valid: Set<String>,
+                                          silent: Bool = false) -> Set<String> {
             // Process invalid rule identifiers
             if !silent {
                 let invalidRuleIdentifiers = ruleIds.subtracting(valid)
                 if !invalidRuleIdentifiers.isEmpty {
                     for invalidRuleIdentifier in invalidRuleIdentifiers.subtracting(invalidRuleIdsWarnedAbout) {
-                        invalidRuleIdsWarnedAbout.insert(invalidRuleIdentifier)
+                        if resultingRulesLock.try() {
+                            invalidRuleIdsWarnedAbout.insert(invalidRuleIdentifier)
+                            resultingRulesLock.unlock()
+                        } else {
+                            invalidRuleIdsWarnedAbout.insert(invalidRuleIdentifier)
+                        }
                         queuedPrintError(
                             "warning: '\(invalidRuleIdentifier)' is not a valid rule identifier"
                         )

@@ -54,7 +54,7 @@ public struct Configuration: Sendable {
 
     // MARK: Public Computed
     /// All rules enabled in this configuration
-    public var rules: [any Rule] { rulesWrapper.resultingRules }
+    public nonisolated var rules: [any Rule] { rulesWrapper.resultingRules }
 
     /// The root directory is the directory that included & excluded paths relate to.
     /// By default, the root directory is the current working directory,
@@ -215,7 +215,7 @@ public struct Configuration: Sendable {
         ignoreParentAndChildConfigs: Bool = false,
         mockedNetworkResults: [String: String] = [:],
         useDefaultConfigOnFailure: Bool? = nil // swiftlint:disable:this discouraged_optional_boolean
-    ) {
+    ) async {
         // Handle mocked network results if needed
         Self.FileGraph.FilePath.mockedNetworkResults = mockedNetworkResults
         defer {
@@ -246,7 +246,7 @@ public struct Configuration: Sendable {
                 rootDirectory: currentWorkingDirectory,
                 ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
             )
-            let resultingConfiguration = try fileGraph.resultingConfiguration(
+            let resultingConfiguration = try await fileGraph.resultingConfiguration(
                 enableAllRules: enableAllRules,
                 onlyRule: onlyRule,
                 cachePath: cachePath
@@ -290,7 +290,7 @@ public struct Configuration: Sendable {
 
 // MARK: - Hashable
 extension Configuration: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    public nonisolated func hash(into hasher: inout Hasher) {
         hasher.combine(includedPaths)
         hasher.combine(excludedPaths)
         hasher.combine(indentation)
@@ -307,7 +307,7 @@ extension Configuration: Hashable {
         hasher.combine(fileGraph)
     }
 
-    public static func == (lhs: Configuration, rhs: Configuration) -> Bool {
+    public static nonisolated func == (lhs: Configuration, rhs: Configuration) -> Bool {
         lhs.includedPaths == rhs.includedPaths &&
             lhs.excludedPaths == rhs.excludedPaths &&
             lhs.indentation == rhs.indentation &&
@@ -328,7 +328,7 @@ extension Configuration: Hashable {
 
 // MARK: - CustomStringConvertible
 extension Configuration: CustomStringConvertible {
-    public var description: String {
+    public nonisolated var description: String {
         "Configuration: \n"
             + "- Indentation Style: \(indentation)\n"
             + "- Included Paths: \(includedPaths)\n"

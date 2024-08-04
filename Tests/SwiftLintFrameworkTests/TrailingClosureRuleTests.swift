@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
 final class TrailingClosureRuleTests: SwiftLintTestCase {
-    func testWithOnlySingleMutedParameterEnabled() {
+    func testWithOnlySingleMutedParameterEnabled() async {
         let originalDescription = TrailingClosureRule.description
         let description = originalDescription
             .with(nonTriggeringExamples: originalDescription.nonTriggeringExamples + [
@@ -26,6 +26,6 @@ final class TrailingClosureRuleTests: SwiftLintTestCase {
                         """),
             ])
 
-        verifyRule(description, ruleConfiguration: ["only_single_muted_parameter": true])
+        await verifyRule(description, ruleConfiguration: ["only_single_muted_parameter": true])
     }
 }

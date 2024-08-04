@@ -3,7 +3,7 @@ import SwiftLintTestHelpers
 import XCTest
 
 final class CollectingRuleTests: SwiftLintTestCase {
-    func testCollectsIntoStorage() {
+    func testCollectsIntoStorage() async {
         struct Spec: MockCollectingRule {
             var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -21,10 +21,10 @@ final class CollectingRuleTests: SwiftLintTestCase {
             }
         }
 
-        XCTAssertFalse(violations(Example("_ = 0"), config: Spec.configuration!).isEmpty)
+        await AsyncAssertFalse(await violations(Example("_ = 0"), config: Spec.configuration!).isEmpty)
     }
 
-    func testCollectsAllFiles() {
+    func testCollectsAllFiles() async {
         struct Spec: MockCollectingRule {
             var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -46,10 +46,10 @@ final class CollectingRuleTests: SwiftLintTestCase {
         }
 
         let inputs = ["foo", "bar", "baz"]
-        XCTAssertEqual(inputs.violations(config: Spec.configuration!).count, inputs.count)
+        await AsyncAssertEqual(await inputs.violations(config: Spec.configuration!).count, inputs.count)
     }
 
-    func testCollectsAnalyzerFiles() {
+    func testCollectsAnalyzerFiles() async {
         struct Spec: MockCollectingRule, AnalyzerRule {
             var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -68,10 +68,12 @@ final class CollectingRuleTests: SwiftLintTestCase {
             }
         }
 
-        XCTAssertFalse(violations(Example("_ = 0"), config: Spec.configuration!, requiresFileOnDisk: true).isEmpty)
+        await AsyncAssertFalse(
+            await violations(Example("_ = 0"), config: Spec.configuration!, requiresFileOnDisk: true).isEmpty
+        )
     }
 
-    func testCorrects() {
+    func testCorrects() async {
         struct Spec: MockCollectingRule, CollectingCorrectableRule {
             var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -134,8 +136,11 @@ final class CollectingRuleTests: SwiftLintTestCase {
         }
 
         let inputs = ["foo", "baz"]
-        XCTAssertEqual(inputs.corrections(config: Spec.configuration!).count, 1)
-        XCTAssertEqual(inputs.corrections(config: AnalyzerSpec.configuration!, requiresFileOnDisk: true).count, 1)
+        await AsyncAssertEqual(await inputs.corrections(config: Spec.configuration!).count, 1)
+        await AsyncAssertEqual(
+            await inputs.corrections(config: AnalyzerSpec.configuration!, requiresFileOnDisk: true).count,
+            1
+        )
     }
 }
 

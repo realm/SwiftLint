@@ -7,7 +7,7 @@ private let detectingTypes = ["actor", "class", "struct", "enum"]
 // swiftlint:disable:next type_body_length
 final class NestingRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
-    func testNestingWithAlwaysAllowOneTypeInFunctions() {
+    func testNestingWithAlwaysAllowOneTypeInFunctions() async {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [
@@ -208,11 +208,11 @@ final class NestingRuleTests: SwiftLintTestCase {
             triggeringExamples: triggeringExamples
         )
 
-        verifyRule(description, ruleConfiguration: ["always_allow_one_type_in_functions": true])
+        await verifyRule(description, ruleConfiguration: ["always_allow_one_type_in_functions": true])
     }
 
     // swiftlint:disable:next function_body_length
-    func testNestingWithoutCheckNestingInClosuresAndStatements() {
+    func testNestingWithoutCheckNestingInClosuresAndStatements() async {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         // swiftlint:disable:next closure_body_length
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
@@ -507,10 +507,10 @@ final class NestingRuleTests: SwiftLintTestCase {
             triggeringExamples: triggeringExamples
         )
 
-        verifyRule(description, ruleConfiguration: ["check_nesting_in_closures_and_statements": false])
+        await verifyRule(description, ruleConfiguration: ["check_nesting_in_closures_and_statements": false])
     }
 
-    func testNestingWithoutTypealiasAndAssociatedtype() {
+    func testNestingWithoutTypealiasAndAssociatedtype() async {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [
@@ -552,6 +552,6 @@ final class NestingRuleTests: SwiftLintTestCase {
 
         let description = NestingRule.description.with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignore_typealiases_and_associatedtypes": true])
+        await verifyRule(description, ruleConfiguration: ["ignore_typealiases_and_associatedtypes": true])
     }
 }

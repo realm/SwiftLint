@@ -2,15 +2,15 @@
 import SwiftLintTestHelpers
 
 final class ExtraRulesTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+    func testWithDefaultConfiguration() async {
         for ruleType in extraRules() {
-            verifyRule(ruleType.description)
+            await verifyRule(ruleType.description)
         }
     }
 }
 
 extension ExtraRulesTests {
-    static var allTests: [(String, (ExtraRulesTests) -> () throws -> Void)] {
+    static var allTests: [(String, (ExtraRulesTests) -> () async throws -> Void)] {
         [("testWithDefaultConfiguration", testWithDefaultConfiguration)]
     }
 }

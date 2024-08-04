@@ -48,7 +48,7 @@ public struct Region: Equatable {
     public func isRuleDisabled(_ rule: some Rule) -> Bool {
         if rule is CustomRules {
             let customRulesConfiguration = rule.configuration as? CustomRulesConfiguration
-            let identifiers = customRulesConfiguration?.customRuleConfigurations.map { $0.identifier } ?? []
+            let identifiers = customRulesConfiguration?.customRuleConfigurations.map(\.identifier) ?? []
             return areRulesDisabled(ruleIDs: identifiers + [type(of: rule).description.identifier])
         }
         return areRulesDisabled(ruleIDs: type(of: rule).description.allIdentifiers)

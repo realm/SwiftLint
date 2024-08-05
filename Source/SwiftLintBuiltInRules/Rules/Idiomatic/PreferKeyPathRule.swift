@@ -7,7 +7,7 @@ struct PreferKeyPathRule: OptInRule {
 
     private static let extendedMode = ["restrict_to_standard_functions": false]
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "prefer_key_path",
         name: "Prefer Key Path",
         description: "Use a key path argument instead of a closure with property access",

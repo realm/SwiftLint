@@ -5,7 +5,7 @@ import SwiftSyntaxBuilder
 struct ToggleBoolRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "toggle_bool",
         name: "Toggle Bool",
         description: "Prefer `someBool.toggle()` over `someBool = !someBool`",

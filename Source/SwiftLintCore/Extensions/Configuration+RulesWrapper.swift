@@ -99,9 +99,7 @@ internal extension Configuration {
             validate(ruleIds: optInRuleIds, valid: valid.union([RuleIdentifier.all.stringRepresentation]))
         }
 
-        private static func validate(ruleIds: Set<String>,
-                                          valid: Set<String>,
-                                          silent: Bool = false) -> Set<String> {
+        private static func validate(ruleIds: Set<String>, valid: Set<String>, silent: Bool = false) -> Set<String> {
             // Process invalid rule identifiers
             if !silent {
                 let invalidRuleIdentifiers = ruleIds.subtracting(valid)
@@ -124,7 +122,7 @@ internal extension Configuration {
         }
 
         // MARK: Merging
-        func merged(with child: RulesWrapper) -> RulesWrapper {
+        func merged(with child: Self) -> Self {
             // Merge allRulesWrapped
             let newAllRulesWrapped = mergedAllRulesWrapped(with: child)
 
@@ -151,15 +149,15 @@ internal extension Configuration {
             }
 
             // Assemble & return merged rules
-            return RulesWrapper(
+            return Self(
                 mode: newMode,
                 allRulesWrapped: mergedCustomRules(newAllRulesWrapped: newAllRulesWrapped, with: child),
-                aliasResolver: { child.aliasResolver(self.aliasResolver($0)) },
+                aliasResolver: { child.aliasResolver(aliasResolver($0)) },
                 originatesFromMergingProcess: true
             )
         }
 
-        private func mergedAllRulesWrapped(with child: RulesWrapper) -> [ConfigurationRuleWrapper] {
+        private func mergedAllRulesWrapped(with child: Self) -> [ConfigurationRuleWrapper] {
             let mainConfigSet = Set(allRulesWrapped.map(HashableConfigurationRuleWrapperWrapper.init))
             let childConfigSet = Set(child.allRulesWrapped.map(HashableConfigurationRuleWrapperWrapper.init))
             let childConfigRulesWithConfig = childConfigSet
@@ -173,7 +171,7 @@ internal extension Configuration {
         }
 
         private func mergedCustomRules(
-            newAllRulesWrapped: [ConfigurationRuleWrapper], with child: RulesWrapper
+            newAllRulesWrapped: [ConfigurationRuleWrapper], with child: Self
         ) -> [ConfigurationRuleWrapper] {
             guard
                 let parentCustomRulesRule = (allRulesWrapped.first { $0.rule is CustomRules })?.rule
@@ -201,7 +199,7 @@ internal extension Configuration {
 
         private func mergeDefaultMode(
             newAllRulesWrapped: [ConfigurationRuleWrapper],
-            child: RulesWrapper,
+            child: Self,
             childDisabled: Set<String>,
             childOptIn: Set<String>,
             validRuleIdentifiers: Set<String>

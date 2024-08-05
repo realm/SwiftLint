@@ -5,7 +5,7 @@ import SwiftSyntax
 struct FinalTestCaseRule: OptInRule {
     var configuration = FinalTestCaseConfiguration()
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "final_test_case",
         name: "Final Test Case",
         description: "Test cases should be final",

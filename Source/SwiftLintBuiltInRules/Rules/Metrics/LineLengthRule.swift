@@ -1,5 +1,5 @@
 import Foundation
-import SourceKittenFramework
+@preconcurrency import SourceKittenFramework
 
 struct LineLengthRule: Rule {
     var configuration = LineLengthConfiguration()

@@ -1,5 +1,5 @@
 import Foundation
-import SourceKittenFramework
+@preconcurrency import SourceKittenFramework
 
 /// A rule configuration used for defining custom rules in yaml.
 public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Hashable,

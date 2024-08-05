@@ -417,9 +417,9 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 ///    ```
 ///
 @propertyWrapper
-public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: Equatable {
+public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable & Sendable>: Equatable, Sendable {
     /// A deprecation notice.
-    public enum DeprecationNotice {
+    public enum DeprecationNotice: Sendable {
         /// Warning suggesting an alternative option.
         case suggestAlternative(ruleID: String, name: String)
     }
@@ -450,7 +450,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     public let inline: Bool
 
     private let deprecationNotice: DeprecationNotice?
-    private let postprocessor: (inout T) -> Void
+    private let postprocessor: @Sendable (inout T) -> Void
 
     /// Default constructor.
     ///
@@ -463,7 +463,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     public init(wrappedValue value: T,
                 key: String,
                 deprecationNotice: DeprecationNotice? = nil,
-                postprocessor: @escaping (inout T) -> Void = { _ in }) {
+                postprocessor: @escaping @Sendable (inout T) -> Void = { _ in }) {
         self.init(
             wrappedValue: value,
             key: key,
@@ -511,7 +511,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
                  key: String,
                  inline: Bool,
                  deprecationNotice: DeprecationNotice? = nil,
-                 postprocessor: @escaping (inout T) -> Void = { _ in }) {
+                 postprocessor: @escaping @Sendable (inout T) -> Void = { _ in }) {
         self.wrappedValue = wrappedValue
         self.key = key
         self.inline = inline

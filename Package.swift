@@ -131,7 +131,7 @@ let package = Package(
                 "SwiftLintFramework",
                 "SwiftLintTestHelpers",
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
             name: "IntegrationTests",

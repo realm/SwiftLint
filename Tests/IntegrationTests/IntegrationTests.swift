@@ -28,7 +28,7 @@ final class IntegrationTests: SwiftLintTestCase {
         )
 
         let storage = RuleStorage()
-        let violations = await swiftFiles.parallelFlatMap {
+        let violations = await swiftFiles.asyncFlatMap {
             await Linter(file: $0, configuration: config).collect(into: storage).styleViolations(using: storage)
         }
         violations.forEach { violation in
@@ -44,7 +44,7 @@ final class IntegrationTests: SwiftLintTestCase {
             forceExclude: false,
             excludeBy: .paths(excludedPaths: await config.excludedPaths()))
         let storage = RuleStorage()
-        let corrections = await swiftFiles.parallelFlatMap {
+        let corrections = await swiftFiles.asyncFlatMap {
             await Linter(file: $0, configuration: config).collect(into: storage).correct(using: storage)
         }
         for correction in corrections {

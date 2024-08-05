@@ -53,8 +53,8 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         }
         """)
 
-        await AsyncAssertEqual(
-            await ruleViolations(example).first?.reason,
+        XCTAssertEqual(
+            ruleViolations(example).first?.reason,
             "Computed properties should first declare the getter and then the setter"
         )
     }
@@ -73,8 +73,8 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         }
         """)
 
-        await AsyncAssertEqual(
-            await ruleViolations(example).first?.reason,
+        XCTAssertEqual(
+            ruleViolations(example).first?.reason,
             "Computed subscripts should first declare the getter and then the setter"
         )
     }
@@ -93,13 +93,13 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         }
         """)
 
-        await AsyncAssertEqual(
-            await ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason,
+        XCTAssertEqual(
+            ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason,
             "Computed properties should first declare the setter and then the getter"
         )
     }
 
-    func testSetGetSubscriptReason() async {
+    func testSetGetSubscriptReason() {
         let example = Example("""
         class Foo {
             subscript(i: Int) -> Int {
@@ -113,17 +113,17 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         }
         """)
 
-        await AsyncAssertEqual(
-            await ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason,
+        XCTAssertEqual(
+            ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason,
             "Computed subscripts should first declare the setter and then the getter"
         )
     }
 
-    private func ruleViolations(_ example: Example, ruleConfiguration: Any? = nil) async -> [StyleViolation] {
+    private func ruleViolations(_ example: Example, ruleConfiguration: Any? = nil) -> [StyleViolation] {
         guard let config = makeConfig(ruleConfiguration, ComputedAccessorsOrderRule.description.identifier) else {
             return []
         }
 
-        return await violations(example, config: config)
+        return violations(example, config: config)
     }
 }

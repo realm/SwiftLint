@@ -395,14 +395,14 @@ final class ModifierOrderTests: SwiftLintTestCase {
         )
     }
 
-    func testViolationMessage() async {
+    func testViolationMessage() {
         let ruleID = ModifierOrderRule.description.identifier
         guard let config = makeConfig(["preferred_modifier_order": ["acl", "final"]], ruleID) else {
             XCTFail("Failed to create configuration")
             return
         }
 
-        let allViolations = await violations(Example("final public var foo: String"), config: config)
+        let allViolations = violations(Example("final public var foo: String"), config: config)
         let modifierOrderRuleViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         if let violation = modifierOrderRuleViolation {
             XCTAssertEqual(violation.reason, "public modifier should come before final")

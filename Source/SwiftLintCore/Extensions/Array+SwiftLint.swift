@@ -82,8 +82,8 @@ public extension Array {
     /// - parameter transform: The transformation to apply to each element.
     ///
     /// - returns: The result of applying `transform` on every element and flattening the results.
-    func parallelFlatMap<T>(transform: @escaping (Element) async -> [T]) async -> [T] {
-        await parallelMap(transform: transform).flatMap { $0 }
+    func parallelFlatMap<T>(transform: (Element) -> [T]) -> [T] {
+        parallelMap(transform: transform).flatMap { $0 }
     }
 
     /// Same as `compactMap` but spreads the work in the `transform` block in parallel using GCD's `concurrentPerform`.
@@ -91,8 +91,8 @@ public extension Array {
     /// - parameter transform: The transformation to apply to each element.
     ///
     /// - returns: The result of applying `transform` on every element and discarding the `nil` ones.
-    func parallelCompactMap<T>(transform: @escaping (Element) async -> T?) async -> [T] {
-        await parallelMap(transform: transform).compactMap { $0 }
+    func parallelCompactMap<T>(transform: (Element) -> T?) -> [T] {
+        parallelMap(transform: transform).compactMap { $0 }
     }
 
     /// Same as `map` but spreads the work in the `transform` block in parallel using GCD's `concurrentPerform`.
@@ -100,18 +100,13 @@ public extension Array {
     /// - parameter transform: The transformation to apply to each element.
     ///
     /// - returns: The result of applying `transform` on every element.
-    func parallelMap<T>(transform: @escaping (Element) async -> T) async -> [T] {
-        await withTaskGroup(of: T.self) { group in
-            for element in self {
-                group.addTask { await transform(element) }
+    func parallelMap<T>(transform: (Element) -> T) -> [T] {
+        var result = ContiguousArray<T?>(repeating: nil, count: count)
+        return result.withUnsafeMutableBufferPointer { buffer in
+            DispatchQueue.concurrentPerform(iterations: buffer.count) { idx in
+                buffer[idx] = transform(self[idx])
             }
-            var index = 0
-            var result = ContiguousArray<T?>(repeating: nil, count: count)
-            for await value in group {
-                result[index] = value
-                index += 1
-            }
-            return result.map { $0! }
+            return buffer.map { $0! }
         }
     }
 }

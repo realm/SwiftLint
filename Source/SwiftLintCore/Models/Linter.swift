@@ -206,8 +206,8 @@ public struct CollectedLinter: @unchecked Sendable { // TODO: Make `Rule` @Senda
     /// - parameter storage: The storage object containing all collected info.
     ///
     /// - returns: All style violations found by this linter.
-    public func styleViolations(using storage: RuleStorage) async -> [StyleViolation] {
-        await getStyleViolations(using: storage).0
+    public func styleViolations(using storage: RuleStorage) -> [StyleViolation] {
+        getStyleViolations(using: storage).0
     }
 
     /// Computes or retrieves style violations and the time spent executing each rule.
@@ -216,12 +216,12 @@ public struct CollectedLinter: @unchecked Sendable { // TODO: Make `Rule` @Senda
     ///
     /// - returns: All style violations found by this linter, and the time spent executing each rule.
     public func styleViolationsAndRuleTimes(using storage: RuleStorage)
-            async -> ([StyleViolation], [(id: String, time: Double)]) {
-        await getStyleViolations(using: storage, benchmark: true)
+            -> ([StyleViolation], [(id: String, time: Double)]) {
+        getStyleViolations(using: storage, benchmark: true)
     }
 
     private func getStyleViolations(using storage: RuleStorage,
-                                    benchmark: Bool = false) async -> ([StyleViolation], [(id: String, time: Double)]) {
+                                    benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
         guard !rules.isEmpty else {
             // Nothing to validate if there are no active rules!
             return ([], [])
@@ -235,7 +235,7 @@ public struct CollectedLinter: @unchecked Sendable { // TODO: Make `Rule` @Senda
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        let validationResults = await rules.parallelCompactMap {
+        let validationResults = rules.parallelCompactMap {
             $0.lint(file: file, regions: regions, benchmark: benchmark,
                     storage: storage,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,

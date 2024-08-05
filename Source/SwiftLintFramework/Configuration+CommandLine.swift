@@ -48,7 +48,7 @@ extension Configuration {
         let files = try await Signposts.record(
             name: "Configuration.VisitLintableFiles.GetFiles"
         ) { @Sendable in
-            try await getFiles(with: visitor)
+            try getFiles(with: visitor)
         }
         let groupedFiles = try await Signposts.record(
             name: "Configuration.VisitLintableFiles.GroupFiles"
@@ -225,7 +225,7 @@ extension Configuration {
             linters.asyncMap(visit)
     }
 
-    fileprivate func getFiles(with visitor: LintableFilesVisitor) async throws -> [SwiftLintFile] {
+    fileprivate func getFiles(with visitor: LintableFilesVisitor) throws -> [SwiftLintFile] {
         let options = visitor.options
         if options.useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
@@ -241,10 +241,10 @@ extension Configuration {
             let scriptInputPaths = files.compactMap(\.path)
 
             if options.useExcludingByPrefix {
-                return await filterExcludedPathsByPrefix(in: scriptInputPaths)
+                return filterExcludedPathsByPrefix(in: scriptInputPaths)
                     .map(SwiftLintFile.init(pathDeferringReading:))
             }
-            return await filterExcludedPaths(excludedPaths(), in: scriptInputPaths)
+            return filterExcludedPaths(excludedPaths(), in: scriptInputPaths)
                 .map(SwiftLintFile.init(pathDeferringReading:))
         }
         if !options.quiet {
@@ -257,11 +257,11 @@ extension Configuration {
 
             queuedPrintError("\(options.capitalizedVerb) Swift files \(filesInfo)")
         }
-        let excludeLintableFilesBy = await options.useExcludingByPrefix
+        let excludeLintableFilesBy = options.useExcludingByPrefix
                     ? Configuration.ExcludeBy.prefix
                     : .paths(excludedPaths: excludedPaths())
-        return await options.paths.asyncFlatMap {
-            await self.lintableFiles(
+        return options.paths.flatMap {
+            self.lintableFiles(
                 inPath: $0,
                 forceExclude: options.forceExclude,
                 excludeBy: excludeLintableFilesBy)

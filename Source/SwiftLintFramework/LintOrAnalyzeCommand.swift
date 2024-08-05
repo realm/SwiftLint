@@ -165,7 +165,7 @@ public struct LintOrAnalyzeCommand {
             if options.benchmark {
                 await CustomRuleTimer.shared.activate()
                 let start = Date()
-                let (violationsBeforeLeniency, currentRuleTimes) = await linter
+                let (violationsBeforeLeniency, currentRuleTimes) = linter
                     .styleViolationsAndRuleTimes(using: builder.storage)
                 currentViolations = applyLeniency(
                     options: options,
@@ -177,7 +177,7 @@ public struct LintOrAnalyzeCommand {
                     await builder.recordRuleBenchmark(id: id, time: time)
                 }
             } else {
-                currentViolations = await applyLeniency(
+                currentViolations = applyLeniency(
                     options: options,
                     strict: builder.configuration.strict,
                     violations: linter.styleViolations(using: builder.storage)

@@ -21,7 +21,7 @@ final class CollectingRuleTests: SwiftLintTestCase {
             }
         }
 
-        await AsyncAssertFalse(await violations(Example("_ = 0"), config: Spec.configuration!).isEmpty)
+        XCTAssertFalse(violations(Example("_ = 0"), config: Spec.configuration!).isEmpty)
     }
 
     func testCollectsAllFiles() async {
@@ -46,7 +46,7 @@ final class CollectingRuleTests: SwiftLintTestCase {
         }
 
         let inputs = ["foo", "bar", "baz"]
-        await AsyncAssertEqual(await inputs.violations(config: Spec.configuration!).count, inputs.count)
+        XCTAssertEqual(inputs.violations(config: Spec.configuration!).count, inputs.count)
     }
 
     func testCollectsAnalyzerFiles() async {
@@ -68,9 +68,7 @@ final class CollectingRuleTests: SwiftLintTestCase {
             }
         }
 
-        await AsyncAssertFalse(
-            await violations(Example("_ = 0"), config: Spec.configuration!, requiresFileOnDisk: true).isEmpty
-        )
+        XCTAssertFalse(violations(Example("_ = 0"), config: Spec.configuration!, requiresFileOnDisk: true).isEmpty)
     }
 
     func testCorrects() async {

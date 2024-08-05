@@ -6,42 +6,42 @@ final class TodoRuleTests: SwiftLintTestCase {
         await verifyRule(TodoRule.description, commentDoesntViolate: false)
     }
 
-    func testTodoMessage() async {
+    func testTodoMessage() {
         let example = Example("fatalError() // TODO: Implement")
-        let violations = await self.violations(example)
+        let violations = self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODOs should be resolved (Implement)")
     }
 
-    func testFixMeMessage() async {
+    func testFixMeMessage() {
         let example = Example("fatalError() // FIXME: Implement")
-        let violations = await self.violations(example)
+        let violations = self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement)")
     }
 
-    func testOnlyFixMe() async {
+    func testOnlyFixMe() {
         let example = Example("""
             fatalError() // TODO: Implement todo
             fatalError() // FIXME: Implement fixme
         """)
-        let violations = await self.violations(example, config: ["only": ["FIXME"]])
+        let violations = self.violations(example, config: ["only": ["FIXME"]])
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement fixme)")
     }
 
-    func testOnlyTodo() async {
+    func testOnlyTodo() {
         let example = Example("""
             fatalError() // TODO: Implement todo
             fatalError() // FIXME: Implement fixme
         """)
-        let violations = await self.violations(example, config: ["only": ["TODO"]])
+        let violations = self.violations(example, config: ["only": ["TODO"]])
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODOs should be resolved (Implement todo)")
     }
 
-    private func violations(_ example: Example, config: Any? = nil) async -> [StyleViolation] {
+    private func violations(_ example: Example, config: Any? = nil) -> [StyleViolation] {
         let config = makeConfig(config, TodoRule.description.identifier)!
-        return await SwiftLintFrameworkTests.violations(example, config: config)
+        return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

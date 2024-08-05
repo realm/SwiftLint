@@ -35,32 +35,32 @@ extension ConfigurationTests {
                 reporter: XcodeReporter.identifier
             )
         }
-        await AsyncAssertEqual(
-            await configuration(forWarningThreshold: 3)
+        XCTAssertEqual(
+            configuration(forWarningThreshold: 3)
                 .merged(withChild: configuration(forWarningThreshold: 2))
                 .warningThreshold,
             2
         )
-        await AsyncAssertEqual(
-            await configuration(forWarningThreshold: nil)
+        XCTAssertEqual(
+            configuration(forWarningThreshold: nil)
                 .merged(withChild: configuration(forWarningThreshold: 2))
                 .warningThreshold,
             2
         )
-        await AsyncAssertEqual(
-            await configuration(forWarningThreshold: 3)
+        XCTAssertEqual(
+            configuration(forWarningThreshold: 3)
                 .merged(withChild: configuration(forWarningThreshold: nil))
                 .warningThreshold,
             3
         )
-        await AsyncAssertNil(
-            await configuration(forWarningThreshold: nil)
+        XCTAssertNil(
+            configuration(forWarningThreshold: nil)
                 .merged(withChild: configuration(forWarningThreshold: nil))
                 .warningThreshold
             )
     }
 
-    func testOnlyRulesMerging() async {
+    func testOnlyRulesMerging() {
         let baseConfiguration = Configuration(
             rulesMode: .default(
                 disabled: [],
@@ -75,12 +75,12 @@ extension ConfigurationTests {
         XCTAssertEqual(onlyConfiguration.rules.count, 1)
         XCTAssertTrue(onlyConfiguration.rules[0] is TodoRule)
 
-        let mergedConfiguration1 = await baseConfiguration.merged(withChild: onlyConfiguration)
+        let mergedConfiguration1 = baseConfiguration.merged(withChild: onlyConfiguration)
         XCTAssertEqual(mergedConfiguration1.rules.count, 1)
         XCTAssertTrue(mergedConfiguration1.rules[0] is TodoRule)
 
         // Also test the other way around
-        let mergedConfiguration2 = await onlyConfiguration.merged(withChild: baseConfiguration)
+        let mergedConfiguration2 = onlyConfiguration.merged(withChild: baseConfiguration)
         XCTAssertEqual(mergedConfiguration2.rules.count, 3) // 2 opt-ins + 1 from the only rules
         XCTAssertTrue(mergedConfiguration2.contains(rule: TodoRule.self))
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceCastRule.self))
@@ -319,7 +319,7 @@ extension ConfigurationTests {
         )
     }
 
-    func testParentChildOptInAndDisable() async {
+    func testParentChildOptInAndDisable() {
         struct TestCase: Equatable {
             let optedInInParent: Bool
             let disabledInParent: Bool
@@ -366,13 +366,13 @@ extension ConfigurationTests {
                 disabled: testCase.disabledInChild ? [ruleIdentifier] : [],
                 optIn: testCase.optedInInChild ? [ruleIdentifier] : []
             ))
-            let mergedConfiguration = await parentConfiguration.merged(withChild: childConfiguration)
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration)
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
             XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
         }
     }
 
-    func testParentChildDisableForDefaultRule() async {
+    func testParentChildDisableForDefaultRule() {
         struct TestCase: Equatable {
             let disabledInParent: Bool
             let disabledInChild: Bool
@@ -398,7 +398,7 @@ extension ConfigurationTests {
             let childConfiguration = Configuration(
                 rulesMode: .default(disabled: testCase.disabledInChild ? [ruleIdentifier] : [], optIn: [])
             )
-            let mergedConfiguration = await parentConfiguration.merged(withChild: childConfiguration)
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration)
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
             XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
         }
@@ -429,24 +429,24 @@ extension ConfigurationTests {
                 disabled: testCase.disabledInChild ? [ruleIdentifier] : [],
                 optIn: testCase.optedInInChild ? [ruleIdentifier] : []
             ))
-            let mergedConfiguration = await parentConfiguration.merged(withChild: childConfiguration)
+            let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration)
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
             XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
         }
     }
 
     // MARK: Warnings about configurations for disabled rules
-    func testDefaultConfigurationDisabledRuleWarnings() async {
+    func testDefaultConfigurationDisabledRuleWarnings() {
         let optInRuleType = ImplicitReturnRule.self
         XCTAssertTrue((optInRuleType as Any) is any OptInRule.Type)
-        await testDefaultConfigurationDisabledRuleWarnings(for: optInRuleType)
+        testDefaultConfigurationDisabledRuleWarnings(for: optInRuleType)
 
         let defaultRuleType = BlockBasedKVORule.self
         XCTAssertFalse((defaultRuleType as Any) is any OptInRule.Type)
-        await testDefaultConfigurationDisabledRuleWarnings(for: defaultRuleType)
+        testDefaultConfigurationDisabledRuleWarnings(for: defaultRuleType)
     }
 
-    private func testDefaultConfigurationDisabledRuleWarnings(for ruleType: any Rule.Type) async {
+    private func testDefaultConfigurationDisabledRuleWarnings(for ruleType: any Rule.Type) {
         let ruleIdentifier = ruleType.identifier
 
         let parentConfigurations = [
@@ -469,7 +469,7 @@ extension ConfigurationTests {
 
         for parentConfiguration in parentConfigurations {
             for configuration in configurations {
-                await testParentConfiguration(parentConfiguration, configuration: configuration, ruleType: ruleType)
+                testParentConfiguration(parentConfiguration, configuration: configuration, ruleType: ruleType)
             }
         }
     }
@@ -478,13 +478,13 @@ extension ConfigurationTests {
         _ parentConfiguration: Configuration?,
         configuration: Configuration,
         ruleType: any Rule.Type
-    ) async {
+    ) {
         guard case .default(let disabledRules, let optInRules) = configuration.rulesMode else {
             XCTFail("Configuration rulesMode was not the default")
             return
         }
 
-        let mergedConfiguration = await parentConfiguration?.merged(withChild: configuration) ?? configuration
+        let mergedConfiguration = parentConfiguration?.merged(withChild: configuration) ?? configuration
         let isEnabled = mergedConfiguration.contains(rule: ruleType)
         let issue = Configuration.validateConfiguredRuleIsEnabled(
             parentConfiguration: parentConfiguration,

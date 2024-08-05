@@ -18,8 +18,8 @@ extension Configuration {
     /// - returns: Files to lint.
     public func lintableFiles(inPath path: String,
                               forceExclude: Bool,
-                              excludeBy: ExcludeBy) async -> [SwiftLintFile] {
-        await lintablePaths(inPath: path, forceExclude: forceExclude, excludeBy: excludeBy)
+                              excludeBy: ExcludeBy) -> [SwiftLintFile] {
+        lintablePaths(inPath: path, forceExclude: forceExclude, excludeBy: excludeBy)
             .compactMap(SwiftLintFile.init(pathDeferringReading:))
     }
 
@@ -38,12 +38,12 @@ extension Configuration {
         forceExclude: Bool,
         excludeBy: ExcludeBy,
         fileManager: some LintableFileManager = FileManager.default
-    ) async -> [String] {
+    ) -> [String] {
         if fileManager.isFile(atPath: path) {
             if forceExclude {
                 switch excludeBy {
                 case .prefix:
-                    return await filterExcludedPathsByPrefix(in: [path.absolutePathStandardized()])
+                    return filterExcludedPathsByPrefix(in: [path.absolutePathStandardized()])
                 case .paths(let excludedPaths):
                     return filterExcludedPaths(excludedPaths, in: [path.absolutePathStandardized()])
                 }
@@ -52,14 +52,14 @@ extension Configuration {
             return [path]
         }
 
-        let pathsForPath = includedPaths.isEmpty ? await fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
-        let includedPaths = await self.includedPaths
+        let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
+        let includedPaths = self.includedPaths
             .flatMap(Glob.resolveGlob)
-            .parallelFlatMap { await fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
+            .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
 
         switch excludeBy {
         case .prefix:
-            return await filterExcludedPathsByPrefix(in: pathsForPath, includedPaths)
+            return filterExcludedPathsByPrefix(in: pathsForPath, includedPaths)
         case .paths(let excludedPaths):
             return filterExcludedPaths(excludedPaths, in: pathsForPath, includedPaths)
         }
@@ -94,9 +94,9 @@ extension Configuration {
     /// algorithm `filterExcludedPaths`.
     ///
     /// - returns: The input paths after removing the excluded paths.
-    public func filterExcludedPathsByPrefix(in paths: [String]...) async -> [String] {
+    public func filterExcludedPathsByPrefix(in paths: [String]...) -> [String] {
         let allPaths = paths.flatMap { $0 }
-        let excludedPaths = await self.excludedPaths.parallelFlatMap(transform: Glob.resolveGlob)
+        let excludedPaths = self.excludedPaths.parallelFlatMap(transform: Glob.resolveGlob)
                                     .map { $0.absolutePathStandardized() }
         return allPaths.filter { path in
             !excludedPaths.contains { path.hasPrefix($0) }
@@ -109,9 +109,9 @@ extension Configuration {
     /// - parameter fileManager: The file manager to get child paths in a given parent location.
     ///
     /// - returns: The expanded excluded file paths.
-    public func excludedPaths(fileManager: some LintableFileManager = FileManager.default) async -> [String] {
-        await excludedPaths
+    public func excludedPaths(fileManager: some LintableFileManager = FileManager.default) -> [String] {
+        excludedPaths
             .flatMap(Glob.resolveGlob)
-            .parallelFlatMap { await fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
+            .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
     }
 }

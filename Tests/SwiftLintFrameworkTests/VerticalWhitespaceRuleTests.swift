@@ -26,12 +26,12 @@ final class VerticalWhitespaceRuleTests: SwiftLintTestCase {
         await verifyRule(maxEmptyLinesDescription, ruleConfiguration: ["max_empty_lines": 2])
     }
 
-    func testViolationMessageWithMaxEmptyLines() async {
+    func testViolationMessageWithMaxEmptyLines() {
         guard let config = makeConfig(["max_empty_lines": 2], ruleID) else {
             XCTFail("Failed to create configuration")
             return
         }
-        let allViolations = await violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"), config: config)
+        let allViolations = violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"), config: config)
 
         let verticalWhiteSpaceViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         if let violation = verticalWhiteSpaceViolation {
@@ -41,8 +41,8 @@ final class VerticalWhitespaceRuleTests: SwiftLintTestCase {
         }
     }
 
-    func testViolationMessageWithDefaultConfiguration() async {
-        let allViolations = await violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"))
+    func testViolationMessageWithDefaultConfiguration() {
+        let allViolations = violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"))
         let verticalWhiteSpaceViolation = allViolations.first(where: { $0.ruleIdentifier == ruleID })
         if let violation = verticalWhiteSpaceViolation {
             XCTAssertEqual(violation.reason, "Limit vertical whitespace to a single empty line; currently 3")

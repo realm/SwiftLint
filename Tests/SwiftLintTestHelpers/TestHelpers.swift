@@ -61,7 +61,7 @@ public extension Configuration {
 
 public func violations(_ example: Example,
                        config inputConfig: Configuration = Configuration.default,
-                       requiresFileOnDisk: Bool = false) async -> [StyleViolation] {
+                       requiresFileOnDisk: Bool = false) -> [StyleViolation] {
     SwiftLintFile.clearCaches()
     let config = inputConfig.applyingConfiguration(from: example)
     let stringStrippingMarkers = example.removingViolationMarkers()
@@ -69,20 +69,20 @@ public func violations(_ example: Example,
         let file = SwiftLintFile.testFile(withContents: stringStrippingMarkers.code)
         let storage = RuleStorage()
         let linter = Linter(file: file, configuration: config).collect(into: storage)
-        return await linter.styleViolations(using: storage)
+        return linter.styleViolations(using: storage)
     }
 
     let file = SwiftLintFile.testFile(withContents: stringStrippingMarkers.code, persistToDisk: true)
     let storage = RuleStorage()
     let collector = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
     let linter = collector.collect(into: storage)
-    return await linter.styleViolations(using: storage).withoutFiles()
+    return linter.styleViolations(using: storage).withoutFiles()
 }
 
 public extension Collection where Element == String {
     func violations(config: Configuration = Configuration.default,
-                    requiresFileOnDisk: Bool = false) async -> [StyleViolation] {
-            await map { SwiftLintFile.testFile(withContents: $0, persistToDisk: requiresFileOnDisk) }
+                    requiresFileOnDisk: Bool = false) -> [StyleViolation] {
+            map { SwiftLintFile.testFile(withContents: $0, persistToDisk: requiresFileOnDisk) }
                 .violations(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 
@@ -95,15 +95,15 @@ public extension Collection where Element == String {
 
 public extension Collection where Element == SwiftLintFile {
     func violations(config: Configuration = Configuration.default,
-                    requiresFileOnDisk: Bool = false) async -> [StyleViolation] {
+                    requiresFileOnDisk: Bool = false) -> [StyleViolation] {
             let storage = RuleStorage()
-            let violations = await map({ file in
+            let violations = map({ file in
                 Linter(file: file, configuration: config,
                        compilerArguments: requiresFileOnDisk ? file.makeCompilerArguments() : [])
             }).map({ linter in
                 linter.collect(into: storage)
-            }).asyncFlatMap({ linter in
-                await linter.styleViolations(using: storage)
+            }).flatMap({ linter in
+                linter.styleViolations(using: storage)
             })
             return requiresFileOnDisk ? violations.withoutFiles() : violations
     }
@@ -354,7 +354,7 @@ public extension XCTestCase {
             disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
         }
 
-        await self.verifyLint(
+        self.verifyLint(
             ruleDescription,
             config: config,
             commentDoesntViolate: commentDoesntViolate,
@@ -386,32 +386,32 @@ public extension XCTestCase {
                     testMultiByteOffsets: Bool = true,
                     testShebang: Bool = true,
                     file: StaticString = #filePath,
-                    line: UInt = #line) async {
-        func verify(triggers: [Example], nonTriggers: [Example]) async {
-            await verifyExamples(
+                    line: UInt = #line) {
+        func verify(triggers: [Example], nonTriggers: [Example]) {
+            verifyExamples(
                 triggers: triggers,
                 nonTriggers: nonTriggers,
                 configuration: config,
                 requiresFileOnDisk: ruleDescription.requiresFileOnDisk
             )
         }
-        func makeViolations(_ example: Example) async -> [StyleViolation] {
-            await violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
+        func makeViolations(_ example: Example) -> [StyleViolation] {
+            violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
         }
 
         let ruleDescription = ruleDescription.focused()
         let (triggers, nonTriggers) = (ruleDescription.triggeringExamples, ruleDescription.nonTriggeringExamples)
-        await verify(triggers: triggers, nonTriggers: nonTriggers)
+        verify(triggers: triggers, nonTriggers: nonTriggers)
 
         if testMultiByteOffsets {
-            await verify(
+            verify(
                 triggers: triggers.filter(\.testMultiByteOffsets).map(addEmoji),
                 nonTriggers: nonTriggers.filter(\.testMultiByteOffsets).map(addEmoji)
             )
         }
 
         if testShebang {
-            await verify(
+            verify(
                 triggers: triggers.filter(\.testMultiByteOffsets).map(addShebang),
                 nonTriggers: nonTriggers.filter(\.testMultiByteOffsets).map(addShebang)
             )
@@ -420,8 +420,8 @@ public extension XCTestCase {
         // Comment doesn't violate
         if !skipCommentTests {
             let triggersToCheck = triggers.filter(\.testWrappingInComment)
-            let violations = await triggersToCheck.asyncFlatMap {
-                await makeViolations($0.with(code: "/*\n  " + $0.code + "\n */"))
+            let violations = triggersToCheck.flatMap {
+                makeViolations($0.with(code: "/*\n  " + $0.code + "\n */"))
             }
             XCTAssertEqual(
                 violations.count,
@@ -434,8 +434,8 @@ public extension XCTestCase {
         // String doesn't violate
         if !skipStringTests {
             let triggersToCheck = triggers.filter(\.testWrappingInString)
-            let violations = await triggersToCheck.asyncFlatMap {
-                await makeViolations($0.with(code: $0.code.toStringLiteral()))
+            let violations = triggersToCheck.flatMap {
+                makeViolations($0.with(code: $0.code.toStringLiteral()))
             }
             XCTAssertEqual(
                 violations.count,
@@ -452,7 +452,7 @@ public extension XCTestCase {
                 .map { $0.with(code: command + $0.code) }
 
             for trigger in disabledTriggers {
-                let violationsPartitionedByType = await makeViolations(trigger)
+                let violationsPartitionedByType = makeViolations(trigger)
                     .partitioned { $0.ruleIdentifier == SuperfluousDisableCommandRule.description.identifier }
 
                 XCTAssert(violationsPartitionedByType.first.isEmpty,
@@ -498,10 +498,10 @@ public extension XCTestCase {
     private func verifyExamples(triggers: [Example],
                                 nonTriggers: [Example],
                                 configuration config: Configuration,
-                                requiresFileOnDisk: Bool) async {
+                                requiresFileOnDisk: Bool) {
         // Non-triggering examples don't violate
         for nonTrigger in nonTriggers {
-            let unexpectedViolations = await violations(
+            let unexpectedViolations = violations(
                 nonTrigger,
                 config: config,
                 requiresFileOnDisk: requiresFileOnDisk
@@ -516,7 +516,7 @@ public extension XCTestCase {
 
         // Triggering examples violate
         for trigger in triggers {
-            let triggerViolations = await violations(
+            let triggerViolations = violations(
                 trigger,
                 config: config,
                 requiresFileOnDisk: requiresFileOnDisk

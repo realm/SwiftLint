@@ -14,13 +14,13 @@ private func violatingFuncWithBody(_ body: String, file: StaticString = #filePat
 }
 
 final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
-    func testFunctionBodyLengths() async {
+    func testFunctionBodyLengths() {
         let longFunctionBody = funcWithBody(repeatElement("x = 0\n", count: 49).joined())
-        await AsyncAssertEqual(await self.violations(longFunctionBody), [])
+        XCTAssertEqual(self.violations(longFunctionBody), [])
 
         let longerFunctionBody = violatingFuncWithBody(repeatElement("x = 0\n", count: 51).joined())
-        await AsyncAssertEqual(
-            await self.violations(longerFunctionBody),
+        XCTAssertEqual(
+            self.violations(longerFunctionBody),
             [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,
@@ -34,22 +34,22 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
         let longerFunctionBodyWithEmptyLines = funcWithBody(
             repeatElement("\n", count: 100).joined()
         )
-        await AsyncAssertEqual(await self.violations(longerFunctionBodyWithEmptyLines), [])
+        XCTAssertEqual(self.violations(longerFunctionBodyWithEmptyLines), [])
     }
 
-    func testFunctionBodyLengthsWithComments() async {
+    func testFunctionBodyLengthsWithComments() {
         let longFunctionBodyWithComments = funcWithBody(
             repeatElement("x = 0\n", count: 49).joined() +
             "// comment only line should be ignored.\n"
         )
-        await AsyncAssertEqual(await violations(longFunctionBodyWithComments), [])
+        XCTAssertEqual(violations(longFunctionBodyWithComments), [])
 
         let longerFunctionBodyWithComments = violatingFuncWithBody(
             repeatElement("x = 0\n", count: 51).joined() +
             "// comment only line should be ignored.\n"
         )
-        await AsyncAssertEqual(
-            await self.violations(longerFunctionBodyWithComments),
+        XCTAssertEqual(
+            self.violations(longerFunctionBodyWithComments),
             [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,
@@ -61,19 +61,19 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testFunctionBodyLengthsWithMultilineComments() async {
+    func testFunctionBodyLengthsWithMultilineComments() {
         let longFunctionBodyWithMultilineComments = funcWithBody(
             repeatElement("x = 0\n", count: 49).joined() +
             "/* multi line comment only line should be ignored.\n*/\n"
         )
-        await AsyncAssertEqual(await self.violations(longFunctionBodyWithMultilineComments), [])
+        XCTAssertEqual(self.violations(longFunctionBodyWithMultilineComments), [])
 
         let longerFunctionBodyWithMultilineComments = violatingFuncWithBody(
             repeatElement("x = 0\n", count: 51).joined() +
             "/* multi line comment only line should be ignored.\n*/\n"
         )
-        await AsyncAssertEqual(
-            await self.violations(longerFunctionBodyWithMultilineComments),
+        XCTAssertEqual(
+            self.violations(longerFunctionBodyWithMultilineComments),
             [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,
@@ -85,23 +85,23 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testConfiguration() async {
+    func testConfiguration() {
         let function = violatingFuncWithBody(repeatElement("x = 0\n", count: 10).joined())
 
-        await AsyncAssertEqual(await self.violations(function, configuration: ["warning": 12]).count, 0)
-        await AsyncAssertEqual(await self.violations(function, configuration: ["warning": 12, "error": 14]).count, 0)
-        await AsyncAssertEqual(
-            await self.violations(function, configuration: ["warning": 8]).map(\.reason),
+        XCTAssertEqual(self.violations(function, configuration: ["warning": 12]).count, 0)
+        XCTAssertEqual(self.violations(function, configuration: ["warning": 12, "error": 14]).count, 0)
+        XCTAssertEqual(
+            self.violations(function, configuration: ["warning": 8]).map(\.reason),
             ["Function body should span 8 lines or less excluding comments and whitespace: currently spans 10 lines"]
         )
-        await AsyncAssertEqual(
-            await self.violations(function, configuration: ["warning": 12, "error": 8]).map(\.reason),
+        XCTAssertEqual(
+            self.violations(function, configuration: ["warning": 12, "error": 8]).map(\.reason),
             ["Function body should span 8 lines or less excluding comments and whitespace: currently spans 10 lines"]
         )
     }
 
-    private func violations(_ example: Example, configuration: Any? = nil) async -> [StyleViolation] {
+    private func violations(_ example: Example, configuration: Any? = nil) -> [StyleViolation] {
         let config = makeConfig(configuration, FunctionBodyLengthRule.description.identifier)!
-        return await SwiftLintFrameworkTests.violations(example, config: config)
+        return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

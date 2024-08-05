@@ -1,35 +1,39 @@
 import Foundation
 
 internal extension Configuration {
-    actor RulesWrapper {
+    struct RulesWrapper {
         // MARK: - Properties
         private static var isOptInRuleCache: [String: Bool] = [:]
+        private static var invalidRuleIdsWarnedAbout: Set<String> = []
 
-        nonisolated let allRulesWrapped: [ConfigurationRuleWrapper]
-        internal let mode: RulesMode
         private let aliasResolver: @Sendable (String) -> String
+        private let validRuleIdentifiers: Set<String>
 
-        private nonisolated(unsafe) var invalidRuleIdsWarnedAbout: Set<String> = []
-        private nonisolated var validRuleIdentifiers: Set<String> {
+        let allRulesWrapped: [ConfigurationRuleWrapper]
+        let mode: RulesMode
+        let resultingRules: [any Rule]
+        let disabledRuleIdentifiers: [String]
+
+        // MARK: - Initializers
+        init(
+            mode: RulesMode,
+            allRulesWrapped: [ConfigurationRuleWrapper],
+            aliasResolver: @escaping @Sendable (String) -> String,
+            originatesFromMergingProcess: Bool = false
+        ) {
+            self.allRulesWrapped = allRulesWrapped
+            self.aliasResolver = aliasResolver
+            let mode = mode.applied(aliasResolver: aliasResolver)
             let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).description.identifier }
             let configurationCustomRulesIdentifiers =
                 (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?
                     .configuration.customRuleConfigurations.map(\.identifier) ?? []
-            return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)
-        }
-
-        private nonisolated(unsafe) var cachedResultingRules: [any Rule]?
-        private let resultingRulesLock = NSLock()
-
-        /// All rules enabled in this configuration,
-        /// derived from rule mode (only / optIn - disabled) & existing rules
-        nonisolated var resultingRules: [any Rule] {
-            // Lock for thread-safety (that's also why this is not a lazy var)
-            resultingRulesLock.lock()
-            defer { resultingRulesLock.unlock() }
-
-            // Return existing value if it's available
-            if let cachedResultingRules { return cachedResultingRules }
+            self.validRuleIdentifiers = Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)
+            // If this instance originates from a merging process, some custom rules may be treated as not activated
+            // Otherwise, custom rules should be treated as implicitly activated
+            self.mode = originatesFromMergingProcess
+                ? mode
+                : mode.activateCustomRuleIdentifiers(allRulesWrapped: allRulesWrapped)
 
             // Calculate value
             let customRulesFilter: (RegexConfiguration<CustomRules>) -> (Bool)
@@ -41,15 +45,15 @@ internal extension Configuration {
 
             case var .only(onlyRulesRuleIdentifiers):
                 customRulesFilter = { onlyRulesRuleIdentifiers.contains($0.identifier) }
-                onlyRulesRuleIdentifiers = validate(ruleIds: onlyRulesRuleIdentifiers, valid: validRuleIdentifiers)
+                onlyRulesRuleIdentifiers = Self.validate(ruleIds: onlyRulesRuleIdentifiers, valid: validRuleIdentifiers)
                 resultingRules = allRulesWrapped.filter { tuple in
                     onlyRulesRuleIdentifiers.contains(type(of: tuple.rule).description.identifier)
                 }.map(\.rule)
 
             case var .default(disabledRuleIdentifiers, optInRuleIdentifiers):
                 customRulesFilter = { !disabledRuleIdentifiers.contains($0.identifier) }
-                disabledRuleIdentifiers = validate(ruleIds: disabledRuleIdentifiers, valid: validRuleIdentifiers)
-                optInRuleIdentifiers = validate(optInRuleIds: optInRuleIdentifiers, valid: validRuleIdentifiers)
+                disabledRuleIdentifiers = Self.validate(ruleIds: disabledRuleIdentifiers, valid: validRuleIdentifiers)
+                optInRuleIdentifiers = Self.validate(optInRuleIds: optInRuleIdentifiers, valid: validRuleIdentifiers)
                 resultingRules = allRulesWrapped.filter { tuple in
                     let id = type(of: tuple.rule).description.identifier
                     return !disabledRuleIdentifiers.contains(id)
@@ -68,69 +72,42 @@ internal extension Configuration {
             resultingRules = resultingRules.sorted {
                 type(of: $0).description.identifier < type(of: $1).description.identifier
             }
+            self.resultingRules = resultingRules
 
-            // Store & return
-            cachedResultingRules = resultingRules
-            return resultingRules
-        }
+            self.disabledRuleIdentifiers =
+                switch mode {
+                case let .default(disabled, _):
+                    Self.validate(ruleIds: disabled, valid: validRuleIdentifiers, silent: true)
+                        .sorted(by: <)
 
-        lazy nonisolated var disabledRuleIdentifiers: [String] = {
-            switch mode {
-            case let .default(disabled, _):
-                return validate(ruleIds: disabled, valid: validRuleIdentifiers, silent: true)
-                    .sorted(by: <)
+                case let .only(onlyRules):
+                    Self.validate(
+                        ruleIds: Set(allRulesWrapped
+                            .map { type(of: $0.rule).description.identifier }
+                            .filter { !onlyRules.contains($0) }),
+                        valid: validRuleIdentifiers,
+                        silent: true
+                    ).sorted(by: <)
 
-            case let .only(onlyRules):
-                return validate(
-                    ruleIds: Set(allRulesWrapped
-                        .map { type(of: $0.rule).description.identifier }
-                        .filter { !onlyRules.contains($0) }),
-                    valid: validRuleIdentifiers,
-                    silent: true
-                ).sorted(by: <)
-
-            case .allEnabled:
-                return []
-            }
-        }()
-
-        // MARK: - Initializers
-        init(
-            mode: RulesMode,
-            allRulesWrapped: [ConfigurationRuleWrapper],
-            aliasResolver: @escaping @Sendable (String) -> String,
-            originatesFromMergingProcess: Bool = false
-        ) {
-            self.allRulesWrapped = allRulesWrapped
-            self.aliasResolver = aliasResolver
-            let mode = mode.applied(aliasResolver: aliasResolver)
-
-            // If this instance originates from a merging process, some custom rules may be treated as not activated
-            // Otherwise, custom rules should be treated as implicitly activated
-            self.mode = originatesFromMergingProcess
-                ? mode
-                : mode.activateCustomRuleIdentifiers(allRulesWrapped: allRulesWrapped)
+                case .allEnabled:
+                    []
+                }
         }
 
         // MARK: - Methods: Validation
-        private nonisolated func validate(optInRuleIds: Set<String>, valid: Set<String>) -> Set<String> {
+        private static func validate(optInRuleIds: Set<String>, valid: Set<String>) -> Set<String> {
             validate(ruleIds: optInRuleIds, valid: valid.union([RuleIdentifier.all.stringRepresentation]))
         }
 
-        private nonisolated func validate(ruleIds: Set<String>,
+        private static func validate(ruleIds: Set<String>,
                                           valid: Set<String>,
                                           silent: Bool = false) -> Set<String> {
             // Process invalid rule identifiers
             if !silent {
                 let invalidRuleIdentifiers = ruleIds.subtracting(valid)
                 if !invalidRuleIdentifiers.isEmpty {
-                    for invalidRuleIdentifier in invalidRuleIdentifiers.subtracting(invalidRuleIdsWarnedAbout) {
-                        if resultingRulesLock.try() {
-                            invalidRuleIdsWarnedAbout.insert(invalidRuleIdentifier)
-                            resultingRulesLock.unlock()
-                        } else {
-                            invalidRuleIdsWarnedAbout.insert(invalidRuleIdentifier)
-                        }
+                    for invalidRuleIdentifier in invalidRuleIdentifiers.subtracting(Self.invalidRuleIdsWarnedAbout) {
+                        Self.invalidRuleIdsWarnedAbout.insert(invalidRuleIdentifier)
                         queuedPrintError(
                             "warning: '\(invalidRuleIdentifier)' is not a valid rule identifier"
                         )
@@ -229,13 +206,13 @@ internal extension Configuration {
             childOptIn: Set<String>,
             validRuleIdentifiers: Set<String>
         ) -> RulesMode {
-            let childDisabled = child.validate(ruleIds: childDisabled, valid: validRuleIdentifiers)
-            let childOptIn = child.validate(optInRuleIds: childOptIn, valid: validRuleIdentifiers)
+            let childDisabled = Self.validate(ruleIds: childDisabled, valid: validRuleIdentifiers)
+            let childOptIn = Self.validate(optInRuleIds: childOptIn, valid: validRuleIdentifiers)
 
             switch mode { // Switch parent's mode. Child is in default mode.
             case var .default(disabled, optIn):
-                disabled = validate(ruleIds: disabled, valid: validRuleIdentifiers)
-                optIn = child.validate(optInRuleIds: optIn, valid: validRuleIdentifiers)
+                disabled = Self.validate(ruleIds: disabled, valid: validRuleIdentifiers)
+                optIn = Self.validate(optInRuleIds: optIn, valid: validRuleIdentifiers)
 
                 // Only use parent disabled / optIn if child config doesn't tell the opposite
                 return .default(
@@ -260,7 +237,7 @@ internal extension Configuration {
                     }
                 }
 
-                onlyRules = validate(ruleIds: onlyRules, valid: validRuleIdentifiers)
+                onlyRules = Self.validate(ruleIds: onlyRules, valid: validRuleIdentifiers)
 
                 // Allow parent only rules that weren't disabled via the child config
                 // & opt-ins from the child config

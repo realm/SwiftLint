@@ -283,7 +283,7 @@ package extension Configuration {
                     cachePath: cachePath
                 )
                 childConfiguration.fileGraph = Self(rootDirectory: childConfigData.rootDirectory)
-                firstConfiguration = await firstConfiguration.merged(
+                firstConfiguration = firstConfiguration.merged(
                     withChild: childConfiguration,
                     rootDirectory: rootDirectory
                 )

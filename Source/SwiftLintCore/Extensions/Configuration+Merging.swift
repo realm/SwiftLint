@@ -9,14 +9,14 @@ extension Configuration {
     package func merged(
         withChild childConfiguration: Configuration,
         rootDirectory: String = ""
-    ) async -> Configuration {
+    ) -> Configuration {
         let mergedIncludedAndExcluded = self.mergedIncludedAndExcluded(
             with: childConfiguration,
             rootDirectory: rootDirectory
         )
 
         return Configuration(
-            rulesWrapper: await rulesWrapper.merged(with: childConfiguration.rulesWrapper),
+            rulesWrapper: rulesWrapper.merged(with: childConfiguration.rulesWrapper),
             fileGraph: FileGraph(rootDirectory: rootDirectory),
             includedPaths: mergedIncludedAndExcluded.includedPaths,
             excludedPaths: mergedIncludedAndExcluded.excludedPaths,
@@ -121,7 +121,7 @@ extension Configuration {
                 ignoreParentAndChildConfigs: true
             )
             childConfiguration.fileGraph = FileGraph(rootDirectory: directory)
-            config = await merged(withChild: childConfiguration, rootDirectory: rootDirectory)
+            config = merged(withChild: childConfiguration, rootDirectory: rootDirectory)
 
             // Cache merged result to circumvent heavy merge recomputations
             config.setCached(forIdentifier: cacheIdentifier)

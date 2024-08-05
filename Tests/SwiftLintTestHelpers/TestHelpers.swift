@@ -49,13 +49,13 @@ public extension String {
 public let allRuleIdentifiers = Set(RuleRegistry.shared.list.list.keys)
 
 public extension Configuration {
-    func applyingConfiguration(from example: Example) async -> Configuration {
+    func applyingConfiguration(from example: Example) -> Configuration {
         guard let exampleConfiguration = example.configuration,
            case let .only(onlyRules) = self.rulesMode,
            let firstRule = (onlyRules.first { $0 != "superfluous_disable_command" }),
            case let configDict: [_: any Sendable] = ["only_rules": onlyRules, firstRule: exampleConfiguration],
            let typedConfiguration = try? Configuration(dict: configDict) else { return self }
-        return await merged(withChild: typedConfiguration, rootDirectory: rootDirectory)
+        return merged(withChild: typedConfiguration, rootDirectory: rootDirectory)
     }
 }
 
@@ -63,7 +63,7 @@ public func violations(_ example: Example,
                        config inputConfig: Configuration = Configuration.default,
                        requiresFileOnDisk: Bool = false) async -> [StyleViolation] {
     SwiftLintFile.clearCaches()
-    let config = await inputConfig.applyingConfiguration(from: example)
+    let config = inputConfig.applyingConfiguration(from: example)
     let stringStrippingMarkers = example.removingViolationMarkers()
     guard requiresFileOnDisk else {
         let file = SwiftLintFile.testFile(withContents: stringStrippingMarkers.code)
@@ -304,7 +304,7 @@ private func testCorrection(_ correction: (Example, Example),
         let ruleToConfigure = (onlyRules.first { $0 != SuperfluousDisableCommandRule.description.identifier }),
         case let configDict: [_: any Sendable] = ["only_rules": onlyRules, ruleToConfigure: correctionConfiguration],
         let typedConfiguration = try? Configuration(dict: configDict) {
-        config = await configuration.merged(withChild: typedConfiguration, rootDirectory: configuration.rootDirectory)
+        config = configuration.merged(withChild: typedConfiguration, rootDirectory: configuration.rootDirectory)
     }
 
     await config.assertCorrection(correction.0, expected: correction.1)

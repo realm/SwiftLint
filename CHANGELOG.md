@@ -23,7 +23,11 @@
 
 #### Enhancements
 
-* Linting got up to 30% faster due to the praisworthy performance
+* Add new syntax to `swiftlint_version` configuration option to allow for minimum
+  and maximum versions.  
+  [alex-taffe](https://github.com/alex-taffe)
+
+* Linting got around 30% faster due to the praisworthy performance
   improvements done in the [SwiftSyntax](https://github.com/swiftlang/swift-syntax)
   library.
 

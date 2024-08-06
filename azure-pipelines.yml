@@ -15,16 +15,25 @@ jobs:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
 
-- job: macOS
+- job: macOS12
+  pool:
+    vmImage: 'macOS-12'
   strategy:
     maxParallel: 10
-    matrix:
-      macOS-12:
-        imageName: macOS-12
-      macOS-13:
-        imageName: macOS-13
+  steps:
+    - script: brew install swift
+      displayName: Install latest Swift
+    - script: |
+        export PATH="/opt/homebrew/opt/swift/bin:$PATH"
+        swift --version
+        swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
+      displayName: swift test
+
+- job: macOS13
   pool:
-    vmImage: $[ variables['imageName'] ]
+    vmImage: 'macOS-13'
+  strategy:
+    maxParallel: 10
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
@@ -58,7 +67,7 @@ jobs:
     - script: bundle exec pod lib lint --platforms=macos --verbose
       displayName: pod lib lint
 
-- job: jazzy
+- job: Jazzy
   pool:
     vmImage: 'macOS-14'
   variables:

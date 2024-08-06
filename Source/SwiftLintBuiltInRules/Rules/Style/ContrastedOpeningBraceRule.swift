@@ -2,7 +2,7 @@ import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct ContrastedOpeningBraceRule: SwiftSyntaxCorrectableRule {
+struct ContrastedOpeningBraceRule: OptInRule, SwiftSyntaxCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

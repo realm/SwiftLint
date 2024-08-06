@@ -14,7 +14,8 @@
 
 #### Bug Fixes
 
-* None.
+* Let `contrasted_opening_brace` be an opt-in rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ## 0.56.0: Heat Pump Dryer
 

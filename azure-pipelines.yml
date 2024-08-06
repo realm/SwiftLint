@@ -23,9 +23,9 @@ jobs:
   steps:
     - script: brew install swift
       displayName: Install latest Swift
-    - script: echo '##vso[task.prependpath]/opt/homebrew/opt/swift/bin'
+    - script: echo "##vso[task.prependpath]$(brew --prefix)/opt/swift/bin"
       displayName: Select toolchain
-    - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
+    - script: $(brew --prefix)/opt/swift/bin/swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
 
 - job: macOS13

@@ -5,57 +5,46 @@ import SwiftLintFramework
 typealias File = String
 typealias Arguments = [String]
 
-class CompilerInvocations {
-    static func buildLog(compilerInvocations: [[String]]) -> CompilerInvocations {
-        ArrayCompilerInvocations(invocations: compilerInvocations)
-    }
+protocol CompilerInvocations: Sendable {
+    func arguments(forFile _: String?) -> Arguments
+}
 
-    static func compilationDatabase(compileCommands: [File: Arguments]) -> CompilerInvocations {
-        CompilationDatabaseInvocations(compileCommands: compileCommands)
-    }
+private struct ArrayCompilerInvocations: CompilerInvocations {
+    private let invocationsByArgument: [String: [Arguments]]
 
-    /// Default implementation
-    func arguments(forFile _: String?) -> Arguments { [] }
-
-    // MARK: - Private
-
-    private class ArrayCompilerInvocations: CompilerInvocations {
-        private let invocationsByArgument: [String: [Arguments]]
-
-        init(invocations: [Arguments]) {
-            // Store invocations by the path, so next when we'll be asked for arguments,
-            // we'll be able to return them faster
-            self.invocationsByArgument = invocations.reduce(into: [:]) { result, arguments in
-                arguments.forEach { result[$0, default: []].append(arguments) }
-            }
-        }
-
-        override func arguments(forFile path: String?) -> Arguments {
-            path.flatMap { path in
-                invocationsByArgument[path]?.first
-            } ?? []
+    init(invocations: [Arguments]) {
+        // Store invocations by the path, so next when we'll be asked for arguments,
+        // we'll be able to return them faster
+        self.invocationsByArgument = invocations.reduce(into: [:]) { result, arguments in
+            arguments.forEach { result[$0, default: []].append(arguments) }
         }
     }
 
-    private class CompilationDatabaseInvocations: CompilerInvocations {
-        private let compileCommands: [File: Arguments]
-
-        init(compileCommands: [File: Arguments]) {
-            self.compileCommands = compileCommands
-        }
-
-        override func arguments(forFile path: String?) -> Arguments {
-            path.flatMap { path in
-                compileCommands[path] ??
-                compileCommands[path.path(relativeTo: FileManager.default.currentDirectoryPath)]
-            } ?? []
-        }
+    func arguments(forFile path: String?) -> Arguments {
+        path.flatMap { path in
+            invocationsByArgument[path]?.first
+        } ?? []
     }
 }
 
-enum LintOrAnalyzeModeWithCompilerArguments {
+private struct CompilationDatabaseInvocations: CompilerInvocations {
+    private let compileCommands: [File: Arguments]
+
+    init(compileCommands: [File: Arguments]) {
+        self.compileCommands = compileCommands
+    }
+
+    func arguments(forFile path: String?) -> Arguments {
+        path.flatMap { path in
+            compileCommands[path] ??
+            compileCommands[path.path(relativeTo: FileManager.default.currentDirectoryPath)]
+        } ?? []
+    }
+}
+
+enum LintOrAnalyzeModeWithCompilerArguments: Sendable {
     case lint
-    case analyze(allCompilerInvocations: CompilerInvocations)
+    case analyze(allCompilerInvocations: any CompilerInvocations)
 }
 
 private func resolveParamsFiles(args: [String]) -> [String] {
@@ -68,7 +57,7 @@ private func resolveParamsFiles(args: [String]) -> [String] {
     }
 }
 
-struct LintableFilesVisitor {
+struct LintableFilesVisitor: Sendable {
     let paths: [String]
     let action: String
     let useSTDIN: Bool
@@ -81,7 +70,7 @@ struct LintableFilesVisitor {
     let parallel: Bool
     let allowZeroLintableFiles: Bool
     let mode: LintOrAnalyzeModeWithCompilerArguments
-    let block: (CollectedLinter) async -> Void
+    let block: @Sendable (CollectedLinter) async -> Void
 
     private init(paths: [String],
                  action: String,
@@ -92,9 +81,9 @@ struct LintableFilesVisitor {
                  forceExclude: Bool,
                  useExcludingByPrefix: Bool,
                  cache: LinterCache?,
-                 compilerInvocations: CompilerInvocations?,
+                 compilerInvocations: (any CompilerInvocations)?,
                  allowZeroLintableFiles: Bool,
-                 block: @escaping (CollectedLinter) async -> Void) {
+                 block: @Sendable @escaping (CollectedLinter) async -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
@@ -121,15 +110,14 @@ struct LintableFilesVisitor {
     static func create(_ options: LintOrAnalyzeOptions,
                        cache: LinterCache?,
                        allowZeroLintableFiles: Bool,
-                       block: @escaping (CollectedLinter) async -> Void)
-        throws -> Self {
-        try Signposts.record(name: "LintableFilesVisitor.Create") {
-            let compilerInvocations: CompilerInvocations?
-            if options.mode == .lint {
-                compilerInvocations = nil
-            } else {
-                compilerInvocations = try loadCompilerInvocations(options)
-            }
+                       block: @Sendable @escaping (CollectedLinter) async -> Void) async throws -> Self {
+        try await Signposts.record(name: "LintableFilesVisitor.Create") { @Sendable in
+            let compilerInvocations: (any CompilerInvocations)? =
+                if options.mode == .lint {
+                    nil
+                } else {
+                    try loadCompilerInvocations(options)
+                }
 
             return Self(
                 paths: options.paths, action: options.verb.bridge().capitalized,
@@ -165,17 +153,17 @@ struct LintableFilesVisitor {
         }
     }
 
-    private static func loadCompilerInvocations(_ options: LintOrAnalyzeOptions) throws -> CompilerInvocations {
+    private static func loadCompilerInvocations(_ options: LintOrAnalyzeOptions) throws -> any CompilerInvocations {
         if let path = options.compilerLogPath {
             guard let compilerInvocations = self.loadLogCompilerInvocations(path) else {
                 throw SwiftLintError.usageError(description: "Could not read compiler log at path: '\(path)'")
             }
 
-            return .buildLog(compilerInvocations: compilerInvocations)
+            return ArrayCompilerInvocations(invocations: compilerInvocations)
         }
         if let path = options.compileCommands {
             do {
-                return .compilationDatabase(compileCommands: try self.loadCompileCommands(path))
+                return CompilationDatabaseInvocations(compileCommands: try self.loadCompileCommands(path))
             } catch {
                 throw SwiftLintError.usageError(
                     description: "Could not read compilation database at path: '\(path)' \(error.localizedDescription)"

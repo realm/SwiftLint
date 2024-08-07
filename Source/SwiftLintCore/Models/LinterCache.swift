@@ -17,7 +17,7 @@ private struct FileCache: Codable {
 }
 
 /// A persisted cache for storing and retrieving linter results.
-public final class LinterCache {
+public final class LinterCache: @unchecked Sendable {
     private typealias Encoder = PropertyListEncoder
     private typealias Decoder = PropertyListDecoder
     private typealias Cache = [String: FileCache]

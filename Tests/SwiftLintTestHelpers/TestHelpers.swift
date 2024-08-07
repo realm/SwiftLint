@@ -15,12 +15,10 @@ private extension SwiftLintFile {
                 .appendingPathComponent(UUID().uuidString)
                 .appendingPathExtension("swift")
             _ = try? contents.data(using: .utf8)!.write(to: url)
-            file = SwiftLintFile(path: url.path)!
+            file = SwiftLintFile(path: url.path, isTestFile: true)!
         } else {
-            file = SwiftLintFile(contents: contents)
+            file = SwiftLintFile(contents: contents, isTestFile: true)
         }
-
-        file.markAsTestFile()
         return file
     }
 
@@ -93,7 +91,7 @@ public extension Collection where Element == String {
     }
 }
 
-public extension Collection where Element: SwiftLintFile {
+public extension Collection where Element == SwiftLintFile {
     func violations(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false)
         -> [StyleViolation] {
             let storage = RuleStorage()

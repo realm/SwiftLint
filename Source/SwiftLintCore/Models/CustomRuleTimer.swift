@@ -1,8 +1,7 @@
 import Foundation
 
 /// Utility to measure the time spent in each custom rule.
-public final class CustomRuleTimer {
-    private let lock = NSLock()
+public final actor CustomRuleTimer {
     private var ruleIDForTimes = [String: [TimeInterval]]()
     private var shouldRecord = false
 
@@ -25,9 +24,6 @@ public final class CustomRuleTimer {
     /// - parameter ruleID: The ID of the rule that was evaluated.
     func register(time: TimeInterval, forRuleID ruleID: String) {
         guard shouldRecord else { return }
-
-        lock.lock()
-        defer { lock.unlock() }
         ruleIDForTimes[ruleID, default: []].append(time)
     }
 }

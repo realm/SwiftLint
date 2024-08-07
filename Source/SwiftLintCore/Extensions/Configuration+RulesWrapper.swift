@@ -1,7 +1,7 @@
 import Foundation
 
 internal extension Configuration {
-    class RulesWrapper {
+    final class RulesWrapper: @unchecked Sendable { // TODO: Remove `@unchecked`
         // MARK: - Properties
         private static var isOptInRuleCache: [String: Bool] = [:]
 

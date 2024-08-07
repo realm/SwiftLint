@@ -1,4 +1,4 @@
-import Dispatch
+@preconcurrency import Dispatch
 import Foundation
 import SwiftLintFramework
 
@@ -36,35 +36,34 @@ struct LintOrAnalyzeCommand {
                     )
             }
         }
-        try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
+        try await Signposts.record(name: "LintOrAnalyzeCommand.run") { @Sendable in
             try await options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
         }
         ExitHelper.successfullyExit()
     }
 
     private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws {
-        let builder = LintOrAnalyzeResultBuilder(options)
+        let builder = await LintOrAnalyzeResultBuilder(options)
         let files = try await collectViolations(builder: builder)
         if let baselineOutputPath = options.writeBaseline ?? builder.configuration.writeBaseline {
-            try Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath)
+            try await Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath)
         }
-        try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
-            try postProcessViolations(files: files, builder: builder)
+        try await Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") { @Sendable in
+            try await postProcessViolations(files: files, builder: builder)
         }
         if options.checkForUpdates || builder.configuration.checkForUpdates {
-            UpdateChecker.checkForUpdates()
+            await UpdateChecker.checkForUpdates()
         }
     }
 
     private static func collectViolations(builder: LintOrAnalyzeResultBuilder) async throws -> [SwiftLintFile] {
         let options = builder.options
-        let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
         let baseline = try baseline(options, builder.configuration)
         return try await builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
                                                                   storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
-                CustomRuleTimer.shared.activate()
+                await CustomRuleTimer.shared.activate()
                 let start = Date()
                 let (violationsBeforeLeniency, currentRuleTimes) = linter
                     .styleViolationsAndRuleTimes(using: builder.storage)
@@ -73,9 +72,9 @@ struct LintOrAnalyzeCommand {
                     strict: builder.configuration.strict,
                     violations: violationsBeforeLeniency
                 )
-                visitorMutationQueue.sync {
-                    builder.fileBenchmark.record(file: linter.file, from: start)
-                    currentRuleTimes.forEach { builder.ruleBenchmark.record(id: $0, time: $1) }
+                await builder.recordFileBenchmark(file: linter.file, from: start)
+                for (id, time) in currentRuleTimes {
+                    await builder.recordRuleBenchmark(id: id, time: time)
                 }
             } else {
                 currentViolations = applyLeniency(
@@ -85,38 +84,40 @@ struct LintOrAnalyzeCommand {
                 )
             }
             let filteredViolations = baseline?.filter(currentViolations) ?? currentViolations
-            visitorMutationQueue.sync {
-                builder.unfilteredViolations += currentViolations
-                builder.violations += filteredViolations
-            }
+            await builder.addViolations(filteredViolations: filteredViolations, unfilteredViolations: currentViolations)
 
             linter.file.invalidateCache()
-            builder.report(violations: filteredViolations, realtimeCondition: true)
+            await builder.report(violations: filteredViolations, realtimeCondition: true)
         }
     }
 
-    private static func postProcessViolations(files: [SwiftLintFile], builder: LintOrAnalyzeResultBuilder) throws {
+    private static func postProcessViolations(files: [SwiftLintFile],
+                                              builder: LintOrAnalyzeResultBuilder) async throws {
         let options = builder.options
         let configuration = builder.configuration
-        if isWarningThresholdBroken(configuration: configuration, violations: builder.violations)
-            && !options.lenient {
-            builder.violations.append(
-                createThresholdViolation(threshold: configuration.warningThreshold!)
+        if await isWarningThresholdBroken(configuration: configuration, violations: builder.violations),
+           !options.lenient {
+            await builder.addViolations(
+                filteredViolations: [createThresholdViolation(threshold: configuration.warningThreshold!)]
             )
-            builder.report(violations: [builder.violations.last!], realtimeCondition: true)
+            await builder.report(violations: [builder.violations.last!], realtimeCondition: true)
         }
-        builder.report(violations: builder.violations, realtimeCondition: false)
-        let numberOfSeriousViolations = builder.violations.filter({ $0.severity == .error }).count
+        await builder.report(violations: builder.violations, realtimeCondition: false)
+        let numberOfSeriousViolations = await builder.violations.filter({ $0.severity == .error }).count
         if !options.quiet {
-            printStatus(violations: builder.violations, files: files, serious: numberOfSeriousViolations,
-                        verb: options.verb)
+            await printStatus(
+                violations: builder.violations,
+                files: files,
+                serious: numberOfSeriousViolations,
+                verb: options.verb
+            )
         }
         if options.benchmark {
-            builder.fileBenchmark.save()
-            for (id, time) in CustomRuleTimer.shared.dump() {
-                builder.ruleBenchmark.record(id: id, time: time)
+            await builder.fileBenchmark.save()
+            for (id, time) in await CustomRuleTimer.shared.dump() {
+                await builder.recordRuleBenchmark(id: id, time: time)
             }
-            builder.ruleBenchmark.save()
+            await builder.ruleBenchmark.save()
             if !options.quiet, let memoryUsage = memoryUsage() {
                 queuedPrintError(memoryUsage)
             }
@@ -287,7 +288,7 @@ struct LintOrAnalyzeOptions {
     }
 }
 
-private class LintOrAnalyzeResultBuilder {
+private actor LintOrAnalyzeResultBuilder {
     var fileBenchmark = Benchmark(name: "files")
     var ruleBenchmark = Benchmark(name: "rules")
     /// All detected violations, unfiltered by the baseline, if any.
@@ -300,8 +301,8 @@ private class LintOrAnalyzeResultBuilder {
     let cache: LinterCache?
     let options: LintOrAnalyzeOptions
 
-    init(_ options: LintOrAnalyzeOptions) {
-        let config = Signposts.record(name: "LintOrAnalyzeCommand.ParseConfiguration") {
+    init(_ options: LintOrAnalyzeOptions) async {
+        let config = await Signposts.record(name: "LintOrAnalyzeCommand.ParseConfiguration") { @Sendable in
             Configuration(options: options)
         }
         configuration = config
@@ -320,6 +321,19 @@ private class LintOrAnalyzeResultBuilder {
                 Issue.fileNotWritable(path: outFile).print()
             }
         }
+    }
+
+    func recordFileBenchmark(file: SwiftLintFile, from date: Date) {
+        fileBenchmark.record(file: file, from: date)
+    }
+
+    func recordRuleBenchmark(id: String, time: Double) {
+        ruleBenchmark.record(id: id, time: time)
+    }
+
+    func addViolations(filteredViolations: [StyleViolation] = [], unfilteredViolations: [StyleViolation] = []) {
+        self.violations += filteredViolations
+        self.unfilteredViolations += unfilteredViolations
     }
 
     func report(violations: [StyleViolation], realtimeCondition: Bool) {

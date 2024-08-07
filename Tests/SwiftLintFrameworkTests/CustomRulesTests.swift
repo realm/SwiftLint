@@ -308,15 +308,7 @@ final class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testSuperfluousCommandWorksForCustomRulesWorks() throws {
-        let customRules: [String: Any] = [
-            "forbidden": [
-                "regex": "FORBIDDEN",
-            ],
-            "forbidden2": [
-                "regex": "FORBIDDEN2",
-            ],
-        ]
-
+        let customRules = getForbiddenCustomRules()
         let example = Example("""
                               // swiftlint:disable:next custom_rules
                               let ALLOWED = 2
@@ -324,30 +316,39 @@ final class CustomRulesTests: SwiftLintTestCase {
 
         let violations = try violations(forExample: example, customRules: customRules)
         XCTAssertEqual(violations.count, 1)
+    }
 
-        let example2 = Example("""
+    func someOtherTest2() throws {
+        let customRules = getForbiddenCustomRules()
+        let example = Example("""
                               // swiftlint:disable:next forbidden forbidden2
                               let ALLOWED = 2
                               """)
 
-        let violations2 = try self.violations(forExample: example2, customRules: customRules)
-        XCTAssertEqual(violations2.count, 2)
+        let violations = try self.violations(forExample: example, customRules: customRules)
+        XCTAssertEqual(violations.count, 2)
+    }
 
-        let example3 = Example("""
+    func someOtherTest3() throws {
+        let customRules = getForbiddenCustomRules()
+        let example = Example("""
                               // swiftlint:disable:next forbidden forbidden2
                               let FORBIDDEN = 1
                               """)
 
-        let violations3 = try self.violations(forExample: example3, customRules: customRules)
-        XCTAssertEqual(violations3.count, 1)
+        let violations = try self.violations(forExample: example, customRules: customRules)
+        XCTAssertEqual(violations.count, 1)
+    }
 
-        let example4 = Example("""
+    func someOtherTest4() throws {
+        let customRules = getForbiddenCustomRules()
+        let example = Example("""
                               // swiftlint:disable:next forbidden forbidden2 custom_rules
                               let FORBIDDEN = 1
                               """)
 
-        let violations4 = try self.violations(forExample: example4, customRules: customRules)
-        XCTAssertEqual(violations4.count, 1)
+        let violations = try self.violations(forExample: example, customRules: customRules)
+        XCTAssertEqual(violations.count, 1)
     }
 
     func testSuperfluousDisableCommandWithCustomRules() throws {
@@ -403,15 +404,6 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertTrue(secondViolation.didNotTrigger(for: "custom1"))
         XCTAssertEqual(thirdViolation.ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
         XCTAssertTrue(thirdViolation.didNotTrigger(for: "custom3"))
-
-//        XCTAssertEqual(violations.filter { $0.ruleIdentifier == "superfluous_disable_command" }.count, 2)
-//        XCTAssertEqual(violations.filter { $0.ruleIdentifier == "custom2" }.count, 1)
-//        XCTAssertTrue(violations.contains { violation in
-//            violation.description.contains("SwiftLint rule 'custom1' did not trigger a violation")
-//        })
-//        XCTAssertTrue(violations.contains { violation in
-//            violation.description.contains("SwiftLint rule 'custom3' did not trigger a violation")
-//        })
     }
 
     func testSuperfluousDisableCommandDoesNotViolate() throws {
@@ -487,6 +479,17 @@ final class CustomRulesTests: SwiftLintTestCase {
 
         let customRules = customRules(withConfigurations: [regexConfig1, regexConfig2])
         return ((regexConfig1, regexConfig2), customRules)
+    }
+
+    private func getForbiddenCustomRules() -> [String: Any] {
+        [
+            "forbidden": [
+                "regex": "FORBIDDEN",
+            ],
+            "forbidden2": [
+                "regex": "FORBIDDEN2",
+            ],
+        ]
     }
 
     private func getTestTextFile() -> SwiftLintFile {

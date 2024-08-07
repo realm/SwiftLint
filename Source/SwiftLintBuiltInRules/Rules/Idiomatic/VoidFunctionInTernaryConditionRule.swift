@@ -60,6 +60,42 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             subscript(index: Int) -> Int {
                 index == 0 ? defaultValue() : compute(index)
             """),
+            Example("""
+            func example() -> String {
+                if true {
+                    isTrue ? defaultValue() : defaultValue()
+                } else {
+                    "Default"
+                }
+            }
+            """),
+            Example("""
+            func exampleNestedIfExpr() -> String {
+                if true {
+                  isTrue ? defaultValue() : defaultValue()
+                } else {
+                    "Default"
+                }
+            }
+            """),
+            Example("""
+            func exampleNestedIfExpr() -> String {
+                test()
+                if true {
+                  isTrue ? defaultValue() : defaultValue()
+                } else {
+                    "Default"
+                }
+            }
+            """),
+            Example("""
+            func collectionView() -> CGSize {
+                switch indexPath.section {
+                case 0: isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
+                default: .zero
+                }
+            }
+            """),
         ],
         triggeringExamples: [
             Example("success ↓? askQuestion() : exit()"),
@@ -103,6 +139,34 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                     index == 0 ↓? something() : somethingElse(index)
                     return index
                 }
+            """),
+            Example("""
+            func example() -> Void {
+                if true {
+                    isTrue ↓? defaultValue() : defaultValue()
+                } else {
+                    print("false")
+                }
+            }
+            """),
+            Example("""
+            func exampleNestedIfExpr() -> String {
+                if true {
+                  isTrue ↓? defaultValue() : defaultValue()
+                } else {
+                    "Default"
+                }
+                return hoge
+            }
+            """),
+            Example("""
+            func collectionView() -> CGSize {
+                switch indexPath.section {
+                case 0: isEditing ↓? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
+                default: .zero
+                }
+                return hoge
+            }
             """),
         ]
     )
@@ -152,7 +216,7 @@ private extension CodeBlockItemSyntax {
     var isImplicitReturn: Bool {
         isClosureImplictReturn || isFunctionImplicitReturn ||
         isVariableImplicitReturn || isSubscriptImplicitReturn ||
-        isAcessorImplicitReturn
+        isAcessorImplicitReturn || isIfExprImplicitReturn || isSwitchExprImplicitReturn
     }
 
     var isClosureImplictReturn: Bool {
@@ -198,6 +262,36 @@ private extension CodeBlockItemSyntax {
         }
 
         return parent.children(viewMode: .sourceAccurate).count == 1
+    }
+
+    var isIfExprImplicitReturn: Bool {
+      guard let parent = parent?.as(CodeBlockItemListSyntax.self),
+            let ifExprSytax = parent.parent?.parent?.as(IfExprSyntax.self) else {
+        return false
+      }
+      guard let funcDecl = ifExprSytax.parent?.parent?.parent?.parent?.parent?.as(FunctionDeclSyntax.self) else {
+        return false
+      }
+      if let codeBlockItemListSyntax = ifExprSytax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self),
+         let expressionStmtSyntax = codeBlockItemListSyntax.last?.item.as(ExpressionStmtSyntax.self) {
+        return parent.children(viewMode: .sourceAccurate).count == 1 &&
+        ( codeBlockItemListSyntax.count == 1 || expressionStmtSyntax.expression.is(IfExprSyntax.self)) &&
+        funcDecl.signature.allowsImplicitReturns
+      }
+      return false
+    }
+
+    var isSwitchExprImplicitReturn: Bool {
+      guard let parent = parent?.as(CodeBlockItemListSyntax.self),
+            let switchExprSytax = parent.parent?.parent?.parent?.as(SwitchExprSyntax.self) else {
+        return false
+      }
+      guard let funcDecl = switchExprSytax.parent?.parent?.parent?.parent?.parent?.as(FunctionDeclSyntax.self) else {
+        return false
+      }
+      return parent.children(viewMode: .sourceAccurate).count == 1 &&
+      funcDecl.signature.allowsImplicitReturns &&
+      switchExprSytax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self)?.count == 1
     }
 }
 

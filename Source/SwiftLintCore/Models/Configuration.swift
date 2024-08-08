@@ -1,3 +1,6 @@
+// swiftlint:disable file_length
+// Everything in this file makes sense to be in this file
+
 import Foundation
 import SourceKittenFramework
 
@@ -124,7 +127,7 @@ public struct Configuration {
 
     /// Creates a `Configuration` by specifying its properties directly,
     /// except that rules are still to be synthesized from rulesMode, ruleList & allRulesWrapped
-    /// and a check against the pinnedVersion is performed if given.
+    /// and a check against the version in use is performed if a constraint is configured.
     ///
     /// - parameter rulesMode:              The `RulesMode` for this configuration.
     /// - parameter allRulesWrapped:        The rules with their own configurations already applied.
@@ -139,7 +142,7 @@ public struct Configuration {
     ///                                     lint as having failed.
     /// - parameter reporter:               The identifier for the `Reporter` to use to report style violations.
     /// - parameter cachePath:              The location of the persisted cache to use with this configuration.
-    /// - parameter pinnedVersion:          The SwiftLint version defined in this configuration.
+    /// - parameter versionConstraint:      The SwiftLint version defined in this configuration.
     /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable
     ///                                     files.
     /// - parameter strict:                 Treat warnings as errors.
@@ -157,19 +160,15 @@ public struct Configuration {
         warningThreshold: Int? = nil,
         reporter: String? = nil,
         cachePath: String? = nil,
-        pinnedVersion: String? = nil,
+        versionConstraint: String? = nil,
         allowZeroLintableFiles: Bool = false,
         strict: Bool = false,
         baseline: String? = nil,
         writeBaseline: String? = nil,
         checkForUpdates: Bool = false
     ) {
-        if let pinnedVersion, pinnedVersion != Version.current.value {
-            queuedPrintError(
-                "warning: Currently running SwiftLint \(Version.current.value) but " +
-                "configuration specified version \(pinnedVersion)."
-            )
-            exit(2)
+        if let versionConstraint {
+            Self.compareVersion(to: versionConstraint)
         }
 
         self.init(
@@ -284,6 +283,96 @@ public struct Configuration {
 
         excludedPaths = excludedPaths.map {
             $0.bridge().absolutePathRepresentation(rootDirectory: previousBasePath).path(relativeTo: newBasePath)
+        }
+    }
+
+    /// Compares a supplied version to the version SwiftLint is currently running with. If the version does not match,
+    /// or the version syntax is invalid, the method will abort execution with an error. The syntax for valid version
+    /// strings is as follows:
+    ///
+    /// * `0.54.0`
+    /// * `>0.54.0`
+    /// * `>=0.54.0`
+    /// * `<0.54.0`
+    /// * `<=0.54.0`
+    ///
+    /// - Parameter configurationVersion: The configuration version to compare against.
+    static func compareVersion(to configurationVersion: String) { // swiftlint:disable:this function_body_length
+        func showInvalidVersionStringError() -> Never {
+            let invalidVersionString = """
+            error: swiftlint_version syntax invalid.
+            Please specify a version as follows:
+            0.54.0
+            >0.54.0
+            >=0.54.0
+            <0.54.0
+            <=0.54.0
+            """
+
+            queuedFatalError(
+                invalidVersionString
+            )
+        }
+
+        func compareVersionString(_ versionString: String) {
+            var versionString = versionString
+            let comparator: (Version, Version) -> Bool
+            let errorDifferentiatorString: String
+
+            if versionString.starts(with: ">=") {
+                comparator = (>=)
+                versionString = String(versionString.dropFirst(2))
+                errorDifferentiatorString = "at least"
+            } else if versionString.starts(with: ">") {
+                comparator = (>)
+                versionString = String(versionString.dropFirst(1))
+                errorDifferentiatorString = "greater than"
+            } else if versionString.starts(with: "<=") {
+                comparator = (<=)
+                versionString = String(versionString.dropFirst(2))
+                errorDifferentiatorString = "at most"
+            } else if versionString.starts(with: "<") {
+                comparator = (<)
+                versionString = String(versionString.dropFirst(1))
+                errorDifferentiatorString = "less than"
+            } else {
+                comparator = (==)
+                errorDifferentiatorString = "exactly"
+            }
+
+            // make sure the remaining string is just a version string of numeral.numeral.numeral
+            versionString = versionString.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard versionString.range(of: #"^\d+\.\d+\.\d+$"#, options: .regularExpression) != nil else {
+                showInvalidVersionStringError()
+            }
+
+            let configVersion = Version(value: versionString)
+
+            if !comparator(Version.current, configVersion) {
+                queuedPrintError(
+                    "warning: Currently running SwiftLint \(Version.current.value) but " +
+                    "configuration specified \(errorDifferentiatorString) \(versionString)."
+                )
+                exit(2)
+            }
+        }
+
+        let splitVersion = configurationVersion
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: .whitespaces)
+
+        if splitVersion.count == 2 {
+            // Assume the user put a space in between the operator and the version
+            let `operator` = splitVersion[0]
+            let version = splitVersion[1]
+            compareVersionString(`operator` + version)
+        } else if splitVersion.count == 1 {
+            // Assume we're going for a discrete version or gt/gte/lt/lte scenario
+            let versionString = splitVersion[0]
+            compareVersionString(versionString)
+        } else {
+            // The user typed in too much
+            showInvalidVersionStringError()
         }
     }
 }

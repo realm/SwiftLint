@@ -25,7 +25,7 @@ jobs:
       displayName: Install latest Swift
     - script: echo "##vso[task.prependpath]$(brew --prefix)/opt/swift/bin"
       displayName: Select toolchain
-    - script: swift test --toolchain "$(brew --prefix)/opt/swift/Swift-5.10.xctoolchain" --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
+    - script: swift test --toolchain "$(brew --prefix)/opt/swift/Swift-5.10.xctoolchain" --verbose --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
 
 - job: macOS13

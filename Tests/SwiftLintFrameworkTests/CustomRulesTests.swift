@@ -265,7 +265,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(firstViolation.ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
         XCTAssertTrue(firstViolation.didNotTrigger(for: "custom_rules"))
         XCTAssertEqual(secondViolation.ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
-        XCTAssertEqual(secondViolation.didNotTrigger(for: "\(customRuleIdentifier)"), true)
+        XCTAssertTrue(secondViolation.didNotTrigger(for: "\(customRuleIdentifier)"))
     }
 
     func testSuperfluousDisableCommandAndViolationWithCustomRules() throws {
@@ -291,7 +291,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertTrue(secondViolation.didNotTrigger(for: customRuleIdentifier))
     }
 
-    func testDisablingCustomRulesWorks() throws {
+    func testDisablingCustomRules() throws {
         let customRules: [String: Any] = [
             "forbidden": [
                 "regex": "FORBIDDEN",
@@ -307,7 +307,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertTrue(violations.isEmpty)
     }
 
-    func testSuperfluousCommandWorksForCustomRulesWorks() throws {
+    func testSuperfluousCommandWorksForCustomRules() throws {
         let customRules = getForbiddenCustomRules()
         let example = Example("""
                               // swiftlint:disable:next custom_rules
@@ -318,7 +318,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations.count, 1)
     }
 
-    func someOtherTest2() throws {
+    func testSuperfluousCommandWorksForSpecificCustomRules() throws {
         let customRules = getForbiddenCustomRules()
         let example = Example("""
                               // swiftlint:disable:next forbidden forbidden2
@@ -329,7 +329,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations.count, 2)
     }
 
-    func someOtherTest3() throws {
+    func testSuperfluousCommandWorksForSpecificCustomRulesWhenOneCustomRuleIsViolated() throws {
         let customRules = getForbiddenCustomRules()
         let example = Example("""
                               // swiftlint:disable:next forbidden forbidden2
@@ -340,7 +340,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations.count, 1)
     }
 
-    func someOtherTest4() throws {
+    func testSuperfluousCommandWorksForSpecificAndGeneralCustomRulesWhenOneCustomRuleIsViolated() throws {
         let customRules = getForbiddenCustomRules()
         let example = Example("""
                               // swiftlint:disable:next forbidden forbidden2 custom_rules
@@ -427,6 +427,19 @@ final class CustomRulesTests: SwiftLintTestCase {
         ]
         let example = Example("""
                                // swiftlint:disable:next all
+                               print("Hello, world")
+                               """)
+        XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
+    }
+
+    func testDisableAllAndASpecificCustomRule() throws {
+        let customRules: [String: Any] = [
+            "dont_print": [
+                "regex": "print\\("
+            ],
+        ]
+        let example = Example("""
+                               // swiftlint:disable:next all dont_print
                                print("Hello, world")
                                """)
         XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)

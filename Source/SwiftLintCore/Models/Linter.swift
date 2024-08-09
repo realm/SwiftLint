@@ -48,7 +48,7 @@ private extension Rule {
                 region.isRuleDisabled(self)
             }
             return [(Self.description.identifier, regionsDisablingCurrentRule)]
-        }().sorted { (lhs, rhs) -> Bool in // make sure that the results are consistently ordered
+        }().sorted { lhs, rhs -> Bool in // make sure that the results are consistently ordered
             lhs.0 < rhs.0
         }
 

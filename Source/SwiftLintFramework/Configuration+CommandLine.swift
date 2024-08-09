@@ -1,7 +1,6 @@
 import CollectionConcurrencyKit
 import Foundation
 import SourceKittenFramework
-import SwiftLintFramework
 
 private actor CounterActor {
     private var count = 0

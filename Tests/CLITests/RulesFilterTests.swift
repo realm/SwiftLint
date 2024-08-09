@@ -1,4 +1,3 @@
-@testable import swiftlint
 import SwiftLintFramework
 import XCTest
 

@@ -135,13 +135,14 @@ swift_library(
     srcs = glob(
         ["Source/SwiftLintFramework/**/*.swift"],
     ),
-    copts = copts + strict_concurrency_copts,
+    copts = copts,
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintBuiltInRules",
         ":SwiftLintCore",
         ":SwiftLintExtraRules",
+        "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
     ],
 )
 
@@ -154,7 +155,6 @@ swift_library(
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintFramework",
-        "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
         "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ],

@@ -1,9 +1,9 @@
 import Foundation
 
-enum SwiftLintError: LocalizedError {
+package enum SwiftLintError: LocalizedError {
     case usageError(description: String)
 
-    var errorDescription: String? {
+    package var errorDescription: String? {
         switch self {
         case .usageError(let description):
             return description

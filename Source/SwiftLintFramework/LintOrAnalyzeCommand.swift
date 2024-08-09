@@ -1,11 +1,12 @@
 import Dispatch
 import Foundation
-import SwiftLintFramework
 
-enum LintOrAnalyzeMode {
+// swiftlint:disable file_length
+
+public enum LintOrAnalyzeMode {
     case lint, analyze
 
-    var imperative: String {
+    public var imperative: String {
         switch self {
         case .lint:
             return "lint"
@@ -14,7 +15,7 @@ enum LintOrAnalyzeMode {
         }
     }
 
-    var verb: String {
+    public var verb: String {
         switch self {
         case .lint:
             return "linting"
@@ -24,8 +25,98 @@ enum LintOrAnalyzeMode {
     }
 }
 
-struct LintOrAnalyzeCommand {
-    static func run(_ options: LintOrAnalyzeOptions) async throws {
+public struct LintOrAnalyzeOptions {
+    let mode: LintOrAnalyzeMode
+    let paths: [String]
+    let useSTDIN: Bool
+    let configurationFiles: [String]
+    let strict: Bool
+    let lenient: Bool
+    let forceExclude: Bool
+    let useExcludingByPrefix: Bool
+    let useScriptInputFiles: Bool
+    let benchmark: Bool
+    let reporter: String?
+    let baseline: String?
+    let writeBaseline: String?
+    let workingDirectory: String?
+    let quiet: Bool
+    let output: String?
+    let progress: Bool
+    let cachePath: String?
+    let ignoreCache: Bool
+    let enableAllRules: Bool
+    let onlyRule: String?
+    let autocorrect: Bool
+    let format: Bool
+    let compilerLogPath: String?
+    let compileCommands: String?
+    let checkForUpdates: Bool
+
+    public init(mode: LintOrAnalyzeMode,
+                paths: [String],
+                useSTDIN: Bool,
+                configurationFiles: [String],
+                strict: Bool,
+                lenient: Bool,
+                forceExclude: Bool,
+                useExcludingByPrefix: Bool,
+                useScriptInputFiles: Bool,
+                benchmark: Bool,
+                reporter: String?,
+                baseline: String?,
+                writeBaseline: String?,
+                workingDirectory: String?,
+                quiet: Bool,
+                output: String?,
+                progress: Bool,
+                cachePath: String?,
+                ignoreCache: Bool,
+                enableAllRules: Bool,
+                onlyRule: String?,
+                autocorrect: Bool,
+                format: Bool,
+                compilerLogPath: String?,
+                compileCommands: String?,
+                checkForUpdates: Bool) {
+        self.mode = mode
+        self.paths = paths
+        self.useSTDIN = useSTDIN
+        self.configurationFiles = configurationFiles
+        self.strict = strict
+        self.lenient = lenient
+        self.forceExclude = forceExclude
+        self.useExcludingByPrefix = useExcludingByPrefix
+        self.useScriptInputFiles = useScriptInputFiles
+        self.benchmark = benchmark
+        self.reporter = reporter
+        self.baseline = baseline
+        self.writeBaseline = writeBaseline
+        self.workingDirectory = workingDirectory
+        self.quiet = quiet
+        self.output = output
+        self.progress = progress
+        self.cachePath = cachePath
+        self.ignoreCache = ignoreCache
+        self.enableAllRules = enableAllRules
+        self.onlyRule = onlyRule
+        self.autocorrect = autocorrect
+        self.format = format
+        self.compilerLogPath = compilerLogPath
+        self.compileCommands = compileCommands
+        self.checkForUpdates = checkForUpdates
+    }
+
+    var verb: String {
+        if autocorrect {
+            return "correcting"
+        }
+        return mode.verb
+    }
+}
+
+public struct LintOrAnalyzeCommand {
+    public static func run(_ options: LintOrAnalyzeOptions) async throws {
         if let workingDirectory = options.workingDirectory {
             if !FileManager.default.changeCurrentDirectoryPath(workingDirectory) {
                 throw SwiftLintError.usageError(
@@ -248,42 +339,6 @@ struct LintOrAnalyzeCommand {
             }
             queuedPrintError("Done correcting \(files.count) file\(pluralSuffix(files))!")
         }
-    }
-}
-
-struct LintOrAnalyzeOptions {
-    let mode: LintOrAnalyzeMode
-    let paths: [String]
-    let useSTDIN: Bool
-    let configurationFiles: [String]
-    let strict: Bool
-    let lenient: Bool
-    let forceExclude: Bool
-    let useExcludingByPrefix: Bool
-    let useScriptInputFiles: Bool
-    let benchmark: Bool
-    let reporter: String?
-    let baseline: String?
-    let writeBaseline: String?
-    let workingDirectory: String?
-    let quiet: Bool
-    let output: String?
-    let progress: Bool
-    let cachePath: String?
-    let ignoreCache: Bool
-    let enableAllRules: Bool
-    let onlyRule: String?
-    let autocorrect: Bool
-    let format: Bool
-    let compilerLogPath: String?
-    let compileCommands: String?
-    let checkForUpdates: Bool
-
-    var verb: String {
-        if autocorrect {
-            return "correcting"
-        }
-        return mode.verb
     }
 }
 

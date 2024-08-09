@@ -79,19 +79,27 @@ struct CustomRules: Rule, CacheDescriptionProvider {
                                severity: configuration.severity,
                                location: Location(file: file, characterOffset: $0.location),
                                reason: configuration.message)
-            }).filter { violation in
-                guard let region = file.regions().first(where: { $0.contains(violation.location) }) else {
-                    return true
-                }
-
-                return !region.isRuleDisabled(customRuleIdentifier: configuration.identifier)
-            }
+            })
         }
     }
 }
 
-private extension Region {
-    func isRuleDisabled(customRuleIdentifier: String) -> Bool {
+extension Region {
+    func isCustomRuleDisabled(customRuleIdentifier: String) -> Bool {
+        disabledRuleIdentifiers.intersection(
+            [
+                .all,
+                RuleIdentifier(customRuleIdentifier),
+                RuleIdentifier(CustomRules.description.identifier),
+            ]
+        ).isNotEmpty
+    }
+
+    func isCustomRuleSpecificallyDisabled(customRuleIdentifier: String) -> Bool {
         disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
+    }
+
+    func areAllCustomRulesDisabled() -> Bool {
+        disabledRuleIdentifiers.contains(RuleIdentifier(CustomRules.description.identifier))
     }
 }

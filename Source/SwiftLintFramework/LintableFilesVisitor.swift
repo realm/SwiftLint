@@ -68,78 +68,43 @@ private func resolveParamsFiles(args: [String]) -> [String] {
 }
 
 struct LintableFilesVisitor {
-    let paths: [String]
-    let action: String
-    let useSTDIN: Bool
-    let quiet: Bool
-    let showProgressBar: Bool
-    let useScriptInputFiles: Bool
-    let forceExclude: Bool
-    let useExcludingByPrefix: Bool
+    let options: LintOrAnalyzeOptions
     let cache: LinterCache?
-    let parallel: Bool
-    let allowZeroLintableFiles: Bool
     let mode: LintOrAnalyzeModeWithCompilerArguments
+    let parallel: Bool
     let block: (CollectedLinter) async -> Void
+    let allowZeroLintableFiles: Bool
 
-    private init(paths: [String],
-                 action: String,
-                 useSTDIN: Bool,
-                 quiet: Bool,
-                 showProgressBar: Bool,
-                 useScriptInputFiles: Bool,
-                 forceExclude: Bool,
-                 useExcludingByPrefix: Bool,
+    private init(options: LintOrAnalyzeOptions,
                  cache: LinterCache?,
-                 compilerInvocations: CompilerInvocations?,
                  allowZeroLintableFiles: Bool,
-                 block: @escaping (CollectedLinter) async -> Void) {
-        self.paths = resolveParamsFiles(args: paths)
-        self.action = action
-        self.useSTDIN = useSTDIN
-        self.quiet = quiet
-        self.showProgressBar = showProgressBar
-        self.useScriptInputFiles = useScriptInputFiles
-        self.forceExclude = forceExclude
-        self.useExcludingByPrefix = useExcludingByPrefix
+                 block: @escaping (CollectedLinter) async -> Void) throws {
+        self.options = options
         self.cache = cache
-        if let compilerInvocations {
-            self.mode = .analyze(allCompilerInvocations: compilerInvocations)
+        if options.mode == .lint {
+            self.mode = .lint
+            self.parallel = true
+        } else {
+            self.mode = .analyze(allCompilerInvocations: try Self.loadCompilerInvocations(options))
             // SourceKit had some changes in 5.6 that makes it ~100x more expensive
             // to process files concurrently. By processing files serially, it's
             // only 2x slower than before.
             self.parallel = SwiftVersion.current < .fiveDotSix
-        } else {
-            self.mode = .lint
-            self.parallel = true
         }
-        self.block = block
         self.allowZeroLintableFiles = allowZeroLintableFiles
+        self.block = block
     }
 
     static func create(_ options: LintOrAnalyzeOptions,
                        cache: LinterCache?,
                        allowZeroLintableFiles: Bool,
-                       block: @escaping (CollectedLinter) async -> Void)
-        throws -> Self {
+                       block: @escaping (CollectedLinter) async -> Void) throws -> Self {
         try Signposts.record(name: "LintableFilesVisitor.Create") {
-            let compilerInvocations: CompilerInvocations?
-            if options.mode == .lint {
-                compilerInvocations = nil
-            } else {
-                compilerInvocations = try loadCompilerInvocations(options)
-            }
-
-            return Self(
-                paths: options.paths, action: options.verb.bridge().capitalized,
-                useSTDIN: options.useSTDIN, quiet: options.quiet,
-                showProgressBar: options.progress,
-                useScriptInputFiles: options.useScriptInputFiles,
-                forceExclude: options.forceExclude,
-                useExcludingByPrefix: options.useExcludingByPrefix,
+            try Self(
+                options: options,
                 cache: cache,
-                compilerInvocations: compilerInvocations,
-                allowZeroLintableFiles: allowZeroLintableFiles, block: block
+                allowZeroLintableFiles: allowZeroLintableFiles,
+                block: block
             )
         }
     }

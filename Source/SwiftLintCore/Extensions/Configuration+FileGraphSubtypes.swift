@@ -8,7 +8,7 @@ extension Configuration.FileGraph {
     }
 
     // MARK: - Vertex
-    final class Vertex: Hashable, @unchecked Sendable { // TODO: Remove `@unchecked`
+    final class Vertex: Hashable, Sendable {
         var originatesFromRemote: Bool { originalRemoteString != nil }
         var rootDirectory: String {
             if !originatesFromRemote, case let .existing(path) = filePath {
@@ -22,8 +22,8 @@ extension Configuration.FileGraph {
         private let originalRootDirectory: String
         let originalRemoteString: String?
         let isInitialVertex: Bool
-        private(set) var filePath: FilePath
-        private(set) var configurationDict: [String: any Sendable]
+        private(set) nonisolated(unsafe) var filePath: FilePath
+        private(set) nonisolated(unsafe) var configurationDict: [String: any Sendable]
 
         convenience init(string: String, rootDirectory: String, isInitialVertex: Bool) {
             let (originalRemoteString, filePath): (String?, FilePath) =

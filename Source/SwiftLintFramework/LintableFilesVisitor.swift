@@ -61,7 +61,7 @@ struct LintableFilesVisitor: Sendable {
     let cache: LinterCache?
     let mode: LintOrAnalyzeModeWithCompilerArguments
     let parallel: Bool
-    let block: (CollectedLinter) async -> Void
+    let block: @Sendable (CollectedLinter) async -> Void
     let allowZeroLintableFiles: Bool
 
     private init(options: LintOrAnalyzeOptions,

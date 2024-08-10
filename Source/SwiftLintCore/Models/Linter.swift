@@ -129,7 +129,7 @@ private extension Rule {
 }
 
 /// Represents a file that can be linted for style violations and corrections after being collected.
-public struct Linter {
+public struct Linter: Sendable {
     /// The file to lint with this linter.
     public let file: SwiftLintFile
     /// Whether or not this linter will be used to collect information from several files.
@@ -185,7 +185,7 @@ public struct Linter {
 /// Represents a file that can compute style violations and corrections for a list of rules.
 ///
 /// A `CollectedLinter` is only created after a `Linter` has run its collection steps in `Linter.collect(into:)`.
-public struct CollectedLinter {
+public struct CollectedLinter: Sendable {
     /// The file to lint with this linter.
     public let file: SwiftLintFile
     private let rules: [any Rule]

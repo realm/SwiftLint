@@ -1,5 +1,5 @@
 public final class RulesFilter {
-    public struct ExcludingOptions: OptionSet {
+    public struct ExcludingOptions: OptionSet, Sendable {
         public let rawValue: Int
 
         public init(rawValue: Int) {

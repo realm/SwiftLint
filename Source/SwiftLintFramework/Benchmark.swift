@@ -1,5 +1,4 @@
 import Foundation
-import SwiftLintFramework
 
 struct BenchmarkEntry {
     let id: String

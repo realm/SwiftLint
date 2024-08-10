@@ -1,23 +1,25 @@
-import SwiftLintFramework
+package final class RulesFilter {
+    package struct ExcludingOptions: OptionSet {
+        package let rawValue: Int
 
-final class RulesFilter {
-    struct ExcludingOptions: OptionSet {
-        let rawValue: Int
+        package init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
 
-        static let enabled = Self(rawValue: 1 << 0)
-        static let disabled = Self(rawValue: 1 << 1)
-        static let uncorrectable = Self(rawValue: 1 << 2)
+        package static let enabled = Self(rawValue: 1 << 0)
+        package static let disabled = Self(rawValue: 1 << 1)
+        package static let uncorrectable = Self(rawValue: 1 << 2)
     }
 
     private let allRules: RuleList
     private let enabledRules: [any Rule]
 
-    init(allRules: RuleList = RuleRegistry.shared.list, enabledRules: [any Rule]) {
+    package init(allRules: RuleList = RuleRegistry.shared.list, enabledRules: [any Rule]) {
         self.allRules = allRules
         self.enabledRules = enabledRules
     }
 
-    func getRules(excluding excludingOptions: ExcludingOptions) -> RuleList {
+    package func getRules(excluding excludingOptions: ExcludingOptions) -> RuleList {
         if excludingOptions.isEmpty {
             return allRules
         }

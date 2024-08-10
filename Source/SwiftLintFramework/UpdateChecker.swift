@@ -14,10 +14,9 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-import SwiftLintFramework
 
-enum UpdateChecker {
-    static func checkForUpdates() {
+package enum UpdateChecker {
+    package static func checkForUpdates() {
         guard let url = URL(string: "https://api.github.com/repos/realm/SwiftLint/releases/latest"),
               let data = sendRequest(to: url),
               let latestVersionNumber = parseVersionNumber(data) else {

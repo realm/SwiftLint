@@ -60,7 +60,7 @@ let package = Package(
         .testTarget(
             name: "CLITests",
             dependencies: [
-                "swiftlint"
+                "SwiftLintFramework",
             ],
             swiftSettings: swiftFeatures
         ),

@@ -1,6 +1,5 @@
 import Dispatch
 import Foundation
-import SwiftLintFramework
 
 // Inspired by https://github.com/jkandzi/Progress.swift
 actor ProgressBar {

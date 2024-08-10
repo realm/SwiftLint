@@ -13,7 +13,7 @@ swift_library(
     module_name = "CLITests",
     package_name = "SwiftLint",
     deps = [
-        "//:swiftlint.library",
+        "//:SwiftLintFramework",
     ],
     copts = copts,
 )

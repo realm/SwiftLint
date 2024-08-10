@@ -108,10 +108,11 @@ public struct LintOrAnalyzeOptions {
     }
 
     var verb: String {
-        if autocorrect {
-            return "correcting"
-        }
-        return mode.verb
+        autocorrect ? "correcting" : mode.verb
+    }
+
+    var capitalizedVerb: String {
+        verb.capitalized
     }
 }
 

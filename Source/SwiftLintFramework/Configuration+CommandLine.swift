@@ -77,7 +77,7 @@ extension Configuration {
         -> [Configuration: [SwiftLintFile]] {
         if files.isEmpty && !visitor.allowZeroLintableFiles {
             throw SwiftLintError.usageError(
-                description: "No lintable files found at paths: '\(visitor.paths.joined(separator: ", "))'"
+                description: "No lintable files found at paths: '\(visitor.options.paths.joined(separator: ", "))'"
             )
         }
 
@@ -141,13 +141,13 @@ extension Configuration {
         let counter = CounterActor()
         let total = linters.filter(\.isCollecting).count
         let progress = ProgressBar(count: total)
-        if visitor.showProgressBar && total > 0 {
+        if visitor.options.progress && total > 0 {
             await progress.initialize()
         }
         let collect = { (linter: Linter) -> CollectedLinter? in
             let skipFile = visitor.shouldSkipFile(atPath: linter.file.path)
-            if !visitor.quiet && linter.isCollecting {
-                if visitor.showProgressBar {
+            if !visitor.options.quiet && linter.isCollecting {
+                if visitor.options.progress {
                     await progress.printNext()
                 } else if let filePath = linter.file.path {
                     let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
@@ -185,17 +185,19 @@ extension Configuration {
                        duplicateFileNames: Set<String>) async -> [SwiftLintFile] {
         let counter = CounterActor()
         let progress = ProgressBar(count: linters.count)
-        if visitor.showProgressBar {
+        if visitor.options.progress {
             await progress.initialize()
         }
         let visit = { (linter: CollectedLinter) -> SwiftLintFile in
-            if !visitor.quiet {
-                if visitor.showProgressBar {
+            if !visitor.options.quiet {
+                if visitor.options.progress {
                     await progress.printNext()
                 } else if let filePath = linter.file.path {
                     let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
                     let visited = await counter.next()
-                    queuedPrintError("\(visitor.action) '\(outputFilename)' (\(visited)/\(linters.count))")
+                    queuedPrintError(
+                        "\(visitor.options.capitalizedVerb) '\(outputFilename)' (\(visited)/\(linters.count))"
+                    )
                 }
             }
 
@@ -210,43 +212,44 @@ extension Configuration {
     }
 
     fileprivate func getFiles(with visitor: LintableFilesVisitor) async throws -> [SwiftLintFile] {
-        if visitor.useSTDIN {
+        let options = visitor.options
+        if options.useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
             let stdinString = String(decoding: stdinData, as: UTF8.self)
             return [SwiftLintFile(contents: stdinString)]
         }
-        if visitor.useScriptInputFiles {
+        if options.useScriptInputFiles {
             let files = try scriptInputFiles()
-            guard visitor.forceExclude else {
+            guard options.forceExclude else {
                 return files
             }
 
             let scriptInputPaths = files.compactMap(\.path)
 
-            if visitor.useExcludingByPrefix {
+            if options.useExcludingByPrefix {
                 return filterExcludedPathsByPrefix(in: scriptInputPaths)
                     .map(SwiftLintFile.init(pathDeferringReading:))
             }
             return filterExcludedPaths(excludedPaths(), in: scriptInputPaths)
                 .map(SwiftLintFile.init(pathDeferringReading:))
         }
-        if !visitor.quiet {
+        if !options.quiet {
             let filesInfo: String
-            if visitor.paths.isEmpty || visitor.paths == [""] {
+            if options.paths.isEmpty || options.paths == [""] {
                 filesInfo = "in current working directory"
             } else {
-                filesInfo = "at paths \(visitor.paths.joined(separator: ", "))"
+                filesInfo = "at paths \(options.paths.joined(separator: ", "))"
             }
 
-            queuedPrintError("\(visitor.action) Swift files \(filesInfo)")
+            queuedPrintError("\(options.capitalizedVerb) Swift files \(filesInfo)")
         }
-        let excludeLintableFilesBy = visitor.useExcludingByPrefix
+        let excludeLintableFilesBy = options.useExcludingByPrefix
                     ? Configuration.ExcludeBy.prefix
                     : .paths(excludedPaths: excludedPaths())
-        return visitor.paths.flatMap {
+        return options.paths.flatMap {
             self.lintableFiles(
                 inPath: $0,
-                forceExclude: visitor.forceExclude,
+                forceExclude: options.forceExclude,
                 excludeBy: excludeLintableFilesBy)
         }
     }

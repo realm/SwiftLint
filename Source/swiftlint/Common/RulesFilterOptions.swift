@@ -1,4 +1,5 @@
 import ArgumentParser
+import SwiftLintFramework
 
 enum RuleEnablementOptions: String, EnumerableFlag {
     case enabled, disabled
@@ -17,4 +18,23 @@ struct RulesFilterOptions: ParsableArguments {
     var ruleEnablement: RuleEnablementOptions?
     @Flag(name: .shortAndLong, help: "Only display correctable rules")
     var correctable = false
+
+    var excludingOptions: RulesFilter.ExcludingOptions {
+        var excludingOptions: RulesFilter.ExcludingOptions = []
+
+        switch ruleEnablement {
+        case .enabled:
+            excludingOptions.insert(.disabled)
+        case .disabled:
+            excludingOptions.insert(.enabled)
+        case .none:
+            break
+        }
+
+        if correctable {
+            excludingOptions.insert(.uncorrectable)
+        }
+
+        return excludingOptions
+    }
 }

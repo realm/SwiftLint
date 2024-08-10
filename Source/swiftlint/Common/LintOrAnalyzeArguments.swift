@@ -1,4 +1,5 @@
 import ArgumentParser
+import SwiftLintFramework
 
 enum LeniencyOptions: String, EnumerableFlag {
     case strict, lenient

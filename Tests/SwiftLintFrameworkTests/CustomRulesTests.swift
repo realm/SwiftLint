@@ -203,7 +203,6 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations[0].location.character, 6)
     }
 
-    // superfluous_disable_command should work for disables of specfic custom rules.
     func testSpecificCustomRuleSuperfluousDisableCommand() throws {
         let customRuleIdentifier = "forbidden"
         let customRules: [String: Any] = [
@@ -223,7 +222,6 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations.first?.didNotTrigger(for: customRuleIdentifier), true)
     }
 
-    // superfluous_disable_command of custom_rules should also still work.
     func testCustomRulesSuperfluousDisableCommand() throws {
         let customRuleIdentifier = "forbidden"
         let customRules: [String: Any] = [
@@ -244,7 +242,6 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations.first?.didNotTrigger(for: "custom_rules"), true)
     }
 
-    // superfluous_disable_command of custom_rules should also still work.
     func testSpecificAndCustomRulesSuperfluousDisableCommand() throws {
         let customRuleIdentifier = "forbidden"
         let customRules: [String: Any] = [

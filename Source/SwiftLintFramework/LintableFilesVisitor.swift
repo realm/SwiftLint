@@ -88,7 +88,7 @@ struct LintableFilesVisitor: Sendable {
                        cache: LinterCache?,
                        allowZeroLintableFiles: Bool,
                        block: @escaping @Sendable (CollectedLinter) async -> Void) async throws -> Self {
-        try await Signposts.record(name: "LintableFilesVisitor.Create") {
+        try await Signposts.record(name: "LintableFilesVisitor.Create") { @Sendable in
             try Self(
                 options: options,
                 cache: cache,

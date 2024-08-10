@@ -54,7 +54,7 @@ public struct Configuration: Sendable {
 
     // MARK: Public Computed
     /// All rules enabled in this configuration
-    public nonisolated var rules: [any Rule] { rulesWrapper.resultingRules }
+    public var rules: [any Rule] { rulesWrapper.resultingRules }
 
     /// The root directory is the directory that included & excluded paths relate to.
     /// By default, the root directory is the current working directory,

@@ -38,7 +38,7 @@ internal extension Configuration {
             // Calculate value
             let customRulesFilter: (RegexConfiguration<CustomRules>) -> (Bool)
             var resultingRules = [any Rule]()
-            switch mode {
+            switch self.mode {
             case .allEnabled:
                 customRulesFilter = { _ in true }
                 resultingRules = allRulesWrapped.map(\.rule)
@@ -127,26 +127,26 @@ internal extension Configuration {
             let newAllRulesWrapped = mergedAllRulesWrapped(with: child)
 
             // Merge mode
-            let validRuleIdentifiers = self.validRuleIdentifiers.union(child.validRuleIdentifiers)
-            let newMode: RulesMode
-            switch child.mode {
-            case let .default(childDisabled, childOptIn):
-                newMode = mergeDefaultMode(
-                    newAllRulesWrapped: newAllRulesWrapped,
-                    child: child,
-                    childDisabled: childDisabled,
-                    childOptIn: childOptIn,
-                    validRuleIdentifiers: validRuleIdentifiers
-                )
+            let validRuleIdentifiers = validRuleIdentifiers.union(child.validRuleIdentifiers)
+            let newMode: RulesMode =
+                switch child.mode {
+                case let .default(childDisabled, childOptIn):
+                    mergeDefaultMode(
+                        newAllRulesWrapped: newAllRulesWrapped,
+                        child: child,
+                        childDisabled: childDisabled,
+                        childOptIn: childOptIn,
+                        validRuleIdentifiers: validRuleIdentifiers
+                    )
 
-            case let .only(childOnlyRules):
-                // Always use the child only rules
-                newMode = .only(childOnlyRules)
+                case let .only(childOnlyRules):
+                    // Always use the child only rules
+                    .only(childOnlyRules)
 
-            case .allEnabled:
-                // Always use .allEnabled mode
-                newMode = .allEnabled
-            }
+                case .allEnabled:
+                    // Always use .allEnabled mode
+                    .allEnabled
+                }
 
             // Assemble & return merged rules
             return Self(
@@ -170,9 +170,8 @@ internal extension Configuration {
                 .map(\.configurationRuleWrapper)
         }
 
-        private func mergedCustomRules(
-            newAllRulesWrapped: [ConfigurationRuleWrapper], with child: Self
-        ) -> [ConfigurationRuleWrapper] {
+        private func mergedCustomRules(newAllRulesWrapped: [ConfigurationRuleWrapper],
+                                       with child: Self) -> [ConfigurationRuleWrapper] {
             guard
                 let parentCustomRulesRule = (allRulesWrapped.first { $0.rule is CustomRules })?.rule
                     as? CustomRules,

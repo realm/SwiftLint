@@ -152,9 +152,7 @@ public struct LintOrAnalyzeCommand {
         }
     }
 
-    private static func collectViolations(builder: LintOrAnalyzeResultBuilder) async throws
-        -> [SwiftLintFile]
-    {
+    private static func collectViolations(builder: LintOrAnalyzeResultBuilder) async throws -> [SwiftLintFile] {
         let options = builder.options
         let baseline = try baseline(options, builder.configuration)
         return try await builder.configuration.visitLintableFiles(
@@ -194,14 +192,11 @@ public struct LintOrAnalyzeCommand {
 
     private static func postProcessViolations(
         files: [SwiftLintFile],
-        builder: LintOrAnalyzeResultBuilder
-    ) async throws {
+        builder: LintOrAnalyzeResultBuilder) async throws {
         let options = builder.options
         let configuration = builder.configuration
-        if await isWarningThresholdBroken(
-            configuration: configuration, violations: builder.violations),
-            !options.lenient
-        {
+        if await isWarningThresholdBroken(configuration: configuration, violations: builder.violations),
+           !options.lenient {
             await builder.addViolations(
                 filteredViolations: [
                     createThresholdViolation(threshold: configuration.warningThreshold!)
@@ -234,17 +229,13 @@ public struct LintOrAnalyzeCommand {
         guard numberOfSeriousViolations == 0 else { exit(2) }
     }
 
-    private static func baseline(_ options: LintOrAnalyzeOptions, _ configuration: Configuration)
-        throws -> Baseline?
-    {
+    private static func baseline(_ options: LintOrAnalyzeOptions, _ configuration: Configuration) throws -> Baseline? {
         if let baselinePath = options.baseline ?? configuration.baseline {
             do {
                 return try Baseline(fromPath: baselinePath)
             } catch {
                 Issue.baselineNotReadable(path: baselinePath).print()
-                if (error as? CocoaError)?.code != CocoaError.fileReadNoSuchFile
-                    || options.writeBaseline != options.baseline
-                {
+                if (error as? CocoaError)?.code != .fileReadNoSuchFile || options.writeBaseline != options.baseline {
                     throw error
                 }
             }
@@ -252,9 +243,7 @@ public struct LintOrAnalyzeCommand {
         return nil
     }
 
-    private static func printStatus(
-        violations: [StyleViolation], files: [SwiftLintFile], serious: Int, verb: String
-    ) {
+    private static func printStatus(violations: [StyleViolation], files: [SwiftLintFile], serious: Int, verb: String) {
         let pluralSuffix = { (collection: [Any]) -> String in
             collection.count != 1 ? "s" : ""
         }
@@ -290,8 +279,7 @@ public struct LintOrAnalyzeCommand {
     private static func applyLeniency(
         options: LintOrAnalyzeOptions,
         strict: Bool,
-        violations: [StyleViolation]
-    ) -> [StyleViolation] {
+        violations: [StyleViolation]) -> [StyleViolation] {
         let strict = (strict && !options.lenient) || options.strict
 
         switch (options.lenient, strict) {
@@ -324,32 +312,30 @@ public struct LintOrAnalyzeCommand {
         let storage = RuleStorage()
         let configuration = await Configuration(options: options)
         let correctionsBuilder = CorrectionsBuilder()
-        let files =
-            try await configuration
-            .visitLintableFiles(options: options, cache: nil, storage: storage) { linter in
-                if options.format {
-                    switch configuration.indentation {
-                    case .tabs:
-                        linter.format(useTabs: true, indentWidth: 4)
-                    case .spaces(let count):
-                        linter.format(useTabs: false, indentWidth: count)
-                    }
+        let files = try await configuration.visitLintableFiles(options: options, storage: storage) { linter in
+            if options.format {
+                switch configuration.indentation {
+                case .tabs:
+                    linter.format(useTabs: true, indentWidth: 4)
+                case .spaces(let count):
+                    linter.format(useTabs: false, indentWidth: count)
                 }
+            }
 
-                let corrections = await linter.correct(using: storage)
-                if !corrections.isEmpty && !options.quiet {
-                    if options.useSTDIN {
-                        queuedPrint(linter.file.contents)
+            let corrections = await linter.correct(using: storage)
+            if !corrections.isEmpty && !options.quiet {
+                if options.useSTDIN {
+                    queuedPrint(linter.file.contents)
+                } else {
+                    if options.progress {
+                        await correctionsBuilder.append(corrections)
                     } else {
-                        if options.progress {
-                            await correctionsBuilder.append(corrections)
-                        } else {
-                            let correctionLogs = corrections.map(\.consoleDescription)
-                            queuedPrint(correctionLogs.joined(separator: "\n"))
-                        }
+                        let correctionLogs = corrections.map(\.consoleDescription)
+                        queuedPrint(correctionLogs.joined(separator: "\n"))
                     }
                 }
             }
+        }
 
         if !options.quiet {
             if options.progress {
@@ -411,17 +397,13 @@ private actor LintOrAnalyzeResultBuilder {
         ruleBenchmark.record(id: id, time: time)
     }
 
-    func addViolations(
-        filteredViolations: [StyleViolation] = [], unfilteredViolations: [StyleViolation] = []
-    ) {
+    func addViolations(filteredViolations: [StyleViolation] = [], unfilteredViolations: [StyleViolation] = []) {
         self.violations += filteredViolations
         self.unfilteredViolations += unfilteredViolations
     }
 
     func report(violations: [StyleViolation], realtimeCondition: Bool) {
-        if (reporter.isRealtime && (!options.progress || options.output != nil))
-            == realtimeCondition
-        {
+        if (reporter.isRealtime && (!options.progress || options.output != nil)) == realtimeCondition {
             let report = reporter.generateReport(violations)
             if !report.isEmpty {
                 options.writeToOutput(report)
@@ -430,8 +412,8 @@ private actor LintOrAnalyzeResultBuilder {
     }
 }
 
-extension LintOrAnalyzeOptions {
-    fileprivate func writeToOutput(_ string: String) {
+private extension LintOrAnalyzeOptions {
+    func writeToOutput(_ string: String) {
         guard let outFile = output else {
             queuedPrint(string)
             return

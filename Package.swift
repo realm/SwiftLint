@@ -63,7 +63,7 @@ let package = Package(
             dependencies: [
                 "SwiftLintFramework",
             ],
-            swiftSettings: swiftFeatures + strictConcurrency
+            swiftSettings: swiftFeatures
         ),
         .target(
             name: "SwiftLintCore",
@@ -123,7 +123,7 @@ let package = Package(
             exclude: [
                 "Resources",
             ],
-            swiftSettings: swiftFeatures + strictConcurrency
+            swiftSettings: swiftFeatures
         ),
         .testTarget(
             name: "GeneratedTests",
@@ -131,7 +131,7 @@ let package = Package(
                 "SwiftLintFramework",
                 "SwiftLintTestHelpers",
             ],
-            swiftSettings: swiftFeatures + strictConcurrency
+            swiftSettings: swiftFeatures
         ),
         .testTarget(
             name: "IntegrationTests",
@@ -142,7 +142,7 @@ let package = Package(
             exclude: [
                 "default_rule_configurations.yml"
             ],
-            swiftSettings: swiftFeatures + strictConcurrency
+            swiftSettings: swiftFeatures
         ),
         .testTarget(
             name: "ExtraRulesTests",
@@ -150,7 +150,7 @@ let package = Package(
                 "SwiftLintFramework",
                 "SwiftLintTestHelpers",
             ],
-            swiftSettings: swiftFeatures + strictConcurrency
+            swiftSettings: swiftFeatures
         ),
         .macro(
             name: "SwiftLintCoreMacros",
@@ -167,7 +167,7 @@ let package = Package(
                 "SwiftLintCoreMacros",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ],
-            swiftSettings: swiftFeatures + strictConcurrency
+            swiftSettings: swiftFeatures
         ),
     ]
 )

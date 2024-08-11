@@ -167,7 +167,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         customRules.configuration = customRuleConfiguration
 
         let violations = customRules.validate(file: getTestTextFile())
-        XCTAssertEqual(violations.count, 0)
+        XCTAssertTrue(violations.isEmpty)
     }
 
     func testCustomRulesExcludedExcludesFile() {
@@ -178,7 +178,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         customRules.configuration = customRuleConfiguration
 
         let violations = customRules.validate(file: getTestTextFile())
-        XCTAssertEqual(violations.count, 0)
+        XCTAssertTrue(violations.isEmpty)
     }
 
     func testCustomRulesExcludedArrayExcludesFile() {
@@ -189,7 +189,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         customRules.configuration = customRuleConfiguration
 
         let violations = customRules.validate(file: getTestTextFile())
-        XCTAssertEqual(violations.count, 0)
+        XCTAssertTrue(violations.isEmpty)
     }
 
     func testCustomRulesCaptureGroup() {
@@ -221,8 +221,8 @@ final class CustomRulesTests: SwiftLintTestCase {
         let violations = try violations(forExample: example, customRules: customRules)
 
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
-        XCTAssertEqual(violations.first?.didNotTrigger(for: "custom_rules"), true)
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation())
+        XCTAssertEqual(violations[0].didNotTrigger(for: "custom_rules"), true)
     }
 
     func testSpecificCustomRuleSuperfluousDisableCommand() throws {
@@ -240,8 +240,8 @@ final class CustomRulesTests: SwiftLintTestCase {
 
         let violations = try violations(forExample: example, customRules: customRules)
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
-        XCTAssertEqual(violations.first?.didNotTrigger(for: customRuleIdentifier), true)
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation())
+        XCTAssertEqual(violations[0].didNotTrigger(for: customRuleIdentifier), true)
     }
 
     func testSpecificAndCustomRulesSuperfluousDisableCommand() throws {
@@ -261,9 +261,9 @@ final class CustomRulesTests: SwiftLintTestCase {
 
         XCTAssertEqual(violations.count, 2)
         let (firstViolation, secondViolation) = (violations[0], violations[1])
-        XCTAssertEqual(firstViolation.ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
+        XCTAssertTrue(firstViolation.isSuperfluousDisableCommandViolation())
         XCTAssertTrue(firstViolation.didNotTrigger(for: "custom_rules"))
-        XCTAssertEqual(secondViolation.ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
+        XCTAssertTrue(secondViolation.isSuperfluousDisableCommandViolation())
         XCTAssertTrue(secondViolation.didNotTrigger(for: "\(customRuleIdentifier)"))
     }
 
@@ -286,7 +286,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations.count, 2)
         let (firstViolation, secondViolation) = (violations[0], violations[1])
         XCTAssertEqual(firstViolation.ruleIdentifier, customRuleIdentifier)
-        XCTAssertEqual(secondViolation.ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
+        XCTAssertTrue(secondViolation.isSuperfluousDisableCommandViolation())
         XCTAssertTrue(secondViolation.didNotTrigger(for: customRuleIdentifier))
     }
 
@@ -356,7 +356,7 @@ final class CustomRulesTests: SwiftLintTestCase {
             return
         }
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violation.ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
+        XCTAssertTrue(violation.isSuperfluousDisableCommandViolation())
         XCTAssertTrue(violation.didNotTrigger(for: customRuleIdentifier))
     }
 
@@ -388,9 +388,9 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations.count, 3)
         let (firstViolation, secondViolation, thirdViolation) = (violations[0], violations[1], violations[2])
         XCTAssertEqual(firstViolation.ruleIdentifier, "custom2")
-        XCTAssertEqual(secondViolation.ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
+        XCTAssertTrue(secondViolation.isSuperfluousDisableCommandViolation())
         XCTAssertTrue(secondViolation.didNotTrigger(for: "custom1"))
-        XCTAssertEqual(thirdViolation.ruleIdentifier, SuperfluousDisableCommandRule.description.identifier)
+        XCTAssertTrue(thirdViolation.isSuperfluousDisableCommandViolation())
         XCTAssertTrue(thirdViolation.didNotTrigger(for: "custom3"))
     }
 
@@ -531,5 +531,9 @@ final class CustomRulesTests: SwiftLintTestCase {
 private extension StyleViolation {
     func didNotTrigger(for ruleIdentifier: String) -> Bool {
         reason.contains("SwiftLint rule '\(ruleIdentifier)' did not trigger a violation")
+    }
+
+    func isSuperfluousDisableCommandViolation() -> Bool {
+        ruleIdentifier == SuperfluousDisableCommandRule.description.identifier
     }
 }

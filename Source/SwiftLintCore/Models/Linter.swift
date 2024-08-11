@@ -92,7 +92,7 @@ private extension Rule {
             disabledRuleIdentifier == CustomRules.description.identifier else {
             return false
         }
-        let customRulesIdentifiers = Set(customRules.configuration.customRuleConfigurations.map(\.identifier))
+        let customRulesIdentifiers = Set(customRules.customRuleIdentifiers)
         return customRulesIdentifiers.contains(violation.ruleIdentifier)
     }
 
@@ -145,7 +145,7 @@ private extension Rule {
              guard let customRules = self as? CustomRules else {
                  return []
              }
-             return customRules.configuration.customRuleConfigurations.map(\.identifier)
+             return customRules.customRuleIdentifiers
          }()
         let ruleIDs = Self.description.allIdentifiers +
             customRulesIDs +

@@ -41,6 +41,10 @@ struct CustomRules: Rule, CacheDescriptionProvider {
         configuration.cacheDescription
     }
 
+    var customRuleIdentifiers: [String] {
+        configuration.customRuleConfigurations.map(\.identifier)
+    }
+
     static let description = RuleDescription(
         identifier: "custom_rules",
         name: "Custom Rules",

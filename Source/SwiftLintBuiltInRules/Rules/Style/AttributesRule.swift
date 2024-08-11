@@ -19,7 +19,14 @@ struct AttributesRule: Rule {
         their own lines before a member declaration has become a conventional Swift style."
 
         "This approach limits declaration length. It allows a member to float below its attribute and supports \
-        flush-left access modifiers, so `internal`, `public`, etc appear in the leftmost column."
+        flush-left access modifiers, so `internal`, `public`, etc appear in the leftmost column. Many developers \
+        mix-and-match styles for short Swift attributes like `@objc`"
+
+        SwiftLint's rule requires attributes to be on their own lines for functions and types, but on the same line \
+        for variables and imports.
+
+        The `attributes_with_arguments_always_on_line_above`, `always_on_same_line`, and `always_on_line_above` \
+        configuration parameters can be used to fine-tune the rules behaviour for particular attributes.
         """,
         kind: .style,
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,

@@ -112,8 +112,7 @@ public extension Configuration {
             switch self {
             case let .only(onlyRules) where onlyRules.contains { $0 == CustomRules.description.identifier }:
                 let customRulesRule = (allRulesWrapped.first { $0.rule is CustomRules })?.rule as? CustomRules
-                let customRuleIdentifiers = customRulesRule?.customRuleIdentifiers
-                return .only(onlyRules.union(Set(customRuleIdentifiers ?? [])))
+                return .only(onlyRules.union(Set(customRulesRule?.customRuleIdentifiers ?? [])))
 
             default:
                 return self

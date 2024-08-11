@@ -244,7 +244,6 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations.first?.didNotTrigger(for: customRuleIdentifier), true)
     }
 
-
     func testSpecificAndCustomRulesSuperfluousDisableCommand() throws {
         let customRuleIdentifier = "forbidden"
         let customRules: [String: Any] = [

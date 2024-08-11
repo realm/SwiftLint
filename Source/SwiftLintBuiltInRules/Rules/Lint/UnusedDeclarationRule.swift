@@ -1,5 +1,5 @@
 import Foundation
-import SourceKittenFramework
+@preconcurrency import SourceKittenFramework
 
 struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
     struct FileUSRs: Hashable {

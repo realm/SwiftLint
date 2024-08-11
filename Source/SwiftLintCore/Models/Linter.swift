@@ -129,7 +129,7 @@ private extension Rule {
 }
 
 /// Represents a file that can be linted for style violations and corrections after being collected.
-public struct Linter {
+public struct Linter: Sendable {
     /// The file to lint with this linter.
     public let file: SwiftLintFile
     /// Whether or not this linter will be used to collect information from several files.
@@ -185,7 +185,7 @@ public struct Linter {
 /// Represents a file that can compute style violations and corrections for a list of rules.
 ///
 /// A `CollectedLinter` is only created after a `Linter` has run its collection steps in `Linter.collect(into:)`.
-public struct CollectedLinter {
+public struct CollectedLinter: Sendable {
     /// The file to lint with this linter.
     public let file: SwiftLintFile
     private let rules: [any Rule]
@@ -216,8 +216,8 @@ public struct CollectedLinter {
     ///
     /// - returns: All style violations found by this linter, and the time spent executing each rule.
     public func styleViolationsAndRuleTimes(using storage: RuleStorage)
-        -> ([StyleViolation], [(id: String, time: Double)]) {
-            getStyleViolations(using: storage, benchmark: true)
+            -> ([StyleViolation], [(id: String, time: Double)]) {
+        getStyleViolations(using: storage, benchmark: true)
     }
 
     private func getStyleViolations(using storage: RuleStorage,
@@ -292,12 +292,12 @@ public struct CollectedLinter {
     /// - parameter storage: The storage object containing all collected info.
     ///
     /// - returns: All corrections that were applied.
-    public func correct(using storage: RuleStorage) -> [Correction] {
+    public func correct(using storage: RuleStorage) async -> [Correction] {
         if let violations = cachedStyleViolations()?.0, violations.isEmpty {
             return []
         }
 
-        if let parserDiagnostics = file.parserDiagnostics, parserDiagnostics.isNotEmpty {
+        if let parserDiagnostics = await file.parserDiagnostics, parserDiagnostics.isNotEmpty {
             queuedPrintError(
                 "warning: Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
             )

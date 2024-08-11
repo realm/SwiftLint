@@ -3,11 +3,11 @@
 final class DiscouragedDirectInitRuleTests: SwiftLintTestCase {
     private let baseDescription = DiscouragedDirectInitRule.description
 
-    func testDiscouragedDirectInitWithConfiguredSeverity() {
-        verifyRule(baseDescription, ruleConfiguration: ["severity": "error"])
+    func testDiscouragedDirectInitWithConfiguredSeverity() async {
+        await verifyRule(baseDescription, ruleConfiguration: ["severity": "error"])
     }
 
-    func testDiscouragedDirectInitWithNewIncludedTypes() {
+    func testDiscouragedDirectInitWithNewIncludedTypes() async {
         let triggeringExamples = [
             Example("let foo = ↓Foo()"),
             Example("let bar = ↓Bar()"),
@@ -22,10 +22,10 @@ final class DiscouragedDirectInitRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["types": ["Foo", "Bar"]])
+        await verifyRule(description, ruleConfiguration: ["types": ["Foo", "Bar"]])
     }
 
-    func testDiscouragedDirectInitWithReplacedTypes() {
+    func testDiscouragedDirectInitWithReplacedTypes() async {
         let triggeringExamples = [
             Example("let bundle = ↓Bundle()")
         ]
@@ -38,6 +38,6 @@ final class DiscouragedDirectInitRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["types": ["Bundle"]])
+        await verifyRule(description, ruleConfiguration: ["types": ["Bundle"]])
     }
 }

@@ -2,8 +2,8 @@
 import XCTest
 
 final class TodoRuleTests: SwiftLintTestCase {
-    func testTodo() {
-        verifyRule(TodoRule.description, commentDoesntViolate: false)
+    func testTodo() async {
+        await verifyRule(TodoRule.description, commentDoesntViolate: false)
     }
 
     func testTodoMessage() {

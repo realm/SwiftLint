@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 /// An executable value that can identify issues (violations) in Swift source code.
-public protocol Rule {
+public protocol Rule: Sendable {
     /// The type of the configuration used to configure this rule.
     associatedtype ConfigurationType: RuleConfiguration
 

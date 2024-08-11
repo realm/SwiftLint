@@ -2,7 +2,7 @@
 
 final class FileTypesOrderRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
-    func testFileTypesOrderReversedOrder() {
+    func testFileTypesOrderReversedOrder() async {
         // Test with reversed `order` entries
         let nonTriggeringExamples = [
             Example(FileTypesOrderRuleExamples.defaultOrderParts.reversed().joined(separator: "\n\n"))
@@ -73,7 +73,7 @@ final class FileTypesOrderRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(
+        await verifyRule(
             reversedOrderDescription,
             ruleConfiguration: [
                 "order": ["library_content_provider", "preview_provider", "extension", "main_type", "supporting_type"]
@@ -81,7 +81,7 @@ final class FileTypesOrderRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testFileTypesOrderGroupedOrder() {
+    func testFileTypesOrderGroupedOrder() async {
         // Test with grouped `order` entries
         let nonTriggeringExamples = [
             Example("""
@@ -139,7 +139,7 @@ final class FileTypesOrderRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(
+        await verifyRule(
             groupedOrderDescription,
             ruleConfiguration: [
                 "order": ["main_type", ["extension", "supporting_type"] as Any, "preview_provider"] as Any

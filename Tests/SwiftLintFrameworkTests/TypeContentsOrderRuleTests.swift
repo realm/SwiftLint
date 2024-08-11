@@ -2,7 +2,7 @@
 
 final class TypeContentsOrderRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
-    func testTypeContentsOrderReversedOrder() {
+    func testTypeContentsOrderReversedOrder() async {
         // Test with reversed `order` entries
         let nonTriggeringExamples = [
             Example([
@@ -140,7 +140,7 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(
+        await verifyRule(
             reversedOrderDescription,
             ruleConfiguration: [
                 "order": [
@@ -164,7 +164,7 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
     }
 
     // swiftlint:disable:next function_body_length
-    func testTypeContentsOrderGroupedOrder() {
+    func testTypeContentsOrderGroupedOrder() async {
         // Test with grouped `order` entries
         let nonTriggeringExamples = [
             Example("""
@@ -336,7 +336,7 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(
+        await verifyRule(
             groupedOrderDescription,
             ruleConfiguration: [
                 "order": [

@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
 final class EmptyCountRuleTests: SwiftLintTestCase {
-    func testEmptyCountWithOnlyAfterDot() {
+    func testEmptyCountWithOnlyAfterDot() async {
         // Test with `only_after_dot` set to true
         let nonTriggeringExamples = [
             Example("var count = 0\n"),
@@ -61,6 +61,6 @@ final class EmptyCountRuleTests: SwiftLintTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(corrections: corrections)
 
-        verifyRule(description, ruleConfiguration: ["only_after_dot": true])
+        await verifyRule(description, ruleConfiguration: ["only_after_dot": true])
     }
 }

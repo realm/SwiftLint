@@ -6,9 +6,9 @@ final class BlanketDisableCommandRuleTests: SwiftLintTestCase {
         .with(triggeringExamples: [])
         .with(nonTriggeringExamples: [])
 
-    func testAlwaysBlanketDisable() {
+    func testAlwaysBlanketDisable() async {
         let nonTriggeringExamples = [Example("// swiftlint:disable file_length\n// swiftlint:enable file_length")]
-        verifyRule(emptyDescription.with(nonTriggeringExamples: nonTriggeringExamples))
+        await verifyRule(emptyDescription.with(nonTriggeringExamples: nonTriggeringExamples))
 
         let triggeringExamples = [
             Example("// swiftlint:disable file_length\n// swiftlint:enable ↓file_length"),
@@ -16,23 +16,28 @@ final class BlanketDisableCommandRuleTests: SwiftLintTestCase {
             Example("// swiftlint:disable:this ↓file_length"),
             Example("// swiftlint:disable:next ↓file_length"),
         ]
-        verifyRule(emptyDescription.with(triggeringExamples: triggeringExamples),
-                   ruleConfiguration: ["always_blanket_disable": ["file_length"]],
-                   skipCommentTests: true, skipDisableCommandTests: true)
+        await verifyRule(
+            emptyDescription.with(triggeringExamples: triggeringExamples),
+            ruleConfiguration: ["always_blanket_disable": ["file_length"]],
+            skipCommentTests: true,
+            skipDisableCommandTests: true
+        )
     }
 
-    func testAlwaysBlanketDisabledAreAllowed() {
+    func testAlwaysBlanketDisabledAreAllowed() async {
         let nonTriggeringExamples = [Example("// swiftlint:disable identifier_name\n")]
-        verifyRule(emptyDescription.with(nonTriggeringExamples: nonTriggeringExamples),
-                   ruleConfiguration: ["always_blanket_disable": ["identifier_name"], "allowed_rules": []],
-                   skipDisableCommandTests: true)
+        await verifyRule(
+            emptyDescription.with(nonTriggeringExamples: nonTriggeringExamples),
+            ruleConfiguration: ["always_blanket_disable": ["identifier_name"], "allowed_rules": []],
+            skipDisableCommandTests: true
+        )
     }
 
-    func testAllowedRules() {
+    func testAllowedRules() async {
         let nonTriggeringExamples = [
             Example("// swiftlint:disable file_length"),
             Example("// swiftlint:disable single_test_class"),
         ]
-        verifyRule(emptyDescription.with(nonTriggeringExamples: nonTriggeringExamples))
+        await verifyRule(emptyDescription.with(nonTriggeringExamples: nonTriggeringExamples))
     }
 }

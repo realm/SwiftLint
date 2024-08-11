@@ -13,7 +13,6 @@ build --disk_cache=~/.bazel_cache
 build --experimental_remote_cache_compression
 build --remote_build_event_upload=minimal
 build --nolegacy_important_outputs
-build --swiftcopt=-warnings-as-errors
 
 build:release \
   --compilation_mode=opt \

@@ -8,7 +8,7 @@ final class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
         XCTAssertEqual(rule.configuration.severity, .warning)
     }
 
-    func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() {
+    func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() async {
         let baseDescription = ImplicitlyUnwrappedOptionalRule.description
         let triggeringExamples = [
             Example("@IBOutlet private var label: UILabel!"),
@@ -20,11 +20,15 @@ final class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["mode": "all"],
-                   commentDoesntViolate: true, stringDoesntViolate: true)
+        await verifyRule(
+            description,
+            ruleConfiguration: ["mode": "all"],
+            commentDoesntViolate: true,
+            stringDoesntViolate: true
+        )
     }
 
-    func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInWeakMode() {
+    func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInWeakMode() async {
         let baseDescription = ImplicitlyUnwrappedOptionalRule.description
         let triggeringExamples = [
             Example("private weak var label: ↓UILabel!"),
@@ -43,6 +47,6 @@ final class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["mode": "weak_except_iboutlets"])
+        await verifyRule(description, ruleConfiguration: ["mode": "weak_except_iboutlets"])
     }
 }

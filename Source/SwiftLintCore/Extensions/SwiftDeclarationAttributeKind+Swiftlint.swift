@@ -10,7 +10,7 @@ public extension SwiftDeclarationAttributeKind {
         ]
     }
 
-    enum ModifierGroup: String, CustomDebugStringConvertible {
+    enum ModifierGroup: String, CustomDebugStringConvertible, Sendable {
         case `override`
         case acl
         case setterACL

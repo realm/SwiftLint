@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
 final class ColonRuleTests: SwiftLintTestCase {
-    func testColonWithFlexibleRightSpace() {
+    func testColonWithFlexibleRightSpace() async {
         // Verify Colon rule with test values for when flexible_right_spacing
         // is true.
         let nonTriggeringExamples = ColonRule.description.nonTriggeringExamples + [
@@ -64,10 +64,10 @@ final class ColonRuleTests: SwiftLintTestCase {
                                                .with(nonTriggeringExamples: nonTriggeringExamples)
                                                .with(corrections: corrections)
 
-        verifyRule(description, ruleConfiguration: ["flexible_right_spacing": true])
+        await verifyRule(description, ruleConfiguration: ["flexible_right_spacing": true])
     }
 
-    func testColonWithoutApplyToDictionaries() {
+    func testColonWithoutApplyToDictionaries() async {
         let nonTriggeringExamples = ColonRule.description.nonTriggeringExamples + [
             Example("let abc = [Void:Void]()\n"),
             Example("let abc = [Void : Void]()\n"),
@@ -129,6 +129,6 @@ final class ColonRuleTests: SwiftLintTestCase {
                                                .with(nonTriggeringExamples: nonTriggeringExamples)
                                                .with(corrections: corrections)
 
-        verifyRule(description, ruleConfiguration: ["apply_to_dictionaries": false])
+        await verifyRule(description, ruleConfiguration: ["apply_to_dictionaries": false])
     }
 }

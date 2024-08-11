@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
 final class ExplicitInitRuleTests: SwiftLintTestCase {
-    func testIncludeBareInit() {
+    func testIncludeBareInit() async {
         let nonTriggeringExamples = [
             Example("let foo = Foo()"),
             Example("let foo = init()"),
@@ -17,6 +17,6 @@ final class ExplicitInitRuleTests: SwiftLintTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["include_bare_init": true])
+        await verifyRule(description, ruleConfiguration: ["include_bare_init": true])
     }
 }

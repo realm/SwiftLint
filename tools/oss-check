@@ -97,15 +97,12 @@ def fail(str)
   exit
 end
 
-def perform(*args)
-  commands = args
-  if @options[:verbose]
-    commands.each do |x|
-      puts(x)
-      system(x)
-    end
+def perform(command, dir: nil)
+  puts command if @options[:verbose]
+  if dir
+    Dir.chdir(dir) { perform(command) }
   else
-    commands.each { |x| `#{x}` }
+    system(command)
   end
 end
 
@@ -208,24 +205,24 @@ def build(branch)
   dir = "#{@working_dir}/builds"
   target = branch == 'main' ? @effective_main_commitish : @options[:branch]
   if File.directory?(dir)
-    perform("cd #{dir}; git checkout #{target}")
+    perform("git checkout #{target}", dir: dir)
   else
     perform("git worktree add --detach #{dir} #{target}")
   end
 
-  build_command = "cd #{dir}; bazel build --config=release @SwiftLint//:swiftlint && mv bazel-bin/swiftlint swiftlint-#{branch}"
-
-  perform(build_command)
-  return if $?.success?
+  build_command = "bazel build --config=release @SwiftLint//:swiftlint"
 
   return_value = nil
   puts build_command if @options[:verbose]
-  Open3.popen3(build_command) do |_, stdout, _, wait_thr|
+  Open3.popen3(build_command, :chdir=>"#{dir}")  do |_, stdout, stderr, wait_thr|
     puts stdout.read.chomp
+    puts stderr.read.chomp
     return_value = wait_thr.value
   end
 
   fail "Could not build #{branch}" unless return_value.success?
+
+  perform("mv bazel-bin/swiftlint swiftlint-#{branch}", dir: dir)
 end
 
 def diff_and_report_changes_to_danger

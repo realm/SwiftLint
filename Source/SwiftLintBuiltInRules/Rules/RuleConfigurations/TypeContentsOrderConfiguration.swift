@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AcceptableByConfigurationElement
-enum TypeContent: String {
+enum TypeContent: String, Sendable {
     case `case` = "case"
     case typeAlias = "type_alias"
     case associatedType = "associated_type"

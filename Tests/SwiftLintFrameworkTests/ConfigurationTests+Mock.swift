@@ -64,21 +64,39 @@ internal extension ConfigurationTests {
 
         // MARK: Configurations
         enum Config {
-            static var _0: Configuration { Configuration(configurationFiles: []) }
-            static var _0Custom: Configuration { Configuration(configurationFiles: [Yml._0Custom]) }
-            static var _0CustomRules: Configuration { Configuration(configurationFiles: [Yml._0CustomRules]) }
-            static var _0CustomRulesOnly: Configuration { Configuration(configurationFiles: [Yml._0CustomRulesOnly]) }
-            static var _2: Configuration { Configuration(configurationFiles: [Yml._2]) }
-            static var _2CustomRules: Configuration { Configuration(configurationFiles: [Yml._2CustomRules]) }
-            static var _2CustomRulesOnly: Configuration { Configuration(configurationFiles: [Yml._2CustomRulesOnly]) }
+            static var _0: Configuration {
+                get async { await Configuration(configurationFiles: []) }
+            }
+            static var _0Custom: Configuration {
+                get async { await Configuration(configurationFiles: [Yml._0Custom]) }
+            }
+            static var _0CustomRules: Configuration {
+                get async { await Configuration(configurationFiles: [Yml._0CustomRules]) }
+            }
+            static var _0CustomRulesOnly: Configuration {
+                get async { await Configuration(configurationFiles: [Yml._0CustomRulesOnly]) }
+            }
+            static var _2: Configuration {
+                get async { await Configuration(configurationFiles: [Yml._2]) }
+            }
+            static var _2CustomRules: Configuration {
+                get async { await Configuration(configurationFiles: [Yml._2CustomRules]) }
+            }
+            static var _2CustomRulesOnly: Configuration {
+                get async { await Configuration(configurationFiles: [Yml._2CustomRulesOnly]) }
+            }
             static var _2CustomRulesDisabled: Configuration {
-                Configuration(configurationFiles: [Yml._2CustomRulesDisabled])
+                get async { await Configuration(configurationFiles: [Yml._2CustomRulesDisabled]) }
             }
             static var _2CustomRulesReconfig: Configuration {
-                Configuration(configurationFiles: [Yml._2CustomRulesReconfig])
+                get async { await Configuration(configurationFiles: [Yml._2CustomRulesReconfig]) }
             }
-            static var _3: Configuration { Configuration(configurationFiles: [Yml._3]) }
-            static var nested: Configuration { Configuration(configurationFiles: [Yml.nested]) }
+            static var _3: Configuration {
+                get async { await Configuration(configurationFiles: [Yml._3]) }
+            }
+            static var nested: Configuration {
+                get async { await Configuration(configurationFiles: [Yml.nested]) }
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ let swiftFeatures: [SwiftSetting] = [
     .enableUpcomingFeature("ForwardTrailingClosures"),
     .enableUpcomingFeature("ImplicitOpenExistentials"),
 ]
+let strictConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurrency")]
 
 let swiftLintPluginDependencies: [Target.Dependency]
 
@@ -55,7 +56,7 @@ let package = Package(
                 "SwiftLintFramework",
                 "SwiftyTextTable",
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
             name: "CLITests",
@@ -84,11 +85,12 @@ let package = Package(
         .target(
             name: "SwiftLintBuiltInRules",
             dependencies: ["SwiftLintCore"],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .target(
             name: "SwiftLintExtraRules",
-            dependencies: ["SwiftLintCore"]
+            dependencies: ["SwiftLintCore"],
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .target(
             name: "SwiftLintFramework",
@@ -100,7 +102,7 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "CollectionConcurrencyKit",
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .target(name: "DyldWarningWorkaround"),
         .target(
@@ -108,7 +110,8 @@ let package = Package(
             dependencies: [
                 "SwiftLintFramework"
             ],
-            path: "Tests/SwiftLintTestHelpers"
+            path: "Tests/SwiftLintTestHelpers",
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
             name: "SwiftLintFrameworkTests",
@@ -146,7 +149,8 @@ let package = Package(
             dependencies: [
                 "SwiftLintFramework",
                 "SwiftLintTestHelpers",
-            ]
+            ],
+            swiftSettings: swiftFeatures
         ),
         .macro(
             name: "SwiftLintCoreMacros",
@@ -155,7 +159,7 @@ let package = Package(
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
             ],
             path: "Source/SwiftLintCoreMacros",
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
             name: "MacroTests",

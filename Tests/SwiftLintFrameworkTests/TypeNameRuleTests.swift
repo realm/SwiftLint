@@ -1,7 +1,7 @@
 @testable import SwiftLintBuiltInRules
 
 final class TypeNameRuleTests: SwiftLintTestCase {
-    func testTypeNameWithExcluded() {
+    func testTypeNameWithExcluded() async {
         let baseDescription = TypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("class apple {}"),
@@ -14,10 +14,10 @@ final class TypeNameRuleTests: SwiftLintTestCase {
         ]
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
                                                triggeringExamples: triggeringExamples)
-        verifyRule(description, ruleConfiguration: ["excluded": ["apple", "some.*", ".*st\\d+.*"]])
+        await verifyRule(description, ruleConfiguration: ["excluded": ["apple", "some.*", ".*st\\d+.*"]])
     }
 
-    func testTypeNameWithAllowedSymbols() {
+    func testTypeNameWithAllowedSymbols() async {
         let baseDescription = TypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("class MyType$ {}"),
@@ -28,20 +28,20 @@ final class TypeNameRuleTests: SwiftLintTestCase {
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
-        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$"]])
+        await verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$"]])
     }
 
-    func testTypeNameWithAllowedSymbolsAndViolation() {
+    func testTypeNameWithAllowedSymbolsAndViolation() async {
         let baseDescription = TypeNameRule.description
         let triggeringExamples = [
             Example("class ↓My_Type$ {}")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
-        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+        await verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testTypeNameWithIgnoreStartWithLowercase() {
+    func testTypeNameWithIgnoreStartWithLowercase() async {
         let baseDescription = TypeNameRule.description
         let triggeringExamplesToRemove = [
             Example("private typealias ↓foo = Void"),
@@ -57,6 +57,6 @@ final class TypeNameRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
+        await verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
     }
 }

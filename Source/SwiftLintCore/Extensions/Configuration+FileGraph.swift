@@ -1,7 +1,7 @@
 import Foundation
 
 package extension Configuration {
-    struct FileGraph: Hashable {
+    struct FileGraph: Hashable, Sendable {
         // MARK: - Properties
         private static let defaultRemoteConfigTimeout: TimeInterval = 2
         private static let defaultRemoteConfigTimeoutIfCached: TimeInterval = 1
@@ -43,13 +43,13 @@ package extension Configuration {
             enableAllRules: Bool,
             onlyRule: String?,
             cachePath: String?
-        ) throws -> Configuration {
+        ) async throws -> Configuration {
             // Build if needed
             if !isBuilt {
                 try build()
             }
 
-            return try merged(
+            return try await merged(
                 configurationData: try validate(),
                 enableAllRules: enableAllRules,
                 onlyRule: onlyRule,
@@ -83,11 +83,10 @@ package extension Configuration {
             remoteConfigTimeoutOverride: TimeInterval? = nil,
             remoteConfigTimeoutIfCachedOverride: TimeInterval? = nil
         ) throws {
-            try vertex.build(
+            try vertex.adaptFromConfig(
                 remoteConfigTimeout: remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeout,
                 remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCachedOverride
-                    ?? remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeoutIfCached
-            )
+                    ?? remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeoutIfCached)
 
             if !ignoreParentAndChildConfigs {
                 try processPossibleReferenceIgnoringFileAbsence(
@@ -252,7 +251,7 @@ package extension Configuration {
             enableAllRules: Bool,
             onlyRule: String?,
             cachePath: String?
-        ) throws -> Configuration {
+        ) async throws -> Configuration {
             // Split into first & remainder; use empty dict for first if the array is empty
             let firstConfigurationData = configurationData.first ?? (configurationDict: [:], rootDirectory: "")
             let configurationData = Array(configurationData.dropFirst())
@@ -275,18 +274,21 @@ package extension Configuration {
             )
 
             // Build succeeding configurations
-            return try configurationData.reduce(firstConfiguration) {
+            for childConfigData in configurationData {
                 var childConfiguration = try Configuration(
-                    parentConfiguration: $0,
-                    dict: $1.configurationDict,
+                    parentConfiguration: firstConfiguration,
+                    dict: childConfigData.configurationDict,
                     enableAllRules: enableAllRules,
                     onlyRule: onlyRule,
                     cachePath: cachePath
                 )
-                childConfiguration.fileGraph = Self(rootDirectory: $1.rootDirectory)
-
-                return $0.merged(withChild: childConfiguration, rootDirectory: rootDirectory)
+                childConfiguration.fileGraph = Self(rootDirectory: childConfigData.rootDirectory)
+                firstConfiguration = firstConfiguration.merged(
+                    withChild: childConfiguration,
+                    rootDirectory: rootDirectory
+                )
             }
+            return firstConfiguration
         }
     }
 }

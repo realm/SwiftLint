@@ -4,8 +4,8 @@ import XCTest
 final class ExpiringTodoRuleTests: SwiftLintTestCase {
     private lazy var config: Configuration = makeConfiguration()
 
-    func testExpiringTodo() {
-        verifyRule(ExpiringTodoRule.description, commentDoesntViolate: false)
+    func testExpiringTodo() async {
+        await verifyRule(ExpiringTodoRule.description, commentDoesntViolate: false)
     }
 
     func testExpiredTodo() {

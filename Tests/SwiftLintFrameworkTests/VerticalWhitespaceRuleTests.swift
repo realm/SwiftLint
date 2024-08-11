@@ -4,18 +4,17 @@ import XCTest
 final class VerticalWhitespaceRuleTests: SwiftLintTestCase {
     private let ruleID = VerticalWhitespaceRule.description.identifier
 
-    func testAttributesWithMaxEmptyLines() {
+    func testAttributesWithMaxEmptyLines() async {
         // Test with custom `max_empty_lines`
         let maxEmptyLinesDescription = VerticalWhitespaceRule.description
             .with(nonTriggeringExamples: [Example("let aaaa = 0\n\n\n")])
             .with(triggeringExamples: [Example("struct AAAA {}\n\n\n\n")])
             .with(corrections: [:])
 
-        verifyRule(maxEmptyLinesDescription,
-                   ruleConfiguration: ["max_empty_lines": 2])
+        await verifyRule(maxEmptyLinesDescription, ruleConfiguration: ["max_empty_lines": 2])
     }
 
-    func testAutoCorrectionWithMaxEmptyLines() {
+    func testAutoCorrectionWithMaxEmptyLines() async {
         let maxEmptyLinesDescription = VerticalWhitespaceRule.description
             .with(nonTriggeringExamples: [])
             .with(triggeringExamples: [])
@@ -24,8 +23,7 @@ final class VerticalWhitespaceRuleTests: SwiftLintTestCase {
                 Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\n\nclass AAA {}\n"),
             ])
 
-        verifyRule(maxEmptyLinesDescription,
-                   ruleConfiguration: ["max_empty_lines": 2])
+        await verifyRule(maxEmptyLinesDescription, ruleConfiguration: ["max_empty_lines": 2])
     }
 
     func testViolationMessageWithMaxEmptyLines() {

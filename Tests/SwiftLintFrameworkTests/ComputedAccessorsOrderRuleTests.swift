@@ -2,7 +2,7 @@
 import XCTest
 
 final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
-    func testSetGetConfiguration() {
+    func testSetGetConfiguration() async {
         let nonTriggeringExamples = [
             Example("""
             class Foo {
@@ -36,10 +36,10 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["order": "set_get"])
+        await verifyRule(description, ruleConfiguration: ["order": "set_get"])
     }
 
-    func testGetSetPropertyReason() {
+    func testGetSetPropertyReason() async {
         let example = Example("""
         class Foo {
             var foo: Int {
@@ -59,7 +59,7 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testGetSetSubscriptReason() {
+    func testGetSetSubscriptReason() async {
         let example = Example("""
         class Foo {
             subscript(i: Int) -> Int {
@@ -79,7 +79,7 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testSetGetPropertyReason() {
+    func testSetGetPropertyReason() async {
         let example = Example("""
         class Foo {
             var foo: Int {

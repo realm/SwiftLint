@@ -3,7 +3,7 @@ import XCTest
 
 final class LineEndingTests: SwiftLintTestCase {
     func testCarriageReturnDoesNotCauseError() {
-        XCTAssert(
+        XCTAssertTrue(
             violations(
                 Example(
                     "// swiftlint:disable:next blanket_disable_command\r\n" +

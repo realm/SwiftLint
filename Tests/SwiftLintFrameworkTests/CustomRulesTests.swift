@@ -205,7 +205,7 @@ final class CustomRulesTests: SwiftLintTestCase {
 
     // MARK: - superfluous_disable_command support
 
-    func testCustomRulesSuperfluousDisableCommand() throws {
+    func testCustomRulesTriggersSuperfluousDisableCommand() throws {
         let customRuleIdentifier = "forbidden"
         let customRules: [String: Any] = [
             customRuleIdentifier: [
@@ -222,10 +222,10 @@ final class CustomRulesTests: SwiftLintTestCase {
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation())
-        XCTAssertEqual(violations[0].didNotTrigger(for: "custom_rules"), true)
+        XCTAssertTrue(violations[0].didNotTrigger(for: "custom_rules"))
     }
 
-    func testSpecificCustomRuleSuperfluousDisableCommand() throws {
+    func testSpecificCustomRuleTriggersSuperfluousDisableCommand() throws {
         let customRuleIdentifier = "forbidden"
         let customRules: [String: Any] = [
             customRuleIdentifier: [
@@ -241,7 +241,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let violations = try violations(forExample: example, customRules: customRules)
         XCTAssertEqual(violations.count, 1)
         XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation())
-        XCTAssertEqual(violations[0].didNotTrigger(for: customRuleIdentifier), true)
+        XCTAssertTrue(violations[0].didNotTrigger(for: customRuleIdentifier))
     }
 
     func testSpecificAndCustomRulesSuperfluousDisableCommand() throws {
@@ -260,11 +260,10 @@ final class CustomRulesTests: SwiftLintTestCase {
         let violations = try violations(forExample: example, customRules: customRules)
 
         XCTAssertEqual(violations.count, 2)
-        let (firstViolation, secondViolation) = (violations[0], violations[1])
-        XCTAssertTrue(firstViolation.isSuperfluousDisableCommandViolation())
-        XCTAssertTrue(firstViolation.didNotTrigger(for: "custom_rules"))
-        XCTAssertTrue(secondViolation.isSuperfluousDisableCommandViolation())
-        XCTAssertTrue(secondViolation.didNotTrigger(for: "\(customRuleIdentifier)"))
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation())
+        XCTAssertTrue(violations[0].didNotTrigger(for: "custom_rules"))
+        XCTAssertTrue(violations[1].isSuperfluousDisableCommandViolation())
+        XCTAssertTrue(violations[1].didNotTrigger(for: "\(customRuleIdentifier)"))
     }
 
     func testSuperfluousDisableCommandAndViolationWithCustomRules() throws {
@@ -284,10 +283,9 @@ final class CustomRulesTests: SwiftLintTestCase {
         let violations = try violations(forExample: example, customRules: customRules)
 
         XCTAssertEqual(violations.count, 2)
-        let (firstViolation, secondViolation) = (violations[0], violations[1])
-        XCTAssertEqual(firstViolation.ruleIdentifier, customRuleIdentifier)
-        XCTAssertTrue(secondViolation.isSuperfluousDisableCommandViolation())
-        XCTAssertTrue(secondViolation.didNotTrigger(for: customRuleIdentifier))
+        XCTAssertEqual(violations[0].ruleIdentifier, customRuleIdentifier)
+        XCTAssertTrue(violations[1].isSuperfluousDisableCommandViolation())
+        XCTAssertTrue(violations[1].didNotTrigger(for: customRuleIdentifier))
     }
 
     func testDisablingCustomRules() throws {
@@ -386,12 +384,11 @@ final class CustomRulesTests: SwiftLintTestCase {
         let violations = try violations(forExample: example, customRules: customRules)
 
         XCTAssertEqual(violations.count, 3)
-        let (firstViolation, secondViolation, thirdViolation) = (violations[0], violations[1], violations[2])
-        XCTAssertEqual(firstViolation.ruleIdentifier, "custom2")
-        XCTAssertTrue(secondViolation.isSuperfluousDisableCommandViolation())
-        XCTAssertTrue(secondViolation.didNotTrigger(for: "custom1"))
-        XCTAssertTrue(thirdViolation.isSuperfluousDisableCommandViolation())
-        XCTAssertTrue(thirdViolation.didNotTrigger(for: "custom3"))
+        XCTAssertEqual(violations[0].ruleIdentifier, "custom2")
+        XCTAssertTrue(violations[1].isSuperfluousDisableCommandViolation())
+        XCTAssertTrue(violations[1].didNotTrigger(for: "custom1"))
+        XCTAssertTrue(violations[2].isSuperfluousDisableCommandViolation())
+        XCTAssertTrue(violations[2].didNotTrigger(for: "custom3"))
     }
 
     func testSuperfluousDisableCommandDoesNotViolate() throws {

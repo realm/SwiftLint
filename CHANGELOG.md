@@ -63,6 +63,11 @@
 * Check `if` expressions nested arbitrarily deep in `contrasted_opening_brace` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5752](https://github.com/realm/SwiftLint/issues/5752)
+* `superfluous_disable_command` violations are now triggered for
+  custom rules.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4754](https://github.com/realm/SwiftLint/issues/4754)
 
 * Align left closure brace with associated parent function call in `contrasted_opening_brace` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

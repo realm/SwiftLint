@@ -35,7 +35,7 @@ private extension OpeningBraceRule {
                 return
             }
 
-            collectViolations(for: node.memberBlock)
+            super.visitPost(node)
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
@@ -46,7 +46,7 @@ private extension OpeningBraceRule {
                 return
             }
 
-            collectViolations(for: node.memberBlock)
+            super.visitPost(node)
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
@@ -57,7 +57,7 @@ private extension OpeningBraceRule {
                 return
             }
 
-            collectViolations(for: node.memberBlock)
+            super.visitPost(node)
         }
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
@@ -68,7 +68,7 @@ private extension OpeningBraceRule {
                 return
             }
 
-            collectViolations(for: node.memberBlock)
+            super.visitPost(node)
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
@@ -79,7 +79,7 @@ private extension OpeningBraceRule {
                 return
             }
 
-            collectViolations(for: node.memberBlock)
+            super.visitPost(node)
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
@@ -90,8 +90,44 @@ private extension OpeningBraceRule {
                 return
             }
 
-            collectViolations(for: node.memberBlock)
+            super.visitPost(node)
         }
+
+        // MARK: - Conditional Statements
+
+        override func visitPost(_ node: ForStmtSyntax) {
+            if
+                configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.forKeyword)
+            {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: IfExprSyntax) {
+            if
+                configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.ifKeyword)
+            {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: WhileStmtSyntax) {
+            if
+                configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.whileKeyword)
+            {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
 
         // MARK: - Functions and Initializers
 
@@ -102,7 +138,7 @@ private extension OpeningBraceRule {
             if configuration.allowMultilineFunc, hasMultilinePredecessors(body, keyword: node.funcKeyword) {
                 return
             }
-            collectViolations(for: body)
+            super.visitPost(node)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
@@ -112,7 +148,7 @@ private extension OpeningBraceRule {
             if configuration.allowMultilineFunc, hasMultilinePredecessors(body, keyword: node.initKeyword) {
                 return
             }
-            collectViolations(for: body)
+            super.visitPost(node)
         }
 
         // MARK: - Auxiliar

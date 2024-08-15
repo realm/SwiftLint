@@ -124,6 +124,58 @@ final class OpeningBraceRuleTests: SwiftLintTestCase {
 
         verifyRule(description, ruleConfiguration: ["ignore_multiline_type_headers": true])
     }
+
+    func testWithIgnoreMultilineStatementConditionsTrue() {
+        let nonTriggeringExamples = [
+            Example("""
+                while
+                    abc
+                {}
+                """),
+            Example("""
+                if x {
+
+                } else if 
+                    y,
+                    z
+                {
+
+                }
+                """),
+            Example("""
+                if
+                    condition1,
+                    let var1 = var1
+                {}
+                """)
+        ]
+
+        let triggeringExamples = [
+            Example("""
+                if x
+                {}
+                """),
+            Example("""
+                if x {
+
+                } else if y, z
+                {}
+                """),
+            Example("""
+                if x {
+
+                } else
+                {}
+                """),
+        ]
+
+        let description = OpeningBraceRule.description
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
+            .with(corrections: [:])
+
+        verifyRule(description, ruleConfiguration: ["ignore_multiline_statement_conditions": true])
+    }
 }
 
 private extension Array where Element == Example {

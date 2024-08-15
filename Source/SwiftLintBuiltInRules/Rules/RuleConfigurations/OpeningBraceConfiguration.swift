@@ -10,4 +10,6 @@ struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration {
     private(set) var allowMultilineFunc = false
     @ConfigurationElement(key: "ignore_multiline_type_headers")
     private(set) var ignoreMultilineTypeHeaders = false
+    @ConfigurationElement(key: "ignore_multiline_statement_conditions")
+    private(set) var ignoreMultilineStatementConditions = false
 }

@@ -89,6 +89,41 @@ final class OpeningBraceRuleTests: SwiftLintTestCase {
 
         verifyRule(description, ruleConfiguration: ["allow_multiline_func": true])
     }
+
+    func testWithIgnoreMultilineTypeHeadersTrue() {
+        let nonTriggeringExamples = [
+            Example("""
+                extension A
+                    where B: Equatable
+                {}
+                """),
+            Example("""
+                struct S {
+                    init() {}
+                }
+                """),
+        ]
+
+        let triggeringExamples = [
+            Example("""
+                struct S
+                ↓{}
+                """),
+            Example("""
+                extension A where B: Equatable
+                ↓{
+
+                }
+                """),
+        ]
+
+        let description = OpeningBraceRule.description
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
+            .with(corrections: [:])
+
+        verifyRule(description, ruleConfiguration: ["ignore_multiline_type_headers": true])
+    }
 }
 
 private extension Array where Element == Example {

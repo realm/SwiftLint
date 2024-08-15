@@ -25,11 +25,81 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
 
 private extension OpeningBraceRule {
     final class Visitor: CodeBlockVisitor<ConfigurationType> {
+        // MARK: - Type Declarations
+
+        override func visitPost(_ node: ActorDeclSyntax) {
+            if
+                configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.actorKeyword)
+            {
+                return
+            }
+
+            collectViolations(for: node.memberBlock)
+        }
+
+        override func visitPost(_ node: ClassDeclSyntax) {
+            if
+                configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.classKeyword)
+            {
+                return
+            }
+
+            collectViolations(for: node.memberBlock)
+        }
+
+        override func visitPost(_ node: EnumDeclSyntax) {
+            if
+                configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.enumKeyword)
+            {
+                return
+            }
+
+            collectViolations(for: node.memberBlock)
+        }
+
+        override func visitPost(_ node: ExtensionDeclSyntax) {
+            if
+                configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.extensionKeyword)
+            {
+                return
+            }
+
+            collectViolations(for: node.memberBlock)
+        }
+
+        override func visitPost(_ node: ProtocolDeclSyntax) {
+            if
+                configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.protocolKeyword)
+            {
+                return
+            }
+
+            collectViolations(for: node.memberBlock)
+        }
+
+        override func visitPost(_ node: StructDeclSyntax) {
+            if
+                configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.structKeyword)
+            {
+                return
+            }
+
+            collectViolations(for: node.memberBlock)
+        }
+
+        // MARK: - Functions and Initializers
+
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard let body = node.body else {
                 return
             }
-            if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.funcKeyword) {
+            if configuration.allowMultilineFunc, hasMultilinePredecessors(body, keyword: node.funcKeyword) {
                 return
             }
             collectViolations(for: body)
@@ -39,17 +109,19 @@ private extension OpeningBraceRule {
             guard let body = node.body else {
                 return
             }
-            if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.initKeyword) {
+            if configuration.allowMultilineFunc, hasMultilinePredecessors(body, keyword: node.initKeyword) {
                 return
             }
             collectViolations(for: body)
         }
 
-        private func refersToMultilineFunction(_ body: CodeBlockSyntax, functionIndicator: TokenSyntax) -> Bool {
+        // MARK: - Auxiliar
+
+        private func hasMultilinePredecessors(_ body: some BracedSyntax, keyword: TokenSyntax) -> Bool {
             guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
                 return false
             }
-            let startLocation = functionIndicator.endLocation(converter: locationConverter)
+            let startLocation = keyword.endLocation(converter: locationConverter)
             let endLocation = endToken.endLocation(converter: locationConverter)
             let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
             return startLocation.line != endLocation.line && endLocation.line != braceLocation.line

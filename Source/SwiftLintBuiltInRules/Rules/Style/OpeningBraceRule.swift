@@ -28,10 +28,8 @@ private extension OpeningBraceRule {
         // MARK: - Type Declarations
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            if
-                configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.actorKeyword)
-            {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.actorKeyword) {
                 return
             }
 
@@ -39,10 +37,8 @@ private extension OpeningBraceRule {
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            if
-                configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.classKeyword)
-            {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.classKeyword) {
                 return
             }
 
@@ -50,10 +46,8 @@ private extension OpeningBraceRule {
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            if
-                configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.enumKeyword)
-            {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.enumKeyword) {
                 return
             }
 
@@ -61,10 +55,8 @@ private extension OpeningBraceRule {
         }
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
-            if
-                configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.extensionKeyword)
-            {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.extensionKeyword) {
                 return
             }
 
@@ -72,10 +64,8 @@ private extension OpeningBraceRule {
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
-            if
-                configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.protocolKeyword)
-            {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.protocolKeyword) {
                 return
             }
 
@@ -83,10 +73,8 @@ private extension OpeningBraceRule {
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            if
-                configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.structKeyword)
-            {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.structKeyword) {
                 return
             }
 
@@ -96,10 +84,8 @@ private extension OpeningBraceRule {
         // MARK: - Conditional Statements
 
         override func visitPost(_ node: ForStmtSyntax) {
-            if
-                configuration.ignoreMultilineStatementConditions,
-                hasMultilinePredecessors(node.body, keyword: node.forKeyword)
-            {
+            if configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.forKeyword) {
                 return
             }
 
@@ -107,10 +93,8 @@ private extension OpeningBraceRule {
         }
 
         override func visitPost(_ node: IfExprSyntax) {
-            if
-                configuration.ignoreMultilineStatementConditions,
-                hasMultilinePredecessors(node.body, keyword: node.ifKeyword)
-            {
+            if configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.ifKeyword) {
                 return
             }
 
@@ -118,41 +102,41 @@ private extension OpeningBraceRule {
         }
 
         override func visitPost(_ node: WhileStmtSyntax) {
-            if
-                configuration.ignoreMultilineStatementConditions,
-                hasMultilinePredecessors(node.body, keyword: node.whileKeyword)
-            {
+            if configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.whileKeyword) {
                 return
             }
 
             super.visitPost(node)
         }
-
 
         // MARK: - Functions and Initializers
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard let body = node.body else {
+            if let body = node.body,
+                configuration.shouldIgnoreMultilineFunctionSignatures,
+                hasMultilinePredecessors(body, keyword: node.funcKeyword) {
                 return
             }
-            if configuration.allowMultilineFunc, hasMultilinePredecessors(body, keyword: node.funcKeyword) {
-                return
-            }
+
             super.visitPost(node)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            guard let body = node.body else {
+            if let body = node.body,
+                configuration.shouldIgnoreMultilineFunctionSignatures,
+                hasMultilinePredecessors(body, keyword: node.initKeyword) {
                 return
             }
-            if configuration.allowMultilineFunc, hasMultilinePredecessors(body, keyword: node.initKeyword) {
-                return
-            }
+
             super.visitPost(node)
         }
 
-        // MARK: - Auxiliar
+        // MARK: - Other Methods
 
+        /// Checks if a `BracedSyntax` has a multiline predecessor.
+        /// For type declarations, the predecessor is the header. For conditional statements,
+        /// it is the condition list, and for functions, it is the signature.
         private func hasMultilinePredecessors(_ body: some BracedSyntax, keyword: TokenSyntax) -> Bool {
             guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
                 return false

@@ -12,7 +12,12 @@
 
 #### Enhancements
 
-* None.
+* Add `ignore_multiline_type_headers` and `ignore_multiline_statement_conditions`
+  options to `opening_brace` rule to allow opening braces to be on a new line after
+  multiline type headers or statement conditions. Rename `allow_multiline_func` to
+  `ignore_multiline_function_signatures`.  
+  [leonardosrodrigues0](https://github.com/leonardosrodrigues0)
+  [#3720](https://github.com/realm/SwiftLint/issues/3720)
 
 #### Bug Fixes
 

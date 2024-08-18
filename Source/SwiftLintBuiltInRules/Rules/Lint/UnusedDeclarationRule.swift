@@ -121,6 +121,20 @@ private extension SwiftLintFile {
                      editorOpen: SourceKittenDictionary,
                      compilerArguments: [String],
                      configuration: UnusedDeclarationConfiguration) -> UnusedDeclarationRule.DeclaredUSR? {
+        // Skip initializers, deinit, enum cases and subscripts since we can't reliably detect if they're used.
+        let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
+            .enumelement,
+            .extensionProtocol,
+            .extension,
+            .extensionEnum,
+            .extensionClass,
+            .extensionStruct,
+            .functionConstructor,
+            .functionDestructor,
+            .functionSubscript,
+            .genericTypeParam,
+        ]
+
         guard let stringKind = indexEntity.kind,
               stringKind.starts(with: "source.lang.swift.decl."),
               !stringKind.contains(".accessor."),
@@ -196,6 +210,14 @@ private extension SwiftLintFile {
     }
 
     private func shouldIgnoreEntity(_ indexEntity: SourceKittenDictionary, relatedUSRsToSkip: Set<String>) -> Bool {
+        let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
+            .ibaction,
+            .main,
+            .nsApplicationMain,
+            .override,
+            .uiApplicationMain,
+        ]
+
         if indexEntity.shouldSkipIndexEntityToWorkAroundSR11985() ||
             indexEntity.shouldSkipRelated(relatedUSRsToSkip: relatedUSRsToSkip) ||
             indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
@@ -321,25 +343,3 @@ private extension SourceKittenDictionary {
         return nil
     }
 }
-
-// Skip initializers, deinit, enum cases and subscripts since we can't reliably detect if they're used.
-private let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
-    .enumelement,
-    .extensionProtocol,
-    .extension,
-    .extensionEnum,
-    .extensionClass,
-    .extensionStruct,
-    .functionConstructor,
-    .functionDestructor,
-    .functionSubscript,
-    .genericTypeParam,
-]
-
-private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
-    .ibaction,
-    .main,
-    .nsApplicationMain,
-    .override,
-    .uiApplicationMain,
-]

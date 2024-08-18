@@ -15,6 +15,15 @@ jobs:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
 
+- job: macOS13
+  pool:
+    vmImage: 'macOS-13'
+  strategy:
+    maxParallel: 10
+  steps:
+    - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
+      displayName: swift test
+
 # TODO: Re-enable when FB11648454 is fixed
 # - job: Xcode
 #   pool:
@@ -44,7 +53,7 @@ jobs:
     - script: bundle exec pod lib lint --platforms=macos --verbose
       displayName: pod lib lint
 
-- job: jazzy
+- job: Jazzy
   pool:
     vmImage: 'macOS-14'
   variables:

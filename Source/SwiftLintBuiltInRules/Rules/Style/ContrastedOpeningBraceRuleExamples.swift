@@ -104,6 +104,18 @@ struct ContrastedOpeningBraceRuleExamples {
                 return
             }
         """),
+        Example("""
+            if c1
+            {
+              return
+            } else if c2
+            {
+              return
+            } else if c3
+            {
+              return
+            }
+            """),
     ]
 
     static let triggeringExamples = [
@@ -191,6 +203,16 @@ struct ContrastedOpeningBraceRuleExamples {
             if c
               ↓{
                 // code here
+            }
+            """),
+        Example("""
+            if c1 ↓{
+              return
+            } else if c2↓{
+              return
+            } else if c3
+             ↓{
+              return
             }
             """),
     ]

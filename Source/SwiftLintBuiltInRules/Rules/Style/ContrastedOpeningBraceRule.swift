@@ -72,12 +72,21 @@ private extension BracedSyntax {
         if let catchClause = parent?.as(CatchClauseSyntax.self) {
             return catchClause.parent?.as(CatchClauseListSyntax.self)?.parent?.as(DoStmtSyntax.self)
         }
-        if parent?.as(IfExprSyntax.self)?.keyPathInParent == \IfExprSyntax.elseBody {
-            return parent?.parent
+        if let ifExpr = parent?.as(IfExprSyntax.self) {
+            return ifExpr.indentationDecidingParent
         }
         if let binding = parent?.as(PatternBindingSyntax.self) {
             return binding.parent?.as(PatternBindingListSyntax.self)?.parent?.as(VariableDeclSyntax.self)
         }
         return parent
+    }
+}
+
+private extension IfExprSyntax {
+    var indentationDecidingParent: any SyntaxProtocol {
+        if keyPathInParent == \IfExprSyntax.elseBody, let parent = parent?.as(IfExprSyntax.self) {
+            return parent.indentationDecidingParent
+        }
+        return self
     }
 }

@@ -18,6 +18,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5153](https://github.com/realm/SwiftLint/issues/5153)
 
+* Check `if` expressions nested arbitrarily deep in `contrasted_opening_brace` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5752](https://github.com/realm/SwiftLint/issues/5752)
+
 ## 0.56.1: Heat Pump Dryer
 
 #### Breaking

@@ -901,6 +901,12 @@ final class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class PreferTypeCheckingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferTypeCheckingRule.description)
+    }
+}
+
 final class PreferZeroOverExplicitInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferZeroOverExplicitInitRule.description)
@@ -1240,12 +1246,6 @@ final class TrailingWhitespaceRuleGeneratedTests: SwiftLintTestCase {
 final class TypeBodyLengthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeBodyLengthRule.description)
-    }
-}
-
-final class TypeCheckingUsingIsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TypeCheckingUsingIsRule.description)
     }
 }
 

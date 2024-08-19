@@ -2,63 +2,57 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule(explicitRewriter: true)
-struct TypeCheckingUsingIsRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.error)
+struct PreferTypeCheckingRule: Rule {
+    var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
-        identifier: "type_checking_using_is",
-        name: "Type checking using is",
-        description: "Type checking using is should be preferred",
+        identifier: "prefer_type_checking",
+        name: "Prefer Type Checking",
+        description: "Prefer `a is X` to `a as? X != nil`",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("let dog = dog as? Dog"),
-            Example("nonTriggering is Example"),
+            Example("let foo = bar as? Foo"),
+            Example("bar is Foo"),
             Example("""
-            if a is Dog {
+            if foo is Bar {
                 doSomeThing()
             }
             """),
             Example("""
-            if let dog = dog as? Dog {
-                dog.run()
+            if let bar = foo as? Bar {
+                foo.run()
             }
-            """)
+            """),
         ],
         triggeringExamples: [
-            Example("triggering ↓as? Example != nil"),
+            Example("bar ↓as? Foo != nil"),
             Example("""
-            if a ↓as? Dog != nil {
+            if foo ↓as? Bar != nil {
                 doSomeThing()
             }
-            """)
+            """),
         ],
         corrections: [
-            Example("triggering ↓as? Example != nil"): Example("triggering is Example"),
+            Example("bar ↓as? Foo != nil"): Example("bar is Foo"),
             Example("""
-            if a ↓as? Dog != nil {
+            if foo ↓as? Bar != nil {
                 doSomeThing()
             }
             """): Example("""
-            if a is Dog {
+            if foo is Bar {
                 doSomeThing()
             }
-            """)
+            """),
         ]
     )
 }
 
-private extension TypeCheckingUsingIsRule {
+private extension PreferTypeCheckingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: ExprListSyntax) {
-            guard
-                node.castsTypeAndChecksForNil,
-                let unresolvedAsExpr = node.dropFirst().first,
-                unresolvedAsExpr.is(UnresolvedAsExprSyntax.self) == true
-            else {
-               return
+        override func visitPost(_ node: UnresolvedAsExprSyntax) {
+            if node.questionOrExclamationMark?.tokenKind == .postfixQuestionMark, node.isBeingComparedToNotNil() {
+                violations.append(node.asKeyword.positionAfterSkippingLeadingTrivia)
             }
-
-            violations.append(unresolvedAsExpr.positionAfterSkippingLeadingTrivia)
         }
     }
 
@@ -84,6 +78,16 @@ private extension TypeCheckingUsingIsRule {
                 .with(\.trailingTrivia, node.trailingTrivia)
             return super.visit(newNode)
         }
+    }
+}
+
+private extension ExprSyntaxProtocol {
+    func isBeingComparedToNotNil() -> Bool {
+        guard let parent = parent?.as(ExprListSyntax.self),
+              let last = parent.last, last.is(NilLiteralExprSyntax.self) else {
+            return false
+        }
+        return parent.dropLast().last?.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("!=")
     }
 }
 

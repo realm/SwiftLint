@@ -408,6 +408,8 @@ prefer_self_in_static_references:
   severity: warning
 prefer_self_type_over_type_of_self:
   severity: warning
+prefer_type_checking:
+  severity: warning
 prefer_zero_over_explicit_init:
   severity: warning
 prefixed_toplevel_constant:
@@ -553,8 +555,6 @@ trailing_whitespace:
 type_body_length:
   warning: 250
   error: 350
-type_checking_using_is:
-  severity: error
 type_contents_order:
   severity: warning
   order: [[case], [type_alias, associated_type], [subtype], [type_property], [instance_property], [ib_inspectable], [ib_outlet], [initializer], [type_method], [view_life_cycle_method], [ib_action], [other_method], [subscript], [deinitializer]]

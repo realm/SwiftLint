@@ -432,7 +432,7 @@
   `let s: String = ""` as redundant.  
   [Garric Nahapetian](https://github.com/garricn)
 
-* Add new `type_checking_using_is` rule that triggers when a type is checked by casting and checking for `nil`.  
+* Add new `prefer_type_checking` rule to prefer `a is X` over `a as? X != nil`.  
   [ikelax](https://github.com/ikelax)
   [#5295](https://github.com/realm/SwiftLint/issues/5295)
 

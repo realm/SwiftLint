@@ -59,7 +59,7 @@ private extension PreferTypeCheckingRule {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ExprListSyntax) -> ExprListSyntax {
             guard
-                node.castsTypeAndChecksForNil,
+                node.unresolvedAsExprIsBeingComparedToNotNil,
                 let unresolvedAsExpr = node.dropFirst().first,
                 let indexUnresolvedAsExpr = node.index(of: unresolvedAsExpr),
                 let typeExpr = node.dropFirst(2).first
@@ -92,14 +92,10 @@ private extension ExprSyntaxProtocol {
 }
 
 private extension ExprListSyntax {
-    var castsTypeAndChecksForNil: Bool {
+    var unresolvedAsExprIsBeingComparedToNotNil: Bool {
         guard
-            count == 5,
-            first?.is(DeclReferenceExprSyntax.self) == true,
-            dropFirst().first?.is(UnresolvedAsExprSyntax.self) == true,
-            let binaryOperator = dropFirst(3).first?.as(BinaryOperatorExprSyntax.self),
-            binaryOperator.operator.tokenKind == .binaryOperator("!="),
-            last?.is(NilLiteralExprSyntax.self) == true
+            let node = dropFirst().first?.as(UnresolvedAsExprSyntax.self),
+            node.questionOrExclamationMark?.tokenKind == .postfixQuestionMark, node.isBeingComparedToNotNil()
         else {
             return false
         }

@@ -78,6 +78,18 @@ private extension BracedSyntax {
         if let binding = parent?.as(PatternBindingSyntax.self) {
             return binding.parent?.as(PatternBindingListSyntax.self)?.parent?.as(VariableDeclSyntax.self)
         }
+        if let closure = `as`(ClosureExprSyntax.self),
+           closure.keyPathInParent == \FunctionCallExprSyntax.trailingClosure {
+           var indentationDecidingToken = closure.leftBrace
+            repeat {
+                if let previousToken = indentationDecidingToken.previousToken(viewMode: .sourceAccurate) {
+                    indentationDecidingToken = previousToken
+                } else {
+                    break
+                }
+            } while indentationDecidingToken.leadingTrivia.containsNewlines() == false
+            return indentationDecidingToken
+        }
         return parent
     }
 }

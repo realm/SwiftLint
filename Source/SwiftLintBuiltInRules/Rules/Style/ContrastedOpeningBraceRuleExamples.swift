@@ -116,6 +116,12 @@ struct ContrastedOpeningBraceRuleExamples {
               return
             }
             """),
+        Example("""
+            let a = f.map
+            { a in
+                a
+            }
+            """),
     ]
 
     static let triggeringExamples = [
@@ -213,6 +219,13 @@ struct ContrastedOpeningBraceRuleExamples {
             } else if c3
              ↓{
               return
+            }
+            """),
+        Example("""
+            func f()
+            {
+                return a.map
+                        ↓{ $0 }
             }
             """),
     ]
@@ -433,6 +446,15 @@ struct ContrastedOpeningBraceRuleExamples {
                 {
                     // nothing
                 }
+                """),
+        Example("""
+            a.b { $0 }
+             .c { $1 }
+            """): Example("""
+                a.b
+                { $0 }
+                 .c
+                 { $1 }
                 """),
     ]
 }

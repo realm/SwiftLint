@@ -62,7 +62,7 @@ struct PrivateUnitTestRule: Rule {
                 private func atest() {}
                 private static func test3() {}
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -96,7 +96,7 @@ struct PrivateUnitTestRule: Rule {
                 public func test3() {}
                 private ↓func test4() {}
             }
-            """)
+            """),
         ],
         corrections: [
             Example("""
@@ -122,7 +122,7 @@ struct PrivateUnitTestRule: Rule {
                         @objc private func test3() {}
                         internal func test4() {}
                     }
-                    """)
+                    """),
         ]
     )
 }

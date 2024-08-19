@@ -25,7 +25,7 @@ private let legacyObjcTypes = [
     "NSURLComponents",
     "NSURLQueryItem",
     "NSURLRequest",
-    "NSUUID"
+    "NSUUID",
 ]
 
 @SwiftSyntaxRule
@@ -43,7 +43,7 @@ struct LegacyObjcTypeRule: OptInRule {
             Example("var formatter: NSDataDetector"),
             Example("var className: String = NSStringFromClass(MyClass.self)"),
             Example("_ = URLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
-            Example(#"_ = Notification.Name("com.apple.Music.playerInfo")"#)
+            Example(#"_ = Notification.Name("com.apple.Music.playerInfo")"#),
         ],
         triggeringExamples: [
             Example("var array = ↓NSArray()"),
@@ -63,7 +63,7 @@ struct LegacyObjcTypeRule: OptInRule {
                     return Foundation.Notification.Name("org.wordpress.reachability.changed")
                 }
             }
-            """)
+            """),
         ]
     )
 }

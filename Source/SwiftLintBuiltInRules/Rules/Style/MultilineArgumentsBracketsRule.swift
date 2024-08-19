@@ -99,7 +99,7 @@ struct MultilineArgumentsBracketsRule: OptInRule {
             SomeType(
               a: 1
             ) {} onError: {}
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -153,7 +153,7 @@ struct MultilineArgumentsBracketsRule: OptInRule {
                 title: "MacBook", subtitle: "M1", action: { [weak self] in
                 print("action tapped")
             }↓))
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ]
     )
 }

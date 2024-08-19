@@ -1,7 +1,7 @@
 package struct SuperfluousDisableCommandRule: SourceKitFreeRule {
     package var configuration = SeverityConfiguration<Self>(.warning)
 
-    package init() {}
+    package init() { /* Make initializer as accessible as its type. */ }
 
     package static let description = RuleDescription(
         identifier: "superfluous_disable_command",
@@ -17,7 +17,7 @@ package struct SuperfluousDisableCommandRule: SourceKitFreeRule {
                 // swiftlint:disable colon
                 let abc:Void
                 // swiftlint:enable colon
-                """)
+                """),
         ],
         triggeringExamples: [
             Example("let abc: Void // swiftlint:disable:this colon"),
@@ -25,13 +25,13 @@ package struct SuperfluousDisableCommandRule: SourceKitFreeRule {
                 // swiftlint:disable colon
                 let abc: Void
                 // swiftlint:enable colon
-                """)
+                """),
         ]
     )
 
-    package func validate(file: SwiftLintFile) -> [StyleViolation] {
+    package func validate(file _: SwiftLintFile) -> [StyleViolation] {
         // This rule is implemented in Linter.swift
-        return []
+        []
     }
 
     func reason(for rule: (some Rule).Type) -> String {
@@ -42,6 +42,6 @@ package struct SuperfluousDisableCommandRule: SourceKitFreeRule {
     }
 
     func reason(forNonExistentRule rule: String) -> String {
-        return "'\(rule)' is not a valid SwiftLint rule; remove it from the disable command"
+        "'\(rule)' is not a valid SwiftLint rule; remove it from the disable command"
     }
 }

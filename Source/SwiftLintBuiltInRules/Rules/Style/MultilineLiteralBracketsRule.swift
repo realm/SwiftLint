@@ -46,7 +46,7 @@ struct MultilineLiteralBracketsRule: OptInRule {
                     5, 6,
                     7, 8, 9
                 ]
-            """)
+                """),
         ],
         triggeringExamples: [
             Example("""
@@ -92,13 +92,13 @@ struct MultilineLiteralBracketsRule: OptInRule {
                     4,
                     5, 6,
                     7, 8, 9↓]
-            """),
+                """),
             Example("""
                 _ = [↓1, 2, 3,
                      4, 5, 6,
                      7, 8, 9
                 ]
-            """),
+                """),
             Example("""
             class Hogwarts {
                 let houseCup = [
@@ -107,7 +107,7 @@ struct MultilineLiteralBracketsRule: OptInRule {
                         $0.isValid
                     }.sum()↓]
             }
-            """)
+            """),
         ]
     )
 }

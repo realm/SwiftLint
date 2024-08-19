@@ -61,7 +61,7 @@ struct UnusedSetterValueRule: Rule {
                 }
                 set {}
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -124,7 +124,7 @@ struct UnusedSetterValueRule: Rule {
                     Persister.shared.aValue = aValue
                 }
             }
-            """)
+            """),
         ]
     )
 }

@@ -13,7 +13,7 @@ struct EmptyCollectionLiteralRule: OptInRule {
             Example("myArray = []"),
             Example("myArray.isEmpty"),
             Example("!myArray.isEmpty"),
-            Example("myDict = [:]")
+            Example("myDict = [:]"),
         ],
         triggeringExamples: [
             Example("myArray↓ == []"),
@@ -23,7 +23,7 @@ struct EmptyCollectionLiteralRule: OptInRule {
             Example("myDict↓ != [:]"),
             Example("myDict↓ == [: ]"),
             Example("myDict↓ == [ :]"),
-            Example("myDict↓ == [ : ]")
+            Example("myDict↓ == [ : ]"),
         ]
     )
 }

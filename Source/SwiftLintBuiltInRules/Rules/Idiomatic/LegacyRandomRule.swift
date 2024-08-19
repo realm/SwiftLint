@@ -12,12 +12,12 @@ struct LegacyRandomRule: Rule {
         nonTriggeringExamples: [
             Example("Int.random(in: 0..<10)"),
             Example("Double.random(in: 8.6...111.34)"),
-            Example("Float.random(in: 0 ..< 1)")
+            Example("Float.random(in: 0 ..< 1)"),
         ],
         triggeringExamples: [
             Example("↓arc4random()"),
             Example("↓arc4random_uniform(83)"),
-            Example("↓drand48()")
+            Example("↓drand48()"),
         ]
     )
 }
@@ -27,7 +27,7 @@ private extension LegacyRandomRule {
         private static let legacyRandomFunctions: Set<String> = [
             "arc4random",
             "arc4random_uniform",
-            "drand48"
+            "drand48",
         ]
 
         override func visitPost(_ node: FunctionCallExprSyntax) {

@@ -7,15 +7,15 @@ typealias Arguments = [String]
 
 class CompilerInvocations {
     static func buildLog(compilerInvocations: [[String]]) -> CompilerInvocations {
-        return ArrayCompilerInvocations(invocations: compilerInvocations)
+        ArrayCompilerInvocations(invocations: compilerInvocations)
     }
 
     static func compilationDatabase(compileCommands: [File: Arguments]) -> CompilerInvocations {
-        return CompilationDatabaseInvocations(compileCommands: compileCommands)
+        CompilationDatabaseInvocations(compileCommands: compileCommands)
     }
 
     /// Default implementation
-    func arguments(forFile path: String?) -> Arguments { [] }
+    func arguments(forFile _: String?) -> Arguments { [] }
 
     // MARK: - Private
 
@@ -31,8 +31,8 @@ class CompilerInvocations {
         }
 
         override func arguments(forFile path: String?) -> Arguments {
-            return path.flatMap { path in
-                return invocationsByArgument[path]?.first
+            path.flatMap { path in
+                invocationsByArgument[path]?.first
             } ?? []
         }
     }
@@ -45,8 +45,8 @@ class CompilerInvocations {
         }
 
         override func arguments(forFile path: String?) -> Arguments {
-            return path.flatMap { path in
-                return compileCommands[path] ??
+            path.flatMap { path in
+                compileCommands[path] ??
                 compileCommands[path.path(relativeTo: FileManager.default.currentDirectoryPath)]
             } ?? []
         }
@@ -59,7 +59,7 @@ enum LintOrAnalyzeModeWithCompilerArguments {
 }
 
 private func resolveParamsFiles(args: [String]) -> [String] {
-    return args.reduce(into: []) { (allArgs: inout [String], arg: String) in
+    args.reduce(into: []) { (allArgs: inout [String], arg: String) in
         if arg.hasPrefix("@"), let contents = try? String(contentsOfFile: String(arg.dropFirst())) {
             allArgs.append(contentsOf: resolveParamsFiles(args: contents.split(separator: "\n").map(String.init)))
         } else {
@@ -83,10 +83,18 @@ struct LintableFilesVisitor {
     let mode: LintOrAnalyzeModeWithCompilerArguments
     let block: (CollectedLinter) async -> Void
 
-    private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, showProgressBar: Bool,
-                 useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
-                 cache: LinterCache?, compilerInvocations: CompilerInvocations?,
-                 allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) async -> Void) {
+    private init(paths: [String],
+                 action: String,
+                 useSTDIN: Bool,
+                 quiet: Bool,
+                 showProgressBar: Bool,
+                 useScriptInputFiles: Bool,
+                 forceExclude: Bool,
+                 useExcludingByPrefix: Bool,
+                 cache: LinterCache?,
+                 compilerInvocations: CompilerInvocations?,
+                 allowZeroLintableFiles: Bool,
+                 block: @escaping (CollectedLinter) async -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
@@ -114,7 +122,7 @@ struct LintableFilesVisitor {
                        cache: LinterCache?,
                        allowZeroLintableFiles: Bool,
                        block: @escaping (CollectedLinter) async -> Void)
-        throws -> LintableFilesVisitor {
+        throws -> Self {
         try Signposts.record(name: "LintableFilesVisitor.Create") {
             let compilerInvocations: CompilerInvocations?
             if options.mode == .lint {

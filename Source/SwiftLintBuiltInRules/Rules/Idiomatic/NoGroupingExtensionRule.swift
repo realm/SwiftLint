@@ -12,20 +12,20 @@ struct NoGroupingExtensionRule: OptInRule {
         nonTriggeringExamples: [
             Example("protocol Food {}\nextension Food {}"),
             Example("class Apples {}\nextension Oranges {}"),
-            Example("class Box<T> {}\nextension Box where T: Vegetable {}")
+            Example("class Box<T> {}\nextension Box where T: Vegetable {}"),
         ],
         triggeringExamples: [
             Example("enum Fruit {}\n↓extension Fruit {}"),
             Example("↓extension Tea: Error {}\nstruct Tea {}"),
             Example("class Ham { class Spam {}}\n↓extension Ham.Spam {}"),
-            Example("extension External { struct Gotcha {}}\n↓extension External.Gotcha {}")
+            Example("extension External { struct Gotcha {}}\n↓extension External.Gotcha {}"),
         ]
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return Visitor(configuration: configuration, file: file)
+        Visitor(configuration: configuration, file: file)
             .walk(tree: file.syntaxTree) { visitor in
-                return visitor.extensionDeclarations.compactMap { decl in
+                visitor.extensionDeclarations.compactMap { decl in
                     guard visitor.typeDeclarations.contains(decl.name) else {
                         return nil
                     }
@@ -55,7 +55,7 @@ private extension NoGroupingExtensionRule {
                 FunctionDeclSyntax.self,
                 VariableDeclSyntax.self,
                 InitializerDeclSyntax.self,
-                SubscriptDeclSyntax.self
+                SubscriptDeclSyntax.self,
             ]
         }
 
@@ -64,7 +64,7 @@ private extension NoGroupingExtensionRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ActorDeclSyntax) {
+        override func visitPost(_: ActorDeclSyntax) {
             typeScope.removeLast()
         }
 
@@ -73,7 +73,7 @@ private extension NoGroupingExtensionRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClassDeclSyntax) {
+        override func visitPost(_: ClassDeclSyntax) {
             typeScope.removeLast()
         }
 
@@ -82,7 +82,7 @@ private extension NoGroupingExtensionRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: EnumDeclSyntax) {
+        override func visitPost(_: EnumDeclSyntax) {
             typeScope.removeLast()
         }
 
@@ -91,7 +91,7 @@ private extension NoGroupingExtensionRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: StructDeclSyntax) {
+        override func visitPost(_: StructDeclSyntax) {
             typeScope.removeLast()
         }
 
@@ -110,7 +110,7 @@ private extension NoGroupingExtensionRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ExtensionDeclSyntax) {
+        override func visitPost(_: ExtensionDeclSyntax) {
             typeScope.removeLast()
         }
 

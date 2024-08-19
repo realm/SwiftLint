@@ -21,7 +21,7 @@ struct PatternMatchingKeywordsRule: OptInRule {
             Example("case var (x, y)"),
             Example("case .foo(var x)"),
             Example("case var .foo(x, y)"),
-            Example("case (y, let x, z)")
+            Example("case (y, let x, z)"),
         ].map(wrapInSwitch),
         triggeringExamples: [
             Example("case (↓let x,  ↓let y)"),
@@ -34,7 +34,7 @@ struct PatternMatchingKeywordsRule: OptInRule {
             Example("case (.yamlParsing(↓let x), .yamlParsing(↓let y))"),
             Example("case (↓var x,  ↓var y)"),
             Example("case .foo(↓var x, ↓var y)"),
-            Example("case (.yamlParsing(↓var x), .yamlParsing(↓var y))")
+            Example("case (.yamlParsing(↓var x), .yamlParsing(↓var y))"),
         ].map(wrapInSwitch)
     )
 

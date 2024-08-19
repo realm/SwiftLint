@@ -8,9 +8,18 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      swift59:
-        containerImage: swift:5.9
+      swift-5.10.1:
+        containerImage: swift:5.10.1
   container: $[ variables['containerImage'] ]
+  steps:
+    - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
+      displayName: swift test
+
+- job: macOS13
+  pool:
+    vmImage: 'macOS-13'
+  strategy:
+    maxParallel: 10
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
@@ -33,9 +42,9 @@ jobs:
 #       displayName: xcodebuild test
 - job: CocoaPods
   pool:
-    vmImage: 'macOS-13'
+    vmImage: 'macOS-14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_15.0.app
+    DEVELOPER_DIR: /Applications/Xcode_15.4.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -44,11 +53,11 @@ jobs:
     - script: bundle exec pod lib lint --platforms=macos --verbose
       displayName: pod lib lint
 
-- job: jazzy
+- job: Jazzy
   pool:
-    vmImage: 'macOS-13'
+    vmImage: 'macOS-14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_15.0.app
+    DEVELOPER_DIR: /Applications/Xcode_15.4.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs

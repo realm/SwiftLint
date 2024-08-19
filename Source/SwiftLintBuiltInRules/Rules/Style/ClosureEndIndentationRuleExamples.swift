@@ -33,7 +33,7 @@ internal struct ClosureEndIndentationRuleExamples {
         "    anotherClosure: { y in\n" +
         "        print(y)\n" +
         "    })"),
-        Example("(-variable).foo()")
+        Example("(-variable).foo()"),
     ]
 
     static let triggeringExamples = [
@@ -52,7 +52,7 @@ internal struct ClosureEndIndentationRuleExamples {
         "↓},\n" +
         "    anotherClosure: { y in\n" +
         "        print(y)\n" +
-        "↓})")
+        "↓})"),
     ]
 
     static let corrections = [
@@ -168,6 +168,6 @@ internal struct ClosureEndIndentationRuleExamples {
         "        print(x)\n" +
         "    }, anotherClosure: { y in\n" +
         "    print(y)\n" +
-        "    })")
+        "    })"),
     ]
 }

@@ -33,14 +33,14 @@ struct ExpiringTodoRule: OptInRule {
             Example("/* FIXME: */"),
             Example("/* TODO: */"),
             Example("/** FIXME: */"),
-            Example("/** TODO: */")
+            Example("/** TODO: */"),
         ],
         triggeringExamples: [
             Example("// TODO: [↓10/14/2019]"),
             Example("// FIXME: [↓10/14/2019]"),
             Example("// FIXME: [↓1/14/2019]"),
             Example("// FIXME: [↓10/14/2019]"),
-            Example("// TODO: [↓9999/14/10]")
+            Example("// TODO: [↓9999/14/10]"),
         ].skipWrappingInCommentTests()
     )
 
@@ -56,7 +56,7 @@ struct ExpiringTodoRule: OptInRule {
 
         return file.matchesAndSyntaxKinds(matching: regex).compactMap { checkingResult, syntaxKinds in
             guard
-                syntaxKinds.allSatisfy({ $0.isCommentLike }),
+                syntaxKinds.allSatisfy(\.isCommentLike),
                 checkingResult.numberOfRanges > 1,
                 case let range = checkingResult.range(at: 1),
                 let violationLevel = violationLevel(for: expiryDate(file: file, range: range)),
@@ -117,13 +117,13 @@ struct ExpiringTodoRule: OptInRule {
 
 private extension Date {
     var isAfterToday: Bool {
-        return Calendar.current.compare(.init(), to: self, toGranularity: .day) == .orderedAscending
+        Calendar.current.compare(.init(), to: self, toGranularity: .day) == .orderedAscending
     }
 }
 
 private extension SyntaxKind {
    /// Returns if the syntax kind is comment-like.
    var isCommentLike: Bool {
-       return Self.commentKinds.contains(self)
+       Self.commentKinds.contains(self)
    }
 }

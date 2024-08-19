@@ -9,7 +9,7 @@ struct DuplicateImportsRule: SwiftSyntaxCorrectableRule {
     static let importKinds = [
         "typealias", "struct", "class",
         "enum", "protocol", "let",
-        "var", "func"
+        "var", "func",
     ]
 
     static let description = RuleDescription(
@@ -31,7 +31,7 @@ struct DuplicateImportsRule: SwiftSyntaxCorrectableRule {
         }
     }
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+    func makeVisitor(file _: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
         queuedFatalError("Unreachable: `validate(file:)` will be used instead")
     }
 
@@ -42,16 +42,26 @@ struct DuplicateImportsRule: SwiftSyntaxCorrectableRule {
 
 // MARK: - Private
 
+private struct Import {
+    let position: AbsolutePosition
+    let path: [String]
+    let hasAttributes: Bool
+}
+
 private final class ImportPathVisitor: SyntaxVisitor {
-    var importPaths = [AbsolutePosition: [String]]()
-    var sortedImportPaths: [(position: AbsolutePosition, path: [String])] {
-        importPaths
-            .sorted { $0.key < $1.key }
-            .map { (position: $0, path: $1) }
+    var importPaths = [Import]()
+    var sortedImportPaths: [Import] {
+        importPaths.sorted { $0.position < $1.position }
     }
 
     override func visitPost(_ node: ImportDeclSyntax) {
-        importPaths[node.positionAfterSkippingLeadingTrivia] = node.path.map(\.name.text)
+        importPaths.append(
+            .init(
+                position: node.positionAfterSkippingLeadingTrivia,
+                path: node.path.map(\.name.text),
+                hasAttributes: node.attributes.contains { $0.is(AttributeSyntax.self) }
+            )
+        )
     }
 }
 
@@ -100,7 +110,9 @@ private extension SwiftLintFile {
         var seen = Set<ImportPathUsage>()
 
         // Exact matches
-        for (position, path) in importPaths {
+        for `import` in importPaths {
+            let path = `import`.path
+            let position = `import`.position
             let rangesForPosition = ranges(for: position)
 
             defer {
@@ -127,7 +139,9 @@ private extension SwiftLintFile {
         }
 
         // Partial matches
-        for (position, path) in importPaths {
+        for `import` in importPaths where !`import`.hasAttributes {
+            let path = `import`.path
+            let position = `import`.position
             let violation = importPaths.contains { other in
                 let otherPath = other.path
                 guard path.starts(with: otherPath), otherPath != path else { return false }

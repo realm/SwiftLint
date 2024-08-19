@@ -35,7 +35,7 @@ struct TrailingClosureRule: OptInRule {
             for i in h({ [1,2,3] }) {
                 print(i)
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("foo.map(↓{ $0 + 1 })"),
@@ -47,7 +47,7 @@ struct TrailingClosureRule: OptInRule {
             for n in list {
                 n.forEach(↓{ print($0) })
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         corrections: [
             Example("foo.map(↓{ $0 + 1 })"):
@@ -100,7 +100,7 @@ struct TrailingClosureRule: OptInRule {
                 f(a: 2, /* comment1 */ c /* comment2 */ : /* comment3 */ { 3 } /* comment4 */)
                 """): Example("""
                     f(a: 2) /* comment1 */ /* comment2 */ /* comment3 */ { 3 } /* comment4 */
-                    """)
+                    """),
         ]
     )
 }
@@ -119,7 +119,7 @@ private extension TrailingClosureRule {
             }
         }
 
-        override func visit(_ node: ConditionElementListSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ConditionElementListSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
@@ -256,7 +256,7 @@ private extension Trivia {
 
     func removingLeadingNewlines() -> Self {
         if startsWithNewline {
-            Trivia(pieces: pieces.drop(while: { $0.isNewline }))
+            Trivia(pieces: pieces.drop(while: \.isNewline))
         } else {
             self
         }

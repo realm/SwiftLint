@@ -28,7 +28,7 @@ internal enum SyntacticSugarRuleExamples {
 
         Example("let x = case Optional<Any>.none = obj"),
         Example("let a = Swift.Optional<String?>.none"),
-        Example("func f() -> [Array<Int>.Index] { [Array<Int>.Index]() }", excludeFromDocumentation: true)
+        Example("func f() -> [Array<Int>.Index] { [Array<Int>.Index]() }", excludeFromDocumentation: true),
     ]
 
     static let triggering = [
@@ -62,7 +62,7 @@ internal enum SyntacticSugarRuleExamples {
         Example("""
         let dict: [String: Any] = [:]
         _ = dict["key"] as? ↓Optional<String?> ?? Optional<String?>.none
-        """)
+        """),
     ]
 
     static let corrections = [
@@ -81,6 +81,6 @@ internal enum SyntacticSugarRuleExamples {
         Example("let x:↓Dictionary<↓Dictionary<↓Dictionary<Int, Int>, Int>, String>"):
             Example("let x:[[[Int: Int]: Int]: String]"),
         Example("let x:↓Array<↓Dictionary<Int, Int>>"): Example("let x:[[Int: Int]]"),
-        Example("let x:↓Optional<↓Dictionary<Int, Int>>"): Example("let x:[Int: Int]?")
+        Example("let x:↓Optional<↓Dictionary<Int, Int>>"): Example("let x:[Int: Int]?"),
     ]
 }

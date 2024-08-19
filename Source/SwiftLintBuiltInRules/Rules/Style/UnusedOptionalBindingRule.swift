@@ -16,7 +16,7 @@ struct UnusedOptionalBindingRule: Rule {
             Example("if foo() { let _ = bar() }"),
             Example("if foo() { _ = bar() }"),
             Example("if case .some(_) = self {}"),
-            Example("if let point = state.find({ _ in true }) {}")
+            Example("if let point = state.find({ _ in true }) {}"),
         ],
         triggeringExamples: [
             Example("if let ↓_ = Foo.optionalValue {}"),
@@ -26,7 +26,7 @@ struct UnusedOptionalBindingRule: Rule {
             Example("if let (first, _) = getOptionalTuple(), let ↓_ = Foo.optionalValue {}"),
             Example("if let (_, second) = getOptionalTuple(), let ↓_ = Foo.optionalValue {}"),
             Example("if let ↓(_, _, _) = getOptionalTuple(), let bar = Foo.optionalValue {}"),
-            Example("func foo() { if let ↓_ = bar {} }")
+            Example("func foo() { if let ↓_ = bar {} }"),
         ]
     )
 }
@@ -56,9 +56,7 @@ private extension ExprSyntax {
             return true
         }
         if let tuple = self.as(TupleExprSyntax.self) {
-            return tuple.elements.allSatisfy { elem in
-                elem.expression.isDiscardExpression
-            }
+            return tuple.elements.allSatisfy(\.expression.isDiscardExpression)
         }
 
         return false

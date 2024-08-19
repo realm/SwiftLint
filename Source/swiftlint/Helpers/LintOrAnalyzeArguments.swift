@@ -3,7 +3,7 @@ import ArgumentParser
 enum LeniencyOptions: String, EnumerableFlag {
     case strict, lenient
 
-    static func help(for value: LeniencyOptions) -> ArgumentHelp? {
+    static func help(for value: Self) -> ArgumentHelp? {
         switch value {
         case .strict:
             return "Upgrades warnings to serious violations (errors)."
@@ -42,22 +42,20 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var baseline: String?
     @Option(help: "The path to save detected violations to as a new baseline.")
     var writeBaseline: String?
-    @Flag(help: "Use the in-process version of SourceKit.")
-    var inProcessSourcekit = false
+    @Option(help: "The working directory to use when running SwiftLint.")
+    var workingDirectory: String?
     @Option(help: "The file where violations should be saved. Prints to stdout by default.")
     var output: String?
     @Flag(help: "Show a live-updating progress bar instead of each file being processed.")
     var progress = false
+    @Flag(help: "Check whether a later version of SwiftLint is available after processing all files.")
+    var checkForUpdates = false
 }
 
 // MARK: - Common Argument Help
 
 // It'd be great to be able to parameterize an `@OptionGroup` so we could move these options into
 // `LintOrAnalyzeArguments`.
-
-func pathOptionDescription(for mode: LintOrAnalyzeMode) -> ArgumentHelp {
-    ArgumentHelp(visibility: .hidden)
-}
 
 func pathsArgumentDescription(for mode: LintOrAnalyzeMode) -> ArgumentHelp {
     "List of paths to the files or directories to \(mode.imperative)."

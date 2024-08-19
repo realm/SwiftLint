@@ -15,17 +15,17 @@ struct VerticalWhitespaceRule: CorrectableRule {
             Example("let abc = 0\n"),
             Example("let abc = 0\n\n"),
             Example("/* bcs \n\n\n\n*/"),
-            Example("// bca \n\n")
+            Example("// bca \n\n"),
         ],
         triggeringExamples: [
             Example("let aaaa = 0\n\n\n"),
             Example("struct AAAA {}\n\n\n\n"),
-            Example("class BBBB {}\n\n\n")
+            Example("class BBBB {}\n\n\n"),
         ],
         corrections: [
             Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\nclass AAA {}\n"),
             Example("let c = 0\n\n\nlet num = 1\n"): Example("let c = 0\n\nlet num = 1\n"),
-            Example("// bca \n\n\n"): Example("// bca \n\n")
+            Example("// bca \n\n\n"): Example("// bca \n\n"),
         ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
 
@@ -43,7 +43,7 @@ struct VerticalWhitespaceRule: CorrectableRule {
         }
 
         return linesSections.map { eachLastLine, eachSectionCount in
-            return StyleViolation(
+            StyleViolation(
                 ruleDescription: Self.description,
                 severity: configuration.severityConfiguration.severity,
                 location: Location(file: file.path, line: eachLastLine.index),

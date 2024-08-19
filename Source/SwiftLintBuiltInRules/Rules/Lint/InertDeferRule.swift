@@ -42,7 +42,7 @@ struct InertDeferRule: SwiftSyntaxRule, OptInRule {
                 #endif
                 print(1)
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -79,7 +79,7 @@ struct InertDeferRule: SwiftSyntaxRule, OptInRule {
                 ↓defer { print(5) }
                 #endif
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ]
     )
 

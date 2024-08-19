@@ -15,7 +15,7 @@ internal struct InclusiveLanguageRuleExamples {
             case mastercard
         }
         """),
-        Example("func chargeMasterCard(_ card: Card) {}")
+        Example("func chargeMasterCard(_ card: Card) {}"),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -37,7 +37,7 @@ internal struct InclusiveLanguageRuleExamples {
         final class FooBar {
             func register<↓Master, ↓Slave>(one: Master, two: Slave) {}
         }
-        """)
+        """),
     ]
 
     // MARK: - Non-default config
@@ -54,8 +54,8 @@ internal struct InclusiveLanguageRuleExamples {
         private func doThisThing() {}
         """, configuration: [
             "override_terms": ["abc123"],
-            "additional_terms": ["xyz789"]
-        ])
+            "additional_terms": ["xyz789"],
+        ]),
     ]
 
     static let triggeringExamplesWithConfig: [Example] = [
@@ -75,6 +75,6 @@ internal struct InclusiveLanguageRuleExamples {
         private var ↓fooBar = "abc"
         """, configuration: [
             "additional_terms": ["FoObAr"]
-        ])
+        ]),
     ]
 }

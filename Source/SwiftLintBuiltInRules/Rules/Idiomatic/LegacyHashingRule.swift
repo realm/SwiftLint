@@ -50,7 +50,7 @@ struct LegacyHashingRule: Rule {
                 set { bar = newValue }
               }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -70,7 +70,7 @@ struct LegacyHashingRule: Rule {
                     return bar
                 }
             }
-            """)
+            """),
         ]
     )
 }

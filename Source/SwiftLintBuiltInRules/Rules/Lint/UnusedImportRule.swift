@@ -18,7 +18,7 @@ struct UnusedImportRule: CorrectableRule, AnalyzerRule {
     )
 
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
-        return importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
+        importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: importUsage.violationRange?.location ?? 1),
@@ -28,7 +28,7 @@ struct UnusedImportRule: CorrectableRule, AnalyzerRule {
 
     func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
         let importUsages = importUsage(in: file, compilerArguments: compilerArguments)
-        let matches = file.ruleEnabled(violatingRanges: importUsages.compactMap({ $0.violationRange }), for: self)
+        let matches = file.ruleEnabled(violatingRanges: importUsages.compactMap(\.violationRange), for: self)
 
         var contents = file.stringView.nsString
         let description = Self.description
@@ -113,7 +113,7 @@ private extension SwiftLintFile {
             unusedImports.subtract(
                 operatorImports(
                     arguments: compilerArguments,
-                    processedTokenOffsets: Set(syntaxMap.tokens.map { $0.offset })
+                    processedTokenOffsets: Set(syntaxMap.tokens.map(\.offset))
                 )
             )
         }
@@ -134,7 +134,7 @@ private extension SwiftLintFile {
                 let modulesAllowedToImportCurrentModule = configuration.allowedTransitiveImports
                     .filter { !unusedImports.contains($0.importedModule) }
                     .filter { $0.transitivelyImportedModules.contains(module) }
-                    .map { $0.importedModule }
+                    .map(\.importedModule)
 
                 return modulesAllowedToImportCurrentModule.isEmpty ||
                     imports.isDisjoint(with: modulesAllowedToImportCurrentModule)
@@ -186,7 +186,7 @@ private extension SwiftLintFile {
     }
 
     func rangedAndSortedUnusedImports(of unusedImports: [String]) -> [(String, NSRange)] {
-        return unusedImports
+        unusedImports
             .compactMap { module in
                 match(pattern: "^(@(?!_exported)\\w+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
             }
@@ -240,7 +240,7 @@ private extension SwiftLintFile {
     }
 
     func offsetPerLine() -> [Int: Int64] {
-        return Dictionary(
+        Dictionary(
             uniqueKeysWithValues: contents.bridge()
                 .components(separatedBy: "\n")
                 .map { Int64($0.bridge().lengthOfBytes(using: .utf8)) }
@@ -259,7 +259,7 @@ private extension SwiftLintFile {
         guard let kind else { return false }
         return [
             "source.lang.swift.ref.function.operator",
-            "source.lang.swift.ref.function.method.static"
+            "source.lang.swift.ref.function.method.static",
         ].contains { kind.hasPrefix($0) }
     }
 

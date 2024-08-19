@@ -12,7 +12,7 @@ public extension SwiftLintSyntaxVisitor {
     }
 
     func walk<T>(file: SwiftLintFile, handler: (Self) -> [T]) -> [T] {
-        return walk(tree: file.syntaxTree, handler: handler)
+        walk(tree: file.syntaxTree, handler: handler)
     }
 }
 
@@ -100,6 +100,16 @@ public extension DeclModifierListSyntax {
         first { $0.asAccessLevelModifier != nil }
     }
 
+    func accessLevelModifier(setter: Bool = false) -> DeclModifierSyntax? {
+        first {
+            if $0.asAccessLevelModifier == nil {
+                return false
+            }
+            let hasSetDetail = $0.detail?.detail.tokenKind == .identifier("set")
+            return setter ? hasSetDetail : !hasSetDetail
+        }
+    }
+
     func contains(keyword: Keyword) -> Bool {
         contains { $0.name.tokenKind == .keyword(keyword) }
     }
@@ -163,7 +173,7 @@ public extension EnumDeclSyntax {
             "Int", "Int8", "Int16", "Int32", "Int64",
             "UInt", "UInt8", "UInt16", "UInt32", "UInt64",
             "Double", "Float", "Float80", "Decimal", "NSNumber",
-            "NSDecimalNumber", "NSInteger", "String", "CGFloat"
+            "NSDecimalNumber", "NSInteger", "String", "CGFloat",
         ]
 
         return inheritedTypeCollection.contains { element in
@@ -338,8 +348,6 @@ public extension ClosureCaptureSyntax {
         specifier?.specifier.text == "weak"
     }
 }
-
-extension PrecedenceGroupDeclSyntax: BracedSyntax {}
 
 private extension String {
     var isZero: Bool {

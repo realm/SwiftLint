@@ -11,8 +11,8 @@ SwiftLint hooks into [Clang](http://clang.llvm.org) and
 [AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) representation
 of your source files for more accurate results.
 
-[![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
-[![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=main)](https://codecov.io/github/realm/SwiftLint?branch=main)
+[![Azure Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
+[![Buildkite Build Status](https://badge.buildkite.com/e2a5bc32c347e76e2793e4c5764a5f42bcd42bbe32f79c3a53.svg?branch=main)](https://buildkite.com/swiftlint/swiftlint)
 
 ![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/screenshot.png)
 
@@ -37,23 +37,40 @@ presentation recorded January 9th, 2017 by JP Simard (transcript provided):
 ### [Swift Package Manager](https://github.com/apple/swift-package-manager)
 
 SwiftLint can be used as a [command plugin](#swift-package-command-plugin)
-or a [build tool plugin](#swift-package-build-tool-plugins).
+or a [build tool plugin](#build-tool-plugins).
 
 Add
 
 ```swift
-.package(url: "https://github.com/realm/SwiftLint.git", from: "<version>")
+.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "<version>")
 ```
 
 to your `Package.swift` file to consume the latest release of SwiftLint
 automatically or pin the dependency to a specific version:
 
 ```swift
-.package(url: "https://github.com/realm/SwiftLint.git", exact: "<version>")
+.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "<version>")
 ```
 
+Therein, replace `<version>` with the desired minimum or exact version.
+
 > [!NOTE]
-> Replace `<version>` with the desired minimum or exact version.
+> Consuming the plugins directly from the SwiftLint repository comes
+> with several drawbacks. To avoid them and reduce the overhead imposed, it's
+> highly recommended to consume the plugins from the dedicated
+> [SwiftLintPlugins repository](https://github.com/SimplyDanny/SwiftLintPlugins),
+> even though plugins from the SwiftLint repository are also absolutely
+> functional. If the plugins from SwiftLint are preferred, just use the URL
+> `https://github.com/realm/SwiftLint` in the package declarations above.
+>
+> However, [SwiftLintPlugins](https://github.com/SimplyDanny/SwiftLintPlugins)
+> facilitates plugin adoption massively. It lists some of the reasons that
+> drive the plugins as provided by SwiftLint itself very troublesome. Since
+> the plugin code and the releases are kept in sync, there is no difference
+> in functionality between the two, but you spare yourself a lot of time and
+> trouble using the dedicated plugins repository.
+>
+> This document assumes you're relying on SwiftLintPlugins.
 
 ### [Xcode Package Dependency](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app)
 
@@ -61,13 +78,8 @@ Use the following link to add SwiftLint as a Package Dependency to an Xcode
 project:
 
 ```bash
-https://github.com/realm/SwiftLint
+https://github.com/SimplyDanny/SwiftLintPlugins
 ```
-
-> [!IMPORTANT]
-> Do not add the `SwiftLintFramework` library or the
-> `swiftlint` executable to any targets. Ensure `None`
-> is selected when asked to choose package products.
 
 ### [Homebrew](http://brew.sh)
 
@@ -192,18 +204,7 @@ To build SwiftLint, clone this repository and run `make install`.
 > confusing results, especially when executing with `--fix`/`--autocorrect`
 > command line arguments.
 
-### Swift Package Command Plugin
-
-> [!NOTE]
-> Requires installing via [Swift Package Manager](#swift-package-manager).
-
-The command plugin enables running SwiftLint from the command line as follows:
-
-```shell
-swift package plugin swiftlint
-```
-
-### Swift Package Build Tool Plugins
+### Build Tool Plugins
 
 SwiftLint can be used as a build tool plugin for both
 [Swift Package projects](#swift-package-projects)
@@ -234,8 +235,19 @@ To do this, add the plugin to the target(s) to be linted as follows:
 ```swift
 .target(
     ...
-    plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
+    plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
 ),
+```
+
+### Swift Package Command Plugin
+
+> [!NOTE]
+> Requires installing via [Swift Package Manager](#swift-package-manager).
+
+The command plugin enables running SwiftLint from the command line as follows:
+
+```shell
+swift package plugin swiftlint
 ```
 
 ### Xcode Projects
@@ -267,7 +279,7 @@ validations can be disabled with either of the following:
 * Setting Xcode defaults:
 
   ```bash
-  defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
+  defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
   defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
   ```
 
@@ -319,6 +331,27 @@ else
     echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
 fi
 ```
+
+If you're using the SwiftLintPlugin in a Swift package,
+you may refer to the `swiftlint` executable in the
+following way:
+
+```bash
+SWIFT_PACKAGE_DIR="${BUILD_DIR%Build/*}SourcePackages/artifacts"
+SWIFTLINT_CMD=$(ls "$SWIFT_PACKAGE_DIR"/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-*/bin/swiftlint | head -n 1)
+
+if test -f "$SWIFTLINT_CMD" 2>&1
+then
+    "$SWIFTLINT_CMD"
+else
+    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
+fi
+```
+
+> [!NOTE]
+> The `SWIFTLINT_CMD` path uses the default Xcode configuration and has been
+> tested on Xcode 15/16. In case of another configuration (e.g. a custom
+> Swift package path), please adapt the values accordingly.
 
 > [!TIP]
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental
@@ -668,7 +701,9 @@ opt_in_rules: # some rules are turned off by default, so you need to opt-in
 analyzer_rules: # rules run by `swiftlint analyze`
   - explicit_self
 
-included: # case-sensitive paths to include during linting. `--path` is ignored if present
+# Case-sensitive paths to include during linting. Directory paths supplied on the
+# command line will be ignored.
+included: 
   - Sources
 excluded: # case-sensitive paths to ignore during linting. Takes precedence over `included`
   - Carthage
@@ -682,6 +717,15 @@ allow_zero_lintable_files: false
 
 # If true, SwiftLint will treat all warnings as errors.
 strict: false
+
+# The path to a baseline file, which will be used to filter out detected violations.
+baseline: Baseline.json
+
+# The path to save detected violations to as a new baseline.
+write_baseline: Baseline.json
+
+# If true, SwiftLint will check for updates after linting or analyzing.
+check_for_updates: true
 
 # configurable rules can be customized from this configuration file
 # binary rules can set their severity level
@@ -807,8 +851,18 @@ All syntax kinds used in a snippet of Swift code can be extracted asking
 
 which match to `keyword` and `identifier` in the above list.
 
-If using custom rules in combination with `only_rules`, make sure to add
-`custom_rules` as an item under `only_rules`.
+If using custom rules in combination with `only_rules`, you must include the 
+literal string `custom_rules` in the `only_rules` list:
+
+```yaml
+only_rules:
+  - custom_rules
+
+custom_rules:
+  no_hiding_in_strings:
+    regex: "([nN]inja)"
+    match_kinds: string
+```
 
 Unlike Swift custom rules, you can use official SwiftLint builds
 (e.g. from Homebrew) to run regex custom rules.
@@ -867,9 +921,9 @@ opt_in_rules:
 - force_cast
 ```
 
-### Child / Parent Configs (Locally)
+### Child/Parent Configs (Locally)
 
-You can specify a `child_config` and / or a `parent_config` reference within a
+You can specify a `child_config` and/or a `parent_config` reference within a
 configuration file. These references should be local paths relative to the
 folder of the configuration file they are specified in. This even works
 recursively, as long as there are no cycles and no ambiguities.
@@ -900,9 +954,9 @@ When merging parent and child configs, `included` and `excluded` configurations
 are processed carefully to account for differences in the directory location
 of the containing configuration files.
 
-### Child / Parent Configs (Remote)
+### Child/Parent Configs (Remote)
 
-Just as you can provide local `child_config` / `parent_config` references,
+Just as you can provide local `child_config`/`parent_config` references,
 instead of referencing local paths, you can just put urls that lead to
 configuration files. In order for SwiftLint to detect these remote references,
 they must start with `http://` or `https://`.
@@ -924,8 +978,8 @@ there once SwiftLint has run successfully at least once.
 
 If needed, the timeouts for the remote configuration fetching can be specified
 manually via the configuration file(s) using the
-`remote_timeout` / `remote_timeout_if_cached` specifiers. These values default
-to 2 / 1 second(s).
+`remote_timeout`/`remote_timeout_if_cached` specifiers. These values default
+to 2 seconds or 1 second, respectively.
 
 ### Command Line
 
@@ -952,7 +1006,7 @@ configuration.
 `.swiftlint.yml` files are only considered as a nested configuration if they
 have not been used to build the main configuration already (e. g. by having
 been referenced via something like `child_config: Folder/.swiftlint.yml`).
-Also, `parent_config` / `child_config` specifications of nested configurations
+Also, `parent_config`/`child_config` specifications of nested configurations
 are getting ignored because there's no sense to that.
 
 If one (or more) SwiftLint file(s) are explicitly specified via the `--config`

@@ -7,7 +7,7 @@ public struct Correction: Equatable, Sendable {
 
     /// The console-printable description for this correction.
     public var consoleDescription: String {
-        return "\(location) Corrected \(ruleDescription.name)"
+        "\(location.file ?? "<nopath>"): Corrected \(ruleDescription.name)"
     }
 
     /// Memberwise initializer.

@@ -31,6 +31,7 @@ public extension Configuration {
 
         internal init(
             enableAllRules: Bool,
+            onlyRule: String?,
             onlyRules: [String],
             optInRules: [String],
             disabledRules: [String],
@@ -48,6 +49,8 @@ public extension Configuration {
 
             if enableAllRules {
                 self = .allEnabled
+            } else if let onlyRule {
+                self = .only(Set([onlyRule]))
             } else if onlyRules.isNotEmpty {
                 if disabledRules.isNotEmpty || optInRules.isNotEmpty {
                     throw Issue.genericWarning(
@@ -87,7 +90,7 @@ public extension Configuration {
             }
         }
 
-        internal func applied(aliasResolver: (String) -> String) -> RulesMode {
+        internal func applied(aliasResolver: (String) -> String) -> Self {
             switch self {
             case let .default(disabled, optIn):
                 return .default(
@@ -103,7 +106,7 @@ public extension Configuration {
             }
         }
 
-        internal func activateCustomRuleIdentifiers(allRulesWrapped: [ConfigurationRuleWrapper]) -> RulesMode {
+        internal func activateCustomRuleIdentifiers(allRulesWrapped: [ConfigurationRuleWrapper]) -> Self {
             // In the only mode, if the custom rules rule is enabled, all custom rules are also enabled implicitly
             // This method makes the implicitly explicit
             switch self {

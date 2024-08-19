@@ -35,9 +35,11 @@ final class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
         let warning1 = 10
         let error1 = 30
         let length1 = SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: warning1, error: error1)
-        let config1: [String: Any] = ["warning": warning1,
-                                      "error": error1,
-                                      "ignores_case_statements": true]
+        let config1: [String: Any] = [
+            "warning": warning1,
+            "error": error1,
+            "ignores_case_statements": true,
+        ]
 
         let warning2 = 20
         let error2 = 40
@@ -62,7 +64,7 @@ final class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
     func testCyclomaticComplexityConfigurationThrowsOnBadConfigValues() {
         let badConfigs: [[String: Any]] = [
             ["warning": true],
-            ["ignores_case_statements": 300]
+            ["ignores_case_statements": 300],
         ]
 
         for badConfig in badConfigs {

@@ -168,7 +168,7 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     })
             }
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -265,6 +265,6 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     })
             }
         }
-        """)
+        """),
     ]
 }

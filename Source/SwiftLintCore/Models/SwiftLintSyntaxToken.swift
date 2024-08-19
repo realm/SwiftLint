@@ -18,23 +18,23 @@ public struct SwiftLintSyntaxToken {
 
     /// The byte range in a source file for this token.
     public var range: ByteRange {
-        return value.range
+        value.range
     }
 
     /// The starting byte offset in a source file for this token.
     public var offset: ByteCount {
-        return value.offset
+        value.offset
     }
 
     /// The length in bytes for this token.
     public var length: ByteCount {
-        return value.length
+        value.length
     }
 }
 
 public extension Array where Element == SwiftLintSyntaxToken {
     /// The kinds for these tokens.
     var kinds: [SyntaxKind] {
-        return compactMap { $0.kind }
+        compactMap(\.kind)
     }
 }

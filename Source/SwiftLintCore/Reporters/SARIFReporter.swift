@@ -22,21 +22,21 @@ struct SARIFReporter: Reporter {
                         "driver": [
                             "name": "SwiftLint",
                             "semanticVersion": Version.current.value,
-                            "informationUri": swiftlintVersion
-                        ]
+                            "informationUri": swiftlintVersion,
+                        ],
                     ],
-                    "results": violations.map(dictionary(for:))
-                ]
-            ]
+                    "results": violations.map(dictionary(for:)),
+                ],
+            ],
         ] as [String: Any]
 
-        return toJSON(SARIFJson)
+        return toJSON(SARIFJson, options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes])
     }
 
     // MARK: - Private
 
     private static func dictionary(for violation: StyleViolation) -> [String: Any] {
-        return [
+        [
             "level": violation.severity.rawValue,
             "ruleId": violation.ruleIdentifier,
             "message": [
@@ -44,7 +44,7 @@ struct SARIFReporter: Reporter {
             ],
             "locations": [
                 dictionary(for: violation.location)
-            ]
+            ],
         ]
     }
 
@@ -54,13 +54,13 @@ struct SARIFReporter: Reporter {
             return [
                 "physicalLocation": [
                     "artifactLocation": [
-                        "uri": location.file ?? ""
+                        "uri": location.relativeFile ?? ""
                     ],
                     "region": [
                         "startLine": line,
-                        "startColumn": location.character ?? "1"
-                    ]
-                ]
+                        "startColumn": location.character ?? 1,
+                    ],
+                ],
             ]
         }
 
@@ -68,8 +68,8 @@ struct SARIFReporter: Reporter {
             "physicalLocation": [
                 "artifactLocation": [
                     "uri": location.file ?? ""
-                ]
-            ]
+                ],
+            ],
         ]
     }
 }

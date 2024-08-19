@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-20.04
   
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Extract DOCKER_TAG using tag name
       if: startsWith(github.ref, 'refs/tags/')
@@ -31,16 +31,16 @@ jobs:
         REPOSITORY: '${{ github.repository }}'
       
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v3
       
     - name: Login to GitHub registry
-      uses: docker/login-action@v1 
+      uses: docker/login-action@v3 
       with:
         username: ${{ github.actor }}
         password:  ${{ secrets.GITHUB_TOKEN }}
         registry: ghcr.io
     
-    - uses: docker/build-push-action@v2
+    - uses: docker/build-push-action@v6
       with:
         push: true
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}

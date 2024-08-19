@@ -36,7 +36,7 @@ struct UnusedEnumeratedRule: Rule {
                 let (i, e) = $0
                 print(i)
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("for (↓_, foo) in bar.enumerated() { }"),
@@ -84,7 +84,7 @@ struct UnusedEnumeratedRule: Rule {
             list.↓enumerated().forEach {
                 let (i, _) = $0
             }
-            """)
+            """),
         ]
     )
 }
@@ -175,7 +175,7 @@ private extension UnusedEnumeratedRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClosureExprSyntax) {
+        override func visitPost(_: ClosureExprSyntax) {
             if let closure = closures.pop(), (closure.zeroPosition != nil) != (closure.onePosition != nil) {
                 addViolation(
                     zeroPosition: closure.onePosition,

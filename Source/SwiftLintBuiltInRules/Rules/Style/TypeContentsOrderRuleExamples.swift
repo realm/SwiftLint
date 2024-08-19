@@ -1,10 +1,10 @@
 internal struct TypeContentsOrderRuleExamples {
     static let defaultOrderParts = [
-        """
+            """
             // Type Aliases
             typealias CompletionHandler = ((TestEnum) -> Void)
-        """,
-        """
+            """,
+            """
             // Subtypes
             class TestClass {
                 // 10 lines
@@ -17,12 +17,12 @@ internal struct TypeContentsOrderRuleExamples {
             enum TestEnum {
                 // 5 lines
             }
-        """,
-        """
+            """,
+            """
             // Type Properties
             static let cellIdentifier: String = "AmazingCell"
-        """,
-        """
+            """,
+            """
             // Instance Properties
             var shouldLayoutView1: Bool!
             weak var delegate: TestViewControllerDelegate?
@@ -32,13 +32,13 @@ internal struct TypeContentsOrderRuleExamples {
             private var hasAnyLayoutedView: Bool {
                  return hasLayoutedView1 || hasLayoutedView2
             }
-        """,
-        """
+            """,
+            """
             // IBOutlets
             @IBOutlet private var view1: UIView!
             @IBOutlet private var view2: UIView!
-        """,
-        """
+            """,
+            """
             // Initializers
             override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
                 super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -47,14 +47,14 @@ internal struct TypeContentsOrderRuleExamples {
             required init?(coder aDecoder: NSCoder) {
                 fatalError("init(coder:) has not been implemented")
             }
-        """,
-        """
+            """,
+            """
             // Type Methods
             static func makeViewController() -> TestViewController {
                 // some code
             }
-        """,
-        """
+            """,
+            """
             // View Life-Cycle Methods
             override func viewDidLoad() {
                 super.viewDidLoad()
@@ -82,15 +82,15 @@ internal struct TypeContentsOrderRuleExamples {
             override func viewIsAppearing(_ animated: Bool) {
                 super.viewIsAppearing(animated)
             }
-        """,
-        """
+            """,
+            """
             // IBActions
             @IBAction func goNextButtonPressed() {
                 goToNextVc()
                 delegate?.didPressTrackedButton()
             }
-        """,
-        """
+            """,
+            """
             // Other Methods
             func goToNextVc() { /* TODO */ }
 
@@ -102,8 +102,8 @@ internal struct TypeContentsOrderRuleExamples {
             }
 
             private func getRandomVc() -> UIViewController { return UIViewController() }
-        """,
-        """
+            """,
+            """
             // Subscripts
             subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
                 get {
@@ -114,12 +114,12 @@ internal struct TypeContentsOrderRuleExamples {
                     log.warning("Just a test", newValue)
                 }
             }
-        """,
-        """
+            """,
+            """
             deinit {
                 log.debug("deinit")
             }
-        """
+            """,
     ]
 
     static let nonTriggeringExamples = [
@@ -127,7 +127,7 @@ internal struct TypeContentsOrderRuleExamples {
         class TestViewController: UIViewController {
         \(Self.defaultOrderParts.joined(separator: "\n\n")),
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -254,6 +254,6 @@ internal struct TypeContentsOrderRuleExamples {
             // MARK: Other Methods
             func goToNextVc() { /* TODO */ }
         }
-        """)
+        """),
     ]
 }

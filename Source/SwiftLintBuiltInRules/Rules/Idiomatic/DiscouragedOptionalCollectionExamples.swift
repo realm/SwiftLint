@@ -51,7 +51,7 @@ internal struct DiscouragedOptionalCollectionExamples {
 
         wrapExample("enum", "func foo(input: [String] = []) {}"),
         wrapExample("enum", "func foo(input: [String: String] = [:]) {}"),
-        wrapExample("enum", "func foo(input: Set<String> = []) {}")
+        wrapExample("enum", "func foo(input: Set<String> = []) {}"),
     ]
 
     static let triggeringExamples = [
@@ -204,14 +204,17 @@ internal struct DiscouragedOptionalCollectionExamples {
         wrapExample("enum", "static func foo(input: [String: ↓[String: String]?]) {}"),
         wrapExample("enum", "static func foo(input: ↓[String: ↓[String: String]?]?) {}"),
         wrapExample("enum", "static func foo<K, V>(_ dict1: [K: V], _ dict2: ↓[K: V]?) -> [K: V]"),
-        wrapExample("enum", "static func foo<K, V>(dict1: [K: V], dict2: ↓[K: V]?) -> [K: V]")
+        wrapExample("enum", "static func foo<K, V>(dict1: [K: V], dict2: ↓[K: V]?) -> [K: V]"),
     ]
 }
 
 // MARK: - Private
 
-private func wrapExample(_ type: String, _ test: String, file: StaticString = #file, line: UInt = #line) -> Example {
-    return Example("""
+private func wrapExample(_ type: String,
+                         _ test: String,
+                         file: StaticString = #filePath,
+                         line: UInt = #line) -> Example {
+    Example("""
         \(type) Foo {
             \(test)
         }

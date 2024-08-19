@@ -12,7 +12,7 @@ public final class RuleRegistry: @unchecked Sendable {
     ///         accessed will not work.
     public private(set) lazy var list = RuleList(rules: registeredRules)
 
-    private init() {}
+    private init() { /* To guarantee that this is singleton. */ }
 
     /// Register rules.
     ///
@@ -27,6 +27,6 @@ public final class RuleRegistry: @unchecked Sendable {
     ///
     /// - returns: The rule matching the specified ID, if one was found.
     public func rule(forID id: String) -> (any Rule.Type)? {
-        return list.list[id]
+        list.list[id]
     }
 }

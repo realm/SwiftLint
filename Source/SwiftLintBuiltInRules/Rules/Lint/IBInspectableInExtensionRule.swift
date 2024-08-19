@@ -14,14 +14,14 @@ struct IBInspectableInExtensionRule: OptInRule {
             class Foo {
               @IBInspectable private var x: Int
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
             extension Foo {
               ↓@IBInspectable private var x: Int
             }
-            """)
+            """),
         ]
     )
 }

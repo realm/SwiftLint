@@ -1,7 +1,7 @@
 import SourceKittenFramework
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct CyclomaticComplexityConfiguration: RuleConfiguration {
     typealias Parent = CyclomaticComplexityRule
 
@@ -11,6 +11,6 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration {
     private(set) var ignoresCaseStatements = false
 
     var params: [RuleParameter<Int>] {
-        return length.params
+        length.params
     }
 }

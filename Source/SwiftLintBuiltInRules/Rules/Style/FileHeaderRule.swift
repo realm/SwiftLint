@@ -14,7 +14,7 @@ struct FileHeaderRule: OptInRule {
         nonTriggeringExamples: [
             Example("let foo = \"Copyright\""),
             Example("let foo = 2 // Copyright"),
-            Example("let foo = 2\n // Copyright")
+            Example("let foo = 2\n // Copyright"),
         ],
         triggeringExamples: [
             Example("// ↓Copyright"),
@@ -27,7 +27,7 @@ struct FileHeaderRule: OptInRule {
             //  Created by Marcelo Fabri on 27/11/16.
             //  ↓Copyright © 2016 Realm. All rights reserved.
             //
-            """)
+            """),
         ].skipWrappingInCommentTests()
     )
 
@@ -95,15 +95,15 @@ struct FileHeaderRule: OptInRule {
     }
 
     private func makeViolation(at location: Location) -> StyleViolation {
-        return StyleViolation(ruleDescription: Self.description,
-                              severity: configuration.severityConfiguration.severity,
-                              location: location,
-                              reason: "Header comments should be consistent with project patterns")
+        StyleViolation(ruleDescription: Self.description,
+                       severity: configuration.severityConfiguration.severity,
+                       location: location,
+                       reason: "Header comments should be consistent with project patterns")
     }
 }
 
 private extension SyntaxKind {
     var isFileHeaderKind: Bool {
-        return self == .comment || self == .commentURL
+        self == .comment || self == .commentURL
     }
 }

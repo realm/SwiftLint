@@ -26,7 +26,7 @@ public struct YamlParser {
 
 private extension Constructor {
     static func swiftlintConstructor(env: [String: String]) -> Constructor {
-        return Constructor(customScalarMap(env: env))
+        Constructor(customScalarMap(env: env))
     }
 
     static func customScalarMap(env: [String: String]) -> ScalarMap {
@@ -40,8 +40,8 @@ private extension Constructor {
 
 private extension String {
     static func constructExpandingEnvVars(env: [String: String]) -> (_ scalar: Node.Scalar) -> String? {
-        return { (scalar: Node.Scalar) -> String? in
-            return scalar.string.expandingEnvVars(env: env)
+        { (scalar: Node.Scalar) -> String? in
+            scalar.string.expandingEnvVars(env: env)
         }
     }
 

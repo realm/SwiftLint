@@ -14,15 +14,175 @@
 
 #### Bug Fixes
 
+* Ignore initializers with attributes in `unneeded_synthesized_initializer` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5153](https://github.com/realm/SwiftLint/issues/5153)
+
+## 0.56.1: Heat Pump Dryer
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Let `contrasted_opening_brace` be an opt-in rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+## 0.56.0: Heat Pump Dryer
+
+#### Breaking
+
+* The deprecated `--path` and `--in-process-sourcekit` arguments have now been
+  removed completely.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5614](https://github.com/realm/SwiftLint/issues/5614)
+
+* When SwiftLint corrects violations automatically (`swiftlint lint --fix`)
+  it doesn't report the exact location of the fix any longer. The new format
+  is `<file-path>: Correcting <rule-name>` without line and column numbers.
+  Reason: Correction positions are likely just incorrect, especially when
+  multiple rules apply their rewrites. Fixing that is not trivial and likely
+  not worth the effort also considering that there haven't been any bug
+  reports about wrong correction positions so far.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Linting got up to 30% faster due to the praisworthy performance
+  improvements done in the [SwiftSyntax](https://github.com/swiftlang/swift-syntax)
+  library.
+
+* Rewrite the following rules with SwiftSyntax:
+  * `missing_docs`
+
+  [woxtu](https://github.com/woxtu)  
+  [SimplyDanny](https://github.com/SimplyDanny)  
+
+* Add new `prefer_key_path` rule that triggers when a trailing closure on a standard
+  function call is only hosting a (chained) member access expression since the closure
+  can be replaced with a key path argument. Likewise, it triggers on closure arguments.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+* Adds `baseline` and `write_baseline` configuration file settings, equivalent
+  to the `--baseline` and `--write-baseline` command line options.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5552](https://github.com/realm/SwiftLint/issues/5552)
+
+* Add `no_empty_block` opt-in rule to validate that code blocks are not empty.
+  They should at least contain a comment.  
+  [Ueeek](https://github.com/Ueeek)
+  [#5615](https://github.com/realm/SwiftLint/issues/5615)
+
+* Add new `contrasted_opening_brace` rule that enforces opening
+  braces to be on a separate line after the preceding declaration.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+* Add new `unused_parameter` rule that triggers on function/initializer/subscript
+  parameters that are not used inside of the function/initializer/subscript.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#2120](https://github.com/realm/SwiftLint/issues/2120)
+
+* Support `--target` paths being passed to command plugin by Xcode.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5603](https://github.com/realm/SwiftLint/issues/5603)
+
+* Add modified configurations to examples in rule documentation.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+* Add new option `evaluate_effective_access_control_level` to `missing_docs`
+  rule. Setting it to `true` stops the rule from triggering on declarations
+  inside of types with lower visibility. These declarations effectively
+  have at most the same access level.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+* Add new `--check-for-updates` command line option for the `lint`, `analyze`,
+  and `version` subcommands to check for new versions  of SwiftLint, and an
+  equivalent `check_for_updates` configuration file setting.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [Ian Leitch](https://github.com/ileitch)
+  [#5613](https://github.com/realm/SwiftLint/issues/5613)
+
+* Add new `--only-rule` command line option for the `lint` and `analyze`,
+  subcommands that overrides configuration file rule enablement and
+  disablement, in particular to facilitate running `--fix` for single rules
+  without having to temporarily edit the configuration file.
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5666](https://github.com/realm/SwiftLint/issues/5666)
+
+#### Bug Fixes
+
+* Fix a few false positives and negatives by updating the parser to support
+  Swift 6 with all its new language constructs.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Stop triggering `mark` rule on "mark" comments in the middle of another
   comment.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5592](https://github.com/realm/SwiftLint/issues/5592)
 
+* Don't consider specialized imports with attributes as duplicates in
+  `duplicate_imports` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5716](https://github.com/realm/SwiftLint/issues/5716)
+
+* Use correct types and relative paths in SARIF reporter output. Generally
+  avoid escaping slashes in JSON output as well.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5598](https://github.com/realm/SwiftLint/issues/5598)
+  [#5599](https://github.com/realm/SwiftLint/issues/5599)
+
 * Keep initializers with attributed parameters in
   `unneeded_synthesized_initializer` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5153](https://github.com/realm/SwiftLint/issues/5153)
+
+* Make `vertical_whitespace_between_cases` rule work for
+  cases ending with a string literal.  
+  [ilendemli](https://github.com/ilendemli)
+  [#5612](https://github.com/realm/SwiftLint/issues/5612)
+
+* Ignore access level modifiers restricted to value setting in
+  `extension_access_modifier` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5623](https://github.com/realm/SwiftLint/issues/5623)
+
+* Fix `baseline compare` incorrectly reporting some violations
+  as new, and also now sorts the violations from `baseline compare`
+  deterministically.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5606](https://github.com/realm/SwiftLint/issues/5606)
+
+* Fix rewriting for `implicit_return` rule when violations are
+  nested within each other.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5660](https://github.com/realm/SwiftLint/issues/5660)
+
+* Fix `opening_brace` correction and make sure that disable commands
+  are taken into account before applying a fix.  
+  [swiftty](https://github.com/swiftty)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5598](https://github.com/realm/SwiftLint/issues/5598)
+
+* Violations of the `typesafe_array_init` rule will now be correctly
+  reported as such, instead of as violations of the `array_init`
+  rule.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5709](https://github.com/realm/SwiftLint/issues/5709)
 
 ## 0.55.1: Universal Washing Powder
 
@@ -366,6 +526,11 @@
   re-enable the rule as soon as possible.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5450](https://github.com/realm/SwiftLint/issues/5450)
+
+* Add a `--working-directory` command line option, for users who cannot
+  otherwise control which directory SwiftLint is run from.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5424](https://github.com/realm/SwiftLint/issues/5424)
 
 ## 0.54.0: Macro-Economic Forces
 

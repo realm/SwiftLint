@@ -8,8 +8,8 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
             Example([
                 "class TestViewController: UIViewController {",
                 TypeContentsOrderRuleExamples.defaultOrderParts.reversed().joined(separator: "\n\n"),
-                "}"
-            ].joined(separator: "\n"))
+                "}",
+            ].joined(separator: "\n")),
         ]
         let triggeringExamples = [
             Example("""
@@ -133,7 +133,7 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
                     }
                 }
             }
-            """)
+            """),
         ]
 
         let reversedOrderDescription = TypeContentsOrderRule.description
@@ -157,8 +157,8 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
                     "type_property",
                     "subtype",
                     ["type_alias", "associated_type"],
-                    "case"
-                ] as [Any]
+                    "case",
+                ] as [Any],
             ]
         )
     }
@@ -278,7 +278,7 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
                     hasLayoutedView2 = true
                 }
             }
-            """)
+            """),
         ]
         let triggeringExamples = [
             Example("""
@@ -329,7 +329,7 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
                     // some code
                 }
             }
-            """)
+            """),
         ]
 
         let groupedOrderDescription = TypeContentsOrderRule.description
@@ -343,8 +343,8 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
                     ["type_alias", "associated_type", "subtype"],
                     ["type_property", "instance_property", "ib_inspectable", "ib_outlet"],
                     ["initializer", "type_method", "deinitializer"],
-                    ["view_life_cycle_method", "ib_action", "other_method", "subscript"]
-                ]
+                    ["view_life_cycle_method", "ib_action", "other_method", "subscript"],
+                ],
             ]
         )
     }

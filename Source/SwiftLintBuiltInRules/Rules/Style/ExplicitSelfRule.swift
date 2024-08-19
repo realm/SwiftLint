@@ -16,7 +16,7 @@ struct ExplicitSelfRule: CorrectableRule, AnalyzerRule {
     )
 
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
-        return violationRanges(in: file, compilerArguments: compilerArguments).map {
+        violationRanges(in: file, compilerArguments: compilerArguments).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
@@ -80,13 +80,13 @@ struct ExplicitSelfRule: CorrectableRule, AnalyzerRule {
 
 private let kindsToFind: Set = [
     "source.lang.swift.ref.function.method.instance",
-    "source.lang.swift.ref.var.instance"
+    "source.lang.swift.ref.var.instance",
 ]
 
 private extension SwiftLintFile {
     func allCursorInfo(compilerArguments: [String], atByteOffsets byteOffsets: [ByteCount]) throws
         -> [[String: any SourceKitRepresentable]] {
-        return try byteOffsets.compactMap { offset in
+        try byteOffsets.compactMap { offset in
             if isExplicitAccess(at: offset) { return nil }
             let cursorInfoRequest = Request.cursorInfoWithoutSymbolGraph(
                 file: self.path!, offset: offset, arguments: compilerArguments

@@ -19,7 +19,7 @@ struct XCTFailMessageRule: Rule {
             func testFoo() {
               XCTFail(bar)
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -31,7 +31,7 @@ struct XCTFailMessageRule: Rule {
             func testFoo() {
               ↓XCTFail("")
             }
-            """)
+            """),
         ]
     )
 }

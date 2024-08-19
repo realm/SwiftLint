@@ -1,10 +1,10 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = FileTypesOrderRule
 
-    @MakeAcceptableByConfigurationElement
+    @AcceptableByConfigurationElement
     enum FileType: String {
         case supportingType = "supporting_type"
         case mainType = "main_type"
@@ -21,6 +21,6 @@ struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration {
         [.mainType],
         [.extension],
         [.previewProvider],
-        [.libraryContentProvider]
+        [.libraryContentProvider],
     ]
 }

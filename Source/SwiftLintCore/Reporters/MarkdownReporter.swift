@@ -14,7 +14,7 @@ struct MarkdownReporter: Reporter {
             "line",
             "severity",
             "reason",
-            "rule_id"
+            "rule_id",
         ].joined(separator: " | ")
 
         let rows = [keys, "--- | --- | --- | --- | ---"] + violations.map(markdownRow(for:))
@@ -24,12 +24,12 @@ struct MarkdownReporter: Reporter {
     // MARK: - Private
 
     private static func markdownRow(for violation: StyleViolation) -> String {
-        return [
+        [
             violation.location.file?.escapedForMarkdown() ?? "",
             violation.location.line?.description ?? "",
             severity(for: violation.severity),
             violation.ruleName.escapedForMarkdown() + ": " + violation.reason.escapedForMarkdown(),
-            violation.ruleIdentifier
+            violation.ruleIdentifier,
         ].joined(separator: " | ")
     }
 

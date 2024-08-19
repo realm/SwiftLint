@@ -8,7 +8,7 @@ struct ImplicitReturnRuleExamples {
             [1, 2].first(where: {
                 true
             })
-            """)
+            """),
         ]
 
         static let triggeringExamples = [
@@ -27,7 +27,7 @@ struct ImplicitReturnRuleExamples {
             [1, 2].first(where: {
                 ↓return true
             })
-            """)
+            """),
         ]
 
         static let corrections = [
@@ -60,7 +60,7 @@ struct ImplicitReturnRuleExamples {
                 [1, 2].first(where: {
                     true
                 })
-                """)
+                """),
         ]
     }
 
@@ -102,7 +102,7 @@ struct ImplicitReturnRuleExamples {
                 return g()
                 func g() -> Int { 4 }
             }
-            """)
+            """),
         ]
 
         static let triggeringExamples = [
@@ -118,7 +118,7 @@ struct ImplicitReturnRuleExamples {
             """),
             Example("""
             func f() { ↓return }
-            """)
+            """),
         ]
 
         static let corrections = [
@@ -156,7 +156,7 @@ struct ImplicitReturnRuleExamples {
                     \("")
                     // Another comment
                 }
-                """)
+                """),
         ]
     }
 
@@ -178,7 +178,7 @@ struct ImplicitReturnRuleExamples {
                     0
                 }
             }
-            """)
+            """),
         ]
 
         static let triggeringExamples = [
@@ -198,7 +198,7 @@ struct ImplicitReturnRuleExamples {
                     ↓return 0
                 }
             }
-            """)
+            """),
         ]
 
         static let corrections = [
@@ -219,7 +219,7 @@ struct ImplicitReturnRuleExamples {
                         }
                     }
                 }
-                """)
+                """),
         ]
     }
 
@@ -244,7 +244,7 @@ struct ImplicitReturnRuleExamples {
                     return nil
                 }
             }
-            """)
+            """),
         ]
 
         static let triggeringExamples = [
@@ -261,7 +261,7 @@ struct ImplicitReturnRuleExamples {
                     ↓return nil
                 }
             }
-            """)
+            """),
         ]
 
         static let corrections = [
@@ -290,7 +290,7 @@ struct ImplicitReturnRuleExamples {
                         nil
                     }
                 }
-                """)
+                """),
         ]
     }
 
@@ -303,7 +303,7 @@ struct ImplicitReturnRuleExamples {
                     return res
                 }
             }
-            """)
+            """),
         ]
 
         static let triggeringExamples = [
@@ -313,7 +313,7 @@ struct ImplicitReturnRuleExamples {
                     ↓return i
                 }
             }
-            """)
+            """),
         ]
 
         static let corrections = [
@@ -329,7 +329,25 @@ struct ImplicitReturnRuleExamples {
                         i
                     }
                 }
-                """)
+                """),
+        ]
+    }
+
+    struct MixedExamples {
+        static let corrections = [
+            Example("""
+                func foo() -> Int {
+                    ↓return [1, 2].first(where: {
+                        ↓return true
+                    })
+                }
+                """): Example("""
+                func foo() -> Int {
+                    [1, 2].first(where: {
+                        true
+                    })
+                }
+                """),
         ]
     }
 
@@ -353,7 +371,8 @@ struct ImplicitReturnRuleExamples {
             FunctionExamples.corrections,
             GetterExamples.corrections,
             InitializerExamples.corrections,
-            SubscriptExamples.corrections
+            SubscriptExamples.corrections,
+            MixedExamples.corrections,
         ]
         .reduce(into: [:]) { result, element in
             result.merge(element) { _, _ in

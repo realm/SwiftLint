@@ -62,7 +62,7 @@ enum UnusedClosureParameterRuleExamples {
         """),
         Example(#"_ = ["a"].filter { `class` in `class`.hasPrefix("a") }"#),
         Example("let closure: (Int) -> Void = { `foo` in _ = foo }"),
-        Example("let closure: (Int) -> Void = { foo in _ = `foo` }")
+        Example("let closure: (Int) -> Void = { foo in _ = `foo` }"),
     ]
 
     static let triggering = [
@@ -97,7 +97,7 @@ enum UnusedClosureParameterRuleExamples {
         Example("""
         let class1 = "a"
         _ = ["a"].filter { ↓`class` in `class1`.hasPrefix("a") }
-        """)
+        """),
     ]
 
     static let corrections = [
@@ -166,6 +166,6 @@ enum UnusedClosureParameterRuleExamples {
             let failure: Failure = { _, error in
                 observer.sendFailed(error)
             }
-            """)
+            """),
     ]
 }

@@ -41,7 +41,7 @@ final class RegionTests: SwiftLintTestCase {
                        disabledRuleIdentifiers: ["rule_id"]),
                 Region(start: Location(file: nil, line: 2, character: 28),
                        end: Location(file: nil, line: .max, character: .max),
-                       disabledRuleIdentifiers: [])
+                       disabledRuleIdentifiers: []),
             ])
         }
         // enable/disable
@@ -53,7 +53,7 @@ final class RegionTests: SwiftLintTestCase {
                        disabledRuleIdentifiers: []),
                 Region(start: Location(file: nil, line: 2, character: 29),
                        end: Location(file: nil, line: .max, character: .max),
-                       disabledRuleIdentifiers: ["rule_id"])
+                       disabledRuleIdentifiers: ["rule_id"]),
             ])
         }
     }
@@ -68,7 +68,7 @@ final class RegionTests: SwiftLintTestCase {
                    disabledRuleIdentifiers: ["1", "2", "3"]),
             Region(start: Location(file: nil, line: 2, character: .max),
                    end: Location(file: nil, line: .max, character: .max),
-                   disabledRuleIdentifiers: [])
+                   disabledRuleIdentifiers: []),
         ])
     }
 
@@ -97,7 +97,7 @@ final class RegionTests: SwiftLintTestCase {
                    disabledRuleIdentifiers: ["3"]),
             Region(start: Location(file: nil, line: 6, character: 22),
                    end: Location(file: nil, line: .max, character: .max),
-                   disabledRuleIdentifiers: [])
+                   disabledRuleIdentifiers: []),
         ])
     }
 }

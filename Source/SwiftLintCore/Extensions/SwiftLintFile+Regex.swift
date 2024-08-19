@@ -18,7 +18,7 @@ extension SwiftLintFile {
         let commands: [Command]
         if let restrictingRuleIdentifiers {
             commands = self.commands().filter { command in
-                return command.ruleIdentifiers.contains(where: restrictingRuleIdentifiers.contains)
+                command.ruleIdentifiers.contains(where: restrictingRuleIdentifiers.contains)
             }
         } else {
             commands = self.commands()
@@ -94,9 +94,9 @@ extension SwiftLintFile {
     }
 
     public func match(pattern: String, with syntaxKinds: [SyntaxKind], range: NSRange? = nil) -> [NSRange] {
-        return match(pattern: pattern, range: range)
+        match(pattern: pattern, range: range)
             .filter { $0.1 == syntaxKinds }
-            .map { $0.0 }
+            .map(\.0)
     }
 
     public func matchesAndTokens(matching pattern: String,
@@ -112,18 +112,18 @@ extension SwiftLintFile {
 
     public func matchesAndSyntaxKinds(matching pattern: String,
                                       range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxKind])] {
-        return matchesAndTokens(matching: pattern, range: range).map { textCheckingResult, tokens in
+        matchesAndTokens(matching: pattern, range: range).map { textCheckingResult, tokens in
             (textCheckingResult, tokens.kinds)
         }
     }
 
     public func rangesAndTokens(matching pattern: String,
                                 range: NSRange? = nil) -> [(NSRange, [SwiftLintSyntaxToken])] {
-        return matchesAndTokens(matching: pattern, range: range).map { ($0.0.range, $0.1) }
+        matchesAndTokens(matching: pattern, range: range).map { ($0.0.range, $0.1) }
     }
 
     public func match(pattern: String, range: NSRange? = nil, captureGroup: Int = 0) -> [(NSRange, [SyntaxKind])] {
-        return matchesAndSyntaxKinds(matching: pattern, range: range).map { textCheckingResult, syntaxKinds in
+        matchesAndSyntaxKinds(matching: pattern, range: range).map { textCheckingResult, syntaxKinds in
             (textCheckingResult.range(at: captureGroup), syntaxKinds)
         }
     }
@@ -185,7 +185,7 @@ extension SwiftLintFile {
             return nil
         }
 
-        return tokens.map { $0.kinds }
+        return tokens.map(\.kinds)
     }
 
     /**
@@ -203,9 +203,9 @@ extension SwiftLintFile {
                       excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>,
                       range: NSRange? = nil,
                       captureGroup: Int = 0) -> [NSRange] {
-        return match(pattern: pattern, range: range, captureGroup: captureGroup)
+        match(pattern: pattern, range: range, captureGroup: captureGroup)
             .filter { syntaxKinds.isDisjoint(with: $0.1) }
-            .map { $0.0 }
+            .map(\.0)
     }
 
     public typealias MatchMapping = (NSTextCheckingResult) -> NSRange
@@ -214,7 +214,7 @@ extension SwiftLintFile {
                       range: NSRange? = nil,
                       excludingSyntaxKinds: Set<SyntaxKind>,
                       excludingPattern: String,
-                      exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
+                      exclusionMapping: MatchMapping = \.range) -> [NSRange] {
         let matches = match(pattern: pattern, excludingSyntaxKinds: excludingSyntaxKinds)
         if matches.isEmpty {
             return []
@@ -279,7 +279,7 @@ extension SwiftLintFile {
     }
 
     public func ruleEnabled(violatingRange: NSRange, for rule: some Rule) -> NSRange? {
-        return ruleEnabled(violatingRanges: [violatingRange], for: rule).first
+        ruleEnabled(violatingRanges: [violatingRange], for: rule).first
     }
 
     public func isACL(token: SwiftLintSyntaxToken) -> Bool {
@@ -292,6 +292,6 @@ extension SwiftLintFile {
     }
 
     public func contents(for token: SwiftLintSyntaxToken) -> String? {
-        return stringView.substringWithByteRange(token.range)
+        stringView.substringWithByteRange(token.range)
     }
 }

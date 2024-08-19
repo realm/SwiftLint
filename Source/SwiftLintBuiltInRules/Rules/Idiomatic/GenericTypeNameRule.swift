@@ -28,7 +28,7 @@ struct GenericTypeNameRule: Rule {
             Example("func configureWith(data: Either<MessageThread, (project: Project, backing: Backing)>)"),
             Example("typealias StringDictionary<T> = Dictionary<String, T>"),
             Example("typealias BackwardTriple<T1, T2, T3> = (T3, T2, T1)"),
-            Example("typealias DictionaryOfStrings<T : Hashable> = Dictionary<T, String>")
+            Example("typealias DictionaryOfStrings<T : Hashable> = Dictionary<T, String>"),
         ],
         triggeringExamples: [
             Example("func foo<↓T_Foo>() {}"),
@@ -37,14 +37,14 @@ struct GenericTypeNameRule: Rule {
             Example("func foo<↓type>() {}"),
             Example("typealias StringDictionary<↓T_Foo> = Dictionary<String, T_Foo>"),
             Example("typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)"),
-            Example("typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>")
+            Example("typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>"),
         ] + ["class", "struct", "enum"].flatMap { type -> [Example] in
-            return [
+            [
                 Example("\(type) Foo<↓T_Foo> {}"),
                 Example("\(type) Foo<T, ↓U_Foo> {}"),
                 Example("\(type) Foo<↓T_Foo, ↓U_Foo> {}"),
                 Example("\(type) Foo<↓\(String(repeating: "T", count: 21))> {}"),
-                Example("\(type) Foo<↓type> {}")
+                Example("\(type) Foo<↓type> {}"),
             ]
         }
     )

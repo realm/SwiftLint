@@ -22,7 +22,7 @@ struct FunctionParameterCountRule: Rule {
             func f(a: [Int], b: Int, c: Int, d: Int, f: Int) -> [Int] {
                 let s = a.flatMap { $0 as? [String: Int] } ?? []}}
             """),
-            Example("override func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}")
+            Example("override func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
         ],
         triggeringExamples: [
             Example("↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
@@ -32,7 +32,7 @@ struct FunctionParameterCountRule: Rule {
             struct Foo {
                 init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}
                 ↓func bar(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}}
-            """)
+            """),
         ]
     )
 }

@@ -243,7 +243,13 @@ enum UnneededSynthesizedInitializerRuleExamples {
 
             init() {}
         }
-        """, excludeFromDocumentation: true)
+        """, excludeFromDocumentation: true),
+        Example("""
+        struct Foo {
+            @available(*, unavailable)
+            init() {}
+        }
+        """),
     ]
 
     static let triggering = [
@@ -388,7 +394,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.i = i
                     }
                 }
-                """)
+                """),
     ]
 
     static let corrections = [
@@ -539,6 +545,6 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         let prop: Int
                     }
                 }
-                """)
+                """),
     ]
 }

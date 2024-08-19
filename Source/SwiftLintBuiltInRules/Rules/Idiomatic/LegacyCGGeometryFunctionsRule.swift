@@ -27,7 +27,7 @@ struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
             // "rect.divide(atDistance: 10.2, fromEdge: edge)", No correction available for divide
             Example("rect1.contains(rect2)"),
             Example("rect.contains(point)"),
-            Example("rect1.intersects(rect2)")
+            Example("rect1.intersects(rect2)"),
         ],
         triggeringExamples: [
             Example("↓CGRectGetWidth(rect)"),
@@ -49,7 +49,7 @@ struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
             Example("↓CGRectIntersection(rect1, rect2)"),
             Example("↓CGRectContainsRect(rect1, rect2)"),
             Example("↓CGRectContainsPoint(rect, point)"),
-            Example("↓CGRectIntersectsRect(rect1, rect2)")
+            Example("↓CGRectIntersectsRect(rect1, rect2)"),
         ],
         corrections: [
             Example("↓CGRectGetWidth( rect  )"): Example("rect.width"),
@@ -73,7 +73,7 @@ struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
             Example("↓CGRectContainsPoint(rect  ,point)"): Example("rect.contains(point)"),
             Example("↓CGRectIntersectsRect(  rect1,rect2 )"): Example("rect1.intersects(rect2)"),
             Example("↓CGRectIntersectsRect(rect1, rect2 )\n↓CGRectGetWidth(rect  )"):
-                Example("rect1.intersects(rect2)\nrect.width")
+                Example("rect1.intersects(rect2)\nrect.width"),
         ]
     )
 
@@ -97,7 +97,7 @@ struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
         "CGRectContainsRect": .function(name: "contains", argumentLabels: [""]),
         "CGRectContainsPoint": .function(name: "contains", argumentLabels: [""]),
         "CGRectIntersectsRect": .function(name: "intersects", argumentLabels: [""]),
-        "CGRectIntersection": .function(name: "intersection", argumentLabels: [""])
+        "CGRectIntersection": .function(name: "intersection", argumentLabels: [""]),
     ]
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {

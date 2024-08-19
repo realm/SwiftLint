@@ -13,7 +13,7 @@ internal struct NotificationCenterDetachmentRuleExamples {
                NotificationCenter.default.removeObserver(otherObject)
            }
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -23,6 +23,6 @@ internal struct NotificationCenterDetachmentRuleExamples {
                ↓NotificationCenter.default.removeObserver(self)
            }
         }
-        """)
+        """),
     ]
 }

@@ -104,7 +104,7 @@ struct RequiredEnumCaseRule: OptInRule {
                 case error
                 case notConnected(error: Error)
             }
-            """, configuration: exampleConfiguration)
+            """, configuration: exampleConfiguration),
         ],
         triggeringExamples: [
             Example("""
@@ -128,7 +128,7 @@ struct RequiredEnumCaseRule: OptInRule {
                 case success
                 case error
             }
-            """, configuration: exampleConfiguration)
+            """, configuration: exampleConfiguration),
         ]
     )
 }
@@ -167,7 +167,7 @@ private extension RequiredEnumCaseRule {
 
 private extension EnumDeclSyntax {
     var enumCasesNames: [String] {
-        return memberBlock.members
+        memberBlock.members
             .flatMap { member -> [String] in
                 guard let enumCaseDecl = member.decl.as(EnumCaseDeclSyntax.self) else {
                     return []

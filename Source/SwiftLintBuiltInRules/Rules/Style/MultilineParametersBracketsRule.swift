@@ -53,7 +53,7 @@ struct MultilineParametersBracketsRule: OptInRule {
                 func foo(a: [Int] = [
                     1
                 ])
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -86,12 +86,12 @@ struct MultilineParametersBracketsRule: OptInRule {
             func foo<T>(↓param1: T, param2: String,
                      param3: String
             ) -> T
-            """)
+            """),
         ]
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violations(in: file.structureDictionary, file: file)
+        violations(in: file.structureDictionary, file: file)
     }
 
     private func violations(in substructure: SourceKittenDictionary, file: SwiftLintFile) -> [StyleViolation] {
@@ -112,7 +112,7 @@ struct MultilineParametersBracketsRule: OptInRule {
             let parameters = substructure.substructure.filter { $0.declarationKind == .varParameter }
             let parameterBodies = parameters.compactMap { $0.content(in: file) }
             let parametersNewlineCount = parameterBodies.map { body in
-                return body.countOccurrences(of: "\n")
+                body.countOccurrences(of: "\n")
             }.reduce(0, +)
             let declarationNewlineCount = functionName.countOccurrences(of: "\n")
             let isMultiline = declarationNewlineCount > parametersNewlineCount

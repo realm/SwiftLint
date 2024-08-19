@@ -56,7 +56,7 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
             Example("var bol: Bool = true"),
             Example("var dbl: Double = 0.0"),
             Example("var int: Int = 0"),
-            Example("var str: String = \"str\"")
+            Example("var str: String = \"str\""),
         ],
         triggeringExamples: [
             Example("var url↓:URL=URL()"),
@@ -109,7 +109,7 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
             Example("var bol↓: Bool = true", configuration: ["consider_default_literal_types_redundant": true]),
             Example("var dbl↓: Double = 0.0", configuration: ["consider_default_literal_types_redundant": true]),
             Example("var int↓: Int = 0", configuration: ["consider_default_literal_types_redundant": true]),
-            Example("var str↓: String = \"str\"", configuration: ["consider_default_literal_types_redundant": true])
+            Example("var str↓: String = \"str\"", configuration: ["consider_default_literal_types_redundant": true]),
         ],
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),
@@ -174,7 +174,7 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
             Example("var int: Int = 0", configuration: ["consider_default_literal_types_redundant": true]):
                 Example("var int = 0"),
             Example("var str: String = \"str\"", configuration: ["consider_default_literal_types_redundant": true]):
-                Example("var str = \"str\"")
+                Example("var str = \"str\""),
         ]
     )
 }
@@ -203,12 +203,14 @@ private extension RedundantTypeAnnotationRule {
             guard isLiteralRedundant || initializer.hasRedundant(type: type.type) else {
                 return
             }
-            violations.append(type.positionAfterSkippingLeadingTrivia)
-            violationCorrections.append(ViolationCorrection(
-                start: type.position,
-                end: type.endPositionBeforeTrailingTrivia,
-                replacement: ""
-            ))
+            violations.append(
+                at: type.positionAfterSkippingLeadingTrivia,
+                correction: .init(
+                    start: type.position,
+                    end: type.endPositionBeforeTrailingTrivia,
+                    replacement: ""
+                )
+            )
         }
     }
 }

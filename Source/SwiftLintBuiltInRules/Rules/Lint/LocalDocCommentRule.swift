@@ -28,7 +28,7 @@ struct LocalDocCommentRule: SwiftSyntaxRule, OptInRule {
             /// Look here for more info:
             /// https://github.com.
             var myGreatProperty: String!
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -36,7 +36,7 @@ struct LocalDocCommentRule: SwiftSyntaxRule, OptInRule {
               ↓/// Docstring inside a function declaration
               print("foo")
             }
-            """)
+            """),
         ]
     )
 
@@ -53,7 +53,8 @@ private extension LocalDocCommentRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let docCommentRanges: [ByteSourceRange]
 
-        init(configuration: ConfigurationType, file: SwiftLintFile,
+        init(configuration: ConfigurationType,
+             file: SwiftLintFile,
              classifications: [SyntaxClassifiedRange]) {
             self.docCommentRanges = classifications
                 .filter { $0.kind == .docLineComment || $0.kind == .docBlockComment }

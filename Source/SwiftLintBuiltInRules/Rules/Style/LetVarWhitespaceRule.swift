@@ -16,77 +16,77 @@ struct LetVarWhitespaceRule: OptInRule {
                 var x = 1
 
                 var y = 2
-            """),
+                """),
             Example("""
                 let a = 5
 
                 var x = 1
-            """),
+                """),
             Example("""
                 var a = 0
-            """),
+                """),
             Example("""
                 let a = 1 +
                     2
                 let b = 5
-            """),
+                """),
             Example("""
                 var x: Int {
                     return 0
                 }
-            """),
+                """),
             Example("""
                 var x: Int {
                     let a = 0
 
                     return a
                 }
-            """),
+                """),
             Example("""
                 #if os(macOS)
                 let a = 0
 
                 func f() {}
                 #endif
-            """),
+                """),
             Example("""
                 #warning("TODO: remove it")
                 let a = 0
                 #warning("TODO: remove it")
                 let b = 0
-            """),
+                """),
             Example("""
                 #error("TODO: remove it")
                 let a = 0
-            """),
+                """),
             Example("""
                 @available(swift 4)
                 let a = 0
-            """),
+                """),
             Example("""
                 @objc
                 var s: String = ""
-            """),
+                """),
             Example("""
                 @objc
                 func a() {}
-            """),
+                """),
             Example("""
                 var x = 0
                 lazy
                 var y = 0
-            """),
+                """),
             Example("""
                 @available(OSX, introduced: 10.6)
                 @available(*, deprecated)
                 var x = 0
-            """),
+                """),
             Example("""
                 // swiftlint:disable superfluous_disable_command
                 // swiftlint:disable force_cast
 
                 let x = bar as! Bar
-            """),
+                """),
             Example("""
                 @available(swift 4)
                 @UserDefault("param", defaultValue: true)
@@ -94,14 +94,14 @@ struct LetVarWhitespaceRule: OptInRule {
 
                 @Attribute
                 func f() {}
-            """),
+                """),
             // Don't trigger on local variable declarations.
             Example("""
                 var x: Int {
                     let a = 0
                     return a
                 }
-            """),
+                """),
             Example("""
                 static var test: String { /* Comment block */
                     let s = "!"
@@ -109,7 +109,7 @@ struct LetVarWhitespaceRule: OptInRule {
                 }
 
                 func f() {}
-            """, excludeFromDocumentation: true),
+                """, excludeFromDocumentation: true),
             Example(#"""
                 @Flag(name: "name", help: "help")
                 var fix = false
@@ -120,32 +120,32 @@ struct LetVarWhitespaceRule: OptInRule {
                 var format = false
                 @Flag(help: "help")
                 var useAlternativeExcluding = false
-            """#, excludeFromDocumentation: true)
+                """#, excludeFromDocumentation: true),
         ].map(Self.wrapIntoClass) + [
             Example("""
                 a = 2
-            """),
+                """),
             Example("""
                 a = 2
 
                 var b = 3
-            """),
+                """),
             Example("""
                 #warning("message")
                 let a = 2
-            """),
+                """),
             Example("""
                 #if os(macOS)
                 let a = 2
                 #endif
-            """),
+                """),
             // Don't trigger in closure bodies.
             Example("""
                 f {
                     let a = 1
                     return a
                 }
-            """),
+                """),
             Example("""
                 func f() {
                     #if os(macOS)
@@ -155,27 +155,27 @@ struct LetVarWhitespaceRule: OptInRule {
                     return 1
                     #endif
                 }
-            """)
+                """),
         ],
         triggeringExamples: [
             Example("""
                 let a
                 ↓func x() {}
-            """),
+                """),
             Example("""
                 var x = 0
                 ↓@objc func f() {}
-            """),
+                """),
             Example("""
                 var x = 0
                 ↓@objc
                 func f() {}
-            """),
+                """),
             Example("""
                 @objc func f() {
                 }
                 ↓var x = 0
-            """),
+                """),
             Example("""
                 func f() {}
                 ↓@Wapper
@@ -183,18 +183,18 @@ struct LetVarWhitespaceRule: OptInRule {
                 @Wapper
                 var isEnabled = true
                 ↓func g() {}
-            """),
+                """),
             Example("""
                 #if os(macOS)
                 let a = 0
                 ↓func f() {}
                 #endif
-            """)
+                """),
         ].map(Self.wrapIntoClass) + [
             Example("""
                 let a = 2
                 ↓b = 1
-            """),
+                """),
             Example("""
                 #if os(macOS)
                 let a = 0
@@ -203,7 +203,7 @@ struct LetVarWhitespaceRule: OptInRule {
                 func f() {}
                 ↓let a = 1
                 #endif
-            """, excludeFromDocumentation: true)
+                """, excludeFromDocumentation: true),
         ]
     )
 
@@ -215,12 +215,12 @@ struct LetVarWhitespaceRule: OptInRule {
 private extension LetVarWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberBlockItemListSyntax) {
-            collectViolations(from: node, using: { $0.decl })
+            collectViolations(from: node, using: { $0.decl }) // swiftlint:disable:this prefer_key_path
         }
 
         override func visitPost(_ node: CodeBlockItemListSyntax) {
             if node.isInValidContext {
-                collectViolations(from: node, using: { $0.unwrap })
+                collectViolations(from: node, using: \.unwrap)
             }
         }
 

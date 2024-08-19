@@ -5,7 +5,7 @@ struct MissingDocsConfiguration: RuleConfiguration {
 
     private(set) var parameters = [
         RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
-        RuleParameter<AccessControlLevel>(severity: .warning, value: .public)
+        RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
     ]
 
     @ConfigurationElement(key: "excludes_extensions")
@@ -14,6 +14,8 @@ struct MissingDocsConfiguration: RuleConfiguration {
     private(set) var excludesInheritedTypes = true
     @ConfigurationElement(key: "excludes_trivial_init")
     private(set) var excludesTrivialInit = false
+    @ConfigurationElement(key: "evaluate_effective_access_control_level")
+    private(set) var evaluateEffectiveAccessControlLevel = false
 
     var parameterDescription: RuleConfigurationDescription? {
         let parametersDescription = parameters.group { $0.severity }
@@ -26,6 +28,7 @@ struct MissingDocsConfiguration: RuleConfiguration {
         $excludesExtensions.key => .flag(excludesExtensions)
         $excludesInheritedTypes.key => .flag(excludesInheritedTypes)
         $excludesTrivialInit.key => .flag(excludesTrivialInit)
+        $evaluateEffectiveAccessControlLevel.key => .flag(evaluateEffectiveAccessControlLevel)
     }
 
     mutating func apply(configuration: Any) throws {
@@ -43,6 +46,10 @@ struct MissingDocsConfiguration: RuleConfiguration {
 
         if let excludesTrivialInit = dict[$excludesTrivialInit.key] as? Bool {
             self.excludesTrivialInit = excludesTrivialInit
+        }
+
+        if let evaluateEffectiveAccessControlLevel = dict[$evaluateEffectiveAccessControlLevel.key] as? Bool {
+            self.evaluateEffectiveAccessControlLevel = evaluateEffectiveAccessControlLevel
         }
 
         if let parameters = try parameters(from: dict) {
@@ -75,7 +82,7 @@ struct MissingDocsConfiguration: RuleConfiguration {
             }
         }
 
-        guard parameters.count == parameters.map({ $0.value }).unique.count else {
+        guard parameters.count == parameters.map(\.value).unique.count else {
             throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
 

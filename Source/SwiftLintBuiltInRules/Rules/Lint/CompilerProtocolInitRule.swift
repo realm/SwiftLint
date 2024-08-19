@@ -12,13 +12,13 @@ struct CompilerProtocolInitRule: Rule {
         kind: .lint,
         nonTriggeringExamples: [
             Example("let set: Set<Int> = [1, 2]"),
-            Example("let set = Set(array)")
+            Example("let set = Set(array)"),
         ],
         triggeringExamples: [
             Example("let set = ↓Set(arrayLiteral: 1, 2)"),
             Example("let set = ↓Set (arrayLiteral: 1, 2)"),
             Example("let set = ↓Set.init(arrayLiteral: 1, 2)"),
-            Example("let set = ↓Set.init(arrayLiteral : 1, 2)")
+            Example("let set = ↓Set.init(arrayLiteral : 1, 2)"),
         ]
     )
 }
@@ -85,10 +85,12 @@ private struct ExpressibleByCompiler {
         initCallNames = Set(types.flatMap { [$0, "\($0).init"] })
     }
 
-    static let allProtocols = [byArrayLiteral, byNilLiteral, byBooleanLiteral,
-                               byFloatLiteral, byIntegerLiteral, byUnicodeScalarLiteral,
-                               byExtendedGraphemeClusterLiteral, byStringLiteral,
-                               byStringInterpolation, byDictionaryLiteral]
+    static let allProtocols = [
+        byArrayLiteral, byNilLiteral, byBooleanLiteral,
+        byFloatLiteral, byIntegerLiteral, byUnicodeScalarLiteral,
+        byExtendedGraphemeClusterLiteral, byStringLiteral,
+        byStringInterpolation, byDictionaryLiteral,
+    ]
 
     static let possibleNumberOfArguments: Set<Int> = {
         allProtocols.reduce(into: Set<Int>()) { partialResult, entry in
@@ -103,7 +105,7 @@ private struct ExpressibleByCompiler {
     }()
 
     func match(arguments: [String]) -> Bool {
-        return self.arguments.contains(arguments)
+        self.arguments.contains(arguments)
     }
 
     private static let byArrayLiteral: ExpressibleByCompiler = {
@@ -121,7 +123,7 @@ private struct ExpressibleByCompiler {
             "NSSet",
             "SBElementArray",
             "Set",
-            "IndexSet"
+            "IndexSet",
         ]
         return Self(protocolName: "ExpressibleByArrayLiteral", types: types, arguments: [["arrayLiteral"]])
     }()

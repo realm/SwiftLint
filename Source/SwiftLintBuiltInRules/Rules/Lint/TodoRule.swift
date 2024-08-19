@@ -12,7 +12,7 @@ struct TodoRule: Rule {
         kind: .lint,
         nonTriggeringExamples: [
             Example("// notaTODO:"),
-            Example("// notaFIXME:")
+            Example("// notaFIXME:"),
         ],
         triggeringExamples: [
             Example("// ↓TODO:"),
@@ -22,7 +22,7 @@ struct TodoRule: Rule {
             Example("/* ↓FIXME: */"),
             Example("/* ↓TODO: */"),
             Example("/** ↓FIXME: */"),
-            Example("/** ↓TODO: */")
+            Example("/** ↓TODO: */"),
         ].skipWrappingInCommentTests()
     )
 }

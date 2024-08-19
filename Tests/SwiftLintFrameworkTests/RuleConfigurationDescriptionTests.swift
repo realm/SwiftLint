@@ -6,7 +6,7 @@ import XCTest
 
 // swiftlint:disable:next type_body_length
 final class RuleConfigurationDescriptionTests: XCTestCase {
-    @AutoApply
+    @AutoConfigParser
     private struct TestConfiguration: RuleConfiguration {
         typealias Parent = RuleMock // swiftlint:disable:this nesting
 
@@ -40,7 +40,7 @@ final class RuleConfigurationDescriptionTests: XCTestCase {
         @ConfigurationElement(key: "levels")
         var nestedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 3, error: 2)
 
-        func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool { false }
+        func isEqualTo(_: some RuleConfiguration) -> Bool { false }
     }
 
     // swiftlint:disable:next function_body_length
@@ -221,9 +221,9 @@ final class RuleConfigurationDescriptionTests: XCTestCase {
             @ConfigurationElement(key: "invisible")
             var invisible = true
 
-            mutating func apply(configuration: Any) throws {}
+            mutating func apply(configuration _: Any) throws { /* conformance for test */ }
 
-            func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool { false }
+            func isEqualTo(_: some RuleConfiguration) -> Bool { false }
         }
 
         let description = RuleConfigurationDescription.from(configuration: Config())
@@ -472,7 +472,7 @@ final class RuleConfigurationDescriptionTests: XCTestCase {
             "set": [4, 5, 6],
             "SEVERITY": "error",
             "warning": 12,
-            "levels": ["warning": 6, "error": 7]
+            "levels": ["warning": 6, "error": 7],
         ])
 
         XCTAssertFalse(configuration.flag)
@@ -508,7 +508,7 @@ final class RuleConfigurationDescriptionTests: XCTestCase {
                     "severity": "error",
                     "warning": 3,
                     "unknown": 1,
-                    "unsupported": true
+                    "unsupported": true,
                 ])
             },
             """

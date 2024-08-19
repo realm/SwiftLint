@@ -43,7 +43,7 @@ struct DuplicateEnumCasesRule: Rule {
               case file(URL)
             #endif
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -52,7 +52,7 @@ struct DuplicateEnumCasesRule: Rule {
                 case addURL(url: URL)
                 case ↓add(data: Data)
             }
-            """)
+            """),
         ]
     )
 }
@@ -76,7 +76,7 @@ private extension DuplicateEnumCasesRule {
 
             let duplicatedElementPositions = elementsByName
                 .filter { $0.value.count > 1 }
-                .flatMap { $0.value }
+                .flatMap(\.value)
 
             violations.append(contentsOf: duplicatedElementPositions)
         }

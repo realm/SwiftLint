@@ -60,7 +60,7 @@ struct PrefixedTopLevelConstantRule: OptInRule {
                     print("\(number) is a small number")
                 }
             }
-            """#)
+            """#),
         ],
         triggeringExamples: [
             Example("private let ↓Foo = 20.0"),
@@ -76,7 +76,7 @@ struct PrefixedTopLevelConstantRule: OptInRule {
             let ↓foo = {
                 return a + b
             }()
-            """)
+            """),
         ]
     )
 }
@@ -106,11 +106,11 @@ private extension PrefixedTopLevelConstantRule {
             }
         }
 
-        override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
-        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
     }

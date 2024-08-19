@@ -11,7 +11,7 @@ open class ViolationsSyntaxVisitor<Configuration: RuleConfiguration>: SyntaxVisi
     public lazy var locationConverter = file.locationConverter
 
     /// Initializer for a ``ViolationsSyntaxVisitor``.
-    /// 
+    ///
     /// - Parameters:
     ///   - configuration: Configuration of a rule.
     ///   - file: File from which the syntax tree stems from.
@@ -24,9 +24,6 @@ open class ViolationsSyntaxVisitor<Configuration: RuleConfiguration>: SyntaxVisi
 
     /// Positions in a source file where violations should be reported.
     public var violations: [ReasonedRuleViolation] = []
-    /// Ranges of violations to be used in rewriting (see ``SwiftSyntaxCorrectableRule``). It is not mandatory to fill
-    /// this list while traversing the AST, especially not if the rule is not correctable or provides a custom rewriter.
-    public var violationCorrections = [ViolationCorrection]()
 
     /// List of declaration types that shall be skipped while traversing the AST.
     open var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [] }
@@ -56,28 +53,6 @@ open class ViolationsSyntaxVisitor<Configuration: RuleConfiguration>: SyntaxVisi
     }
 }
 
-/// The correction of a violation that is basically the violation's range in the source code and a
-/// replacement for this range that would fix the violation.
-public struct ViolationCorrection {
-    /// Start position of the violation range.
-    public let start: AbsolutePosition
-    /// End position of the violation range.
-    let end: AbsolutePosition
-    /// Replacement for the violating range.
-    let replacement: String
-
-    /// Create a ``ViolationCorrection``.
-    /// - Parameters:
-    ///   - start:          Start position of the violation range.
-    ///   - end:            End position of the violation range.
-    ///   - replacement:    Replacement for the violating range.
-    public init(start: AbsolutePosition, end: AbsolutePosition, replacement: String) {
-        self.start = start
-        self.end = end
-        self.replacement = replacement
-    }
-}
-
 public extension Array where Element == any DeclSyntaxProtocol.Type {
     /// All visitable declaration syntax types.
     static let all: Self = [
@@ -90,7 +65,7 @@ public extension Array where Element == any DeclSyntaxProtocol.Type {
         ProtocolDeclSyntax.self,
         StructDeclSyntax.self,
         SubscriptDeclSyntax.self,
-        VariableDeclSyntax.self
+        VariableDeclSyntax.self,
     ]
 
     /// All declarations except for the specified ones.

@@ -10,11 +10,11 @@ struct NonOptionalStringDataConversionRule: Rule {
         kind: .lint,
         nonTriggeringExamples: [
             Example("Data(\"foo\".utf8)"),
-            Example("String(decoding: data, as: UTF8.self)")
+            Example("String(decoding: data, as: UTF8.self)"),
         ],
         triggeringExamples: [
             Example("\"foo\".data(using: .utf8)"),
-            Example("String(data: data, encoding: .utf8)")
+            Example("String(data: data, encoding: .utf8)"),
         ]
     )
 }

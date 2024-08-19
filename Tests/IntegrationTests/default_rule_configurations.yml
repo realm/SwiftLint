@@ -66,6 +66,8 @@ contains_over_first_not_nil:
   severity: warning
 contains_over_range_nil_comparison:
   severity: warning
+contrasted_opening_brace:
+  severity: warning
 control_statement:
   severity: warning
 convenience_type:
@@ -303,6 +305,7 @@ missing_docs:
   excludes_extensions: true
   excludes_inherited_types: true
   excludes_trivial_init: false
+  evaluate_effective_access_control_level: false
 modifier_order:
   severity: warning
   preferred_modifier_order: [override, acl, setterACL, dynamic, mutators, lazy, final, required, convenience, typeMethods, owned]
@@ -333,6 +336,9 @@ nesting:
   ignore_typealiases_and_associatedtypes: false
 nimble_operator:
   severity: warning
+no_empty_block:
+  severity: warning
+  disabled_block_types: []
 no_extension_access_modifier:
   severity: error
 no_fallthrough_only:
@@ -393,6 +399,9 @@ pattern_matching_keywords:
   severity: warning
 period_spacing:
   severity: warning
+prefer_key_path:
+  severity: warning
+  restrict_to_standard_functions: true
 prefer_nimble:
   severity: warning
 prefer_self_in_static_references:
@@ -602,6 +611,8 @@ unused_import:
 unused_optional_binding:
   severity: warning
   ignore_optional_try: false
+unused_parameter:
+  severity: warning
 unused_setter_value:
   severity: warning
 valid_ibinspectable:

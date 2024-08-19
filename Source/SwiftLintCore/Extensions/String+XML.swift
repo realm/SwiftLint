@@ -6,7 +6,7 @@ extension String {
             ("\"", "&quot;"),
             ("'", "&apos;"),
             (">", "&gt;"),
-            ("<", "&lt;")
+            ("<", "&lt;"),
         ]
         var newString = self
         for (key, value) in htmlEscapes {

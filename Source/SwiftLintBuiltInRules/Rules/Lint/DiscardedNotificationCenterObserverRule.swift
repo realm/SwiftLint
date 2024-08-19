@@ -38,8 +38,8 @@ struct DiscardedNotificationCenterObserverRule: OptInRule {
             obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))
             """),
             Example("""
-            func foo(_ notif: Any) {
-               obs.append(notif)
+            func foo(_ notify: Any) {
+               obs.append(notify)
             }
             foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))
             """),
@@ -54,7 +54,7 @@ struct DiscardedNotificationCenterObserverRule: OptInRule {
             """),
             Example("""
             f { return nc.addObserver(forName: $0, object: object, queue: queue, using: block) }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }"),
@@ -88,7 +88,7 @@ struct DiscardedNotificationCenterObserverRule: OptInRule {
                     ↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
                 }
             }
-            """)
+            """),
         ]
     )
 }
@@ -105,12 +105,12 @@ private extension DiscardedNotificationCenterObserverRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         var scopes = Stack<CodeBlockScope>()
 
-        override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: SourceFileSyntax) -> SyntaxVisitorContinueKind {
             scopes.push(.file)
             return .visitChildren
         }
 
-        override func visitPost(_ node: SourceFileSyntax) {
+        override func visitPost(_: SourceFileSyntax) {
             scopes.pop()
         }
 
@@ -119,7 +119,7 @@ private extension DiscardedNotificationCenterObserverRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: FunctionDeclSyntax) {
+        override func visitPost(_: FunctionDeclSyntax) {
             scopes.pop()
         }
 
@@ -130,7 +130,7 @@ private extension DiscardedNotificationCenterObserverRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: AccessorBlockSyntax) {
+        override func visitPost(_: AccessorBlockSyntax) {
             scopes.pop()
         }
 
@@ -143,7 +143,7 @@ private extension DiscardedNotificationCenterObserverRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: AccessorDeclSyntax) {
+        override func visitPost(_: AccessorDeclSyntax) {
             scopes.pop()
         }
 
@@ -152,7 +152,7 @@ private extension DiscardedNotificationCenterObserverRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClosureExprSyntax) {
+        override func visitPost(_: ClosureExprSyntax) {
             scopes.pop()
         }
 

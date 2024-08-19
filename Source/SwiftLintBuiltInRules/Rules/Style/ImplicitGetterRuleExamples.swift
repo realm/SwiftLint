@@ -202,7 +202,7 @@ struct ImplicitGetterRuleExamples {
                     }
                 }
             }
-            """)
+            """),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -261,6 +261,6 @@ struct ImplicitGetterRuleExamples {
                     }
                 }
             }
-            """)
+            """),
     ]
 }

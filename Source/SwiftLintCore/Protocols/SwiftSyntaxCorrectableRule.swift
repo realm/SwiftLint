@@ -1,3 +1,4 @@
+import Foundation
 import SwiftSyntax
 
 /// A SwiftLint CorrectableRule that performs its corrections using a SwiftSyntax `SyntaxRewriter`.
@@ -12,7 +13,7 @@ public protocol SwiftSyntaxCorrectableRule: SwiftSyntaxRule, CorrectableRule {
 }
 
 public extension SwiftSyntaxCorrectableRule {
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>? {
+    func makeRewriter(file _: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>? {
         nil
     }
 
@@ -23,7 +24,7 @@ public extension SwiftSyntaxCorrectableRule {
         if let rewriter = makeRewriter(file: file) {
             let newTree = rewriter.visit(syntaxTree)
             let positions = rewriter.correctionPositions
-            if positions.isEmpty {
+            guard positions.isNotEmpty else {
                 return []
             }
             let corrections = positions
@@ -39,18 +40,33 @@ public extension SwiftSyntaxCorrectableRule {
         }
 
         // There is no rewriter. Falling back to the correction ranges collected by the visitor (if any).
-        let violationCorrections = makeVisitor(file: file).walk(tree: syntaxTree, handler: \.violationCorrections)
-        if violationCorrections.isEmpty {
+        let violations = makeVisitor(file: file)
+            .walk(tree: syntaxTree, handler: \.violations)
+        guard violations.isNotEmpty else {
             return []
         }
-        let correctionRanges = violationCorrections
+
+        let locationConverter = file.locationConverter
+        let disabledRegions = file.regions()
+            .filter { $0.areRulesDisabled(ruleIDs: Self.description.allIdentifiers) }
+            .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
+
+        typealias CorrectionRange = (range: NSRange, correction: String)
+        let correctionRanges = violations
+            .filter { !$0.position.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) }
+            .compactMap(\.correction)
             .compactMap { correction in
                 file.stringView.NSRange(start: correction.start, end: correction.end).map { range in
-                    (range: range, correction: correction.replacement)
+                    CorrectionRange(range: range, correction: correction.replacement)
                 }
             }
-            .filter { file.ruleEnabled(violatingRange: $0.range, for: self) != nil }
-            .reversed()
+            .sorted { (lhs: CorrectionRange, rhs: CorrectionRange) -> Bool in
+                lhs.range.location > rhs.range.location
+            }
+        guard correctionRanges.isNotEmpty else {
+            return []
+        }
+
         var corrections = [Correction]()
         var contents = file.contents
         for range in correctionRanges {
@@ -83,7 +99,7 @@ open class ViolationsSyntaxRewriter<Configuration: RuleConfiguration>: SyntaxRew
     /// Positions in a source file where corrections were applied.
     public var correctionPositions = [AbsolutePosition]()
 
-    /// Initilizer for a ``ViolationsSyntaxRewriter``.
+    /// Initializer for a ``ViolationsSyntaxRewriter``.
     ///
     /// - Parameters:
     ///   - configuration: Configuration of a rule.

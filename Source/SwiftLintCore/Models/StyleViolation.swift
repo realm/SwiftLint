@@ -20,7 +20,7 @@ public struct StyleViolation: CustomStringConvertible, Codable, Hashable {
 
     /// A printable description for this violation.
     public var description: String {
-        return XcodeReporter.generateForSingleViolation(self)
+        XcodeReporter.generateForSingleViolation(self)
     }
 
     /// Creates a `StyleViolation` by specifying its properties directly.
@@ -53,7 +53,7 @@ public struct StyleViolation: CustomStringConvertible, Codable, Hashable {
 
     /// Returns the same violation, but with the `severity` that is passed in
     /// - Parameter severity: the new severity to use in the modified violation
-    public func with(severity: ViolationSeverity) -> StyleViolation {
+    public func with(severity: ViolationSeverity) -> Self {
         var new = self
         new.severity = severity
         return new
@@ -61,7 +61,7 @@ public struct StyleViolation: CustomStringConvertible, Codable, Hashable {
 
     /// Returns the same violation, but with the `location` that is passed in
     /// - Parameter location: the new location to use in the modified violation
-    public func with(location: Location) -> StyleViolation {
+    public func with(location: Location) -> Self {
         var new = self
         new.location = location
         return new

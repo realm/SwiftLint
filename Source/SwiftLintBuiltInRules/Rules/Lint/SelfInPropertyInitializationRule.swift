@@ -67,7 +67,7 @@ struct SelfInPropertyInitializationRule: Rule {
                 func calculateA() -> String { "A" }
                 func calculateB() -> String { "B" }
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -87,7 +87,7 @@ struct SelfInPropertyInitializationRule: Rule {
                     return button
                 }()
             }
-            """)
+            """),
         ]
     )
 }

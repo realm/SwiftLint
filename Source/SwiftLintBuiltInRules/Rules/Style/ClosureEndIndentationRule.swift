@@ -17,8 +17,8 @@ struct ClosureEndIndentationRule: Rule, OptInRule {
     fileprivate static let notWhitespace = regex("[^\\s]")
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violations(in: file).map { violation in
-            return styleViolation(for: violation, in: file)
+        violations(in: file).map { violation in
+            styleViolation(for: violation, in: file)
         }
     }
 
@@ -62,8 +62,7 @@ extension ClosureEndIndentationRule: CorrectableRule {
         }
 
         var corrections = correctedLocations.map {
-            return Correction(ruleDescription: Self.description,
-                              location: Location(file: file, characterOffset: $0))
+            Correction(ruleDescription: Self.description, location: Location(file: file, characterOffset: $0))
         }
 
         file.write(correctedContents)
@@ -114,13 +113,14 @@ extension ClosureEndIndentationRule {
     }
 
     fileprivate func violations(in file: SwiftLintFile) -> [Violation] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
+        file.structureDictionary.traverseDepthFirst { subDict in
             guard let kind = subDict.expressionKind else { return nil }
             return violations(in: file, of: kind, dictionary: subDict)
         }
     }
 
-    private func violations(in file: SwiftLintFile, of kind: SwiftExpressionKind,
+    private func violations(in file: SwiftLintFile,
+                            of kind: SwiftExpressionKind,
                             dictionary: SourceKittenDictionary) -> [Violation] {
         guard kind == .call else {
             return []
@@ -204,7 +204,7 @@ extension ClosureEndIndentationRule {
         }
 
         return closureArguments.compactMap { dictionary in
-            return validateClosureArgument(in: file, dictionary: dictionary)
+            validateClosureArgument(in: file, dictionary: dictionary)
         }
     }
 
@@ -270,7 +270,8 @@ extension ClosureEndIndentationRule {
     }
 
     private func isSingleLineClosure(dictionary: SourceKittenDictionary,
-                                     endPosition: ByteCount, file: SwiftLintFile) -> Bool {
+                                     endPosition: ByteCount,
+                                     file: SwiftLintFile) -> Bool {
         let contents = file.stringView
 
         guard let start = dictionary.bodyOffset,
@@ -283,7 +284,8 @@ extension ClosureEndIndentationRule {
     }
 
     private func containsSingleLineClosure(dictionary: SourceKittenDictionary,
-                                           endPosition: ByteCount, file: SwiftLintFile) -> Bool {
+                                           endPosition: ByteCount,
+                                           file: SwiftLintFile) -> Bool {
         let contents = file.stringView
 
         guard let closure = trailingClosure(dictionary: dictionary, file: file),
@@ -311,7 +313,7 @@ extension ClosureEndIndentationRule {
 
     private func filterClosureArguments(_ arguments: [SourceKittenDictionary],
                                         file: SwiftLintFile) -> [SourceKittenDictionary] {
-        return arguments.filter { argument in
+        arguments.filter { argument in
             guard let bodyByteRange = argument.bodyByteRange,
                 let range = file.stringView.byteRangeToNSRange(bodyByteRange),
                 let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,

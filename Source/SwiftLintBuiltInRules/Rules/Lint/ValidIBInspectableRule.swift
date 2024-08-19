@@ -68,7 +68,7 @@ struct ValidIBInspectableRule: Rule {
                     }
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -105,7 +105,7 @@ struct ValidIBInspectableRule: Rule {
             class Foo {
               @IBInspectable private ↓var x: Optional<String>
             }
-            """)
+            """),
         ]
     )
 
@@ -122,7 +122,7 @@ struct ValidIBInspectableRule: Rule {
             "UIColor",
             "NSColor",
             "UIImage",
-            "NSImage"
+            "NSImage",
         ]
 
         let types = [
@@ -135,7 +135,7 @@ struct ValidIBInspectableRule: Rule {
             "CGSize",
             "NSSize",
             "CGRect",
-            "NSRect"
+            "NSRect",
         ]
 
         let intTypes: [String] = ["", "8", "16", "32", "64"].flatMap { size in

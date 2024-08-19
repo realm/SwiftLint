@@ -11,7 +11,7 @@ struct FlatMapOverMapReduceRule: OptInRule {
         kind: .performance,
         nonTriggeringExamples: [
             Example("let foo = bar.map { $0.count }.reduce(0, +)"),
-            Example("let foo = bar.flatMap { $0.array }")
+            Example("let foo = bar.flatMap { $0.array }"),
         ],
         triggeringExamples: [
             Example("let foo = ↓bar.map { $0.array }.reduce([], +)")

@@ -26,14 +26,15 @@ enum LintOrAnalyzeMode {
 
 struct LintOrAnalyzeCommand {
     static func run(_ options: LintOrAnalyzeOptions) async throws {
-        if options.inProcessSourcekit {
-            // TODO: [08/11/2024] Remove deprecation warning after ~2 years.
-            queuedPrintError(
-                """
-                warning: The --in-process-sourcekit option is deprecated. \
-                SwiftLint now always uses an in-process SourceKit.
-                """
-            )
+        if let workingDirectory = options.workingDirectory {
+            if !FileManager.default.changeCurrentDirectoryPath(workingDirectory) {
+                throw SwiftLintError.usageError(
+                    description: """
+                                 Could not change working directory to '\(workingDirectory)'. \
+                                 Make sure it exists and is accessible.
+                                 """
+                    )
+            }
         }
         try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
             try await options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
@@ -44,18 +45,21 @@ struct LintOrAnalyzeCommand {
     private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws {
         let builder = LintOrAnalyzeResultBuilder(options)
         let files = try await collectViolations(builder: builder)
-        if let baselineOutputPath = options.writeBaseline {
+        if let baselineOutputPath = options.writeBaseline ?? builder.configuration.writeBaseline {
             try Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath)
         }
         try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
             try postProcessViolations(files: files, builder: builder)
+        }
+        if options.checkForUpdates || builder.configuration.checkForUpdates {
+            UpdateChecker.checkForUpdates()
         }
     }
 
     private static func collectViolations(builder: LintOrAnalyzeResultBuilder) async throws -> [SwiftLintFile] {
         let options = builder.options
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
-        let baseline = try baseline(options)
+        let baseline = try baseline(options, builder.configuration)
         return try await builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
                                                                   storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
@@ -121,8 +125,8 @@ struct LintOrAnalyzeCommand {
         guard numberOfSeriousViolations == 0 else { exit(2) }
     }
 
-    private static func baseline(_ options: LintOrAnalyzeOptions) throws -> Baseline? {
-        if let baselinePath = options.baseline {
+    private static func baseline(_ options: LintOrAnalyzeOptions, _ configuration: Configuration) throws -> Baseline? {
+        if let baselinePath = options.baseline ?? configuration.baseline {
             do {
                 return try Baseline(fromPath: baselinePath)
             } catch {
@@ -139,7 +143,7 @@ struct LintOrAnalyzeCommand {
 
     private static func printStatus(violations: [StyleViolation], files: [SwiftLintFile], serious: Int, verb: String) {
         let pluralSuffix = { (collection: [Any]) -> String in
-            return collection.count != 1 ? "s" : ""
+            collection.count != 1 ? "s" : ""
         }
         queuedPrintError(
             "Done \(verb)! Found \(violations.count) violation\(pluralSuffix(violations)), " +
@@ -240,7 +244,7 @@ struct LintOrAnalyzeCommand {
             }
 
             let pluralSuffix = { (collection: [Any]) -> String in
-                return collection.count != 1 ? "s" : ""
+                collection.count != 1 ? "s" : ""
             }
             queuedPrintError("Done correcting \(files.count) file\(pluralSuffix(files))!")
         }
@@ -261,17 +265,19 @@ struct LintOrAnalyzeOptions {
     let reporter: String?
     let baseline: String?
     let writeBaseline: String?
+    let workingDirectory: String?
     let quiet: Bool
     let output: String?
     let progress: Bool
     let cachePath: String?
     let ignoreCache: Bool
     let enableAllRules: Bool
+    let onlyRule: String?
     let autocorrect: Bool
     let format: Bool
     let compilerLogPath: String?
     let compileCommands: String?
-    let inProcessSourcekit: Bool
+    let checkForUpdates: Bool
 
     var verb: String {
         if autocorrect {

@@ -7,7 +7,7 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Inli
     @ConfigurationElement(key: "error")
     public var error: Int?
 
-    /// Create a `SeverityLevelsConfiguration` based on the sepecified `warning` and `error` thresholds.
+    /// Create a `SeverityLevelsConfiguration` based on the specified `warning` and `error` thresholds.
     ///
     /// - parameter warning: The threshold for a violation to be a warning.
     /// - parameter error:   The threshold for a violation to be an error.
@@ -19,8 +19,10 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Inli
     /// The rule parameters that define the thresholds that should map to each severity.
     public var params: [RuleParameter<Int>] {
         if let error {
-            return [RuleParameter(severity: .error, value: error),
-                    RuleParameter(severity: .warning, value: warning)]
+            return [
+                RuleParameter(severity: .error, value: error),
+                RuleParameter(severity: .warning, value: warning),
+            ]
         }
         return [RuleParameter(severity: .warning, value: warning)]
     }

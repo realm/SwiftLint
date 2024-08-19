@@ -41,7 +41,7 @@ final class NestingRuleTests: SwiftLintTestCase {
                             \(type) Example_1 {}
                         }
                     }
-                """)
+                """),
             ]
         })
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
@@ -92,7 +92,7 @@ final class NestingRuleTests: SwiftLintTestCase {
                            }
                        }
                     }
-                """)
+                """),
             ]
         })
 
@@ -134,10 +134,11 @@ final class NestingRuleTests: SwiftLintTestCase {
                            }
                        }
                     }
-                """)
+                """),
             ]
         }
 
+        // swiftlint:disable:next closure_body_length
         triggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [
                 .init("""
@@ -194,7 +195,7 @@ final class NestingRuleTests: SwiftLintTestCase {
                            }
                        }
                     }
-                """)
+                """),
             ]
         })
 
@@ -213,6 +214,7 @@ final class NestingRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
     func testNestingWithoutCheckNestingInClosuresAndStatements() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
+        // swiftlint:disable:next closure_body_length
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [
                 .init("""
@@ -382,10 +384,11 @@ final class NestingRuleTests: SwiftLintTestCase {
                            }
                        }
                     }
-                """)
+                """),
             ]
         })
 
+        // swiftlint:disable:next closure_body_length
         var triggeringExamples = detectingTypes.flatMap { type -> [Example] in
             [
                 .init("""
@@ -440,7 +443,7 @@ final class NestingRuleTests: SwiftLintTestCase {
                            }
                        }
                     }
-                """)
+                """),
             ]
         }
 
@@ -492,7 +495,7 @@ final class NestingRuleTests: SwiftLintTestCase {
                        }
                    }
                 }
-            """)
+            """),
         ])
 
         let description = RuleDescription(
@@ -543,7 +546,7 @@ final class NestingRuleTests: SwiftLintTestCase {
                             typealias AssociatedType = Int
                         }
                     }
-                """)
+                """),
             ]
         })
 

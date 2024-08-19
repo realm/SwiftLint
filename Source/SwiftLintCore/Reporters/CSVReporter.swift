@@ -16,7 +16,7 @@ struct CSVReporter: Reporter {
             "severity",
             "type",
             "reason",
-            "rule_id"
+            "rule_id",
         ].joined(separator: ",")
 
         let rows = [keys] + violations.map(csvRow(for:))
@@ -26,14 +26,14 @@ struct CSVReporter: Reporter {
     // MARK: - Private
 
     private static func csvRow(for violation: StyleViolation) -> String {
-        return [
+        [
             violation.location.file?.escapedForCSV() ?? "",
             violation.location.line?.description ?? "",
             violation.location.character?.description ?? "",
             violation.severity.rawValue.capitalized,
             violation.ruleName.escapedForCSV(),
             violation.reason.escapedForCSV(),
-            violation.ruleIdentifier
+            violation.ruleIdentifier,
         ].joined(separator: ",")
     }
 }

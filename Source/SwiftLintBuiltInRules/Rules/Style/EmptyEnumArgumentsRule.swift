@@ -3,8 +3,9 @@ import SwiftSyntax
 private func wrapInSwitch(
     variable: String = "foo",
     _ str: String,
-    file: StaticString = #file, line: UInt = #line) -> Example {
-    return Example(
+    file: StaticString = #filePath,
+    line: UInt = #line) -> Example {
+    Example(
         """
         switch \(variable) {
         \(str): break
@@ -12,11 +13,11 @@ private func wrapInSwitch(
         """, file: file, line: line)
 }
 
-private func wrapInFunc(_ str: String, file: StaticString = #file, line: UInt = #line) -> Example {
-    return Example("""
+private func wrapInFunc(_ str: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
+    Example("""
     func example(foo: Foo) {
         switch foo {
-        case \(str):
+        \(str):
             break
         }
     }
@@ -49,17 +50,17 @@ struct EmptyEnumArgumentsRule: Rule {
             Example("guard foo == .bar() else { return }"),
             Example("""
             if case .appStore = self.appInstaller, !UIDevice.isSimulator() {
-              viewController.present(self, animated: false)
+                viewController.present(self, animated: false)
             } else {
-              UIApplication.shared.open(self.appInstaller.url)
+                UIApplication.shared.open(self.appInstaller.url)
             }
             """),
             Example("""
             let updatedUserNotificationSettings = deepLink.filter { nav in
-              guard case .settings(.notifications(_, nil)) = nav else { return false }
-              return true
+                guard case .settings(.notifications(_, nil)) = nav else { return false }
+                return true
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             wrapInSwitch("case .bar↓(_)"),
@@ -75,17 +76,17 @@ struct EmptyEnumArgumentsRule: Rule {
             Example("guard case .bar↓() = foo else {\n}"),
             Example("""
             if case .appStore↓(_) = self.appInstaller, !UIDevice.isSimulator() {
-              viewController.present(self, animated: false)
+                viewController.present(self, animated: false)
             } else {
-              UIApplication.shared.open(self.appInstaller.url)
+                UIApplication.shared.open(self.appInstaller.url)
             }
             """),
             Example("""
             let updatedUserNotificationSettings = deepLink.filter { nav in
-              guard case .settings(.notifications↓(_, _)) = nav else { return false }
-              return true
+                guard case .settings(.notifications↓(_, _)) = nav else { return false }
+                return true
             }
-            """)
+            """),
         ],
         corrections: [
             wrapInSwitch("case .bar↓(_)"): wrapInSwitch("case .bar"),
@@ -99,16 +100,16 @@ struct EmptyEnumArgumentsRule: Rule {
             Example("guard case .bar↓(_) = foo else {"): Example("guard case .bar = foo else {"),
             Example("""
             let updatedUserNotificationSettings = deepLink.filter { nav in
-              guard case .settings(.notifications↓(_, _)) = nav else { return false }
-              return true
+                guard case .settings(.notifications↓(_, _)) = nav else { return false }
+                return true
             }
             """):
                 Example("""
                 let updatedUserNotificationSettings = deepLink.filter { nav in
-                  guard case .settings(.notifications) = nav else { return false }
-                  return true
+                    guard case .settings(.notifications) = nav else { return false }
+                    return true
                 }
-                """)
+                """),
         ]
     )
 }

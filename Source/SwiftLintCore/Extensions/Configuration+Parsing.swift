@@ -15,6 +15,9 @@ extension Configuration {
         case analyzerRules = "analyzer_rules"
         case allowZeroLintableFiles = "allow_zero_lintable_files"
         case strict = "strict"
+        case baseline = "baseline"
+        case writeBaseline = "write_baseline"
+        case checkForUpdates = "check_for_updates"
         case childConfig = "child_config"
         case parentConfig = "parent_config"
         case remoteConfigTimeout = "remote_timeout"
@@ -22,7 +25,7 @@ extension Configuration {
     }
 
     // MARK: - Properties
-    private static let validGlobalKeys: Set<String> = Set(Key.allCases.map { $0.rawValue })
+    private static let validGlobalKeys: Set<String> = Set(Key.allCases.map(\.rawValue))
 
     // MARK: - Initializers
     /// Creates a Configuration value based on the specified parameters.
@@ -39,9 +42,10 @@ extension Configuration {
         dict: [String: Any],
         ruleList: RuleList = RuleRegistry.shared.list,
         enableAllRules: Bool = false,
+        onlyRule: String? = nil,
         cachePath: String? = nil
     ) throws {
-        func defaultStringArray(_ object: Any?) -> [String] { return [String].array(of: object) ?? [] }
+        func defaultStringArray(_ object: Any?) -> [String] { [String].array(of: object) ?? [] }
 
         // Use either the new 'opt_in_rules' or fallback to the deprecated 'enabled_rules'
         let optInRules = defaultStringArray(dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue])
@@ -70,18 +74,21 @@ extension Configuration {
 
         let rulesMode = try RulesMode(
             enableAllRules: enableAllRules,
+            onlyRule: onlyRule,
             onlyRules: onlyRules,
             optInRules: optInRules,
             disabledRules: disabledRules,
             analyzerRules: analyzerRules
         )
 
-        Self.validateConfiguredRulesAreEnabled(
-            parentConfiguration: parentConfiguration,
-            configurationDictionary: dict,
-            ruleList: ruleList,
-            rulesMode: rulesMode
-        )
+        if onlyRule == nil {
+            Self.validateConfiguredRulesAreEnabled(
+                parentConfiguration: parentConfiguration,
+                configurationDictionary: dict,
+                ruleList: ruleList,
+                rulesMode: rulesMode
+            )
+        }
 
         self.init(
             rulesMode: rulesMode,
@@ -95,13 +102,16 @@ extension Configuration {
             cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
             pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },
             allowZeroLintableFiles: dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false,
-            strict: dict[Key.strict.rawValue] as? Bool ?? false
+            strict: dict[Key.strict.rawValue] as? Bool ?? false,
+            baseline: dict[Key.baseline.rawValue] as? String,
+            writeBaseline: dict[Key.writeBaseline.rawValue] as? String,
+            checkForUpdates: dict[Key.checkForUpdates.rawValue] as? Bool ?? false
         )
     }
 
     // MARK: - Methods: Validations
     private static func validKeys(ruleList: RuleList) -> Set<String> {
-        return validGlobalKeys.union(ruleList.allValidIdentifiers())
+        validGlobalKeys.union(ruleList.allValidIdentifiers())
     }
 
     private static func getIndentationLogIfInvalid(from dict: [String: Any]) -> IndentationStyle {
@@ -130,12 +140,12 @@ extension Configuration {
 
         // Deprecation warning for rules
         let deprecatedRulesIdentifiers = ruleList.list.flatMap { identifier, rule -> [(String, String)] in
-            return rule.description.deprecatedAliases.map { ($0, identifier) }
+            rule.description.deprecatedAliases.map { ($0, identifier) }
         }
 
         let userProvidedRuleIDs = Set(disabledRules + optInRules + onlyRules)
         let deprecatedUsages = deprecatedRulesIdentifiers.filter { deprecatedIdentifier, _ in
-            return dict[deprecatedIdentifier] != nil || userProvidedRuleIDs.contains(deprecatedIdentifier)
+            dict[deprecatedIdentifier] != nil || userProvidedRuleIDs.contains(deprecatedIdentifier)
         }
 
         for (deprecatedIdentifier, identifier) in deprecatedUsages {

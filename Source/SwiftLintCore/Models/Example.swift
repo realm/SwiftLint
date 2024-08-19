@@ -59,9 +59,15 @@ public extension Example {
     ///                           Defaults to the file where this initializer is called.
     ///   - line:                 The line in the file where the example is located.
     ///                           Defaults to the line where this initializer is called.
-    init(_ code: String, configuration: [String: any Sendable]? = nil, testMultiByteOffsets: Bool = true,
-         testWrappingInComment: Bool = true, testWrappingInString: Bool = true, testDisableCommand: Bool = true,
-         testOnLinux: Bool = true, file: StaticString = #file, line: UInt = #line,
+    init(_ code: String,
+         configuration: [String: any Sendable]? = nil,
+         testMultiByteOffsets: Bool = true,
+         testWrappingInComment: Bool = true,
+         testWrappingInString: Bool = true,
+         testDisableCommand: Bool = true,
+         testOnLinux: Bool = true,
+         file: StaticString = #filePath,
+         line: UInt = #line,
          excludeFromDocumentation: Bool = false) {
         self.code = code
         self.configuration = configuration
@@ -86,7 +92,7 @@ public extension Example {
 
     /// Returns a copy of the Example with all instances of the "↓" character removed.
     func removingViolationMarkers() -> Example {
-        return with(code: code.replacingOccurrences(of: "↓", with: ""))
+        with(code: code.replacingOccurrences(of: "↓", with: ""))
     }
 }
 
@@ -127,7 +133,7 @@ extension Example: Hashable {
     public static func == (lhs: Example, rhs: Example) -> Bool {
         // Ignoring file/line metadata because two Examples could represent
         // the same idea, but captured at two different points in the code
-        return lhs.code == rhs.code
+        lhs.code == rhs.code
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -139,7 +145,7 @@ extension Example: Hashable {
 
 extension Example: Comparable {
     public static func < (lhs: Example, rhs: Example) -> Bool {
-        return lhs.code < rhs.code
+        lhs.code < rhs.code
     }
 }
 

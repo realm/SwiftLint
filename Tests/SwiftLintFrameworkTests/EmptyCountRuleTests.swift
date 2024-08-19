@@ -13,7 +13,7 @@ final class EmptyCountRuleTests: SwiftLintTestCase {
             Example("[Int]().count == 0o07\n"),
             Example("discount == 0\n"),
             Example("order.discount == 0\n"),
-            Example("count == 0\n")
+            Example("count == 0\n"),
         ]
         let triggeringExamples = [
             Example("[Int]().↓count == 0\n"),
@@ -22,7 +22,7 @@ final class EmptyCountRuleTests: SwiftLintTestCase {
             Example("[Int]().↓count == 0x0\n"),
             Example("[Int]().↓count == 0x00_00\n"),
             Example("[Int]().↓count == 0b00\n"),
-            Example("[Int]().↓count == 0o00\n")
+            Example("[Int]().↓count == 0o00\n"),
         ]
 
         let corrections = [
@@ -53,7 +53,7 @@ final class EmptyCountRuleTests: SwiftLintTestCase {
             Example("count == 0 && [Int]().↓count == 0o00"):
                 Example("count == 0 && [Int]().isEmpty"),
             Example("[Int]().count != 3 && [Int]().↓count != 0 || count == 0 && [Int]().count > 2"):
-                Example("[Int]().count != 3 && ![Int]().isEmpty || count == 0 && [Int]().count > 2")
+                Example("[Int]().count != 3 && ![Int]().isEmpty || count == 0 && [Int]().count > 2"),
         ]
 
         let description = EmptyCountRule.description

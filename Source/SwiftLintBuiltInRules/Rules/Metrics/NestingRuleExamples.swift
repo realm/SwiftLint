@@ -17,7 +17,7 @@ internal struct NestingRuleExamples {
                     \(type) Example_0 {
                         \(type) Example_1 {}
                     }
-                """),
+                    """),
 
                 /*
                  all variableKinds of SwiftDeclarationKind (except .varParameter which is a function parameter)
@@ -30,7 +30,7 @@ internal struct NestingRuleExamples {
                         }
                         return 5
                     }
-                """),
+                    """),
 
                 // didSet is not present in file structure although there is such a swift declaration kind
                 .init("""
@@ -41,14 +41,14 @@ internal struct NestingRuleExamples {
                             }
                         }
                     }
-                """),
+                    """),
 
                 // extensions are counted as a type level
                 .init("""
                     extension Example_0 {
                         \(type) Example_1 {}
                     }
-                """)
+                    """),
             ]
         }
 
@@ -60,7 +60,7 @@ internal struct NestingRuleExamples {
                     func f_2() {}
                 }
             }
-        """),
+            """),
 
         /*
          all variableKinds of SwiftDeclarationKind (except .varParameter which is a function parameter)
@@ -75,7 +75,7 @@ internal struct NestingRuleExamples {
                 }
                 return 5
             }
-        """),
+            """),
 
         // didSet is not present in file structure although there is such a swift declaration kind
         .init("""
@@ -88,7 +88,7 @@ internal struct NestingRuleExamples {
                     }
                 }
             }
-        """),
+            """),
 
         // extensions are counted as a type level
         .init("""
@@ -99,17 +99,17 @@ internal struct NestingRuleExamples {
                     }
                 }
             }
-        """)
+            """),
     ]
 
     private static let nonTriggeringProtocolExamples =
         detectingTypes.flatMap { type in
             [
                 Example("""
-                \(type) Example_0 {
-                    protocol Example_1 {}
-                }
-                """),
+                    \(type) Example_0 {
+                        protocol Example_1 {}
+                    }
+                    """),
                 Example("""
                     var example: Int {
                         \(type) Example_0 {
@@ -117,7 +117,7 @@ internal struct NestingRuleExamples {
                         }
                         return 5
                     }
-                """),
+                    """),
                 Example("""
                     var example: Int = 5 {
                         didSet {
@@ -126,12 +126,12 @@ internal struct NestingRuleExamples {
                             }
                         }
                     }
-                """),
+                    """),
                 Example("""
                     extension Example_0 {
                         protocol Example_1 {}
                     }
-                """)
+                    """),
             ]
         }
 
@@ -152,7 +152,7 @@ internal struct NestingRuleExamples {
                             }
                         }
                     }
-                """),
+                    """),
 
                 // closure var example
                 .init("""
@@ -166,7 +166,7 @@ internal struct NestingRuleExamples {
                             }
                         }
                     }
-                """),
+                    """),
 
                 // function closure parameter example
                 .init("""
@@ -180,7 +180,7 @@ internal struct NestingRuleExamples {
                             }
                         }
                     })
-                """)
+                    """),
             ]
         }
 
@@ -199,7 +199,7 @@ internal struct NestingRuleExamples {
                             protocol P {}
                         }
                     }
-                """),
+                    """),
 
                 // default maximum nesting level for both type and function within closures and statements
                 .init("""
@@ -225,7 +225,7 @@ internal struct NestingRuleExamples {
                             }
                         }
                     }
-                """)
+                    """),
             ]
         }
 }
@@ -247,7 +247,7 @@ extension NestingRuleExamples {
                             ↓\(type) Example_2 {}
                         }
                     }
-                """),
+                    """),
 
                 /*
                  all variableKinds of SwiftDeclarationKind (except .varParameter which is a function parameter)
@@ -262,7 +262,7 @@ extension NestingRuleExamples {
                         }
                         return 5
                     }
-                """),
+                    """),
 
                 // didSet is not present in file structure although there is such a swift declaration kind
                 .init("""
@@ -275,7 +275,7 @@ extension NestingRuleExamples {
                             }
                         }
                     }
-                """),
+                    """),
 
                 // extensions are counted as a type level, violation of default maximum type nesting level
                 .init("""
@@ -284,7 +284,7 @@ extension NestingRuleExamples {
                             ↓\(type) Example_2 {}
                         }
                     }
-                """)
+                    """),
             ]
         }
 
@@ -298,7 +298,7 @@ extension NestingRuleExamples {
                     }
                 }
             }
-        """),
+            """),
 
         /*
          all variableKinds of SwiftDeclarationKind (except .varParameter which is a function parameter)
@@ -315,7 +315,7 @@ extension NestingRuleExamples {
                 }
                 return 5
             }
-        """),
+            """),
 
         // didSet is not present in file structure although there is such a swift declaration kind
         .init("""
@@ -330,7 +330,7 @@ extension NestingRuleExamples {
                     }
                 }
             }
-        """),
+            """),
 
         // extensions are counted as a type level, violation of default maximum function nesting level
         .init("""
@@ -343,7 +343,7 @@ extension NestingRuleExamples {
                     }
                 }
             }
-        """)
+            """),
     ]
 
     private static let triggeringClosureAndStatementExamples =
@@ -367,7 +367,7 @@ extension NestingRuleExamples {
                             }
                         }
                     }
-                """),
+                    """),
 
                 // closure var example
                 .init("""
@@ -385,7 +385,7 @@ extension NestingRuleExamples {
                             }
                         }
                     }
-                """),
+                    """),
 
                 // function closure parameter example
                 .init("""
@@ -401,7 +401,7 @@ extension NestingRuleExamples {
                             }
                         }
                     })
-                """)
+                    """),
             ]
         }
 
@@ -409,12 +409,12 @@ extension NestingRuleExamples {
         detectingTypes.flatMap { type in
             [
                 Example("""
-                \(type) Example_0 {
-                    \(type) Example_1 {
-                        ↓protocol Example_2 {}
+                    \(type) Example_0 {
+                        \(type) Example_1 {
+                            ↓protocol Example_2 {}
+                        }
                     }
-                }
-                """),
+                    """),
                 Example("""
                     var example: Int {
                         \(type) Example_0 {
@@ -424,7 +424,7 @@ extension NestingRuleExamples {
                         }
                         return 5
                     }
-                """),
+                    """),
                 Example("""
                     var example: Int = 5 {
                         didSet {
@@ -435,14 +435,14 @@ extension NestingRuleExamples {
                             }
                         }
                     }
-                """),
+                    """),
                 Example("""
                     extension Example_0 {
                         \(type) Example_1 {
                             ↓protocol Example_2 {}
                         }
                     }
-                """)
+                    """),
             ]
         }
 
@@ -464,7 +464,7 @@ extension NestingRuleExamples {
                             }
                         }
                     }
-                """),
+                    """),
 
                 // violation of default maximum nesting level for both type and function within closures and statements
                 .init("""
@@ -496,7 +496,7 @@ extension NestingRuleExamples {
                             }
                         }
                     }
-                """)
+                    """),
             ]
         }
 }

@@ -22,13 +22,13 @@ struct NSLocalizedStringKeyRule: OptInRule {
             let format = NSLocalizedString("%@, %@.", comment: "Accessibility label for a post in the post list." +
             " The parameters are the title, and date respectively." +
             " For example, \"Let it Go, 1 hour ago.\"")
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("NSLocalizedString(↓method(), comment: \"\")"),
             Example("NSLocalizedString(↓\"key_\\(param)\", comment: \"\")"),
             Example("NSLocalizedString(\"key\", comment: ↓\"comment with \\(param)\")"),
-            Example("NSLocalizedString(↓\"key_\\(param)\", comment: ↓method())")
+            Example("NSLocalizedString(↓\"key_\\(param)\", comment: ↓method())"),
         ]
     )
 }

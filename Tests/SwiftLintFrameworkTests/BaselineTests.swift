@@ -44,7 +44,7 @@ final class BaselineTests: XCTestCase {
         ArrayInitRule.description,
         BlockBasedKVORule.description,
         ClosingBraceRule.description,
-        DirectReturnRule.description
+        DirectReturnRule.description,
     ]
 
     private static var currentDirectoryPath: String?
@@ -116,14 +116,14 @@ final class BaselineTests: XCTestCase {
             BlockBasedKVORule.description,
             DirectReturnRule.description,
             ArrayInitRule.description,
-            ClosingBraceRule.description
+            ClosingBraceRule.description,
         ]
 
         let ruleDescriptions = [
             ArrayInitRule.description,
             BlockBasedKVORule.description,
             ClosingBraceRule.description,
-            DirectReturnRule.description
+            DirectReturnRule.description,
         ]
 
         for ruleDescription in ruleDescriptions {
@@ -139,13 +139,16 @@ final class BaselineTests: XCTestCase {
 
     func testCompare() throws {
         try withExampleFileCreated { sourceFilePath in
-            let violations = Self.violations(for: sourceFilePath)
-            let oldViolations = Array(violations.dropFirst())
-            let newViolations = Array(violations.dropLast())
-            let oldBaseline = Baseline(violations: oldViolations)
-            let newBaseline = Baseline(violations: newViolations)
-            XCTAssertEqual(oldBaseline.compare(newBaseline), [violations.first])
-            XCTAssertEqual(newBaseline.compare(oldBaseline), [violations.last])
+            let ruleDescriptions = Self.ruleDescriptions + Self.ruleDescriptions
+            let violations = ruleDescriptions.violations(for: sourceFilePath)
+            let numberofViolationsToDrop = 3
+            let oldBaseline = Baseline(violations: Array(violations.dropFirst(numberofViolationsToDrop)).reversed())
+            let newViolations = Array(
+                try violations.lineShifted(by: 2, path: sourceFilePath).dropLast(numberofViolationsToDrop)
+            )
+            let newBaseline = Baseline(violations: newViolations.reversed())
+            XCTAssertEqual(oldBaseline.compare(newBaseline), Array(newViolations.prefix(numberofViolationsToDrop)))
+            XCTAssertEqual(newBaseline.compare(oldBaseline), Array(violations.suffix(numberofViolationsToDrop)))
         }
     }
 
@@ -193,7 +196,7 @@ private extension [StyleViolation] {
             XCTFail("Shift must be positive")
             return self
         }
-        var lines = SwiftLintFile(path: path)?.lines.map({ $0.content }) ?? []
+        var lines = SwiftLintFile(path: path)?.lines.map(\.content) ?? []
         lines = [String](repeating: "", count: shift) + lines
         if let data = lines.joined(separator: "\n").data(using: .utf8) {
             try data.write(to: URL(fileURLWithPath: path))

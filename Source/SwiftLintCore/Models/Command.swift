@@ -13,7 +13,7 @@ public struct Command: Equatable {
 
         /// - returns: The inverse action that can cancel out the current action, restoring the SwifttLint engine's
         ///            state prior to the current action.
-        internal func inverse() -> Action {
+        internal func inverse() -> Self {
             switch self {
             case .enable: return .disable
             case .disable: return .enable
@@ -67,8 +67,12 @@ public struct Command: Equatable {
     ///                              defined.
     /// - parameter modifier:        This command's modifier, if any.
     /// - parameter trailingComment: The comment following this command's `-` delimiter, if any.
-    public init(action: Action, ruleIdentifiers: Set<RuleIdentifier> = [], line: Int = 0,
-                character: Int? = nil, modifier: Modifier? = nil, trailingComment: String? = nil) {
+    public init(action: Action,
+                ruleIdentifiers: Set<RuleIdentifier> = [],
+                line: Int = 0,
+                character: Int? = nil,
+                modifier: Modifier? = nil,
+                trailingComment: String? = nil) {
         self.action = action
         self.ruleIdentifiers = ruleIdentifiers
         self.line = line
@@ -143,7 +147,7 @@ public struct Command: Equatable {
     /// If the command doesn't have a modifier, it is returned as-is.
     ///
     /// - returns: The expanded commands.
-    internal func expand() -> [Command] {
+    internal func expand() -> [Self] {
         guard let modifier else {
             return [self]
         }
@@ -151,17 +155,17 @@ public struct Command: Equatable {
         case .previous:
             return [
                 Self(action: action, ruleIdentifiers: ruleIdentifiers, line: line - 1),
-                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1, character: Int.max)
+                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1, character: Int.max),
             ]
         case .this:
             return [
                 Self(action: action, ruleIdentifiers: ruleIdentifiers, line: line),
-                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line, character: Int.max)
+                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line, character: Int.max),
             ]
         case .next:
             return [
                 Self(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
-                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1, character: Int.max)
+                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1, character: Int.max),
             ]
         case .invalid:
             return []

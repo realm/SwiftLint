@@ -51,7 +51,7 @@ struct TypeContentsOrderRule: OptInRule {
                 let typeContentOffset = orderedTypeContentOffsets[index]
 
                 let content = typeContentOffset.typeContent.rawValue
-                let expected = expectedTypesContents.map { $0.rawValue }.joined(separator: ",")
+                let expected = expectedTypesContents.map(\.rawValue).joined(separator: ",")
                 let article = ["a", "e", "i", "o", "u"].contains(content.substring(from: 0, length: 1)) ? "An" : "A"
 
                 let styleViolation = StyleViolation(
@@ -68,7 +68,7 @@ struct TypeContentsOrderRule: OptInRule {
     }
 
     private func typeContentOffsets(in typeStructure: SourceKittenDictionary) -> [TypeContentOffset] {
-        return typeStructure.substructure.compactMap { typeContentStructure in
+        typeStructure.substructure.compactMap { typeContentStructure in
             guard let typeContent = typeContent(for: typeContentStructure) else { return nil }
             return (typeContent, typeContentStructure.offset!)
         }
@@ -118,7 +118,7 @@ struct TypeContentsOrderRule: OptInRule {
                 "viewDidAppear(",
                 "viewWillDisappear(",
                 "viewDidDisappear(",
-                "willMove("
+                "willMove(",
             ]
 
             if typeContentStructure.name!.starts(with: "init(") {

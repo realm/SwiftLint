@@ -59,7 +59,7 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             Example("""
             subscript(index: Int) -> Int {
                 index == 0 ? defaultValue() : compute(index)
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("success ↓? askQuestion() : exit()"),
@@ -103,7 +103,7 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                     index == 0 ↓? something() : somethingElse(index)
                     return index
                 }
-            """)
+            """),
         ]
     )
 }
@@ -144,7 +144,7 @@ private extension VoidFunctionInTernaryConditionRule {
 
 private extension ExprListSyntax {
     var containsAssignment: Bool {
-        return children(viewMode: .sourceAccurate).contains(where: { $0.is(AssignmentExprSyntax.self) })
+        children(viewMode: .sourceAccurate).contains(where: { $0.is(AssignmentExprSyntax.self) })
     }
 }
 

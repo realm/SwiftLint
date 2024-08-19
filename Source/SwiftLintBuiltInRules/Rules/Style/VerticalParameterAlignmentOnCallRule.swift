@@ -82,7 +82,7 @@ struct VerticalParameterAlignmentOnCallRule: OptInRule {
             } completion: { _ in
                 // completion
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -119,7 +119,7 @@ struct VerticalParameterAlignmentOnCallRule: OptInRule {
             Example("""
             myFunc(foo: 0, bar:
                     baz == 0, ↓baz: true)
-            """)
+            """),
         ]
     )
 }

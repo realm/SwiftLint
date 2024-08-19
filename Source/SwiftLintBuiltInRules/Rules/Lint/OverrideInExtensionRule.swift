@@ -25,11 +25,11 @@ struct OverrideInExtensionRule: OptInRule, SwiftSyntaxRule {
             extension Foo.Bar {
                 override var description: String { return "" }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("extension Person {\n  override ↓var age: Int { return 42 }\n}"),
-            Example("extension Person {\n  override ↓func celebrateBirthday() {}\n}")
+            Example("extension Person {\n  override ↓func celebrateBirthday() {}\n}"),
         ]
     )
 
@@ -50,7 +50,8 @@ private extension OverrideInExtensionRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let allowedExtensions: Set<String>
 
-        init(configuration: ConfigurationType, file: SwiftLintFile,
+        init(configuration: ConfigurationType,
+             file: SwiftLintFile,
              allowedExtensions: Set<String>) {
             self.allowedExtensions = allowedExtensions
             super.init(configuration: configuration, file: file)

@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
-        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+        match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
     }
 }
 
@@ -22,7 +22,7 @@ struct VerticalWhitespaceOpeningBracesRule: Rule {
 
             }
         */
-        """)
+        """),
     ]
 
     private static let violatingToValidExamples: [Example: Example] = [
@@ -134,15 +134,13 @@ struct VerticalWhitespaceOpeningBracesRule: Rule {
               self.dismiss(animated: false, completion: {
               })
             }
-            """)
+            """),
     ]
 
     private let pattern = "([{(\\[][ \\t]*(?:[^\\n{]+ in[ \\t]*$)?)((?:\\n[ \\t]*)+)(\\n)"
 }
 
 extension VerticalWhitespaceOpeningBracesRule: OptInRule {
-    init(configuration: Any) throws {}
-
     static let description = RuleDescription(
         identifier: "vertical_whitespace_opening_braces",
         name: "Vertical Whitespace after Opening Braces",

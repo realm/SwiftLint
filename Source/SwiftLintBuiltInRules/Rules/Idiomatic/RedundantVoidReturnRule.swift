@@ -32,7 +32,7 @@ struct RedundantVoidReturnRule: Rule {
             doSomething { arg -> Void in
                 print(arg)
             }
-            """, configuration: ["include_closures": false])
+            """, configuration: ["include_closures": false]),
         ],
         triggeringExamples: [
             Example("func foo()↓ -> Void {}"),
@@ -57,7 +57,7 @@ struct RedundantVoidReturnRule: Rule {
             doSomething { arg↓ -> Void in
                 print(arg)
             }
-            """)
+            """),
         ],
         corrections: [
             Example("func foo()↓ -> Void {}"): Example("func foo() {}"),
@@ -65,7 +65,7 @@ struct RedundantVoidReturnRule: Rule {
             Example("func foo()↓ -> () {}"): Example("func foo() {}"),
             Example("protocol Foo {\n func foo()↓ -> ()\n}"): Example("protocol Foo {\n func foo()\n}"),
             Example("protocol Foo {\n    #if true\n    func foo()↓ -> Void\n    #endif\n}"):
-                Example("protocol Foo {\n    #if true\n    func foo()\n    #endif\n}")
+                Example("protocol Foo {\n    #if true\n    func foo()\n    #endif\n}"),
         ]
     )
 }

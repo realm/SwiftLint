@@ -3,18 +3,11 @@ import SourceKittenFramework
 
 /// An executable value that can identify issues (violations) in Swift source code.
 public protocol Rule {
-    /// The rule's description type.
-    associatedtype Description: Documentable
-
     /// The type of the configuration used to configure this rule.
     associatedtype ConfigurationType: RuleConfiguration
 
     /// A verbose description of many of this rule's properties.
     static var description: RuleDescription { get }
-
-    /// A description of how this rule has been configured to run. It can be built using the annotated result builder.
-    @RuleConfigurationDescriptionBuilder
-    var configurationDescription: Description { get }
 
     /// This rule's configuration.
     var configuration: ConfigurationType { get set }
@@ -31,6 +24,9 @@ public protocol Rule {
     ///
     /// - throws: Throws if the configuration didn't match the expected format.
     init(configuration: Any) throws
+
+    /// Create a description of how this rule has been configured to run.
+    func createConfigurationDescription(exclusiveOptions: Set<String>) -> RuleConfigurationDescription
 
     /// Executes the rule on a file and returns any violations to the rule's expectations.
     ///
@@ -86,13 +82,12 @@ public extension Rule {
         try self.configuration.apply(configuration: configuration)
     }
 
-    func validate(file: SwiftLintFile, using storage: RuleStorage,
-                  compilerArguments: [String]) -> [StyleViolation] {
-        return validate(file: file, compilerArguments: compilerArguments)
+    func validate(file: SwiftLintFile, using _: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
+        validate(file: file, compilerArguments: compilerArguments)
     }
 
-    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
-        return validate(file: file)
+    func validate(file: SwiftLintFile, compilerArguments _: [String]) -> [StyleViolation] {
+        validate(file: file)
     }
 
     func isEqualTo(_ rule: any Rule) -> Bool {
@@ -102,18 +97,18 @@ public extension Rule {
         return false
     }
 
-    func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
+    func collectInfo(for _: SwiftLintFile, into _: RuleStorage, compilerArguments _: [String]) {
         // no-op: only CollectingRules mutate their storage
     }
 
     /// The cache description which will be used to determine if a previous
     /// cached value is still valid given the new cache value.
     var cacheDescription: String {
-        (self as? any CacheDescriptionProvider)?.cacheDescription ?? configurationDescription.oneLiner()
+        (self as? any CacheDescriptionProvider)?.cacheDescription ?? createConfigurationDescription().oneLiner()
     }
 
-    var configurationDescription: some Documentable {
-        RuleConfigurationDescription.from(configuration: configuration)
+    func createConfigurationDescription(exclusiveOptions: Set<String> = []) -> RuleConfigurationDescription {
+        RuleConfigurationDescription.from(configuration: configuration, exclusiveOptions: exclusiveOptions)
     }
 }
 
@@ -156,11 +151,11 @@ public protocol CorrectableRule: Rule {
 }
 
 public extension CorrectableRule {
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
-        return correct(file: file)
+    func correct(file: SwiftLintFile, compilerArguments _: [String]) -> [Correction] {
+        correct(file: file)
     }
-    func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
-        return correct(file: file, compilerArguments: compilerArguments)
+    func correct(file: SwiftLintFile, using _: RuleStorage, compilerArguments: [String]) -> [Correction] {
+        correct(file: file, compilerArguments: compilerArguments)
     }
 }
 
@@ -213,14 +208,14 @@ public protocol SourceKitFreeRule: Rule {}
 public protocol AnalyzerRule: OptInRule {}
 
 public extension AnalyzerRule {
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile) -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:compilerArguments:)` for AnalyzerRule")
     }
 }
 
 /// :nodoc:
 public extension AnalyzerRule where Self: CorrectableRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file _: SwiftLintFile) -> [Correction] {
         queuedFatalError("Must call `correct(file:compilerArguments:)` for AnalyzerRule")
     }
 }

@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ProhibitedSuperRule
 
@@ -19,7 +19,7 @@ struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration {
         // NSView
         "updateLayer()",
         // UIViewController
-        "loadView()"
+        "loadView()",
     ]
 
     var resolvedMethodNames: [String] {

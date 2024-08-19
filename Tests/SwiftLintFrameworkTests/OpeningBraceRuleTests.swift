@@ -12,7 +12,7 @@ final class OpeningBraceRuleTests: SwiftLintTestCase {
                         return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
                             to: _ThreadLocalStorage.self)
                     }
-                    """)
+                    """),
             ]))
 
         verifyRule(description, ruleConfiguration: ["allow_multiline_func": true])
@@ -50,7 +50,7 @@ final class OpeningBraceRuleTests: SwiftLintTestCase {
 
                     }
                 }
-                """)
+                """),
         ]
 
         let triggeringExamples = [
@@ -79,7 +79,7 @@ final class OpeningBraceRuleTests: SwiftLintTestCase {
 
                     }
                 }
-                """)
+                """),
         ]
 
         let description = OpeningBraceRule.description

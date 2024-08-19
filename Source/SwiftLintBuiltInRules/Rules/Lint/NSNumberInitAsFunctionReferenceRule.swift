@@ -16,11 +16,11 @@ struct NSNumberInitAsFunctionReferenceRule: Rule {
             Example("let value = NSNumber.init(value: 0.0)"),
             Example("[0, 0.2].map { NSNumber(value: $0) }"),
             Example("[0, 0.2].map(NSDecimalNumber.init(value:))"),
-            Example("[0, 0.2].map { NSDecimalNumber(value: $0) }")
+            Example("[0, 0.2].map { NSDecimalNumber(value: $0) }"),
         ],
         triggeringExamples: [
             Example("[0, 0.2].map(↓NSNumber.init)"),
-            Example("[0, 0.2].map(↓NSDecimalNumber.init)")
+            Example("[0, 0.2].map(↓NSDecimalNumber.init)"),
         ]
     )
 }

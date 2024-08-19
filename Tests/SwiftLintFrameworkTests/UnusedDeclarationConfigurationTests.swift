@@ -7,7 +7,7 @@ final class UnusedDeclarationConfigurationTests: XCTestCase {
         let config = [
             "severity": "warning",
             "include_public_and_open": true,
-            "related_usrs_to_skip": ["a", "b"]
+            "related_usrs_to_skip": ["a", "b"],
         ] as [String: any Sendable]
 
         try testee.apply(configuration: config)

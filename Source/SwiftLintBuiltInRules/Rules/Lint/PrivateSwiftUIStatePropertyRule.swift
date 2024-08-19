@@ -41,7 +41,7 @@ private extension PrivateSwiftUIStatePropertyRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClassDeclSyntax) {
+        override func visitPost(_: ClassDeclSyntax) {
             swiftUITypeScopes.pop()
         }
 
@@ -50,7 +50,7 @@ private extension PrivateSwiftUIStatePropertyRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: StructDeclSyntax) {
+        override func visitPost(_: StructDeclSyntax) {
             swiftUITypeScopes.pop()
         }
 
@@ -59,7 +59,7 @@ private extension PrivateSwiftUIStatePropertyRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ActorDeclSyntax) {
+        override func visitPost(_: ActorDeclSyntax) {
             swiftUITypeScopes.pop()
         }
 

@@ -11,14 +11,14 @@ struct NoExtensionAccessModifierRule: OptInRule {
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("extension String {}"),
-            Example("\n\n extension String {}")
+            Example("\n\n extension String {}"),
         ],
         triggeringExamples: [
             Example("↓private extension String {}"),
             Example("↓public \n extension String {}"),
             Example("↓open extension String {}"),
             Example("↓internal extension String {}"),
-            Example("↓fileprivate extension String {}")
+            Example("↓fileprivate extension String {}"),
         ]
     )
 }

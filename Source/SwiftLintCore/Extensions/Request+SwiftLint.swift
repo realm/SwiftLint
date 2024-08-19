@@ -19,7 +19,7 @@ public extension Request {
             "key.offset": Int64(offset.value),
             "key.compilerargs": arguments,
             "key.cancel_on_subsequent_request": 0,
-            "key.retrieve_symbol_graph": 0
+            "key.retrieve_symbol_graph": 0,
         ])
     }
 }

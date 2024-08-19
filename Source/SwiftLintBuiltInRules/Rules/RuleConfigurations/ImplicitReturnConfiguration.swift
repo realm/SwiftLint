@@ -1,10 +1,10 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ImplicitReturnRule
 
-    @MakeAcceptableByConfigurationElement
+    @AcceptableByConfigurationElement
     enum ReturnKind: String, CaseIterable, Comparable {
         case closure
         case function
@@ -29,6 +29,6 @@ struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration {
     }
 
     func isKindIncluded(_ kind: ReturnKind) -> Bool {
-        return self.includedKinds.contains(kind)
+        includedKinds.contains(kind)
     }
 }

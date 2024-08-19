@@ -15,13 +15,13 @@ struct ForceTryRule: Rule {
             do {
               try a()
             } catch {}
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
             func a() throws {}
             ↓try! a()
-            """)
+            """),
         ]
     )
 }

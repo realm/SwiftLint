@@ -2,7 +2,7 @@ import Foundation
 
 extension NSRange {
     func intersects(_ range: NSRange) -> Bool {
-        return NSIntersectionRange(self, range).length > 0
+        NSIntersectionRange(self, range).length > 0
     }
 
     func intersects(_ ranges: [NSRange]) -> Bool {

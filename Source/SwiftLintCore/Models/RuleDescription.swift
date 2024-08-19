@@ -52,11 +52,11 @@ public struct RuleDescription: Equatable, Sendable {
     public let requiresFileOnDisk: Bool
 
     /// The console-printable string for this description.
-    public var consoleDescription: String { return "\(name) (\(identifier)): \(description)" }
+    public var consoleDescription: String { "\(name) (\(identifier)): \(description)" }
 
     /// All identifiers that have been used to uniquely identify this rule in past and current SwiftLint versions.
     public var allIdentifiers: [String] {
-        return Array(deprecatedAliases) + [identifier]
+        Array(deprecatedAliases) + [identifier]
     }
 
     /// Creates a `RuleDescription` by specifying all its properties directly.
@@ -71,9 +71,13 @@ public struct RuleDescription: Equatable, Sendable {
     /// - parameter corrections:           Sets the description's `corrections` property.
     /// - parameter deprecatedAliases:     Sets the description's `deprecatedAliases` property.
     /// - parameter requiresFileOnDisk:    Sets the description's `requiresFileOnDisk` property.
-    public init(identifier: String, name: String, description: String, kind: RuleKind,
+    public init(identifier: String,
+                name: String,
+                description: String,
+                kind: RuleKind,
                 minSwiftVersion: SwiftVersion = .five,
-                nonTriggeringExamples: [Example] = [], triggeringExamples: [Example] = [],
+                nonTriggeringExamples: [Example] = [],
+                triggeringExamples: [Example] = [],
                 corrections: [Example: Example] = [:],
                 deprecatedAliases: Set<String> = [],
                 requiresFileOnDisk: Bool = false) {
@@ -91,7 +95,7 @@ public struct RuleDescription: Equatable, Sendable {
 
     // MARK: Equatable
 
-    public static func == (lhs: RuleDescription, rhs: RuleDescription) -> Bool {
-        return lhs.identifier == rhs.identifier
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.identifier == rhs.identifier
     }
 }

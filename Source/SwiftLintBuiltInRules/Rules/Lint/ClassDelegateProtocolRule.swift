@@ -21,12 +21,12 @@ struct ClassDelegateProtocolRule: Rule {
             Example("protocol FooDelegate: NSObjectProtocol {}"),
             Example("protocol FooDelegate where Self: BarDelegate {}"),
             Example("protocol FooDelegate where Self: AnyObject {}"),
-            Example("protocol FooDelegate where Self: NSObjectProtocol {}")
+            Example("protocol FooDelegate where Self: NSObjectProtocol {}"),
         ],
         triggeringExamples: [
             Example("↓protocol FooDelegate {}"),
             Example("↓protocol FooDelegate: Bar {}"),
-            Example("↓protocol FooDelegate where Self: StringProtocol {}")
+            Example("↓protocol FooDelegate where Self: StringProtocol {}"),
         ]
     )
 }

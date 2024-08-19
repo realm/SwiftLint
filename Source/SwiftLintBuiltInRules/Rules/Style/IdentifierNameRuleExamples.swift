@@ -29,7 +29,7 @@ internal struct IdentifierNameRuleExamples {
                    static var Bar = 0
                 }
                 """),
-        Example("func √ (arg: Double) -> Double { arg }", configuration: ["additional_operators": "√"])
+        Example("func √ (arg: Double) -> Double { arg }", configuration: ["additional_operators": "√"]),
     ]
 
     static let triggeringExamples = [
@@ -95,6 +95,6 @@ internal struct IdentifierNameRuleExamples {
                 }
             }
             """),
-        Example("func ↓√ (arg: Double) -> Double { arg }")
+        Example("func ↓√ (arg: Double) -> Double { arg }"),
     ]
 }

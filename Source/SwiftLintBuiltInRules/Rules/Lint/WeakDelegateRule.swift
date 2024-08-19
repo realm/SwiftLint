@@ -50,7 +50,7 @@ struct WeakDelegateRule: OptInRule {
                 }
             }
             """, excludeFromDocumentation: true),
-            Example("private var appDelegate: String?", excludeFromDocumentation: true)
+            Example("private var appDelegate: String?", excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("class Foo {\n  ↓var delegate: SomeProtocol?\n}"),
@@ -62,7 +62,7 @@ struct WeakDelegateRule: OptInRule {
                         print("Updated delegate")
                     }
                }
-            """)
+            """),
         ]
     )
 }
@@ -123,7 +123,7 @@ private extension VariableDeclSyntax {
         let ignoredAttributes: Set = [
             "UIApplicationDelegateAdaptor",
             "NSApplicationDelegateAdaptor",
-            "WKExtensionDelegateAdaptor"
+            "WKExtensionDelegateAdaptor",
         ]
 
         return attributes.contains { attr in

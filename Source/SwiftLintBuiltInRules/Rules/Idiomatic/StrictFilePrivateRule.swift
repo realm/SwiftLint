@@ -55,7 +55,7 @@ struct StrictFilePrivateRule: OptInRule {
                 protocol P<T> {
                     func f()
                 }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ] + ["actor", "class", "enum", "extension", "struct"].map { type in
             Example("""
                 \(type) T: P<Int> {
@@ -100,7 +100,7 @@ struct StrictFilePrivateRule: OptInRule {
             """),
             Example("""
                 ↓fileprivate func f() {}
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ] + ["actor", "class", "enum", "extension", "struct"].map { type in
             Example("""
                 \(type) T: P<Int> {

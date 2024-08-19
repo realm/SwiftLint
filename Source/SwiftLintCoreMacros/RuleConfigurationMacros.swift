@@ -3,10 +3,10 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-enum AutoApply: MemberMacro {
+enum AutoConfigParser: MemberMacro {
     // swiftlint:disable:next function_body_length
     static func expansion(
-        of node: AttributeSyntax,
+        of _: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
@@ -83,17 +83,17 @@ enum AutoApply: MemberMacro {
                     Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                 }
                 """
-            })
+            }),
         ]
     }
 }
 
-enum MakeAcceptableByConfigurationElement: ExtensionMacro {
+enum AcceptableByConfigurationElement: ExtensionMacro {
     static func expansion(
-        of node: AttributeSyntax,
+        of _: AttributeSyntax,
         attachedTo declaration: some DeclGroupSyntax,
         providingExtensionsOf type: some TypeSyntaxProtocol,
-        conformingTo protocols: [TypeSyntax],
+        conformingTo _: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
         guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
@@ -117,7 +117,7 @@ enum MakeAcceptableByConfigurationElement: ExtensionMacro {
                         }
                     }
                 }
-                """)
+                """),
         ]
     }
 }

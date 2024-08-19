@@ -19,7 +19,7 @@ struct FatalErrorMessageRule: OptInRule {
             func foo() {
               fatalError(x)
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -31,7 +31,7 @@ struct FatalErrorMessageRule: OptInRule {
             func foo() {
               ↓fatalError()
             }
-            """)
+            """),
         ]
     )
 }

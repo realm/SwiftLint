@@ -11,7 +11,7 @@ private struct CacheTestHelper {
 
     private var fileManager: TestFileManager {
         // swiftlint:disable:next force_cast
-        return cache.fileManager as! TestFileManager
+        cache.fileManager as! TestFileManager
     }
 
     fileprivate init(dict: [String: Any], cache: LinterCache) {
@@ -31,12 +31,12 @@ private struct CacheTestHelper {
             StyleViolation(ruleDescription: ruleDescription,
                            severity: .error,
                            location: Location(file: file, line: 5, character: nil),
-                           reason: "Something is wrong")
+                           reason: "Something is wrong"),
         ]
     }
 
     fileprivate func makeConfig(dict: [String: Any]) -> Configuration {
-        return try! Configuration(dict: dict, ruleList: ruleList) // swiftlint:disable:this force_try
+        try! Configuration(dict: dict, ruleList: ruleList) // swiftlint:disable:this force_try
     }
 
     fileprivate func touch(file: String) {
@@ -48,22 +48,22 @@ private struct CacheTestHelper {
     }
 
     fileprivate func fileCount() -> Int {
-        return fileManager.stubbedModificationDateByPath.count
+        fileManager.stubbedModificationDateByPath.count
     }
 }
 
 private class TestFileManager: LintableFileManager {
-    fileprivate func filesToLint(inPath: String, rootDirectory: String? = nil) -> [String] {
-        return []
+    fileprivate func filesToLint(inPath _: String, rootDirectory _: String? = nil) -> [String] {
+        []
     }
 
     fileprivate var stubbedModificationDateByPath = [String: Date]()
 
     fileprivate func modificationDate(forFileAtPath path: String) -> Date? {
-        return stubbedModificationDateByPath[path]
+        stubbedModificationDateByPath[path]
     }
 
-    fileprivate func isFile(atPath path: String) -> Bool {
+    fileprivate func isFile(atPath _: String) -> Bool {
         false
     }
 }
@@ -74,11 +74,14 @@ final class LinterCacheTests: SwiftLintTestCase {
     private var cache = LinterCache(fileManager: TestFileManager())
 
     private func makeCacheTestHelper(dict: [String: Any]) -> CacheTestHelper {
-        return CacheTestHelper(dict: dict, cache: cache)
+        CacheTestHelper(dict: dict, cache: cache)
     }
 
-    private func cacheAndValidate(violations: [StyleViolation], forFile: String, configuration: Configuration,
-                                  file: StaticString = #file, line: UInt = #line) {
+    private func cacheAndValidate(violations: [StyleViolation],
+                                  forFile: String,
+                                  configuration: Configuration,
+                                  file: StaticString = #filePath,
+                                  line: UInt = #line) {
         cache.cache(violations: violations, forFile: forFile, configuration: configuration)
         cache = cache.flushed()
         XCTAssertEqual(cache.violations(forFile: forFile, configuration: configuration)!,
@@ -86,7 +89,8 @@ final class LinterCacheTests: SwiftLintTestCase {
     }
 
     private func cacheAndValidateNoViolationsTwoFiles(configuration: Configuration,
-                                                      file: StaticString = #file, line: UInt = #line) {
+                                                      file: StaticString = #filePath,
+                                                      line: UInt = #line) {
         let (file1, file2) = ("file1.swift", "file2.swift")
         // swiftlint:disable:next force_cast
         let fileManager = cache.fileManager as! TestFileManager
@@ -96,8 +100,10 @@ final class LinterCacheTests: SwiftLintTestCase {
         cacheAndValidate(violations: [], forFile: file2, configuration: configuration, file: file, line: line)
     }
 
-    private func validateNewConfigDoesntHitCache(dict: [String: Any], initialConfig: Configuration,
-                                                 file: StaticString = #file, line: UInt = #line) throws {
+    private func validateNewConfigDoesntHitCache(dict: [String: Any],
+                                                 initialConfig: Configuration,
+                                                 file: StaticString = #filePath,
+                                                 line: UInt = #line) throws {
         let newConfig = try Configuration(dict: dict)
         let (file1, file2) = ("file1.swift", "file2.swift")
 
@@ -195,7 +201,7 @@ final class LinterCacheTests: SwiftLintTestCase {
         let initialConfig = try Configuration(
             dict: [
                 "only_rules": ["custom_rules", "rule1"],
-                "custom_rules": ["rule1": ["regex": "([n,N]inja)"]]
+                "custom_rules": ["rule1": ["regex": "([n,N]inja)"]],
             ],
             ruleList: RuleList(rules: CustomRules.self)
         )
@@ -205,7 +211,7 @@ final class LinterCacheTests: SwiftLintTestCase {
         try validateNewConfigDoesntHitCache(
             dict: [
                 "only_rules": ["custom_rules", "rule1"],
-                "custom_rules": ["rule1": ["regex": "([n,N]injas)"]]
+                "custom_rules": ["rule1": ["regex": "([n,N]injas)"]],
             ],
             initialConfig: initialConfig
         )
@@ -214,7 +220,7 @@ final class LinterCacheTests: SwiftLintTestCase {
         try validateNewConfigDoesntHitCache(
             dict: [
                 "only_rules": ["custom_rules", "rule1"],
-                "custom_rules": ["rule1": ["regex": "([n,N]injas)"], "rule2": ["regex": "([k,K]ittens)"]]
+                "custom_rules": ["rule1": ["regex": "([n,N]injas)"], "rule2": ["regex": "([k,K]ittens)"]],
             ],
             initialConfig: initialConfig
         )

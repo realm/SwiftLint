@@ -11,12 +11,12 @@ struct StrongIBOutletRule: OptInRule {
         kind: .lint,
         nonTriggeringExamples: [
             wrapExample("@IBOutlet var label: UILabel?"),
-            wrapExample("weak var label: UILabel?")
+            wrapExample("weak var label: UILabel?"),
         ],
         triggeringExamples: [
             wrapExample("@IBOutlet ↓weak var label: UILabel?"),
             wrapExample("@IBOutlet ↓unowned var label: UILabel!"),
-            wrapExample("@IBOutlet ↓weak var textField: UITextField?")
+            wrapExample("@IBOutlet ↓weak var textField: UITextField?"),
         ],
         corrections: [
             wrapExample("@IBOutlet ↓weak var label: UILabel?"):
@@ -24,7 +24,7 @@ struct StrongIBOutletRule: OptInRule {
             wrapExample("@IBOutlet ↓unowned var label: UILabel!"):
                 wrapExample("@IBOutlet var label: UILabel!"),
             wrapExample("@IBOutlet ↓weak var textField: UITextField?"):
-                wrapExample("@IBOutlet var textField: UITextField?")
+                wrapExample("@IBOutlet var textField: UITextField?"),
         ]
     )
 }
@@ -68,8 +68,8 @@ private extension VariableDeclSyntax {
     }
 }
 
-private func wrapExample(_ text: String, file: StaticString = #file, line: UInt = #line) -> Example {
-    return Example("""
+private func wrapExample(_ text: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
+    Example("""
     class ViewController: UIViewController {
         \(text)
     }

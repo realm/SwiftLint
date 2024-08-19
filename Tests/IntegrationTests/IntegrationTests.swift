@@ -5,7 +5,7 @@ import XCTest
 
 private let config: Configuration = {
     let bazelWorkspaceDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"]
-    let rootProjectDirectory = bazelWorkspaceDirectory ?? #file.bridge()
+    let rootProjectDirectory = bazelWorkspaceDirectory ?? #filePath.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent
@@ -21,7 +21,7 @@ final class IntegrationTests: SwiftLintTestCase {
             forceExclude: false,
             excludeBy: .paths(excludedPaths: config.excludedPaths()))
         XCTAssert(
-            swiftFiles.contains(where: { #file.bridge().absolutePathRepresentation() == $0.path }),
+            swiftFiles.contains(where: { #filePath.bridge().absolutePathRepresentation() == $0.path }),
             "current file should be included"
         )
 
@@ -60,11 +60,11 @@ final class IntegrationTests: SwiftLintTestCase {
             .map {
                 """
                 \($0.identifier):
-                \($0.init().configurationDescription.yaml().indent(by: 2))
+                \($0.init().createConfigurationDescription().yaml().indent(by: 2))
                 """
             }
             .joined(separator: "\n")
-        let referenceFile = URL(fileURLWithPath: #file)
+        let referenceFile = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
             .appendingPathComponent("default_rule_configurations.yml")
         XCTAssertEqual(defaultConfig + "\n", try String(contentsOf: referenceFile))
@@ -92,8 +92,10 @@ final class IntegrationTests: SwiftLintTestCase {
             try? FileManager.default.removeItem(at: seatbeltURL)
         }
 
-        let swiftlintInSandboxArgs = ["sandbox-exec", "-f", seatbeltURL.path, "sh", "-c",
-                                      "SWIFTLINT_SWIFT_VERSION=5 \(swiftlintURL.path) --no-cache"]
+        let swiftlintInSandboxArgs = [
+            "sandbox-exec", "-f", seatbeltURL.path, "sh", "-c",
+            "SWIFTLINT_SWIFT_VERSION=5 \(swiftlintURL.path) --no-cache",
+        ]
         let swiftlintResult = execute(swiftlintInSandboxArgs, in: testSwiftURL.deletingLastPathComponent())
         let statusWithoutCrash: Int32 = 0
         let stdoutWithoutCrash = """
@@ -150,7 +152,7 @@ private struct StaticStringImitator {
         }
 
         var staticString: StaticString {
-            return unsafeBitCast(self, to: StaticString.self)
+            unsafeBitCast(self, to: StaticString.self)
         }
     }
 }

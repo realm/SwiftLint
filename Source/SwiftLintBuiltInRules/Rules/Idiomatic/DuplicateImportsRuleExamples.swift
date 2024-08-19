@@ -32,11 +32,16 @@ internal struct DuplicateImportsRuleExamples {
         #if TEST
         func test() {
         }
-        """)
+        """),
+        Example("""
+        import Foo
+        @testable import struct Foo.Bar
+        """),
     ]
 
     static let triggeringExamples = Array(corrections.keys.sorted())
 
+    // swiftlint:disable:next closure_body_length
     static let corrections: [Example: Example] = {
         var corrections = [
             Example("""
@@ -126,6 +131,12 @@ internal struct DuplicateImportsRuleExamples {
 
                 """),
             Example("""
+            @testable import Foo
+            import struct Foo.Bar
+            """): Example("""
+                @testable import Foo
+                """),
+            Example("""
             ↓import A.B.C
             ↓import A.B
             import A
@@ -169,7 +180,7 @@ internal struct DuplicateImportsRuleExamples {
             """, excludeFromDocumentation: true): Example("""
                 import A
 
-                """)
+                """),
         ]
 
         DuplicateImportsRule.importKinds.map { importKind in

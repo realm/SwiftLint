@@ -21,10 +21,10 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         Example("let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)"),
         Example("\"let foo =  1\""),
         Example("""
-          enum Enum {
-          case hello   = 1
-          case hello2  = 1
-          }
+        enum Enum {
+        case hello   = 1
+        case hello2  = 1
+        }
         """),
         Example("""
         let something = Something<GenericParameter1,
@@ -90,7 +90,7 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         """,
         configuration: ["allowed_no_space_operators": ["<--<"]],
         excludeFromDocumentation: true
-        )
+        ),
     ]
 
     static let triggeringExamples = [
@@ -112,22 +112,22 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         Example("let foo↓  = \"1\""),
         Example("let foo↓ =  \"1\""),
         Example("""
-          enum Enum {
-          case one↓  =  1
-          case two  = 1
-          }
+        enum Enum {
+        case one↓  =  1
+        case two  = 1
+        }
         """),
         Example("""
-          enum Enum {
-          case one  = 1
-          case two↓  =  1
-          }
+        enum Enum {
+        case one  = 1
+        case two↓  =  1
+        }
         """),
         Example("""
-          enum Enum {
-          case one↓   = 1
-          case two↓  = 1
-          }
+        enum Enum {
+        case one↓   = 1
+        case two↓  = 1
+        }
         """),
         Example("typealias Foo↓ =  Bar"),
         Example("""
@@ -137,7 +137,7 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         """),
         Example("tabbedViewController.title↓  = nil"),
         Example("let foo = bar ? 0↓:1"),
-        Example("let foo = bar↓ ?   0 : 1")
+        Example("let foo = bar↓ ?   0 : 1"),
     ]
 
     static let corrections = [
@@ -158,6 +158,6 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         Example("let foo↓  = \"1\""): Example("let foo = \"1\""),
         Example("let foo↓ =  \"1\""): Example("let foo = \"1\""),
         Example("let foo = bar ? 0↓:1"): Example("let foo = bar ? 0 : 1"),
-        Example("let foo = bar↓ ?   0 : 1"): Example("let foo = bar ? 0 : 1")
+        Example("let foo = bar↓ ?   0 : 1"): Example("let foo = bar ? 0 : 1"),
     ]
 }

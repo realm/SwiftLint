@@ -6,7 +6,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         var referenced: Set<String>
         var declared: Set<DeclaredUSR>
 
-        fileprivate static var empty: FileUSRs { Self(referenced: [], declared: []) }
+        fileprivate static var empty: Self { Self(referenced: [], declared: []) }
     }
 
     struct DeclaredUSR: Hashable {
@@ -28,7 +28,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         requiresFileOnDisk: true
     )
 
-    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
+    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> Self.FileUSRs {
         guard compilerArguments.isNotEmpty else {
             Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
             return .empty
@@ -54,8 +54,9 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         )
     }
 
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: UnusedDeclarationRule.FileUSRs],
-                  compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: Self.FileUSRs],
+                  compilerArguments _: [String]) -> [StyleViolation] {
         let allReferencedUSRs = collectedInfo.values.reduce(into: Set()) { $0.formUnion($1.referenced) }
         return violationOffsets(declaredUSRs: collectedInfo[file]?.declared ?? [],
                                 allReferencedUSRs: allReferencedUSRs)
@@ -70,9 +71,9 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         // Unused declarations are:
         // 1. all declarations
         // 2. minus all references
-        return declaredUSRs
+        declaredUSRs
             .filter { !allReferencedUSRs.contains($0.usr) }
-            .map { $0.nameOffset }
+            .map(\.nameOffset)
             .sorted()
     }
 }
@@ -81,7 +82,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
 
 private extension SwiftLintFile {
     func index(compilerArguments: [String]) -> SourceKittenDictionary? {
-        return path
+        path
             .flatMap { path in
                 try? Request.index(file: path, arguments: compilerArguments)
                             .send()
@@ -90,7 +91,7 @@ private extension SwiftLintFile {
     }
 
     func referencedUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary) -> Set<String> {
-        return Set(index.traverseEntitiesDepthFirst { parent, entity -> String? in
+        Set(index.traverseEntitiesDepthFirst { parent, entity -> String? in
             if let usr = entity.usr,
                let kind = entity.kind,
                kind.starts(with: "source.lang.swift.ref"),
@@ -106,18 +107,34 @@ private extension SwiftLintFile {
         })
     }
 
-    func declaredUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
-                      compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
-    -> Set<UnusedDeclarationRule.DeclaredUSR> {
-        return Set(index.traverseEntitiesDepthFirst { _, indexEntity in
+    func declaredUSRs(index: SourceKittenDictionary,
+                      editorOpen: SourceKittenDictionary,
+                      compilerArguments: [String],
+                      configuration: UnusedDeclarationConfiguration) -> Set<UnusedDeclarationRule.DeclaredUSR> {
+        Set(index.traverseEntitiesDepthFirst { _, indexEntity in
             self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
                              configuration: configuration)
         })
     }
 
-    func declaredUSR(indexEntity: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
-                     compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
-    -> UnusedDeclarationRule.DeclaredUSR? {
+    func declaredUSR(indexEntity: SourceKittenDictionary,
+                     editorOpen: SourceKittenDictionary,
+                     compilerArguments: [String],
+                     configuration: UnusedDeclarationConfiguration) -> UnusedDeclarationRule.DeclaredUSR? {
+        // Skip initializers, deinit, enum cases and subscripts since we can't reliably detect if they're used.
+        let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
+            .enumelement,
+            .extensionProtocol,
+            .extension,
+            .extensionEnum,
+            .extensionClass,
+            .extensionStruct,
+            .functionConstructor,
+            .functionDestructor,
+            .functionSubscript,
+            .genericTypeParam,
+        ]
+
         guard let stringKind = indexEntity.kind,
               stringKind.starts(with: "source.lang.swift.decl."),
               !stringKind.contains(".accessor."),
@@ -193,6 +210,14 @@ private extension SwiftLintFile {
     }
 
     private func shouldIgnoreEntity(_ indexEntity: SourceKittenDictionary, relatedUSRsToSkip: Set<String>) -> Bool {
+        let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
+            .ibaction,
+            .main,
+            .nsApplicationMain,
+            .override,
+            .uiApplicationMain,
+        ]
+
         if indexEntity.shouldSkipIndexEntityToWorkAroundSR11985() ||
             indexEntity.shouldSkipRelated(relatedUSRsToSkip: relatedUSRsToSkip) ||
             indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
@@ -225,15 +250,15 @@ private extension SwiftLintFile {
 
 private extension SourceKittenDictionary {
     var usr: String? {
-        return value["key.usr"] as? String
+        value["key.usr"] as? String
     }
 
     var annotatedDeclaration: String? {
-        return value["key.annotated_decl"] as? String
+        value["key.annotated_decl"] as? String
     }
 
     var isImplicit: Bool {
-        return value["key.is_implicit"] as? Bool == true
+        value["key.is_implicit"] as? Bool == true
     }
 
     func propertyAtOffset<T>(_ offset: ByteCount, property: KeyPath<Self, T?>) -> T? {
@@ -251,7 +276,7 @@ private extension SourceKittenDictionary {
     }
 
     func shouldSkipRelated(relatedUSRsToSkip: Set<String>) -> Bool {
-        return (value["key.related"] as? [[String: any SourceKitRepresentable]])?
+        (value["key.related"] as? [[String: any SourceKitRepresentable]])?
             .compactMap { SourceKittenDictionary($0).usr }
             .contains(where: relatedUSRsToSkip.contains) == true
     }
@@ -274,7 +299,7 @@ private extension SourceKittenDictionary {
             "tableView(_:commit:forRowAt:)",
             "tableView(_:editingStyleForRowAt:)",
             "tableView(_:willDisplayHeaderView:forSection:)",
-            "tableView(_:willSelectRowAt:)"
+            "tableView(_:willSelectRowAt:)",
         ]
 
         return functionsToSkipForSR11985.contains(name)
@@ -297,7 +322,7 @@ private extension SourceKittenDictionary {
             "buildFinalResult(_:)",
             // https://github.com/apple/swift-evolution/blob/main/proposals/0348-buildpartialblock.md
             "buildPartialBlock(first:)",
-            "buildPartialBlock(accumulated:next:)"
+            "buildPartialBlock(accumulated:next:)",
         ]
 
         return resultBuilderStaticMethods.contains(name)
@@ -318,25 +343,3 @@ private extension SourceKittenDictionary {
         return nil
     }
 }
-
-// Skip initializers, deinit, enum cases and subscripts since we can't reliably detect if they're used.
-private let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
-    .enumelement,
-    .extensionProtocol,
-    .extension,
-    .extensionEnum,
-    .extensionClass,
-    .extensionStruct,
-    .functionConstructor,
-    .functionDestructor,
-    .functionSubscript,
-    .genericTypeParam
-]
-
-private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
-    .ibaction,
-    .main,
-    .nsApplicationMain,
-    .override,
-    .uiApplicationMain
-]

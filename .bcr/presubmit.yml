@@ -9,7 +9,7 @@ tasks:
     platform: ubuntu2004
     environment:
       CC: "clang"
-      SWIFT_VERSION: "5.8.1"
+      SWIFT_VERSION: "5.10"
       SWIFT_HOME: "$HOME/swift-$SWIFT_VERSION"
       PATH: "$PATH:$SWIFT_HOME/usr/bin"
     shell_commands: *shell_commands

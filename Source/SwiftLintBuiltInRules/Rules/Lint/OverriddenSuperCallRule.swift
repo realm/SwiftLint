@@ -46,7 +46,7 @@ struct OverriddenSuperCallRule: OptInRule {
                     }
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -71,7 +71,7 @@ struct OverriddenSuperCallRule: OptInRule {
                 override func didReceiveMemoryWarning() {↓
                 }
             }
-            """)
+            """),
         ]
     )
 }

@@ -31,7 +31,7 @@ struct RequiredDeinitRule: OptInRule {
                     deinit { print("Deinit Inner") }
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("↓class Apple { }"),
@@ -63,7 +63,7 @@ struct RequiredDeinitRule: OptInRule {
                     deinit { }
                 }
             }
-            """)
+            """),
         ]
     )
 }
@@ -83,7 +83,7 @@ private extension RequiredDeinitRule {
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-        override func visitPost(_ node: DeinitializerDeclSyntax) {
+        override func visitPost(_: DeinitializerDeclSyntax) {
             hasDeinit = true
         }
     }

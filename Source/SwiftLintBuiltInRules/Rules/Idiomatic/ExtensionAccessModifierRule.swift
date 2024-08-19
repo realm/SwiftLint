@@ -97,7 +97,12 @@ struct ExtensionAccessModifierRule: OptInRule {
                 set { Foo.shared.bar = newValue }
               }
             }
-            """)
+            """),
+            Example("""
+            public extension Foo {
+              private(set) var value: Int { 1 }
+            }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -156,7 +161,12 @@ struct ExtensionAccessModifierRule: OptInRule {
               ↓private func bar() {}
               ↓private func baz() {}
             }
-            """)
+            """),
+            Example("""
+            ↓extension Foo {
+              private(set) public var value: Int { 1 }
+            }
+            """),
         ]
     )
 }
@@ -166,7 +176,7 @@ private extension ExtensionAccessModifierRule {
         case implicit
         case explicit(TokenKind)
 
-        static func from(tokenKind: TokenKind?) -> ACL {
+        static func from(tokenKind: TokenKind?) -> Self {
             switch tokenKind {
             case nil:
                 return .implicit
@@ -180,7 +190,7 @@ private extension ExtensionAccessModifierRule {
                 .explicit(.keyword(.internal)),
                 .explicit(.keyword(.private)),
                 .explicit(.keyword(.open)),
-                .implicit
+                .implicit,
             ].contains(acl)
         }
     }
@@ -198,7 +208,7 @@ private extension ExtensionAccessModifierRule {
 
             for decl in node.memberBlock.expandingIfConfigs() {
                 let modifiers = decl.asProtocol((any WithModifiersSyntax).self)?.modifiers
-                let aclToken = modifiers?.accessLevelModifier?.name
+                let aclToken = modifiers?.accessLevelModifier()?.name
                 let acl = ACL.from(tokenKind: aclToken?.tokenKind)
                 if areAllACLsEqual, acl != aclTokens.last?.acl, aclTokens.isNotEmpty {
                     areAllACLsEqual = false

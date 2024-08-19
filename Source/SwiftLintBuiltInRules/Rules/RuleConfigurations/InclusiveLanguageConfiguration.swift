@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = InclusiveLanguageRule
 
@@ -8,7 +8,7 @@ struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration {
         "whitelist",
         "blacklist",
         "master",
-        "slave"
+        "slave",
     ]
 
     private static let defaultAllowedTerms: Set<String> = [

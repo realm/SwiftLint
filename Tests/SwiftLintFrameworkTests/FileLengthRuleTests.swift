@@ -13,7 +13,7 @@ final class FileLengthRuleTests: SwiftLintTestCase {
         let nonTriggeringExamples = [
             Example((repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()),
             Example(repeatElement("print(\"swiftlint\")\n", count: 400).joined()),
-            Example(repeatElement("print(\"swiftlint\")\n\n", count: 201).joined())
+            Example(repeatElement("print(\"swiftlint\")\n\n", count: 201).joined()),
         ]
 
         let description = FileLengthRule.description

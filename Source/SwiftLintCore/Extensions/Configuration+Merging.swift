@@ -25,7 +25,10 @@ extension Configuration {
             reporter: reporter,
             cachePath: cachePath,
             allowZeroLintableFiles: childConfiguration.allowZeroLintableFiles,
-            strict: childConfiguration.strict
+            strict: childConfiguration.strict,
+            baseline: childConfiguration.baseline,
+            writeBaseline: childConfiguration.writeBaseline,
+            checkForUpdates: childConfiguration.checkForUpdates
         )
     }
 
@@ -81,7 +84,7 @@ extension Configuration {
     ///
     /// - returns: A new configuration.
     public func configuration(for file: SwiftLintFile) -> Configuration {
-        return (file.path?.bridge().deletingLastPathComponent).map(configuration(forDirectory:)) ?? self
+        (file.path?.bridge().deletingLastPathComponent).map(configuration(forDirectory:)) ?? self
     }
 
     private func configuration(forDirectory directory: String) -> Configuration {

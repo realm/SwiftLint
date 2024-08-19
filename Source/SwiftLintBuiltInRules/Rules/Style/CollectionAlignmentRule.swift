@@ -93,7 +93,7 @@ extension CollectionAlignmentRule {
         }
 
         private var alignColonsTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -117,12 +117,12 @@ extension CollectionAlignmentRule {
                     "b"  ↓:2,
                     "c"    :      3
                 ]
-                """)
+                """),
             ]
         }
 
         private var alignColonsNonTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -150,12 +150,12 @@ extension CollectionAlignmentRule {
                 Example("""
                 NSAttributedString(string: "…", attributes: [.font: UIFont.systemFont(ofSize: 12, weight: .regular),
                                                   .foregroundColor: UIColor(white: 0, alpha: 0.2)])
-                """)
+                """),
             ]
         }
 
         private var alignLeftTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -179,12 +179,12 @@ extension CollectionAlignmentRule {
                                 "lunch": "sandwich",
                     ↓"dinner": "burger"
                 ]
-                """)
+                """),
             ]
         }
 
         private var alignLeftNonTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -212,12 +212,12 @@ extension CollectionAlignmentRule {
                 Example("""
                 NSAttributedString(string: "…", attributes: [.font: UIFont.systemFont(ofSize: 12, weight: .regular),
                                                              .foregroundColor: UIColor(white: 0, alpha: 0.2)])
-                """)
+                """),
             ]
         }
 
         private var sharedTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 let coordinates = [
                     CLLocationCoordinate2D(latitude: 0, longitude: 33),
@@ -231,12 +231,12 @@ extension CollectionAlignmentRule {
                   ↓4,
                     6
                 ]
-                """)
+                """),
             ]
         }
 
         private var sharedNonTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 let coordinates = [
                     CLLocationCoordinate2D(latitude: 0, longitude: 33),
@@ -263,7 +263,7 @@ extension CollectionAlignmentRule {
                 let abc = [
                     "foo": "bar", "fizz": "buzz"
                 ]
-                """)
+                """),
             ]
         }
     }

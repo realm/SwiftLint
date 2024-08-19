@@ -24,7 +24,7 @@ struct UnusedImportRuleExamples {
         import Foundation
         let 👨‍👩‍👧‍👦 = #selector(NSArray.contains(_:))
         👨‍👩‍👧‍👦 == 👨‍👩‍👧‍👦
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -62,7 +62,7 @@ struct UnusedImportRuleExamples {
         ↓import Swift
         ↓import SwiftShims
         func foo(error: Swift.Error) {}
-        """)
+        """),
     ]
 
     static let corrections = [
@@ -159,9 +159,9 @@ struct UnusedImportRuleExamples {
             "allowed_transitive_imports": [
                 [
                     "module": "Foundation",
-                    "allowed_transitive_imports": ["CoreFoundation"]
-                ] as [String: any Sendable]
-            ]
+                    "allowed_transitive_imports": ["CoreFoundation"],
+                ] as [String: any Sendable],
+            ],
         ] as [String: any Sendable], testMultiByteOffsets: false, testOnLinux: false):
             Example("""
             import CoreFoundation
@@ -187,9 +187,9 @@ struct UnusedImportRuleExamples {
             "allowed_transitive_imports": [
                 [
                     "module": "Foundation",
-                    "allowed_transitive_imports": ["CoreFoundation"]
-                ] as [String: any Sendable]
-            ]
+                    "allowed_transitive_imports": ["CoreFoundation"],
+                ] as [String: any Sendable],
+            ],
         ] as [String: any Sendable]):
             Example("""
             import Foundation
@@ -229,6 +229,6 @@ struct UnusedImportRuleExamples {
         """):
             Example("""
             func foo(error: Swift.Error) {}
-            """)
+            """),
     ]
 }

@@ -14,7 +14,7 @@ extension String {
     }
 
     fileprivate func trailingNewlineCount() -> Int? {
-        return countOfTrailingCharacters(in: .newlines)
+        countOfTrailingCharacters(in: .newlines)
     }
 }
 
@@ -31,12 +31,12 @@ struct TrailingNewlineRule: CorrectableRule, SourceKitFreeRule {
         ],
         triggeringExamples: [
             Example("let a = 0"),
-            Example("let a = 0\n\n")
+            Example("let a = 0\n\n"),
         ].skipWrappingInCommentTests().skipWrappingInStringTests(),
         corrections: [
             Example("let a = 0"): Example("let a = 0\n"),
             Example("let b = 0\n\n"): Example("let b = 0\n"),
-            Example("let c = 0\n\n\n\n"): Example("let c = 0\n")
+            Example("let c = 0\n\n\n\n"): Example("let c = 0\n"),
         ]
     )
 
@@ -44,9 +44,13 @@ struct TrailingNewlineRule: CorrectableRule, SourceKitFreeRule {
         if file.contents.trailingNewlineCount() == 1 {
             return []
         }
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file.path, line: max(file.lines.count, 1)))]
+        return [
+            StyleViolation(
+                ruleDescription: Self.description,
+                severity: configuration.severity,
+                location: Location(file: file.path, line: max(file.lines.count, 1))
+            ),
+        ]
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {

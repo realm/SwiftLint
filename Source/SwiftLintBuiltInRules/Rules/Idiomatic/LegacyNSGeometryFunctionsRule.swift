@@ -24,7 +24,7 @@ struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
             // "rect.divide(atDistance: 10.2, fromEdge: edge)", No correction available for divide
             Example("rect1.contains(rect2)"),
             Example("rect.contains(point)"),
-            Example("rect1.intersects(rect2)")
+            Example("rect1.intersects(rect2)"),
         ],
         triggeringExamples: [
             Example("↓NSWidth(rect)"),
@@ -47,7 +47,7 @@ struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
             Example("↓NSIntersectionRect(rect1, rect2)"),
             Example("↓NSContainsRect(rect1, rect2)"),
             Example("↓NSPointInRect(rect, point)"),
-            Example("↓NSIntersectsRect(rect1, rect2)")
+            Example("↓NSIntersectsRect(rect1, rect2)"),
         ],
         corrections: [
             Example("↓NSWidth( rect  )"): Example("rect.width"),
@@ -72,7 +72,7 @@ struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
             Example("↓NSIntersectsRect(  rect1,rect2 )"): Example("rect1.intersects(rect2)"),
             Example("↓NSIntersectsRect(rect1, rect2 )\n↓NSWidth(rect  )"):
                 Example("rect1.intersects(rect2)\nrect.width"),
-            Example("↓NSIntersectionRect(rect1, rect2)"): Example("rect1.intersection(rect2)")
+            Example("↓NSIntersectionRect(rect1, rect2)"): Example("rect1.intersection(rect2)"),
         ]
     )
 
@@ -97,7 +97,7 @@ struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
         "NSContainsRect": .function(name: "contains", argumentLabels: [""]),
         "NSIntersectsRect": .function(name: "intersects", argumentLabels: [""]),
         "NSIntersectionRect": .function(name: "intersection", argumentLabels: [""]),
-        "NSPointInRect": .function(name: "contains", argumentLabels: [""], reversed: true)
+        "NSPointInRect": .function(name: "contains", argumentLabels: [""], reversed: true),
     ]
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {

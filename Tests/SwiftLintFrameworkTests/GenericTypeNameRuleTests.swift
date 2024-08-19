@@ -6,11 +6,11 @@ final class GenericTypeNameRuleTests: SwiftLintTestCase {
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("func foo<apple> {}"),
             Example("func foo<some_apple> {}"),
-            Example("func foo<test123> {}")
+            Example("func foo<test123> {}"),
         ]
         let triggeringExamples = baseDescription.triggeringExamples + [
             Example("func foo<ap_ple> {}"),
-            Example("func foo<appleJuice> {}")
+            Example("func foo<appleJuice> {}"),
         ]
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
                                                triggeringExamples: triggeringExamples)
@@ -25,7 +25,7 @@ final class GenericTypeNameRuleTests: SwiftLintTestCase {
             Example("typealias StringDictionary<T$> = Dictionary<String, T$>"),
             Example("class Foo<T$%> {}"),
             Example("struct Foo<T$%> {}"),
-            Example("enum Foo<T$%> {}")
+            Example("enum Foo<T$%> {}"),
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
@@ -48,7 +48,7 @@ final class GenericTypeNameRuleTests: SwiftLintTestCase {
             Example("func foo<↓type>() {}"),
             Example("class Foo<↓type> {}"),
             Example("struct Foo<↓type> {}"),
-            Example("enum Foo<↓type> {}")
+            Example("enum Foo<↓type> {}"),
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()

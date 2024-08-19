@@ -13,14 +13,14 @@ struct CodeClimateReporter: Reporter {
     static let description = "Reports violations as a JSON array in Code Climate format."
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        return toJSON(violations.map(dictionary(for:)))
+        toJSON(violations.map(dictionary(for:)))
             .replacingOccurrences(of: "\\/", with: "/")
     }
 
     // MARK: - Private
 
     private static func dictionary(for violation: StyleViolation) -> [String: Any] {
-        return [
+        [
             "check_name": violation.ruleName,
             "description": violation.reason,
             "engine_name": "SwiftLint",
@@ -29,11 +29,11 @@ struct CodeClimateReporter: Reporter {
                 "path": violation.location.relativeFile ?? NSNull() as Any,
                 "lines": [
                     "begin": violation.location.line ?? NSNull() as Any,
-                    "end": violation.location.line ?? NSNull() as Any
-                ]
+                    "end": violation.location.line ?? NSNull() as Any,
+                ],
             ],
             "severity": violation.severity == .error ? "major" : "minor",
-            "type": "issue"
+            "type": "issue",
         ]
     }
 
@@ -46,7 +46,7 @@ struct CodeClimateReporter: Reporter {
 
         return [
             "\(fingerprintLocation)",
-            "\(violation.ruleIdentifier)"
+            "\(violation.ruleIdentifier)",
         ].joined().sha256()
     }
 }

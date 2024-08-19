@@ -72,7 +72,7 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
             closure()
             j = 1
             closure()
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -147,18 +147,19 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
                 func test(_ completionHandler: @escaping (Int) -> Void) {
                 }
             }
-            """)
+            """),
         ],
         requiresFileOnDisk: true
     )
 
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> CaptureVariableRule.FileInfo {
+    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> Self.FileInfo {
         file.declaredVariables(compilerArguments: compilerArguments)
     }
 
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: CaptureVariableRule.FileInfo],
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: Self.FileInfo],
                   compilerArguments: [String]) -> [StyleViolation] {
         file.captureListVariables(compilerArguments: compilerArguments)
             .filter { capturedVariable in collectedInfo.values.contains { $0.contains(capturedVariable.usr) } }

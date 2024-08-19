@@ -60,7 +60,7 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
             Example("""
             self.happeningNewsletterOn = self.updateCurrentUser
                 .map { $0.newsletters.happening }.skipNil().skipRepeats()
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -88,17 +88,17 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
             a.b {
             //  ““
             }↓.e()
-            """)
+            """),
         ]
     )
 
     func validate(file: SwiftLintFile,
                   kind: SwiftExpressionKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violatingOffsets(file: file, kind: kind, dictionary: dictionary).map { offset in
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: offset))
+        violatingOffsets(file: file, kind: kind, dictionary: dictionary).map { offset in
+            StyleViolation(ruleDescription: Self.description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: offset))
         }
     }
 
@@ -116,7 +116,7 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
             return (dotLine: line, dotOffset: offset, range: range)
         }
 
-        let uniqueLines = calls.map { $0.dotLine }.unique
+        let uniqueLines = calls.map(\.dotLine).unique
 
         if uniqueLines.count == 1 { return [] }
 
@@ -127,7 +127,7 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
                 !callHasLeadingNewline(file: file, callRange: line.range)
             }
 
-        return noLeadingNewlineViolations.map { $0.dotOffset }
+        return noLeadingNewlineViolations.map(\.dotOffset)
     }
 
     private static let whitespaceDotRegex = regex("\\s*\\.")
@@ -214,7 +214,7 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
 
 private extension SourceKittenDictionary {
     var subcalls: [SourceKittenDictionary] {
-        return substructure.compactMap { dictionary -> SourceKittenDictionary? in
+        substructure.compactMap { dictionary -> SourceKittenDictionary? in
             guard dictionary.expressionKind == .call else {
                 return nil
             }

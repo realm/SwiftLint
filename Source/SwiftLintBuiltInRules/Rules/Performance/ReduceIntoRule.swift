@@ -48,7 +48,7 @@ struct ReduceIntoRule: OptInRule {
                 result.handleValue(value)
                 return result
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -103,7 +103,7 @@ struct ReduceIntoRule: OptInRule {
                     }
                 }
             }
-            """)
+            """),
         ]
     )
 }

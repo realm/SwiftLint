@@ -34,8 +34,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             included.map(\.pattern).joined(separator: ","),
             excluded.map(\.pattern).joined(separator: ","),
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
-                .map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
-            severity.rawValue
+                .map(\.rawValue).sorted(by: <).joined(separator: ","),
+            severity.rawValue,
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) {
             return String(decoding: jsonData, as: UTF8.self)
@@ -45,8 +45,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
 
     /// The `RuleDescription` for the custom rule defined here.
     public var description: RuleDescription {
-        return RuleDescription(identifier: identifier, name: name ?? identifier,
-                               description: "", kind: .style)
+        RuleDescription(identifier: identifier, name: name ?? identifier,
+                        description: "", kind: .style)
     }
 
     /// Create a `RegexConfiguration` with the specified identifier, with other properties to be set later.

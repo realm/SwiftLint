@@ -38,7 +38,7 @@ struct UnavailableConditionRule: Rule {
             } else if i < 2, #available(macOS 11.0, *) {
               print("something else")
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -66,7 +66,7 @@ struct UnavailableConditionRule: Rule {
             } else if i < 2 {
               loadMainWindow()
             }
-            """)
+            """),
         ]
     )
 }

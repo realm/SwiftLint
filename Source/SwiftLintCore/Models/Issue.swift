@@ -100,7 +100,7 @@ public enum Issue: LocalizedError, Equatable {
     ///
     /// - returns: A `SwiftLintError.genericWarning` containing the message of the `error` argument.
     static func wrap(error: some Error) -> Self {
-        error as? Issue ?? Self.genericWarning(error.localizedDescription)
+        error as? Self ?? Self.genericWarning(error.localizedDescription)
     }
 
     /// Make this issue an error.

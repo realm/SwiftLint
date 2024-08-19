@@ -12,14 +12,14 @@ struct EmptyStringRule: OptInRule {
         nonTriggeringExamples: [
             Example("myString.isEmpty"),
             Example("!myString.isEmpty"),
-            Example("\"\"\"\nfoo==\n\"\"\"")
+            Example("\"\"\"\nfoo==\n\"\"\""),
         ],
         triggeringExamples: [
             Example(#"myString↓ == """#),
             Example(#"myString↓ != """#),
             Example(#"myString↓=="""#),
             Example(##"myString↓ == #""#"##),
-            Example(###"myString↓ == ##""##"###)
+            Example(###"myString↓ == ##""##"###),
         ]
     )
 }

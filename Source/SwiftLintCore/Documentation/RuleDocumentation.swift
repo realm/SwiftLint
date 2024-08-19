@@ -52,6 +52,27 @@ struct RuleDocumentation {
         }
         return content.joined(separator: "\n\n")
     }
+
+    private func formattedCode(_ example: Example) -> String {
+        if let config = example.configuration, let configuredRule = try? ruleType.init(configuration: config) {
+            let configDescription = configuredRule.createConfigurationDescription(exclusiveOptions: Set(config.keys))
+            return """
+                ```swift
+                //
+                // \(configDescription.yaml().linesPrefixed(with: "// "))
+                //
+
+                \(example.code)
+
+                ```
+                """
+        }
+        return """
+            ```swift
+            \(example.code)
+            ```
+            """
+    }
 }
 
 private func h1(_ text: String) -> String { "# \(text)" }
@@ -60,30 +81,20 @@ private func h2(_ text: String) -> String { "## \(text)" }
 
 private func detailsSummary(_ rule: some Rule) -> String {
     let ruleDescription = """
-        * **Identifier:** \(type(of: rule).description.identifier)
+        * **Identifier:** `\(type(of: rule).description.identifier)`
         * **Enabled by default:** \(rule is any OptInRule ? "No" : "Yes")
         * **Supports autocorrection:** \(rule is any CorrectableRule ? "Yes" : "No")
         * **Kind:** \(type(of: rule).description.kind)
         * **Analyzer rule:** \(rule is any AnalyzerRule ? "Yes" : "No")
         * **Minimum Swift compiler version:** \(type(of: rule).description.minSwiftVersion.rawValue)
         """
-    if rule.configurationDescription.hasContent {
-        let configurationTable = rule.configurationDescription.markdown()
-            .split(separator: "\n")
-            .joined(separator: "\n  ")
+    let description = rule.createConfigurationDescription()
+    if description.hasContent {
         return ruleDescription + """
 
             * **Default configuration:**
-              \(configurationTable)
+              \(description.markdown().linesPrefixed(with: "  "))
             """
     }
     return ruleDescription
-}
-
-private func formattedCode(_ example: Example) -> String {
-    return """
-        ```swift
-        \(example.code)
-        ```
-        """
 }

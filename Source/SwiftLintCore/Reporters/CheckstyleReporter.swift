@@ -8,23 +8,23 @@ struct CheckstyleReporter: Reporter {
     static let description = "Reports violations as Checkstyle XML."
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        return [
+        [
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">",
             violations
                 .group(by: { ($0.location.file ?? "<nopath>").escapedForXML() })
                 .sorted(by: { $0.key < $1.key })
                 .map(generateForViolationFile).joined(),
-            "\n</checkstyle>"
+            "\n</checkstyle>",
         ].joined()
     }
 
     // MARK: - Private
 
     private static func generateForViolationFile(_ file: String, violations: [StyleViolation]) -> String {
-        return [
+        [
             "\n\t<file name=\"", file, "\">\n",
             violations.map(generateForSingleViolation).joined(),
-            "\t</file>"
+            "\t</file>",
         ].joined()
     }
 
@@ -40,7 +40,7 @@ struct CheckstyleReporter: Reporter {
             "column=\"\(col)\" ",
             "severity=\"", severity, "\" ",
             "message=\"", reason, "\" ",
-            "source=\"\(source)\"/>\n"
+            "source=\"\(source)\"/>\n",
         ].joined()
     }
 }

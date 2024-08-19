@@ -148,7 +148,7 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 .accessibilityLabel(Text("Label for my image"))
             }
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -264,6 +264,6 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 ↓Image(systemName: "circle.plus")
             }
         }
-        """)
+        """),
     ]
 }

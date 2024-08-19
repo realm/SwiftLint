@@ -90,7 +90,7 @@ struct ForWhereRule: Rule {
                 return derivedValue != 0
               }
             }
-            """, configuration: ["allow_for_as_filter": true])
+            """, configuration: ["allow_for_as_filter": true]),
         ],
         triggeringExamples: [
             Example("""
@@ -113,7 +113,7 @@ struct ForWhereRule: Rule {
                     subview.removeFromSuperview()
                 }
             }
-            """, configuration: ["allow_for_as_filter": true])
+            """, configuration: ["allow_for_as_filter": true]),
         ]
     )
 }

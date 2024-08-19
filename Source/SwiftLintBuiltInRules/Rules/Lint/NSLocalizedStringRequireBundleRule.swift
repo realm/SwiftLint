@@ -25,7 +25,7 @@ struct NSLocalizedStringRequireBundleRule: OptInRule {
             """),
             Example("""
             arbitraryFunctionCall("something")
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -37,7 +37,7 @@ struct NSLocalizedStringRequireBundleRule: OptInRule {
             Example("""
             ↓NSLocalizedString("someKey", tableName: "xyz",
                               value: "test", comment: "test")
-            """)
+            """),
         ]
     )
 }

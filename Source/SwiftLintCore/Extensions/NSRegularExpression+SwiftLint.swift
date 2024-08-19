@@ -7,7 +7,7 @@ private let regexCacheLock = NSLock()
 public struct RegularExpression: Hashable, Comparable, ExpressibleByStringLiteral {
     public let regex: NSRegularExpression
 
-    public init(pattern: String, options: NSRegularExpression.Options? = nil) throws {
+    public init(pattern: String, options _: NSRegularExpression.Options? = nil) throws {
         regex = try .cached(pattern: pattern)
     }
     public init(stringLiteral value: String) {
@@ -34,12 +34,6 @@ private struct RegexCacheKey: Hashable {
     }
 }
 
-extension NSRegularExpression: Comparable {
-    public static func < (lhs: NSRegularExpression, rhs: NSRegularExpression) -> Bool {
-        lhs.pattern < rhs.pattern
-    }
-}
-
 public extension NSRegularExpression {
     static func cached(pattern: String, options: Options? = nil) throws -> NSRegularExpression {
         let options = options ?? [.anchorsMatchLines, .dotMatchesLineSeparators]
@@ -57,17 +51,17 @@ public extension NSRegularExpression {
 
     func matches(in stringView: StringView,
                  options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
-        return matches(in: stringView.string, options: options, range: stringView.range)
+        matches(in: stringView.string, options: options, range: stringView.range)
     }
 
     func matches(in stringView: StringView,
                  options: NSRegularExpression.MatchingOptions = [],
                  range: NSRange) -> [NSTextCheckingResult] {
-        return matches(in: stringView.string, options: options, range: range)
+        matches(in: stringView.string, options: options, range: range)
     }
 
     func matches(in file: SwiftLintFile,
                  options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
-        return matches(in: file.stringView.string, options: options, range: file.stringView.range)
+        matches(in: file.stringView.string, options: options, range: file.stringView.range)
     }
 }

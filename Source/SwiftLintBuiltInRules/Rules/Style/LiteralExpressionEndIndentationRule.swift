@@ -48,7 +48,7 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
                key: 0,
                key2: 20
             ]
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -67,7 +67,7 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
             let x = [
                key: value
                ↓]
-            """)
+            """),
         ],
         corrections: [
             Example("""
@@ -117,13 +117,13 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
                3,
                4
             ]
-            """)
+            """),
         ]
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violations(in: file).map { violation in
-            return styleViolation(for: violation, in: file)
+        violations(in: file).map { violation in
+            styleViolation(for: violation, in: file)
         }
     }
 
@@ -169,8 +169,7 @@ extension LiteralExpressionEndIndentationRule: CorrectableRule {
         }
 
         var corrections = correctedLocations.map {
-            return Correction(ruleDescription: Self.description,
-                              location: Location(file: file, characterOffset: $0))
+            Correction(ruleDescription: Self.description, location: Location(file: file, characterOffset: $0))
         }
 
         file.write(correctedContents)
@@ -214,14 +213,15 @@ extension LiteralExpressionEndIndentationRule {
     }
 
     fileprivate func violations(in file: SwiftLintFile) -> [Violation] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
+        file.structureDictionary.traverseDepthFirst { subDict in
             guard let kind = subDict.expressionKind else { return nil }
             guard let violation = violation(in: file, of: kind, dictionary: subDict) else { return nil }
             return [violation]
         }
     }
 
-    private func violation(in file: SwiftLintFile, of kind: SwiftExpressionKind,
+    private func violation(in file: SwiftLintFile,
+                           of kind: SwiftExpressionKind,
                            dictionary: SourceKittenDictionary) -> Violation? {
         guard kind == .dictionary || kind == .array else {
             return nil

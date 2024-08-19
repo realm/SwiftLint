@@ -14,7 +14,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
     )
 
     func validate(file: SwiftLintFile,
-                  kind: SwiftDeclarationKind,
+                  kind _: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset else {
             return []
@@ -32,14 +32,14 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: reason
-                )
+                ),
             ]
         }
         return []
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
+        file.structureDictionary.traverseDepthFirst { subDict in
             guard subDict.declarationKind != nil else { return nil }
             return correct(file: file, dictionary: subDict)
         }
@@ -85,7 +85,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
                         file: file,
                         byteOffset: offset
                     )
-                )
+                ),
             ]
         }
         return corrections
@@ -119,7 +119,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
         let prioritizedModifiers = self.prioritizedModifiers(violatableModifiers: violatableModifiers)
         let sortedByPriorityModifiers = prioritizedModifiers
             .sorted { $0.priority < $1.priority }
-            .map { $0.modifier }
+            .map(\.modifier)
 
         return zip(sortedByPriorityModifiers, violatableModifiers).filter { $0 != $1 }
     }
@@ -171,7 +171,7 @@ private extension SourceKittenDictionary {
 
 private extension String {
     func lastComponentAfter(_ character: String) -> String {
-        return components(separatedBy: character).last ?? ""
+        components(separatedBy: character).last ?? ""
     }
 }
 
@@ -180,5 +180,5 @@ private struct ModifierDescription: Equatable {
     let group: SwiftDeclarationAttributeKind.ModifierGroup
     let offset: ByteCount
     let length: ByteCount
-    var range: ByteRange { return ByteRange(location: offset, length: length) }
+    var range: ByteRange { ByteRange(location: offset, length: length) }
 }

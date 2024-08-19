@@ -105,7 +105,7 @@ struct UnhandledThrowingTaskRule: OptInRule {
                   try someThrowingFunc()
               }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -181,7 +181,7 @@ struct UnhandledThrowingTaskRule: OptInRule {
                 try await someThrowingFunction()
               }
             }
-            """)
+            """),
         ]
     )
 }
@@ -308,7 +308,7 @@ private final class ThrowsVisitor: SyntaxVisitor {
         }
     }
 
-    override func visitPost(_ node: ThrowStmtSyntax) {
+    override func visitPost(_: ThrowStmtSyntax) {
         doesThrow = true
     }
 }

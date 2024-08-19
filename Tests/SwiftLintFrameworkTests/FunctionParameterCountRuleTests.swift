@@ -2,7 +2,7 @@
 
 private func funcWithParameters(_ parameters: String,
                                 violates: Bool = false,
-                                file: StaticString = #file,
+                                file: StaticString = #filePath,
                                 line: UInt = #line) -> Example {
     let marker = violates ? "↓" : ""
 

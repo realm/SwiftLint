@@ -17,7 +17,7 @@ final class TrailingWhitespaceRuleTests: SwiftLintTestCase {
         let baseDescription = TrailingWhitespaceRule.description
         let triggeringComments = [
             Example("// \n"),
-            Example("let name: String // \n")
+            Example("let name: String // \n"),
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples
             .filter { !triggeringComments.contains($0) }

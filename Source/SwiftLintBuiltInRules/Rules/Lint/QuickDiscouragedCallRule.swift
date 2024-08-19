@@ -15,7 +15,7 @@ struct QuickDiscouragedCallRule: OptInRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         let testClasses = dict.substructure.filter {
-            return $0.inheritedTypes.isNotEmpty &&
+            $0.inheritedTypes.isNotEmpty &&
                 $0.declarationKind == .class
         }
 
@@ -34,7 +34,7 @@ struct QuickDiscouragedCallRule: OptInRule {
     }
 
     private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.traverseDepthFirst { subDict in
+        dictionary.traverseDepthFirst { subDict in
             guard let kind = subDict.expressionKind else { return nil }
             return validate(file: file, kind: kind, dictionary: subDict)
         }
@@ -60,7 +60,7 @@ struct QuickDiscouragedCallRule: OptInRule {
     }
 
     private func violationOffsets(in substructure: [SourceKittenDictionary]) -> [ByteCount] {
-        return substructure.flatMap { dictionary -> [ByteCount] in
+        substructure.flatMap { dictionary -> [ByteCount] in
             let substructure = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
                 if dict.expressionKind == .closure {
                     return dict.substructure

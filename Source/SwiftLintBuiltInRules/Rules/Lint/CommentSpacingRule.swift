@@ -57,8 +57,8 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
             */
             """),
             Example("""
-            /*#-editable-code Swift Platground editable area*/default/*#-end-editable-code*/
-            """)
+            /*#-editable-code Swift Playground editable area*/default/*#-end-editable-code*/
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -89,7 +89,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
             """),
             Example("""
             //:↓Swift Playground prose section
-            """)
+            """),
         ],
         corrections: [
             Example("//↓Something"): Example("// Something"),
@@ -113,7 +113,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
                 print("Something")
             }
             // We should improve above function
-            """)
+            """),
         ]
     )
 
@@ -123,7 +123,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
             .filter(\.kind.isComment)
             .map { $0.range.toSourceKittenByteRange() }
             .compactMap { (range: ByteRange) -> [NSRange]? in
-                return file.stringView
+                file.stringView
                     .substringWithByteRange(range)
                     .map(StringView.init)
                     .map { commentBody in
@@ -134,7 +134,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
                             .compactMap { result in
                                 // Set the location to be directly before the first non-slash,
                                 // non-whitespace character which was matched
-                                return file.stringView.byteRangeToNSRange(
+                                file.stringView.byteRangeToNSRange(
                                     ByteRange(
                                         // Safe to mix NSRange offsets with byte offsets here because the regex can't
                                         // contain multi-byte characters
@@ -149,7 +149,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
     }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map { range in
+        violationRanges(in: file).map { range in
             StyleViolation(
                 ruleDescription: Self.description,
                 severity: configuration.severity,
@@ -158,7 +158,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
         }
     }
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, " ")
+    func substitution(for violationRange: NSRange, in _: SwiftLintFile) -> (NSRange, String)? {
+        (violationRange, " ")
     }
 }

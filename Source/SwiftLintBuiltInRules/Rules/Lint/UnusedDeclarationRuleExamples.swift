@@ -136,7 +136,7 @@ struct UnusedDeclarationRuleExamples {
         acceptComponentBuilder {
           "hello"
         }
-        """)
+        """),
     ] + platformSpecificNonTriggeringExamples
 
     static let triggeringExamples = [
@@ -215,7 +215,7 @@ struct UnusedDeclarationRuleExamples {
         Example("""
         class ↓C<T> {}
         extension C<Int> {}
-        """)
+        """),
     ] + ["actor", "enum", "class", "struct"].map {
         Example("""
         protocol Foo {}
@@ -277,7 +277,7 @@ struct UnusedDeclarationRuleExamples {
                 didSet { print("didSet") }
             }
         }
-        """)
+        """),
     ]
 
     private static let platformSpecificTriggeringExamples = [
@@ -319,7 +319,7 @@ struct UnusedDeclarationRuleExamples {
         final class ↓Bar {
             var ↓foo = Foo()
         }
-        """)
+        """),
     ]
 #else
     private static let platformSpecificNonTriggeringExamples = [Example]()

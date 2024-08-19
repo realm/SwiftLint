@@ -26,7 +26,7 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
                   /// appends after an existing message ("<expectation> (use beNil() to match nils)")
                   case appends(ExpectationMessage, /* Appended Message */ String)
                 }
-                """, excludeFromDocumentation: true)
+                """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("func abc(a: String↓ ,b: String) { }"),
@@ -48,7 +48,7 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
                       another: parameter, doIt: true,
                       alignment: .center)
             """),
-            Example(#"Logger.logError("Hat is too large"↓,  info: [])"#)
+            Example(#"Logger.logError("Hat is too large"↓,  info: [])"#),
         ],
         corrections: [
             Example("func abc(a: String↓,b: String) {}"): Example("func abc(a: String, b: String) {}"),
@@ -84,12 +84,12 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
                           alignment: .center)
                 """),
             Example(#"Logger.logError("Hat is too large"↓,  info: [])"#):
-                Example(#"Logger.logError("Hat is too large", info: [])"#)
+                Example(#"Logger.logError("Hat is too large", info: [])"#),
         ]
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
+        violationRanges(in: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0.0.location))

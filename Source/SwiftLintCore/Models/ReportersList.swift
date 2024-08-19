@@ -17,5 +17,5 @@ public let reportersList: [any Reporter.Type] = [
     SARIFReporter.self,
     SonarQubeReporter.self,
     SummaryReporter.self,
-    XcodeReporter.self
+    XcodeReporter.self,
 ]

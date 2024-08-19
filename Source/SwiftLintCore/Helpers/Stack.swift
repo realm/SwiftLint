@@ -3,7 +3,7 @@ public struct Stack<Element> {
     private var elements = [Element]()
 
     /// Creates an empty `Stack`.
-    public init() {}
+    public init() { /* Publish no-op initializer */ }
 
     /// The number of elements in this stack.
     public var count: Int {
@@ -46,6 +46,12 @@ public struct Stack<Element> {
         if elements.isNotEmpty {
             modifier(&elements[count - 1])
         }
+    }
+}
+
+extension Stack: Sequence {
+    public func makeIterator() -> [Element].Iterator {
+        elements.makeIterator()
     }
 }
 

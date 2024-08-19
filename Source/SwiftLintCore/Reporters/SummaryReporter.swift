@@ -32,7 +32,7 @@ private extension TextTable {
             TextTableColumn(header: numberOfWarningsHeader),
             TextTableColumn(header: numberOfErrorsHeader),
             TextTableColumn(header: numberOfViolationsHeader),
-            TextTableColumn(header: numberOfFilesHeader)
+            TextTableColumn(header: numberOfFilesHeader),
         ]
         self.init(columns: columns)
 
@@ -65,7 +65,7 @@ private extension TextTable {
             totalNumberOfWarnings += numberOfWarnings
             totalNumberOfErrors += numberOfErrors
             let ruleViolations = ruleIdentifiersToViolationsMap[ruleIdentifier] ?? []
-            let numberOfFiles = Set(ruleViolations.map { $0.location.file }).count
+            let numberOfFiles = Set(ruleViolations.map(\.location.file)).count
 
             addRow(values: [
                 ruleIdentifier,
@@ -75,12 +75,12 @@ private extension TextTable {
                 numberOfWarnings.formattedString.leftPadded(forHeader: numberOfWarningsHeader),
                 numberOfErrors.formattedString.leftPadded(forHeader: numberOfErrorsHeader),
                 numberOfViolations.formattedString.leftPadded(forHeader: numberOfViolationsHeader),
-                numberOfFiles.formattedString.leftPadded(forHeader: numberOfFilesHeader)
+                numberOfFiles.formattedString.leftPadded(forHeader: numberOfFilesHeader),
             ])
         }
 
         let totalNumberOfViolations = totalNumberOfWarnings + totalNumberOfErrors
-        let totalNumberOfFiles = Set(violations.map { $0.location.file }).count
+        let totalNumberOfFiles = Set(violations.map(\.location.file)).count
         addRow(values: [
             "Total",
             "",
@@ -89,7 +89,7 @@ private extension TextTable {
             totalNumberOfWarnings.formattedString.leftPadded(forHeader: numberOfWarningsHeader),
             totalNumberOfErrors.formattedString.leftPadded(forHeader: numberOfErrorsHeader),
             totalNumberOfViolations.formattedString.leftPadded(forHeader: numberOfViolationsHeader),
-            totalNumberOfFiles.formattedString.leftPadded(forHeader: numberOfFilesHeader)
+            totalNumberOfFiles.formattedString.leftPadded(forHeader: numberOfFilesHeader),
         ])
     }
 

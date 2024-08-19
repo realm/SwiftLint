@@ -56,7 +56,7 @@ struct BalancedXCTestLifecycleRule: OptInRule {
                 class func setUp() {}
                 class func tearDown() {}
             }
-            """#)
+            """#),
         ],
         triggeringExamples: [
             Example(#"""
@@ -101,7 +101,7 @@ struct BalancedXCTestLifecycleRule: OptInRule {
             final class ↓BarTests: XCTestCase {
                 override func tearDownWithError() throws {}
             }
-            """#)
+            """#),
         ]
     )
 }

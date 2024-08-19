@@ -12,147 +12,147 @@ struct DuplicateConditionsRule: Rule {
         nonTriggeringExamples: [
             Example("""
                 if x < 5 {
-                  foo()
+                    foo()
                 } else if y == "s" {
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 if x < 5 {
-                  foo()
+                    foo()
                 }
                 if x < 5 {
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 if x < 5, y == "s" {
-                  foo()
+                    foo()
                 } else if x < 5 {
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 switch x {
                 case \"a\":
-                  foo()
-                  bar()
+                    foo()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 switch x {
                 case \"a\" where y == "s":
-                  foo()
+                    foo()
                 case \"a\" where y == "t":
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 if let x = maybeAbc {
-                  foo()
+                    foo()
                 } else if let x = maybePqr {
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 if let x = maybeAbc, let z = x.maybeY {
-                  foo()
+                    foo()
                 } else if let x = maybePqr, let z = x.maybeY {
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 if case .p = x {
-                  foo()
+                    foo()
                 } else if case .q = x {
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 if true {
-                  if true { foo() }
+                    if true { foo() }
                 }
-            """)
+                """),
         ],
         triggeringExamples: [
             Example("""
                 if ↓x < 5 {
-                  foo()
+                    foo()
                 } else if y == "s" {
-                  bar()
+                    bar()
                 } else if ↓x < 5 {
-                  baz()
+                    baz()
                 }
-            """),
+                """),
             Example("""
                 if z {
-                  if ↓x < 5 {
-                    foo()
-                  } else if y == "s" {
-                    bar()
-                  } else if ↓x < 5 {
-                    baz()
-                  }
+                    if ↓x < 5 {
+                        foo()
+                    } else if y == "s" {
+                        bar()
+                    } else if ↓x < 5 {
+                        baz()
+                    }
                 }
-            """),
+                """),
             Example("""
                 if ↓x < 5, y == "s" {
-                  foo()
+                    foo()
                 } else if x < 10 {
-                  bar()
+                    bar()
                 } else if ↓y == "s", x < 5 {
-                  baz()
+                    baz()
                 }
-            """),
+                """),
             Example("""
                 switch x {
                 case ↓\"a\", \"b\":
-                  foo()
+                    foo()
                 case \"c\", ↓\"a\":
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 switch x {
                 case ↓\"a\" where y == "s":
-                  foo()
+                    foo()
                 case ↓\"a\" where y == "s":
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 if ↓let xyz = maybeXyz {
-                  foo()
+                    foo()
                 } else if ↓let xyz = maybeXyz {
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 if ↓let x = maybeAbc, let z = x.maybeY {
-                  foo()
+                    foo()
                 } else if ↓let x = maybeAbc, let z = x.maybeY {
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 if ↓#available(macOS 10.15, *) {
-                  foo()
+                    foo()
                 } else if ↓#available(macOS 10.15, *) {
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 if ↓case .p = x {
-                  foo()
+                    foo()
                 } else if ↓case .p = x {
-                  bar()
+                    bar()
                 }
-            """),
+                """),
             Example("""
                 if ↓x < 5 {}
                 else if ↓x < 5 {}
                 else if ↓x < 5 {}
-            """)
+                """),
         ]
     )
 }
@@ -174,7 +174,7 @@ private extension DuplicateConditionsRule {
 
             let positionsByConditions = statementChain
                 .reduce(into: [Set<String>: [AbsolutePosition]]()) { acc, elt in
-                    let conditions = elt.conditions.map { $0.condition.trimmedDescription }
+                    let conditions = elt.conditions.map(\.condition.trimmedDescription)
                     let location = elt.conditions.positionAfterSkippingLeadingTrivia
                     acc[Set(conditions), default: []].append(location)
                 }

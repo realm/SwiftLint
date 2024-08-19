@@ -32,7 +32,7 @@ struct IdenticalOperandsRule: OptInRule {
                 """),
                 Example("num \(operation) num!.byteSwapped"),
                 Example("1    + 1 \(operation)   1     +    2"),
-                Example("f(  i :   2) \(operation)   f (i: 3 )")
+                Example("f(  i :   2) \(operation)   f (i: 3 )"),
             ]
         } + [
             Example("func evaluate(_ mode: CommandMode) -> Result<Options, CommandantError<CommandantError<()>>>"),
@@ -42,7 +42,7 @@ struct IdenticalOperandsRule: OptInRule {
             Example("type(of: model).cachePrefix == cachePrefix"),
             Example("histogram[156].0 == 0x003B8D96 && histogram[156].1 == 1"),
             Example(#"[Wrapper(type: .three), Wrapper(type: .one)].sorted { "\($0.type)" > "\($1.type)"}"#),
-            Example(#"array.sorted { "\($0)" < "\($1)" }"#)
+            Example(#"array.sorted { "\($0)" < "\($1)" }"#),
         ],
         triggeringExamples: operators.flatMap { operation in
             [
@@ -56,7 +56,7 @@ struct IdenticalOperandsRule: OptInRule {
                 Example("XCTAssertTrue(↓s3 \(operation) s3)"),
                 Example("if let tab = tabManager.selectedTab, ↓tab.webView \(operation) tab.webView"),
                 Example("↓1    + 1 \(operation)   1     +    1"),
-                Example(" ↓f(  i :   2) \(operation)   f (i: \n 2 )")
+                Example(" ↓f(  i :   2) \(operation)   f (i: \n 2 )"),
             ]
         } + [
             Example("""
@@ -66,7 +66,7 @@ struct IdenticalOperandsRule: OptInRule {
             Example("""
                 return lhs.foo == rhs.foo &&
                        ↓lhs.bar == lhs.bar
-            """)
+            """),
         ]
     )
 }

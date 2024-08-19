@@ -82,7 +82,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
-        """, excludeFromDocumentation: true)
+        """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -157,6 +157,6 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
-        """, excludeFromDocumentation: true)
+        """, excludeFromDocumentation: true),
     ]
 }

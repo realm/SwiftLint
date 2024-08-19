@@ -39,6 +39,6 @@ final class YamlSwiftLintTests: SwiftLintTestCase {
     }
 
     private func getTestYaml() throws -> String {
-        return try String(contentsOfFile: "\(testResourcesPath)/test.yml", encoding: .utf8)
+        try String(contentsOfFile: "\(testResourcesPath)/test.yml", encoding: .utf8)
     }
 }

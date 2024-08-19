@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = BlanketDisableCommandRule
 
@@ -12,7 +12,7 @@ struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration {
         "file_length",
         "file_name",
         "file_name_no_space",
-        "single_test_class"
+        "single_test_class",
     ]
     @ConfigurationElement(key: "always_blanket_disable")
     private(set) var alwaysBlanketDisableRuleIdentifiers: Set<String> = []

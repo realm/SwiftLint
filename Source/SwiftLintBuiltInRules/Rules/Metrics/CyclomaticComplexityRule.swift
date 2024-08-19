@@ -42,7 +42,7 @@ struct CyclomaticComplexityRule: Rule {
                     if true {}; if true {}; if true {}; if true {}; if true {}
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -67,7 +67,7 @@ struct CyclomaticComplexityRule: Rule {
                     }
                 }
             }
-            """)
+            """),
         ]
     )
 }
@@ -121,48 +121,48 @@ private extension CyclomaticComplexityRule {
             super.init(viewMode: .sourceAccurate)
         }
 
-        override func visitPost(_ node: ForStmtSyntax) {
+        override func visitPost(_: ForStmtSyntax) {
             complexity += 1
         }
 
-        override func visitPost(_ node: IfExprSyntax) {
+        override func visitPost(_: IfExprSyntax) {
             complexity += 1
         }
 
-        override func visitPost(_ node: GuardStmtSyntax) {
+        override func visitPost(_: GuardStmtSyntax) {
             complexity += 1
         }
 
-        override func visitPost(_ node: RepeatStmtSyntax) {
+        override func visitPost(_: RepeatStmtSyntax) {
             complexity += 1
         }
 
-        override func visitPost(_ node: WhileStmtSyntax) {
+        override func visitPost(_: WhileStmtSyntax) {
             complexity += 1
         }
 
-        override func visitPost(_ node: CatchClauseSyntax) {
+        override func visitPost(_: CatchClauseSyntax) {
             complexity += 1
         }
 
-        override func visitPost(_ node: SwitchCaseSyntax) {
+        override func visitPost(_: SwitchCaseSyntax) {
             if !ignoresCaseStatements {
                 complexity += 1
             }
         }
 
-        override func visitPost(_ node: FallThroughStmtSyntax) {
+        override func visitPost(_: FallThroughStmtSyntax) {
             // Switch complexity is reduced by `fallthrough` cases
             if !ignoresCaseStatements {
                 complexity -= 1
             }
         }
 
-        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
-        override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
     }

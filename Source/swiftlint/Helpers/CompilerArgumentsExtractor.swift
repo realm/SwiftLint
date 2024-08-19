@@ -59,7 +59,7 @@ private func partiallyFilter(arguments args: [String]) -> ([String], Bool) {
 extension Array where Element == String {
     /// Return the full list of compiler arguments, replacing any response files with their contents.
     fileprivate var expandingResponseFiles: [String] {
-        return flatMap { arg -> [String] in
+        flatMap { arg -> [String] in
             guard arg.starts(with: "@") else {
                 return [arg]
             }
@@ -94,7 +94,7 @@ extension Array where Element == String {
                 "-incremental",
                 "-serialize-diagnostics",
                 "-emit-dependencies",
-                "-use-frontend-parseable-output"
+                "-use-frontend-parseable-output",
             ].contains(arg)
         }.map { arg in
             if arg == "-O" {

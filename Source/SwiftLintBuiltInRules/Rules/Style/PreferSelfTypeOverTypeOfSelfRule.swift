@@ -38,7 +38,7 @@ struct PreferSelfTypeOverTypeOfSelfRule: OptInRule {
                     print(type(of: self))
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -61,7 +61,7 @@ struct PreferSelfTypeOverTypeOfSelfRule: OptInRule {
                     print(↓Swift.type(of: self).baz)
                 }
             }
-            """)
+            """),
         ],
         corrections: [
             Example("""
@@ -102,7 +102,7 @@ struct PreferSelfTypeOverTypeOfSelfRule: OptInRule {
                     print(Self.baz)
                 }
             }
-            """)
+            """),
         ]
     )
 }
@@ -135,7 +135,7 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
 
 private extension FunctionCallExprSyntax {
     var hasViolation: Bool {
-        return isTypeOfSelfCall &&
+        isTypeOfSelfCall &&
         arguments.map(\.label?.text) == ["of"] &&
         arguments.first?.expression.as(DeclReferenceExprSyntax.self)?.baseName.tokenKind == .keyword(.self)
     }

@@ -1,9 +1,9 @@
 [
   {
     "check_name" : "Line Length",
-    "description" : "Violation Reason",
+    "description" : "Violation Reason 1",
     "engine_name" : "SwiftLint",
-    "fingerprint" : "917a85854a9500cfd28520fa4875a3ecbba171e522f13452c7adec71fc14497a",
+    "fingerprint" : "4a17aef14fdc2dbdd95ab2ee78d1b7d6cc289539d290b283cbabedd30e929f5f",
     "location" : {
       "lines" : {
         "begin" : 1,
@@ -16,9 +16,9 @@
   },
   {
     "check_name" : "Line Length",
-    "description" : "Violation Reason",
+    "description" : "Violation Reason 2",
     "engine_name" : "SwiftLint",
-    "fingerprint" : "917a85854a9500cfd28520fa4875a3ecbba171e522f13452c7adec71fc14497a",
+    "fingerprint" : "4a17aef14fdc2dbdd95ab2ee78d1b7d6cc289539d290b283cbabedd30e929f5f",
     "location" : {
       "lines" : {
         "begin" : 1,
@@ -33,13 +33,13 @@
     "check_name" : "Syntactic Sugar",
     "description" : "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>",
     "engine_name" : "SwiftLint",
-    "fingerprint" : "6477f518963149b01807a31e7067be97dc39a30b93673e1e246f812e9ea5ef21",
+    "fingerprint" : "752322cea7c7ad97a20777d51a8d44c33a7e037290344c8fed6881ec916b6f1a",
     "location" : {
       "lines" : {
         "begin" : 1,
         "end" : 1
       },
-      "path" : "filename"
+      "path" : "path/file.swift"
     },
     "severity" : "major",
     "type" : "issue"

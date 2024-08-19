@@ -23,7 +23,8 @@ struct AccessibilityTraitForButtonRule: ASTRule, OptInRule {
 
     // MARK: AST Rule
 
-    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+    func validate(file: SwiftLintFile,
+                  kind: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         // Only proceed to check View structs.
         guard kind == .struct,
@@ -88,7 +89,7 @@ private extension SourceKittenDictionary {
     /// or by a `gesture`, `simultaneousGesture`, or `highPriorityGesture` modifier with an argument
     /// starting with a `TapGesture` object with a count of 1 (default value is 1).
     func hasOnSingleTapModifier(in file: SwiftLintFile) -> Bool {
-        return hasModifier(
+        hasModifier(
             anyOf: [
                 SwiftUIModifier(
                     name: "onTapGesture",
@@ -111,7 +112,7 @@ private extension SourceKittenDictionary {
                     arguments: [
                         .init(name: "", values: ["TapGesture()", "TapGesture(count: 1)"], matchType: .prefix)
                     ]
-                )
+                ),
             ],
             in: file
         )
@@ -120,7 +121,7 @@ private extension SourceKittenDictionary {
     /// Whether or not the dictionary represents a SwiftUI View with an `accessibilityAddTraits()` or
     /// `accessibility(addTraits:)` modifier with the specified trait (specify trait as a String).
     func hasAccessibilityTrait(_ trait: String, in file: SwiftLintFile) -> Bool {
-        return hasModifier(
+        hasModifier(
             anyOf: [
                 SwiftUIModifier(
                     name: "accessibilityAddTraits",
@@ -129,7 +130,7 @@ private extension SourceKittenDictionary {
                 SwiftUIModifier(
                     name: "accessibility",
                     arguments: [.init(name: "addTraits", values: [trait], matchType: .substring)]
-                )
+                ),
             ],
             in: file
         )

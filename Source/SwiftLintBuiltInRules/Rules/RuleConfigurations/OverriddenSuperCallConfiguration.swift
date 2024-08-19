@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = OverriddenSuperCallRule
 
@@ -33,7 +33,7 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration {
         "viewWillAppear(_:)",
         "viewWillDisappear(_:)",
         // XCTestCase
-        "invokeTest()"
+        "invokeTest()",
     ]
 
     @ConfigurationElement(key: "severity")

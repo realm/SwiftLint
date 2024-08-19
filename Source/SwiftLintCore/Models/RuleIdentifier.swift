@@ -14,7 +14,7 @@ public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
 
     private static let allStringRepresentation = "all"
 
-    /// The spelling of the string for this idenfitier.
+    /// The spelling of the string for this identifier.
     public var stringRepresentation: String {
         switch self {
         case .all:

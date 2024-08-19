@@ -11,11 +11,11 @@ struct ClosingBraceRule: Rule {
         kind: .style,
         nonTriggeringExamples: [
             Example("[].map({ })"),
-            Example("[].map(\n  { }\n)")
+            Example("[].map(\n  { }\n)"),
         ],
         triggeringExamples: [
             Example("[].map({ ↓} )"),
-            Example("[].map({ ↓}\t)")
+            Example("[].map({ ↓}\t)"),
         ],
         corrections: [
             Example("[].map({ ↓} )"): Example("[].map({ })")

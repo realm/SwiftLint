@@ -18,7 +18,7 @@ struct DiscouragedDirectInitRule: Rule {
             Example("let foo = Bundle.init(identifier: \"bar\")"),
             Example("let foo = NSError(domain: \"bar\", code: 0)"),
             Example("let foo = NSError.init(domain: \"bar\", code: 0)"),
-            Example("func testNSError()")
+            Example("func testNSError()"),
         ],
         triggeringExamples: [
             Example("↓UIDevice()"),
@@ -32,7 +32,7 @@ struct DiscouragedDirectInitRule: Rule {
             Example("↓NSError.init()"),
             Example("let foo = ↓UIDevice.init()"),
             Example("let foo = ↓Bundle.init()"),
-            Example("let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init(), error: ↓NSError.init())")
+            Example("let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init(), error: ↓NSError.init())"),
         ]
     )
 }

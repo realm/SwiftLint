@@ -15,7 +15,7 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
                     }
                 }
             }
-            """)
+            """),
         ]
         let triggeringExamples = [
             Example("""
@@ -29,7 +29,7 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
                     }
                 }
             }
-            """)
+            """),
         ]
 
         let description = ComputedAccessorsOrderRule.description

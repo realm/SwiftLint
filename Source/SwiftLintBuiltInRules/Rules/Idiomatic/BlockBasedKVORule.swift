@@ -14,7 +14,7 @@ struct BlockBasedKVORule: Rule {
             let observer = foo.observe(\.value, options: [.new]) { (foo, change) in
                print(change.newValue)
             }
-            """#)
+            """#),
         ],
         triggeringExamples: [
             Example("""
@@ -30,7 +30,7 @@ struct BlockBasedKVORule: Rule {
                                           change: Dictionary<NSKeyValueChangeKey, Any>?,
                                           context: UnsafeMutableRawPointer?) {}
             }
-            """)
+            """),
         ]
     )
 }

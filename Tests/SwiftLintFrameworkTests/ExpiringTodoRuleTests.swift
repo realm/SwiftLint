@@ -141,7 +141,7 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
     }
 
     private func violations(_ example: Example) -> [StyleViolation] {
-        return SwiftLintFrameworkTests.violations(example, config: config)
+        SwiftLintFrameworkTests.violations(example, config: config)
     }
 
     private func dateString(for status: ExpiringTodoRule.ExpiryViolationLevel) -> String {
@@ -185,9 +185,9 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
                 "date_format": config.dateFormat,
                 "date_delimiters": [
                     "opening": config.dateDelimiters.opening,
-                    "closing": config.dateDelimiters.closing
+                    "closing": config.dateDelimiters.closing,
                 ],
-                "date_separator": config.dateSeparator
+                "date_separator": config.dateSeparator,
             ]
         }
 
@@ -198,6 +198,6 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
 fileprivate extension Configuration {
     var ruleConfiguration: ExpiringTodoConfiguration {
         // swiftlint:disable:next force_cast
-        return (rules.first(where: { $0 is ExpiringTodoRule }) as! ExpiringTodoRule).configuration
+        (rules.first(where: { $0 is ExpiringTodoRule }) as! ExpiringTodoRule).configuration
     }
 }

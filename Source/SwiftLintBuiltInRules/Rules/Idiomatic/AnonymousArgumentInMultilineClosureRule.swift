@@ -21,14 +21,14 @@ struct AnonymousArgumentInMultilineClosureRule: OptInRule {
             closure { arg in
                 nestedClosure { $0 + arg }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
             closure {
                 print(↓$0)
             }
-            """)
+            """),
         ]
     )
 }

@@ -87,10 +87,12 @@ final class DeploymentTargetConfigurationTests: SwiftLintTestCase {
         )
         XCTAssertEqual(configuration.severityConfiguration.severity, .warning)
 
-        try configuration.apply(configuration: ["tvOS_deployment_target": 10.2,
-                                                "tvOSApplicationExtension_deployment_target": 9.1,
-                                                "watchOS_deployment_target": 5,
-                                                "watchOSApplicationExtension_deployment_target": 2.2])
+        try configuration.apply(configuration: [
+            "tvOS_deployment_target": 10.2,
+            "tvOSApplicationExtension_deployment_target": 9.1,
+            "watchOS_deployment_target": 5,
+            "watchOSApplicationExtension_deployment_target": 2.2,
+        ])
         XCTAssertEqual(
             configuration.iOSDeploymentTarget,
             Version(platform: .iOS, major: 10, minor: 1)
@@ -132,7 +134,7 @@ final class DeploymentTargetConfigurationTests: SwiftLintTestCase {
             ["iOS_deployment_target": ""],
             ["iOS_deployment_target": "5.x"],
             ["iOS_deployment_target": true],
-            ["invalid": true]
+            ["invalid": true],
         ]
 
         for badConfig in badConfigs {

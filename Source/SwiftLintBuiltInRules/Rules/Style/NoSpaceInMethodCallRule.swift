@@ -23,7 +23,7 @@ struct NoSpaceInMethodCallRule: Rule {
             } label: {
                 Text("Button")
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("foo↓ ()"),
@@ -32,7 +32,7 @@ struct NoSpaceInMethodCallRule: Rule {
             Example("object.foo↓ (value: 1)"),
             Example("object.foo↓ () {}"),
             Example("object.foo↓     ()"),
-            Example("object.foo↓     (value: 1) { x in print(x) }")
+            Example("object.foo↓     (value: 1) { x in print(x) }"),
         ],
         corrections: [
             Example("foo↓ ()"): Example("foo()"),
@@ -40,7 +40,7 @@ struct NoSpaceInMethodCallRule: Rule {
             Example("object.foo↓ (1)"): Example("object.foo(1)"),
             Example("object.foo↓ (value: 1)"): Example("object.foo(value: 1)"),
             Example("object.foo↓ () {}"): Example("object.foo() {}"),
-            Example("object.foo↓     ()"): Example("object.foo()")
+            Example("object.foo↓     ()"): Example("object.foo()"),
         ]
     )
 }

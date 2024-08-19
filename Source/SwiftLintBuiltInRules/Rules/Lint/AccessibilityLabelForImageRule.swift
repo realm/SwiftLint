@@ -25,7 +25,8 @@ struct AccessibilityLabelForImageRule: ASTRule, OptInRule {
 
     // MARK: AST Rule
 
-    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+    func validate(file: SwiftLintFile,
+                  kind: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         // Only proceed to check View structs.
         guard kind == .struct,
@@ -97,7 +98,7 @@ private extension SourceKittenDictionary {
         // Image(decorative: "myImage").resizable().frame
         //     --> Image(decorative: "myImage").resizable
         //         --> Image
-        return substructure.contains(where: { $0.isImage })
+        return substructure.contains(where: \.isImage)
     }
 
     /// Whether or not the dictionary represents a SwiftUI Image using the `Image(decorative:)` constructor (hides
@@ -118,13 +119,13 @@ private extension SourceKittenDictionary {
         // Image(decorative: "myImage").resizable().frame
         //     --> Image(decorative: "myImage").resizable
         //         --> Image
-        return substructure.contains(where: { $0.isDecorativeOrLabeledImage })
+        return substructure.contains(where: \.isDecorativeOrLabeledImage)
     }
 
     /// Whether or not the dictionary represents a SwiftUI View with an `accesibilityLabel(_:)`
     /// or `accessibility(label:)` modifier.
     func hasAccessibilityLabelModifier(in file: SwiftLintFile) -> Bool {
-        return hasModifier(
+        hasModifier(
             anyOf: [
                 SwiftUIModifier(
                     name: "accessibilityLabel",
@@ -133,7 +134,7 @@ private extension SourceKittenDictionary {
                 SwiftUIModifier(
                     name: "accessibility",
                     arguments: [.init(name: "label", values: [])]
-                )
+                ),
             ],
             in: file
         )

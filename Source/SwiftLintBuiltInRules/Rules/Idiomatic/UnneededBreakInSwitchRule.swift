@@ -3,8 +3,9 @@ import SwiftSyntax
 private func embedInSwitch(
     _ text: String,
     case: String = "case .bar",
-    file: StaticString = #file, line: UInt = #line) -> Example {
-    return Example("""
+    file: StaticString = #filePath,
+    line: UInt = #line) -> Example {
+    Example("""
         switch foo {
         \(`case`):
             \(text)
@@ -39,13 +40,13 @@ struct UnneededBreakInSwitchRule: Rule {
                     }
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             embedInSwitch("something()\n    ↓break"),
             embedInSwitch("something()\n    ↓break // comment"),
             embedInSwitch("something()\n    ↓break", case: "default"),
-            embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition")
+            embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition"),
         ],
         corrections: [
             embedInSwitch("something()\n    ↓break")
@@ -83,7 +84,7 @@ struct UnneededBreakInSwitchRule: Rule {
             embedInSwitch("something()\n    ↓break", case: "default")
             : embedInSwitch("something()", case: "default"),
             embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition")
-            : embedInSwitch("something()", case: "case .foo, .foo2 where condition")
+            : embedInSwitch("something()", case: "case .foo, .foo2 where condition"),
         ]
     )
 }

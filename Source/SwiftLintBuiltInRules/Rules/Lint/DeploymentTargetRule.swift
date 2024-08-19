@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct DeploymentTargetRule {
+struct DeploymentTargetRule: Rule {
     fileprivate typealias Version = DeploymentTargetConfiguration.Version
 
     var configuration = DeploymentTargetConfiguration()
@@ -46,7 +46,7 @@ private extension DeploymentTargetRule {
                 "tvOS": configuration.tvOSDeploymentTarget,
                 "tvOSApplicationExtension": configuration.tvOSAppExtensionDeploymentTarget,
                 "watchOS": configuration.watchOSDeploymentTarget,
-                "watchOSApplicationExtension": configuration.watchOSAppExtensionDeploymentTarget
+                "watchOSApplicationExtension": configuration.watchOSAppExtensionDeploymentTarget,
             ]
         }
 
@@ -108,7 +108,7 @@ private extension DeploymentTargetRule {
                     return nil
             }
 
-            guard let version = try? Version(platform: platform, rawValue: versionString),
+            guard let version = try? Version(platform: platform, value: versionString),
                 version <= minVersion else {
                     return nil
             }

@@ -24,10 +24,10 @@ private extension Rule {
         }
 
         let regionsDisablingCurrentRule = regions.filter { region in
-            return region.isRuleDisabled(self.init())
+            region.isRuleDisabled(self.init())
         }
         let regionsDisablingSuperfluousDisableRule = regions.filter { region in
-            return region.isRuleDisabled(superfluousDisableCommandRule)
+            region.isRuleDisabled(superfluousDisableCommandRule)
         }
 
         return regionsDisablingCurrentRule.compactMap { region -> StyleViolation? in
@@ -40,7 +40,7 @@ private extension Rule {
             }
 
             let noViolationsInDisabledRegion = !allViolations.contains { violation in
-                return region.contains(violation.location)
+                region.contains(violation.location)
             }
             guard noViolationsInDisabledRegion else {
                 return nil
@@ -57,9 +57,10 @@ private extension Rule {
 
     // As we need the configuration to get custom identifiers.
     // swiftlint:disable:next function_parameter_count
-    func lint(file: SwiftLintFile, regions: [Region], benchmark: Bool,
+    func lint(file: SwiftLintFile,
+              regions: [Region],
+              benchmark: Bool,
               storage: RuleStorage,
-              configuration: Configuration,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
         // We shouldn't lint if the current Swift version is not supported by the rule
@@ -91,9 +92,9 @@ private extension Rule {
         }
 
         let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
-            return (violation, regions.first { $0.contains(violation.location) })
+            (violation, regions.first { $0.contains(violation.location) })
         }.partitioned { _, region in
-            return region?.isRuleEnabled(self) ?? true
+            region?.isRuleEnabled(self) ?? true
         }
 
         let ruleIDs = Self.description.allIdentifiers +
@@ -114,7 +115,7 @@ private extension Rule {
                 return violation
             }
         } else {
-            enabledViolations = enabledViolationsAndRegions.map { $0.0 }
+            enabledViolations = enabledViolationsAndRegions.map(\.0)
         }
         let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
             let identifiers = region?.deprecatedAliasesDisabling(rule: self) ?? []
@@ -144,7 +145,9 @@ public struct Linter {
     /// - parameter configuration:     The SwiftLint configuration to apply to this linter.
     /// - parameter cache:             The persisted cache to use for this linter.
     /// - parameter compilerArguments: The compiler arguments to use for this linter if it is to execute analyzer rules.
-    public init(file: SwiftLintFile, configuration: Configuration = Configuration.default, cache: LinterCache? = nil,
+    public init(file: SwiftLintFile,
+                configuration: Configuration = Configuration.default,
+                cache: LinterCache? = nil,
                 compilerArguments: [String] = []) {
         self.file = file
         self.cache = cache
@@ -204,7 +207,7 @@ public struct CollectedLinter {
     ///
     /// - returns: All style violations found by this linter.
     public func styleViolations(using storage: RuleStorage) -> [StyleViolation] {
-        return getStyleViolations(using: storage).0
+        getStyleViolations(using: storage).0
     }
 
     /// Computes or retrieves style violations and the time spent executing each rule.
@@ -214,7 +217,7 @@ public struct CollectedLinter {
     /// - returns: All style violations found by this linter, and the time spent executing each rule.
     public func styleViolationsAndRuleTimes(using storage: RuleStorage)
         -> ([StyleViolation], [(id: String, time: Double)]) {
-            return getStyleViolations(using: storage, benchmark: true)
+            getStyleViolations(using: storage, benchmark: true)
     }
 
     private func getStyleViolations(using storage: RuleStorage,
@@ -235,7 +238,6 @@ public struct CollectedLinter {
         let validationResults = rules.parallelCompactMap {
             $0.lint(file: file, regions: regions, benchmark: benchmark,
                     storage: storage,
-                    configuration: configuration,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
                     compilerArguments: compilerArguments)
         }
@@ -243,10 +245,10 @@ public struct CollectedLinter {
             regions: regions, configuration: configuration,
             superfluousDisableCommandRule: superfluousDisableCommandRule)
 
-        let violations = validationResults.flatMap { $0.violations } + undefinedSuperfluousCommandViolations
-        let ruleTimes = validationResults.compactMap { $0.ruleTime }
+        let violations = validationResults.flatMap(\.violations) + undefinedSuperfluousCommandViolations
+        let ruleTimes = validationResults.compactMap(\.ruleTime)
         var deprecatedToValidIdentifier = [String: String]()
-        for (key, value) in validationResults.flatMap({ $0.deprecatedToValidIDPairs }) {
+        for (key, value) in validationResults.flatMap(\.deprecatedToValidIDPairs) {
             deprecatedToValidIdentifier[key] = value
         }
 
@@ -348,7 +350,7 @@ public struct CollectedLinter {
                 !region.disabledRuleIdentifiers.contains(.all) &&
                 !region.disabledRuleIdentifiers.contains(superfluousRuleIdentifier)
             }).map { id in
-                return StyleViolation(
+                StyleViolation(
                     ruleDescription: type(of: superfluousDisableCommandRule).description,
                     severity: superfluousDisableCommandRule.configuration.severity,
                     location: region.start,

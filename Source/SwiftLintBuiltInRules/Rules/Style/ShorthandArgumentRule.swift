@@ -17,22 +17,22 @@ struct ShorthandArgumentRule: OptInRule {
         nonTriggeringExamples: [
             Example("""
                 f { $0 }
-            """),
+                """),
             Example("""
                 f {
                     $0
                   + $1
                   + $2
                 }
-            """),
+                """),
             Example("""
                 f { $0.a + $0.b }
-            """),
+                """),
             Example("""
                 f {
                     $0
                   +  g { $0 }
-            """, configuration: ["allow_until_line_after_opening_brace": 1])
+                """, configuration: ["allow_until_line_after_opening_brace": 1]),
         ],
         triggeringExamples: [
             Example("""
@@ -43,7 +43,7 @@ struct ShorthandArgumentRule: OptInRule {
 
                   + ↓$0
                 }
-            """),
+                """),
             Example("""
                 f {
                     $0
@@ -53,18 +53,18 @@ struct ShorthandArgumentRule: OptInRule {
                   + $0
                   + ↓$1
                 }
-            """, configuration: ["allow_until_line_after_opening_brace": 5]),
+                """, configuration: ["allow_until_line_after_opening_brace": 5]),
             Example("""
                 f { ↓$0 + ↓$1 }
-            """, configuration: ["always_disallow_more_than_one": true]),
+                """, configuration: ["always_disallow_more_than_one": true]),
             Example("""
                 f {
                     ↓$0.a
                   + ↓$0.b
                   + $1
                   + ↓$2.c
-            }
-            """, configuration: ["always_disallow_member_access": true, "allow_until_line_after_opening_brace": 3])
+                }
+                """, configuration: ["always_disallow_member_access": true, "allow_until_line_after_opening_brace": 3]),
         ]
     )
 }
@@ -145,7 +145,7 @@ private final class ShorthandArgumentCollector: SyntaxVisitor {
         }
     }
 
-    override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
         .skipChildren
     }
 }

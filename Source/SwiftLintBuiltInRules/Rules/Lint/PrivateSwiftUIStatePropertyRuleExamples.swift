@@ -101,7 +101,7 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
         actor ContentView: View {
             @State private var isPlaying: Bool = false
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -184,7 +184,7 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
         Example("""
         struct ContentView: View {
             @State ↓fileprivate(set) public var isPlaying = false
-        """)
+        """),
     ]
 
     static let corrections: [Example: Example] = [
@@ -265,6 +265,6 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
                             /// This will track if the content is currently playing
                             private var isPlaying: Bool = false
                         }
-                        """)
+                        """),
     ]
 }

@@ -94,7 +94,7 @@ struct UnusedCaptureListRule: SwiftSyntaxRule, OptInRule {
                 }
                 someInstanceFunction()
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -140,7 +140,7 @@ struct UnusedCaptureListRule: SwiftSyntaxRule, OptInRule {
                 }
                 someInstanceFunction()
             }
-            """)
+            """),
         ]
     )
 

@@ -3,19 +3,19 @@ import SourceKittenFramework
 
 fileprivate extension Line {
     var contentRange: NSRange {
-        return NSRange(location: range.location, length: content.bridge().length)
+        NSRange(location: range.location, length: content.bridge().length)
     }
 
     // `Line` in this rule always contains word import
     // This method returns contents of line that are before import
     func importAttributes() -> String {
-        return content[importAttributesRange()].trimmingCharacters(in: .whitespaces)
+        content[importAttributesRange()].trimmingCharacters(in: .whitespaces)
     }
 
     // `Line` in this rule always contains word import
     // This method returns contents of line that are after import
     func importModule() -> Substring {
-        return content[importModuleRange()]
+        content[importModuleRange()]
     }
 
     func importAttributesRange() -> Range<String.Index> {
@@ -37,7 +37,7 @@ private extension Sequence where Element == Line {
     // Groups lines, so that lines that are one after the other
     // will end up in same group.
     func grouped() -> [[Line]] {
-        return reduce(into: [[]]) { result, line in
+        reduce(into: [[]]) { result, line in
             guard let last = result.last?.last else {
                 result = [[line]]
                 return
@@ -93,8 +93,8 @@ struct SortedImportsRule: CorrectableRule, OptInRule {
     }
 
     private func violatingOffsets(inGroups groups: [[Line]]) -> [Int] {
-        return groups.flatMap { group in
-            return zip(group, group.dropFirst()).reduce(into: []) { violatingOffsets, groupPair in
+        groups.flatMap { group in
+            zip(group, group.dropFirst()).reduce(into: []) { violatingOffsets, groupPair in
                 let (previous, current) = groupPair
                 let isOrderedCorrectly = should(previous, comeBefore: current)
                 if isOrderedCorrectly {
@@ -142,9 +142,9 @@ struct SortedImportsRule: CorrectableRule, OptInRule {
             guard let first = group.first?.contentRange else {
                 continue
             }
-            let result = group.map { $0.content }.joined(separator: "\n")
+            let result = group.map(\.content).joined(separator: "\n")
             let union = group.dropFirst().reduce(first) { result, line in
-                return NSUnionRange(result, line.contentRange)
+                NSUnionRange(result, line.contentRange)
             }
             correctedContents.replaceCharacters(in: union, with: result)
         }

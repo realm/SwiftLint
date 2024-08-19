@@ -29,7 +29,8 @@ public protocol CollectingRule: AnyCollectingRule {
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     ///
     /// - returns: All style violations to the rule's expectations.
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: FileInfo],
                   compilerArguments: [String]) -> [StyleViolation]
 
     /// Executes the rule on a file after collecting file info for all files and returns any violations to the rule's
@@ -53,33 +54,35 @@ public extension CollectingRule {
         }
         return validate(file: file, collectedInfo: info, compilerArguments: compilerArguments)
     }
-    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> FileInfo {
-        return collectInfo(for: file)
+    func collectInfo(for file: SwiftLintFile, compilerArguments _: [String]) -> FileInfo {
+        collectInfo(for: file)
     }
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
-                  compilerArguments: [String]) -> [StyleViolation] {
-        return validate(file: file, collectedInfo: collectedInfo)
+
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: FileInfo],
+                  compilerArguments _: [String]) -> [StyleViolation] {
+        validate(file: file, collectedInfo: collectedInfo)
     }
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile) -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:collectedInfo:)` for CollectingRule")
     }
-    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile, compilerArguments _: [String]) -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:collectedInfo:compilerArguments:)` for CollectingRule")
     }
 }
 
 public extension CollectingRule where Self: AnalyzerRule {
-    func collectInfo(for file: SwiftLintFile) -> FileInfo {
+    func collectInfo(for _: SwiftLintFile) -> FileInfo {
         queuedFatalError(
             "Must call `collect(infoFor:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )
     }
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile) -> [StyleViolation] {
         queuedFatalError(
             "Must call `validate(file:collectedInfo:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )
     }
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile, collectedInfo _: [SwiftLintFile: FileInfo]) -> [StyleViolation] {
         queuedFatalError(
             "Must call `validate(file:collectedInfo:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )
@@ -98,7 +101,8 @@ package protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     ///
     /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
+    func correct(file: SwiftLintFile,
+                 collectedInfo: [SwiftLintFile: FileInfo],
                  compilerArguments: [String]) -> [Correction]
 
     /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
@@ -114,9 +118,10 @@ package protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
 }
 
 package extension CollectingCorrectableRule {
-    func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
-                 compilerArguments: [String]) -> [Correction] {
-        return correct(file: file, collectedInfo: collectedInfo)
+    func correct(file: SwiftLintFile,
+                 collectedInfo: [SwiftLintFile: FileInfo],
+                 compilerArguments _: [String]) -> [Correction] {
+        correct(file: file, collectedInfo: collectedInfo)
     }
 
     func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
@@ -126,23 +131,23 @@ package extension CollectingCorrectableRule {
         return correct(file: file, collectedInfo: info, compilerArguments: compilerArguments)
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file _: SwiftLintFile) -> [Correction] {
         queuedFatalError("Must call `correct(file:collectedInfo:)` for AnalyzerRule")
     }
 
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
+    func correct(file _: SwiftLintFile, compilerArguments _: [String]) -> [Correction] {
         queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
     }
 }
 
 package extension CollectingCorrectableRule where Self: AnalyzerRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file _: SwiftLintFile) -> [Correction] {
         queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
     }
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
+    func correct(file _: SwiftLintFile, compilerArguments _: [String]) -> [Correction] {
         queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
     }
-    func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [Correction] {
+    func correct(file _: SwiftLintFile, collectedInfo _: [SwiftLintFile: FileInfo]) -> [Correction] {
         queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
     }
 }

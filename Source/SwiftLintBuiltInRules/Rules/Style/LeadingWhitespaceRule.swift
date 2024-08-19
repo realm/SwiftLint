@@ -14,7 +14,7 @@ struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
         ],
         triggeringExamples: [
             Example("\n//"),
-            Example(" //")
+            Example(" //"),
         ].skipMultiByteOffsetTests().skipDisableCommandTests(),
         corrections: [
             Example("\n //", testMultiByteOffsets: false): Example("//")
@@ -27,9 +27,13 @@ struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
             return []
         }
 
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file.path, line: 1))]
+        return [
+            StyleViolation(
+                ruleDescription: Self.description,
+                severity: configuration.severity,
+                location: Location(file: file.path, line: 1)
+            ),
+        ]
     }
 
     func correct(file: SwiftLintFile) -> [Correction] {

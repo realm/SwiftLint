@@ -3,12 +3,12 @@ import ArgumentParser
 enum RuleEnablementOptions: String, EnumerableFlag {
     case enabled, disabled
 
-    static func name(for value: RuleEnablementOptions) -> NameSpecification {
-        return .shortAndLong
+    static func name(for _: Self) -> NameSpecification {
+        .shortAndLong
     }
 
-    static func help(for value: RuleEnablementOptions) -> ArgumentHelp? {
-        return "Only show \(value.rawValue) rules"
+    static func help(for value: Self) -> ArgumentHelp? {
+        "Only show \(value.rawValue) rules"
     }
 }
 

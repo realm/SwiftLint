@@ -41,7 +41,7 @@ private func scriptInputFiles() throws -> [SwiftLintFile] {
 }
 
 #if os(Linux)
-private func autoreleasepool<T>(block: () -> T) -> T { return block() }
+private func autoreleasepool<T>(block: () -> T) -> T { block() }
 #endif
 
 extension Configuration {
@@ -222,7 +222,7 @@ extension Configuration {
                 return files
             }
 
-            let scriptInputPaths = files.compactMap { $0.path }
+            let scriptInputPaths = files.compactMap(\.path)
 
             if visitor.useExcludingByPrefix {
                 return filterExcludedPathsByPrefix(in: scriptInputPaths)
@@ -252,7 +252,9 @@ extension Configuration {
         }
     }
 
-    func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
+    func visitLintableFiles(options: LintOrAnalyzeOptions,
+                            cache: LinterCache? = nil,
+                            storage: RuleStorage,
                             visitorBlock: @escaping (CollectedLinter) async -> Void) async throws -> [SwiftLintFile] {
         let visitor = try LintableFilesVisitor.create(options, cache: cache,
                                                       allowZeroLintableFiles: allowZeroLintableFiles,
@@ -266,6 +268,7 @@ extension Configuration {
         self.init(
             configurationFiles: options.configurationFiles,
             enableAllRules: options.enableAllRules,
+            onlyRule: options.onlyRule,
             cachePath: options.cachePath
         )
     }

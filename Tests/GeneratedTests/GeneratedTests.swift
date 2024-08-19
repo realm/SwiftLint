@@ -175,6 +175,12 @@ final class ContainsOverRangeNilComparisonRuleGeneratedTests: SwiftLintTestCase 
     }
 }
 
+final class ContrastedOpeningBraceRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ContrastedOpeningBraceRule.description)
+    }
+}
+
 final class ControlStatementRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ControlStatementRule.description)
@@ -745,6 +751,12 @@ final class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class NoEmptyBlockRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NoEmptyBlockRule.description)
+    }
+}
+
 final class NoExtensionAccessModifierRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoExtensionAccessModifierRule.description)
@@ -805,9 +817,9 @@ final class ObjectLiteralRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class OneDelarationPerFileRuleGeneratedTests: SwiftLintTestCase {
+final class OneDeclarationPerFileRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(OneDelarationPerFileRule.description)
+        verifyRule(OneDeclarationPerFileRule.description)
     }
 }
 
@@ -862,6 +874,12 @@ final class PatternMatchingKeywordsRuleGeneratedTests: SwiftLintTestCase {
 final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PeriodSpacingRule.description)
+    }
+}
+
+final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferKeyPathRule.description)
     }
 }
 
@@ -1342,6 +1360,12 @@ final class UnusedImportRuleGeneratedTests: SwiftLintTestCase {
 final class UnusedOptionalBindingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedOptionalBindingRule.description)
+    }
+}
+
+final class UnusedParameterRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnusedParameterRule.description)
     }
 }
 

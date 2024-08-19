@@ -83,7 +83,7 @@ struct DiscouragedNoneNameRule: OptInRule {
             class MyClass {
                 var none = MyClass()
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -174,7 +174,7 @@ struct DiscouragedNoneNameRule: OptInRule {
             struct MyStruct {
                 ↓static var none = MyStruct(), a = MyStruct()
             }
-            """)
+            """),
         ]
     )
 }

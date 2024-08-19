@@ -29,7 +29,7 @@ struct ClosureParameterPositionRule: Rule {
             let mediaView: UIView = { [weak self] index in
                return UIView()
             }(index)
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -91,7 +91,7 @@ struct ClosureParameterPositionRule: Rule {
                 [weak ↓self] in
                 self?.bar()
             }
-            """)
+            """),
         ]
     )
 }
@@ -119,7 +119,7 @@ private extension ClosureParameterPositionRule {
                 return
             }
             let localViolations = positionsToCheck.dropLast().filter { position in
-                return locationConverter.location(for: position).line != startLine
+                locationConverter.location(for: position).line != startLine
             }
 
             violations.append(contentsOf: localViolations)

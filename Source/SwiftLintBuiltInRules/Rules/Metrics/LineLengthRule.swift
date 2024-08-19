@@ -16,17 +16,17 @@ struct LineLengthRule: Rule {
         nonTriggeringExamples: [
             Example(String(repeating: "/", count: 120) + ""),
             Example(String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120) + ""),
-            Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120) + "")
+            Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120) + ""),
         ],
         triggeringExamples: [
             Example(String(repeating: "/", count: 121) + ""),
             Example(String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 121) + ""),
-            Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + "")
+            Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + ""),
         ].skipWrappingInCommentTests().skipWrappingInStringTests()
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let minValue = configuration.params.map({ $0.value }).min() ?? .max
+        let minValue = configuration.params.map(\.value).min() ?? .max
         let swiftDeclarationKindsByLine = Lazy(file.swiftDeclarationKindsByLine() ?? [])
         let syntaxKindsByLine = Lazy(file.syntaxKindsByLine() ?? [])
 

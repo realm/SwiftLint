@@ -27,7 +27,7 @@ struct LargeTupleRuleExamples {
         Example("func foo(bar: (Int, String, Float) async -> Void)"),
         Example("func foo(bar: (Int, String, Float) async throws -> Void)"),
         Example("func getDictionaryAndInt() async -> (Dictionary<Int, String>, Int)?"),
-        Example("func getGenericTypeAndInt() async -> (Type<Int, String, Float>, Int)?")
+        Example("func getGenericTypeAndInt() async -> (Type<Int, String, Float>, Int)?"),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -51,6 +51,6 @@ struct LargeTupleRuleExamples {
         Example("func foo() async throws -> ↓(Int, Int, Int)"),
         Example("func foo() async throws -> ↓(Int, Int, Int) {}"),
         Example("func foo() async throws -> ↓(Int, ↓(String, String, String), Int) {}"),
-        Example("func getDictionaryAndInt() async -> (Dictionary<Int, ↓(String, String, String)>, Int)?")
+        Example("func getDictionaryAndInt() async -> (Dictionary<Int, ↓(String, String, String)>, Int)?"),
     ]
 }

@@ -14,13 +14,13 @@ struct DiscouragedAssertRule: OptInRule {
             Example(#"assert(true, "foobar")"#),
             Example(#"assert(true, "foobar", file: "toto", line: 42)"#),
             Example(#"assert(false || true)"#),
-            Example(#"XCTAssert(false)"#)
+            Example(#"XCTAssert(false)"#),
         ],
         triggeringExamples: [
             Example(#"↓assert(false)"#),
             Example(#"↓assert(false, "foobar")"#),
             Example(#"↓assert(false, "foobar", file: "toto", line: 42)"#),
-            Example(#"↓assert(   false    , "foobar")"#)
+            Example(#"↓assert(   false    , "foobar")"#),
         ]
     )
 }

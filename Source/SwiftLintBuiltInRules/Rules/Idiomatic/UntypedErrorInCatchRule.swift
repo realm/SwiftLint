@@ -41,7 +41,7 @@ struct UntypedErrorInCatchRule: OptInRule {
             } catch {
                 print(error)
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -78,12 +78,12 @@ struct UntypedErrorInCatchRule: OptInRule {
             do {
               try foo()
             } ↓catch (let error) {}
-            """)
+            """),
         ],
         corrections: [
             Example("do {\n    try foo() \n} ↓catch let error {}"): Example("do {\n    try foo() \n} catch {}"),
             Example("do {\n    try foo() \n} ↓catch(let error) {}"): Example("do {\n    try foo() \n} catch {}"),
-            Example("do {\n    try foo() \n} ↓catch (let error) {}"): Example("do {\n    try foo() \n} catch {}")
+            Example("do {\n    try foo() \n} ↓catch (let error) {}"): Example("do {\n    try foo() \n} catch {}"),
         ])
 }
 

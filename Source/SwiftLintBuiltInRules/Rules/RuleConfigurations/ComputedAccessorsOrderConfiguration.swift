@@ -1,10 +1,10 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct ComputedAccessorsOrderConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ComputedAccessorsOrderRule
 
-    @MakeAcceptableByConfigurationElement
+    @AcceptableByConfigurationElement
     enum Order: String {
         case getSet = "get_set"
         case setGet = "set_get"

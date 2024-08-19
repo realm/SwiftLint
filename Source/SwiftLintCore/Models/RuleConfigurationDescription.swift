@@ -27,7 +27,7 @@ public protocol Documentable {
 public struct RuleConfigurationDescription: Equatable {
     fileprivate let options: [RuleConfigurationOption]
 
-    fileprivate init(options: [RuleConfigurationOption]) {
+    fileprivate init(options: [RuleConfigurationOption], exclusiveOptions: Set<String> = []) {
         if options.contains(.noOptions) {
             if options.count > 1 {
                 queuedFatalError(
@@ -39,18 +39,21 @@ public struct RuleConfigurationDescription: Equatable {
                 )
             }
             self.options = []
-        } else {
-            self.options = options.filter { $0.value != .empty }
+            return
         }
+        let nonEmptyOptions = options.filter { $0.value != .empty }
+        self.options = exclusiveOptions.isEmpty
+            ? nonEmptyOptions
+            : nonEmptyOptions.filter { exclusiveOptions.contains($0.key) }
     }
 
-    static func from(configuration: some RuleConfiguration) -> Self {
+    static func from(configuration: some RuleConfiguration, exclusiveOptions: Set<String> = []) -> Self {
         // Prefer custom descriptions.
         if let customDescription = configuration.parameterDescription {
-            return customDescription
+            return Self(options: customDescription.options, exclusiveOptions: exclusiveOptions)
         }
         let options: [RuleConfigurationOption] = Mirror(reflecting: configuration).children
-            .compactMap { child -> RuleConfigurationDescription? in
+            .compactMap { child -> Self? in
                 // Property wrappers have names prefixed by an underscore.
                 guard let codingKey = child.label, codingKey.starts(with: "_") else {
                     return nil
@@ -69,7 +72,7 @@ public struct RuleConfigurationDescription: Equatable {
                 """
             )
         }
-        return Self(options: options)
+        return Self(options: options, exclusiveOptions: exclusiveOptions)
     }
 
     func allowedKeys() -> [String] {
@@ -179,7 +182,7 @@ public enum OptionType: Equatable {
     /// Special option for a ``ViolationSeverity``.
     case severity(ViolationSeverity)
     /// A list of options.
-    case list([OptionType])
+    case list([Self])
     /// An option which is another set of configuration options to be nested in the serialized output.
     case nested(RuleConfigurationDescription)
 }
@@ -273,7 +276,7 @@ public struct RuleConfigurationDescriptionBuilder {
 
     /// :nodoc:
     public static func buildArray(_ components: [Description]) -> Description {
-        Description(options: components.flatMap { $0.options })
+        Description(options: components.flatMap(\.options))
     }
 }
 
@@ -402,7 +405,7 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 ///    levels: warning: 1
 ///            error: 2
 ///    ```
-/// 3. As mentioned in the beginning, the implict key inference meachnism can be overruled by specifying a `key` as in:
+/// 3. As mentioned in the beginning, the implicit key inference mechanism can be overruled by specifying a `key` as in:
 ///    ```swift
 ///    @ConfigurationElement(key: "foo")
 ///    var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
@@ -435,7 +438,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
 
     /// The wrapper itself providing access to all its data. This field can only be accessed by the
     /// element's name prefixed with a `$`.
-    public var projectedValue: ConfigurationElement {
+    public var projectedValue: Self {
         get { self }
         _modify { yield &self }
     }
@@ -516,7 +519,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
         self.postprocessor = postprocessor
     }
 
-    public static func == (lhs: ConfigurationElement, rhs: ConfigurationElement) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.wrappedValue == rhs.wrappedValue && lhs.key == rhs.key
     }
 }
@@ -654,13 +657,13 @@ public extension AcceptableByConfigurationElement where Self: RuleConfiguration 
         return RuleConfigurationDescription(options: [key => asOption()])
     }
 
-    mutating func apply(_ value: Any?, ruleID: String) throws {
+    mutating func apply(_ value: Any?, ruleID _: String) throws {
         if let value {
             try apply(configuration: value)
         }
     }
 
-    init(fromAny value: Any, context ruleID: String) throws {
+    init(fromAny _: Any, context _: String) throws {
         throw Issue.genericError("Do not call this initializer")
     }
 }

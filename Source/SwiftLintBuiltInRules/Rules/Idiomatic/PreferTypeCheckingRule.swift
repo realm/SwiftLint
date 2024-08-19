@@ -50,7 +50,7 @@ struct PreferTypeCheckingRule: Rule {
 private extension PreferTypeCheckingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: UnresolvedAsExprSyntax) {
-            if node.questionOrExclamationMark?.tokenKind == .postfixQuestionMark, node.isBeingComparedToNotNil() {
+            if node.asWithQuestionMarkExprIsBeingComparedToNotNil() {
                 violations.append(node.asKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -82,12 +82,13 @@ private extension PreferTypeCheckingRule {
 }
 
 private extension ExprSyntaxProtocol {
-    func isBeingComparedToNotNil() -> Bool {
-        guard let parent = parent?.as(ExprListSyntax.self),
+    func asWithQuestionMarkExprIsBeingComparedToNotNil() -> Bool {
+        guard let node = self.as(UnresolvedAsExprSyntax.self),
+              let parent = parent?.as(ExprListSyntax.self),
               let last = parent.last, last.is(NilLiteralExprSyntax.self) else {
             return false
         }
-        return parent.dropLast().last?.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("!=")
+        return node.questionOrExclamationMark?.tokenKind == .postfixQuestionMark && parent.dropLast().last?.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("!=")
     }
 }
 
@@ -95,7 +96,7 @@ private extension ExprListSyntax {
     var unresolvedAsExprIsBeingComparedToNotNil: Bool {
         guard
             let node = dropFirst().first?.as(UnresolvedAsExprSyntax.self),
-            node.questionOrExclamationMark?.tokenKind == .postfixQuestionMark, node.isBeingComparedToNotNil()
+            node.asWithQuestionMarkExprIsBeingComparedToNotNil()
         else {
             return false
         }

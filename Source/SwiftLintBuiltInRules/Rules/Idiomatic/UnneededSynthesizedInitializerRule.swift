@@ -112,7 +112,7 @@ private extension StructDeclSyntax {
             self.initializerParameters($0.parameterList, match: varDecls) &&
             (($0.parameterList.isEmpty && hasNoSideEffects($0.body)) ||
              initializerBody($0.body, matches: varDecls)) &&
-            initializerModifiers($0.modifiers, match: varDecls) && !$0.isInlinable
+            initializerModifiers($0.modifiers, match: varDecls) && $0.attributes.isEmpty
         }
     }
 
@@ -236,9 +236,7 @@ private extension InitializerDeclSyntax {
     var hasThrowsOrRethrowsKeyword: Bool {
         signature.effectSpecifiers?.throwsClause?.throwsSpecifier != nil
     }
-    var isInlinable: Bool {
-        attributes.contains(attributeNamed: "inlinable")
-    }
+
     var parameterList: FunctionParameterListSyntax {
         signature.parameterClause.parameters
     }

@@ -228,6 +228,13 @@ struct ContrastedOpeningBraceRuleExamples {
                         ↓{ $0 }
             }
             """),
+        Example("""
+            a ↓{
+                $0
+            } b: ↓{
+                $1
+            }
+            """),
     ]
 
     static let corrections = [
@@ -455,6 +462,21 @@ struct ContrastedOpeningBraceRuleExamples {
                 { $0 }
                  .c
                  { $1 }
+                """),
+        Example("""
+            a {
+                $0
+            } b: {
+                $1
+            }
+            """): Example("""
+                a
+                {
+                    $0
+                } b:
+                {
+                    $1
+                }
                 """),
     ]
 }

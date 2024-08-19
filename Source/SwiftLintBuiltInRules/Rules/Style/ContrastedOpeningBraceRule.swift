@@ -98,7 +98,7 @@ private extension TokenSyntax {
             } else {
                 break
             }
-        } while indentationDecidingToken.leadingTrivia.containsNewlines() == false
+        } while !indentationDecidingToken.leadingTrivia.containsNewlines()
         return indentationDecidingToken
     }
 }

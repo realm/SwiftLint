@@ -80,17 +80,26 @@ private extension BracedSyntax {
         }
         if let closure = `as`(ClosureExprSyntax.self),
            closure.keyPathInParent == \FunctionCallExprSyntax.trailingClosure {
-           var indentationDecidingToken = closure.leftBrace
-            repeat {
-                if let previousToken = indentationDecidingToken.previousToken(viewMode: .sourceAccurate) {
-                    indentationDecidingToken = previousToken
-                } else {
-                    break
-                }
-            } while indentationDecidingToken.leadingTrivia.containsNewlines() == false
-            return indentationDecidingToken
+           return closure.leftBrace.previousIndentationDecidingToken
+        }
+        if let closureLabel = parent?.as(MultipleTrailingClosureElementSyntax.self)?.label {
+            return closureLabel.previousIndentationDecidingToken
         }
         return parent
+    }
+}
+
+private extension TokenSyntax {
+    var previousIndentationDecidingToken: TokenSyntax {
+        var indentationDecidingToken = self
+        repeat {
+            if let previousToken = indentationDecidingToken.previousToken(viewMode: .sourceAccurate) {
+                indentationDecidingToken = previousToken
+            } else {
+                break
+            }
+        } while !indentationDecidingToken.leadingTrivia.containsNewlines()
+        return indentationDecidingToken
     }
 }
 

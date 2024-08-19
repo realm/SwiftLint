@@ -26,6 +26,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5752](https://github.com/realm/SwiftLint/issues/5752)
 
+* Align left brace of additional trailing closures with right brace of previous trailing closure
+  in `contrasted_opening_brace` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5752](https://github.com/realm/SwiftLint/issues/5752)
+
 ## 0.56.1: Heat Pump Dryer
 
 #### Breaking

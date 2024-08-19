@@ -300,18 +300,16 @@ public struct Configuration {
     static func checkVersion(against versionConstraint: String) { // swiftlint:disable:this function_body_length
         func showInvalidVersionStringError() -> Never {
             let invalidVersionString = """
-            error: swiftlint_version syntax invalid.
-            Please specify a version as follows:
-            0.54.0
-            >0.54.0
-            >=0.54.0
-            <0.54.0
-            <=0.54.0
-            """
+                error: swiftlint_version syntax invalid.
+                Please specify a version as follows:
+                0.54.0
+                >0.54.0
+                >=0.54.0
+                <0.54.0
+                <=0.54.0
+                """
 
-            queuedFatalError(
-                invalidVersionString
-            )
+            queuedFatalError(invalidVersionString)
         }
 
         func compareVersionString(_ versionString: String) {
@@ -350,8 +348,10 @@ public struct Configuration {
 
             if !comparator(Version.current, configVersion) {
                 queuedPrintError(
-                    "warning: Currently running SwiftLint \(Version.current.value) but " +
-                    "configuration specified \(errorDifferentiatorString) \(versionString)."
+                    """
+                    warning: Currently running SwiftLint \(Version.current.value) but \
+                    configuration specified \(errorDifferentiatorString) \(versionString).
+                    """
                 )
                 exit(2)
             }

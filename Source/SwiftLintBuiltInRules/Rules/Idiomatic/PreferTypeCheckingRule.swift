@@ -88,7 +88,8 @@ private extension ExprSyntaxProtocol {
               let last = parent.last, last.is(NilLiteralExprSyntax.self) else {
             return false
         }
-        return node.questionOrExclamationMark?.tokenKind == .postfixQuestionMark && parent.dropLast().last?.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("!=")
+        return node.questionOrExclamationMark?.tokenKind == .postfixQuestionMark
+            && parent.dropLast().last?.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("!=")
     }
 }
 

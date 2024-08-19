@@ -14,7 +14,9 @@
 
 #### Bug Fixes
 
-* None.
+* Ignore initializers with attributes in `unneeded_synthesized_initializer` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5153](https://github.com/realm/SwiftLint/issues/5153)
 
 ## 0.56.1: Heat Pump Dryer
 

@@ -244,6 +244,12 @@ enum UnneededSynthesizedInitializerRuleExamples {
             init() {}
         }
         """, excludeFromDocumentation: true),
+        Example("""
+        struct Foo {
+            @available(*, unavailable)
+            init() {}
+        }
+        """),
     ]
 
     static let triggering = [

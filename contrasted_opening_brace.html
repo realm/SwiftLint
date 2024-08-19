@@ -483,6 +483,17 @@ warning
         <span class="k">return</span>
     <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="n">c1</span>
+<span class="p">{</span>
+  <span class="k">return</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">c2</span>
+<span class="p">{</span>
+  <span class="k">return</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">c3</span>
+<span class="p">{</span>
+  <span class="k">return</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">()</span><span class="err">↓</span><span class="p">{</span>
 <span class="p">}</span>
@@ -543,6 +554,15 @@ warning
 <pre class="highlight swift"><code><span class="k">if</span> <span class="n">c</span>
   <span class="err">↓</span><span class="p">{</span>
     <span class="c1">// code here</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="n">c1</span> <span class="err">↓</span><span class="p">{</span>
+  <span class="k">return</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">c2</span><span class="err">↓</span><span class="p">{</span>
+  <span class="k">return</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">c3</span>
+ <span class="err">↓</span><span class="p">{</span>
+  <span class="k">return</span>
 <span class="p">}</span>
 </code></pre>
 

@@ -31,6 +31,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5752](https://github.com/realm/SwiftLint/issues/5752)
 
+* Trigger on empty closure blocks in `no_empty_block` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5762](https://github.com/realm/SwiftLint/issues/5762)
+
 ## 0.56.1: Heat Pump Dryer
 
 #### Breaking

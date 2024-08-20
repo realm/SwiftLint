@@ -463,7 +463,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     public init(wrappedValue value: T,
                 key: String,
                 deprecationNotice: DeprecationNotice? = nil,
-                postprocessor: @escaping (inout T) -> Void = { _ in }) {
+                postprocessor: @escaping (inout T) -> Void = { _ in }) { // swiftlint:disable:this no_empty_block
         self.init(
             wrappedValue: value,
             key: key,
@@ -511,7 +511,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
                  key: String,
                  inline: Bool,
                  deprecationNotice: DeprecationNotice? = nil,
-                 postprocessor: @escaping (inout T) -> Void = { _ in }) {
+                 postprocessor: @escaping (inout T) -> Void = { _ in }) { // swiftlint:disable:this no_empty_block
         self.wrappedValue = wrappedValue
         self.key = key
         self.inline = inline

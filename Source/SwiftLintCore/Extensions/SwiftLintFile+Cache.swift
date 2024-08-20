@@ -29,7 +29,7 @@ private let syntaxTreeCache = Cache { file -> SourceFileSyntax in
 }
 private let foldedSyntaxTreeCache = Cache { file -> SourceFileSyntax? in
     OperatorTable.standardOperators
-        .foldAll(file.syntaxTree) { _ in }
+        .foldAll(file.syntaxTree) { _ in /* Don't handle errors. */ }
         .as(SourceFileSyntax.self)
 }
 private let locationConverterCache = Cache { file -> SourceLocationConverter in

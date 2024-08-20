@@ -9,6 +9,7 @@ struct NoEmptyBlockConfiguration: SeverityBasedRuleConfiguration {
         case functionBodies = "function_bodies"
         case initializerBodies = "initializer_bodies"
         case statementBlocks = "statement_blocks"
+        case closureBlocks = "closure_blocks"
 
         static let all = Set(allCases)
     }

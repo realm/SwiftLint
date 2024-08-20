@@ -18,7 +18,7 @@ final class NoEmptyBlockConfigurationTests: SwiftLintTestCase {
             ] as [String: any Sendable]
         )
         XCTAssertEqual(config.severityConfiguration.severity, .error)
-        XCTAssertEqual(config.enabledBlockTypes, Set([.initializerBodies, .statementBlocks]))
+        XCTAssertEqual(config.enabledBlockTypes, Set([.initializerBodies, .statementBlocks, .closureBlocks]))
     }
 
     func testInvalidKeyInCustomConfiguration() {

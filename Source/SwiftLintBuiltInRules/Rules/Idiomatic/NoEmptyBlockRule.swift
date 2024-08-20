@@ -92,6 +92,18 @@ struct NoEmptyBlockRule: OptInRule {
 
             while i < 10 {}
             """, configuration: ["disabled_block_types": ["statement_blocks"]]),
+            Example("""
+            f { _ in /* comment */ }
+            f { _ in // comment
+            }
+            f { _ in
+                // comment
+            }
+            """),
+            Example("""
+            f {}
+            {}()
+            """, configuration: ["disabled_block_types": ["closure_blocks"]]),
         ],
         triggeringExamples: [
             Example("""
@@ -130,6 +142,12 @@ struct NoEmptyBlockRule: OptInRule {
 
             while i < 10 ↓{}
             """),
+            Example("""
+            f ↓{}
+            """),
+            Example("""
+            Button ↓{} label: ↓{}
+            """),
         ]
     )
 }
@@ -142,7 +160,14 @@ private extension NoEmptyBlockRule {
             }
         }
 
-        func validate(node: CodeBlockSyntax) {
+        override func visitPost(_ node: ClosureExprSyntax) {
+            if configuration.enabledBlockTypes.contains(.closureBlocks),
+               node.signature?.inKeyword.trailingTrivia.containsComments != true {
+                validate(node: node)
+            }
+        }
+
+        func validate(node: some BracedSyntax & WithStatementsSyntax) {
             guard node.statements.isEmpty,
                   !node.leftBrace.trailingTrivia.containsComments,
                   !node.rightBrace.leadingTrivia.containsComments else {
@@ -162,6 +187,8 @@ private extension CodeBlockSyntax {
             .initializerBodies
         case .forStmt, .doStmt, .whileStmt, .repeatStmt, .ifExpr, .catchClause, .deferStmt:
             .statementBlocks
+        case .closureExpr:
+            .closureBlocks
         case .guardStmt:
             // No need to handle this case since Empty Block of `guard` is compile error.
             nil

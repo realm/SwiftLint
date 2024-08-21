@@ -18,6 +18,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5153](https://github.com/realm/SwiftLint/issues/5153)
 
+* Silence `prefer_key_path` rule on macro expansion expressions.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5744](https://github.com/realm/SwiftLint/issues/5744)
+
 * Check `if` expressions nested arbitrarily deep in `contrasted_opening_brace` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5752](https://github.com/realm/SwiftLint/issues/5752)

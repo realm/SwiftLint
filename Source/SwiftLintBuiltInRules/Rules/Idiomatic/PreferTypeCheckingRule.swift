@@ -13,6 +13,7 @@ struct PreferTypeCheckingRule: Rule {
         nonTriggeringExamples: [
             Example("let foo = bar as? Foo"),
             Example("bar is Foo"),
+            Example("2*x is X"),
             Example("""
             if foo is Bar {
                 doSomeThing()
@@ -23,19 +24,19 @@ struct PreferTypeCheckingRule: Rule {
                 foo.run()
             }
             """),
-            Example("2*x is X")
         ],
         triggeringExamples: [
             Example("bar ↓as? Foo != nil"),
+            Example("2*x as? X != nil"),
             Example("""
             if foo ↓as? Bar != nil {
                 doSomeThing()
             }
             """),
-            Example("2*x as? X != nil")
         ],
         corrections: [
             Example("bar ↓as? Foo != nil"): Example("bar is Foo"),
+            Example("2*x ↓as? X != nil"): Example("2*x is X"),
             Example("""
             if foo ↓as? Bar != nil {
                 doSomeThing()
@@ -45,7 +46,6 @@ struct PreferTypeCheckingRule: Rule {
                 doSomeThing()
             }
             """),
-            Example("2*x ↓as? X != nil"): Example("2*x is X")
         ]
     )
 }
@@ -65,12 +65,12 @@ private extension PreferTypeCheckingRule {
                   let asExpr = node.leftOperand.as(AsExprSyntax.self) else {
                 return super.visit(node)
             }
-            
+
             correctionPositions.append(asExpr.asKeyword.positionAfterSkippingLeadingTrivia)
-            
+
             let expression = asExpr.expression.trimmed
             let type = asExpr.type.trimmed
-            
+
             return ExprSyntax(stringLiteral: "\(expression) is \(type)")
                 .with(\.leadingTrivia, node.leadingTrivia)
                 .with(\.trailingTrivia, node.trailingTrivia)

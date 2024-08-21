@@ -45,7 +45,7 @@ struct PreferTypeCheckingRule: Rule {
                 doSomeThing()
             }
             """),
-            Example("2*x as? X != nil"): Example("2*x is X")
+            Example("2*x ↓as? X != nil"): Example("2*x is X")
         ]
     )
 }
@@ -60,52 +60,21 @@ private extension PreferTypeCheckingRule {
     }
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
-        override func visit(_ node: ExprListSyntax) -> ExprListSyntax {
-            guard
-                node.unresolvedAsExprIsBeingComparedToNotNil,
-                let unresolvedAsExpr = node.dropFirst().first,
-                let indexUnresolvedAsExpr = node.index(of: unresolvedAsExpr),
-                let typeExpr = node.dropFirst(2).first
-            else {
+        override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
+            guard node.typeChecksWithAsCasting,
+                  let asExpr = node.leftOperand.as(AsExprSyntax.self) else {
                 return super.visit(node)
             }
-            correctionPositions.append(unresolvedAsExpr.positionAfterSkippingLeadingTrivia)
-            let elements = node
-                .with(
-                    \.[indexUnresolvedAsExpr],
-                    "is \(typeExpr.trimmed)"
-                )
-                .dropLast(3)
-            let newNode = ExprListSyntax(elements)
+            
+            correctionPositions.append(asExpr.asKeyword.positionAfterSkippingLeadingTrivia)
+            
+            let expression = asExpr.expression.trimmed
+            let type = asExpr.type.trimmed
+            
+            return ExprSyntax(stringLiteral: "\(expression) is \(type)")
                 .with(\.leadingTrivia, node.leadingTrivia)
                 .with(\.trailingTrivia, node.trailingTrivia)
-            return super.visit(newNode)
         }
-    }
-}
-
-private extension ExprSyntaxProtocol {
-    func asWithQuestionMarkExprIsBeingComparedToNotNil() -> Bool {
-        guard let node = self.as(UnresolvedAsExprSyntax.self),
-              let parent = parent?.as(ExprListSyntax.self),
-              let last = parent.last, last.is(NilLiteralExprSyntax.self) else {
-            return false
-        }
-        return node.questionOrExclamationMark?.tokenKind == .postfixQuestionMark
-            && parent.dropLast().last?.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("!=")
-    }
-}
-
-private extension ExprListSyntax {
-    var unresolvedAsExprIsBeingComparedToNotNil: Bool {
-        guard
-            let node = dropFirst().first?.as(UnresolvedAsExprSyntax.self),
-            node.asWithQuestionMarkExprIsBeingComparedToNotNil()
-        else {
-            return false
-        }
-
-        return true
     }
 }
 

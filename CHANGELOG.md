@@ -433,7 +433,8 @@
   [Garric Nahapetian](https://github.com/garricn)
 
 * Add new `prefer_type_checking` rule to prefer `a is X` over `a as? X != nil`.  
-  [ikelax](https://github.com/ikelax) and [mildm8nnered](https://github.com/mildm8nnered)
+  [ikelax](https://github.com/ikelax)  
+  [mildm8nnered](https://github.com/mildm8nnered)
   [#5295](https://github.com/realm/SwiftLint/issues/5295)
 
 #### Bug Fixes

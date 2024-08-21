@@ -23,6 +23,7 @@ struct PreferTypeCheckingRule: Rule {
                 foo.run()
             }
             """),
+            Example("2*x is X")
         ],
         triggeringExamples: [
             Example("bar ↓as? Foo != nil"),
@@ -31,6 +32,7 @@ struct PreferTypeCheckingRule: Rule {
                 doSomeThing()
             }
             """),
+            Example("2*x as? X != nil")
         ],
         corrections: [
             Example("bar ↓as? Foo != nil"): Example("bar is Foo"),
@@ -43,6 +45,7 @@ struct PreferTypeCheckingRule: Rule {
                 doSomeThing()
             }
             """),
+            Example("2*x as? X != nil"): Example("2*x is X")
         ]
     )
 }

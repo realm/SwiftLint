@@ -1,7 +1,7 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-@SwiftSyntaxRule(explicitRewriter: true)
+@SwiftSyntaxRule(foldExpressions: true, explicitRewriter: true)
 struct PreferTypeCheckingRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -52,9 +52,9 @@ struct PreferTypeCheckingRule: Rule {
 
 private extension PreferTypeCheckingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: UnresolvedAsExprSyntax) {
-            if node.asWithQuestionMarkExprIsBeingComparedToNotNil() {
-                violations.append(node.asKeyword.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            if node.typeChecksWithAsCasting, let asExpr = node.leftOperand.as(AsExprSyntax.self) {
+                violations.append(asExpr.asKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
     }
@@ -106,5 +106,13 @@ private extension ExprListSyntax {
         }
 
         return true
+    }
+}
+
+private extension InfixOperatorExprSyntax {
+    var typeChecksWithAsCasting: Bool {
+        self.leftOperand.is(AsExprSyntax.self)
+        && self.operator.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("!=")
+        && self.rightOperand.is(NilLiteralExprSyntax.self)
     }
 }

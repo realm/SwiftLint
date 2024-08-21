@@ -18,6 +18,13 @@ struct UnneededOverrideRuleExamples {
         """),
         Example("""
         class Foo {
+            @objc override func bar() {
+                super.bar()
+            }
+        }
+        """),
+        Example("""
+        class Foo {
             override func bar() {
                 super.bar()
                 super.bar()

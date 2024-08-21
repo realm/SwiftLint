@@ -35,6 +35,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5762](https://github.com/realm/SwiftLint/issues/5762)
 
+* Silence `unneeded_override` rule on methods and initializers with attributes.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5753](https://github.com/realm/SwiftLint/issues/5753)
+
 ## 0.56.1: Heat Pump Dryer
 
 #### Breaking

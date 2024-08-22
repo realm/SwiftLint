@@ -122,7 +122,7 @@ GEM
     public_suffix (4.0.7)
     rchardet (1.8.0)
     redcarpet (3.6.0)
-    rexml (3.3.3)
+    rexml (3.3.6)
       strscan
     rouge (4.3.0)
     ruby-macho (2.5.1)

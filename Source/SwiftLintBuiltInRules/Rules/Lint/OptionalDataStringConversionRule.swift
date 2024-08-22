@@ -6,7 +6,7 @@ struct OptionalDataStringConversionRule: Rule {
     static let description = RuleDescription(
         identifier: "optional_data_string_conversion",
         name: "Optional Data -> String Conversion",
-        description: "Prefer using failable String(data:encoding:) when converting from `Data` to a UTF-8 `String`",
+        description: "Prefer failable `String(data:encoding:)` initializer when converting `Data` to `String`",
         kind: .lint,
         nonTriggeringExamples: [
             Example("String(data: data, encoding: .utf8)")

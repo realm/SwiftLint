@@ -169,7 +169,7 @@ extension SwiftLint {
                 progress: true,
                 cachePath: nil,
                 ignoreCache: false,
-                enableAllRules: true, 
+                enableAllRules: true,
                 onlyRule: nil,
                 autocorrect: false,
                 format: false,

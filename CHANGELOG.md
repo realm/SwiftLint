@@ -2,7 +2,9 @@
 
 #### Breaking
 
-* None.
+* The deprecated `anyobject_protocol` rule has now been removed.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5769](https://github.com/realm/SwiftLint/issues/5769)
 
 #### Experimental
 

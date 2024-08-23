@@ -6,7 +6,6 @@ public let builtInRules: [any Rule.Type] = [
     AccessibilityLabelForImageRule.self,
     AccessibilityTraitForButtonRule.self,
     AnonymousArgumentInMultilineClosureRule.self,
-    AnyObjectProtocolRule.self,
     ArrayInitRule.self,
     AttributesRule.self,
     BalancedXCTestLifecycleRule.self,

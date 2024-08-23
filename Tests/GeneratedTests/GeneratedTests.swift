@@ -25,12 +25,6 @@ final class AnonymousArgumentInMultilineClosureRuleGeneratedTests: SwiftLintTest
     }
 }
 
-final class AnyObjectProtocolRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(AnyObjectProtocolRule.description)
-    }
-}
-
 final class ArrayInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ArrayInitRule.description)

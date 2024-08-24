@@ -4,8 +4,6 @@ accessibility_trait_for_button:
   severity: warning
 anonymous_argument_in_multiline_closure:
   severity: warning
-anyobject_protocol:
-  severity: warning
 array_init:
   severity: warning
 attributes:

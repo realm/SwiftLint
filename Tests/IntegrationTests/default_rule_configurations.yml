@@ -386,6 +386,8 @@ operator_usage_whitespace:
   allowed_no_space_operators: ["...", "..<"]
 operator_whitespace:
   severity: warning
+optional_data_string_conversion:
+  severity: warning
 optional_enum_case_matching:
   severity: warning
 orphaned_doc_comment:

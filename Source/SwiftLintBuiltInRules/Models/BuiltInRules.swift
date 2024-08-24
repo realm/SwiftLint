@@ -141,6 +141,7 @@ public let builtInRules: [any Rule.Type] = [
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
     OperatorUsageWhitespaceRule.self,
+    OptionalDataStringConversionRule.self,
     OptionalEnumCaseMatchingRule.self,
     OrphanedDocCommentRule.self,
     OverriddenSuperCallRule.self,

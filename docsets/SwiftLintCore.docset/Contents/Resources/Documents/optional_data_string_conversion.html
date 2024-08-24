@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>non_optional_string_data_conversion  Reference</title>
+    <title>optional_data_string_conversion  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -15,7 +15,7 @@
   <body>
 
 
-    <a title="non_optional_string_data_conversion  Reference"></a>
+    <a title="optional_data_string_conversion  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -51,7 +51,7 @@
       <img class="carat" src="img/carat.png" alt=""/>
       <a class="breadcrumb" href="Guides.html">Guides</a>
       <img class="carat" src="img/carat.png" alt=""/>
-      non_optional_string_data_conversion  Reference
+      optional_data_string_conversion  Reference
     </p>
 
     <div class="content-wrapper">
@@ -367,12 +367,12 @@
         <section class="section">
           <div class="section-content top-matter">
             
-            <h1 id='non-optional-string-gt-data-conversion' class='heading'>Non-optional String -&gt; Data Conversion</h1>
+            <h1 id='optional-data-gt-string-conversion' class='heading'>Optional Data -&gt; String Conversion</h1>
 
-<p>Prefer non-optional <code>Data(_:)</code> initializer when converting <code>String</code> to <code>Data</code></p>
+<p>Prefer failable <code>String(data:encoding:)</code> initializer when converting <code>Data</code> to <code>String</code></p>
 
 <ul>
-<li><strong>Identifier:</strong> <code>non_optional_string_data_conversion</code></li>
+<li><strong>Identifier:</strong> <code>optional_data_string_conversion</code></li>
 <li><strong>Enabled by default:</strong> Yes</li>
 <li><strong>Supports autocorrection:</strong> No</li>
 <li><strong>Kind:</strong> lint</li>
@@ -396,10 +396,10 @@ warning
 </table></li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="kt">Data</span><span class="p">(</span><span class="s">"foo"</span><span class="o">.</span><span class="n">utf8</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kt">String</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span> <span class="nv">encoding</span><span class="p">:</span> <span class="o">.</span><span class="n">utf8</span><span class="p">)</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="s">"foo"</span><span class="o">.</span><span class="nf">data</span><span class="p">(</span><span class="nv">using</span><span class="p">:</span> <span class="o">.</span><span class="n">utf8</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kt">String</span><span class="p">(</span><span class="nv">decoding</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span> <span class="nv">as</span><span class="p">:</span> <span class="kt">UTF8</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
 </code></pre>
 
           </div>

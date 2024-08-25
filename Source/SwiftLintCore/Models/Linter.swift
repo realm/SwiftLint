@@ -37,7 +37,7 @@ private extension Rule {
                     return (configuration.identifier, regionsDisablingCurrentRule)
                 }
                 let regionsDisablingAllCustomRules = regions.filter { region in
-                    region.areAllCustomRulesDisabled()
+                    region.areAllCustomRulesDisabled
                 }
                 if regionsDisablingAllCustomRules.isNotEmpty {
                     result.append((CustomRules.description.identifier, regionsDisablingAllCustomRules))

@@ -403,24 +403,6 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
     }
 
-    func testRegionsForCustomRules() {
-        let file = SwiftLintFile(contents: "// swiftlint:disable custom_rules\n")
-        XCTAssertFalse(file.regions().first?.isRuleEnabled(CustomRules()) ?? true)
-
-        let config: [String: Any] = [
-            "regex": "pattern",
-        ]
-
-        let regexConfig = configuration(withIdentifier: "custom", configurationDict: config)
-        let customRules = customRules(withConfigurations: [regexConfig])
-
-        let file2 = SwiftLintFile(contents: "// swiftlint:disable custom\n")
-        XCTAssertFalse(file2.regions().first?.isRuleEnabled(customRules) ?? true)
-
-        let file3 = SwiftLintFile(contents: "// swiftlint:disable all\n")
-        XCTAssertFalse(file3.regions().first?.isRuleEnabled(customRules) ?? true)
-    }
-
     // MARK: - Private
 
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {

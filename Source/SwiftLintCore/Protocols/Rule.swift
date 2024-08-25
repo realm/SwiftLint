@@ -70,6 +70,15 @@ public protocol Rule {
     ///
     /// - returns: All style violations to the rule's expectations.
     func validate(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation]
+
+    /// Returns the disabled rule identifiers and the regions that they are disabled in.
+    ///
+    /// - note: In the case of custom rules, the identifiers may be user defined.
+    ///
+    /// - parameter regions: The regions that are affected by `swiftlint:disable` commands.
+    ///
+    /// - returns:  An array of tuples of rule identifiers, and the regions that those identifiers are disabled in.
+    func disabledRuleIdentifiersWithRegions(regions: [Region]) -> [(String, [Region])]
 }
 
 public extension Rule {
@@ -109,6 +118,13 @@ public extension Rule {
 
     func createConfigurationDescription(exclusiveOptions: Set<String> = []) -> RuleConfigurationDescription {
         RuleConfigurationDescription.from(configuration: configuration, exclusiveOptions: exclusiveOptions)
+    }
+
+    func disabledRuleIdentifiersWithRegions(regions: [Region]) -> [(String, [Region])] {
+        let regionsDisablingCurrentRule = regions.filter { region in
+            region.isRuleDisabled(self)
+        }
+        return [(Self.description.identifier, regionsDisablingCurrentRule)]
     }
 }
 

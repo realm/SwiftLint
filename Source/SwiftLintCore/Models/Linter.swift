@@ -29,25 +29,7 @@ private extension Rule {
         }
 
         let identifiersWithRegions: [(String, [Region])] = {
-            if let customRules = self as? CustomRules {
-                var result = customRules.configuration.customRuleConfigurations.map { configuration in
-                    let regionsDisablingCurrentRule = regions.filter { region in
-                        region.disabledRuleIdentifiers.contains(RuleIdentifier(configuration.identifier))
-                    }
-                    return (configuration.identifier, regionsDisablingCurrentRule)
-                }
-                let regionsDisablingAllCustomRules = regions.filter { region in
-                    region.areAllCustomRulesDisabled
-                }
-                if regionsDisablingAllCustomRules.isNotEmpty {
-                    result.append((CustomRules.description.identifier, regionsDisablingAllCustomRules))
-                }
-                return result
-            }
-            let regionsDisablingCurrentRule = regions.filter { region in
-                region.isRuleDisabled(self)
-            }
-            return [(Self.description.identifier, regionsDisablingCurrentRule)]
+            disabledRuleIdentifiersWithRegions(regions: regions)
         }().sorted { lhs, rhs -> Bool in // make sure that the results are consistently ordered
             lhs.0 < rhs.0
         }

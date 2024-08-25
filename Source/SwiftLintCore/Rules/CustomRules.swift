@@ -86,6 +86,20 @@ struct CustomRules: Rule, CacheDescriptionProvider {
             })
         }
     }
+
+    func disabledRuleIdentifiersWithRegions(regions: [Region]) -> [(String, [Region])] {
+        var result = configuration.customRuleConfigurations.map { configuration in
+            let regionsDisablingCurrentRule = regions.filter { region in
+                region.disabledRuleIdentifiers.contains(RuleIdentifier(configuration.identifier))
+            }
+            return (configuration.identifier, regionsDisablingCurrentRule)
+        }
+        let regionsDisablingAllCustomRules = regions.filter(\.areAllCustomRulesDisabled)
+        if regionsDisablingAllCustomRules.isNotEmpty {
+            result.append((Self.description.identifier, regionsDisablingAllCustomRules))
+        }
+        return result
+    }
 }
 
 extension Region {

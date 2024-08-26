@@ -404,6 +404,8 @@ prefer_key_path:
   restrict_to_standard_functions: true
 prefer_nimble:
   severity: warning
+prefer_scaled_to_fit_and_scaled_to_fill:
+  severity: warning
 prefer_self_in_static_references:
   severity: warning
 prefer_self_type_over_type_of_self:

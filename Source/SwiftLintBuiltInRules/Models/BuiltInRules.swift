@@ -150,6 +150,7 @@ public let builtInRules: [any Rule.Type] = [
     PeriodSpacingRule.self,
     PreferKeyPathRule.self,
     PreferNimbleRule.self,
+    PreferScaledToFitAndScaledToFill.self,
     PreferSelfInStaticReferencesRule.self,
     PreferSelfTypeOverTypeOfSelfRule.self,
     PreferZeroOverExplicitInitRule.self,

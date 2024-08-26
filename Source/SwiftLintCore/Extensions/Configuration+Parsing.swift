@@ -100,7 +100,7 @@ extension Configuration {
             warningThreshold: dict[Key.warningThreshold.rawValue] as? Int,
             reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
             cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
-            pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },
+            versionConstraint: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },
             allowZeroLintableFiles: dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false,
             strict: dict[Key.strict.rawValue] as? Bool ?? false,
             baseline: dict[Key.baseline.rawValue] as? String,

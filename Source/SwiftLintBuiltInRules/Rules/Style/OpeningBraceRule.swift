@@ -25,31 +25,123 @@ struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
 
 private extension OpeningBraceRule {
     final class Visitor: CodeBlockVisitor<ConfigurationType> {
+        // MARK: - Type Declarations
+
+        override func visitPost(_ node: ActorDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.actorKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: ClassDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.classKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: EnumDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.enumKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: ExtensionDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.extensionKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: ProtocolDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.protocolKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: StructDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.structKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        // MARK: - Conditional Statements
+
+        override func visitPost(_ node: ForStmtSyntax) {
+            if configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.forKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: IfExprSyntax) {
+            if configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.ifKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: WhileStmtSyntax) {
+            if configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.whileKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        // MARK: - Functions and Initializers
+
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard let body = node.body else {
+            if let body = node.body,
+                configuration.shouldIgnoreMultilineFunctionSignatures,
+                hasMultilinePredecessors(body, keyword: node.funcKeyword) {
                 return
             }
-            if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.funcKeyword) {
-                return
-            }
-            collectViolations(for: body)
+
+            super.visitPost(node)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            guard let body = node.body else {
+            if let body = node.body,
+                configuration.shouldIgnoreMultilineFunctionSignatures,
+                hasMultilinePredecessors(body, keyword: node.initKeyword) {
                 return
             }
-            if configuration.allowMultilineFunc, refersToMultilineFunction(body, functionIndicator: node.initKeyword) {
-                return
-            }
-            collectViolations(for: body)
+
+            super.visitPost(node)
         }
 
-        private func refersToMultilineFunction(_ body: CodeBlockSyntax, functionIndicator: TokenSyntax) -> Bool {
+        // MARK: - Other Methods
+
+        /// Checks if a `BracedSyntax` has a multiline predecessor.
+        /// For type declarations, the predecessor is the header. For conditional statements,
+        /// it is the condition list, and for functions, it is the signature.
+        private func hasMultilinePredecessors(_ body: some BracedSyntax, keyword: TokenSyntax) -> Bool {
             guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
                 return false
             }
-            let startLocation = functionIndicator.endLocation(converter: locationConverter)
+            let startLocation = keyword.endLocation(converter: locationConverter)
             let endLocation = endToken.endLocation(converter: locationConverter)
             let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
             return startLocation.line != endLocation.line && endLocation.line != braceLocation.line

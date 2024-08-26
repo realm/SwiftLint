@@ -4,8 +4,6 @@ accessibility_trait_for_button:
   severity: warning
 anonymous_argument_in_multiline_closure:
   severity: warning
-anyobject_protocol:
-  severity: warning
 array_init:
   severity: warning
 attributes:
@@ -377,6 +375,9 @@ one_declaration_per_file:
   severity: warning
 opening_brace:
   severity: warning
+  ignore_multiline_type_headers: false
+  ignore_multiline_statement_conditions: false
+  ignore_multiline_function_signatures: false
   allow_multiline_func: false
 operator_usage_whitespace:
   severity: warning
@@ -384,6 +385,8 @@ operator_usage_whitespace:
   skip_aligned_constants: true
   allowed_no_space_operators: ["...", "..<"]
 operator_whitespace:
+  severity: warning
+optional_data_string_conversion:
   severity: warning
 optional_enum_case_matching:
   severity: warning
@@ -409,6 +412,8 @@ prefer_scaled_to_fit_and_scaled_to_fill:
 prefer_self_in_static_references:
   severity: warning
 prefer_self_type_over_type_of_self:
+  severity: warning
+prefer_type_checking:
   severity: warning
 prefer_zero_over_explicit_init:
   severity: warning

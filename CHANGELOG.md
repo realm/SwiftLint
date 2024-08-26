@@ -2,7 +2,17 @@
 
 #### Breaking
 
-* None.
+* The deprecated `anyobject_protocol` rule has now been removed.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5769](https://github.com/realm/SwiftLint/issues/5769)
+
+* Revert the part of the `non_optional_string_data_conversion`
+  rule that enforces non-failable conversions of `Data` to UTF-8
+  `String`. This is due to the fact that the data to be converted
+  can be arbitrary and especially doesn't need to represent a valid
+  UTF-8-encoded string.  
+  [Sam Rayner](https://github.com/samrayner)
+  [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
 #### Experimental
 
@@ -10,7 +20,17 @@
 
 #### Enhancements
 
-* None.
+* Add `ignore_multiline_type_headers` and `ignore_multiline_statement_conditions`
+  options to `opening_brace` rule to allow opening braces to be on a new line after
+  multiline type headers or statement conditions. Rename `allow_multiline_func` to
+  `ignore_multiline_function_signatures`.  
+  [leonardosrodrigues0](https://github.com/leonardosrodrigues0)
+  [#3720](https://github.com/realm/SwiftLint/issues/3720)
+
+* Add new `optional_data_string_conversion` rule to enforce
+  failable conversions of `Data` to UTF-8 `String`.  
+  [Sam Rayner](https://github.com/samrayner)
+  [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
 #### Bug Fixes
 
@@ -474,6 +494,11 @@
   consider said types in declarations like `let i: Int = 1` or
   `let s: String = ""` as redundant.  
   [Garric Nahapetian](https://github.com/garricn)
+
+* Add new `prefer_type_checking` rule to prefer `a is X` over `a as? X != nil`.  
+  [ikelax](https://github.com/ikelax)  
+  [mildm8nnered](https://github.com/mildm8nnered)
+  [#5295](https://github.com/realm/SwiftLint/issues/5295)
 
 #### Bug Fixes
 

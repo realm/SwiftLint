@@ -25,12 +25,6 @@ final class AnonymousArgumentInMultilineClosureRuleGeneratedTests: SwiftLintTest
     }
 }
 
-final class AnyObjectProtocolRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(AnyObjectProtocolRule.description)
-    }
-}
-
 final class ArrayInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ArrayInitRule.description)
@@ -841,6 +835,12 @@ final class OperatorUsageWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class OptionalDataStringConversionRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(OptionalDataStringConversionRule.description)
+    }
+}
+
 final class OptionalEnumCaseMatchingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OptionalEnumCaseMatchingRule.description)
@@ -898,6 +898,12 @@ final class PreferSelfInStaticReferencesRuleGeneratedTests: SwiftLintTestCase {
 final class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
+    }
+}
+
+final class PreferTypeCheckingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferTypeCheckingRule.description)
     }
 }
 

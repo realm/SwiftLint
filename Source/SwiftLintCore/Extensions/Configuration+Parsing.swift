@@ -174,7 +174,7 @@ extension Configuration {
             }
 
             switch rulesMode {
-            case .allEnabled:
+            case .allEnabled, .onlyRule:
                 return
             case .only(let onlyRules):
                 let issue = validateConfiguredRuleIsEnabled(onlyRules: onlyRules, ruleType: ruleType)

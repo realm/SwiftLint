@@ -45,6 +45,13 @@ internal extension Configuration {
                     onlyRulesRuleIdentifiers.contains(type(of: tuple.rule).description.identifier)
                 }.map(\.rule)
 
+            case var .onlyRule(onlyRulesRuleIdentifiers):
+                customRulesFilter = { onlyRulesRuleIdentifiers.contains($0.identifier) }
+                onlyRulesRuleIdentifiers = validate(ruleIds: onlyRulesRuleIdentifiers, valid: validRuleIdentifiers)
+                resultingRules = allRulesWrapped.filter { tuple in
+                    onlyRulesRuleIdentifiers.contains(type(of: tuple.rule).description.identifier)
+                }.map(\.rule)
+
             case var .default(disabledRuleIdentifiers, optInRuleIdentifiers):
                 customRulesFilter = { !disabledRuleIdentifiers.contains($0.identifier) }
                 disabledRuleIdentifiers = validate(ruleIds: disabledRuleIdentifiers, valid: validRuleIdentifiers)
@@ -80,6 +87,15 @@ internal extension Configuration {
                     .sorted(by: <)
 
             case let .only(onlyRules):
+                return validate(
+                    ruleIds: Set(allRulesWrapped
+                        .map { type(of: $0.rule).description.identifier }
+                        .filter { !onlyRules.contains($0) }),
+                    valid: validRuleIdentifiers,
+                    silent: true
+                ).sorted(by: <)
+
+            case let .onlyRule(onlyRules):
                 return validate(
                     ruleIds: Set(allRulesWrapped
                         .map { type(of: $0.rule).description.identifier }
@@ -159,6 +175,10 @@ internal extension Configuration {
             case let .only(childOnlyRules):
                 // Always use the child only rules
                 newMode = .only(childOnlyRules)
+
+            case let .onlyRule(onlyRules):
+                // Always use the only rule
+                newMode = .onlyRule(onlyRules)
 
             case .allEnabled:
                 // Always use .allEnabled mode
@@ -259,6 +279,11 @@ internal extension Configuration {
                 return .only(Set(
                     childOptIn.union(onlyRules).filter { !childDisabled.contains($0) }
                 ))
+
+            case let .onlyRule(onlyRules):
+                // .allEnabled allows rules to be disabled in the child config. For now, we'll ignore
+                // the child config
+                return .onlyRule(onlyRules)
 
             case .allEnabled:
                 // Opt-in to every rule that isn't disabled via child config

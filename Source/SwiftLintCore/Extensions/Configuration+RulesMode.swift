@@ -26,6 +26,10 @@ public extension Configuration {
         /// Only enable the rules explicitly listed.
         case only(Set<String>)
 
+        /// Only enable the rule explicitly listed on the command line. The rule may have multiple identifiers,
+        /// hence why this is represented as a Set
+        case onlyRule(Set<String>)
+
         /// Enable all available rules.
         case allEnabled
 
@@ -50,7 +54,7 @@ public extension Configuration {
             if enableAllRules {
                 self = .allEnabled
             } else if let onlyRule {
-                self = .only(Set([onlyRule]))
+                self = .onlyRule(Set([onlyRule]))
             } else if onlyRules.isNotEmpty {
                 if disabledRules.isNotEmpty || optInRules.isNotEmpty {
                     throw Issue.genericWarning(
@@ -100,6 +104,9 @@ public extension Configuration {
 
             case let .only(onlyRules):
                 return .only(Set(onlyRules.map(aliasResolver)))
+
+            case let .onlyRule(onlyRules):
+                return .onlyRule(Set(onlyRules.map(aliasResolver)))
 
             case .allEnabled:
                 return .allEnabled

@@ -173,9 +173,13 @@ internal extension Configuration {
                 )
 
             case let .only(childOnlyRules):
-                // Always use the child only rules
-                newMode = .only(childOnlyRules)
-
+                // Use the child only rules, unless the parent is onlyRule
+                switch mode {
+                case let .onlyRule(onlyRules):
+                    newMode = .onlyRule(onlyRules)
+                default:
+                    newMode = .only(childOnlyRules)
+                }
             case let .onlyRule(onlyRules):
                 // Always use the only rule
                 newMode = .onlyRule(onlyRules)

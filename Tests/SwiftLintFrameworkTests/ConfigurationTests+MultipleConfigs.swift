@@ -77,6 +77,26 @@ extension ConfigurationTests {
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceTryRule.self))
     }
 
+    func testOnlyRuleMerging() {
+        let ruleIdentifier = TodoRule.description.identifier
+        let onlyRuleConfiguration = Configuration.onlyRuleConfiguration(ruleIdentifier)
+
+        let emptyDefaultConfiguration = Configuration.emptyDefaultConfiguration()
+        let mergedConfiguration1 = onlyRuleConfiguration.merged(withChild: emptyDefaultConfiguration)
+        XCTAssertEqual(mergedConfiguration1.rules.count, 1)
+        XCTAssertTrue(mergedConfiguration1.rules[0] is TodoRule)
+
+        let disabledDefaultConfiguration = Configuration.disabledDefaultConfiguration(ruleIdentifier)
+        let mergedConfiguration2 = onlyRuleConfiguration.merged(withChild: disabledDefaultConfiguration)
+        XCTAssertEqual(mergedConfiguration2.rules.count, 1)
+        XCTAssertTrue(mergedConfiguration2.rules[0] is TodoRule)
+
+        let enabledOnlyConfiguration = Configuration.enabledOnlyConfiguration(ForceTryRule.description.identifier)
+        let mergedConfiguration3 = onlyRuleConfiguration.merged(withChild: enabledOnlyConfiguration)
+        XCTAssertEqual(mergedConfiguration3.rules.count, 1)
+        XCTAssertTrue(mergedConfiguration3.rules[0] is TodoRule)
+    }
+
     func testCustomRulesMerging() {
         let mergedConfiguration = Mock.Config._0CustomRules.merged(
             withChild: Mock.Config._2CustomRules,
@@ -653,4 +673,5 @@ private extension Configuration {
         Configuration(rulesMode: .only([ruleIdentifier]))
     }
     static func allEnabledConfiguration() -> Self { Configuration(rulesMode: .allEnabled)}
+    static func onlyRuleConfiguration(_ ruleIdentifier: String) -> Self { Configuration(rulesMode: .onlyRule([ruleIdentifier])) }
 }

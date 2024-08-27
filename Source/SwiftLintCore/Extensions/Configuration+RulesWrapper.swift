@@ -86,16 +86,7 @@ internal extension Configuration {
                 return validate(ruleIds: disabled, valid: validRuleIdentifiers, silent: true)
                     .sorted(by: <)
 
-            case let .only(onlyRules):
-                return validate(
-                    ruleIds: Set(allRulesWrapped
-                        .map { type(of: $0.rule).description.identifier }
-                        .filter { !onlyRules.contains($0) }),
-                    valid: validRuleIdentifiers,
-                    silent: true
-                ).sorted(by: <)
-
-            case let .onlyRule(onlyRules):
+            case let .only(onlyRules), let .onlyRule(onlyRules):
                 return validate(
                     ruleIds: Set(allRulesWrapped
                         .map { type(of: $0.rule).description.identifier }

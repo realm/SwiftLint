@@ -673,5 +673,7 @@ private extension Configuration {
         Configuration(rulesMode: .only([ruleIdentifier]))
     }
     static func allEnabledConfiguration() -> Self { Configuration(rulesMode: .allEnabled)}
-    static func onlyRuleConfiguration(_ ruleIdentifier: String) -> Self { Configuration(rulesMode: .onlyRule([ruleIdentifier])) }
+    static func onlyRuleConfiguration(_ ruleIdentifier: String) -> Self {
+        Configuration(rulesMode: .onlyRule([ruleIdentifier]))
+    }
 }

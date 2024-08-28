@@ -211,7 +211,7 @@ struct MissingDocsRuleExamples {
         public ↓struct S: ~Copyable, ~Escapable {
             public ↓init() {}
         }
-        """),
+        """, configuration: ["excludes_trivial_init": false]),
         Example("""
         /// my doc
         #if os(macOS)

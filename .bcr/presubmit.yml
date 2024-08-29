@@ -1,25 +1,26 @@
-shell_commands: &shell_commands
-- "echo --- Downloading and extracting Swift $SWIFT_VERSION to $SWIFT_HOME"
-- "mkdir $SWIFT_HOME"
-- "curl https://download.swift.org/swift-${SWIFT_VERSION}-release/ubuntu2004/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE-ubuntu20.04.tar.gz | tar xvz --strip-components=1 -C $SWIFT_HOME"
-
 tasks:
   verify_targets_linux:
-    name: Verify targets (Linux)
+    name: Verify Targets (Linux)
     platform: ubuntu2004
+    bazel: 7.x
     environment:
       CC: "clang"
-      SWIFT_VERSION: "5.8.1"
+      SWIFT_VERSION: "5.10"
       SWIFT_HOME: "$HOME/swift-$SWIFT_VERSION"
       PATH: "$PATH:$SWIFT_HOME/usr/bin"
-    shell_commands: *shell_commands
+    shell_commands:
+      - "echo --- Downloading and extracting Swift $SWIFT_VERSION to $SWIFT_HOME"
+      - "mkdir $SWIFT_HOME"
+      - "curl https://download.swift.org/swift-${SWIFT_VERSION}-release/ubuntu2004/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE-ubuntu20.04.tar.gz | tar xvz --strip-components=1 -C $SWIFT_HOME"
     build_flags:
       - "--action_env=PATH"
     build_targets:
-      # TODO: Build `:swiftlint` target when the Swift compiler crash is fixed
-      - '@swiftlint//:SwiftLintFramework'
+      - '@swiftlint//:swiftlint'
   verify_targets_macos:
-    name: Verify targets (macOS)
+    name: Verify Targets (macOS)
     platform: macos
+    bazel: 7.x
     build_targets:
       - '@swiftlint//:swiftlint'
+    build_flags:
+      - "--repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1"

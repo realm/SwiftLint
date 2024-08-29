@@ -25,7 +25,7 @@ extension Configuration {
     }
 
     // MARK: - Properties
-    private static let validGlobalKeys: Set<String> = Set(Key.allCases.map { $0.rawValue })
+    private static let validGlobalKeys: Set<String> = Set(Key.allCases.map(\.rawValue))
 
     // MARK: - Initializers
     /// Creates a Configuration value based on the specified parameters.
@@ -42,6 +42,7 @@ extension Configuration {
         dict: [String: Any],
         ruleList: RuleList = RuleRegistry.shared.list,
         enableAllRules: Bool = false,
+        onlyRule: String? = nil,
         cachePath: String? = nil
     ) throws {
         func defaultStringArray(_ object: Any?) -> [String] { [String].array(of: object) ?? [] }
@@ -73,18 +74,21 @@ extension Configuration {
 
         let rulesMode = try RulesMode(
             enableAllRules: enableAllRules,
+            onlyRule: onlyRule,
             onlyRules: onlyRules,
             optInRules: optInRules,
             disabledRules: disabledRules,
             analyzerRules: analyzerRules
         )
 
-        Self.validateConfiguredRulesAreEnabled(
-            parentConfiguration: parentConfiguration,
-            configurationDictionary: dict,
-            ruleList: ruleList,
-            rulesMode: rulesMode
-        )
+        if onlyRule == nil {
+            Self.validateConfiguredRulesAreEnabled(
+                parentConfiguration: parentConfiguration,
+                configurationDictionary: dict,
+                ruleList: ruleList,
+                rulesMode: rulesMode
+            )
+        }
 
         self.init(
             rulesMode: rulesMode,

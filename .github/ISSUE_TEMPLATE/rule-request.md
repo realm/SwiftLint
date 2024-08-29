@@ -1,6 +1,6 @@
 ---
-name: Rule request
-about: Share your idea for a new rule
+name: Rule Request
+about: Share your idea for a new rule.
 
 ---
 
@@ -9,10 +9,9 @@ about: Share your idea for a new rule
 - [ ] Updated SwiftLint to the latest version
 - [ ] I searched for [existing GitHub issues](https://github.com/realm/SwiftLint/issues)
 
-### New rule request
+### New Rule Request
 
-Please describe the rule idea, format
-this issue's title as `Rule Request: [Rule Name]` and describe:
+Please describe the rule idea, format this issue's title as `Rule Request: [Rule Name]` and describe:
 
 1. Why should this rule be added? Share links to existing discussion about what
    the community thinks about this.

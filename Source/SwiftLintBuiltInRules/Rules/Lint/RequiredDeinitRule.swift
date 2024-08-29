@@ -83,7 +83,7 @@ private extension RequiredDeinitRule {
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-        override func visitPost(_ node: DeinitializerDeclSyntax) {
+        override func visitPost(_: DeinitializerDeclSyntax) {
             hasDeinit = true
         }
     }

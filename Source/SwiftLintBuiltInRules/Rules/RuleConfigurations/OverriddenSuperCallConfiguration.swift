@@ -1,6 +1,6 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = OverriddenSuperCallRule
 

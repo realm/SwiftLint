@@ -5,7 +5,7 @@ import XCTest
 
 // swiftlint:disable file_length
 
-private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is any OptInRule }).map({ $0.0 })
+private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is any OptInRule }).map(\.0)
 
 final class ConfigurationTests: SwiftLintTestCase {
     // MARK: Setup & Teardown
@@ -85,6 +85,16 @@ final class ConfigurationTests: SwiftLintTestCase {
         )
 
         XCTAssertEqual(configuration.rules.count, RuleRegistry.shared.list.list.count)
+    }
+
+    func testOnlyRule() throws {
+        let configuration = try Configuration(
+            dict: [:],
+            onlyRule: "nesting",
+            cachePath: nil
+        )
+
+        XCTAssertEqual(configuration.rules.count, 1)
     }
 
     func testOnlyRules() throws {
@@ -234,7 +244,7 @@ final class ConfigurationTests: SwiftLintTestCase {
     }
 
     private class TestFileManager: LintableFileManager {
-        func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
+        func filesToLint(inPath path: String, rootDirectory _: String? = nil) -> [String] {
             var filesToLint: [String] = []
             switch path {
             case "directory": filesToLint = [
@@ -250,7 +260,7 @@ final class ConfigurationTests: SwiftLintTestCase {
             return filesToLint.absolutePathsStandardized()
         }
 
-        func modificationDate(forFileAtPath path: String) -> Date? {
+        func modificationDate(forFileAtPath _: String) -> Date? {
             nil
         }
 
@@ -415,14 +425,14 @@ final class ConfigurationTests: SwiftLintTestCase {
     func testConfiguresCorrectlyFromDict() throws {
         let ruleConfiguration = [1, 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
-        let rules = try testRuleList.allRulesWrapped(configurationDict: config).map { $0.rule }
+        let rules = try testRuleList.allRulesWrapped(configurationDict: config).map(\.rule)
         // swiftlint:disable:next xct_specific_matcher
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 
     func testConfigureFallsBackCorrectly() throws {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
-        let rules = try testRuleList.allRulesWrapped(configurationDict: config).map { $0.rule }
+        let rules = try testRuleList.allRulesWrapped(configurationDict: config).map(\.rule)
         // swiftlint:disable:next xct_specific_matcher
         XCTAssertTrue(rules == [RuleWithLevelsMock()])
     }

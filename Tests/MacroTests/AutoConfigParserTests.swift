@@ -3,14 +3,14 @@ import SwiftSyntaxMacrosTestSupport
 import XCTest
 
 private let macros = [
-    "AutoApply": AutoApply.self
+    "AutoConfigParser": AutoConfigParser.self
 ]
 
-final class AutoApplyTests: XCTestCase {
+final class AutoConfigParserTests: XCTestCase {
     func testAttachToClass() {
         assertMacroExpansion(
             """
-            @AutoApply
+            @AutoConfigParser
             class C {
             }
             """,
@@ -28,7 +28,7 @@ final class AutoApplyTests: XCTestCase {
     func testNoConfigurationElements() {
         assertMacroExpansion(
             """
-            @AutoApply
+            @AutoConfigParser
             struct S {
             }
             """,
@@ -54,7 +54,7 @@ final class AutoApplyTests: XCTestCase {
     func testConfigurationElementsWithoutKeys() {
         assertMacroExpansion(
             """
-            @AutoApply
+            @AutoConfigParser
             struct S {
                 @ConfigurationElement
                 var eA = 1
@@ -96,7 +96,7 @@ final class AutoApplyTests: XCTestCase {
     func testInlinedConfigurationElements() {
         assertMacroExpansion(
             """
-            @AutoApply
+            @AutoConfigParser
             struct S {
                 @ConfigurationElement(key: "eD")
                 var eA = 1
@@ -147,7 +147,7 @@ final class AutoApplyTests: XCTestCase {
     func testSeverityBasedConfigurationWithoutSeverityProperty() {
         assertMacroExpansion(
             """
-            @AutoApply
+            @AutoConfigParser
             struct S: SeverityBasedRuleConfiguration {
             }
             """,
@@ -180,7 +180,7 @@ final class AutoApplyTests: XCTestCase {
         // swiftlint:disable line_length
         assertMacroExpansion(
             """
-            @AutoApply
+            @AutoConfigParser
             struct S: SeverityBasedRuleConfiguration {
                 @ConfigurationElement
                 var severityConfiguration = .warning

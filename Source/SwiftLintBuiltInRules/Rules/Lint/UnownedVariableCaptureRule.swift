@@ -19,10 +19,10 @@ struct UnownedVariableCaptureRule: OptInRule {
             Example("""
             final class First {}
             final class Second {
-              unowned var value: First
-              init(value: First) {
-                self.value = value
-              }
+                unowned var value: First
+                init(value: First) {
+                    self.value = value
+                }
             }
             """),
         ],

@@ -15,7 +15,7 @@ class CompilerInvocations {
     }
 
     /// Default implementation
-    func arguments(forFile path: String?) -> Arguments { [] }
+    func arguments(forFile _: String?) -> Arguments { [] }
 
     // MARK: - Private
 
@@ -83,10 +83,18 @@ struct LintableFilesVisitor {
     let mode: LintOrAnalyzeModeWithCompilerArguments
     let block: (CollectedLinter) async -> Void
 
-    private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, showProgressBar: Bool,
-                 useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
-                 cache: LinterCache?, compilerInvocations: CompilerInvocations?,
-                 allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) async -> Void) {
+    private init(paths: [String],
+                 action: String,
+                 useSTDIN: Bool,
+                 quiet: Bool,
+                 showProgressBar: Bool,
+                 useScriptInputFiles: Bool,
+                 forceExclude: Bool,
+                 useExcludingByPrefix: Bool,
+                 cache: LinterCache?,
+                 compilerInvocations: CompilerInvocations?,
+                 allowZeroLintableFiles: Bool,
+                 block: @escaping (CollectedLinter) async -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
@@ -179,8 +187,8 @@ struct LintableFilesVisitor {
     }
 
     private static func loadLogCompilerInvocations(_ path: String) -> [[String]]? {
-        if let data = FileManager.default.contents(atPath: path) {
-            let logContents = String(decoding: data, as: UTF8.self)
+        if let data = FileManager.default.contents(atPath: path),
+            let logContents = String(data: data, encoding: .utf8) {
             if logContents.isEmpty {
                 return nil
             }

@@ -64,7 +64,7 @@ private extension NoGroupingExtensionRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ActorDeclSyntax) {
+        override func visitPost(_: ActorDeclSyntax) {
             typeScope.removeLast()
         }
 
@@ -73,7 +73,7 @@ private extension NoGroupingExtensionRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClassDeclSyntax) {
+        override func visitPost(_: ClassDeclSyntax) {
             typeScope.removeLast()
         }
 
@@ -82,7 +82,7 @@ private extension NoGroupingExtensionRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: EnumDeclSyntax) {
+        override func visitPost(_: EnumDeclSyntax) {
             typeScope.removeLast()
         }
 
@@ -91,7 +91,7 @@ private extension NoGroupingExtensionRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: StructDeclSyntax) {
+        override func visitPost(_: StructDeclSyntax) {
             typeScope.removeLast()
         }
 
@@ -110,7 +110,7 @@ private extension NoGroupingExtensionRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ExtensionDeclSyntax) {
+        override func visitPost(_: ExtensionDeclSyntax) {
             typeScope.removeLast()
         }
 

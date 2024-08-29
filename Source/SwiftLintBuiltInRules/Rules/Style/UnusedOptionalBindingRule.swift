@@ -56,9 +56,7 @@ private extension ExprSyntax {
             return true
         }
         if let tuple = self.as(TupleExprSyntax.self) {
-            return tuple.elements.allSatisfy { elem in
-                elem.expression.isDiscardExpression
-            }
+            return tuple.elements.allSatisfy(\.expression.isDiscardExpression)
         }
 
         return false

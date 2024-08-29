@@ -130,7 +130,7 @@ public struct SourceKittenDictionary {
 
     /// The `SwiftDeclarationAttributeKind` values associated with this dictionary.
     public var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
-        swiftAttributes.compactMap { $0.attribute }
+        swiftAttributes.compactMap(\.attribute)
             .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
     }
 
@@ -193,7 +193,7 @@ extension SourceKittenDictionary {
     /// Block executed for every encountered entity during traversal of a dictionary.
     public typealias TraverseBlock<T> = (_ parent: SourceKittenDictionary, _ entity: SourceKittenDictionary) -> T?
 
-    /// Traversing all substuctures of the dictionary hierarchically, calling `traverseBlock` on each node.
+    /// Traversing all substructures of the dictionary hierarchically, calling `traverseBlock` on each node.
     /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
     ///
     /// - parameter traverseBlock: block that will be called for each substructure in the dictionary.

@@ -30,7 +30,7 @@ struct SARIFReporter: Reporter {
             ],
         ] as [String: Any]
 
-        return toJSON(SARIFJson)
+        return toJSON(SARIFJson, options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes])
     }
 
     // MARK: - Private
@@ -54,11 +54,11 @@ struct SARIFReporter: Reporter {
             return [
                 "physicalLocation": [
                     "artifactLocation": [
-                        "uri": location.file ?? ""
+                        "uri": location.relativeFile ?? ""
                     ],
                     "region": [
                         "startLine": line,
-                        "startColumn": location.character ?? "1",
+                        "startColumn": location.character ?? 1,
                     ],
                 ],
             ]

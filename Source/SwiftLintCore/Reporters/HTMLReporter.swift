@@ -21,13 +21,14 @@ struct HTMLReporter: Reporter {
     // MARK: - Internal
 
     // swiftlint:disable:next function_body_length
-    internal static func generateReport(_ violations: [StyleViolation], swiftlintVersion: String,
+    internal static func generateReport(_ violations: [StyleViolation],
+                                        swiftlintVersion: String,
                                         dateString: String) -> String {
         let rows = violations.enumerated()
             .map { generateSingleRow(for: $1, at: $0 + 1) }
             .joined(separator: "\n")
 
-        let fileCount = Set(violations.compactMap({ $0.location.file })).count
+        let fileCount = Set(violations.compactMap(\.location.file)).count
         let warningCount = violations.filter({ $0.severity == .warning }).count
         let errorCount = violations.filter({ $0.severity == .error }).count
 

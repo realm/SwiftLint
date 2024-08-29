@@ -119,7 +119,7 @@ private extension RedundantOptionalInitializationRule {
     }
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
-        override func visitAny(_ node: Syntax) -> Syntax? { nil }
+        override func visitAny(_: Syntax) -> Syntax? { nil }
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
             guard node.bindingSpecifier.tokenKind == .keyword(.var),

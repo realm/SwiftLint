@@ -176,7 +176,7 @@ private extension Sequence where Element == BaselineViolation {
     }
 
     var violationsWithAbsolutePaths: [StyleViolation] {
-        map { $0.violation.withAbsolutePath }
+        map(\.violation.withAbsolutePath)
     }
 
     func groupedByFile() -> ViolationsPerFile {

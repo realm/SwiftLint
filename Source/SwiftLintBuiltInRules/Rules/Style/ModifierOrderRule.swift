@@ -14,7 +14,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
     )
 
     func validate(file: SwiftLintFile,
-                  kind: SwiftDeclarationKind,
+                  kind _: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset else {
             return []
@@ -119,7 +119,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
         let prioritizedModifiers = self.prioritizedModifiers(violatableModifiers: violatableModifiers)
         let sortedByPriorityModifiers = prioritizedModifiers
             .sorted { $0.priority < $1.priority }
-            .map { $0.modifier }
+            .map(\.modifier)
 
         return zip(sortedByPriorityModifiers, violatableModifiers).filter { $0 != $1 }
     }

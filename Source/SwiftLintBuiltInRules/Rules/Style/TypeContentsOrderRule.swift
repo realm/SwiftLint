@@ -51,7 +51,7 @@ struct TypeContentsOrderRule: OptInRule {
                 let typeContentOffset = orderedTypeContentOffsets[index]
 
                 let content = typeContentOffset.typeContent.rawValue
-                let expected = expectedTypesContents.map { $0.rawValue }.joined(separator: ",")
+                let expected = expectedTypesContents.map(\.rawValue).joined(separator: ",")
                 let article = ["a", "e", "i", "o", "u"].contains(content.substring(from: 0, length: 1)) ? "An" : "A"
 
                 let styleViolation = StyleViolation(

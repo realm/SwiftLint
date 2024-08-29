@@ -7,7 +7,6 @@ let swiftFeatures: [SwiftSetting] = [
     .enableUpcomingFeature("ConciseMagicFile"),
     .enableUpcomingFeature("ImportObjcForwardDeclarations"),
     .enableUpcomingFeature("ForwardTrailingClosures"),
-    .enableUpcomingFeature("InternalImportsByDefault"),
     .enableUpcomingFeature("ImplicitOpenExistentials"),
 ]
 
@@ -30,7 +29,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.1"),
-        .package(url: "https://github.com/apple/swift-syntax.git", exact: "600.0.0-prerelease-2024-04-02"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "600.0.0-prerelease-2024-08-14"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMinor(from: "0.35.0")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.6"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
@@ -173,8 +172,8 @@ let package = Package(
 package.targets.append(
     .binaryTarget(
         name: "SwiftLintBinary",
-        url: "https://github.com/realm/SwiftLint/releases/download/0.55.1/SwiftLintBinary-macos.artifactbundle.zip",
-        checksum: "722a705de1cf4e0e07f2b7d2f9f631f3a8b2635a0c84cce99f9677b38aa4a1d6"
+        url: "https://github.com/realm/SwiftLint/releases/download/0.56.2/SwiftLintBinary-macos.artifactbundle.zip",
+        checksum: "197df93d7f5041d8cd46d6902a34ad57914efe1b5b50635995f3b9065f2c3ffd"
     )
 )
 #endif

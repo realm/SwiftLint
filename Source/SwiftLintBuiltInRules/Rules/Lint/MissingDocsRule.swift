@@ -33,7 +33,7 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ActorDeclSyntax) {
+        override func visitPost(_: ActorDeclSyntax) {
             aclScope.pop()
         }
 
@@ -55,15 +55,15 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClassDeclSyntax) {
+        override func visitPost(_: ClassDeclSyntax) {
             aclScope.pop()
         }
 
-        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
-        override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
@@ -73,15 +73,13 @@ private extension MissingDocsRule {
             }
             let acl = enumAcl ?? .internal
             if let parameter = configuration.parameters.first(where: { $0.value == acl }) {
-                node.elements.forEach {
-                    violations.append(
-                        ReasonedRuleViolation(
-                            position: $0.name.positionAfterSkippingLeadingTrivia,
-                            reason: "\(acl) declarations should be documented",
-                            severity: parameter.severity
-                        )
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: node.caseKeyword.positionAfterSkippingLeadingTrivia,
+                        reason: "\(acl) declarations should be documented",
+                        severity: parameter.severity
                     )
-                }
+                )
             }
         }
 
@@ -99,7 +97,7 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: EnumDeclSyntax) {
+        override func visitPost(_: EnumDeclSyntax) {
             aclScope.pop()
         }
 
@@ -114,7 +112,7 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ExtensionDeclSyntax) {
+        override func visitPost(_: ExtensionDeclSyntax) {
             aclScope.pop()
         }
 
@@ -144,7 +142,7 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: ProtocolDeclSyntax) {
+        override func visitPost(_: ProtocolDeclSyntax) {
             aclScope.pop()
         }
 
@@ -162,7 +160,7 @@ private extension MissingDocsRule {
             return .visitChildren
         }
 
-        override func visitPost(_ node: StructDeclSyntax) {
+        override func visitPost(_: StructDeclSyntax) {
             aclScope.pop()
         }
 
@@ -191,7 +189,7 @@ private extension MissingDocsRule {
             if let parameter = configuration.parameters.first(where: { $0.value == acl }) {
                 violations.append(
                     ReasonedRuleViolation(
-                        position: (node.modifiers.staticOrClass ?? token).positionAfterSkippingLeadingTrivia,
+                        position: token.positionAfterSkippingLeadingTrivia,
                         reason: "\(acl) declarations should be documented",
                         severity: parameter.severity
                     )
@@ -236,10 +234,6 @@ private extension SyntaxProtocol {
 private extension DeclModifierListSyntax {
     var accessibility: AccessControlLevel? {
         filter { $0.detail == nil }.compactMap { AccessControlLevel(description: $0.name.text) }.first
-    }
-
-    var staticOrClass: TokenSyntax? {
-        first { $0.name.text == "static" || $0.name.text == "class" }?.name
     }
 }
 

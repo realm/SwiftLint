@@ -29,7 +29,7 @@ private let syntaxTreeCache = Cache { file -> SourceFileSyntax in
 }
 private let foldedSyntaxTreeCache = Cache { file -> SourceFileSyntax? in
     OperatorTable.standardOperators
-        .foldAll(file.syntaxTree) { _ in }
+        .foldAll(file.syntaxTree) { _ in /* Don't handle errors. */ }
         .as(SourceFileSyntax.self)
 }
 private let locationConverterCache = Cache { file -> SourceLocationConverter in
@@ -165,7 +165,7 @@ extension SwiftLintFile {
 
     public var locationConverter: SourceLocationConverter { locationConverterCache.get(self) }
 
-    public var commands: [Command] { commandsCache.get(self).filter { $0.isValid } }
+    public var commands: [Command] { commandsCache.get(self).filter(\.isValid) }
 
     public var invalidCommands: [Command] { commandsCache.get(self).filter { !$0.isValid } }
 

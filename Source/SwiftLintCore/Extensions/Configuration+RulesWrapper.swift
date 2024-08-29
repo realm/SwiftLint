@@ -14,7 +14,7 @@ internal extension Configuration {
             let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).description.identifier }
             let configurationCustomRulesIdentifiers =
                 (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?
-                    .configuration.customRuleConfigurations.map { $0.identifier } ?? []
+                    .configuration.customRuleConfigurations.map(\.identifier) ?? []
             return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)
         }
 
@@ -37,14 +37,14 @@ internal extension Configuration {
             switch mode {
             case .allEnabled:
                 customRulesFilter = { _ in true }
-                resultingRules = allRulesWrapped.map { $0.rule }
+                resultingRules = allRulesWrapped.map(\.rule)
 
             case var .only(onlyRulesRuleIdentifiers):
                 customRulesFilter = { onlyRulesRuleIdentifiers.contains($0.identifier) }
                 onlyRulesRuleIdentifiers = validate(ruleIds: onlyRulesRuleIdentifiers, valid: validRuleIdentifiers)
                 resultingRules = allRulesWrapped.filter { tuple in
                     onlyRulesRuleIdentifiers.contains(type(of: tuple.rule).description.identifier)
-                }.map { $0.rule }
+                }.map(\.rule)
 
             case var .default(disabledRuleIdentifiers, optInRuleIdentifiers):
                 customRulesFilter = { !disabledRuleIdentifiers.contains($0.identifier) }
@@ -54,7 +54,7 @@ internal extension Configuration {
                     let id = type(of: tuple.rule).description.identifier
                     return !disabledRuleIdentifiers.contains(id)
                         && (!(tuple.rule is any OptInRule) || optInRuleIdentifiers.contains(id))
-                }.map { $0.rule }
+                }.map(\.rule)
             }
 
             // Filter custom rules
@@ -178,15 +178,14 @@ internal extension Configuration {
         private func mergedAllRulesWrapped(with child: RulesWrapper) -> [ConfigurationRuleWrapper] {
             let mainConfigSet = Set(allRulesWrapped.map(HashableConfigurationRuleWrapperWrapper.init))
             let childConfigSet = Set(child.allRulesWrapped.map(HashableConfigurationRuleWrapperWrapper.init))
-            let childConfigRulesWithConfig = childConfigSet.filter {
-                $0.configurationRuleWrapper.initializedWithNonEmptyConfiguration
-            }
+            let childConfigRulesWithConfig = childConfigSet
+                .filter(\.configurationRuleWrapper.initializedWithNonEmptyConfiguration)
 
             let rulesUniqueToChildConfig = childConfigSet.subtracting(mainConfigSet)
             return childConfigRulesWithConfig // Include, if rule is configured in child
                 .union(rulesUniqueToChildConfig) // Include, if rule is in child config only
                 .union(mainConfigSet) // Use configurations from parent for remaining rules
-                .map { $0.configurationRuleWrapper }
+                .map(\.configurationRuleWrapper)
         }
 
         private func mergedCustomRules(
@@ -248,7 +247,7 @@ internal extension Configuration {
                         as? CustomRules {
                         onlyRules = onlyRules.union(
                             Set(
-                                childCustomRulesRule.configuration.customRuleConfigurations.map { $0.identifier }
+                                childCustomRulesRule.configuration.customRuleConfigurations.map(\.identifier)
                             )
                         )
                     }

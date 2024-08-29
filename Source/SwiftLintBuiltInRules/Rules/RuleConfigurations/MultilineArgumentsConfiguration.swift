@@ -1,10 +1,10 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = MultilineArgumentsRule
 
-    @MakeAcceptableByConfigurationElement
+    @AcceptableByConfigurationElement
     enum FirstArgumentLocation: String {
         case anyLine = "any_line"
         case sameLine = "same_line"

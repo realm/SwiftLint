@@ -15,8 +15,8 @@ opt_in_rules:
   - all
 disabled_rules:
   - anonymous_argument_in_multiline_closure
-  - anyobject_protocol
   - conditional_returns_on_newline
+  - contrasted_opening_brace
   - convenience_type
   - discouraged_optional_collection
   - explicit_acl
@@ -32,7 +32,6 @@ disabled_rules:
   - multiline_arguments
   - multiline_arguments_brackets
   - multiline_function_chains
-  - multiline_parameters
   - multiline_parameters_brackets
   - no_extension_access_modifier
   - no_grouping_extension
@@ -62,7 +61,7 @@ balanced_xctest_lifecycle: &unit_test_configuration
     - XCTestCase
 closure_body_length:
     warning: 50
-    error: 100    
+    error: 100
 empty_xctest_method: *unit_test_configuration
 file_name:
   excluded:
@@ -79,6 +78,8 @@ identifier_name:
 large_tuple: 3
 number_separator:
   minimum_length: 5
+prefer_key_path:
+  restrict_to_standard_functions: false
 redundant_type_annotation:
   consider_default_literal_types_redundant: true
 single_test_class: *unit_test_configuration

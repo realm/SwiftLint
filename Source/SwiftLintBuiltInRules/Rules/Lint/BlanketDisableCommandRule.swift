@@ -167,7 +167,7 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
         }
 
         for command in file.commands {
-            let ruleIdentifiers: Set<String> = Set(command.ruleIdentifiers.map { $0.stringRepresentation })
+            let ruleIdentifiers: Set<String> = Set(command.ruleIdentifiers.map(\.stringRepresentation))
             let intersection = ruleIdentifiers.intersection(configuration.alwaysBlanketDisableRuleIdentifiers)
             if command.action == .enable {
                 violations.append(contentsOf: intersection.map {

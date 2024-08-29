@@ -28,7 +28,7 @@ private extension NotificationCenterDetachmentRule {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
 
-        override func visit(_ node: DeinitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: DeinitializerDeclSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
     }

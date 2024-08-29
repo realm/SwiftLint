@@ -131,7 +131,7 @@ private extension ExplicitACLRule {
             return node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren
         }
 
-        override func visitPost(_ node: ActorDeclSyntax) {
+        override func visitPost(_: ActorDeclSyntax) {
             declScope.pop()
         }
 
@@ -141,15 +141,15 @@ private extension ExplicitACLRule {
             return node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren
         }
 
-        override func visitPost(_ node: ClassDeclSyntax) {
+        override func visitPost(_: ClassDeclSyntax) {
             declScope.pop()
         }
 
-        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
-        override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
@@ -158,7 +158,7 @@ private extension ExplicitACLRule {
             return node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren
         }
 
-        override func visitPost(_ node: ExtensionDeclSyntax) {
+        override func visitPost(_: ExtensionDeclSyntax) {
             declScope.pop()
         }
 
@@ -168,7 +168,7 @@ private extension ExplicitACLRule {
             return node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren
         }
 
-        override func visitPost(_ node: EnumDeclSyntax) {
+        override func visitPost(_: EnumDeclSyntax) {
             declScope.pop()
         }
 
@@ -190,7 +190,7 @@ private extension ExplicitACLRule {
             return node.modifiers.containsPrivateOrFileprivate() ? .skipChildren : .visitChildren
         }
 
-        override func visitPost(_ node: StructDeclSyntax) {
+        override func visitPost(_: StructDeclSyntax) {
             declScope.pop()
         }
 

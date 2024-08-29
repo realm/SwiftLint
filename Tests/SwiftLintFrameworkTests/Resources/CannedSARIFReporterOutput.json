@@ -1,5 +1,5 @@
 {
-  "$schema" : "https:\/\/docs.oasis-open.org\/sarif\/sarif\/v2.1.0\/cos02\/schemas\/sarif-schema-2.1.0.json",
+  "$schema" : "https://docs.oasis-open.org/sarif/sarif/v2.1.0/cos02/schemas/sarif-schema-2.1.0.json",
   "runs" : [
     {
       "results" : [
@@ -12,14 +12,14 @@
                   "uri" : "filename"
                 },
                 "region" : {
-                  "startColumn" : 2,
+                  "startColumn" : 1,
                   "startLine" : 1
                 }
               }
             }
           ],
           "message" : {
-            "text" : "Violation Reason"
+            "text" : "Violation Reason 1"
           },
           "ruleId" : "line_length"
         },
@@ -32,14 +32,14 @@
                   "uri" : "filename"
                 },
                 "region" : {
-                  "startColumn" : 2,
+                  "startColumn" : 1,
                   "startLine" : 1
                 }
               }
             }
           ],
           "message" : {
-            "text" : "Violation Reason"
+            "text" : "Violation Reason 2"
           },
           "ruleId" : "line_length"
         },
@@ -49,7 +49,7 @@
             {
               "physicalLocation" : {
                 "artifactLocation" : {
-                  "uri" : "filename"
+                  "uri" : "path/file.swift"
                 },
                 "region" : {
                   "startColumn" : 2,
@@ -82,9 +82,9 @@
       ],
       "tool" : {
         "driver" : {
-          "informationUri" : "https:\/\/github.com\/realm\/SwiftLint\/blob\/${SWIFT_LINT_VERSION}\/README.md",
+          "informationUri" : "https://github.com/realm/SwiftLint/blob/${SWIFTLINT_VERSION}/README.md",
           "name" : "SwiftLint",
-          "semanticVersion" : "${SWIFT_LINT_VERSION}"
+          "semanticVersion" : "${SWIFTLINT_VERSION}"
         }
       }
     }

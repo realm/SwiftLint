@@ -25,12 +25,6 @@ final class AnonymousArgumentInMultilineClosureRuleGeneratedTests: SwiftLintTest
     }
 }
 
-final class AnyObjectProtocolRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(AnyObjectProtocolRule.description)
-    }
-}
-
 final class ArrayInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ArrayInitRule.description)
@@ -178,6 +172,12 @@ final class ContainsOverFirstNotNilRuleGeneratedTests: SwiftLintTestCase {
 final class ContainsOverRangeNilComparisonRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ContainsOverRangeNilComparisonRule.description)
+    }
+}
+
+final class ContrastedOpeningBraceRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ContrastedOpeningBraceRule.description)
     }
 }
 
@@ -817,9 +817,9 @@ final class ObjectLiteralRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class OneDelarationPerFileRuleGeneratedTests: SwiftLintTestCase {
+final class OneDeclarationPerFileRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(OneDelarationPerFileRule.description)
+        verifyRule(OneDeclarationPerFileRule.description)
     }
 }
 
@@ -838,6 +838,12 @@ final class OperatorFunctionWhitespaceRuleGeneratedTests: SwiftLintTestCase {
 final class OperatorUsageWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OperatorUsageWhitespaceRule.description)
+    }
+}
+
+final class OptionalDataStringConversionRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(OptionalDataStringConversionRule.description)
     }
 }
 
@@ -877,6 +883,12 @@ final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferKeyPathRule.description)
+    }
+}
+
 final class PreferNimbleRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferNimbleRule.description)
@@ -892,6 +904,12 @@ final class PreferSelfInStaticReferencesRuleGeneratedTests: SwiftLintTestCase {
 final class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
+    }
+}
+
+final class PreferTypeCheckingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferTypeCheckingRule.description)
     }
 }
 
@@ -1348,6 +1366,12 @@ final class UnusedImportRuleGeneratedTests: SwiftLintTestCase {
 final class UnusedOptionalBindingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedOptionalBindingRule.description)
+    }
+}
+
+final class UnusedParameterRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnusedParameterRule.description)
     }
 }
 

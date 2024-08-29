@@ -11,8 +11,8 @@ SwiftLint hooks into [Clang](http://clang.llvm.org) and
 [AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) representation
 of your source files for more accurate results.
 
-[![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
-[![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=main)](https://codecov.io/github/realm/SwiftLint?branch=main)
+[![Azure Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
+[![Buildkite Build Status](https://badge.buildkite.com/e2a5bc32c347e76e2793e4c5764a5f42bcd42bbe32f79c3a53.svg?branch=main)](https://buildkite.com/swiftlint/swiftlint)
 
 ![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/screenshot.png)
 
@@ -331,6 +331,27 @@ else
     echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
 fi
 ```
+
+If you're using the SwiftLintPlugin in a Swift package,
+you may refer to the `swiftlint` executable in the
+following way:
+
+```bash
+SWIFT_PACKAGE_DIR="${BUILD_DIR%Build/*}SourcePackages/artifacts"
+SWIFTLINT_CMD=$(ls "$SWIFT_PACKAGE_DIR"/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-*/bin/swiftlint | head -n 1)
+
+if test -f "$SWIFTLINT_CMD" 2>&1
+then
+    "$SWIFTLINT_CMD"
+else
+    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
+fi
+```
+
+> [!NOTE]
+> The `SWIFTLINT_CMD` path uses the default Xcode configuration and has been
+> tested on Xcode 15/16. In case of another configuration (e.g. a custom
+> Swift package path), please adapt the values accordingly.
 
 > [!TIP]
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental
@@ -830,8 +851,18 @@ All syntax kinds used in a snippet of Swift code can be extracted asking
 
 which match to `keyword` and `identifier` in the above list.
 
-If using custom rules in combination with `only_rules`, make sure to add
-`custom_rules` as an item under `only_rules`.
+If using custom rules in combination with `only_rules`, you must include the 
+literal string `custom_rules` in the `only_rules` list:
+
+```yaml
+only_rules:
+  - custom_rules
+
+custom_rules:
+  no_hiding_in_strings:
+    regex: "([nN]inja)"
+    match_kinds: string
+```
 
 Unlike Swift custom rules, you can use official SwiftLint builds
 (e.g. from Homebrew) to run regex custom rules.
@@ -890,9 +921,9 @@ opt_in_rules:
 - force_cast
 ```
 
-### Child / Parent Configs (Locally)
+### Child/Parent Configs (Locally)
 
-You can specify a `child_config` and / or a `parent_config` reference within a
+You can specify a `child_config` and/or a `parent_config` reference within a
 configuration file. These references should be local paths relative to the
 folder of the configuration file they are specified in. This even works
 recursively, as long as there are no cycles and no ambiguities.
@@ -923,9 +954,9 @@ When merging parent and child configs, `included` and `excluded` configurations
 are processed carefully to account for differences in the directory location
 of the containing configuration files.
 
-### Child / Parent Configs (Remote)
+### Child/Parent Configs (Remote)
 
-Just as you can provide local `child_config` / `parent_config` references,
+Just as you can provide local `child_config`/`parent_config` references,
 instead of referencing local paths, you can just put urls that lead to
 configuration files. In order for SwiftLint to detect these remote references,
 they must start with `http://` or `https://`.
@@ -947,8 +978,8 @@ there once SwiftLint has run successfully at least once.
 
 If needed, the timeouts for the remote configuration fetching can be specified
 manually via the configuration file(s) using the
-`remote_timeout` / `remote_timeout_if_cached` specifiers. These values default
-to 2 / 1 second(s).
+`remote_timeout`/`remote_timeout_if_cached` specifiers. These values default
+to 2 seconds or 1 second, respectively.
 
 ### Command Line
 
@@ -975,7 +1006,7 @@ configuration.
 `.swiftlint.yml` files are only considered as a nested configuration if they
 have not been used to build the main configuration already (e. g. by having
 been referenced via something like `child_config: Folder/.swiftlint.yml`).
-Also, `parent_config` / `child_config` specifications of nested configurations
+Also, `parent_config`/`child_config` specifications of nested configurations
 are getting ignored because there's no sense to that.
 
 If one (or more) SwiftLint file(s) are explicitly specified via the `--config`

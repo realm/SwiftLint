@@ -34,11 +34,12 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             included.map(\.pattern).joined(separator: ","),
             excluded.map(\.pattern).joined(separator: ","),
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
-                .map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
+                .map(\.rawValue).sorted(by: <).joined(separator: ","),
             severity.rawValue,
         ]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) {
-            return String(decoding: jsonData, as: UTF8.self)
+        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
+          let jsonString = String(data: jsonData, encoding: .utf8) {
+              return jsonString
         }
         queuedFatalError("Could not serialize regex configuration for cache")
     }

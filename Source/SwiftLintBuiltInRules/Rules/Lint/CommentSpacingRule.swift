@@ -57,7 +57,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
             */
             """),
             Example("""
-            /*#-editable-code Swift Platground editable area*/default/*#-end-editable-code*/
+            /*#-editable-code Swift Playground editable area*/default/*#-end-editable-code*/
             """),
         ],
         triggeringExamples: [
@@ -158,7 +158,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
         }
     }
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in _: SwiftLintFile) -> (NSRange, String)? {
         (violationRange, " ")
     }
 }

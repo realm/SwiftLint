@@ -57,36 +57,27 @@ struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule {
 private extension ReturnArrowWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionTypeSyntax) {
-            guard let violation = node.returnClause.arrow.arrowViolation else {
-                return
+            if let violation = node.returnClause.arrow.arrowViolation {
+                violations.append(violation)
             }
-
-            violations.append(violation.start)
-            violationCorrections.append(violation)
         }
 
         override func visitPost(_ node: FunctionSignatureSyntax) {
-            guard let output = node.returnClause, let violation = output.arrow.arrowViolation else {
-                return
+            if let output = node.returnClause, let violation = output.arrow.arrowViolation {
+                violations.append(violation)
             }
-
-            violations.append(violation.start)
-            violationCorrections.append(violation)
         }
 
         override func visitPost(_ node: ClosureSignatureSyntax) {
-            guard let output = node.returnClause, let violation = output.arrow.arrowViolation else {
-                return
+            if let output = node.returnClause, let violation = output.arrow.arrowViolation {
+                violations.append(violation)
             }
-
-            violations.append(violation.start)
-            violationCorrections.append(violation)
         }
     }
 }
 
 private extension TokenSyntax {
-    var arrowViolation: ViolationCorrection? {
+    var arrowViolation: ReasonedRuleViolation? {
         guard let previousToken = previousToken(viewMode: .sourceAccurate),
               let nextToken = nextToken(viewMode: .sourceAccurate) else {
             return nil
@@ -119,6 +110,6 @@ private extension TokenSyntax {
             return nil
         }
 
-        return ViolationCorrection(start: start, end: end, replacement: correction)
+        return .init(position: start, correction: .init(start: start, end: end, replacement: correction))
     }
 }

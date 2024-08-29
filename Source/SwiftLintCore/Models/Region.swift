@@ -58,7 +58,7 @@ public struct Region: Equatable {
         if disabledRuleIdentifiers.contains(.all) {
             return true
         }
-        let regionIdentifiers = Set(disabledRuleIdentifiers.map { $0.stringRepresentation })
+        let regionIdentifiers = Set(disabledRuleIdentifiers.map(\.stringRepresentation))
         return !regionIdentifiers.isDisjoint(with: ruleIDs)
     }
 
@@ -70,7 +70,7 @@ public struct Region: Equatable {
     /// - returns: Deprecated rule aliases.
     public func deprecatedAliasesDisabling(rule: some Rule) -> Set<String> {
         let identifiers = type(of: rule).description.deprecatedAliases
-        return Set(disabledRuleIdentifiers.map { $0.stringRepresentation }).intersection(identifiers)
+        return Set(disabledRuleIdentifiers.map(\.stringRepresentation)).intersection(identifiers)
     }
 
     /// Converts this `Region` to a SwiftSyntax `SourceRange`.

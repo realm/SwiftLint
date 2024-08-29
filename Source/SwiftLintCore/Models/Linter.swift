@@ -57,9 +57,10 @@ private extension Rule {
 
     // As we need the configuration to get custom identifiers.
     // swiftlint:disable:next function_parameter_count
-    func lint(file: SwiftLintFile, regions: [Region], benchmark: Bool,
+    func lint(file: SwiftLintFile,
+              regions: [Region],
+              benchmark: Bool,
               storage: RuleStorage,
-              configuration: Configuration,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
         // We shouldn't lint if the current Swift version is not supported by the rule
@@ -114,7 +115,7 @@ private extension Rule {
                 return violation
             }
         } else {
-            enabledViolations = enabledViolationsAndRegions.map { $0.0 }
+            enabledViolations = enabledViolationsAndRegions.map(\.0)
         }
         let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
             let identifiers = region?.deprecatedAliasesDisabling(rule: self) ?? []
@@ -144,7 +145,9 @@ public struct Linter {
     /// - parameter configuration:     The SwiftLint configuration to apply to this linter.
     /// - parameter cache:             The persisted cache to use for this linter.
     /// - parameter compilerArguments: The compiler arguments to use for this linter if it is to execute analyzer rules.
-    public init(file: SwiftLintFile, configuration: Configuration = Configuration.default, cache: LinterCache? = nil,
+    public init(file: SwiftLintFile,
+                configuration: Configuration = Configuration.default,
+                cache: LinterCache? = nil,
                 compilerArguments: [String] = []) {
         self.file = file
         self.cache = cache
@@ -235,7 +238,6 @@ public struct CollectedLinter {
         let validationResults = rules.parallelCompactMap {
             $0.lint(file: file, regions: regions, benchmark: benchmark,
                     storage: storage,
-                    configuration: configuration,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
                     compilerArguments: compilerArguments)
         }
@@ -243,10 +245,10 @@ public struct CollectedLinter {
             regions: regions, configuration: configuration,
             superfluousDisableCommandRule: superfluousDisableCommandRule)
 
-        let violations = validationResults.flatMap { $0.violations } + undefinedSuperfluousCommandViolations
-        let ruleTimes = validationResults.compactMap { $0.ruleTime }
+        let violations = validationResults.flatMap(\.violations) + undefinedSuperfluousCommandViolations
+        let ruleTimes = validationResults.compactMap(\.ruleTime)
         var deprecatedToValidIdentifier = [String: String]()
-        for (key, value) in validationResults.flatMap({ $0.deprecatedToValidIDPairs }) {
+        for (key, value) in validationResults.flatMap(\.deprecatedToValidIDPairs) {
             deprecatedToValidIdentifier[key] = value
         }
 

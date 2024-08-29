@@ -213,8 +213,10 @@ extension Configuration {
     fileprivate func getFiles(with visitor: LintableFilesVisitor) async throws -> [SwiftLintFile] {
         if visitor.useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
-            let stdinString = String(decoding: stdinData, as: UTF8.self)
-            return [SwiftLintFile(contents: stdinString)]
+            if let stdinString = String(data: stdinData, encoding: .utf8) {
+                return [SwiftLintFile(contents: stdinString)]
+            }
+            throw SwiftLintError.usageError(description: "stdin isn't a UTF8-encoded string")
         }
         if visitor.useScriptInputFiles {
             let files = try scriptInputFiles()
@@ -222,7 +224,7 @@ extension Configuration {
                 return files
             }
 
-            let scriptInputPaths = files.compactMap { $0.path }
+            let scriptInputPaths = files.compactMap(\.path)
 
             if visitor.useExcludingByPrefix {
                 return filterExcludedPathsByPrefix(in: scriptInputPaths)
@@ -252,7 +254,9 @@ extension Configuration {
         }
     }
 
-    func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
+    func visitLintableFiles(options: LintOrAnalyzeOptions,
+                            cache: LinterCache? = nil,
+                            storage: RuleStorage,
                             visitorBlock: @escaping (CollectedLinter) async -> Void) async throws -> [SwiftLintFile] {
         let visitor = try LintableFilesVisitor.create(options, cache: cache,
                                                       allowZeroLintableFiles: allowZeroLintableFiles,
@@ -266,6 +270,7 @@ extension Configuration {
         self.init(
             configurationFiles: options.configurationFiles,
             enableAllRules: options.enableAllRules,
+            onlyRule: options.onlyRule,
             cachePath: options.cachePath
         )
     }

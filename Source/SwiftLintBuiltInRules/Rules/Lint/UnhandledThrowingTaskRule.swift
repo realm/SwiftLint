@@ -308,7 +308,7 @@ private final class ThrowsVisitor: SyntaxVisitor {
         }
     }
 
-    override func visitPost(_ node: ThrowStmtSyntax) {
+    override func visitPost(_: ThrowStmtSyntax) {
         doesThrow = true
     }
 }

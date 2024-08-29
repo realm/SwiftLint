@@ -49,6 +49,12 @@ public struct Stack<Element> {
     }
 }
 
+extension Stack: Sequence {
+    public func makeIterator() -> [Element].Iterator {
+        elements.makeIterator()
+    }
+}
+
 extension Stack: CustomDebugStringConvertible where Element: CustomDebugStringConvertible {
     public var debugDescription: String {
         let intermediateElements = count > 1 ? elements[1 ..< count - 1] : []

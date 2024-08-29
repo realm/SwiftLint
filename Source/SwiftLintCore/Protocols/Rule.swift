@@ -82,12 +82,11 @@ public extension Rule {
         try self.configuration.apply(configuration: configuration)
     }
 
-    func validate(file: SwiftLintFile, using storage: RuleStorage,
-                  compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, using _: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
         validate(file: file, compilerArguments: compilerArguments)
     }
 
-    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, compilerArguments _: [String]) -> [StyleViolation] {
         validate(file: file)
     }
 
@@ -98,7 +97,7 @@ public extension Rule {
         return false
     }
 
-    func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
+    func collectInfo(for _: SwiftLintFile, into _: RuleStorage, compilerArguments _: [String]) {
         // no-op: only CollectingRules mutate their storage
     }
 
@@ -152,10 +151,10 @@ public protocol CorrectableRule: Rule {
 }
 
 public extension CorrectableRule {
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
+    func correct(file: SwiftLintFile, compilerArguments _: [String]) -> [Correction] {
         correct(file: file)
     }
-    func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
+    func correct(file: SwiftLintFile, using _: RuleStorage, compilerArguments: [String]) -> [Correction] {
         correct(file: file, compilerArguments: compilerArguments)
     }
 }
@@ -209,14 +208,14 @@ public protocol SourceKitFreeRule: Rule {}
 public protocol AnalyzerRule: OptInRule {}
 
 public extension AnalyzerRule {
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile) -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:compilerArguments:)` for AnalyzerRule")
     }
 }
 
 /// :nodoc:
 public extension AnalyzerRule where Self: CorrectableRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file _: SwiftLintFile) -> [Correction] {
         queuedFatalError("Must call `correct(file:compilerArguments:)` for AnalyzerRule")
     }
 }

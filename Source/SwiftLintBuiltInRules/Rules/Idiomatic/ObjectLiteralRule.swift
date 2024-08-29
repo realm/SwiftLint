@@ -66,9 +66,7 @@ private extension ObjectLiteralRule {
                     return false
             }
 
-            return node.arguments.allSatisfy { elem in
-                elem.expression.canBeExpressedAsColorLiteralParams
-            }
+            return node.arguments.allSatisfy(\.expression.canBeExpressedAsColorLiteralParams)
         }
 
         private func inits(forClasses names: [String]) -> [String] {

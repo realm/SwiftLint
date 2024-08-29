@@ -54,8 +54,9 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         )
     }
 
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: Self.FileUSRs],
-                  compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: Self.FileUSRs],
+                  compilerArguments _: [String]) -> [StyleViolation] {
         let allReferencedUSRs = collectedInfo.values.reduce(into: Set()) { $0.formUnion($1.referenced) }
         return violationOffsets(declaredUSRs: collectedInfo[file]?.declared ?? [],
                                 allReferencedUSRs: allReferencedUSRs)
@@ -72,7 +73,7 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
         // 2. minus all references
         declaredUSRs
             .filter { !allReferencedUSRs.contains($0.usr) }
-            .map { $0.nameOffset }
+            .map(\.nameOffset)
             .sorted()
     }
 }
@@ -106,18 +107,34 @@ private extension SwiftLintFile {
         })
     }
 
-    func declaredUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
-                      compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
-    -> Set<UnusedDeclarationRule.DeclaredUSR> {
+    func declaredUSRs(index: SourceKittenDictionary,
+                      editorOpen: SourceKittenDictionary,
+                      compilerArguments: [String],
+                      configuration: UnusedDeclarationConfiguration) -> Set<UnusedDeclarationRule.DeclaredUSR> {
         Set(index.traverseEntitiesDepthFirst { _, indexEntity in
             self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
                              configuration: configuration)
         })
     }
 
-    func declaredUSR(indexEntity: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
-                     compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
-    -> UnusedDeclarationRule.DeclaredUSR? {
+    func declaredUSR(indexEntity: SourceKittenDictionary,
+                     editorOpen: SourceKittenDictionary,
+                     compilerArguments: [String],
+                     configuration: UnusedDeclarationConfiguration) -> UnusedDeclarationRule.DeclaredUSR? {
+        // Skip initializers, deinit, enum cases and subscripts since we can't reliably detect if they're used.
+        let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
+            .enumelement,
+            .extensionProtocol,
+            .extension,
+            .extensionEnum,
+            .extensionClass,
+            .extensionStruct,
+            .functionConstructor,
+            .functionDestructor,
+            .functionSubscript,
+            .genericTypeParam,
+        ]
+
         guard let stringKind = indexEntity.kind,
               stringKind.starts(with: "source.lang.swift.decl."),
               !stringKind.contains(".accessor."),
@@ -193,6 +210,14 @@ private extension SwiftLintFile {
     }
 
     private func shouldIgnoreEntity(_ indexEntity: SourceKittenDictionary, relatedUSRsToSkip: Set<String>) -> Bool {
+        let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
+            .ibaction,
+            .main,
+            .nsApplicationMain,
+            .override,
+            .uiApplicationMain,
+        ]
+
         if indexEntity.shouldSkipIndexEntityToWorkAroundSR11985() ||
             indexEntity.shouldSkipRelated(relatedUSRsToSkip: relatedUSRsToSkip) ||
             indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
@@ -318,25 +343,3 @@ private extension SourceKittenDictionary {
         return nil
     }
 }
-
-// Skip initializers, deinit, enum cases and subscripts since we can't reliably detect if they're used.
-private let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
-    .enumelement,
-    .extensionProtocol,
-    .extension,
-    .extensionEnum,
-    .extensionClass,
-    .extensionStruct,
-    .functionConstructor,
-    .functionDestructor,
-    .functionSubscript,
-    .genericTypeParam,
-]
-
-private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
-    .ibaction,
-    .main,
-    .nsApplicationMain,
-    .override,
-    .uiApplicationMain,
-]

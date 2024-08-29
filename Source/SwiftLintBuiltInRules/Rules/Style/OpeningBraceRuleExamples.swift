@@ -198,10 +198,10 @@ struct OpeningBraceRuleExamples {
                 let bar: String? = "bar"
 
                 if
-                    let foooo = foo,
-                    let barrr = bar
+                    let foo = foo,
+                    let bar = bar
                 ↓{
-                    print(foooo + barrr)
+                    print(foo + bar)
                 }
             }
             """),
@@ -546,5 +546,40 @@ struct OpeningBraceRuleExamples {
                     return
                 }
             """),
+        // https://github.com/realm/SwiftLint/issues/5598
+        Example("""
+            func foo() {
+                if q1, q2
+                {
+                    do1()
+                } else if q3, q4
+                {
+                    do2()
+                }
+            }
+            """): Example("""
+                func foo() {
+                    if q1, q2 {
+                        do1()
+                    } else if q3, q4 {
+                        do2()
+                    }
+                }
+                """),
+        Example("""
+            if
+                "test".isEmpty
+            // swiftlint:disable:next opening_brace
+            {
+                // code here
+            }
+            """): Example("""
+                if
+                    "test".isEmpty
+                // swiftlint:disable:next opening_brace
+                {
+                    // code here
+                }
+                """),
     ]
 }

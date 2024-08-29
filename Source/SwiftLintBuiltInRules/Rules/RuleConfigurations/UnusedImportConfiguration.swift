@@ -8,7 +8,7 @@ struct TransitiveModuleConfiguration<Parent: Rule>: Equatable, AcceptableByConfi
     /// The set of modules that can be transitively imported by `importedModule`.
     let transitivelyImportedModules: [String]
 
-    init(fromAny configuration: Any, context ruleID: String) throws {
+    init(fromAny configuration: Any, context _: String) throws {
         guard let configurationDict = configuration as? [String: Any],
             Set(configurationDict.keys) == ["module", "allowed_transitive_imports"],
             let importedModule = configurationDict["module"] as? String,
@@ -27,7 +27,7 @@ struct TransitiveModuleConfiguration<Parent: Rule>: Equatable, AcceptableByConfi
     }
 }
 
-@AutoApply
+@AutoConfigParser
 struct UnusedImportConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = UnusedImportRule
 

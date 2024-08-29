@@ -1,10 +1,10 @@
 import SwiftLintCore
 
-@AutoApply
+@AutoConfigParser
 struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ImplicitlyUnwrappedOptionalRule
 
-    @MakeAcceptableByConfigurationElement
+    @AcceptableByConfigurationElement
     enum ImplicitlyUnwrappedOptionalModeConfiguration: String { // swiftlint:disable:this type_name
         case all = "all"
         case allExceptIBOutlets = "all_except_iboutlets"

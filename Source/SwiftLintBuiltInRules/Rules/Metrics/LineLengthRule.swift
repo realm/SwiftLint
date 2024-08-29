@@ -26,7 +26,7 @@ struct LineLengthRule: Rule {
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let minValue = configuration.params.map({ $0.value }).min() ?? .max
+        let minValue = configuration.params.map(\.value).min() ?? .max
         let swiftDeclarationKindsByLine = Lazy(file.swiftDeclarationKindsByLine() ?? [])
         let syntaxKindsByLine = Lazy(file.syntaxKindsByLine() ?? [])
 

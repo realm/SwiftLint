@@ -1,4 +1,4 @@
-@AutoApply
+@AutoConfigParser
 struct RedundantVoidReturnConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = RedundantVoidReturnRule
 

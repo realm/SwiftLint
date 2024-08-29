@@ -8,12 +8,12 @@ struct AttributeNameSpacingRule: SwiftSyntaxCorrectableRule {
     static let description = RuleDescription(
         identifier: "attribute_name_spacing",
         name: "Attribute Name Spacing",
-        description: "There should not be a space between an attribute name and (",
+        description: "This rule prevents trailing spaces after attribute names, ensuring compatibility with Swift 6 where a space between an attribute name and the opening parenthesis results in a compilation error (e.g. `@MyPropertyWrapper ()`, `@escaping ()`).",
         kind: .style,
         nonTriggeringExamples: [
             Example("private(set) var foo: Bool = false"),
             Example("fileprivate(set) var foo: Bool = false"),
-            Example("@MainActor"),
+            Example("@MainActor class Foo {}"),
             Example("func funcWithEscapingClosure(_ x: @escaping () -> Int) {}"),
             Example("@available(*, deprecated)"),
             Example("@MyPropertyWrapper(param: 2) "),
@@ -39,7 +39,7 @@ struct AttributeNameSpacingRule: SwiftSyntaxCorrectableRule {
             Example("fileprivate ↓(set) var foo: Bool = false"),
             Example("public ↓(set) var foo: Bool = false"),
             Example("  public  ↓(set) var foo: Bool = false"),
-            Example("@ ↓MainActor"),
+            Example("@ ↓MainActor class Foo {}"),
             Example("func funcWithEscapingClosure(_ x: @ ↓escaping () -> Int) {}"),
             Example("func funcWithEscapingClosure(_ x: @escaping↓() -> Int) {}"),
             Example("@available ↓(*, deprecated)"),

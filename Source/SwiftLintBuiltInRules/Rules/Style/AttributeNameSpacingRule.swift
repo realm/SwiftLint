@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
@@ -44,6 +45,7 @@ struct AttributeNameSpacingRule: SwiftSyntaxCorrectableRule {
             Example("@available ↓(*, deprecated)"),
             Example("@MyPropertyWrapper ↓(param: 2) "),
             Example("nonisolated ↓(unsafe) var _value: X?"),
+            Example("@MyProperty ()"),
             Example("""
             let closure1 = { @MainActor ↓(a, b) in
             }
@@ -61,6 +63,7 @@ struct AttributeNameSpacingRule: SwiftSyntaxCorrectableRule {
             Example("@available↓ (*, deprecated)"): Example("@available(*, deprecated)"),
             Example("@MyPropertyWrapper↓ (param: 2) "): Example("@MyPropertyWrapper(param: 2) "),
             Example("nonisolated↓ (unsafe) var _value: X?"): Example("nonisolated(unsafe) var _value: X?"),
+            Example("@MyProperty↓ ()"): Example("@MyProperty()"),
             Example("""
             let closure1 = { @MainActor↓ (a, b) in
             }
@@ -123,14 +126,13 @@ private extension AttributeNameSpacingRule {
             endPosition: AbsolutePosition,
             replacement: String
         ) {
-            violations.append(endPosition)
-
-            let correction = ViolationCorrection(
+            let correction = ReasonedRuleViolation.ViolationCorrection(
                 start: startPosition,
                 end: endPosition,
                 replacement: replacement
             )
-            violationCorrections.append(correction)
+
+            violations.append(at: endPosition, correction: correction)
         }
     }
 }

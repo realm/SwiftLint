@@ -125,11 +125,12 @@
 
 #### Enhancements
 
-* Adds `access_control_setter_spacing` rule to enforce no trailing whitespace between attribute names and parentheses, ensuring compatibility with Swift 6, where this spacing causes compilation errors.
+* Add new `access_control_setter_spacing` rule to enforce no trailing whitespace between
+  attribute names and parentheses, ensuring compatibility with Swift 6, where this spacing
+  causes compilation errors.  
   [aryamansharda](https://github.com/aryamansharda)
   [#5667](https://github.com/realm/SwiftLint/issues/5667)
-* Linting got around 20% faster due to the praisworthy performance
-  improvements done in the [SwiftSyntax](https://github.com/apple/swift-syntax)
+
 * Linting got up to 30% faster due to the praisworthy performance
   improvements done in the [SwiftSyntax](https://github.com/swiftlang/swift-syntax)
   library.

@@ -49,7 +49,7 @@ struct AttributeNameSpacingRule: SwiftSyntaxCorrectableRule {
             Example("@available ↓(*, deprecated)"),
             Example("@MyPropertyWrapper ↓(param: 2) "),
             Example("nonisolated ↓(unsafe) var _value: X?"),
-            Example("@MyProperty ()"),
+            Example("@MyProperty ↓() class Foo {}"),
             Example("""
             let closure1 = { @MainActor ↓(a, b) in
             }

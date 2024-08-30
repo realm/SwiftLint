@@ -8,7 +8,11 @@ struct AttributeNameSpacingRule: SwiftSyntaxCorrectableRule {
     static let description = RuleDescription(
         identifier: "attribute_name_spacing",
         name: "Attribute Name Spacing",
-        description: "This rule prevents trailing spaces after attribute names, ensuring compatibility with Swift 6 where a space between an attribute name and the opening parenthesis results in a compilation error (e.g. `@MyPropertyWrapper ()`, `@escaping ()`).",
+        description: """
+            This rule prevents trailing spaces after attribute names, ensuring compatibility \
+            with Swift 6 where a space between an attribute name and the opening parenthesis \
+            results in a compilation error (e.g. `@MyPropertyWrapper ()`, `private (set)`).
+            """,
         kind: .style,
         nonTriggeringExamples: [
             Example("private(set) var foo: Bool = false"),

@@ -13,6 +13,33 @@ SwiftLint Hook 了 [Clang](http://clang.llvm.org) 和 [SourceKit](http://www.jps
 不可接受的行为报告给 [info@realm.io](mailto:info@realm.io)。
 
 ## 安装
+### 使用[Swift Package Manager](https://github.com/apple/swift-package-manager)
+
+SwiftLint 可以用作[命令插件](#swift-package-command-plugin)或[构建工具插件](#build-tool-plugins)
+
+添加
+
+```swift
+.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "<version>")
+```
+
+到你的 `Package.swift` 文件中，以自动获取 SwiftLint 的最新版本，或者将依赖项固定到特定版本：
+
+```swift
+.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "<version>")
+```
+
+其中，用所需的最低版本或精确版本替换 `<version>`。
+
+
+### [Xcode Package Dependency](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app)
+
+使用以下链接将 SwiftLint 作为包依赖添加到 Xcode 项目中：
+
+```bash
+https://github.com/SimplyDanny/SwiftLintPlugins
+```
+
 
 ### 使用 [Homebrew](http://brew.sh/)：
 

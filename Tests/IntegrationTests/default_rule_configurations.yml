@@ -348,6 +348,7 @@ no_grouping_extension:
 no_magic_numbers:
   severity: warning
   test_parent_classes: ["QuickSpec", "XCTestCase"]
+  macros_to_ignore: []
 no_space_in_method_call:
   severity: warning
 non_optional_string_data_conversion:

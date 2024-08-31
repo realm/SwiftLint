@@ -3,6 +3,7 @@ import SwiftLintCore
 @AutoConfigParser
 struct NoMagicNumbersConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = NoMagicNumbersRule
+
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(

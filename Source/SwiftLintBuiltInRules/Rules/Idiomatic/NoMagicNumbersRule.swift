@@ -81,6 +81,11 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let (lowerBound, upperBound) = (400, 599)"),
             Example("let a = (5, 10)"),
             Example("let notFound = (statusCode: 404, description: \"Not Found\", isError: true)"),
+            Example("""
+            #Preview {
+                ContentView(value: 5)
+            }
+            """, configuration: ["macros_to_ignore": ["Preview"]]),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -107,6 +112,11 @@ struct NoMagicNumbersRule: OptInRule {
             """),
             Example("let imageHeight = (width - ↓24)"),
             Example("return (↓5, ↓10, ↓15)"),
+            Example("""
+            #Preview {
+                ContentView(value: ↓5)
+            }
+            """),
         ]
     )
 }
@@ -150,6 +160,9 @@ private extension NoMagicNumbersRule {
                 return
             }
             if node.isOperandOfFreestandingShiftOperation() {
+                return
+            }
+            if node.isContainedInExcludedMacro(configuration.macrosToIgnore) {
                 return
             }
             let violation = node.positionAfterSkippingLeadingTrivia
@@ -238,6 +251,19 @@ private extension ExprSyntaxProtocol {
            let operatorSymbol = operation.operator.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind,
            [.binaryOperator("<<"), .binaryOperator(">>")].contains(operatorSymbol) {
             return operation.parent?.isProtocol((any ExprSyntaxProtocol).self) != true
+        }
+        return false
+    }
+
+    func isContainedInExcludedMacro(_ macrosToIgnore: Set<String>) -> Bool {
+        var parent = parent
+        while parent != nil {
+            if let macro = parent?.as(MacroExpansionExprSyntax.self),
+               case let .identifier(text) = macro.macroName.tokenKind,
+               macrosToIgnore.contains(text) {
+                return true
+            }
+            parent = parent?.parent
         }
         return false
     }

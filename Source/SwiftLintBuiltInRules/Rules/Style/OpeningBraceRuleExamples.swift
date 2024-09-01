@@ -548,6 +548,28 @@ struct OpeningBraceRuleExamples {
             """),
         // https://github.com/realm/SwiftLint/issues/5598
         Example("""
+            if c    // A comment
+            {
+                return
+            }
+        """): Example("""
+                if c { // A comment
+                    return
+                }
+            """),
+        // https://github.com/realm/SwiftLint/issues/5751
+        Example("""
+            if c    // A comment
+            { // Another comment
+                return
+            }
+        """): Example("""
+                if c { // A comment // Another comment
+                    return
+                }
+            """),
+        // https://github.com/realm/SwiftLint/issues/5751
+        Example("""
             func foo() {
                 if q1, q2
                 {

@@ -172,10 +172,11 @@ private extension OpeningBraceRule {
             let previousLocation = previousToken.endLocation(converter: locationConverter)
             let leftBraceLocation = leftBrace.startLocation(converter: locationConverter)
             if previousLocation.line != leftBraceLocation.line {
+                let trailingCommentText = previousToken.trailingTrivia.description.trimmingCharacters(in: .whitespaces)
                 return .init(
                     start: previousToken.endPositionBeforeTrailingTrivia,
-                    end: openingPosition,
-                    replacement: " "
+                    end: openingPosition.advanced(by: trailingCommentText.isNotEmpty ? 1 : 0),
+                    replacement: trailingCommentText.isNotEmpty ? " { \(trailingCommentText)" : " "
                 )
             }
             if previousLocation.column + 1 == leftBraceLocation.column {

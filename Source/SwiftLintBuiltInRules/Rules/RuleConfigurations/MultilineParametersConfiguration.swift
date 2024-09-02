@@ -8,4 +8,28 @@ struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allows_single_line")
     private(set) var allowsSingleLine = true
+    @ConfigurationElement(key: "max_number_of_single_line_parameters")
+    private(set) var maxNumberOfSingleLineParameters: Int?
+
+    func validate() throws {
+        guard let maxNumberOfSingleLineParameters else {
+            return
+        }
+        guard maxNumberOfSingleLineParameters >= 1 else {
+            throw Issue.invalidConfiguration(
+                ruleID: Parent.identifier,
+                message: "Option '\($maxNumberOfSingleLineParameters.key)' should be >= 1."
+            )
+        }
+
+        if maxNumberOfSingleLineParameters > 1, !allowsSingleLine {
+            throw Issue.invalidConfiguration(
+                ruleID: Parent.identifier,
+                message: """
+                         Option '\($maxNumberOfSingleLineParameters.key)' has no effect when \
+                         '\($allowsSingleLine.key)' is false.
+                         """
+            )
+        }
+    }
 }

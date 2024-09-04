@@ -87,33 +87,25 @@ struct CustomRules: Rule, CacheDescriptionProvider {
         }
     }
 
-    func disabledRuleIdentifiersWithRegions(regions: [Region]) -> [(String, [Region])] {
-        var result = configuration.customRuleConfigurations.map { configuration in
-            let regionsDisablingCurrentRule = regions.filter { region in
-                region.disabledRuleIdentifiers.contains(RuleIdentifier(configuration.identifier))
-            }
-            return (configuration.identifier, regionsDisablingCurrentRule)
+    func canBeDisabled(violation: StyleViolation, by ruleID: RuleIdentifier) -> Bool {
+        switch ruleID {
+        case let .single(identifier: id):
+            id == Self.description.identifier
+                ? customRuleIdentifiers.contains(violation.ruleIdentifier)
+                : customRuleIdentifiers.contains(id) && violation.ruleIdentifier == id
+        default:
+            (self as any Rule).canBeDisabled(violation: violation, by: ruleID)
         }
-        let regionsDisablingAllCustomRules = regions.filter(\.areAllCustomRulesDisabled)
-        if regionsDisablingAllCustomRules.isNotEmpty {
-            result.append((Self.description.identifier, regionsDisablingAllCustomRules))
+    }
+
+    func isEnabled(in region: Region, for ruleID: String) -> Bool {
+        if !Self.description.allIdentifiers.contains(ruleID),
+           !customRuleIdentifiers.contains(ruleID),
+           Self.description.identifier != ruleID {
+            return true
         }
-        return result
-    }
-}
-
-extension Region {
-    func isCustomRuleDisabled(customRuleIdentifier: String) -> Bool {
-           areAllCustomRulesDisabled
-        || isCustomRuleSpecificallyDisabled(customRuleIdentifier: customRuleIdentifier)
-        || disabledRuleIdentifiers.contains(.all)
-    }
-
-    func isCustomRuleSpecificallyDisabled(customRuleIdentifier: String) -> Bool {
-        disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
-    }
-
-    var areAllCustomRulesDisabled: Bool {
-        disabledRuleIdentifiers.contains(RuleIdentifier(CustomRules.description.identifier))
+        return !region.disabledRuleIdentifiers.contains(RuleIdentifier(Self.description.identifier))
+            && !region.disabledRuleIdentifiers.contains(RuleIdentifier(ruleID))
+            && !region.disabledRuleIdentifiers.contains(.all)
     }
 }

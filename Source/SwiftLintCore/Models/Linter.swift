@@ -1,7 +1,6 @@
 import Foundation
 import SourceKittenFramework
 
-// swiftlint:disable file_length
 private let warnSourceKitFailedOnceImpl: Void = {
     Issue.genericWarning("SourceKit-based rules will be skipped because sourcekitd has failed.").print()
 }()
@@ -28,54 +27,41 @@ private extension Rule {
             region.isRuleDisabled(superfluousDisableCommandRule)
         }
 
-        let identifiersWithRegions: [(String, [Region])] = {
-            disabledRuleIdentifiersWithRegions(regions: regions)
-        }().sorted { lhs, rhs -> Bool in // make sure that the results are consistently ordered
-            lhs.0 < rhs.0
-        }
-
-        return identifiersWithRegions.flatMap { ruleIdentifier, regionsDisablingCurrentRule in
-            regionsDisablingCurrentRule.compactMap { region -> StyleViolation? in
-                let isSuperfluousRuleDisabled = regionsDisablingSuperfluousDisableRule.contains {
-                    $0.contains(region.start)
+        var superfluousDisableCommandViolations = [StyleViolation]()
+        for region in regions {
+            if regionsDisablingSuperfluousDisableRule.contains(where: { $0.contains(region.start) }) {
+                continue
+            }
+            let sortedDisabledIdentifiers = region.disabledRuleIdentifiers.sorted {
+                $0.stringRepresentation < $1.stringRepresentation
+            }
+            commandIDsLoop: for disabledIdentifier in sortedDisabledIdentifiers {
+                guard !isEnabled(in: region, for: disabledIdentifier.stringRepresentation) else {
+                    continue
                 }
-                guard !isSuperfluousRuleDisabled else {
-                    return nil
+                var disableCommandValid = false
+                for violation in allViolations where region.contains(violation.location) {
+                    if canBeDisabled(violation: violation, by: disabledIdentifier) {
+                        disableCommandValid = true
+                        continue commandIDsLoop
+                    }
                 }
-
-                let noViolationsInDisabledRegion = !allViolations.contains { violation in
-                    isViolationDisabled(violation: violation, in: region, byDisabledRuleIdentifier: ruleIdentifier)
+                if !disableCommandValid {
+                    let reason = superfluousDisableCommandRule.reason(
+                        forRuleIdentifier: disabledIdentifier.stringRepresentation
+                    )
+                    superfluousDisableCommandViolations.append(
+                        StyleViolation(
+                            ruleDescription: type(of: superfluousDisableCommandRule).description,
+                            severity: superfluousDisableCommandRule.configuration.severity,
+                            location: region.start,
+                            reason: reason
+                        )
+                    )
                 }
-                guard noViolationsInDisabledRegion else {
-                    return nil
-                }
-
-                return StyleViolation(
-                    ruleDescription: type(of: superfluousDisableCommandRule).description,
-                    severity: superfluousDisableCommandRule.configuration.severity,
-                    location: region.start,
-                    reason: superfluousDisableCommandRule.reason(forRuleIdentifier: ruleIdentifier)
-                )
             }
         }
-    }
-
-    private func isViolationDisabled(violation: StyleViolation,
-                                     in region: Region,
-                                     byDisabledRuleIdentifier disabledRuleIdentifier: String) -> Bool {
-        guard region.contains(violation.location) else {
-            return false
-        }
-        if violation.ruleIdentifier == disabledRuleIdentifier {
-            return true
-        }
-        guard
-            let customRules = self as? CustomRules,
-            disabledRuleIdentifier == CustomRules.description.identifier else {
-            return false
-        }
-        let customRulesIdentifiers = Set(customRules.customRuleIdentifiers)
-        return customRulesIdentifiers.contains(violation.ruleIdentifier)
+        return superfluousDisableCommandViolations
     }
 
     // As we need the configuration to get custom identifiers.
@@ -117,10 +103,10 @@ private extension Rule {
         let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
             (violation, regions.first { $0.contains(violation.location) })
         }.partitioned { violation, region in
-            if self is CustomRules {
-                return !(region?.isCustomRuleDisabled(customRuleIdentifier: violation.ruleIdentifier) ?? false)
+            if let region {
+                return isEnabled(in: region, for: violation.ruleIdentifier)
             }
-            return region?.isRuleEnabled(self) ?? true
+            return true
         }
 
         let customRulesIDs: [String] = {

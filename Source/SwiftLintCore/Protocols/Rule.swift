@@ -71,14 +71,25 @@ public protocol Rule {
     /// - returns: All style violations to the rule's expectations.
     func validate(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation]
 
-    /// Returns the disabled rule identifiers and the regions that they are disabled in.
+    /// Checks if a style violation can be disabled by a command specifying a rule ID. Only the rule can claim that for
+    /// sure since it knows all the possible identifiers.
     ///
-    /// - note: In the case of custom rules, the identifiers may be user defined.
+    /// - Parameters:
+    ///   - violation: A style violation.
+    ///   - ruleID: The name of a rule as used in a disable command.
     ///
-    /// - parameter regions: The regions that are affected by `swiftlint:disable` commands.
-    ///
-    /// - returns:  An array of tuples of rule identifiers, and the regions that those identifiers are disabled in.
-    func disabledRuleIdentifiersWithRegions(regions: [Region]) -> [(String, [Region])]
+    /// - Returns: A boolean value indicating whether the violation can be disabled by the given ID.
+   func canBeDisabled(violation: StyleViolation, by ruleID: RuleIdentifier) -> Bool
+
+   /// Checks if a the rule is enabled in a given region. A specific rule ID can be provided in case a rule supports
+   /// more than one identifier.
+   ///
+   /// - Parameters:
+   ///   - region: The region to check.
+   ///   - ruleID: Rule identifier deviating from the default rule's name.
+   ///
+   /// - Returns: A boolean value indicating whether the rule is enabled in the given region.
+   func isEnabled(in region: Region, for ruleID: String) -> Bool
 }
 
 public extension Rule {
@@ -120,11 +131,18 @@ public extension Rule {
         RuleConfigurationDescription.from(configuration: configuration, exclusiveOptions: exclusiveOptions)
     }
 
-    func disabledRuleIdentifiersWithRegions(regions: [Region]) -> [(String, [Region])] {
-        let regionsDisablingCurrentRule = regions.filter { region in
-            region.isRuleDisabled(self)
+    func canBeDisabled(violation: StyleViolation, by ruleID: RuleIdentifier) -> Bool {
+        switch ruleID {
+        case .all:
+            true
+        case let .single(identifier: id):
+               Self.description.allIdentifiers.contains(id)
+            && Self.description.allIdentifiers.contains(violation.ruleIdentifier)
         }
-        return [(Self.description.identifier, regionsDisablingCurrentRule)]
+    }
+
+    func isEnabled(in region: Region, for ruleID: String) -> Bool {
+        !Self.description.allIdentifiers.contains(ruleID) || region.isRuleEnabled(self)
     }
 }
 

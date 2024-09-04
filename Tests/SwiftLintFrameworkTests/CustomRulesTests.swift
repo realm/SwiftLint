@@ -5,7 +5,10 @@ import XCTest
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 final class CustomRulesTests: SwiftLintTestCase {
-    typealias Configuration = RegexConfiguration<CustomRules>
+    private typealias Configuration = RegexConfiguration<CustomRules>
+
+    private var testFile: SwiftLintFile { SwiftLintFile(path: "\(testResourcesPath)/test.txt")! }
+
     func testCustomRuleConfigurationSetsCorrectlyWithMatchKinds() {
         let configDict = [
             "my_custom_rule": [
@@ -155,7 +158,7 @@ final class CustomRulesTests: SwiftLintTestCase {
     func testCustomRulesIncludedDefault() {
         // Violation detected when included is omitted.
         let (_, customRules) = getCustomRules()
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = customRules.validate(file: testFile)
         XCTAssertEqual(violations.count, 1)
     }
 
@@ -166,7 +169,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
         customRules.configuration = customRuleConfiguration
 
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = customRules.validate(file: testFile)
         XCTAssertTrue(violations.isEmpty)
     }
 
@@ -177,7 +180,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
         customRules.configuration = customRuleConfiguration
 
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = customRules.validate(file: testFile)
         XCTAssertTrue(violations.isEmpty)
     }
 
@@ -188,7 +191,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
         customRules.configuration = customRuleConfiguration
 
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = customRules.validate(file: testFile)
         XCTAssertTrue(violations.isEmpty)
     }
 
@@ -197,7 +200,7 @@ final class CustomRulesTests: SwiftLintTestCase {
             "regex": #"\ba\s+(\w+)"#,
             "capture_group": 1,
         ])
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = customRules.validate(file: testFile)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations[0].location.line, 2)
         XCTAssertEqual(violations[0].location.character, 6)
@@ -297,7 +300,14 @@ final class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testMultipleSpecificCustomRulesTriggersSuperfluousDisableCommand() throws {
-        let customRules = getForbiddenCustomRules()
+        let customRules = [
+            "forbidden": [
+                "regex": "FORBIDDEN",
+            ],
+            "forbidden2": [
+                "regex": "FORBIDDEN2",
+            ],
+        ]
         let example = Example("""
                               // swiftlint:disable:next forbidden forbidden2
                               let ALLOWED = 2
@@ -310,7 +320,14 @@ final class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testUnviolatedSpecificCustomRulesTriggersSuperfluousDisableCommand() throws {
-        let customRules = getForbiddenCustomRules()
+        let customRules = [
+            "forbidden": [
+                "regex": "FORBIDDEN",
+            ],
+            "forbidden2": [
+                "regex": "FORBIDDEN2",
+            ],
+        ]
         let example = Example("""
                               // swiftlint:disable:next forbidden forbidden2
                               let FORBIDDEN = 1
@@ -322,7 +339,14 @@ final class CustomRulesTests: SwiftLintTestCase {
     }
 
     func testViolatedSpecificAndGeneralCustomRulesTriggersSuperfluousDisableCommand() throws {
-        let customRules = getForbiddenCustomRules()
+        let customRules = [
+            "forbidden": [
+                "regex": "FORBIDDEN",
+            ],
+            "forbidden2": [
+                "regex": "FORBIDDEN2",
+            ],
+        ]
         let example = Example("""
                               // swiftlint:disable:next forbidden forbidden2 custom_rules
                               let FORBIDDEN = 1
@@ -434,21 +458,6 @@ final class CustomRulesTests: SwiftLintTestCase {
 
         let customRules = customRules(withConfigurations: [regexConfig1, regexConfig2])
         return ((regexConfig1, regexConfig2), customRules)
-    }
-
-    private func getForbiddenCustomRules() -> [String: Any] {
-        [
-            "forbidden": [
-                "regex": "FORBIDDEN",
-            ],
-            "forbidden2": [
-                "regex": "FORBIDDEN2",
-            ],
-        ]
-    }
-
-    private func getTestTextFile() -> SwiftLintFile {
-        SwiftLintFile(path: "\(testResourcesPath)/test.txt")!
     }
 
     private func violations(forExample example: Example, customRules: [String: Any]) throws -> [StyleViolation] {

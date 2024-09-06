@@ -68,6 +68,7 @@
   custom rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [Martin Redington](https://github.com/mildm8nnered)
+  [SimplyDanny](https://github.com/SimplyDanny)
   [#4754](https://github.com/realm/SwiftLint/issues/4754)
 
 * Align left closure brace with associated parent function call in `contrasted_opening_brace` rule.  

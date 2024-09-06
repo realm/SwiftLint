@@ -125,7 +125,7 @@
 
 #### Enhancements
 
-* Add new `access_control_setter_spacing` rule to enforce no trailing whitespace between
+* Add new `attribute_name_spacing` rule to enforce no trailing whitespace between
   attribute names and parentheses, ensuring compatibility with Swift 6, where this spacing
   causes compilation errors.  
   [aryamansharda](https://github.com/aryamansharda)

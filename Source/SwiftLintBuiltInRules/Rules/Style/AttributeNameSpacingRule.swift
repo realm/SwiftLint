@@ -89,7 +89,8 @@ private extension AttributeNameSpacingRule {
             addViolation(
                 startPosition: node.name.endPositionBeforeTrailingTrivia,
                 endPosition: node.name.endPosition,
-                replacement: ""
+                replacement: "",
+                reason: "There should be no trailing space between access control modifier and scope"
             )
         }
 
@@ -100,7 +101,8 @@ private extension AttributeNameSpacingRule {
                 addViolation(
                     startPosition: node.atSign.endPositionBeforeTrailingTrivia,
                     endPosition: node.atSign.endPosition,
-                    replacement: ""
+                    replacement: "",
+                    reason: "Attributes should not have a space before the attribute identifier"
                 )
             }
 
@@ -111,7 +113,8 @@ private extension AttributeNameSpacingRule {
                 addViolation(
                     startPosition: node.attributeName.endPositionBeforeTrailingTrivia,
                     endPosition: node.attributeName.endPosition,
-                    replacement: ""
+                    replacement: "",
+                    reason: "Attribute declarations with arguments should not have trailing space"
                 )
             }
 
@@ -120,7 +123,8 @@ private extension AttributeNameSpacingRule {
                 addViolation(
                     startPosition: node.attributeName.endPositionBeforeTrailingTrivia,
                     endPosition: node.attributeName.endPosition,
-                    replacement: " "
+                    replacement: " ",
+                    reason: "@escaping should have a trailing space before the associated type"
                 )
             }
         }
@@ -128,7 +132,8 @@ private extension AttributeNameSpacingRule {
         private func addViolation(
             startPosition: AbsolutePosition,
             endPosition: AbsolutePosition,
-            replacement: String
+            replacement: String,
+            reason: String
         ) {
             let correction = ReasonedRuleViolation.ViolationCorrection(
                 start: startPosition,
@@ -136,7 +141,13 @@ private extension AttributeNameSpacingRule {
                 replacement: replacement
             )
 
-            violations.append(at: endPosition, correction: correction)
+            let violation = ReasonedRuleViolation(
+                position: endPosition,
+                reason: reason,
+                severity: configuration.severity,
+                correction: correction
+            )
+            violations.append(violation)
         }
     }
 }

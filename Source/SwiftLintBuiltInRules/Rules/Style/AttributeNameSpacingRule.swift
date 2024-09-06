@@ -90,31 +90,30 @@ private extension AttributeNameSpacingRule {
                 startPosition: node.name.endPositionBeforeTrailingTrivia,
                 endPosition: node.name.endPosition,
                 replacement: "",
-                reason: "There should be no trailing space between access control modifier and scope"
+                reason: "There must not be any space between access control modifier and scope"
             )
         }
 
         override func visitPost(_ node: AttributeSyntax) {
-            // Check for trailing trivia after the '@' sign
-            // Handles cases like `@ MainActor` / `@ escaping`
+            // Check for trailing trivia after the '@' sign. Handles cases like `@ MainActor` / `@ escaping`.
             if node.atSign.trailingTrivia.isNotEmpty {
                 addViolation(
                     startPosition: node.atSign.endPositionBeforeTrailingTrivia,
                     endPosition: node.atSign.endPosition,
                     replacement: "",
-                    reason: "Attributes should not have a space before the attribute identifier"
+                    reason: "Attributes must not have trivia between `@` and the identifier"
                 )
             }
 
             let hasTrailingTrivia = node.attributeName.trailingTrivia.isNotEmpty
 
-            // Handles cases like @MyPropertyWrapper (param: 2)
+            // Handles cases like `@MyPropertyWrapper (param: 2)`.
             if node.arguments != nil, hasTrailingTrivia {
                 addViolation(
                     startPosition: node.attributeName.endPositionBeforeTrailingTrivia,
                     endPosition: node.attributeName.endPosition,
                     replacement: "",
-                    reason: "Attribute declarations with arguments should not have trailing space"
+                    reason: "Attribute declarations with arguments must not have trailing trivia"
                 )
             }
 
@@ -124,7 +123,7 @@ private extension AttributeNameSpacingRule {
                     startPosition: node.attributeName.endPositionBeforeTrailingTrivia,
                     endPosition: node.attributeName.endPosition,
                     replacement: " ",
-                    reason: "@escaping should have a trailing space before the associated type"
+                    reason: "`@escaping` must have a trailing space before the associated type"
                 )
             }
         }

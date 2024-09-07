@@ -32,6 +32,7 @@ struct SwiftLintCommandPlugin: CommandPlugin {
 
             try process.run()
             process.waitUntilExit()
+
             switch process.terminationReason {
             case .exit:
                 Diagnostics.remark("Finished running in module '\(target.name)'")
@@ -40,9 +41,12 @@ struct SwiftLintCommandPlugin: CommandPlugin {
             @unknown default:
                 Diagnostics.error("Stopped running in module '\(target.name) due to unexpected termination reason")
             }
+
             if process.terminationStatus != EXIT_SUCCESS {
-                Diagnostics.warning(
-                    "Command found violations or unsuccessfully stopped running in module '\(target.name)'"
+                Diagnostics.error("""
+                    Command found error violations or unsuccessfully stopped running with \
+                    exit code \(process.terminationStatus) in module '\(target.name)'
+                    """
                 )
             }
         }

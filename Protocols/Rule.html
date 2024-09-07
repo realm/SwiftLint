@@ -378,7 +378,7 @@
             <p>An executable value that can identify issues (violations) in Swift source code.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L5-L73">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L5-L93">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -1005,6 +1005,152 @@ expectations.</p>
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:13SwiftLintCore4RuleP13canBeDisabled9violation2bySbAA14StyleViolationV_AA0D10IdentifierOtF"></a>
+                    <a name="//apple_ref/swift/Method/canBeDisabled(violation:by:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore4RuleP13canBeDisabled9violation2bySbAA14StyleViolationV_AA0D10IdentifierOtF">canBeDisabled(violation:<wbr>by:<wbr>)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Checks if a style violation can be disabled by a command specifying a rule ID. Only the rule can claim that for
+sure since it knows all the possible identifiers.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">canBeDisabled</span><span class="p">(</span><span class="nv">violation</span><span class="p">:</span> <span class="kt"><a href="../Structs/StyleViolation.html">StyleViolation</a></span><span class="p">,</span> <span class="n">by</span> <span class="nv">ruleID</span><span class="p">:</span> <span class="kt"><a href="../Enums/RuleIdentifier.html">RuleIdentifier</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>violation</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A style violation.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>ruleID</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of a rule as used in a disable command.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A boolean value indicating whether the violation can be disabled by the given ID.</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L82">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore4RuleP9isEnabled2in3forSbAA6RegionV_SStF"></a>
+                    <a name="//apple_ref/swift/Method/isEnabled(in:for:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore4RuleP9isEnabled2in3forSbAA6RegionV_SStF">isEnabled(in:<wbr>for:<wbr>)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Checks if a the rule is enabled in a given region. A specific rule ID can be provided in case a rule supports
+more than one identifier.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">isEnabled</span><span class="p">(</span><span class="k">in</span> <span class="nv">region</span><span class="p">:</span> <span class="kt"><a href="../Structs/Region.html">Region</a></span><span class="p">,</span> <span class="k">for</span> <span class="nv">ruleID</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>region</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The region to check.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>ruleID</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Rule identifier deviating from the default rule&rsquo;s name.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A boolean value indicating whether the rule is enabled in the given region.</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L92">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:13SwiftLintCore4RulePAAE16cacheDescriptionSSvp"></a>
                     <a name="//apple_ref/swift/Property/cacheDescription" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SwiftLintCore4RulePAAE16cacheDescriptionSSvp">cacheDescription</a>
@@ -1031,7 +1177,7 @@ cached value is still valid given the new cache value.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L106-L108">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L126-L128">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1064,7 +1210,7 @@ cached value is still valid given the new cache value.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L117">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Protocols/Rule.swift#L151">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

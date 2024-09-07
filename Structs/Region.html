@@ -378,7 +378,7 @@
             <p>A contiguous region of Swift source code.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Region.swift#L4-L92">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Region.swift#L4-L96">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -672,6 +672,13 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Whether the specified rule is disabled in this region.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>For CustomRules, this will only return true if the <code><a href="../custom_rules.html">custom_rules</a></code> identifier
+    is used with the <code>swiftlint</code> disable command, but this method is never
+    called for CustomRules.</p>
+
+</div>
 
                       </div>
                       <div class="declaration">
@@ -706,7 +713,7 @@
                         <p>True if the specified rule is disabled in this region.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Region.swift#L48-L50">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Region.swift#L52-L54">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -759,7 +766,7 @@
                         <p>True if the specified rules are disabled in this region.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Region.swift#L57-L63">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Region.swift#L61-L67">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -813,7 +820,7 @@ Returns the empty set if the rule isn&rsquo;t disabled in this region.</p>
                         <p>Deprecated rule aliases.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Region.swift#L71-L74">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Region.swift#L75-L78">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

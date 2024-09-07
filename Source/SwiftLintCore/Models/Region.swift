@@ -44,6 +44,10 @@ public struct Region: Equatable {
     ///
     /// - parameter rule: The rule whose status should be determined.
     ///
+    /// - note: For CustomRules, this will only return true if the `custom_rules` identifier
+    ///         is used with the `swiftlint` disable command, but this method is never
+    ///         called for CustomRules.
+    ///
     /// - returns: True if the specified rule is disabled in this region.
     public func isRuleDisabled(_ rule: some Rule) -> Bool {
         areRulesDisabled(ruleIDs: type(of: rule).description.allIdentifiers)

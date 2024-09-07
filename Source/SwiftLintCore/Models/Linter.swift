@@ -16,47 +16,56 @@ private struct LintResult {
 }
 
 private extension Rule {
-    static func superfluousDisableCommandViolations(regions: [Region],
-                                                    superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
-                                                    allViolations: [StyleViolation]) -> [StyleViolation] {
+    func superfluousDisableCommandViolations(regions: [Region],
+                                             superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
+                                             allViolations: [StyleViolation]) -> [StyleViolation] {
         guard regions.isNotEmpty, let superfluousDisableCommandRule else {
             return []
         }
 
-        let regionsDisablingCurrentRule = regions.filter { region in
-            region.isRuleDisabled(self.init())
-        }
         let regionsDisablingSuperfluousDisableRule = regions.filter { region in
             region.isRuleDisabled(superfluousDisableCommandRule)
         }
 
-        return regionsDisablingCurrentRule.compactMap { region -> StyleViolation? in
-            let isSuperfluousRuleDisabled = regionsDisablingSuperfluousDisableRule.contains {
-                $0.contains(region.start)
+        var superfluousDisableCommandViolations = [StyleViolation]()
+        for region in regions {
+            if regionsDisablingSuperfluousDisableRule.contains(where: { $0.contains(region.start) }) {
+                continue
             }
-
-            guard !isSuperfluousRuleDisabled else {
-                return nil
+            let sortedDisabledIdentifiers = region.disabledRuleIdentifiers.sorted {
+                $0.stringRepresentation < $1.stringRepresentation
             }
-
-            let noViolationsInDisabledRegion = !allViolations.contains { violation in
-                region.contains(violation.location)
+            commandIDsLoop: for disabledIdentifier in sortedDisabledIdentifiers {
+                guard !isEnabled(in: region, for: disabledIdentifier.stringRepresentation) else {
+                    continue
+                }
+                var disableCommandValid = false
+                for violation in allViolations where region.contains(violation.location) {
+                    if canBeDisabled(violation: violation, by: disabledIdentifier) {
+                        disableCommandValid = true
+                        continue commandIDsLoop
+                    }
+                }
+                if !disableCommandValid {
+                    let reason = superfluousDisableCommandRule.reason(
+                        forRuleIdentifier: disabledIdentifier.stringRepresentation
+                    )
+                    superfluousDisableCommandViolations.append(
+                        StyleViolation(
+                            ruleDescription: type(of: superfluousDisableCommandRule).description,
+                            severity: superfluousDisableCommandRule.configuration.severity,
+                            location: region.start,
+                            reason: reason
+                        )
+                    )
+                }
             }
-            guard noViolationsInDisabledRegion else {
-                return nil
-            }
-
-            return StyleViolation(
-                ruleDescription: type(of: superfluousDisableCommandRule).description,
-                severity: superfluousDisableCommandRule.configuration.severity,
-                location: region.start,
-                reason: superfluousDisableCommandRule.reason(for: self)
-            )
         }
+        return superfluousDisableCommandViolations
     }
 
     // As we need the configuration to get custom identifiers.
-    // swiftlint:disable:next function_parameter_count
+    // swiftlint:disable:next function_parameter_count function_body_length
     func lint(file: SwiftLintFile,
               regions: [Region],
               benchmark: Bool,
@@ -93,16 +102,26 @@ private extension Rule {
 
         let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
             (violation, regions.first { $0.contains(violation.location) })
-        }.partitioned { _, region in
-            region?.isRuleEnabled(self) ?? true
+        }.partitioned { violation, region in
+            if let region {
+                return isEnabled(in: region, for: violation.ruleIdentifier)
+            }
+            return true
         }
 
+        let customRulesIDs: [String] = {
+             guard let customRules = self as? CustomRules else {
+                 return []
+             }
+             return customRules.customRuleIdentifiers
+         }()
         let ruleIDs = Self.description.allIdentifiers +
+            customRulesIDs +
             (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? []) +
             [RuleIdentifier.all.stringRepresentation]
         let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
 
-        let superfluousDisableCommandViolations = Self.superfluousDisableCommandViolations(
+        let superfluousDisableCommandViolations = superfluousDisableCommandViolations(
             regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions,
             superfluousDisableCommandRule: superfluousDisableCommandRule,
             allViolations: violations

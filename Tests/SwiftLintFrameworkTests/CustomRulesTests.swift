@@ -2,8 +2,13 @@ import SourceKittenFramework
 @testable import SwiftLintCore
 import XCTest
 
+// swiftlint:disable file_length
+// swiftlint:disable:next type_body_length
 final class CustomRulesTests: SwiftLintTestCase {
-    typealias Configuration = RegexConfiguration<CustomRules>
+    private typealias Configuration = RegexConfiguration<CustomRules>
+
+    private var testFile: SwiftLintFile { SwiftLintFile(path: "\(testResourcesPath)/test.txt")! }
+
     func testCustomRuleConfigurationSetsCorrectlyWithMatchKinds() {
         let configDict = [
             "my_custom_rule": [
@@ -122,10 +127,16 @@ final class CustomRulesTests: SwiftLintTestCase {
         )
     }
 
-    func testLocalDisableCustomRule() {
-        let (_, customRules) = getCustomRules()
-        let file = SwiftLintFile(contents: "//swiftlint:disable custom \n// file with a pattern")
-        XCTAssertEqual(customRules.validate(file: file), [])
+    func testLocalDisableCustomRule() throws {
+        let customRules: [String: Any] = [
+            "custom": [
+                "regex": "pattern",
+                "match_kinds": "comment",
+            ],
+        ]
+        let example = Example("//swiftlint:disable custom \n// file with a pattern")
+        let violations = try violations(forExample: example, customRules: customRules)
+        XCTAssertTrue(violations.isEmpty)
     }
 
     func testLocalDisableCustomRuleWithMultipleRules() {
@@ -147,7 +158,7 @@ final class CustomRulesTests: SwiftLintTestCase {
     func testCustomRulesIncludedDefault() {
         // Violation detected when included is omitted.
         let (_, customRules) = getCustomRules()
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = customRules.validate(file: testFile)
         XCTAssertEqual(violations.count, 1)
     }
 
@@ -158,8 +169,8 @@ final class CustomRulesTests: SwiftLintTestCase {
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
         customRules.configuration = customRuleConfiguration
 
-        let violations = customRules.validate(file: getTestTextFile())
-        XCTAssertEqual(violations.count, 0)
+        let violations = customRules.validate(file: testFile)
+        XCTAssertTrue(violations.isEmpty)
     }
 
     func testCustomRulesExcludedExcludesFile() {
@@ -169,8 +180,8 @@ final class CustomRulesTests: SwiftLintTestCase {
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
         customRules.configuration = customRuleConfiguration
 
-        let violations = customRules.validate(file: getTestTextFile())
-        XCTAssertEqual(violations.count, 0)
+        let violations = customRules.validate(file: testFile)
+        XCTAssertTrue(violations.isEmpty)
     }
 
     func testCustomRulesExcludedArrayExcludesFile() {
@@ -180,8 +191,8 @@ final class CustomRulesTests: SwiftLintTestCase {
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
         customRules.configuration = customRuleConfiguration
 
-        let violations = customRules.validate(file: getTestTextFile())
-        XCTAssertEqual(violations.count, 0)
+        let violations = customRules.validate(file: testFile)
+        XCTAssertTrue(violations.isEmpty)
     }
 
     func testCustomRulesCaptureGroup() {
@@ -189,11 +200,234 @@ final class CustomRulesTests: SwiftLintTestCase {
             "regex": #"\ba\s+(\w+)"#,
             "capture_group": 1,
         ])
-        let violations = customRules.validate(file: getTestTextFile())
+        let violations = customRules.validate(file: testFile)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations[0].location.line, 2)
         XCTAssertEqual(violations[0].location.character, 6)
     }
+
+    // MARK: - superfluous_disable_command support
+
+    func testCustomRulesTriggersSuperfluousDisableCommand() throws {
+        let customRuleIdentifier = "forbidden"
+        let customRules: [String: Any] = [
+            customRuleIdentifier: [
+                "regex": "FORBIDDEN",
+            ],
+        ]
+        let example = Example("""
+                              // swiftlint:disable:next custom_rules
+                              let ALLOWED = 2
+                              """)
+
+        let violations = try violations(forExample: example, customRules: customRules)
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "custom_rules"))
+    }
+
+    func testSpecificCustomRuleTriggersSuperfluousDisableCommand() throws {
+        let customRuleIdentifier = "forbidden"
+        let customRules: [String: Any] = [
+            customRuleIdentifier: [
+                "regex": "FORBIDDEN",
+            ],
+        ]
+
+        let example = Example("""
+                              // swiftlint:disable:next \(customRuleIdentifier)
+                              let ALLOWED = 2
+                              """)
+
+        let violations = try violations(forExample: example, customRules: customRules)
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: customRuleIdentifier))
+    }
+
+    func testSpecificAndCustomRulesTriggersSuperfluousDisableCommand() throws {
+        let customRuleIdentifier = "forbidden"
+        let customRules: [String: Any] = [
+            customRuleIdentifier: [
+                "regex": "FORBIDDEN",
+            ],
+        ]
+
+        let example = Example("""
+                              // swiftlint:disable:next custom_rules \(customRuleIdentifier)
+                              let ALLOWED = 2
+                              """)
+
+        let violations = try violations(forExample: example, customRules: customRules)
+
+        XCTAssertEqual(violations.count, 2)
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "custom_rules"))
+        XCTAssertTrue(violations[1].isSuperfluousDisableCommandViolation(for: "\(customRuleIdentifier)"))
+    }
+
+    func testCustomRulesViolationAndViolationOfSuperfluousDisableCommand() throws {
+        let customRuleIdentifier = "forbidden"
+        let customRules: [String: Any] = [
+            customRuleIdentifier: [
+                "regex": "FORBIDDEN",
+            ],
+        ]
+
+        let example = Example("""
+                              let FORBIDDEN = 1
+                              // swiftlint:disable:next \(customRuleIdentifier)
+                              let ALLOWED = 2
+                              """)
+
+        let violations = try violations(forExample: example, customRules: customRules)
+
+        XCTAssertEqual(violations.count, 2)
+        XCTAssertEqual(violations[0].ruleIdentifier, customRuleIdentifier)
+        XCTAssertTrue(violations[1].isSuperfluousDisableCommandViolation(for: customRuleIdentifier))
+    }
+
+    func testDisablingCustomRulesDoesNotTriggerSuperfluousDisableCommand() throws {
+        let customRules: [String: Any] = [
+            "forbidden": [
+                "regex": "FORBIDDEN",
+            ],
+        ]
+
+        let example = Example("""
+                              // swiftlint:disable:next custom_rules
+                              let FORBIDDEN = 1
+                              """)
+
+        XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
+    }
+
+    func testMultipleSpecificCustomRulesTriggersSuperfluousDisableCommand() throws {
+        let customRules = [
+            "forbidden": [
+                "regex": "FORBIDDEN",
+            ],
+            "forbidden2": [
+                "regex": "FORBIDDEN2",
+            ],
+        ]
+        let example = Example("""
+                              // swiftlint:disable:next forbidden forbidden2
+                              let ALLOWED = 2
+                              """)
+
+        let violations = try self.violations(forExample: example, customRules: customRules)
+        XCTAssertEqual(violations.count, 2)
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "forbidden"))
+        XCTAssertTrue(violations[1].isSuperfluousDisableCommandViolation(for: "forbidden2"))
+    }
+
+    func testUnviolatedSpecificCustomRulesTriggersSuperfluousDisableCommand() throws {
+        let customRules = [
+            "forbidden": [
+                "regex": "FORBIDDEN",
+            ],
+            "forbidden2": [
+                "regex": "FORBIDDEN2",
+            ],
+        ]
+        let example = Example("""
+                              // swiftlint:disable:next forbidden forbidden2
+                              let FORBIDDEN = 1
+                              """)
+
+        let violations = try self.violations(forExample: example, customRules: customRules)
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "forbidden2"))
+    }
+
+    func testViolatedSpecificAndGeneralCustomRulesTriggersSuperfluousDisableCommand() throws {
+        let customRules = [
+            "forbidden": [
+                "regex": "FORBIDDEN",
+            ],
+            "forbidden2": [
+                "regex": "FORBIDDEN2",
+            ],
+        ]
+        let example = Example("""
+                              // swiftlint:disable:next forbidden forbidden2 custom_rules
+                              let FORBIDDEN = 1
+                              """)
+
+        let violations = try self.violations(forExample: example, customRules: customRules)
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "forbidden2"))
+    }
+
+    func testSuperfluousDisableCommandWithMultipleCustomRules() throws {
+        let customRules: [String: Any] = [
+            "custom1": [
+                "regex": "pattern",
+                "match_kinds": "comment",
+            ],
+            "custom2": [
+                "regex": "10",
+                "match_kinds": "number",
+            ],
+            "custom3": [
+                "regex": "100",
+                "match_kinds": "number",
+            ],
+        ]
+
+        let example = Example(
+             """
+             // swiftlint:disable custom1 custom3
+             return 10
+             """
+        )
+
+        let violations = try violations(forExample: example, customRules: customRules)
+
+        XCTAssertEqual(violations.count, 3)
+        XCTAssertEqual(violations[0].ruleIdentifier, "custom2")
+        XCTAssertTrue(violations[1].isSuperfluousDisableCommandViolation(for: "custom1"))
+        XCTAssertTrue(violations[2].isSuperfluousDisableCommandViolation(for: "custom3"))
+    }
+
+    func testViolatedCustomRuleDoesNotTriggerSuperfluousDisableCommand() throws {
+        let customRules: [String: Any] = [
+            "dont_print": [
+                "regex": "print\\("
+            ],
+        ]
+        let example = Example("""
+                               // swiftlint:disable:next dont_print
+                               print("Hello, world")
+                               """)
+        XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
+    }
+
+    func testDisableAllDoesNotTriggerSuperfluousDisableCommand() throws {
+        let customRules: [String: Any] = [
+            "dont_print": [
+                "regex": "print\\("
+            ],
+        ]
+        let example = Example("""
+                               // swiftlint:disable:next all
+                               print("Hello, world")
+                               """)
+        XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
+    }
+
+    func testDisableAllAndDisableSpecificCustomRuleDoesNotTriggerSuperfluousDisableCommand() throws {
+        let customRules: [String: Any] = [
+            "dont_print": [
+                "regex": "print\\("
+            ],
+        ]
+        let example = Example("""
+                               // swiftlint:disable:next all dont_print
+                               print("Hello, world")
+                               """)
+        XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
+    }
+
+    // MARK: - Private
 
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {
         var config: [String: Any] = [
@@ -202,18 +436,8 @@ final class CustomRulesTests: SwiftLintTestCase {
         ]
         extraConfig.forEach { config[$0] = $1 }
 
-        var regexConfig = RegexConfiguration<CustomRules>(identifier: "custom")
-        do {
-            try regexConfig.apply(configuration: config)
-        } catch {
-            XCTFail("Failed regex config")
-        }
-
-        var customRuleConfiguration = CustomRulesConfiguration()
-        customRuleConfiguration.customRuleConfigurations = [regexConfig]
-
-        var customRules = CustomRules()
-        customRules.configuration = customRuleConfiguration
+        let regexConfig = configuration(withIdentifier: "custom", configurationDict: config)
+        let customRules = customRules(withConfigurations: [regexConfig])
         return (regexConfig, customRules)
     }
 
@@ -223,34 +447,53 @@ final class CustomRulesTests: SwiftLintTestCase {
             "match_kinds": "comment",
         ]
 
-        var regexConfig1 = Configuration(identifier: "custom1")
-        do {
-            try regexConfig1.apply(configuration: config1)
-        } catch {
-            XCTFail("Failed regex config")
-        }
+        let regexConfig1 = configuration(withIdentifier: "custom1", configurationDict: config1)
 
         let config2 = [
             "regex": "something",
             "match_kinds": "comment",
         ]
 
-        var regexConfig2 = Configuration(identifier: "custom2")
-        do {
-            try regexConfig2.apply(configuration: config2)
-        } catch {
-            XCTFail("Failed regex config")
-        }
+        let regexConfig2 = configuration(withIdentifier: "custom2", configurationDict: config2)
 
-        var customRuleConfiguration = CustomRulesConfiguration()
-        customRuleConfiguration.customRuleConfigurations = [regexConfig1, regexConfig2]
-
-        var customRules = CustomRules()
-        customRules.configuration = customRuleConfiguration
+        let customRules = customRules(withConfigurations: [regexConfig1, regexConfig2])
         return ((regexConfig1, regexConfig2), customRules)
     }
 
-    private func getTestTextFile() -> SwiftLintFile {
-        SwiftLintFile(path: "\(testResourcesPath)/test.txt")!
+    private func violations(forExample example: Example, customRules: [String: Any]) throws -> [StyleViolation] {
+        let configDict: [String: Any] = [
+            "only_rules": ["custom_rules", "superfluous_disable_command"],
+            "custom_rules": customRules,
+        ]
+        let configuration = try SwiftLintCore.Configuration(dict: configDict)
+        return SwiftLintTestHelpers.violations(
+            example.skipWrappingInCommentTest(),
+            config: configuration
+        )
+    }
+
+    private func configuration(withIdentifier identifier: String, configurationDict: [String: Any]) -> Configuration {
+        var regexConfig = Configuration(identifier: identifier)
+        do {
+            try regexConfig.apply(configuration: configurationDict)
+        } catch {
+            XCTFail("Failed regex config")
+        }
+        return regexConfig
+    }
+
+    private func customRules(withConfigurations configurations: [Configuration]) -> CustomRules {
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = configurations
+        var customRules = CustomRules()
+        customRules.configuration = customRuleConfiguration
+        return customRules
+    }
+}
+
+private extension StyleViolation {
+    func isSuperfluousDisableCommandViolation(for ruleIdentifier: String) -> Bool {
+        self.ruleIdentifier == SuperfluousDisableCommandRule.description.identifier &&
+            reason.contains("SwiftLint rule '\(ruleIdentifier)' did not trigger a violation")
     }
 }

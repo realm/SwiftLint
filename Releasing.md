@@ -10,5 +10,4 @@ For SwiftLint contributors, follow these steps to cut a release:
 1. Make sure you have the latest stable Xcode version installed and
   `xcode-select`ed
 1. Release new version: `make release "0.2.0: Tumble Dry"`
-1. Wait for the Docker CI job to finish then run: `make zip_linux_release`
 1. Celebrate. :tada:

@@ -1,0 +1,21 @@
+name: Docker Release
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  trigger-build:
+    uses: ./.github/workflows/docker.yml
+    with:
+      tag: ${{ github.event.release.tag_name }}
+      secrets: inherit
+  upload-docker:
+    needs: trigger-build
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload binary to existing release
+        run: make zip_linux_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

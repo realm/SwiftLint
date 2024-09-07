@@ -43,8 +43,10 @@ struct SwiftLintCommandPlugin: CommandPlugin {
             }
 
             if process.terminationStatus != EXIT_SUCCESS {
-                Diagnostics.error(
-                    "Command found violations or unsuccessfully stopped running in module '\(target.name)' / Exit code: '\(process.terminationStatus)'"
+                Diagnostics.error("""
+                    Command found error violations or unsuccessfully stopped running with \
+                    exit code \(process.terminationStatus) in module '\(target.name)'
+                    """
                 )
             }
         }

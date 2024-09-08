@@ -32,6 +32,11 @@
   [Sam Rayner](https://github.com/samrayner)
   [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
+* The `no_magic_numbers` rule will now ignore violations in
+  SwiftUI's `Preview` macro.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5778](https://github.com/realm/SwiftLint/issues/5778)
+
 #### Bug Fixes
 
 * `superfluous_disable_command` violations are now triggered for

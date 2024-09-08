@@ -88,8 +88,7 @@ extension ConfigurationTests {
 
         let disabledDefaultConfiguration = Configuration.disabledDefaultConfiguration(ruleIdentifier)
         let mergedConfiguration2 = onlyRuleConfiguration.merged(withChild: disabledDefaultConfiguration)
-        XCTAssertEqual(mergedConfiguration2.rules.count, 1)
-        XCTAssertTrue(mergedConfiguration2.rules[0] is TodoRule)
+        XCTAssertTrue(mergedConfiguration2.rules.isEmpty)
 
         let enabledOnlyConfiguration = Configuration.enabledOnlyConfiguration(ForceTryRule.description.identifier)
         let mergedConfiguration3 = onlyRuleConfiguration.merged(withChild: enabledOnlyConfiguration)

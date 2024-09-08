@@ -485,6 +485,10 @@ test_parent_classes
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">notFound</span> <span class="o">=</span> <span class="p">(</span><span class="nv">statusCode</span><span class="p">:</span> <span class="mi">404</span><span class="p">,</span> <span class="nv">description</span><span class="p">:</span> <span class="s">"Not Found"</span><span class="p">,</span> <span class="nv">isError</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="cp">#Preview {</span>
+    <span class="kt">ContentView</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="mi">5</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="err">↓</span><span class="mi">321</span><span class="p">)</span>
 </code></pre>
@@ -520,6 +524,10 @@ test_parent_classes
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">imageHeight</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="err">↓</span><span class="mi">24</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">return</span> <span class="p">(</span><span class="err">↓</span><span class="mi">5</span><span class="p">,</span> <span class="err">↓</span><span class="mi">10</span><span class="p">,</span> <span class="err">↓</span><span class="mi">15</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="cp">#ExampleMacro {</span>
+    <span class="kt">ContentView</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="err">↓</span><span class="mi">5</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
           </div>

@@ -153,8 +153,10 @@ docker_htop:
 display_compilation_time:
 	$(BUILD_TOOL) $(XCODEFLAGS) OTHER_SWIFT_FLAGS="-Xfrontend -debug-time-function-bodies" clean build-for-testing | grep -E ^[1-9]{1}[0-9]*.[0-9]+ms | sort -n
 
-publish:
+formula_bump:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
+
+pod_publish:
 	bundle install
 	bundle exec pod trunk push SwiftLint.podspec
 
@@ -186,7 +188,7 @@ endif
 	git push origin HEAD
 	git push origin $(NEW_VERSION)
 	./tools/create-github-release.sh "$(NEW_VERSION)"
-	make publish
+	make formula_bump
 	./tools/add-new-changelog-section.sh
 	git commit -a -m "Add new changelog section"
 	git push origin HEAD

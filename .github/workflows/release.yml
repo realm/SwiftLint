@@ -39,3 +39,16 @@ jobs:
         run: make zip_linux_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  publish-pod:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve author in uppercase
+        id: retrieve_author
+        run: |
+          AUTHOR=${{ github.event.release.author.login }}
+          echo "name=${AUTHOR@U}" >> $GITHUB_OUTPUT
+      - name: Deploy to CocoaPods
+        run: make pod_publish
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets[format('COCOAPODS_TRUNK_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}

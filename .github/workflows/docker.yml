@@ -25,7 +25,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set Docker tag
-      if: github.event_name == 'workflow_call'
+      if: github.event_name == 'workflow_call' || github.event_name == 'workflow_dispatch'
       run: echo "DOCKER_TAG=${{ inputs.tag }}" >> $GITHUB_ENV
     - name: Use default Docker tag
       if: github.event_name == 'push'

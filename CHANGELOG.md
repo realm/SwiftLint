@@ -33,8 +33,7 @@
   [#5263](https://github.com/realm/SwiftLint/issues/5263)
 
 * Add new `macros_to_ignore` configuration option to the `no_magic_numbers` rule.
-  Empty by default, the `macros_to_ignore` setting allows, for example, numbers in
-  SwiftUI Preview's to be easily ignored.
+  By default, SwiftUI's `Preview` will be ignored.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5778](https://github.com/realm/SwiftLint/issues/5778)
 

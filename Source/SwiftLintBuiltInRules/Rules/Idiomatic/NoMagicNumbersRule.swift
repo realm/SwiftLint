@@ -132,7 +132,7 @@ private extension NoMagicNumbersRule {
         }
 
         override func visit(_ node: MacroExpansionExprSyntax) -> SyntaxVisitorContinueKind {
-            if case let .identifier(text) = node.macroName.tokenKind, configuration.macrosToIgnore.contains(text) {
+            if case let .identifier(text) = node.macroName.tokenKind, text == "Preview" {
                 .skipChildren
             } else {
                 .visitChildren

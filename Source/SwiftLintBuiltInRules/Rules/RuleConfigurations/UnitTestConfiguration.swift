@@ -3,7 +3,7 @@ import SwiftLintCore
 typealias BalancedXCTestLifecycleConfiguration = UnitTestConfiguration<BalancedXCTestLifecycleRule>
 typealias EmptyXCTestMethodConfiguration = UnitTestConfiguration<EmptyXCTestMethodRule>
 typealias FinalTestCaseConfiguration = UnitTestConfiguration<FinalTestCaseRule>
-typealias NoMagicNumbersConfiguration = UnitTestConfiguration<FinalTestCaseRule>
+typealias NoMagicNumbersConfiguration = UnitTestConfiguration<NoMagicNumbersRule>
 typealias SingleTestClassConfiguration = UnitTestConfiguration<SingleTestClassRule>
 
 @AutoConfigParser

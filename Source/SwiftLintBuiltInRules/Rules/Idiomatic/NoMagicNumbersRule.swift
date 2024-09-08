@@ -131,6 +131,14 @@ private extension NoMagicNumbersRule {
             node.isSimpleTupleAssignment ? .skipChildren : .visitChildren
         }
 
+        override func visit(_ node: MacroExpansionExprSyntax) -> SyntaxVisitorContinueKind {
+            if case let .identifier(text) = node.macroName.tokenKind, configuration.macrosToIgnore.contains(text) {
+                .skipChildren
+            } else {
+                .visitChildren
+            }
+        }
+
         override func visitPost(_ node: ClassDeclSyntax) {
             let className = node.name.text
             if node.isXCTestCase(configuration.testParentClasses) {
@@ -160,9 +168,6 @@ private extension NoMagicNumbersRule {
                 return
             }
             if node.isOperandOfFreestandingShiftOperation() {
-                return
-            }
-            if node.isContainedInExcludedMacro(configuration.macrosToIgnore) {
                 return
             }
             let violation = node.positionAfterSkippingLeadingTrivia
@@ -251,19 +256,6 @@ private extension ExprSyntaxProtocol {
            let operatorSymbol = operation.operator.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind,
            [.binaryOperator("<<"), .binaryOperator(">>")].contains(operatorSymbol) {
             return operation.parent?.isProtocol((any ExprSyntaxProtocol).self) != true
-        }
-        return false
-    }
-
-    func isContainedInExcludedMacro(_ macrosToIgnore: Set<String>) -> Bool {
-        var parent = parent
-        while parent != nil {
-            if let macro = parent?.as(MacroExpansionExprSyntax.self),
-               case let .identifier(text) = macro.macroName.tokenKind,
-               macrosToIgnore.contains(text) {
-                return true
-            }
-            parent = parent?.parent
         }
         return false
     }

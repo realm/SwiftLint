@@ -1,11 +1,11 @@
-name: Plugins Release
+name: Release
 
 on:
   release:
     types: [released]
 
 jobs:
-  dispatch:
+  dispatch-plugins:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -25,3 +25,17 @@ jobs:
               "tag": "${{ github.ref_name }}",
               "checksum": "${{ steps.parse_checksum.outputs.checksum }}"
             }
+  trigger-docker:
+    uses: ./.github/workflows/docker.yml
+    with:
+      tag: ${{ github.event.release.tag_name }}
+      secrets: inherit
+  upload-docker:
+    needs: trigger-docker
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload binary to existing release
+        run: make zip_linux_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

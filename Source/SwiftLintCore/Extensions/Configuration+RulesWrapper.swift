@@ -276,9 +276,8 @@ internal extension Configuration {
                 ))
 
             case let .onlyRule(onlyRules):
-                // .allEnabled allows rules to be disabled in the child config. For now, we'll ignore
-                // the child config
-                return .onlyRule(onlyRules)
+                // Like .allEnabled, rules can be disabled in a child config
+                return .onlyRule(onlyRules.filter { !childDisabled.contains($0) })
 
             case .allEnabled:
                 // Opt-in to every rule that isn't disabled via child config

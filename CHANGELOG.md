@@ -41,6 +41,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4754](https://github.com/realm/SwiftLint/issues/4754)
 
+* Trailing comments are now preserved by the `opening_brace` rule when
+  rewriting.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5751](https://github.com/realm/SwiftLint/issues/5751)
+
 ## 0.56.2: Heat Pump Dryer
 
 #### Breaking

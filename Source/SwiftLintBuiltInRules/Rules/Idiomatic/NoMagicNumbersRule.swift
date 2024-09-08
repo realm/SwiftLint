@@ -85,7 +85,7 @@ struct NoMagicNumbersRule: OptInRule {
             #Preview {
                 ContentView(value: 5)
             }
-            """, configuration: ["macros_to_ignore": ["Preview"]]),
+            """),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -113,7 +113,7 @@ struct NoMagicNumbersRule: OptInRule {
             Example("let imageHeight = (width - ↓24)"),
             Example("return (↓5, ↓10, ↓15)"),
             Example("""
-            #Preview {
+            #ExampleMacro {
                 ContentView(value: ↓5)
             }
             """),

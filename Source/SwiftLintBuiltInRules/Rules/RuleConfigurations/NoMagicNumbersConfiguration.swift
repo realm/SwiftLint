@@ -11,6 +11,9 @@ struct NoMagicNumbersConfiguration: SeverityBasedRuleConfiguration {
         postprocessor: { $0.formUnion(["QuickSpec", "XCTestCase"]) }
     )
     private(set) var testParentClasses = Set<String>()
-    @ConfigurationElement(key: "macros_to_ignore")
+    @ConfigurationElement(
+        key: "macros_to_ignore",
+        postprocessor: { $0.formUnion(["Preview"]) }
+    )
     private(set) var macrosToIgnore = Set<String>()
 }

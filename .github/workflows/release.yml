@@ -27,9 +27,9 @@ jobs:
             }
   trigger-docker:
     uses: ./.github/workflows/docker.yml
+    secrets: inherit
     with:
       tag: ${{ github.event.release.tag_name }}
-      secrets: inherit
   upload-docker:
     needs: trigger-docker
     runs-on: ubuntu-20.04

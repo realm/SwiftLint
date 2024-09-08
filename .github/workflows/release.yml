@@ -22,7 +22,7 @@ jobs:
           client-payload: |-
             {
               "title": "${{ github.event.release.name }}",
-              "tag": "${{ github.ref_name }}",
+              "tag": "${{ github.event.release.tag_name }}",
               "checksum": "${{ steps.parse_checksum.outputs.checksum }}"
             }
   trigger-docker:

@@ -11,6 +11,13 @@ on:
         required: true
         type: string
         default: 'latest'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker tag'
+        required: true
+        type: string
+        default: 'latest'
 
 jobs:
   build:

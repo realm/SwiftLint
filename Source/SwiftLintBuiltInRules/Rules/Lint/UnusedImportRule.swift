@@ -118,7 +118,7 @@ private extension SwiftLintFile {
             )
         }
 
-        /// Find the missing imports, which should be imported, but are not.
+        // Find the missing imports, which should be imported, but are not.
         let currentModule = (compilerArguments.firstIndex(of: "-module-name")?.advanced(by: 1))
             .map { compilerArguments[$0] }
 
@@ -136,29 +136,27 @@ private extension SwiftLintFile {
 
         // Check if unused imports were used for transitive imports
         var foundUmbrellaModules = Set<String>()
+        var foundMissingImports = Set<String>()
         for missingImport in missingImports {
             let umbrellaModules = configuration.allowedTransitiveImports
                 .filter { $0.transitivelyImportedModules.contains(missingImport) }
-                .map { $0.importedModule }
-
-            umbrellaModules.forEach { umbrellaModule in
-                missingImports.remove(missingImport)
-                if unusedImports.contains(umbrellaModule) {
-                    foundUmbrellaModules.insert(umbrellaModule)
-                }
+                .map(\.importedModule)
+            if umbrellaModules.isEmpty {
+                continue
             }
+            foundMissingImports.insert(missingImport)
+            foundUmbrellaModules.formUnion(umbrellaModules.filter(unusedImports.contains))
         }
 
         unusedImports.subtract(foundUmbrellaModules)
+        missingImports.subtract(foundMissingImports)
 
         let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports))
             .map { ImportUsage.unused(module: $0, range: $1) }
 
-        guard configuration.requireExplicitImports else {
-            return unusedImportUsages
-        }
-
-        return unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
+        return configuration.requireExplicitImports
+            ? unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
+            : unusedImportUsages
     }
 
     func getImportsAndUSRFragments(compilerArguments: [String]) -> (imports: Set<String>, usrFragments: Set<String>) {

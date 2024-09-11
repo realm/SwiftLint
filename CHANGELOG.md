@@ -14,7 +14,10 @@
 
 #### Bug Fixes
 
-* None.
+* Run command plugin in whole package if no targets are defined in the
+  package manifest.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5787](https://github.com/realm/SwiftLint/issues/5787)
 
 ## 0.57.0: Squeaky Clean Cycle
 

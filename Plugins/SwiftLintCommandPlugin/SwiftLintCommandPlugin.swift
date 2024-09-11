@@ -13,42 +13,52 @@ struct SwiftLintCommandPlugin: CommandPlugin {
         let targets = targetNames.isEmpty
             ? context.package.targets
             : try context.package.targets(named: targetNames)
-        let tool = try context.tool(named: "swiftlint")
+        guard !targets.isEmpty else {
+            try run(with: context, arguments: arguments)
+            return
+        }
         for target in targets {
             guard let target = target.sourceModule else {
                 Diagnostics.warning("Target '\(target.name)' is not a source module; skipping it")
                 continue
             }
+            try run(in: target.directory.string, for: target.name, with: context, arguments: arguments)
+        }
+    }
 
-            let process = Process()
-            process.currentDirectoryURL = URL(fileURLWithPath: context.package.directory.string)
-            process.executableURL = URL(fileURLWithPath: tool.path.string)
-            process.arguments = arguments
-            if !arguments.contains("analyze") {
-                // The analyze command does not support the `--cache-path` argument.
-                process.arguments! += ["--cache-path", "\(context.pluginWorkDirectory.string)"]
-            }
-            process.arguments! += [target.directory.string]
+    private func run(in directory: String = ".",
+                     for targetName: String? = nil,
+                     with context: PluginContext,
+                     arguments: [String]) throws {
+        let process = Process()
+        process.currentDirectoryURL = URL(fileURLWithPath: context.package.directory.string)
+        process.executableURL = URL(fileURLWithPath: try context.tool(named: "swiftlint").path.string)
+        process.arguments = arguments
+        if !arguments.contains("analyze") {
+            // The analyze command does not support the `--cache-path` argument.
+            process.arguments! += ["--cache-path", "\(context.pluginWorkDirectory.string)"]
+        }
+        process.arguments! += [directory]
 
-            try process.run()
-            process.waitUntilExit()
+        try process.run()
+        process.waitUntilExit()
 
-            switch process.terminationReason {
-            case .exit:
-                Diagnostics.remark("Finished running in module '\(target.name)'")
-            case .uncaughtSignal:
-                Diagnostics.error("Got uncaught signal while running in module '\(target.name)'")
-            @unknown default:
-                Diagnostics.error("Stopped running in module '\(target.name) due to unexpected termination reason")
-            }
+        let module = targetName.map { "module '\($0)'" } ?? "package"
+        switch process.terminationReason {
+        case .exit:
+            Diagnostics.remark("Finished running in \(module)")
+        case .uncaughtSignal:
+            Diagnostics.error("Got uncaught signal while running in \(module)")
+        @unknown default:
+            Diagnostics.error("Stopped running in \(module) due to unexpected termination reason")
+        }
 
-            if process.terminationStatus != EXIT_SUCCESS {
-                Diagnostics.error("""
-                    Command found error violations or unsuccessfully stopped running with \
-                    exit code \(process.terminationStatus) in module '\(target.name)'
-                    """
-                )
-            }
+        if process.terminationStatus != EXIT_SUCCESS {
+            Diagnostics.error("""
+                Command found error violations or unsuccessfully stopped running with \
+                exit code \(process.terminationStatus) in \(module)
+                """
+            )
         }
     }
 }

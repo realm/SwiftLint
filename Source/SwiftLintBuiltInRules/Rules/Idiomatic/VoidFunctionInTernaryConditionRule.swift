@@ -277,26 +277,26 @@ private extension CodeBlockItemSyntax {
 
         return parent.children(viewMode: .sourceAccurate).count == 1
     }
-  
-  func getFunctionDeclSyntax(parent: CodeBlockItemListSyntax) -> FunctionDeclSyntax? {
-    let targetSyntax = parent.parent?.parent
-    if let targetSyntax = targetSyntax?.as(FunctionDeclSyntax.self) {
-      return targetSyntax
-    }
-    if let ifExprSyntax = targetSyntax?.as(IfExprSyntax.self) {
-      guard let codeBlockItemListSyntax = ifExprSyntax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self) else {
-        return nil
+
+    func getFunctionDeclSyntax(parent: CodeBlockItemListSyntax) -> FunctionDeclSyntax? {
+      let targetSyntax = parent.parent?.parent
+      if let targetSyntax = targetSyntax?.as(FunctionDeclSyntax.self) {
+        return targetSyntax
       }
-      return getFunctionDeclSyntax(parent: codeBlockItemListSyntax)
-    }
-    if let swichExprSyntax = targetSyntax?.parent?.as(SwitchExprSyntax.self) {
-      guard let codeBlockItemListSyntax = swichExprSyntax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self) else {
-        return nil
+      if let ifExprSyntax = targetSyntax?.as(IfExprSyntax.self) {
+        guard let codeBlockItemListSyntax = ifExprSyntax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self) else {
+          return nil
+        }
+        return getFunctionDeclSyntax(parent: codeBlockItemListSyntax)
       }
-      return getFunctionDeclSyntax(parent: codeBlockItemListSyntax)
+      if let switchExpr = targetSyntax?.parent?.as(SwitchExprSyntax.self) {
+        guard let codeBlockItemListSyntax = switchExpr.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self) else {
+          return nil
+        }
+        return getFunctionDeclSyntax(parent: codeBlockItemListSyntax)
+      }
+      return nil
     }
-    return nil
-  }
 
     var isIfExprImplicitReturn: Bool {
       guard let parent = parent?.as(CodeBlockItemListSyntax.self) else { return false }

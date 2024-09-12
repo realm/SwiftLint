@@ -499,6 +499,12 @@ final class RuleConfigurationDescriptionTests: XCTestCase {
         )
     }
 
+    func testNoDeprecationWarningIfNoDeprecatedPropertySet() throws {
+        var configuration = TestConfiguration()
+
+        XCTAssert(try Issue.captureConsole { try configuration.apply(configuration: ["flag": false]) }.isEmpty)
+    }
+
     func testInvalidKeys() throws {
         var configuration = TestConfiguration()
 
@@ -511,10 +517,7 @@ final class RuleConfigurationDescriptionTests: XCTestCase {
                     "unsupported": true,
                 ])
             },
-            """
-            warning: Configuration option 'set' in 'my_rule' rule is deprecated. Use the option 'other_opt' instead.
-            warning: Configuration for 'RuleMock' rule contains the invalid key(s) 'unknown', 'unsupported'.
-            """
+            "warning: Configuration for 'RuleMock' rule contains the invalid key(s) 'unknown', 'unsupported'."
         )
     }
 

@@ -74,7 +74,9 @@ enum AutoConfigParser: MemberMacro {
                 """
                 for option in nonInlinedOptions {
                     """
-                    try \(raw: option).apply(configuration[$\(raw: option).key], ruleID: Parent.identifier)
+                    if let value = configuration[$\(raw: option).key] {
+                        try \(raw: option).apply(value, ruleID: Parent.identifier)
+                    }
                     """
                 }
                 """

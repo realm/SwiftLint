@@ -35,6 +35,7 @@ package struct LintOrAnalyzeOptions {
     let forceExclude: Bool
     let useExcludingByPrefix: Bool
     let useScriptInputFiles: Bool
+    let useScriptInputFileLists: Bool
     let benchmark: Bool
     let reporter: String?
     let baseline: String?
@@ -62,6 +63,7 @@ package struct LintOrAnalyzeOptions {
                  forceExclude: Bool,
                  useExcludingByPrefix: Bool,
                  useScriptInputFiles: Bool,
+                 useScriptInputFileLists: Bool,
                  benchmark: Bool,
                  reporter: String?,
                  baseline: String?,
@@ -88,6 +90,7 @@ package struct LintOrAnalyzeOptions {
         self.forceExclude = forceExclude
         self.useExcludingByPrefix = useExcludingByPrefix
         self.useScriptInputFiles = useScriptInputFiles
+        self.useScriptInputFileLists = useScriptInputFileLists
         self.benchmark = benchmark
         self.reporter = reporter
         self.baseline = baseline

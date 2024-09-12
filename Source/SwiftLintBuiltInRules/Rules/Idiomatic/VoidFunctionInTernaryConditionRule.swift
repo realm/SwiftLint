@@ -168,6 +168,20 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                 return hoge
             }
             """),
+            Example("""
+            func exampleNestedIfExpr() -> String {
+                if true {
+                  if true {
+                    isTrue ↓? defaultValue() : defaultValue()
+                  } else {
+                    return "False"
+                  }
+                } else {
+                  return "Default"
+                }
+                return hoge
+            }
+            """),
         ]
     )
 }
@@ -263,20 +277,35 @@ private extension CodeBlockItemSyntax {
 
         return parent.children(viewMode: .sourceAccurate).count == 1
     }
+  
+  func getFunctionDeclSyntax(parent: CodeBlockItemListSyntax) -> FunctionDeclSyntax? {
+    let targetSyntax = parent.parent?.parent
+    if let targetSyntax = targetSyntax?.as(FunctionDeclSyntax.self) {
+      return targetSyntax
+    }
+    if let ifExprSyntax = targetSyntax?.as(IfExprSyntax.self) {
+      guard let codeBlockItemListSyntax = ifExprSyntax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self) else {
+        return nil
+      }
+      return getFunctionDeclSyntax(parent: codeBlockItemListSyntax)
+    }
+    if let swichExprSyntax = targetSyntax?.parent?.as(SwitchExprSyntax.self) {
+      guard let codeBlockItemListSyntax = swichExprSyntax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self) else {
+        return nil
+      }
+      return getFunctionDeclSyntax(parent: codeBlockItemListSyntax)
+    }
+    return nil
+  }
 
     var isIfExprImplicitReturn: Bool {
-      guard let parent = parent?.as(CodeBlockItemListSyntax.self),
-            let ifExprSytax = parent.parent?.parent?.as(IfExprSyntax.self) else {
-        return false
-      }
-      guard let funcDecl = ifExprSytax.parent?.parent?.parent?.parent?.parent?.as(FunctionDeclSyntax.self) else {
-        return false
-      }
-      if let codeBlockItemListSyntax = ifExprSytax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self),
+      guard let parent = parent?.as(CodeBlockItemListSyntax.self) else { return false }
+      guard let result = getFunctionDeclSyntax(parent: parent) else { return false }
+      if let codeBlockItemListSyntax = result.body?.statements,
          let expressionStmtSyntax = codeBlockItemListSyntax.last?.item.as(ExpressionStmtSyntax.self) {
         return parent.children(viewMode: .sourceAccurate).count == 1 &&
         ( codeBlockItemListSyntax.count == 1 || expressionStmtSyntax.expression.is(IfExprSyntax.self)) &&
-        funcDecl.signature.allowsImplicitReturns
+        result.signature.allowsImplicitReturns
       }
       return false
     }

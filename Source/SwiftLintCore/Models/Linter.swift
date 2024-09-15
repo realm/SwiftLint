@@ -19,7 +19,11 @@ private extension Rule {
     func superfluousDisableCommandViolations(regions: [Region],
                                              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
                                              allViolations: [StyleViolation]) -> [StyleViolation] {
-        guard regions.isNotEmpty, let superfluousDisableCommandRule else {
+        guard let superfluousDisableCommandRule else {
+            return []
+        }
+        guard regions.isNotEmpty, allViolations.isNotEmpty
+        else {
             return []
         }
 
@@ -121,8 +125,9 @@ private extension Rule {
             [RuleIdentifier.all.stringRepresentation]
         let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
 
+        let regions = regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions
         let superfluousDisableCommandViolations = superfluousDisableCommandViolations(
-            regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions,
+            regions: file.remap(regions: regions),
             superfluousDisableCommandRule: superfluousDisableCommandRule,
             allViolations: violations
         )

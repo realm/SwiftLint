@@ -11,7 +11,7 @@ bazel_dep(name = "platforms", version = "0.0.10")
 bazel_dep(name = "rules_apple", version = "3.8.0", repo_name = "build_bazel_rules_apple")
 bazel_dep(name = "rules_swift", version = "2.1.1", repo_name = "build_bazel_rules_swift")
 bazel_dep(name = "sourcekitten", version = "0.36.0", repo_name = "com_github_jpsim_sourcekitten")
-bazel_dep(name = "swift-syntax", version = "600.0.0-prerelease-2024-08-14", repo_name = "SwiftSyntax")
+bazel_dep(name = "swift-syntax", version = "600.0.0", repo_name = "SwiftSyntax")
 bazel_dep(name = "swift_argument_parser", version = "1.3.1.1", repo_name = "sourcekitten_com_github_apple_swift_argument_parser")
 bazel_dep(name = "yams", version = "5.1.3", repo_name = "sourcekitten_com_github_jpsim_yams")
 

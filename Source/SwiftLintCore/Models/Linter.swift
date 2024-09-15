@@ -25,6 +25,8 @@ private extension Rule {
             return []
         }
 
+        let regions = decompose(regions: regions)
+
         let regionsDisablingSuperfluousDisableRule = regions.filter { region in
             region.isRuleDisabled(superfluousDisableCommandRule)
         }
@@ -121,9 +123,8 @@ private extension Rule {
             [RuleIdentifier.all.stringRepresentation]
         let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
 
-        let regions = regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions
         let superfluousDisableCommandViolations = superfluousDisableCommandViolations(
-            regions: decompose(regions: regions, file: file),
+            regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions,
             superfluousDisableCommandRule: superfluousDisableCommandRule,
             allViolations: violations
         )
@@ -147,7 +148,7 @@ private extension Rule {
                           deprecatedToValidIDPairs: deprecatedToValidIDPairs)
     }
 
-    private func decompose(regions: [Region], file: SwiftLintFile) -> [Region] {
+    private func decompose(regions: [Region]) -> [Region] {
         guard regions.isNotEmpty else {
             return []
         }
@@ -174,7 +175,7 @@ private extension Rule {
             lastRegionEnd = region.end
         }
 
-        let end = Location(file: file.path, line: .max, character: .max)
+        let end = Location(file: regions.first?.start.file, line: .max, character: .max)
         for ruleIdentifier in startMap.keys.sorted() {
             if let start = startMap[ruleIdentifier] {
                 let newRegion = Region(start: start, end: end, disabledRuleIdentifiers: [ruleIdentifier])

@@ -123,7 +123,7 @@ private extension Rule {
 
         let regions = regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions
         let superfluousDisableCommandViolations = superfluousDisableCommandViolations(
-            regions: file.remap(regions: regions),
+            regions: remap(regions: regions, file: file),
             superfluousDisableCommandRule: superfluousDisableCommandRule,
             allViolations: violations
         )
@@ -145,6 +145,45 @@ private extension Rule {
         return LintResult(violations: enabledViolations + superfluousDisableCommandViolations,
                           ruleTime: ruleTime,
                           deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+    }
+
+    private func remap(regions: [Region], file: SwiftLintFile) -> [Region] {
+        guard regions.isNotEmpty else {
+            return []
+        }
+
+        var remappedRegions = [Region]()
+        var startMap: [RuleIdentifier: Location] = [:]
+        var lastRegionEnd: Location?
+
+        for region in regions {
+            let ruleIdentifiers = startMap.keys.sorted()
+            for ruleIdentifier in ruleIdentifiers where !region.disabledRuleIdentifiers.contains(ruleIdentifier) {
+                if let lastRegionEnd, let start = startMap[ruleIdentifier] {
+                    let newRegion = Region(start: start, end: lastRegionEnd, disabledRuleIdentifiers: [ruleIdentifier])
+                    remappedRegions.append(newRegion)
+                    startMap[ruleIdentifier] = nil
+                }
+            }
+            for ruleIdentifier in region.disabledRuleIdentifiers where startMap[ruleIdentifier] == nil {
+                startMap[ruleIdentifier] = region.start
+            }
+            if region.disabledRuleIdentifiers.isEmpty {
+                remappedRegions.append(region)
+            }
+            lastRegionEnd = region.end
+        }
+
+        let end = Location(file: file.path, line: .max, character: .max)
+        for ruleIdentifier in startMap.keys.sorted() {
+            if let start = startMap[ruleIdentifier] {
+                let newRegion = Region(start: start, end: end, disabledRuleIdentifiers: [ruleIdentifier])
+                remappedRegions.append(newRegion)
+                startMap[ruleIdentifier] = nil
+            }
+        }
+
+        return remappedRegions
     }
 }
 

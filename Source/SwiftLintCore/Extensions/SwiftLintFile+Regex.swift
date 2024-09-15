@@ -57,45 +57,6 @@ extension SwiftLintFile {
         return regions
     }
 
-    public func remap(regions: [Region]) -> [Region] {
-        guard regions.isNotEmpty else {
-            return []
-        }
-
-        var remappedRegions = [Region]()
-        var startMap: [RuleIdentifier: Location] = [:]
-        var lastRegionEnd: Location?
-
-        for region in regions {
-            let ruleIdentifiers = startMap.keys.sorted()
-            for ruleIdentifier in ruleIdentifiers where !region.disabledRuleIdentifiers.contains(ruleIdentifier) {
-                if let lastRegionEnd, let start = startMap[ruleIdentifier] {
-                    let newRegion = Region(start: start, end: lastRegionEnd, disabledRuleIdentifiers: [ruleIdentifier])
-                    remappedRegions.append(newRegion)
-                    startMap[ruleIdentifier] = nil
-                }
-            }
-            for ruleIdentifier in region.disabledRuleIdentifiers where startMap[ruleIdentifier] == nil {
-                startMap[ruleIdentifier] = region.start
-            }
-            if region.disabledRuleIdentifiers.isEmpty {
-                remappedRegions.append(region)
-            }
-            lastRegionEnd = region.end
-        }
-
-        let end = Location(file: path, line: .max, character: .max)
-        for ruleIdentifier in startMap.keys.sorted() {
-            if let start = startMap[ruleIdentifier] {
-                let newRegion = Region(start: start, end: end, disabledRuleIdentifiers: [ruleIdentifier])
-                remappedRegions.append(newRegion)
-                startMap[ruleIdentifier] = nil
-            }
-        }
-
-        return remappedRegions
-    }
-
     public func commands(in range: NSRange? = nil) -> [Command] {
         guard let range else {
             return commands

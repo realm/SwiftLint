@@ -19,13 +19,10 @@ private extension Rule {
     func superfluousDisableCommandViolations(regions: [Region],
                                              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
                                              allViolations: [StyleViolation]) -> [StyleViolation] {
-        guard let superfluousDisableCommandRule else {
+        guard regions.isNotEmpty, let superfluousDisableCommandRule else {
             return []
         }
-        guard regions.isNotEmpty else {
-            return []
-        }
-
+        
         let regionsDisablingSuperfluousDisableRule = regions.filter { region in
             region.isRuleDisabled(superfluousDisableCommandRule)
         }

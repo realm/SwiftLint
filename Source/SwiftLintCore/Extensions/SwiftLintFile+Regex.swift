@@ -73,7 +73,7 @@ extension SwiftLintFile {
             }
             // We've started all of our new regions - can we finish any?
             // swiftlint:disable:next line_length
-            for ruleIdentifier in disabledRuleIdentifiers where !region.disabledRuleIdentifiers.contains(ruleIdentifier) {
+            for ruleIdentifier in disabledRuleIdentifiers.sorted() where !region.disabledRuleIdentifiers.contains(ruleIdentifier) {
                 if let lastRegionEnd, let start = startMap[ruleIdentifier] {
                     let newRegion = Region(start: start, end: lastRegionEnd, disabledRuleIdentifiers: [ruleIdentifier])
                     remappedRegions.append(newRegion)
@@ -89,7 +89,7 @@ extension SwiftLintFile {
         }
         // We're at the end now, so we need to finish up any still disabled rules
         let end = Location(file: path, line: .max, character: .max)
-        for ruleIdentifier in startMap.keys {
+        for ruleIdentifier in startMap.keys.sorted() {
             if let start = startMap[ruleIdentifier] {
                 let newRegion = Region(start: start, end: end, disabledRuleIdentifiers: [ruleIdentifier])
                 remappedRegions.append(newRegion)

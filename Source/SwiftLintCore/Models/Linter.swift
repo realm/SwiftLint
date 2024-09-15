@@ -1,6 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
+// swiftlint:disable file_length
+
 private let warnSourceKitFailedOnceImpl: Void = {
     Issue.genericWarning("SourceKit-based rules will be skipped because sourcekitd has failed.").print()
 }()
@@ -22,7 +24,7 @@ private extension Rule {
         guard regions.isNotEmpty, let superfluousDisableCommandRule else {
             return []
         }
-        
+
         let regionsDisablingSuperfluousDisableRule = regions.filter { region in
             region.isRuleDisabled(superfluousDisableCommandRule)
         }
@@ -32,33 +34,31 @@ private extension Rule {
             if regionsDisablingSuperfluousDisableRule.contains(where: { $0.contains(region.start) }) {
                 continue
             }
-            let sortedDisabledIdentifiers = region.disabledRuleIdentifiers.sorted {
-                $0.stringRepresentation < $1.stringRepresentation
+            guard let disabledRuleIdentifier = region.disabledRuleIdentifiers.first else {
+                continue
             }
-            commandIDsLoop: for disabledIdentifier in sortedDisabledIdentifiers {
-                guard !isEnabled(in: region, for: disabledIdentifier.stringRepresentation) else {
+            guard !isEnabled(in: region, for: disabledRuleIdentifier.stringRepresentation) else {
+                continue
+            }
+            var disableCommandValid = false
+            for violation in allViolations where region.contains(violation.location) {
+                if canBeDisabled(violation: violation, by: disabledRuleIdentifier) {
+                    disableCommandValid = true
                     continue
                 }
-                var disableCommandValid = false
-                for violation in allViolations where region.contains(violation.location) {
-                    if canBeDisabled(violation: violation, by: disabledIdentifier) {
-                        disableCommandValid = true
-                        continue commandIDsLoop
-                    }
-                }
-                if !disableCommandValid {
-                    let reason = superfluousDisableCommandRule.reason(
-                        forRuleIdentifier: disabledIdentifier.stringRepresentation
+            }
+            if !disableCommandValid {
+                let reason = superfluousDisableCommandRule.reason(
+                    forRuleIdentifier: disabledRuleIdentifier.stringRepresentation
+                )
+                superfluousDisableCommandViolations.append(
+                    StyleViolation(
+                        ruleDescription: type(of: superfluousDisableCommandRule).description,
+                        severity: superfluousDisableCommandRule.configuration.severity,
+                        location: region.start,
+                        reason: reason
                     )
-                    superfluousDisableCommandViolations.append(
-                        StyleViolation(
-                            ruleDescription: type(of: superfluousDisableCommandRule).description,
-                            severity: superfluousDisableCommandRule.configuration.severity,
-                            location: region.start,
-                            reason: reason
-                        )
-                    )
-                }
+                )
             }
         }
         return superfluousDisableCommandViolations

@@ -20,18 +20,14 @@ final class RegionTests: SwiftLintTestCase {
             let file = SwiftLintFile(contents: "// swiftlint:disable rule_id\n")
             let start = Location(file: nil, line: 1, character: 29)
             let end = Location(file: nil, line: .max, character: .max)
-            let fileRegions = file.regions()
-            XCTAssertEqual(fileRegions, [Region(start: start, end: end, disabledRuleIdentifiers: ["rule_id"])])
-            XCTAssertEqual(file.remap(regions: fileRegions), fileRegions)
+            XCTAssertEqual(file.regions(), [Region(start: start, end: end, disabledRuleIdentifiers: ["rule_id"])])
         }
         // enable
         do {
             let file = SwiftLintFile(contents: "// swiftlint:enable rule_id\n")
             let start = Location(file: nil, line: 1, character: 28)
             let end = Location(file: nil, line: .max, character: .max)
-            let fileRegions = file.regions()
-            XCTAssertEqual(fileRegions, [Region(start: start, end: end, disabledRuleIdentifiers: [])])
-            XCTAssertEqual(file.remap(regions: fileRegions), fileRegions)
+            XCTAssertEqual(file.regions(), [Region(start: start, end: end, disabledRuleIdentifiers: [])])
         }
     }
 
@@ -39,8 +35,7 @@ final class RegionTests: SwiftLintTestCase {
         // disable/enable
         do {
             let file = SwiftLintFile(contents: "// swiftlint:disable rule_id\n// swiftlint:enable rule_id\n")
-            let fileRegions = file.regions()
-            XCTAssertEqual(fileRegions, [
+            XCTAssertEqual(file.regions(), [
                 Region(start: Location(file: nil, line: 1, character: 29),
                        end: Location(file: nil, line: 2, character: 27),
                        disabledRuleIdentifiers: ["rule_id"]),
@@ -48,13 +43,11 @@ final class RegionTests: SwiftLintTestCase {
                        end: Location(file: nil, line: .max, character: .max),
                        disabledRuleIdentifiers: []),
             ])
-            XCTAssertEqual(file.remap(regions: fileRegions), fileRegions)
         }
         // enable/disable
         do {
             let file = SwiftLintFile(contents: "// swiftlint:enable rule_id\n// swiftlint:disable rule_id\n")
-            let fileRegions = file.regions()
-            XCTAssertEqual(fileRegions, [
+            XCTAssertEqual(file.regions(), [
                 Region(start: Location(file: nil, line: 1, character: 28),
                        end: Location(file: nil, line: 2, character: 28),
                        disabledRuleIdentifiers: []),
@@ -62,7 +55,6 @@ final class RegionTests: SwiftLintTestCase {
                        end: Location(file: nil, line: .max, character: .max),
                        disabledRuleIdentifiers: ["rule_id"]),
             ])
-            XCTAssertEqual(file.remap(regions: fileRegions), fileRegions)
         }
     }
 
@@ -70,25 +62,10 @@ final class RegionTests: SwiftLintTestCase {
         let file = SwiftLintFile(contents: "// swiftlint:disable:next 1\n" +
                                   "// swiftlint:disable:this 2\n" +
                                   "// swiftlint:disable:previous 3\n")
-        let fileRegions = file.regions()
-        XCTAssertEqual(fileRegions, [
+        XCTAssertEqual(file.regions(), [
             Region(start: Location(file: nil, line: 2, character: nil),
                    end: Location(file: nil, line: 2, character: .max - 1),
                    disabledRuleIdentifiers: ["1", "2", "3"]),
-            Region(start: Location(file: nil, line: 2, character: .max),
-                   end: Location(file: nil, line: .max, character: .max),
-                   disabledRuleIdentifiers: []),
-        ])
-        XCTAssertEqual(file.remap(regions: fileRegions), [
-            Region(start: Location(file: nil, line: 2, character: nil),
-                   end: Location(file: nil, line: 2, character: .max - 1),
-                   disabledRuleIdentifiers: ["1"]),
-            Region(start: Location(file: nil, line: 2, character: nil),
-                   end: Location(file: nil, line: 2, character: .max - 1),
-                   disabledRuleIdentifiers: ["2"]),
-            Region(start: Location(file: nil, line: 2, character: nil),
-                   end: Location(file: nil, line: 2, character: .max - 1),
-                   disabledRuleIdentifiers: ["3"]),
             Region(start: Location(file: nil, line: 2, character: .max),
                    end: Location(file: nil, line: .max, character: .max),
                    disabledRuleIdentifiers: []),
@@ -102,8 +79,7 @@ final class RegionTests: SwiftLintTestCase {
                                   "// swiftlint:enable 1\n" +
                                   "// swiftlint:enable 2\n" +
                                   "// swiftlint:enable 3\n")
-        let fileRegions = file.regions()
-        XCTAssertEqual(fileRegions, [
+        XCTAssertEqual(file.regions(), [
             Region(start: Location(file: nil, line: 1, character: 23),
                    end: Location(file: nil, line: 2, character: 22),
                    disabledRuleIdentifiers: ["1"]),
@@ -119,64 +95,6 @@ final class RegionTests: SwiftLintTestCase {
             Region(start: Location(file: nil, line: 5, character: 22),
                    end: Location(file: nil, line: 6, character: 21),
                    disabledRuleIdentifiers: ["3"]),
-            Region(start: Location(file: nil, line: 6, character: 22),
-                   end: Location(file: nil, line: .max, character: .max),
-                   disabledRuleIdentifiers: []),
-        ])
-        XCTAssertEqual(file.remap(regions: fileRegions), [
-            Region(start: Location(file: nil, line: 1, character: 23),
-                   end: Location(file: nil, line: 4, character: 21),
-                   disabledRuleIdentifiers: ["1"]),
-            Region(start: Location(file: nil, line: 2, character: 23),
-                   end: Location(file: nil, line: 5, character: 21),
-                   disabledRuleIdentifiers: ["2"]),
-            Region(start: Location(file: nil, line: 3, character: 23),
-                   end: Location(file: nil, line: 6, character: 21),
-                   disabledRuleIdentifiers: ["3"]),
-            Region(start: Location(file: nil, line: 6, character: 22),
-                   end: Location(file: nil, line: .max, character: .max),
-                   disabledRuleIdentifiers: []),
-        ])
-    }
-
-    func testOverlappingAndNestedRegions() {
-        let file = SwiftLintFile(contents: "// swiftlint:disable 1\n" +
-                                  "// swiftlint:disable 2\n" +
-                                  "// swiftlint:disable 3\n" +
-                                  "// swiftlint:enable 2\n" +
-                                  "// swiftlint:enable 3\n" +
-                                  "// swiftlint:enable 1\n")
-        let fileRegions = file.regions()
-        XCTAssertEqual(fileRegions, [
-            Region(start: Location(file: nil, line: 1, character: 23),
-                   end: Location(file: nil, line: 2, character: 22),
-                   disabledRuleIdentifiers: ["1"]),
-            Region(start: Location(file: nil, line: 2, character: 23),
-                   end: Location(file: nil, line: 3, character: 22),
-                   disabledRuleIdentifiers: ["1", "2"]),
-            Region(start: Location(file: nil, line: 3, character: 23),
-                   end: Location(file: nil, line: 4, character: 21),
-                   disabledRuleIdentifiers: ["1", "2", "3"]),
-            Region(start: Location(file: nil, line: 4, character: 22),
-                   end: Location(file: nil, line: 5, character: 21),
-                   disabledRuleIdentifiers: ["1", "3"]),
-            Region(start: Location(file: nil, line: 5, character: 22),
-                   end: Location(file: nil, line: 6, character: 21),
-                   disabledRuleIdentifiers: ["1"]),
-            Region(start: Location(file: nil, line: 6, character: 22),
-                   end: Location(file: nil, line: .max, character: .max),
-                   disabledRuleIdentifiers: []),
-        ])
-        XCTAssertEqual(file.remap(regions: fileRegions), [
-            Region(start: Location(file: nil, line: 2, character: 23),
-                   end: Location(file: nil, line: 4, character: 21),
-                   disabledRuleIdentifiers: ["2"]),
-            Region(start: Location(file: nil, line: 3, character: 23),
-                   end: Location(file: nil, line: 5, character: 21),
-                   disabledRuleIdentifiers: ["3"]),
-            Region(start: Location(file: nil, line: 1, character: 23),
-                   end: Location(file: nil, line: 6, character: 21),
-                   disabledRuleIdentifiers: ["1"]),
             Region(start: Location(file: nil, line: 6, character: 22),
                    end: Location(file: nil, line: .max, character: .max),
                    disabledRuleIdentifiers: []),

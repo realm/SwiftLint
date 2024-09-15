@@ -22,8 +22,7 @@ private extension Rule {
         guard let superfluousDisableCommandRule else {
             return []
         }
-        guard regions.isNotEmpty, allViolations.isNotEmpty
-        else {
+        guard regions.isNotEmpty else {
             return []
         }
 

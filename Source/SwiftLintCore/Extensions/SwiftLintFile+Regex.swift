@@ -58,44 +58,38 @@ extension SwiftLintFile {
     }
 
     public func remap(regions: [Region]) -> [Region] {
-        var remappedRegions = [Region]()
-        var startMap: [RuleIdentifier: Location] = [:]
-        var lastRegionEnd: Location?
-
         guard regions.isNotEmpty else {
             return []
         }
 
+        var remappedRegions = [Region]()
+        var startMap: [RuleIdentifier: Location] = [:]
+        var lastRegionEnd: Location?
+
         for region in regions {
-            let disabledRuleIdentifiers = startMap.keys
-            for ruleIdentifier in region.disabledRuleIdentifiers where startMap[ruleIdentifier] == nil {
-                startMap[ruleIdentifier] = region.start
-            }
-            // We've started all of our new regions - can we finish any?
-            // swiftlint:disable:next line_length
-            for ruleIdentifier in disabledRuleIdentifiers.sorted() where !region.disabledRuleIdentifiers.contains(ruleIdentifier) {
+            let ruleIdentifiers = startMap.keys.sorted()
+            for ruleIdentifier in ruleIdentifiers where !region.disabledRuleIdentifiers.contains(ruleIdentifier) {
                 if let lastRegionEnd, let start = startMap[ruleIdentifier] {
                     let newRegion = Region(start: start, end: lastRegionEnd, disabledRuleIdentifiers: [ruleIdentifier])
                     remappedRegions.append(newRegion)
                     startMap[ruleIdentifier] = nil
-                } else {
-                    print(">>>> this should not happen")
                 }
             }
-            lastRegionEnd = region.end
+            for ruleIdentifier in region.disabledRuleIdentifiers where startMap[ruleIdentifier] == nil {
+                startMap[ruleIdentifier] = region.start
+            }
             if region.disabledRuleIdentifiers.isEmpty {
                 remappedRegions.append(region)
             }
+            lastRegionEnd = region.end
         }
-        // We're at the end now, so we need to finish up any still disabled rules
+
         let end = Location(file: path, line: .max, character: .max)
         for ruleIdentifier in startMap.keys.sorted() {
             if let start = startMap[ruleIdentifier] {
                 let newRegion = Region(start: start, end: end, disabledRuleIdentifiers: [ruleIdentifier])
                 remappedRegions.append(newRegion)
                 startMap[ruleIdentifier] = nil
-            } else {
-                print(">>>> this also should not happen")
             }
         }
 

@@ -19,6 +19,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5787](https://github.com/realm/SwiftLint/issues/5787)
 
+* Do not throw deprecation warning if deprecated property is not
+  presented in configuration.  
+  [chipp](https://github.com/chipp)
+  [#5791](https://github.com/realm/SwiftLint/issues/5791)
+
 ## 0.57.0: Squeaky Clean Cycle
 
 #### Breaking

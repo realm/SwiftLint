@@ -80,8 +80,12 @@ final class AutoConfigParserTests: XCTestCase {
                     guard let configuration = configuration as? [String: Any] else {
                         throw Issue.invalidConfiguration(ruleID: Parent.identifier)
                     }
-                    try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
-                    try eB.apply(configuration[$eB.key], ruleID: Parent.identifier)
+                    if let value = configuration[$eA.key] {
+                        try eA.apply(value, ruleID: Parent.identifier)
+                    }
+                    if let value = configuration[$eB.key] {
+                        try eB.apply(value, ruleID: Parent.identifier)
+                    }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
@@ -131,8 +135,12 @@ final class AutoConfigParserTests: XCTestCase {
                     guard let configuration = configuration as? [String: Any] else {
                         return
                     }
-                    try eA.apply(configuration[$eA.key], ruleID: Parent.identifier)
-                    try eC.apply(configuration[$eC.key], ruleID: Parent.identifier)
+                    if let value = configuration[$eA.key] {
+                        try eA.apply(value, ruleID: Parent.identifier)
+                    }
+                    if let value = configuration[$eC.key] {
+                        try eC.apply(value, ruleID: Parent.identifier)
+                    }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
@@ -177,7 +185,6 @@ final class AutoConfigParserTests: XCTestCase {
     }
 
     func testSeverityAppliedTwice() {
-        // swiftlint:disable line_length
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -211,8 +218,12 @@ final class AutoConfigParserTests: XCTestCase {
                     guard let configuration = configuration as? [String: Any] else {
                         return
                     }
-                    try severityConfiguration.apply(configuration[$severityConfiguration.key], ruleID: Parent.identifier)
-                    try foo.apply(configuration[$foo.key], ruleID: Parent.identifier)
+                    if let value = configuration[$severityConfiguration.key] {
+                        try severityConfiguration.apply(value, ruleID: Parent.identifier)
+                    }
+                    if let value = configuration[$foo.key] {
+                        try foo.apply(value, ruleID: Parent.identifier)
+                    }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
@@ -222,6 +233,5 @@ final class AutoConfigParserTests: XCTestCase {
             """,
             macros: macros
         )
-        // swiftlint:enable line_length
     }
 }

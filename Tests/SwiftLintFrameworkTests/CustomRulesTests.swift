@@ -427,7 +427,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
     }
 
-    func testNestedCustomRuleDoNotTriggerSuperfluousDisableCommand() throws {
+    func testNestedCustomRuleDisablesDoNotTriggerSuperfluousDisableCommand() throws {
         let customRules: [String: Any] = [
             "rule1": [
                 "regex": "pattern1"
@@ -445,6 +445,34 @@ final class CustomRulesTests: SwiftLintTestCase {
                                // swiftlint:enable rule1
                                """)
         XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
+    }
+
+    func testNestedAndOverlappingCustomRuleDisables() throws {
+        let customRules: [String: Any] = [
+            "rule1": [
+                "regex": "pattern1"
+            ],
+            "rule2": [
+                "regex": "pattern2"
+            ],
+            "rule3": [
+                "regex": "pattern3"
+            ],
+        ]
+        let example = Example("""
+                              // swiftlint:disable rule1
+                              // swiftlint:disable rule2
+                              // swiftlint:disable rule3
+                              let pattern2 = ""
+                              // swiftlint:enable rule2
+                              // swiftlint:enable rule3
+                              let pattern1 = ""
+                              // swiftlint:enable rule1
+                              """)
+        let violations = try violations(forExample: example, customRules: customRules)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "rule3"))
     }
 
     // MARK: - Private

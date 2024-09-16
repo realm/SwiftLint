@@ -148,7 +148,7 @@ private extension Rule {
                           deprecatedToValidIDPairs: deprecatedToValidIDPairs)
     }
 
-    // Produces one region for each disable command
+    // Produces one region for each disabled rule identifier
     private func decompose(regions: [Region]) -> [Region] {
         guard regions.isNotEmpty else {
             return []

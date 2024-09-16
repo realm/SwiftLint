@@ -336,8 +336,10 @@ public protocol AcceptableByConfigurationElement {
 
     /// Update the object.
     ///
-    /// - Parameter value: New underlying data for the object.
-    mutating func apply(_ value: Any?, ruleID: String) throws
+    /// - Parameters:
+    ///   - value: New underlying data for the object.
+    ///   - ruleID: The rule's identifier in which context the configuration parsing runs.
+    mutating func apply(_ value: Any, ruleID: String) throws
 }
 
 /// Default implementations which are shortcuts applicable for most of the types conforming to the protocol.
@@ -346,10 +348,8 @@ public extension AcceptableByConfigurationElement {
         RuleConfigurationDescription(options: [key => asOption()])
     }
 
-    mutating func apply(_ value: Any?, ruleID: String) throws {
-        if let value {
-            self = try Self(fromAny: value, context: ruleID)
-        }
+    mutating func apply(_ value: Any, ruleID: String) throws {
+        self = try Self(fromAny: value, context: ruleID)
     }
 }
 
@@ -657,10 +657,8 @@ public extension AcceptableByConfigurationElement where Self: RuleConfiguration 
         return RuleConfigurationDescription(options: [key => asOption()])
     }
 
-    mutating func apply(_ value: Any?, ruleID _: String) throws {
-        if let value {
-            try apply(configuration: value)
-        }
+    mutating func apply(_ value: Any, ruleID _: String) throws {
+        try apply(configuration: value)
     }
 
     init(fromAny _: Any, context _: String) throws {

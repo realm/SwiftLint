@@ -489,18 +489,19 @@ final class CustomRulesTests: SwiftLintTestCase {
         ]
         let example = Example("""
                               // swiftlint:disable rule1
+                              // swiftlint:disable rule2 rule3
+                              // swiftlint:enable rule3 rule2
                               // swiftlint:disable rule2
-                              // swiftlint:disable rule3
-                              // swiftlint:enable rule2
-                              // swiftlint:enable rule3
                               // swiftlint:enable rule1
+                              // swiftlint:enable rule2
                               """)
         let violations = try violations(forExample: example, customRules: customRules)
 
-        XCTAssertEqual(violations.count, 3)
+        XCTAssertEqual(violations.count, 4)
         XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "rule1"))
         XCTAssertTrue(violations[1].isSuperfluousDisableCommandViolation(for: "rule2"))
         XCTAssertTrue(violations[2].isSuperfluousDisableCommandViolation(for: "rule3"))
+        XCTAssertTrue(violations[3].isSuperfluousDisableCommandViolation(for: "rule2"))
     }
 
     // MARK: - Private

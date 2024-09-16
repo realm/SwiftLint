@@ -10,7 +10,11 @@
 
 #### Enhancements
 
-* None.
+* Suggest failable `String(bytes:encoding:)` initializer in
+  `optional_data_string_conversion` rule as it accepts all `Sequence`
+  types.  
+  [Jordan Rose](https://github.com/jrose-signal)
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Bug Fixes
 

@@ -28,6 +28,11 @@
   [chipp](https://github.com/chipp)
   [#5791](https://github.com/realm/SwiftLint/issues/5791)
 
+* Fixes an issue where the `superfluous_disable_command` rule could generate
+  false positives for nested custom rules.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5788](https://github.com/realm/SwiftLint/issues/5788)
+
 ## 0.57.0: Squeaky Clean Cycle
 
 #### Breaking

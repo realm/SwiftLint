@@ -194,7 +194,6 @@ private extension Rule {
             }
             return $0.start < $1.start
         }
-        return decomposedRegions
     }
 }
 

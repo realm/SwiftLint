@@ -148,6 +148,7 @@ private extension Rule {
                           deprecatedToValidIDPairs: deprecatedToValidIDPairs)
     }
 
+    // Produces one region for each disable command
     private func decompose(regions: [Region]) -> [Region] {
         guard regions.isNotEmpty else {
             return []
@@ -184,6 +185,15 @@ private extension Rule {
             }
         }
 
+        return decomposedRegions.sorted {
+            if $0.start == $1.start {
+                if let lhsDisabledRuleIdentifier = $0.disabledRuleIdentifiers.first,
+                   let rhsDisabledRuleIdentifier = $1.disabledRuleIdentifiers.first {
+                    return lhsDisabledRuleIdentifier < rhsDisabledRuleIdentifier
+                }
+            }
+            return $0.start < $1.start
+        }
         return decomposedRegions
     }
 }

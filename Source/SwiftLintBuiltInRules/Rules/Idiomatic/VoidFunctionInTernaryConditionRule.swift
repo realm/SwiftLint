@@ -124,20 +124,44 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             func exampleNestedIfExpr() -> String {
                 test()
                 if true {
-                  isTrue ? defaultValue() : defaultValue()
+                  return isTrue ? defaultValue() : defaultValue()
                 } else {
-                    "Default"
+                  return "Default"
                 }
             }
             """),
             Example("""
             func collectionView() -> CGSize {
                 switch indexPath.section {
-                case 0: isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
+                case 0: return isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
                 default: .zero
                 }
             }
             """),
+            Example("""
+            func exampleFunction() -> String {
+                if true {
+                    switch value {
+                    case 1:
+                        if flag {
+                            return isTrue ? "1" : "2"
+                        } else {
+                            return "3"
+                        }
+                    case 2:
+                        if true {
+                            return "4"
+                        } else {
+                            return "5"
+                        }
+                    default:
+                        return "6"
+                    }
+                } else {
+                    return "7"
+                }
+            }
+            """)
         ],
         triggeringExamples: [
             Example("success ↓? askQuestion() : exit()"),
@@ -343,26 +367,6 @@ private extension CodeBlockItemSyntax {
         }
 
         return parent.children(viewMode: .sourceAccurate).count == 1
-    }
-
-    func getFunctionDeclSyntax(parent: CodeBlockItemListSyntax) -> FunctionDeclSyntax? {
-      let targetSyntax = parent.parent?.parent
-      if let targetSyntax = targetSyntax?.as(FunctionDeclSyntax.self) {
-        return targetSyntax
-      }
-      if let ifExprSyntax = targetSyntax?.as(IfExprSyntax.self) {
-        guard let codeBlockItemListSyntax = ifExprSyntax.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self) else {
-          return nil
-        }
-        return getFunctionDeclSyntax(parent: codeBlockItemListSyntax)
-      }
-      if let switchExpr = targetSyntax?.parent?.as(SwitchExprSyntax.self) {
-        guard let codeBlockItemListSyntax = switchExpr.parent?.parent?.parent?.as(CodeBlockItemListSyntax.self) else {
-          return nil
-        }
-        return getFunctionDeclSyntax(parent: codeBlockItemListSyntax)
-      }
-      return nil
     }
 
     // Recursively traverse the codeBlockItem to determine if it is a FunctionDeclSyntax

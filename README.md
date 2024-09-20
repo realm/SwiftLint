@@ -723,6 +723,9 @@ allow_zero_lintable_files: false
 # If true, SwiftLint will treat all warnings as errors.
 strict: false
 
+# If true, SwiftLint will treat all errors as warnings.
+lenient: false
+
 # The path to a baseline file, which will be used to filter out detected violations.
 baseline: Baseline.json
 

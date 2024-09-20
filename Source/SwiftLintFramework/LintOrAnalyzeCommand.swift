@@ -169,6 +169,7 @@ package struct LintOrAnalyzeCommand {
                 currentViolations = applyLeniency(
                     options: options,
                     strict: builder.configuration.strict,
+                    lenient: builder.configuration.lenient,
                     violations: violationsBeforeLeniency
                 )
                 visitorMutationQueue.sync {
@@ -179,6 +180,7 @@ package struct LintOrAnalyzeCommand {
                 currentViolations = applyLeniency(
                     options: options,
                     strict: builder.configuration.strict,
+                    lenient: builder.configuration.lenient,
                     violations: linter.styleViolations(using: builder.storage)
                 )
             }
@@ -273,11 +275,14 @@ package struct LintOrAnalyzeCommand {
     private static func applyLeniency(
         options: LintOrAnalyzeOptions,
         strict: Bool,
+        lenient: Bool,
         violations: [StyleViolation]
     ) -> [StyleViolation] {
+        // config file settings can be overridden by either `--strict` or `--lenient` command line options
         let strict = (strict && !options.lenient) || options.strict
+        let lenient = (lenient && !options.strict) || options.lenient
 
-        switch (options.lenient, strict) {
+        switch (lenient, strict) {
         case (false, false):
             return violations
 
@@ -298,7 +303,7 @@ package struct LintOrAnalyzeCommand {
             }
 
         case (true, true):
-            queuedFatalError("Invalid command line options: 'lenient' and 'strict' are mutually exclusive.")
+            queuedFatalError("Invalid command line or config options: 'lenient' and 'strict' are mutually exclusive.")
         }
     }
 

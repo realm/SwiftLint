@@ -51,10 +51,16 @@ struct TypesafeArrayInitRule: AnalyzerRule {
     )
 
     private static let parentRule = ArrayInitRule()
-    private static let mapTypePattern = regex("""
-            \\Q<Self, T where Self : \\E(?:Sequence|Collection)> \
-            \\Q(Self) -> ((Self.Element) throws -> T) throws -> [T]\\E
-            """)
+    private static let mapTypePatterns = [
+            regex("""
+                \\Q<Self, T where Self : \\E(?:Sequence|Collection)> \
+                \\Q(Self) -> ((Self.Element) throws -> T) throws -> [T]\\E
+                """),
+            regex("""
+                \\Q<Self, T, E where Self : \\E(?:Sequence|Collection), \
+                \\QE : Error> (Self) -> ((Self.Element) throws(E) -> T) throws(E) -> [T]\\E
+                """),
+    ]
 
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         guard let filePath = file.path else {
@@ -83,7 +89,9 @@ struct TypesafeArrayInitRule: AnalyzerRule {
         if let isSystem = pointee["key.is_system"], isSystem.isEqualTo(true),
            let name = pointee["key.name"], name.isEqualTo("map(_:)"),
            let typeName = pointee["key.typename"] as? String {
-            return Self.mapTypePattern.numberOfMatches(in: typeName, range: typeName.fullNSRange) == 1
+            return Self.mapTypePatterns.contains {
+                $0.numberOfMatches(in: typeName, range: typeName.fullNSRange) == 1
+            }
         }
         return false
     }

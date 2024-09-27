@@ -76,6 +76,21 @@ final class ImplicitReturnRuleTests: SwiftLintTestCase {
         )
     }
 
+    func testOnlySwitchKindIncluded() {
+        var nonTriggeringExamples = ImplicitReturnRuleExamples.nonTriggeringExamples +
+                                    ImplicitReturnRuleExamples.triggeringExamples
+        nonTriggeringExamples.removeAll(
+            where: ImplicitReturnRuleExamples.SwitchExamples.triggeringExamples.contains
+        )
+
+        verifySubset(
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: ImplicitReturnRuleExamples.SwitchExamples.triggeringExamples,
+            corrections: ImplicitReturnRuleExamples.SwitchExamples.corrections,
+            kind: .switch
+        )
+    }
+
     private func verifySubset(
         nonTriggeringExamples: [Example],
         triggeringExamples: [Example],

@@ -139,7 +139,7 @@ package struct LintOrAnalyzeCommand {
         }
     }
 
-    static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws -> [StyleViolation] {
+    package static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws -> [StyleViolation] {
         let builder = LintOrAnalyzeResultBuilder(options)
         _ = try await collectViolations(builder: builder)
         let report = builder.reporter.generateReport(builder.violations)

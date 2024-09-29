@@ -4,47 +4,42 @@ trigger:
 jobs:
 - job: Linux
   pool:
-    vmImage: 'ubuntu-22.04'
+    vmImage: 'ubuntu-24.04'
   strategy:
     maxParallel: 10
     matrix:
-      swift-5.10.1:
-        containerImage: swift:5.10.1
-  container: $[ variables['containerImage'] ]
+      'Swift 5.10.1':
+        image: swift:5.10.1-noble
+      'Swift 6':
+        image: swift:6.0-noble
+  container: $[ variables['image'] ]
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
 
-- job: macOS13
-  pool:
-    vmImage: 'macOS-13'
+- job: macOS
   strategy:
     maxParallel: 10
+    matrix:
+      '13':
+        image: 'macOS-13'
+        xcode: '15.2'
+      '14':
+        image: 'macOS-14'
+        xcode: '15.4'
+  pool:
+    vmImage: $(image)
+  variables:
+    DEVELOPER_DIR: /Applications/Xcode_$(xcode).app
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
 
-# TODO: Re-enable when FB11648454 is fixed
-# - job: Xcode
-#   pool:
-#     vmImage: 'macOS-12'
-#   strategy:
-#     maxParallel: 10
-#     matrix:
-#       xcode14:
-#         DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
-#   steps:
-#     - script: |
-#         sw_vers
-#         xcodebuild -version
-#       displayName: Version Informations
-#     - script: xcodebuild -scheme swiftlint test -destination "platform=macOS" OTHER_SWIFT_FLAGS="\$(inherited) -D DISABLE_FOCUSED_EXAMPLES"
-#       displayName: xcodebuild test
 - job: CocoaPods
   pool:
     vmImage: 'macOS-14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_15.4.app
+    DEVELOPER_DIR: /Applications/Xcode_16.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install

@@ -21,9 +21,6 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      '13':
-        image: 'macOS-13'
-        xcode: '15.2'
       '14':
         image: 'macOS-14'
         xcode: '15.4'

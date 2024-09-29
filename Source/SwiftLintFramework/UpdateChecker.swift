@@ -16,9 +16,9 @@ import FoundationNetworking
 #endif
 
 package enum UpdateChecker {
-    package static func checkForUpdates() {
+    package static func checkForUpdates() async {
         guard let url = URL(string: "https://api.github.com/repos/realm/SwiftLint/releases/latest"),
-              let data = sendRequest(to: url),
+              let data = try? await sendRequest(to: url),
               let latestVersionNumber = parseVersionNumber(data) else {
             print("Could not check latest SwiftLint version")
             return
@@ -39,20 +39,10 @@ package enum UpdateChecker {
         return jsonObject["tag_name"] as? String
     }
 
-    private static func sendRequest(to url: URL) -> Data? {
+    private static func sendRequest(to url: URL) async throws -> Data {
         var request = URLRequest(url: url)
         request.setValue("SwiftLint", forHTTPHeaderField: "User-Agent")
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-        let semaphore = DispatchSemaphore(value: 0)
-        var result: Data?
-
-        let task = URLSession.shared.dataTask(with: request) { data, _, _ in
-            result = data
-            semaphore.signal()
-        }
-        task.resume()
-
-        semaphore.wait()
-        return result
+        return try await URLSession.shared.data(for: request).0
     }
 }

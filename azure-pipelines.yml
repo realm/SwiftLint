@@ -8,8 +8,6 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      'Swift 5.10.1':
-        image: swift:5.10.1-noble
       'Swift 6':
         image: swift:6.0-noble
   container: $[ variables['image'] ]

@@ -15,13 +15,13 @@ COPY Tests Tests/
 COPY Package.* ./
 
 RUN swift package update
-ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2 -Xswiftc -I. -Xlinker -fuse-ld=lld -Xlinker -L/usr/lib/swift/linux"
+ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -l_CFURLSessionInterface -Xlinker -l_CFXMLInterface -Xlinker -lcurl -Xlinker -lxml2 -Xswiftc -I. -Xlinker -fuse-ld=lld -Xlinker -L/usr/lib/swift/linux"
 RUN swift build $SWIFT_FLAGS --product swiftlint
 RUN mv `swift build $SWIFT_FLAGS --show-bin-path`/swiftlint /usr/bin
 
 # Runtime image
 FROM ${RUNTIME_IMAGE}
-LABEL org.opencontainers.image.source https://github.com/realm/SwiftLint
+LABEL org.opencontainers.image.source=https://github.com/realm/SwiftLint
 RUN apt-get update && apt-get install -y \
     libcurl4 \
     libxml2 \

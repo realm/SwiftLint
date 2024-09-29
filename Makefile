@@ -63,7 +63,8 @@ analyze_autocorrect: write_xcodebuild_log
 clean:
 	rm -f "$(OUTPUT_PACKAGE)"
 	rm -rf "$(TEMPORARY_FOLDER)"
-	rm -f "./*.zip" "bazel.tar.gz" "bazel.tar.gz.sha256"
+	rm -rf rule_docs/ docs/
+	rm -f ./*.{zip,pkg} bazel.tar.gz bazel.tar.gz.sha256
 	swift package clean
 
 clean_xcode:

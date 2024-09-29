@@ -1,6 +1,5 @@
 import Foundation
 import SourceKittenFramework
-import SwiftLintFramework
 
 typealias File = String
 typealias Arguments = [String]

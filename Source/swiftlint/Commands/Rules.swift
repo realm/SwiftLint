@@ -40,7 +40,7 @@ extension SwiftLint {
                 return
             }
             let rules = RulesFilter(enabledRules: configuration.rules)
-                .getRules(excluding: .excludingOptions(byCommandLineOptions: rulesFilterOptions))
+                .getRules(excluding: rulesFilterOptions.excludingOptions)
                 .list
                 .sorted { $0.0 < $1.0 }
             if configOnly {

@@ -142,30 +142,20 @@ swift_library(
         ":SwiftLintBuiltInRules",
         ":SwiftLintCore",
         ":SwiftLintExtraRules",
-    ],
-)
-
-swift_library(
-    name = "swiftlint.library",
-    package_name = "SwiftLint",
-    srcs = glob(["Source/swiftlint/**/*.swift"]),
-    copts = copts,  # TODO: strict_concurrency_copts
-    module_name = "swiftlint",
-    visibility = ["//visibility:public"],
-    deps = [
-        ":SwiftLintFramework",
         "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
-        "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
-        "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ],
 )
 
 swift_binary(
     name = "swiftlint",
-    copts = copts + strict_concurrency_copts,
+    package_name = "SwiftLint",
+    srcs = glob(["Source/swiftlint/**/*.swift"]),
+    copts = copts,
     visibility = ["//visibility:public"],
     deps = [
-        ":swiftlint.library",
+        ":SwiftLintFramework",
+        "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
+        "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ],
 )
 

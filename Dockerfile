@@ -1,6 +1,6 @@
-# Explicitly specify `jammy` to keep the Swift & Ubuntu images in sync.
-ARG BUILDER_IMAGE=swift:5.9-jammy
-ARG RUNTIME_IMAGE=ubuntu:jammy
+# Explicitly specify `noble` to keep the Swift & Ubuntu images in sync.
+ARG BUILDER_IMAGE=swift:6.0-noble
+ARG RUNTIME_IMAGE=ubuntu:noble
 
 # Builder image
 FROM ${BUILDER_IMAGE} AS builder

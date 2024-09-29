@@ -103,10 +103,36 @@ public extension Array {
     func parallelMap<T>(transform: (Element) -> T) -> [T] {
         var result = ContiguousArray<T?>(repeating: nil, count: count)
         return result.withUnsafeMutableBufferPointer { buffer in
+            let buffer = Wrapper(buffer: buffer)
             DispatchQueue.concurrentPerform(iterations: buffer.count) { idx in
                 buffer[idx] = transform(self[idx])
             }
-            return buffer.map { $0! }
+            return buffer.data
+        }
+    }
+
+    private class Wrapper<T>: @unchecked Sendable {
+        let buffer: UnsafeMutableBufferPointer<T?>
+
+        init(buffer: UnsafeMutableBufferPointer<T?>) {
+            self.buffer = buffer
+        }
+
+        var data: [T] {
+            buffer.map { $0! }
+        }
+
+        var count: Int {
+            buffer.count
+        }
+
+        subscript(index: Int) -> T {
+            get {
+                queuedFatalError("Do not call this getter.")
+            }
+            set(newValue) {
+                buffer[index] = newValue
+            }
         }
     }
 }

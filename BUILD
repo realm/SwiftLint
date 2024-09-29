@@ -103,10 +103,7 @@ swift_library(
     name = "SwiftLintBuiltInRules",
     package_name = "SwiftLint",
     srcs = glob(["Source/SwiftLintBuiltInRules/**/*.swift"]),
-    copts = copts + select({
-        ":strict_concurrency_builtin_rules": strict_concurrency_copts,
-        "//conditions:default": [],
-    }),
+    copts = copts + strict_concurrency_copts,
     module_name = "SwiftLintBuiltInRules",
     visibility = ["//visibility:public"],
     deps = [

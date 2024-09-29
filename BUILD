@@ -150,7 +150,7 @@ swift_binary(
     name = "swiftlint",
     package_name = "SwiftLint",
     srcs = glob(["Source/swiftlint/**/*.swift"]),
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintFramework",

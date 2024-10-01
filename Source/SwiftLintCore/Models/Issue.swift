@@ -75,7 +75,11 @@ public enum Issue: LocalizedError, Equatable {
     case baselineNotReadable(path: String)
 
     /// Flag to enable warnings for deprecations being printed to the console. Printing is enabled by default.
+    #if compiler(>=6.0)
     package nonisolated(unsafe) static var printDeprecationWarnings = true
+    #else
+    package static var printDeprecationWarnings = true
+    #endif
 
     /// Hook used to capture all messages normally printed to stdout and return them back to the caller.
     ///

@@ -1,3 +1,6 @@
+#if os(macOS)
+@preconcurrency import Darwin
+#endif
 import Dispatch
 import Foundation
 

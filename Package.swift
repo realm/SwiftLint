@@ -85,7 +85,7 @@ let package = Package(
         .target(
             name: "SwiftLintBuiltInRules",
             dependencies: ["SwiftLintCore"],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .target(
             name: "SwiftLintExtraRules",

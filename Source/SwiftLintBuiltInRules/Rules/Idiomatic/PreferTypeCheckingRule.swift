@@ -25,6 +25,7 @@ struct PreferTypeCheckingRule: Rule {
             }
             """),
             Example("bar as Foo? != nil"),
+            Example("bar as Foo? != nil"),
             Example("bar as? Foo? != nil"),
         ],
         triggeringExamples: [

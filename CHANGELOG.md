@@ -16,6 +16,11 @@
   [Jordan Rose](https://github.com/jrose-signal)
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Adds a `lenient` configuration file setting, equivalent to the `--lenient`
+  command line option.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5801](https://github.com/realm/SwiftLint/issues/5801)
+
 #### Bug Fixes
 
 * Run command plugin in whole package if no targets are defined in the

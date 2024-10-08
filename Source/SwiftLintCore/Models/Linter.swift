@@ -1,6 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
+// swiftlint:disable file_length
+
 private let warnSourceKitFailedOnceImpl: Void = {
     Issue.genericWarning("SourceKit-based rules will be skipped because sourcekitd has failed.").print()
 }()
@@ -23,6 +25,8 @@ private extension Rule {
             return []
         }
 
+        let regions = decompose(regions: regions)
+
         let regionsDisablingSuperfluousDisableRule = regions.filter { region in
             region.isRuleDisabled(superfluousDisableCommandRule)
         }
@@ -32,33 +36,31 @@ private extension Rule {
             if regionsDisablingSuperfluousDisableRule.contains(where: { $0.contains(region.start) }) {
                 continue
             }
-            let sortedDisabledIdentifiers = region.disabledRuleIdentifiers.sorted {
-                $0.stringRepresentation < $1.stringRepresentation
+            guard let disabledRuleIdentifier = region.disabledRuleIdentifiers.first else {
+                continue
             }
-            commandIDsLoop: for disabledIdentifier in sortedDisabledIdentifiers {
-                guard !isEnabled(in: region, for: disabledIdentifier.stringRepresentation) else {
+            guard !isEnabled(in: region, for: disabledRuleIdentifier.stringRepresentation) else {
+                continue
+            }
+            var disableCommandValid = false
+            for violation in allViolations where region.contains(violation.location) {
+                if canBeDisabled(violation: violation, by: disabledRuleIdentifier) {
+                    disableCommandValid = true
                     continue
                 }
-                var disableCommandValid = false
-                for violation in allViolations where region.contains(violation.location) {
-                    if canBeDisabled(violation: violation, by: disabledIdentifier) {
-                        disableCommandValid = true
-                        continue commandIDsLoop
-                    }
-                }
-                if !disableCommandValid {
-                    let reason = superfluousDisableCommandRule.reason(
-                        forRuleIdentifier: disabledIdentifier.stringRepresentation
+            }
+            if !disableCommandValid {
+                let reason = superfluousDisableCommandRule.reason(
+                    forRuleIdentifier: disabledRuleIdentifier.stringRepresentation
+                )
+                superfluousDisableCommandViolations.append(
+                    StyleViolation(
+                        ruleDescription: type(of: superfluousDisableCommandRule).description,
+                        severity: superfluousDisableCommandRule.configuration.severity,
+                        location: region.start,
+                        reason: reason
                     )
-                    superfluousDisableCommandViolations.append(
-                        StyleViolation(
-                            ruleDescription: type(of: superfluousDisableCommandRule).description,
-                            severity: superfluousDisableCommandRule.configuration.severity,
-                            location: region.start,
-                            reason: reason
-                        )
-                    )
-                }
+                )
             }
         }
         return superfluousDisableCommandViolations
@@ -144,6 +146,54 @@ private extension Rule {
         return LintResult(violations: enabledViolations + superfluousDisableCommandViolations,
                           ruleTime: ruleTime,
                           deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+    }
+
+    // Produces one region for each disabled rule identifier
+    private func decompose(regions: [Region]) -> [Region] {
+        guard regions.isNotEmpty else {
+            return []
+        }
+
+        var decomposedRegions = [Region]()
+        var startMap: [RuleIdentifier: Location] = [:]
+        var lastRegionEnd: Location?
+
+        for region in regions {
+            let ruleIdentifiers = startMap.keys.sorted()
+            for ruleIdentifier in ruleIdentifiers where !region.disabledRuleIdentifiers.contains(ruleIdentifier) {
+                if let lastRegionEnd, let start = startMap[ruleIdentifier] {
+                    let newRegion = Region(start: start, end: lastRegionEnd, disabledRuleIdentifiers: [ruleIdentifier])
+                    decomposedRegions.append(newRegion)
+                    startMap[ruleIdentifier] = nil
+                }
+            }
+            for ruleIdentifier in region.disabledRuleIdentifiers where startMap[ruleIdentifier] == nil {
+                startMap[ruleIdentifier] = region.start
+            }
+            if region.disabledRuleIdentifiers.isEmpty {
+                decomposedRegions.append(region)
+            }
+            lastRegionEnd = region.end
+        }
+
+        let end = Location(file: regions.first?.start.file, line: .max, character: .max)
+        for ruleIdentifier in startMap.keys.sorted() {
+            if let start = startMap[ruleIdentifier] {
+                let newRegion = Region(start: start, end: end, disabledRuleIdentifiers: [ruleIdentifier])
+                decomposedRegions.append(newRegion)
+                startMap[ruleIdentifier] = nil
+            }
+        }
+
+        return decomposedRegions.sorted {
+            if $0.start == $1.start {
+                if let lhsDisabledRuleIdentifier = $0.disabledRuleIdentifiers.first,
+                   let rhsDisabledRuleIdentifier = $1.disabledRuleIdentifiers.first {
+                    return lhsDisabledRuleIdentifier < rhsDisabledRuleIdentifier
+                }
+            }
+            return $0.start < $1.start
+        }
     }
 }
 

@@ -427,6 +427,83 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
     }
 
+    func testNestedCustomRuleDisablesDoNotTriggerSuperfluousDisableCommand() throws {
+        let customRules: [String: Any] = [
+            "rule1": [
+                "regex": "pattern1"
+            ],
+            "rule2": [
+                "regex": "pattern2"
+            ],
+        ]
+        let example = Example("""
+                               // swiftlint:disable rule1
+                               // swiftlint:disable rule2
+                               let pattern2 = ""
+                               // swiftlint:enable rule2
+                               let pattern1 = ""
+                               // swiftlint:enable rule1
+                               """)
+        XCTAssertTrue(try violations(forExample: example, customRules: customRules).isEmpty)
+    }
+
+    func testNestedAndOverlappingCustomRuleDisables() throws {
+        let customRules: [String: Any] = [
+            "rule1": [
+                "regex": "pattern1"
+            ],
+            "rule2": [
+                "regex": "pattern2"
+            ],
+            "rule3": [
+                "regex": "pattern3"
+            ],
+        ]
+        let example = Example("""
+                              // swiftlint:disable rule1
+                              // swiftlint:disable rule2
+                              // swiftlint:disable rule3
+                              let pattern2 = ""
+                              // swiftlint:enable rule2
+                              // swiftlint:enable rule3
+                              let pattern1 = ""
+                              // swiftlint:enable rule1
+                              """)
+        let violations = try violations(forExample: example, customRules: customRules)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "rule3"))
+    }
+
+    func testSuperfluousDisableRuleOrder() throws {
+        let customRules: [String: Any] = [
+            "rule1": [
+                "regex": "pattern1"
+            ],
+            "rule2": [
+                "regex": "pattern2"
+            ],
+            "rule3": [
+                "regex": "pattern3"
+            ],
+        ]
+        let example = Example("""
+                              // swiftlint:disable rule1
+                              // swiftlint:disable rule2 rule3
+                              // swiftlint:enable rule3 rule2
+                              // swiftlint:disable rule2
+                              // swiftlint:enable rule1
+                              // swiftlint:enable rule2
+                              """)
+        let violations = try violations(forExample: example, customRules: customRules)
+
+        XCTAssertEqual(violations.count, 4)
+        XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "rule1"))
+        XCTAssertTrue(violations[1].isSuperfluousDisableCommandViolation(for: "rule2"))
+        XCTAssertTrue(violations[2].isSuperfluousDisableCommandViolation(for: "rule3"))
+        XCTAssertTrue(violations[3].isSuperfluousDisableCommandViolation(for: "rule2"))
+    }
+
     // MARK: - Private
 
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {

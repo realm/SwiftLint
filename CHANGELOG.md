@@ -28,6 +28,11 @@
   [chipp](https://github.com/chipp)
   [#5791](https://github.com/realm/SwiftLint/issues/5791)
 
+* The `prefer_type_checking` rule will no longer trigger for non-optional
+  type casting (`as`), or for comparisons to optional types.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5802](https://github.com/realm/SwiftLint/issues/5802)
+
 ## 0.57.0: Squeaky Clean Cycle
 
 #### Breaking

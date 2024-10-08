@@ -24,6 +24,10 @@ struct PreferTypeCheckingRule: Rule {
                 foo.run()
             }
             """),
+            Example("bar as Foo != nil"),
+            Example("nil != bar as Foo"),
+            Example("bar as Foo? != nil"),
+            Example("bar as? Foo? != nil"),
         ],
         triggeringExamples: [
             Example("bar ↓as? Foo != nil"),
@@ -33,9 +37,12 @@ struct PreferTypeCheckingRule: Rule {
                 doSomeThing()
             }
             """),
+            Example("nil != bar ↓as? Foo"),
+            Example("nil != 2*x ↓as? X"),
         ],
         corrections: [
             Example("bar ↓as? Foo != nil"): Example("bar is Foo"),
+            Example("nil != bar ↓as? Foo"): Example("bar is Foo"),
             Example("2*x ↓as? X != nil"): Example("2*x is X"),
             Example("""
             if foo ↓as? Bar != nil {
@@ -53,7 +60,7 @@ struct PreferTypeCheckingRule: Rule {
 private extension PreferTypeCheckingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
-            if node.typeChecksWithAsCasting, let asExpr = node.leftOperand.as(AsExprSyntax.self) {
+            if let asExpr = node.asExprWithOptionalTypeChecking {
                 violations.append(asExpr.asKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -61,8 +68,7 @@ private extension PreferTypeCheckingRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
-            guard node.typeChecksWithAsCasting,
-                  let asExpr = node.leftOperand.as(AsExprSyntax.self) else {
+            guard let asExpr = node.asExprWithOptionalTypeChecking else {
                 return super.visit(node)
             }
 
@@ -79,9 +85,15 @@ private extension PreferTypeCheckingRule {
 }
 
 private extension InfixOperatorExprSyntax {
-    var typeChecksWithAsCasting: Bool {
-        self.leftOperand.is(AsExprSyntax.self)
-        && self.operator.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("!=")
-        && self.rightOperand.is(NilLiteralExprSyntax.self)
+    var asExprWithOptionalTypeChecking: AsExprSyntax? {
+        if let asExpr = leftOperand.as(AsExprSyntax.self) ?? rightOperand.as(AsExprSyntax.self),
+           asExpr.questionOrExclamationMark?.tokenKind == .postfixQuestionMark,
+           !asExpr.type.is(OptionalTypeSyntax.self),
+           self.operator.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("!="),
+           rightOperand.is(NilLiteralExprSyntax.self) || leftOperand.is(NilLiteralExprSyntax.self) {
+            asExpr
+        } else {
+            nil
+        }
     }
 }

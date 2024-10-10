@@ -43,6 +43,12 @@ private extension MultilineParametersRule {
                 numberOfParameters += 1
             }
 
+            if let maxNumberOfParams = configuration.maxNumberOfParams,
+               configuration.allowsSingleLine,
+               numberOfParameters > maxNumberOfParams {
+                return true
+            }
+
             guard linesWithParameters.count > (configuration.allowsSingleLine ? 1 : 0),
                   numberOfParameters != linesWithParameters.count else {
                 return false

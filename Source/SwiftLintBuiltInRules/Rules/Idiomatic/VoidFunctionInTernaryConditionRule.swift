@@ -61,18 +61,18 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                 index == 0 ? defaultValue() : compute(index)
             """),
             Example("""
-            func example() -> String {
+            func example(index: Int) -> String {
                 if true {
-                  return isTrue ? defaultValue() : defaultValue()
+                  return index == 0 ? defaultValue() : defaultValue()
                 } else {
                   return "Default"
                 }
             }
             """),
             Example("""
-            func exampleNestedIfExpr() -> String {
+            func exampleNestedIfExpr(index: Int) -> String {
                 if true {
-                  return isTrue ? defaultValue() : defaultValue()
+                  return index == 0 ? defaultValue() : defaultValue()
                 } else {
                   return "Default"
                 }
@@ -87,17 +87,17 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             }
             """),
             Example("""
-            func exampleFunction() -> String {
-                if true {
-                    switch value {
+            func exampleNestedIfExprAndSwitchExpr(index: Int) -> String {
+                if index <= 3 {
+                    switch index {
                     case 1:
-                        if flag {
+                        if isTrue {
                             return isTrue ? "1" : "2"
                         } else {
                             return "3"
                         }
                     case 2:
-                        if true {
+                        if isTrue {
                             return "4"
                         } else {
                             return "5"
@@ -164,16 +164,6 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             }
             """),
             Example("""
-            func exampleNestedIfExpr() -> String {
-                if true {
-                  isTrue ↓? defaultValue() : defaultValue()
-                } else {
-                  "Default"
-                }
-                return hoge
-            }
-            """),
-            Example("""
             func collectionView() -> CGSize {
                 switch indexPath.section {
                 case 0: isEditing ↓? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
@@ -187,17 +177,18 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                 if true {
                   if true {
                     isTrue ↓? defaultValue() : defaultValue()
+                    retun "True"
                   } else {
                     return "False"
                   }
                 } else {
                   return "Default"
                 }
-                return hoge
+                return "hoge"
             }
             """),
             Example("""
-            func exampleFunction() -> String {
+            func exampleNestedIfExprAndSwitchExpr() -> String {
                 if true {
                     switch value {
                     case 1:
@@ -317,7 +308,7 @@ private extension CodeBlockItemSyntax {
         return parent.children(viewMode: .sourceAccurate).count == 1
     }
 
-    // Recursively traverse the codeBlockItem to determine if it is a FunctionDeclSyntax
+    // For codeBlockItem, recursively traverse it to determine if it is within its own FunctionDeclSyntax.
     func getFunctionDeclSyntax(codeBlockItem: CodeBlockItemSyntax) -> FunctionDeclSyntax? {
       let targetSyntax = codeBlockItem.parent?.parent?.parent?.parent
       if let targetSyntax = targetSyntax?.as(FunctionDeclSyntax.self) {

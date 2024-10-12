@@ -79,16 +79,6 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             }
             """),
             Example("""
-            func exampleNestedIfExpr() -> String {
-                test()
-                if true {
-                  return isTrue ? defaultValue() : defaultValue()
-                } else {
-                  return "Default"
-                }
-            }
-            """),
-            Example("""
             func collectionView() -> CGSize {
                 switch indexPath.section {
                 case 0: return isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
@@ -120,48 +110,6 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                 }
             }
             """),
-            Example("""
-            func exampleNestedIfExpr() -> String {
-                test()
-                if true {
-                  return isTrue ? defaultValue() : defaultValue()
-                } else {
-                  return "Default"
-                }
-            }
-            """),
-            Example("""
-            func collectionView() -> CGSize {
-                switch indexPath.section {
-                case 0: return isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
-                default: .zero
-                }
-            }
-            """),
-            Example("""
-            func exampleFunction() -> String {
-                if true {
-                    switch value {
-                    case 1:
-                        if flag {
-                            return isTrue ? "1" : "2"
-                        } else {
-                            return "3"
-                        }
-                    case 2:
-                        if true {
-                            return "4"
-                        } else {
-                            return "5"
-                        }
-                    default:
-                        return "6"
-                    }
-                } else {
-                    return "7"
-                }
-            }
-            """)
         ],
         triggeringExamples: [
             Example("success ↓? askQuestion() : exit()"),

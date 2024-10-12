@@ -119,7 +119,7 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                     return "7"
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("success ↓? askQuestion() : exit()"),
@@ -230,7 +230,7 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                     return "7"
                 }
             }
-            """)
+            """),
         ]
     )
 }

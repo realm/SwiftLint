@@ -44,6 +44,7 @@ final class AutoConfigParserTests: XCTestCase {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                     }
+                    try validate()
                 }
             }
             """,
@@ -90,6 +91,7 @@ final class AutoConfigParserTests: XCTestCase {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                     }
+                    try validate()
                 }
             }
             """,
@@ -145,6 +147,7 @@ final class AutoConfigParserTests: XCTestCase {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                     }
+                    try validate()
                 }
             }
             """,
@@ -171,6 +174,7 @@ final class AutoConfigParserTests: XCTestCase {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                     }
+                    try validate()
                 }
             }
             """,
@@ -228,6 +232,7 @@ final class AutoConfigParserTests: XCTestCase {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
                         Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                     }
+                    try validate()
                 }
             }
             """,

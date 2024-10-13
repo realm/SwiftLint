@@ -85,6 +85,9 @@ enum AutoConfigParser: MemberMacro {
                     Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
                 }
                 """
+                """
+                try validate()
+                """
             }),
         ]
     }

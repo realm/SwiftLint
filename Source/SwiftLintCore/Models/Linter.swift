@@ -25,7 +25,7 @@ private extension Rule {
             return []
         }
 
-        let regions = decompose(regions: regions)
+        let regions = regions.perIdentifierRegions
 
         let regionsDisablingSuperfluousDisableRule = regions.filter { region in
             region.isRuleDisabled(superfluousDisableCommandRule)
@@ -46,7 +46,7 @@ private extension Rule {
             for violation in allViolations where region.contains(violation.location) {
                 if canBeDisabled(violation: violation, by: disabledRuleIdentifier) {
                     disableCommandValid = true
-                    continue
+                    break
                 }
             }
             if !disableCommandValid {
@@ -147,23 +147,26 @@ private extension Rule {
                           ruleTime: ruleTime,
                           deprecatedToValidIDPairs: deprecatedToValidIDPairs)
     }
+}
 
-    // Produces one region for each disabled rule identifier
-    private func decompose(regions: [Region]) -> [Region] {
-        guard regions.isNotEmpty else {
+private extension [Region] {
+    // Normally regions correspond to changes in the set of enabled rules. To detect superfluous disable command
+    // rule violations effectively, we need individual regions for each disabled rule identifier.
+    var perIdentifierRegions: [Region] {
+        guard isNotEmpty else {
             return []
         }
 
-        var decomposedRegions = [Region]()
+        var convertedRegions = [Region]()
         var startMap: [RuleIdentifier: Location] = [:]
         var lastRegionEnd: Location?
 
-        for region in regions {
+        for region in self {
             let ruleIdentifiers = startMap.keys.sorted()
             for ruleIdentifier in ruleIdentifiers where !region.disabledRuleIdentifiers.contains(ruleIdentifier) {
                 if let lastRegionEnd, let start = startMap[ruleIdentifier] {
                     let newRegion = Region(start: start, end: lastRegionEnd, disabledRuleIdentifiers: [ruleIdentifier])
-                    decomposedRegions.append(newRegion)
+                    convertedRegions.append(newRegion)
                     startMap[ruleIdentifier] = nil
                 }
             }
@@ -171,21 +174,21 @@ private extension Rule {
                 startMap[ruleIdentifier] = region.start
             }
             if region.disabledRuleIdentifiers.isEmpty {
-                decomposedRegions.append(region)
+                convertedRegions.append(region)
             }
             lastRegionEnd = region.end
         }
 
-        let end = Location(file: regions.first?.start.file, line: .max, character: .max)
+        let end = Location(file: first?.start.file, line: .max, character: .max)
         for ruleIdentifier in startMap.keys.sorted() {
             if let start = startMap[ruleIdentifier] {
                 let newRegion = Region(start: start, end: end, disabledRuleIdentifiers: [ruleIdentifier])
-                decomposedRegions.append(newRegion)
+                convertedRegions.append(newRegion)
                 startMap[ruleIdentifier] = nil
             }
         }
 
-        return decomposedRegions.sorted {
+        return convertedRegions.sorted {
             if $0.start == $1.start {
                 if let lhsDisabledRuleIdentifier = $0.disabledRuleIdentifiers.first,
                    let rhsDisabledRuleIdentifier = $1.disabledRuleIdentifiers.first {

@@ -35,7 +35,7 @@ public extension Configuration {
 
         internal init(
             enableAllRules: Bool,
-            onlyRule: String?,
+            onlyRule: [String],
             onlyRules: [String],
             optInRules: [String],
             disabledRules: [String],
@@ -53,8 +53,8 @@ public extension Configuration {
 
             if enableAllRules {
                 self = .allEnabled
-            } else if let onlyRule {
-                self = .onlyRule(Set([onlyRule]))
+            } else if onlyRule.isNotEmpty {
+                self = .onlyRule(Set(onlyRule))
             } else if onlyRules.isNotEmpty {
                 if disabledRules.isNotEmpty || optInRules.isNotEmpty {
                     throw Issue.genericWarning(

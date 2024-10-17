@@ -3,7 +3,7 @@ import Foundation
 /// All possible SwiftLint issues which are printed as warnings by default.
 public enum Issue: LocalizedError, Equatable {
     /// The configuration didn't match internal expectations.
-    case invalidConfiguration(ruleID: String)
+    case invalidConfiguration(ruleID: String, message: String? = nil)
 
     /// Issued when an option is deprecated. Suggests an alternative optionally.
     case deprecatedConfigurationOption(ruleID: String, key: String, alternative: String? = nil)
@@ -19,6 +19,10 @@ public enum Issue: LocalizedError, Equatable {
 
     /// Some configuration keys are invalid.
     case invalidConfigurationKeys(ruleID: String, keys: Set<String>)
+
+    /// The configuration is inconsistent, that is options are mutually exclusive or one drives other values
+    /// irrelevant.
+    case inconsistentConfiguration(ruleID: String, message: String)
 
     /// Used rule IDs are invalid.
     case invalidRuleIDs(Set<String>)
@@ -138,8 +142,9 @@ public enum Issue: LocalizedError, Equatable {
 
     private var message: String {
         switch self {
-        case let .invalidConfiguration(id):
-            return "Invalid configuration for '\(id)' rule. Falling back to default."
+        case let .invalidConfiguration(id, message):
+            let message = if let message { ": \(message)" } else { "." }
+            return "Invalid configuration for '\(id)' rule\(message) Falling back to default."
         case let .deprecatedConfigurationOption(id, key, alternative):
             let baseMessage = "Configuration option '\(key)' in '\(id)' rule is deprecated."
             if let alternative {
@@ -154,6 +159,8 @@ public enum Issue: LocalizedError, Equatable {
             return "'\(old)' has been renamed to '\(new)' and will be completely removed in a future release."
         case let .invalidConfigurationKeys(id, keys):
             return "Configuration for '\(id)' rule contains the invalid key(s) \(keys.formatted)."
+        case let .inconsistentConfiguration(id, message):
+            return "Inconsistent configuration for '\(id)' rule: \(message)"
         case let .invalidRuleIDs(ruleIDs):
             return "The key(s) \(ruleIDs.formatted) used as rule identifier(s) is/are invalid."
         case let .ruleNotPresentInOnlyRules(id):

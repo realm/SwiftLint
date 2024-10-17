@@ -13,6 +13,10 @@ public protocol RuleConfiguration: Equatable {
     ///
     /// - throws: Throws if the configuration is not in the expected format.
     mutating func apply(configuration: Any) throws
+
+    /// Run a sanity check on the configuration, perform optional postprocessing steps and/or warn about potential
+    /// issues.
+    mutating func validate() throws
 }
 
 /// A configuration for a rule that allows to configure at least the severity.
@@ -30,6 +34,10 @@ public extension SeverityBasedRuleConfiguration {
 
 public extension RuleConfiguration {
     var parameterDescription: RuleConfigurationDescription? { nil }
+
+    func validate() throws {
+        // Do nothing by default.
+    }
 }
 
 public extension RuleConfiguration {

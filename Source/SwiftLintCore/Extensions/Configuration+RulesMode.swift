@@ -23,11 +23,10 @@ public extension Configuration {
         /// `optIn`.
         case `default`(disabled: Set<String>, optIn: Set<String>)
 
-        /// Only enable the rules explicitly listed.
+        /// Only enable the rules explicitly listed in the configuration files.
         case only(Set<String>)
 
-        /// Only enable the rule explicitly listed on the command line. The rule may have multiple identifiers,
-        /// hence why this is represented as a Set
+        /// Only enable the rules explicitly listed on the command line.
         case onlyRule(Set<String>)
 
         /// Enable all available rules.

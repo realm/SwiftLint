@@ -21,9 +21,12 @@ extension SwiftLint {
         var enableAllRules = false
         @Option(
             parsing: .singleValue,
-            help: "Run only the specified rule, ignoring `only_rules`, `opt_in_rules` and `disabled_rules`."
+            help: """
+                  Run only the specified rule, ignoring `only_rules`, `opt_in_rules` and `disabled_rules`.
+                  Can be specified repeatedly to run multiple rules.
+                  """
         )
-        var onlyRule: [String]
+        var onlyRule: [String] = []
         @Argument(help: pathsArgumentDescription(for: .lint))
         var paths = [String]()
 

@@ -98,8 +98,6 @@ let package = Package(
                 "SwiftLintBuiltInRules",
                 "SwiftLintCore",
                 "SwiftLintExtraRules",
-                // Workaround for https://github.com/apple/swift-package-manager/issues/6940:
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "CollectionConcurrencyKit",
             ],
             swiftSettings: swiftFeatures + strictConcurrency

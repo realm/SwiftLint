@@ -404,6 +404,8 @@ pattern_matching_keywords:
   severity: warning
 period_spacing:
   severity: warning
+prefer_if_and_switch_expressions:
+  severity: warning
 prefer_key_path:
   severity: warning
   restrict_to_standard_functions: true

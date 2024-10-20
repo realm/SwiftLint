@@ -15,6 +15,7 @@ extension Configuration {
         case analyzerRules = "analyzer_rules"
         case allowZeroLintableFiles = "allow_zero_lintable_files"
         case strict = "strict"
+        case lenient = "lenient"
         case baseline = "baseline"
         case writeBaseline = "write_baseline"
         case checkForUpdates = "check_for_updates"
@@ -103,6 +104,7 @@ extension Configuration {
             pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },
             allowZeroLintableFiles: dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false,
             strict: dict[Key.strict.rawValue] as? Bool ?? false,
+            lenient: dict[Key.lenient.rawValue] as? Bool ?? false,
             baseline: dict[Key.baseline.rawValue] as? String,
             writeBaseline: dict[Key.writeBaseline.rawValue] as? String,
             checkForUpdates: dict[Key.checkForUpdates.rawValue] as? Bool ?? false

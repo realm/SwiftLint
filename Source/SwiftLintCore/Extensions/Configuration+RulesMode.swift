@@ -26,7 +26,7 @@ public extension Configuration {
         /// Only enable the rules explicitly listed in the configuration files.
         case only(Set<String>)
 
-        /// Only enable the rules explicitly listed on the command line.
+        /// Only enable the rule explicitly listed on the command line (and it's aliases).
         case onlyRule(Set<String>)
 
         /// Enable all available rules.

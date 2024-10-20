@@ -23,8 +23,11 @@ public extension Configuration {
         /// `optIn`.
         case `default`(disabled: Set<String>, optIn: Set<String>)
 
-        /// Only enable the rules explicitly listed.
+        /// Only enable the rules explicitly listed in the configuration files.
         case only(Set<String>)
+
+        /// Only enable the rule explicitly listed on the command line (and it's aliases).
+        case onlyRule(Set<String>)
 
         /// Enable all available rules.
         case allEnabled
@@ -50,7 +53,7 @@ public extension Configuration {
             if enableAllRules {
                 self = .allEnabled
             } else if let onlyRule {
-                self = .only(Set([onlyRule]))
+                self = .onlyRule(Set([onlyRule]))
             } else if onlyRules.isNotEmpty {
                 if disabledRules.isNotEmpty || optInRules.isNotEmpty {
                     throw Issue.genericWarning(
@@ -100,6 +103,9 @@ public extension Configuration {
 
             case let .only(onlyRules):
                 return .only(Set(onlyRules.map(aliasResolver)))
+
+            case let .onlyRule(onlyRules):
+                return .onlyRule(Set(onlyRules.map(aliasResolver)))
 
             case .allEnabled:
                 return .allEnabled

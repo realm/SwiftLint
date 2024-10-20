@@ -38,14 +38,7 @@ internal extension Configuration {
                 customRulesFilter = { _ in true }
                 resultingRules = allRulesWrapped.map(\.rule)
 
-            case var .only(onlyRulesRuleIdentifiers):
-                customRulesFilter = { onlyRulesRuleIdentifiers.contains($0.identifier) }
-                onlyRulesRuleIdentifiers = validate(ruleIds: onlyRulesRuleIdentifiers, valid: validRuleIdentifiers)
-                resultingRules = allRulesWrapped.filter { tuple in
-                    onlyRulesRuleIdentifiers.contains(type(of: tuple.rule).description.identifier)
-                }.map(\.rule)
-
-            case var .onlyRule(onlyRulesRuleIdentifiers):
+            case var .only(onlyRulesRuleIdentifiers), var .onlyRule(onlyRulesRuleIdentifiers):
                 customRulesFilter = { onlyRulesRuleIdentifiers.contains($0.identifier) }
                 onlyRulesRuleIdentifiers = validate(ruleIds: onlyRulesRuleIdentifiers, valid: validRuleIdentifiers)
                 resultingRules = allRulesWrapped.filter { tuple in

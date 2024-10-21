@@ -2,7 +2,7 @@ import SwiftOperators
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct PreferIfAndSwitchExpressionsRule: OptInRule {
+struct PreferIfAndSwitchExpressionsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

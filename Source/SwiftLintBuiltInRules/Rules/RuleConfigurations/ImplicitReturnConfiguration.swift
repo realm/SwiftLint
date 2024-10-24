@@ -11,6 +11,7 @@ struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration {
         case getter
         case `subscript`
         case initializer
+        case `switch`
 
         static func < (lhs: Self, rhs: Self) -> Bool {
             lhs.rawValue < rhs.rawValue

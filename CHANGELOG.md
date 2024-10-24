@@ -15,6 +15,10 @@
   types.  
   [Jordan Rose](https://github.com/jrose-signal)
   [SimplyDanny](https://github.com/SimplyDanny)
+* Support linting from Input File Lists provided by Run Script Phase of Xcode with
+  `--use-script-input-file-lists`.  
+  [BlueVirusX](https://github.com/BlueVirusX)
+  [#5790](https://github.com/realm/SwiftLint/pull/5790)
 
 #### Bug Fixes
 

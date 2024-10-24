@@ -118,17 +118,11 @@ private extension SwiftLintFile {
             )
         }
 
-        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports))
-            .map { ImportUsage.unused(module: $0, range: $1) }
-
-        guard configuration.requireExplicitImports else {
-            return unusedImportUsages
-        }
-
+        // Find the missing imports, which should be imported, but are not.
         let currentModule = (compilerArguments.firstIndex(of: "-module-name")?.advanced(by: 1))
             .map { compilerArguments[$0] }
 
-        let missingImports = usrFragments
+        var missingImports = usrFragments
             .subtracting(imports + [currentModule].compactMap({ $0 }))
             .filter { module in
                 let modulesAllowedToImportCurrentModule = configuration.allowedTransitiveImports
@@ -140,7 +134,29 @@ private extension SwiftLintFile {
                     imports.isDisjoint(with: modulesAllowedToImportCurrentModule)
             }
 
-        return unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
+        // Check if unused imports were used for transitive imports
+        var foundUmbrellaModules = Set<String>()
+        var foundMissingImports = Set<String>()
+        for missingImport in missingImports {
+            let umbrellaModules = configuration.allowedTransitiveImports
+                .filter { $0.transitivelyImportedModules.contains(missingImport) }
+                .map(\.importedModule)
+            if umbrellaModules.isEmpty {
+                continue
+            }
+            foundMissingImports.insert(missingImport)
+            foundUmbrellaModules.formUnion(umbrellaModules.filter(unusedImports.contains))
+        }
+
+        unusedImports.subtract(foundUmbrellaModules)
+        missingImports.subtract(foundMissingImports)
+
+        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports))
+            .map { ImportUsage.unused(module: $0, range: $1) }
+
+        return configuration.requireExplicitImports
+            ? unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
+            : unusedImportUsages
     }
 
     func getImportsAndUSRFragments(compilerArguments: [String]) -> (imports: Set<String>, usrFragments: Set<String>) {

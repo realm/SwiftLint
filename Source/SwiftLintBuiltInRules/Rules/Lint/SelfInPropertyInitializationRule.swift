@@ -68,6 +68,12 @@ struct SelfInPropertyInitializationRule: Rule {
                 func calculateB() -> String { "B" }
             }
             """, excludeFromDocumentation: true),
+            Example("""
+            final class NotActuallyReferencingSelf {
+                let keyPath: Any = \\String.self
+                let someType: Any = String.self
+            }
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -102,7 +108,7 @@ private extension SelfInPropertyInitializationRule {
                 return
             }
 
-            let visitor = IdentifierUsageVisitor(identifier: .keyword(.self))
+            let visitor = IdentifierUsageVisitor(viewMode: .sourceAccurate)
             for binding in node.bindings {
                 guard let initializer = binding.initializer,
                       visitor.walk(tree: initializer.value, handler: \.isTokenUsed) else {
@@ -116,16 +122,12 @@ private extension SelfInPropertyInitializationRule {
 }
 
 private final class IdentifierUsageVisitor: SyntaxVisitor {
-    let identifier: TokenKind
     private(set) var isTokenUsed = false
 
-    init(identifier: TokenKind) {
-        self.identifier = identifier
-        super.init(viewMode: .sourceAccurate)
-    }
-
     override func visitPost(_ node: DeclReferenceExprSyntax) {
-        if node.baseName.tokenKind == identifier, node.keyPathInParent != \MemberAccessExprSyntax.declName {
+        if node.baseName.tokenKind == .keyword(.self),
+           node.keyPathInParent != \MemberAccessExprSyntax.declName,
+           node.keyPathInParent != \KeyPathPropertyComponentSyntax.declName {
             isTokenUsed = true
         }
     }

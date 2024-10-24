@@ -38,6 +38,20 @@ struct UnusedImportRuleExamples {
                 ] as [String: any Sendable],
             ],
         ]),
+        Example("""
+        import SwiftUI
+
+        final class EditMode: ObservableObject {
+            @Published var isEditing = false
+        }
+        """, configuration: [
+            "allowed_transitive_imports": [
+                [
+                    "module": "SwiftUI",
+                    "allowed_transitive_imports": ["Foundation"],
+                ] as [String: any Sendable],
+            ],
+        ], excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [

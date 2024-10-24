@@ -23,6 +23,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5787](https://github.com/realm/SwiftLint/issues/5787)
 
+* Do not trigger `self_in_property_initialization` rule on `self` in
+  key paths expressions.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5835](https://github.com/realm/SwiftLint/issues/5835)
+
 * Do not throw deprecation warning if deprecated property is not
   presented in configuration.  
   [chipp](https://github.com/chipp)

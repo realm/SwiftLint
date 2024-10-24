@@ -103,6 +103,12 @@ final class ClosureSpacingRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class CognitiveComplexityRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(CognitiveComplexityRule.description)
+    }
+}
+
 final class CollectionAlignmentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CollectionAlignmentRule.description)

@@ -514,6 +514,11 @@ can do so by passing the option `--use-script-input-files` and setting the
 following instance variables: `SCRIPT_INPUT_FILE_COUNT`
 and `SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`, ...,
 `SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT - 1}`.
+Similarly, files can be read from file lists by passing
+the option `--use-script-input-file-lists` and setting the
+following instance variables: `SCRIPT_INPUT_FILE_LIST_COUNT`
+and `SCRIPT_INPUT_FILE_LIST_0`, `SCRIPT_INPUT_FILE_LIST_1`, ...,
+`SCRIPT_INPUT_FILE_LIST_{SCRIPT_INPUT_FILE_LIST_COUNT - 1}`.
 
 These are same environment variables set for input files to
 [custom Xcode script phases](http://indiestack.com/2014/12/speeding-up-custom-script-phases/).

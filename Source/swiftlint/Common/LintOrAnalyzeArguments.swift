@@ -31,6 +31,8 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var useAlternativeExcluding = false
     @Flag(help: "Read SCRIPT_INPUT_FILE* environment variables as files.")
     var useScriptInputFiles = false
+    @Flag(help: "Read SCRIPT_INPUT_FILE_LIST* environment variables as file lists.")
+    var useScriptInputFileLists = false
     @Flag(exclusivity: .exclusive)
     var leniency: LeniencyOptions?
     @Flag(help: "Exclude files in config `excluded` even if their paths are explicitly specified.")

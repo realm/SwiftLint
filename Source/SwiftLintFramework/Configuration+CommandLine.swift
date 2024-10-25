@@ -11,16 +11,8 @@ private actor CounterActor {
     }
 }
 
-private func scriptInputFiles() throws -> [SwiftLintFile] {
-    let inputFileKey = "SCRIPT_INPUT_FILE_COUNT"
-    guard let countString = ProcessInfo.processInfo.environment[inputFileKey] else {
-        throw SwiftLintError.usageError(description: "\(inputFileKey) variable not set")
-    }
-
-    guard let count = Int(countString) else {
-        throw SwiftLintError.usageError(description: "\(inputFileKey) did not specify a number")
-    }
-
+private func readFilesFromScriptInputFiles() throws -> [SwiftLintFile] {
+    let count = try fileCount(from: "SCRIPT_INPUT_FILE_COUNT")
     return (0..<count).compactMap { fileNumber in
         do {
             let environment = ProcessInfo.processInfo.environment
@@ -37,6 +29,44 @@ private func scriptInputFiles() throws -> [SwiftLintFile] {
             return nil
         }
     }
+}
+
+private func readFilesFromScriptInputFileLists() throws -> [SwiftLintFile] {
+    let count = try fileCount(from: "SCRIPT_INPUT_FILE_LIST_COUNT")
+    return (0..<count).flatMap { fileNumber in
+        var filesToLint: [SwiftLintFile] = []
+        do {
+            let environment = ProcessInfo.processInfo.environment
+            let variable = "SCRIPT_INPUT_FILE_LIST_\(fileNumber)"
+            guard let path = environment[variable] else {
+                throw SwiftLintError.usageError(description: "Environment variable not set: \(variable)")
+            }
+            if path.bridge().pathExtension == "xcfilelist" {
+                guard let fileContents = FileManager.default.contents(atPath: path),
+                      let textContents = String(data: fileContents, encoding: .utf8) else {
+                    throw SwiftLintError.usageError(description: "Could not read file list at: \(path)")
+                }
+                textContents.enumerateLines { line, _ in
+                    if line.isSwiftFile() {
+                        filesToLint.append(SwiftLintFile(pathDeferringReading: line))
+                    }
+                }
+            }
+        } catch {
+            queuedPrintError(String(describing: error))
+        }
+        return filesToLint
+    }
+}
+
+private func fileCount(from envVar: String) throws -> Int {
+    guard let countString = ProcessInfo.processInfo.environment[envVar] else {
+        throw SwiftLintError.usageError(description: "\(envVar) variable not set")
+    }
+    guard let count = Int(countString) else {
+        throw SwiftLintError.usageError(description: "\(envVar) did not specify a number")
+    }
+    return count
 }
 
 #if os(Linux)
@@ -220,8 +250,10 @@ extension Configuration {
             }
             throw SwiftLintError.usageError(description: "stdin isn't a UTF8-encoded string")
         }
-        if options.useScriptInputFiles {
-            let files = try scriptInputFiles()
+        if options.useScriptInputFiles || options.useScriptInputFileLists {
+            let files = try options.useScriptInputFiles
+                ? readFilesFromScriptInputFiles()
+                : readFilesFromScriptInputFileLists()
             guard options.forceExclude else {
                 return files
             }

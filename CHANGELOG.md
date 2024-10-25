@@ -16,6 +16,11 @@
   [Jordan Rose](https://github.com/jrose-signal)
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Support reading files to lint from Input File Lists provided
+  by Run Script Build Phases in Xcode using the command-line
+  argument `--use-script-input-file-lists`.  
+  [BlueVirusX](https://github.com/BlueVirusX)
+
 #### Bug Fixes
 
 * Run command plugin in whole package if no targets are defined in the

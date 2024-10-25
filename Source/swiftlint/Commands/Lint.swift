@@ -43,6 +43,7 @@ extension SwiftLint {
                 forceExclude: common.forceExclude,
                 useExcludingByPrefix: common.useAlternativeExcluding,
                 useScriptInputFiles: common.useScriptInputFiles,
+                useScriptInputFileLists: common.useScriptInputFileLists,
                 benchmark: common.benchmark,
                 reporter: common.reporter,
                 baseline: common.baseline,

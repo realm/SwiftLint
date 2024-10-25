@@ -834,7 +834,12 @@ plugin, or modified files in the working tree based on <code>git ls-files -m</co
 can do so by passing the option <code>--use-script-input-files</code> and setting the
 following instance variables: <code>SCRIPT_INPUT_FILE_COUNT</code>
 and <code>SCRIPT_INPUT_FILE_0</code>, <code>SCRIPT_INPUT_FILE_1</code>, &hellip;,
-<code>SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT - 1}</code>.</p>
+<code>SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT - 1}</code>.
+Similarly, files can be read from file lists by passing
+the option <code>--use-script-input-file-lists</code> and setting the
+following instance variables: <code>SCRIPT_INPUT_FILE_LIST_COUNT</code>
+and <code>SCRIPT_INPUT_FILE_LIST_0</code>, <code>SCRIPT_INPUT_FILE_LIST_1</code>, &hellip;,
+<code>SCRIPT_INPUT_FILE_LIST_{SCRIPT_INPUT_FILE_LIST_COUNT - 1}</code>.</p>
 
 <p>These are same environment variables set for input files to
 <a href="http://indiestack.com/2014/12/speeding-up-custom-script-phases/">custom Xcode script phases</a>.</p>

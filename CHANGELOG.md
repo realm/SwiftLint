@@ -33,6 +33,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5835](https://github.com/realm/SwiftLint/issues/5835)
 
+* Allow to specify transitive modules to be taken into account by
+  `unused_import` rule. This avoids that required imports are removed.  
+  [Paul Taykalo](https://github.com/PaulTaykalo)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5167](https://github.com/realm/SwiftLint/issues/5167)
+
 * Do not throw deprecation warning if deprecated property is not
   presented in configuration.  
   [chipp](https://github.com/chipp)

@@ -3,7 +3,7 @@ import XCTest
 
 final class ImplicitGetterRuleTests: SwiftLintTestCase {
     func testPropertyReason() throws {
-        let config = try XCTUnwrap(makeConfig(nil, ImplicitGetterRule.description.identifier))
+        let config = try XCTUnwrap(makeConfig(nil, ImplicitGetterRule.identifier))
         let example = Example("""
         class Foo {
             var foo: Int {
@@ -20,7 +20,7 @@ final class ImplicitGetterRuleTests: SwiftLintTestCase {
     }
 
     func testSubscriptReason() throws {
-        let config = try XCTUnwrap(makeConfig(nil, ImplicitGetterRule.description.identifier))
+        let config = try XCTUnwrap(makeConfig(nil, ImplicitGetterRule.identifier))
         let example = Example("""
         class Foo {
             subscript(i: Int) -> Int {

@@ -200,7 +200,7 @@ final class NestingRuleTests: SwiftLintTestCase {
         })
 
         let description = RuleDescription(
-            identifier: NestingRule.description.identifier,
+            identifier: NestingRule.identifier,
             name: NestingRule.description.name,
             description: NestingRule.description.description,
             kind: .metrics,
@@ -499,7 +499,7 @@ final class NestingRuleTests: SwiftLintTestCase {
         ])
 
         let description = RuleDescription(
-            identifier: NestingRule.description.identifier,
+            identifier: NestingRule.identifier,
             name: NestingRule.description.name,
             description: NestingRule.description.description,
             kind: .metrics,

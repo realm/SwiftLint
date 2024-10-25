@@ -39,7 +39,7 @@ final class ImplicitlyUnwrappedOptionalConfigurationTests: SwiftLintTestCase {
                 mode: .allExceptIBOutlets
             )
 
-            checkError(Issue.invalidConfiguration(ruleID: ImplicitlyUnwrappedOptionalRule.description.identifier)) {
+            checkError(Issue.invalidConfiguration(ruleID: ImplicitlyUnwrappedOptionalRule.identifier)) {
                 try configuration.apply(configuration: badConfig)
             }
         }

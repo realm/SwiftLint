@@ -282,7 +282,7 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         configDict["include_compiler_directives"] = includeCompilerDirectives
         configDict["include_multiline_strings"] = includeMultilineStrings
 
-        guard let config = makeConfig(configDict, IndentationWidthRule.description.identifier) else {
+        guard let config = makeConfig(configDict, IndentationWidthRule.identifier) else {
             XCTFail("Unable to create rule configuration.", file: (file), line: line)
             return 0
         }

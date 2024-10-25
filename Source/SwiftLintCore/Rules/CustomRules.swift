@@ -90,7 +90,7 @@ struct CustomRules: Rule, CacheDescriptionProvider {
     func canBeDisabled(violation: StyleViolation, by ruleID: RuleIdentifier) -> Bool {
         switch ruleID {
         case let .single(identifier: id):
-            id == Self.description.identifier
+            id == Self.identifier
                 ? customRuleIdentifiers.contains(violation.ruleIdentifier)
                 : customRuleIdentifiers.contains(id) && violation.ruleIdentifier == id
         default:
@@ -101,10 +101,10 @@ struct CustomRules: Rule, CacheDescriptionProvider {
     func isEnabled(in region: Region, for ruleID: String) -> Bool {
         if !Self.description.allIdentifiers.contains(ruleID),
            !customRuleIdentifiers.contains(ruleID),
-           Self.description.identifier != ruleID {
+           Self.identifier != ruleID {
             return true
         }
-        return !region.disabledRuleIdentifiers.contains(RuleIdentifier(Self.description.identifier))
+        return !region.disabledRuleIdentifiers.contains(RuleIdentifier(Self.identifier))
             && !region.disabledRuleIdentifiers.contains(RuleIdentifier(ruleID))
             && !region.disabledRuleIdentifiers.contains(.all)
     }

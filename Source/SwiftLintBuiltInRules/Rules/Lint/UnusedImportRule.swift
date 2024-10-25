@@ -84,7 +84,7 @@ struct UnusedImportRule: CorrectableRule, AnalyzerRule {
 
     private func importUsage(in file: SwiftLintFile, compilerArguments: [String]) -> [ImportUsage] {
         guard compilerArguments.isNotEmpty else {
-            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.identifier).print()
             return []
         }
 
@@ -162,7 +162,7 @@ private extension SwiftLintFile {
                 file: path!, offset: token.offset, arguments: compilerArguments
             )
             guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled()).map(SourceKittenDictionary.init) else {
-                Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.description.identifier).print()
+                Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.identifier).print()
                 continue
             }
             if nextIsModuleImport {
@@ -197,7 +197,7 @@ private extension SwiftLintFile {
     func operatorImports(arguments: [String], processedTokenOffsets: Set<ByteCount>) -> Set<String> {
         guard let index = (try? Request.index(file: path!, arguments: arguments).sendIfNotDisabled())
             .map(SourceKittenDictionary.init) else {
-            Issue.indexingError(path: path, ruleID: UnusedImportRule.description.identifier).print()
+            Issue.indexingError(path: path, ruleID: UnusedImportRule.identifier).print()
             return []
         }
 
@@ -220,7 +220,7 @@ private extension SwiftLintFile {
                 )
                 guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled())
                     .map(SourceKittenDictionary.init) else {
-                    Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.description.identifier).print()
+                    Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.identifier).print()
                     continue
                 }
 

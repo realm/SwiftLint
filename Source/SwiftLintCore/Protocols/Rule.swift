@@ -147,7 +147,7 @@ public extension Rule {
 }
 
 public extension Rule {
-    /// The rule's unique identifier which is the same as `Rule.description.identifier`.
+    /// The rule's unique identifier which is the same as `Rule.identifier`.
     static var identifier: String { description.identifier }
 }
 

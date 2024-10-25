@@ -2,7 +2,7 @@ import SwiftSyntax
 
 // TODO: [12/22/2024] Remove deprecation warning after ~2 years.
 private let warnDeprecatedOnceImpl: Void = {
-    Issue.ruleDeprecated(ruleID: UnusedCaptureListRule.description.identifier).print()
+    Issue.ruleDeprecated(ruleID: UnusedCaptureListRule.identifier).print()
 }()
 
 private func warnDeprecatedOnce() {

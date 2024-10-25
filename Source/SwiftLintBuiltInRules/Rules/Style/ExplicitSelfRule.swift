@@ -42,7 +42,7 @@ struct ExplicitSelfRule: CorrectableRule, AnalyzerRule {
 
     private func violationRanges(in file: SwiftLintFile, compilerArguments: [String]) -> [NSRange] {
         guard compilerArguments.isNotEmpty else {
-            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.identifier).print()
             return []
         }
 
@@ -69,7 +69,7 @@ struct ExplicitSelfRule: CorrectableRule, AnalyzerRule {
 
         return cursorsMissingExplicitSelf.compactMap { cursorInfo in
             guard let byteOffset = (cursorInfo["swiftlint.offset"] as? Int64).flatMap(ByteCount.init) else {
-                Issue.genericWarning("Cannot convert offsets in '\(Self.description.identifier)' rule.").print()
+                Issue.genericWarning("Cannot convert offsets in '\(Self.identifier)' rule.").print()
                 return nil
             }
 

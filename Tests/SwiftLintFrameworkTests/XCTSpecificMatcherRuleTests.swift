@@ -181,7 +181,7 @@ final class XCTSpecificMatcherRuleTests: SwiftLintTestCase {
     }
 
     private func violations(_ example: Example) -> [StyleViolation] {
-        guard let config = makeConfig(nil, XCTSpecificMatcherRule.description.identifier) else { return [] }
+        guard let config = makeConfig(nil, XCTSpecificMatcherRule.identifier) else { return [] }
         return SwiftLintFrameworkTests.violations(example, config: config)
     }
 

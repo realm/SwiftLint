@@ -30,18 +30,18 @@ struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
 
     func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> Self.FileUSRs {
         guard compilerArguments.isNotEmpty else {
-            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.identifier).print()
             return .empty
         }
 
         guard let index = file.index(compilerArguments: compilerArguments), index.value.isNotEmpty else {
-            Issue.indexingError(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.indexingError(path: file.path, ruleID: Self.identifier).print()
             return .empty
         }
 
         guard let editorOpen = (try? Request.editorOpen(file: file.file).sendIfNotDisabled())
                 .map(SourceKittenDictionary.init) else {
-            Issue.fileNotReadable(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.fileNotReadable(path: file.path, ruleID: Self.identifier).print()
             return .empty
         }
 

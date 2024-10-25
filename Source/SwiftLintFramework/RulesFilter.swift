@@ -26,7 +26,7 @@ package final class RulesFilter {
 
         let filtered: [any Rule.Type] = allRules.list.compactMap { ruleID, ruleType in
             let enabledRule = enabledRules.first { rule in
-                type(of: rule).description.identifier == ruleID
+                type(of: rule).identifier == ruleID
             }
             let isRuleEnabled = enabledRule != nil
 

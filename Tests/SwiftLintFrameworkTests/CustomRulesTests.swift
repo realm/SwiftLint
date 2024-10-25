@@ -66,7 +66,7 @@ final class CustomRulesTests: SwiftLintTestCase {
     func testCustomRuleConfigurationThrows() {
         let config = 17
         var customRulesConfig = CustomRulesConfiguration()
-        checkError(Issue.invalidConfiguration(ruleID: CustomRules.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: CustomRules.identifier)) {
             try customRulesConfig.apply(configuration: config)
         }
     }
@@ -106,7 +106,7 @@ final class CustomRulesTests: SwiftLintTestCase {
 
         XCTAssertEqual(customRulesConfig.customRuleConfigurations.count, 1)
 
-        let identifier = customRulesConfig.customRuleConfigurations.first?.description.identifier
+        let identifier = customRulesConfig.customRuleConfigurations.first?.identifier
         XCTAssertEqual(identifier, "my_custom_rule")
     }
 
@@ -570,7 +570,7 @@ final class CustomRulesTests: SwiftLintTestCase {
 
 private extension StyleViolation {
     func isSuperfluousDisableCommandViolation(for ruleIdentifier: String) -> Bool {
-        self.ruleIdentifier == SuperfluousDisableCommandRule.description.identifier &&
+        self.ruleIdentifier == SuperfluousDisableCommandRule.identifier &&
             reason.contains("SwiftLint rule '\(ruleIdentifier)' did not trigger a violation")
     }
 }

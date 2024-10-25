@@ -31,10 +31,10 @@ struct RuleDocumentation {
     var ruleName: String { ruleType.description.name }
 
     /// The identifier of the documented rule.
-    var ruleIdentifier: String { ruleType.description.identifier }
+    var ruleIdentifier: String { ruleType.identifier }
 
     /// The name of the file on disk for this rule documentation.
-    var fileName: String { "\(ruleType.description.identifier).md" }
+    var fileName: String { "\(ruleType.identifier).md" }
 
     /// The contents of the file for this rule documentation.
     var fileContents: String {
@@ -81,7 +81,7 @@ private func h2(_ text: String) -> String { "## \(text)" }
 
 private func detailsSummary(_ rule: some Rule) -> String {
     let ruleDescription = """
-        * **Identifier:** `\(type(of: rule).description.identifier)`
+        * **Identifier:** `\(type(of: rule).identifier)`
         * **Enabled by default:** \(rule is any OptInRule ? "No" : "Yes")
         * **Supports autocorrection:** \(rule is any CorrectableRule ? "Yes" : "No")
         * **Kind:** \(type(of: rule).description.kind)

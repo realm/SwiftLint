@@ -33,14 +33,14 @@ final class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
 
     func testInvalidTypeOfCustomConfiguration() {
         var config = ExplicitTypeInterfaceConfiguration()
-        checkError(Issue.invalidConfiguration(ruleID: ExplicitTypeInterfaceRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: ExplicitTypeInterfaceRule.identifier)) {
             try config.apply(configuration: "invalidKey")
         }
     }
 
     func testInvalidTypeOfValueInCustomConfiguration() {
         var config = ExplicitTypeInterfaceConfiguration()
-        checkError(Issue.invalidConfiguration(ruleID: ExplicitTypeInterfaceRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: ExplicitTypeInterfaceRule.identifier)) {
             try config.apply(configuration: ["severity": "foo"])
         }
     }

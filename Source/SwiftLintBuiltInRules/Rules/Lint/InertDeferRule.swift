@@ -2,7 +2,7 @@ import SwiftSyntax
 
 // TODO: [12/23/2024] Remove deprecation warning after ~2 years.
 private let warnDeprecatedOnceImpl: Void = {
-    Issue.ruleDeprecated(ruleID: InertDeferRule.description.identifier).print()
+    Issue.ruleDeprecated(ruleID: InertDeferRule.identifier).print()
 }()
 
 private func warnDeprecatedOnce() {

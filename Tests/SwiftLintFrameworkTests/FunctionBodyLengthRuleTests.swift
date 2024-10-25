@@ -101,7 +101,7 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
     }
 
     private func violations(_ example: Example, configuration: Any? = nil) -> [StyleViolation] {
-        let config = makeConfig(configuration, FunctionBodyLengthRule.description.identifier)!
+        let config = makeConfig(configuration, FunctionBodyLengthRule.identifier)!
         return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

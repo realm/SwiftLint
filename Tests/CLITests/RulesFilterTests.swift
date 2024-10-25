@@ -23,7 +23,7 @@ final class RulesFilterTests: XCTestCase {
 
         XCTAssertEqual(
             Set(filteredRules.list.keys),
-            Set([RuleMock2.description.identifier])
+            Set([RuleMock2.identifier])
         )
     }
 
@@ -48,7 +48,7 @@ final class RulesFilterTests: XCTestCase {
 
         XCTAssertEqual(
             Set(filteredRules.list.keys),
-            Set([RuleMock1.description.identifier, CorrectableRuleMock.description.identifier])
+            Set([RuleMock1.identifier, CorrectableRuleMock.identifier])
         )
     }
 
@@ -73,7 +73,7 @@ final class RulesFilterTests: XCTestCase {
 
         XCTAssertEqual(
             Set(filteredRules.list.keys),
-            Set([CorrectableRuleMock.description.identifier])
+            Set([CorrectableRuleMock.identifier])
         )
     }
 
@@ -98,7 +98,7 @@ final class RulesFilterTests: XCTestCase {
 
         XCTAssertEqual(
             Set(filteredRules.list.keys),
-            Set([CorrectableRuleMock.description.identifier])
+            Set([CorrectableRuleMock.identifier])
         )
     }
 
@@ -122,7 +122,7 @@ final class RulesFilterTests: XCTestCase {
 
         XCTAssertEqual(
             Set(filteredRules.list.keys),
-            Set([CorrectableRuleMock.description.identifier])
+            Set([CorrectableRuleMock.identifier])
         )
     }
 }

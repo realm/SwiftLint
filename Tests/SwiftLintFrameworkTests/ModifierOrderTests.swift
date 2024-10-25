@@ -383,7 +383,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
     }
 
     func testViolationMessage() {
-        let ruleID = ModifierOrderRule.description.identifier
+        let ruleID = ModifierOrderRule.identifier
         guard let config = makeConfig(["preferred_modifier_order": ["acl", "final"]], ruleID) else {
             XCTFail("Failed to create configuration")
             return

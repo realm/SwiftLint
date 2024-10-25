@@ -27,7 +27,7 @@ public struct RuleList {
         var tmpAliases = [String: String]()
 
         for rule in rules {
-            let identifier = rule.description.identifier
+            let identifier = rule.identifier
             tmpList[identifier] = rule
             for alias in rule.description.deprecatedAliases {
                 tmpAliases[alias] = identifier

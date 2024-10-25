@@ -48,6 +48,15 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5788](https://github.com/realm/SwiftLint/issues/5788)
 
+* Fixes the `--only-rule` command line option, when a default `.swiftlint.yml`
+  is absent. Additionally rules specified with `--only-rule` on the command
+  line can now be disabled in a child configuration, to allow specific
+  directories to be excluded from the rule (or from being auto-corrected by
+  the rule), and `--only-rule` can now be specified multiple times
+  to run multiple rules.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5711](https://github.com/realm/SwiftLint/issues/5711)
+
 ## 0.57.0: Squeaky Clean Cycle
 
 #### Breaking

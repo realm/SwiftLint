@@ -147,7 +147,7 @@ public struct Configuration {
     /// - parameter writeBaseline:          The path to write a baseline to.
     /// - parameter checkForUpdates:        Check for updates to SwiftLint.
     package init(
-        rulesMode: RulesMode = .default(disabled: [], optIn: []),
+        rulesMode: RulesMode = .defaultConfiguration(disabled: [], optIn: []),
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
         ruleList: RuleList = RuleRegistry.shared.list,
         fileGraph: FileGraph? = nil,
@@ -210,7 +210,7 @@ public struct Configuration {
     public init(
         configurationFiles: [String], // No default value here to avoid ambiguous Configuration() initializer
         enableAllRules: Bool = false,
-        onlyRule: String? = nil,
+        onlyRule: [String] = [],
         cachePath: String? = nil,
         ignoreParentAndChildConfigs: Bool = false,
         mockedNetworkResults: [String: String] = [:],
@@ -230,7 +230,13 @@ public struct Configuration {
         defer { basedOnCustomConfigurationFiles = hasCustomConfigurationFiles }
 
         let currentWorkingDirectory = FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
-        let rulesMode: RulesMode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
+        let rulesMode: RulesMode = if enableAllRules {
+            .allCommandLine
+        } else if onlyRule.isNotEmpty {
+            .onlyCommandLine(Set(onlyRule))
+        } else {
+            .defaultConfiguration(disabled: [], optIn: [])
+        }
 
         // Try obtaining cached config
         let cacheIdentifier = "\(currentWorkingDirectory) - \(configurationFiles)"

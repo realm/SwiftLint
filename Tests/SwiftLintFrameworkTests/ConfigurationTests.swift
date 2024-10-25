@@ -90,11 +90,25 @@ final class ConfigurationTests: SwiftLintTestCase {
     func testOnlyRule() throws {
         let configuration = try Configuration(
             dict: [:],
-            onlyRule: "nesting",
+            onlyRule: ["nesting"],
             cachePath: nil
         )
 
         XCTAssertEqual(configuration.rules.count, 1)
+    }
+
+    func testOnlyRuleMultiple() throws {
+        let onlyRuleIdentifiers = ["nesting", "todo"].sorted()
+        let configuration = try Configuration(
+            dict: ["only_rules": "line_length"],
+            onlyRule: onlyRuleIdentifiers,
+            cachePath: nil
+        )
+        XCTAssertEqual(onlyRuleIdentifiers, configuration.enabledRuleIdentifiers)
+
+        let childConfiguration = try Configuration(dict: ["disabled_rules": onlyRuleIdentifiers.last ?? ""])
+        let mergedConfiguration = configuration.merged(withChild: childConfiguration)
+        XCTAssertEqual(onlyRuleIdentifiers.dropLast(), mergedConfiguration.enabledRuleIdentifiers)
     }
 
     func testOnlyRules() throws {
@@ -180,10 +194,7 @@ final class ConfigurationTests: SwiftLintTestCase {
                        "initializing Configuration with valid rules in YAML string should succeed")
         let expectedIdentifiers = Set(RuleRegistry.shared.list.list.keys
             .filter({ !([validRule] + optInRules).contains($0) }))
-        let configuredIdentifiers = Set(configuration.rules.map {
-            type(of: $0).description.identifier
-        })
-        XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
+        XCTAssertEqual(expectedIdentifiers, Set(configuration.enabledRuleIdentifiers))
     }
 
     func testDuplicatedRules() {
@@ -590,5 +601,13 @@ extension ConfigurationTests {
 private extension Sequence where Element == String {
     func absolutePathsStandardized() -> [String] {
         map { $0.absolutePathStandardized() }
+    }
+}
+
+private extension Configuration {
+    var enabledRuleIdentifiers: [String] {
+        rules.map {
+            type(of: $0).identifier
+        }.sorted()
     }
 }

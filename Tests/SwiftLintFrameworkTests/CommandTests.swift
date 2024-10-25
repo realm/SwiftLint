@@ -393,7 +393,9 @@ final class CommandTests: SwiftLintTestCase {
     }
 
     func testSuperfluousDisableCommandsDisabledOnConfiguration() {
-        let rulesMode = Configuration.RulesMode.default(disabled: ["superfluous_disable_command"], optIn: [])
+        let rulesMode = Configuration.RulesMode.defaultConfiguration(
+            disabled: ["superfluous_disable_command"], optIn: []
+        )
         let configuration = Configuration(rulesMode: rulesMode)
 
         XCTAssertEqual(
@@ -456,7 +458,7 @@ final class CommandTests: SwiftLintTestCase {
 
     func testSuperfluousDisableCommandsEnabledForAnalyzer() {
         let configuration = Configuration(
-            rulesMode: .default(disabled: [], optIn: [UnusedDeclarationRule.description.identifier])
+            rulesMode: .defaultConfiguration(disabled: [], optIn: [UnusedDeclarationRule.identifier])
         )
         let violations = violations(
             Example("""

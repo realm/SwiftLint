@@ -147,7 +147,7 @@ extension MockCollectingRule {
         RuleDescription(identifier: "test_rule", name: "", description: "", kind: .lint)
     }
     static var configuration: Configuration? {
-        Configuration(rulesMode: .only([description.identifier]), ruleList: RuleList(rules: self))
+        Configuration(rulesMode: .onlyConfiguration([identifier]), ruleList: RuleList(rules: self))
     }
 
     init(configuration _: Any) throws { self.init() }

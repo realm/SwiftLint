@@ -13,8 +13,11 @@ extension SwiftLint {
         var compilerLogPath: String?
         @Option(help: "The path of a compilation database to use when running AnalyzerRules.")
         var compileCommands: String?
-        @Option(help: "Run only the specified rule, ignoring `only_rules`, `opt_in_rules` and `disabled_rules`.")
-        var onlyRule: String?
+        @Option(
+            parsing: .singleValue,
+            help: "Run only the specified rule, ignoring `only_rules`, `opt_in_rules` and `disabled_rules`."
+        )
+        var onlyRule: [String]
         @Argument(help: pathsArgumentDescription(for: .analyze))
         var paths = [String]()
 

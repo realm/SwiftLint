@@ -42,7 +42,8 @@
   is absent. Additionally rules specified with `--only-rule` on the command
   line can now be disabled in a child configuration, to allow specific
   directories to be excluded from the rule (or from being auto-corrected by
-  the rule).  
+  the rule), and `--only-rule` can now be specified multiple times
+  to run multiple rules.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#5711](https://github.com/realm/SwiftLint/issues/5711)
 

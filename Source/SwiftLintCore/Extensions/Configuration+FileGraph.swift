@@ -41,7 +41,7 @@ package extension Configuration {
         // MARK: - Methods
         internal mutating func resultingConfiguration(
             enableAllRules: Bool,
-            onlyRule: String?,
+            onlyRule: [String],
             cachePath: String?
         ) throws -> Configuration {
             // Build if needed
@@ -250,7 +250,7 @@ package extension Configuration {
         private func merged(
             configurationData: [(configurationDict: [String: Any], rootDirectory: String)],
             enableAllRules: Bool,
-            onlyRule: String?,
+            onlyRule: [String],
             cachePath: String?
         ) throws -> Configuration {
             // Split into first & remainder; use empty dict for first if the array is empty

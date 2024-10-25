@@ -210,7 +210,7 @@ public struct Configuration {
     public init(
         configurationFiles: [String], // No default value here to avoid ambiguous Configuration() initializer
         enableAllRules: Bool = false,
-        onlyRule: String? = nil,
+        onlyRule: [String] = [],
         cachePath: String? = nil,
         ignoreParentAndChildConfigs: Bool = false,
         mockedNetworkResults: [String: String] = [:],
@@ -232,8 +232,8 @@ public struct Configuration {
         let currentWorkingDirectory = FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
         let rulesMode: RulesMode = if enableAllRules {
             .allCommandLine
-        } else if let onlyRule {
-            .onlyCommandLine([onlyRule])
+        } else if onlyRule.isNotEmpty {
+            .onlyCommandLine(Set(onlyRule))
         } else {
             .defaultConfiguration(disabled: [], optIn: [])
         }

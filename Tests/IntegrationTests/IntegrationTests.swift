@@ -54,7 +54,7 @@ final class IntegrationTests: SwiftLintTestCase {
     }
 
     func testDefaultConfigurations() {
-        let defaultConfig = Configuration(rulesMode: .allEnabled).rules
+        let defaultConfig = Configuration(rulesMode: .allCommandLine).rules
             .map { type(of: $0) }
             .filter { $0.identifier != "custom_rules" }
             .map {

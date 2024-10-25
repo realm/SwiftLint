@@ -147,7 +147,7 @@ public struct Configuration {
     /// - parameter writeBaseline:          The path to write a baseline to.
     /// - parameter checkForUpdates:        Check for updates to SwiftLint.
     package init(
-        rulesMode: RulesMode = .default(disabled: [], optIn: []),
+        rulesMode: RulesMode = .defaultConfiguration(disabled: [], optIn: []),
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
         ruleList: RuleList = RuleRegistry.shared.list,
         fileGraph: FileGraph? = nil,
@@ -231,11 +231,11 @@ public struct Configuration {
 
         let currentWorkingDirectory = FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
         let rulesMode: RulesMode = if enableAllRules {
-            .allEnabled
+            .allCommandLine
         } else if let onlyRule {
-            .onlyRule([onlyRule])
+            .onlyCommandLine([onlyRule])
         } else {
-            .default(disabled: [], optIn: [])
+            .defaultConfiguration(disabled: [], optIn: [])
         }
 
         // Try obtaining cached config

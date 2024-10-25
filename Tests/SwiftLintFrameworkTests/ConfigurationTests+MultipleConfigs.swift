@@ -52,7 +52,7 @@ extension ConfigurationTests {
 
     func testOnlyRulesMerging() {
         let baseConfiguration = Configuration(
-            rulesMode: .default(
+            rulesMode: .defaultConfiguration(
                 disabled: [],
                 optIn: [
                     ForceTryRule.description.identifier,
@@ -60,7 +60,7 @@ extension ConfigurationTests {
                 ]
             )
         )
-        let onlyConfiguration = Configuration(rulesMode: .only([TodoRule.description.identifier]))
+        let onlyConfiguration = Configuration(rulesMode: .onlyConfiguration([TodoRule.identifier]))
         XCTAssertTrue(baseConfiguration.contains(rule: TodoRule.self))
         XCTAssertEqual(onlyConfiguration.rules.count, 1)
         XCTAssertTrue(onlyConfiguration.rules[0] is TodoRule)
@@ -364,11 +364,11 @@ extension ConfigurationTests {
         XCTAssertTrue((ruleType as Any) is any OptInRule.Type)
         let ruleIdentifier = ruleType.description.identifier
         for testCase in testCases {
-            let parentConfiguration = Configuration(rulesMode: .default(
+            let parentConfiguration = Configuration(rulesMode: .defaultConfiguration(
                 disabled: testCase.disabledInParent ? [ruleIdentifier] : [],
                 optIn: testCase.optedInInParent ? [ruleIdentifier] : []
             ))
-            let childConfiguration = Configuration(rulesMode: .default(
+            let childConfiguration = Configuration(rulesMode: .defaultConfiguration(
                 disabled: testCase.disabledInChild ? [ruleIdentifier] : [],
                 optIn: testCase.optedInInChild ? [ruleIdentifier] : []
             ))
@@ -399,10 +399,10 @@ extension ConfigurationTests {
         let ruleIdentifier = ruleType.description.identifier
         for testCase in testCases {
             let parentConfiguration = Configuration(
-                rulesMode: .default(disabled: testCase.disabledInParent ? [ruleIdentifier] : [], optIn: [])
+                rulesMode: .defaultConfiguration(disabled: testCase.disabledInParent ? [ruleIdentifier] : [], optIn: [])
             )
             let childConfiguration = Configuration(
-                rulesMode: .default(disabled: testCase.disabledInChild ? [ruleIdentifier] : [], optIn: [])
+                rulesMode: .defaultConfiguration(disabled: testCase.disabledInChild ? [ruleIdentifier] : [], optIn: [])
             )
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration)
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
@@ -429,9 +429,9 @@ extension ConfigurationTests {
         let ruleType = ImplicitReturnRule.self
         XCTAssertTrue((ruleType as Any) is any OptInRule.Type)
         let ruleIdentifier = ruleType.description.identifier
-        let parentConfiguration = Configuration(rulesMode: .only([ruleIdentifier]))
+        let parentConfiguration = Configuration(rulesMode: .onlyConfiguration([ruleIdentifier]))
         for testCase in testCases {
-            let childConfiguration = Configuration(rulesMode: .default(
+            let childConfiguration = Configuration(rulesMode: .defaultConfiguration(
                 disabled: testCase.disabledInChild ? [ruleIdentifier] : [],
                 optIn: testCase.optedInInChild ? [ruleIdentifier] : []
             ))
@@ -467,10 +467,10 @@ extension ConfigurationTests {
         ]
 
         let configurations = [
-            Configuration(rulesMode: .default(disabled: [], optIn: [])),
-            Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier])),
-            Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier])),
-            Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [])),
+            Configuration(rulesMode: .defaultConfiguration(disabled: [], optIn: [])),
+            Configuration(rulesMode: .defaultConfiguration(disabled: [], optIn: [ruleIdentifier])),
+            Configuration(rulesMode: .defaultConfiguration(disabled: [ruleIdentifier], optIn: [ruleIdentifier])),
+            Configuration(rulesMode: .defaultConfiguration(disabled: [ruleIdentifier], optIn: [])),
         ]
 
         for parentConfiguration in parentConfigurations {
@@ -485,7 +485,7 @@ extension ConfigurationTests {
         configuration: Configuration,
         ruleType: any Rule.Type
     ) {
-        guard case .default(let disabledRules, let optInRules) = configuration.rulesMode else {
+        guard case .defaultConfiguration(let disabledRules, let optInRules) = configuration.rulesMode else {
             XCTFail("Configuration rulesMode was not the default")
             return
         }
@@ -656,23 +656,23 @@ extension ConfigurationTests {
 
 private extension Configuration {
     static func emptyDefaultConfiguration() -> Self {
-        Configuration(rulesMode: .default(disabled: [], optIn: []))
+        Configuration(rulesMode: .defaultConfiguration(disabled: [], optIn: []))
     }
     static func optInDefaultConfiguration(_ ruleIdentifier: String) -> Self {
-        Configuration(rulesMode: .default(disabled: [], optIn: [ruleIdentifier]))
+        Configuration(rulesMode: .defaultConfiguration(disabled: [], optIn: [ruleIdentifier]))
     }
     static func optInDisabledDefaultConfiguration(_ ruleIdentifier: String) -> Self {
-        Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: [ruleIdentifier]))
+        Configuration(rulesMode: .defaultConfiguration(disabled: [ruleIdentifier], optIn: [ruleIdentifier]))
     }
     static func disabledDefaultConfiguration(_ ruleIdentifier: String) -> Self {
-        Configuration(rulesMode: .default(disabled: [ruleIdentifier], optIn: []))
+        Configuration(rulesMode: .defaultConfiguration(disabled: [ruleIdentifier], optIn: []))
     }
-    static func emptyOnlyConfiguration() -> Self { Configuration(rulesMode: .only([])) }
+    static func emptyOnlyConfiguration() -> Self { Configuration(rulesMode: .onlyConfiguration([])) }
     static func enabledOnlyConfiguration(_ ruleIdentifier: String) -> Self {
-        Configuration(rulesMode: .only([ruleIdentifier]))
+        Configuration(rulesMode: .onlyConfiguration([ruleIdentifier]))
     }
-    static func allEnabledConfiguration() -> Self { Configuration(rulesMode: .allEnabled)}
+    static func allEnabledConfiguration() -> Self { Configuration(rulesMode: .allCommandLine)}
     static func onlyRuleConfiguration(_ ruleIdentifier: String) -> Self {
-        Configuration(rulesMode: .onlyRule([ruleIdentifier]))
+        Configuration(rulesMode: .onlyCommandLine([ruleIdentifier]))
     }
 }

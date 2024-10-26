@@ -278,15 +278,13 @@ package struct LintOrAnalyzeCommand {
         lenient: Bool,
         violations: [StyleViolation]
     ) -> [StyleViolation] {
-        // config file settings can be overridden by either `--strict` or `--lenient` command line options
-        let strict = (strict && !options.lenient) || options.strict
-        let lenient = (lenient && !options.strict) || options.lenient
+        let (strict, lenient) = options.leniency(strict: strict, lenient: lenient)
 
-        switch (lenient, strict) {
+        switch (strict, lenient) {
         case (false, false):
             return violations
 
-        case (true, false):
+        case (false, true):
             return violations.map {
                 if $0.severity == .error {
                     return $0.with(severity: .warning)
@@ -294,7 +292,7 @@ package struct LintOrAnalyzeCommand {
                 return $0
             }
 
-        case (false, true):
+        case (true, false):
             return violations.map {
                 if $0.severity == .warning {
                     return $0.with(severity: .error)
@@ -303,7 +301,7 @@ package struct LintOrAnalyzeCommand {
             }
 
         case (true, true):
-            queuedFatalError("Invalid command line or config options: 'lenient' and 'strict' are mutually exclusive.")
+            queuedFatalError("Invalid command line or config options: 'strict' and 'lenient' are mutually exclusive.")
         }
     }
 
@@ -399,8 +397,8 @@ private class LintOrAnalyzeResultBuilder {
     }
 }
 
-private extension LintOrAnalyzeOptions {
-    func writeToOutput(_ string: String) {
+extension LintOrAnalyzeOptions {
+    fileprivate func writeToOutput(_ string: String) {
         guard let outFile = output else {
             queuedPrint(string)
             return
@@ -415,6 +413,13 @@ private extension LintOrAnalyzeOptions {
         } catch {
             Issue.fileNotWritable(path: outFile).print()
         }
+    }
+
+    // config file settings can be overridden by either `--strict` or `--lenient` command line options
+    func leniency(strict: Bool, lenient: Bool) -> (Bool , Bool) {
+        let strict = (strict && !self.lenient) || self.strict
+        let lenient = (lenient && !self.strict) || self.lenient
+        return (strict, lenient)
     }
 }
 

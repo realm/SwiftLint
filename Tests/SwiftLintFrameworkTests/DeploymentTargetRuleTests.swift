@@ -35,7 +35,7 @@ final class DeploymentTargetRuleTests: SwiftLintTestCase {
     }
 
     private func violations(_ example: Example, config: Any?) -> [StyleViolation] {
-        guard let config = makeConfig(config, DeploymentTargetRule.description.identifier) else {
+        guard let config = makeConfig(config, DeploymentTargetRule.identifier) else {
             return []
         }
 

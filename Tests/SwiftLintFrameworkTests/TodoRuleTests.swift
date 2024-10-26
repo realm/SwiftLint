@@ -41,7 +41,7 @@ final class TodoRuleTests: SwiftLintTestCase {
     }
 
     private func violations(_ example: Example, config: Any? = nil) -> [StyleViolation] {
-        let config = makeConfig(config, TodoRule.description.identifier)!
+        let config = makeConfig(config, TodoRule.identifier)!
         return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

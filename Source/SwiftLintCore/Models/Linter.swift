@@ -89,7 +89,7 @@ private extension Rule {
             return nil
         }
 
-        let ruleID = Self.description.identifier
+        let ruleID = Self.identifier
 
         let violations: [StyleViolation]
         let ruleTime: (String, Double)?
@@ -351,7 +351,7 @@ public struct CollectedLinter {
             let totalTime = -start.timeIntervalSinceNow
             let fractionedTime = totalTime / TimeInterval(rules.count)
             ruleTimes = rules.compactMap { rule in
-                let id = type(of: rule).description.identifier
+                let id = type(of: rule).identifier
                 return (id, fractionedTime)
             }
         }
@@ -414,7 +414,7 @@ public struct CollectedLinter {
             .configuration.customRuleConfigurations.map { RuleIdentifier($0.identifier) } ?? []
         let allRuleIdentifiers = RuleRegistry.shared.list.allValidIdentifiers().map { RuleIdentifier($0) }
         let allValidIdentifiers = Set(allCustomIdentifiers + allRuleIdentifiers + [.all])
-        let superfluousRuleIdentifier = RuleIdentifier(SuperfluousDisableCommandRule.description.identifier)
+        let superfluousRuleIdentifier = RuleIdentifier(SuperfluousDisableCommandRule.identifier)
 
         return regions.flatMap { region in
             region.disabledRuleIdentifiers.filter({

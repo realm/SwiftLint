@@ -139,7 +139,7 @@ final class DeploymentTargetConfigurationTests: SwiftLintTestCase {
 
         for badConfig in badConfigs {
             var configuration = DeploymentTargetConfiguration()
-            checkError(Issue.invalidConfiguration(ruleID: DeploymentTargetRule.description.identifier)) {
+            checkError(Issue.invalidConfiguration(ruleID: DeploymentTargetRule.identifier)) {
                 try configuration.apply(configuration: badConfig)
             }
         }

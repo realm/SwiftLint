@@ -5,11 +5,11 @@ internal struct HashableConfigurationRuleWrapperWrapper: Hashable {
         lhs: Self, rhs: Self
     ) -> Bool {
         // Only use identifier for equality check (not taking config into account)
-        type(of: lhs.configurationRuleWrapper.rule).description.identifier
-            == type(of: rhs.configurationRuleWrapper.rule).description.identifier
+        type(of: lhs.configurationRuleWrapper.rule).identifier
+            == type(of: rhs.configurationRuleWrapper.rule).identifier
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(type(of: configurationRuleWrapper.rule).description.identifier)
+        hasher.combine(type(of: configurationRuleWrapper.rule).identifier)
     }
 }

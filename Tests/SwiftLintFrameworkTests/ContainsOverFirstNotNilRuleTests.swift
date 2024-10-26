@@ -21,7 +21,7 @@ final class ContainsOverFirstNotNilRuleTests: SwiftLintTestCase {
     // MARK: - Private
 
     private func violations(_ example: Example, config: Any? = nil) -> [StyleViolation] {
-        guard let config = makeConfig(config, ContainsOverFirstNotNilRule.description.identifier) else {
+        guard let config = makeConfig(config, ContainsOverFirstNotNilRule.identifier) else {
             return []
         }
 

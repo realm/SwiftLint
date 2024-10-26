@@ -120,7 +120,7 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
     }
 
     private func ruleViolations(_ example: Example, ruleConfiguration: Any? = nil) -> [StyleViolation] {
-        guard let config = makeConfig(ruleConfiguration, ComputedAccessorsOrderRule.description.identifier) else {
+        guard let config = makeConfig(ruleConfiguration, ComputedAccessorsOrderRule.identifier) else {
             return []
         }
 

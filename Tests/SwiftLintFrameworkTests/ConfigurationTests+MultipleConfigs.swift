@@ -55,8 +55,8 @@ extension ConfigurationTests {
             rulesMode: .defaultConfiguration(
                 disabled: [],
                 optIn: [
-                    ForceTryRule.description.identifier,
-                    ForceCastRule.description.identifier,
+                    ForceTryRule.identifier,
+                    ForceCastRule.identifier,
                 ]
             )
         )
@@ -78,7 +78,7 @@ extension ConfigurationTests {
     }
 
     func testOnlyRuleMerging() {
-        let ruleIdentifier = TodoRule.description.identifier
+        let ruleIdentifier = TodoRule.identifier
         let onlyRuleConfiguration = Configuration.onlyRuleConfiguration(ruleIdentifier)
 
         let emptyDefaultConfiguration = Configuration.emptyDefaultConfiguration()
@@ -90,7 +90,7 @@ extension ConfigurationTests {
         let mergedConfiguration2 = onlyRuleConfiguration.merged(withChild: disabledDefaultConfiguration)
         XCTAssertTrue(mergedConfiguration2.rules.isEmpty)
 
-        let enabledOnlyConfiguration = Configuration.enabledOnlyConfiguration(ForceTryRule.description.identifier)
+        let enabledOnlyConfiguration = Configuration.enabledOnlyConfiguration(ForceTryRule.identifier)
         let mergedConfiguration3 = onlyRuleConfiguration.merged(withChild: enabledOnlyConfiguration)
         XCTAssertEqual(mergedConfiguration3.rules.count, 1)
         XCTAssertTrue(mergedConfiguration3.rules[0] is TodoRule)
@@ -362,7 +362,7 @@ extension ConfigurationTests {
         XCTAssertEqual(testCases.unique.count, 4 * 4)
         let ruleType = ImplicitReturnRule.self
         XCTAssertTrue((ruleType as Any) is any OptInRule.Type)
-        let ruleIdentifier = ruleType.description.identifier
+        let ruleIdentifier = ruleType.identifier
         for testCase in testCases {
             let parentConfiguration = Configuration(rulesMode: .defaultConfiguration(
                 disabled: testCase.disabledInParent ? [ruleIdentifier] : [],
@@ -396,7 +396,7 @@ extension ConfigurationTests {
         XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = BlanketDisableCommandRule.self
         XCTAssertFalse(ruleType is any OptInRule.Type)
-        let ruleIdentifier = ruleType.description.identifier
+        let ruleIdentifier = ruleType.identifier
         for testCase in testCases {
             let parentConfiguration = Configuration(
                 rulesMode: .defaultConfiguration(disabled: testCase.disabledInParent ? [ruleIdentifier] : [], optIn: [])
@@ -428,7 +428,7 @@ extension ConfigurationTests {
         XCTAssertEqual(testCases.unique.count, 2 * 2)
         let ruleType = ImplicitReturnRule.self
         XCTAssertTrue((ruleType as Any) is any OptInRule.Type)
-        let ruleIdentifier = ruleType.description.identifier
+        let ruleIdentifier = ruleType.identifier
         let parentConfiguration = Configuration(rulesMode: .onlyConfiguration([ruleIdentifier]))
         for testCase in testCases {
             let childConfiguration = Configuration(rulesMode: .defaultConfiguration(
@@ -635,8 +635,8 @@ extension ConfigurationTests {
         )
 
         XCTAssertEqual(
-            configuration1.rules.map { type(of: $0).description.identifier },
-            configuration2.rules.map { type(of: $0).description.identifier }
+            configuration1.rules.map { type(of: $0).identifier },
+            configuration2.rules.map { type(of: $0).identifier }
         )
 
         XCTAssertEqual(

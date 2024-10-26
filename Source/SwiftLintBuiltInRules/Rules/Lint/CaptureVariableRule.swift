@@ -264,7 +264,7 @@ private extension SwiftLintFile {
             let path = self.path,
             let response = try? Request.index(file: path, arguments: compilerArguments).sendIfNotDisabled()
         else {
-            Issue.indexingError(path: path, ruleID: CaptureVariableRule.description.identifier).print()
+            Issue.indexingError(path: path, ruleID: CaptureVariableRule.identifier).print()
             return nil
         }
 

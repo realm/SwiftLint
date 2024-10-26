@@ -2,7 +2,7 @@
 import XCTest
 
 final class CompilerProtocolInitRuleTests: SwiftLintTestCase {
-    private let ruleID = CompilerProtocolInitRule.description.identifier
+    private let ruleID = CompilerProtocolInitRule.identifier
 
     func testViolationMessageForExpressibleByIntegerLiteral() throws {
         let config = try XCTUnwrap(makeConfig(nil, ruleID))

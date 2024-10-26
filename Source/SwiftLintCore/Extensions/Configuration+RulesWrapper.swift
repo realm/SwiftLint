@@ -11,7 +11,7 @@ internal extension Configuration {
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []
         private var validRuleIdentifiers: Set<String> {
-            let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).description.identifier }
+            let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).identifier }
             let configurationCustomRulesIdentifiers =
                 (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?.customRuleIdentifiers ?? []
             return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)
@@ -42,7 +42,7 @@ internal extension Configuration {
                 customRulesFilter = { onlyRulesRuleIdentifiers.contains($0.identifier) }
                 let onlyRulesRuleIdentifiers = validate(ruleIds: onlyRulesRuleIdentifiers, valid: validRuleIdentifiers)
                 resultingRules = allRulesWrapped.filter { tuple in
-                    onlyRulesRuleIdentifiers.contains(type(of: tuple.rule).description.identifier)
+                    onlyRulesRuleIdentifiers.contains(type(of: tuple.rule).identifier)
                 }.map(\.rule)
 
             case var .defaultConfiguration(disabledRuleIdentifiers, optInRuleIdentifiers):
@@ -50,7 +50,7 @@ internal extension Configuration {
                 disabledRuleIdentifiers = validate(ruleIds: disabledRuleIdentifiers, valid: validRuleIdentifiers)
                 optInRuleIdentifiers = validate(optInRuleIds: optInRuleIdentifiers, valid: validRuleIdentifiers)
                 resultingRules = allRulesWrapped.filter { tuple in
-                    let id = type(of: tuple.rule).description.identifier
+                    let id = type(of: tuple.rule).identifier
                     return !disabledRuleIdentifiers.contains(id)
                         && (!(tuple.rule is any OptInRule) || optInRuleIdentifiers.contains(id))
                 }.map(\.rule)
@@ -65,7 +65,7 @@ internal extension Configuration {
 
             // Sort by name
             resultingRules = resultingRules.sorted {
-                type(of: $0).description.identifier < type(of: $1).description.identifier
+                type(of: $0).identifier < type(of: $1).identifier
             }
 
             // Store & return
@@ -82,7 +82,7 @@ internal extension Configuration {
             case let .onlyConfiguration(onlyRules), let .onlyCommandLine(onlyRules):
                 return validate(
                     ruleIds: Set(allRulesWrapped
-                        .map { type(of: $0.rule).description.identifier }
+                        .map { type(of: $0.rule).identifier }
                         .filter { !onlyRules.contains($0) }),
                     valid: validRuleIdentifiers,
                     silent: true
@@ -249,7 +249,7 @@ internal extension Configuration {
             case var .onlyConfiguration(onlyRules):
                 // Also add identifiers of child custom rules iff the custom_rules rule is enabled
                 // (parent custom rules are already added)
-                if (onlyRules.contains { $0 == CustomRules.description.identifier }) {
+                if (onlyRules.contains { $0 == CustomRules.identifier }) {
                     if let childCustomRulesRule = (child.allRulesWrapped.first { $0.rule is CustomRules })?.rule
                         as? CustomRules {
                         onlyRules = onlyRules.union(
@@ -279,7 +279,7 @@ internal extension Configuration {
                         .filter {
                             !isOptInRule($0, allRulesWrapped: newAllRulesWrapped)
                         },
-                    optIn: Set(newAllRulesWrapped.map { type(of: $0.rule).description.identifier }
+                    optIn: Set(newAllRulesWrapped.map { type(of: $0.rule).identifier }
                         .filter {
                             !childDisabled.contains($0)
                             && isOptInRule($0, allRulesWrapped: newAllRulesWrapped)
@@ -298,7 +298,7 @@ internal extension Configuration {
             }
 
             let isOptInRule = allRulesWrapped
-                .first { type(of: $0.rule).description.identifier == identifier }?.rule is any OptInRule
+                .first { type(of: $0.rule).identifier == identifier }?.rule is any OptInRule
             Self.isOptInRuleCache[identifier] = isOptInRule
             return isOptInRule
         }

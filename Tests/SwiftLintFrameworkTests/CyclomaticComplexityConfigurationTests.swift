@@ -71,7 +71,7 @@ final class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
             var configuration = CyclomaticComplexityConfiguration(
                 length: SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: 100, error: 150)
             )
-            checkError(Issue.invalidConfiguration(ruleID: CyclomaticComplexityRule.description.identifier)) {
+            checkError(Issue.invalidConfiguration(ruleID: CyclomaticComplexityRule.identifier)) {
                 try configuration.apply(configuration: badConfig)
             }
         }

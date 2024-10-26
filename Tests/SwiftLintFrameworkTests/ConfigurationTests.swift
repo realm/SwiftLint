@@ -116,7 +116,7 @@ final class ConfigurationTests: SwiftLintTestCase {
 
         let config = try Configuration(dict: ["only_rules": only])
         let configuredIdentifiers = config.rules.map {
-            type(of: $0).description.identifier
+            type(of: $0).identifier
         }.sorted()
         XCTAssertEqual(only, configuredIdentifiers)
     }
@@ -178,7 +178,7 @@ final class ConfigurationTests: SwiftLintTestCase {
         let expectedIdentifiers = Set(RuleRegistry.shared.list.list.keys
             .filter({ !(["nesting", "todo"] + optInRules).contains($0) }))
         let configuredIdentifiers = Set(disabledConfig.rules.map {
-            type(of: $0).description.identifier
+            type(of: $0).identifier
         })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
@@ -205,7 +205,7 @@ final class ConfigurationTests: SwiftLintTestCase {
 
         let duplicateConfig2 = try? Configuration(dict: ["opt_in_rules": [optInRules.first!, optInRules.first!]])
         XCTAssertEqual(
-            duplicateConfig2?.rules.filter { type(of: $0).description.identifier == optInRules.first! }.count, 1,
+            duplicateConfig2?.rules.filter { type(of: $0).identifier == optInRules.first! }.count, 1,
             "duplicate rules should be removed when initializing Configuration"
         )
 
@@ -435,14 +435,14 @@ final class ConfigurationTests: SwiftLintTestCase {
 
     func testConfiguresCorrectlyFromDict() throws {
         let ruleConfiguration = [1, 2]
-        let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
+        let config = [RuleWithLevelsMock.identifier: ruleConfiguration]
         let rules = try testRuleList.allRulesWrapped(configurationDict: config).map(\.rule)
         // swiftlint:disable:next xct_specific_matcher
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 
     func testConfigureFallsBackCorrectly() throws {
-        let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
+        let config = [RuleWithLevelsMock.identifier: ["a", "b"]]
         let rules = try testRuleList.allRulesWrapped(configurationDict: config).map(\.rule)
         // swiftlint:disable:next xct_specific_matcher
         XCTAssertTrue(rules == [RuleWithLevelsMock()])

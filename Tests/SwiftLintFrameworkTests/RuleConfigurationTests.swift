@@ -37,7 +37,7 @@ final class RuleConfigurationTests: SwiftLintTestCase {
     func testNestingConfigurationThrowsOnBadConfig() {
         let config = 17
         var nestingConfig = defaultNestingConfiguration
-        checkError(Issue.invalidConfiguration(ruleID: NestingRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: NestingRule.identifier)) {
             try nestingConfig.apply(configuration: config)
         }
     }
@@ -117,7 +117,7 @@ final class RuleConfigurationTests: SwiftLintTestCase {
     func testRegexConfigurationThrows() {
         let config = 17
         var regexConfig = RegexConfiguration<RuleMock>(identifier: "")
-        checkError(Issue.invalidConfiguration(ruleID: RuleMock.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: RuleMock.identifier)) {
             try regexConfig.apply(configuration: config)
         }
     }
@@ -137,7 +137,7 @@ final class RuleConfigurationTests: SwiftLintTestCase {
         let config = "unknown"
         var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
                                                             ignoresComments: true)
-        checkError(Issue.invalidConfiguration(ruleID: TrailingWhitespaceRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: TrailingWhitespaceRule.identifier)) {
             try configuration.apply(configuration: config)
         }
     }
@@ -321,7 +321,7 @@ final class RuleConfigurationTests: SwiftLintTestCase {
         var configuration = ModifierOrderConfiguration()
         let config = ["severity": "warning", "preferred_modifier_order": ["specialize"]]  as [String: any Sendable]
 
-        checkError(Issue.invalidConfiguration(ruleID: ModifierOrderRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: ModifierOrderRule.identifier)) {
             try configuration.apply(configuration: config)
         }
     }
@@ -329,7 +329,7 @@ final class RuleConfigurationTests: SwiftLintTestCase {
     func testModifierOrderConfigurationThrowsOnNonModifiableGroup() {
         var configuration = ModifierOrderConfiguration()
         let config = ["severity": "warning", "preferred_modifier_order": ["atPrefixed"]]  as [String: any Sendable]
-        checkError(Issue.invalidConfiguration(ruleID: ModifierOrderRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: ModifierOrderRule.identifier)) {
             try configuration.apply(configuration: config)
         }
     }

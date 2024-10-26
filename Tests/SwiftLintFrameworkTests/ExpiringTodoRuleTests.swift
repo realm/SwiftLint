@@ -191,7 +191,7 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
             ]
         }
 
-        return makeConfig(serializedConfig, ExpiringTodoRule.description.identifier)!
+        return makeConfig(serializedConfig, ExpiringTodoRule.identifier)!
     }
 }
 

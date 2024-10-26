@@ -67,7 +67,7 @@ struct TypesafeArrayInitRule: AnalyzerRule {
             return []
         }
         guard compilerArguments.isNotEmpty else {
-            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.identifier).print()
             return []
         }
         return Self.parentRule.validate(file: file)

@@ -31,14 +31,14 @@ final class NoEmptyBlockConfigurationTests: SwiftLintTestCase {
 
     func testInvalidTypeOfCustomConfiguration() {
         var config = NoEmptyBlockConfiguration()
-        checkError(Issue.invalidConfiguration(ruleID: NoEmptyBlockRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: NoEmptyBlockRule.identifier)) {
             try config.apply(configuration: "invalidKey")
         }
     }
 
     func testInvalidTypeOfValueInCustomConfiguration() {
         var config = NoEmptyBlockConfiguration()
-        checkError(Issue.invalidConfiguration(ruleID: NoEmptyBlockRule.description.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: NoEmptyBlockRule.identifier)) {
             try config.apply(configuration: ["severity": "foo"])
         }
     }

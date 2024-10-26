@@ -272,7 +272,7 @@ private extension String {
 public func makeConfig(_ ruleConfiguration: Any?,
                        _ identifier: String,
                        skipDisableCommandTests: Bool = false) -> Configuration? {
-    let superfluousDisableCommandRuleIdentifier = SuperfluousDisableCommandRule.description.identifier
+    let superfluousDisableCommandRuleIdentifier = SuperfluousDisableCommandRule.identifier
     let identifiers: Set<String> = skipDisableCommandTests ? [identifier]
         : [identifier, superfluousDisableCommandRuleIdentifier]
 
@@ -300,7 +300,7 @@ private func testCorrection(_ correction: (Example, Example),
     var config = configuration
     if let correctionConfiguration = correction.0.configuration,
         case let .onlyConfiguration(onlyRules) = configuration.rulesMode,
-        let ruleToConfigure = (onlyRules.first { $0 != SuperfluousDisableCommandRule.description.identifier }),
+        let ruleToConfigure = (onlyRules.first { $0 != SuperfluousDisableCommandRule.identifier }),
         case let configDict: [_: any Sendable] = ["only_rules": onlyRules, ruleToConfigure: correctionConfiguration],
         let typedConfiguration = try? Configuration(dict: configDict) {
         config = configuration.merged(withChild: typedConfiguration, rootDirectory: configuration.rootDirectory)
@@ -425,7 +425,7 @@ public extension XCTestCase {
 
             for trigger in disabledTriggers {
                 let violationsPartitionedByType = makeViolations(trigger)
-                    .partitioned { $0.ruleIdentifier == SuperfluousDisableCommandRule.description.identifier }
+                    .partitioned { $0.ruleIdentifier == SuperfluousDisableCommandRule.identifier }
 
                 XCTAssert(violationsPartitionedByType.first.isEmpty,
                           "Violation(s) still triggered although rule was disabled",

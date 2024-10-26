@@ -69,7 +69,7 @@ final class TrailingCommaRuleTests: SwiftLintTestCase {
     }
 
     private func trailingCommaViolations(_ example: Example, ruleConfiguration: Any? = nil) -> [StyleViolation] {
-        let config = makeConfig(ruleConfiguration, TrailingCommaRule.description.identifier)!
+        let config = makeConfig(ruleConfiguration, TrailingCommaRule.identifier)!
         return violations(example, config: config)
     }
 }

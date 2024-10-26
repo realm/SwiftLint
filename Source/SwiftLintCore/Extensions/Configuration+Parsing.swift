@@ -66,7 +66,7 @@ extension Configuration {
             allRulesWrapped = try ruleList.allRulesWrapped(configurationDict: dict)
         } catch let RuleListError.duplicatedConfigurations(ruleType) {
             let aliases = ruleType.description.deprecatedAliases.map { "'\($0)'" }.joined(separator: ", ")
-            let identifier = ruleType.description.identifier
+            let identifier = ruleType.identifier
             throw Issue.genericWarning(
                 "Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases)."
             )

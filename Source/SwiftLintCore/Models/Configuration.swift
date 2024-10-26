@@ -309,7 +309,7 @@ extension Configuration: Hashable {
         hasher.combine(checkForUpdates)
         hasher.combine(basedOnCustomConfigurationFiles)
         hasher.combine(cachePath)
-        hasher.combine(rules.map { type(of: $0).description.identifier })
+        hasher.combine(rules.map { type(of: $0).identifier })
         hasher.combine(fileGraph)
     }
 
@@ -344,6 +344,6 @@ extension Configuration: CustomStringConvertible {
             + "- Reporter: \(reporter ?? "default")\n"
             + "- Cache Path: \(cachePath as Optional)\n"
             + "- Computed Cache Description: \(computedCacheDescription as Optional)\n"
-            + "- Rules: \(rules.map { type(of: $0).description.identifier })"
+            + "- Rules: \(rules.map { type(of: $0).identifier })"
     }
 }

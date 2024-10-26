@@ -431,7 +431,7 @@ private extension Configuration {
     var customYML: String {
         let customYML = ""
         for rule in rules {
-            let ruleIdentifier = type(of: rule).description.identifier
+            let ruleIdentifier = type(of: rule).identifier
             guard ruleIdentifier != "file_name", ruleIdentifier != "required_enum_case" else {
                 continue
             }
@@ -442,7 +442,7 @@ private extension Configuration {
 //                if ruleYML != defaultYML {
 //                    customYML += """
 //
-//                             \(type(of: rule).description.identifier):
+//                             \(type(of: rule).identifier):
 //                             \(ruleYML.indent(by: 4))
 //
 //                             """

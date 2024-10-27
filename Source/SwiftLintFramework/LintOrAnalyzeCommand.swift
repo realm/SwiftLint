@@ -417,8 +417,8 @@ extension LintOrAnalyzeOptions {
 
     // config file settings can be overridden by either `--strict` or `--lenient` command line options.
     func leniency(strict commandLineStrict: Bool, lenient commandLineLenient: Bool) -> (Bool, Bool) {
-        let strict = (commandLineStrict && !self.lenient) || self.strict
-        let lenient = (commandLineLenient && !self.strict) || self.lenient
+        let strict = commandLineStrict || self.strict
+        let lenient = commandLineLenient || self.lenient
         return (strict, lenient)
     }
 }

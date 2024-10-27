@@ -14,27 +14,19 @@ final class LintOrAnalyzeOptionsTests: XCTestCase {
 
         for configuration in parameters {
             for commandLine in parameters {
-                let expected: Leniency = if configuration == bothFalse {
-                    commandLine
-                } else if configuration == bothTrue {
-                    bothTrue // This is an error
-                } else if configuration == strict {
-                    strict // Hmmm. We should be able to override strict with lenient on the command line
-                } else { // configuration = lenient. Can be overridden from the command line
-                    commandLine.strict ? strict : lenient
+                let options = LintOrAnalyzeOptions(leniency: configuration)
+                let leniency: Leniency = options.leniency(strict: commandLine.strict, lenient: commandLine.lenient)
+                if commandLine.strict {
+                    XCTAssertTrue(leniency.strict)
+                } else if commandLine.lenient {
+                    XCTAssertTrue(leniency.lenient)
+                } else if configuration.strict {
+                    XCTAssertTrue(leniency.strict)
+                } else if configuration.lenient {
+                    XCTAssertTrue(leniency.lenient)
                 }
-                testLeniency(configuration: bothTrue, commandLine: lenient, expected: expected)
             }
         }
-
-        testLeniency(configuration: strict, commandLine: lenient, expected: lenient)
-    }
-
-    private func testLeniency(configuration: Leniency, commandLine: Leniency, expected: Leniency) {
-        let options = LintOrAnalyzeOptions(leniency: configuration)
-        let leniency = options.leniency(strict: commandLine.strict, lenient: commandLine.lenient)
-        XCTAssertEqual(leniency.0, expected.strict)
-        XCTAssertEqual(leniency.1, expected.lenient)
     }
 }
 

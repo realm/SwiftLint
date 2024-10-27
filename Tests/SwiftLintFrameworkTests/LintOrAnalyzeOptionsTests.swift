@@ -2,14 +2,15 @@
 import XCTest
 
 final class LintOrAnalyzeOptionsTests: XCTestCase {
-    typealias Leniency = LintOrAnalyzeOptions.Leniency
+    private typealias Leniency = LintOrAnalyzeOptions.Leniency
 
     func testLeniency() {
-        let bothFalse = Leniency(strict: false, lenient: false)
-        let bothTrue = Leniency(strict: true, lenient: true)
-        let strict = Leniency(strict: true, lenient: false)
-        let lenient = Leniency(strict: true, lenient: false)
-        let parameters = [ bothFalse, bothTrue, strict, lenient ]
+        let parameters = [
+            Leniency(strict: false, lenient: false),
+            Leniency(strict: true, lenient: true),
+            Leniency(strict: true, lenient: false),
+            Leniency(strict: false, lenient: true),
+        ]
 
         for configuration in parameters {
             for commandLine in parameters {
@@ -23,7 +24,7 @@ final class LintOrAnalyzeOptionsTests: XCTestCase {
                         XCTAssertFalse(leniency.lenient)
                     }
                 } else if commandLine.lenient {
-                    // Command line takes precendence, and should override
+                    // Command line takes precedence, and should override
                     // `strict` in the configuration.
                     XCTAssertTrue(leniency.lenient)
                     XCTAssertFalse(leniency.strict)

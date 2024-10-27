@@ -16,9 +16,17 @@ final class LintOrAnalyzeOptionsTests: XCTestCase {
                 let options = LintOrAnalyzeOptions(leniency: configuration)
                 let leniency: Leniency = options.leniency(strict: commandLine.strict, lenient: commandLine.lenient)
                 if commandLine.strict {
+                    // Command line takes precedence.
                     XCTAssertTrue(leniency.strict)
+                    if !commandLine.lenient {
+                        // `--strict` should disable configuration lenience.
+                        XCTAssertFalse(leniency.lenient)
+                    }
                 } else if commandLine.lenient {
+                    // Command line takes precendence, and should override
+                    // `strict` in the configuration.
                     XCTAssertTrue(leniency.lenient)
+                    XCTAssertFalse(leniency.strict)
                 } else if configuration.strict {
                     XCTAssertTrue(leniency.strict)
                 } else if configuration.lenient {

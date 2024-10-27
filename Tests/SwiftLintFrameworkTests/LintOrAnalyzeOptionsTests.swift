@@ -1,9 +1,9 @@
 @testable import SwiftLintFramework
 import XCTest
 
-internal typealias Leniency = (strict: Bool, lenient: Bool)
-
 final class LintOrAnalyzeOptionsTests: XCTestCase {
+    typealias Leniency = LintOrAnalyzeOptions.Leniency
+
     func testLeniency() {
         let bothFalse = Leniency(strict: false, lenient: false)
         let bothTrue = Leniency(strict: true, lenient: true)
@@ -14,7 +14,7 @@ final class LintOrAnalyzeOptionsTests: XCTestCase {
         for configuration in parameters {
             for commandLine in parameters {
                 let options = LintOrAnalyzeOptions(leniency: configuration)
-                let leniency: Leniency = options.leniency(strict: commandLine.strict, lenient: commandLine.lenient)
+                let leniency = options.leniency(strict: commandLine.strict, lenient: commandLine.lenient)
                 if commandLine.strict {
                     // Command line takes precedence.
                     XCTAssertTrue(leniency.strict)

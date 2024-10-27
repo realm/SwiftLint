@@ -278,9 +278,9 @@ package struct LintOrAnalyzeCommand {
         lenient: Bool,
         violations: [StyleViolation]
     ) -> [StyleViolation] {
-        let (strict, lenient) = options.leniency(strict: strict, lenient: lenient)
+        let leniency = options.leniency(strict: strict, lenient: lenient)
 
-        switch (strict, lenient) {
+        switch leniency {
         case (false, false):
             return violations
 
@@ -415,11 +415,13 @@ extension LintOrAnalyzeOptions {
         }
     }
 
-    // config file settings can be overridden by either `--strict` or `--lenient` command line options.
-    func leniency(strict commandLineStrict: Bool, lenient commandLineLenient: Bool) -> (Bool, Bool) {
-        let strict = commandLineStrict || self.strict
+    typealias Leniency = (strict: Bool, lenient: Bool)
+
+    // Config file settings can be overridden by either `--strict` or `--lenient` command line options.
+    func leniency(strict commandLineStrict: Bool, lenient commandLineLenient: Bool) -> Leniency {
+        let strict = commandLineStrict || (self.strict && !commandLineLenient)
         let lenient = commandLineLenient || (self.lenient && !commandLineStrict)
-        return (strict, lenient)
+        return Leniency(strict: strict, lenient: lenient)
     }
 }
 

@@ -16,6 +16,10 @@
   [Jordan Rose](https://github.com/jrose-signal)
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Add `Cognitive Complexity Rule`
+  [lorwe](https://github.com/lorwe)
+  [#3335](https://github.com/realm/SwiftLint/issues/3335)
+
 #### Bug Fixes
 
 * Run command plugin in whole package if no targets are defined in the

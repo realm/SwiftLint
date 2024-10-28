@@ -12,10 +12,10 @@ final class LintOrAnalyzeOptionsTests: XCTestCase {
             Leniency(strict: false, lenient: true),
         ]
 
-        for configuration in parameters {
-            for commandLine in parameters {
-                let options = LintOrAnalyzeOptions(leniency: configuration)
-                let leniency = options.leniency(strict: commandLine.strict, lenient: commandLine.lenient)
+        for commandLine in parameters {
+            let options = LintOrAnalyzeOptions(leniency: commandLine)
+            for configuration in parameters {
+                let leniency = options.leniency(strict: configuration.strict, lenient: configuration.lenient)
                 if commandLine.strict {
                     // Command line takes precedence.
                     XCTAssertTrue(leniency.strict)

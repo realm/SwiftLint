@@ -169,6 +169,7 @@ package struct LintOrAnalyzeCommand {
                 currentViolations = applyLeniency(
                     options: options,
                     strict: builder.configuration.strict,
+                    lenient: builder.configuration.lenient,
                     violations: violationsBeforeLeniency
                 )
                 visitorMutationQueue.sync {
@@ -179,6 +180,7 @@ package struct LintOrAnalyzeCommand {
                 currentViolations = applyLeniency(
                     options: options,
                     strict: builder.configuration.strict,
+                    lenient: builder.configuration.lenient,
                     violations: linter.styleViolations(using: builder.storage)
                 )
             }
@@ -273,15 +275,16 @@ package struct LintOrAnalyzeCommand {
     private static func applyLeniency(
         options: LintOrAnalyzeOptions,
         strict: Bool,
+        lenient: Bool,
         violations: [StyleViolation]
     ) -> [StyleViolation] {
-        let strict = (strict && !options.lenient) || options.strict
+        let leniency = options.leniency(strict: strict, lenient: lenient)
 
-        switch (options.lenient, strict) {
+        switch leniency {
         case (false, false):
             return violations
 
-        case (true, false):
+        case (false, true):
             return violations.map {
                 if $0.severity == .error {
                     return $0.with(severity: .warning)
@@ -289,7 +292,7 @@ package struct LintOrAnalyzeCommand {
                 return $0
             }
 
-        case (false, true):
+        case (true, false):
             return violations.map {
                 if $0.severity == .warning {
                     return $0.with(severity: .error)
@@ -298,7 +301,7 @@ package struct LintOrAnalyzeCommand {
             }
 
         case (true, true):
-            queuedFatalError("Invalid command line options: 'lenient' and 'strict' are mutually exclusive.")
+            queuedFatalError("Invalid command line or config options: 'strict' and 'lenient' are mutually exclusive.")
         }
     }
 
@@ -394,8 +397,8 @@ private class LintOrAnalyzeResultBuilder {
     }
 }
 
-private extension LintOrAnalyzeOptions {
-    func writeToOutput(_ string: String) {
+extension LintOrAnalyzeOptions {
+    fileprivate func writeToOutput(_ string: String) {
         guard let outFile = output else {
             queuedPrint(string)
             return
@@ -410,6 +413,15 @@ private extension LintOrAnalyzeOptions {
         } catch {
             Issue.fileNotWritable(path: outFile).print()
         }
+    }
+
+    typealias Leniency = (strict: Bool, lenient: Bool)
+
+    // Config file settings can be overridden by either `--strict` or `--lenient` command line options.
+    func leniency(strict configurationStrict: Bool, lenient configurationLenient: Bool) -> Leniency {
+        let strict = self.strict || (configurationStrict && !self.lenient)
+        let lenient = self.lenient || (configurationLenient && !self.strict)
+        return Leniency(strict: strict, lenient: lenient)
     }
 }
 

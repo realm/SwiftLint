@@ -38,6 +38,9 @@ public struct Configuration {
     /// Treat warnings as errors.
     public let strict: Bool
 
+    /// Treat errors as warnings.
+    public let lenient: Bool
+
     /// The path to read a baseline from.
     public let baseline: String?
 
@@ -83,6 +86,7 @@ public struct Configuration {
         cachePath: String?,
         allowZeroLintableFiles: Bool,
         strict: Bool,
+        lenient: Bool,
         baseline: String?,
         writeBaseline: String?,
         checkForUpdates: Bool
@@ -97,6 +101,7 @@ public struct Configuration {
         self.cachePath = cachePath
         self.allowZeroLintableFiles = allowZeroLintableFiles
         self.strict = strict
+        self.lenient = lenient
         self.baseline = baseline
         self.writeBaseline = writeBaseline
         self.checkForUpdates = checkForUpdates
@@ -117,6 +122,7 @@ public struct Configuration {
         cachePath = configuration.cachePath
         allowZeroLintableFiles = configuration.allowZeroLintableFiles
         strict = configuration.strict
+        lenient = configuration.lenient
         baseline = configuration.baseline
         writeBaseline = configuration.writeBaseline
         checkForUpdates = configuration.checkForUpdates
@@ -143,6 +149,7 @@ public struct Configuration {
     /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable
     ///                                     files.
     /// - parameter strict:                 Treat warnings as errors.
+    /// - parameter lenient:                Treat errors as warnings.
     /// - parameter baseline:               The path to read a baseline from.
     /// - parameter writeBaseline:          The path to write a baseline to.
     /// - parameter checkForUpdates:        Check for updates to SwiftLint.
@@ -160,6 +167,7 @@ public struct Configuration {
         pinnedVersion: String? = nil,
         allowZeroLintableFiles: Bool = false,
         strict: Bool = false,
+        lenient: Bool = false,
         baseline: String? = nil,
         writeBaseline: String? = nil,
         checkForUpdates: Bool = false
@@ -189,6 +197,7 @@ public struct Configuration {
             cachePath: cachePath,
             allowZeroLintableFiles: allowZeroLintableFiles,
             strict: strict,
+            lenient: lenient,
             baseline: baseline,
             writeBaseline: writeBaseline,
             checkForUpdates: checkForUpdates
@@ -304,6 +313,7 @@ extension Configuration: Hashable {
         hasher.combine(reporter)
         hasher.combine(allowZeroLintableFiles)
         hasher.combine(strict)
+        hasher.combine(lenient)
         hasher.combine(baseline)
         hasher.combine(writeBaseline)
         hasher.combine(checkForUpdates)
@@ -325,6 +335,7 @@ extension Configuration: Hashable {
             lhs.fileGraph == rhs.fileGraph &&
             lhs.allowZeroLintableFiles == rhs.allowZeroLintableFiles &&
             lhs.strict == rhs.strict &&
+            lhs.lenient == rhs.lenient &&
             lhs.baseline == rhs.baseline &&
             lhs.writeBaseline == rhs.writeBaseline &&
             lhs.checkForUpdates == rhs.checkForUpdates &&

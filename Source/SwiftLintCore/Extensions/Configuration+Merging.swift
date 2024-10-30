@@ -26,6 +26,7 @@ extension Configuration {
             cachePath: cachePath,
             allowZeroLintableFiles: childConfiguration.allowZeroLintableFiles,
             strict: childConfiguration.strict,
+            lenient: childConfiguration.lenient,
             baseline: childConfiguration.baseline,
             writeBaseline: childConfiguration.writeBaseline,
             checkForUpdates: childConfiguration.checkForUpdates

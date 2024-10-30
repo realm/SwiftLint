@@ -56,6 +56,7 @@ final class ConfigurationTests: SwiftLintTestCase {
         XCTAssertEqual(reporterFrom(identifier: config.reporter).identifier, "xcode")
         XCTAssertFalse(config.allowZeroLintableFiles)
         XCTAssertFalse(config.strict)
+        XCTAssertFalse(config.lenient)
         XCTAssertNil(config.baseline)
         XCTAssertNil(config.writeBaseline)
         XCTAssertFalse(config.checkForUpdates)
@@ -456,6 +457,11 @@ final class ConfigurationTests: SwiftLintTestCase {
     func testStrict() throws {
         let configuration = try Configuration(dict: ["strict": true])
         XCTAssertTrue(configuration.strict)
+    }
+
+    func testLenient() throws {
+        let configuration = try Configuration(dict: ["lenient": true])
+        XCTAssertTrue(configuration.lenient)
     }
 
     func testBaseline() throws {

@@ -58,20 +58,7 @@ struct RuleDocumentation {
     }
 
     private func formattedRationale(_ rationale: String) -> String {
-        var insideMultilineString = false
-        return rationale.components(separatedBy: "\n").map { line in
-            if line.contains("```") {
-                if insideMultilineString {
-                    insideMultilineString = false
-                } else {
-                    insideMultilineString = true
-                    if line.hasSuffix("```") {
-                        return line + "swift"
-                    }
-                }
-            }
-            return line
-        }.joined(separator: "\n")
+        rationale.formattedAsRationale
     }
 
     private func formattedCode(_ example: Example) -> String {
@@ -118,4 +105,23 @@ private func detailsSummary(_ rule: some Rule) -> String {
             """
     }
     return ruleDescription
+}
+
+extension String {
+    var formattedAsRationale: String {
+        var insideMultilineString = false
+        return components(separatedBy: "\n").map { line in
+            if line.contains("```") {
+                if insideMultilineString {
+                    insideMultilineString = false
+                } else {
+                    insideMultilineString = true
+                    if line.hasSuffix("```") {
+                        return line + "swift"
+                    }
+                }
+            }
+            return line
+        }.joined(separator: "\n")
+    }
 }

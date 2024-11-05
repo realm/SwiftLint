@@ -64,23 +64,7 @@ public struct RuleDescription: Equatable, Sendable {
         guard let rationale else {
             return nil
         }
-        var insideMultilineString = false
-        return rationale.components(separatedBy: "\n").map { line in
-            if line.contains("```") {
-                if insideMultilineString {
-                    insideMultilineString = false
-                } else {
-                    insideMultilineString = true
-                    if line.hasSuffix("```") {
-                        return line + "swift"
-                    }
-                }
-            }
-            if insideMultilineString {
-                return "     \(line)"
-            }
-            return line
-        }.joined(separator: "\n")
+        return rationale.formattedAsRationale
     }
 
     /// All identifiers that have been used to uniquely identify this rule in past and current SwiftLint versions.

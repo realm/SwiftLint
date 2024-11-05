@@ -10,7 +10,7 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
                      to be ignored, instead of disabling the rule for the rest of the file.
                      """,
         rationale: """
-        The intent of this rule is to prevent code like this
+        The intent of this rule is to prevent code like
 
         ```
         // swiftlint:disable force_unwrapping
@@ -20,7 +20,7 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
         which disables the `force_unwrapping` rule for the remainder the file, instead of just for the specific \
         violation.
 
-        `next`, `this`, or `previous` be used to restrict the disable commands scope to a single line, or it can be \
+        `next`, `this`, or `previous` can be used to restrict the disable command's scope to a single line, or it can be \
         re-enabled after the violations.
 
         To disable this rule in code you will need to do something like

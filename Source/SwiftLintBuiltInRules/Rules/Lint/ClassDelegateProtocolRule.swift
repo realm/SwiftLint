@@ -9,7 +9,7 @@ struct ClassDelegateProtocolRule: Rule {
         name: "Class Delegate Protocol",
         description: "Delegate protocols should be class-only so they can be weakly referenced",
         rationale: """
-        Delegate protocols are usually `weak`, to avoid retain cycles, or bad references to deallocated delegates.
+        Delegate protocols are usually `weak` to avoid retain cycles, or bad references to deallocated delegates.
 
         The `weak` operator is only supported for classes, and so this rule enforces that protocols ending in \
         "Delegate" are class based.

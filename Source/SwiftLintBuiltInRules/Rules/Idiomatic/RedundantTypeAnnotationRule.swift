@@ -62,7 +62,7 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
                 var url: URL = URL()
                 let myVar: Int? = 0, s: String = ""
             }
-            """, configuration: ["ignore_type_interfaces": true]),
+            """, configuration: ["ignore_properties": true]),
         ],
         triggeringExamples: [
             Example("var url↓:URL=URL()"),
@@ -100,7 +100,7 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
                 let myVar↓: Int = Int(5)
               }
             }
-            """, configuration: ["ignore_type_interfaces": true]),
+            """, configuration: ["ignore_properties": true]),
             Example("let a↓: [Int] = [Int]()"),
             Example("let a↓: A.B = A.B()"),
             Example("""
@@ -280,11 +280,7 @@ extension RedundantTypeAnnotationConfiguration {
         if ignoreAttributes.contains(where: { varDecl.attributes.contains(attributeNamed: $0) }) {
             return true
         }
-        if ignoreTypeInterfaces,
-           let parentNode = varDecl.parent,
-           parentNode.as(CodeBlockItemSyntax.self) == nil {
-            return true
-        }
-        return false
+
+        return ignoreProperties && varDecl.parent?.is(MemberBlockItemSyntax.self) == true
     }
 }

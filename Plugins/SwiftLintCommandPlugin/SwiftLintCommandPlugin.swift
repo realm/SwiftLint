@@ -26,7 +26,7 @@ struct SwiftLintCommandPlugin: CommandPlugin {
         let targets = targetNames.isEmpty
             ? context.package.targets
             : try context.package.targets(named: targetNames)
-        guard !targets.isEmpty else {
+        if targets.isEmpty || !commandsNotExpectingPaths.isDisjoint(with: arguments) {
             try run(with: context, arguments: arguments)
             return
         }

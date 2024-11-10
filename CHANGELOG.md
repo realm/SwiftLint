@@ -44,6 +44,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5167](https://github.com/realm/SwiftLint/issues/5167)
 
+* Only pass cache path and directory paths to commands that accept these arguments
+  in the command plugin.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5848](https://github.com/realm/SwiftLint/issues/5848)
+
 * Do not throw deprecation warning if deprecated property is not
   presented in configuration.  
   [chipp](https://github.com/chipp)

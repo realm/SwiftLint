@@ -1,6 +1,19 @@
 import Foundation
 import PackagePlugin
 
+private let commandsNotExpectingPaths: Set<String> = [
+    "docs",
+    "generate-docs",
+    "baseline",
+    "reporters",
+    "rules",
+    "version",
+]
+
+private let commandsWithoutCachPathOption: Set<String> = commandsNotExpectingPaths.union([
+    "analyze",
+])
+
 @main
 struct SwiftLintCommandPlugin: CommandPlugin {
     func performCommand(context: PluginContext, arguments: [String]) throws {
@@ -13,7 +26,7 @@ struct SwiftLintCommandPlugin: CommandPlugin {
         let targets = targetNames.isEmpty
             ? context.package.targets
             : try context.package.targets(named: targetNames)
-        guard !targets.isEmpty else {
+        if targets.isEmpty || !commandsNotExpectingPaths.isDisjoint(with: arguments) {
             try run(with: context, arguments: arguments)
             return
         }
@@ -34,11 +47,12 @@ struct SwiftLintCommandPlugin: CommandPlugin {
         process.currentDirectoryURL = URL(fileURLWithPath: context.package.directory.string)
         process.executableURL = URL(fileURLWithPath: try context.tool(named: "swiftlint").path.string)
         process.arguments = arguments
-        if !arguments.contains("analyze") {
-            // The analyze command does not support the `--cache-path` argument.
+        if commandsWithoutCachPathOption.isDisjoint(with: arguments) {
             process.arguments! += ["--cache-path", "\(context.pluginWorkDirectory.string)"]
         }
-        process.arguments! += [directory]
+        if commandsNotExpectingPaths.isDisjoint(with: arguments) {
+            process.arguments! += [directory]
+        }
 
         try process.run()
         process.waitUntilExit()

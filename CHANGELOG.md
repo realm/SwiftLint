@@ -26,6 +26,13 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5801](https://github.com/realm/SwiftLint/issues/5801)
 
+* The `redundant_type_annotation` rule gains a new option,
+  `ignore_properties`, that skips enforcement on members in a
+  type declaration (like a `struct`). This helps the rule coexist with
+  the `explicit_type_interface` rule that requires such redundancy.  
+  [jaredgrubb](https://github.com/jaredgrubb)
+  [#3750](https://github.com/realm/SwiftLint/issues/3750)
+
 #### Bug Fixes
 
 * Run command plugin in whole package if no targets are defined in the

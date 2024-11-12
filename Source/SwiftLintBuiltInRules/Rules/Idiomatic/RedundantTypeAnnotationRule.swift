@@ -57,6 +57,12 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
             Example("var dbl: Double = 0.0"),
             Example("var int: Int = 0"),
             Example("var str: String = \"str\""),
+            Example("""
+            struct Foo {
+                var url: URL = URL()
+                let myVar: Int? = 0, s: String = ""
+            }
+            """, configuration: ["ignore_properties": true]),
         ],
         triggeringExamples: [
             Example("var url↓:URL=URL()"),
@@ -88,6 +94,13 @@ struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
               }
             }
             """),
+            Example("""
+            class ViewController: UIViewController {
+              func someMethod() {
+                let myVar↓: Int = Int(5)
+              }
+            }
+            """, configuration: ["ignore_properties": true]),
             Example("let a↓: [Int] = [Int]()"),
             Example("let a↓: A.B = A.B()"),
             Example("""
@@ -183,7 +196,7 @@ private extension RedundantTypeAnnotationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: PatternBindingSyntax) {
             if let varDecl = node.parent?.parent?.as(VariableDeclSyntax.self),
-               configuration.ignoreAttributes.allSatisfy({ !varDecl.attributes.contains(attributeNamed: $0) }),
+               !configuration.shouldSkipRuleCheck(for: varDecl),
                let typeAnnotation = node.typeAnnotation,
                let initializer = node.initializer?.value {
                 collectViolation(forType: typeAnnotation, withInitializer: initializer)
@@ -259,5 +272,15 @@ private extension SyntaxKind {
         default:
             nil
         }
+    }
+}
+
+extension RedundantTypeAnnotationConfiguration {
+    func shouldSkipRuleCheck(for varDecl: VariableDeclSyntax) -> Bool {
+        if ignoreAttributes.contains(where: { varDecl.attributes.contains(attributeNamed: $0) }) {
+            return true
+        }
+
+        return ignoreProperties && varDecl.parent?.is(MemberBlockItemSyntax.self) == true
     }
 }

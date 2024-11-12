@@ -35,7 +35,9 @@ struct FileNameRule: OptInRule, SourceKitFreeRule {
         }
 
         // Process nested type separator
-        let allDeclaredTypeNames = TypeNameCollectingVisitor(requireFullyQualifiedNames: configuration.fullyQualified)
+        let allDeclaredTypeNames = TypeNameCollectingVisitor(
+            requireFullyQualifiedNames: configuration.requireFullyQualifiedNames
+        )
             .walk(tree: file.syntaxTree, handler: \.names)
             .map {
                 $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
@@ -56,15 +58,15 @@ struct FileNameRule: OptInRule, SourceKitFreeRule {
 }
 
 private class TypeNameCollectingVisitor: SyntaxVisitor {
-    // All of a visited node's ancestor type names if that node is nested, starting with the furthest
-    // ancestor and ending with the direct parent
-    private var ancestorNames: [String] = []
+    /// All of a visited node's ancestor type names if that node is nested, starting with the furthest
+    /// ancestor and ending with the direct parent
+    private var ancestorNames = Stack<String>()
 
-    // All of the type names found in the file
+    /// All of the type names found in the file
     private(set) var names: Set<String> = []
 
-    // If true, nested types are only allowed in the file name when used by their fully-qualified name
-    // (e.g. `My.Nested.Type` and not just `Type`)
+    /// If true, nested types are only allowed in the file name when used by their fully-qualified name
+    /// (e.g. `My.Nested.Type` and not just `Type`)
     private let requireFullyQualifiedNames: Bool
 
     init(requireFullyQualifiedNames: Bool) {
@@ -72,82 +74,102 @@ private class TypeNameCollectingVisitor: SyntaxVisitor {
         super.init(viewMode: .sourceAccurate)
     }
 
-    private func addVisitedNodeName(_ name: String) {
+    /// Visits a node to collect its type name and store it as an ancestor type name to prepend to any
+    /// children to form their fully-qualified type names
+    private func visitNode(_ node: some TypeNameCollectible) -> SyntaxVisitorContinueKind {
+        let name = node.typeName
         let fullyQualifiedName = (ancestorNames + [name]).joined(separator: ".")
         names.insert(fullyQualifiedName)
 
         if !requireFullyQualifiedNames {
             names.insert(name)
         }
+
+        ancestorNames.push(node.typeName)
+        return .visitChildren
+    }
+
+    /// Removes a node's type name as an ancestor type name once all of its children have been visited
+    private func visitNodePost(_: some TypeNameCollectible) {
+        ancestorNames.pop()
     }
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        ancestorNames.append(node.name.text)
-        return .visitChildren
+        visitNode(node)
     }
 
     override func visitPost(_ node: ClassDeclSyntax) {
-        ancestorNames.removeLast()
-        addVisitedNodeName(node.name.text)
+        visitNodePost(node)
     }
 
     override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-        ancestorNames.append(node.name.text)
-        return .visitChildren
+        visitNode(node)
     }
 
     override func visitPost(_ node: ActorDeclSyntax) {
-        ancestorNames.removeLast()
-        addVisitedNodeName(node.name.text)
+        visitNodePost(node)
     }
 
     override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-        ancestorNames.append(node.name.text)
-        return .visitChildren
+        visitNode(node)
     }
 
     override func visitPost(_ node: StructDeclSyntax) {
-        ancestorNames.removeLast()
-        addVisitedNodeName(node.name.text)
+        visitNodePost(node)
     }
 
     override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
-        ancestorNames.append(node.name.text)
-        return .visitChildren
+        visitNode(node)
     }
 
     override func visitPost(_ node: TypeAliasDeclSyntax) {
-        ancestorNames.removeLast()
-        addVisitedNodeName(node.name.text)
+        visitNodePost(node)
     }
 
     override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-        ancestorNames.append(node.name.text)
-        return .visitChildren
+        visitNode(node)
     }
 
     override func visitPost(_ node: EnumDeclSyntax) {
-        ancestorNames.removeLast()
-        addVisitedNodeName(node.name.text)
+        visitNodePost(node)
     }
 
     override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-        ancestorNames.append(node.name.text)
-        return .visitChildren
+        visitNode(node)
     }
 
     override func visitPost(_ node: ProtocolDeclSyntax) {
-        ancestorNames.removeLast()
-        addVisitedNodeName(node.name.text)
+        visitNodePost(node)
     }
 
     override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-        ancestorNames.append(node.extendedType.trimmedDescription)
-        return .visitChildren
+        visitNode(node)
     }
 
     override func visitPost(_ node: ExtensionDeclSyntax) {
-        ancestorNames.removeLast()
-        addVisitedNodeName(node.extendedType.trimmedDescription)
+        visitNodePost(node)
+    }
+}
+
+/// A protocol for types that have a type name that can be collected
+private protocol TypeNameCollectible {
+    var typeName: String { get }
+}
+
+extension TypeNameCollectible where Self: NamedDeclSyntax {
+    var typeName: String {
+        name.trimmedDescription
+    }
+}
+extension ClassDeclSyntax: TypeNameCollectible {}
+extension ActorDeclSyntax: TypeNameCollectible {}
+extension StructDeclSyntax: TypeNameCollectible {}
+extension TypeAliasDeclSyntax: TypeNameCollectible {}
+extension EnumDeclSyntax: TypeNameCollectible {}
+extension ProtocolDeclSyntax: TypeNameCollectible {}
+
+extension ExtensionDeclSyntax: TypeNameCollectible {
+    public var typeName: String {
+        extendedType.trimmedDescription
     }
 }

@@ -9,7 +9,7 @@ final class FileNameRuleTests: SwiftLintTestCase {
                           prefixPattern: String? = nil,
                           suffixPattern: String? = nil,
                           nestedTypeSeparator: String? = nil,
-                          fullyQualified: Bool = false) throws -> [StyleViolation] {
+                          requireFullyQualifiedNames: Bool = false) throws -> [StyleViolation] {
         let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
 
         var configuration = [String: Any]()
@@ -26,8 +26,8 @@ final class FileNameRuleTests: SwiftLintTestCase {
         if let nestedTypeSeparator {
             configuration["nested_type_separator"] = nestedTypeSeparator
         }
-        if fullyQualified {
-            configuration["fully_qualified"] = fullyQualified
+        if requireFullyQualifiedNames {
+            configuration["require_fully_qualified_names"] = requireFullyQualifiedNames
         }
 
         let rule = try FileNameRule(configuration: configuration)
@@ -72,7 +72,7 @@ final class FileNameRuleTests: SwiftLintTestCase {
     }
 
     func testNestedTypeNotFullyQualifiedDoesTriggerWithOverride() {
-        XCTAssert(try !validate(fileName: "MyType.swift", fullyQualified: true).isEmpty)
+        XCTAssert(try validate(fileName: "MyType.swift", requireFullyQualifiedNames: true).isNotEmpty)
     }
 
     func testNestedTypeSeparatorDoesntTrigger() {
@@ -81,8 +81,8 @@ final class FileNameRuleTests: SwiftLintTestCase {
     }
 
     func testWrongNestedTypeSeparatorDoesTrigger() {
-        XCTAssert(try !validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: ".").isEmpty)
-        XCTAssert(try !validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "__").isEmpty)
+        XCTAssert(try validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: ".").isNotEmpty)
+        XCTAssert(try validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "__").isNotEmpty)
     }
 
     func testMisspelledNameDoesTrigger() {

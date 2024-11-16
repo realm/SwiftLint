@@ -40,6 +40,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5787](https://github.com/realm/SwiftLint/issues/5787)
 
+* Silence `superfluous_else` rule on `if` expressions with only a single
+  availability condition.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5833](https://github.com/realm/SwiftLint/issues/5833)
+
 * Stop triggering the `control_statement` rule on closures being directly
   called as conditions.  
   [SimplyDanny](https://github.com/SimplyDanny)

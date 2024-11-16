@@ -69,6 +69,13 @@ struct SuperfluousElseRule: OptInRule {
                     }
                 }
                 """),
+            Example("""
+            if #available(iOS 13, *) {
+                return
+            } else {
+                deprecatedFunction()
+            }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -324,10 +331,9 @@ private extension SuperfluousElseRule {
 
 private extension IfExprSyntax {
     var superfluousElse: TokenSyntax? {
-        if elseKeyword == nil {
-            return nil
-        }
-        if !lastStatementExitsScope(in: body) {
+        guard elseKeyword != nil,
+              conditions.onlyElement?.condition.is(AvailabilityConditionSyntax.self) != true,
+              lastStatementExitsScope(in: body) else {
             return nil
         }
         if let parent = parent?.as(IfExprSyntax.self) {

@@ -42,11 +42,14 @@ struct FunctionDefaultParameterAtEndRule: OptInRule {
             Example("""
             func expect<T>(file: String = #file, _ expression: @autoclosure () -> (() throws -> T)) -> Expectation<T> {}
             """, excludeFromDocumentation: true),
+            Example("func foo(bar: Int, baz: Int = 0, z: () -> Void) {}"),
+            Example("func foo(bar: Int, baz: Int = 0, z: () -> Void, x: Int = 0) {}"),
         ],
         triggeringExamples: [
-            Example("↓func foo(bar: Int = 0, baz: String) {}"),
-            Example("private ↓func foo(bar: Int = 0, baz: String) {}"),
-            Example("public ↓init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}"),
+            Example("func foo(↓bar: Int = 0, baz: String) {}"),
+            Example("private func foo(↓bar: Int = 0, baz: String) {}"),
+            Example("public init?(↓for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}"),
+            Example("func foo(bar: Int, ↓baz: Int = 0, z: () -> Void, x: Int) {}"),
         ]
     )
 }
@@ -54,46 +57,33 @@ struct FunctionDefaultParameterAtEndRule: OptInRule {
 private extension FunctionDefaultParameterAtEndRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard !node.modifiers.contains(keyword: .override), node.signature.containsViolation else {
-                return
+            if !node.modifiers.contains(keyword: .override) {
+                collectViolations(for: node.signature)
             }
-
-            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            guard !node.modifiers.contains(keyword: .override), node.signature.containsViolation else {
+            if !node.modifiers.contains(keyword: .override) {
+                collectViolations(for: node.signature)
+            }
+        }
+
+        private func collectViolations(for signature: FunctionSignatureSyntax) {
+            if signature.parameterClause.parameters.count < 2 {
                 return
             }
-
-            violations.append(node.initKeyword.positionAfterSkippingLeadingTrivia)
+            var previousWithDefault = true
+            for param in signature.parameterClause.parameters.reversed() {
+                if param.isClosure {
+                    continue
+                }
+                let hasDefault = param.defaultValue != nil
+                if !previousWithDefault, hasDefault {
+                    violations.append(param.positionAfterSkippingLeadingTrivia)
+                }
+                previousWithDefault = hasDefault
+            }
         }
-    }
-}
-
-private extension FunctionSignatureSyntax {
-    var containsViolation: Bool {
-        let params = parameterClause.parameters.filter { param in
-            !param.isClosure
-        }
-
-        guard params.isNotEmpty else {
-            return false
-        }
-
-        let defaultParams = params.filter { param in
-            param.defaultValue != nil
-        }
-        guard defaultParams.isNotEmpty else {
-            return false
-        }
-
-        let lastParameters = params.suffix(defaultParams.count)
-        let lastParametersWithDefaultValue = lastParameters.filter { param in
-            param.defaultValue != nil
-        }
-
-        return lastParameters.count != lastParametersWithDefaultValue.count
     }
 }
 

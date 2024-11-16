@@ -99,31 +99,26 @@ private extension FunctionSignatureSyntax {
 
 private extension FunctionParameterSyntax {
     var isClosure: Bool {
-        if isEscaping || type.is(FunctionTypeSyntax.self) {
-            return true
-        }
-
-        if let optionalType = type.as(OptionalTypeSyntax.self),
-           let tuple = optionalType.wrappedType.as(TupleTypeSyntax.self) {
-            return tuple.elements.onlyElement?.type.as(FunctionTypeSyntax.self) != nil
-        }
-
-        if let tuple = type.as(TupleTypeSyntax.self) {
-            return tuple.elements.onlyElement?.type.as(FunctionTypeSyntax.self) != nil
-        }
-
-        if let attrType = type.as(AttributedTypeSyntax.self) {
-            return attrType.baseType.is(FunctionTypeSyntax.self)
-        }
-
-        return false
+        isEscaping || type.isFunctionType
     }
 
     var isEscaping: Bool {
-        guard let attrType = type.as(AttributedTypeSyntax.self) else {
-            return false
-        }
+        type.as(AttributedTypeSyntax.self)?.attributes.contains(attributeNamed: "escaping") == true
+    }
+}
 
-        return attrType.attributes.contains(attributeNamed: "escaping")
+private extension TypeSyntax {
+    var isFunctionType: Bool {
+        if `is`(FunctionTypeSyntax.self) {
+            true
+        } else if let optionalType = `as`(OptionalTypeSyntax.self) {
+            optionalType.wrappedType.isFunctionType
+        } else if let tupleType = `as`(TupleTypeSyntax.self) {
+            tupleType.elements.onlyElement?.type.isFunctionType == true
+        } else if let attributedType = `as`(AttributedTypeSyntax.self) {
+            attributedType.baseType.isFunctionType
+        } else {
+            false
+        }
     }
 }

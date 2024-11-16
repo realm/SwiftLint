@@ -204,6 +204,7 @@ function_body_length:
   error: 100
 function_default_parameter_at_end:
   severity: warning
+  ignore_first_isolation_inheritance_parameter: true
 function_parameter_count:
   warning: 5
   error: 8

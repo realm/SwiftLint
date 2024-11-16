@@ -33,6 +33,12 @@
   [jaredgrubb](https://github.com/jaredgrubb)
   [#3750](https://github.com/realm/SwiftLint/issues/3750)
 
+* Allow inherited isolation parameter to be first in function signatures
+  depending on the new option `ignore_first_isolation_inheritance_parameter`
+  which is `true` by default.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5793](https://github.com/realm/SwiftLint/issues/5793)
+
 #### Bug Fixes
 
 * Run command plugin in whole package if no targets are defined in the

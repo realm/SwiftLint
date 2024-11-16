@@ -29,6 +29,8 @@ struct ControlStatementRule: Rule {
             Example("switch (lhs, rhs) {}"),
             Example("if (f() { g() {} }) {}"),
             Example("if (a + f() {} == 1) {}"),
+            Example("if ({ true }()) {}"),
+            Example("if ({if i < 1 { true } else { false }}()) {}", excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("↓if (condition) {}"),
@@ -176,7 +178,7 @@ private extension ExprSyntax {
    private func containsTrailingClosure(_ node: Syntax) -> Bool {
         switch node.as(SyntaxEnum.self) {
         case .functionCallExpr(let node):
-            node.trailingClosure != nil
+            node.trailingClosure != nil || node.calledExpression.is(ClosureExprSyntax.self)
         case .sequenceExpr(let node):
             node.elements.contains { containsTrailingClosure(Syntax($0)) }
         default: false

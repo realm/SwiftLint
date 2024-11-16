@@ -40,6 +40,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5787](https://github.com/realm/SwiftLint/issues/5787)
 
+* Stop triggering the `control_statement` rule on closures being directly
+  called as conditions.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5846](https://github.com/realm/SwiftLint/issues/5846)
+
 * Do not trigger `self_in_property_initialization` rule on `self` in
   key paths expressions.  
   [SimplyDanny](https://github.com/SimplyDanny)

@@ -2,7 +2,7 @@ import SwiftSyntax
 
 @SwiftSyntaxRule
 struct FunctionDefaultParameterAtEndRule: OptInRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = FunctionDefaultParameterAtEndConfiguration()
 
     static let description = RuleDescription(
         identifier: "function_default_parameter_at_end",
@@ -44,12 +44,17 @@ struct FunctionDefaultParameterAtEndRule: OptInRule {
             """, excludeFromDocumentation: true),
             Example("func foo(bar: Int, baz: Int = 0, z: () -> Void) {}"),
             Example("func foo(bar: Int, baz: Int = 0, z: () -> Void, x: Int = 0) {}"),
+            Example("func foo(isolation: isolated (any Actor)? = #isolation, bar: String) {}"),
         ],
         triggeringExamples: [
             Example("func foo(↓bar: Int = 0, baz: String) {}"),
             Example("private func foo(↓bar: Int = 0, baz: String) {}"),
             Example("public init?(↓for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}"),
             Example("func foo(bar: Int, ↓baz: Int = 0, z: () -> Void, x: Int) {}"),
+            Example(
+                "func foo(isolation: isolated (any Actor)? = #isolation, bar: String) {}",
+                configuration: ["ignore_first_isolation_inheritance_parameter": false]
+            ),
         ]
     )
 }
@@ -69,16 +74,22 @@ private extension FunctionDefaultParameterAtEndRule {
         }
 
         private func collectViolations(for signature: FunctionSignatureSyntax) {
-            if signature.parameterClause.parameters.count < 2 {
+            let numberOfParameters = signature.parameterClause.parameters.count
+            if numberOfParameters < 2 {
                 return
             }
             var previousWithDefault = true
-            for param in signature.parameterClause.parameters.reversed() {
+            for (index, param) in signature.parameterClause.parameters.reversed().enumerated() {
                 if param.isClosure {
                     continue
                 }
                 let hasDefault = param.defaultValue != nil
                 if !previousWithDefault, hasDefault {
+                    if index + 1 == numberOfParameters,
+                       param.isInheritedIsolation,
+                       configuration.ignoreFirstIsolationInheritanceParameter {
+                        break // It's the last element anyway.
+                    }
                     violations.append(param.positionAfterSkippingLeadingTrivia)
                 }
                 previousWithDefault = hasDefault
@@ -94,6 +105,10 @@ private extension FunctionParameterSyntax {
 
     var isEscaping: Bool {
         type.as(AttributedTypeSyntax.self)?.attributes.contains(attributeNamed: "escaping") == true
+    }
+
+    var isInheritedIsolation: Bool {
+        defaultValue?.value.as(MacroExpansionExprSyntax.self)?.macroName.text == "isolation"
     }
 }
 

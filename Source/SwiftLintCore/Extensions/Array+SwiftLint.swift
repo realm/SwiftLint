@@ -82,7 +82,7 @@ public extension Array {
     /// - parameter transform: The transformation to apply to each element.
     ///
     /// - returns: The result of applying `transform` on every element and flattening the results.
-    func parallelFlatMap<T>(transform: (Element) -> [T]) -> [T] {
+    func parallelFlatMap<T>(transform: @Sendable (Element) -> [T]) -> [T] {
         parallelMap(transform: transform).flatMap { $0 }
     }
 
@@ -91,7 +91,7 @@ public extension Array {
     /// - parameter transform: The transformation to apply to each element.
     ///
     /// - returns: The result of applying `transform` on every element and discarding the `nil` ones.
-    func parallelCompactMap<T>(transform: (Element) -> T?) -> [T] {
+    func parallelCompactMap<T>(transform: @Sendable (Element) -> T?) -> [T] {
         parallelMap(transform: transform).compactMap { $0 }
     }
 
@@ -100,18 +100,21 @@ public extension Array {
     /// - parameter transform: The transformation to apply to each element.
     ///
     /// - returns: The result of applying `transform` on every element.
-    func parallelMap<T>(transform: (Element) -> T) -> [T] {
+    func parallelMap<T>(transform: @Sendable (Element) -> T) -> [T] {
         var result = ContiguousArray<T?>(repeating: nil, count: count)
         return result.withUnsafeMutableBufferPointer { buffer in
-            let buffer = Wrapper(buffer: buffer)
-            DispatchQueue.concurrentPerform(iterations: buffer.count) { idx in
-                buffer[idx] = transform(self[idx])
+            let buffer = MutableWrapper(buffer: buffer)
+            withUnsafeBufferPointer { array in
+                let array = ImmutableWrapper(buffer: array)
+                DispatchQueue.concurrentPerform(iterations: buffer.count) { idx in
+                    buffer[idx] = transform(array[idx])
+                }
             }
             return buffer.data
         }
     }
 
-    private class Wrapper<T>: @unchecked Sendable {
+    private class MutableWrapper<T>: @unchecked Sendable {
         let buffer: UnsafeMutableBufferPointer<T?>
 
         init(buffer: UnsafeMutableBufferPointer<T?>) {
@@ -133,6 +136,18 @@ public extension Array {
             set(newValue) {
                 buffer[index] = newValue
             }
+        }
+    }
+
+    private class ImmutableWrapper<T>: @unchecked Sendable {
+        let buffer: UnsafeBufferPointer<T>
+
+        init(buffer: UnsafeBufferPointer<T>) {
+            self.buffer = buffer
+        }
+
+        subscript(index: Int) -> T {
+            buffer[index]
         }
     }
 }

@@ -3,7 +3,7 @@ import Foundation
 #if canImport(Darwin)
 import Darwin
 
-private let globFunction = Darwin.glob
+private nonisolated(unsafe) let globFunction = Darwin.glob
 #elseif canImport(Glibc)
 import Glibc
 

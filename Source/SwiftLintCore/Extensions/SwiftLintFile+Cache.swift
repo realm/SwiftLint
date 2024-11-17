@@ -53,17 +53,16 @@ private let linesWithTokensCache = Cache { $0.computeLinesWithTokens() }
 internal typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.
 // https://github.com/realm/SwiftLint/issues/3348
-package var parserDiagnosticsDisabledForTests = false
+package nonisolated(unsafe) var parserDiagnosticsDisabledForTests = false
 
-private let assertHandlers = [FileCacheKey: AssertHandler]()
-private let assertHandlerCache = Cache { file in assertHandlers[file.cacheKey] }
+private let assertHandlerCache = Cache { (_: SwiftLintFile) -> AssertHandler? in nil }
 
-private class Cache<T> {
-    private var values = [FileCacheKey: T]()
-    private let factory: (SwiftLintFile) -> T
+private final class Cache<T>: Sendable {
+    private nonisolated(unsafe) var values = [FileCacheKey: T]()
+    private let factory: @Sendable (SwiftLintFile) -> T
     private let lock = PlatformLock()
 
-    fileprivate init(_ factory: @escaping (SwiftLintFile) -> T) {
+    fileprivate init(_ factory: @escaping @Sendable (SwiftLintFile) -> T) {
         self.factory = factory
     }
 
@@ -224,9 +223,9 @@ extension SwiftLintFile {
     }
 }
 
-private final class PlatformLock {
+private final class PlatformLock: Sendable {
 #if canImport(Darwin)
-    private let primitiveLock: UnsafeMutablePointer<os_unfair_lock>
+    private nonisolated(unsafe) let primitiveLock: UnsafeMutablePointer<os_unfair_lock>
 #else
     private let primitiveLock = NSLock()
 #endif

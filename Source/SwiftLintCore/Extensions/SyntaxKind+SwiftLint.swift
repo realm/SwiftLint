@@ -1,4 +1,4 @@
-import SourceKittenFramework
+@preconcurrency import SourceKittenFramework
 
 public extension SyntaxKind {
     init?(shortName: Swift.String) {

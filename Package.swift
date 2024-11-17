@@ -90,7 +90,7 @@ let package = Package(
         .target(
             name: "SwiftLintExtraRules",
             dependencies: ["SwiftLintCore"],
-            swiftSettings: strictConcurrency
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .target(
             name: "SwiftLintFramework",
@@ -108,7 +108,8 @@ let package = Package(
             dependencies: [
                 "SwiftLintFramework"
             ],
-            path: "Tests/SwiftLintTestHelpers"
+            path: "Tests/SwiftLintTestHelpers",
+            swiftSettings: swiftFeatures
         ),
         .testTarget(
             name: "SwiftLintFrameworkTests",
@@ -146,7 +147,8 @@ let package = Package(
             dependencies: [
                 "SwiftLintFramework",
                 "SwiftLintTestHelpers",
-            ]
+            ],
+            swiftSettings: swiftFeatures
         ),
         .macro(
             name: "SwiftLintCoreMacros",

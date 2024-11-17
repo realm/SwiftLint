@@ -1,7 +1,7 @@
 import Foundation
 
 /// Utility to measure the time spent in each custom rule.
-public final class CustomRuleTimer {
+public final class CustomRuleTimer: @unchecked Sendable {
     private let lock = NSLock()
     private var ruleIDForTimes = [String: [TimeInterval]]()
     private var shouldRecord = false
@@ -16,7 +16,9 @@ public final class CustomRuleTimer {
 
     /// Return all time spent for each custom rule, keyed by rule ID.
     public func dump() -> [String: TimeInterval] {
-        ruleIDForTimes.mapValues { $0.reduce(0, +) }
+        lock.withLock {
+            ruleIDForTimes.mapValues { $0.reduce(0, +) }
+        }
     }
 
     /// Register time spent evaluating a rule with the specified ID.
@@ -24,10 +26,10 @@ public final class CustomRuleTimer {
     /// - parameter time:   The time interval spent evaluating this rule ID.
     /// - parameter ruleID: The ID of the rule that was evaluated.
     func register(time: TimeInterval, forRuleID ruleID: String) {
-        guard shouldRecord else { return }
-
-        lock.lock()
-        defer { lock.unlock() }
-        ruleIDForTimes[ruleID, default: []].append(time)
+        if shouldRecord {
+            lock.withLock {
+                ruleIDForTimes[ruleID, default: []].append(time)
+            }
+        }
     }
 }

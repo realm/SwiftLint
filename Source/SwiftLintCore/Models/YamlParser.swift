@@ -31,40 +31,28 @@ private extension Constructor {
 
     static func customScalarMap(env: [String: String]) -> ScalarMap {
         var map = defaultScalarMap
-        map[.str] = String.constructExpandingEnvVars(env: env)
-        map[.bool] = Bool.constructUsingOnlyTrueAndFalse
-
+        map[.str] = { $0.string.expandingEnvVars(env: env) }
+        map[.bool] = {
+            switch $0.string.expandingEnvVars(env: env).lowercased() {
+            case "true": true
+            case "false": false
+            default: nil
+            }
+        }
+        map[.int] = { Int($0.string.expandingEnvVars(env: env)) }
+        map[.float] = { Double($0.string.expandingEnvVars(env: env)) }
         return map
     }
 }
 
 private extension String {
-    static func constructExpandingEnvVars(env: [String: String]) -> (_ scalar: Node.Scalar) -> String? {
-        { (scalar: Node.Scalar) -> String? in
-            scalar.string.expandingEnvVars(env: env)
-        }
-    }
-
     func expandingEnvVars(env: [String: String]) -> String {
-        var result = self
-        for (key, value) in env {
-            result = result.replacingOccurrences(of: "${\(key)}", with: value)
+        guard contains("${") else {
+            // No environment variables used.
+            return self
         }
-
-        return result
-    }
-}
-
-private extension Bool {
-    // swiftlint:disable:next discouraged_optional_boolean
-    static func constructUsingOnlyTrueAndFalse(from scalar: Node.Scalar) -> Bool? {
-        switch scalar.string.lowercased() {
-        case "true":
-            return true
-        case "false":
-            return false
-        default:
-            return nil
+        return env.reduce(into: self) { result, envVar in
+            result = result.replacingOccurrences(of: "${\(envVar.key)}", with: envVar.value)
         }
     }
 }

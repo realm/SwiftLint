@@ -26,6 +26,12 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5801](https://github.com/realm/SwiftLint/issues/5801)
 
+* Support type casting on configuration option values defined by environment variables.
+  Without a cast, these values would always be treated as strings leading to a potentially
+  invalid configuration.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5774](https://github.com/realm/SwiftLint/issues/5774)
+
 * The `redundant_type_annotation` rule gains a new option,
   `ignore_properties`, that skips enforcement on members in a
   type declaration (like a `struct`). This helps the rule coexist with

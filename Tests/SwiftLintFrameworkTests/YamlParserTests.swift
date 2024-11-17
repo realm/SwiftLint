@@ -53,4 +53,48 @@ final class YamlParserTests: SwiftLintTestCase {
             _ = try YamlParser.parse("|\na", env: [:])
         }
     }
+
+    func testTreatAllEnvVarsAsStringsWithoutCasting() throws {
+        let env = [
+            "INT": "1",
+            "FLOAT": "1.0",
+            "BOOL": "true",
+            "STRING": "string",
+        ]
+        let string = """
+            int: ${INT}
+            float: ${FLOAT}
+            bool: ${BOOL}
+            string: ${STRING}
+            """
+
+        let result = try YamlParser.parse(string, env: env)
+
+        XCTAssertEqual(result["int"] as? String, "1")
+        XCTAssertEqual(result["float"] as? String, "1.0")
+        XCTAssertEqual(result["bool"] as? String, "true")
+        XCTAssertEqual(result["string"] as? String, "string")
+    }
+
+    func testRespectCastsOnEnvVars() throws {
+        let env = [
+            "INT": "1",
+            "FLOAT": "1.0",
+            "BOOL": "true",
+            "STRING": "string",
+        ]
+        let string = """
+            int: !!int ${INT}
+            float: !!float ${FLOAT}
+            bool: !!bool ${BOOL}
+            string: !!str ${STRING}
+            """
+
+        let result = try YamlParser.parse(string, env: env)
+
+        XCTAssertEqual(result["int"] as? Int, 1)
+        XCTAssertEqual(result["float"] as? Double, 1.0)
+        XCTAssertEqual(result["bool"] as? Bool, true)
+        XCTAssertEqual(result["string"] as? String, "string")
+    }
 }

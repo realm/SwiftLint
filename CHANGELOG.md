@@ -13,6 +13,9 @@
 * The `inert_defer` and `unused_capture_list` rules have completely been removed after being deprecated for 2 years.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* SwiftLint now requires a Swift 6 or higher compiler to build.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Experimental
 
 * None.

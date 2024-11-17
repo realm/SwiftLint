@@ -1,4 +1,4 @@
-package struct SuperfluousDisableCommandRule: SourceKitFreeRule {
+package struct SuperfluousDisableCommandRule: SourceKitFreeRule, Sendable {
     package var configuration = SeverityConfiguration<Self>(.warning)
 
     package init() { /* Make initializer as accessible as its type. */ }

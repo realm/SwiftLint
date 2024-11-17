@@ -24,7 +24,7 @@ public protocol Documentable {
 }
 
 /// Description of a rule configuration.
-public struct RuleConfigurationDescription: Equatable {
+public struct RuleConfigurationDescription: Equatable, Sendable {
     fileprivate let options: [RuleConfigurationOption]
 
     fileprivate init(options: [RuleConfigurationOption], exclusiveOptions: Set<String> = []) {
@@ -122,7 +122,7 @@ extension RuleConfigurationDescription: Documentable {
 }
 
 /// A single option of a ``RuleConfigurationDescription``.
-public struct RuleConfigurationOption: Equatable {
+public struct RuleConfigurationOption: Equatable, Sendable {
     /// An option serving as a marker for an empty configuration description.
     public static let noOptions = Self(key: "<nothing>", value: .empty)
 
@@ -164,7 +164,7 @@ extension RuleConfigurationOption: Documentable {
 }
 
 /// Type of an option.
-public enum OptionType: Equatable {
+public enum OptionType: Equatable, Sendable {
     /// An irrelevant option. It will be ignored in documentation serialization.
     case empty
     /// A boolean flag.
@@ -415,9 +415,9 @@ public protocol InlinableOptionType: AcceptableByConfigurationElement {}
 ///    ```
 ///
 @propertyWrapper
-public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: Equatable {
+public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable & Sendable>: Equatable, Sendable {
     /// A deprecation notice.
-    public enum DeprecationNotice {
+    public enum DeprecationNotice: Sendable {
         /// Warning suggesting an alternative option.
         case suggestAlternative(ruleID: String, name: String)
     }
@@ -448,7 +448,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     public let inline: Bool
 
     private let deprecationNotice: DeprecationNotice?
-    private let postprocessor: (inout T) -> Void
+    private let postprocessor: @Sendable (inout T) -> Void
 
     /// Default constructor.
     ///
@@ -461,7 +461,8 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     public init(wrappedValue value: T,
                 key: String,
                 deprecationNotice: DeprecationNotice? = nil,
-                postprocessor: @escaping (inout T) -> Void = { _ in }) { // swiftlint:disable:this no_empty_block
+                postprocessor: @escaping @Sendable (inout T) -> Void = { _ in }) {
+        // swiftlint:disable:previous no_empty_block
         self.init(
             wrappedValue: value,
             key: key,
@@ -509,7 +510,8 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
                  key: String,
                  inline: Bool,
                  deprecationNotice: DeprecationNotice? = nil,
-                 postprocessor: @escaping (inout T) -> Void = { _ in }) { // swiftlint:disable:this no_empty_block
+                 postprocessor: @escaping @Sendable (inout T) -> Void = { _ in }) {
+        // swiftlint:disable:previous no_empty_block
         self.wrappedValue = wrappedValue
         self.key = key
         self.inline = inline

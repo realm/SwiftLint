@@ -3,12 +3,12 @@
 import XCTest
 
 final class MultilineParametersConfigurationTests: SwiftLintTestCase {
-    func testInvalidMaxNumberOfSingleLineParameters() throws {
+    func testInvalidMaxNumberOfSingleLineParameters() async throws {
         for maxNumberOfSingleLineParameters in [0, -1] {
             var config = MultilineParametersConfiguration()
 
-            XCTAssertEqual(
-                try Issue.captureConsole {
+            try await AsyncAssertEqual(
+                try await Issue.captureConsole {
                     try config.apply(
                         configuration: ["max_number_of_single_line_parameters": maxNumberOfSingleLineParameters]
                     )
@@ -21,11 +21,11 @@ final class MultilineParametersConfigurationTests: SwiftLintTestCase {
         }
     }
 
-    func testInvalidMaxNumberOfSingleLineParametersWithSingleLineEnabled() throws {
+    func testInvalidMaxNumberOfSingleLineParametersWithSingleLineEnabled() async throws {
         var config = MultilineParametersConfiguration()
 
-        XCTAssertEqual(
-            try Issue.captureConsole {
+        try await AsyncAssertEqual(
+            try await Issue.captureConsole {
                 try config.apply(
                     configuration: ["max_number_of_single_line_parameters": 2, "allows_single_line": false]
                 )

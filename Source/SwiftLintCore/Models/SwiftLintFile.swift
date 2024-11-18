@@ -1,8 +1,8 @@
 import Foundation
-import SourceKittenFramework
+@preconcurrency import SourceKittenFramework
 
 /// A unit of Swift source code, either on disk or in memory.
-public final class SwiftLintFile {
+public final class SwiftLintFile: Sendable {
     /// The underlying SourceKitten file.
     public let file: File
     /// The associated unique identifier for this file.

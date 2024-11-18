@@ -20,8 +20,8 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
         which disables the `force_unwrapping` rule for the remainder the file, instead of just for the specific \
         violation.
 
-        `next`, `this`, or `previous` can be used to restrict the disable command's scope to a single line, or it can be \
-        re-enabled after the violations.
+        `next`, `this`, or `previous` can be used to restrict the disable command's scope to a single line, or it \
+        can be re-enabled after the violations.
 
         To disable this rule in code you will need to do something like
 

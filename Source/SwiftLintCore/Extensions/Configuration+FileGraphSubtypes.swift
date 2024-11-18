@@ -60,8 +60,8 @@ internal extension Configuration.FileGraph {
         internal func build(
             remoteConfigTimeout: TimeInterval,
             remoteConfigTimeoutIfCached: TimeInterval
-        ) throws {
-            let path = try filePath.resolve(
+        ) async throws {
+            let path = try await filePath.resolve(
                 remoteConfigTimeout: remoteConfigTimeout,
                 remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCached
             )

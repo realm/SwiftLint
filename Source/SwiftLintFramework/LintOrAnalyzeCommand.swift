@@ -141,7 +141,7 @@ package struct LintOrAnalyzeCommand {
     }
 
     private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws {
-        let builder = LintOrAnalyzeResultBuilder(options)
+        let builder = await LintOrAnalyzeResultBuilder(options)
         let files = try await collectViolations(builder: builder)
         if let baselineOutputPath = options.writeBaseline ?? builder.configuration.writeBaseline {
             try Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath)
@@ -307,7 +307,7 @@ package struct LintOrAnalyzeCommand {
 
     private static func autocorrect(_ options: LintOrAnalyzeOptions) async throws {
         let storage = RuleStorage()
-        let configuration = Configuration(options: options)
+        let configuration = await Configuration(options: options)
         let correctionsBuilder = CorrectionsBuilder()
         let files = try await configuration
             .visitLintableFiles(options: options, cache: nil, storage: storage) { linter in
@@ -365,9 +365,9 @@ private class LintOrAnalyzeResultBuilder {
     let cache: LinterCache?
     let options: LintOrAnalyzeOptions
 
-    init(_ options: LintOrAnalyzeOptions) {
-        let config = Signposts.record(name: "LintOrAnalyzeCommand.ParseConfiguration") {
-            Configuration(options: options)
+    init(_ options: LintOrAnalyzeOptions) async {
+        let config = await Signposts.record(name: "LintOrAnalyzeCommand.ParseConfiguration") {
+            await Configuration(options: options)
         }
         configuration = config
         reporter = reporterFrom(identifier: options.reporter ?? config.reporter)

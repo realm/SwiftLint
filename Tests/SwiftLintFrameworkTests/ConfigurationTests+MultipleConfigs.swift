@@ -12,25 +12,23 @@ private extension Configuration {
 
 extension ConfigurationTests {
     // MARK: - Rules Merging
-    func testMerge() {
-        let config0Merge2 = Mock.Config._0.merged(withChild: Mock.Config._2)
+    func testMerge() async {
+        let config0Merge2 = await Mock.Config._0.merged(withChild: Mock.Config._2)
 
-        XCTAssertFalse(Mock.Config._0.contains(rule: ForceCastRule.self))
-        XCTAssertTrue(Mock.Config._2.contains(rule: ForceCastRule.self))
+        await AsyncAssertFalse(await Mock.Config._0.contains(rule: ForceCastRule.self))
+        await AsyncAssertTrue(await Mock.Config._2.contains(rule: ForceCastRule.self))
         XCTAssertFalse(config0Merge2.contains(rule: ForceCastRule.self))
 
-        XCTAssertTrue(Mock.Config._0.contains(rule: TodoRule.self))
-        XCTAssertTrue(Mock.Config._2.contains(rule: TodoRule.self))
+        await AsyncAssertTrue(await Mock.Config._0.contains(rule: TodoRule.self))
+        await AsyncAssertTrue(await Mock.Config._2.contains(rule: TodoRule.self))
         XCTAssertTrue(config0Merge2.contains(rule: TodoRule.self))
 
-        XCTAssertFalse(Mock.Config._3.contains(rule: TodoRule.self))
-        XCTAssertFalse(
-            config0Merge2.merged(withChild: Mock.Config._3).contains(rule: TodoRule.self)
-        )
+        await AsyncAssertFalse(await Mock.Config._3.contains(rule: TodoRule.self))
+        await AsyncAssertFalse(await config0Merge2.merged(withChild: Mock.Config._3).contains(rule: TodoRule.self))
     }
 
     // MARK: - Merging Aspects
-    func testWarningThresholdMerging() {
+    func testWarningThresholdMerging() async {
         func configuration(forWarningThreshold warningThreshold: Int?) -> Configuration {
             Configuration(
                 warningThreshold: warningThreshold,
@@ -50,7 +48,7 @@ extension ConfigurationTests {
             .merged(withChild: configuration(forWarningThreshold: nil)).warningThreshold)
     }
 
-    func testOnlyRulesMerging() {
+    func testOnlyRulesMerging() async {
         let baseConfiguration = Configuration(
             rulesMode: .defaultConfiguration(
                 disabled: [],
@@ -96,8 +94,8 @@ extension ConfigurationTests {
         XCTAssertTrue(mergedConfiguration3.rules[0] is TodoRule)
     }
 
-    func testCustomRulesMerging() {
-        let mergedConfiguration = Mock.Config._0CustomRules.merged(
+    func testCustomRulesMerging() async {
+        let mergedConfiguration = await Mock.Config._0CustomRules.merged(
             withChild: Mock.Config._2CustomRules,
             rootDirectory: ""
         )
@@ -114,8 +112,8 @@ extension ConfigurationTests {
         )
     }
 
-    func testMergingAllowsDisablingParentsCustomRules() {
-        let mergedConfiguration = Mock.Config._0CustomRules.merged(
+    func testMergingAllowsDisablingParentsCustomRules() async {
+        let mergedConfiguration = await Mock.Config._0CustomRules.merged(
             withChild: Mock.Config._2CustomRulesDisabled,
             rootDirectory: ""
         )
@@ -132,11 +130,11 @@ extension ConfigurationTests {
         )
     }
 
-    func testCustomRulesMergingWithOnlyRulesCase1() {
+    func testCustomRulesMergingWithOnlyRulesCase1() async {
         // The base configuration is in only rules mode
         // The child configuration is in the default rules mode
         // => all custom rules should be considered
-        let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
+        let mergedConfiguration = await Mock.Config._0CustomRulesOnly.merged(
             withChild: Mock.Config._2CustomRules,
             rootDirectory: ""
         )
@@ -153,12 +151,12 @@ extension ConfigurationTests {
         )
     }
 
-    func testCustomRulesMergingWithOnlyRulesCase2() {
+    func testCustomRulesMergingWithOnlyRulesCase2() async {
         // The base configuration is in only rules mode
         // The child configuration is in the only rules mode
         // => only the custom rules from the child configuration should be considered
         // (because custom rules from base configuration would require explicit mention as one of the `only_rules`)
-        let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
+        let mergedConfiguration = await Mock.Config._0CustomRulesOnly.merged(
             withChild: Mock.Config._2CustomRulesOnly,
             rootDirectory: ""
         )
@@ -175,9 +173,9 @@ extension ConfigurationTests {
         )
     }
 
-    func testCustomRulesReconfiguration() {
+    func testCustomRulesReconfiguration() async {
         // Custom Rule severity gets reconfigured to "error"
-        let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
+        let mergedConfiguration = await Mock.Config._0CustomRulesOnly.merged(
             withChild: Mock.Config._2CustomRulesReconfig,
             rootDirectory: ""
         )
@@ -199,101 +197,103 @@ extension ConfigurationTests {
     }
 
     // MARK: - Nested Configurations
-    func testLevel0() {
-        XCTAssertEqual(Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._0)!),
-                       Mock.Config._0)
+    func testLevel0() async {
+        await AsyncAssertEqual(
+            await Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._0)!),
+            await Mock.Config._0
+        )
     }
 
-    func testLevel1() {
-        XCTAssertEqual(Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._1)!),
-                       Mock.Config._0)
+    func testLevel1() async {
+        await AsyncAssertEqual(
+            await Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._1)!),
+            await Mock.Config._0
+        )
     }
 
-    func testLevel2() {
-        let config = Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._2)!)
-        var config2 = Mock.Config._2
+    func testLevel2() async {
+        let config = await Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._2)!)
+        var config2 = await Mock.Config._2
         config2.fileGraph = Configuration.FileGraph(rootDirectory: Mock.Dir.level2)
 
-        XCTAssertEqual(
+        await AsyncAssertEqual(
             config,
-            Mock.Config._0.merged(withChild: config2, rootDirectory: config.rootDirectory)
+            await Mock.Config._0.merged(withChild: config2, rootDirectory: config.rootDirectory)
         )
     }
 
-    func testLevel3() {
-        let config = Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._3)!)
-        var config3 = Mock.Config._3
+    func testLevel3() async {
+        let config = await Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._3)!)
+        var config3 = await Mock.Config._3
         config3.fileGraph = Configuration.FileGraph(rootDirectory: Mock.Dir.level3)
 
-        XCTAssertEqual(
+        await AsyncAssertEqual(
             config,
-            Mock.Config._0.merged(withChild: config3, rootDirectory: config.rootDirectory)
+            await Mock.Config._0.merged(withChild: config3, rootDirectory: config.rootDirectory)
         )
     }
 
-    func testNestedConfigurationForOnePathPassedIn() {
+    func testNestedConfigurationForOnePathPassedIn() async {
         // If a path to one or more configuration files is specified, nested configurations should be ignored
-        let config = Configuration(configurationFiles: [Mock.Yml._0])
-        XCTAssertEqual(
-            config.configuration(for: SwiftLintFile(path: Mock.Swift._3)!),
+        let config = await Configuration(configurationFiles: [Mock.Yml._0])
+        await AsyncAssertEqual(
+            await config.configuration(for: SwiftLintFile(path: Mock.Swift._3)!),
             config
         )
     }
 
-    func testParentConfigIsIgnoredAsNestedConfiguration() {
+    func testParentConfigIsIgnoredAsNestedConfiguration() async {
         // If a configuration has already been used to build the main config,
         // it should not again be regarded as a nested config
-        XCTAssertEqual(
-            Mock.Config.nested.configuration(for: SwiftLintFile(path: Mock.Swift.nestedSub)!),
-            Mock.Config.nested
+        await AsyncAssertEqual(
+            await Mock.Config.nested.configuration(for: SwiftLintFile(path: Mock.Swift.nestedSub)!),
+            await Mock.Config.nested
         )
     }
 
     // MARK: - Child & Parent Configs
-    func testValidChildConfig() {
+    func testValidChildConfig() async {
         guard !isRunningWithBazel else {
             return
         }
 
         for path in [Mock.Dir.childConfigTest1, Mock.Dir.childConfigTest2] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
+            FileManager.default.changeCurrentDirectoryPath(path)
 
             assertEqualExceptForFileGraph(
-                Configuration(configurationFiles: ["main.yml"]),
-                Configuration(configurationFiles: ["expected.yml"])
+                await Configuration(configurationFiles: ["main.yml"]),
+                await Configuration(configurationFiles: ["expected.yml"])
             )
         }
     }
 
-    func testValidParentConfig() {
+    func testValidParentConfig() async {
         for path in [Mock.Dir.parentConfigTest1, Mock.Dir.parentConfigTest2] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
+            FileManager.default.changeCurrentDirectoryPath(path)
 
             assertEqualExceptForFileGraph(
-                Configuration(configurationFiles: ["main.yml"]),
-                Configuration(configurationFiles: ["expected.yml"])
+                await Configuration(configurationFiles: ["main.yml"]),
+                await Configuration(configurationFiles: ["expected.yml"])
             )
         }
     }
 
-    func testCommandLineChildConfigs() {
+    func testCommandLineChildConfigs() async {
         guard !isRunningWithBazel else {
             return
         }
 
         for path in [Mock.Dir.childConfigTest1, Mock.Dir.childConfigTest2] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
+            FileManager.default.changeCurrentDirectoryPath(path)
 
             assertEqualExceptForFileGraph(
-                Configuration(
-                    configurationFiles: ["main.yml", "child1.yml", "child2.yml"]
-                ),
-                Configuration(configurationFiles: ["expected.yml"])
+                await Configuration(configurationFiles: ["main.yml", "child1.yml", "child2.yml"]),
+                await Configuration(configurationFiles: ["expected.yml"])
             )
         }
     }
 
-    func testConfigCycleDetection() {
+    func testConfigCycleDetection() async {
         for path in [
             Mock.Dir.childConfigCycle1,
             Mock.Dir.childConfigCycle2,
@@ -302,22 +302,23 @@ extension ConfigurationTests {
             Mock.Dir.parentConfigCycle2,
             Mock.Dir.parentConfigCycle3,
         ] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
+            FileManager.default.changeCurrentDirectoryPath(path)
 
             // If the cycle is properly detected, the config should equal the default config.
-            XCTAssertEqual(
-                Configuration(configurationFiles: []), // not specifying a file means the .swiftlint.yml will be used
+            await AsyncAssertEqual(
+                // not specifying a file means the .swiftlint.yml will be used
+                await Configuration(configurationFiles: []),
                 Configuration()
             )
         }
     }
 
-    func testCommandLineConfigsCycleDetection() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.childConfigCycle4))
+    func testCommandLineConfigsCycleDetection() async {
+        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.childConfigCycle4)
 
         // If the cycle is properly detected, the config should equal the default config.
         assertEqualExceptForFileGraph(
-            Configuration(
+            await Configuration(
                 configurationFiles: ["main.yml", "child.yml"],
                 useDefaultConfigOnFailure: true
             ),
@@ -325,7 +326,7 @@ extension ConfigurationTests {
         )
     }
 
-    func testParentChildOptInAndDisable() {
+    func testParentChildOptInAndDisable() async {
         struct TestCase: Equatable {
             let optedInInParent: Bool
             let disabledInParent: Bool
@@ -378,7 +379,7 @@ extension ConfigurationTests {
         }
     }
 
-    func testParentChildDisableForDefaultRule() {
+    func testParentChildDisableForDefaultRule() async {
         struct TestCase: Equatable {
             let disabledInParent: Bool
             let disabledInChild: Bool
@@ -410,7 +411,7 @@ extension ConfigurationTests {
         }
     }
 
-    func testParentOnlyRulesAndChildOptInAndDisabled() {
+    func testParentOnlyRulesAndChildOptInAndDisabled() async {
         struct TestCase: Equatable {
             let optedInInChild: Bool
             let disabledInChild: Bool
@@ -442,17 +443,17 @@ extension ConfigurationTests {
     }
 
     // MARK: Warnings about configurations for disabled rules
-    func testDefaultConfigurationDisabledRuleWarnings() {
+    func testDefaultConfigurationDisabledRuleWarnings() async {
         let optInRuleType = ImplicitReturnRule.self
         XCTAssertTrue((optInRuleType as Any) is any OptInRule.Type)
-        testDefaultConfigurationDisabledRuleWarnings(for: optInRuleType)
+        await testDefaultConfigurationDisabledRuleWarnings(for: optInRuleType)
 
         let defaultRuleType = BlockBasedKVORule.self
         XCTAssertFalse((defaultRuleType as Any) is any OptInRule.Type)
-        testDefaultConfigurationDisabledRuleWarnings(for: defaultRuleType)
+        await testDefaultConfigurationDisabledRuleWarnings(for: defaultRuleType)
     }
 
-    private func testDefaultConfigurationDisabledRuleWarnings(for ruleType: any Rule.Type) {
+    private func testDefaultConfigurationDisabledRuleWarnings(for ruleType: any Rule.Type) async {
         let ruleIdentifier = ruleType.identifier
 
         let parentConfigurations = [
@@ -543,84 +544,84 @@ extension ConfigurationTests {
     }
 
     // MARK: - Remote Configs
-    func testValidRemoteChildConfig() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild))
+    @MainActor
+    func testValidRemoteChildConfig() async {
+        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild)
+
+        Configuration.FileGraph.FilePath.mockedNetworkResults = [
+            "https://www.mock.com":
+            """
+            included:
+                - Test/Test1/Test/Test
+                - Test/Test2/Test/Test
+            """,
+        ]
 
         assertEqualExceptForFileGraph(
-            Configuration(
-                configurationFiles: ["main.yml"],
-                mockedNetworkResults: [
-                    "https://www.mock.com":
-                    """
-                    included:
-                      - Test/Test1/Test/Test
-                      - Test/Test2/Test/Test
-                    """,
-                ]
-            ),
-            Configuration(configurationFiles: ["expected.yml"])
+            await Configuration(configurationFiles: ["main.yml"]),
+            await Configuration(configurationFiles: ["expected.yml"])
         )
     }
 
-    func testValidRemoteParentConfig() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigParent))
+    @MainActor
+    func testValidRemoteParentConfig() async {
+        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigParent)
+
+        Configuration.FileGraph.FilePath.mockedNetworkResults = [
+            "https://www.mock.com":
+            """
+            included:
+                - Test/Test1
+                - Test/Test2
+
+            excluded:
+                - Test/Test1/Test
+                - Test/Test2/Test
+
+            line_length: 80
+            """,
+        ]
 
         assertEqualExceptForFileGraph(
-            Configuration(
-                configurationFiles: ["main.yml"],
-                mockedNetworkResults: [
-                    "https://www.mock.com":
-                    """
-                    included:
-                      - Test/Test1
-                      - Test/Test2
-
-                    excluded:
-                      - Test/Test1/Test
-                      - Test/Test2/Test
-
-                    line_length: 80
-                    """,
-                ]
-            ),
-            Configuration(configurationFiles: ["expected.yml"])
+            await Configuration(configurationFiles: ["main.yml"]),
+            await Configuration(configurationFiles: ["expected.yml"])
         )
     }
 
-    func testsRemoteConfigNotAllowedToReferenceLocalConfig() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigLocalRef))
+    @MainActor
+    func testsRemoteConfigNotAllowedToReferenceLocalConfig() async {
+        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigLocalRef)
+
+        Configuration.FileGraph.FilePath.mockedNetworkResults = [
+            "https://www.mock.com":
+            """
+            line_length: 60
+
+            child_config: child2.yml
+            """,
+        ]
 
         // If the remote file is not allowed to reference a local file, the config should equal the default config.
-        XCTAssertEqual(
-            Configuration(
-                configurationFiles: [], // not specifying a file means the .swiftlint.yml will be used
-                mockedNetworkResults: [
-                    "https://www.mock.com":
-                    """
-                    line_length: 60
-
-                    child_config: child2.yml
-                    """,
-                ]
-            ),
+        await AsyncAssertEqual(
+            await Configuration(configurationFiles: []), // not specifying a file means the .swiftlint.yml will be used
             Configuration()
         )
     }
 
-    func testRemoteConfigCycleDetection() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigCycle))
+    @MainActor
+    func testRemoteConfigCycleDetection() async {
+        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigCycle)
+
+        Configuration.FileGraph.FilePath.mockedNetworkResults = [
+            "https://www.mock.com":
+            """
+            child_config: https://www.mock.com
+            """,
+        ]
 
         // If the cycle is properly detected, the config should equal the default config.
-        XCTAssertEqual(
-            Configuration(
-                configurationFiles: [], // not specifying a file means the .swiftlint.yml will be used
-                mockedNetworkResults: [
-                    "https://www.mock.com":
-                    """
-                    child_config: https://www.mock.com
-                    """,
-                ]
-            ),
+        await AsyncAssertEqual(
+            await Configuration(configurationFiles: []), // not specifying a file means the .swiftlint.yml will be used
             Configuration()
         )
     }

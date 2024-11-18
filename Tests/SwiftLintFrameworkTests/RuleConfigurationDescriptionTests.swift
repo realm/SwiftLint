@@ -5,7 +5,7 @@ import XCTest
 // swiftlint:disable file_length
 
 // swiftlint:disable:next type_body_length
-final class RuleConfigurationDescriptionTests: XCTestCase {
+final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
     @AutoConfigParser
     private struct TestConfiguration: RuleConfiguration {
         typealias Parent = RuleMock // swiftlint:disable:this nesting
@@ -490,26 +490,31 @@ final class RuleConfigurationDescriptionTests: XCTestCase {
         XCTAssertEqual(configuration.nestedSeverityLevels, SeverityLevelsConfiguration(warning: 6, error: 7))
     }
 
-    func testDeprecationWarning() throws {
+    @MainActor
+    func testDeprecationWarning() async throws {
         var configuration = TestConfiguration()
 
-        XCTAssertEqual(
-            try Issue.captureConsole { try configuration.apply(configuration: ["set": [6, 7]]) },
+        try await AsyncAssertEqual(
+            try await Issue.captureConsole { try configuration.apply(configuration: ["set": [6, 7]]) },
             "warning: Configuration option 'set' in 'my_rule' rule is deprecated. Use the option 'other_opt' instead."
         )
     }
 
-    func testNoDeprecationWarningIfNoDeprecatedPropertySet() throws {
+    @MainActor
+    func testNoDeprecationWarningIfNoDeprecatedPropertySet() async throws {
         var configuration = TestConfiguration()
 
-        XCTAssert(try Issue.captureConsole { try configuration.apply(configuration: ["flag": false]) }.isEmpty)
+        try await AsyncAssertTrue(
+            try await Issue.captureConsole { try configuration.apply(configuration: ["flag": false]) }.isEmpty
+        )
     }
 
-    func testInvalidKeys() throws {
+    @MainActor
+    func testInvalidKeys() async throws {
         var configuration = TestConfiguration()
 
-        XCTAssertEqual(
-            try Issue.captureConsole {
+        try await AsyncAssertEqual(
+            try await Issue.captureConsole {
                 try configuration.apply(configuration: [
                     "severity": "error",
                     "warning": 3,

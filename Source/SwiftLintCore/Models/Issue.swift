@@ -92,15 +92,24 @@ public enum Issue: LocalizedError, Equatable {
     /// - parameter runner: The code to run. Messages printed during the execution are collected.
     ///
     /// - returns: The collected messages produced while running the code in the runner.
-    static func captureConsole(runner: () throws -> Void) rethrows -> String {
-        var console = ""
-        messageConsumer = { console += (console.isEmpty ? "" : "\n") + $0 }
-        defer { messageConsumer = nil }
+    @MainActor
+    static func captureConsole(runner: () throws -> Void) async rethrows -> String {
+        actor Console {
+            static var content = ""
+        }
+        messageConsumer = {
+            Console.content += (Console.content.isEmpty ? "" : "\n") + $0
+        }
+        defer {
+            messageConsumer = nil
+            Console.content = ""
+        }
         try runner()
-        return console
+        await Task.yield()
+        return Console.content
     }
 
-    private static var messageConsumer: ((String) -> Void)?
+    @MainActor private static var messageConsumer: (@Sendable (String) -> Void)?
 
     /// Wraps any `Error` into a `SwiftLintError.genericWarning` if it is not already a `SwiftLintError`.
     ///
@@ -133,10 +142,12 @@ public enum Issue: LocalizedError, Equatable {
         if case .ruleDeprecated = self, !Self.printDeprecationWarnings {
             return
         }
-        if let consumer = Self.messageConsumer {
-            consumer(errorDescription)
-        } else {
-            queuedPrintError(errorDescription)
+        Task { @MainActor in
+            if let consumer = Self.messageConsumer {
+                consumer(errorDescription)
+            } else {
+                queuedPrintError(errorDescription)
+            }
         }
     }
 

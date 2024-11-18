@@ -1,5 +1,5 @@
 /// An identifier representing a SwiftLint rule, or all rules.
-public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral, Comparable {
+public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral, Comparable, Sendable {
     // MARK: - Values
 
     /// Special identifier that should be treated as referring to 'all' SwiftLint rules. One helpful usecase is in

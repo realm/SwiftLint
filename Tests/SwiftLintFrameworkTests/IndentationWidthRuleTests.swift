@@ -4,13 +4,14 @@ import SwiftLintTestHelpers
 import XCTest
 
 final class IndentationWidthRuleTests: SwiftLintTestCase {
-    func testInvalidIndentation() throws {
+    @MainActor
+    func testInvalidIndentation() async throws {
         var testee = IndentationWidthConfiguration()
         let defaultValue = testee.indentationWidth
 
         for indentation in [0, -1, -5] {
-            XCTAssertEqual(
-                try Issue.captureConsole { try testee.apply(configuration: ["indentation_width": indentation]) },
+            try await AsyncAssertEqual(
+                try await Issue.captureConsole { try testee.apply(configuration: ["indentation_width": indentation]) },
                 "warning: Invalid configuration for 'indentation_width' rule. Falling back to default."
             )
             // Value remains the default.

@@ -6,7 +6,7 @@ import SwiftyTextTable
 private typealias SortedRules = [(String, any Rule.Type)]
 
 extension SwiftLint {
-    struct Rules: ParsableCommand {
+    struct Rules: AsyncParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Display the list of rules and their identifiers")
 
         @Option(help: "The path to a SwiftLint configuration file")
@@ -22,8 +22,8 @@ extension SwiftLint {
         @Argument(help: "The rule identifier to display description for")
         var ruleID: String?
 
-        func run() throws {
-            let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
+        func run() async throws {
+            let configuration = await Configuration(configurationFiles: [config].compactMap({ $0 }))
             if let ruleID {
                 guard let rule = RuleRegistry.shared.rule(forID: ruleID) else {
                     throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")

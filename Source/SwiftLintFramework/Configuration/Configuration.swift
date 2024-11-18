@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 /// The configuration struct for SwiftLint. User-defined in the `.swiftlint.yml` file, drives the behavior of SwiftLint.
-public struct Configuration {
+public struct Configuration: Sendable {
     // MARK: - Properties: Static
     /// The default Configuration resulting from an empty configuration file.
     public static var `default`: Self {
@@ -57,7 +57,7 @@ public struct Configuration {
 
     // MARK: Public Computed
     /// All rules enabled in this configuration
-    public var rules: [any Rule] { rulesWrapper.resultingRules }
+    public nonisolated var rules: [any Rule] { rulesWrapper.resultingRules }
 
     /// The root directory is the directory that included & excluded paths relate to.
     /// By default, the root directory is the current working directory,
@@ -212,8 +212,6 @@ public struct Configuration {
     /// - parameter enableAllRules:             Enable all available rules.
     /// - parameter cachePath:                  The location of the persisted cache to use whith this configuration.
     /// - parameter ignoreParentAndChildConfigs:If `true`, child and parent config references will be ignored.
-    /// - parameter mockedNetworkResults:       For testing purposes only. Instead of loading the specified urls,
-    ///                                         the mocked value will be used. Example: ["http://mock.com": "content"]
     /// - parameter useDefaultConfigOnFailure:  If this value is specified, it will override the normal behavior.
     ///                                         This is only intended for tests checking whether invalid configs fail.
     public init(
@@ -222,17 +220,8 @@ public struct Configuration {
         onlyRule: [String] = [],
         cachePath: String? = nil,
         ignoreParentAndChildConfigs: Bool = false,
-        mockedNetworkResults: [String: String] = [:],
         useDefaultConfigOnFailure: Bool? = nil // swiftlint:disable:this discouraged_optional_boolean
-    ) {
-        // Handle mocked network results if needed
-        Self.FileGraph.FilePath.mockedNetworkResults = mockedNetworkResults
-        defer {
-            if !mockedNetworkResults.isEmpty {
-                Self.FileGraph.FilePath.deleteGitignoreAndSwiftlintCache()
-            }
-        }
-
+    ) async {
         // Store whether there are custom configuration files; use default config file name if there are none
         let hasCustomConfigurationFiles: Bool = configurationFiles.isNotEmpty
         let configurationFiles = configurationFiles.isEmpty ? [Self.defaultFileName] : configurationFiles
@@ -261,7 +250,7 @@ public struct Configuration {
                 rootDirectory: currentWorkingDirectory,
                 ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
             )
-            let resultingConfiguration = try fileGraph.resultingConfiguration(
+            let resultingConfiguration = try await fileGraph.resultingConfiguration(
                 enableAllRules: enableAllRules,
                 onlyRule: onlyRule,
                 cachePath: cachePath
@@ -305,7 +294,7 @@ public struct Configuration {
 
 // MARK: - Hashable
 extension Configuration: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    public nonisolated func hash(into hasher: inout Hasher) {
         hasher.combine(includedPaths)
         hasher.combine(excludedPaths)
         hasher.combine(indentation)
@@ -323,7 +312,7 @@ extension Configuration: Hashable {
         hasher.combine(fileGraph)
     }
 
-    public static func == (lhs: Configuration, rhs: Configuration) -> Bool {
+    public static nonisolated func == (lhs: Configuration, rhs: Configuration) -> Bool {
         lhs.includedPaths == rhs.includedPaths &&
             lhs.excludedPaths == rhs.excludedPaths &&
             lhs.indentation == rhs.indentation &&
@@ -345,7 +334,7 @@ extension Configuration: Hashable {
 
 // MARK: - CustomStringConvertible
 extension Configuration: CustomStringConvertible {
-    public var description: String {
+    public nonisolated var description: String {
         "Configuration: \n"
             + "- Indentation Style: \(indentation)\n"
             + "- Included Paths: \(includedPaths)\n"

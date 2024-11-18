@@ -43,10 +43,10 @@ package extension Configuration {
             enableAllRules: Bool,
             onlyRule: [String],
             cachePath: String?
-        ) throws -> Configuration {
+        ) async throws -> Configuration {
             // Build if needed
             if !isBuilt {
-                try build()
+                try await build()
             }
 
             return try merged(
@@ -70,9 +70,9 @@ package extension Configuration {
         }
 
         // MARK: Building
-        private mutating func build() throws {
+        private mutating func build() async throws {
             for vertex in vertices {
-                try process(vertex: vertex)
+                try await process(vertex: vertex)
             }
 
             isBuilt = true
@@ -82,21 +82,21 @@ package extension Configuration {
             vertex: Vertex,
             remoteConfigTimeoutOverride: TimeInterval? = nil,
             remoteConfigTimeoutIfCachedOverride: TimeInterval? = nil
-        ) throws {
-            try vertex.build(
+        ) async throws {
+            try await vertex.build(
                 remoteConfigTimeout: remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeout,
                 remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCachedOverride
                     ?? remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeoutIfCached
             )
 
             if !ignoreParentAndChildConfigs {
-                try processPossibleReferenceIgnoringFileAbsence(
+                try await processPossibleReferenceIgnoringFileAbsence(
                     ofType: .childConfig,
                     from: vertex,
                     remoteConfigTimeoutOverride: remoteConfigTimeoutOverride,
                     remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCachedOverride)
 
-                try processPossibleReferenceIgnoringFileAbsence(
+                try await processPossibleReferenceIgnoringFileAbsence(
                     ofType: .parentConfig,
                     from: vertex,
                     remoteConfigTimeoutOverride: remoteConfigTimeoutOverride,
@@ -109,9 +109,9 @@ package extension Configuration {
             from vertex: Vertex,
             remoteConfigTimeoutOverride: TimeInterval?,
             remoteConfigTimeoutIfCachedOverride: TimeInterval?
-        ) throws {
+        ) async throws {
             do {
-                try processPossibleReference(
+                try await processPossibleReference(
                     ofType: type,
                     from: vertex,
                     remoteConfigTimeoutOverride: remoteConfigTimeoutOverride,
@@ -136,7 +136,7 @@ package extension Configuration {
             from vertex: Vertex,
             remoteConfigTimeoutOverride: TimeInterval?,
             remoteConfigTimeoutIfCachedOverride: TimeInterval?
-        ) throws {
+        ) async throws {
             let key = type == .childConfig ? Configuration.Key.childConfig.rawValue
                 : Configuration.Key.parentConfig.rawValue
 
@@ -171,7 +171,7 @@ package extension Configuration {
                             as? TimeInterval
                             ?? remoteConfigTimeoutIfCachedOverride // from vertex parent
 
-                    try process(
+                    try await process(
                         vertex: referencedVertex,
                         remoteConfigTimeoutOverride: remoteConfigTimeout,
                         remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCached

@@ -3,7 +3,7 @@ import Foundation
 import SwiftLintFramework
 
 extension SwiftLint {
-    struct GenerateDocs: ParsableCommand {
+    struct GenerateDocs: AsyncParsableCommand {
         static let configuration = CommandConfiguration(
             abstract: "Generates markdown documentation for selected group of rules"
         )
@@ -15,8 +15,8 @@ extension SwiftLint {
         @OptionGroup
         var rulesFilterOptions: RulesFilterOptions
 
-        func run() throws {
-            let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
+        func run() async throws {
+            let configuration = await Configuration(configurationFiles: [config].compactMap({ $0 }))
             let rulesFilter = RulesFilter(enabledRules: configuration.rules)
             let rules = rulesFilter.getRules(excluding: rulesFilterOptions.excludingOptions)
 

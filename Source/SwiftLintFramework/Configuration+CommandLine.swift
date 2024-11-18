@@ -78,8 +78,8 @@ extension Configuration {
         let files = try await Signposts.record(name: "Configuration.VisitLintableFiles.GetFiles") {
             try await getFiles(with: visitor)
         }
-        let groupedFiles = try Signposts.record(name: "Configuration.VisitLintableFiles.GroupFiles") {
-            try groupFiles(files, visitor: visitor)
+        let groupedFiles = try await Signposts.record(name: "Configuration.VisitLintableFiles.GroupFiles") {
+            try await groupFiles(files, visitor: visitor)
         }
         let lintersForFile = Signposts.record(name: "Configuration.VisitLintableFiles.LintersForFile") {
             groupedFiles.map { file in
@@ -103,7 +103,7 @@ extension Configuration {
         return result.flatMap { $0 }
     }
 
-    private func groupFiles(_ files: [SwiftLintFile], visitor: LintableFilesVisitor) throws
+    private func groupFiles(_ files: [SwiftLintFile], visitor: LintableFilesVisitor) async throws
         -> [Configuration: [SwiftLintFile]] {
         if files.isEmpty && !visitor.allowZeroLintableFiles {
             throw SwiftLintError.usageError(
@@ -113,7 +113,7 @@ extension Configuration {
 
         var groupedFiles = [Configuration: [SwiftLintFile]]()
         for file in files {
-            let fileConfiguration = configuration(for: file)
+            let fileConfiguration = await configuration(for: file)
             let fileConfigurationRootPath = fileConfiguration.rootDirectory.bridge()
 
             // Files whose configuration specifies they should be excluded will be skipped
@@ -300,8 +300,8 @@ extension Configuration {
 
     // MARK: LintOrAnalyze Command
 
-    init(options: LintOrAnalyzeOptions) {
-        self.init(
+    init(options: LintOrAnalyzeOptions) async {
+        await self.init(
             configurationFiles: options.configurationFiles,
             enableAllRules: options.enableAllRules,
             onlyRule: options.onlyRule,

@@ -3,18 +3,21 @@ import SwiftLintFramework
 import SwiftLintTestHelpers
 import XCTest
 
-private let config: Configuration = {
-    let bazelWorkspaceDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"]
-    let rootProjectDirectory = bazelWorkspaceDirectory ?? #filePath.bridge()
-        .deletingLastPathComponent.bridge()
-        .deletingLastPathComponent.bridge()
-        .deletingLastPathComponent
-    _ = FileManager.default.changeCurrentDirectoryPath(rootProjectDirectory)
-    return Configuration(configurationFiles: [Configuration.defaultFileName])
-}()
+private var config: Configuration {
+    get async {
+        let bazelWorkspaceDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"]
+        let rootProjectDirectory = bazelWorkspaceDirectory ?? #filePath.bridge()
+            .deletingLastPathComponent.bridge()
+            .deletingLastPathComponent.bridge()
+            .deletingLastPathComponent
+        _ = FileManager.default.changeCurrentDirectoryPath(rootProjectDirectory)
+        return await Configuration(configurationFiles: [Configuration.defaultFileName])
+    }
+}
 
 final class IntegrationTests: SwiftLintTestCase {
-    func testSwiftLintLints() {
+    func testSwiftLintLints() async {
+        let config = await config
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFiles(
             inPath: "",
@@ -36,7 +39,8 @@ final class IntegrationTests: SwiftLintTestCase {
         }
     }
 
-    func testSwiftLintAutoCorrects() {
+    func testSwiftLintAutoCorrects() async {
+        let config = await config
         let swiftFiles = config.lintableFiles(
             inPath: "",
             forceExclude: false,

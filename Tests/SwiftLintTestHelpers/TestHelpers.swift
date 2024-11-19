@@ -9,19 +9,14 @@ private let violationMarker = "↓"
 
 private extension SwiftLintFile {
     static func testFile(withContents contents: String, persistToDisk: Bool = false) -> SwiftLintFile {
-        let file: SwiftLintFile
         if persistToDisk {
             let url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
                 .appendingPathComponent(UUID().uuidString)
                 .appendingPathExtension("swift")
             _ = try? contents.data(using: .utf8)!.write(to: url)
-            file = SwiftLintFile(path: url.path)!
-        } else {
-            file = SwiftLintFile(contents: contents)
+            return SwiftLintFile(path: url.path, isTestFile: true)!
         }
-
-        file.markAsTestFile()
-        return file
+        return SwiftLintFile(contents: contents, isTestFile: true)
     }
 
     func makeCompilerArguments() -> [String] {

@@ -7,7 +7,7 @@ private nonisolated(unsafe) let globFunction = Darwin.glob
 #elseif canImport(Glibc)
 import Glibc
 
-private let globFunction = Glibc.glob
+private nonisolated(unsafe) let globFunction = Glibc.glob
 #else
 #error("Unsupported platform")
 #endif

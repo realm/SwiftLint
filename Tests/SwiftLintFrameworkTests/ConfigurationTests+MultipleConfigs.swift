@@ -258,7 +258,7 @@ extension ConfigurationTests {
         }
 
         for path in [Mock.Dir.childConfigTest1, Mock.Dir.childConfigTest2] {
-            FileManager.default.changeCurrentDirectoryPath(path)
+            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
 
             assertEqualExceptForFileGraph(
                 await Configuration(configurationFiles: ["main.yml"]),
@@ -269,7 +269,7 @@ extension ConfigurationTests {
 
     func testValidParentConfig() async {
         for path in [Mock.Dir.parentConfigTest1, Mock.Dir.parentConfigTest2] {
-            FileManager.default.changeCurrentDirectoryPath(path)
+            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
 
             assertEqualExceptForFileGraph(
                 await Configuration(configurationFiles: ["main.yml"]),
@@ -284,7 +284,7 @@ extension ConfigurationTests {
         }
 
         for path in [Mock.Dir.childConfigTest1, Mock.Dir.childConfigTest2] {
-            FileManager.default.changeCurrentDirectoryPath(path)
+            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
 
             assertEqualExceptForFileGraph(
                 await Configuration(configurationFiles: ["main.yml", "child1.yml", "child2.yml"]),
@@ -302,7 +302,7 @@ extension ConfigurationTests {
             Mock.Dir.parentConfigCycle2,
             Mock.Dir.parentConfigCycle3,
         ] {
-            FileManager.default.changeCurrentDirectoryPath(path)
+            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
 
             // If the cycle is properly detected, the config should equal the default config.
             await AsyncAssertEqual(
@@ -314,7 +314,7 @@ extension ConfigurationTests {
     }
 
     func testCommandLineConfigsCycleDetection() async {
-        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.childConfigCycle4)
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.childConfigCycle4))
 
         // If the cycle is properly detected, the config should equal the default config.
         assertEqualExceptForFileGraph(
@@ -546,7 +546,7 @@ extension ConfigurationTests {
     // MARK: - Remote Configs
     @MainActor
     func testValidRemoteChildConfig() async {
-        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild)
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild))
 
         Configuration.FileGraph.FilePath.mockedNetworkResults = [
             "https://www.mock.com":
@@ -565,7 +565,7 @@ extension ConfigurationTests {
 
     @MainActor
     func testValidRemoteParentConfig() async {
-        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigParent)
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigParent))
 
         Configuration.FileGraph.FilePath.mockedNetworkResults = [
             "https://www.mock.com":
@@ -590,7 +590,7 @@ extension ConfigurationTests {
 
     @MainActor
     func testsRemoteConfigNotAllowedToReferenceLocalConfig() async {
-        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigLocalRef)
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigLocalRef))
 
         Configuration.FileGraph.FilePath.mockedNetworkResults = [
             "https://www.mock.com":
@@ -610,7 +610,7 @@ extension ConfigurationTests {
 
     @MainActor
     func testRemoteConfigCycleDetection() async {
-        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigCycle)
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigCycle))
 
         Configuration.FileGraph.FilePath.mockedNetworkResults = [
             "https://www.mock.com":

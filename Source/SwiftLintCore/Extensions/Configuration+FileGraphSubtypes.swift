@@ -1,6 +1,6 @@
 import Foundation // swiftlint:disable:this file_name
 
-internal extension Configuration.FileGraph {
+extension Configuration.FileGraph {
     // MARK: - FilePath
     enum FilePath: Hashable {
         case promised(urlString: String)
@@ -8,10 +8,9 @@ internal extension Configuration.FileGraph {
     }
 
     // MARK: - Vertex
-    class Vertex: Hashable {
-        internal let originalRemoteString: String?
-        internal var originatesFromRemote: Bool { originalRemoteString != nil }
-        internal var rootDirectory: String {
+    final class Vertex: Hashable, Sendable {
+        var originatesFromRemote: Bool { originalRemoteString != nil }
+        var rootDirectory: String {
             if !originatesFromRemote, case let .existing(path) = filePath {
                 // This is a local file, so its root directory is its containing directory
                 return path.bridge().deletingLastPathComponent
@@ -21,43 +20,50 @@ internal extension Configuration.FileGraph {
         }
 
         private let originalRootDirectory: String
+        let originalRemoteString: String?
         let isInitialVertex: Bool
-        private(set) var filePath: FilePath
-        private(set) var configurationDict: [String: Any] = [:]
+        private let lock = NSLock()
+        private(set) nonisolated(unsafe) var filePath: FilePath
+        private(set) nonisolated(unsafe) var configurationDict: [String: Any]
 
-        init(string: String, rootDirectory: String, isInitialVertex: Bool) {
-            originalRootDirectory = rootDirectory
-            if string.hasPrefix("http://") || string.hasPrefix("https://") {
-                originalRemoteString = string
-                filePath = .promised(urlString: string)
-            } else {
-                originalRemoteString = nil
-                filePath = .existing(
-                    path: string.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
-                )
-            }
-            self.isInitialVertex = isInitialVertex
-        }
-
-        init(originalRemoteString: String?, originalRootDirectory: String, filePath: FilePath, isInitialVertex: Bool) {
-            self.originalRemoteString = originalRemoteString
-            self.originalRootDirectory = originalRootDirectory
-            self.filePath = filePath
-            self.isInitialVertex = isInitialVertex
-        }
-
-        internal func copy(withNewRootDirectory rootDirectory: String) -> Vertex {
-            let vertex = Vertex(
+        convenience init(string: String, rootDirectory: String, isInitialVertex: Bool) {
+            let (originalRemoteString, filePath): (String?, FilePath) =
+                if string.hasPrefix("http://") || string.hasPrefix("https://") {
+                    (string, .promised(urlString: string))
+                } else {
+                    (nil, .existing(path: string.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)))
+                }
+            self.init(
                 originalRemoteString: originalRemoteString,
                 originalRootDirectory: rootDirectory,
                 filePath: filePath,
                 isInitialVertex: isInitialVertex
             )
-            vertex.configurationDict = configurationDict
-            return vertex
         }
 
-        internal func build(
+        init(originalRemoteString: String?,
+             originalRootDirectory: String,
+             filePath: FilePath,
+             isInitialVertex: Bool,
+             configurationDict: [String: Any] = [:]) {
+            self.originalRemoteString = originalRemoteString
+            self.originalRootDirectory = originalRootDirectory
+            self.filePath = filePath
+            self.isInitialVertex = isInitialVertex
+            self.configurationDict = configurationDict
+        }
+
+        func copy(withNewRootDirectory rootDirectory: String) -> Vertex {
+            Vertex(
+                originalRemoteString: originalRemoteString,
+                originalRootDirectory: rootDirectory,
+                filePath: filePath,
+                isInitialVertex: isInitialVertex,
+                configurationDict: configurationDict
+            )
+        }
+
+        func adaptFromConfig(
             remoteConfigTimeout: TimeInterval,
             remoteConfigTimeoutIfCached: TimeInterval
         ) async throws {
@@ -65,9 +71,10 @@ internal extension Configuration.FileGraph {
                 remoteConfigTimeout: remoteConfigTimeout,
                 remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCached
             )
-
-            filePath = .existing(path: path)
-            configurationDict = try YamlParser.parse(read(at: path))
+            try lock.withLock {
+                self.filePath = .existing(path: path)
+                self.configurationDict = try YamlParser.parse(read(at: path))
+            }
         }
 
         private func read(at path: String) throws -> String {
@@ -80,13 +87,13 @@ internal extension Configuration.FileGraph {
             return try String(contentsOfFile: path, encoding: .utf8)
         }
 
-        internal static func == (lhs: Vertex, rhs: Vertex) -> Bool {
+        static func == (lhs: Vertex, rhs: Vertex) -> Bool {
             lhs.filePath == rhs.filePath
                 && lhs.originalRemoteString == rhs.originalRemoteString
                 && lhs.rootDirectory == rhs.rootDirectory
         }
 
-        internal func hash(into hasher: inout Hasher) {
+        func hash(into hasher: inout Hasher) {
             hasher.combine(filePath)
             hasher.combine(originalRemoteString)
             hasher.combine(originalRootDirectory)
@@ -94,7 +101,7 @@ internal extension Configuration.FileGraph {
     }
 
     // MARK: - Edge
-    struct Edge: Hashable {
+    struct Edge: Hashable, Sendable {
         // swiftlint:disable implicitly_unwrapped_optional
         var parent: Vertex!
         var child: Vertex!

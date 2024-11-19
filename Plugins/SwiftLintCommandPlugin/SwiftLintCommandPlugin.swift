@@ -26,8 +26,9 @@ struct SwiftLintCommandPlugin: CommandPlugin {
         let targets = targetNames.isEmpty
             ? context.package.targets
             : try context.package.targets(named: targetNames)
-        if targets.isEmpty || !commandsNotExpectingPaths.isDisjoint(with: arguments) {
-            try run(with: context, arguments: arguments)
+        let remainingArguments = argExtractor.remainingArguments
+        if targets.isEmpty || !commandsNotExpectingPaths.isDisjoint(with: remainingArguments) {
+            try run(with: context, arguments: remainingArguments)
             return
         }
         for target in targets {
@@ -35,7 +36,7 @@ struct SwiftLintCommandPlugin: CommandPlugin {
                 Diagnostics.warning("Target '\(target.name)' is not a source module; skipping it")
                 continue
             }
-            try run(in: target.directory.string, for: target.name, with: context, arguments: arguments)
+            try run(in: target.directory.string, for: target.name, with: context, arguments: remainingArguments)
         }
     }
 

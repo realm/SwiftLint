@@ -4,6 +4,11 @@
 
 * The command plugin now requires write permissions so that it works with the `--fix` option without an error.  
   [SimplyDanny](https://github.com/SimplyDanny)
+* The artifactbundle name has changed.
+  `SwiftLintBinary-macos.artifactbundle.zip` is now called `SwiftLintBinary.artifactbundle.zip`.
+  This now includes an AMD64 Linux binary.
+  [Bradley Mackey](https://github.com/bradleymackey)
+  [#5514](https://github.com/realm/SwiftLint/issues/5514)
 
 #### Experimental
 

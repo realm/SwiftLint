@@ -178,6 +178,7 @@ let package = Package(
 )
 
 #if os(macOS)
+// TODO: in the next release the artifactbundle is not suffixed with "-macos"
 package.targets.append(
     .binaryTarget(
         name: "SwiftLintBinary",

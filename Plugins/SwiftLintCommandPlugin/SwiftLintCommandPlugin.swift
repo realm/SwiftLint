@@ -23,57 +23,65 @@ struct SwiftLintCommandPlugin: CommandPlugin {
         }
         var argExtractor = ArgumentExtractor(arguments)
         let targetNames = argExtractor.extractOption(named: "target")
-        let targets = targetNames.isEmpty
-            ? context.package.targets
-            : try context.package.targets(named: targetNames)
         let remainingArguments = argExtractor.remainingArguments
-        if targets.isEmpty || !commandsNotExpectingPaths.isDisjoint(with: remainingArguments) {
-            try run(with: context, arguments: remainingArguments)
+        if targetNames.isEmpty || !commandsNotExpectingPaths.isDisjoint(with: remainingArguments) {
+            try lintFiles(with: context, arguments: remainingArguments)
             return
         }
-        for target in targets {
-            guard let target = target.sourceModule else {
-                Diagnostics.warning("Target '\(target.name)' is not a source module; skipping it")
-                continue
-            }
-            try run(in: target.directory.string, for: target.name, with: context, arguments: remainingArguments)
+        for target in try context.targets(named: targetNames) {
+            try lintFiles(in: target.path, for: target.name, with: context, arguments: remainingArguments)
         }
     }
+}
 
-    private func run(in directory: String = ".",
-                     for targetName: String? = nil,
-                     with context: PluginContext,
-                     arguments: [String]) throws {
-        let process = Process()
-        process.currentDirectoryURL = URL(fileURLWithPath: context.package.directory.string)
-        process.executableURL = URL(fileURLWithPath: try context.tool(named: "swiftlint").path.string)
-        process.arguments = arguments
-        if commandsWithoutCachPathOption.isDisjoint(with: arguments) {
-            process.arguments! += ["--cache-path", "\(context.pluginWorkDirectory.string)"]
-        }
-        if commandsNotExpectingPaths.isDisjoint(with: arguments) {
-            process.arguments! += [directory]
-        }
+#if canImport(XcodeProjectPlugin)
 
-        try process.run()
-        process.waitUntilExit()
+import XcodeProjectPlugin
 
-        let module = targetName.map { "module '\($0)'" } ?? "package"
-        switch process.terminationReason {
-        case .exit:
-            Diagnostics.remark("Finished running in \(module)")
-        case .uncaughtSignal:
-            Diagnostics.error("Got uncaught signal while running in \(module)")
-        @unknown default:
-            Diagnostics.error("Stopped running in \(module) due to unexpected termination reason")
-        }
+extension SwiftLintCommandPlugin: XcodeCommandPlugin {
+    func performCommand(context: XcodePluginContext, arguments: [String]) throws {
+        var argExtractor = ArgumentExtractor(arguments)
+        _ = argExtractor.extractOption(named: "target")
 
-        if process.terminationStatus != EXIT_SUCCESS {
-            Diagnostics.error("""
-                Command found error violations or unsuccessfully stopped running with \
-                exit code \(process.terminationStatus) in \(module)
-                """
-            )
-        }
+        try lintFiles(with: context, arguments: argExtractor.remainingArguments)
+    }
+}
+
+#endif
+
+private func lintFiles(in directory: String = ".",
+                       for targetName: String? = nil,
+                       with context: some CommandContext,
+                       arguments: [String]) throws {
+    let process = Process()
+    process.currentDirectoryURL = URL(fileURLWithPath: context.workingDirectory)
+    process.executableURL = URL(fileURLWithPath: try context.tool)
+    process.arguments = arguments
+    if commandsWithoutCachPathOption.isDisjoint(with: arguments) {
+        process.arguments! += ["--cache-path", context.cacheDirectory]
+    }
+    if commandsNotExpectingPaths.isDisjoint(with: arguments) {
+        process.arguments! += [directory]
+    }
+
+    try process.run()
+    process.waitUntilExit()
+
+    let module = targetName.map { "\(context.subUnitName) '\($0)'" } ?? context.unitName
+    switch process.terminationReason {
+    case .exit:
+        Diagnostics.remark("Finished running in \(module)")
+    case .uncaughtSignal:
+        Diagnostics.error("Got uncaught signal while running in \(module)")
+    @unknown default:
+        Diagnostics.error("Stopped running in \(module) due to unexpected termination reason")
+    }
+
+    if process.terminationStatus != EXIT_SUCCESS {
+        Diagnostics.error("""
+            Command found error violations or unsuccessfully stopped running with \
+            exit code \(process.terminationStatus) in \(module)
+            """
+        )
     }
 }

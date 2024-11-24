@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Add Xcode command plugin allowing to run SwiftLint from within Xcode.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Bug Fixes
 

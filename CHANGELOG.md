@@ -32,6 +32,14 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5774](https://github.com/realm/SwiftLint/issues/5774)
 
+* Add new option `max_number_of_single_line_parameters` that allows only the specified maximum
+  number of parameters to be on one line when `allows_single_line = true`. If the limit is
+  exceeded, the rule will still trigger. Confusing option combinations like `allows_single_line = false`
+  together with `max_number_of_single_line_parameters > 1` will be reported.  
+  [kimdv](https://github.com/kimdv)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5781](https://github.com/realm/SwiftLint/issues/5781)
+
 * The `redundant_type_annotation` rule gains a new option,
   `ignore_properties`, that skips enforcement on members in a
   type declaration (like a `struct`). This helps the rule coexist with

@@ -333,6 +333,88 @@ struct ImplicitReturnRuleExamples {
         ]
     }
 
+    struct SwitchExamples {
+        static let nonTriggeringExamples = [
+            Example("""
+                switch someBool {
+                case true: true
+                case false: nil
+                }
+                """),
+            Example("""
+                switch someBool {
+                case true:
+                    true
+                case false:
+                    nil
+                }
+                """),
+            Example("""
+                return switch someBool {
+                case true:
+                    true
+                case false:
+                    nil
+                }
+                """),
+            Example("""
+                switch someBool {
+                case true:
+                    return true
+                case false:
+                    let someVar = 0
+                    return nil
+                }
+                """),
+        ]
+
+        static let triggeringExamples = [
+            Example("""
+                switch someBool {
+                case true: ↓return true
+                case false: ↓return nil
+                }
+                """),
+            Example("""
+                switch someBool {
+                case true:
+                    ↓return true
+                case false:
+                    ↓return nil
+                }
+                """),
+        ]
+
+        static let corrections = [
+            Example("""
+                switch someBool {
+                case true: ↓return true
+                case false: ↓return nil
+                }
+                """): Example("""
+                switch someBool {
+                case true: true
+                case false: nil
+                }
+                """),
+            Example("""
+                switch someBool {
+                case true:
+                    ↓return true
+                case false:
+                    ↓return nil
+                }
+                """): Example("""
+                switch someBool {
+                case true:
+                    true
+                case false:
+                    nil
+                }
+                """),
+        ]
+    }
+
     struct MixedExamples {
         static let corrections = [
             Example("""
@@ -356,14 +438,16 @@ struct ImplicitReturnRuleExamples {
         FunctionExamples.nonTriggeringExamples +
         GetterExamples.nonTriggeringExamples +
         InitializerExamples.nonTriggeringExamples +
-        SubscriptExamples.nonTriggeringExamples
+        SubscriptExamples.nonTriggeringExamples +
+        SwitchExamples.nonTriggeringExamples
 
     static let triggeringExamples =
         ClosureExamples.triggeringExamples +
         FunctionExamples.triggeringExamples +
         GetterExamples.triggeringExamples +
         InitializerExamples.triggeringExamples +
-        SubscriptExamples.triggeringExamples
+        SubscriptExamples.triggeringExamples +
+        SwitchExamples.triggeringExamples
 
     static var corrections: [Example: Example] {
         [
@@ -372,6 +456,7 @@ struct ImplicitReturnRuleExamples {
             GetterExamples.corrections,
             InitializerExamples.corrections,
             SubscriptExamples.corrections,
+            SwitchExamples.corrections,
             MixedExamples.corrections,
         ]
         .reduce(into: [:]) { result, element in

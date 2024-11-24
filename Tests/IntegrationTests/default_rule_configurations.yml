@@ -240,7 +240,7 @@ implicit_getter:
   severity: warning
 implicit_return:
   severity: warning
-  included: [closure, function, getter, initializer, subscript]
+  included: [closure, function, getter, initializer, subscript, switch]
 implicitly_unwrapped_optional:
   severity: warning
   mode: all_except_iboutlets

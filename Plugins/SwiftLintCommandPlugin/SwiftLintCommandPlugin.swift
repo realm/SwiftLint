@@ -42,7 +42,7 @@ extension SwiftLintCommandPlugin {
         var argExtractor = ArgumentExtractor(arguments)
         let targetNames = argExtractor.extractOption(named: "target")
         let remainingArguments = argExtractor.remainingArguments
-        if targetNames.isEmpty || !commandsNotExpectingPaths.isDisjoint(with: remainingArguments) {
+        guard !targetNames.isEmpty, commandsNotExpectingPaths.isDisjoint(with: remainingArguments) else {
             try lintFiles(with: context, arguments: remainingArguments)
             return
         }

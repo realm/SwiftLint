@@ -8,8 +8,15 @@ final class MultilineParametersConfigurationTests: SwiftLintTestCase {
             var config = MultilineParametersConfiguration()
 
             XCTAssertEqual(
-                try Issue.captureConsole { try config.apply(configuration: ["max_number_of_single_line_parameters": maxNumberOfSingleLineParameters]) },
-                "Option \'max_number_of_single_line_parameters\' should be >= 1."
+                try Issue.captureConsole {
+                    try config.apply(
+                        configuration: ["max_number_of_single_line_parameters": maxNumberOfSingleLineParameters]
+                    )
+                },
+                """
+                warning: Inconsistent configuration for 'multiline_parameters' rule: Option \
+                'max_number_of_single_line_parameters' should be >= 1.
+                """
             )
         }
     }
@@ -18,8 +25,15 @@ final class MultilineParametersConfigurationTests: SwiftLintTestCase {
         var config = MultilineParametersConfiguration()
 
         XCTAssertEqual(
-            try Issue.captureConsole { try config.apply(configuration: ["max_number_of_single_line_parameters": 2, "allows_single_line": false]) },
-            "Option \'max_number_of_single_line_parameters\' has no effect when \'allows_single_line\' is false."
+            try Issue.captureConsole {
+                try config.apply(
+                    configuration: ["max_number_of_single_line_parameters": 2, "allows_single_line": false]
+                )
+            },
+            """
+            warning: Inconsistent configuration for 'multiline_parameters' rule: Option \
+            'max_number_of_single_line_parameters' has no effect when 'allows_single_line' is false.
+            """
         )
     }
 }

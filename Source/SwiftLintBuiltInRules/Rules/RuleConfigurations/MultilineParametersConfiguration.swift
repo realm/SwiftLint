@@ -16,20 +16,21 @@ struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration {
             return
         }
         guard maxNumberOfSingleLineParameters >= 1 else {
-            throw Issue.invalidConfiguration(
+            Issue.inconsistentConfiguration(
                 ruleID: Parent.identifier,
                 message: "Option '\($maxNumberOfSingleLineParameters.key)' should be >= 1."
-            )
+            ).print()
+            return
         }
 
         if maxNumberOfSingleLineParameters > 1, !allowsSingleLine {
-            throw Issue.invalidConfiguration(
+            Issue.inconsistentConfiguration(
                 ruleID: Parent.identifier,
                 message: """
                          Option '\($maxNumberOfSingleLineParameters.key)' has no effect when \
                          '\($allowsSingleLine.key)' is false.
                          """
-            )
+            ).print()
         }
     }
 }

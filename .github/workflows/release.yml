@@ -46,8 +46,9 @@ jobs:
       - name: Retrieve author in uppercase
         id: retrieve_author
         run: |
-          AUTHOR=${{ github.event.release.author.login }}
-          echo "name=${AUTHOR@U}" >> $GITHUB_OUTPUT
+          author=${{ github.event.release.author.login }}
+          AUTHOR=$(echo $author | tr '[:lower:]' '[:upper:]')
+          echo "name=${AUTHOR}" >> $GITHUB_OUTPUT
       - name: Deploy to CocoaPods
         run: make pod_publish
         env:

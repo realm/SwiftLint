@@ -11,7 +11,7 @@ protocol CommandContext {
 
     var subUnitName: String { get }
 
-    func targets(named names: [String]) throws -> [(path: String, name: String)]
+    func targets(named names: [String]) throws -> [(paths: [String], name: String)]
 }
 
 extension PluginContext: CommandContext {
@@ -37,7 +37,7 @@ extension PluginContext: CommandContext {
         "module"
     }
 
-    func targets(named names: [String]) throws -> [(path: String, name: String)] {
+    func targets(named names: [String]) throws -> [(paths: [String], name: String)] {
         let targets = names.isEmpty
             ? package.targets
             : try package.targets(named: names)
@@ -46,7 +46,8 @@ extension PluginContext: CommandContext {
                 Diagnostics.warning("Target '\(target.name)' is not a source module; skipping it")
                 return nil
             }
-            return (path: target.directory.string, name: target.name)
+            // Packages have a 1-to-1 mapping between targets and directories.
+            return (paths: [target.directory.string], name: target.name)
         }
     }
 }
@@ -78,8 +79,13 @@ extension XcodePluginContext: CommandContext {
         "target"
     }
 
-    func targets(named _: [String]) throws -> [(path: String, name: String)] {
-        []
+    func targets(named names: [String]) throws -> [(paths: [String], name: String)] {
+        if names.isEmpty {
+            return [(paths: [xcodeProject.directory.string], name: xcodeProject.displayName)]
+        }
+        return xcodeProject.targets
+            .filter { names.contains($0.displayName) }
+            .map { (paths: $0.inputFiles.map(\.path.string), name: $0.displayName) }
     }
 }
 

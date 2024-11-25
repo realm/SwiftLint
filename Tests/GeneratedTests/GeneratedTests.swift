@@ -751,7 +751,7 @@ final class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class NoAsyncFuncWithoutAwaitRuleGeneratedTests: SwiftLintTestCase {
+final class NoAsyncWithoutAwaitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoAsyncWithoutAwaitRule.description)
     }

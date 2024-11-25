@@ -111,10 +111,6 @@ private extension NoAsyncWithoutAwaitRule {
 
 private extension FunctionDeclSyntax {
     var asyncSpecifier: TokenSyntax? {
-        guard let asyncSpecifier = signature.effectSpecifiers?.asyncSpecifier else {
-            return nil
-        }
-
-        return asyncSpecifier
+        signature.effectSpecifiers?.asyncSpecifier
     }
 }

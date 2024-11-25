@@ -1,12 +1,12 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct NoAsyncFuncWithoutAwaitRule: OptInRule {
+struct NoAsyncWithoutAwaitRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
-        identifier: "no_async_func_without_await",
-        name: "No sync func without await",
+        identifier: "no_async_without_await",
+        name: "No sync without await",
         description: "Function should not be async if doesn't use await",
         kind: .idiomatic,
         nonTriggeringExamples: [
@@ -64,7 +64,7 @@ struct NoAsyncFuncWithoutAwaitRule: OptInRule {
         ]
     )
 }
-private extension NoAsyncFuncWithoutAwaitRule {
+private extension NoAsyncWithoutAwaitRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private struct FuncInfo {
             var awaitCount: Int = 0

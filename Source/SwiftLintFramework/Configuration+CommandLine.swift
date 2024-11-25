@@ -241,7 +241,6 @@ extension Configuration {
             linters.asyncMap(visit)
     }
 
-    // swiftlint:disable:next no_async_without_await
     fileprivate func getFiles(with visitor: LintableFilesVisitor) async throws -> [SwiftLintFile] {
         let options = visitor.options
         if options.useSTDIN {

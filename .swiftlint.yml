@@ -33,6 +33,7 @@ disabled_rules:
   - multiline_arguments_brackets
   - multiline_function_chains
   - multiline_parameters_brackets
+  - no_async_without_await
   - no_extension_access_modifier
   - no_grouping_extension
   - no_magic_numbers

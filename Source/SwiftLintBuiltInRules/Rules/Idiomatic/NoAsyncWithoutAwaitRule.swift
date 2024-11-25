@@ -41,7 +41,7 @@ struct NoAsyncWithoutAwaitRule: OptInRule {
                     quz()
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -60,17 +60,17 @@ struct NoAsyncWithoutAwaitRule: OptInRule {
                     quz()
                 }
             }
-            """)
+            """),
         ]
     )
 }
 private extension NoAsyncWithoutAwaitRule {
-    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private struct FuncInfo {
-            var awaitCount: Int = 0
-            let isAsync: Bool
-        }
+    private struct FuncInfo {
+        var awaitCount = 0
+        let isAsync: Bool
+    }
 
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var awaitCount = Stack<FuncInfo>()
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -90,7 +90,8 @@ private extension NoAsyncWithoutAwaitRule {
         }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if node.parent?.kind == .awaitExpr || node.parent?.kind == .tryExpr && node.parent?.parent?.kind == .awaitExpr {
+            if node.parent?.kind == .awaitExpr
+                || node.parent?.kind == .tryExpr && node.parent?.parent?.kind == .awaitExpr {
                 awaitCount.modifyLast {
                     $0.awaitCount += 1
                 }

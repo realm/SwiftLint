@@ -100,6 +100,7 @@ private extension NoAsyncWithoutAwaitRule {
             }
         }
 
+        // swiftlint:disable:next unused_parameter
         override func visitPost(_ node: AwaitExprSyntax) {
             awaitCount.modifyLast {
                 $0.awaitCount += 1

@@ -6,7 +6,7 @@ struct NoAsyncWithoutAwaitRule: OptInRule {
 
     static let description = RuleDescription(
         identifier: "no_async_without_await",
-        name: "No sync without await",
+        name: "No Async Without Await",
         description: "Declaration should not be async if it doesn't use await",
         kind: .idiomatic,
         nonTriggeringExamples: [

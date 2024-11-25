@@ -29,6 +29,9 @@
 * None.
 
 #### Enhancements
+* Adds `noAsyncFuncWithoutAwait` opt-in rule that check if a async function call at least one async function.  
+  [Jan Kolarik](https://github.com/jkolarik-paylocity)
+  [#5082](https://github.com/realm/SwiftLint/issues/5082)
 
 * Suggest failable `String(bytes:encoding:)` initializer in
   `optional_data_string_conversion` rule as it accepts all `Sequence`

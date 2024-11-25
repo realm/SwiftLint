@@ -337,6 +337,8 @@ nesting:
   ignore_typealiases_and_associatedtypes: false
 nimble_operator:
   severity: warning
+no_async_without_await:
+  severity: warning
 no_empty_block:
   severity: warning
   disabled_block_types: []

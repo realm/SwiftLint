@@ -8,7 +8,7 @@ struct NoAsyncWithoutAwaitRule: OptInRule {
         identifier: "no_async_without_await",
         name: "No Async Without Await",
         description: "Declaration should not be async if it doesn't use await",
-        kind: .idiomatic,
+        kind: .lint,
         nonTriggeringExamples: [
             Example("""
             func test() {

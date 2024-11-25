@@ -45,7 +45,14 @@ let package = Package(
         ),
         .plugin(
             name: "SwiftLintCommandPlugin",
-            capability: .command(intent: .custom(verb: "swiftlint", description: "SwiftLint Command Plugin")),
+            capability: .command(
+                intent: .custom(verb: "swiftlint", description: "SwiftLint Command Plugin"),
+                permissions: [
+                    .writeToPackageDirectory(
+                        reason: "When this command is run with the `--fix` option it may modify source files."
+                    ),
+                ]
+            ),
             dependencies: swiftLintPluginDependencies
         ),
         .executableTarget(

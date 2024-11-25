@@ -2,7 +2,8 @@
 
 #### Breaking
 
-* None.
+* The command plugin now requires write permissions so that it works with the `--fix` option without an error.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Experimental
 

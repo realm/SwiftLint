@@ -77,7 +77,7 @@ struct NoAsyncWithoutAwaitRule: OptInRule {
 }
 private extension NoAsyncWithoutAwaitRule {
     private struct FuncInfo {
-        var awaitCount = 0
+        var containsCount = false
         let isAsync: Bool
     }
 
@@ -95,14 +95,14 @@ private extension NoAsyncWithoutAwaitRule {
                 return
             }
 
-            if info.awaitCount == 0 {
+            if !info.containsCount {
                 violations.append(asyncSymbol.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_: AwaitExprSyntax) {
             awaitCount.modifyLast {
-                $0.awaitCount += 1
+                $0.containsCount = true
             }
         }
     }

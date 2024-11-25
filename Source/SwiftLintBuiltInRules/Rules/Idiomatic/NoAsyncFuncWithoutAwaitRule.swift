@@ -65,3 +65,47 @@ struct NoAsyncFuncWithoutAwaitRule: OptInRule {
         ]
     )
 }
+private extension NoAsyncFuncWithoutAwaitRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private struct FuncInfo {
+            var awaitCount: Int = 0
+            let isAsync: Bool
+        }
+
+        private var awaitCount = Stack<FuncInfo>()
+
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+            awaitCount.push(.init(isAsync: node.asyncSpecifier != nil))
+
+            return super.visit(node)
+        }
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard let info = awaitCount.pop(), let asyncSymbol = node.asyncSpecifier else {
+                return
+            }
+
+            if info.awaitCount == 0 {
+                violations.append(asyncSymbol.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if node.parent?.kind == .awaitExpr || node.parent?.kind == .tryExpr && node.parent?.parent?.kind == .awaitExpr {
+                awaitCount.modifyLast {
+                    $0.awaitCount += 1
+                }
+            }
+        }
+    }
+}
+
+private extension FunctionDeclSyntax {
+    var asyncSpecifier: TokenSyntax? {
+        guard let asyncSpecifier = signature.effectSpecifiers?.asyncSpecifier, asyncSpecifier.tokenKind == TokenKind.keyword(.async) else {
+            return nil
+        }
+
+        return asyncSpecifier
+    }
+}

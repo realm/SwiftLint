@@ -41,8 +41,7 @@ struct NoAsyncFuncWithoutAwaitRule: OptInRule {
                     quz()
                 }
             }
-            """
-            )
+            """)
         ],
         triggeringExamples: [
             Example("""
@@ -102,7 +101,7 @@ private extension NoAsyncFuncWithoutAwaitRule {
 
 private extension FunctionDeclSyntax {
     var asyncSpecifier: TokenSyntax? {
-        guard let asyncSpecifier = signature.effectSpecifiers?.asyncSpecifier, asyncSpecifier.tokenKind == TokenKind.keyword(.async) else {
+        guard let asyncSpecifier = signature.effectSpecifiers?.asyncSpecifier else {
             return nil
         }
 

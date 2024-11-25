@@ -15,6 +15,7 @@
   [SimplyDanny](https://github.com/SimplyDanny)
 * None.
 * Adds `noAsyncFuncWithoutAwait` opt-in rule that check if a async function call at least one async function.  
+* Adds `noAsyncWithoutAwait` opt-in rule that check if a async function call at least one async function.  
   [Jan Kolarik](https://github.com/jkolarik-paylocity)
   [#5082](https://github.com/realm/SwiftLint/issues/5082)
 

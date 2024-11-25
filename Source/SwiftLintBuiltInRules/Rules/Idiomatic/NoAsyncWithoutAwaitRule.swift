@@ -18,23 +18,28 @@ struct NoAsyncWithoutAwaitRule: OptInRule {
             },
             """),
             Example("""
+            func test() {
+                func test() async {
+                    await test().value
+                }
+            },
+            """),
+            Example("""
             func test() async {
                 await scheduler.task { foo { bar() } }
             }
             """),
             Example("""
             func test() async {
-                perform(await try foo())
+                perform(await try foo().value)
             }
             """),
             Example("""
             func test() async {
                 perform(try await foo())
             }
-            """
-            ),
-            Example(
-            """
+            """),
+            Example("""
             func test() async {
                 await perform()
                 func baz() {
@@ -49,15 +54,21 @@ struct NoAsyncWithoutAwaitRule: OptInRule {
                 perform()
             }
             """),
-            Example(
-            """
+            Example("""
             func test() {
-                func baz() ↓async{
+                func baz() ↓async {
                     quz()
                 }
                 perform()
                 func baz() {
                     quz()
+                }
+            }
+            """),
+            Example("""
+            func test() ↓async {
+                func baz() async {
+                    await quz()
                 }
             }
             """),
@@ -89,12 +100,9 @@ private extension NoAsyncWithoutAwaitRule {
             }
         }
 
-        override func visitPost(_ node: FunctionCallExprSyntax) {
-            if node.parent?.kind == .awaitExpr
-                || node.parent?.kind == .tryExpr && node.parent?.parent?.kind == .awaitExpr {
-                awaitCount.modifyLast {
-                    $0.awaitCount += 1
-                }
+        override func visitPost(_ node: AwaitExprSyntax) {
+            awaitCount.modifyLast {
+                $0.awaitCount += 1
             }
         }
     }

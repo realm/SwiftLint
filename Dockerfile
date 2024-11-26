@@ -18,6 +18,7 @@ RUN swift package update
 ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -l_CFURLSessionInterface -Xlinker -l_CFXMLInterface -Xlinker -lcurl -Xlinker -lxml2 -Xswiftc -I. -Xlinker -fuse-ld=lld -Xlinker -L/usr/lib/swift/linux"
 RUN swift build $SWIFT_FLAGS --product swiftlint
 RUN mv `swift build $SWIFT_FLAGS --show-bin-path`/swiftlint /usr/bin
+RUN strip /usr/bin/swiftlint
 
 # Runtime image
 FROM ${RUNTIME_IMAGE}

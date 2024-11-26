@@ -139,6 +139,7 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
 private extension AsyncWithoutAwaitRule {
     private struct FuncInfo {
         var containsCount = false
+        var containsAsync = false
         let isAsync: Bool
     }
 
@@ -157,6 +158,7 @@ private extension AsyncWithoutAwaitRule {
             }
 
             if !info.containsCount {
+            if !info.containsAsync {
                 violations.append(
                     at: asyncSymbol.positionAfterSkippingLeadingTrivia,
                     correction: .init(
@@ -181,6 +183,7 @@ private extension AsyncWithoutAwaitRule {
         override func visitPost(_: AwaitExprSyntax) {
             awaitCount.modifyLast {
                 $0.containsCount = true
+                $0.containsAsync = true
             }
         }
     }

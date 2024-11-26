@@ -1,6 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
+// swiftlint:disable file_length
+
 @SwiftSyntaxRule
 struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
@@ -104,6 +106,24 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
                     await foo()
                 }
             }
+            """),
+            Example("""
+            func foo() async -> Int
+            func bar() async -> Int
+            """),
+            Example("""
+            var foo: Int { get async }
+            var bar: Int { get async }
+            """),
+            Example("""
+            init(foo: bar) async
+            init(baz: qux) async
+            let baz = { qux() }
+            """),
+            Example("""
+            typealias Foo = () async -> Void
+            typealias Bar = () async -> Void
+            let baz = { qux() }
             """),
         ],
         triggeringExamples: [
@@ -284,12 +304,9 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
 private extension AsyncWithoutAwaitRule {
     private struct FuncInfo {
         var containsAwait = false
-        let isAsync: Bool
         let asyncToken: TokenSyntax?
 
-        init(containsAwait: Bool = false, isAsync: Bool, asyncToken: TokenSyntax? = nil) {
-            self.containsAwait = containsAwait
-            self.isAsync = isAsync
+        init(asyncToken: TokenSyntax?) {
             self.asyncToken = asyncToken
         }
     }
@@ -300,17 +317,24 @@ private extension AsyncWithoutAwaitRule {
         private var pendingAsync: TokenSyntax?
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            awaitCount.push(.init(isAsync: node.asyncSpecifier != nil, asyncToken: node.asyncSpecifier))
+            guard node.body != nil else {
+                return .visitChildren
+            }
 
-            return super.visit(node)
+            let asyncToken = node.signature.effectSpecifiers?.asyncSpecifier
+            awaitCount.push(.init(asyncToken: asyncToken))
+
+            return .visitChildren
         }
 
-        override func visitPost(_: FunctionDeclSyntax) {
-            checkViolation()
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if node.body != nil {
+                checkViolation()
+            }
         }
 
         override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            awaitCount.push(.init(isAsync: pendingAsync != nil, asyncToken: pendingAsync))
+            awaitCount.push(.init(asyncToken: pendingAsync))
             pendingAsync = nil
 
             return .visitChildren
@@ -333,14 +357,20 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visit(_ node: AccessorDeclSyntax) -> SyntaxVisitorContinueKind {
+            guard node.body != nil else {
+                return .visitChildren
+            }
+
             let asyncToken = node.effectSpecifiers?.asyncSpecifier
-            awaitCount.push(.init(isAsync: asyncToken != nil, asyncToken: asyncToken))
+            awaitCount.push(.init(asyncToken: asyncToken))
 
             return .visitChildren
         }
 
-        override func visitPost(_: AccessorDeclSyntax) {
-            checkViolation()
+        override func visitPost(_ node: AccessorDeclSyntax) {
+            if node.body != nil {
+                checkViolation()
+            }
         }
 
         override func visitPost(_: PatternBindingSyntax) {
@@ -348,22 +378,32 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+            guard node.body != nil else {
+                return .visitChildren
+            }
+
             let asyncToken = node.signature.effectSpecifiers?.asyncSpecifier
-            awaitCount.push(.init(isAsync: asyncToken != nil, asyncToken: asyncToken))
+            awaitCount.push(.init(asyncToken: asyncToken))
 
             return .visitChildren
         }
 
-        override func visitPost(_: InitializerDeclSyntax) {
-            checkViolation()
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            if node.body != nil {
+                checkViolation()
+            }
+        }
+
+        override func visitPost(_: TypeAliasDeclSyntax) {
+            pendingAsync = nil
         }
 
         private func checkViolation() {
-            guard let info = awaitCount.pop(), info.isAsync else {
+            guard let info = awaitCount.pop(), let asyncToken = info.asyncToken  else {
                 return
             }
 
-            if !info.containsAwait, let asyncToken = info.asyncToken {
+            if !info.containsAwait {
                 violations.append(
                     at: asyncToken.positionAfterSkippingLeadingTrivia,
                     correction: .init(
@@ -374,11 +414,5 @@ private extension AsyncWithoutAwaitRule {
                 )
             }
         }
-    }
-}
-
-private extension FunctionDeclSyntax {
-    var asyncSpecifier: TokenSyntax? {
-        signature.effectSpecifiers?.asyncSpecifier
     }
 }

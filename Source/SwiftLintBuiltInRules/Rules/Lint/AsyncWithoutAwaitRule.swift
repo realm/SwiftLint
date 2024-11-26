@@ -128,6 +128,10 @@ private extension AsyncWithoutAwaitRule {
             }
         }
 
+        override func visitPost(_ node: FunctionParameterClauseSyntax) {
+            pendingAsync = nil
+        }
+
         private func checkViolation() {
             guard
                 let info = functionScopes.pop(),

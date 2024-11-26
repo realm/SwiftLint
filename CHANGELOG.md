@@ -18,6 +18,7 @@
 * Adds `noAsyncWithoutAwait` opt-in rule that check if a async function call at least one async function.  
 * Add new `no_async_without_await` opt-in rule that check if an `async` function/property/subscript/initializer declaration contains at least one `await`.  
 * Add new `async_without_await` opt-in rule that check if an `async` function/property/subscript/initializer declaration contains at least one `await`.  
+* Add new `async_without_await` opt-in rule that checks if an `async` declaration contains at least one `await`.  
   [Jan Kolarik](https://github.com/jkolarik-paylocity)
   [#5082](https://github.com/realm/SwiftLint/issues/5082)
 

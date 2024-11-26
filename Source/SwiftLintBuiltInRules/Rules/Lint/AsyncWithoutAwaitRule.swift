@@ -111,10 +111,19 @@ private extension AsyncWithoutAwaitRule {
             pendingAsync = nil
         }
 
+        override func visitPost(_ node: ForStmtSyntax) {
+            if node.awaitKeyword != nil {
+                functionScopes.modifyLast {
+                    $0.containsAwait = true
+                }
+            }
+        }
+
         private func checkViolation() {
-            guard let info = functionScopes.pop(),
-                    let asyncToken = info.asyncToken,
-                    !info.containsAwait
+            guard
+                let info = functionScopes.pop(),
+                let asyncToken = info.asyncToken,
+                !info.containsAwait
             else {
                 return
             }

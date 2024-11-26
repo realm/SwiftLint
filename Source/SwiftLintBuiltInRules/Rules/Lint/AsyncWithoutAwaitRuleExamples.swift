@@ -112,6 +112,28 @@ internal struct AsyncWithoutAwaitRuleExamples {
         typealias Bar = () async -> Void
         let baz = { qux() }
         """),
+        Example("""
+        func test() async {
+            for await foo in bar {}
+        }
+        """),
+        Example("""
+        func test() async {
+            while let foo = await bar() {}
+        }
+        """),
+        Example("""
+        func test() async {
+            async let foo = bar()
+            let baz = await foo
+        }
+        """),
+        Example("""
+        func test() async {
+            async let foo = bar()
+            await foo
+        }
+        """),
     ]
 
     static let triggeringExamples = [
@@ -187,6 +209,21 @@ internal struct AsyncWithoutAwaitRuleExamples {
             get ↓async {
                 1.0
             }
+        }
+        """),
+        Example("""
+        func test() ↓async {
+            for foo in bar {}
+        }
+        """),
+        Example("""
+        func test() ↓async {
+            while let foo = bar() {}
+        }
+        """),
+        Example("""
+        func test() ↓async {
+            async let foo = bar()
         }
         """),
     ]

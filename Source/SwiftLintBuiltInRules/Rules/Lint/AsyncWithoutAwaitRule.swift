@@ -312,8 +312,7 @@ private extension AsyncWithoutAwaitRule {
     }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private var awaitCount = Stack<FuncInfo>()
-
+        private var functionScopes = Stack<FuncInfo>()
         private var pendingAsync: TokenSyntax?
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -322,7 +321,7 @@ private extension AsyncWithoutAwaitRule {
             }
 
             let asyncToken = node.signature.effectSpecifiers?.asyncSpecifier
-            awaitCount.push(.init(asyncToken: asyncToken))
+            functionScopes.push(.init(asyncToken: asyncToken))
 
             return .visitChildren
         }
@@ -334,7 +333,7 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            awaitCount.push(.init(asyncToken: pendingAsync))
+            functionScopes.push(.init(asyncToken: pendingAsync))
             pendingAsync = nil
 
             return .visitChildren
@@ -345,7 +344,7 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visitPost(_: AwaitExprSyntax) {
-            awaitCount.modifyLast {
+            functionScopes.modifyLast {
                 $0.containsAwait = true
             }
         }
@@ -362,7 +361,7 @@ private extension AsyncWithoutAwaitRule {
             }
 
             let asyncToken = node.effectSpecifiers?.asyncSpecifier
-            awaitCount.push(.init(asyncToken: asyncToken))
+            functionScopes.push(.init(asyncToken: asyncToken))
 
             return .visitChildren
         }
@@ -383,7 +382,7 @@ private extension AsyncWithoutAwaitRule {
             }
 
             let asyncToken = node.signature.effectSpecifiers?.asyncSpecifier
-            awaitCount.push(.init(asyncToken: asyncToken))
+            functionScopes.push(.init(asyncToken: asyncToken))
 
             return .visitChildren
         }
@@ -399,20 +398,21 @@ private extension AsyncWithoutAwaitRule {
         }
 
         private func checkViolation() {
-            guard let info = awaitCount.pop(), let asyncToken = info.asyncToken else {
+            guard let info = functionScopes.pop(),
+                    let asyncToken = info.asyncToken,
+                    !info.containsAwait
+            else {
                 return
             }
 
-            if !info.containsAwait {
-                violations.append(
-                    at: asyncToken.positionAfterSkippingLeadingTrivia,
-                    correction: .init(
-                        start: asyncToken.positionAfterSkippingLeadingTrivia,
-                        end: asyncToken.endPosition,
-                        replacement: ""
-                    )
+            violations.append(
+                at: asyncToken.positionAfterSkippingLeadingTrivia,
+                correction: .init(
+                    start: asyncToken.positionAfterSkippingLeadingTrivia,
+                    end: asyncToken.endPosition,
+                    replacement: ""
                 )
-            }
+            )
         }
     }
 }

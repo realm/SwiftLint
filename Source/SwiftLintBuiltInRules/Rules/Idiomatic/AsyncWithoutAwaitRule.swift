@@ -87,6 +87,7 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
         ],
         corrections: [
             Example("func test() ↓async {}"): Example("func test() {}"),
+            Example("func test() ↓async throws {}"): Example("func test() throws {}"),
             Example("""
             func test() {
                 func baz() ↓async {
@@ -160,11 +161,21 @@ private extension AsyncWithoutAwaitRule {
                     at: asyncSymbol.positionAfterSkippingLeadingTrivia,
                     correction: .init(
                         start: asyncSymbol.positionAfterSkippingLeadingTrivia,
-                        end: node.body?.positionAfterSkippingLeadingTrivia ?? asyncSymbol.endPositionBeforeTrailingTrivia,
+                        end: asyncSymbol.endPosition,
                         replacement: ""
                     )
                 )
             }
+        }
+
+        override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+            awaitCount.push(.init(isAsync: false))
+
+            return .visitChildren
+        }
+
+        override func visitPost(_: ClosureExprSyntax) {
+            _ = awaitCount.pop()
         }
 
         override func visitPost(_: AwaitExprSyntax) {

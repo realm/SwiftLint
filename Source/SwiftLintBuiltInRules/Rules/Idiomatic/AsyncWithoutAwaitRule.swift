@@ -2,12 +2,12 @@ import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct NoAsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
+struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
-        identifier: "no_async_without_await",
-        name: "No Async Without Await",
+        identifier: "async_without_await",
+        name: "Async Without Await",
         description: "Declaration should not be async if it doesn't use await",
         kind: .lint,
         nonTriggeringExamples: [
@@ -131,11 +131,11 @@ struct NoAsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
               func g() {}
               let x = { await g() }
             }
-            """)
+            """),
         ]
     )
 }
-private extension NoAsyncWithoutAwaitRule {
+private extension AsyncWithoutAwaitRule {
     private struct FuncInfo {
         var containsCount = false
         let isAsync: Bool

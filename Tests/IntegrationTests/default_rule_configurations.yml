@@ -6,6 +6,8 @@ anonymous_argument_in_multiline_closure:
   severity: warning
 array_init:
   severity: warning
+async_without_await:
+  severity: warning
 attribute_name_spacing:
   severity: error
 attributes:
@@ -336,8 +338,6 @@ nesting:
   always_allow_one_type_in_functions: false
   ignore_typealiases_and_associatedtypes: false
 nimble_operator:
-  severity: warning
-no_async_without_await:
   severity: warning
 no_empty_block:
   severity: warning

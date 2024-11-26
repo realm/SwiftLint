@@ -31,6 +31,12 @@ final class ArrayInitRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class AsyncWithoutAwaitRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(AsyncWithoutAwaitRule.description)
+    }
+}
+
 final class AttributeNameSpacingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AttributeNameSpacingRule.description)
@@ -748,12 +754,6 @@ final class NestingRuleGeneratedTests: SwiftLintTestCase {
 final class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NimbleOperatorRule.description)
-    }
-}
-
-final class NoAsyncWithoutAwaitRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NoAsyncWithoutAwaitRule.description)
     }
 }
 

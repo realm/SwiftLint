@@ -1,7 +1,8 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
-struct NoAsyncWithoutAwaitRule: OptInRule {
+struct NoAsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -43,35 +44,83 @@ struct NoAsyncWithoutAwaitRule: OptInRule {
             func test() async {
                 await perform()
                 func baz() {
-                    quz()
+                    qux()
                 }
             }
             """),
         ],
         triggeringExamples: [
             Example("""
-            func testFailed() ↓async {
+            func test() ↓async {
                 perform()
             }
             """),
             Example("""
             func test() {
                 func baz() ↓async {
-                    quz()
+                    qux()
                 }
                 perform()
                 func baz() {
-                    quz()
+                    qux()
                 }
             }
             """),
             Example("""
             func test() ↓async {
                 func baz() async {
-                    await quz()
+                    await qux()
                 }
             }
             """),
+        ],
+        corrections: [
+            Example("func test() ↓async {}"): Example("func test() {}"),
+            Example("""
+            func test() {
+                func baz() ↓async {
+                    qux()
+                }
+                perform()
+                func baz() {
+                    qux()
+                }
+            }
+            """): Example("""
+            func test() {
+                func baz() {
+                    qux()
+                }
+                perform()
+                func baz() {
+                    qux()
+                }
+            }
+            """),
+            Example("""
+            func test() ↓async{
+                func baz() async {
+                    await qux()
+                }
+            }
+            """): Example("""
+            func test() {
+                func baz() async {
+                    await qux()
+                }
+            }
+            """),
+            Example("""
+            func f() ↓async {
+              func g() ↓async {}
+              let x = { await g() }
+            }
+            """): Example("""
+            func f() {
+              func g() {}
+              let x = { await g() }
+            }
+            """)
         ]
     )
 }
@@ -96,7 +145,14 @@ private extension NoAsyncWithoutAwaitRule {
             }
 
             if !info.containsCount {
-                violations.append(asyncSymbol.positionAfterSkippingLeadingTrivia)
+                violations.append(
+                    at: asyncSymbol.positionAfterSkippingLeadingTrivia,
+                    correction: .init(
+                        start: asyncSymbol.positionAfterSkippingLeadingTrivia,
+                        end: node.body?.positionAfterSkippingLeadingTrivia ?? asyncSymbol.endPositionBeforeTrailingTrivia,
+                        replacement: ""
+                    )
+                )
             }
         }
 

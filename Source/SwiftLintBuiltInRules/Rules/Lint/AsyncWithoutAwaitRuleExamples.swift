@@ -134,6 +134,11 @@ internal struct AsyncWithoutAwaitRuleExamples {
             await foo
         }
         """),
+        Example("""
+        func test() async {
+            async let foo = bar()
+        }
+        """),
     ]
 
     static let triggeringExamples = [
@@ -219,11 +224,6 @@ internal struct AsyncWithoutAwaitRuleExamples {
         Example("""
         func test() ↓async {
             while let foo = bar() {}
-        }
-        """),
-        Example("""
-        func test() ↓async {
-            async let foo = bar()
         }
         """),
     ]

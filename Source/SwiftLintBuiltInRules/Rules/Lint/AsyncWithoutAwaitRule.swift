@@ -306,7 +306,7 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visitPost(_: FunctionDeclSyntax) {
-            collect()
+            checkViolation()
         }
 
         override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
@@ -317,7 +317,7 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visitPost(_: ClosureExprSyntax) {
-            collect()
+            checkViolation()
         }
 
         override func visitPost(_: AwaitExprSyntax) {
@@ -340,7 +340,7 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visitPost(_: AccessorDeclSyntax) {
-            collect()
+            checkViolation()
         }
 
         override func visitPost(_: PatternBindingSyntax) {
@@ -355,10 +355,10 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visitPost(_: InitializerDeclSyntax) {
-            collect()
+            checkViolation()
         }
 
-        private func collect() {
+        private func checkViolation() {
             guard let info = awaitCount.pop(), info.isAsync else {
                 return
             }

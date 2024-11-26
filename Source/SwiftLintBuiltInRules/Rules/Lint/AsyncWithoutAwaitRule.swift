@@ -59,9 +59,10 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
             }
             """),
             Example("""
-            let x: () async -> Void = {
-                await { await test() }()
+            func test() async {
+                await foo()
             }
+            let x = { bar() }
             """),
             Example("""
             let x: (() async -> Void)? = {
@@ -82,6 +83,19 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
                 get throws {
                     try bar()
                 }
+            }
+            """),
+            Example("""
+            init() async {
+                await foo()
+            }
+            """),
+            Example("""
+            init() async {
+                func test() async {
+                    await foo()
+                }
+                await { await foo() }()
             }
             """),
         ],
@@ -146,6 +160,13 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
                 }
             }
             """),
+            Example("init() ↓async {}"),
+            Example("""
+            init() ↓async {
+                func foo() ↓async {}
+                let bar: () ↓async -> Void = { foo() }
+            }
+            """),
         ],
         corrections: [
             Example("func test() ↓async {}"): Example("func test() {}"),
@@ -160,41 +181,44 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
                     qux()
                 }
             }
-            """): Example("""
-            func test() {
-                func baz() {
-                    qux()
+            """):
+                Example("""
+                func test() {
+                    func baz() {
+                        qux()
+                    }
+                    perform()
+                    func baz() {
+                        qux()
+                    }
                 }
-                perform()
-                func baz() {
-                    qux()
-                }
-            }
-            """),
+                """),
             Example("""
             func test() ↓async{
                 func baz() async {
                     await qux()
                 }
             }
-            """): Example("""
-            func test() {
-                func baz() async {
-                    await qux()
+            """):
+                Example("""
+                func test() {
+                    func baz() async {
+                        await qux()
+                    }
                 }
-            }
-            """),
+                """),
             Example("""
             func test() ↓async {
               func foo() ↓async {}
               let bar = { await foo() }
             }
-            """): Example("""
-            func test() {
-              func foo() {}
-              let bar = { await foo() }
-            }
-            """),
+            """):
+                Example("""
+                func test() {
+                  func foo() {}
+                  let bar = { await foo() }
+                }
+                """),
             Example("let x: () ↓async -> Void = { test() }"):
                 Example("let x: () -> Void = { test() }"),
             Example("""
@@ -204,14 +228,28 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
                     let bar = { await foo() }
                 }
             }
-            """): Example("""
-            var test: Int {
-                get throws {
-                    func foo() {}
-                    let bar = { await foo() }
+            """):
+                Example("""
+                var test: Int {
+                    get throws {
+                        func foo() {}
+                        let bar = { await foo() }
+                    }
                 }
+                """),
+            Example("init() ↓async {}"): Example("init() {}"),
+            Example("""
+            init() ↓async {
+                func foo() ↓async {}
+                let bar: () ↓async -> Void = { foo() }
             }
-            """),
+            """):
+                Example("""
+                init() {
+                    func foo() {}
+                    let bar: () -> Void = { foo() }
+                }
+                """),
         ]
     )
 }
@@ -234,26 +272,13 @@ private extension AsyncWithoutAwaitRule {
         private var pendingAsync: TokenSyntax?
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            awaitCount.push(.init(isAsync: node.asyncSpecifier != nil))
+            awaitCount.push(.init(isAsync: node.asyncSpecifier != nil, asyncToken: node.asyncSpecifier))
 
             return super.visit(node)
         }
 
-        override func visitPost(_ node: FunctionDeclSyntax) {
-            guard let info = awaitCount.pop(), let asyncSymbol = node.asyncSpecifier else {
-                return
-            }
-
-            if !info.containsAwait {
-                violations.append(
-                    at: asyncSymbol.positionAfterSkippingLeadingTrivia,
-                    correction: .init(
-                        start: asyncSymbol.positionAfterSkippingLeadingTrivia,
-                        end: asyncSymbol.endPosition,
-                        replacement: ""
-                    )
-                )
-            }
+        override func visitPost(_: FunctionDeclSyntax) {
+            collect()
         }
 
         override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
@@ -264,20 +289,7 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visitPost(_: ClosureExprSyntax) {
-            guard let info = awaitCount.pop(), info.isAsync else {
-                return
-            }
-
-            if !info.containsAwait, let asyncToken = info.asyncToken {
-                violations.append(
-                    at: asyncToken.positionAfterSkippingLeadingTrivia,
-                    correction: .init(
-                        start: asyncToken.positionAfterSkippingLeadingTrivia,
-                        end: asyncToken.endPosition,
-                        replacement: ""
-                    )
-                )
-            }
+            collect()
         }
 
         override func visitPost(_: AwaitExprSyntax) {
@@ -292,10 +304,6 @@ private extension AsyncWithoutAwaitRule {
             }
         }
 
-        override func visit(_: PatternBindingSyntax) -> SyntaxVisitorContinueKind {
-            .visitChildren
-        }
-
         override func visit(_ node: AccessorDeclSyntax) -> SyntaxVisitorContinueKind {
             let asyncToken = node.effectSpecifiers?.asyncSpecifier
             awaitCount.push(.init(isAsync: asyncToken != nil, asyncToken: asyncToken))
@@ -304,6 +312,25 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visitPost(_: AccessorDeclSyntax) {
+            collect()
+        }
+
+        override func visitPost(_: PatternBindingSyntax) {
+            pendingAsync = nil
+        }
+
+        override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+            let asyncToken = node.signature.effectSpecifiers?.asyncSpecifier
+            awaitCount.push(.init(isAsync: asyncToken != nil, asyncToken: asyncToken))
+
+            return .visitChildren
+        }
+
+        override func visitPost(_: InitializerDeclSyntax) {
+            collect()
+        }
+
+        private func collect() {
             guard let info = awaitCount.pop(), info.isAsync else {
                 return
             }
@@ -318,10 +345,6 @@ private extension AsyncWithoutAwaitRule {
                     )
                 )
             }
-        }
-
-        override func visitPost(_: PatternBindingSyntax) {
-            pendingAsync = nil
         }
     }
 }

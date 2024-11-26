@@ -98,6 +98,13 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
                 await { await foo() }()
             }
             """),
+            Example("""
+            subscript(row: Int) -> Double {
+                get async {
+                    await foo()
+                }
+            }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -165,6 +172,13 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
             init() ↓async {
                 func foo() ↓async {}
                 let bar: () ↓async -> Void = { foo() }
+            }
+            """),
+            Example("""
+            subscript(row: Int) -> Double {
+                get ↓async {
+                    1.0
+                }
             }
             """),
         ],
@@ -248,6 +262,20 @@ struct AsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
                 init() {
                     func foo() {}
                     let bar: () -> Void = { foo() }
+                }
+                """),
+            Example("""
+            subscript(row: Int) -> Double {
+                get ↓async {
+                    foo()
+                }
+            }
+            """):
+                Example("""
+                subscript(row: Int) -> Double {
+                    get {
+                        foo()
+                    }
                 }
                 """),
         ]

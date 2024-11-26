@@ -399,7 +399,7 @@ private extension AsyncWithoutAwaitRule {
         }
 
         private func checkViolation() {
-            guard let info = awaitCount.pop(), let asyncToken = info.asyncToken  else {
+            guard let info = awaitCount.pop(), let asyncToken = info.asyncToken else {
                 return
             }
 

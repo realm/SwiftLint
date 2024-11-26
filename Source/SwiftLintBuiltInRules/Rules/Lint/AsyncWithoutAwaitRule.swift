@@ -128,7 +128,7 @@ private extension AsyncWithoutAwaitRule {
             }
         }
 
-        override func visitPost(_ node: FunctionParameterClauseSyntax) {
+        override func visitPost(_: FunctionParameterSyntax) {
             pendingAsync = nil
         }
 

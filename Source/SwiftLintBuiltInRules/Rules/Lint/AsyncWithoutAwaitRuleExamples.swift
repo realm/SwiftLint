@@ -140,6 +140,13 @@ internal struct AsyncWithoutAwaitRuleExamples {
         }
         """),
         Example("func foo(bar: () async -> Void) { { } }"),
+        Example("func foo(bar: () async -> Void = { await baz() }) { }"),
+        Example("""
+        func foo(
+            bar: () async -> Void,
+            baz: () -> Void = {}
+        ) { { } }
+        """),
     ]
 
     static let triggeringExamples = [
@@ -227,7 +234,7 @@ internal struct AsyncWithoutAwaitRuleExamples {
             while let foo = bar() {}
         }
         """),
-        Example("func foo(bar: () ↓async -> Void = {}) { { } }"),
+        Example("func foo(bar: () ↓async -> Void = {}) { }"),
     ]
 
     static let corrections = [

@@ -117,8 +117,8 @@ spm_artifactbundle: installables installables_linux
 	mkdir -p "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin"
 	mkdir -p "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin"
 	sed 's/__VERSION__/$(VERSION_STRING)/g' tools/info.json.template > "$(ARTIFACT_BUNDLE_PATH)/info.json"
-	cp -f "$(SWIFTLINT_EXECUTABLE)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin"
-	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin"
+	cp -f "$(SWIFTLINT_EXECUTABLE)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin/swiftlint"
+	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(ARTIFACT_BUNDLE_PATH)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary.artifactbundle.zip"
 

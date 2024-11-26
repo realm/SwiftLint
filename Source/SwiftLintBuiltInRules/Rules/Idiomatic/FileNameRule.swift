@@ -74,102 +74,80 @@ private class TypeNameCollectingVisitor: SyntaxVisitor {
         super.init(viewMode: .sourceAccurate)
     }
 
-    /// Visits a node to collect its type name and store it as an ancestor type name to prepend to any
-    /// children to form their fully-qualified type names
-    private func visitNode(_ node: some TypeNameCollectible) -> SyntaxVisitorContinueKind {
-        let name = node.typeName
+    /// Calls `visit(name:)` using the name of the provided node
+    private func visit(node: some NamedDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(name: node.name.trimmedDescription)
+    }
+
+    /// Visits a node with the provided name, storing that name as an ancestor type name to prepend to
+    /// any children to form their fully-qualified names
+    private func visit(name: String) -> SyntaxVisitorContinueKind {
         let fullyQualifiedName = (ancestorNames + [name]).joined(separator: ".")
         names.insert(fullyQualifiedName)
 
+        // If the options don't require only fully-qualified names, then we will allow this node's
+        // name to be used by itself
         if !requireFullyQualifiedNames {
             names.insert(name)
         }
 
-        ancestorNames.push(node.typeName)
+        ancestorNames.push(name)
         return .visitChildren
     }
 
-    /// Removes a node's type name as an ancestor type name once all of its children have been visited
-    private func visitNodePost(_: some TypeNameCollectible) {
+    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(node: node)
+    }
+
+    override func visitPost(_: ClassDeclSyntax) {
         ancestorNames.pop()
     }
 
-    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        visitNode(node)
-    }
-
-    override func visitPost(_ node: ClassDeclSyntax) {
-        visitNodePost(node)
-    }
-
     override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-        visitNode(node)
+        visit(node: node)
     }
 
-    override func visitPost(_ node: ActorDeclSyntax) {
-        visitNodePost(node)
+    override func visitPost(_: ActorDeclSyntax) {
+        ancestorNames.pop()
     }
 
     override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-        visitNode(node)
+        visit(node: node)
     }
 
-    override func visitPost(_ node: StructDeclSyntax) {
-        visitNodePost(node)
+    override func visitPost(_: StructDeclSyntax) {
+        ancestorNames.pop()
     }
 
     override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
-        visitNode(node)
+        visit(node: node)
     }
 
-    override func visitPost(_ node: TypeAliasDeclSyntax) {
-        visitNodePost(node)
+    override func visitPost(_: TypeAliasDeclSyntax) {
+        ancestorNames.pop()
     }
 
     override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-        visitNode(node)
+        visit(node: node)
     }
 
-    override func visitPost(_ node: EnumDeclSyntax) {
-        visitNodePost(node)
+    override func visitPost(_: EnumDeclSyntax) {
+        ancestorNames.pop()
     }
 
     override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-        visitNode(node)
+        visit(node: node)
     }
 
-    override func visitPost(_ node: ProtocolDeclSyntax) {
-        visitNodePost(node)
+    override func visitPost(_: ProtocolDeclSyntax) {
+        ancestorNames.pop()
     }
 
     override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-        visitNode(node)
+        visit(name: node.extendedType.trimmedDescription)
     }
 
-    override func visitPost(_ node: ExtensionDeclSyntax) {
-        visitNodePost(node)
-    }
-}
-
-/// A protocol for types that have a type name that can be collected
-private protocol TypeNameCollectible {
-    var typeName: String { get }
-}
-
-extension TypeNameCollectible where Self: NamedDeclSyntax {
-    var typeName: String {
-        name.trimmedDescription
-    }
-}
-extension ClassDeclSyntax: TypeNameCollectible {}
-extension ActorDeclSyntax: TypeNameCollectible {}
-extension StructDeclSyntax: TypeNameCollectible {}
-extension TypeAliasDeclSyntax: TypeNameCollectible {}
-extension EnumDeclSyntax: TypeNameCollectible {}
-extension ProtocolDeclSyntax: TypeNameCollectible {}
-
-extension ExtensionDeclSyntax: TypeNameCollectible {
-    public var typeName: String {
-        extendedType.trimmedDescription
+    override func visitPost(_: ExtensionDeclSyntax) {
+        ancestorNames.pop()
     }
 }

@@ -73,6 +73,17 @@ struct NoAsyncWithoutAwaitRule: SwiftSyntaxCorrectableRule, OptInRule {
                 }
             }
             """),
+            Example("""
+            func test() ↓async {
+              func foo() ↓async {}
+              let bar = { await foo() }
+            }
+            """),
+            Example("""
+            func test() ↓async {
+              let bar = { func foo() ↓async {} }
+            }
+            """),
         ],
         corrections: [
             Example("func test() ↓async {}"): Example("func test() {}"),

@@ -124,13 +124,13 @@ spm_artifactbundle: installables installables_linux
 
 zip_linux: docker_image build_linux
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	cp -f $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) "$(TMP_FOLDER)"
+	cp -f $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 
 zip_linux_release: build_linux
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)"
+	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 	gh release upload "$(VERSION_STRING)" swiftlint_linux.zip

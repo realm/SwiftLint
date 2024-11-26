@@ -140,7 +140,8 @@ internal struct AsyncWithoutAwaitRuleExamples {
         }
         """),
         Example("func foo(bar: () async -> Void) { { } }"),
-        Example("func foo(bar: () async -> Void = { await baz() }) { }"),
+        Example("func foo(bar: () async -> Void = { await baz() }) { {} }"),
+        Example("func foo() -> (() async -> Void)? { {} }"),
         Example("""
         func foo(
             bar: () async -> Void,

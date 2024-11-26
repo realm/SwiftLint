@@ -63,8 +63,8 @@ private extension AsyncWithoutAwaitRule {
             }
         }
 
-        override func visitPost(_ node: TypeEffectSpecifiersSyntax) {
-            if let asyncNode = node.asyncSpecifier {
+        override func visitPost(_ node: FunctionTypeSyntax) {
+            if let asyncNode = node.effectSpecifiers?.asyncSpecifier {
                 pendingAsync = asyncNode
             }
         }
@@ -129,6 +129,10 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visitPost(_: FunctionParameterSyntax) {
+            pendingAsync = nil
+        }
+
+        override func visitPost(_: ReturnClauseSyntax) {
             pendingAsync = nil
         }
 

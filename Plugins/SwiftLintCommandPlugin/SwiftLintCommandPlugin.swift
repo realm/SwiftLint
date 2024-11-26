@@ -17,48 +17,59 @@ private let commandsWithoutCachPathOption: Set<String> = commandsNotExpectingPat
 @main
 struct SwiftLintCommandPlugin: CommandPlugin {
     func performCommand(context: PluginContext, arguments: [String]) throws {
+        try lintFiles(context: context, arguments: arguments)
+    }
+}
+
+#if canImport(XcodeProjectPlugin)
+
+import XcodeProjectPlugin
+
+extension SwiftLintCommandPlugin: XcodeCommandPlugin {
+    func performCommand(context: XcodePluginContext, arguments: [String]) throws {
+        try lintFiles(context: context, arguments: arguments)
+    }
+}
+
+#endif
+
+extension SwiftLintCommandPlugin {
+    private func lintFiles(context: some CommandContext, arguments: [String]) throws {
         guard !arguments.contains("--cache-path") else {
             Diagnostics.error("Caching is managed by the plugin and so setting `--cache-path` is not allowed")
             return
         }
         var argExtractor = ArgumentExtractor(arguments)
         let targetNames = argExtractor.extractOption(named: "target")
-        let targets = targetNames.isEmpty
-            ? context.package.targets
-            : try context.package.targets(named: targetNames)
         let remainingArguments = argExtractor.remainingArguments
-        if targets.isEmpty || !commandsNotExpectingPaths.isDisjoint(with: remainingArguments) {
-            try run(with: context, arguments: remainingArguments)
+        guard !targetNames.isEmpty, commandsNotExpectingPaths.isDisjoint(with: remainingArguments) else {
+            try lintFiles(with: context, arguments: remainingArguments)
             return
         }
-        for target in targets {
-            guard let target = target.sourceModule else {
-                Diagnostics.warning("Target '\(target.name)' is not a source module; skipping it")
-                continue
-            }
-            try run(in: target.directory.string, for: target.name, with: context, arguments: remainingArguments)
+        for target in try context.targets(named: targetNames) {
+            try lintFiles(in: target.paths, for: target.name, with: context, arguments: remainingArguments)
         }
     }
 
-    private func run(in directory: String = ".",
-                     for targetName: String? = nil,
-                     with context: PluginContext,
-                     arguments: [String]) throws {
+    private func lintFiles(in paths: [String] = ["."],
+                           for targetName: String? = nil,
+                           with context: some CommandContext,
+                           arguments: [String]) throws {
         let process = Process()
-        process.currentDirectoryURL = URL(fileURLWithPath: context.package.directory.string)
-        process.executableURL = URL(fileURLWithPath: try context.tool(named: "swiftlint").path.string)
+        process.currentDirectoryURL = URL(fileURLWithPath: context.workingDirectory)
+        process.executableURL = URL(fileURLWithPath: try context.tool)
         process.arguments = arguments
         if commandsWithoutCachPathOption.isDisjoint(with: arguments) {
-            process.arguments! += ["--cache-path", "\(context.pluginWorkDirectory.string)"]
+            process.arguments! += ["--cache-path", context.cacheDirectory]
         }
         if commandsNotExpectingPaths.isDisjoint(with: arguments) {
-            process.arguments! += [directory]
+            process.arguments! += paths
         }
 
         try process.run()
         process.waitUntilExit()
 
-        let module = targetName.map { "module '\($0)'" } ?? "package"
+        let module = targetName.map { "\(context.subUnitName) '\($0)'" } ?? context.unitName
         switch process.terminationReason {
         case .exit:
             Diagnostics.remark("Finished running in \(module)")

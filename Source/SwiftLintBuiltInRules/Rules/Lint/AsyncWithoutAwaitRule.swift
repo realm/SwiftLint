@@ -128,8 +128,8 @@ private extension AsyncWithoutAwaitRule {
             }
         }
 
-        override func visitPost(_: FunctionParameterSyntax) {
-            pendingAsync = nil
+        override func visit(_: FunctionParameterSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
         }
 
         override func visitPost(_: ReturnClauseSyntax) {

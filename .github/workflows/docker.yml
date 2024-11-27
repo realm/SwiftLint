@@ -25,6 +25,9 @@ jobs:
   build:
     name: Build Docker Image
     runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        platform: [amd64, arm64]
     steps:
     - name: Define variables on push to `main`
       if: github.event_name == 'push'
@@ -69,16 +72,16 @@ jobs:
       with:
         context: .
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
-        platforms: linux/amd64
+        platforms: linux/${{ matrix.platform }}
         outputs: ${{ env.OUTPUT_TYPE }}
     - name: Rename binary artifact
       if: contains(env.OUTPUT_TYPE, 'local')
-      run: mv artifacts/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_amd64
+      run: mv artifacts/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_${{ matrix.platform }}
     - name: Upload binary artifact
       if: contains(env.OUTPUT_TYPE, 'local')
       uses: actions/upload-artifact@v4
       with:
-        name: swiftlint_linux_amd64
-        path: artifacts/usr/bin/swiftlint_linux_amd64
+        name: swiftlint_linux_${{ matrix.platform }}
+        path: artifacts/usr/bin/swiftlint_linux_${{ matrix.platform }}
         if-no-files-found: error
         retention-days: 2

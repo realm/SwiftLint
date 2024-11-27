@@ -137,11 +137,9 @@ private extension AsyncWithoutAwaitRule {
         }
 
         private func checkViolation() {
-            guard
-                let info = functionScopes.pop(),
-                let asyncToken = info.asyncToken,
-                !info.containsAwait
-            else {
+            guard let info = functionScopes.pop(),
+                  let asyncToken = info.asyncToken,
+                  !info.containsAwait else {
                 return
             }
 

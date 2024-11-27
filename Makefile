@@ -10,6 +10,8 @@ SWIFT_BUILD_FLAGS=--configuration release -Xlinker -dead_strip
 
 SWIFTLINT_EXECUTABLE_PARENT=.build/universal
 SWIFTLINT_EXECUTABLE=$(SWIFTLINT_EXECUTABLE_PARENT)/swiftlint
+SWIFTLINT_EXECUTABLE_LINUX_PARENT=.build/linux
+SWIFTLINT_EXECUTABLE_LINUX_AMD64=$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)/swiftlint_linux_amd64
 
 ARTIFACT_BUNDLE_PATH=$(TEMPORARY_FOLDER)/SwiftLintBinary.artifactbundle
 
@@ -26,7 +28,7 @@ OUTPUT_PACKAGE=SwiftLint.pkg
 
 VERSION_STRING=$(shell ./tools/get-version)
 
-.PHONY: all clean build install package test uninstall docs
+.PHONY: all clean build build_linux install package test uninstall docs
 
 all: build
 
@@ -78,6 +80,11 @@ build:
 	chmod +w "$(SWIFTLINT_EXECUTABLE)"
 	strip -rSTX "$(SWIFTLINT_EXECUTABLE)"
 
+build_linux:
+	mkdir -p "$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)"
+	docker run --platform linux/amd64 "ghcr.io/realm/swiftlint:$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)"
+	chmod +x "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)"
+
 build_with_disable_sandbox:
 	swift build --disable-sandbox $(SWIFT_BUILD_FLAGS)
 
@@ -93,6 +100,10 @@ installables: build
 	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 	install "$(SWIFTLINT_EXECUTABLE)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 
+installables_linux: build_linux
+	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"	
+	install "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
+
 prefix_install: build_with_disable_sandbox
 	install -d "$(PREFIX)/bin/"
 	install "$(SWIFTLINT_EXECUTABLE)" "$(PREFIX)/bin/"
@@ -102,24 +113,24 @@ portable_zip: installables
 	cp -f "$(LICENSE_PATH)" "$(TEMPORARY_FOLDER)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./portable_swiftlint.zip"
 
-spm_artifactbundle_macos: installables
+spm_artifactbundle: installables installables_linux
 	mkdir -p "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin"
-	sed 's/__VERSION__/$(VERSION_STRING)/g' tools/info-macos.json.template > "$(ARTIFACT_BUNDLE_PATH)/info.json"
-	cp -f "$(SWIFTLINT_EXECUTABLE)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin"
+	mkdir -p "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin"
+	sed 's/__VERSION__/$(VERSION_STRING)/g' tools/info.json.template > "$(ARTIFACT_BUNDLE_PATH)/info.json"
+	cp -f "$(SWIFTLINT_EXECUTABLE)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin/swiftlint"
+	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(ARTIFACT_BUNDLE_PATH)"
-	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary-macos.artifactbundle.zip"
+	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary.artifactbundle.zip"
 
-zip_linux: docker_image
+zip_linux: docker_image build_linux
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	docker run swiftlint cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
-	chmod +x "$(TMP_FOLDER)/swiftlint"
+	cp -f $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 
-zip_linux_release:
+zip_linux_release: build_linux
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	docker run --platform linux/amd64 "ghcr.io/realm/swiftlint:$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
-	chmod +x "$(TMP_FOLDER)/swiftlint"
+	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 	gh release upload "$(VERSION_STRING)" swiftlint_linux.zip
@@ -182,7 +193,7 @@ endif
 	make package
 	make bazel_release
 	make portable_zip
-	make spm_artifactbundle_macos
+	make spm_artifactbundle
 	./tools/update-artifact-bundle.sh "$(NEW_VERSION)"
 	git commit -a -m "Release $(NEW_VERSION)"
 	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"

@@ -13,6 +13,10 @@
 
 * Add Xcode command plugin allowing to run SwiftLint from within Xcode.  
   [SimplyDanny](https://github.com/SimplyDanny)
+   
+* Add new `async_without_await` opt-in rule that checks if an `async` declaration contains at least one `await`.  
+  [Jan Kolarik](https://github.com/jkolarik-paylocity)
+  [#5082](https://github.com/realm/SwiftLint/issues/5082)
 
 #### Bug Fixes
 

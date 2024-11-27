@@ -7,6 +7,7 @@ public let builtInRules: [any Rule.Type] = [
     AccessibilityTraitForButtonRule.self,
     AnonymousArgumentInMultilineClosureRule.self,
     ArrayInitRule.self,
+    AsyncWithoutAwaitRule.self,
     AttributeNameSpacingRule.self,
     AttributesRule.self,
     BalancedXCTestLifecycleRule.self,

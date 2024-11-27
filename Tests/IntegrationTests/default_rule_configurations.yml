@@ -6,6 +6,8 @@ anonymous_argument_in_multiline_closure:
   severity: warning
 array_init:
   severity: warning
+async_without_await:
+  severity: warning
 attribute_name_spacing:
   severity: error
 attributes:

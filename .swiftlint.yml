@@ -15,6 +15,7 @@ opt_in_rules:
   - all
 disabled_rules:
   - anonymous_argument_in_multiline_closure
+  - async_without_await
   - conditional_returns_on_newline
   - contrasted_opening_brace
   - convenience_type

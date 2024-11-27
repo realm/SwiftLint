@@ -31,6 +31,12 @@ final class ArrayInitRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class AsyncWithoutAwaitRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(AsyncWithoutAwaitRule.description)
+    }
+}
+
 final class AttributeNameSpacingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AttributeNameSpacingRule.description)

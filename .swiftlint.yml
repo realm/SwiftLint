@@ -38,6 +38,7 @@ disabled_rules:
   - no_grouping_extension
   - no_magic_numbers
   - one_declaration_per_file
+  - prefer_if_and_switch_expressions
   - prefer_nimble
   - prefixed_toplevel_constant
   - required_deinit

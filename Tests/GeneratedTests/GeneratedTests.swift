@@ -889,6 +889,12 @@ final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class PreferIfAndSwitchExpressionsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferIfAndSwitchExpressionsRule.description)
+    }
+}
+
 final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferKeyPathRule.description)

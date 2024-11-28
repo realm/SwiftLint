@@ -19,10 +19,8 @@ struct PreferKeyPathRule: OptInRule {
             Example("f { $0.a }"),
             Example("let f = { $0.a }(b)"),
             Example("f {}", configuration: extendedMode),
-            Example("f { $0 }", configuration: extendedMode),
             Example("f() { g() }", configuration: extendedMode),
             Example("f { a.b.c }", configuration: extendedMode),
-            Example("f { a in a }", configuration: extendedMode),
             Example("f { a, b in a.b }", configuration: extendedMode),
             Example("f { (a, b) in a.b }", configuration: extendedMode),
             Example("f { $0.a } g: { $0.b }", configuration: extendedMode),
@@ -91,7 +89,9 @@ private extension PreferKeyPathRule {
             if node.isInvalid(restrictToStandardFunctions: configuration.restrictToStandardFunctions) {
                 return
             }
-            if node.onlyExprStmt?.accesses(identifier: node.onlyParameter) == true {
+            if let onlyStmt = node.onlyExprStmt,
+               SwiftVersion.current >= .six || !onlyStmt.is(DeclReferenceExprSyntax.self),
+               onlyStmt.accesses(identifier: node.onlyParameter) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -104,7 +104,7 @@ private extension PreferKeyPathRule {
                   !closure.isInvalid(restrictToStandardFunctions: configuration.restrictToStandardFunctions),
                   let expr = closure.onlyExprStmt,
                   expr.accesses(identifier: closure.onlyParameter) == true,
-                  let declName = expr.as(MemberAccessExprSyntax.self),
+                  let replacement = expr.asKeyPath,
                   let calleeName = node.calleeName else {
                 return super.visit(node)
             }
@@ -115,7 +115,7 @@ private extension PreferKeyPathRule {
             }
             let newArg = LabeledExprSyntax(
                 label: argumentLabelByStandardFunction[calleeName, default: nil],
-                expression: declName.asKeyPath
+                expression: replacement
             )
             node = node.with(\.arguments, [newArg]
             )
@@ -134,9 +134,9 @@ private extension PreferKeyPathRule {
             }
             if let expr = node.onlyExprStmt,
                expr.accesses(identifier: node.onlyParameter) == true,
-               let declName = expr.as(MemberAccessExprSyntax.self) {
+               let replacement = expr.asKeyPath {
                 correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-                let node = declName.asKeyPath
+                let node = replacement
                     .with(\.leadingTrivia, node.leadingTrivia)
                     .with(\.trailingTrivia, node.trailingTrivia)
                 return super.visit(node)
@@ -149,10 +149,10 @@ private extension PreferKeyPathRule {
 private extension ExprSyntax {
     func accesses(identifier: String?) -> Bool {
         if let base = `as`(MemberAccessExprSyntax.self)?.base {
-            if let declRef = base.as(DeclReferenceExprSyntax.self) {
-                return declRef.baseName.text == identifier ?? "$0"
-            }
             return base.accesses(identifier: identifier)
+        }
+        if let declRef = `as`(DeclReferenceExprSyntax.self) {
+            return declRef.baseName.text == identifier ?? "$0"
         }
         return false
     }
@@ -187,7 +187,11 @@ private extension ClosureExprSyntax {
             // Closure is function argument.
             return restrictToStandardFunctions && !call.isStandardFunction
         }
-        return parent?.as(FunctionCallExprSyntax.self)?.isStandardFunction == false
+        if let call = parent?.as(FunctionCallExprSyntax.self) {
+            // Trailing closure.
+            return call.additionalTrailingClosures.isNotEmpty || restrictToStandardFunctions && !call.isStandardFunction
+        }
+        return false
     }
 }
 
@@ -218,16 +222,22 @@ private extension FunctionCallExprSyntax {
     }
 }
 
-private extension MemberAccessExprSyntax {
-    var asKeyPath: ExprSyntax {
-        var this = base
-        var elements = [declName]
-        while this?.is(DeclReferenceExprSyntax.self) != true {
-            if let memberAccess = this?.as(MemberAccessExprSyntax.self) {
-                elements.append(memberAccess.declName)
-                this = memberAccess.base
+private extension ExprSyntax {
+    var asKeyPath: ExprSyntax? {
+        if let memberAccess = `as`(MemberAccessExprSyntax.self) {
+            var this = memberAccess.base
+            var elements = [memberAccess.declName]
+            while this?.is(DeclReferenceExprSyntax.self) != true {
+                if let memberAccess = this?.as(MemberAccessExprSyntax.self) {
+                    elements.append(memberAccess.declName)
+                    this = memberAccess.base
+                }
             }
+            return "\\.\(raw: elements.reversed().map(\.baseName.text).joined(separator: "."))" as ExprSyntax
         }
-        return "\\.\(raw: elements.reversed().map(\.baseName.text).joined(separator: "."))" as ExprSyntax
+        if SwiftVersion.current >= .six, `is`(DeclReferenceExprSyntax.self) {
+            return "\\.self"
+        }
+        return nil
     }
 }

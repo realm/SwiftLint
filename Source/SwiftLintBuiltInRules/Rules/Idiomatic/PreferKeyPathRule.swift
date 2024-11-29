@@ -44,6 +44,7 @@ struct PreferKeyPathRule: OptInRule {
             Example("f.allSatisfy ↓{ (a: A) in a.b }"),
             Example("f.first ↓{ (a b: A) in b.c }"),
             Example("f.contains ↓{ $0.0.a }"),
+            Example("f.compactMap ↓{ $0.a.b.c.d }"),
             Example("f.flatMap ↓{ $0.a.b }"),
             Example("let f: (Int) -> Int = ↓{ $0.bigEndian }", configuration: extendedMode),
         ],
@@ -78,6 +79,8 @@ struct PreferKeyPathRule: OptInRule {
                 Example("f.first(where: \\.a)"),
             Example("f.drop ↓{ element in element.a }"):
                 Example("f.drop(while: \\.a)"),
+            Example("f.compactMap ↓{ $0.a.b.c.d }"):
+                Example("f.compactMap(\\.a.b.c.d)"),
         ]
     )
 }
@@ -191,6 +194,7 @@ private extension ClosureExprSyntax {
 private let argumentLabelByStandardFunction: [String: String?] = [
     "allSatisfy": nil,
     "contains": "where",
+    "compactMap": nil,
     "drop": "while",
     "filter": nil,
     "first": "where",

@@ -42,7 +42,7 @@ struct RuleDocumentation {
         var content = [h1(description.name), description.description, detailsSummary(ruleType.init())]
         if let rationale = description.rationale {
             content += [h2("Rationale")]
-            content.append(formattedRationale(rationale))
+            content.append(rationale.formattedAsRationale)
         }
         let nonTriggeringExamples = description.nonTriggeringExamples.filter { !$0.excludeFromDocumentation }
         if nonTriggeringExamples.isNotEmpty {
@@ -55,10 +55,6 @@ struct RuleDocumentation {
             content += triggeringExamples.map(formattedCode)
         }
         return content.joined(separator: "\n\n")
-    }
-
-    private func formattedRationale(_ rationale: String) -> String {
-        rationale.formattedAsRationale
     }
 
     private func formattedCode(_ example: Example) -> String {
@@ -122,6 +118,13 @@ extension String {
                 }
             }
             return line
+        }.joined(separator: "\n")
+    }
+
+    var formattedAsConsoleRationale: String {
+        var insideMultilineString = false
+        return components(separatedBy: "\n").compactMap { line in
+            line.contains("```") ? nil : line
         }.joined(separator: "\n")
     }
 }

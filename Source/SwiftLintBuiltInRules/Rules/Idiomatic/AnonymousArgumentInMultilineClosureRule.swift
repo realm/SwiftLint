@@ -12,17 +12,17 @@ struct AnonymousArgumentInMultilineClosureRule: Rule {
         In multiline closures, for clarity, prefer using named arguments
 
         ```
-        closure { arg in
-            print(arg)
-        }
+            closure { arg in
+                print(arg)
+            }
         ```
 
         to anonymous arguments
 
         ```
-        closure {
-            print(↓$0)
-        }
+            closure {
+               print(↓$0)
+            }
         ```
         """,
         kind: .idiomatic,

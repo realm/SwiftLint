@@ -17,13 +17,13 @@ struct ClassDelegateProtocolRule: Rule {
         For example
 
         ```
-        protocol FooDelegate: class {}
+            protocol FooDelegate: class {}
         ```
 
         versus
 
         ```
-        ↓protocol FooDelegate {}
+            ↓protocol FooDelegate {}
         ```
         """,
         kind: .lint,

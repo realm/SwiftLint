@@ -13,8 +13,8 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
         The intent of this rule is to prevent code like
 
         ```
-        // swiftlint:disable force_unwrapping
-        let foo = bar!
+            // swiftlint:disable force_unwrapping
+            let foo = bar!
         ```
 
         which disables the `force_unwrapping` rule for the remainder the file, instead of just for the specific \
@@ -26,16 +26,10 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
         To disable this rule in code you will need to do something like
 
         ```
-        // swiftlint:disable:next blanket_disable_command
-        // swiftlint:disable force_unwrapping
+            // swiftlint:disable:next blanket_disable_command
+            // swiftlint:disable force_unwrapping
         ```
 
-        There are some rules which only make sense in the context of the entire file, for example `file_header`, \
-        `file_length`, `file_name`, `file_name_no_space`, and `single_test_class`. These can be configured with \
-        the `allowed_rules` configuration parameter.
-
-        You can also specify rules which must always be applied to the entire file, and should never be scoped or \
-        re-enabled with the `always_blanket_disable` configuration parameter.
         """,
         kind: .lint,
         nonTriggeringExamples: [

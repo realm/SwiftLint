@@ -28,7 +28,7 @@ struct PreferKeyPathRule: OptInRule {
             Example("f.map(1) { $0.a }"),
             Example("f.filter({ $0.a }, x)"),
             Example("#Predicate { $0.a }"),
-            Example("let transform: (Int) -> Int = nil ?? { $0 }"),
+            Example("let transform: (Int) -> Int = nil ?? { $0.a }"),
         ],
         triggeringExamples: [
             Example("f.map ↓{ $0.a }"),
@@ -46,6 +46,7 @@ struct PreferKeyPathRule: OptInRule {
             Example("f.compactMap ↓{ $0.a.b.c.d }"),
             Example("f.flatMap ↓{ $0.a.b }"),
             Example("let f: (Int) -> Int = ↓{ $0.bigEndian }", configuration: extendedMode),
+            Example("transform = ↓{ $0.a }"),
         ],
         corrections: [
             Example("f.map { $0.a }"):
@@ -180,15 +181,16 @@ private extension ClosureExprSyntax {
 
     func isInvalid(restrictToStandardFunctions: Bool) -> Bool {
         guard keyPathInParent != \FunctionCallExprSyntax.calledExpression,
-              let parentKind = parent?.kind,
-              ![.macroExpansionExpr, .multipleTrailingClosureElement, .exprList].contains(parentKind) else {
+              let parent,
+              ![.macroExpansionExpr, .multipleTrailingClosureElement].contains(parent.kind),
+              previousToken(viewMode: .sourceAccurate)?.text != "??" else {
             return true
         }
-        if let call = parent?.as(LabeledExprSyntax.self)?.parent?.parent?.as(FunctionCallExprSyntax.self) {
+        if let call = parent.as(LabeledExprSyntax.self)?.parent?.parent?.as(FunctionCallExprSyntax.self) {
             // Closure is function argument.
             return restrictToStandardFunctions && !call.isStandardFunction
         }
-        if let call = parent?.as(FunctionCallExprSyntax.self) {
+        if let call = parent.as(FunctionCallExprSyntax.self) {
             // Trailing closure.
             return call.additionalTrailingClosures.isNotEmpty || restrictToStandardFunctions && !call.isStandardFunction
         }

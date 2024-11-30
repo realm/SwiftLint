@@ -64,7 +64,7 @@ public struct RuleDescription: Equatable, Sendable {
         guard let rationale else {
             return nil
         }
-        return rationale.formattedAsRationale
+        return rationale.formattedAsConsoleRationale
     }
 
     /// All identifiers that have been used to uniquely identify this rule in past and current SwiftLint versions.

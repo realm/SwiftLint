@@ -28,6 +28,7 @@ struct PreferKeyPathRule: OptInRule {
             Example("f.map(1) { $0.a }"),
             Example("f.filter({ $0.a }, x)"),
             Example("#Predicate { $0.a }"),
+            Example("let transform: (Int) -> Int = nil ?? { $0 }"),
         ],
         triggeringExamples: [
             Example("f.map ↓{ $0.a }"),
@@ -180,7 +181,7 @@ private extension ClosureExprSyntax {
     func isInvalid(restrictToStandardFunctions: Bool) -> Bool {
         guard keyPathInParent != \FunctionCallExprSyntax.calledExpression,
               let parentKind = parent?.kind,
-              ![.macroExpansionExpr, .multipleTrailingClosureElement].contains(parentKind) else {
+              ![.macroExpansionExpr, .multipleTrailingClosureElement, .exprList].contains(parentKind) else {
             return true
         }
         if let call = parent?.as(LabeledExprSyntax.self)?.parent?.parent?.as(FunctionCallExprSyntax.self) {

@@ -13,7 +13,7 @@ public struct RuleDescription: Equatable, Sendable {
 
     /// A longer explanation of the rule's purpose and rationale. Typically defined as a multiline string, long text 
     /// lines should be wrapped. Markdown formatting is supported. Multiline code blocks will be formatted as
-    /// `swift` code unless otherwise specified.
+    /// `swift` code unless otherwise specified, and should be indented appropriately in the definition.
     public let rationale: String?
 
     /// The `RuleKind` that best categorizes this rule.

@@ -18,10 +18,13 @@
 
 * Add Xcode command plugin allowing to run SwiftLint from within Xcode.  
   [SimplyDanny](https://github.com/SimplyDanny)
-   
+
 * Add new `async_without_await` opt-in rule that checks if an `async` declaration contains at least one `await`.  
   [Jan Kolarik](https://github.com/jkolarik-paylocity)
   [#5082](https://github.com/realm/SwiftLint/issues/5082)
+
+* Support replacing identity expressions with `\.self` in `prefer_key_path` rule from Swift 6 on.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Bug Fixes
 

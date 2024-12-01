@@ -119,11 +119,10 @@ extension String {
                 if insideMultilineString {
                     insideMultilineString = false
                     return forConsole ? nil : line
-                } else {
-                    insideMultilineString = true
-                    if line.hasSuffix("```") {
-                        return forConsole ? nil : (line + "swift")
-                    } 
+                }
+                insideMultilineString = true
+                if line.hasSuffix("```") {
+                    return forConsole ? nil : (line + "swift")
                 }
             }
             return line.indent(by: (insideMultilineString && forConsole) ? 4 : 0)

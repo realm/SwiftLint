@@ -42,7 +42,7 @@ struct RuleDocumentation {
         var content = [h1(description.name), description.description, detailsSummary(ruleType.init())]
         if let rationale = description.rationale {
             content += [h2("Rationale")]
-            content.append(rationale.formattedAsRationale)
+            content.append(rationale.formattedRationale)
         }
         let nonTriggeringExamples = description.nonTriggeringExamples.filter { !$0.excludeFromDocumentation }
         if nonTriggeringExamples.isNotEmpty {
@@ -104,17 +104,17 @@ private func detailsSummary(_ rule: some Rule) -> String {
 }
 
 extension String {
-    var formattedAsRationale: String {
+    var formattedRationale: String {
         formattedRationale(forConsole: false)
     }
 
-    var formattedAsConsoleRationale: String {
+    var consoleRationale: String {
         formattedRationale(forConsole: true)
     }
 
     private func formattedRationale(forConsole: Bool) -> String {
         var insideMultilineString = false
-        return components(separatedBy: "\n").compactMap { line in
+        return components(separatedBy: "\n").compactMap { line -> String? in
             if line.contains("```") {
                 if insideMultilineString {
                     insideMultilineString = false

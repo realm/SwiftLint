@@ -62,10 +62,7 @@ public struct RuleDescription: Equatable, Sendable {
 
     /// The console-printable rationale for this description.
     public var consoleRationale: String? {
-        guard let rationale else {
-            return nil
-        }
-        return rationale.formattedAsConsoleRationale
+        rationale?.consoleRationale
     }
 
     /// All identifiers that have been used to uniquely identify this rule in past and current SwiftLint versions.

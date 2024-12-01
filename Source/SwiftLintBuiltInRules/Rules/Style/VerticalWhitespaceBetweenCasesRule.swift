@@ -23,6 +23,8 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
             default:
                 print("x is invalid")
 
+            @unknown default:
+                print("x is out of this world")
             }
             """),
         Example("""
@@ -42,6 +44,7 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
             case 0..<5: print("x is low")
             case 5..<10: print("x is high")
             default: print("x is invalid")
+            @unknown default: print("x is out of this world")
             }
             """),
         // Testing handling of trailing spaces: do not convert to """ style
@@ -63,6 +66,8 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
                 return "x is valid"
             ↓default:
                 return "x is invalid"
+            ↓@unknown default:
+                print("x is out of this world")
             }
             """): Example("""
                 switch x {
@@ -71,6 +76,9 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
 
                 default:
                     return "x is invalid"
+
+                @unknown default:
+                    print("x is out of this world")
                 }
                 """),
         Example("""
@@ -127,7 +135,7 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
                 """),
     ]
 
-    private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default):[ \\t]*\\n)"
+    private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default|@unknown default):[ \\t]*\\n)"
 
     private func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         file.violatingRanges(for: pattern).filter {

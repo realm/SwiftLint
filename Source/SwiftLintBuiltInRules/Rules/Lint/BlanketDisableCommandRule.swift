@@ -13,8 +13,8 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
         The intent of this rule is to prevent code like
 
         ```
-            // swiftlint:disable force_unwrapping
-            let foo = bar!
+        // swiftlint:disable force_unwrapping
+        let foo = bar!
         ```
 
         which disables the `force_unwrapping` rule for the remainder the file, instead of just for the specific \
@@ -26,10 +26,9 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
         To disable this rule in code you will need to do something like
 
         ```
-            // swiftlint:disable:next blanket_disable_command
-            // swiftlint:disable force_unwrapping
+        // swiftlint:disable:next blanket_disable_command
+        // swiftlint:disable force_unwrapping
         ```
-
         """,
         kind: .lint,
         nonTriggeringExamples: [

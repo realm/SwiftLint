@@ -105,25 +105,28 @@ private func detailsSummary(_ rule: some Rule) -> String {
 
 extension String {
     var formattedAsRationale: String {
-        var insideMultilineString = false
-        return components(separatedBy: "\n").map { line in
-            if line.contains("```") {
-                if insideMultilineString {
-                    insideMultilineString = false
-                } else {
-                    insideMultilineString = true
-                    if line.hasSuffix("```") {
-                        return line + "swift"
-                    }
-                }
-            }
-            return line
-        }.joined(separator: "\n")
+        formattedRationale(forConsole: false)
     }
 
     var formattedAsConsoleRationale: String {
-        components(separatedBy: "\n").compactMap { line in
-            line.contains("```") ? nil : line
+        formattedRationale(forConsole: true)
+    }
+
+    private func formattedRationale(forConsole: Bool) -> String {
+        var insideMultilineString = false
+        return components(separatedBy: "\n").compactMap { line in
+            if line.contains("```") {
+                if insideMultilineString {
+                    insideMultilineString = false
+                    return forConsole ? nil : line
+                } else {
+                    insideMultilineString = true
+                    if line.hasSuffix("```") {
+                        return forConsole ? nil : (line + "swift")
+                    } 
+                }
+            }
+            return line.indent(by: (insideMultilineString && forConsole) ? 4 : 0)
         }.joined(separator: "\n")
     }
 }

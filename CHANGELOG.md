@@ -146,7 +146,7 @@
   [#5840](https://github.com/realm/SwiftLint/issues/5840)
 
 * Fixes an issue where the `vertical_whitespace_between_cases` rule does not
-  recognize `@unknown default`.
+  recognize `@unknown default`.  
   [Jared Grubb](https://github.com/jaredtrubb)
   [#5788](https://github.com/realm/SwiftLint/issues/3511)
 

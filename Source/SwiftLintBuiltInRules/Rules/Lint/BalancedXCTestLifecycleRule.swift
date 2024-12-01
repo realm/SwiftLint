@@ -18,22 +18,22 @@ struct BalancedXCTestLifecycleRule: Rule {
         So in a test class with 10 tests, given
 
         ```
-            private var foo: String = "Bar"
+        private var foo: String = "Bar"
         ```
 
         "Bar" will be stored 10 times over, but with
 
         ```
-            // swiftlint:disable:next implicitly_unwrapped_optional
-            private var foo: String!
+        // swiftlint:disable:next implicitly_unwrapped_optional
+        private var foo: String!
 
-            func setUp() {
-                foo = "Bar"
-            }
+        func setUp() {
+            foo = "Bar"
+        }
 
-            func tearDown() {
-                foo = nil
-            }
+        func tearDown() {
+            foo = nil
+        }
         ```
 
         No memory will be consumed by the value of the variable.

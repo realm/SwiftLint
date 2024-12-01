@@ -122,8 +122,7 @@ extension String {
     }
 
     var formattedAsConsoleRationale: String {
-        var insideMultilineString = false
-        return components(separatedBy: "\n").compactMap { line in
+        components(separatedBy: "\n").compactMap { line in
             line.contains("```") ? nil : line
         }.joined(separator: "\n")
     }

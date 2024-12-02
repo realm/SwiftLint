@@ -25,6 +25,9 @@
 
 * Support replacing identity expressions with `\.self` in `prefer_key_path` rule from Swift 6 on.  
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Support for running command plugin as CLI on filepaths provided as arguments.  
+  [DanSkeel](https://github.com/DanSkeel)
 
 #### Bug Fixes
 

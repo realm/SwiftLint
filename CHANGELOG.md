@@ -28,6 +28,7 @@
   
 * Support for running command plugin as CLI on filepaths provided as arguments.  
   [DanSkeel](https://github.com/DanSkeel)
+  [#5879](https://github.com/realm/SwiftLint/pull/5879)
 
 #### Bug Fixes
 

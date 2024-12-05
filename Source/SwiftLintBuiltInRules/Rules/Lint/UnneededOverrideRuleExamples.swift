@@ -121,6 +121,22 @@ struct UnneededOverrideRuleExamples {
             }
         }
         """),
+        Example("""
+        class C {
+            override func foo() {
+                super.foo {}
+            }
+            override func bar(_ c: () -> Void) {
+                super.bar {}
+            }
+            override func baz(_ c: () -> Void) {
+                super.baz({})
+            }
+            override func qux(c: () -> Void) {
+                super.qux(c: {})
+            }
+        }
+        """),
     ]
 
     static let triggeringExamples = [

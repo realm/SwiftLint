@@ -28,7 +28,9 @@
 
 #### Bug Fixes
 
-* None.
+* Ignore super calls with trailing closures in `unneeded_override` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5886](ttps://github.com/realm/SwiftLint/issues/5886)
 
 ## 0.57.1: Squeaky Clean Cycle
 

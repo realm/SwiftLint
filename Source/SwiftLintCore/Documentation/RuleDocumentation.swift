@@ -40,6 +40,10 @@ struct RuleDocumentation {
     var fileContents: String {
         let description = ruleType.description
         var content = [h1(description.name), description.description, detailsSummary(ruleType.init())]
+        if let rationale = description.rationale {
+            content += [h2("Rationale")]
+            content.append(rationale.formattedAsRationale)
+        }
         let nonTriggeringExamples = description.nonTriggeringExamples.filter { !$0.excludeFromDocumentation }
         if nonTriggeringExamples.isNotEmpty {
             content += [h2("Non Triggering Examples")]
@@ -97,4 +101,31 @@ private func detailsSummary(_ rule: some Rule) -> String {
             """
     }
     return ruleDescription
+}
+
+extension String {
+    var formattedAsRationale: String {
+        formattedRationale(forConsole: false)
+    }
+
+    var formattedAsConsoleRationale: String {
+        formattedRationale(forConsole: true)
+    }
+
+    private func formattedRationale(forConsole: Bool) -> String {
+        var insideMultilineString = false
+        return components(separatedBy: "\n").compactMap { line in
+            if line.contains("```") {
+                if insideMultilineString {
+                    insideMultilineString = false
+                    return forConsole ? nil : line
+                }
+                insideMultilineString = true
+                if line.hasSuffix("```") {
+                    return forConsole ? nil : (line + "swift")
+                }
+            }
+            return line.indent(by: (insideMultilineString && forConsole) ? 4 : 0)
+        }.joined(separator: "\n")
+    }
 }

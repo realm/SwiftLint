@@ -11,6 +11,12 @@ public struct RuleDescription: Equatable, Sendable {
     /// explanation of the rule's purpose and rationale.
     public let description: String
 
+    /// A longer explanation of the rule's purpose and rationale. Typically defined as a multiline string, long text 
+    /// lines should be wrapped. Markdown formatting is supported. Multiline code blocks will be formatted as
+    /// `swift` code unless otherwise specified, and will automatically be indented by four spaces when printed
+    /// to the console.
+    public let rationale: String?
+
     /// The `RuleKind` that best categorizes this rule.
     public let kind: RuleKind
 
@@ -54,6 +60,14 @@ public struct RuleDescription: Equatable, Sendable {
     /// The console-printable string for this description.
     public var consoleDescription: String { "\(name) (\(identifier)): \(description)" }
 
+    /// The console-printable rationale for this description.
+    public var consoleRationale: String? {
+        guard let rationale else {
+            return nil
+        }
+        return rationale.formattedAsConsoleRationale
+    }
+
     /// All identifiers that have been used to uniquely identify this rule in past and current SwiftLint versions.
     public var allIdentifiers: [String] {
         Array(deprecatedAliases) + [identifier]
@@ -74,6 +88,7 @@ public struct RuleDescription: Equatable, Sendable {
     public init(identifier: String,
                 name: String,
                 description: String,
+                rationale: String? = nil,
                 kind: RuleKind,
                 minSwiftVersion: SwiftVersion = .five,
                 nonTriggeringExamples: [Example] = [],
@@ -84,6 +99,7 @@ public struct RuleDescription: Equatable, Sendable {
         self.identifier = identifier
         self.name = name
         self.description = description
+        self.rationale = rationale
         self.kind = kind
         self.nonTriggeringExamples = nonTriggeringExamples
         self.triggeringExamples = triggeringExamples

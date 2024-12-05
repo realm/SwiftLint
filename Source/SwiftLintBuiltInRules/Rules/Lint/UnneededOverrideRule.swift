@@ -101,6 +101,11 @@ private extension OverridableDecl {
             return false
         }
 
+        guard call.trailingClosure == nil, call.additionalTrailingClosures.isEmpty else {
+            // Assume trailing closures change behavior.
+            return false
+        }
+
         let declParameters = signature.parameterClause.parameters
         if declParameters.contains(where: { $0.defaultValue != nil }) {
             // Any default parameter might be a change to the super.

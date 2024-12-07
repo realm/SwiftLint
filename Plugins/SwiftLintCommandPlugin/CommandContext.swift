@@ -85,7 +85,7 @@ extension XcodePluginContext: CommandContext {
         }
         return xcodeProject.targets
             .filter { names.contains($0.displayName) }
-            .map { (paths: $0.inputFiles.map(\.path.string), name: $0.displayName) }
+            .map { (paths: $0.inputFiles.map(\.path.string).filter { $0.hasSuffix(".swift") }, name: $0.displayName) }
     }
 }
 

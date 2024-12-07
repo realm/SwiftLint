@@ -59,7 +59,7 @@ internal extension Configuration.FileGraph.FilePath {
             configString = mockedValue
         } else {
             // Handle missing network
-            guard Reachability.connectivityStatus != .disconnected else {
+            guard await Reachability.connectivityStatus != .disconnected else {
                 return try handleMissingNetwork(urlString: urlString, cachedFilePath: cachedFilePath)
             }
 

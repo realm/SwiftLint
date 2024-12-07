@@ -49,7 +49,7 @@ extension SwiftLintCommandPlugin {
         }
         guard !targetNames.isEmpty else {
             if let pathArgument = remainingArguments.last, FileManager.default.fileExists(atPath: pathArgument) {
-                Diagnostics.remark("No targets provided, paths from remaining arguments will be used")
+                Diagnostics.remark("No targets provided. Files provided in path arguments will be linted.")
                 try lintFiles(in: [], with: context, arguments: remainingArguments)
             } else {
                 try lintFiles(with: context, arguments: remainingArguments)

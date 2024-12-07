@@ -601,8 +601,6 @@ unowned_variable_capture:
   severity: warning
 untyped_error_in_catch:
   severity: warning
-unused_capture_list:
-  severity: warning
 unused_closure_parameter:
   severity: warning
 unused_control_flow_label:

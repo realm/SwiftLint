@@ -26,9 +26,8 @@
 * Support replacing identity expressions with `\.self` in `prefer_key_path` rule from Swift 6 on.  
   [SimplyDanny](https://github.com/SimplyDanny)
   
-* Support for running command plugin as CLI on filepaths provided as arguments.  
+* Support linting only provided file paths with command plugins.  
   [DanSkeel](https://github.com/DanSkeel)
-  [#5879](https://github.com/realm/SwiftLint/pull/5879)
 
 #### Bug Fixes
 

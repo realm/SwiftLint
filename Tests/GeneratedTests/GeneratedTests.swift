@@ -1333,12 +1333,6 @@ final class UntypedErrorInCatchRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class UnusedCaptureListRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedCaptureListRule.description)
-    }
-}
-
 final class UnusedClosureParameterRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedClosureParameterRule.description)

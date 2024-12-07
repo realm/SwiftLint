@@ -224,7 +224,6 @@ public let builtInRules: [any Rule.Type] = [
     UnneededSynthesizedInitializerRule.self,
     UnownedVariableCaptureRule.self,
     UntypedErrorInCatchRule.self,
-    UnusedCaptureListRule.self,
     UnusedClosureParameterRule.self,
     UnusedControlFlowLabelRule.self,
     UnusedDeclarationRule.self,

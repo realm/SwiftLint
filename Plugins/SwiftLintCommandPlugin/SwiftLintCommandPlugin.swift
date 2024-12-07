@@ -42,8 +42,18 @@ extension SwiftLintCommandPlugin {
         var argExtractor = ArgumentExtractor(arguments)
         let targetNames = argExtractor.extractOption(named: "target")
         let remainingArguments = argExtractor.remainingArguments
-        guard !targetNames.isEmpty, commandsNotExpectingPaths.isDisjoint(with: remainingArguments) else {
+
+        if !commandsNotExpectingPaths.isDisjoint(with: remainingArguments) {
             try lintFiles(with: context, arguments: remainingArguments)
+            return
+        }
+        guard !targetNames.isEmpty else {
+            if let pathArgument = remainingArguments.last, FileManager.default.fileExists(atPath: pathArgument) {
+                Diagnostics.remark("No targets provided. Files provided in path arguments will be linted.")
+                try lintFiles(in: [], with: context, arguments: remainingArguments)
+            } else {
+                try lintFiles(with: context, arguments: remainingArguments)
+            }
             return
         }
         for target in try context.targets(named: targetNames) {

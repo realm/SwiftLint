@@ -25,6 +25,9 @@
 
 * Support replacing identity expressions with `\.self` in `prefer_key_path` rule from Swift 6 on.  
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Support linting only provided file paths with command plugins.  
+  [DanSkeel](https://github.com/DanSkeel)
 
 #### Bug Fixes
 

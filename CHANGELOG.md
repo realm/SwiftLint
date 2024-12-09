@@ -10,6 +10,9 @@
   [Bradley Mackey](https://github.com/bradleymackey)
   [#5514](https://github.com/realm/SwiftLint/issues/5514)
 
+* The `inert_defer` and `unused_capture_list` rules have completely been removed after being deprecated for 2 years.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Experimental
 
 * None.

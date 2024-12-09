@@ -255,8 +255,6 @@ indentation_width:
   include_comments: true
   include_compiler_directives: true
   include_multiline_strings: true
-inert_defer:
-  severity: warning
 invalid_swiftlint_command:
   severity: warning
 is_disjoint:

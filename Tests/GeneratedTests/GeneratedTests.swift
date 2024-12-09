@@ -541,12 +541,6 @@ final class IndentationWidthRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class InertDeferRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(InertDeferRule.description)
-    }
-}
-
 final class InvalidSwiftLintCommandRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(InvalidSwiftLintCommandRule.description)

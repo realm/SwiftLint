@@ -1029,17 +1029,18 @@ parameter.**
 
 ## About
 
-<img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/realm.png" width="184" />
+SwiftLint is utterly maintained by volunteers contributing to its success
+entirely in their free time. As such, SwiftLint isn't a commercial product
+in any way.
 
-SwiftLint is maintained and funded by Realm Inc. The names and logos for
-Realm are trademarks of Realm Inc.
+Be kind to the people maintaining SwiftLint as a hobby and accept that their
+time is limited. Support them by contributing to the project, reporting issues,
+and helping others in the community.
 
-We :heart: open source software!
-See [our other open source projects](https://github.com/realm),
-read [our blog](https://realm.io/news), or say hi on twitter
-([@realm](https://twitter.com/realm)).
+Special thanks go to [MacStadium](https://www.macstadium.com) for providing
+physical Mac mini machines to run our performance tests.
 
 <img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/macstadium.png" width="184" />
 
-Our thanks to MacStadium for providing a Mac Mini to run our performance
-tests.
+We also thank Realm (now MongoDB) for their inital contributions and setup of
+the project.

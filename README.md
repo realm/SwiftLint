@@ -570,7 +570,7 @@ Once [installed](https://pre-commit.com/#install), add this to the
 ```yaml
 repos:
   - repo: https://github.com/realm/SwiftLint
-    rev: 0.57.3
+    rev: 0.57.1
     hooks:
       - id: swiftlint
 ```
@@ -582,7 +582,7 @@ SwiftLint can be configured using `entry` to apply fixes and fail on errors:
 
 ```yaml
 -   repo: https://github.com/realm/SwiftLint
-    rev: 0.57.3
+    rev: 0.57.1
     hooks:
     -   id: swiftlint
         entry: swiftlint --fix --strict

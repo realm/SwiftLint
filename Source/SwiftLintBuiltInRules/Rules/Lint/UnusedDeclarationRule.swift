@@ -211,6 +211,7 @@ private extension SwiftLintFile {
 
     private func shouldIgnoreEntity(_ indexEntity: SourceKittenDictionary, relatedUSRsToSkip: Set<String>) -> Bool {
         let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
+            .ibsegueaction,
             .ibaction,
             .main,
             .nsApplicationMain,

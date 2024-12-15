@@ -53,16 +53,14 @@ public struct RuleConfigurationDescription: Equatable {
             return Self(options: customDescription.options, exclusiveOptions: exclusiveOptions)
         }
         let options: [RuleConfigurationOption] = Mirror(reflecting: configuration).children
-            .compactMap { child -> Self? in
+            .flatMap { child in
                 // Property wrappers have names prefixed by an underscore.
-                guard let codingKey = child.label, codingKey.starts(with: "_") else {
-                    return nil
+                if child.label?.starts(with: "_") == true,
+                   let element = child.value as? any AnyConfigurationElement {
+                    return element.description.options
                 }
-                guard let element = child.value as? any AnyConfigurationElement else {
-                    return nil
-                }
-                return element.description
-            }.flatMap(\.options)
+                return []
+            }
         guard options.isNotEmpty else {
             queuedFatalError(
                 """

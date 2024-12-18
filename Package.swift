@@ -35,7 +35,7 @@ let package = Package(
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.6"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
         .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit.git", from: "0.2.0"),
-        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.8.0")),
+        .package(url: "https://github.com/apple/swift-crypto.git", .upToNextMinor(from: "3.9.1")),
     ],
     targets: [
         .plugin(
@@ -75,7 +75,7 @@ let package = Package(
         .target(
             name: "SwiftLintCore",
             dependencies: [
-                .product(name: "CryptoSwift", package: "CryptoSwift", condition: .when(platforms: [.linux])),
+                .product(name: "Crypto", package: "swift-crypto", condition: .when(platforms: [.linux])),
                 .target(name: "DyldWarningWorkaround", condition: .when(platforms: [.macOS])),
                 .product(name: "SourceKittenFramework", package: "SourceKitten"),
                 .product(name: "SwiftIDEUtils", package: "swift-syntax"),

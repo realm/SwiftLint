@@ -95,7 +95,7 @@ swift_library(
         "@sourcekitten_com_github_jpsim_yams//:Yams",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ] + select({
-        "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
+        "@platforms//os:linux": ["@com_github_apple_swift_crypto//:Crypto"],
         "//conditions:default": [":DyldWarningWorkaround"],
     }),
 )

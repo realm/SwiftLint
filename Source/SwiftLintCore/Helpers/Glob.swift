@@ -1,15 +1,9 @@
 import Foundation
 
-#if canImport(Darwin)
-import Darwin
-
-private let globFunction = Darwin.glob
-#elseif canImport(Glibc)
-import Glibc
-
-private let globFunction = Glibc.glob
-#else
-#error("Unsupported platform")
+#if os(Linux)
+#if canImport(Glibc)
+import func Glibc.glob
+#endif
 #endif
 
 // Adapted from https://gist.github.com/efirestone/ce01ae109e08772647eb061b3bb387c3
@@ -26,7 +20,7 @@ struct Glob {
                 var globResult = glob_t()
                 defer { globfree(&globResult) }
 
-                if globFunction(pattern, GLOB_TILDE | GLOB_BRACE | GLOB_MARK, nil, &globResult) == 0 {
+                if glob(pattern, GLOB_TILDE | GLOB_BRACE | GLOB_MARK, nil, &globResult) == 0 {
                     paths.append(contentsOf: populateFiles(globResult: globResult))
                 }
             }

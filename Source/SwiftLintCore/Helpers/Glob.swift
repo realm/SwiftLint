@@ -3,6 +3,8 @@ import Foundation
 #if os(Linux)
 #if canImport(Glibc)
 import func Glibc.glob
+#elseif canImport(Musl)
+import func Musl.glob
 #endif
 #endif
 
@@ -20,7 +22,12 @@ struct Glob {
                 var globResult = glob_t()
                 defer { globfree(&globResult) }
 
-                if glob(pattern, GLOB_TILDE | GLOB_BRACE | GLOB_MARK, nil, &globResult) == 0 {
+                #if canImport(Musl)
+                let flags = GLOB_TILDE | GLOB_MARK
+                #else
+                let flags = GLOB_TILDE | GLOB_BRACE | GLOB_MARK
+                #endif
+                if glob(pattern, flags, nil, &globResult) == 0 {
                     paths.append(contentsOf: populateFiles(globResult: globResult))
                 }
             }

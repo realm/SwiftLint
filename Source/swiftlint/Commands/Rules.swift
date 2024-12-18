@@ -1,11 +1,4 @@
 import ArgumentParser
-#if canImport(Darwin)
-import Darwin
-#elseif canImport(Glibc)
-import Glibc
-#else
-#error("Unsupported platform")
-#endif
 import Foundation
 import SwiftLintFramework
 import SwiftyTextTable

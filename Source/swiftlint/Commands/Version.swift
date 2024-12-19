@@ -22,7 +22,6 @@ extension SwiftLint {
             if checkForUpdates {
                 await UpdateChecker.checkForUpdates()
             }
-            ExitHelper.successfullyExit()
         }
     }
 }

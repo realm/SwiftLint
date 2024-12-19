@@ -29,7 +29,6 @@ extension SwiftLint {
                     throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")
                 }
                 printDescription(for: rule, with: configuration)
-                ExitHelper.successfullyExit()
                 return
             }
             let rules = RulesFilter(enabledRules: configuration.rules)
@@ -50,7 +49,6 @@ extension SwiftLint {
                 )
                 print(table.render())
             }
-            ExitHelper.successfullyExit()
         }
 
         private func printDescription(for ruleType: any Rule.Type, with configuration: Configuration) {

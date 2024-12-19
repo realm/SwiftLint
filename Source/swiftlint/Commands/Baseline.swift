@@ -39,7 +39,6 @@ extension SwiftLint {
         func run() throws {
             let savedBaseline = try SwiftLintCore.Baseline(fromPath: options.baseline)
             try report(savedBaseline.violations, using: reportingOptions.reporter, to: reportingOptions.output)
-            ExitHelper.successfullyExit()
         }
     }
 
@@ -65,7 +64,6 @@ extension SwiftLint {
             let baseline = try SwiftLintCore.Baseline(fromPath: options.baseline)
             let otherBaseline = try SwiftLintCore.Baseline(fromPath: otherBaseline)
             try report(baseline.compare(otherBaseline), using: reportingOptions.reporter, to: reportingOptions.output)
-            ExitHelper.successfullyExit()
         }
     }
 }

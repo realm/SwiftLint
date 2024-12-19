@@ -137,7 +137,6 @@ package struct LintOrAnalyzeCommand {
         try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
             try await options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
         }
-        ExitHelper.successfullyExit()
     }
 
     private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws {

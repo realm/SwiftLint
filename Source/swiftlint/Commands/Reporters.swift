@@ -8,7 +8,6 @@ extension SwiftLint {
 
         func run() throws {
             print(TextTable(reporters: reportersList).render())
-            ExitHelper.successfullyExit()
         }
     }
 }

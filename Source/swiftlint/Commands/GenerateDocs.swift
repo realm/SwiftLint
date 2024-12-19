@@ -22,7 +22,6 @@ extension SwiftLint {
 
             try RuleListDocumentation(rules)
                 .write(to: URL(fileURLWithPath: path, isDirectory: true))
-            ExitHelper.successfullyExit()
         }
     }
 }

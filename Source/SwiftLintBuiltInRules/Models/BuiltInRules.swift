@@ -176,6 +176,7 @@ public let builtInRules: [any Rule.Type] = [
     RedundantObjcAttributeRule.self,
     RedundantOptionalInitializationRule.self,
     RedundantSelfInClosureRule.self,
+    RedundantSendableRule.self,
     RedundantSetAccessControlRule.self,
     RedundantStringEnumValueRule.self,
     RedundantTypeAnnotationRule.self,

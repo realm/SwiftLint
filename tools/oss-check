@@ -45,6 +45,7 @@ end.parse!
 class Repo
   attr_accessor :name
   attr_accessor :github_location
+  attr_accessor :keep_config
   attr_accessor :config
   attr_accessor :commit_hash
   attr_accessor :branch_exit_value
@@ -52,9 +53,10 @@ class Repo
   attr_accessor :main_exit_value
   attr_accessor :main_duration
 
-  def initialize(name, github_location, config=nil)
+  def initialize(name, github_location, keep_config=false, config=nil)
     @name = name
     @github_location = github_location
+    @keep_config = keep_config
     @config = config
   end
 
@@ -140,7 +142,9 @@ def setup_repos
     puts "Cloning #{repo}"
     perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
     swiftlint_config = "#{dir}/.swiftlint.yml"
-    FileUtils.rm_rf(swiftlint_config)
+    if !repo.keep_config
+      FileUtils.rm_rf(swiftlint_config)
+    end
     if repo.config
       File.open(swiftlint_config, 'a') do |file|
         file.puts(repo.config)
@@ -292,7 +296,7 @@ end
 @repos = [
   Repo.new('Aerial', 'JohnCoates/Aerial'),
   Repo.new('Alamofire', 'Alamofire/Alamofire'),
-  Repo.new('Brave', 'brave/brave-ios'),
+  Repo.new('Brave', 'brave/brave-ios', true),
   Repo.new('DuckDuckGo', 'duckduckgo/iOS'),
   Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
   Repo.new('Kickstarter', 'kickstarter/ios-oss'),
@@ -303,9 +307,9 @@ end
   Repo.new('Quick', 'Quick/Quick'),
   Repo.new('Realm', 'realm/realm-swift'),
   Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
-  Repo.new('Swift', 'apple/swift', 'included: stdlib'),
+  Repo.new('Swift', 'apple/swift', false, 'included: stdlib'),
   Repo.new('VLC', 'videolan/vlc-ios'),
-  Repo.new('Wire', 'wireapp/wire-ios', 'excluded: wire-ios/Templates/Viper'),
+  Repo.new('Wire', 'wireapp/wire-ios', false, 'excluded: wire-ios/Templates/Viper'),
   Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
 ]
 

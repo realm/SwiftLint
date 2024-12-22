@@ -5,10 +5,10 @@ struct Coverage {
     private let totalNumberOfRules: Int
     private var numberOfLinesOfCode = 0
     private var coverageRulesProduct = 0
-    private var enabledRulesCoverage: Double {
+    var enabledRulesCoverage: Double {
         coverage(forNumberOfRules: numberOfEnabledRules)
     }
-    private var allRulesCoverage: Double {
+    var allRulesCoverage: Double {
         coverage(forNumberOfRules: totalNumberOfRules)
     }
 

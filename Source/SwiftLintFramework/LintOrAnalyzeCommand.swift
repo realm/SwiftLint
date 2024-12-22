@@ -145,11 +145,15 @@ package struct LintOrAnalyzeCommand {
         if let baselineOutputPath = options.writeBaseline ?? builder.configuration.writeBaseline {
             try Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath)
         }
+        var numberOfSeriousViolations = 0
         try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
-            try postProcessViolations(files: files, builder: builder)
+            numberOfSeriousViolations = try postProcessViolations(files: files, builder: builder)
         }
         if options.checkForUpdates || builder.configuration.checkForUpdates {
             await UpdateChecker.checkForUpdates()
+        }
+        if numberOfSeriousViolations > 0 {
+            exit(2)
         }
     }
 
@@ -194,7 +198,7 @@ package struct LintOrAnalyzeCommand {
         }
     }
 
-    private static func postProcessViolations(files: [SwiftLintFile], builder: LintOrAnalyzeResultBuilder) throws {
+    private static func postProcessViolations(files: [SwiftLintFile], builder: LintOrAnalyzeResultBuilder) throws -> Int {
         let options = builder.options
         let configuration = builder.configuration
         if isWarningThresholdBroken(configuration: configuration, violations: builder.violations)
@@ -221,7 +225,7 @@ package struct LintOrAnalyzeCommand {
             }
         }
         try builder.cache?.save()
-        guard numberOfSeriousViolations == 0 else { exit(2) }
+        return numberOfSeriousViolations
     }
 
     private static func baseline(_ options: LintOrAnalyzeOptions, _ configuration: Configuration) throws -> Baseline? {

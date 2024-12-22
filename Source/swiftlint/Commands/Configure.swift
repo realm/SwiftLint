@@ -27,7 +27,6 @@ extension SwiftLint {
 
         func run() async throws {
             _ = try await configure()
-            ExitHelper.successfullyExit()
         }
 
         private func configure() async throws -> Bool {
@@ -340,7 +339,7 @@ extension SwiftLint {
 
         private func doYouWantToContinue(_ message: String) {
             if !askUser(message) {
-                ExitHelper.successfullyExit()
+                exit()
             }
         }
 

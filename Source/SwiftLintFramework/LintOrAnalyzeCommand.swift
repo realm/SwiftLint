@@ -40,6 +40,7 @@ package struct LintOrAnalyzeOptions {
     let useScriptInputFiles: Bool
     let useScriptInputFileLists: Bool
     let benchmark: Bool
+    let reportCoverage: Bool
     let reporter: String?
     let baseline: String?
     let writeBaseline: String?
@@ -68,6 +69,7 @@ package struct LintOrAnalyzeOptions {
                  useScriptInputFiles: Bool,
                  useScriptInputFileLists: Bool,
                  benchmark: Bool,
+                 reportCoverage: Bool,
                  reporter: String?,
                  baseline: String?,
                  writeBaseline: String?,
@@ -95,6 +97,7 @@ package struct LintOrAnalyzeOptions {
         self.useScriptInputFiles = useScriptInputFiles
         self.useScriptInputFileLists = useScriptInputFileLists
         self.benchmark = benchmark
+        self.reportCoverage = reportCoverage
         self.reporter = reporter
         self.baseline = baseline
         self.writeBaseline = writeBaseline
@@ -148,6 +151,9 @@ package struct LintOrAnalyzeCommand {
         let numberOfSeriousViolations = try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
             try postProcessViolations(files: files, builder: builder)
         }
+        if let coverage = builder.coverage {
+            queuedPrint(coverage.report)
+        }
         if options.checkForUpdates || builder.configuration.checkForUpdates {
             await UpdateChecker.checkForUpdates()
         }
@@ -186,6 +192,11 @@ package struct LintOrAnalyzeCommand {
                     violations: linter.styleViolations(using: builder.storage)
                 )
             }
+
+            visitorMutationQueue.sync {
+                builder.coverage?.addCoverage(for: linter.file, rules: builder.configuration.rules)
+            }
+
             let filteredViolations = baseline?.filter(currentViolations) ?? currentViolations
             visitorMutationQueue.sync {
                 builder.unfilteredViolations += currentViolations
@@ -365,6 +376,9 @@ package struct LintOrAnalyzeCommand {
 private class LintOrAnalyzeResultBuilder {
     var fileBenchmark = Benchmark(name: "files")
     var ruleBenchmark = Benchmark(name: "rules")
+
+    var coverage: Coverage?
+
     /// All detected violations, unfiltered by the baseline, if any.
     var unfilteredViolations = [StyleViolation]()
     /// The violations to be reported, possibly filtered by a baseline, plus any threshold violations.
@@ -394,6 +408,10 @@ private class LintOrAnalyzeResultBuilder {
             } catch {
                 Issue.fileNotWritable(path: outFile).print()
             }
+        }
+
+        if options.reportCoverage {
+            coverage = Coverage(numberOfRules: configuration.rules.count)
         }
     }
 

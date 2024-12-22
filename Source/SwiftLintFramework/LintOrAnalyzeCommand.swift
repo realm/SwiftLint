@@ -145,9 +145,8 @@ package struct LintOrAnalyzeCommand {
         if let baselineOutputPath = options.writeBaseline ?? builder.configuration.writeBaseline {
             try Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath)
         }
-        var numberOfSeriousViolations = 0
-        try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
-            numberOfSeriousViolations = try postProcessViolations(files: files, builder: builder)
+        let numberOfSeriousViolations = try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
+            try postProcessViolations(files: files, builder: builder)
         }
         if options.checkForUpdates || builder.configuration.checkForUpdates {
             await UpdateChecker.checkForUpdates()

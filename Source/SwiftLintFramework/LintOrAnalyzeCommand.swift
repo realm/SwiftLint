@@ -411,7 +411,13 @@ private class LintOrAnalyzeResultBuilder {
         }
 
         if options.reportCoverage {
-            coverage = Coverage(numberOfRules: configuration.rules.count)
+            let totalNumberOfRules = options.mode == .lint ?
+                RuleRegistry.shared.numberOfLinterRules :
+                RuleRegistry.shared.numberOfAnalyzerRules
+            coverage = Coverage(
+                numberOfEnabledRules: configuration.rules.count,
+                totalNumberOfRules: totalNumberOfRules
+            )
         }
     }
 
@@ -450,6 +456,21 @@ extension LintOrAnalyzeOptions {
         let strict = self.strict || (configurationStrict && !self.lenient)
         let lenient = self.lenient || (configurationLenient && !self.strict)
         return Leniency(strict: strict, lenient: lenient)
+    }
+}
+
+private extension RuleRegistry {
+    var numberOfLinterRules: Int {
+        let mapBlock: (String, any Rule.Type) -> String? = { ruleID, ruleType in
+            ruleType is any AnalyzerRule.Type ? nil : ruleID
+        }
+        return RuleRegistry.shared.list.list.compactMap(mapBlock).count
+    }
+    var numberOfAnalyzerRules: Int {
+        let mapBlock: (String, any Rule.Type) -> String? = { ruleID, ruleType in
+            ruleType is any AnalyzerRule.Type ? ruleID : nil
+        }
+        return RuleRegistry.shared.list.list.compactMap(mapBlock).count
     }
 }
 

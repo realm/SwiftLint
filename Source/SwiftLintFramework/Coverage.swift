@@ -62,6 +62,6 @@ private extension Region {
 private extension Double {
     func rounded(toNearestPlaces places: Int) -> Double {
         let divisor = pow(10.0, Double(places))
-        return ((self * divisor) + 0.5).rounded() / divisor
+        return (self * divisor).rounded() / divisor
     }
 }

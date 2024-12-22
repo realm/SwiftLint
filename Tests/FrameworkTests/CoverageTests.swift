@@ -1,5 +1,5 @@
-@testable import SwiftLintFramework
 @testable import SwiftLintBuiltInRules
+@testable import SwiftLintFramework
 import XCTest
 
 final class CoverageTests: SwiftLintTestCase {
@@ -17,6 +17,9 @@ final class CoverageTests: SwiftLintTestCase {
         coverage.addCoverage(for: file, rules: rules)
         XCTAssertEqual(coverage.enabledRulesCoverage, 1.0)
         XCTAssertEqual(coverage.allRulesCoverage, 0.4)
-        XCTAssertEqual(coverage.report, "Enabled rules coverage: 1.001\n    All rules coverage: 0.401")
+        XCTAssertEqual(coverage.report, """
+                                        Enabled rules coverage: 1.0
+                                            All rules coverage: 0.4
+                                        """)
     }
 }

@@ -87,7 +87,7 @@ let package = Package(
                 .product(name: "Yams", package: "Yams"),
                 "SwiftLintCoreMacros",
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .target(
             name: "SwiftLintBuiltInRules",

@@ -73,7 +73,7 @@ swift_library(
     name = "SwiftLintCore",
     package_name = "SwiftLint",
     srcs = glob(["Source/SwiftLintCore/**/*.swift"]),
-    copts = copts,  # TODO: strict_concurrency_copts
+    copts = copts + strict_concurrency_copts,
     module_name = "SwiftLintCore",
     plugins = select({
         ":universal_tools_config": [":SwiftLintCoreMacros"],

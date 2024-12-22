@@ -26,6 +26,9 @@ public struct Configuration {
     /// The threshold for the number of warnings to tolerate before treating the lint as having failed.
     public let warningThreshold: Int?
 
+    /// Report coverage statistics when linting or analyzing.
+    public let reportCoverage: Bool
+
     /// The identifier for the `Reporter` to use to report style violations.
     public let reporter: String?
 
@@ -47,7 +50,7 @@ public struct Configuration {
     /// The path to write a baseline to.
     public let writeBaseline: String?
 
-    /// Check for updates.
+    /// Check for updates after linting or analyzing.`
     public let checkForUpdates: Bool
 
     /// This value is `true` iff the `--config` parameter was used to specify (a) configuration file(s)
@@ -82,6 +85,7 @@ public struct Configuration {
         excludedPaths: [String],
         indentation: IndentationStyle,
         warningThreshold: Int?,
+        reportCoverage: Bool,
         reporter: String?,
         cachePath: String?,
         allowZeroLintableFiles: Bool,
@@ -97,6 +101,7 @@ public struct Configuration {
         self.excludedPaths = excludedPaths
         self.indentation = indentation
         self.warningThreshold = warningThreshold
+        self.reportCoverage = reportCoverage
         self.reporter = reporter
         self.cachePath = cachePath
         self.allowZeroLintableFiles = allowZeroLintableFiles
@@ -117,6 +122,7 @@ public struct Configuration {
         excludedPaths = configuration.excludedPaths
         indentation = configuration.indentation
         warningThreshold = configuration.warningThreshold
+        reportCoverage = configuration.reportCoverage
         reporter = configuration.reporter
         basedOnCustomConfigurationFiles = configuration.basedOnCustomConfigurationFiles
         cachePath = configuration.cachePath
@@ -143,6 +149,7 @@ public struct Configuration {
     /// - parameter indentation:            The style to use when indenting Swift source code.
     /// - parameter warningThreshold:       The threshold for the number of warnings to tolerate before treating the
     ///                                     lint as having failed.
+    /// - parameter reportCoverage:         Report coverage data after linting or analyzing.
     /// - parameter reporter:               The identifier for the `Reporter` to use to report style violations.
     /// - parameter cachePath:              The location of the persisted cache to use with this configuration.
     /// - parameter pinnedVersion:          The SwiftLint version defined in this configuration.
@@ -152,7 +159,7 @@ public struct Configuration {
     /// - parameter lenient:                Treat errors as warnings.
     /// - parameter baseline:               The path to read a baseline from.
     /// - parameter writeBaseline:          The path to write a baseline to.
-    /// - parameter checkForUpdates:        Check for updates to SwiftLint.
+    /// - parameter checkForUpdates:        Check for updates to SwiftLint after linting or analyzing.
     package init(
         rulesMode: RulesMode = .defaultConfiguration(disabled: [], optIn: []),
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
@@ -162,6 +169,7 @@ public struct Configuration {
         excludedPaths: [String] = [],
         indentation: IndentationStyle = .default,
         warningThreshold: Int? = nil,
+        reportCoverage: Bool = false,
         reporter: String? = nil,
         cachePath: String? = nil,
         pinnedVersion: String? = nil,
@@ -193,6 +201,7 @@ public struct Configuration {
             excludedPaths: excludedPaths,
             indentation: indentation,
             warningThreshold: warningThreshold,
+            reportCoverage: reportCoverage,
             reporter: reporter,
             cachePath: cachePath,
             allowZeroLintableFiles: allowZeroLintableFiles,
@@ -310,6 +319,7 @@ extension Configuration: Hashable {
         hasher.combine(excludedPaths)
         hasher.combine(indentation)
         hasher.combine(warningThreshold)
+        hasher.combine(reportCoverage)
         hasher.combine(reporter)
         hasher.combine(allowZeroLintableFiles)
         hasher.combine(strict)
@@ -328,6 +338,7 @@ extension Configuration: Hashable {
             lhs.excludedPaths == rhs.excludedPaths &&
             lhs.indentation == rhs.indentation &&
             lhs.warningThreshold == rhs.warningThreshold &&
+            lhs.reportCoverage == rhs.reportCoverage &&
             lhs.reporter == rhs.reporter &&
             lhs.basedOnCustomConfigurationFiles == rhs.basedOnCustomConfigurationFiles &&
             lhs.cachePath == rhs.cachePath &&

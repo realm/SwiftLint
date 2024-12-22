@@ -44,8 +44,8 @@ final class CoverageTests: SwiftLintTestCase {
              // These blank lines keep the linecount consistent
              """
 
-        let expectedEnabledRulesCoverage = "0.95"
-        let expectedAllRulesCoverage = "0.38"
+        let expectedEnabledRulesCoverage = "0.958"
+        let expectedAllRulesCoverage = "0.383"
 
         testCoverage(
             source: sourceWithRegionsForEnabledRulesOnly,
@@ -57,7 +57,7 @@ final class CoverageTests: SwiftLintTestCase {
             .components(separatedBy: "\n")
             .dropLast()
             .joined(separator: "\n")
-            + ("// swiftlint:disable:previous expiring_todo")
+            + ("\n// swiftlint:disable:previous expiring_todo")
 
         testCoverage(
             source: sourceWithRegionsForIrrelevantRules,

@@ -40,7 +40,7 @@ final class CoverageTests: SwiftLintTestCase {
                  // swiftlint:disable:next direct_return
                  return 0
              }
-             
+
              // These blank lines keep the linecount consistent
              """
 
@@ -73,7 +73,7 @@ final class CoverageTests: SwiftLintTestCase {
         enabledRulesCoverage: String,
         allRulesCoverage: String
     ) {
-        var coverage = Coverage(numberOfEnabledRules: rules.count, totalNumberOfRules: 10)
+        var coverage = Coverage(numberOfEnabledRules: rules.count, totalNumberOfRules: totalNumberOfRules)
         XCTAssertEqual(coverage.enabledRulesCoverage, 0)
         XCTAssertEqual(coverage.allRulesCoverage, 0)
         let file = SwiftLintFile(contents: source)
@@ -82,6 +82,5 @@ final class CoverageTests: SwiftLintTestCase {
                                         Enabled rules coverage: \(enabledRulesCoverage)
                                             All rules coverage: \(allRulesCoverage)
                                         """)
-
     }
 }

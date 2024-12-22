@@ -2,17 +2,15 @@ import Foundation
 
 struct Coverage {
     private let numberOfEnabledRules: Int
+    private let totalNumberOfRules: Int
     private var numberOfLinesOfCode = 0
     private var coverageRulesProduct = 0
     private var enabledRulesCoverage: Double {
         coverage(forNumberOfRules: numberOfEnabledRules)
     }
     private var allRulesCoverage: Double {
-        coverage(forNumberOfRules: numberOfAllRules)
+        coverage(forNumberOfRules: totalNumberOfRules)
     }
-    private var numberOfAllRules: Int = {
-        RuleRegistry.shared.list.list.count
-    }()
 
     var report: String {
         """
@@ -21,8 +19,9 @@ struct Coverage {
         """
     }
 
-    init(numberOfRules: Int) {
-        self.numberOfEnabledRules = numberOfRules
+    init(numberOfEnabledRules: Int, totalNumberOfRules: Int) {
+        self.numberOfEnabledRules = numberOfEnabledRules
+        self.totalNumberOfRules = totalNumberOfRules
     }
 
     mutating func addCoverage(for file: SwiftLintFile, rules: [any Rule]) {

@@ -410,7 +410,7 @@ private class LintOrAnalyzeResultBuilder {
             }
         }
 
-        if options.reportCoverage {
+        if configuration.reportCoverage || options.reportCoverage {
             let totalNumberOfRules = options.mode == .lint ?
                 RuleRegistry.shared.numberOfLinterRules :
                 RuleRegistry.shared.numberOfAnalyzerRules

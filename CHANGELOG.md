@@ -28,12 +28,12 @@
 
 * Support replacing identity expressions with `\.self` in `prefer_key_path` rule from Swift 6 on.  
   [SimplyDanny](https://github.com/SimplyDanny)
-  
+
 * Support linting only provided file paths with command plugins.  
   [DanSkeel](https://github.com/DanSkeel)
 
 * Add new category for `@IBSegueAction` to `type_contents_order` rule.  
-  [dk-talks](https://github.com/dk-talks)  
+  [dk-talks](https://github.com/dk-talks)
   [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Bug Fixes
@@ -41,6 +41,11 @@
 * Ignore super calls with trailing closures in `unneeded_override` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5886](ttps://github.com/realm/SwiftLint/issues/5886)
+
+* If violations are detected by `lint` or `analyze`, still perform an update
+  check for new versions of SwiftLint if requested.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5904](ttps://github.com/realm/SwiftLint/issues/5904)
 
 ## 0.57.1: Squeaky Clean Cycle
 

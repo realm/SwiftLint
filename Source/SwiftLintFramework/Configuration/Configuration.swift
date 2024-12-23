@@ -369,3 +369,10 @@ extension Configuration: CustomStringConvertible {
             + "- Rules: \(rules.map { type(of: $0).identifier })"
     }
 }
+
+// MARK: - Custom Rules Identifiers
+extension Configuration {
+    public var customRuleIdentifiers: [String] {
+        rulesWrapper.customRuleIdentifiers
+    }
+}

@@ -410,10 +410,20 @@ private class LintOrAnalyzeResultBuilder {
             }
         }
 
+        func numberOfLinterRules() -> Int {
+            var numberOfLinterRules = RuleRegistry.shared.numberOfLinterRules
+            let customRuleIdentifiers = configuration.customRuleIdentifiers
+            if customRuleIdentifiers.isNotEmpty {
+                numberOfLinterRules += customRuleIdentifiers.count - 1
+            }
+            return numberOfLinterRules
+        }
         if configuration.reportCoverage || options.reportCoverage {
-            let totalNumberOfRules = options.mode == .lint ?
-                RuleRegistry.shared.numberOfLinterRules :
+            let totalNumberOfRules: Int = if options.mode == .lint {
+                numberOfLinterRules()
+            } else {
                 RuleRegistry.shared.numberOfAnalyzerRules
+            }
             coverage = Coverage(totalNumberOfRules: totalNumberOfRules)
         }
     }

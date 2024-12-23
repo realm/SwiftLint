@@ -95,12 +95,12 @@ final class CoverageTests: SwiftLintTestCase {
             allRulesCoverage: "0.1"
         )
 
-        func testDisablingOneCustomRule(_ i: Int, totalNumberOfRules: Int, allRulesCoverage: String) {
-            let sourceDisablingOneCustomRule = "// swiftlint:disable \(customRules.customRuleIdentifiers[i])" + filler
+        func testDisablingOneCustomRule(_ index: Int, totalNumberOfRules: Int, allRulesCoverage: String) {
+            let source = "// swiftlint:disable \(customRules.customRuleIdentifiers[index])" + filler
             testCoverage(
                 for: [customRules],
                 totalNumberOfRules: totalNumberOfRules,
-                source: sourceDisablingOneCustomRule,
+                source: source,
                 enabledRulesCoverage: "0.55",
                 allRulesCoverage: allRulesCoverage
             )

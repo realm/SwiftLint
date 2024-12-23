@@ -11,6 +11,8 @@ public final class SwiftLintFile: Sendable {
     public let isTestFile: Bool
     /// A file is virtual if it is not backed by a filesystem path.
     public let isVirtual: Bool
+    /// A cache of regions.
+    internal var cachedRegions: [Region]?
 
     /// Creates a `SwiftLintFile` with a SourceKitten `File`.
     ///

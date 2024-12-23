@@ -63,7 +63,7 @@ struct Coverage {
             if region.disabledRuleIdentifiers.contains(.all) {
                 // All rules are disabled
                 let numberOfLines = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
-                observedProduct -= (numberOfLines * rules.count)
+                observedProduct -= numberOfLines * rules.count
             } else {
                 // number of disabled rules that are disabled by the region
                 let disabledRuleIdentifiers = Set(region.disabledRuleIdentifiers.map { $0.stringRepresentation })

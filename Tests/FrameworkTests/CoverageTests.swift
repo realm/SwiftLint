@@ -68,7 +68,7 @@ final class CoverageTests: SwiftLintTestCase {
 
     func testDisableAllCoverage() {
         let source = "// swiftlint:disable all".appending(String(repeating: "\n", count: 10))
-        // The `swiftlint:disable` line will still be linted, so coverage will not be zero.
+        // The `disable` command line will still be linted, so coverage will not be zero.
         testCoverage(source: source, enabledRulesCoverage: "0.1", allRulesCoverage: "0.04")
     }
 

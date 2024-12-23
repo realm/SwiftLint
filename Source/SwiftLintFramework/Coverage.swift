@@ -13,9 +13,9 @@ import Foundation
 /// Two coverage metrics are calculated, based on different sets of rules:
 ///
 /// * "Enabled rules coverage" is based on the enabled rules only, and measures how frequently these are being
-/// disabled by `swiftlint:disable` commands.
+///   disabled by `swiftlint:disable` commands.
 /// * "All rules coverage" is based on all of the rules, and measures the coverage that's being achieved, compared
-/// to what could be achieved if all rules were enabled.
+///   to what could be achieved if all rules were enabled.
 ///
 /// When calculating `allRulesCoverage`, we only take acount of disable commands for enabled rules, so
 /// if there are any disable commands for non-enabled rules, then `allRulesCoverage` will slightly underestimate
@@ -26,10 +26,11 @@ import Foundation
 /// The number of enabled rules is determined on a per-file basis, so child and local configurations will be accounted
 /// for.
 ///
-/// `CustomRules`, if enabled, will be counted as first class rules in both enabled and all rules coverage. If not
-/// enabled, `CustomRules` will be counted as a single rule, even if a configuration exists for it.
-///
-/// TODO: Child configurations with additional custom rules.
+/// Rules defined by `CustomRules`, if enabled, will be counted as first class rules in both enabled and all rules
+/// coverage. If not enabled, `CustomRules` will be counted as a single rule, even if a configuration exists for it.
+/// When calculating enabled rules coverage, the custom rules in the configuration for each file (e.g. including
+/// child configurations) will be taken into account. When calculating all rules coverage, only the main configurations
+/// custom rules settings will be used.
 ///
 struct Coverage {
     private let totalNumberOfRules: Int

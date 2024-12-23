@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/krzyzanowskim/CryptoSwift.git",
       "state" : {
-        "revision" : "c9c3df6ab812de32bae61fc0cd1bf6d45170ebf0",
-        "version" : "1.8.2"
+        "revision" : "729e01bc9b9dab466ac85f21fb9ee2bc1c61b258",
+        "version" : "1.8.4"
       }
     },
     {

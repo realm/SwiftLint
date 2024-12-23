@@ -1,15 +1,15 @@
 import Foundation
 
 struct Coverage {
-    private let numberOfEnabledRules: Int
     private let totalNumberOfRules: Int
     private var numberOfLinesOfCode = 0
-    private var coverageRulesProduct = 0
+    private var maximumCoverage = 0
+    private var observedCoverage = 0
     var enabledRulesCoverage: Double {
-        coverage(forNumberOfRules: numberOfEnabledRules)
+        coverage(denominator: maximumCoverage)
     }
     var allRulesCoverage: Double {
-        coverage(forNumberOfRules: totalNumberOfRules)
+        coverage(denominator: numberOfLinesOfCode * totalNumberOfRules)
     }
 
     var report: String {
@@ -19,35 +19,36 @@ struct Coverage {
         """
     }
 
-    init(numberOfEnabledRules: Int, totalNumberOfRules: Int) {
-        self.numberOfEnabledRules = numberOfEnabledRules
+    init(totalNumberOfRules: Int) {
         self.totalNumberOfRules = totalNumberOfRules
     }
 
     mutating func addCoverage(for file: SwiftLintFile, rules: [any Rule]) {
         let numberOfLinesInFile = file.lines.count
-        numberOfLinesOfCode += numberOfLinesInFile
         let ruleIdentifiers = Set(rules.flatMap { type(of: $0).description.allIdentifiers })
-        var maxProduct = numberOfLinesInFile * rules.count
+        let maxProduct = numberOfLinesInFile * rules.count
+        var observedProduct = maxProduct
         for region in file.regions() {
             if region.disabledRuleIdentifiers.contains(.all) {
                 // All rules are disabled
                 let numberOfLines = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
-                maxProduct -= (numberOfLines * rules.count)
+                observedProduct -= (numberOfLines * rules.count)
             } else {
                 // number of disabled rules that are disabled by the region
                 let disabledRuleIdentifiers = Set(region.disabledRuleIdentifiers.map { $0.stringRepresentation })
                 let numberOfActiveDisabledRules = disabledRuleIdentifiers.intersection(ruleIdentifiers).count
                 let numberOfLines = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
-                maxProduct -= numberOfLines * numberOfActiveDisabledRules
+                observedProduct -= numberOfLines * numberOfActiveDisabledRules
             }
         }
-        coverageRulesProduct += maxProduct
+
+        numberOfLinesOfCode += numberOfLinesInFile
+        maximumCoverage += maxProduct
+        observedCoverage += observedProduct
     }
 
-    private func coverage(forNumberOfRules numberOfRules: Int) -> Double {
-        let denominator = numberOfLinesOfCode * numberOfRules
-        return denominator == 0 ? 0.0 : (Double(coverageRulesProduct) / Double(denominator))
+    private func coverage(denominator: Int) -> Double {
+        denominator == 0 ? 0.0 : (Double(observedCoverage) / Double(denominator))
     }
 }
 

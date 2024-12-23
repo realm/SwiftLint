@@ -371,8 +371,8 @@ extension Configuration: CustomStringConvertible {
 }
 
 // MARK: - Custom Rules Identifiers
-extension Configuration {
-    public var customRuleIdentifiers: [String] {
+public extension Configuration {
+    var customRuleIdentifiers: [String] {
         rulesWrapper.customRuleIdentifiers
     }
 }

@@ -4,8 +4,8 @@ import Foundation
 /// of the total number of rules that could have been applied.
 ///
 /// For example, if all rules are applied to every single line, then coverage would be 1. If half the rules are applied
-/// to all input lines, or if all the rules are applied to half of the input lines, then coverage would be 0.5, and if no
-/// rules are enabled, or there are no input lines, then coverage would be zero.
+/// to all input lines, or if all the rules are applied to half of the input lines, then coverage would be 0.5, and if
+/// no rules are enabled, or there are no input lines, then coverage would be zero.
 ///
 /// No distinction is made between actual lines of Swift source, versus blank lines or comments, as SwiftLint may
 /// apply rules to those as well.
@@ -26,8 +26,8 @@ import Foundation
 /// The number of enabled rules is determined on a per-file basis, so child and local configurations will be accounted
 /// for.
 ///
-/// CustomRules, if enabled, will be counted as first class rules in both enabled and all rules coverage. If not enabled,
-/// CustomRules will be counted as a single rule, even if a configuration exists for it.
+/// `CustomRules`, if enabled, will be counted as first class rules in both enabled and all rules coverage. If not
+/// enabled, `CustomRules` will be counted as a single rule, even if a configuration exists for it.
 ///
 /// TODO: Child configurations with additional custom rules.
 ///

@@ -8,11 +8,6 @@ load(
     "universal_swift_compiler_plugin",
 )
 
-config_setting(
-    name = "strict_concurrency_builtin_rules",
-    values = {"define": "strict_concurrency_builtin_rules=true"},
-)
-
 bool_flag(
     name = "universal_tools",
     build_setting_default = False,

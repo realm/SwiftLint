@@ -2,6 +2,11 @@ import SwiftSyntax
 
 /// A visitor that collects style violations for all available code blocks.
 open class CodeBlockVisitor<Configuration: RuleConfiguration>: ViolationsSyntaxVisitor<Configuration> {
+    @inlinable
+    override public init(configuration: Configuration, file: SwiftLintFile) {
+        super.init(configuration: configuration, file: file)
+    }
+
     override open func visitPost(_ node: AccessorDeclSyntax) {
         collectViolations(for: node.body)
     }

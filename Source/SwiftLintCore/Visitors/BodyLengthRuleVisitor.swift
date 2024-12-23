@@ -2,7 +2,7 @@ import SwiftSyntax
 
 /// Visitor that collection violations of code block lengths.
 public final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<SeverityLevelsConfiguration<Parent>> {
-    private let kind: Kind
+    @usableFromInline let kind: Kind
 
     /// The code block types to check.
     public enum Kind {
@@ -31,6 +31,7 @@ public final class BodyLengthRuleVisitor<Parent: Rule>: ViolationsSyntaxVisitor<
     ///   - kind: The code block type to check. See ``Kind``.
     ///   - file: The file to collect violation for.
     ///   - configuration: The configuration that defines the acceptable limits.
+    @inlinable
     public init(kind: Kind, file: SwiftLintFile, configuration: SeverityLevelsConfiguration<Parent>) {
         self.kind = kind
         super.init(configuration: configuration, file: file)

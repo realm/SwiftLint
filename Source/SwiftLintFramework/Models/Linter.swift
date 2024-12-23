@@ -292,7 +292,7 @@ public struct Linter {
 public struct CollectedLinter {
     /// The file to lint with this linter.
     public let file: SwiftLintFile
-    private let rules: [any Rule]
+    public let rules: [any Rule]
     private let cache: LinterCache?
     private let configuration: Configuration
     private let compilerArguments: [String]

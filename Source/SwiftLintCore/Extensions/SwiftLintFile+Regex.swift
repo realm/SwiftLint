@@ -13,9 +13,9 @@ public func regex(_ pattern: String,
 
 extension SwiftLintFile {
     public func regions(restrictingRuleIdentifiers: Set<RuleIdentifier>? = nil) -> [Region] {
-        if restrictingRuleIdentifiers == nil, let cachedRegions {
-            return cachedRegions
-        }
+//        if restrictingRuleIdentifiers == nil, let cachedRegions {
+//            return cachedRegions
+//        }
         var regions = [Region]()
         var disabledRules = Set<RuleIdentifier>()
         let commands: [Command]
@@ -58,9 +58,9 @@ extension SwiftLintFile {
             }
         }
 
-        if restrictingRuleIdentifiers == nil {
-            cachedRegions = regions
-        }
+//        if restrictingRuleIdentifiers == nil {
+//            cachedRegions = regions
+//        }
 
         return regions
     }

@@ -1,5 +1,36 @@
 import Foundation
 
+/// Coverage is the total of the number of rules that are applied to each line of each input file, as a proportion
+/// of the total number of rules that could have been applied.
+///
+/// For example, if all rules are applied to every single line, then coverage would be 1. If half the rules are applied
+/// to all input lines, or if all the rules are applied to half of the input lines, then coverage would be 0.5, and if no
+/// rules are enabled, or there are no input lines, then coverage would be zero.
+///
+/// No distinction is made between actual lines of Swift source, versus blank lines or comments, as SwiftLint may
+/// apply rules to those as well.
+///
+/// Two coverage metrics are calculated, based on different sets of rules:
+///
+/// * "Enabled rules coverage" is based on the enabled rules only, and measures how frequently these are being
+/// disabled by `swiftlint:disable` commands.
+/// * "All rules coverage" is based on all of the rules, and measures the coverage that's being achieved, compared
+/// to what could be achieved if all rules were enabled.
+///
+/// When calculating `allRulesCoverage`, we only take acount of disable commands for enabled rules, so
+/// if there are any disable commands for non-enabled rules, then `allRulesCoverage` will slightly underestimate
+/// actual coverage (as if those rules were enabled, they would not apply to every line).
+///
+/// Linter and analyzer rules will be counted separately, so coverage will be different for each.
+///
+/// The number of enabled rules is determined on a per-file basis, so child and local configurations will be accounted
+/// for.
+///
+/// CustomRules, if enabled, will be counted as first class rules in both enabled and all rules coverage. If not enabled,
+/// CustomRules will be counted as a single rule, even if a configuration exists for it.
+///
+/// TODO: Child configurations with additional custom rules.
+///
 struct Coverage {
     private let totalNumberOfRules: Int
     private var numberOfLinesOfCode = 0

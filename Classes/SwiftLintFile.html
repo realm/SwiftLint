@@ -331,7 +331,7 @@
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">SwiftLintFile</span> <span class="p">:</span> <span class="kt">Sendable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">SwiftLintFile</span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">SwiftLintFile</span><span class="p">:</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">Hashable</span></code></pre>
 
                 </div>
@@ -428,7 +428,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">isTestFile</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">isTestFile</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -458,7 +458,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">isVirtual</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">isVirtual</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -471,9 +471,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore0aB4FileC4file06isTestD00F7VirtualAC21SourceKittenFramework0D0C_S2btcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(file:isTestFile:isVirtual:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore0aB4FileC4file06isTestD00F7VirtualAC21SourceKittenFramework0D0C_S2btcfc">init(file:<wbr>isTestFile:<wbr>isVirtual:<wbr>)</a>
+                    <a name="/s:13SwiftLintCore0aB4FileC4fileAC21SourceKittenFramework0D0C_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(file:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore0aB4FileC4fileAC21SourceKittenFramework0D0C_tcfc">init(file:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -488,7 +488,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">file</span><span class="p">:</span> <span class="kt">File</span><span class="p">,</span> <span class="nv">isTestFile</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">isVirtual</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">file</span><span class="p">:</span> <span class="kt">File</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -508,35 +508,11 @@
                                 </div>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>isTestFile</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Mark the file as being generated for testing purposes only.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>isVirtual</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Mark the file as virtual (in-memory).</p>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L20-L25">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L18-L21">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -544,9 +520,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore0aB4FileC4path06isTestD0ACSgSS_Sbtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(path:isTestFile:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore0aB4FileC4path06isTestD0ACSgSS_Sbtcfc">init(path:<wbr>isTestFile:<wbr>)</a>
+                    <a name="/s:13SwiftLintCore0aB4FileC4pathACSgSS_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(path:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore0aB4FileC4pathACSgSS_tcfc">init(path:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -562,7 +538,7 @@ Fails if the file does not exist.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">convenience</span> <span class="nf">init</span><span class="p">?(</span><span class="nv">path</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">isTestFile</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">convenience</span> <span class="nf">init</span><span class="p">?(</span><span class="nv">path</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -582,23 +558,11 @@ Fails if the file does not exist.</p>
                                 </div>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>isTestFile</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Mark the file as being generated for testing purposes only.</p>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L32-L35">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L27-L30">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -648,7 +612,7 @@ one does not read its contents immediately, but rather traps at runtime when att
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L41-L43">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L36-L38">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -656,9 +620,9 @@ one does not read its contents immediately, but rather traps at runtime when att
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore0aB4FileC8contents06isTestD0ACSS_Sbtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(contents:isTestFile:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore0aB4FileC8contents06isTestD0ACSS_Sbtcfc">init(contents:<wbr>isTestFile:<wbr>)</a>
+                    <a name="/s:13SwiftLintCore0aB4FileC8contentsACSS_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(contents:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore0aB4FileC8contentsACSS_tcfc">init(contents:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -673,7 +637,7 @@ one does not read its contents immediately, but rather traps at runtime when att
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">convenience</span> <span class="nf">init</span><span class="p">(</span><span class="nv">contents</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">isTestFile</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">convenience</span> <span class="nf">init</span><span class="p">(</span><span class="nv">contents</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -693,23 +657,11 @@ one does not read its contents immediately, but rather traps at runtime when att
                                 </div>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>isTestFile</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Mark the file as being generated for testing purposes only.</p>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L49-L51">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L43-L46">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -739,7 +691,7 @@ one does not read its contents immediately, but rather traps at runtime when att
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L54-L56">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L49-L51">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -769,7 +721,7 @@ one does not read its contents immediately, but rather traps at runtime when att
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L59-L61">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L54-L56">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -799,7 +751,7 @@ one does not read its contents immediately, but rather traps at runtime when att
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L64-L66">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L59-L61">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -829,7 +781,7 @@ one does not read its contents immediately, but rather traps at runtime when att
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L69-L71">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/SwiftLintFile.swift#L64-L66">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

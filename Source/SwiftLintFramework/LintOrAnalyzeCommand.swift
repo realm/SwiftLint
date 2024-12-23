@@ -418,7 +418,7 @@ private class LintOrAnalyzeResultBuilder {
             }
             return numberOfLinterRules
         }
-        if configuration.reportCoverage || options.reportCoverage {
+        if configuration.reportCoverage || options.reportCoverage || true {
             let totalNumberOfRules: Int = if options.mode == .lint {
                 numberOfLinterRules()
             } else {

@@ -416,10 +416,7 @@ private class LintOrAnalyzeResultBuilder {
             let totalNumberOfRules = options.mode == .lint ?
                 RuleRegistry.shared.numberOfLinterRules :
                 RuleRegistry.shared.numberOfAnalyzerRules
-            coverage = Coverage(
-                numberOfEnabledRules: configuration.rules.count,
-                totalNumberOfRules: totalNumberOfRules
-            )
+            coverage = Coverage(totalNumberOfRules: totalNumberOfRules)
         }
     }
 

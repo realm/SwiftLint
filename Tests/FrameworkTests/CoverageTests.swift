@@ -16,19 +16,11 @@ final class CoverageTests: SwiftLintTestCase {
     private static let totalNumberOfRules = 10
 
     func testEmptySourceCoverage() {
-        testCoverage(
-            source: "",
-            enabledRulesCoverage: "0.0",
-            allRulesCoverage: "0.0"
-        )
+        testCoverage(source: "", enabledRulesCoverage: "0.0", allRulesCoverage: "0.0")
     }
 
     func testBlankLineSourceCoverage() {
-        testCoverage(
-            source: "\n",
-            enabledRulesCoverage: "1.0",
-            allRulesCoverage: "0.4"
-        )
+        testCoverage(source: "\n", enabledRulesCoverage: "1.0", allRulesCoverage: "0.4")
     }
 
     func testNoDisabledCommandCoverage() {

@@ -1,14 +1,14 @@
-#if canImport(CommonCrypto)
-import CommonCrypto
+#if canImport(CryptoKit)
+import CryptoKit
+#elseif canImport(Crypto)
+import Crypto
+#endif
+
 import Foundation
 
 extension Data {
     internal func sha256() -> Data {
-        withUnsafeBytes { bytes in
-            var hash = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
-            _ = CC_SHA256(bytes.baseAddress, CC_LONG(count), &hash)
-            return Data(hash)
-        }
+        Data(SHA256.hash(data: self))
     }
 
     internal func toHexString() -> String {
@@ -18,7 +18,6 @@ extension Data {
 
 extension String {
     internal func sha256() -> String {
-        data(using: .utf8)!.sha256().toHexString()
+        Data(utf8).sha256().toHexString()
     }
 }
-#endif

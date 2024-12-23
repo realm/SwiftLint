@@ -73,7 +73,7 @@ final class CoverageTests: SwiftLintTestCase {
         enabledRulesCoverage: String,
         allRulesCoverage: String
     ) {
-        var coverage = Coverage(numberOfEnabledRules: rules.count, totalNumberOfRules: totalNumberOfRules)
+        var coverage = Coverage(totalNumberOfRules: totalNumberOfRules)
         XCTAssertEqual(coverage.enabledRulesCoverage, 0)
         XCTAssertEqual(coverage.allRulesCoverage, 0)
         let file = SwiftLintFile(contents: source)

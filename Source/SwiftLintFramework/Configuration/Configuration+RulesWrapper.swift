@@ -6,15 +6,16 @@ internal extension Configuration {
         private static var isOptInRuleCache: [String: Bool] = [:]
 
         let allRulesWrapped: [ConfigurationRuleWrapper]
-        internal let mode: RulesMode
+        let mode: RulesMode
+        var customRuleIdentifiers: [String] {
+            (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?.customRuleIdentifiers ?? []
+        }
         private let aliasResolver: (String) -> String
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []
         private var validRuleIdentifiers: Set<String> {
             let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).identifier }
-            let configurationCustomRulesIdentifiers =
-                (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?.customRuleIdentifiers ?? []
-            return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)
+            return Set(regularRuleIdentifiers + customRuleIdentifiers)
         }
 
         private var cachedResultingRules: [any Rule]?

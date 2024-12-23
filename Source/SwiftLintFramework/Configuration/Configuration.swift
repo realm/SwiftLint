@@ -376,3 +376,25 @@ public extension Configuration {
         rulesWrapper.customRuleIdentifiers
     }
 }
+
+public extension [any Rule] {
+    var ruleIdentifiers: [String] {
+        Set(flatMap { type(of: $0).description.allIdentifiers }) + customRuleIdentifiers
+    }
+
+    internal var customRules: CustomRules? {
+        first { $0 is CustomRules } as? CustomRules
+    }
+
+    var customRuleIdentifiers: [String] {
+        customRules?.customRuleIdentifiers ?? []
+    }
+
+    var numberOfRulesIncludingCustom: Int {
+        if customRules != nil {
+            count + customRuleIdentifiers.count - 1
+        } else {
+            count
+        }
+    }
+}

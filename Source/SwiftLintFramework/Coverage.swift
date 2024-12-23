@@ -55,9 +55,13 @@ struct Coverage {
     }
 
     mutating func addCoverage(for file: SwiftLintFile, rules: [any Rule]) {
+        guard !file.contents.isEmpty else {
+            return
+        }
+
         let numberOfLinesInFile = file.lines.count
-        let ruleIdentifiers = Set(rules.flatMap { type(of: $0).description.allIdentifiers })
-        let maxProduct = numberOfLinesInFile * rules.count
+        let ruleIdentifiers = rules.ruleIdentifiers
+        let maxProduct = numberOfLinesInFile * rules.numberOfRulesIncludingCustom
         var observedProduct = maxProduct
         for region in file.regions() {
             if region.disabledRuleIdentifiers.contains(.all) {
@@ -67,8 +71,12 @@ struct Coverage {
             } else {
                 // number of disabled rules that are disabled by the region
                 let disabledRuleIdentifiers = Set(region.disabledRuleIdentifiers.map { $0.stringRepresentation })
-                let numberOfActiveDisabledRules = disabledRuleIdentifiers.intersection(ruleIdentifiers).count
                 let numberOfLines = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
+                var numberOfActiveDisabledRules = disabledRuleIdentifiers.intersection(ruleIdentifiers).count
+                if disabledRuleIdentifiers.contains("custom_rules") {
+                    observedProduct -= numberOfLines * rules.customRuleIdentifiers.count
+                    numberOfActiveDisabledRules -= 1 // Because we've accounted for custom_rules already
+                }
                 observedProduct -= numberOfLines * numberOfActiveDisabledRules
             }
         }

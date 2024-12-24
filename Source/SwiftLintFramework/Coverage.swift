@@ -76,12 +76,17 @@ struct Coverage {
             } else {
                 let disabledRuleIdentifiers = Set(region.disabledRuleIdentifiers.map { $0.stringRepresentation })
                 let numberOfLines = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
-                var numberOfActiveDisabledRules = disabledRuleIdentifiers.intersection(ruleIdentifiers).count
-                if disabledRuleIdentifiers.contains(CustomRules.description.identifier) {
+                let numberOfActiveDisabledRules = disabledRuleIdentifiers.intersection(ruleIdentifiers).count
+                let customRulesIdentifier = CustomRules.description.identifier
+                if disabledRuleIdentifiers.contains(customRulesIdentifier) {
+                    let nonCustomRulesDisabledRuleIdentifiers = disabledRuleIdentifiers.subtracting(
+                        Set(rules.customRuleIdentifiers + [CustomRules.description.identifier])
+                    )
                     observedProduct -= numberOfLines * rules.customRuleIdentifiers.count
-                    numberOfActiveDisabledRules -= 1 // Because we've accounted for custom_rules already
+                    observedProduct -= numberOfLines * nonCustomRulesDisabledRuleIdentifiers.intersection(ruleIdentifiers).count
+                } else {
+                    observedProduct -= numberOfLines * numberOfActiveDisabledRules
                 }
-                observedProduct -= numberOfLines * numberOfActiveDisabledRules
             }
         }
 

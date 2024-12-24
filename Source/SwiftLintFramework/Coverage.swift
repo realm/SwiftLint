@@ -64,29 +64,25 @@ struct Coverage {
         guard !file.contents.isEmpty else {
             return
         }
-
         let numberOfLinesInFile = file.lines.count
         let ruleIdentifiers = rules.ruleIdentifiers
         let maxProduct = numberOfLinesInFile * rules.numberOfRulesIncludingCustom
         var observedProduct = maxProduct
         for region in file.regions {
+            let numberOfLinesInRegion = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
             if region.disabledRuleIdentifiers.contains(.all) {
-                let numberOfLines = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
-                observedProduct -= numberOfLines * rules.numberOfRulesIncludingCustom
+                observedProduct -= numberOfLinesInRegion * rules.numberOfRulesIncludingCustom
             } else {
                 let disabledRuleIdentifiers = Set(region.disabledRuleIdentifiers.map { $0.stringRepresentation })
-                let numberOfLines = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
-                let numberOfActiveDisabledRules = disabledRuleIdentifiers.intersection(ruleIdentifiers).count
                 let customRulesIdentifier = CustomRules.description.identifier
-                if disabledRuleIdentifiers.contains(customRulesIdentifier) {
-                    let nonCustomRulesDisabledRuleIdentifiers = disabledRuleIdentifiers.subtracting(
-                        Set(rules.customRuleIdentifiers + [CustomRules.description.identifier])
-                    )
-                    observedProduct -= numberOfLines * rules.customRuleIdentifiers.count
-                    observedProduct -= numberOfLines * nonCustomRulesDisabledRuleIdentifiers.intersection(ruleIdentifiers).count
+                let numberOfDisabledRules: Int = if disabledRuleIdentifiers.contains(customRulesIdentifier) {
+                    disabledRuleIdentifiers.subtracting(
+                        Set(rules.customRuleIdentifiers + [customRulesIdentifier])
+                    ).intersection(ruleIdentifiers).count + rules.customRuleIdentifiers.count
                 } else {
-                    observedProduct -= numberOfLines * numberOfActiveDisabledRules
+                    disabledRuleIdentifiers.intersection(ruleIdentifiers).count
                 }
+                observedProduct -= numberOfLinesInRegion * numberOfDisabledRules
             }
         }
 

@@ -8,16 +8,14 @@ internal extension Configuration {
 
         let allRulesWrapped: [ConfigurationRuleWrapper]
         let mode: RulesMode
-        var customRuleIdentifiers: [String] {
-            resultingRules.customRuleIdentifiers
-        }
         private let aliasResolver: (String) -> String
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []
         private var validRuleIdentifiers: Set<String> {
             let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).identifier }
-            return Set(regularRuleIdentifiers + customRuleIdentifiers)
-        }
+            let configurationCustomRulesIdentifiers =
+                 (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?.customRuleIdentifiers ?? []
+             return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)        }
 
         private var cachedResultingRules: [any Rule]?
         private let resultingRulesLock = NSLock()

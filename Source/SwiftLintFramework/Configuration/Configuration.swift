@@ -369,28 +369,3 @@ extension Configuration: CustomStringConvertible {
             + "- Rules: \(rules.map { type(of: $0).identifier })"
     }
 }
-
-// MARK: - Custom Rules Identifiers
-public extension Configuration {
-    var customRuleIdentifiers: [String] {
-        rules.customRuleIdentifiers
-    }
-}
-
-public extension [any Rule] {
-    var ruleIdentifiers: [String] {
-        Set(flatMap { type(of: $0).description.allIdentifiers }) + customRuleIdentifiers
-    }
-
-    var customRuleIdentifiers: [String] {
-        customRules?.customRuleIdentifiers ?? []
-    }
-
-    var numberOfRulesIncludingCustom: Int {
-        count + Swift.max(customRuleIdentifiers.count - 1, 0)
-    }
-
-    private var customRules: CustomRules? {
-        first { $0 is CustomRules } as? CustomRules
-    }
-}

@@ -4,8 +4,6 @@
 import XCTest
 
 final class CoverageTests: SwiftLintTestCase {
-    private typealias Configuration = RegexConfiguration<CustomRules>
-
     private static let rules: [any Rule] = [
         ArrayInitRule(),
         BlockBasedKVORule(),
@@ -46,7 +44,7 @@ final class CoverageTests: SwiftLintTestCase {
     func testDisableAllCoverage() {
         // The `disable` command line will still be linted, so coverage will not be zero.
         testCoverageWithDisabledIdentifiers(
-            disabledIdentifiersString: "all",
+            disabledIdentifiers: ["all"],
             enabledRulesCoverage: "0.1",
             allRulesCoverage: "0.04"
         )
@@ -80,60 +78,101 @@ final class CoverageTests: SwiftLintTestCase {
             enabledRulesCoverage: expectedEnabledRulesCoverage,
             allRulesCoverage: expectedAllRulesCoverage
         )
+
+        let overlappingRegionSource = """
+             func foo() -> Int {
+                 // swiftlint:disable:next direct_return
+                 return 0 // swiftlint:disable:this direct_return
+             } // swiftlint:disable:previous direct_return
+             
+             // These blank lines keep the linecount consistent
+             """
+
+        testCoverage(
+            source: overlappingRegionSource,
+            enabledRulesCoverage: expectedEnabledRulesCoverage,
+            allRulesCoverage: expectedAllRulesCoverage
+        )
     }
 
-    func testCoverageWithCustomRules() {
-        let customRules = customRules()
+    func testNestedAndOverlappingRegions() throws {
+        let customRules = try customRules()
+        let rules: [any Rule] = [customRules] + Self.rules
+
+        let source = """
+                     // swiftlint:disable \(customRules.customRuleIdentifiers[0])
+                     // swiftlint:disable array_init
+                     // swiftlint:disable \(customRules.customRuleIdentifiers[1]) direct_return
+
+                     // swiftlint:enable array_init direct_return
+                     // swiftlint:enable \(customRules.customRuleIdentifiers[1])
+
+                     // swiftlint:enable \(customRules.customRuleIdentifiers[0])
+                     """
+
+        testCoverage(
+            for: rules,
+            source: source,
+            enabledRulesCoverage: "0.688",
+            allRulesCoverage: "0.413"
+        )
+    }
+
+    func testCoverageWithCustomRules() throws {
+        let customRules = try customRules()
         let rules: [any Rule] = [customRules, ArrayInitRule()]
 
         func testCoverage(
             totalNumberOfRules: Int = 3,
-            disabledIdentifiersString: String,
+            disabledIdentifiers: [String],
             enabledRulesCoverage: String,
             allRulesCoverage: String
         ) {
             testCoverageWithDisabledIdentifiers(
                 for: rules,
                 totalNumberOfRules: totalNumberOfRules,
-                disabledIdentifiersString: disabledIdentifiersString,
+                disabledIdentifiers: disabledIdentifiers,
                 enabledRulesCoverage: enabledRulesCoverage,
                 allRulesCoverage: allRulesCoverage
             )
         }
 
-        testCoverage(disabledIdentifiersString: "all", enabledRulesCoverage: "0.1", allRulesCoverage: "0.1")
+        testCoverage(disabledIdentifiers: ["all"], enabledRulesCoverage: "0.1", allRulesCoverage: "0.1")
 
-        func testDisablingAllCustomRules(disabledIdentifiersString: String) {
+        func testDisablingAllCustomRules(disabledIdentifiers: [String]) {
             testCoverage(
-                disabledIdentifiersString: disabledIdentifiersString,
+                disabledIdentifiers: disabledIdentifiers,
                 enabledRulesCoverage: "0.4",
                 allRulesCoverage: "0.4"
             )
         }
 
-        testDisablingAllCustomRules(disabledIdentifiersString: "custom_rules")
+        let customRulesIdentifier = CustomRules.identifier
+        testDisablingAllCustomRules(disabledIdentifiers: [customRulesIdentifier])
         let firstCustomRuleIdentifier = customRules.customRuleIdentifiers[0]
-        testDisablingAllCustomRules(disabledIdentifiersString: "custom_rules \(firstCustomRuleIdentifier)")
+        testDisablingAllCustomRules(disabledIdentifiers: [customRulesIdentifier, firstCustomRuleIdentifier])
         let secondCustomRuleIdentifier = customRules.customRuleIdentifiers[1]
-        testDisablingAllCustomRules(disabledIdentifiersString: "custom_rules \(secondCustomRuleIdentifier)")
-        testDisablingAllCustomRules(disabledIdentifiersString: "custom_rules \(firstCustomRuleIdentifier) \(secondCustomRuleIdentifier)")
-        testDisablingAllCustomRules(disabledIdentifiersString: "\(firstCustomRuleIdentifier) \(secondCustomRuleIdentifier)")
+        testDisablingAllCustomRules(disabledIdentifiers: [customRulesIdentifier, secondCustomRuleIdentifier])
+        testDisablingAllCustomRules(
+            disabledIdentifiers: [customRulesIdentifier, firstCustomRuleIdentifier, secondCustomRuleIdentifier]
+        )
+        testDisablingAllCustomRules(disabledIdentifiers: [firstCustomRuleIdentifier, secondCustomRuleIdentifier])
 
         testCoverage(
-            disabledIdentifiersString: "\(firstCustomRuleIdentifier)",
+            disabledIdentifiers: [firstCustomRuleIdentifier],
             enabledRulesCoverage: "0.7",
             allRulesCoverage: "0.7"
         )
 
         testCoverage(
-            disabledIdentifiersString: "\(secondCustomRuleIdentifier)",
+            disabledIdentifiers: [secondCustomRuleIdentifier],
             enabledRulesCoverage: "0.7",
             allRulesCoverage: "0.7"
         )
 
         testCoverage(
             totalNumberOfRules: 10,
-            disabledIdentifiersString: "\(secondCustomRuleIdentifier)",
+            disabledIdentifiers: [secondCustomRuleIdentifier],
             enabledRulesCoverage: "0.7",
             allRulesCoverage: "0.21"
         )
@@ -143,7 +182,7 @@ final class CoverageTests: SwiftLintTestCase {
     private func testCoverageWithDisabledIdentifiers(
         for rules: [any Rule] = CoverageTests.rules,
         totalNumberOfRules: Int = CoverageTests.totalNumberOfRules,
-        disabledIdentifiersString: String,
+        disabledIdentifiers: [String],
         enabledRulesCoverage: String,
         allRulesCoverage: String
     ) {
@@ -151,7 +190,7 @@ final class CoverageTests: SwiftLintTestCase {
         testCoverage(
             for: rules,
             totalNumberOfRules: totalNumberOfRules,
-            source: "// swiftlint:disable \(disabledIdentifiersString)" + filler,
+            source: "// swiftlint:disable \(disabledIdentifiers.joined(separator: " "))" + filler,
             enabledRulesCoverage: enabledRulesCoverage,
             allRulesCoverage: allRulesCoverage
         )
@@ -175,20 +214,18 @@ final class CoverageTests: SwiftLintTestCase {
                                         """)
     }
 
-    private func customRules() -> CustomRules {
-        func configuration(withIdentifier identifier: String, configurationDict: [String: Any]) -> Configuration {
-            var regexConfig = Configuration(identifier: identifier)
-            do {
-                try regexConfig.apply(configuration: configurationDict)
-            } catch {
-                XCTFail("Failed regex config")
-            }
+    private func customRules() throws -> CustomRules {
+        func configuration(
+            withIdentifier identifier: String,
+            configurationDict: [String: Any]
+        ) throws -> RegexConfiguration<CustomRules> {
+            var regexConfig = RegexConfiguration<CustomRules>(identifier: identifier)
+            try regexConfig.apply(configuration: configurationDict)
             return regexConfig
         }
-
         let customRuleConfiguration = CustomRulesConfiguration(customRuleConfigurations: [
-            configuration(withIdentifier: "custom1", configurationDict: ["regex": "pattern"]),
-            configuration(withIdentifier: "custom2", configurationDict: ["regex": "something"]),
+            try configuration(withIdentifier: "custom1", configurationDict: ["regex": "pattern"]),
+            try configuration(withIdentifier: "custom2", configurationDict: ["regex": "something"]),
         ])
         return CustomRules(configuration: customRuleConfiguration)
     }

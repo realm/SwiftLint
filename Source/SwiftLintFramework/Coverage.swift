@@ -74,7 +74,7 @@ struct Coverage {
                 observedProduct -= numberOfLinesInRegion * rules.numberOfRulesIncludingCustom
             } else {
                 let disabledRuleIdentifiers = Set(region.disabledRuleIdentifiers.map { $0.stringRepresentation })
-                let customRulesIdentifier = CustomRules.description.identifier
+                let customRulesIdentifier = CustomRules.identifier
                 let numberOfDisabledRules: Int = if disabledRuleIdentifiers.contains(customRulesIdentifier) {
                     disabledRuleIdentifiers.subtracting(
                         Set(rules.customRuleIdentifiers + [customRulesIdentifier])

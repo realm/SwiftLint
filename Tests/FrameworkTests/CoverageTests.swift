@@ -77,29 +77,40 @@ final class CoverageTests: SwiftLintTestCase {
 
     func testCoverageWithCustomRules() {
         let customRules = customRules()
+        let rules: [any Rule] = [customRules, ArrayInitRule()]
         let filler = String(repeating: "\n", count: 10)
-        let sourceDisablingAllCustomRules = "// swiftlint:disable custom_rules" + filler
+
+        let sourceDisablingAllRules = "// swiftlint:disable all" + filler
         testCoverage(
-            for: [customRules],
-            totalNumberOfRules: 2,
-            source: sourceDisablingAllCustomRules,
+            for: rules,
+            totalNumberOfRules: 3,
+            source: sourceDisablingAllRules,
             enabledRulesCoverage: "0.1",
             allRulesCoverage: "0.1"
+        )
+
+        let sourceDisablingAllCustomRules = "// swiftlint:disable custom_rules" + filler
+        testCoverage(
+            for: rules,
+            totalNumberOfRules: 3,
+            source: sourceDisablingAllCustomRules,
+            enabledRulesCoverage: "0.4",
+            allRulesCoverage: "0.4"
         )
 
         func testDisablingOneCustomRule(_ index: Int, totalNumberOfRules: Int, allRulesCoverage: String) {
             let source = "// swiftlint:disable \(customRules.customRuleIdentifiers[index])" + filler
             testCoverage(
-                for: [customRules],
+                for: rules,
                 totalNumberOfRules: totalNumberOfRules,
                 source: source,
-                enabledRulesCoverage: "0.55",
+                enabledRulesCoverage: "0.7",
                 allRulesCoverage: allRulesCoverage
             )
         }
-        testDisablingOneCustomRule(0, totalNumberOfRules: 2, allRulesCoverage: "0.55")
-        testDisablingOneCustomRule(1, totalNumberOfRules: 2, allRulesCoverage: "0.55")
-        testDisablingOneCustomRule(1, totalNumberOfRules: 10, allRulesCoverage: "0.11")
+        testDisablingOneCustomRule(0, totalNumberOfRules: 3, allRulesCoverage: "0.7")
+        testDisablingOneCustomRule(1, totalNumberOfRules: 3, allRulesCoverage: "0.7")
+        testDisablingOneCustomRule(1, totalNumberOfRules: 10, allRulesCoverage: "0.21")
     }
 
     // MARK: - Private

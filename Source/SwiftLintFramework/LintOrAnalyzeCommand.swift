@@ -410,17 +410,9 @@ private class LintOrAnalyzeResultBuilder {
             }
         }
 
-        func numberOfLinterRules() -> Int {
-            var numberOfLinterRules = RuleRegistry.shared.numberOfLinterRules
-            let customRuleIdentifiers = configuration.customRuleIdentifiers
-            if customRuleIdentifiers.isNotEmpty {
-                numberOfLinterRules += customRuleIdentifiers.count - 1
-            }
-            return numberOfLinterRules
-        }
-        if configuration.reportCoverage || options.reportCoverage || true {
+        if configuration.reportCoverage || options.reportCoverage {
             let totalNumberOfRules: Int = if options.mode == .lint {
-                numberOfLinterRules()
+                configuration.numberOfLinterRules()
             } else {
                 RuleRegistry.shared.numberOfAnalyzerRules
             }
@@ -478,6 +470,17 @@ private extension RuleRegistry {
             ruleType is any AnalyzerRule.Type ? ruleID : nil
         }
         return RuleRegistry.shared.list.list.compactMap(mapBlock).count
+    }
+}
+
+private extension Configuration {
+    func numberOfLinterRules() -> Int {
+        var numberOfLinterRules = RuleRegistry.shared.numberOfLinterRules
+        let customRuleIdentifiers = customRuleIdentifiers
+        if customRuleIdentifiers.isNotEmpty {
+            numberOfLinterRules += customRuleIdentifiers.count - 1
+        }
+        return numberOfLinterRules
     }
 }
 

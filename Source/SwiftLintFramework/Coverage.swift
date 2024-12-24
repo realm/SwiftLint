@@ -56,6 +56,10 @@ struct Coverage {
         self.totalNumberOfRules = totalNumberOfRules
     }
 
+    mutating func addCoverage(for linter: CollectedLinter) {
+        addCoverage(for: linter.file, rules: linter.rules)
+    }
+
     mutating func addCoverage(for file: SwiftLintFile, rules: [any Rule]) {
         guard !file.contents.isEmpty else {
             return

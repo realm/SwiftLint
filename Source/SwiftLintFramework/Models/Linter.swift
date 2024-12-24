@@ -303,7 +303,7 @@ public struct CollectedLinter {
             return cached
         }
 
-        let regions = file.regions()
+        let regions = file.regions
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule

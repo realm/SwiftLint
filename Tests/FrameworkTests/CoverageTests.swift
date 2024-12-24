@@ -23,6 +23,16 @@ final class CoverageTests: SwiftLintTestCase {
         testCoverage(source: "\n", enabledRulesCoverage: "1.0", allRulesCoverage: "0.4")
     }
 
+    func testNoRulesCoverage() {
+        testCoverage(
+            for: [],
+            totalNumberOfRules: 0,
+            source: "\n",
+            enabledRulesCoverage: "0.0",
+            allRulesCoverage: "0.0"
+        )
+    }
+
     func testNoDisabledCommandCoverage() {
         let source = """
              func foo() -> Int {
@@ -30,20 +40,25 @@ final class CoverageTests: SwiftLintTestCase {
              }
              """
 
-        testCoverage(
-            source: source,
-            enabledRulesCoverage: "1.0",
-            allRulesCoverage: "0.4"
+        testCoverage(source: source, enabledRulesCoverage: "1.0", allRulesCoverage: "0.4")
+    }
+
+    func testDisableAllCoverage() {
+        // The `disable` command line will still be linted, so coverage will not be zero.
+        testCoverageWithDisabledIdentifiers(
+            disabledIdentifiersString: "all",
+            enabledRulesCoverage: "0.1",
+            allRulesCoverage: "0.04"
         )
     }
 
     func testCoverageWithRegions() {
-        let sourceWithRegionsForEnabledRulesOnly = """
+        let enabledRuleRegionSource = """
              func foo() -> Int {
                  // swiftlint:disable:next direct_return
                  return 0
              }
-
+             
              // These blank lines keep the linecount consistent
              """
 
@@ -51,69 +66,105 @@ final class CoverageTests: SwiftLintTestCase {
         let expectedAllRulesCoverage = "0.383"
 
         testCoverage(
-            source: sourceWithRegionsForEnabledRulesOnly,
+            source: enabledRuleRegionSource,
             enabledRulesCoverage: expectedEnabledRulesCoverage,
             allRulesCoverage: expectedAllRulesCoverage
         )
 
-        let sourceWithRegionsForIrrelevantRules = sourceWithRegionsForEnabledRulesOnly
-            .components(separatedBy: "\n")
-            .dropLast()
-            .joined(separator: "\n")
-            + ("\n// swiftlint:disable:previous expiring_todo")
+        let irrelevantRegionsSource = enabledRuleRegionSource.replacingLastLine(
+            with: "// swiftlint:disable:previous expiring_todo"
+        )
 
         testCoverage(
-            source: sourceWithRegionsForIrrelevantRules,
+            source: irrelevantRegionsSource,
             enabledRulesCoverage: expectedEnabledRulesCoverage,
             allRulesCoverage: expectedAllRulesCoverage
         )
-    }
-
-    func testDisableAllCoverage() {
-        let source = "// swiftlint:disable all".appending(String(repeating: "\n", count: 10))
-        // The `disable` command line will still be linted, so coverage will not be zero.
-        testCoverage(source: source, enabledRulesCoverage: "0.1", allRulesCoverage: "0.04")
     }
 
     func testCoverageWithCustomRules() {
         let customRules = customRules()
         let rules: [any Rule] = [customRules, ArrayInitRule()]
-        let filler = String(repeating: "\n", count: 10)
 
-        let sourceDisablingAllRules = "// swiftlint:disable all" + filler
+        func testCoverage(
+            totalNumberOfRules: Int = 3,
+            disabledIdentifiersString: String,
+            enabledRulesCoverage: String,
+            allRulesCoverage: String
+        ) {
+            testCoverageWithDisabledIdentifiers(
+                for: rules,
+                totalNumberOfRules: totalNumberOfRules,
+                disabledIdentifiersString: disabledIdentifiersString,
+                enabledRulesCoverage: enabledRulesCoverage,
+                allRulesCoverage: allRulesCoverage
+            )
+        }
+
+        testCoverage(disabledIdentifiersString: "all", enabledRulesCoverage: "0.1", allRulesCoverage: "0.1")
+        testCoverage(disabledIdentifiersString: "custom_rules", enabledRulesCoverage: "0.4", allRulesCoverage: "0.4")
+
+        let firstCustomRuleIdentifier = customRules.customRuleIdentifiers[0]
         testCoverage(
-            for: rules,
-            totalNumberOfRules: 3,
-            source: sourceDisablingAllRules,
-            enabledRulesCoverage: "0.1",
-            allRulesCoverage: "0.1"
+            disabledIdentifiersString: "custom_rules \(firstCustomRuleIdentifier)",
+            enabledRulesCoverage: "0.4",
+            allRulesCoverage: "0.4"
         )
-
-        let sourceDisablingAllCustomRules = "// swiftlint:disable custom_rules" + filler
+        let secondCustomRuleIdentifier = customRules.customRuleIdentifiers[1]
         testCoverage(
-            for: rules,
-            totalNumberOfRules: 3,
-            source: sourceDisablingAllCustomRules,
+            disabledIdentifiersString: "custom_rules \(secondCustomRuleIdentifier)",
+            enabledRulesCoverage: "0.4",
+            allRulesCoverage: "0.4"
+        )
+        testCoverage(
+            disabledIdentifiersString: "custom_rules \(firstCustomRuleIdentifier) \(secondCustomRuleIdentifier)",
+            enabledRulesCoverage: "0.4",
+            allRulesCoverage: "0.4"
+        )
+        testCoverage(
+            disabledIdentifiersString: "\(firstCustomRuleIdentifier) \(secondCustomRuleIdentifier)",
             enabledRulesCoverage: "0.4",
             allRulesCoverage: "0.4"
         )
 
-        func testDisablingOneCustomRule(_ index: Int, totalNumberOfRules: Int, allRulesCoverage: String) {
-            let source = "// swiftlint:disable \(customRules.customRuleIdentifiers[index])" + filler
-            testCoverage(
-                for: rules,
-                totalNumberOfRules: totalNumberOfRules,
-                source: source,
-                enabledRulesCoverage: "0.7",
-                allRulesCoverage: allRulesCoverage
-            )
-        }
-        testDisablingOneCustomRule(0, totalNumberOfRules: 3, allRulesCoverage: "0.7")
-        testDisablingOneCustomRule(1, totalNumberOfRules: 3, allRulesCoverage: "0.7")
-        testDisablingOneCustomRule(1, totalNumberOfRules: 10, allRulesCoverage: "0.21")
+        testCoverage(
+            disabledIdentifiersString: "\(firstCustomRuleIdentifier)",
+            enabledRulesCoverage: "0.7",
+            allRulesCoverage: "0.7"
+        )
+
+        testCoverage(
+            disabledIdentifiersString: "\(secondCustomRuleIdentifier)",
+            enabledRulesCoverage: "0.7",
+            allRulesCoverage: "0.7"
+        )
+
+        testCoverage(
+            totalNumberOfRules: 10,
+            disabledIdentifiersString: "\(secondCustomRuleIdentifier)",
+            enabledRulesCoverage: "0.7",
+            allRulesCoverage: "0.21"
+        )
     }
 
     // MARK: - Private
+    private func testCoverageWithDisabledIdentifiers(
+        for rules: [any Rule] = CoverageTests.rules,
+        totalNumberOfRules: Int = CoverageTests.totalNumberOfRules,
+        disabledIdentifiersString: String,
+        enabledRulesCoverage: String,
+        allRulesCoverage: String
+    ) {
+        let filler = String(repeating: "\n", count: 10)
+        testCoverage(
+            for: rules,
+            totalNumberOfRules: totalNumberOfRules,
+            source: "// swiftlint:disable \(disabledIdentifiersString)" + filler,
+            enabledRulesCoverage: enabledRulesCoverage,
+            allRulesCoverage: allRulesCoverage
+        )
+    }
+
     private func testCoverage(
         for rules: [any Rule] = CoverageTests.rules,
         totalNumberOfRules: Int = CoverageTests.totalNumberOfRules,
@@ -143,9 +194,16 @@ final class CoverageTests: SwiftLintTestCase {
             return regexConfig
         }
 
-        let regexConfig1 = configuration(withIdentifier: "custom1", configurationDict: ["regex": "pattern"])
-        let regexConfig2 = configuration(withIdentifier: "custom2", configurationDict: ["regex": "something"])
-        let customRuleConfiguration = CustomRulesConfiguration(customRuleConfigurations: [regexConfig1, regexConfig2])
+        let customRuleConfiguration = CustomRulesConfiguration(customRuleConfigurations: [
+            configuration(withIdentifier: "custom1", configurationDict: ["regex": "pattern"]),
+            configuration(withIdentifier: "custom2", configurationDict: ["regex": "something"]),
+        ])
         return CustomRules(configuration: customRuleConfiguration)
+    }
+}
+
+private extension String {
+    func replacingLastLine(with string: String) -> String {
+        components(separatedBy: "\n").dropLast().joined(separator: "\n") + "\n\(string)"
     }
 }

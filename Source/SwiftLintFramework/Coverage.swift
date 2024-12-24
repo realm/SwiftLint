@@ -89,12 +89,6 @@ struct Coverage {
     }
 }
 
-//extension Coverage.Coverage {
-//    init() {
-//        self.init(numberOfLinesOfCode: 0, observedCoverage: 0, maximumCoverage: 0)
-//    }
-//}
-
 private extension SwiftLintFile {
     func coverage(for rules: [any Rule]) -> Coverage.Coverage {
         guard !contents.isEmpty else {
@@ -102,12 +96,12 @@ private extension SwiftLintFile {
         }
         let numberOfLinesInFile = lines.count
         let ruleIdentifiers = rules.ruleIdentifiers
-        let maxProduct = numberOfLinesInFile * rules.numberOfRulesIncludingCustom
+        let maxProduct = numberOfLinesInFile * rules.numberOfRulesIncludingCustomRules
         var observedProduct = maxProduct
         for region in regions {
             let numberOfLinesInRegion = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
             if region.disabledRuleIdentifiers.contains(.all) {
-                observedProduct -= numberOfLinesInRegion * rules.numberOfRulesIncludingCustom
+                observedProduct -= numberOfLinesInRegion * rules.numberOfRulesIncludingCustomRules
             } else {
                 let disabledRuleIdentifiers = Set(region.disabledRuleIdentifiers.map { $0.stringRepresentation })
                 let numberOfDisabledRules: Int = if disabledRuleIdentifiers.contains(CustomRules.identifier) {
@@ -138,15 +132,8 @@ private extension Region {
 }
 
 private extension Configuration {
-    var customRuleIdentifiers: [String] { rules.customRuleIdentifiers }
-
     func numberOfLinterRules() -> Int {
-        var numberOfLinterRules = RuleRegistry.shared.numberOfLinterRules
-        let customRuleIdentifiers = customRuleIdentifiers
-        if customRuleIdentifiers.isNotEmpty {
-            numberOfLinterRules += customRuleIdentifiers.count - 1
-        }
-        return numberOfLinterRules
+        RuleRegistry.shared.numberOfLinterRules + max(rules.customRuleIdentifiers.count - 1, 0)
     }
 }
 
@@ -164,13 +151,10 @@ private extension [any Rule] {
         Set(flatMap { type(of: $0).description.allIdentifiers }) + customRuleIdentifiers
     }
     var customRuleIdentifiers: [String] {
-        customRules?.customRuleIdentifiers ?? []
+        (first { $0 is CustomRules } as? CustomRules)?.customRuleIdentifiers ?? []
     }
-    var numberOfRulesIncludingCustom: Int {
+    var numberOfRulesIncludingCustomRules: Int {
         count + Swift.max(customRuleIdentifiers.count - 1, 0)
-    }
-    private var customRules: CustomRules? {
-        first { $0 is CustomRules } as? CustomRules
     }
 }
 

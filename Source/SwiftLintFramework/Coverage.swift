@@ -35,8 +35,9 @@ import Foundation
 struct Coverage {
     private let totalNumberOfRules: Int
     private var numberOfLinesOfCode = 0
-    private var maximumCoverage = 0
     private var observedCoverage = 0
+    private var maximumCoverage = 0
+
     var enabledRulesCoverage: Double {
         coverage(denominator: maximumCoverage)
     }
@@ -81,8 +82,8 @@ struct Coverage {
         }
 
         numberOfLinesOfCode += numberOfLinesInFile
-        maximumCoverage += maxProduct
         observedCoverage += observedProduct
+        maximumCoverage += maxProduct
     }
 
     private func coverage(denominator: Int) -> Double {
@@ -106,24 +107,19 @@ private extension Double {
 }
 
 extension Configuration {
-    var customRuleIdentifiers: [String] {
-        rules.customRuleIdentifiers
-    }
+    var customRuleIdentifiers: [String] { rules.customRuleIdentifiers }
 }
 
 private extension [any Rule] {
     var ruleIdentifiers: [String] {
         Set(flatMap { type(of: $0).description.allIdentifiers }) + customRuleIdentifiers
     }
-
     var customRuleIdentifiers: [String] {
         customRules?.customRuleIdentifiers ?? []
     }
-
     var numberOfRulesIncludingCustom: Int {
         count + Swift.max(customRuleIdentifiers.count - 1, 0)
     }
-
     private var customRules: CustomRules? {
         first { $0 is CustomRules } as? CustomRules
     }

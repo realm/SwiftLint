@@ -9,7 +9,7 @@ internal extension Configuration {
         let allRulesWrapped: [ConfigurationRuleWrapper]
         let mode: RulesMode
         var customRuleIdentifiers: [String] {
-            (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?.customRuleIdentifiers ?? []
+            resultingRules.customRuleIdentifiers
         }
         private let aliasResolver: (String) -> String
 

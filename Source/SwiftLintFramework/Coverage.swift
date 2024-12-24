@@ -34,20 +34,19 @@ import Foundation
 ///
 struct Coverage {
     struct Coverage {
-        let numberOfLinesOfCode: Int
-        let observedCoverage: Int
-        let maximumCoverage: Int
+        var numberOfLinesOfCode = 0
+        var observedCoverage = 0
+        var maximumCoverage = 0
 
-        static func + (left: Self, right: Self) -> Self {
-            Self(
-                numberOfLinesOfCode: left.numberOfLinesOfCode + right.numberOfLinesOfCode,
-                observedCoverage: left.observedCoverage + right.observedCoverage,
-                maximumCoverage: left.maximumCoverage + right.maximumCoverage
-            )
+        mutating func add(_ coverage: Self) {
+            numberOfLinesOfCode += coverage.numberOfLinesOfCode
+            observedCoverage += coverage.observedCoverage
+            maximumCoverage += coverage.maximumCoverage
         }
     }
 
     private let totalNumberOfRules: Int
+    // swiftlint:disable:next prefer_self_in_static_references
     private var coverage = Coverage()
 
     var enabledRulesCoverage: Double {
@@ -82,7 +81,7 @@ struct Coverage {
     }
 
     mutating func addCoverage(for file: SwiftLintFile, rules: [any Rule]) {
-        coverage = coverage + file.coverage(for: rules)
+        coverage.add(file.coverage(for: rules))
     }
 
     private func coverage(denominator: Int) -> Double {
@@ -90,11 +89,11 @@ struct Coverage {
     }
 }
 
-extension Coverage.Coverage {
-    init() {
-        self.init(numberOfLinesOfCode: 0, observedCoverage: 0, maximumCoverage: 0)
-    }
-}
+//extension Coverage.Coverage {
+//    init() {
+//        self.init(numberOfLinesOfCode: 0, observedCoverage: 0, maximumCoverage: 0)
+//    }
+//}
 
 private extension SwiftLintFile {
     func coverage(for rules: [any Rule]) -> Coverage.Coverage {

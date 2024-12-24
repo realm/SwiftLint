@@ -66,11 +66,9 @@ struct Coverage {
         var observedProduct = maxProduct
         for region in file.regions() {
             if region.disabledRuleIdentifiers.contains(.all) {
-                // All rules are disabled
                 let numberOfLines = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
-                observedProduct -= numberOfLines * rules.count
+                observedProduct -= numberOfLines * rules.numberOfRulesIncludingCustom
             } else {
-                // number of disabled rules that are disabled by the region
                 let disabledRuleIdentifiers = Set(region.disabledRuleIdentifiers.map { $0.stringRepresentation })
                 let numberOfLines = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
                 var numberOfActiveDisabledRules = disabledRuleIdentifiers.intersection(ruleIdentifiers).count
@@ -107,7 +105,6 @@ private extension Double {
     }
 }
 
-// MARK: - Custom Rules Identifiers
 extension Configuration {
     var customRuleIdentifiers: [String] {
         rules.customRuleIdentifiers

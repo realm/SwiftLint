@@ -194,7 +194,7 @@ package struct LintOrAnalyzeCommand {
             }
 
             visitorMutationQueue.sync {
-                builder.coverage?.addCoverage(for: linter.file, rules: linter.rules)
+                builder.coverage?.addCoverage(for: linter)
             }
 
             let filteredViolations = baseline?.filter(currentViolations) ?? currentViolations

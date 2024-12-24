@@ -102,30 +102,22 @@ final class CoverageTests: SwiftLintTestCase {
         }
 
         testCoverage(disabledIdentifiersString: "all", enabledRulesCoverage: "0.1", allRulesCoverage: "0.1")
-        testCoverage(disabledIdentifiersString: "custom_rules", enabledRulesCoverage: "0.4", allRulesCoverage: "0.4")
 
+        func testDisablingAllCustomRules(disabledIdentifiersString: String) {
+            testCoverage(
+                disabledIdentifiersString: disabledIdentifiersString,
+                enabledRulesCoverage: "0.4",
+                allRulesCoverage: "0.4"
+            )
+        }
+
+        testDisablingAllCustomRules(disabledIdentifiersString: "custom_rules")
         let firstCustomRuleIdentifier = customRules.customRuleIdentifiers[0]
-        testCoverage(
-            disabledIdentifiersString: "custom_rules \(firstCustomRuleIdentifier)",
-            enabledRulesCoverage: "0.4",
-            allRulesCoverage: "0.4"
-        )
+        testDisablingAllCustomRules(disabledIdentifiersString: "custom_rules \(firstCustomRuleIdentifier)")
         let secondCustomRuleIdentifier = customRules.customRuleIdentifiers[1]
-        testCoverage(
-            disabledIdentifiersString: "custom_rules \(secondCustomRuleIdentifier)",
-            enabledRulesCoverage: "0.4",
-            allRulesCoverage: "0.4"
-        )
-        testCoverage(
-            disabledIdentifiersString: "custom_rules \(firstCustomRuleIdentifier) \(secondCustomRuleIdentifier)",
-            enabledRulesCoverage: "0.4",
-            allRulesCoverage: "0.4"
-        )
-        testCoverage(
-            disabledIdentifiersString: "\(firstCustomRuleIdentifier) \(secondCustomRuleIdentifier)",
-            enabledRulesCoverage: "0.4",
-            allRulesCoverage: "0.4"
-        )
+        testDisablingAllCustomRules(disabledIdentifiersString: "custom_rules \(secondCustomRuleIdentifier)")
+        testDisablingAllCustomRules(disabledIdentifiersString: "custom_rules \(firstCustomRuleIdentifier) \(secondCustomRuleIdentifier)")
+        testDisablingAllCustomRules(disabledIdentifiersString: "\(firstCustomRuleIdentifier) \(secondCustomRuleIdentifier)")
 
         testCoverage(
             disabledIdentifiersString: "\(firstCustomRuleIdentifier)",

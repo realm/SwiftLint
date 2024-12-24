@@ -7,15 +7,15 @@ internal extension Configuration {
         private static let isOptInRuleCacheLock = NSLock()
 
         let allRulesWrapped: [ConfigurationRuleWrapper]
-        let mode: RulesMode
+        internal let mode: RulesMode
         private let aliasResolver: (String) -> String
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []
         private var validRuleIdentifiers: Set<String> {
             let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).identifier }
             let configurationCustomRulesIdentifiers =
-                 (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?.customRuleIdentifiers ?? []
-             return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)        }
+                (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?.customRuleIdentifiers ?? []
+            return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)        }
 
         private var cachedResultingRules: [any Rule]?
         private let resultingRulesLock = NSLock()

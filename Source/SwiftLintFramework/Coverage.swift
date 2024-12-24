@@ -74,7 +74,7 @@ struct Coverage {
                 let disabledRuleIdentifiers = Set(region.disabledRuleIdentifiers.map { $0.stringRepresentation })
                 let numberOfLines = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
                 var numberOfActiveDisabledRules = disabledRuleIdentifiers.intersection(ruleIdentifiers).count
-                if disabledRuleIdentifiers.contains("custom_rules") {
+                if disabledRuleIdentifiers.contains(CustomRules.description.identifier) {
                     observedProduct -= numberOfLines * rules.customRuleIdentifiers.count
                     numberOfActiveDisabledRules -= 1 // Because we've accounted for custom_rules already
                 }
@@ -104,5 +104,30 @@ private extension Double {
     func rounded(toNearestPlaces places: Int) -> Double {
         let divisor = pow(10.0, Double(places))
         return (self * divisor).rounded() / divisor
+    }
+}
+
+// MARK: - Custom Rules Identifiers
+extension Configuration {
+    var customRuleIdentifiers: [String] {
+        rules.customRuleIdentifiers
+    }
+}
+
+private extension [any Rule] {
+    var ruleIdentifiers: [String] {
+        Set(flatMap { type(of: $0).description.allIdentifiers }) + customRuleIdentifiers
+    }
+
+    var customRuleIdentifiers: [String] {
+        customRules?.customRuleIdentifiers ?? []
+    }
+
+    var numberOfRulesIncludingCustom: Int {
+        count + Swift.max(customRuleIdentifiers.count - 1, 0)
+    }
+
+    private var customRules: CustomRules? {
+        first { $0 is CustomRules } as? CustomRules
     }
 }

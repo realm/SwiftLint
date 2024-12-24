@@ -373,7 +373,7 @@ extension Configuration: CustomStringConvertible {
 // MARK: - Custom Rules Identifiers
 public extension Configuration {
     var customRuleIdentifiers: [String] {
-        rulesWrapper.customRuleIdentifiers
+        rules.customRuleIdentifiers
     }
 }
 
@@ -382,19 +382,15 @@ public extension [any Rule] {
         Set(flatMap { type(of: $0).description.allIdentifiers }) + customRuleIdentifiers
     }
 
-    internal var customRules: CustomRules? {
-        first { $0 is CustomRules } as? CustomRules
-    }
-
     var customRuleIdentifiers: [String] {
         customRules?.customRuleIdentifiers ?? []
     }
 
     var numberOfRulesIncludingCustom: Int {
-        if customRules != nil {
-            count + customRuleIdentifiers.count - 1
-        } else {
-            count
-        }
+        count + Swift.max(customRuleIdentifiers.count - 1, 0)
+    }
+
+    private var customRules: CustomRules? {
+        first { $0 is CustomRules } as? CustomRules
     }
 }

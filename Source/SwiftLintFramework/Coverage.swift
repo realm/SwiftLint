@@ -64,7 +64,7 @@ struct Coverage {
         let ruleIdentifiers = rules.ruleIdentifiers
         let maxProduct = numberOfLinesInFile * rules.numberOfRulesIncludingCustom
         var observedProduct = maxProduct
-        for region in file.regions() {
+        for region in file.regions {
             if region.disabledRuleIdentifiers.contains(.all) {
                 let numberOfLines = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
                 observedProduct -= numberOfLines * rules.numberOfRulesIncludingCustom

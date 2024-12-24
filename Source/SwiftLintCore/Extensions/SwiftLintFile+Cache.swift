@@ -42,6 +42,9 @@ private let commandsCache = Cache { file -> [Command] in
     return CommandVisitor(locationConverter: file.locationConverter)
         .walk(file: file, handler: \.commands)
 }
+private let regionsCache = Cache { file -> [Region] in
+    file.regions()
+}
 private let syntaxMapCache = Cache { file in
     responseCache.get(file).map { SwiftLintSyntaxMap(value: SyntaxMap(sourceKitResponse: $0)) }
 }
@@ -172,6 +175,8 @@ extension SwiftLintFile {
 
     public var invalidCommands: [Command] { commandsCache.get(self).filter { !$0.isValid } }
 
+    public var regions: [Region] { regionsCache.get(self) }
+
     public var syntaxTokensByLines: [[SwiftLintSyntaxToken]] {
         guard let syntaxTokensByLines = syntaxTokensByLinesCache.get(self) else {
             if let handler = assertHandler {
@@ -213,6 +218,7 @@ extension SwiftLintFile {
         foldedSyntaxTreeCache.invalidate(self)
         locationConverterCache.invalidate(self)
         commandsCache.invalidate(self)
+        regionsCache.invalidate(self)
         linesWithTokensCache.invalidate(self)
     }
 
@@ -229,6 +235,7 @@ extension SwiftLintFile {
         foldedSyntaxTreeCache.clear()
         locationConverterCache.clear()
         commandsCache.clear()
+        regionsCache.clear()
         linesWithTokensCache.clear()
     }
 }

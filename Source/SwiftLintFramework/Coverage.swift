@@ -61,14 +61,28 @@ struct Coverage {
     }
 
     mutating func addCoverage(for file: SwiftLintFile, rules: [any Rule]) {
-        guard !file.contents.isEmpty else {
-            return
+        if let (numberOfLinesInFile, observedProduct, maxProduct) = file.coverage(for: rules) {
+            numberOfLinesOfCode += numberOfLinesInFile
+            observedCoverage += observedProduct
+            maximumCoverage += maxProduct
         }
-        let numberOfLinesInFile = file.lines.count
+    }
+
+    private func coverage(denominator: Int) -> Double {
+        denominator == 0 ? 0.0 : (Double(observedCoverage) / Double(denominator))
+    }
+}
+
+extension SwiftLintFile {
+    func coverage(for rules: [any Rule]) -> (Int, Int, Int)? {
+        guard !contents.isEmpty else {
+            return nil
+        }
+        let numberOfLinesInFile = lines.count
         let ruleIdentifiers = rules.ruleIdentifiers
         let maxProduct = numberOfLinesInFile * rules.numberOfRulesIncludingCustom
         var observedProduct = maxProduct
-        for region in file.regions {
+        for region in regions {
             let numberOfLinesInRegion = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
             if region.disabledRuleIdentifiers.contains(.all) {
                 observedProduct -= numberOfLinesInRegion * rules.numberOfRulesIncludingCustom
@@ -86,14 +100,9 @@ struct Coverage {
             }
         }
 
-        numberOfLinesOfCode += numberOfLinesInFile
-        observedCoverage += observedProduct
-        maximumCoverage += maxProduct
+        return (numberOfLinesInFile, observedProduct, maxProduct)
     }
 
-    private func coverage(denominator: Int) -> Double {
-        denominator == 0 ? 0.0 : (Double(observedCoverage) / Double(denominator))
-    }
 }
 
 private extension Region {

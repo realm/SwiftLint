@@ -15,7 +15,8 @@ internal extension Configuration {
             let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).identifier }
             let configurationCustomRulesIdentifiers =
                 (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?.customRuleIdentifiers ?? []
-            return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)        }
+            return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)
+        }
 
         private var cachedResultingRules: [any Rule]?
         private let resultingRulesLock = NSLock()

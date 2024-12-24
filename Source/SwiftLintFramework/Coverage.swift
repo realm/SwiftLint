@@ -56,6 +56,15 @@ struct Coverage {
         self.totalNumberOfRules = totalNumberOfRules
     }
 
+    init(mode: LintOrAnalyzeMode, configuration: Configuration) {
+        let totalNumberOfRules: Int = if mode == .lint {
+            configuration.numberOfLinterRules()
+        } else {
+            RuleRegistry.shared.numberOfAnalyzerRules
+        }
+        self.init(totalNumberOfRules: totalNumberOfRules)
+    }
+
     mutating func addCoverage(for linter: CollectedLinter) {
         addCoverage(for: linter.file, rules: linter.rules)
     }
@@ -73,7 +82,7 @@ struct Coverage {
     }
 }
 
-extension SwiftLintFile {
+private extension SwiftLintFile {
     func coverage(for rules: [any Rule]) -> (Int, Int, Int)? {
         guard !contents.isEmpty else {
             return nil
@@ -88,10 +97,9 @@ extension SwiftLintFile {
                 observedProduct -= numberOfLinesInRegion * rules.numberOfRulesIncludingCustom
             } else {
                 let disabledRuleIdentifiers = Set(region.disabledRuleIdentifiers.map { $0.stringRepresentation })
-                let customRulesIdentifier = CustomRules.identifier
-                let numberOfDisabledRules: Int = if disabledRuleIdentifiers.contains(customRulesIdentifier) {
+                let numberOfDisabledRules: Int = if disabledRuleIdentifiers.contains(CustomRules.identifier) {
                     disabledRuleIdentifiers.subtracting(
-                        Set(rules.customRuleIdentifiers + [customRulesIdentifier])
+                        Set(rules.customRuleIdentifiers + [CustomRules.identifier])
                     ).intersection(ruleIdentifiers).count + rules.customRuleIdentifiers.count
                 } else {
                     disabledRuleIdentifiers.intersection(ruleIdentifiers).count
@@ -102,7 +110,6 @@ extension SwiftLintFile {
 
         return (numberOfLinesInFile, observedProduct, maxProduct)
     }
-
 }
 
 private extension Region {
@@ -113,15 +120,26 @@ private extension Region {
     }
 }
 
-private extension Double {
-    func rounded(toNearestPlaces places: Int) -> Double {
-        let divisor = pow(10.0, Double(places))
-        return (self * divisor).rounded() / divisor
+private extension Configuration {
+    var customRuleIdentifiers: [String] { rules.customRuleIdentifiers }
+
+    func numberOfLinterRules() -> Int {
+        var numberOfLinterRules = RuleRegistry.shared.numberOfLinterRules
+        let customRuleIdentifiers = customRuleIdentifiers
+        if customRuleIdentifiers.isNotEmpty {
+            numberOfLinterRules += customRuleIdentifiers.count - 1
+        }
+        return numberOfLinterRules
     }
 }
 
-extension Configuration {
-    var customRuleIdentifiers: [String] { rules.customRuleIdentifiers }
+private extension RuleRegistry {
+    var numberOfLinterRules: Int {
+        RuleRegistry.shared.list.list.filter({ !($1 is any AnalyzerRule.Type) }).count
+    }
+    var numberOfAnalyzerRules: Int {
+        RuleRegistry.shared.list.list.filter({ $1 is any AnalyzerRule.Type }).count
+    }
 }
 
 private extension [any Rule] {
@@ -136,5 +154,12 @@ private extension [any Rule] {
     }
     private var customRules: CustomRules? {
         first { $0 is CustomRules } as? CustomRules
+    }
+}
+
+private extension Double {
+    func rounded(toNearestPlaces places: Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return (self * divisor).rounded() / divisor
     }
 }

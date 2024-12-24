@@ -56,7 +56,7 @@ final class CoverageTests: SwiftLintTestCase {
                  // swiftlint:disable:next direct_return
                  return 0
              }
-             
+
              // These blank lines keep the linecount consistent
              """
 
@@ -84,7 +84,7 @@ final class CoverageTests: SwiftLintTestCase {
                  // swiftlint:disable:next direct_return
                  return 0 // swiftlint:disable:this direct_return
              } // swiftlint:disable:previous direct_return
-             
+
              // These blank lines keep the linecount consistent
              """
 

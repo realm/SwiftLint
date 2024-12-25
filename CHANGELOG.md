@@ -43,6 +43,11 @@
   [dk-talks](https://github.com/dk-talks)
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Add new `redundant_sendable` rule that triggers on `Sendable` conformances of
+  types that are implicitly already `Sendable` due to being actor-isolated. It
+  is enabled by default.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
 
 * Ignore super calls with trailing closures in `unneeded_override` rule.  

@@ -467,6 +467,9 @@ redundant_optional_initialization:
   severity: warning
 redundant_self_in_closure:
   severity: warning
+redundant_sendable:
+  severity: warning
+  global_actors: []
 redundant_set_access_control:
   severity: warning
 redundant_string_enum_value:

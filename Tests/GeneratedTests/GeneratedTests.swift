@@ -1045,6 +1045,12 @@ final class RedundantSelfInClosureRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class RedundantSendableRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantSendableRule.description)
+    }
+}
+
 final class RedundantSetAccessControlRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantSetAccessControlRule.description)

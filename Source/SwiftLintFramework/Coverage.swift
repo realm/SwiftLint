@@ -122,7 +122,7 @@ private extension Region {
 
         let numberOfLinesInRegion = numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
         if disabledRuleIdentifiers.contains(.all) {
-           return numberOfLinesInRegion * rules.numberOfRulesIncludingCustomRules
+            return numberOfLinesInRegion * rules.numberOfRulesIncludingCustomRules
         }
 
         let disabledRuleIdentifiers = Set(disabledRuleIdentifiers.map { $0.stringRepresentation })
@@ -145,36 +145,31 @@ private extension Region {
 
 private extension Set<String> {
     func numberOfDisabledRules(from ruleIdentifiers: Self, rules: [any Rule]) -> Int {
-        let numberOfMatchingIdentifiers = intersection(ruleIdentifiers).count
+        var remainingDisabledIdentifiers = intersection(ruleIdentifiers)
+
         // Check whether there is more than one match, or more ruleIdentifiers than there are rules
         // We do not need to worry about `custom_rules` being used to disable all custom rules
         // as that is taken care of by the caller.
-        guard numberOfMatchingIdentifiers > 1, ruleIdentifiers.count > rules.count else {
-            return numberOfMatchingIdentifiers
+        guard remainingDisabledIdentifiers.count > 1, ruleIdentifiers.count > rules.count else {
+            return remainingDisabledIdentifiers.count
         }
-        // All possible identifiers have been specified.
-        guard numberOfMatchingIdentifiers < ruleIdentifiers.count else {
+        // Have all possible identifiers been specified?
+        guard remainingDisabledIdentifiers.count < ruleIdentifiers.count else {
             return rules.count
         }
-        // Finally we need to look at the actual identifiers. Iterate over the rules,
-        // and work out which rules are actually disabled - this is complicated by aliases and
-        // custom rules.
-        var remainingDisabledIdentifiers = self
+        // We need to handle aliases and custom rules specially.
         var numberOfDisabledRules = 0
         for rule in rules {
-            let customRules = rule as? CustomRules
-            let allRuleIdentifiers = type(of: rule).description.allIdentifiers + (customRules?.customRuleIdentifiers ?? [])
-
+            let allRuleIdentifiers = type(of: rule).description.allIdentifiers + [rule].customRuleIdentifiers
             if !remainingDisabledIdentifiers.isDisjoint(with: allRuleIdentifiers) {
-                if customRules != nil {
+                if rule is CustomRules {
                     numberOfDisabledRules += remainingDisabledIdentifiers.intersection(allRuleIdentifiers).count
                 } else {
                     numberOfDisabledRules += 1
                 }
                 remainingDisabledIdentifiers.subtract(allRuleIdentifiers)
 
-                // If there is only one identifier left, it must match one rule. `custom_rules` will have
-                // been dealt already by the caller
+                // If there is only one identifier left, it must match one rule.
                 if remainingDisabledIdentifiers.count == 1 {
                     return numberOfDisabledRules + 1
                 }

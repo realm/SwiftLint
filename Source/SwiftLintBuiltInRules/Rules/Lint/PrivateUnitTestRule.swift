@@ -132,11 +132,11 @@ private extension PrivateUnitTestRule {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            !node.isPrivate && node.hasParent(configuredIn: configuration) ? .visitChildren : .skipChildren
+            !node.isPrivate && node.isXCTestCase(configuration.testParentClasses) ? .visitChildren : .skipChildren
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            if node.isPrivate, node.hasParent(configuredIn: configuration) {
+            if node.isPrivate, node.isXCTestCase(configuration.testParentClasses) {
                 violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -150,7 +150,7 @@ private extension PrivateUnitTestRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
-            guard node.isPrivate, node.hasParent(configuredIn: configuration) else {
+            guard node.isPrivate, node.isXCTestCase(configuration.testParentClasses) else {
                 return super.visit(node)
             }
 
@@ -189,16 +189,6 @@ private extension PrivateUnitTestRule {
 }
 
 private extension ClassDeclSyntax {
-    func hasParent(configuredIn config: PrivateUnitTestConfiguration) -> Bool {
-        inheritanceClause?.inheritedTypes.contains { type in
-            if let name = type.type.as(IdentifierTypeSyntax.self)?.name.text {
-                return config.regex.regex.numberOfMatches(in: name, range: name.fullNSRange) > 0
-                    || config.testParentClasses.contains(name)
-            }
-            return false
-        } ?? false
-    }
-
     var isPrivate: Bool {
         resultInPrivateProperty(modifiers: modifiers, attributes: attributes)
     }

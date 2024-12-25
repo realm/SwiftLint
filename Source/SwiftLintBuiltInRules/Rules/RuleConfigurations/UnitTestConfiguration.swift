@@ -5,6 +5,7 @@ typealias EmptyXCTestMethodConfiguration = UnitTestConfiguration<EmptyXCTestMeth
 typealias FinalTestCaseConfiguration = UnitTestConfiguration<FinalTestCaseRule>
 typealias NoMagicNumbersConfiguration = UnitTestConfiguration<NoMagicNumbersRule>
 typealias SingleTestClassConfiguration = UnitTestConfiguration<SingleTestClassRule>
+typealias PrivateUnitTestConfiguration = UnitTestConfiguration<PrivateUnitTestRule>
 
 @AutoConfigParser
 struct UnitTestConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration {

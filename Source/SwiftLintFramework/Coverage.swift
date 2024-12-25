@@ -33,7 +33,7 @@ import Foundation
 /// custom rules settings will be used.
 ///
 struct Coverage {
-    struct Coverage {
+    struct Coverage: Equatable {
         var numberOfLinesOfCode = 0
         var observedCoverage = 0
         var maximumCoverage = 0
@@ -47,7 +47,7 @@ struct Coverage {
 
     private let totalNumberOfRules: Int
     // swiftlint:disable:next prefer_self_in_static_references
-    private var coverage = Coverage()
+    var coverage = Coverage()
 
     var enabledRulesCoverage: Double {
         coverage(denominator: coverage.maximumCoverage)

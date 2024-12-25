@@ -119,39 +119,35 @@ final class CoverageTests: SwiftLintTestCase {
             maximumCoverage: 30
         )
 
-        func testDisablingAllCustomRules(disabledIdentifiers: [String]) {
+        let customRulesIdentifier = CustomRules.identifier
+        let firstCustomRuleIdentifier = customRules.customRuleIdentifiers[0]
+        let secondCustomRuleIdentifier = customRules.customRuleIdentifiers[1]
+
+        let disabledRuleIdentifiers = [
+            [customRulesIdentifier],
+            [customRulesIdentifier, firstCustomRuleIdentifier],
+            [customRulesIdentifier, secondCustomRuleIdentifier],
+            [customRulesIdentifier, firstCustomRuleIdentifier, secondCustomRuleIdentifier],
+            [firstCustomRuleIdentifier, secondCustomRuleIdentifier],
+        ]
+
+        disabledRuleIdentifiers.forEach {
             testCoverageWithDisabledIdentifiers(
                 for: rules,
-                disabledIdentifiers: disabledIdentifiers,
+                disabledIdentifiers: $0,
                 observedCoverage: 12,
                 maximumCoverage: 30
             )
         }
 
-        let customRulesIdentifier = CustomRules.identifier
-        testDisablingAllCustomRules(disabledIdentifiers: [customRulesIdentifier])
-        let firstCustomRuleIdentifier = customRules.customRuleIdentifiers[0]
-        testDisablingAllCustomRules(disabledIdentifiers: [customRulesIdentifier, firstCustomRuleIdentifier])
-        let secondCustomRuleIdentifier = customRules.customRuleIdentifiers[1]
-        testDisablingAllCustomRules(disabledIdentifiers: [customRulesIdentifier, secondCustomRuleIdentifier])
-        testDisablingAllCustomRules(
-            disabledIdentifiers: [customRulesIdentifier, firstCustomRuleIdentifier, secondCustomRuleIdentifier]
-        )
-        testDisablingAllCustomRules(disabledIdentifiers: [firstCustomRuleIdentifier, secondCustomRuleIdentifier])
-
-        testCoverageWithDisabledIdentifiers(
-            for: rules,
-            disabledIdentifiers: [firstCustomRuleIdentifier],
-            observedCoverage: 21,
-            maximumCoverage: 30
-        )
-
-        testCoverageWithDisabledIdentifiers(
-            for: rules,
-            disabledIdentifiers: [secondCustomRuleIdentifier],
-            observedCoverage: 21,
-            maximumCoverage: 30
-        )
+        [firstCustomRuleIdentifier, secondCustomRuleIdentifier].forEach {
+            testCoverageWithDisabledIdentifiers(
+                for: rules,
+                disabledIdentifiers: [$0],
+                observedCoverage: 21,
+                maximumCoverage: 30
+            )
+        }
     }
 
     // MARK: - Private

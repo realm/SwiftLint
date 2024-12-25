@@ -146,7 +146,8 @@ private extension Set<String> {
                 // If there is only one identifier left, it must match one rule
                 if remainingDisabledIdentifiers.count == 1 {
                     return numberOfRules + 1
-                } else if remainingDisabledIdentifiers.isEmpty {
+                }
+                if remainingDisabledIdentifiers.isEmpty {
                     return numberOfRules
                 }
             }

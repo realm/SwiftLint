@@ -188,8 +188,7 @@ final class CoverageTests: SwiftLintTestCase {
         source: String,
         observedCoverage: Int = 0,
         maximumCoverage: Int = 0
-    )
-    {
+    ) {
         let file = SwiftLintFile(contents: source)
         let expectedCoverage = Coverage.Coverage(
             numberOfLinesOfCode: file.contents.isEmpty ? 0 : file.lines.count,

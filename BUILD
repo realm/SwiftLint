@@ -89,6 +89,7 @@ swift_library(
         ":SourceKittenFramework.wrapper",
         "@sourcekitten_com_github_jpsim_yams//:Yams",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
+        "@com_github_ileitch_swift-filename-matcher//:FilenameMatcher"
     ] + select({
         "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
         "//conditions:default": [":DyldWarningWorkaround"],

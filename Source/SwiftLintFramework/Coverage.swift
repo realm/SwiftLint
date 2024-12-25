@@ -146,7 +146,9 @@ private extension Region {
 private extension Set<String> {
     func numberOfDisabledRules(from ruleIdentifiers: Self, rules: [any Rule]) -> Int {
         let numberOfMatchingIdentifiers = intersection(ruleIdentifiers).count
-        // Only one match, or no aliases
+        // Check whether there is more than one match, or more ruleIdentifiers than there are rules
+        // We do not need to worry about `custom_rules` being used to disable all custom rules
+        // as that is taken care of by the caller.
         guard numberOfMatchingIdentifiers > 1, ruleIdentifiers.count > rules.count else {
             return numberOfMatchingIdentifiers
         }
@@ -155,24 +157,33 @@ private extension Set<String> {
             return rules.count
         }
         // Finally we need to look at the actual identifiers. Iterate over the rules,
-        // and work out which rules are actually disabled
+        // and work out which rules are actually disabled - this is complicated by aliases and
+        // custom rules.
         var remainingDisabledIdentifiers = self
-        var numberOfRules = 0
+        var numberOfDisabledRules = 0
         for rule in rules {
-            let allRuleIdentifiers = type(of: rule).description.allIdentifiers
+            let customRules = rule as? CustomRules
+            let allRuleIdentifiers = type(of: rule).description.allIdentifiers + (customRules?.customRuleIdentifiers ?? [])
+
             if !remainingDisabledIdentifiers.isDisjoint(with: allRuleIdentifiers) {
-                remainingDisabledIdentifiers = remainingDisabledIdentifiers.subtracting(allRuleIdentifiers)
-                numberOfRules += 1
-                // If there is only one identifier left, it must match one rule
+                if customRules != nil {
+                    numberOfDisabledRules += remainingDisabledIdentifiers.intersection(allRuleIdentifiers).count
+                } else {
+                    numberOfDisabledRules += 1
+                }
+                remainingDisabledIdentifiers.subtract(allRuleIdentifiers)
+
+                // If there is only one identifier left, it must match one rule. `custom_rules` will have
+                // been dealt already by the caller
                 if remainingDisabledIdentifiers.count == 1 {
-                    return numberOfRules + 1
+                    return numberOfDisabledRules + 1
                 }
                 if remainingDisabledIdentifiers.isEmpty {
-                    return numberOfRules
+                    return numberOfDisabledRules
                 }
             }
         }
-        return numberOfRules
+        return numberOfDisabledRules
     }
 }
 

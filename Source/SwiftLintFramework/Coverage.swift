@@ -95,7 +95,7 @@ private extension SwiftLintFile {
             return Coverage.Coverage()
         }
         let numberOfLinesInFile = lines.count
-        let ruleIdentifiers = rules.ruleIdentifiers
+        let ruleIdentifiers = Set(rules.ruleIdentifiers)
         let maxProduct = numberOfLinesInFile * rules.numberOfRulesIncludingCustomRules
         var observedProduct = maxProduct
         for region in regions {
@@ -107,9 +107,9 @@ private extension SwiftLintFile {
                 let numberOfDisabledRules: Int = if disabledRuleIdentifiers.contains(CustomRules.identifier) {
                     disabledRuleIdentifiers.subtracting(
                         Set(rules.customRuleIdentifiers + [CustomRules.identifier])
-                    ).intersection(ruleIdentifiers).count + rules.customRuleIdentifiers.count
+                    ).numberOfDisabledRules(from: ruleIdentifiers, rules: rules) + rules.customRuleIdentifiers.count
                 } else {
-                    disabledRuleIdentifiers.intersection(ruleIdentifiers).count
+                    disabledRuleIdentifiers.numberOfDisabledRules(from: ruleIdentifiers, rules: rules)
                 }
                 observedProduct -= numberOfLinesInRegion * numberOfDisabledRules
             }
@@ -120,6 +120,38 @@ private extension SwiftLintFile {
             observedCoverage: observedProduct,
             maximumCoverage: maxProduct
         )
+    }
+}
+
+private extension Set<String> {
+    func numberOfDisabledRules(from ruleIdentifiers: Self, rules: [any Rule]) -> Int {
+        let numberOfMatchingIdentifiers = intersection(ruleIdentifiers).count
+        // Only one match, or no aliases
+        guard numberOfMatchingIdentifiers > 1, ruleIdentifiers.count > rules.count else {
+            return numberOfMatchingIdentifiers
+        }
+        // All possible identifiers have been specified.
+        guard numberOfMatchingIdentifiers < ruleIdentifiers.count else {
+            return rules.count
+        }
+        // Finally we need to look at the actual identifiers. Iterate over the rules,
+        // and work out which rules are actually disabled
+        var remainingDisabledIdentifiers = self
+        var numberOfRules = 0
+        for rule in rules {
+            let allRuleIdentifiers = type(of: rule).description.allIdentifiers
+            if !remainingDisabledIdentifiers.isDisjoint(with: allRuleIdentifiers) {
+                remainingDisabledIdentifiers = remainingDisabledIdentifiers.subtracting(allRuleIdentifiers)
+                numberOfRules += 1
+                // If there is only one identifier left, it must match one rule
+                if remainingDisabledIdentifiers.count == 1 {
+                    return numberOfRules + 1
+                } else if remainingDisabledIdentifiers.isEmpty {
+                    return numberOfRules
+                }
+            }
+        }
+        return numberOfRules
     }
 }
 

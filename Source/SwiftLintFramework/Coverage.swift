@@ -46,8 +46,8 @@ struct Coverage {
     }
 
     private let totalNumberOfRules: Int
-    // swiftlint:disable:next prefer_self_in_static_references
-    var coverage = Coverage()
+
+    var coverage = Coverage() // swiftlint:disable:this prefer_self_in_static_references
 
     var enabledRulesCoverage: Double {
         coverage(denominator: coverage.maximumCoverage)
@@ -96,30 +96,50 @@ private extension SwiftLintFile {
         }
         let numberOfLinesInFile = lines.count
         let ruleIdentifiers = Set(rules.ruleIdentifiers)
-        let maxProduct = numberOfLinesInFile * rules.numberOfRulesIncludingCustomRules
-        var observedProduct = maxProduct
+        let maximumCoverage = numberOfLinesInFile * rules.numberOfRulesIncludingCustomRules
+        var observedCoverage = maximumCoverage
         for region in regions {
-            let numberOfLinesInRegion = region.numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
-            if region.disabledRuleIdentifiers.contains(.all) {
-                observedProduct -= numberOfLinesInRegion * rules.numberOfRulesIncludingCustomRules
-            } else {
-                let disabledRuleIdentifiers = Set(region.disabledRuleIdentifiers.map { $0.stringRepresentation })
-                let numberOfDisabledRules: Int = if disabledRuleIdentifiers.contains(CustomRules.identifier) {
-                    disabledRuleIdentifiers.subtracting(
-                        Set(rules.customRuleIdentifiers + [CustomRules.identifier])
-                    ).numberOfDisabledRules(from: ruleIdentifiers, rules: rules) + rules.customRuleIdentifiers.count
-                } else {
-                    disabledRuleIdentifiers.numberOfDisabledRules(from: ruleIdentifiers, rules: rules)
-                }
-                observedProduct -= numberOfLinesInRegion * numberOfDisabledRules
-            }
+            observedCoverage -= region.reducesCoverageBy(
+                numberOfLinesInFile: numberOfLinesInFile,
+                rules: rules,
+                ruleIdentifiers: ruleIdentifiers
+            )
         }
 
         return Coverage.Coverage(
             numberOfLinesOfCode: numberOfLinesInFile,
-            observedCoverage: observedProduct,
-            maximumCoverage: maxProduct
+            observedCoverage: observedCoverage,
+            maximumCoverage: maximumCoverage
         )
+    }
+}
+
+private extension Region {
+    func reducesCoverageBy(numberOfLinesInFile: Int, rules: [any Rule], ruleIdentifiers: Set<String>) -> Int {
+        guard disabledRuleIdentifiers.isNotEmpty else {
+            return 0
+        }
+
+        let numberOfLinesInRegion = numberOfLines(numberOfLinesInFile: numberOfLinesInFile)
+        if disabledRuleIdentifiers.contains(.all) {
+           return numberOfLinesInRegion * rules.numberOfRulesIncludingCustomRules
+        }
+
+        let disabledRuleIdentifiers = Set(disabledRuleIdentifiers.map { $0.stringRepresentation })
+        let numberOfDisabledRules: Int = if disabledRuleIdentifiers.contains(CustomRules.identifier) {
+            disabledRuleIdentifiers.subtracting(
+                Set(rules.customRuleIdentifiers + [CustomRules.identifier])
+            ).numberOfDisabledRules(from: ruleIdentifiers, rules: rules) + rules.customRuleIdentifiers.count
+        } else {
+            disabledRuleIdentifiers.numberOfDisabledRules(from: ruleIdentifiers, rules: rules)
+        }
+        return numberOfLinesInRegion * numberOfDisabledRules
+    }
+
+    private func numberOfLines(numberOfLinesInFile: Int) -> Int {
+        end.line == .max ?
+            numberOfLinesInFile - (start.line ?? numberOfLinesInFile) :
+            max((end.line ?? 0) - (start.line ?? 0), 1)
     }
 }
 
@@ -153,14 +173,6 @@ private extension Set<String> {
             }
         }
         return numberOfRules
-    }
-}
-
-private extension Region {
-    func numberOfLines(numberOfLinesInFile: Int) -> Int {
-        end.line == .max ?
-            numberOfLinesInFile - (start.line ?? numberOfLinesInFile) :
-            max((end.line ?? 0) - (start.line ?? 0), 1)
     }
 }
 

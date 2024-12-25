@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct QuickDiscouragedFocusedTestRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct QuickDiscouragedFocusedTestRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

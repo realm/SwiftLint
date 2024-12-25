@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct BalancedXCTestLifecycleRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct BalancedXCTestLifecycleRule: Rule {
     var configuration = BalancedXCTestLifecycleConfiguration()
 
     static let description = RuleDescription(

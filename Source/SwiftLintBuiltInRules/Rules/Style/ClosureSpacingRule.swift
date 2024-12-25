@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct ClosureSpacingRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct ClosureSpacingRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

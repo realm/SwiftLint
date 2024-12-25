@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(foldExpressions: true)
-struct NoMagicNumbersRule: OptInRule {
+@SwiftSyntaxRule(foldExpressions: true, optIn: true)
+struct NoMagicNumbersRule: Rule {
     var configuration = NoMagicNumbersConfiguration()
 
     static let description = RuleDescription(

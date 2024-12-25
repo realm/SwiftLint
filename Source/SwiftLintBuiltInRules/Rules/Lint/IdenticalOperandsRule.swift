@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(foldExpressions: true)
-struct IdenticalOperandsRule: OptInRule {
+@SwiftSyntaxRule(foldExpressions: true, optIn: true)
+struct IdenticalOperandsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     private static let operators = ["==", "!=", "===", "!==", ">", ">=", "<", "<="]

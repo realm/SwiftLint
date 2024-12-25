@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct LetVarWhitespaceRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct LetVarWhitespaceRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

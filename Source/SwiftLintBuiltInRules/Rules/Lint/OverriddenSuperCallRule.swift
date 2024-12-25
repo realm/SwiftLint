@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct OverriddenSuperCallRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct OverriddenSuperCallRule: Rule {
     var configuration = OverriddenSuperCallConfiguration()
 
     static let description = RuleDescription(

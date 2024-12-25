@@ -1,8 +1,8 @@
 import SwiftOperators
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct XCTSpecificMatcherRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct XCTSpecificMatcherRule: Rule {
     var configuration = XCTSpecificMatcherConfiguration()
 
     static let description = RuleDescription(

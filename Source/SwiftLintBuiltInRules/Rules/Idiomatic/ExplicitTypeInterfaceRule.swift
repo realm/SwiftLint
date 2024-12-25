@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ExplicitTypeInterfaceRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ExplicitTypeInterfaceRule: Rule {
     var configuration = ExplicitTypeInterfaceConfiguration()
 
     static let description = RuleDescription(

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(foldExpressions: true)
-struct ContainsOverRangeNilComparisonRule: OptInRule {
+@SwiftSyntaxRule(foldExpressions: true, optIn: true)
+struct ContainsOverRangeNilComparisonRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

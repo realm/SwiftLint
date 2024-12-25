@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct FinalTestCaseRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct FinalTestCaseRule: Rule {
     var configuration = FinalTestCaseConfiguration()
 
     static let description = RuleDescription(

@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule(foldExpressions: true, explicitRewriter: true)
-struct EmptyCountRule: OptInRule {
+@SwiftSyntaxRule(foldExpressions: true, explicitRewriter: true, optIn: true)
+struct EmptyCountRule: Rule {
     var configuration = EmptyCountConfiguration()
 
     static let description = RuleDescription(

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct MultilineParametersRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct MultilineParametersRule: Rule {
     var configuration = MultilineParametersConfiguration()
 
     static let description = RuleDescription(

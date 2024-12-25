@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct PreferKeyPathRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct PreferKeyPathRule: Rule {
     var configuration = PreferKeyPathConfiguration()
 
     private static let extendedMode = ["restrict_to_standard_functions": false]

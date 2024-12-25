@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct FatalErrorMessageRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct FatalErrorMessageRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

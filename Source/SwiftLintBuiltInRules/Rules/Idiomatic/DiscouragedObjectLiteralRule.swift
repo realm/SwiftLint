@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct DiscouragedObjectLiteralRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct DiscouragedObjectLiteralRule: Rule {
     var configuration = DiscouragedObjectLiteralConfiguration()
 
     static let description = RuleDescription(

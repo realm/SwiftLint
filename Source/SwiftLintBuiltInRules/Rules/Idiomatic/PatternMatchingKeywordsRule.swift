@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct PatternMatchingKeywordsRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct PatternMatchingKeywordsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

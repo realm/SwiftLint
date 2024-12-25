@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct UnusedParameterRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(correctable: true, optIn: true)
+struct UnusedParameterRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

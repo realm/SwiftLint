@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct RedundantSelfInClosureRule: SwiftSyntaxCorrectableRule, OptInRule {
+@SwiftSyntaxRule(correctable: true, optIn: true)
+struct RedundantSelfInClosureRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

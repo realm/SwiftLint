@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct EnumCaseAssociatedValuesLengthRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct EnumCaseAssociatedValuesLengthRule: Rule {
     var configuration = SeverityLevelsConfiguration<Self>(warning: 5, error: 6)
 
     static let description = RuleDescription(

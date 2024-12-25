@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct OneDeclarationPerFileRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct OneDeclarationPerFileRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

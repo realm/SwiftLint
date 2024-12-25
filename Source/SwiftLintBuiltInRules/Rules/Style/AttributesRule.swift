@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct AttributesRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct AttributesRule: Rule {
     var configuration = AttributesConfiguration()
 
     static let description = RuleDescription(

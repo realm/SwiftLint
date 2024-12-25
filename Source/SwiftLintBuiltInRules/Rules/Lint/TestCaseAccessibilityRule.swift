@@ -1,8 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct TestCaseAccessibilityRule: OptInRule, SubstitutionCorrectableRule {
+@SwiftSyntaxRule(optIn: true)
+struct TestCaseAccessibilityRule: Rule, SubstitutionCorrectableRule {
     var configuration = TestCaseAccessibilityConfiguration()
 
     static let description = RuleDescription(

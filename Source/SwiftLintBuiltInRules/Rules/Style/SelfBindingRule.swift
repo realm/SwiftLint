@@ -2,8 +2,8 @@ import SwiftSyntax
 
 // MARK: - SelfBindingRule
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct SelfBindingRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct SelfBindingRule: Rule {
     var configuration = SelfBindingConfiguration()
 
     static let description = RuleDescription(

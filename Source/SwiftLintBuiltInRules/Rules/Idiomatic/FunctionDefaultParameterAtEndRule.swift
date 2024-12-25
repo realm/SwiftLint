@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct FunctionDefaultParameterAtEndRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct FunctionDefaultParameterAtEndRule: Rule {
     var configuration = FunctionDefaultParameterAtEndConfiguration()
 
     static let description = RuleDescription(

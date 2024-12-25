@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ShorthandArgumentRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ShorthandArgumentRule: Rule {
     var configuration = ShorthandArgumentConfiguration()
 
     static let description = RuleDescription(

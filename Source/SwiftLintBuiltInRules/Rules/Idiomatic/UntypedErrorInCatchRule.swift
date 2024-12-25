@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct UntypedErrorInCatchRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct UntypedErrorInCatchRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

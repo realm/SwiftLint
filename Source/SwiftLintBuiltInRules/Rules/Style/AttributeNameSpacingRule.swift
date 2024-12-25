@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct AttributeNameSpacingRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(correctable: true)
+struct AttributeNameSpacingRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(

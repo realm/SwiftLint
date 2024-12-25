@@ -28,8 +28,8 @@ private let legacyObjcTypes = [
     "NSUUID",
 ]
 
-@SwiftSyntaxRule
-struct LegacyObjcTypeRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct LegacyObjcTypeRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

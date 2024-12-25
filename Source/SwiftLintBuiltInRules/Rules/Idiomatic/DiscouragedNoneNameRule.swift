@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct DiscouragedNoneNameRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct DiscouragedNoneNameRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

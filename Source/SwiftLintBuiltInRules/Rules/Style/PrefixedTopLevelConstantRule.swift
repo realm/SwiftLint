@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct PrefixedTopLevelConstantRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct PrefixedTopLevelConstantRule: Rule {
     var configuration = PrefixedTopLevelConstantConfiguration()
 
     static let description = RuleDescription(

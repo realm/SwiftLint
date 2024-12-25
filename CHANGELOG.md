@@ -16,6 +16,10 @@
 * SwiftLint now requires a Swift 6 or higher compiler to build.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* The `private_unit_test` rule's deprecated `regex` configuration option has been removed after 2 years.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5912](https://github.com/realm/SwiftLint/issues/5912)
+
 #### Experimental
 
 * None.

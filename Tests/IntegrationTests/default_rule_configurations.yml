@@ -437,7 +437,6 @@ private_swiftui_state:
 private_unit_test:
   severity: warning
   test_parent_classes: ["QuickSpec", "XCTestCase"]
-  regex: "XCTestCase"
 prohibited_interface_builder:
   severity: warning
 prohibited_super_call:

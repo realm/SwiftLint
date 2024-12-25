@@ -1,25 +1,22 @@
+import FilenameMatcher
 import Foundation
 
 extension Configuration {
-    public enum ExcludeBy {
-        case prefix
-        case paths(excludedPaths: [String])
-    }
-
     // MARK: Lintable Paths
+
     /// Returns the files that can be linted by SwiftLint in the specified parent path.
     ///
     /// - parameter path:            The parent path in which to search for lintable files. Can be a directory or a
     ///                              file.
     /// - parameter forceExclude:    Whether or not excludes defined in this configuration should be applied even if
     ///                              `path` is an exact match.
-    /// - parameter excludeByPrefix: Whether or not uses excluding by prefix algorithm.
+    /// - parameter excludeByPrefix: Whether or not it uses the exclude-by-prefix algorithm.
     ///
     /// - returns: Files to lint.
     public func lintableFiles(inPath path: String,
                               forceExclude: Bool,
-                              excludeBy: ExcludeBy) -> [SwiftLintFile] {
-        lintablePaths(inPath: path, forceExclude: forceExclude, excludeBy: excludeBy)
+                              excludeByPrefix: Bool) -> [SwiftLintFile] {
+        lintablePaths(inPath: path, forceExclude: forceExclude, excludeByPrefix: excludeByPrefix)
             .parallelCompactMap {
                 SwiftLintFile(pathDeferringReading: $0)
             }
@@ -31,27 +28,25 @@ extension Configuration {
     ///                              file.
     /// - parameter forceExclude:    Whether or not excludes defined in this configuration should be applied even if
     ///                              `path` is an exact match.
-    /// - parameter excludeByPrefix: Whether or not uses excluding by prefix algorithm.
+    /// - parameter excludeByPrefix: Whether or not it uses the exclude-by-prefix algorithm.
     /// - parameter fileManager:     The lintable file manager to use to search for lintable files.
     ///
     /// - returns: Paths for files to lint.
     internal func lintablePaths(
         inPath path: String,
         forceExclude: Bool,
-        excludeBy: ExcludeBy,
+        excludeByPrefix: Bool,
         fileManager: some LintableFileManager = FileManager.default
     ) -> [String] {
         if fileManager.isFile(atPath: path) {
+            let file = fileManager.filesToLint(inPath: path, rootDirectory: nil)
             if forceExclude {
-                switch excludeBy {
-                case .prefix:
-                    return filterExcludedPathsByPrefix(in: [path.absolutePathStandardized()])
-                case .paths(let excludedPaths):
-                    return filterExcludedPaths(excludedPaths, in: [path.absolutePathStandardized()])
-                }
+                return excludeByPrefix
+                    ? filterExcludedPathsByPrefix(in: file)
+                    : filterExcludedPaths(in: file)
             }
             // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
-            return [path]
+            return file
         }
 
         let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
@@ -59,35 +54,29 @@ extension Configuration {
             .flatMap(Glob.resolveGlob)
             .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
 
-        switch excludeBy {
-        case .prefix:
-            return filterExcludedPathsByPrefix(in: pathsForPath, includedPaths)
-        case .paths(let excludedPaths):
-            return filterExcludedPaths(excludedPaths, in: pathsForPath, includedPaths)
-        }
+        return excludeByPrefix
+            ? filterExcludedPathsByPrefix(in: pathsForPath + includedPaths)
+            : filterExcludedPaths(in: pathsForPath + includedPaths)
     }
 
     /// Returns an array of file paths after removing the excluded paths as defined by this configuration.
     ///
-    /// - parameter fileManager: The lintable file manager to use to expand the excluded paths into all matching paths.
-    /// - parameter paths:       The input paths to filter.
+    /// - parameter paths: The input paths to filter.
     ///
     /// - returns: The input paths after removing the excluded paths.
-    public func filterExcludedPaths(
-        _ excludedPaths: [String],
-        in paths: [String]...
-    ) -> [String] {
-        let allPaths = paths.flatMap(\.self)
+    public func filterExcludedPaths(in paths: [String]) -> [String] {
         #if os(Linux)
-        let result = NSMutableOrderedSet(capacity: allPaths.count)
-        result.addObjects(from: allPaths)
+        let result = NSMutableOrderedSet(capacity: paths.count)
+        result.addObjects(from: paths)
         #else
-        let result = NSMutableOrderedSet(array: allPaths)
+        let result = NSOrderedSet(array: paths)
         #endif
-
-        result.minusSet(Set(excludedPaths))
-        // swiftlint:disable:next force_cast
-        return result.map { $0 as! String }
+        let exclusionPatterns = self.excludedPaths.flatMap {
+            Glob.createFilenameMatchers(root: rootDirectory, pattern: $0)
+        }
+        return result.array
+            .parallelCompactMap { exclusionPatterns.anyMatch(filename: $0 as! String) ? nil : $0 as? String }
+            // swiftlint:disable:previous force_cast
     }
 
     /// Returns the file paths that are excluded by this configuration using filtering by absolute path prefix.
@@ -96,25 +85,12 @@ extension Configuration {
     /// algorithm `filterExcludedPaths`.
     ///
     /// - returns: The input paths after removing the excluded paths.
-    public func filterExcludedPathsByPrefix(in paths: [String]...) -> [String] {
-        let allPaths = paths.flatMap(\.self)
+    public func filterExcludedPathsByPrefix(in paths: [String]) -> [String] {
         let excludedPaths = self.excludedPaths
-            .parallelFlatMap { @Sendable in Glob.resolveGlob($0) }
+            .parallelFlatMap { Glob.resolveGlob($0) }
             .map { $0.absolutePathStandardized() }
-        return allPaths.filter { path in
+        return paths.filter { path in
             !excludedPaths.contains { path.hasPrefix($0) }
         }
-    }
-
-    /// Returns the file paths that are excluded by this configuration after expanding them using the specified file
-    /// manager.
-    ///
-    /// - parameter fileManager: The file manager to get child paths in a given parent location.
-    ///
-    /// - returns: The expanded excluded file paths.
-    public func excludedPaths(fileManager: some LintableFileManager = FileManager.default) -> [String] {
-        excludedPaths
-            .flatMap(Glob.resolveGlob)
-            .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
     }
 }
